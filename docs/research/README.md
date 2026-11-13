@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[Full PF追加幅計画](h4_full_pf_followup_plan_20261114/REPORT.md)：S2/Y4各2幅・M5/16hの初回5案、M5/32hは分枝未解決で保留。既存B/D APIで78round metadataとearlyを保持、人工4test PASS。δE/価格/N/G新計算0、科学実行は別承認後、公開後STOP。
+
 [Full PF公式・幅のH_eff結果](h4_full_pf_heff_scan_results_20261114/REPORT.md)：科学SOURCE b64f22b9、14新cell/28組の直接・spectral照合が全数値gate通過。元固有系cacheで新eigh0、旧S2/.1再計算なし。局所予算screen内11・超3、候補S2/.2・Y4/.4・M5/.8。新caller4人工PASS、価格/N/G未取得、公開後STOP。
 
 [Full PF H_effの有限探索計画](h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：保存q格子に基づくS2/Y4/M5×5幅、195round/177 physical/15actual cellをmetadataで保持。既存点を除く新14step、元H eigh0、直接/spectral各最大28の有限案。新6＋旧19 PASS、実H4/保存再解析/C/G0、公開後STOP。

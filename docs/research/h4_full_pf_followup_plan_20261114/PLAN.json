@@ -1,0 +1,4819 @@
+{
+  "status": "FOLLOWUP_PLAN_ONLY_NO_SCIENCE",
+  "sources": {
+    "previous_result": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+    "previous_plan": {
+      "commit": "878000d8d5d956b1d2f5513986ae40d0612e0bdd",
+      "path": "docs/research/h4_full_pf_heff_scan_preparation_20261114/PLAN.json"
+    },
+    "base": {
+      "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+      "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json"
+    },
+    "C_API": "86f37d25ffd5eee3daf7f25ce001b090b1f2cf33",
+    "B_API": "437ba4acdb82708b6fc98e3cd119a2a734f7cf64",
+    "D_API": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+    "price_catalog": {
+      "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+      "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json"
+    },
+    "latest_C_context": "367dc98d832ecb4d769f2a3da3d174bc697331a5"
+  },
+  "shared": {
+    "binding": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 10,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H4_TOL_ONLY_DF10",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "system": "H4",
+      "source": {
+        "input_source": {
+          "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+          "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+        },
+        "composition_recipe": {
+          "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "path": "src/trottertracks/pr_rpe_signal_provider.py",
+          "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+        },
+        "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+      },
+      "decomposition": {
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "contract": {
+          "completion": "saved_weighted_Hermitian_completion",
+          "fragment_order": "saved_snapshot_order",
+          "preparation_binding": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+            "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+          },
+          "state_preparation_cost": 0,
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          }
+        },
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        }
+      }
+    },
+    "profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "scope": "single_hadamard_interrogation_without_state_preparation",
+      "P": 0,
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    },
+    "h": {
+      "numerator": 3602879701896397,
+      "denominator": 36028797018963968
+    },
+    "M": 12,
+    "P": 0,
+    "rmse_policy": {
+      "family": "PR_PAPER_RMSE",
+      "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+      "source": {
+        "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+        "path": "scripts/run_pr_rpe_rmse_s0.py",
+        "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+      },
+      "target_rmse_ha": {
+        "numerator": 3890625249,
+        "denominator": 2441406250000
+      },
+      "error_contract": {
+        "A_policy": {
+          "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+          "metric": "energy_RMSE",
+          "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+          "family": "PR_PAPER_RMSE",
+          "target_rmse": "3890625249/2441406250000",
+          "qpe_rmse": "3890625249/4882812500000",
+          "evolution_rmse": "3890625249/4882812500000",
+          "error_rule": "minkowski",
+          "normalization_rule": "finite_B_diagnostic",
+          "N_terminal": 11,
+          "slope_D": 4,
+          "Cmax": {
+            "PF": 0.08,
+            "PR": 0.1
+          },
+          "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+          "source": {
+            "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+            "path": "scripts/run_pr_rpe_rmse_s0.py",
+            "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+          },
+          "paper": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          },
+          "high_probability_compatible": false
+        },
+        "state_assumption": "saved_numerical_state_conditional_ground",
+        "energy_prior_ha": [
+          -4.994249624417489,
+          -2.0985459369977186
+        ],
+        "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+      },
+      "scientific_status": "PROPOSED_NOT_ADOPTED"
+    },
+    "target": {
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4",
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        },
+        "decomposition": {
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          }
+        }
+      },
+      "energy_shift_ha": 0,
+      "quantity": "ORIGINAL_DF_H_TARGET_ENERGY",
+      "source": {
+        "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+        "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+        "selector": [
+          "target"
+        ]
+      },
+      "state_assumption": "saved_numerical_state_conditional_ground",
+      "ground_state_certified": false,
+      "truth_proxy_source": {
+        "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+        "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+        "selector": [
+          "records",
+          5,
+          "diagnostics"
+        ]
+      },
+      "reference_solver_energy_ha": -2.1663874486347634,
+      "truth_proxy_adopted_for_new_simulation": false,
+      "qualification": "UNQUALIFIED"
+    },
+    "numerical_policy_source": {
+      "commit": "9af1ac8ed8adcaef059f439ce690b22b7a320de0",
+      "path": "docs/research/h4_full_pf_heff_preparation_20261113/PLAN.json",
+      "selector": [
+        "numerical_policy"
+      ]
+    },
+    "cached_reference_eigensystem": {
+      "commit": "69ee0ff8898960d5f9959af8d34d89f223caec87",
+      "path": "docs/research/h4_full_pf_heff_results_20261113/run01/EIGENSYSTEM.json",
+      "selector": [
+        "reference_comparison"
+      ]
+    }
+  },
+  "configurations": [
+    {
+      "label": "S2_16h_over_7",
+      "formula": "2nd",
+      "h_multiplier": {
+        "numerator": 16,
+        "denominator": 7
+      },
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 15762598695796736
+      },
+      "display_only_delta": 0.2285714285714286,
+      "stage": "PROPOSED_FIRST_BATCH",
+      "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+      "constructor": {
+        "base": {
+          "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+          "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json"
+        },
+        "base_selector": [
+          "candidates",
+          0,
+          "configuration",
+          "spec"
+        ],
+        "api": "D.full_pf_spec -> B.generate",
+        "formula": "2nd",
+        "delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        "M": 12,
+        "rank": 10
+      },
+      "rounds": [
+        {
+          "m": 0,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "q_RPE": 1,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": null,
+            "K": null,
+            "id": "5669f142d693eee92583"
+          },
+          "canonical_candidate_id": "RMSE:3c4c498c24321838d73c1b7cf75ab1d85e98fe5cef11ae93f84b885038b4c0b3",
+          "step_cell": "2nd @ 1h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 1,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "q_RPE": 2,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 0.2,
+            "q": 1,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "eb745e6e4759d15f75bc"
+          },
+          "canonical_candidate_id": "RMSE:33458860c606f690274223c61cd41f5c4545d003d6223e24d3c0a639c3ab3c44",
+          "step_cell": "2nd @ 2h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 2,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "q_RPE": 4,
+          "q_PF": 2,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 0.4,
+            "q": 2,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "4433563c3a4ef7a61702"
+          },
+          "canonical_candidate_id": "RMSE:eb2b5293563561fc2d1e0b2862be2020f8d6100455f864933729e62e5a66c8e6",
+          "step_cell": "2nd @ 2h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 2,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 3,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 4503599627370496
+          },
+          "q_RPE": 8,
+          "q_PF": 4,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 0.8,
+            "q": 4,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "e2b139ad6211e2c63ae6"
+          },
+          "canonical_candidate_id": "RMSE:c1d579af36d4b35c70edaea7f0a84c1af178a4a967a3318a0bdf7c4ee197253b",
+          "step_cell": "2nd @ 2h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 4,
+          "price_coverage": {
+            "X": "EXACT_METADATA_MATCH",
+            "Y": "EXACT_METADATA_MATCH",
+            "source": {
+              "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+              "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json",
+              "selector": [
+                "rows",
+                2
+              ]
+            },
+            "new_acceptance": false
+          }
+        },
+        {
+          "m": 4,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "q_RPE": 16,
+          "q_PF": 7,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 15762598695796736
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 1.6,
+            "q": 7,
+            "delta": 0.2285714285714286,
+            "R_outer": null,
+            "K": null,
+            "id": "b7c4e73538ec19070cde"
+          },
+          "canonical_candidate_id": "RMSE:71308acbb97113010c8b2a08c7c4e88998f91e71184c494e117dff271b1bb47c",
+          "step_cell": "2nd @ 16/7h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 7,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 5,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "q_RPE": 32,
+          "q_PF": 14,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 15762598695796736
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 3.2,
+            "q": 14,
+            "delta": 0.2285714285714286,
+            "R_outer": null,
+            "K": null,
+            "id": "8df73ab164fac57bfd6c"
+          },
+          "canonical_candidate_id": "RMSE:8c2315761a0202d09d381c6feeca9ae775650b46cf0beed40491d190414f945a",
+          "step_cell": "2nd @ 16/7h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 14,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 6,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 562949953421312
+          },
+          "q_RPE": 64,
+          "q_PF": 28,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 15762598695796736
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 6.4,
+            "q": 28,
+            "delta": 0.2285714285714286,
+            "R_outer": null,
+            "K": null,
+            "id": "4f3984c6d381fa0ca848"
+          },
+          "canonical_candidate_id": "RMSE:a2ea9428a626a7df97001159f50327197b20045ae5d6b27d0901f07c5678b523",
+          "step_cell": "2nd @ 16/7h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 28,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 7,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 281474976710656
+          },
+          "q_RPE": 128,
+          "q_PF": 56,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 15762598695796736
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 12.8,
+            "q": 56,
+            "delta": 0.2285714285714286,
+            "R_outer": null,
+            "K": null,
+            "id": "a80a87e65d70d3ad37cd"
+          },
+          "canonical_candidate_id": "RMSE:853d9e0079ce0adf7a5a74d5499489cf752fa2c71f5d72bcaca94c1a3dc49542",
+          "step_cell": "2nd @ 16/7h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 56,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 8,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 140737488355328
+          },
+          "q_RPE": 256,
+          "q_PF": 112,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 15762598695796736
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 25.6,
+            "q": 112,
+            "delta": 0.2285714285714286,
+            "R_outer": null,
+            "K": null,
+            "id": "c11e4c72179cc662ceb0"
+          },
+          "canonical_candidate_id": "RMSE:2e6140dc307646386f20857021b817ae64907b1c41fbf7deeacc90d21816545c",
+          "step_cell": "2nd @ 16/7h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 112,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 9,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 70368744177664
+          },
+          "q_RPE": 512,
+          "q_PF": 224,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 15762598695796736
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 51.2,
+            "q": 224,
+            "delta": 0.2285714285714286,
+            "R_outer": null,
+            "K": null,
+            "id": "a4ec53ff4e60d60a2930"
+          },
+          "canonical_candidate_id": "RMSE:6c45d3029062e7ed7eab64a4b6a4faf4181768c96653fb29af291f32b33d8e4e",
+          "step_cell": "2nd @ 16/7h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 224,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 10,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 35184372088832
+          },
+          "q_RPE": 1024,
+          "q_PF": 448,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 15762598695796736
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 102.4,
+            "q": 448,
+            "delta": 0.2285714285714286,
+            "R_outer": null,
+            "K": null,
+            "id": "d86b55e4b1f65ea9cd14"
+          },
+          "canonical_candidate_id": "RMSE:dda03811a36e42a9824a8909d67f4137f34f1b518bb3635f9b0b288976ba1e43",
+          "step_cell": "2nd @ 16/7h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 448,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 11,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 17592186044416
+          },
+          "q_RPE": 2048,
+          "q_PF": 896,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 15762598695796736
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 204.8,
+            "q": 896,
+            "delta": 0.2285714285714286,
+            "R_outer": null,
+            "K": null,
+            "id": "ee6d77a5b25f2a37992f"
+          },
+          "canonical_candidate_id": "RMSE:21d49ecd3c1df70bc173055c6cc99d09bd09aac3073b60ae9a398aac6f0a683c",
+          "step_cell": "2nd @ 16/7h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 896,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 12,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 8796093022208
+          },
+          "q_RPE": 4096,
+          "q_PF": 1792,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 15762598695796736
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 409.6,
+            "q": 1792,
+            "delta": 0.2285714285714286,
+            "R_outer": null,
+            "K": null,
+            "id": "923d811dd2e493ca3f37"
+          },
+          "canonical_candidate_id": "RMSE:36272c751f6b952b00e2ecc227e904b8cbaa8f10a303347f0383a746b60d48da",
+          "step_cell": "2nd @ 16/7h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1792,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        }
+      ],
+      "selected": false,
+      "sufficient_N": null,
+      "global_RMSE_bound": null,
+      "G": null
+    },
+    {
+      "label": "S2_8h_over_3",
+      "formula": "2nd",
+      "h_multiplier": {
+        "numerator": 8,
+        "denominator": 3
+      },
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 13510798882111488
+      },
+      "display_only_delta": 0.26666666666666666,
+      "stage": "PROPOSED_FIRST_BATCH",
+      "configuration_id": "7754671bba8a61cf3054f4e43f9672517f3f786f81c21d0bdea02cfdef30b575",
+      "constructor": {
+        "base": {
+          "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+          "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json"
+        },
+        "base_selector": [
+          "candidates",
+          0,
+          "configuration",
+          "spec"
+        ],
+        "api": "D.full_pf_spec -> B.generate",
+        "formula": "2nd",
+        "delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 13510798882111488
+        },
+        "M": 12,
+        "rank": 10
+      },
+      "rounds": [
+        {
+          "m": 0,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "q_RPE": 1,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": null,
+            "K": null,
+            "id": "5669f142d693eee92583"
+          },
+          "canonical_candidate_id": "RMSE:ceeb66172f8ac7fe6d5e7e3ebac25cf5a7862c6ea2e53ff818c77764071d4fb2",
+          "step_cell": "2nd @ 1h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 1,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "q_RPE": 2,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 0.2,
+            "q": 1,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "eb745e6e4759d15f75bc"
+          },
+          "canonical_candidate_id": "RMSE:ff59b61ac3fee4cc4f466a6fe04551c2f721f8621863c2450b2a446cec2cfe4b",
+          "step_cell": "2nd @ 2h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 2,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "q_RPE": 4,
+          "q_PF": 2,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 0.4,
+            "q": 2,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "4433563c3a4ef7a61702"
+          },
+          "canonical_candidate_id": "RMSE:466cf6ffbd0d838d6e2d6d78f2b2879bb83f8d86fd706e726afa67d305def6b1",
+          "step_cell": "2nd @ 2h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 2,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 3,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 4503599627370496
+          },
+          "q_RPE": 8,
+          "q_PF": 3,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 0.8,
+            "q": 3,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "a8bb41e00ad35ab175e8"
+          },
+          "canonical_candidate_id": "RMSE:818c118ca4142a5180647e761e67c191c3186ed35538c76a85e64dde2641cd3e",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 3,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 4,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "q_RPE": 16,
+          "q_PF": 6,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 1.6,
+            "q": 6,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "260a8b5784dd02e7405e"
+          },
+          "canonical_candidate_id": "RMSE:f3cb260a8641604f39ff4737d188ccfaa33a29bc698c89fc0ae298e0fbdce034",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 6,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 5,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "q_RPE": 32,
+          "q_PF": 12,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 3.2,
+            "q": 12,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "e12c5b01365ad1d8342d"
+          },
+          "canonical_candidate_id": "RMSE:417947588ca619f39fe7e0a76aaac6d03e99af93156aa3f58b7948c0446a808c",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 12,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 6,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 562949953421312
+          },
+          "q_RPE": 64,
+          "q_PF": 24,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 6.4,
+            "q": 24,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "9a3ed5056d6c4b2105db"
+          },
+          "canonical_candidate_id": "RMSE:6d5a8d7106746c5e5d5c3b76a1e16ac9234c7f0c1629d6ba96ed68bd9ffa237c",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 24,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 7,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 281474976710656
+          },
+          "q_RPE": 128,
+          "q_PF": 48,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 12.8,
+            "q": 48,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "5092c0d73fe511741fe8"
+          },
+          "canonical_candidate_id": "RMSE:b84021087131c0b77a48b4e2ef239382cb10855168cc844bb88823a9de98068d",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 48,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 8,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 140737488355328
+          },
+          "q_RPE": 256,
+          "q_PF": 96,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 25.6,
+            "q": 96,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "5f5d9dda159f07f28ed2"
+          },
+          "canonical_candidate_id": "RMSE:8d2d5da640843d2c4c78f239b5a066084b59ef6b2c744a1285a03f93f003279f",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 96,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 9,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 70368744177664
+          },
+          "q_RPE": 512,
+          "q_PF": 192,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 51.2,
+            "q": 192,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "f5006b5dac4d36c51e16"
+          },
+          "canonical_candidate_id": "RMSE:6122d3c612f38c265b434303772105df4374c4c2fb3981323abde136afef87b6",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 192,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 10,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 35184372088832
+          },
+          "q_RPE": 1024,
+          "q_PF": 384,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 102.4,
+            "q": 384,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "70df77e8b65e26f76d51"
+          },
+          "canonical_candidate_id": "RMSE:2e11738271075664c1f0ecfe6cbdf2f415e6868eb71178b9868a6dd87ac84c2e",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 384,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 11,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 17592186044416
+          },
+          "q_RPE": 2048,
+          "q_PF": 768,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 204.8,
+            "q": 768,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "53e91ff186cefbdf2c31"
+          },
+          "canonical_candidate_id": "RMSE:751eb03e74a430ce24791f51de79187d45abb3c8b696dcb17fcd42055abd2c09",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 768,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 12,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 8796093022208
+          },
+          "q_RPE": 4096,
+          "q_PF": 1536,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 13510798882111488
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 10,
+            "T": 409.6,
+            "q": 1536,
+            "delta": 0.26666666666666666,
+            "R_outer": null,
+            "K": null,
+            "id": "a0f2a78c710738c4bcc8"
+          },
+          "canonical_candidate_id": "RMSE:22931a00d0dfc2dea8415995e08f449fd719dd77e94743d22611758d60740a96",
+          "step_cell": "2nd @ 8/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1536,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        }
+      ],
+      "selected": false,
+      "sufficient_N": null,
+      "global_RMSE_bound": null,
+      "G": null
+    },
+    {
+      "label": "Y4_16h_over_3",
+      "formula": "4th",
+      "h_multiplier": {
+        "numerator": 16,
+        "denominator": 3
+      },
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 6755399441055744
+      },
+      "display_only_delta": 0.5333333333333333,
+      "stage": "PROPOSED_FIRST_BATCH",
+      "configuration_id": "a799697fc8ca36b024acec26af43313777948ead432e66804c670649a18afe76",
+      "constructor": {
+        "base": {
+          "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+          "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json"
+        },
+        "base_selector": [
+          "candidates",
+          0,
+          "configuration",
+          "spec"
+        ],
+        "api": "D.full_pf_spec -> B.generate",
+        "formula": "4th",
+        "delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 6755399441055744
+        },
+        "M": 12,
+        "rank": 10
+      },
+      "rounds": [
+        {
+          "m": 0,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "q_RPE": 1,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": null,
+            "K": null,
+            "id": "03df026eb51a56241eef"
+          },
+          "canonical_candidate_id": "RMSE:c40e5c493ba11b6c36c9cc2ded5a224bbd4d48371e3849bbcd0496e4cfad31f6",
+          "step_cell": "4th @ 1h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 3,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 1,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "q_RPE": 2,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 0.2,
+            "q": 1,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "ce89c91c95889ed4a657"
+          },
+          "canonical_candidate_id": "RMSE:cfd471d3d0db56291ede0f43c484081b1a41c7e7d99f33e214aba5784d288e3d",
+          "step_cell": "4th @ 2h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 3,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 2,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "q_RPE": 4,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 0.4,
+            "q": 1,
+            "delta": 0.4,
+            "R_outer": null,
+            "K": null,
+            "id": "21951422c4c3cb249055"
+          },
+          "canonical_candidate_id": "RMSE:297cf1ef5ff2dc0c6c835cf65c40e4a6a930f80d975185d00193b7108cbedcad",
+          "step_cell": "4th @ 4h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 3,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 3,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 4503599627370496
+          },
+          "q_RPE": 8,
+          "q_PF": 2,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 0.8,
+            "q": 2,
+            "delta": 0.4,
+            "R_outer": null,
+            "K": null,
+            "id": "2594f35f92e76d58874c"
+          },
+          "canonical_candidate_id": "RMSE:065dba463b66ca62e8df6de712b2f1c0546e8e6a71459a33f23f074b9c605fa4",
+          "step_cell": "4th @ 4h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 6,
+          "price_coverage": {
+            "X": "EXACT_METADATA_MATCH",
+            "Y": "EXACT_METADATA_MATCH",
+            "source": {
+              "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+              "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json",
+              "selector": [
+                "rows",
+                25
+              ]
+            },
+            "new_acceptance": false
+          }
+        },
+        {
+          "m": 4,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "q_RPE": 16,
+          "q_PF": 3,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 1.6,
+            "q": 3,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "3cf8eddfb3b78e96f5d2"
+          },
+          "canonical_candidate_id": "RMSE:68f71506c554aaad101c8028471206917e2a8c1be28262ed88cb343f39c3eb46",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 9,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 5,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "q_RPE": 32,
+          "q_PF": 6,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 3.2,
+            "q": 6,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "72383d110445e479155d"
+          },
+          "canonical_candidate_id": "RMSE:33db2c41601204274928878f9ce2ea53a73159f11e42c722a4e315c945fa9fdc",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 18,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 6,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 562949953421312
+          },
+          "q_RPE": 64,
+          "q_PF": 12,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 6.4,
+            "q": 12,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "7727a3fec25e033629f1"
+          },
+          "canonical_candidate_id": "RMSE:e63aab409bea3eb4a3dd320bed7b8edaa60ca231c787bdfb9212f2dc65993d08",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 36,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 7,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 281474976710656
+          },
+          "q_RPE": 128,
+          "q_PF": 24,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 12.8,
+            "q": 24,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "56f9ef44e385a83151b1"
+          },
+          "canonical_candidate_id": "RMSE:797e10139d97b43260d946e4057d042ba45af016dd444e42979798f655197c18",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 72,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 8,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 140737488355328
+          },
+          "q_RPE": 256,
+          "q_PF": 48,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 25.6,
+            "q": 48,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "0c0cf088690c1833bf8d"
+          },
+          "canonical_candidate_id": "RMSE:68d68149beeaa177d1238c68f5792799a39fc933592e6303aae0a552e08bae85",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 144,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 9,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 70368744177664
+          },
+          "q_RPE": 512,
+          "q_PF": 96,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 51.2,
+            "q": 96,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "b2c479e7805c4d1f0b30"
+          },
+          "canonical_candidate_id": "RMSE:b1a30ac1be4336213b9698fe190e4adcda0bfc44ca195c38e499b54b548c6d15",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 288,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 10,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 35184372088832
+          },
+          "q_RPE": 1024,
+          "q_PF": 192,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 102.4,
+            "q": 192,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "b151518b48c7b50db179"
+          },
+          "canonical_candidate_id": "RMSE:5f55cfa1e4ac051838ca273339ac3eff0b91ec3500032962f089f9315bdee979",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 576,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 11,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 17592186044416
+          },
+          "q_RPE": 2048,
+          "q_PF": 384,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 204.8,
+            "q": 384,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "269bef78d4a64a9f9ee3"
+          },
+          "canonical_candidate_id": "RMSE:f8075296f70e6cec37dc0c3a43c169638b21c182eb8a7e2d0f5ad0ea43606e93",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1152,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 12,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 8796093022208
+          },
+          "q_RPE": 4096,
+          "q_PF": 768,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 409.6,
+            "q": 768,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "2bc57e7f7ab3040a45f5"
+          },
+          "canonical_candidate_id": "RMSE:d20afd675c5880976892554f63e639502c3f6b676af5f1d92680076dc6af38c8",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 2304,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        }
+      ],
+      "selected": false,
+      "sufficient_N": null,
+      "global_RMSE_bound": null,
+      "G": null
+    },
+    {
+      "label": "Y4_32h_over_5",
+      "formula": "4th",
+      "h_multiplier": {
+        "numerator": 32,
+        "denominator": 5
+      },
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 5629499534213120
+      },
+      "display_only_delta": 0.64,
+      "stage": "PROPOSED_FIRST_BATCH",
+      "configuration_id": "9e930a476209c65a0d9a17b8a2bf4a8605fa43cb70018d1e37c5d960a3f58c27",
+      "constructor": {
+        "base": {
+          "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+          "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json"
+        },
+        "base_selector": [
+          "candidates",
+          0,
+          "configuration",
+          "spec"
+        ],
+        "api": "D.full_pf_spec -> B.generate",
+        "formula": "4th",
+        "delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 5629499534213120
+        },
+        "M": 12,
+        "rank": 10
+      },
+      "rounds": [
+        {
+          "m": 0,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "q_RPE": 1,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": null,
+            "K": null,
+            "id": "03df026eb51a56241eef"
+          },
+          "canonical_candidate_id": "RMSE:a2a55f155cbd5b8ffd28619669d00648d092ccc9c2e44d58ac61d338e50c2d81",
+          "step_cell": "4th @ 1h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 3,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 1,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "q_RPE": 2,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 0.2,
+            "q": 1,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "ce89c91c95889ed4a657"
+          },
+          "canonical_candidate_id": "RMSE:878adb1a8277168c691dc5a7ac93d84cd847588450442a3f404bbae45ef6770d",
+          "step_cell": "4th @ 2h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 3,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 2,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "q_RPE": 4,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 0.4,
+            "q": 1,
+            "delta": 0.4,
+            "R_outer": null,
+            "K": null,
+            "id": "21951422c4c3cb249055"
+          },
+          "canonical_candidate_id": "RMSE:24c8c2f993096bea945076b7fa25afd5db29145366db78f287faa44e95e5742e",
+          "step_cell": "4th @ 4h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 3,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 3,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 4503599627370496
+          },
+          "q_RPE": 8,
+          "q_PF": 2,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 0.8,
+            "q": 2,
+            "delta": 0.4,
+            "R_outer": null,
+            "K": null,
+            "id": "2594f35f92e76d58874c"
+          },
+          "canonical_candidate_id": "RMSE:22624c4c2859b77621e28a21fde2c5fe6ef55f7b55037263b19ed1bc6845a4c3",
+          "step_cell": "4th @ 4h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 6,
+          "price_coverage": {
+            "X": "EXACT_METADATA_MATCH",
+            "Y": "EXACT_METADATA_MATCH",
+            "source": {
+              "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+              "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json",
+              "selector": [
+                "rows",
+                25
+              ]
+            },
+            "new_acceptance": false
+          }
+        },
+        {
+          "m": 4,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "q_RPE": 16,
+          "q_PF": 3,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 6755399441055744
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 1.6,
+            "q": 3,
+            "delta": 0.5333333333333333,
+            "R_outer": null,
+            "K": null,
+            "id": "3cf8eddfb3b78e96f5d2"
+          },
+          "canonical_candidate_id": "RMSE:00ea82fbb8d4515924494d8220d373320c76c3b205f4587e621fee490e7b1a71",
+          "step_cell": "4th @ 16/3h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 9,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 5,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "q_RPE": 32,
+          "q_PF": 5,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 5629499534213120
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 3.2,
+            "q": 5,
+            "delta": 0.64,
+            "R_outer": null,
+            "K": null,
+            "id": "b86cbbd8916975eaf2fe"
+          },
+          "canonical_candidate_id": "RMSE:0382f3f488edd6069f5cb7994636b327291c7f81b4c409f4bfd39f1f13442f70",
+          "step_cell": "4th @ 32/5h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 15,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 6,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 562949953421312
+          },
+          "q_RPE": 64,
+          "q_PF": 10,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 5629499534213120
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 6.4,
+            "q": 10,
+            "delta": 0.64,
+            "R_outer": null,
+            "K": null,
+            "id": "91ee2955a80e3c76444b"
+          },
+          "canonical_candidate_id": "RMSE:5d3e10f1025872e508e823c7b19609fa55c1fa66a72fb1898a3b9cf79cbf6811",
+          "step_cell": "4th @ 32/5h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 30,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 7,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 281474976710656
+          },
+          "q_RPE": 128,
+          "q_PF": 20,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 5629499534213120
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 12.8,
+            "q": 20,
+            "delta": 0.64,
+            "R_outer": null,
+            "K": null,
+            "id": "2c71028b12289314e935"
+          },
+          "canonical_candidate_id": "RMSE:86557f842d7d8d39da06867282dec4b42d2c60c443f13d497c237e0f075340e8",
+          "step_cell": "4th @ 32/5h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 60,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 8,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 140737488355328
+          },
+          "q_RPE": 256,
+          "q_PF": 40,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 5629499534213120
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 25.6,
+            "q": 40,
+            "delta": 0.64,
+            "R_outer": null,
+            "K": null,
+            "id": "9b633de9df8fa42f47c1"
+          },
+          "canonical_candidate_id": "RMSE:b47ef67ae839b06ec4ebd2e0652300904ded47b99bf3aaa1caa84242d82c08b2",
+          "step_cell": "4th @ 32/5h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 120,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 9,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 70368744177664
+          },
+          "q_RPE": 512,
+          "q_PF": 80,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 5629499534213120
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 51.2,
+            "q": 80,
+            "delta": 0.64,
+            "R_outer": null,
+            "K": null,
+            "id": "6dde7af15b83359b2b8e"
+          },
+          "canonical_candidate_id": "RMSE:b0d9ba4f60d81f779d5e73389ec697dce7dbc49fbad726511c391394e1557034",
+          "step_cell": "4th @ 32/5h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 240,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 10,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 35184372088832
+          },
+          "q_RPE": 1024,
+          "q_PF": 160,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 5629499534213120
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 102.4,
+            "q": 160,
+            "delta": 0.64,
+            "R_outer": null,
+            "K": null,
+            "id": "fc208364837a7cfa6b6a"
+          },
+          "canonical_candidate_id": "RMSE:019dedd0d655a818512ce45395f7c29be3b4b3febf4592e1fe97607c7dfd3418",
+          "step_cell": "4th @ 32/5h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 480,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 11,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 17592186044416
+          },
+          "q_RPE": 2048,
+          "q_PF": 320,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 5629499534213120
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 204.8,
+            "q": 320,
+            "delta": 0.64,
+            "R_outer": null,
+            "K": null,
+            "id": "724c526fdff8420a0ac6"
+          },
+          "canonical_candidate_id": "RMSE:0d117ebb0c21da764449e748eb54a32e4c5fa413f28d5006238ddfdb15f7d4e3",
+          "step_cell": "4th @ 32/5h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 960,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 12,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 8796093022208
+          },
+          "q_RPE": 4096,
+          "q_PF": 640,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 5629499534213120
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th",
+            "prefix": 10,
+            "T": 409.6,
+            "q": 640,
+            "delta": 0.64,
+            "R_outer": null,
+            "K": null,
+            "id": "4347fa63877b9f85a9ba"
+          },
+          "canonical_candidate_id": "RMSE:e7eb87dd34f35795ef00dd152f197e761989e74ac3be09a6d284287f03e43a93",
+          "step_cell": "4th @ 32/5h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1920,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        }
+      ],
+      "selected": false,
+      "sufficient_N": null,
+      "global_RMSE_bound": null,
+      "G": null
+    },
+    {
+      "label": "M5_16h",
+      "formula": "4th(m5_best)",
+      "h_multiplier": {
+        "numerator": 16,
+        "denominator": 1
+      },
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 2251799813685248
+      },
+      "display_only_delta": 1.6,
+      "stage": "PROPOSED_FIRST_BATCH_WITH_EXPLICIT_WINDOW",
+      "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+      "constructor": {
+        "base": {
+          "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+          "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json"
+        },
+        "base_selector": [
+          "candidates",
+          0,
+          "configuration",
+          "spec"
+        ],
+        "api": "D.full_pf_spec -> B.generate",
+        "formula": "4th(m5_best)",
+        "delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 2251799813685248
+        },
+        "M": 12,
+        "rank": 10
+      },
+      "rounds": [
+        {
+          "m": 0,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "q_RPE": 1,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": null,
+            "K": null,
+            "id": "715f0d9f996ec0e62951"
+          },
+          "canonical_candidate_id": "RMSE:47da2a5a6f86dbca3c4df762b316692c72631d1d4a674856b8442f87f2ef9fec",
+          "step_cell": "4th(m5_best) @ 1h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 1,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "q_RPE": 2,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 0.2,
+            "q": 1,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "67211ee2c1c1aa51f15f"
+          },
+          "canonical_candidate_id": "RMSE:c140da3bd4972d14577def04f3da3db637cd6f072569c3c7fa819504117486a9",
+          "step_cell": "4th(m5_best) @ 2h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 2,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "q_RPE": 4,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 0.4,
+            "q": 1,
+            "delta": 0.4,
+            "R_outer": null,
+            "K": null,
+            "id": "d7b8233d8219e2575ebb"
+          },
+          "canonical_candidate_id": "RMSE:54e3a1f6d63e5fb145ba648014855a50ba643ece9b4033f99870838f7c88ae02",
+          "step_cell": "4th(m5_best) @ 4h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 3,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 4503599627370496
+          },
+          "q_RPE": 8,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 4503599627370496
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 0.8,
+            "q": 1,
+            "delta": 0.8,
+            "R_outer": null,
+            "K": null,
+            "id": "1b3aa083ff69842d8f31"
+          },
+          "canonical_candidate_id": "RMSE:6df31ce2bbfebf6f1ae029d522d0fcadda1f3008c91b6f17da14ccf0770dd216",
+          "step_cell": "4th(m5_best) @ 8h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "EXACT_METADATA_MATCH",
+            "Y": "EXACT_METADATA_MATCH",
+            "source": {
+              "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+              "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json",
+              "selector": [
+                "rows",
+                46
+              ]
+            },
+            "new_acceptance": false
+          }
+        },
+        {
+          "m": 4,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "q_RPE": 16,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 1.6,
+            "q": 1,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "0cd1527c80f7b9841a83"
+          },
+          "canonical_candidate_id": "RMSE:cb3184f8ed2478e791e5024b6c04037ea056adbc8f825e8e74cbdeff38aa76a5",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "EXACT_METADATA_MATCH",
+            "Y": "EXACT_METADATA_MATCH",
+            "source": {
+              "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+              "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json",
+              "selector": [
+                "rows",
+                57
+              ]
+            },
+            "new_acceptance": false
+          }
+        },
+        {
+          "m": 5,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "q_RPE": 32,
+          "q_PF": 2,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 3.2,
+            "q": 2,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "c63a835541462a1c264b"
+          },
+          "canonical_candidate_id": "RMSE:5682e91d8c010a663f2c011fa99c71dffd59acc56c6a21f2cfae0a03f00b4a97",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 22,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 6,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 562949953421312
+          },
+          "q_RPE": 64,
+          "q_PF": 4,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 6.4,
+            "q": 4,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "8db0bd3c1a5e1eeb541f"
+          },
+          "canonical_candidate_id": "RMSE:1ec18cc4716a83da2c56fc0a3e9323b1b3eeda23ecc282080a6c75de350d711a",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 44,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 7,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 281474976710656
+          },
+          "q_RPE": 128,
+          "q_PF": 8,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 12.8,
+            "q": 8,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "8d17e5590b7184a8cf20"
+          },
+          "canonical_candidate_id": "RMSE:7f14a24d119586b7755f8da983bdef07681cdb8495b960f0bea6dc077f1b7f69",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 88,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 8,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 140737488355328
+          },
+          "q_RPE": 256,
+          "q_PF": 16,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 25.6,
+            "q": 16,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "982942f6b3f38f5bae15"
+          },
+          "canonical_candidate_id": "RMSE:22245395c52ccee7bae26afb2a50435815e850689e98d526c4a8ee6ae63e259b",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 176,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 9,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 70368744177664
+          },
+          "q_RPE": 512,
+          "q_PF": 32,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 51.2,
+            "q": 32,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "a53547a5fb707b9550d5"
+          },
+          "canonical_candidate_id": "RMSE:cbe9ee1c7ace3e4f283ad49b03210900881263336e9f49674f72873ea2129990",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 352,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 10,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 35184372088832
+          },
+          "q_RPE": 1024,
+          "q_PF": 64,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 102.4,
+            "q": 64,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "fced81c5cafbe0be89a9"
+          },
+          "canonical_candidate_id": "RMSE:09812d9b370b9545cf75694d4c07ea688150746bd3fe0bd5db687b8b2f6449f9",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 704,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 11,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 17592186044416
+          },
+          "q_RPE": 2048,
+          "q_PF": 128,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 204.8,
+            "q": 128,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "5f53bd8fb930f950bee2"
+          },
+          "canonical_candidate_id": "RMSE:261ad4ceed694b50fe5e4c94736814e346696847e659eb76fb188bd296d7ed31",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1408,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 12,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 8796093022208
+          },
+          "q_RPE": 4096,
+          "q_PF": 256,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 409.6,
+            "q": 256,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "8980fe4c3c86362a844a"
+          },
+          "canonical_candidate_id": "RMSE:ec00ea7062838229665b243e81fe2f6dae6651bd2bb7d39cce778f14eedd1e90",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 2816,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        }
+      ],
+      "selected": false,
+      "sufficient_N": null,
+      "global_RMSE_bound": null,
+      "G": null
+    },
+    {
+      "label": "M5_32h",
+      "formula": "4th(m5_best)",
+      "h_multiplier": {
+        "numerator": 32,
+        "denominator": 1
+      },
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 1125899906842624
+      },
+      "display_only_delta": 3.2,
+      "stage": "HOLD_BRANCH_POLICY_UNRESOLVED",
+      "configuration_id": "a8853e14bd7cfe698e3de3d5e6d4fb99a780e5bbf647eb3290988343c02cfd64",
+      "constructor": {
+        "base": {
+          "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+          "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json"
+        },
+        "base_selector": [
+          "candidates",
+          0,
+          "configuration",
+          "spec"
+        ],
+        "api": "D.full_pf_spec -> B.generate",
+        "formula": "4th(m5_best)",
+        "delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 1125899906842624
+        },
+        "M": 12,
+        "rank": 10
+      },
+      "rounds": [
+        {
+          "m": 0,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "q_RPE": 1,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": null,
+            "K": null,
+            "id": "715f0d9f996ec0e62951"
+          },
+          "canonical_candidate_id": "RMSE:8baf40bd8a6a4ff41026136c15e5be566f4b3f6f93a5bbac06b51678e9f08bfd",
+          "step_cell": "4th(m5_best) @ 1h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 1,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "q_RPE": 2,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 0.2,
+            "q": 1,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "67211ee2c1c1aa51f15f"
+          },
+          "canonical_candidate_id": "RMSE:338ba5ceb7839b555240d7f2ebf63db7cc580af8a01b3b3287f25ab35eb4f1ff",
+          "step_cell": "4th(m5_best) @ 2h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 2,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "q_RPE": 4,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 0.4,
+            "q": 1,
+            "delta": 0.4,
+            "R_outer": null,
+            "K": null,
+            "id": "d7b8233d8219e2575ebb"
+          },
+          "canonical_candidate_id": "RMSE:1d9796abf761493f88279350a90e85784b1f07d8d0a01e5aed1d5e0f58aea6a5",
+          "step_cell": "4th(m5_best) @ 4h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 3,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 4503599627370496
+          },
+          "q_RPE": 8,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 4503599627370496
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 0.8,
+            "q": 1,
+            "delta": 0.8,
+            "R_outer": null,
+            "K": null,
+            "id": "1b3aa083ff69842d8f31"
+          },
+          "canonical_candidate_id": "RMSE:15aab5791004f787aad90a0e1824fdc959f6356c0cddf263ed71b5648d031cf7",
+          "step_cell": "4th(m5_best) @ 8h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "EXACT_METADATA_MATCH",
+            "Y": "EXACT_METADATA_MATCH",
+            "source": {
+              "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+              "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json",
+              "selector": [
+                "rows",
+                46
+              ]
+            },
+            "new_acceptance": false
+          }
+        },
+        {
+          "m": 4,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "q_RPE": 16,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 1.6,
+            "q": 1,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "0cd1527c80f7b9841a83"
+          },
+          "canonical_candidate_id": "RMSE:5022177ed589090ae996990b61b6d011847f45df75bf3d9858e205d256ec0521",
+          "step_cell": "4th(m5_best) @ 16h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "EXACT_METADATA_MATCH",
+            "Y": "EXACT_METADATA_MATCH",
+            "source": {
+              "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+              "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json",
+              "selector": [
+                "rows",
+                57
+              ]
+            },
+            "new_acceptance": false
+          }
+        },
+        {
+          "m": 5,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "q_RPE": 32,
+          "q_PF": 1,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 3.2,
+            "q": 1,
+            "delta": 3.2,
+            "R_outer": null,
+            "K": null,
+            "id": "8da90f4633dd7c83632e"
+          },
+          "canonical_candidate_id": "RMSE:11d32c1382df82b8445f2e9c1f01593314a892b372ad56ff3a94aabe0f521104",
+          "step_cell": "4th(m5_best) @ 32h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 11,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 6,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 562949953421312
+          },
+          "q_RPE": 64,
+          "q_PF": 2,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 6.4,
+            "q": 2,
+            "delta": 3.2,
+            "R_outer": null,
+            "K": null,
+            "id": "de086538d36bc886a43a"
+          },
+          "canonical_candidate_id": "RMSE:be078d71c7d5534625d6e8db42c1ab1c3ed461fc6e63b5d11afbf6803fb4e357",
+          "step_cell": "4th(m5_best) @ 32h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 22,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 7,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 281474976710656
+          },
+          "q_RPE": 128,
+          "q_PF": 4,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 12.8,
+            "q": 4,
+            "delta": 3.2,
+            "R_outer": null,
+            "K": null,
+            "id": "cc2bea045cd119d7c8d3"
+          },
+          "canonical_candidate_id": "RMSE:7982789a2fca83156756f2233b32ce18e0f58f5ea46111a6ea0865fee3595e41",
+          "step_cell": "4th(m5_best) @ 32h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 44,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 8,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 140737488355328
+          },
+          "q_RPE": 256,
+          "q_PF": 8,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 25.6,
+            "q": 8,
+            "delta": 3.2,
+            "R_outer": null,
+            "K": null,
+            "id": "64f30797f08012fbb2e8"
+          },
+          "canonical_candidate_id": "RMSE:ce52ae0cfa25783aed36c777c768788ad1e690c586e03a7da79d31e0bca38b3d",
+          "step_cell": "4th(m5_best) @ 32h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 88,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 9,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 70368744177664
+          },
+          "q_RPE": 512,
+          "q_PF": 16,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 51.2,
+            "q": 16,
+            "delta": 3.2,
+            "R_outer": null,
+            "K": null,
+            "id": "9031493846607c5fd622"
+          },
+          "canonical_candidate_id": "RMSE:c340ec1b2858a7032f7aa8b2581cf718250cf3d8c588cf152f324d021d9fac84",
+          "step_cell": "4th(m5_best) @ 32h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 176,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 10,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 35184372088832
+          },
+          "q_RPE": 1024,
+          "q_PF": 32,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 102.4,
+            "q": 32,
+            "delta": 3.2,
+            "R_outer": null,
+            "K": null,
+            "id": "223eb572bf7ebcb1d033"
+          },
+          "canonical_candidate_id": "RMSE:37ef80cd3a4004fe5841b5a0628ee9f9334ef3e514da41bc0b2e1de2abaaeba5",
+          "step_cell": "4th(m5_best) @ 32h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 352,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 11,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 17592186044416
+          },
+          "q_RPE": 2048,
+          "q_PF": 64,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 204.8,
+            "q": 64,
+            "delta": 3.2,
+            "R_outer": null,
+            "K": null,
+            "id": "41f4e2333342e078b03d"
+          },
+          "canonical_candidate_id": "RMSE:a66d764446321a507108b980bcc2157cd710762f69055d85948f62265f2e0236",
+          "step_cell": "4th(m5_best) @ 32h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 704,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        },
+        {
+          "m": 12,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 8796093022208
+          },
+          "q_RPE": 4096,
+          "q_PF": 128,
+          "actual_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "physical_candidate": {
+            "system": "H4",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 10,
+            "T": 409.6,
+            "q": 128,
+            "delta": 3.2,
+            "R_outer": null,
+            "K": null,
+            "id": "8fd81901073fde10bd5c"
+          },
+          "canonical_candidate_id": "RMSE:e724fb75df29b222969dc43fde8bd2efb0c1e3ba3cdf2ba216d1815ad7d281f9",
+          "step_cell": "4th(m5_best) @ 32h",
+          "signed_S2_piece_count_NOT_compiled_RZ": 1408,
+          "price_coverage": {
+            "X": "OUTSIDE_CHECKED_CATALOG",
+            "Y": "OUTSIDE_CHECKED_CATALOG",
+            "source": null
+          }
+        }
+      ],
+      "selected": false,
+      "sufficient_N": null,
+      "global_RMSE_bound": null,
+      "G": null
+    }
+  ],
+  "step_cells": [
+    {
+      "label": "2nd @ 1h",
+      "formula": "2nd",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "actual_delta_display": 0.1,
+      "signed_weights": [
+        1.0
+      ],
+      "signed_piece_times_hex": [
+        "0x1.999999999999ap-4"
+      ],
+      "saved_source": {
+        "commit": "69ee0ff8898960d5f9959af8d34d89f223caec87",
+        "path": "docs/research/h4_full_pf_heff_results_20261113/run01/EIGENSYSTEM.json"
+      },
+      "new_science_required": false,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "SAVED_SOURCE_REFERENCE_ONLY",
+      "uses": [
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 0
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 0
+        }
+      ],
+      "first_check": {
+        "m": 0,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "q_RPE": 1,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "2nd",
+          "prefix": 10,
+          "T": 0.1,
+          "q": 1,
+          "delta": 0.1,
+          "R_outer": null,
+          "K": null,
+          "id": "5669f142d693eee92583"
+        },
+        "canonical_candidate_id": "RMSE:3c4c498c24321838d73c1b7cf75ab1d85e98fe5cef11ae93f84b885038b4c0b3",
+        "step_cell": "2nd @ 1h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 1,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": null,
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "2nd @ 2h",
+      "formula": "2nd",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 18014398509481984
+      },
+      "actual_delta_display": 0.2,
+      "signed_weights": [
+        1.0
+      ],
+      "signed_piece_times_hex": [
+        "0x1.999999999999ap-3"
+      ],
+      "saved_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_02/EIGENSYSTEM.json"
+      },
+      "new_science_required": false,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "SAVED_SOURCE_REFERENCE_ONLY",
+      "uses": [
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 1
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 2
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 3
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 1
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 2
+        }
+      ],
+      "first_check": {
+        "m": 1,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        "q_RPE": 2,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "2nd",
+          "prefix": 10,
+          "T": 0.2,
+          "q": 1,
+          "delta": 0.2,
+          "R_outer": null,
+          "K": null,
+          "id": "eb745e6e4759d15f75bc"
+        },
+        "canonical_candidate_id": "RMSE:33458860c606f690274223c61cd41f5c4545d003d6223e24d3c0a639c3ab3c44",
+        "step_cell": "2nd @ 2h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 1,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": null,
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "2nd @ 16/7h",
+      "formula": "2nd",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 15762598695796736
+      },
+      "actual_delta_display": 0.2285714285714286,
+      "signed_weights": [
+        1.0
+      ],
+      "signed_piece_times_hex": [
+        "0x1.d41d41d41d41ep-3"
+      ],
+      "saved_source": null,
+      "new_science_required": true,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "AWAITING_USER_SCIENCE_PERMISSION",
+      "uses": [
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 4
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 5
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 6
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 7
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 8
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 9
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 10
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 11
+        },
+        {
+          "configuration": "S2_16h_over_7",
+          "m": 12
+        }
+      ],
+      "first_check": {
+        "m": 4,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 2251799813685248
+        },
+        "q_RPE": 16,
+        "q_PF": 7,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "2nd",
+          "prefix": 10,
+          "T": 1.6,
+          "q": 7,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "b7c4e73538ec19070cde"
+        },
+        "canonical_candidate_id": "RMSE:71308acbb97113010c8b2a08c7c4e88998f91e71184c494e117dff271b1bb47c",
+        "step_cell": "2nd @ 16/7h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 7,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": {
+        "m": 12,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 8796093022208
+        },
+        "q_RPE": 4096,
+        "q_PF": 1792,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "2nd",
+          "prefix": 10,
+          "T": 409.6,
+          "q": 1792,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "923d811dd2e493ca3f37"
+        },
+        "canonical_candidate_id": "RMSE:36272c751f6b952b00e2ecc227e904b8cbaa8f10a303347f0383a746b60d48da",
+        "step_cell": "2nd @ 16/7h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 1792,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "2nd @ 8/3h",
+      "formula": "2nd",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 13510798882111488
+      },
+      "actual_delta_display": 0.26666666666666666,
+      "signed_weights": [
+        1.0
+      ],
+      "signed_piece_times_hex": [
+        "0x1.1111111111111p-2"
+      ],
+      "saved_source": null,
+      "new_science_required": true,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "AWAITING_USER_SCIENCE_PERMISSION",
+      "uses": [
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 3
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 4
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 5
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 6
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 7
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 8
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 9
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 10
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 11
+        },
+        {
+          "configuration": "S2_8h_over_3",
+          "m": 12
+        }
+      ],
+      "first_check": {
+        "m": 3,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 4503599627370496
+        },
+        "q_RPE": 8,
+        "q_PF": 3,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 13510798882111488
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "2nd",
+          "prefix": 10,
+          "T": 0.8,
+          "q": 3,
+          "delta": 0.26666666666666666,
+          "R_outer": null,
+          "K": null,
+          "id": "a8bb41e00ad35ab175e8"
+        },
+        "canonical_candidate_id": "RMSE:818c118ca4142a5180647e761e67c191c3186ed35538c76a85e64dde2641cd3e",
+        "step_cell": "2nd @ 8/3h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 3,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": {
+        "m": 12,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 8796093022208
+        },
+        "q_RPE": 4096,
+        "q_PF": 1536,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 13510798882111488
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "2nd",
+          "prefix": 10,
+          "T": 409.6,
+          "q": 1536,
+          "delta": 0.26666666666666666,
+          "R_outer": null,
+          "K": null,
+          "id": "a0f2a78c710738c4bcc8"
+        },
+        "canonical_candidate_id": "RMSE:22931a00d0dfc2dea8415995e08f449fd719dd77e94743d22611758d60740a96",
+        "step_cell": "2nd @ 8/3h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 1536,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th @ 1h",
+      "formula": "4th",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "actual_delta_display": 0.1,
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "signed_piece_times_hex": [
+        "0x1.14ba2befab5c7p-3",
+        "-0x1.5ca78b1289ec1p-3",
+        "0x1.14ba2befab5c7p-3"
+      ],
+      "saved_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_06/EIGENSYSTEM.json"
+      },
+      "new_science_required": false,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "SAVED_SOURCE_REFERENCE_ONLY",
+      "uses": [
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 0
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 0
+        }
+      ],
+      "first_check": {
+        "m": 0,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "q_RPE": 1,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th",
+          "prefix": 10,
+          "T": 0.1,
+          "q": 1,
+          "delta": 0.1,
+          "R_outer": null,
+          "K": null,
+          "id": "03df026eb51a56241eef"
+        },
+        "canonical_candidate_id": "RMSE:c40e5c493ba11b6c36c9cc2ded5a224bbd4d48371e3849bbcd0496e4cfad31f6",
+        "step_cell": "4th @ 1h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 3,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": null,
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th @ 2h",
+      "formula": "4th",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 18014398509481984
+      },
+      "actual_delta_display": 0.2,
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "signed_piece_times_hex": [
+        "0x1.14ba2befab5c7p-2",
+        "-0x1.5ca78b1289ec1p-2",
+        "0x1.14ba2befab5c7p-2"
+      ],
+      "saved_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_07/EIGENSYSTEM.json"
+      },
+      "new_science_required": false,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "SAVED_SOURCE_REFERENCE_ONLY",
+      "uses": [
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 1
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 1
+        }
+      ],
+      "first_check": {
+        "m": 1,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        "q_RPE": 2,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th",
+          "prefix": 10,
+          "T": 0.2,
+          "q": 1,
+          "delta": 0.2,
+          "R_outer": null,
+          "K": null,
+          "id": "ce89c91c95889ed4a657"
+        },
+        "canonical_candidate_id": "RMSE:cfd471d3d0db56291ede0f43c484081b1a41c7e7d99f33e214aba5784d288e3d",
+        "step_cell": "4th @ 2h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 3,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": null,
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th @ 4h",
+      "formula": "4th",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 9007199254740992
+      },
+      "actual_delta_display": 0.4,
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "signed_piece_times_hex": [
+        "0x1.14ba2befab5c7p-1",
+        "-0x1.5ca78b1289ec1p-1",
+        "0x1.14ba2befab5c7p-1"
+      ],
+      "saved_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_08/EIGENSYSTEM.json"
+      },
+      "new_science_required": false,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "SAVED_SOURCE_REFERENCE_ONLY",
+      "uses": [
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 2
+        },
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 3
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 2
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 3
+        }
+      ],
+      "first_check": {
+        "m": 2,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 9007199254740992
+        },
+        "q_RPE": 4,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 9007199254740992
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th",
+          "prefix": 10,
+          "T": 0.4,
+          "q": 1,
+          "delta": 0.4,
+          "R_outer": null,
+          "K": null,
+          "id": "21951422c4c3cb249055"
+        },
+        "canonical_candidate_id": "RMSE:297cf1ef5ff2dc0c6c835cf65c40e4a6a930f80d975185d00193b7108cbedcad",
+        "step_cell": "4th @ 4h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 3,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": null,
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th @ 16/3h",
+      "formula": "4th",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 6755399441055744
+      },
+      "actual_delta_display": 0.5333333333333333,
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "signed_piece_times_hex": [
+        "0x1.70f83a94e47b4p-1",
+        "-0x1.d0df6418b7e57p-1",
+        "0x1.70f83a94e47b4p-1"
+      ],
+      "saved_source": null,
+      "new_science_required": true,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "AWAITING_USER_SCIENCE_PERMISSION",
+      "uses": [
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 4
+        },
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 5
+        },
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 6
+        },
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 7
+        },
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 8
+        },
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 9
+        },
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 10
+        },
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 11
+        },
+        {
+          "configuration": "Y4_16h_over_3",
+          "m": 12
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 4
+        }
+      ],
+      "first_check": {
+        "m": 4,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 2251799813685248
+        },
+        "q_RPE": 16,
+        "q_PF": 3,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 6755399441055744
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th",
+          "prefix": 10,
+          "T": 1.6,
+          "q": 3,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "3cf8eddfb3b78e96f5d2"
+        },
+        "canonical_candidate_id": "RMSE:68f71506c554aaad101c8028471206917e2a8c1be28262ed88cb343f39c3eb46",
+        "step_cell": "4th @ 16/3h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 9,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": {
+        "m": 12,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 8796093022208
+        },
+        "q_RPE": 4096,
+        "q_PF": 768,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 6755399441055744
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th",
+          "prefix": 10,
+          "T": 409.6,
+          "q": 768,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "2bc57e7f7ab3040a45f5"
+        },
+        "canonical_candidate_id": "RMSE:d20afd675c5880976892554f63e639502c3f6b676af5f1d92680076dc6af38c8",
+        "step_cell": "4th @ 16/3h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 2304,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th @ 32/5h",
+      "formula": "4th",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 5629499534213120
+      },
+      "actual_delta_display": 0.64,
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "signed_piece_times_hex": [
+        "0x1.bac3797f7893ep-1",
+        "-0x1.16ec6f4207f01p+0",
+        "0x1.bac3797f7893ep-1"
+      ],
+      "saved_source": null,
+      "new_science_required": true,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "AWAITING_USER_SCIENCE_PERMISSION",
+      "uses": [
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 5
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 6
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 7
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 8
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 9
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 10
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 11
+        },
+        {
+          "configuration": "Y4_32h_over_5",
+          "m": 12
+        }
+      ],
+      "first_check": {
+        "m": 5,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 1125899906842624
+        },
+        "q_RPE": 32,
+        "q_PF": 5,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 5629499534213120
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th",
+          "prefix": 10,
+          "T": 3.2,
+          "q": 5,
+          "delta": 0.64,
+          "R_outer": null,
+          "K": null,
+          "id": "b86cbbd8916975eaf2fe"
+        },
+        "canonical_candidate_id": "RMSE:0382f3f488edd6069f5cb7994636b327291c7f81b4c409f4bfd39f1f13442f70",
+        "step_cell": "4th @ 32/5h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 15,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": {
+        "m": 12,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 8796093022208
+        },
+        "q_RPE": 4096,
+        "q_PF": 640,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 5629499534213120
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th",
+          "prefix": 10,
+          "T": 409.6,
+          "q": 640,
+          "delta": 0.64,
+          "R_outer": null,
+          "K": null,
+          "id": "4347fa63877b9f85a9ba"
+        },
+        "canonical_candidate_id": "RMSE:e7eb87dd34f35795ef00dd152f197e761989e74ac3be09a6d284287f03e43a93",
+        "step_cell": "4th @ 32/5h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 1920,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th(m5_best) @ 1h",
+      "formula": "4th(m5_best)",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "actual_delta_display": 0.1,
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "signed_piece_times_hex": [
+        "0x1.9b2733dfbb262p-7",
+        "0x1.c398ce219ce6cp-7",
+        "0x1.8d1f3fae33471p-7",
+        "0x1.d0b6eab9a4890p-7",
+        "0x1.6fd5b8c0f410cp-7",
+        "-0x1.c6057ec3bd874p-6",
+        "0x1.6fd5b8c0f410cp-7",
+        "0x1.d0b6eab9a4890p-7",
+        "0x1.8d1f3fae33471p-7",
+        "0x1.c398ce219ce6cp-7",
+        "0x1.9b2733dfbb262p-7"
+      ],
+      "saved_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_11/EIGENSYSTEM.json"
+      },
+      "new_science_required": false,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "SAVED_SOURCE_REFERENCE_ONLY",
+      "uses": [
+        {
+          "configuration": "M5_16h",
+          "m": 0
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 0
+        }
+      ],
+      "first_check": {
+        "m": 0,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "q_RPE": 1,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th(m5_best)",
+          "prefix": 10,
+          "T": 0.1,
+          "q": 1,
+          "delta": 0.1,
+          "R_outer": null,
+          "K": null,
+          "id": "715f0d9f996ec0e62951"
+        },
+        "canonical_candidate_id": "RMSE:47da2a5a6f86dbca3c4df762b316692c72631d1d4a674856b8442f87f2ef9fec",
+        "step_cell": "4th(m5_best) @ 1h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 11,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": null,
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th(m5_best) @ 2h",
+      "formula": "4th(m5_best)",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 18014398509481984
+      },
+      "actual_delta_display": 0.2,
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "signed_piece_times_hex": [
+        "0x1.9b2733dfbb262p-6",
+        "0x1.c398ce219ce6cp-6",
+        "0x1.8d1f3fae33471p-6",
+        "0x1.d0b6eab9a4890p-6",
+        "0x1.6fd5b8c0f410cp-6",
+        "-0x1.c6057ec3bd874p-5",
+        "0x1.6fd5b8c0f410cp-6",
+        "0x1.d0b6eab9a4890p-6",
+        "0x1.8d1f3fae33471p-6",
+        "0x1.c398ce219ce6cp-6",
+        "0x1.9b2733dfbb262p-6"
+      ],
+      "saved_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_12/EIGENSYSTEM.json"
+      },
+      "new_science_required": false,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "SAVED_SOURCE_REFERENCE_ONLY",
+      "uses": [
+        {
+          "configuration": "M5_16h",
+          "m": 1
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 1
+        }
+      ],
+      "first_check": {
+        "m": 1,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        "q_RPE": 2,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th(m5_best)",
+          "prefix": 10,
+          "T": 0.2,
+          "q": 1,
+          "delta": 0.2,
+          "R_outer": null,
+          "K": null,
+          "id": "67211ee2c1c1aa51f15f"
+        },
+        "canonical_candidate_id": "RMSE:c140da3bd4972d14577def04f3da3db637cd6f072569c3c7fa819504117486a9",
+        "step_cell": "4th(m5_best) @ 2h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 11,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": null,
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th(m5_best) @ 4h",
+      "formula": "4th(m5_best)",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 9007199254740992
+      },
+      "actual_delta_display": 0.4,
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "signed_piece_times_hex": [
+        "0x1.9b2733dfbb262p-5",
+        "0x1.c398ce219ce6cp-5",
+        "0x1.8d1f3fae33471p-5",
+        "0x1.d0b6eab9a4890p-5",
+        "0x1.6fd5b8c0f410cp-5",
+        "-0x1.c6057ec3bd874p-4",
+        "0x1.6fd5b8c0f410cp-5",
+        "0x1.d0b6eab9a4890p-5",
+        "0x1.8d1f3fae33471p-5",
+        "0x1.c398ce219ce6cp-5",
+        "0x1.9b2733dfbb262p-5"
+      ],
+      "saved_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_13/EIGENSYSTEM.json"
+      },
+      "new_science_required": false,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "SAVED_SOURCE_REFERENCE_ONLY",
+      "uses": [
+        {
+          "configuration": "M5_16h",
+          "m": 2
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 2
+        }
+      ],
+      "first_check": {
+        "m": 2,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 9007199254740992
+        },
+        "q_RPE": 4,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 9007199254740992
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th(m5_best)",
+          "prefix": 10,
+          "T": 0.4,
+          "q": 1,
+          "delta": 0.4,
+          "R_outer": null,
+          "K": null,
+          "id": "d7b8233d8219e2575ebb"
+        },
+        "canonical_candidate_id": "RMSE:54e3a1f6d63e5fb145ba648014855a50ba643ece9b4033f99870838f7c88ae02",
+        "step_cell": "4th(m5_best) @ 4h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 11,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": null,
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th(m5_best) @ 8h",
+      "formula": "4th(m5_best)",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 4503599627370496
+      },
+      "actual_delta_display": 0.8,
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "signed_piece_times_hex": [
+        "0x1.9b2733dfbb262p-4",
+        "0x1.c398ce219ce6cp-4",
+        "0x1.8d1f3fae33471p-4",
+        "0x1.d0b6eab9a4890p-4",
+        "0x1.6fd5b8c0f410cp-4",
+        "-0x1.c6057ec3bd874p-3",
+        "0x1.6fd5b8c0f410cp-4",
+        "0x1.d0b6eab9a4890p-4",
+        "0x1.8d1f3fae33471p-4",
+        "0x1.c398ce219ce6cp-4",
+        "0x1.9b2733dfbb262p-4"
+      ],
+      "saved_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_14/EIGENSYSTEM.json"
+      },
+      "new_science_required": false,
+      "branch": {
+        "mode": "PRINCIPAL",
+        "status": "CONVENTION_ONLY_ALIAS_UNQUALIFIED"
+      },
+      "execution_readiness": "SAVED_SOURCE_REFERENCE_ONLY",
+      "uses": [
+        {
+          "configuration": "M5_16h",
+          "m": 3
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 3
+        }
+      ],
+      "first_check": {
+        "m": 3,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 4503599627370496
+        },
+        "q_RPE": 8,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 4503599627370496
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th(m5_best)",
+          "prefix": 10,
+          "T": 0.8,
+          "q": 1,
+          "delta": 0.8,
+          "R_outer": null,
+          "K": null,
+          "id": "1b3aa083ff69842d8f31"
+        },
+        "canonical_candidate_id": "RMSE:6df31ce2bbfebf6f1ae029d522d0fcadda1f3008c91b6f17da14ccf0770dd216",
+        "step_cell": "4th(m5_best) @ 8h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 11,
+        "price_coverage": {
+          "X": "EXACT_METADATA_MATCH",
+          "Y": "EXACT_METADATA_MATCH",
+          "source": {
+            "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+            "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json",
+            "selector": [
+              "rows",
+              46
+            ]
+          },
+          "new_acceptance": false
+        }
+      },
+      "last_check": null,
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th(m5_best) @ 16h",
+      "formula": "4th(m5_best)",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 2251799813685248
+      },
+      "actual_delta_display": 1.6,
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "signed_piece_times_hex": [
+        "0x1.9b2733dfbb262p-3",
+        "0x1.c398ce219ce6cp-3",
+        "0x1.8d1f3fae33471p-3",
+        "0x1.d0b6eab9a4890p-3",
+        "0x1.6fd5b8c0f410cp-3",
+        "-0x1.c6057ec3bd874p-2",
+        "0x1.6fd5b8c0f410cp-3",
+        "0x1.d0b6eab9a4890p-3",
+        "0x1.8d1f3fae33471p-3",
+        "0x1.c398ce219ce6cp-3",
+        "0x1.9b2733dfbb262p-3"
+      ],
+      "saved_source": null,
+      "new_science_required": true,
+      "branch": {
+        "mode": "ENERGY_WINDOW",
+        "purpose": "EFFECTIVE_SPECTRUM_WINDOW",
+        "window": [
+          -2.5,
+          1.0
+        ],
+        "status": "PROPOSED_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      "execution_readiness": "AWAITING_USER_SCIENCE_PERMISSION",
+      "uses": [
+        {
+          "configuration": "M5_16h",
+          "m": 4
+        },
+        {
+          "configuration": "M5_16h",
+          "m": 5
+        },
+        {
+          "configuration": "M5_16h",
+          "m": 6
+        },
+        {
+          "configuration": "M5_16h",
+          "m": 7
+        },
+        {
+          "configuration": "M5_16h",
+          "m": 8
+        },
+        {
+          "configuration": "M5_16h",
+          "m": 9
+        },
+        {
+          "configuration": "M5_16h",
+          "m": 10
+        },
+        {
+          "configuration": "M5_16h",
+          "m": 11
+        },
+        {
+          "configuration": "M5_16h",
+          "m": 12
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 4
+        }
+      ],
+      "first_check": {
+        "m": 4,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 2251799813685248
+        },
+        "q_RPE": 16,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 2251799813685248
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th(m5_best)",
+          "prefix": 10,
+          "T": 1.6,
+          "q": 1,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "0cd1527c80f7b9841a83"
+        },
+        "canonical_candidate_id": "RMSE:cb3184f8ed2478e791e5024b6c04037ea056adbc8f825e8e74cbdeff38aa76a5",
+        "step_cell": "4th(m5_best) @ 16h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 11,
+        "price_coverage": {
+          "X": "EXACT_METADATA_MATCH",
+          "Y": "EXACT_METADATA_MATCH",
+          "source": {
+            "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+            "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json",
+            "selector": [
+              "rows",
+              57
+            ]
+          },
+          "new_acceptance": false
+        }
+      },
+      "last_check": {
+        "m": 12,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 8796093022208
+        },
+        "q_RPE": 4096,
+        "q_PF": 256,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 2251799813685248
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th(m5_best)",
+          "prefix": 10,
+          "T": 409.6,
+          "q": 256,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "8980fe4c3c86362a844a"
+        },
+        "canonical_candidate_id": "RMSE:ec00ea7062838229665b243e81fe2f6dae6651bd2bb7d39cce778f14eedd1e90",
+        "step_cell": "4th(m5_best) @ 16h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 2816,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    },
+    {
+      "label": "4th(m5_best) @ 32h",
+      "formula": "4th(m5_best)",
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 1125899906842624
+      },
+      "actual_delta_display": 3.2,
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "signed_piece_times_hex": [
+        "0x1.9b2733dfbb262p-2",
+        "0x1.c398ce219ce6cp-2",
+        "0x1.8d1f3fae33471p-2",
+        "0x1.d0b6eab9a4890p-2",
+        "0x1.6fd5b8c0f410cp-2",
+        "-0x1.c6057ec3bd874p-1",
+        "0x1.6fd5b8c0f410cp-2",
+        "0x1.d0b6eab9a4890p-2",
+        "0x1.8d1f3fae33471p-2",
+        "0x1.c398ce219ce6cp-2",
+        "0x1.9b2733dfbb262p-2"
+      ],
+      "saved_source": null,
+      "new_science_required": true,
+      "branch": {
+        "mode": null,
+        "status": "HOLD_NO_FULL_SPECTRUM_BRANCH_POLICY"
+      },
+      "execution_readiness": "BRANCH_POLICY_REQUIRED",
+      "uses": [
+        {
+          "configuration": "M5_32h",
+          "m": 5
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 6
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 7
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 8
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 9
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 10
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 11
+        },
+        {
+          "configuration": "M5_32h",
+          "m": 12
+        }
+      ],
+      "first_check": {
+        "m": 5,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 1125899906842624
+        },
+        "q_RPE": 32,
+        "q_PF": 1,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 1125899906842624
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th(m5_best)",
+          "prefix": 10,
+          "T": 3.2,
+          "q": 1,
+          "delta": 3.2,
+          "R_outer": null,
+          "K": null,
+          "id": "8da90f4633dd7c83632e"
+        },
+        "canonical_candidate_id": "RMSE:11d32c1382df82b8445f2e9c1f01593314a892b372ad56ff3a94aabe0f521104",
+        "step_cell": "4th(m5_best) @ 32h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 11,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "last_check": {
+        "m": 12,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 8796093022208
+        },
+        "q_RPE": 4096,
+        "q_PF": 128,
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 1125899906842624
+        },
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "formula": "4th(m5_best)",
+          "prefix": 10,
+          "T": 409.6,
+          "q": 128,
+          "delta": 3.2,
+          "R_outer": null,
+          "K": null,
+          "id": "8fd81901073fde10bd5c"
+        },
+        "canonical_candidate_id": "RMSE:e724fb75df29b222969dc43fde8bd2efb0c1e3ba3cdf2ba216d1815ad7d281f9",
+        "step_cell": "4th(m5_best) @ 32h",
+        "signed_S2_piece_count_NOT_compiled_RZ": 1408,
+        "price_coverage": {
+          "X": "OUTSIDE_CHECKED_CATALOG",
+          "Y": "OUTSIDE_CHECKED_CATALOG",
+          "source": null
+        }
+      },
+      "delta_E_ha": null,
+      "C": null,
+      "N": null,
+      "G": null,
+      "qualified": false
+    }
+  ],
+  "metadata_counts": {
+    "configurations": 6,
+    "first_batch_configurations": 5,
+    "round_rows": 78,
+    "total_actual_step_cells": 15,
+    "first_batch_new_actual_steps": 5,
+    "held_new_actual_steps": 1
+  },
+  "proposed_first_science_batch": {
+    "context_load": 1,
+    "new_PF_steps": 5,
+    "new_effective_Schur": 5,
+    "new_original_H_eigh": 0,
+    "direct_PF_means": 10,
+    "full_spectral_means": 10,
+    "new_full_H_reference_actions": 0,
+    "saved_M5_08_spectrum_window_compatibility_check": 1,
+    "old_saved_signal_reanalysis": 0,
+    "normalizers_N_MC_compiled_C_G": 0,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "held_M5_32h": {
+    "status": "TECHNICAL_BRANCH_POLICY_REQUIRED_NOT_IN_FIRST_SCIENCE_BATCH",
+    "physical_schedule_defined": true,
+    "energy_bias_policy_adopted": false,
+    "delta_E_ha": null,
+    "additional_operators_if_later_approved": 1,
+    "additional_Schur_if_later_approved": 1,
+    "possible_additional_branch_continuation_calls": "UNSPECIFIED_MUST_BE_SEPARATELY_FIXED"
+  },
+  "actual_scientific_calls": 0,
+  "saved_numerical_reanalysis": 0,
+  "new_compiled_price_calculations": 0,
+  "sufficient_N": null,
+  "global_RMSE_bound": null,
+  "G": null,
+  "winner": null,
+  "mandatory_stop": true
+}

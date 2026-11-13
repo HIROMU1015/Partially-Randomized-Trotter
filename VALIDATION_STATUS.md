@@ -1,5 +1,7 @@
 # Validation status
 
+[Full PF追加幅計画](docs/research/h4_full_pf_followup_plan_20261114/REPORT.md)：exact h-relativeの初回5配置・新5actual幅と保留M5/32hをmetadataで分離。exact q/ID/表示丸め/人工windowの4test PASS。実H4配列・新固有値・保存数値再解析・N/C/G0、十分N/global RMSE/G null、公開後STOP。
+
 [Full PF H_eff有限格子結果](docs/research/h4_full_pf_heff_scan_results_20261114/REPORT.md)：H4 DF10/sector36/Full10/S2・Y4・M5/Δ.05–.8の14新cellが全数値gate通過、既存S2/.1は参照のみ。最大二時点mean差1.056e−11、最大power unitarity1.174e−10（gate1e−9）。局所予算内11/超3、元H新eigh/reference/旧signal再解析/retry/N/MC/C/G0。caller4人工PASS、alias/ground/RMSE/十分N/G未資格。
 
 [Full PF H_effの有限探索準備](docs/research/h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：S2/Y4/M5×5要求幅15案を既存canonical APIでmetadata生成。元固有系cache3・early/grid/ID3・既存19の計25技術test PASS。実H4配列load/新step/固有値/保存数値再解析/価格/G0、14新H_eff案は未承認、全資格/nullを保持。

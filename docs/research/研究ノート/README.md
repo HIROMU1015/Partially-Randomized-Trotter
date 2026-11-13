@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-14：Full PF追加幅の計画](2026-11-14-h4-full-pf-followup-plan.md)：初回5新actual幅・M5/32h分枝保留、4人工/metadata PASS、新科学0。
+
 [2026-11-13：PF有効Hamiltonianの技術基盤](2026-11-13-pf-effective-hamiltonian.md)：明示branch・state overlap・UNKNOWNとB契約、23人工回帰PASS、実科学0。
 
 [2026-11-13：PR-LD1/LD2全round signal結果](2026-11-13-pr-rpe-first-signal-results.md)：26候補の局所数値gate通過、78complex、N/C/G0。B/D接続と未資格を保持。

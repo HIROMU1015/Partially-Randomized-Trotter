@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full PF追加幅の未実行計画](docs/research/h4_full_pf_followup_plan_20261114/REPORT.md)：S2の16h/7・8h/3、Y4の16h/3・32h/5、M5の16hを新5actual cellへ集約。[metadata CLI](scripts/prepare_h4_full_pf_followup.py)と[人工4test](tests/check_h4_full_pf_followup_plan.py) PASS。M5/16hはENERGY_WINDOW候補、32hは分枝未解決で初回範囲外。全13round ID/early/C statusを保持、新H4/保存数値再解析/N/C/G0、公開後STOP。
+
 [Full PF H_eff有限格子の実行結果](docs/research/h4_full_pf_heff_scan_results_20261114/REPORT.md)：承認済み新14step/Schur・元H新eigh0・直接/spectral各28が全数値gate通過。局所予算内の粗い候補はS2/.2、Y4/.4、M5/.8。S2/.2を全13roundの構造piece数からC比較優先とするがcompiled/G winnerではない。[caller](scripts/run_h4_full_pf_heff_scan.py)／[4人工test](tests/check_h4_full_pf_heff_scan_caller.py)／[C packet](docs/research/h4_full_pf_heff_scan_results_20261114/C_HANDOFF.json)。旧点/3入力保全、新reference/旧signal再解析/N/MC/C/G/retry0、公開後STOP。
 
 [Full PF公式・幅のH_eff有限探索準備](docs/research/h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：既存S2/Y4/M5×Δ.05/.1/.2/.4/.8の15案をB/D metadata APIで195roundへ接続。early actual幅15cell、旧S2/.1参照＋新14step/Schur・新元H eigh0の[科学案](docs/research/h4_full_pf_heff_scan_preparation_20261114/SCIENCE_PLAN.md)。[metadata CLI](scripts/prepare_h4_full_pf_heff_scan.py)／[cache人工](tests/check_pf_effective_reference_cache.py)／[plan test](tests/check_h4_full_pf_heff_scan_plan.py)。新6＋旧19 PASS、実科学/保存数値再解析0、公開後STOP。

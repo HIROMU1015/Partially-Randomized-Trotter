@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[Full PF追加幅の分枝準備](../../docs/research/h4_full_pf_followup_plan_20261114/REPORT.md)：既存H_effのENERGY_WINDOWをM5/16hへ適用する有限案。M5/32hはglobal window規約未解決で保留。評価器変更なし、exact schedule/人工windowの4test PASS、新H4/保存再解析0。
+
 [H4 Full PF H_eff有限格子結果](../../docs/research/h4_full_pf_heff_scan_results_20261114/REPORT.md)：既存cache対応評価器＋C direct-expmで14新診断/28組照合が数値gate通過。元H新eigh0、局所粗幅S2/.2・Y4/.4・M5/.8、compiled価格/十分N/全RMSE/Gは未資格。公開後STOP。
 
 [pf_effective_hamiltonianの元固有系cache](../../docs/research/h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：optional reference_eigensystemで同元Hのeigh重複を避け、SOURCE/H binding・完全整列basis・既存residual gateを保持。cache失敗時fallbackなし。新cache3＋metadata3＋旧19 PASS、実科学0。

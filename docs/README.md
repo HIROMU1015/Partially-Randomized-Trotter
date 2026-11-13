@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full PF追加幅の有限案](research/h4_full_pf_followup_plan_20261114/REPORT.md)：S2/Y4の境界補完とM5粗化を5新actual幅で提案。[SCIENCE_PLAN](research/h4_full_pf_followup_plan_20261114/SCIENCE_PLAN.md)／[C・B HANDOFF](research/h4_full_pf_followup_plan_20261114/HANDOFF.md)。人工4test PASS、M5/32h分枝保留、新科学/保存再解析0、別承認待ちSTOP。
+
 [Full PF H_eff有限探索結果](research/h4_full_pf_heff_scan_results_20261114/REPORT.md)：H4 DF10/sector(2,2)/Full PF/prefix10、S2/Y4/M5×.05–.8の14新診断と旧1点。数値gate全通過、局所候補S2/.2・Y4/.4・M5/.8をCへ渡す。[図・表・HANDOFF](research/h4_full_pf_heff_scan_results_20261114/HANDOFF.md)。十分N/全RMSE/G未資格、公開後STOP。
 
 [Full PF公式・幅の有限探索準備](research/h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：15要求配置のearly実幅とcanonical IDを固定し、旧S2/.1と元固有系を再利用する14新H_eff案を作成。[C HANDOFF](research/h4_full_pf_heff_scan_preparation_20261114/HANDOFF.md)、25技術test PASS、実科学0、別途承認待ちSTOP。
