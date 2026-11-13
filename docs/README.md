@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 PR S1＋S2・全13round nominal結果](research/h4_pr_s1_s2_rmse_results_20261113/REPORT.md)：固定SOURCE c76ffe5dbでS1＋S2を一回完了。全13roundの経験的nominal各軸64/60/56/52/47/43/38/34/30/25/21/17/12、旧3round不変。保存2mean＋新reference4 action＋高速mean8/対照＋m2直接照合。13技術test PASS、十分N/global RMSEはnull、S3/C/G0、公開照合後STOP。
+
 [H4 PR残10roundの証拠補完準備](research/h4_pr_remaining_rmse_preparation_20261113/REPORT.md)：m3/m4は観測norm欠測を保持したSOURCE条件付き再利用、欠測8meanは元spectral powerへ接続。S1 reference4 action・S2高速mean8＋m2直接照合1の有限案を固定。新13＋旧35＝48技術test PASS、元m0/m1/m6不変、新実科学/保存再解析/decoder/C/G0、公開照合後STOP。
 
 [H4 PR m1保存RMSE診断結果](research/h4_pr_m1_rmse_results_20261113/REPORT.md)：固定科学SOURCE ac873e7fcでm1/T.2/qPF2/R4の保存scalar診断を一回実行し数値gate通過、経験的nominal Nは各軸60。m0/m6の64/38をcopy、残10未評価、十分N/全RMSEはnull。35人工・metadata回帰PASS、新mean/reference/normalizer/array/C/G0、公開照合後STOP。

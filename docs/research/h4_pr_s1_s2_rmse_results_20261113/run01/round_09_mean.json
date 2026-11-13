@@ -1,0 +1,146 @@
+{
+  "m": 9,
+  "mean": {
+    "candidate": {
+      "system": "H4",
+      "method": "PR",
+      "formula": "2nd",
+      "prefix": 1,
+      "T": 51.2,
+      "q": 512,
+      "delta": 0.1,
+      "R_outer": 1020,
+      "K": 2,
+      "id": "06a78c7f9856f373336f"
+    },
+    "signal": {
+      "reference": {
+        "real": -0.5708180564706263,
+        "imag": -0.8210765776751813
+      },
+      "corrected": {
+        "real": -0.5764358112993903,
+        "imag": -0.8171423672082772
+      },
+      "raw": {
+        "real": -0.5532005868281952,
+        "imag": -0.7842046385751206
+      },
+      "exact_tail": {
+        "real": -0.5764358112987259,
+        "imag": -0.8171423672073328
+      },
+      "total_signed_bias": {
+        "real": -0.005617754828763921,
+        "imag": 0.00393421046690412
+      },
+      "outer_PF_or_discard_bias": {
+        "real": -0.005617754828099564,
+        "imag": 0.003934210467848476
+      },
+      "finite_RTE_bias": {
+        "real": -6.643574579356937e-13,
+        "imag": -9.443557047461582e-13
+      },
+      "log_B": 0.04114333086639573,
+      "allowance_evidence": {
+        "maximum_intermediate_norm": 1.0000000000042037,
+        "raw_corrected_vector_closure": 3.5479162989776404e-14,
+        "exact_tail_norm_error": 3.04911651483053e-12,
+        "maximum_norm_domain": "ACTUAL_SPECTRAL_BLOCK_BOUNDARIES",
+        "norm_envelope_rationale": "Hermitian polynomial is normal; exact-arithmetic power norm squared is convex in exponent. Floating-point equivalence remains empirical.",
+        "normalizer_one_ulp_log_sensitivity": 2.31921135128519e-10
+      }
+    },
+    "old_u": 0.0,
+    "old_margin": 0.0,
+    "origin": "NEW_SAVED_INPUT_FINITE_MEAN",
+    "phase_alignment": false,
+    "signed_weights": [
+      1.0
+    ],
+    "allocation": [
+      1020
+    ],
+    "event_count": 522240,
+    "backend": {
+      "kind": "ARCHIVED_SPECTRAL_POLYNOMIAL_POWER",
+      "source": {
+        "commit": "e417ffc9f52b13c18f5493193ce510d858664259",
+        "path": "scripts/h46_long_time_signal.py"
+      },
+      "logical_event_count": 522240,
+      "tail_block_applications": 512,
+      "spectral_residuals": [
+        {
+          "reconstruction_frobenius": 5.196086146441816e-13,
+          "isometry_frobenius": 7.090018709448228e-14,
+          "source_gate_tolerance": 1e-09,
+          "rigorous_bound": false
+        },
+        {
+          "reconstruction_frobenius": 9.824499691256898e-14,
+          "isometry_frobenius": 2.7198496010946234e-14,
+          "source_gate_tolerance": 1e-09,
+          "rigorous_bound": false
+        },
+        {
+          "reconstruction_frobenius": 6.698240655064039e-15,
+          "isometry_frobenius": 3.998130847493885e-14,
+          "source_gate_tolerance": 1e-09,
+          "rigorous_bound": false
+        }
+      ],
+      "raw_corrected_independent_propagation": true,
+      "scalar_once": true,
+      "approximate_algorithm_substitution": false
+    }
+  },
+  "reference": {
+    "T": 51.2,
+    "binding": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 10,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H4_TOL_ONLY_DF10",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "system": "H4"
+    },
+    "source": {
+      "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+      "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+      "reference_key": "51.2",
+      "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+    },
+    "evidence": {
+      "reference": {
+        "real": -0.5708180564706263,
+        "imag": -0.8210765776751813
+      },
+      "independent_reference": {
+        "real": -0.5708180564710188,
+        "imag": -0.8210765776750951
+      },
+      "signal_difference": 4.018087322853337e-13,
+      "reference_state_actions": 2,
+      "kind": "NEW_D2_TWO_EXPONENTIAL_PATHS",
+      "certified": false
+    }
+  },
+  "mean_source": {
+    "commit": "c76ffe5dbb2a8dd1a05f1a85038f2d48b959f73e",
+    "path": "scripts/run_h4_pr_rmse_completion.py",
+    "stage": "S1_S2",
+    "m": 9,
+    "backend": "SPECTRAL_POWER"
+  }
+}
