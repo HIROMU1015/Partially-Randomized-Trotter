@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[A/C/D新証拠受入](../../docs/research/rpe_new_evidence_intake_20261113/REPORT.md)：trottertracks.rpe_diagnostic_intakeがm1新scopeとC構造診断を分離、rpe_d_evidence_intakeが固定D metadata module/for_packetとB既存generator/外部physical mapを再利用。core/S0 validator/C providerは無変更、106技術test。
+
 [A/C/D V2接続](../../docs/research/abc_d_v2_integration_20261114/REPORT.md)：trottertracks.abc_s0_published_intakeが公開A/Cを正式受入。controller/structureは標準Yoshida4 PFとκなしFull-H layoutへ最小拡張、D full_baseline_v2_requestsを再利用し外部物理identityを照合。93技術test、実science/Gなし。
 
 [H4 S0 V2接続](../../docs/research/h4_s0_v2_integration_20261113/REPORT.md)：trottertracks.h4_s0_v2_intakeが既存B generator/identity/plannerとC bv2_mean_priceを再利用。A数値器/C価格modelは不変、元packetと未資格状態を保全し61技術test。

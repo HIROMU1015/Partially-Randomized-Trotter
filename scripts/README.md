@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`intake_rpe_new_evidence.py`](intake_rpe_new_evidence.py)：[新証拠metadata受入](../docs/research/rpe_new_evidence_intake_20261113/HANDOFF.md)。公開A m1 packet/result、C診断、D physical/request/136保存coverageを扱う。Git commit/path明示、新規出力directoryのみ、科学計算・価格provider・実G起動optionなし。
+
 [`intake_abc_s0_published.py`](intake_abc_s0_published.py)：B保存canonicalとA/C公開packetの[metadata専用受入](../docs/research/abc_d_v2_integration_20261114/HANDOFF.md)。旧S0 producerを起動せず、既存validator/plannerを再利用。新規出力file専用、科学/compile/G optionなし。
 
 [`prepare_h4_s0_v2.py`](prepare_h4_s0_v2.py)：固定A S0 metadataだけをcanonical V2/26軸planner/C requestへ接続。[HANDOFF](../docs/research/h4_s0_v2_integration_20261113/HANDOFF.md)。fresh出力directory専用、新N packet・signal/N/C/compile/G生成なし。

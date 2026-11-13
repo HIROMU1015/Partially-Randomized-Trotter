@@ -1,5 +1,7 @@
 # 文書索引
 
+[新A/C/D証拠REPORT](research/rpe_new_evidence_intake_20261113/REPORT.md)／[正式受入HANDOFF](research/rpe_new_evidence_intake_20261113/HANDOFF.md)／[最終metadata](research/rpe_new_evidence_intake_20261113/run02/PUBLISHED_EVIDENCE.json)／[4方式不足](research/rpe_new_evidence_intake_20261113/run02/METHOD_GAPS.json)：A m1 nominal60、C構造診断、D物理SOURCE/保存coverageを分離し、実N/C/Gを作らず接続。106技術test。
+
 [A/C/D V2接続REPORT](research/abc_d_v2_integration_20261114/REPORT.md)／[D向けHANDOFF](research/abc_d_v2_integration_20261114/HANDOFF.md)／[公開A/C受入](research/abc_d_v2_integration_20261114/PUBLISHED_INTAKE.json)：既存S0 canonicalを再作成せず正式packetを照合。標準Yoshida4 PF・κなし明示Full-H RTEと外部物理対応、93技術test、実N/C/Gなし。
 
 [H4 S0→V2 REPORT](research/h4_s0_v2_integration_20261113/REPORT.md)／[A/C HANDOFF](research/h4_s0_v2_integration_20261113/HANDOFF.md)／[26軸不足証拠](research/h4_s0_v2_integration_20261113/run01/EVIDENCE_PLAN.json)：原V1 packetを無変更保存、全13roundのcanonical V2/価格requestを公開。61技術test、実N/C/G未実行。
