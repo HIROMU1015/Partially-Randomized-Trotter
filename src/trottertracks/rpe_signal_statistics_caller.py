@@ -153,11 +153,13 @@ def _summary_options(options, target):
                 raise ValueError('Source-bound uniform loss support required')
 
 
-def diagnose(entry, *, repetitions, seed, source, batch_decoder=None):
+def diagnose(entry, *, repetitions, seed, source, batch_decoder=None, risk_options=None):
     """Explicit MC + existing summary, never a scientific N/G producer.
 
     No scalar-target fallback, loss, seed, confidence or acceleration default is
     adopted. Pass R3 decode_sampled_counts explicitly to select acceleration.
+    Optional risk_options adds fixed-family intervals without changing the
+    original diagnostic or issuing N evidence.
     """
     prepared = entry['prepared']; consumed = entry['signal_input']
     target = entry.get('evaluation_target'); _target(target, prepared['target'])
@@ -177,13 +179,19 @@ def diagnose(entry, *, repetitions, seed, source, batch_decoder=None):
     S._integer(repetitions, 'repetitions', 1); S._integer(seed, 'seed')
     S.iid_policy(contract['simulation_policy'])
     _summary_options(contract['summary_options'], target['energy_ha'])
+    if risk_options is not None:
+        from . import rpe_risk_intervals as R
+        R.validate_request(entry, repetitions=repetitions, seed=seed, source=source, **risk_options)
     simulation = S.simulate_prepared(prepared, repetitions=repetitions, seed=seed,
         policy=contract['simulation_policy'], allow_conditional_unqualified=conditional,
         batch_decoder=batch_decoder)
     summary = None if simulation.get('trials') is None else S.summarize(simulation['trials'],
         target_energy_ha=target['energy_ha'], **contract['summary_options'])
-    return dict(configuration_id=entry['configuration_id'], allocation=deepcopy(entry['allocation']),
+    result = dict(configuration_id=entry['configuration_id'], allocation=deepcopy(entry['allocation']),
         source=deepcopy(source), statistical_contract=deepcopy(contract),
         evaluation_target=deepcopy(target), signal_input=deepcopy(consumed),
         diagnostic=dict(simulation=simulation, summary=summary), n_packet=None,
         sufficient_N=None, global_RMSE_bound=None, G=None, winner=None)
+    if risk_options is not None:
+        result['risk_intervals'] = R.summarize(result, **risk_options)
+    return result

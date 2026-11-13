@@ -1,0 +1,43 @@
+2026-11-13 JST. Primary-agent technical checks, not independent scientific review.
+Base: 2906a231224184e36c86fbcfa609af647fdf9f8a
+Branch: codex/rpe-decoder-statistics-20261113
+Worktree: r-variable-rpe-cost-pipeline-20261111
+Python: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B
+
+Commands (from the worktree; Python above):
+python -B -m unittest discover -s tests -p 'check_rpe_risk_intervals.py'
+  Ran 12 tests in 3.278s, OK (exit 0), final implementation.
+python -B -m unittest discover -s tests -p 'check_rpe_signal_statistics_caller.py'
+  Ran 9 tests in 42.510s, OK (exit 0).
+python -B -m unittest discover -s tests -p 'check_rpe_decoder_statistics.py'
+  Ran 16 tests in 18.618s, OK (exit 0).
+python -B -m unittest discover -s tests -p 'check_rpe_shot_allocation.py'
+  Ran 10 tests in 3.163s, OK (exit 0).
+python -B -m unittest discover -s tests -p 'check_rpe_decoder_fast.py'
+  Ran 12 tests in 6.157s, OK (exit 0).
+Total: 12 new + 47 regression = 59 PASS.
+
+New cases: simultaneous p/v ratio formula and sqrt, p_L=0 UNKNOWN, resolved-only,
+mixed and all-unresolved artificial ensembles, missing/nonuniform support UNKNOWN,
+support violations rejected, original zero/tie and decoded wrong-branch/alias
+loss retained, existing bounded-loss/Hoeffding CI reused without scientific
+N/energy qualification, finite artificial Bernoulli law coverage, exact family
+failure budget, pre-MC seed/n/member mismatch, LD/SOURCE/law/target/vector slot
+mismatch, 2 synthetic configurations x 2 whole vectors x 13 rounds, unchanged
+old diagnostics, pending input UNKNOWN, no N producer/cost calls.
+
+Finite-distribution coverage check enumerates d=0..12 for fictional IID
+Bernoulli resolution events and decoded squared loss=1; no sampling or molecular
+numerical input is used. The explicit confidence/support/MC values in all new
+tests are synthetic fixtures and do not adopt values for LD1/LD2 science.
+
+Existing saved-A regressions perform metadata/copy/provenance matching only;
+H4 MC and real G calls are forbidden there. No old S3 trial/result is reanalyzed.
+No new signal/reference, real RMSE/N/E[C]/G, compile, fit, sampling or optimizer.
+Existing legacy invalid-escape DeprecationWarnings in Almost_optimal_grouping.py
+remain unchanged.
+
+Final metadata/source checks PASS: original summary/decoder/controller/shot/
+accounting bytes unchanged; all caller functions except the optional diagnose
+hook unchanged by AST comparison; original manifest entries preserved; direct
+document links resolve; new Python source parses; git diff --check clean.

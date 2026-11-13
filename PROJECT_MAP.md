@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[RPE conditional risk区間](docs/research/rpe_risk_intervals_20261113/REPORT.md)／[API・同時confidence](docs/research/rpe_risk_intervals_20261113/RISK_INTERVAL_HANDOFF.md)：元caller/summary/CP/Hoeffdingを再利用しp-v同時区間と有限familyを追加。p_L=0/support不足はUNKNOWN、全loss未採択/元energy資格/十分N/Gは未取得。新12＋回帰47＝59技術test PASS、実H4 MC/保存科学再解析0、公開後mandatory STOP。
+
 [LD1/LD2明示target付き統計caller](docs/research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)／[HANDOFF](docs/research/pr_ld1_ld2_statistical_caller_20261113/HANDOFF.md)：既存whole-shot/MC/R3/summaryとC plan/signal_inputを再利用。元target・UNQUALIFIEDを保つ受入view、実消費signal binding、MC前の明示evaluation_target検査を実装。新9＋既存38＝47技術test PASS、実H4 MC/保存再解析/N/RMSE/G0、公開後mandatory STOP。
 
 [PR-LD1/LD2全RPE risk・shot評価計画](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/REPORT.md)／[risk水準A〜C](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/RISK_AND_N_EVALUATION_PLAN.md)／[有限科学案](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/FINITE_SCIENCE_PLAN.md)／[HANDOFF](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/HANDOFF.md)：A91349の両13meanをmetadata確認。評価target energy_ha欠落とC signal binding不足を明示し、元Minkowski/全outcome/whole-vectorを保つ。6 metadata確認PASS、計画のみ・新MC/再解析/N/RMSE/G0、公開後STOP。

@@ -1,5 +1,7 @@
 # Validation status
 
+[RPE risk区間の技術検証](docs/research/rpe_risk_intervals_20261113/REPORT.md)：新12＋既存47＝59人工・回帰PASS。conditional p-v比率、有限人工lawの被覆、p_L=0/未解決/support不足、全loss/energy資格の区別、同時failure budgetとLD/SOURCE/law/MC範囲の拒否を確認。実H4 MC/保存科学再解析/実RMSE/N/G0。
+
 [LD1/LD2 caller・C signal binding](docs/research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)：新9＋回帰38＝47技術test PASS。両13meanは読取専用SOURCE照合のみ。人工target/MCのscalar-R3全trial/summary一致、欠測targetのMC前拒否、元UNQUALIFIED・C正式gate・十分N/G nullを確認。C全runtime/scientific graphや実H4 MCは未実行。
 
 [LD1/LD2 risk・N評価計画](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/REPORT.md)：6 metadata確認PASS。両A config/全13 identity/law/共通task、shots=[]での既存prepare、UNQUALIFIED/null、C packet不足とtarget scalar未採択を確認。新risk producer/optimizer/production変更0、新MC/保存再解析/N/RMSE/G0。科学水準A〜C・loss/precisionは未採択、公開後mandatory STOP。

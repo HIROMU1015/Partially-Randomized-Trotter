@@ -1,5 +1,7 @@
 # 文書索引
 
+[RPE risk・RMSE区間](research/rpe_risk_intervals_20261113/REPORT.md)／[RISK_INTERVAL_HANDOFF](research/rpe_risk_intervals_20261113/RISK_INTERVAL_HANDOFF.md)／[次の有限科学案](research/rpe_risk_intervals_20261113/NEXT_SCIENCE_PLAN.md)：条件付きp-v比率と有限familyの明示failure配分。59技術test PASS、元energy資格/N/GはUNKNOWN/null、新科学実行なし。
+
 [LD1/LD2統計caller・signal binding](research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)／[HANDOFF](research/pr_ld1_ld2_statistical_caller_20261113/HANDOFF.md)／[次の科学条件](research/pr_ld1_ld2_statistical_caller_20261113/NEXT_SCIENCE_PLAN.md)：明示targetと既存whole-shot/R3/C入力を接続。47技術test PASS、新科学実行なし。
 
 [LD1/LD2 risk・shot計画](research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/REPORT.md)／[RISK_AND_N_EVALUATION_PLAN](research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/RISK_AND_N_EVALUATION_PLAN.md)／[FINITE_SCIENCE_PLAN](research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/FINITE_SCIENCE_PLAN.md)／[HANDOFF](research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/HANDOFF.md)：6 metadata確認、target/C bindingの最小接続と全RPE risk契約。新科学実行なし。

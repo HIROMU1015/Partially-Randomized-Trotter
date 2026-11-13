@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[RPE risk interval](../../docs/research/rpe_risk_intervals_20261113/REPORT.md)：trottertracks.rpe_risk_intervalsが既存summary/CP/bounded-lossを再利用。p_L=0/support不足はUNKNOWN、同時budgetをwhole-shotの固定callへ結合。59技術test PASS、N資格producer/optimizerなし。
+
 [LD1/LD2統計caller](../../docs/research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)：trottertracks.rpe_signal_statistics_callerが既存W/S/R3とC APIを再利用。evaluation_targetを元targetと分離し、受入viewと実消費signal_inputを保全。元decoder/資格gateは不変、47技術test PASS、実H4科学実行なし。
 
 [全RPE費用予備分析P0〜P4](../../docs/research/rpe_cost_preliminary_results_20261113/REPORT.md)：既存exact_scalar/exact_valueとmetadata loaderをtrottertracks.rpe_cost_preliminaryから再利用。nominal×構造Sを正式Gから分離し、人工4件と固定scope結果確認。旧decoder/統計/controller無変更。
