@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[S3最終科学実行計画案](docs/research/rpe_s3_final_plan_20261113/SCIENTIFIC_PLAN.md)／[REPORT](docs/research/rpe_s3_final_plan_20261113/REPORT.md)／[採択HANDOFF](docs/research/rpe_s3_final_plan_20261113/HANDOFF.md)：B ab12/bf515・A bba/169dを固定し、13round/nominal1配分の条件付きRMSE＋未解決率を推奨。任意の有界loss感度・粗いpilot精度・有限43,819反復を設計。全条件未採択、実S3/保存mean再解析/N最適化/C/G0、計画公開後STOP。
+
 [R3高速decoderのS3統合](docs/research/rpe_decoder_r3_integration_20261113/REPORT.md)／[切替API](docs/research/rpe_decoder_r3_integration_20261113/HANDOFF.md)／[人工benchmark](docs/research/rpe_decoder_r3_integration_20261113/BENCHMARK.json)：A7f1fの独立moduleを取込み、simulate/simulate_preparedへ任意batch hook。元scalar既定・RNG/count/loss/CI保全、60技術test PASS。人工13round/512trialで16.651→.02554秒（約652倍）、実H4 S3/十分N/global bound/G未評価、公開後STOP。
 
 [全13round/K1/C−SのV2受入とS3準備](docs/research/rpe_s3_readiness_20261113/REPORT.md)／[HANDOFF](docs/research/rpe_s3_readiness_20261113/HANDOFF.md)／[S3判断表](docs/research/rpe_s3_readiness_20261113/S3_DECISIONS.md)：A169d全13nominal/meanと追加bba物理inputをcopy受入、m3/m4 norm欠測と旧3round SOURCEを保全。C83d K0 PASS/K1構造4値、Daf6残差interfaceを接続。149技術test PASS、input_complete=true/scientific_ready=false、C/G/十分N/global bound null、S3未実行・公開後STOP。

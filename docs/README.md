@@ -1,5 +1,7 @@
 # 文書索引
 
+[S3最終科学計画案](research/rpe_s3_final_plan_20261113/SCIENTIFIC_PLAN.md)／[REPORT](research/rpe_s3_final_plan_20261113/REPORT.md)／[ユーザー採択・B実行HANDOFF](research/rpe_s3_final_plan_20261113/HANDOFF.md)：固定13round/1 nominal、proxy/IID/loss/support/精度/confidenceと43,819反復を提案。未採択・未実行、科学実行許可は別途必要。
+
 [R3→S3統合REPORT](research/rpe_decoder_r3_integration_20261113/REPORT.md)／[scalar/batch切替](research/rpe_decoder_r3_integration_20261113/HANDOFF.md)／[人工性能](research/rpe_decoder_r3_integration_20261113/BENCHMARK.json)：60技術test、人工512trialで約652倍、実H4 S3/科学的RMSE認定なし。旧科学SOURCE・未資格/null保持。
 
 [S3 readiness REPORT](research/rpe_s3_readiness_20261113/REPORT.md)／[A/C/D interface](research/rpe_s3_readiness_20261113/HANDOFF.md)／[未採択条件](research/rpe_s3_readiness_20261113/S3_DECISIONS.md)／[保存readiness](research/rpe_s3_readiness_20261113/metadata01/S3_READINESS.json)：A13round・C構造4値・D残差欠測を分離。149技術test、実S3/価格/G0。
