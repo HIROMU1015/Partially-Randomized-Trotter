@@ -49,6 +49,13 @@ module内で1つのparse済みcallableだけを保持する。keyは絶対path�
 fileは毎回読み、同じsize/mtimeでの変更も検出する。候補やconfigurationの結果はcacheしない。
 各候補を元の`cid`へ毎回渡すので、入力検査・変更後のID・例外を維持する。
 
+Cのprivate固定B namespaceには別途 `cache_legacy_candidate_parser` を使う。
+元の`candidate_id`関数と固定blobを変更せず、namespace内のAST parserだけに
+内容別cacheを入れる。標準astと他namespaceには影響しない。
+C固有のloader/fixtureへの適用は、C基点の独立branch
+`codex/pr-resource-c-parser-cache-20261114` に収録する。
+測定scriptの `--legacy` でこの経路も比較できる。
+
 ```bash
 $PY -B tests/check_candidate_id_cache.py
 $PY -B tests/check_pr_resource_wiring.py

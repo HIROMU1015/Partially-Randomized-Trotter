@@ -11,6 +11,7 @@ import time
 
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--root',type=Path,required=True)
+parser.add_argument('--legacy',action='store_true',help='Also measure C private fixed-B namespace')
 args=parser.parse_args();root=args.root.resolve()
 sys.path.insert(0,str(root/'src'));sys.dont_write_bytecode=True
 from trottertracks import pf_pr_rpe_pipeline as p
@@ -34,7 +35,15 @@ def measure(function):
         samples.append((time.perf_counter_ns()-start)/200)
     return dict(samples_ns_per_call=samples,median_ns_per_call=statistics.median(samples))
 before=measure(old);after=measure(p.candidate_id)
-print(json.dumps(dict(original_source=baseline,python=sys.version,synthetic_input_count=len(inputs),
+result=dict(original_source=baseline,python=sys.version,synthetic_input_count=len(inputs),
     outputs_identical=True,before=before,after=after,
     speedup=before['median_ns_per_call']/after['median_ns_per_call'],
-    candidate_rule_sha256=hashlib.sha256((root/'scripts/h46_long_time_signal.py').read_bytes()).hexdigest()),indent=2))
+    candidate_rule_sha256=hashlib.sha256((root/'scripts/h46_long_time_signal.py').read_bytes()).hexdigest())
+if args.legacy:
+    from trottertracks import baseline_signal_pipeline as C
+    fixed=C.published_api(str(root)).B.p
+    assert [old(c) for c in inputs]==[fixed.candidate_id(c) for c in inputs]
+    legacy=measure(fixed.candidate_id)
+    result.update(legacy_after=legacy,legacy_speedup=before['median_ns_per_call']/legacy['median_ns_per_call'],
+                  legacy_function_SOURCE=fixed.candidate_id.__code__.co_filename)
+print(json.dumps(result,indent=2))

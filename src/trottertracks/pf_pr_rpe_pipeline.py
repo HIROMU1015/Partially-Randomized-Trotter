@@ -15,6 +15,7 @@ import math
 import re
 import subprocess
 import sys
+from types import SimpleNamespace
 
 from . import h4_df10_rpe_connection as accounting
 
@@ -81,6 +82,21 @@ def candidate_id(candidate):
     # Read exact bytes each time: an edited rule cannot reuse a stale callable,
     # even when file size/mtime are unchanged. Each candidate is evaluated anew.
     return _candidate_id_parser(str(path), path.read_bytes())(candidate)
+
+
+def cache_legacy_candidate_parser(module):
+    """Cache only parsing in an isolated, fixed-blob pipeline namespace.
+
+    Legacy candidate_id code and its live globals/path stay intact. This
+    namespace's sole AST consumer selects cid and never mutates its tree.
+    Each namespace keeps its own parser/rules and one source-content key;
+    changing script text reparses. The process-wide ast module is untouched.
+    """
+    if 'ast' not in module.candidate_id.__code__.co_names:
+        raise ValueError('Expected the legacy candidate_id AST consumer')
+    parser = module.ast
+    module.ast = SimpleNamespace(parse=lru_cache(maxsize=1)(parser.parse),
+        FunctionDef=parser.FunctionDef, Module=parser.Module)
 
 
 def structure(c):

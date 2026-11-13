@@ -174,7 +174,8 @@ def preflight(root, series, source, *, request=None, plan=None):
         if plan is None:
             plan = P.execution_plan(P.make_plan(root, 'WIRING_PREFLIGHT_ONLY'), dict(commit=source), root)
         check_backend_plan(root, plan)
-        if plan['source'] != dict(commit=source): raise ValueError('Backend plan SOURCE differs')
+        if plan['source'] not in (source, dict(commit=source)):
+            raise ValueError('Backend plan SOURCE differs')
         science = P.load_c1_backend(root)['r_price_phase1_science']
         backend = science.Backend(root, plan)  # copies metadata only
         for name in P.USED_BACKEND_METHODS: check_globals(getattr(science.Backend, name))
