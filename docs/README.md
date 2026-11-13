@@ -1,5 +1,7 @@
 # 文書索引
 
+[LD1/LD2 risk・shot計画](research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/REPORT.md)／[RISK_AND_N_EVALUATION_PLAN](research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/RISK_AND_N_EVALUATION_PLAN.md)／[FINITE_SCIENCE_PLAN](research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/FINITE_SCIENCE_PLAN.md)／[HANDOFF](research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/HANDOFF.md)：6 metadata確認、target/C bindingの最小接続と全RPE risk契約。新科学実行なし。
+
 [RPE総コスト予備分析結果](research/rpe_cost_preliminary_results_20261113/REPORT.md)／[DECISION_PACKET_V0](research/rpe_cost_preliminary_results_20261113/DECISION_PACKET_V0.md)／[NEXT_OPTIMIZATION_PLAN](research/rpe_cost_preliminary_results_20261113/NEXT_OPTIMIZATION_PLAN.md)／[HANDOFF](research/rpe_cost_preliminary_results_20261113/HANDOFF.md)：固定保存P0〜P4の承認済み再解析、m12構造寄与66.20%・最後3round96.92%。正式G/必要N認定なし、人工4件PASS。
 
 [総コスト予備分析REPORT](research/rpe_cost_preliminary_analysis_preparation_20261113/REPORT.md)／[DECISION_PACKET_V0](research/rpe_cost_preliminary_analysis_preparation_20261113/DECISION_PACKET_V0.md)／[NEXT_OPTIMIZATION_PLAN](research/rpe_cost_preliminary_analysis_preparation_20261113/NEXT_OPTIMIZATION_PLAN.md)／[HANDOFF](research/rpe_cost_preliminary_analysis_preparation_20261113/HANDOFF.md)：7 metadata確認と有限算術計画のみ。保存値の新比率・寄与率は実行許可待ち、G/winner null。
