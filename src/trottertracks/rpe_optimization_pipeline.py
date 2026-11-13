@@ -17,7 +17,7 @@ A_SOURCE = 'fefd548ecd56f60d72031b3d385f6f5e6ee95d06'
 B_SOURCE = 'b9b9ffa6233db9dd2b413dc07b27e7039324c666'
 C_SOURCE = '86f37d25ffd5eee3daf7f25ce001b090b1f2cf33'
 D_SOURCE = '24b0a6eb1d806391a3c6ad454fb0c018148d8545'
-D_ADAPTER_SOURCE = '0c6e16342b3c804fa0bd89a4028d6b5bea7b0322'
+D_ADAPTER_SOURCE = '748be6875b5007707d864e16aa7a4fc4250f3714'
 MODULE = 'src/trottertracks/rpe_optimization_pipeline.py'
 
 
@@ -192,13 +192,13 @@ def price_context(request,m):
         structure=deepcopy(structure),split=deepcopy(s['split']),law=deepcopy(s['law']))
 
 
-def price_requests(root,request,*,input_source=None,execution_source=None,axes=('X','Y'),preparation_hashes=None):
+def price_requests(root,request,*,input_source=None,execution_source=None,axes=('X','Y'),preparation_hashes=None,expected_scalar=None):
     """D's passive full-wrapper requests; no price/profile values are invented."""
     _validate(root,request);api=providers(str(root))
-    if input_source is not None or execution_source is not None:
+    if input_source is not None or execution_source is not None or expected_scalar is not None:
         from .rpe_d_price_connection import pending_requests
         return pending_requests(root,request,input_source=input_source,execution_source=execution_source,
-                                axes=axes,preparation_hashes=preparation_hashes)
+                                axes=axes,preparation_hashes=preparation_hashes,expected_scalar=expected_scalar)
     axes=tuple(axes)
     if not axes or len(set(axes))!=len(axes) or any(a not in api.B.p.AXES for a in axes):
         raise ValueError('Unique explicit X/Y price axes required')

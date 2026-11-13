@@ -17,7 +17,7 @@ def extension(d_request):
         source=dict(commit=I.D_ADAPTER_SOURCE,path='src/trottertracks/efficient_controlled_zz.py'))
 
 
-def pending_requests(root,request,*,input_source,execution_source,axes=('X','Y'),preparation_hashes=None):
+def pending_requests(root,request,*,input_source,execution_source,axes=('X','Y'),preparation_hashes=None,expected_scalar=None):
     """Use D.from_a_job (which calls from_b) and D.pending_price_records only."""
     I._validate(root,request);api=I.providers(str(root));hashes=preparation_hashes or {}
     if not input_source or not execution_source:raise ValueError('D input and execution SOURCE are required')
@@ -30,7 +30,8 @@ def pending_requests(root,request,*,input_source,execution_source,axes=('X','Y')
     rows=[]
     for job in jobs:
         d=api.Price.from_a_job(request['configuration'],job,input_source=input_source,
-            execution_source=execution_source,axes=axes,preparation_hash=hashes.get(job['m']))
+            execution_source=execution_source,axes=axes,preparation_hash=hashes.get(job['m']),
+            expected_scalar=expected_scalar)
         for row in api.Price.pending_price_records(d):
             row.update(m=job['m'],configuration_id=request['configuration']['id'],
                 physical_context=I.price_context(request,job['m']),d_request=deepcopy(d),
@@ -49,7 +50,7 @@ def _requests(root,request,pending):
         pc=d['physical_context']
         expected=api.Price.from_a_job(request['configuration'],request['pending']['jobs'][m],
             input_source=pc['input_source'],execution_source=pc['execution_source'],axes=d['axes'],
-            preparation_hash=pc['preparation_hash'])
+            preparation_hash=pc['preparation_hash'],expected_scalar=pc.get('expected_scalar'))
         if not I.C.p.same(d,expected):raise ValueError('D request does not belong to this physical configuration')
         if (row.get('axis') not in d['axes'] or not I.C.p.same(row.get('identity'),d['identity'])
                 or not I.C.p.same(row.get('law_binding'),d['law_binding'])
@@ -62,9 +63,10 @@ def _requests(root,request,pending):
         if {(d['m'],a) for a in d['axes']}-seen:raise ValueError('Missing pending record for a requested axis')
     # A schedule may change q/R/law by round, but cannot change its restored
     # input or preparation definition half way through the same price input.
-    anchors=[{k:d['physical_context'][k] for k in ('binding','split','input_source','execution_source','implementation','price_profile','preparation_hash')} for d in result.values()]
+    anchors=[dict({k:d['physical_context'][k] for k in ('binding','split','input_source','execution_source','implementation','price_profile','preparation_hash')},
+                  expected_scalar=d['physical_context'].get('expected_scalar')) for d in result.values()]
     if anchors and any(not I.C.p.same(x,anchors[0]) for x in anchors[1:]):
-        raise ValueError('Mixed preparation/input/execution/compiler domain in one schedule')
+        raise ValueError('Mixed preparation/input/execution/compiler/scalar domain in one schedule')
     return result
 
 
@@ -98,6 +100,8 @@ def _paths(requests,paths,exact_scalar):
         if any(r.get(k) is None for k in fields):raise ValueError('Resolved path preparation metadata missing')
         if pc['preparation_hash'] is not None and r['preparation_hash']!=pc['preparation_hash']:
             raise ValueError('Resolved preparation hash differs')
+        if pc.get('expected_scalar') is not None and float(r['scalar']).hex()!=float(pc['expected_scalar']).hex():
+            raise ValueError('Resolved scalar differs from the requested total scalar')
         prefix=pc['physical_candidate']['prefix'];rank=pc['binding']['rank']
         if (float(exact_scalar(r['lambda_R'])).hex()!=float(exact_scalar(pc['split']['lambda_R'])).hex()
                 or r['deterministic_fragments']!=list(range(prefix)) or r['randomized_fragments']!=list(range(prefix,rank))):

@@ -1,6 +1,8 @@
 """D metadata + fictional path/mean/N only. No preparation/sampling/compile."""
 from copy import deepcopy
+import ast
 import json
+import math
 from pathlib import Path
 import unittest
 from unittest.mock import patch
@@ -15,8 +17,8 @@ INPUT=dict(fixture='ARTIFICIAL_INPUT_SOURCE_ONLY')
 A_MENU='a9abf8de75bf3432fcd714e868e5c14c8884b8f8'
 
 
-def pending(req,axes=('X','Y')):
-    return I.price_requests(ROOT,req,input_source=INPUT,execution_source=SOURCE,axes=axes)
+def pending(req,axes=('X','Y'),**kwargs):
+    return I.price_requests(ROOT,req,input_source=INPUT,execution_source=SOURCE,axes=axes,**kwargs)
 
 
 def path(d,*,axes=None,cohort='ARTIFICIAL_NORMAL',index=0,conditional=False):
@@ -159,6 +161,86 @@ class DConnectionTests(unittest.TestCase):
         with self.assertRaises(ValueError):P.bind_results(ROOT,f[0],f[4],prices=prices,bindings=f[6])
         p=path(f[4][0]['d_request'])
         with self.assertRaises(ValueError):P.bind_results(ROOT,f[0],f[4],paths=[p,p])
+
+    def test_09_expected_scalar_roundtrip_uses_D_ids_and_keeps_B_identity(self):
+        req,_,_=T.toy('PR',2);before=deepcopy(req);legacy=pending(req)
+        with (patch.object(D,'NativeRuntime',side_effect=AssertionError('no preparation')),
+              patch.object(D,'Adapter',side_effect=AssertionError('no price acquisition'))):
+            rows=pending(req,expected_scalar=.07)
+            mapped=P.bind_results(ROOT,req,rows)
+        for row,old in zip(rows,legacy):
+            d=row['d_request'];m=row['m']
+            direct=D.from_b(req['configuration'],m,req['pr_physical'][m],input_source=INPUT,
+                execution_source=SOURCE,expected_scalar=.07)
+            self.assertEqual(d,direct);self.assertEqual(d['physical_context']['expected_scalar'],.07)
+            self.assertNotEqual(d['request_id'],old['d_request']['request_id'])
+            self.assertNotEqual(d['context_key'],old['d_request']['context_key'])
+            self.assertEqual(d['identity'],old['d_request']['identity'])
+            self.assertEqual(d['law_binding'],old['d_request']['law_binding'])
+        self.assertEqual(req,before)
+        self.assertTrue(all(c['mean']['rz_count'] is None for c in mapped['prices']))
+        self.assertEqual(I.D_ADAPTER_SOURCE,'748be6875b5007707d864e16aa7a4fc4250f3714')
+
+    def test_10_mixed_scalar_or_specified_unspecified_schedule_rejected(self):
+        req,_,_=T.toy('PR',1)
+        for other in (.08,math.nextafter(.07,math.inf),None):
+            rows=pending(req,expected_scalar=.07);alternate=pending(req,expected_scalar=other)
+            mixed=[r if r['m']==0 else alternate[i] for i,r in enumerate(rows)]
+            with self.assertRaisesRegex(ValueError,'Mixed.*scalar'):
+                P.bind_results(ROOT,req,mixed)
+        zero=pending(req,expected_scalar=0.)
+        self.assertTrue(all(r['d_request']['physical_context']['expected_scalar']==0. for r in zero))
+        P.bind_results(ROOT,req,zero)
+        absent=pending(req)
+        with self.assertRaisesRegex(ValueError,'Mixed.*scalar'):
+            P.bind_results(ROOT,req,[r if r['m']==0 else absent[i] for i,r in enumerate(zero)])
+
+    def test_11_resolved_scalar_requires_binary64_equality_without_tolerance(self):
+        req,_,_=T.toy('PR',1);rows=pending(req,expected_scalar=.07)
+        good=path(rows[0]['d_request']);mapped=P.bind_results(ROOT,req,rows,paths=[good])
+        self.assertEqual(mapped['paths'],[good])
+        self.assertTrue(all(p['mean']['rz_count'] is None for p in mapped['prices']))
+        for value in (.08,math.nextafter(.07,math.inf)):
+            bad=deepcopy(good);bad['resolved_context']['scalar']=value
+            with self.assertRaisesRegex(ValueError,'Resolved scalar differs'):
+                P.bind_results(ROOT,req,rows,paths=[bad])
+        rows=pending(req,expected_scalar=0.);bad=path(rows[0]['d_request'])
+        bad['resolved_context']['scalar']=-0.
+        with self.assertRaisesRegex(ValueError,'Resolved scalar differs'):
+            P.bind_results(ROOT,req,rows,paths=[bad])
+
+    def test_12_omitted_scalar_requests_equal_legacy_D_constructor(self):
+        # Reuse the old constructor only; it has no scientific entry point.
+        old='0c6e16342b3c804fa0bd89a4028d6b5bea7b0322'
+        tree=ast.parse(I.C.blob(ROOT,old,'src/trottertracks/candidate_price_adapter.py'))
+        fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='from_b')
+        scope=dict(D.__dict__)
+        exec(compile(ast.Module(body=[fn],type_ignores=[]),old+':from_b','exec'),scope)
+        req,_,_=T.toy('PR',2);rows=pending(req)
+        for r in rows:
+            d=r['d_request'];m=r['m']
+            legacy=scope['from_b'](req['configuration'],m,req['pr_physical'][m],input_source=INPUT,
+                execution_source=SOURCE,axes=d['axes'])
+            self.assertEqual(d,legacy);self.assertNotIn('expected_scalar',d['physical_context'])
+        self.assertEqual(rows,pending(req,expected_scalar=None))
+        # The original general-pending route remains distinct from D requests.
+        self.assertTrue(all('d_request' not in r for r in I.price_requests(ROOT,req)))
+        with self.assertRaisesRegex(ValueError,'SOURCE'):
+            I.price_requests(ROOT,req,expected_scalar=.07)
+
+    def test_13_scalar_specific_external_bindings_and_request_integrity(self):
+        f=fixture();req=f[0];rows=pending(req,expected_scalar=.07)
+        with self.assertRaisesRegex(ValueError,'binding differs'):
+            P.bind_results(ROOT,req,rows,prices=f[5],bindings=f[6])
+        lookup={(r['m'],r['axis']):r['d_request'] for r in rows};bindings=deepcopy(f[6])
+        for b in bindings:
+            d=lookup[b['identity']['m'],b['axis']]
+            b.update(d_request_id=d['request_id'],d_context_key=d['context_key'])
+        mapped=P.bind_results(ROOT,req,rows,prices=f[5],bindings=bindings)
+        self.assertEqual([p['mean'] for p in mapped['prices']],[p['mean'] for p in f[5]])
+        altered=deepcopy(rows);altered[0]['d_request']['physical_context']['expected_scalar']=.08
+        with self.assertRaisesRegex(ValueError,'mutated'):
+            P.bind_results(ROOT,req,altered)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
