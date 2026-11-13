@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[H4 PR全13roundの物理誤差契約](h4_pr_physical_error_contract_20261113/REPORT.md)：保存S0/m1/S1＋S2の全signal・bias・allowanceをSOURCE付きで転記。raw↔X/Y・PF/finite-K/state/lawとMinkowskiの適用条件をBへ整理。新8＋既存13の21技術テストPASS、新科学・保存再解析0、十分N/global RMSEは未資格/null。次は別承認のB ideal-law decoder統計、公開照合後STOP。
+
 複数ブランチにまたがる成果と後続記録は[研究結果への統一索引](RESEARCH_RESULTS_INDEX.md)から辿る。
 以下の計画・停止履歴は、このcheckoutに保存された時点の記述として読む。
 
