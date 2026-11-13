@@ -45,6 +45,8 @@ def published_api(root):
         mod = types.ModuleType(name + '.' + short); mod.__package__ = name; mod.__file__ = str(Path(root) / path)
         sys.modules[mod.__name__] = mod
         exec(compile(blob(root, commit, path), commit + ':' + path, 'exec'), mod.__dict__)
+        if short == 'pf_pr_rpe_pipeline':
+            p.cache_legacy_candidate_parser(mod)
         setattr(package, short, mod)
     return types.SimpleNamespace(B=package.pr_rpe_rmse_controller, D=package.full_baseline_v2_requests)
 

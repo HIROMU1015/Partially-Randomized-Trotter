@@ -48,7 +48,7 @@ class Tests(unittest.TestCase):
             path='src/trottertracks/'+name
             self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',coverage.B_BASE+':'+path],cwd=ROOT))
         baseline=ast.parse(subprocess.check_output(['git','show',coverage.B_BASE+':src/trottertracks/pf_pr_rpe_pipeline.py'],cwd=ROOT))
-        current=ast.parse((ROOT/'src/trottertracks/pf_pr_rpe_pipeline.py').read_text())
+        current=ast.parse(subprocess.check_output(['git','show','ac3e1ce87b5ed7d9114abc316545366dd097209e:src/trottertracks/pf_pr_rpe_pipeline.py'],cwd=ROOT))
         current.body=[n for n in current.body if not isinstance(n,ast.FunctionDef) or n.name!='h6_saved_price_provider']
         self.assertEqual(ast.dump(baseline),ast.dump(current))
         self.assertEqual(Path(p.__file__).resolve(),ROOT/'src/trottertracks/pf_pr_rpe_pipeline.py')

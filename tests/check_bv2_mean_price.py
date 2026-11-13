@@ -14,6 +14,7 @@ sys.path[:0]=[str(ROOT/'src'),str(ROOT/'tests')]
 from trottertracks import mean_compiled_price as C
 from trottertracks import bv2_mean_price as V
 from trottertracks import pf_pr_rpe_pipeline as p
+from trottertracks.pf_pr_rpe_pipeline import cache_legacy_candidate_parser
 import trottertracks
 
 
@@ -25,6 +26,8 @@ def fixed(name,path):
     sys.modules[name]=module
     if name.startswith("trottertracks."):setattr(trottertracks,name.rsplit(".",1)[-1],module)
     exec(compile(blob(path),V.B_RELEASE+':'+path,'exec'),module.__dict__)
+    if path=='src/trottertracks/pf_pr_rpe_pipeline.py':
+        cache_legacy_candidate_parser(module)
     return module
 
 
