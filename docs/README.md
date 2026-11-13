@@ -1,5 +1,7 @@
 # 文書索引
 
+[T2実行REPORT](research/d_ld2_m12_t2_20261113/REPORT.md)／[部分STOP結果](research/d_ld2_m12_t2_20261113/run01/T2_PATH_RESULT.json)／[HANDOFF](research/d_ld2_m12_t2_20261113/HANDOFF.md)／[次の有限診断案](research/d_ld2_m12_t2_20261113/NEXT_SCIENCE_PLAN.md)：LD2/m12は入力復元後のscalar不一致で停止。sampling/compile0、価格未取得、無retry、mandatory STOP。
+
 [長時間compiled価格REPORT](research/d_long_time_price_plan_20261113/REPORT.md)／[評価・資格条件](research/d_long_time_price_plan_20261113/LONG_TIME_PRICE_EVALUATION_PLAN.md)／[有限科学案](research/d_long_time_price_plan_20261113/FINITE_PRICE_SCIENCE_PLAN.md)／[HANDOFF](research/d_long_time_price_plan_20261113/HANDOFF.md)：LD1/LD2最大使用域の実行可能性、law/rare/model/同時区間、BのN依存選別を設計。人工metadata5件のみ、新H4・保存値再解析・平均/区間/G計算0、mandatory STOP。
 
 [PR-LD1/LD2 REPORT](research/d_ld12_price_requests_20261113/REPORT.md)／[PRICE_REQUEST_COVERAGE](research/d_ld12_price_requests_20261113/PRICE_REQUEST_COVERAGE.json)／[HANDOFF](research/d_ld12_price_requests_20261113/HANDOFF.md)／[NEXT_SCIENCE_PLAN](research/d_ld12_price_requests_20261113/NEXT_SCIENCE_PLAN.md)：固定menu全52軸のmetadata準備、単独round/axis選択、新科学実行0。

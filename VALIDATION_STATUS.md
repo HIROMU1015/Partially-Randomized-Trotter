@@ -1,5 +1,7 @@
 # Validation status
 
+[LD2/m12 T2の停止結果](docs/research/d_ld2_m12_t2_20261113/REPORT.md)：SOURCE8291f16ceb6b88cc8a43dbe508db419b9a26f373、承認された一attemptを起動。保存入力SHA/復元は成功、NativeRuntime.contextの既存scalar完全一致条件でSTOP。normal sampling/generated path/event/full native/wrapper/新compile0、S/C/D null、retry0。全wall4.694852s・worker peak354,508,800bytesは巨大compileの性能でない。40人工項目PASS、実LD2価格同値性・実行可能性・mean/CIは未検証/UNKNOWN。旧入力と実行コード不変、公開後mandatory STOP。
+
 [長時間価格の資格付け計画](docs/research/d_long_time_price_plan_20261113/REPORT.md)：人工metadata5件PASS。C5ccの固定関数でD748 scalar追加時のkey/再構成・anchor/path照合不足を再現した。Cの修正完了・full integration・科学資格を意味しない。production変更・既存52軸再生成・実H4 preparation/sampling/build/compile・保存数値再解析・fit・新mean/区間/G0。m12価格UNKNOWN、科学案未承認、公開照合後mandatory STOP。
 
 [固定LD1/LD2価格request](docs/research/d_ld12_price_requests_20261113/REPORT.md)：新metadata/mock12＋既存回帰26＝38 PASS。52軸のcanonical/physical/law・exactκ配分/binary64時間・prefix scalar/source/key分離を確認。実H4 preparation/sampling/build/compile、保存科学値再解析、E[C]/Gは0。coverageはREQUEST_READY/NOT_BUILT/全未選択、価格資格を付けず公開後mandatory STOP。

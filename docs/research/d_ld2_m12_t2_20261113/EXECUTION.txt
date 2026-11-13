@@ -1,0 +1,22 @@
+input_restore STARTED 0.005
+input_restore COMPLETE 2.311
+preparation_context STARTED 2.349
+Process ForkProcess-1:
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-compiled-residual-c-minus-s-20261113/src/trottertracks/ld2_m12_t2.py", line 211, in run_worker
+    ctx = timed('preparation_context', lambda: runtime.context(request))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-compiled-residual-c-minus-s-20261113/src/trottertracks/ld2_m12_t2.py", line 200, in timed
+    observe(name, 'STARTED'); then=time.perf_counter(); value=fn()
+                                                              ^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-compiled-residual-c-minus-s-20261113/src/trottertracks/ld2_m12_t2.py", line 211, in <lambda>
+    ctx = timed('preparation_context', lambda: runtime.context(request))
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-compiled-residual-c-minus-s-20261113/src/trottertracks/candidate_price_adapter.py", line 209, in context
+    raise ValueError('Prepared scalar differs from the requested total scalar')
+ValueError: Prepared scalar differs from the requested total scalar
+T2_STOP exitcode 1
