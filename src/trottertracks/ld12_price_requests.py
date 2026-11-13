@@ -6,6 +6,10 @@ indexes are checked by materializing a request only when it is selected.
 """
 from copy import deepcopy
 from fractions import Fraction
+import hashlib
+import io
+import json
+from pathlib import Path
 
 from . import candidate_price_adapter as D
 
@@ -16,6 +20,49 @@ B_SOURCES = ('437ba4acdb82708b6fc98e3cd119a2a734f7cf64', 'b9b9ffa6233db9dd2b413d
 LABELS = ('PR-LD1', 'PR-LD2')
 P2 = '39ddd59edf54a3a901e5302207b2765ddbd03fbb'
 STRUCTURAL = '9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f'
+INPUT_LOCATOR = dict(commit='752b9747a363eb4f1e510092230ef8dc243187ca',
+    path='docs/research/d_ld2_m12_t2_20261113/run01/PREFLIGHT.json')
+
+
+def _constant_from_inputs(inputs, binding, locator):
+    """Read only the saved constant member; never restore H/state or prepare.
+
+    Same NPZ/receipt and array-record convention as the existing saved loader.
+    NumPy is lazy; importing request metadata still imports no scientific stack.
+    """
+    def checked(name):
+        spec = inputs[name]; data = Path(spec['path']).read_bytes()
+        if len(data) != spec['bytes'] or hashlib.sha256(data).hexdigest() != spec['sha256']:
+            raise ValueError('Saved scalar input bytes differ: '+name)
+        return data
+    receipt = json.loads(checked('H4_tol_receipt.json'))
+    data = checked('H4_tol_snapshot.npz')
+    snapshot, receipt_file = inputs['H4_tol_snapshot.npz'], inputs['H4_tol_receipt.json']
+    if (receipt['status'] != 'COMPLETE_MANDATORY_STOP'
+            or receipt['sha256'] != snapshot['sha256'] or receipt['bytes'] != len(data)
+            or snapshot['sha256'] != binding['snapshot']
+            or receipt['hamiltonian_hash'] != binding['hamiltonian']
+            or receipt['state_hash'] != binding['state'] or receipt['rank'] != binding['rank']):
+        raise ValueError('Saved constant receipt/H/snapshot binding differs')
+    import numpy as np
+    with np.load(io.BytesIO(data), allow_pickle=False) as archive:
+        constant = archive['constant']  # no one_body, fragments or state arrays
+    if constant.size != 1 or constant.dtype.kind != 'f' or constant.dtype.itemsize != 8:
+        raise ValueError('One saved binary64 Hamiltonian constant required')
+    canonical = np.ascontiguousarray(constant)  # original saved loader's array_record convention
+    array = dict(shape=list(canonical.shape), dtype=canonical.dtype.str,
+        sha256=hashlib.sha256(canonical.tobytes()).hexdigest())
+    if array != receipt['arrays']['constant']:
+        raise ValueError('Saved constant array record differs')
+    value = D._real(constant.item())
+    return dict(quantity='HAMILTONIAN_CONSTANT', value=value, source=dict(
+        locator=deepcopy(locator), snapshot=deepcopy(snapshot), receipt=deepcopy(receipt_file),
+        array=dict(name='constant', **array), hamiltonian_hash=binding['hamiltonian']))
+
+
+def _saved_constant(root, binding):
+    files = D.p.SavedArtifacts(root).read(INPUT_LOCATOR)['inputs']
+    return _constant_from_inputs(files, binding, INPUT_LOCATOR)
 
 
 def _ref(path, **selector):
@@ -38,12 +85,24 @@ def _read(root):
     return menu, configs
 
 
-def _request(menu, config, label, m, axes, execution_source):
+def _request(menu, config, label, m, axes, execution_source, constant):
     item = next(v for v in menu['candidates'] if v['label'] == label)
+    if (constant.get('quantity') != 'HAMILTONIAN_CONSTANT'
+            or constant['source']['hamiltonian_hash'] != config['spec']['binding']['hamiltonian']
+            or constant['source']['snapshot']['sha256'] != config['spec']['binding']['snapshot']):
+        raise ValueError('Source-bound Hamiltonian constant required; tail identity is distinct')
+    ham_constant = D._real(constant['value'])
+    tail_identity = D._real(item['tail_descriptor']['scalar'])
+    total = ham_constant + tail_identity  # same binary64 operands/order as NativeRuntime.context
     source = dict(menu=_ref('MENU.json', label=label), tail=deepcopy(item['tail_source']),
-        input=deepcopy(config['spec']['binding']['decomposition']['contract']['input_source']))
+        input=deepcopy(config['spec']['binding']['decomposition']['contract']['input_source']),
+        scalar_binding=dict(hamiltonian_constant=deepcopy(constant),
+            tail_identity=dict(quantity='TAIL_EXTRACTED_IDENTITY_COEFFICIENT', value=tail_identity,
+                source=dict(menu=_ref('MENU.json', label=label), tail=deepcopy(item['tail_source']))),
+            expected_total=dict(quantity='EXPLICIT_TOTAL_SCALAR', value=total,
+                rule='BINARY64_HAMILTONIAN_CONSTANT_PLUS_TAIL_IDENTITY_ONCE')))
     return D.from_b(config, m, config['rounds'][m]['physical_candidate'], input_source=source,
-        execution_source=execution_source, axes=axes, expected_scalar=item['tail_descriptor']['scalar'])
+        execution_source=execution_source, axes=axes, expected_scalar=total)
 
 
 def request_for(root, label, m, *, axes=('X', 'Y'), execution_source):
@@ -56,7 +115,8 @@ def request_for(root, label, m, *, axes=('X', 'Y'), execution_source):
     if label not in LABELS or type(m) is not int or m not in range(13):
         raise ValueError('Select one fixed LD1/LD2 round 0..12')
     menu, configs = _read(root)
-    return _request(menu, configs[label], label, m, axes, execution_source)
+    constant = _saved_constant(root, configs[label]['spec']['binding'])
+    return _request(menu, configs[label], label, m, axes, execution_source, constant)
 
 
 def prepare(root, *, execution_source):
@@ -66,8 +126,9 @@ def prepare(root, *, execution_source):
     for label in LABELS:
         config = configs[label]
         item = next(v for v in menu['candidates'] if v['label'] == label)
+        constant = _saved_constant(root, config['spec']['binding'])
         for row in config['rounds']:
-            m = row['m']; req = _request(menu, config, label, m, ('X', 'Y'), execution_source)
+            m = row['m']; req = _request(menu, config, label, m, ('X', 'Y'), execution_source, constant)
             pc = req['physical_context']; c = pc['physical_candidate']
             # Use the carrier's literal signed-time expression for one outer only.
             first = [dict(piece=j, signed_time=c['T']*w/c['q'], rte_steps=n)
@@ -102,6 +163,7 @@ def prepare(root, *, execution_source):
                         deterministic_fragments=list(range(c['prefix'])), randomized_fragments=list(range(c['prefix'], 10)),
                         one_body_policy=pc['one_body_policy'], lambda_R=deepcopy(config['spec']['split']['lambda_R']),
                         scalar_expected=pc['expected_scalar'], source=deepcopy(item['tail_source']),
+                        scalar_binding=deepcopy(pc['input_source']['scalar_binding']),
                         actual_basis_component_tail_hashes=None, runtime_checks='PENDING_SCIENTIFIC_PREPARATION'),
                     price_profile=deepcopy(pc['price_profile']), measurement=measurement,
                     status='REQUEST_READY_SCIENTIFIC_EXECUTION_NOT_AUTHORIZED', unsupported_conditions=[],

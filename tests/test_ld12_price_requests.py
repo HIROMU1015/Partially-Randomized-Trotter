@@ -14,6 +14,12 @@ TECHNICAL_SOURCE = dict(fixture='TECHNICAL_METADATA_ONLY_NO_SCIENCE')
 MOCK_CONTEXT_METHOD = D.NativeRuntime.context
 
 
+def mock_constant(binding):
+    return dict(quantity='HAMILTONIAN_CONSTANT', value=.125, source=dict(
+        fixture='ARTIFICIAL_CONSTANT_NO_H4_ARRAY_READ', hamiltonian_hash=binding['hamiltonian'],
+        snapshot=dict(sha256=binding['snapshot'])))
+
+
 @pytest.fixture(autouse=True)
 def forbid_scientific_entrypoints(monkeypatch):
     def fail(*a, **k):
@@ -21,6 +27,7 @@ def forbid_scientific_entrypoints(monkeypatch):
     monkeypatch.setattr(D.NativeRuntime, 'context', fail)
     monkeypatch.setattr(D.NativeRuntime, 'sample', fail)
     monkeypatch.setattr(D.Adapter, 'acquire', fail)
+    monkeypatch.setattr(L, '_saved_constant', lambda root,binding:mock_constant(binding))
 
 
 @pytest.fixture(scope='module')
@@ -30,7 +37,9 @@ def assets():
 
 @pytest.fixture(scope='module')
 def prepared():
-    return L.prepare(ROOT, execution_source=TECHNICAL_SOURCE)
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(L,'_saved_constant',lambda root,binding:mock_constant(binding))
+        return L.prepare(ROOT, execution_source=TECHNICAL_SOURCE)
 
 
 def test_all_26_rounds_52_axes_ready_but_none_selected(prepared):
@@ -69,7 +78,8 @@ def test_prefix_specific_lambda_scalar_head_tail_and_profile(assets, prepared):
         assert prep['deterministic_fragments'] == list(range(ld))
         assert prep['randomized_fragments'] == list(range(ld, 10))
         assert prep['lambda_R'] == configs[item['label']]['spec']['split']['lambda_R']
-        assert prep['scalar_expected'] == item['tail_descriptor']['scalar']
+        assert prep['scalar_binding']['tail_identity']['value'] == item['tail_descriptor']['scalar']
+        assert prep['scalar_expected'] == .125 + item['tail_descriptor']['scalar']
         assert cell['price_profile']['lowering_id'] == D.zz.LOWERING_ID
         assert cell['price_profile']['compiler'] == D.p.PROFILE['compiler']
         assert cell['price_profile']['wrapper'] == 'full_Hadamard_with_measurement'

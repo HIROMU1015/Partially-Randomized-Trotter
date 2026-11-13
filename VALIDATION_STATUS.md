@@ -1,5 +1,7 @@
 # Validation status
 
+[T2 scalar metadata修正](docs/research/d_t2_scalar_binding_fix_20261113/REPORT.md)：新17＋既存12＝29項目PASS。source-bound saved constantと元tail identityのbinary64和をexpected totalへ渡す。0D/1-element/zero/nonzero・source欠測拒否、元Runtimeの誤結合/1 ULP拒否、scalar一回・X/Y、C380/D748 constructor互換と旧record保全を人工・metadataで確認。保存constant memberの読取と選択metadata1件のみ、実H4 prepare/sampling/build/compile/新価格/mean/CI/fit/G/T2 retry0。元runtime/compiler/wrapper/guardと科学原本は不変。技術PASSはT2許可ではなく、公開後mandatory STOP。
+
 [T2 scalarの限定診断](docs/research/d_t2_scalar_diagnostic_20261113/REPORT.md)：SOURCE244609df5b704723cae5ccd01f78468bca9588b3、入力復元1/context1、fresh preparation cache1。A descriptor=抽出identity0.2223759094107018（0 ULP差）、D total2.515477156730702、Hamiltonian定数2.29310124732。D専用selectorがtail-only値をtotalのexpected欄へ結んだことを特定。実値/hex/差/ULP/hashを保存、元guardは停止を維持。新9人工PASS、sampling/native/full wrapper/compile/T2 retry0、修正・新値採用・E[C]/Gなし、公開後mandatory STOP。旧T2 STOPは保全。
 
 [LD2/m12 T2の停止結果](docs/research/d_ld2_m12_t2_20261113/REPORT.md)：SOURCE8291f16ceb6b88cc8a43dbe508db419b9a26f373、承認された一attemptを起動。保存入力SHA/復元は成功、NativeRuntime.contextの既存scalar完全一致条件でSTOP。normal sampling/generated path/event/full native/wrapper/新compile0、S/C/D null、retry0。全wall4.694852s・worker peak354,508,800bytesは巨大compileの性能でない。40人工項目PASS、実LD2価格同値性・実行可能性・mean/CIは未検証/UNKNOWN。旧入力と実行コード不変、公開後mandatory STOP。

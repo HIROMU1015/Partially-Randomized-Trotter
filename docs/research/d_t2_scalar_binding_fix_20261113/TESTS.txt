@@ -1,0 +1,31 @@
+Primary author's artificial/metadata checks, not an independent review.
+
+PYTHONPATH=src:tests:scripts /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -m pytest -q tests/test_ld12_scalar_binding_fix.py tests/test_ld12_price_requests.py
+29 passed in 39.78s.
+New 17 + existing metadata regression 12 = 29 distinct cases.
+
+Technical development findings (no scientific retry):
+- The first mock Accounting lacked the role keyword; the mock signature was
+  corrected and its scalar-once check passed.
+- The scalar-only saved-metadata read initially rejected the real 0D constant
+  array record. The reader was aligned with the ORIGINAL saved-loader rule:
+  np.ascontiguousarray BEFORE shape/dtype/bytes. 0D and 1-element fixture cases
+  were added; no receipt/input was changed and no fallback/tolerance was added.
+
+All tests use scalar-only synthetic NPZ inputs and mock metadata/preparation.
+The existing Runtime method is called only on mock descriptors with mocked
+prepare/tools. structural_pair uses a mock Accounting word recorder. No real
+H/state restoration, preparation, sampler, circuit object/build or compile runs.
+C380/D748 functions are loaded read-only for two selected-axis metadata cells;
+C's branch/SOURCE and its full integration are not modified or rerun.
+
+Selected LD2/m12 metadata was separately materialized from the saved constant
+member and original A tail descriptor. Correct total matches the published
+diagnostic hex; this is an explicitly technical source/scalar regression, not
+a new H4 preparation or price computation. SCALAR_BINDING_METADATA.json records
+its technical SOURCE tag and selector Git blob; it is not an execution packet.
+
+Coverage: nonzero/zero constant; 0D/1-element float64; only constant member read;
+missing/incorrect source fails closed; tail/total quantity distinction; unchanged
+key rule; exact Runtime guard including one ULP; scalar once; X/Y; C key and
+resolved-scalar compatibility; historical request/result preservation; no science.

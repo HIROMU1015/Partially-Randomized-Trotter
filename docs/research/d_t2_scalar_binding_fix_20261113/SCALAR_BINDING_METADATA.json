@@ -1,0 +1,101 @@
+{
+  "status": "SCALAR_REQUEST_METADATA_FIXED_NO_SCIENCE",
+  "execution_source": {
+    "kind": "TECHNICAL_METADATA_ONLY_NO_SCIENTIFIC_EXECUTION",
+    "base_commit": "240a6be56c5096e7ede27a27fa8f7d8dbfee290b",
+    "selector_blob": "87302b84af2570aae76eaeebf993d7520424e327"
+  },
+  "label": "PR-LD2",
+  "m": 12,
+  "axes": [
+    "X",
+    "Y"
+  ],
+  "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+  "physical_id": "f73c8ae19a25ef249f0a",
+  "request_id": "d3e5fe3cfea38dae36ee4753eef1ac6cebf902732583e85813db0a0626399411",
+  "context_key": "b8a89b25e576c6a97b2364824fc893a43b89dcc874d5b66789a6013946a30f2b",
+  "scalar_binding": {
+    "hamiltonian_constant": {
+      "quantity": "HAMILTONIAN_CONSTANT",
+      "value": 2.29310124732,
+      "source": {
+        "locator": {
+          "commit": "752b9747a363eb4f1e510092230ef8dc243187ca",
+          "path": "docs/research/d_ld2_m12_t2_20261113/run01/PREFLIGHT.json"
+        },
+        "snapshot": {
+          "bytes": 18126,
+          "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+          "role": "tol_snapshot",
+          "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+        },
+        "receipt": {
+          "bytes": 7080,
+          "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+          "role": "tol_receipt",
+          "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+        },
+        "array": {
+          "name": "constant",
+          "shape": [
+            1
+          ],
+          "dtype": "<f8",
+          "sha256": "874b34c93c04576c14050d91ecace903d7b2693560bf77a05b2178fc48fb232b"
+        },
+        "hamiltonian_hash": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+      }
+    },
+    "tail_identity": {
+      "quantity": "TAIL_EXTRACTED_IDENTITY_COEFFICIENT",
+      "value": 0.2223759094107018,
+      "source": {
+        "menu": {
+          "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+          "path": "docs/research/pr_rpe_first_signal_menu_20261113/MENU.json",
+          "label": "PR-LD2"
+        },
+        "tail": {
+          "index": {
+            "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+            "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+          },
+          "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+          "selector": [
+            "prefixes",
+            "2"
+          ]
+        }
+      }
+    },
+    "expected_total": {
+      "quantity": "EXPLICIT_TOTAL_SCALAR",
+      "value": 2.515477156730702,
+      "rule": "BINARY64_HAMILTONIAN_CONSTANT_PLUS_TAIL_IDENTITY_ONCE"
+    }
+  },
+  "expected_scalar": 2.515477156730702,
+  "expected_scalar_hex": "0x1.41fb27ccff28cp+1",
+  "price_profile": {
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "control": "symmetric_directional",
+    "wrapper": "full_Hadamard_with_measurement",
+    "scope": "single_hadamard_interrogation_without_state_preparation",
+    "P": 0,
+    "qiskit_version": "1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1"
+  },
+  "agrees_with_published_diagnostic_hex": true,
+  "real_H4_preparation_sampling_build_compile": 0,
+  "new_C_mean_CI_fit_G": false,
+  "mandatory_stop": true
+}
