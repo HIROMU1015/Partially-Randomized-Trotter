@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H4 PR m1保存RMSE診断結果](../docs/research/h4_pr_m1_rmse_results_20261113/REPORT.md)：固定科学SOURCE ac873e7fcでm1/T.2/qPF2/R4の保存scalar診断を一回実行し数値gate通過、経験的nominal Nは各軸60。m0/m6の64/38をcopy、残10未評価、十分N/全RMSEはnull。35人工・metadata回帰PASS、新mean/reference/normalizer/array/C/G0、公開照合後STOP。
+
 [H4 m1保存RMSE準備・Full PF条件](../docs/research/h4_m1_rmse_full_pf_preparation_20261113/REPORT.md)：H4 m1/T.2/qPF2/R4の保存scalar adapterを整備し、正式B030のV2正本・S0 packetを照合。旧Hoeffding非起動、実m1数値再解析0。DのFull PF3公式と136保存carrierをfieldで整理し、PF policyは未採択。45技術テストPASS、公開照合後STOP。
 
 [H4 S0のB V2接続・全round検証計画](../docs/research/pr_rpe_s0_v2_connection_20261113/REPORT.md)：S0をB af284d853のcanonical V2へ接続し、旧ID/physical SOURCEとm0/m6 nominal64/38を保持。追加一致meanはm1/m3/m4、欠測meanは8候補、m3/m4の独立pairとallowance bridgeが不足。47技術テストPASS、十分N/全RMSE/Gはnull、実数値再解析0、公開照合後STOP。
