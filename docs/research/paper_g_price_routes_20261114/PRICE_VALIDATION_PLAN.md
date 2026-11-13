@@ -60,9 +60,11 @@
 - 回路：DF headは既存native、Pauli tailは`append_pauli_event`＋D2を`controlled_tails`へ渡す。
 - 価格の扱い：単一pathの価格であり、E[C]ではない。
 
-**C側の受入**
-- 本件で追加した`PR_PAULI_TAIL` route（Pauli D2の発行元照合）と、sidecarの`route`宣言を使う。
-- `split.tail_dictionary`（辞書のhash）はphysical contextで照合する。旧形式のphysical CIDには辞書が含まれず、DFとPauliで衝突し得るので、canonicalの辞書identityで区別する。
+**C側の受入**（[PAULI_BRIDGE](PAULI_BRIDGE.md)§1〜2で更新）
+- `PR_PAULI_TAIL` routeを使う。loweringはDの`PAULI_D2_CENTRAL_ROTATION_CONTROL_WITH_NATIVE_DF_HEAD`。routeは、Dのfactsのloweringから導出する。
+- physical IDはBのcanonical candidate ID。`split.tail_dictionary`（辞書のhash）はphysical contextで照合する。
+  - 旧形式のphysical CIDには辞書が含まれず、DFとPauliで衝突し得る。
+  - そのため旧形式IDは拒否し、canonicalの辞書identityで区別する。
 
 **平均単価に資格を付けるのに必要なもの（B1以降）**
 - 辞書のlaw（K2のnormal・order確率）での期待値。
@@ -76,6 +78,8 @@
 既存のC1 finite cohort、Cの構造kernel E[S]、DのC−S残差を、Cの`quote_model`（`STRUCTURAL_PLUS_RESIDUAL`）で結合する。全roundの残差modelとlawの資格は未取得で、第1水準ではtierが`UNQUALIFIED_MODEL`または`FINITE_COHORT_SCENARIO`になる。追加の取得計画は、既存のC/D計画に従う（本件では新規に提案しない）。
 
 ## 5. 承認が必要な範囲（まとめ）
+
+（A11〜A13は§7に追加した。）
 
 | 項目 | 新しいcompile・取得 | 前提 | 担当 |
 |---|---|---|---|
@@ -97,3 +101,51 @@
 - 継続不能な資源不足。
 
 各段階の後はmandatory STOPとする。
+
+## 6. 取得後にCが行う受入とmodel検証（Truncated p7・Full-H κ2・Pauli pilot）
+
+**共通の受入条件**
+- 価格recordは`FULL_WRAPPER_MEAN_COMPILED_PRICE`（P0、測定付きfull wrapper、X/Y別）。
+- sidecarに必要なもの：
+  - `implementation`（method、native・wrapper・scalarのSOURCE、lowering、scalar_quantity、`ONCE_AT_TOTAL_T`、profile、measurement）
+  - `physical_context`＝`I.price_context(req, m)`
+  - `profile_extension`
+  - 固定JSONの`implementation_evidence`
+- guard（`price_implementation_guard.check`）は、第1水準（`paper_cost`）でも第2水準（`compare`/`R.cost`）でも、価格の算術より前に通す。
+- classification・expectation・cohort・n_pathsを、recordに明記する。
+  - 決定論PFは`DIRECT_COMPILED_DETERMINISTIC`かつ`DETERMINISTIC`。
+  - RTEを含む方式の単一path・有限cohortは`DIRECT_COMPILED_FINITE_SAMPLE`かつ`FINITE_COHORT_ONLY`。
+  - law期待値として扱えるのは、`QUALIFIED_EXPECTATION`と`ideal_sampler_distance_qualified=True`の両方が外部で示された場合だけ。
+- 較正点とholdout点は、`price_model_validation.record`で記録する。
+  - 構成のroundではないcellも、SOURCE付きで扱える。
+  - `fit`の前にfeatureとdesignを、`validate`の前に許容差を宣言する。
+  - holdoutに失敗したらrefitしない。
+
+| 方式 | 受け入れる価格 | route／policy項目 | 較正（fit） | holdout | 外挿の扱い |
+|---|---|---|---|---|---|
+| Full PF（p10） | 3 template（S2 16h/7、Y4 16h/3、M5 16h）のm4・m5・m6、X/Y。M5 m4は保存directの受入 | `FULL_PF`、lowering `NOT_APPLICABLE_NO_RTE` | (方式・template・軸)ごとに`C=a+b·q`を、m4・m5の2点からexactに解く | m6（同じtemplate・軸） | m7〜m12は`UNQUALIFIED_MODEL` |
+| Truncated p7 | Full PFと同じ3 template・同じround・X/Y。B0/B0Iの同値性確認（p7 S2 m4、X/Y） | `TRUNCATED_PF`、`NOT_APPLICABLE_NO_RTE`、retained Hの束縛 | Full PFと同じdesign | m6 | 同上。m6でのp7/p10の比は直接の観測値として記録 |
+| Full-H κ2 | P-1：配線確認だけで、価格には使わない。P-2：単一group cell（T=0.1、q=1、R∈{566, 4528, 36223}）、κ2 m5/m6のround | `FULL_H_RTE`、新ZZ（`CONTROLLED_ZZ_CX_CRZ_CX_V1`） | group cellをCALIBRATIONとし、`E[C]=a+b·s+c·(q−1)`（featureはone、event_count、outer_boundary_count） | m5/m6の全round（finite cohort平均、n_pathsとlaw付き） | m7〜m12は`UNQUALIFIED_MODEL`の外挿scenario。group i.i.d.・境界の局所性・compilerの非干渉は未検証の仮説 |
+| Pauli pilot（B0） | LD1/m0、normal 1 path、X/Y | `PR_PAULI_TAIL`、Dの`LOWERING_ID`、canonical physical ID、`pauli_requests`との一致 | 行わない（単一pathなので） | 行わない | 第1水準のtierは`FINITE_COHORT_SCENARIO`。平均単価の資格はB1以降（Pauli特有の特徴量はAの記述子が出てから決める） |
+
+**比較の前提**：Full PFとTruncated p7は、同じ3 template・同じround・同じ軸・同じcompiler profileで取得する。片方だけのtemplateやroundは比較に使わない。
+
+## 7. holdout許容差の選択肢（**採択しない**。A8でユーザーが決める）
+
+| 案 | 判定式 | 適する対象 | 注意 |
+|---|---|---|---|
+| H-a 比較差の1/3 | `|C_obs−C_pred| ≤ r·C_pred`。rは、比較したい価格比の差の1/3（構造proxyではp7/p10≈0.727なので、r≈0.09） | Full PF対Truncated p7 | 比較の結論を変えない精度を目標にする。値は取得前に固定する |
+| H-b 固定相対値 | r＝2%（厳しめ）、または5% | 決定論PF全般 | 経験上の目安であり、科学的な根拠は弱い |
+| H-c 絶対値の下限付き | `|Δ| ≤ max(r·C_pred, n_abs)`（例：n_abs＝数十RZ） | 小さいqのcell | 2点のexact fitでは較正残差が0なので、残差に比例する許容差は使えない |
+| H-d 標本誤差を含める | `|Δ| ≤ r·C_pred + z·SE_cohort`、または同時区間に予測値が含まれること | Full-H、Pauli（有限cohort） | interval contract（SE・coverage）を事前に宣言する。n=1〜2ではSEが定まらないので、判定は保留（UNKNOWN）になる |
+
+**共通の規則**
+- 許容差は、取得の前にSOURCE付きで宣言する（`tolerance={kind, value, source}`）。
+- 失敗した場合はrefitもfeatureの追加もせず、STOPして判断を仰ぐ。
+- 合格しても、modelの`qualified_for_candidate`は自動では昇格しない（外部の採択が必要）。
+
+**承認範囲の追加**（詳細は[PAULI_BRIDGE](PAULI_BRIDGE.md)§5）
+- A11：Bのguard再pin。
+- A12：Pauli bridgeのB取込み。
+- A13：新decoderのbridge（D1の採用後）。
+- A6は、C側の受入準備が完了したので、残る前提はDのsidecar（emitter commitの固定）とassertionである。

@@ -16,9 +16,10 @@ QUANTITY = 'FULL_WRAPPER_MEAN_COMPILED_PRICE'
 SCALAR_ONCE = 'ONCE_AT_TOTAL_T'
 NEW_ZZ = 'CONTROLLED_ZZ_CX_CRZ_CX_V1'
 OLD_ZZ = 'CONTROLLED_ZZ_GENERIC_RZZ_CONTROL1_PROVIDER_C31EF424'
-# Distinct legal route for PR with a collected-Pauli tail: local basis/parity
-# uncontrolled, only the central rotation controlled (P3 native 9c4006bf D2).
-PAULI_D2 = 'PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF'
+# Distinct legal route for PR with a collected-Pauli tail: D's DF head + Pauli
+# tail connection (LOWERING_ID of D pauli_tail_price_connection @5ccc1dfc);
+# local basis/parity uncontrolled, only central rotations controlled (P3 D2).
+PAULI_D2 = 'PAULI_D2_CENTRAL_ROTATION_CONTROL_WITH_NATIVE_DF_HEAD'
 ZZ_FAMILY = (NEW_ZZ, OLD_ZZ)
 PAULI_FAMILY = (PAULI_D2,)
 PAULI_TAIL_KINDS = ('GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL',)
@@ -66,24 +67,31 @@ def _rte_source(root, lowering, commit, path):
     Matching the emitter is necessary, not proof it was activated: the pinned
     execution/receipt assertion must also bind this route to the actual price.
     """
+    # First entry: the emitter named by the sidecar (commit, path). Further
+    # entries: its in-tree dependencies, checked at the SAME sidecar commit.
     references={
-        NEW_ZZ:('01e068af7e06d9f1f5621a5b3800c30eb32ecb06','src/trottertracks/efficient_controlled_zz.py',
-                ('_append_central_application',)),
-        OLD_ZZ:('c31ef424175c02379eafebe8fc6c7548c1d9aabe','src/trotterlib/df_rte_qiskit.py',
-                ('_append_central_application',)),
-        PAULI_D2:('9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c','src/trotterlib/h4_d2_pauli_control.py',
-                  ('_rotation','central_control_tokens'))}
+        NEW_ZZ:(('01e068af7e06d9f1f5621a5b3800c30eb32ecb06','src/trottertracks/efficient_controlled_zz.py',
+                 ('_append_central_application',)),),
+        OLD_ZZ:(('c31ef424175c02379eafebe8fc6c7548c1d9aabe','src/trotterlib/df_rte_qiskit.py',
+                 ('_append_central_application',)),),
+        PAULI_D2:(('5ccc1dfc341236d3fce2f745e7e9023447a027a7','src/trottertracks/pauli_tail_price_connection.py',
+                   ('controlled_tail','compose')),
+                  ('9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c','src/trotterlib/h4_d2_pauli_control.py',
+                   ('_rotation','central_control_body','central_control_tokens')),
+                  ('9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c','src/trotterlib/pauli_signal_adapter.py',
+                   ('append_pauli_event',)))}
     if lowering not in references:
         raise ValueError('Unknown RTE lowering SOURCE route')
-    names=references[lowering][2]
-    def central(c,p):
+    def central(c,p,names):
         tree=ast.parse(C.blob(root,c,p)); dumps=[]
         for name in names:
             nodes=[n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name==name]
             if len(nodes)!=1:raise ValueError('RTE emitter SOURCE unresolved')
             dumps.append(ast.dump(nodes[0],include_attributes=False))
         return dumps
-    _same(central(commit,path),central(*references[lowering][:2]),'RTE lowering contradicts emitter SOURCE')
+    for i,(ref,ref_path,names) in enumerate(references[lowering]):
+        _same(central(commit,path if i==0 else ref_path,names),central(ref,ref_path,names),
+              'RTE lowering contradicts emitter SOURCE')
 
 
 def check(root, config, prices, *, cohorts, bindings, policy):
@@ -163,6 +171,16 @@ def check(root, config, prices, *, cohorts, bindings, policy):
             c=physical['physical_candidate']
             if baseline is not None:
                 _same(c,baseline['rounds'][row['m']]['physical_candidate'],'Implementation physical candidate differs')
+            elif key=='PR_PAULI_TAIL':
+                # B's canonical candidate IS the Pauli physical ID (the legacy
+                # DF candidate_id has no dictionary and is never substituted).
+                if (c.get('id')!=row['candidate']['id'] or c.get('method')!='PR'
+                        or c.get('system')!=config['spec']['binding']['system']
+                        or c.get('formula')!=config['spec']['formula']
+                        or B.a.exact_scalar(c.get('T'))!=B.a.exact_scalar(row['T'])
+                        or (c.get('K'),c.get('R_outer'))!=(config['spec']['finite_K'],row['R_outer'])):
+                    raise ValueError('Implementation Pauli canonical physical id/T/K/R differs')
+                _same(physical.get('structure'),row['structure'],'Implementation Pauli structure differs')
             else:
                 expected=dict(system=config['spec']['binding']['system'],method=(
                     config['spec']['split'].get('original_PF_method') if method=='TRUNCATED_PF' else 'PR'),
@@ -189,7 +207,11 @@ def check(root, config, prices, *, cohorts, bindings, policy):
                 # source-route/receipt checks named by implementation_evidence.
                 C.blob(root, src['commit'], src['path'])
             _same(facts.get('method'), method, 'Implementation METHOD differs')
-            _same(facts.get('route', method), key, 'Implementation tail/lowering route differs')
+            # D's facts carry the registered lowering ID; route is derived from
+            # it, and an explicitly declared route must agree.
+            derived = 'PR_PAULI_TAIL' if facts.get('rte_rotation_lowering') in PAULI_FAMILY else method
+            _same(facts.get('route', derived), derived, 'Implementation tail/lowering route differs')
+            _same(derived, key, 'Implementation tail/lowering route differs')
             _same(facts.get('profile'), profile, 'Implementation compiler/control/wrapper differs')
             _same(facts.get('measurement'), B.p.measurement(row, axis), 'Implementation measurement/axis differs')
             for name in ('measurement_axis','observable','outcome_convention','units'):

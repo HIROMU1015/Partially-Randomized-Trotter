@@ -19,6 +19,11 @@ C_SOURCE = '86f37d25ffd5eee3daf7f25ce001b090b1f2cf33'
 D_SOURCE = '24b0a6eb1d806391a3c6ad454fb0c018148d8545'
 D_ADAPTER_SOURCE = '748be6875b5007707d864e16aa7a4fc4250f3714'
 MODULE = 'src/trottertracks/rpe_optimization_pipeline.py'
+# A's published Pauli-tail all-round SOURCE: pure dictionary/job metadata only.
+A_PAULI_SOURCE = '714247619afb4714fd663eb15c0470ef32bdc7af'
+A_PAULI_JOB = 'src/trottertracks/df_head_pauli_tail_p1.py'
+A_PAULI_P0 = '4220f3006d0d8d413e195ed948e250578513b557'
+PAULI_BRIDGE = 'PAULI_CANONICAL_PHYSICAL_ID_BRIDGE_V1'
 
 
 @lru_cache(maxsize=None)
@@ -92,7 +97,92 @@ def providers(root):
     return types.SimpleNamespace(A=A,B=api.B,C=C,D=api.D,S=S,F=F,W=W,Price=Price)
 
 
-def plan(root, config, *, target, signal_source, pr_physical=None, references=()):
+@lru_cache(maxsize=None)
+def _pauli_helpers(root):
+    """A's unchanged pure dictionary_identity()/job()/numerical_recipe() from the pinned Pauli SOURCE."""
+    from .r_price_phase1_science import functions
+    path='src/trottertracks/pr_rpe_signal_provider.py'
+    recipe=next(ast.literal_eval(n.value) for n in ast.parse(C.blob(root,A_PAULI_SOURCE,path)).body
+                if isinstance(n,ast.Assign) and any(isinstance(x,ast.Name) and x.id=='RECIPE' for x in n.targets))
+    provider=dict(deepcopy=deepcopy,RECIPE=recipe)
+    functions(root,A_PAULI_SOURCE,path,('numerical_recipe',),provider)
+    scope=dict(deepcopy=deepcopy,P0=A_PAULI_P0,P0DIR='docs/research/df_head_pauli_tail_p0_results_20261114/',
+               KIND='GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL',
+               provider=types.SimpleNamespace(numerical_recipe=provider['numerical_recipe']))
+    functions(root,A_PAULI_SOURCE,A_PAULI_JOB,('dictionary_identity','job'),scope)
+    return types.SimpleNamespace(job=scope['job'],dictionary_identity=scope['dictionary_identity'],recipe=recipe)
+
+
+@lru_cache(maxsize=None)
+def _pinned_json(root, commit, path):
+    import json
+    return json.loads(C.blob(root,commit,path))
+
+
+def _pauli_dictionary(root, B, s, tail, dictionary, helpers):
+    """Hash-bound dictionary: A's own identity function, B's exact scalars."""
+    import hashlib, json
+    src=tail.get('source') or {}
+    if (not isinstance(src.get('commit'),str) or len(src['commit'])!=40 or not src.get('path')
+            or tail.get('prefix')!=s['L_D']):
+        raise ValueError('Pinned Pauli dictionary hash/SOURCE/prefix required')
+    payload=_pinned_json(str(root),src['commit'],src['path']) if dictionary is None else dictionary
+    raw=json.dumps(payload,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+    item=dict(payload=payload,dictionary_sha256=hashlib.sha256(raw).hexdigest(),source=src)
+    if item['dictionary_sha256']!=tail.get('dictionary_sha256') or not C.p.same(helpers.dictionary_identity(item),tail):
+        raise ValueError('Pauli dictionary hash/identity differs from canonical split')
+    if (not C.p.same(payload.get('binding'),s['binding']) or payload.get('prefix')!=s['L_D']
+            or B.a.exact_scalar(payload['lambda_P'])!=B.a.exact_scalar(s['split']['lambda_R'])
+            or not C.p.same(payload.get('saved_DF_scalar'),s['split']['scalar'])
+            or not C.p.same(s['split'].get('lambda_source'),dict(src,selector=['lambda_P']))):
+        raise ValueError('Pauli dictionary H/state/prefix/lambda/scalar SOURCE differs')
+    return item['dictionary_sha256']
+
+
+def _pauli_plan(root, api, config, pr_physical, sources, dictionary=None):
+    """B canonical candidate IS the Pauli physical ID; no legacy DF-ID checker.
+
+    A's job() builds each physical context (dictionary identity and per-round
+    numerical recipe included). The same physical fields the legacy checker
+    compares are compared here against B's round, with B's canonical id.
+    The dictionary is read from its pinned SOURCE unless an artificial payload
+    is supplied; either way its SHA-256 must equal the canonical identity.
+    """
+    B=api.B; s=config['spec']; M=s['M']; tail=s['split'].get('tail_dictionary') or {}
+    if config['schema']!='PR_RPE_RMSE_V2' or not C.p.same(tail,(s['law'] or {}).get('tail_dictionary')):
+        raise ValueError('Canonical V2 with one split/law Pauli dictionary required')
+    if any(s['split'].get(k) is None for k in ('lambda_R','lambda_source','scalar')):
+        raise ValueError('Pauli lambda, lambda SOURCE and saved scalar required')
+    helpers=_pauli_helpers(str(root))
+    _pauli_dictionary(root,B,s,tail,dictionary,helpers)
+    if (not isinstance(sources,dict) or set(sources)!={str(m) for m in range(M+1)}
+            or any(not v or not isinstance(v.get('commit'),str) or len(v['commit'])!=40 or not v.get('path')
+                   for v in sources.values())):
+        raise ValueError('Authoritative pinned per-round numerical SOURCE map required for every round')
+    bapi=types.SimpleNamespace(validate=B._validate,exact_scalar=B.a.exact_scalar)
+    jobs=[]
+    for row in config['rounds']:
+        job=helpers.job(config,row['m'],deepcopy(sources[str(row['m'])]),bapi); c=job['physical_context']['physical_candidate']
+        if (c.get('id')!=row['candidate']['id'] or c.get('method')!='PR' or c.get('system')!=s['binding']['system']
+                or B.a.exact_scalar(c['T'])!=B.a.exact_scalar(row['T'])
+                or B.a.exact_scalar(c['delta'])!=B.a.exact_scalar(row['actual_delta_pf'])
+                or (c['formula'],c['prefix'],c['K'],c['q'],c['R_outer'])!=(s['formula'],s['L_D'],s['finite_K'],row['q_PF'],row['R_outer'])
+                or not C.p.same(job['physical_context']['structure'],row['structure'])
+                or row['q_RPE']!=1<<row['m'] or not 1<=c['prefix']<s['binding']['rank']
+                or not C.p.same(job['physical_context']['dictionary_identity'],tail)):
+            raise ValueError('Pauli physical recipe differs from B canonical round')
+        if pr_physical is not None and not C.p.same(pr_physical.get(row['m']),c):
+            raise ValueError('Supplied physical candidate is not the Pauli canonical candidate; no legacy-ID substitution')
+        job.update(status='PAULI_CANONICAL_PHYSICAL_BRIDGE_METADATA_ONLY',N_X=None,N_Y=None,C=None,G=None,
+                   scientific_PASS_FAIL=None,automatic_retry=False)
+        jobs.append(job)
+    return dict(status='WHOLE_SCHEDULE_METADATA_ONLY',B_configuration_id=config['id'],jobs=jobs,round_count=M+1,
+        bridge=PAULI_BRIDGE,bridge_source=dict(commit=A_PAULI_SOURCE,job=A_PAULI_JOB,recipe=helpers.recipe),
+        science_calls=0,external_provider_calls=0,global_RMSE_bound=None,sufficient_N=None,winner=None,mandatory_stop=True)
+
+
+def plan(root, config, *, target, signal_source, pr_physical=None, references=(), implementation_sources=None,
+         pauli_dictionary=None):
     """Prepare exactly the supplied V2 configuration, not a search/menu rule."""
     api=providers(str(root)); api.B._validate(config)
     if not signal_source:raise ValueError('Explicit signal numerical SOURCE required')
@@ -100,6 +190,15 @@ def plan(root, config, *, target, signal_source, pr_physical=None, references=()
     if (target.get('quantity')!='ORIGINAL_DF_H_TARGET_ENERGY' or not target.get('source')
             or not C.p.same(target.get('binding'),s['binding']) or target.get('energy_shift_ha')!=0):
         raise ValueError('Original full-H target/binding/zero shift required')
+    from .price_implementation_guard import route
+    if s['method']=='PR' and route(api.B,s)=='PR_PAULI_TAIL':
+        pending=_pauli_plan(root,api,config,pr_physical,implementation_sources,pauli_dictionary)
+        physical=[deepcopy(j['physical_context']['physical_candidate']) for j in pending['jobs']]
+        return dict(configuration=deepcopy(config),target=deepcopy(target),signal_source=deepcopy(signal_source),
+            provider='A_PR_PAULI',pending=pending,pr_physical=physical,implementation_sources=deepcopy(implementation_sources),
+            pauli_dictionary=deepcopy(pauli_dictionary),science_calls=0,N=None,C=None,G=None)
+    if implementation_sources is not None or pauli_dictionary is not None:
+        raise ValueError('Per-round implementation SOURCE map/dictionary are Pauli-bridge inputs only')
     if s['method']=='PR':
         rows=pr_physical or {}
         pending=api.A.metadata.plan(config,rows,b_validate=api.B._validate,b_exact_scalar=api.B.a.exact_scalar,
@@ -116,8 +215,9 @@ def plan(root, config, *, target, signal_source, pr_physical=None, references=()
 def _validate(root, request):
     expected=plan(root,request['configuration'],target=request['target'],signal_source=request['signal_source'],
         pr_physical=None if request['pr_physical'] is None else dict(enumerate(request['pr_physical'])),
-        references=() if request['provider']=='A_PR' else
-            [r['domain']['reference'] for r in request['pending']['requests'] if r['domain']['reference']])
+        references=() if request['provider'] in ('A_PR','A_PR_PAULI') else
+            [r['domain']['reference'] for r in request['pending']['requests'] if r['domain']['reference']],
+        implementation_sources=request.get('implementation_sources'),pauli_dictionary=request.get('pauli_dictionary'))
     if not C.p.same(expected,request):raise ValueError('Signal plan/source/physical schedule changed')
 
 
@@ -154,6 +254,8 @@ def pr_means(request, records):
 def produce_signals(root, request, out, *, context_factory=None, reference_provider=None, saved=()):
     """Explicit finite scientific entry. Artificial tests supply toy factories."""
     _validate(root,request); api=providers(str(root))
+    if request['provider']=='A_PR_PAULI':
+        raise ValueError("Pauli means come from A's published Pauli producer via B's source-bound intake")
     if request['provider']=='A_PR':
         if saved:raise ValueError('A saved evidence needs its published acceptance path; no relabel/retry')
         batch=api.A.SignalBatch(request['configuration'],dict(enumerate(request['pr_physical'])),
@@ -182,9 +284,29 @@ def signal_input(packet):
     return {k:deepcopy(packet[k]) for k in ('configuration_id','target','source','means')}
 
 
+def provider_binding_check(request, mean):
+    """A mean's producer binding must be this plan's round (no-op if absent).
+
+    Pauli: A's full physical context (canonical id, dictionary identity and
+    per-round numerical recipe) and the authoritative per-round implementation
+    SOURCE, as B's source-bound intake view carries them.
+    """
+    binding=mean.get('provider_binding')
+    if not binding:return
+    pauli=request['provider']=='A_PR_PAULI'
+    if type(mean.get('m')) is not int or mean['m'] not in range(request['configuration']['spec']['M']+1):
+        raise ValueError('Foreign signal round')
+    expected=request['pending']['jobs'][mean['m']]['physical_context'] if pauli else price_context(request,mean['m'])
+    if (not C.p.same(binding.get('physical_context'),expected)
+            or not C.p.same(binding.get('numerical_source'),mean.get('source'))
+            or (pauli and (not C.p.same(binding.get('implementation_source'),request['implementation_sources'][str(mean['m'])])
+                           or not C.p.same(mean.get('implementation_source'),request['implementation_sources'][str(mean['m'])])))):
+        raise ValueError('Signal producer physical context or numerical SOURCE differs')
+
+
 def price_context(request,m):
     s=request['configuration']['spec']
-    if request['provider']=='A_PR':
+    if request['provider'] in ('A_PR','A_PR_PAULI'):
         job=request['pending']['jobs'][m];physical=job['physical_context']['physical_candidate'];structure=job['physical_context']['structure']
     else:
         row=request['pending']['requests'][m];physical=row['physical_candidate'];structure=row['structure']
@@ -231,11 +353,8 @@ def compare(root, request, signal_packet, allocations, evaluations, prices, *, s
     if not C.p.same(signal_packet.get('source'),request['signal_source']):raise ValueError('Signal numerical SOURCE mismatch')
     bound=True
     for mean in signal_packet['means']:
-        binding=mean.get('provider_binding')
-        if mean.get('raw') is not None and binding is None:bound=False
-        if binding and (not C.p.same(binding.get('physical_context'),price_context(request,mean['m']))
-                or not C.p.same(binding.get('numerical_source'),mean.get('source'))):
-            raise ValueError('Signal producer physical context or numerical SOURCE differs')
+        if mean.get('raw') is not None and mean.get('provider_binding') is None:bound=False
+        provider_binding_check(request,mean)
     entries=api.W.prepare(config,signal_packet['means'],allocations,target=request['target'],statistical_contract=statistical_contract)
     ready=bound and all(e['prepared']['input_complete'] and e['prepared']['physical_qualification_complete'] for e in entries)
     blockers=[] if ready else ['SIGNAL_INPUT_MISSING_OR_PHYSICALLY_UNQUALIFIED']

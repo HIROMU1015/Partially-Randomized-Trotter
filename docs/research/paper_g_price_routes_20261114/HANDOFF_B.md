@@ -22,7 +22,7 @@
 - Bのbinding（`codex/b-price-implementation-guard-20261114`の`rpe_price_implementation_guard.py`）は、C guardを固定`3a8b37f1a`のblobから実行している。そのため現状では`PR_PAULI_TAIL`を知らず、Pauli tailのPRは`PR`項目で照合される。
   - Pauli D2の価格にZZの発行元を付けても拒否される。
   - 逆に、DF用policyの`PR`項目でPauli価格を受理してしまうことは、Pauli sidecarが新ZZの発行元とIDを偽装しない限り起きない。
-- Pauli routeを比較に含める前に、bindingの固定commitを本branchの`price_implementation_guard.py`を含むcommitへ更新し、Bの`check_rpe_price_implementation_guard.py`と`cross_route_in_C_tree.py`を再実行する。
+- Pauli routeを比較に含める前に、bindingの固定commitを、本branchの**Pauli bridgeのcommit**（`cfc0fae6`より後。DのLOWERING_IDとcanonical physical IDの検査を含む）へ更新する。その後、Bの`check_rpe_price_implementation_guard.py`と`cross_route_in_C_tree.py`を再実行する。`cfc0fae6`の暫定Pauli ID（`…_9C4006BF`）は廃止した。
 - 旧guard（`3a8b37f1a`）の14件のテストは、本branchでも無変更でPASSする。既存4 routeの挙動は同じである。
 
 ## 3. 第1水準（原論文型G）の会計
@@ -61,3 +61,38 @@ menu = PN.paper_compare([out, ...])                                         # or
 | ユーザー | 比較policy・holdout許容差・各取得範囲の承認 |
 
 各担当は、承認された範囲を超えて自動で進まない。
+
+## 6. Pauli bridgeのB取込み（[PAULI_BRIDGE](PAULI_BRIDGE.md)§1）
+
+Bのintake（`rpe_pauli_signal_intake.bind_packet`）が返す`C_plan_price_bridge='UNKNOWN_PAULI_PHYSICAL_ID_ADAPTER_REQUIRED'`は、次の呼出しで置き換えられる。
+
+```python
+from trottertracks import rpe_optimization_pipeline as I
+view = result['signal_packet']
+req = I.plan(root, result['configuration'], target=view['target'], signal_source=view['source'],
+             implementation_sources=view['implementation_sources'])        # provider 'A_PR_PAULI'
+I.provider_binding_check(req, view['means'][m])                             # per round; compare() also runs it
+```
+
+- configurationとIDはAとBのものをそのまま使う。Cは`B._validate`で検証するだけで、IDの生成器は複製していない。
+- 実LD1/LD2では、保存carrierのphysical contextと26件すべて一致した（metadataのみ）。
+- Bの実viewを`I.compare`に通す確認は、B側で取り込んだ後に再実行する（A12）。
+
+## 7. 第1水準のN packetの形（BとCの対応）
+
+| B `rpe_evaluation_levels`のpaper packet | Cの`nominal_packet` |
+|---|---|
+| `status='PAPER_EMPIRICAL_NOMINAL_ONLY'` | `kind='PAPER_NOMINAL_LEVEL1'`、`evidence_kind='PAPER_NOMINAL'`、`status='PAPER_NOMINAL_NOT_SUFFICIENT'` |
+| `rigorous_sufficient_N=false`、`sufficient_N=null`、`global_RMSE_bound=null` | `sufficient_N=None`、`rmse_qualified=False`、`global_RMSE_bound=None`、round別の`sufficient_N_X/Y=None` |
+| `rounds[{m, identity, law_binding, source, nominal_N_X, nominal_N_Y}]` | `rounds[{m, identity, law_binding, nominal_N_X, nominal_N_Y, log_B_used, nominal_status}]`。SOURCEはpacketの`source`と`signal_input`にある |
+| `policy` | Cのpacketにはない。configurationの`rmse_policy`をBが付ける |
+
+- どちらも、Bの既存`pr_rpe_rmse.nominal_axis_shots`の結果を使う。
+- Bの形へ変換するadapterは、Bが第1水準の取込み方式を決めた後に作る（Cでは作らない）。
+
+## 8. 新decoder version
+
+[PAULI_BRIDGE](PAULI_BRIDGE.md)§4のinterface仕様を参照。
+- Bが旧・新のconfigurationと、round対応の記録を発行する。Cはそれを受け入れ、価格を再束縛する。
+- Cは新しいIDを推測・生成しない。
+- PauliではphysicalなIDも変わるので、固定assertionの再発行か、guardのbridge経路が必要になる。
