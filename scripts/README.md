@@ -1,5 +1,7 @@
 # scripts 索引
 
+[全RPE shot配分API](../docs/research/rpe_shot_allocation_20261113/HANDOFF.md)：rpe_shot_allocation.prepare/diagnose/compareを明示呼出しする。新しい科学runner/CLIは追加せず、metadata準備と実MC/費用算術を分離。実入力の呼出しは別途科学許可の有限scopeのみ。
+
 [`run_h4_s3_statistics.py`](run_h4_s3_statistics.py)：[採択済みS3固定1実験のcaller](../docs/research/rpe_s3_final_plan_20261113/run01/HANDOFF.md)。code ab12/input bf515を再利用し、n43,819/seed20261113・保存nominalを固定。新規出力専用、全trial gzipと主/副summaryを保存。run01は完了済みで、無断再実行しない。
 
 [`bench_rpe_s3_batch_artificial.py`](bench_rpe_s3_batch_artificial.py)：[R3統合後の性能比較](../docs/research/rpe_decoder_r3_integration_20261113/REPORT.md)。実B simulateのscalar/batchを人工13round/512trialで測定し、fresh subprocessの時間・peak RSS・全出力digestを保存する。実分子artifactを読まない、新規JSON出力のみ。

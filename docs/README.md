@@ -1,5 +1,7 @@
 # 文書索引
 
+[全RPE shot配分adapter](research/rpe_shot_allocation_20261113/REPORT.md)／[HANDOFF](research/rpe_shot_allocation_20261113/HANDOFF.md)／[初回有限案](research/rpe_shot_allocation_20261113/SCIENTIFIC_PLAN.md)：同physical IDの全round配分を受入れ、診断/資格/点G/区間優越・不足を分離。48技術test PASS、新科学実行なし。
+
 [RPE精度・N評価REPORT](research/rpe_shot_evaluation_design_20261113/REPORT.md)／[再利用設計](research/rpe_shot_evaluation_design_20261113/DESIGN.md)／[供給signalとN出力](research/rpe_shot_evaluation_design_20261113/HANDOFF.md)／[科学実行案](research/rpe_shot_evaluation_design_20261113/SCIENTIFIC_PLAN.md)：全round結合、nominal/経験的/上側risk資格、Gへの内側allocation接続。69人工/回帰PASS、実H4再解析・MC/N最適化/実Gなし、L1未採択。
 
 [平均compiled価格精度REPORT](research/h4_mean_price_validation_strategy_20261113/REPORT.md)／[PRICE_VALIDATION_PLAN](research/h4_mean_price_validation_strategy_20261113/PRICE_VALIDATION_PLAN.md)／[有限scope](research/h4_mean_price_validation_strategy_20261113/FINITE_SCIENTIFIC_PLAN.md)／[HANDOFF](research/h4_mean_price_validation_strategy_20261113/HANDOFF.md)：N未確定の誤差契約、直接/解析/model、独立holdout・rare/law/covariance、domain限定を整理。2%/95%未採択、37回帰PASS、新科学計算なし。

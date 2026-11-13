@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[全RPE shot配分adapter](docs/research/rpe_shot_allocation_20261113/REPORT.md)／[A/C/D HANDOFF](docs/research/rpe_shot_allocation_20261113/HANDOFF.md)／[有限科学案](docs/research/rpe_shot_allocation_20261113/SCIENTIFIC_PLAN.md)：同physical configurationの複数whole-vectorを既存prepare/MC/assess/cost/selectへ接続。exact N×C、lowering/SOURCE・区間資格、共有価格差分・pendingを保持。新10＋既存38＝48技術test PASS、新実H4/保存再解析/実N/G最適化0、公開後STOP。
+
 [全RPE精度・shot配分の再利用設計](docs/research/rpe_shot_evaluation_design_20261113/REPORT.md)／[設計](docs/research/rpe_shot_evaluation_design_20261113/DESIGN.md)／[signal/N/G HANDOFF](docs/research/rpe_shot_evaluation_design_20261113/HANDOFF.md)／[有限科学案](docs/research/rpe_shot_evaluation_design_20261113/SCIENTIFIC_PLAN.md)：供給全round signal＋whole-shot familyを既存prepare/MC/R3/summaryへ接続。nominal/L1診断と十分Nを分離し、G目的の内側配分選択の必要差分を明示。新7＋回帰62＝69技術test PASS、production無変更・新H4/N最適化/G0、公開後STOP。
 
 [全13round平均compiled価格の最小検証戦略](docs/research/h4_mean_price_validation_strategy_20261113/REPORT.md)／[方法別計画](docs/research/h4_mean_price_validation_strategy_20261113/PRICE_VALIDATION_PLAN.md)／[D/C HANDOFF](docs/research/h4_mean_price_validation_strategy_20261113/HANDOFF.md)：未資格nominalを正式重みにせず、価格同時区間・N一様相対誤差・条件付きΣNbを整理。凍結方法のm12＋内部challengeを最小診断案とし、全域証拠なしの13round認定を拒否。37技術回帰PASS、Dモデル/C kernel新実装・実再解析/fit/compile/G0、公開後STOP。

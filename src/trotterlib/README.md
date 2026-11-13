@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[全RPE shot配分adapter](../../docs/research/rpe_shot_allocation_20261113/REPORT.md)：trottertracks.rpe_shot_allocationが既存統計/R3/controller/exact会計を再利用。元decoder・費用器は無変更、複数allocationを同physical IDで管理し、診断と十分Nを分離。48人工/回帰PASS。
+
 [全RPE精度・shot配分の再利用](../../docs/research/rpe_shot_evaluation_design_20261113/DESIGN.md)：既存trottertracks.rpe_decoder_statistics/R3、V2 controllerとexact費用会計を継続利用。新solverなし、signal/N/Gの[HANDOFF](../../docs/research/rpe_shot_evaluation_design_20261113/HANDOFF.md)と人工7＋回帰62で結合条件を確認。nominal/L1を十分Nへ昇格しない。
 
 [S3固定H4科学run01](../../docs/research/rpe_s3_final_plan_20261113/run01/REPORT.md)：既存rpe_decoder_statistics/fastを無変更で再利用し43,819反復。条件付きRMSEと未解決率・任意loss感度を区別。主population RMSE/十分N/global bound/C/Gの認定なし、追加実行は別scope。

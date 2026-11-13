@@ -1,5 +1,7 @@
 # Validation status
 
+[全RPE shot配分の技術接続](docs/research/rpe_shot_allocation_20261113/REPORT.md)：人工10＋既存統計16/batch5/controller17＝48件PASS。MC診断からN昇格なし、nominal/未資格/欠測CはG UNKNOWN、2^1200超N・有理数会計、同ID内側選択と外側unique-configを確認。元decoder/controllerは無変更、実H4/保存数値再解析/実N/RMSE/G評価0、公開後mandatory STOP。
+
 [全RPE精度・shot評価設計](docs/research/rpe_shot_evaluation_design_20261113/REPORT.md)：新7＋decoder回帰33＋controller/evidence29＝69技術test PASS。供給signal/full-shot vector→既存統計API、診断N昇格拒否、mock N×C、巨大N/backend制限、zero格子・全round結合とselect unique-config制約を確認。production code無変更、新実H4 MC/保存数値再解析/N最適化/RMSE/実G0。claim/L1/十分N未採択、公開後STOP。
 
 [全13round平均価格の検証設計](docs/research/h4_mean_price_validation_strategy_20261113/REPORT.md)：既存pipeline12＋残差13＋lookup12＝37件を別processでPASS確認。初回の同process import干渉FAILは記録保持。N一様相対誤差/区間伝播・XY covariance/TV/unmeasured-domainの人工例をexact rationalで確認。新実H4価格/N/S3再解析・fit/simulation/compile/G0。価格精度/confidence/domainと11menuは未採択、公開後STOP。
