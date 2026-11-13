@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 PF長時間の二経路診断](research/pf_power_stability_h4_20261113/REPORT.md)：[原結果](research/pf_power_stability_h4_20261113/run01/result.json)／[B HANDOFF](research/pf_power_stability_h4_20261113/HANDOFF.md)／[残15セルの未承認再開案](research/pf_power_stability_h4_20261113/RESTART_PROPOSAL.md)。旧spectral gate失敗を保存し、同一点direct expmが通過。新reference/N/C/G0、公開後STOP。
+
 [PF power安定性の人工調査](research/pf_power_stability_artificial_20261113/REPORT.md)：[測定値](research/pf_power_stability_artificial_20261113/RESULT.json)／[集計](research/pf_power_stability_artificial_20261113/SUMMARY.json)／[B HANDOFF](research/pf_power_stability_artificial_20261113/HANDOFF.md)／[未承認の代表1点診断案](research/pf_power_stability_artificial_20261113/NEXT_SCIENCE_PLAN.md)。192人工条件・17技術test、実H4は再計算せずSTOP。
 
 [H4・4方式screen run02の部分結果](research/h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：[20セル状態](research/h4_four_method_signal_screen_results_20261113/run02/SCREEN_STATUS.json)／[CSV](research/h4_four_method_signal_screen_results_20261113/run02/SCREEN_SUMMARY.csv)／[B HANDOFF](research/h4_four_method_signal_screen_results_20261113/run02/HANDOFF.md)。4保存・6数値gate失敗でSTOP、旧run01を保全。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H4 PF長時間の二経路診断](../../docs/research/pf_power_stability_h4_20261113/REPORT.md)：既存`pf_power_stability`の同順expm・失敗値保持、screenのdeterministic_step、保存H/state loaderを再利用。helper dd24dd329、recipe256caad34を保全し、[専用runner](../../scripts/run_pf_power_stability_h4.py)で1候補2meanのみ実行。directの局所gate通過と全RMSEを区別し、production screen backendを勝手に変更しない。
+
 [pf_power_stability](../trottertracks/pf_power_stability.py)：供給matrix/specのGram・再構成診断、明示driver・同順expm、失敗時も残差を返すpower診断。既存`h46_m5_plan.weights`・screenのsigned順・`algorithm_codesign.numerics.Spectrum` observerを再利用。旧screenへは未接続。[人工REPORT](../../docs/research/pf_power_stability_artificial_20261113/REPORT.md)／[test](../../tests/check_pf_power_stability_artificial.py)。実H4未実行。
 
 [H4・4方式signal screen](../trottertracks/h4_four_method_screen.py)／[数値leaf](../trottertracks/h4_four_method_screen_mean.py)：既存`h46_m5_plan`のsigned weights、`rte.finite_rte_distribution`、旧spectral polynomialとNumPy powerを再利用。metadata-only入口と明示的な将来science leafを分離。[REPORT](../../docs/research/h4_four_method_signal_screen_preparation_20261113/REPORT.md)／[人工test](../../tests/check_h4_four_method_screen.py)。17技術test PASS、実科学0。

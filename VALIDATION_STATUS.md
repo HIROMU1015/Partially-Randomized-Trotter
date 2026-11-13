@@ -1,5 +1,7 @@
 # Validation status
 
+[H4 PF長時間の二経路診断](docs/research/pf_power_stability_h4_20261113/REPORT.md)：保存DF10/FullPF S2/prefix10/T409.6/q1024/Δ.4の同1点・2mean。元spectralのstate normは通過、operator unitarity1.007123e−9は失敗。direct expmの5.899875e−12は元1e−9 gate通過。Gram/half-step/macro/powerの観測を保存、原因の厳密な寄与分離は未実施。12人工回帰PASS・6保存整合性確認、十分N/global RMSE/winnerはnull。
+
 [PF power安定性の人工調査](docs/research/pf_power_stability_artificial_20261113/REPORT.md)：192人工条件＋手動Gram defect対照で旧gateの観測不足を確認。元EVR7/48、EVD4/48、EV1/48でoperator unitarity gate失敗、直接expm0/48。新8＋旧9技術test PASS。実H4の原因・代替backendの実科学資格は未検証、元gate1e−9/旧SOURCE/結果は保全。新実H4・保存数値再解析0。
 
 [H4・4方式screen run02の部分結果](docs/research/h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：固定SOURCE256caad34のm6 Full PF/S2・Y4×Δ.1/.4の4局所recordが数値gateを通過。別6件はnorm/unitarity gate失敗、残り9未開始・1空例外未解決。失敗時の残差scalarは未保存で新再計算なし。normalizer保存record0・総call数正確値null（0〜1）。7 metadata整合性確認、十分N/global RMSE・winner未認定。

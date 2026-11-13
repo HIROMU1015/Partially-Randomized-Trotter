@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[H4 PF長時間の二経路診断](pf_power_stability_h4_20261113/REPORT.md)：代表F2-COARSE/m12の旧spectral・direct expm、計2meanを評価。directは数値gate通過、物理biasや全RPE資格は別。PF/B0Iのdirect expm採用による残15セル再開を提案し、未承認の追加計算はせずSTOP。
+
 [PF power安定性の人工調査](pf_power_stability_artificial_20261113/REPORT.md)：再構成だけでは見えないGram defectとpower増幅を人工入力で確認。直接expmを次の限定検証候補とし、実H4の採用は保留。17技術test PASS、実科学・保存再解析0、旧STOPを保持。
 
 [H4・4方式screen run02の部分結果](h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：同一SOURCEの再実行でFull PF4セルを取得、6数値gate失敗・9未開始・1空例外未解決。新reference0、保存40不変。全13round候補の判断材料は未完了で、次は数値安定性の技術調査案。

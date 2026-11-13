@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 PF長時間の二経路診断](docs/research/pf_power_stability_h4_20261113/REPORT.md)：F2-COARSE/m12を各1回、最大2mean・新reference0で比較。旧spectralのoperator unitarity1.0071e−9は失敗、直接expm5.8999e−12は固定gate通過、mean差4.3139e−11。元SOURCE/STOPは不変、全RMSE資格なし。入口は[runner](scripts/run_pf_power_stability_h4.py)、[4人工test](tests/check_pf_power_stability_h4.py)、[結果](docs/research/pf_power_stability_h4_20261113/run01/result.json)。残15セルをdirect PFで再開する案は未実行、公開後STOP。
+
 [PF power安定性の人工調査](docs/research/pf_power_stability_artificial_20261113/REPORT.md)：36次元・192条件で旧再構成gate通過後のunitarity失敗を再現。EVR7/48・EVD4/48・EV1/48、直接expm0/48の人工観測。実H4原因は未確定、旧SOURCE/STOP/production不変。入口は[diagnostic helper](src/trottertracks/pf_power_stability.py)、[人工runner](scripts/check_pf_power_stability_artificial.py)、[8新test](tests/check_pf_power_stability_artificial.py)、[結果](docs/research/pf_power_stability_artificial_20261113/RESULT.json)。旧9を含め17技術test PASS、実科学0、公開後STOP。
 
 [H4・4方式screen run02の部分結果](docs/research/h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：承認済み再実行でm6のFull PF4セルを保存、固定norm/unitarity gate6失敗・9未開始・1空例外未解決でSTOP。旧run01/SOURCE/保存40不変、新reference0、閾値変更・追加retryなし。全RMSE/C/G/winnerは未認定。

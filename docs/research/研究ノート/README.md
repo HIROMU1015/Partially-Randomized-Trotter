@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-13：H4 PF長時間の二経路診断](2026-11-13-pf-power-stability-h4.md)：1候補2mean、旧spectral operator gate失敗・direct通過を保存。残15再開は未実行。
+
 [2026-11-13：PF power安定性の人工調査](2026-11-13-pf-power-stability-artificial.md)：192人工条件、17技術test。直接expmは次の実照合候補、旧SOURCE/STOPと未資格を保全。
 
 [2026-11-13：4方式screen run02追補](2026-11-13-four-method-signal-screen-stop.md)：再実行承認後に4局所recordを取得、6数値gate失敗でSTOP。旧run01・元SOURCEを保持。

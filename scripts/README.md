@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_pf_power_stability_h4.py](run_pf_power_stability_h4.py)：明示承認されたF2-COARSE/m12専用の二経路診断。元spectralとdirect expmを各1回、最大2mean、新reference0。`--source <fixed-runner-SHA> --out <fresh-directory>`。有限gate失敗も値を残し、計画済みの他経路は省略しない。[REPORT](../docs/research/pf_power_stability_h4_20261113/REPORT.md)／[4人工test](../tests/check_pf_power_stability_h4.py)。他セルへの拡張・無断再実行はしない。
+
 [check_pf_power_stability_artificial.py](check_pf_power_stability_artificial.py)：固定seedの36次元人工行列のみ、EVR/EVD/EV/expm・192条件を比較。`--out <fresh-RESULT.json>`、実分子入力optionなし。[REPORT](../docs/research/pf_power_stability_artificial_20261113/REPORT.md)／[test](../tests/check_pf_power_stability_artificial.py)。科学screenの再実行やbackend採用は行わない。
 
 [prepare_h4_four_method_screen.py](prepare_h4_four_method_screen.py)：B51500の新20セル・保存40セルを固定するmetadata-only CLI（`--out <fresh-PLAN.json>`）。科学execute flagなし。[REPORT/有限計画](../docs/research/h4_four_method_signal_screen_preparation_20261113/REPORT.md)、[人工test](../tests/check_h4_four_method_screen.py)。実科学未実行、公開後STOP。
