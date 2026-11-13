@@ -1,0 +1,49 @@
+{
+  "scope": "ARTIFICIAL_ONLY_NO_H4_OR_SAVED_SCIENCE",
+  "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+  "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39",
+  "B_base": "bf515a976f1987ad6a19c61d14689b27b0894542",
+  "A_acceleration": "7f1f9053dfbbb81646ac9e483a0354d01cbec535",
+  "rows_definition": "m=0..12; raw=(.43*cos(.237*2**m), .43*sin(.237*2**m)); N_X=31, N_Y=37",
+  "PCG64_seed": 441,
+  "records": [
+    {
+      "method": "scalar",
+      "trials": 512,
+      "rounds": 13,
+      "repeats": 3,
+      "seconds": [
+        16.651017678901553,
+        16.589654732961208,
+        16.6663235751912
+      ],
+      "median_seconds": 16.651017678901553,
+      "baseline_peak_RSS_MiB": 345.94140625,
+      "peak_RSS_MiB": 352.03125,
+      "output_digest": "41e3138ecead9f13717dc41751303c0ad4f4595b04226fdb9c1236316ea2d871",
+      "numpy_version": "1.26.4"
+    },
+    {
+      "method": "batch",
+      "trials": 512,
+      "rounds": 13,
+      "repeats": 3,
+      "seconds": [
+        0.02726728399284184,
+        0.02536148694343865,
+        0.02554240613244474
+      ],
+      "median_seconds": 0.02554240613244474,
+      "baseline_peak_RSS_MiB": 346.69140625,
+      "peak_RSS_MiB": 355.35546875,
+      "output_digest": "41e3138ecead9f13717dc41751303c0ad4f4595b04226fdb9c1236316ea2d871",
+      "numpy_version": "1.26.4"
+    }
+  ],
+  "all_trial_outputs_identical_except_acceleration_source": true,
+  "median_speedup": 651.8969901489008,
+  "timing": "Full integrated simulate includes binomial/count conversion/math.atan2/branches/trial dicts; excludes imports, startup, digest",
+  "memory": "Fresh Linux subprocess ru_maxrss includes interpreter/imports/input/output and previous-repeat digest high-water; not isolated allocation",
+  "resource_caps_added": false,
+  "real_S3_executed": false
+}

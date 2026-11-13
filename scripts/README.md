@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`bench_rpe_s3_batch_artificial.py`](bench_rpe_s3_batch_artificial.py)：[R3統合後の性能比較](../docs/research/rpe_decoder_r3_integration_20261113/REPORT.md)。実B simulateのscalar/batchを人工13round/512trialで測定し、fresh subprocessの時間・peak RSS・全出力digestを保存する。実分子artifactを読まない、新規JSON出力のみ。
+
 [`prepare_rpe_s3_intake.py`](prepare_rpe_s3_intake.py)：A169d/bba物理packet、C83d K0/K1、Daf6残差interfaceと受入済みFull PF coverageを[metadata接続](../docs/research/rpe_s3_readiness_20261113/HANDOFF.md)。新規出力専用、S3/確率生成/実C−S/Gの実行optionなし。
 
 [`prepare_rpe_decoder_statistics.py`](prepare_rpe_decoder_statistics.py)：固定V2/nominal metadataとD e7dca5fのCOVERAGE_V2/RECEIPTSだけを受入れる[準備CLI](../docs/research/rpe_decoder_statistics_20261113/HANDOFF.md)。実meanをdecoder/Monte Carloへ渡さず、科学実行optionなし。新規出力directory専用。

@@ -169,8 +169,8 @@ def iid_policy(policy):
         raise ValueError('Explicit IID shots/axes/rounds/repetitions and target law required')
 
 
-def simulate_prepared(prepared, *, repetitions, seed, policy, allow_conditional_unqualified=False):
-    """Thin A/V2 input adapter. No simulation until every input cell is supplied."""
+def simulate_prepared(prepared, *, repetitions, seed, policy, allow_conditional_unqualified=False, batch_decoder=None):
+    """Thin A/V2 adapter; optional batch hook preserves the existing input gates."""
     if not prepared['input_complete']:
         return dict(status='NOT_EVALUATED_MISSING_STATISTICAL_INPUT',blockers=deepcopy(prepared['blockers']),
             trials=None,RMSE=None,sufficient_N=None,G=None)
@@ -183,7 +183,7 @@ def simulate_prepared(prepared, *, repetitions, seed, policy, allow_conditional_
         raise ValueError('Supplied mean law and simulation target law differ')
     rows=[dict(m=r['m'],raw=r['mean']['raw'],N_X=r['shots']['N_X'],N_Y=r['shots']['N_Y']) for r in prepared['rows']]
     result=simulate(rows,M=prepared['M'],h=float(B.a.exact_scalar(prepared['h'])),prior=prepared['prior'],
-        repetitions=repetitions,seed=seed,policy=policy)
+        repetitions=repetitions,seed=seed,policy=policy,batch_decoder=batch_decoder)
     result.update(configuration_id=prepared['configuration_id'],target=deepcopy(prepared['target']),
         physical_qualification_complete=prepared['physical_qualification_complete'],
         physical_error_evidence=[dict(m=r['m'],source=r['mean']['source'],bias=r['mean'].get('bias'),uncertainty=r['mean'].get('uncertainty')) for r in prepared['rows']],
@@ -191,12 +191,16 @@ def simulate_prepared(prepared, *, repetitions, seed, policy, allow_conditional_
     return result
 
 
-def simulate(rounds, *, M, h, prior, repetitions, seed, policy):
+def simulate(rounds, *, M, h, prior, repetitions, seed, policy, batch_decoder=None):
     """Conditional binomial Monte Carlo on supplied raw coordinate means.
 
     No RTE trajectory sampling: each +/-1 draw is a marginal Hadamard shot.
     Independent binomials require the explicit joint-law policy. Does not infer
     actual-sampler equality, state accuracy, or sufficient quantum N.
+
+    batch_decoder=None keeps the original scalar path. A supplied callable
+    receives the same completed count arrays and exact count_mean function;
+    rpe_decoder_fast.decode_sampled_counts records acceleration provenance.
     """
     import numpy as np
     iid_policy(policy);_integer(repetitions,'repetitions',1);_integer(seed,'seed')
@@ -214,12 +218,16 @@ def simulate(rounds, *, M, h, prior, repetitions, seed, policy):
             if not -1<=mean<=1:raise ValueError('Raw +/-1 mean outside [-1,1]; no clipping')
             axes[axis]=rng.binomial(n,(1.+mean)/2.,size=repetitions)
         samples.append(axes)
-    results=[]
-    for i in range(repetitions):
-        counts=[dict(m=r['m'],**{axis:dict(plus=int(samples[m][axis][i]),shots=r['N_'+axis]) for axis in p.AXES}) for m,r in enumerate(rounds)]
-        result=decode_counts(counts,h=h,M=M,prior=prior)
-        # Keep statuses/energies/branch diagnostics without retaining all counts.
-        results.append({k:v for k,v in result.items() if k not in ('counts',)})
+    if batch_decoder is None:
+        results=[]
+        for i in range(repetitions):
+            counts=[dict(m=r['m'],**{axis:dict(plus=int(samples[m][axis][i]),shots=r['N_'+axis]) for axis in p.AXES}) for m,r in enumerate(rounds)]
+            result=decode_counts(counts,h=h,M=M,prior=prior)
+            # Keep statuses/energies/branch diagnostics without retaining all counts.
+            results.append({k:v for k,v in result.items() if k not in ('counts',)})
+    else:
+        results=batch_decoder(samples,rounds,M=M,h=h,prior=prior,
+            count_mean=count_mean,decoder_source=SOURCE)
     return dict(trials=results,seed=seed,repetitions=repetitions,policy=deepcopy(policy),
         input_raw_means=deepcopy(rounds),numeric_distribution='NUMPY_PCG64_BINOMIAL_BINARY64_P; not exact-law arithmetic',
         simulation_is_sufficient_N_proof=False)

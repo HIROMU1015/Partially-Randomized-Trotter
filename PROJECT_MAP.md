@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[R3高速decoderのS3統合](docs/research/rpe_decoder_r3_integration_20261113/REPORT.md)／[切替API](docs/research/rpe_decoder_r3_integration_20261113/HANDOFF.md)／[人工benchmark](docs/research/rpe_decoder_r3_integration_20261113/BENCHMARK.json)：A7f1fの独立moduleを取込み、simulate/simulate_preparedへ任意batch hook。元scalar既定・RNG/count/loss/CI保全、60技術test PASS。人工13round/512trialで16.651→.02554秒（約652倍）、実H4 S3/十分N/global bound/G未評価、公開後STOP。
+
 [全13round/K1/C−SのV2受入とS3準備](docs/research/rpe_s3_readiness_20261113/REPORT.md)／[HANDOFF](docs/research/rpe_s3_readiness_20261113/HANDOFF.md)／[S3判断表](docs/research/rpe_s3_readiness_20261113/S3_DECISIONS.md)：A169d全13nominal/meanと追加bba物理inputをcopy受入、m3/m4 norm欠測と旧3round SOURCEを保全。C83d K0 PASS/K1構造4値、Daf6残差interfaceを接続。149技術test PASS、input_complete=true/scientific_ready=false、C/G/十分N/global bound null、S3未実行・公開後STOP。
 
 [RPE decoder有限shot・RMSE技術基盤](docs/research/rpe_decoder_statistics_20261113/REPORT.md)／[A/B interface](docs/research/rpe_decoder_statistics_20261113/HANDOFF.md)／[有限科学実行案](docs/research/rpe_decoder_statistics_20261113/SCIENTIFIC_PLAN.md)：B3216から専用branchを分離。元decoderを直接再利用しcounts/独立binomial/未解決loss/条件付きRMSE/全risk区間を区別。新16＋元decoder1＋既存106＝123技術test PASS。実H4統計0、D e7dca5fの73/0/63をmetadata受入、旧56/17/63保全。十分N/global bound/G未資格、公開後STOP。

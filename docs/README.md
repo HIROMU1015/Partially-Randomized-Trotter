@@ -1,5 +1,7 @@
 # 文書索引
 
+[R3→S3統合REPORT](research/rpe_decoder_r3_integration_20261113/REPORT.md)／[scalar/batch切替](research/rpe_decoder_r3_integration_20261113/HANDOFF.md)／[人工性能](research/rpe_decoder_r3_integration_20261113/BENCHMARK.json)：60技術test、人工512trialで約652倍、実H4 S3/科学的RMSE認定なし。旧科学SOURCE・未資格/null保持。
+
 [S3 readiness REPORT](research/rpe_s3_readiness_20261113/REPORT.md)／[A/C/D interface](research/rpe_s3_readiness_20261113/HANDOFF.md)／[未採択条件](research/rpe_s3_readiness_20261113/S3_DECISIONS.md)／[保存readiness](research/rpe_s3_readiness_20261113/metadata01/S3_READINESS.json)：A13round・C構造4値・D残差欠測を分離。149技術test、実S3/価格/G0。
 
 [decoder shot統計REPORT](research/rpe_decoder_statistics_20261113/REPORT.md)／[A mean I/O](research/rpe_decoder_statistics_20261113/HANDOFF.md)／[loss・trial数・信頼水準の有限計画](research/rpe_decoder_statistics_20261113/SCIENTIFIC_PLAN.md)：123技術test、実H4 Monte Carlo/十分N/実G0。元branch/prior規則と未解決trialを保全し、D新receipt coverageを取込み。
