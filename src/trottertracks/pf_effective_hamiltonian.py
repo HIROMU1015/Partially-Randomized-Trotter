@@ -63,11 +63,15 @@ def evaluate(unitary,delta,*,state,operator,reference,branch,tolerances,referenc
 
     reference.energy is supplied, never inferred/replaced by a ground solver.
     H_eff minimum shift and spectral weights are diagnostics, not RPE bias.
+    Method adoption is workflow metadata, never an individual qualification.
     """
     result=dict(status='UNKNOWN',operator=deepcopy(operator),reference=deepcopy(reference),
         branch=deepcopy(branch),tolerances=deepcopy(tolerances),diagnostics={},H_eff=None,spectrum=None,
         reference_comparison=None,spectral_shift_diagnostics=None,rpe_bias_ha=None,
-        sufficient_N=None,global_RMSE_bound=None,G=None,scientific_method_status='PROPOSED_NOT_ADOPTED',
+        sufficient_N=None,global_RMSE_bound=None,G=None,
+        scientific_method_status=('ADOPTED_MAIN_DETERMINISTIC_PF_ERROR_ROUTE'
+            if operator.get('kind') in ('FULL_PF','TRUNCATED_PF') else
+            'NOT_ADOPTED_FOR_TOTAL_PR_ERROR' if operator.get('kind') in ('PR_HEAD','PR_EXACT_TAIL') else 'NOT_APPLICABLE'),
         physical_alias_qualified=False,ground_identification_qualified=False,numerical_error_certified=False,
         renormalized=False,unitary_repaired=False)
     if operator.get('kind') not in KINDS:
@@ -161,16 +165,33 @@ def evaluate(unitary,delta,*,state,operator,reference,branch,tolerances,referenc
             diag['reference_H_hermiticity_defect_fro']=float(np.linalg.norm(h-h.conj().T,'fro'))
             require(diag['reference_H_hermiticity_defect_fro']<=tol['generator_hermiticity_ha'],'Reference H is not Hermitian')
             evals,basis=eigh(h,check_finite=True)
+            reference_weights=abs(basis.conj().T@psi)**2
+            reference_groups=_groups(evals,reference_weights,tol['energy_cluster_ha'])
+            overlaps=abs(basis.conj().T@vectors)**2
+            diag.update(reference_eigen_residual_fro=float(np.linalg.norm(h@basis-basis*evals,'fro')),
+                reference_eigenvector_gram_defect_fro=float(np.linalg.norm(basis.conj().T@basis-eye,'fro')),
+                reference_weight_sum_error=abs(float(np.sum(reference_weights))-1.))
+            require(diag['reference_eigen_residual_fro']<=tol['generator_hermiticity_ha']
+                and max(diag['reference_eigenvector_gram_defect_fro'],diag['reference_weight_sum_error'])<=tol['reconstruction'],
+                'Reference eigensystem/weight numerical gate')
             diag['delta_reference_H_norm']=float(delta*np.linalg.norm(h,2))
             diag['reference_norm_less_than_pi']=diag['delta_reference_H_norm']<math.pi
             diag['delta_centered_reference_H_norm']=float(delta*np.linalg.norm(h-center*eye,2))
             diag['centered_reference_norm_less_than_pi']=diag['delta_centered_reference_H_norm']<math.pi
             # This is not a proof that the PF log follows the original H branch.
             result['reference_comparison']=dict(eigenvalues_ha=evals.tolist(),
-                squared_eigenbasis_overlaps=(abs(basis.conj().T@vectors)**2).tolist(),
+                eigenvectors=encode(basis),state_weights=reference_weights.tolist(),energy_groups=reference_groups,
+                squared_eigenbasis_overlaps=overlaps.tolist(),
+                reference_lowest_group_to_effective_groups_trace_overlap=[
+                    float(np.sum(overlaps[np.ix_(reference_groups[0]['indices'],g['indices'])])) for g in groups],
+                trace_overlap_is_not_a_normalized_state_probability=True,
+                matched_effective_group=None,
                 degenerate_basis_correspondence_not_unique=True,
                 reference_ground_energy_replaces_declared_reference=False,
                 H_eff_minus_original_H_operator_norm=float(np.linalg.norm(heff-h,2)))
+            result['spectral_shift_diagnostics'].update(
+                minimum_branched_energy_minus_reference_matrix_minimum_ha=float(energies[0]-evals[0]),
+                declared_reference_minus_matrix_minimum_ha=float(energy_ref-evals[0]))
         return _finite_payload(result)
     except (ValueError,TypeError,KeyError,OverflowError,FloatingPointError,np.linalg.LinAlgError) as error:
         # Invalid inputs or numerical ambiguity never become a bias/RMSE PASS.

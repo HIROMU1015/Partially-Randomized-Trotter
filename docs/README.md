@@ -1,6 +1,8 @@
 # 文書索引
 
-[PF有効Hamiltonianの技術基盤](research/pf_effective_hamiltonian_20261113/REPORT.md)：既存direct PFを再利用し、branch/alias/重なりを区別するSchur評価器。人工15＋旧8PASS、実科学/保存再解析0、正式手法未採択。[HANDOFF](research/pf_effective_hamiltonian_20261113/HANDOFF.md)／[有限科学案](research/pf_effective_hamiltonian_20261113/SCIENCE_PLAN.md)。
+[H4 Full PF H_eff適用準備](research/h4_full_pf_heff_preparation_20261113/REPORT.md)：方法の主経路採用を反映。元H/state overlapを最小拡張し人工4＋回帰15PASS。[有限案](research/h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)は実行承認待ち、実H4/保存signal再解析0、個別δE/RPE biasは未資格。
+
+[旧2f0時点・採用前：PF有効Hamiltonianの技術基盤](research/pf_effective_hamiltonian_20261113/REPORT.md)：既存direct PFを再利用し、branch/alias/重なりを区別するSchur評価器。人工15＋旧8PASS、実科学/保存再解析0、正式手法未採択。[HANDOFF](research/pf_effective_hamiltonian_20261113/HANDOFF.md)／[有限科学案](research/pf_effective_hamiltonian_20261113/SCIENCE_PLAN.md)。
 
 [PR-LD1/LD2全round signal結果](research/pr_rpe_first_signal_results_20261113/REPORT.md)：全26候補の局所数値gate通過、78complex・normalizer26、新reference0・旧mean再解析0。[ROUND_SUMMARY](research/pr_rpe_first_signal_results_20261113/ROUND_SUMMARY.csv)／[B/D HANDOFF](research/pr_rpe_first_signal_results_20261113/HANDOFF.md)。N/global RMSE/G/winnerはnull、公開照合後STOP。
 

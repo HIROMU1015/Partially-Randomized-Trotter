@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 Full PFのH_eff適用準備](docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：決定論PFの主評価方法としてH_eff固有値シフトを採用。既存評価器へ元H/state支持・縮退射影・固有系gateを追加、新4＋旧15人工PASS。Full PF S2/Δ.1・m0/m12・元H対角化1回の[未実行案](docs/research/h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)。方法採用とRPE資格は分離、実科学/保存再解析0、公開後STOP。
+
 [PF有効Hamiltonianの技術基盤](docs/research/pf_effective_hamiltonian_20261113/REPORT.md)：[供給unitary評価器](src/trottertracks/pf_effective_hamiltonian.py)で明示log branch・再構成・state overlap/縮退group・元Hと保持Hを区別。新15＋旧8人工/回帰PASS、実科学/保存signal再解析0。最小eigenvalue shiftをRPE biasへ昇格せず、rpe_bias/N/global RMSE/G null。[HANDOFF](docs/research/pf_effective_hamiltonian_20261113/HANDOFF.md)／[未実行有限案](docs/research/pf_effective_hamiltonian_20261113/SCIENCE_PLAN.md)、公開後STOP。
 
 [PR-LD1/LD2全13round signal結果](docs/research/pr_rpe_first_signal_results_20261113/REPORT.md)：固定a9abf8de計画、数値fefd・caller041ac435で26候補/78complex/normalizer26が全数値gate通過。新reference/旧mean再解析/retry/N/MC/C/G0。入口は[scripts/run_pr_rpe_first_signal.py](scripts/run_pr_rpe_first_signal.py)、[5mock test](tests/check_pr_rpe_first_signal_caller.py)、[B/D HANDOFF](docs/research/pr_rpe_first_signal_results_20261113/HANDOFF.md)。十分N/global RMSE/winner未資格、公開照合後STOP。

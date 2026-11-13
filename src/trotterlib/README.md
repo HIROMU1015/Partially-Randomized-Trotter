@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[pf_effective_hamiltonianの元H/state診断追加](../../docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：同じeigh結果から元state weights・縮退射影trace・固有系gateを追加。Full/Truncated PFの方法採用を反映し、個別RPE資格/nullは維持。新4＋旧15人工PASS、実科学0。
+
 [pf_effective_hamiltonian](../trottertracks/pf_effective_hamiltonian.py)：明示PRINCIPAL/ENERGY_WINDOW branchとunitary/Schur/再構成gate、state overlap/縮退group・reference比較を返す。PF builder/ground同定/RPE bias保証ではない。[REPORT](../../docs/research/pf_effective_hamiltonian_20261113/REPORT.md)／[人工15件](../../tests/check_pf_effective_hamiltonian.py)。旧8回帰含め23PASS、実科学0。
 
 [PR-LD1/LD2実行結果](../../docs/research/pr_rpe_first_signal_results_20261113/REPORT.md)：既存[signal provider](../trottertracks/pr_rpe_signal_provider.py)を無変更で使い、全26候補が数値gate通過。新reference/旧mean再解析/N/C/G0。[caller](../../scripts/run_pr_rpe_first_signal.py)／[5mock test](../../tests/check_pr_rpe_first_signal_caller.py)／[B/D HANDOFF](../../docs/research/pr_rpe_first_signal_results_20261113/HANDOFF.md)。局所結果でglobal RMSEを認定しない。

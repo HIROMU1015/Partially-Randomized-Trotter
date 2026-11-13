@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H4 Full PF H_eff適用準備](../docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：新科学runnerは追加せず既存APIを再利用。[元H/state追加人工テスト](../tests/check_pf_effective_hamiltonian_reference.py)4＋既存15PASS。実科学/保存再解析0、S2/Δ.1有限pilotは別途承認待ち。
+
 [PF有効Hamiltonian技術基盤](../docs/research/pf_effective_hamiltonian_20261113/REPORT.md)：新科学CLIは追加せず、人工入口は[check_pf_effective_hamiltonian.py](../tests/check_pf_effective_hamiltonian.py)。既存direct PF生成のunitaryを[評価器](../src/trottertracks/pf_effective_hamiltonian.py)へ渡す。新15＋旧8PASS、実H4/H6/保存signal再解析0、公開後STOP。
 
 [run_pr_rpe_first_signal.py](run_pr_rpe_first_signal.py)：明示承認された固定a9abf8deのLD1/LD2全roundを既存fefd providerで順に実行し、失敗時は全menu STOP。26候補完了、retry0。[REPORT](../docs/research/pr_rpe_first_signal_results_20261113/REPORT.md)／[mock5件](../tests/check_pr_rpe_first_signal_caller.py)。fresh output専用で、追加runの自動承認ではない。

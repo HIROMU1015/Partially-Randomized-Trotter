@@ -1,6 +1,8 @@
 # Validation status
 
-[PF有効Hamiltonianの技術基盤](docs/research/pf_effective_hamiltonian_20261113/REPORT.md)：人工2×2/4×4でlog再構成・Strang BCH係数・branch/cut/alias・state/縮退・q power・切断H・PR exact-tailと非対象kindを新15件確認。旧direct PF/STOP保全8回帰と計23PASS。実科学/保存signal再解析0、rpe_bias/N/global RMSE/Gはnull、方法未採択。
+[H4 Full PF H_eff適用準備](docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：決定論PFの主評価方法採用と個別δE/RPE資格を分離。元H/state overlap、縮退射影、UNKNOWN gateの新4＋旧15人工回帰PASS。実H4 step/固有値/保存再解析0、十分N/global RMSE/G null。
+
+[旧2f0時点・採用前：PF有効Hamiltonianの技術基盤](docs/research/pf_effective_hamiltonian_20261113/REPORT.md)：人工2×2/4×4でlog再構成・Strang BCH係数・branch/cut/alias・state/縮退・q power・切断H・PR exact-tailと非対象kindを新15件確認。旧direct PF/STOP保全8回帰と計23PASS。実科学/保存signal再解析0、rpe_bias/N/global RMSE/Gはnull、方法未採択。
 
 [PR-LD1/LD2全round signal結果](docs/research/pr_rpe_first_signal_results_20261113/REPORT.md)：数値SOURCE fefd、caller041ac435、raw carrier16210932e。26/26局所数値gate通過（78complex、normalizer26）、新reference/旧mean再解析/retry0。新caller mock5件PASS、B metadata prepareは両構成のidentity/law/targetを受入れ、N未指定・物理未資格を保持。十分N/global RMSE/G未認定。
 

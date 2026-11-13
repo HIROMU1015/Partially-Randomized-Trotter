@@ -1,0 +1,447 @@
+{
+  "status": "PROPOSED_H4_PILOT_NOT_EXECUTED",
+  "method_status": "ADOPTED_MAIN_DETERMINISTIC_PF_ERROR_ROUTE",
+  "scope_status": "AWAITING_SEPARATE_EXPLICIT_SCIENCE_EXECUTION_PERMISSION",
+  "sources": {
+    "base_evaluator": "2f0de95304000af251a179fefdddf2a10b8fdc14",
+    "amended_evaluator": "src/trottertracks/pf_effective_hamiltonian.py@COMMIT_CONTAINING_THIS_PLAN",
+    "canonical_configuration": {
+      "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+      "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json",
+      "selector": [
+        "candidates",
+        0,
+        "configuration"
+      ]
+    },
+    "input_index": {
+      "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+      "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+    },
+    "numerics": {
+      "commit": "5cc7c07e112ce97205948465c94441cba0042416",
+      "pipeline": "src/trottertracks/baseline_signal_pipeline.py",
+      "numerics": "src/trottertracks/baseline_signal_numerics.py",
+      "original_provider": "86f37d25ffd5eee3daf7f25ce001b090b1f2cf33"
+    },
+    "physical_contract": {
+      "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+      "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json"
+    }
+  },
+  "canonical_configuration_id": "f2d58f320ed0ebbeff8e6d4c0fbd5de14d6338b493c92015c966935201fd93ef",
+  "canonical_configuration_relabelled": false,
+  "outer_context": {
+    "h": {
+      "numerator": 3602879701896397,
+      "denominator": 36028797018963968
+    },
+    "M": 12,
+    "P": 0,
+    "canonical_rmse_policy_unchanged": true,
+    "canonical_scientific_definition_adopted": false,
+    "note": "Existing B/C metadata copied unchanged; adoption of H_eff does not qualify this configuration or RMSE contract"
+  },
+  "binding": {
+    "system": "H4",
+    "geometry": "linear_1Angstrom",
+    "basis": "STO-3G",
+    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+    "rank": 10,
+    "rank_policy": "tol_only_1e-8",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "control": "symmetric_directional",
+    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75"
+  },
+  "step_key": {
+    "kind": "FULL_PF",
+    "binding": {
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "rank": 10,
+      "rank_policy": "tol_only_1e-8"
+    },
+    "sector": [
+      2,
+      2
+    ],
+    "dimension": 36,
+    "formula": "2nd",
+    "signed_weights": [
+      1.0
+    ],
+    "prefix": 10,
+    "fragment_order": "SAVED_ONE_BODY_THEN_DF_SNAPSHOT_ORDER_SYMMETRIC_S2",
+    "actual_delta": {
+      "numerator": 3602879701896397,
+      "denominator": 36028797018963968
+    },
+    "scalar": "ORIGINAL_CONSTANT_INCLUDED_ONCE_AT_STEP_TIME",
+    "source": {
+      "step_builder": "86f37d25ffd5eee3daf7f25ce001b090b1f2cf33:src/trottertracks/baseline_signal_numerics.py:Context.pf_step",
+      "kernel": "dd24dd329949c255d5e37b90ff8993fa8df7159b:src/trottertracks/pf_power_stability.py:expm_step"
+    }
+  },
+  "canonical_rounds": [
+    {
+      "m": 0,
+      "q_RPE": 1,
+      "q_PF": 1,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "candidate_id": "RMSE:3f8222138edfa1f87c61ad82934aa0ba7ce47622163208717950f4ab8b68cb3e",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 0.1,
+        "q": 1,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "5669f142d693eee92583"
+      }
+    },
+    {
+      "m": 1,
+      "q_RPE": 2,
+      "q_PF": 2,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 18014398509481984
+      },
+      "candidate_id": "RMSE:b2eb22c4555683bc31227f242e0fddb01b167cb7aea2441748cf0d563ed28702",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 0.2,
+        "q": 2,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "c20731fa91e10d84af65"
+      }
+    },
+    {
+      "m": 2,
+      "q_RPE": 4,
+      "q_PF": 4,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 9007199254740992
+      },
+      "candidate_id": "RMSE:736ae482ef15f1c4a0a74f6388e9ae2e118f7a6477146af2e3cadcd6132e8d40",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 0.4,
+        "q": 4,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "ab40308c65192acf1f34"
+      }
+    },
+    {
+      "m": 3,
+      "q_RPE": 8,
+      "q_PF": 8,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 4503599627370496
+      },
+      "candidate_id": "RMSE:bd9391ebdb0af297ded726ec8b0335704c9c2cc076c204c9816394cd6aa2bc73",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 0.8,
+        "q": 8,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "83d703b801b8545ce61f"
+      }
+    },
+    {
+      "m": 4,
+      "q_RPE": 16,
+      "q_PF": 16,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 2251799813685248
+      },
+      "candidate_id": "RMSE:31efc0972b871d07043bcfead80275e97c8f1a0442f771d14d798f623227c5de",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 1.6,
+        "q": 16,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "dc96042e5f8605a29c8f"
+      }
+    },
+    {
+      "m": 5,
+      "q_RPE": 32,
+      "q_PF": 32,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 1125899906842624
+      },
+      "candidate_id": "RMSE:edd653a6a4f5707b32e7418a1e43f717dd86d0361ff07e129c02db39f256917d",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 3.2,
+        "q": 32,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "b31c5afb685fbbfb1fa9"
+      }
+    },
+    {
+      "m": 6,
+      "q_RPE": 64,
+      "q_PF": 64,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 562949953421312
+      },
+      "candidate_id": "RMSE:871f088e17f8f90f89db9ad6f8a356331d350fdaf1a2bfd343e7c6630e5be50d",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 6.4,
+        "q": 64,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "de9bc15cbc089f14b47f"
+      }
+    },
+    {
+      "m": 7,
+      "q_RPE": 128,
+      "q_PF": 128,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 281474976710656
+      },
+      "candidate_id": "RMSE:100399155d8ae2d77cf8d2257e50b655da593ceea364c3516af6e3b8ac92ed93",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 12.8,
+        "q": 128,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "e650a3f4519f27a5528b"
+      }
+    },
+    {
+      "m": 8,
+      "q_RPE": 256,
+      "q_PF": 256,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 140737488355328
+      },
+      "candidate_id": "RMSE:ddd3f20e8ebd1e345106bf369587df7b1af1fa9a15da32f37c12e42b7c6b5401",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 25.6,
+        "q": 256,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "f2dd4bec5c21674649ba"
+      }
+    },
+    {
+      "m": 9,
+      "q_RPE": 512,
+      "q_PF": 512,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 70368744177664
+      },
+      "candidate_id": "RMSE:01314e3f2ca8a1d75ef38a6906a058280a3f35f1ab955b2b3c9feed59ab48e74",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 51.2,
+        "q": 512,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "c6f107a79046bb938e98"
+      }
+    },
+    {
+      "m": 10,
+      "q_RPE": 1024,
+      "q_PF": 1024,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 35184372088832
+      },
+      "candidate_id": "RMSE:3f2716f2435b37e4f18d61982edd48acd6c4d87eec6fa80cfea8c9de909c3c42",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 102.4,
+        "q": 1024,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "849d47706802a0370ff4"
+      }
+    },
+    {
+      "m": 11,
+      "q_RPE": 2048,
+      "q_PF": 2048,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 17592186044416
+      },
+      "candidate_id": "RMSE:daece99548c4a90cbf4a293f1ed102d75b574c431b8a0e984fcbf8d39338b6cd",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 204.8,
+        "q": 2048,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "81ba8a0dec922a0b0dda"
+      }
+    },
+    {
+      "m": 12,
+      "q_RPE": 4096,
+      "q_PF": 4096,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 8796093022208
+      },
+      "candidate_id": "RMSE:f8b11077d4427872eabda87345fdcedc6c3f2a3e22644d15c95b88aa3e9f2711",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 409.6,
+        "q": 4096,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "4841a53bcaf02927b34a"
+      }
+    }
+  ],
+  "proposed_signal_rounds": [
+    0,
+    12
+  ],
+  "common_step_metadata": {
+    "status": "COMMON_STEP_DECLARED",
+    "same_declared_step": true,
+    "integer_power_times": true,
+    "operator_equality_numerically_checked": false,
+    "common_step_qualified": false,
+    "global_RMSE_bound": null
+  },
+  "branch": {
+    "mode": "PRINCIPAL",
+    "status": "PROPOSED_CONVENTION_ONLY_PHYSICAL_ALIAS_UNQUALIFIED",
+    "source": "SCIENCE_PLAN.md in this preparation commit",
+    "energy_shift_ha": 0
+  },
+  "numerical_policy": {
+    "dtype": "complex128",
+    "state_norm": 1e-12,
+    "unitarity_fro": 1e-09,
+    "reconstruction_fro": 1e-09,
+    "generator_hermiticity_and_reference_eigen_residual_ha": 1e-09,
+    "power_norm_and_unitarity": 1e-09,
+    "energy_cluster_ha": 1e-08,
+    "phase_guard_rad": 1e-08,
+    "signal_difference_absolute": 1e-09,
+    "source": {
+      "PF": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+      "effective_evaluator": "2f0de95304000af251a179fefdddf2a10b8fdc14"
+    },
+    "rigorous_error_bounds": false,
+    "renormalization": false,
+    "unitary_projection": false
+  },
+  "reference": {
+    "target": "SAVED_FULL_DF_H_SAME_SECTOR",
+    "ground_state_certified": false,
+    "declared_energy_source": {
+      "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+      "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+      "selector": [
+        "records",
+        5,
+        "diagnostics"
+      ]
+    },
+    "declared_energy_definition": "SAVED_SOLVER_PROXY_NOT_REPLACED_BY_NEW_EIGH",
+    "additional_original_H_eigh_proposed": 1
+  },
+  "proposed_scientific_scope": {
+    "shared_saved_context_load": 1,
+    "full_PF_scalar_included_step": 1,
+    "effective_Schur": 1,
+    "original_full_H_Hermitian_eigh": 1,
+    "direct_PF_complex_means": 2,
+    "full_spectral_complex_means": 2,
+    "new_full_H_reference_actions": 0,
+    "saved_signal_reanalysis": 0,
+    "finite_normalizers": 0,
+    "new_SCF_DF_state_generation": 0,
+    "new_N_RMSE_MC_C_G_or_width_search": 0
+  },
+  "actual_real_scientific_calls": 0,
+  "actual_saved_signal_reanalysis": 0,
+  "rpe_bias_ha": null,
+  "sufficient_N": null,
+  "global_RMSE_bound": null,
+  "G": null,
+  "mandatory_stop": true
+}
