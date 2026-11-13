@@ -57,7 +57,7 @@ def local_summary(diagnostic,cell,records,budget):
         rpe_bias_ha=None,sufficient_N=None,global_RMSE_bound=None,C=None,G=None)
 
 
-def diagnose_cell(ctx,full_h,cell,*,reference,operator,tolerances,cache,policy,budget,save):
+def diagnose_cell(ctx,full_h,cell,*,reference,operator,tolerances,cache,policy,budget,save,branch=None):
     """Existing PF and E.evaluate plus the two planned power/measure checks."""
     import numpy as np
     from trottertracks.pf_power_stability import power_diagnostics
@@ -71,7 +71,7 @@ def diagnose_cell(ctx,full_h,cell,*,reference,operator,tolerances,cache,policy,b
         first_check=first['physical_candidate'],linked_rounds=cell['uses'],binding=operator['identity']['binding']),
         scalar_constant_ha=ctx.constant)
     diagnostic=E.evaluate(unitary,delta,state=ctx.state,operator=op,reference=reference,
-        branch=dict(mode='PRINCIPAL',source=dict(commit=PREPARATION,path=PLAN_PATH)),
+        branch=deepcopy(branch) if branch is not None else dict(mode='PRINCIPAL',source=dict(commit=PREPARATION,path=PLAN_PATH)),
         tolerances=tolerances,reference_hamiltonian=full_h,reference_eigensystem=cache)
     save('EIGENSYSTEM.json',diagnostic)
     if diagnostic['status']!='EFFECTIVE_HAMILTONIAN_DIAGNOSTIC_AVAILABLE':
