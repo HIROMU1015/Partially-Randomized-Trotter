@@ -1,0 +1,59 @@
+P-1 kappa2 m3 execution record (approved by user instruction comment(A1109).md, 2026-11-14) -- STOPPED
+
+worktree HEAD at execution: ce6aacfaca8249c510baa2d958849cffc7649cdc (descendant of fixed caller SOURCE 04bead115; caller bytes identical)
+python: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python (3.11.0rc1; qiskit 1.3.0, numpy 1.26.4, scipy 1.14.1, rustworkx 0.18.1; same venv as the earlier new-ZZ P1 run02 compiles)
+checkout: sparse cone = src scripts tests + docs dirs + 8 artifacts/resource_applicability dirs; top-level references/ was NOT included (cause of STOP)
+
+== pre-run tests (artificial / metadata)
+check_full_h_kappa2_p1_prep: Ran 3 tests in 8.822s OK
+check_full_h_kappa2_p1_circuits: Ran 4 tests in 5.282s OK
+check_full_h_kappa2_s1_caller: Ran 7 tests in 4.056s OK
+
+== metadata preflight: python -B scripts/run_full_h_kappa2_p1.py
+PREFLIGHT_METADATA_ONLY 54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e FULL_H_4de6130f0d3a66e5d695 D_FULL_H_KAPPA2_NEW_ZZ_M3_WIRING_V1
+seeds [5991797726465700931, 1856771849514959079, 15081070386826284294, 17096716759622354895, 12958695304407418943, 15909181170825428684, 2378147530769625426, 9833568142283555868]
+
+== execution (once): python -B scripts/run_full_h_kappa2_p1.py --execute-approved-p1  (wrapped by /usr/bin/time -v)
+exit code: 2
+{"status": "STOP_WIRING_CHECK", "elapsed_seconds": 2.941969265928492}
+User time (seconds): 10.98
+System time (seconds): 5.60
+Percent of CPU this job got: 402%
+Elapsed (wall clock) time (h:mm:ss or m:ss): 0:04.12
+Maximum resident set size (kbytes): 353660
+
+== child stderr (traceback)
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-kappa2-p1-results-20261114/scripts/run_full_h_kappa2_p1.py", line 311, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-kappa2-p1-results-20261114/scripts/run_full_h_kappa2_p1.py", line 303, in main
+    return child(args.child)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-kappa2-p1-results-20261114/scripts/run_full_h_kappa2_p1.py", line 210, in child
+    trial, checks, ok = pilot(full, job['row'])
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-kappa2-p1-results-20261114/scripts/run_full_h_kappa2_p1.py", line 158, in pilot
+    ctx = full.context(row['system'])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "9b83b96b83f62142c9d87858dc24a94db7ac5d61:scripts/h46_full_h_pure_rte.py", line 140, in context
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-kappa2-p1-results-20261114/scripts/h46_m5_tol_native.py", line 4, in <module>
+    import h46_m5_tol_contract as c
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-kappa2-p1-results-20261114/scripts/h46_m5_tol_contract.py", line 13, in <module>
+    TARGETS = read(ROOT / TARGET_PATH)['systems']
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-kappa2-p1-results-20261114/scripts/h46_m5_contract.py", line 31, in read
+    def read(path): return json.loads(Path(path).read_text())
+                                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-kappa2-p1-results-20261114/references/h46_m5_tol_pilot_inputs_v1.json'
+
+retry: none. sampling 0, compose 0, compile 0, saved H4 input restore 0. mandatory STOP.
+
+== after STOP (technical, no science): references/ added to the checkout; import-only check of the child chain after install()
+modules OK: 12 / 12 ; SOURCE_PATHS missing: []

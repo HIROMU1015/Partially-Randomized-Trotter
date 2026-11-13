@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full-H κ2 P-1 run01 STOP](research/d_full_h_kappa2_p1_results_20261114/REPORT.md)／[実行記録](research/d_full_h_kappa2_p1_results_20261114/EXECUTION.txt)：子processのimport時にtracked fileが欠落、科学計算前に停止。
+
 [Full-H κ2 S-1結果](research/d_full_h_kappa2_s1_results_20261114/REPORT.md)／[実行記録](research/d_full_h_kappa2_s1_results_20261114/EXECUTION.txt)：13round raw/corrected/logB、R448との比較条件。
 
 [D κ2 S-1/P-1と価格接続REPORT](research/d_kappa_s1_price_builders_20261114/REPORT.md)／[次の実行](research/d_kappa_s1_price_builders_20261114/NEXT_EXECUTION.md)／[HANDOFF](research/d_kappa_s1_price_builders_20261114/HANDOFF.md)：固定caller `04bead11`、30人工・metadata PASS、科学実行・compileなし、mandatory STOP。

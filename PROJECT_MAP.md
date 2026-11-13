@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full-H κ2 P-1 run01：STOP（実行treeのreferences/欠落、科学計算0）](docs/research/d_full_h_kappa2_p1_results_20261114/REPORT.md)：固定caller 04bead115、compile 0、retryなし。run02には実行tree修正と出力label変更・承認が必要。
+
 [Full-H κ2 S-1結果（承認済み13 mean）](docs/research/d_full_h_kappa2_s1_results_20261114/REPORT.md)／[SIGNALS.csv](docs/research/d_full_h_kappa2_s1_results_20261114/run01/SIGNALS.csv)／[B packet](docs/research/d_full_h_kappa2_s1_results_20261114/run01/FULL_H_K2_QDYADIC_KAPPA2/B_SIGNAL_INPUT.json)：固定caller 04bead115、全gate・logB包絡PASS、N/MSE/G未評価、mandatory STOP。
 
 [Full-H κ2 S-1/P-1準備・Truncated/Pauli価格接続（D）](docs/research/d_kappa_s1_price_builders_20261114/REPORT.md)／[次の実行とSTOP](docs/research/d_kappa_s1_price_builders_20261114/NEXT_EXECUTION.md)／[HANDOFF](docs/research/d_kappa_s1_price_builders_20261114/HANDOFF.md)：固定SOURCE `04bead11`。S-1 caller（κ2 13 mean、1 ULP付きlogB包絡gate、R448信号の流用禁止）、P-1新ZZ配線（provider-root子process、parity・scalar・one-body・X/Y）、T3 B0I p7の決定論価格（既存Full PF native・18 wrapper候補）、A P0辞書付きPauli tail接続を整備。人工・metadata 30 PASS、実H4 mean/sampling/build/compile/価格0、mandatory STOP。
