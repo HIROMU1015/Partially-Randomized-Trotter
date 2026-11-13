@@ -1,6 +1,6 @@
 # Validation status
 
-[効率的controlled ZZ](docs/research/d_p1_efficient_czz_20261113/REPORT.md)：unitary（global/制御phase含む）・委譲・切替・tail parity・呼出し時import・旧provider bytes・固定PLANの新10件＋回帰34＝44 PASS。P1科学結果は未取得（run01 STOP）。
+[効率的controlled ZZ](docs/research/d_p1_efficient_czz_20261113/REPORT.md)：unitary（global/制御phase含む）・委譲・切替・tail parity・呼出し時import・旧provider bytes・固定PLANの新10件＋回帰34＝44 PASS。P1 run02完了（[RESULT](docs/research/d_p1_efficient_czz_20261113/run02/RESULT.json)）：run01 event SHA-256一致（実行前後）、phase A parity全PASS（m0 operator差0）、compile 8/8・cache hit 0、digest連鎖一致。4 pathのfinite development観測のみで、全law E[C]・N/RMSE/Gは未資格。
 
 [P0 controlled ZZ](docs/research/d_controlled_zz_p0_20261113/REPORT.md)：固定PLAN（a287b8e6）でQiskit1.3.0/rz,sx,x,cx/opt1/seed17の小回路8件をcompile。全件compile後≡元回路（≤1.95e−14）、汎用≡解析（差0.0）。技術test 34 PASS。full-wrapper価格・fit・N/G 0。
 

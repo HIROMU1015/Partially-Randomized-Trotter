@@ -1,6 +1,6 @@
 # 文書索引
 
-[効率的controlled ZZ・P1 REPORT](research/d_p1_efficient_czz_20261113/REPORT.md)／[HANDOFF](research/d_p1_efficient_czz_20261113/HANDOFF.md)／[run01 STOP](research/d_p1_efficient_czz_20261113/run01/STOP.json)／[RUN02_PLAN](research/d_p1_efficient_czz_20261113/RUN02_PLAN.json)：新lowering SOURCEと、P1 run01のrunner技術STOP（compile前）。
+[効率的controlled ZZ・P1 REPORT](research/d_p1_efficient_czz_20261113/REPORT.md)／[HANDOFF](research/d_p1_efficient_czz_20261113/HANDOFF.md)／[run02 RESULT](research/d_p1_efficient_czz_20261113/run02/RESULT.json)／[連続性照合](research/d_p1_efficient_czz_20261113/run02_precheck/POST_RUN_CHECK.json)／[run01 STOP](research/d_p1_efficient_czz_20261113/run01/STOP.json)：新lowering SOURCEと、P1 paired pilot（run01 STOP保全、run02完了、m0/m6各2 pathのC・S・D）。
 
 [P0 REPORT](research/d_controlled_zz_p0_20261113/REPORT.md)／[HANDOFF](research/d_controlled_zz_p0_20261113/HANDOFF.md)／[P0_SUMMARY.csv](research/d_controlled_zz_p0_20261113/P0_SUMMARY.csv)：controlled ZZ lowering差（RZ +17〜19・CX +10/回転）の実回路確認と案A/B比較。
 
