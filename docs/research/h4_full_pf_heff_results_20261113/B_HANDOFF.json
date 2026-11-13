@@ -1,0 +1,164 @@
+{
+  "status": "PF_HEFF_LOCAL_DIAGNOSTIC_NOT_RPE_QUALIFIED",
+  "source": {
+    "scientific_commit": "3a26b9ba70f7c5022a7e07356fe1df8b620545e8",
+    "caller": "scripts/run_h4_full_pf_heff.py",
+    "preparation": "9af1ac8ed8adcaef059f439ce690b22b7a320de0",
+    "numerics_C": "86f37d25ffd5eee3daf7f25ce001b090b1f2cf33"
+  },
+  "canonical_configuration_id": "f2d58f320ed0ebbeff8e6d4c0fbd5de14d6338b493c92015c966935201fd93ef",
+  "operator": {
+    "kind": "FULL_PF",
+    "identity": {
+      "configuration_id": "f2d58f320ed0ebbeff8e6d4c0fbd5de14d6338b493c92015c966935201fd93ef",
+      "step_key": {
+        "kind": "FULL_PF",
+        "binding": {
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "rank": 10,
+          "rank_policy": "tol_only_1e-8"
+        },
+        "sector": [
+          2,
+          2
+        ],
+        "dimension": 36,
+        "formula": "2nd",
+        "signed_weights": [
+          1.0
+        ],
+        "prefix": 10,
+        "fragment_order": "SAVED_ONE_BODY_THEN_DF_SNAPSHOT_ORDER_SYMMETRIC_S2",
+        "actual_delta": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "scalar": "ORIGINAL_CONSTANT_INCLUDED_ONCE_AT_STEP_TIME",
+        "source": {
+          "step_builder": "86f37d25ffd5eee3daf7f25ce001b090b1f2cf33:src/trottertracks/baseline_signal_numerics.py:Context.pf_step",
+          "kernel": "dd24dd329949c255d5e37b90ff8993fa8df7159b:src/trottertracks/pf_power_stability.py:expm_step"
+        }
+      }
+    },
+    "source": {
+      "step_builder": "86f37d25ffd5eee3daf7f25ce001b090b1f2cf33:src/trottertracks/baseline_signal_numerics.py:Context.pf_step",
+      "kernel": "dd24dd329949c255d5e37b90ff8993fa8df7159b:src/trottertracks/pf_power_stability.py:expm_step"
+    },
+    "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+    "retained_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+    "scalar_policy": "INCLUDED_ONCE_AT_STEP_TIME",
+    "scalar_constant_ha": 2.29310124732
+  },
+  "original_target": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+  "reference": {
+    "energy": -2.1663874486347634,
+    "definition": "SAVED_SOLVER_PROXY_NOT_REPLACED_BY_NEW_EIGH",
+    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+    "source": {
+      "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+      "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+      "selector": [
+        "records",
+        5,
+        "diagnostics"
+      ]
+    },
+    "ground_state_certified": false,
+    "carrier": {
+      "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+      "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json",
+      "selector": [
+        "shared",
+        "target",
+        "reference_solver_energy_ha"
+      ]
+    }
+  },
+  "full_spectral_evidence": {
+    "path": "run01/EIGENSYSTEM.json",
+    "fields": [
+      "H_eff",
+      "spectrum",
+      "reference_comparison",
+      "diagnostics"
+    ]
+  },
+  "spectral_shift_diagnostics": {
+    "minimum_branched_energy_minus_declared_reference_ha": 0.00013371206319368056,
+    "scope": "BRANCH_DEPENDENT_SPECTRAL_DIAGNOSTIC_NOT_RPE_BIAS",
+    "reference_energy_not_used_to_choose_branch": true,
+    "minimum_branched_energy_minus_reference_matrix_minimum_ha": 0.00013371206319456874,
+    "declared_reference_minus_matrix_minimum_ha": 8.881784197001252e-16
+  },
+  "correspondence_observation": {
+    "reference_lowest_group_state_weight": 1.0000000000000004,
+    "effective_lowest_group_state_weight": 0.999999924308577,
+    "largest_trace_overlap_group_indices": [
+      0
+    ],
+    "largest_trace_overlap": 0.9999999243085774,
+    "matched_effective_group": null,
+    "ground_identification_qualified": false
+  },
+  "branch_status": "CONVENTION_ONLY_ALIAS_EVIDENCE_NOT_SUPPLIED",
+  "physical_alias_qualified": false,
+  "ground_identification_qualified": false,
+  "numerical_error_certified": false,
+  "matched_effective_group": null,
+  "two_time_diagnostics": [
+    {
+      "m": 0,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 0.1,
+        "q": 1,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "5669f142d693eee92583"
+      },
+      "canonical_candidate_id": "RMSE:3f8222138edfa1f87c61ad82934aa0ba7ce47622163208717950f4ab8b68cb3e",
+      "path": "run01/round_0.json",
+      "gate_pass": true
+    },
+    {
+      "m": 12,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 409.6,
+        "q": 4096,
+        "delta": 0.1,
+        "R_outer": null,
+        "K": null,
+        "id": "4841a53bcaf02927b34a"
+      },
+      "canonical_candidate_id": "RMSE:f8b11077d4427872eabda87345fdcedc6c3f2a3e22644d15c95b88aa3e9f2711",
+      "path": "run01/round_12.json",
+      "gate_pass": true
+    }
+  ],
+  "raw_direct_risk_already_includes_PF_effect": true,
+  "do_not_add_same_delta_E_to_raw_direct_risk": true,
+  "new_reference_actions": 0,
+  "saved_signal_reanalysis": 0,
+  "rpe_bias_ha": null,
+  "sufficient_N": null,
+  "global_RMSE_bound": null,
+  "G": null,
+  "mandatory_stop": true,
+  "scientific_scope_counts": {
+    "context_load_attempts": 1,
+    "PF_steps": 1,
+    "effective_evaluator_calls": 1,
+    "direct_means": 2,
+    "spectral_means": 2
+  }
+}

@@ -1,6 +1,8 @@
 # 文書索引
 
-[H4 Full PF H_eff適用準備](research/h4_full_pf_heff_preparation_20261113/REPORT.md)：方法の主経路採用を反映。元H/state overlapを最小拡張し人工4＋回帰15PASS。[有限案](research/h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)は実行承認待ち、実H4/保存signal再解析0、個別δE/RPE biasは未資格。
+[H4 Full PF H_eff実行結果](research/h4_full_pf_heff_results_20261113/REPORT.md)：保存H4 DF10/sector(2,2)/S2/Δ.1のminimum shift +1.33712e−4 Ha。二時点の直接PF/全spectral照合は数値gate通過、厳密RPE bias/全RMSE未資格。[HANDOFF](research/h4_full_pf_heff_results_20261113/HANDOFF.md)、新reference/旧mean再解析0、公開後STOP。
+
+[準備9af1時点：H4 Full PF H_eff適用準備](research/h4_full_pf_heff_preparation_20261113/REPORT.md)：方法の主経路採用を反映。元H/state overlapを最小拡張し人工4＋回帰15PASS。[有限案](research/h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)は実行承認待ち、実H4/保存signal再解析0、個別δE/RPE biasは未資格。
 
 [旧2f0時点・採用前：PF有効Hamiltonianの技術基盤](research/pf_effective_hamiltonian_20261113/REPORT.md)：既存direct PFを再利用し、branch/alias/重なりを区別するSchur評価器。人工15＋旧8PASS、実科学/保存再解析0、正式手法未採択。[HANDOFF](research/pf_effective_hamiltonian_20261113/HANDOFF.md)／[有限科学案](research/pf_effective_hamiltonian_20261113/SCIENCE_PLAN.md)。
 

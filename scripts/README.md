@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_h4_full_pf_heff.py](run_h4_full_pf_heff.py)：承認済み9af1計画のFull PF S2/Δ.1一構成、元H対角化1回・m0/m12の二時点照合に限定。SOURCE3a26・run01完了済み、無断再実行不可。[結果/HANDOFF](../docs/research/h4_full_pf_heff_results_20261113/REPORT.md)／[4人工test](../tests/check_h4_full_pf_heff_caller.py)。
+
 [H4 Full PF H_eff適用準備](../docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：新科学runnerは追加せず既存APIを再利用。[元H/state追加人工テスト](../tests/check_pf_effective_hamiltonian_reference.py)4＋既存15PASS。実科学/保存再解析0、S2/Δ.1有限pilotは別途承認待ち。
 
 [PF有効Hamiltonian技術基盤](../docs/research/pf_effective_hamiltonian_20261113/REPORT.md)：新科学CLIは追加せず、人工入口は[check_pf_effective_hamiltonian.py](../tests/check_pf_effective_hamiltonian.py)。既存direct PF生成のunitaryを[評価器](../src/trottertracks/pf_effective_hamiltonian.py)へ渡す。新15＋旧8PASS、実H4/H6/保存signal再解析0、公開後STOP。

@@ -1,6 +1,8 @@
 # プロジェクト案内
 
-[H4 Full PFのH_eff適用準備](docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：決定論PFの主評価方法としてH_eff固有値シフトを採用。既存評価器へ元H/state支持・縮退射影・固有系gateを追加、新4＋旧15人工PASS。Full PF S2/Δ.1・m0/m12・元H対角化1回の[未実行案](docs/research/h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)。方法採用とRPE資格は分離、実科学/保存再解析0、公開後STOP。
+[H4 Full PF H_effの実数値診断](docs/research/h4_full_pf_heff_results_20261113/REPORT.md)：承認済みS2/prefix10/Δ.1、step1・Schur1・元H対角化1・m0/m12の直接/全spectral mean各2件が数値gate通過。minimum shift +1.3371206319456874e−4 Ha、m12再構成差8.69e−12。[caller](scripts/run_h4_full_pf_heff.py)／[4人工test](tests/check_h4_full_pf_heff_caller.py)／[B HANDOFF](docs/research/h4_full_pf_heff_results_20261113/HANDOFF.md)。RPE bias保証/N/RMSE/G未資格、新reference/旧mean再解析0、公開後STOP。
+
+[準備9af1時点：H4 Full PFのH_eff適用準備](docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：決定論PFの主評価方法としてH_eff固有値シフトを採用。既存評価器へ元H/state支持・縮退射影・固有系gateを追加、新4＋旧15人工PASS。Full PF S2/Δ.1・m0/m12・元H対角化1回の[未実行案](docs/research/h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)。方法採用とRPE資格は分離、実科学/保存再解析0、公開後STOP。
 
 [PF有効Hamiltonianの技術基盤](docs/research/pf_effective_hamiltonian_20261113/REPORT.md)：[供給unitary評価器](src/trottertracks/pf_effective_hamiltonian.py)で明示log branch・再構成・state overlap/縮退group・元Hと保持Hを区別。新15＋旧8人工/回帰PASS、実科学/保存signal再解析0。最小eigenvalue shiftをRPE biasへ昇格せず、rpe_bias/N/global RMSE/G null。[HANDOFF](docs/research/pf_effective_hamiltonian_20261113/HANDOFF.md)／[未実行有限案](docs/research/pf_effective_hamiltonian_20261113/SCIENCE_PLAN.md)、公開後STOP。
 

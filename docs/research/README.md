@@ -1,6 +1,8 @@
 # 研究計画資料
 
-[H4 Full PF H_eff適用準備](h4_full_pf_heff_preparation_20261113/REPORT.md)：決定論PFの主誤差評価にH_effシフトを採用。S2/Δ.1・m0/m12の[有限案](h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)と[B HANDOFF](h4_full_pf_heff_preparation_20261113/HANDOFF.md)を具体化。人工新4＋旧15PASS、実科学/保存再解析0、幅探索へ進まず公開後STOP。
+[H4 Full PF H_eff実行結果](h4_full_pf_heff_results_20261113/REPORT.md)：固定準備9af1・科学SOURCE3a26でS2/Δ.1を一回実行。元最低groupへの最大overlapもeffective最低group、m0/m12のsignal差2.33e−15/8.69e−12。人工caller4PASS、実数値gate通過、N/全RMSE/C/G未資格、公開後STOP。
+
+[準備9af1時点：H4 Full PF H_eff適用準備](h4_full_pf_heff_preparation_20261113/REPORT.md)：決定論PFの主誤差評価にH_effシフトを採用。S2/Δ.1・m0/m12の[有限案](h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)と[B HANDOFF](h4_full_pf_heff_preparation_20261113/HANDOFF.md)を具体化。人工新4＋旧15PASS、実科学/保存再解析0、幅探索へ進まず公開後STOP。
 
 [旧2f0時点・採用前：PF有効Hamiltonian技術基盤](pf_effective_hamiltonian_20261113/REPORT.md)：Full/Truncated/head/PR exact-tailのunitary診断とfinite-K corrected/raw対象外を分離。minimum shiftとRPE biasを区別し、新15＋旧8人工回帰PASS。実H4/H6・保存signal再解析・幅選択/N/G0、手法未採択、公開後STOP。
 
