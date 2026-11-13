@@ -1,5 +1,7 @@
 # 文書索引
 
+[Cモデル用compiled証拠の取得準備](research/d_c_compiled_evidence_alignment_20261113/REPORT.md)／[不足・receipt reuse](research/d_c_compiled_evidence_alignment_20261113/NEEDED_CELLS.md)／[有限科学案](research/d_c_compiled_evidence_alignment_20261113/FINITE_SCIENCE_PLAN.md)／[HANDOFF](research/d_c_compiled_evidence_alignment_20261113/HANDOFF.md)：C1914/D e827を照合し、初回LD2/m0のnormal1 path・X/Y・最大2 compileを提案。科学実行未承認、m12再試行なし、29 metadata回帰PASS、mandatory STOP。
+
 [scalar接続修正REPORT](research/d_t2_scalar_binding_fix_20261113/REPORT.md)／[SOURCE付きmetadata](research/d_t2_scalar_binding_fix_20261113/SCALAR_BINDING_METADATA.json)／[C HANDOFF](research/d_t2_scalar_binding_fix_20261113/HANDOFF.md)：tail-onlyとtotalを区別した最小D selector修正、29人工・metadata PASS。新preparation/compile・T2再実行なし、mandatory STOP。
 
 [T2 scalar診断REPORT](research/d_t2_scalar_diagnostic_20261113/REPORT.md)／[実値・hash](research/d_t2_scalar_diagnostic_20261113/run01/DIAGNOSTIC_RESULT.json)／[修正提案](research/d_t2_scalar_diagnostic_20261113/NEXT_STEPS.md)：preparation一回で、tail-only対totalの接続取り違えを確認。修正・T2再実行は未承認/未実施、mandatory STOP。

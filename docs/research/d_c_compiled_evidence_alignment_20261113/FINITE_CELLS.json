@@ -1,0 +1,447 @@
+{
+  "schema": "D_C_COMPILED_EVIDENCE_SELECTION_V1",
+  "status": "TECHNICAL_SELECTION_AND_UNAPPROVED_FINITE_PLAN_ONLY",
+  "D_base": "e827367629ca6c2920d9d908fc1631314399db86",
+  "C_model_source": "1914d0764115d82ec860e08810dafeb50f8d9a42",
+  "A_menu_source": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+  "candidate_price_source": "0c6e16342b3c804fa0bd89a4028d6b5bea7b0322",
+  "scalar_selector_source": "e827367629ca6c2920d9d908fc1631314399db86",
+  "seed_rule": {
+    "source": "155529e20a8fac39e00786c40b57830b71203c4f",
+    "path": "scripts/h46_long_time_native.py",
+    "function": "trial_seed",
+    "extraction": "p1_efficient_zz.trial_seed_function",
+    "rule": "int(sha256(json.dumps([H46_LONG_TIME_20261025, cohort, physical_id, index, outer, piece])).hexdigest()[:16],16)"
+  },
+  "recommendation": "E0_ONLY_FIRST; E1_IS_A_SEPARATE_DEFERRED_OPTION; NO_M12_DEFAULT",
+  "cells": [
+    {
+      "cell": "E0",
+      "label": "PR-LD2",
+      "m": 0,
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "physical": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 2,
+        "T": 0.1,
+        "q": 1,
+        "delta": 0.1,
+        "R_outer": 1,
+        "K": 2,
+        "id": "ce7ef02e7926c1a6c924"
+      },
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          1
+        ],
+        "event_count": 1,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "first_outer_signed_piece_times": [
+        {
+          "piece": 0,
+          "time": 0.1,
+          "hex": "0x1.999999999999ap-4",
+          "events": 1
+        }
+      ],
+      "request_metadata": {
+        "not_runnable_request": true,
+        "request_id": "c8192de2aa38bb1ab866e13df52196b9e5f1fb802680e92ef4e229e602394f46",
+        "context_key": "0a0c43824c1e953a3198897e0d33c640486b58f741de1ff4068d7d70b350f34d",
+        "execution_source": {
+          "kind": "TECHNICAL_SELECTION_METADATA_ONLY_NOT_EXECUTION_SOURCE",
+          "D_base": "e827367629ca6c2920d9d908fc1631314399db86",
+          "C_model_source": "1914d0764115d82ec860e08810dafeb50f8d9a42"
+        },
+        "identity_sha256": "01575f0f076f80e0dc28cef9d822ef2dade0a3e9e1479449fdde312dfae060e1",
+        "law_binding_sha256": "a5b228c49632de66f4b44f90e961ecd009c198f5e4694b618d9270736230a34d",
+        "identity_and_law_source": {
+          "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+          "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+          "round": 0
+        },
+        "input_source_sha256": "fb2e66a9794c90dea9de5f8df88e89fc689159ce8169f78e815760558913363b",
+        "binding_sha256": "9af730074ff498ba85cbaebbbeb22247802e89926eb08757b7409546b8d8f2e8",
+        "split_sha256": "b79b41d5039416ea77ff471bdbcc68a6530d0a84e6ecbe2b37bd1997d28fb8cd",
+        "price_profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1"
+        },
+        "expected_total_scalar": 2.515477156730702,
+        "expected_total_scalar_hex": "0x1.41fb27ccff28cp+1",
+        "scalar_binding": {
+          "hamiltonian_constant": {
+            "quantity": "HAMILTONIAN_CONSTANT",
+            "value": 2.29310124732,
+            "source": {
+              "locator": {
+                "commit": "752b9747a363eb4f1e510092230ef8dc243187ca",
+                "path": "docs/research/d_ld2_m12_t2_20261113/run01/PREFLIGHT.json"
+              },
+              "snapshot": {
+                "bytes": 18126,
+                "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+                "role": "tol_snapshot",
+                "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+              },
+              "receipt": {
+                "bytes": 7080,
+                "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+                "role": "tol_receipt",
+                "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+              },
+              "array": {
+                "name": "constant",
+                "shape": [
+                  1
+                ],
+                "dtype": "<f8",
+                "sha256": "874b34c93c04576c14050d91ecace903d7b2693560bf77a05b2178fc48fb232b"
+              },
+              "hamiltonian_hash": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+            }
+          },
+          "tail_identity": {
+            "quantity": "TAIL_EXTRACTED_IDENTITY_COEFFICIENT",
+            "value": 0.2223759094107018,
+            "source": {
+              "menu": {
+                "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+                "path": "docs/research/pr_rpe_first_signal_menu_20261113/MENU.json",
+                "label": "PR-LD2"
+              },
+              "tail": {
+                "index": {
+                  "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                  "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                },
+                "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                "selector": [
+                  "prefixes",
+                  "2"
+                ]
+              }
+            }
+          },
+          "expected_total": {
+            "quantity": "EXPLICIT_TOTAL_SCALAR",
+            "value": 2.515477156730702,
+            "rule": "BINARY64_HAMILTONIAN_CONSTANT_PLUS_TAIL_IDENTITY_ONCE"
+          }
+        },
+        "reconstruct": {
+          "module": "trottertracks.ld12_price_requests",
+          "function": "request_for",
+          "label": "PR-LD2",
+          "m": 0,
+          "axes": [
+            "X",
+            "Y"
+          ]
+        }
+      },
+      "cohort": "D_C_PRICE_BRIDGE_LD2_M0_V1",
+      "index": 0,
+      "n_paths": 1,
+      "seeds": [
+        {
+          "outer": 0,
+          "piece": 0,
+          "seed": 13095741627497599946
+        }
+      ],
+      "seed_list_sha256": "230ccc56b2328242fa00e33b27b2652990a6506660906b37496c1c50dcecd425",
+      "role": "CONNECTION_DEVELOPMENT_PATH_NOT_MODEL_CALIBRATION",
+      "status": "PROPOSAL_NOT_AUTHORIZED_NOT_EXECUTED",
+      "new_compile_maximum": 2,
+      "proposed_public": "docs/research/d_c_price_evidence_acquisition_20261113/e0/run01",
+      "proposed_private": "/home/AbeHiromu/projects/d-c-price-evidence-20261113-private/e0/run01",
+      "execution_source": null,
+      "mean_C": null,
+      "confidence_interval": null,
+      "qualified_for_law_expectation": false,
+      "blocked_by": [
+        "EXPLICIT_SCIENTIFIC_SCOPE_APPROVAL_AND_FROZEN_EXECUTION_SOURCE"
+      ]
+    },
+    {
+      "cell": "E1",
+      "label": "PR-LD2",
+      "m": 4,
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "physical": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 2,
+        "T": 1.6,
+        "q": 16,
+        "delta": 0.1,
+        "R_outer": 10,
+        "K": 2,
+        "id": "cef49970538ca248d77e"
+      },
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          10
+        ],
+        "event_count": 160,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "first_outer_signed_piece_times": [
+        {
+          "piece": 0,
+          "time": 0.1,
+          "hex": "0x1.999999999999ap-4",
+          "events": 10
+        }
+      ],
+      "request_metadata": {
+        "not_runnable_request": true,
+        "request_id": "067ff410c8adad50d783fcd015b3fbc0f5aa6f014e88d4a440387204918f7316",
+        "context_key": "1cbb4ecac138d8d59b9ccba2cad912d5815df024a6bf079e8533aca8745b8e25",
+        "execution_source": {
+          "kind": "TECHNICAL_SELECTION_METADATA_ONLY_NOT_EXECUTION_SOURCE",
+          "D_base": "e827367629ca6c2920d9d908fc1631314399db86",
+          "C_model_source": "1914d0764115d82ec860e08810dafeb50f8d9a42"
+        },
+        "identity_sha256": "8a1372dd1f9b063f9bd15cc39eb8c488dbeadfc43495327c79a67e3c4505d73d",
+        "law_binding_sha256": "d9a8252ef70e0294aeb7fb6b819c44fa86d151f8aa9d8e24aa898b83b051e52b",
+        "identity_and_law_source": {
+          "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+          "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+          "round": 4
+        },
+        "input_source_sha256": "fb2e66a9794c90dea9de5f8df88e89fc689159ce8169f78e815760558913363b",
+        "binding_sha256": "9af730074ff498ba85cbaebbbeb22247802e89926eb08757b7409546b8d8f2e8",
+        "split_sha256": "b79b41d5039416ea77ff471bdbcc68a6530d0a84e6ecbe2b37bd1997d28fb8cd",
+        "price_profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1"
+        },
+        "expected_total_scalar": 2.515477156730702,
+        "expected_total_scalar_hex": "0x1.41fb27ccff28cp+1",
+        "scalar_binding": {
+          "hamiltonian_constant": {
+            "quantity": "HAMILTONIAN_CONSTANT",
+            "value": 2.29310124732,
+            "source": {
+              "locator": {
+                "commit": "752b9747a363eb4f1e510092230ef8dc243187ca",
+                "path": "docs/research/d_ld2_m12_t2_20261113/run01/PREFLIGHT.json"
+              },
+              "snapshot": {
+                "bytes": 18126,
+                "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+                "role": "tol_snapshot",
+                "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+              },
+              "receipt": {
+                "bytes": 7080,
+                "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+                "role": "tol_receipt",
+                "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+              },
+              "array": {
+                "name": "constant",
+                "shape": [
+                  1
+                ],
+                "dtype": "<f8",
+                "sha256": "874b34c93c04576c14050d91ecace903d7b2693560bf77a05b2178fc48fb232b"
+              },
+              "hamiltonian_hash": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+            }
+          },
+          "tail_identity": {
+            "quantity": "TAIL_EXTRACTED_IDENTITY_COEFFICIENT",
+            "value": 0.2223759094107018,
+            "source": {
+              "menu": {
+                "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+                "path": "docs/research/pr_rpe_first_signal_menu_20261113/MENU.json",
+                "label": "PR-LD2"
+              },
+              "tail": {
+                "index": {
+                  "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                  "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+                },
+                "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+                "selector": [
+                  "prefixes",
+                  "2"
+                ]
+              }
+            }
+          },
+          "expected_total": {
+            "quantity": "EXPLICIT_TOTAL_SCALAR",
+            "value": 2.515477156730702,
+            "rule": "BINARY64_HAMILTONIAN_CONSTANT_PLUS_TAIL_IDENTITY_ONCE"
+          }
+        },
+        "reconstruct": {
+          "module": "trottertracks.ld12_price_requests",
+          "function": "request_for",
+          "label": "PR-LD2",
+          "m": 4,
+          "axes": [
+            "X",
+            "Y"
+          ]
+        }
+      },
+      "cohort": "D_C_PRICE_CHALLENGE_LD2_M4_V1",
+      "index": 0,
+      "n_paths": 1,
+      "seeds": [
+        {
+          "outer": 0,
+          "piece": 0,
+          "seed": 10593896453441901504
+        },
+        {
+          "outer": 1,
+          "piece": 0,
+          "seed": 4511276609742439543
+        },
+        {
+          "outer": 2,
+          "piece": 0,
+          "seed": 16935463291522111168
+        },
+        {
+          "outer": 3,
+          "piece": 0,
+          "seed": 1211847916863395323
+        },
+        {
+          "outer": 4,
+          "piece": 0,
+          "seed": 9396498819275796373
+        },
+        {
+          "outer": 5,
+          "piece": 0,
+          "seed": 14945858205430507057
+        },
+        {
+          "outer": 6,
+          "piece": 0,
+          "seed": 5374605245131558709
+        },
+        {
+          "outer": 7,
+          "piece": 0,
+          "seed": 17078573937782641191
+        },
+        {
+          "outer": 8,
+          "piece": 0,
+          "seed": 8011366994974042547
+        },
+        {
+          "outer": 9,
+          "piece": 0,
+          "seed": 611506994145536352
+        },
+        {
+          "outer": 10,
+          "piece": 0,
+          "seed": 2627529981487504659
+        },
+        {
+          "outer": 11,
+          "piece": 0,
+          "seed": 13777591395769402258
+        },
+        {
+          "outer": 12,
+          "piece": 0,
+          "seed": 14831888320041031788
+        },
+        {
+          "outer": 13,
+          "piece": 0,
+          "seed": 9509719233752365849
+        },
+        {
+          "outer": 14,
+          "piece": 0,
+          "seed": 13326764587314875352
+        },
+        {
+          "outer": 15,
+          "piece": 0,
+          "seed": 3703796451379098486
+        }
+      ],
+      "seed_list_sha256": "453b151640d72bb52f44883bab80d51a61a145c284e91c657ae5219f5aeadb67",
+      "role": "DEFERRED_MODEL_CHALLENGE_NOT_YET_HOLDOUT",
+      "status": "PROPOSAL_NOT_AUTHORIZED_NOT_EXECUTED",
+      "new_compile_maximum": 2,
+      "proposed_public": "docs/research/d_c_price_evidence_acquisition_20261113/e1/run01",
+      "proposed_private": "/home/AbeHiromu/projects/d-c-price-evidence-20261113-private/e1/run01",
+      "execution_source": null,
+      "mean_C": null,
+      "confidence_interval": null,
+      "qualified_for_law_expectation": false,
+      "blocked_by": [
+        "EXPLICIT_SCIENTIFIC_SCOPE_APPROVAL_AND_FROZEN_EXECUTION_SOURCE",
+        "C_FROZEN_PREDICTION_AND_MODEL_CHECK_DESIGN"
+      ]
+    }
+  ],
+  "execution_SOURCE_status": "MUST_BE_COMMITTED_AND_EXPLICITLY_APPROVED_BEFORE_SCIENCE; metadata request IDs must be regenerated",
+  "mandatory_stop": true
+}
