@@ -1,5 +1,7 @@
 # 文書索引
 
+[ベースライン3系列・全RPE signal有限実行計画](research/baseline_finite_signal_plan_20261113/REPORT.md)（2026-11-13）：Full PF S2/.1/Full10、B0I p7/S2/.1、Full-H K2/q=2^m/R448の3 canonical schedule・39roundを固定。提案は保存Full PF m6の受入再資格1件→PASS時だけ新38 mean。無条件再利用0、X/Yは倍計数しない。既存13 reference pair/保存scalarを利用し、新reference/抽出0。metadataのみ、実input読込/再資格/新signal/旧test再実施/N・価格・G0、明示科学許可待ちSTOP。
+
 [D価格adapterとRPE pipelineの統合](research/d_price_pipeline_integration_20261113/REPORT.md)（2026-11-13）：公開D candidate_price_adapterをC price_requestsへ接続。A固定LD1/LD2の13round metadataとD path→pending/外部mean→B会計を照合し、新8＋既存36＝44 PASS。path/S/finite cohortを適格E[C]へ昇格せず、軸・SOURCE/law/preparation/compiler/loweringを保持。実H4/preparation/sampling/compile/保存再解析/実N・G0、D物理資格と平均/N証拠は後続。
 
 [RPE総コストpipelineの人工統合](research/rpe_optimization_integration_20261113/REPORT.md)（2026-11-13）：A PR・C baselineの全round signalをB shot配分/cost/selectへ接続。D向け未評価requestとphysical/lowering bindingを整備。人工新10＋B metadata2＋C/M5回帰24＝36 PASS、4方式の人工全13round・shot最小/G最小・点/区間・未資格/欠測を区別。実H4/saved再解析/実N・価格・G0、科学N資格producerとD価格は未取得。
