@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PRリソース評価の実装・公開ライブラリ監査](docs/research/pr_resource_implementation_audit_20261113/REPORT.md)（2026-11-13）：A/B/C/D現行pipelineの横断監査。物理核・compiler profileは現状維持。優先事項はRTE tail制御ZZのCCX展開（価格定義の科学判断）、`candidate_id`のmemo化（実測75→16.5 s）、RPE decoder分岐選択の閉形式化（M=12で180倍）。改善は未実装・未承認、公開後STOP。
+
 [A/C/D新証拠の正式V2受入](docs/research/rpe_new_evidence_intake_20261113/REPORT.md)／[HANDOFF](docs/research/rpe_new_evidence_intake_20261113/HANDOFF.md)：A公開3e035のm1 nominal60を新scopeで受入れ、S0 m0/m6=64/38を保全。C局所kernel診断・構造Sはcompiled Cへ供給せず、D053物理request/92ff保存136候補をsource付き外部mapへ接続。106技術testと公開A fixture PASS、十分N/global bound/C/G未資格、実科学計算0、公開後STOP。
 
 [A/C/D V2接続・4次PF/明示Full-H RTE](docs/research/abc_d_v2_integration_20261114/REPORT.md)／[D interface](docs/research/abc_d_v2_integration_20261114/INTERFACE.md)／[HANDOFF](docs/research/abc_d_v2_integration_20261114/HANDOFF.md)：A75b5の公開V2 packet/Cd458の価格requestをB保存正本へ正式照合。Yoshida4とm5、κ付き/κなしlayout、D外部physical bridgeを区別し93技術test PASS。nominal/null/C1 falseを保持、科学的baseline採択・実N/C/Gなし、公開後STOP。
