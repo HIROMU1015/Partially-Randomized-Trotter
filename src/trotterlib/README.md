@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[DF head＋Pauli tail再利用調査](../../docs/research/df_head_pauli_tail_preparation_20261114/REPORT.md)：`PauliHamiltonian`/finite RTE/P3・M1 event部品を再利用候補とし、現DF prefix用adapterと辞書identityは未実装。人工4PASS、本番コード・科学値変更0、公開後STOP。
+
 [Full PF追加幅のH_eff結果](../../docs/research/h4_full_pf_followup_results_20261114/REPORT.md)：既存評価器のPRINCIPAL/ENERGY_WINDOWで5新stepを診断。M5/1.6は窓下1モードの枝−1を保持、旧.8の窓整合検査PASS。数値gate全通過、局所予算内3/超2、全RPE資格/N/C/Gなし、公開後STOP。
 
 [Full PF追加幅の分枝準備](../../docs/research/h4_full_pf_followup_plan_20261114/REPORT.md)：既存H_effのENERGY_WINDOWをM5/16hへ適用する有限案。M5/32hはglobal window規約未解決で保留。評価器変更なし、exact schedule/人工windowの4test PASS、新H4/保存再解析0。

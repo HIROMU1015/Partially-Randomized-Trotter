@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[DF head＋Pauli tail準備](df_head_pauli_tail_preparation_20261114/REPORT.md)：同tailの辞書変更、full256 eventと36 meanの適用条件、B identity/C構造/D loweringのgapを整理。人工4test PASS、実H4/新λ/保存再解析/本番変更/N/C/G0。P0辞書2件・P1最大6meanの条件付き有限案、公開後STOP。
+
 [Full PF追加5点H_eff結果](h4_full_pf_followup_results_20261114/REPORT.md)：S2/16h/7・Y4/16h/3・M5/16hが局所εtrot内。全5点数値gate通過、M5/ENERGY_WINDOWと旧.8スペクトル整合PASS、新step/Schur5、直接/spectral各10。人工13 PASS、global RMSE/十分N/G未資格、公開後STOP。
 
 [Full PF追加幅計画](h4_full_pf_followup_plan_20261114/REPORT.md)：S2/Y4各2幅・M5/16hの初回5案、M5/32hは分枝未解決で保留。既存B/D APIで78round metadataとearlyを保持、人工4test PASS。δE/価格/N/G新計算0、科学実行は別承認後、公開後STOP。

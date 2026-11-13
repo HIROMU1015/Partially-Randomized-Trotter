@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[DF head＋Pauli tail技術調査](docs/research/df_head_pauli_tail_preparation_20261114/REPORT.md)：P3/O1-M1と現A/B/C/DのSOURCEを照合。個別Pauliのsector漏れと合計ideal meanの縮約条件を分離、[人工4test](tests/check_df_head_pauli_tail_contract.py) PASS。LD1/2辞書2件と限定mean最大6件の[未承認科学案](docs/research/df_head_pauli_tail_preparation_20261114/SCIENCE_PLAN.md)。本番変更・実H/保存再解析/λ/N/C/G0、旧negative/STOP保全、公開後STOP。
+
 [Full PF追加5点の実行結果](docs/research/h4_full_pf_followup_results_20261114/REPORT.md)：SOURCE a3005d723で承認scopeを一回実行し全数値gate通過。局所予算内S2/16h/7・Y4/16h/3・M5/16h、他2点は予算超過。M5窓/旧.8スペクトル検査PASS、新step/Schur5・直接/spectral各10、元H新eigh/reference/N/C/G0。[caller](scripts/run_h4_full_pf_followup.py)／[C packet](docs/research/h4_full_pf_followup_results_20261114/C_HANDOFF.json)。人工13 PASS、M5/3.2未実行、十分N/global RMSE未資格、公開後STOP。
 
 [Full PF追加幅の未実行計画](docs/research/h4_full_pf_followup_plan_20261114/REPORT.md)：S2の16h/7・8h/3、Y4の16h/3・32h/5、M5の16hを新5actual cellへ集約。[metadata CLI](scripts/prepare_h4_full_pf_followup.py)と[人工4test](tests/check_h4_full_pf_followup_plan.py) PASS。M5/16hはENERGY_WINDOW候補、32hは分枝未解決で初回範囲外。全13round ID/early/C statusを保持、新H4/保存数値再解析/N/C/G0、公開後STOP。

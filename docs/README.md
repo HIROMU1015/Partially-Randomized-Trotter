@@ -1,5 +1,7 @@
 # 文書索引
 
+[DF head＋Pauli tailの接続調査](research/df_head_pauli_tail_preparation_20261114/REPORT.md)：P3/O1の正負結果を現prefix/κ/identityへ無条件移送せず、sectorとlawの接続条件を整理。[有限科学案](research/df_head_pauli_tail_preparation_20261114/SCIENCE_PLAN.md)／[B/C/D HANDOFF](research/df_head_pauli_tail_preparation_20261114/HANDOFF.md)。人工4PASS、実科学0、別承認待ちSTOP。
+
 [Full PF追加幅の科学結果](research/h4_full_pf_followup_results_20261114/REPORT.md)：S2/Y4/M5の新5actual幅で全数値gate通過、局所予算内3点を[C/B HANDOFF](research/h4_full_pf_followup_results_20261114/HANDOFF.md)へ。保存M5/.8窓整合PASS、直接/spectral各10、人工13 PASS、元H新eigh/reference/N/C/G0、公開後STOP。
 
 [Full PF追加幅の有限案](research/h4_full_pf_followup_plan_20261114/REPORT.md)：S2/Y4の境界補完とM5粗化を5新actual幅で提案。[SCIENCE_PLAN](research/h4_full_pf_followup_plan_20261114/SCIENCE_PLAN.md)／[C・B HANDOFF](research/h4_full_pf_followup_plan_20261114/HANDOFF.md)。人工4test PASS、M5/32h分枝保留、新科学/保存再解析0、別承認待ちSTOP。

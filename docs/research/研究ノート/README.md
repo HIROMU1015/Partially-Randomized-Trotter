@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-14：DF head＋Pauli tail調査](2026-11-14-df-head-pauli-tail-preparation.md)：P3/O1からの再利用・sector/identity/κの条件、人工4PASS、科学実行0。
+
 [2026-11-14：Full PF追加5点の実行](2026-11-14-h4-full-pf-followup-results.md)：5点全数値gate通過・局所予算内3/超2、M5/.8窓整合PASS、元H新eigh/reference/N/C/G0。
 
 [2026-11-14：Full PF追加幅の計画](2026-11-14-h4-full-pf-followup-plan.md)：初回5新actual幅・M5/32h分枝保留、4人工/metadata PASS、新科学0。
