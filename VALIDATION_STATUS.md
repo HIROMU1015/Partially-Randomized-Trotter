@@ -1,5 +1,7 @@
 # Validation status
 
+[DF head＋Pauli tailの技術調査](docs/research/d_df_head_pauli_tail_20261114/REPORT.md)：既存Pauli D2→native DF controlled_tails→measured X/Yを新9人工testで確認（最終4.92秒）。正負時間/K0/K2・ordinary/directional・相対phase/scalar一回・full matrix/測定符号、weight3/identity除外を検査。再利用primitive6 fileは固定P3/providerとD基点でbyte一致。P3 run03/run04・旧O1の価格は元domainのみで新価格受入なし。A75fb0の実辞書/λとBの辞書identity待ち、C3a8b37はPauli route未対応。production/新分子build/price compile/sampling/保存値再集計/新λ/N/G0。K0科学採択/新価格modelなし、公開後mandatory STOP。
+
 [S1/V1価格整合のD引渡し](docs/research/d_s1_v1_price_alignment_20261114/REPORT.md)：監査51d324のSOURCE調査、旧Full-H汎用control/新PR CX–CRZ–CXとPFのRTE非該当を10固定SOURCE assertionで確認。A3ae/Cd7cの完成済みFull PF coverage/receiptを再利用、Bce0517は固定DP診断inputで適格Nではない。C案のS2/.2 m5 XY最大2 compile、現C Full-H m0 q1/R448/K2 normal1 path XY最大2 compileを独立の未承認案として具体化。比較guardはCへの改善案で未実装、production・新prepare/sampling/build/compile/価格集計/fit/G0。旧価格・raw・STOPは保全、長時間model誤差/正式G UNKNOWN、公開照合後mandatory STOP。
 
 [C価格モデル用direct証拠の整合準備](docs/research/d_c_compiled_evidence_alignment_20261113/REPORT.md)：C1914公開HEAD・未資格モデル計画を確認し、scalar修正済みD e827 selectorと既存C forwardingの互換を確認。既存29人工・metadata回帰PASS（39.70秒）、C380→1914転送2 module不変、P2 LD1 m0/m6 physical metadata一致のみで新identity bridge未資格。初回LD2/m0 normal1 path/X,Y/最大2 compileを未承認案として全seed固定、m4は別保留。保存constant member読取・2 request metadataだけで、実H4 restore/prepare/sample/event/build/compile/保存数値再解析/mean/CI/Gは0。m12とモデル精度・law/rareはUNKNOWN、公開照合後mandatory STOP。
