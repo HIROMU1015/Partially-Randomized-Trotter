@@ -1,0 +1,45 @@
+# Artificial audit checks, run 2026-11-14 JST (venv h6-environments/20261011, numpy 1.26.4, qiskit 1.3.0)
+
+## check_rte_mean_identity_artificial.py (repository src at A 69ee0ff88)
+K=0 tau=+0.37 events=6 |b*E[U]-poly|=2.29e-16 |b-closed|=0.0e+00 attenuation=0.937862
+K=0 tau=-0.37 events=6 |b*E[U]-poly|=2.29e-16 |b-closed|=0.0e+00 attenuation=0.937862
+K=0 tau=+0.001 events=6 |b*E[U]-poly|=2.22e-16 |b-closed|=0.0e+00 attenuation=1.000000
+K=0 tau=-1.9 events=6 |b*E[U]-poly|=3.51e-16 |b-closed|=0.0e+00 attenuation=0.465746
+K=2 tau=+0.37 events=222 |b*E[U]-poly|=1.33e-15 |b-closed|=0.0e+00 attenuation=0.880884
+K=2 tau=-0.37 events=222 |b*E[U]-poly|=1.33e-15 |b-closed|=0.0e+00 attenuation=0.880884
+K=2 tau=+0.001 events=222 |b*E[U]-poly|=7.77e-16 |b-closed|=0.0e+00 attenuation=0.999999
+K=2 tau=-1.9 events=222 |b*E[U]-poly|=3.27e-15 |b-closed|=8.9e-16 attenuation=0.233446
+K=4 tau=+0.37 events=7998 |b*E[U]-poly|=1.42e-14 |b-closed|=0.0e+00 attenuation=0.880276
+K=4 tau=-0.37 events=7998 |b*E[U]-poly|=1.42e-14 |b-closed|=0.0e+00 attenuation=0.880276
+K=4 tau=+0.001 events=7998 |b*E[U]-poly|=8.66e-15 |b-closed|=2.2e-16 attenuation=0.999999
+K=4 tau=-1.9 events=7998 |b*E[U]-poly|=2.89e-14 |b-closed|=8.9e-16 attenuation=0.205570
+PASS 2.887625846210436e-14
+
+## check_pr_mean_kernels_artificial.py (A 69ee0ff88)
+2nd           R= 5 K=2 q=7 weights<0:False alloc=[5]  carrier-vs-brute 3.0e-15  A-provider-vs-brute 1.1e-15  |raw|/|corr|=0.8405 logB=0.1738
+4th           R= 9 K=2 q=3 weights<0:True alloc=[3, 3, 3]  carrier-vs-brute 7.6e-15  A-provider-vs-brute 8.8e-16  |raw|/|corr|=0.1314 logB=2.0295
+   carrier kernel not evaluated for 4th(m5_best) : Unsupported num_w: 4th(m5_best)
+4th(m5_best)  R=23 K=4 q=2 weights<0:True alloc=[2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2]  carrier-vs-brute 0.0e+00  A-provider-vs-brute 3.1e-15  |raw|/|corr|=0.8832 logB=0.1242
+2nd           R= 1 K=0 q=4 weights<0:False alloc=[1]  carrier-vs-brute 5.5e-15  A-provider-vs-brute 3.1e-16  |raw|/|corr|=0.2763 logB=1.2863
+PASS 7.62066214597214e-15
+
+## check_xy_wrapper_locality_artificial.py 2000
+trials 2000 {'equal_rz': 1746, 'equal_cx': 2000, 'max_final_run_rz': 3, 'identical_outside_final_ancilla_run': 2000}
+C_Y - C_X distribution {-1: 125, 0: 1746, 1: 129}
+counterexamples to locality: 0
+
+## bench_candidate_id_artificial.py (A 69ee0ff88)
+candidate_id: 7.15 ms/call; cached parse: 0.0047 ms/call; ratio 1536x; same id 2a8c6718220eec59d419
+
+## bench_exact_binomial_scaling_artificial.py (B 6106e4d96)
+N  binomial_axis: seconds, peak MB, bits of denominator | round_distribution(N,N): seconds, cells, peak MB
+   12     0.000 s       0.0 MB       613 bits |    0.256 s      169 cells       8.8 MB
+   64     0.001 s       0.0 MB      3265 bits |    0.434 s     4225 cells       6.7 MB
+  256     0.005 s       0.5 MB     13057 bits |   35.732 s    66049 cells     280.5 MB
+ 1024     0.056 s       7.0 MB     52225 bits
+ 4096     0.706 s     111.7 MB    208897 bits
+
+## import cost (A 69ee0ff88 tree)
+2.59s 346372KB  import trotterlib
+3.32s 344548KB  import trotterlib.rte
+0.57s 105420KB  import numpy, scipy.linalg, qiskit

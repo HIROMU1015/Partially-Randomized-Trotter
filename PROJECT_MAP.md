@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PRリソース評価のリポジトリ横断・実装総合監査](docs/research/pr_resource_repo_wide_audit_20261114/REPORT.md)（2026-11-14）：A/B/C/Dと過去の固定SOURCE・共通実装を横断。中核計算（PF/PR発展、有限K RTE、係数表、kernelの版）は定義式・人工独立実装と一致し、不具合なし。要対処はFull-H RTE価格のlowering不整合、共有moduleのbyte固定による破損（B/D headで5 test失敗）、緩いrisk上界。非効率は初回実行の配線STOP（11/13に7件）、`candidate_id`（遅いtestの77%）、X/Y二重compile（m6の37%）、fingerprint反復。修正・科学計算は0。
+
 [PRリソース評価の実装・公開ライブラリ監査](docs/research/pr_resource_implementation_audit_20261113/REPORT.md)（2026-11-13）：A/B/C/D現行pipelineの横断監査。物理核・compiler profileは現状維持。優先事項はRTE tail制御ZZのCCX展開（価格定義の科学判断）、`candidate_id`のmemo化（実測75→16.5 s）、RPE decoder分岐選択の閉形式化（M=12で180倍）。改善は未実装・未承認、公開後STOP。
 
 [A/C/D新証拠の正式V2受入](docs/research/rpe_new_evidence_intake_20261113/REPORT.md)／[HANDOFF](docs/research/rpe_new_evidence_intake_20261113/HANDOFF.md)：A公開3e035のm1 nominal60を新scopeで受入れ、S0 m0/m6=64/38を保全。C局所kernel診断・構造Sはcompiled Cへ供給せず、D053物理request/92ff保存136候補をsource付き外部mapへ接続。106技術testと公開A fixture PASS、十分N/global bound/C/G未資格、実科学計算0、公開後STOP。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[総合監査REPORT](research/pr_resource_repo_wide_audit_20261114/REPORT.md)／[個別所見](research/pr_resource_repo_wide_audit_20261114/FINDINGS.md)／[人工検証・計測](research/pr_resource_repo_wide_audit_20261114/evidence/ARTIFICIAL_CHECKS.txt)／[回帰テスト一覧](research/pr_resource_repo_wide_audit_20261114/evidence/TEST_MATRIX.txt)：PRリソース評価のリポジトリ横断監査（科学的正しさ・効率・構造・統合・検証不足、優先順位付き）。
+
 [実装監査REPORT](research/pr_resource_implementation_audit_20261113/REPORT.md)／[監査詳細](research/pr_resource_implementation_audit_20261113/IMPLEMENTATION_AUDIT.md)／[改善候補](research/pr_resource_implementation_audit_20261113/IMPROVEMENT_CANDIDATES.md)／[改善計画](research/pr_resource_implementation_audit_20261113/RECOMMENDED_PLAN.md)：PRリソース評価の実装品質・計算効率の監査（変更なし）。
 
 [新A/C/D証拠REPORT](research/rpe_new_evidence_intake_20261113/REPORT.md)／[正式受入HANDOFF](research/rpe_new_evidence_intake_20261113/HANDOFF.md)／[最終metadata](research/rpe_new_evidence_intake_20261113/run02/PUBLISHED_EVIDENCE.json)／[4方式不足](research/rpe_new_evidence_intake_20261113/run02/METHOD_GAPS.json)：A m1 nominal60、C構造診断、D物理SOURCE/保存coverageを分離し、実N/C/Gを作らず接続。106技術test。
