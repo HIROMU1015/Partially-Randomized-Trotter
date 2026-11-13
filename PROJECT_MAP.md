@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[B total/Q3 canonical統合](docs/research/b_total_q3_canonical_integration_20261114/REPORT.md)／[API](docs/research/b_total_q3_canonical_integration_20261114/HANDOFF.md)：Z1＋T1/Q3をbyte再利用し、Pauli新canonical/signal/元receiptをSOURCE付きで接続。C修正済みPauli guard/bridge・paper会計を再利用。110技術test PASS、旧DP不変、新科学N/MSE/Gなし・STOP。
+
 [B独立技術統合・Pauli signal受入](docs/research/b_rpe_pauli_integration_20261114/REPORT.md)／[APIと残るbridge](docs/research/b_rpe_pauli_integration_20261114/HANDOFF.md)：I1/I2/E1・固定C価格guardを再利用、Pauli各13round/26recordをSOURCE照合。二水準readinessはnominalとMSEを分離、科学N/G資格なし。元DP保全、技術137test PASS、新科学評価なし・STOP。
 
 [固定H4 LD1/LD2のDP上界結果](docs/research/h4_dp_risk_fixed_results_20261114/REPORT.md)／[分解正本](docs/research/h4_dp_risk_fixed_results_20261114/DECOMPOSITION.json)／[HANDOFF](docs/research/h4_dp_risk_fixed_results_20261114/HANDOFF.md)：承認済み各1件・計2評価完了。モデルMSE上界約9.0395e−4/9.0324e−4 Ha²へ約99.62%縮小。残余約1e−27、上界は未解決lossが支配。exact検算PASS、十分N/global/G null、MC/追加shot/δE加算なし、公開後STOP。

@@ -1,0 +1,35 @@
+2026-11-14 JST; technical tests only. Existing Python 3.11.0rc1 / NumPy 1.26.4.
+PYTHON=/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python
+110 distinct tests PASS: groups 28 + 37 + 45.
+New B bridge 8 + unchanged independent Codex tests 11 + existing regressions 91.
+
+PYTHONPATH=src:tests "$PYTHON" -B -m unittest -v check_rpe_total_binding check_rpe_total_decoder_risk check_rpe_price_implementation_guard
+Full output: TEST_GROUP_1.txt
+----------------------------------------------------------------------
+Ran 28 tests in 38.973s
+
+OK
+
+PYTHONPATH=src:tests "$PYTHON" -B -m unittest -v check_rpe_deterministic_risk check_rpe_deterministic_refinement check_rpe_decoder_fast
+Full output: TEST_GROUP_2.txt
+----------------------------------------------------------------------
+Ran 37 tests in 7.743s
+
+OK
+
+PYTHONPATH=src:tests "$PYTHON" -B -m unittest -v check_rpe_shot_allocation check_pr_rpe_rmse_controller check_rpe_pauli_integration check_pf_pr_rpe_pipeline
+Full output: TEST_GROUP_3.txt
+----------------------------------------------------------------------
+Ran 45 tests in 6.712s
+
+OK
+
+Inputs: artificial laws/counts/prices or saved metadata equality only. No real H4 risk/N/C/G, saved numeric reanalysis, old DP rerun, or new primary MC. Existing R3/allocation tests include synthetic RNG/MC checks.
+Pre-existing invalid escape DeprecationWarnings in Almost_optimal_grouping.py were emitted; no environment or shared library changed.
+
+Existing B source wiring check (metadata only):
+"$PYTHON" -B scripts/preflight_pr_resource_wiring.py --root "$PWD" --series B --source 284a11c7da1b256cbd64f189a582cd431d29faba
+{"status": "TECHNICAL_WIRING_PASS_NOT_SCIENTIFIC_QUALIFICATION", "series": "B", "source": "284a11c7da1b256cbd64f189a582cd431d29faba", "checked_modules": ["src/trottertracks/pf_pr_rpe_pipeline.py", "src/trottertracks/h4_df10_rpe_connection.py", "src/trottertracks/h4_s0_v2_intake.py"], "boundary": "N/C/G providers: NOT CALLED", "science_calls": 0, "mandatory_stop": true}
+
+git diff --check: PASS
+Protected files: see PRESERVATION.json; byte equality only, no MSE decomposition rerun.

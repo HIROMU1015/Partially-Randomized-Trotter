@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[rpe_total_binding](rpe_total_binding.py)／[rpe_c_interfaces](rpe_c_interfaces.py)：total decoder/Q3 opt-inのcanonical・signal・保存receipt接続。CのPauli bridge/guard/paper会計を固定SOURCE再利用。[REPORT](../../docs/research/b_total_q3_canonical_integration_20261114/REPORT.md)。旧kernel/controller不変。
+
 [rpe_cost_preliminary](rpe_cost_preliminary.py)：固定保存P0〜P4の条件付き構造寄与・損益分岐・pilot比。既存SavedArtifacts/same/exact会計を再利用し、decoder/price providerや最適化器は作らない。[結果](../../docs/research/rpe_cost_preliminary_results_20261113/REPORT.md)／[人工4件](../../tests/check_rpe_cost_preliminary.py)。
 
 [rpe_shot_allocation](rpe_shot_allocation.py)：1つのV2 configuration内の有限whole-shot menu用prepare/diagnose/compare。既存MC/RMSE/cost/selectを再利用し、SOURCE/law/lowering/区間とpendingを保持。[HANDOFF](../../docs/research/rpe_shot_allocation_20261113/HANDOFF.md)。48技術test、実科学なし。

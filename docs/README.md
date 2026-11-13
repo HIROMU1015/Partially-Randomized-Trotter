@@ -1,5 +1,7 @@
 # 文書索引
 
+[Z1＋T1/Q3のB統合](research/b_total_q3_canonical_integration_20261114/REPORT.md)／[canonical/price HANDOFF](research/b_total_q3_canonical_integration_20261114/HANDOFF.md)／[未承認の有限2評価案](research/b_total_q3_canonical_integration_20261114/FINITE_SCIENCE_PLAN.md)：110人工/回帰PASS、新科学評価0。
+
 [Bの独立統合・Pauli全round受入](research/b_rpe_pauli_integration_20261114/REPORT.md)／[二水準APIとC bridge不足](research/b_rpe_pauli_integration_20261114/HANDOFF.md)：既存guard/I1/I2/E1、26recordのmetadataのみ。技術137件PASS、新N/MSE/C/Gなし・STOP。
 
 [実H4部分DPの結果](research/h4_dp_risk_fixed_results_20261114/REPORT.md)／[SOURCEと解釈](research/h4_dp_risk_fixed_results_20261114/HANDOFF.md)／[exact分解](research/h4_dp_risk_fixed_results_20261114/DECOMPOSITION.json)／[26round診断表](research/h4_dp_risk_fixed_results_20261114/ROUND_DIAGNOSTICS.csv)：固定2件・約2時間27分で完了、旧上界より約99.62%縮小。元loss/資格/nullを保持、正式N/価格/Gなし、公開後STOP。
