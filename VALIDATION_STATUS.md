@@ -1,5 +1,7 @@
 # Validation status
 
+[B0I・Full-Hの全13round Raw signal取得](docs/research/truncated_fullh_signal_results_20261114/REPORT.md)（2026-11-14）：固定H4 DF10のB0I p7/S2/Δ.1とFull-H finite-K2/q=2^m/R448を各13round、一回評価。SOURCE5a172629d、26件すべて元数値gate PASS、Raw/corrected/reference/normalizationとB packetを保存。人工caller3件PASS、数値module不変、context復元1、旧signal受入/retry0。数値誤差・law距離・state誤差は未資格、MC/N/価格/G0。旧c546/6306計画・STOPを保全し公開後mandatory STOP。
+
 [B0I・Full-Hの26round Raw signal有限scope](docs/research/truncated_fullh_signal_scope_20261114/REPORT.md)（2026-11-14）：c546原本からB0I p7/S2/.1とFull-H K2/q=2^m/R448の26roundを同identity/SOURCE/gateで分離。Full PF・m6受入依存・旧signal再資格0。新reference/抽出0、共有saved context/cacheを再利用。metadata26件照合PASS、実input/数値計算/再解析/旧test再実施0。数値実行は明示許可待ちSTOP。
 
 [平均compiled価格の証拠coverage・有限検証案](docs/research/rpe_price_evidence_validation_20261113/REPORT.md)（2026-11-13）：PR-LD1/LD2の52軸＋旧Full PF6 recipeの156軸を静的coverage化。PF direct receipt16軸、LD1 E[S]26軸/P2有限cohort4軸の所在と未受入bridgeを区別。D corrected scalarの人工1＋旧13＝14 PASS、production変更0。条件付きPR新paired6セル等を提案し、BのN/精度とA選択待ち。保存S/C再集計・fit/compile/G0、公開後STOP。
