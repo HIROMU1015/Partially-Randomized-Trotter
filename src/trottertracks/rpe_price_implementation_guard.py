@@ -16,7 +16,7 @@ import types
 
 from . import pr_rpe_rmse_controller as B
 
-GUARD = dict(commit='3a8b37f1a282c0c06ac1a363b070f4376e9ff41a',
+GUARD = dict(commit='c628e9e8447c11c984064b922cbce6c52dc72d48',
              path='src/trottertracks/price_implementation_guard.py')
 D_ADAPTER = dict(commit='e7dca5f7301c8633b17a59b6a7161331303aef2d',
                  path='src/trottertracks/full_baseline_v2_requests.py')
@@ -64,15 +64,20 @@ def _guard(root):
     return load('price_implementation_guard', GUARD)
 
 
-def check(root, config, prices, *, cohorts, bindings, policy):
+def check(root, config, prices, *, cohorts, bindings, policy, canonical_binding=None):
     """C's G.check before any B price arithmetic; ValueError on any mismatch."""
+    if canonical_binding is not None:
+        from . import rpe_total_binding as T
+        return T.check_prices(root, config, prices, cohorts=cohorts, bindings=bindings,
+                              policy=policy, canonical_binding=canonical_binding)
     return guard(root).check(str(root), config, prices, cohorts=cohorts, bindings=bindings, policy=policy)
 
 
 def cost(root, config, n_packet, prices, *, cohorts, price_bindings, comparison_policy,
-         price_policy='qualified_expectation'):
+         price_policy='qualified_expectation', canonical_binding=None):
     """C's G.cost sequence (check, then unchanged B.cost), keeping the check."""
-    checked = check(root, config, prices, cohorts=cohorts, bindings=price_bindings, policy=comparison_policy)
+    checked = check(root, config, prices, cohorts=cohorts, bindings=price_bindings, policy=comparison_policy,
+                    canonical_binding=canonical_binding)
     out = B.cost(config, n_packet, prices, cohorts=cohorts, price_policy=price_policy)
     out['price_implementation_check'] = checked
     return out

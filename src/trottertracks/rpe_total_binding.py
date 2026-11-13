@@ -1,0 +1,279 @@
+"""Opt-in canonical Z1+T1/Q3 binding; no decoder/controller reimplementation.
+
+Changing only the estimation contract changes canonical IDs, not the circuit.
+All historical signals/receipts remain intact; bound views carry their origin.
+No N qualification is issued. Numerical evaluate/cost entries require their
+own scientific execution scope when used on real data.
+"""
+from copy import deepcopy
+
+from . import rpe_total_decoder as T
+from . import rpe_total_risk as Q
+from . import rpe_price_implementation_guard as R
+from . import rpe_c_interfaces as C
+
+B, p, K = R.B, R.B.p, Q.K
+DECODER_SOURCE = dict(commit='710aa69b663ef3313439762d25c80a652a03948f',
+                      path='src/trottertracks/rpe_total_decoder.py')
+RISK_SOURCE = dict(commit=DECODER_SOURCE['commit'], path='src/trottertracks/rpe_total_risk.py')
+KIND = 'DECODER_ONLY_CANONICAL_Q3_OPT_IN_V1'
+
+
+def _same(actual, expected, message):
+    if not p.same(actual, expected):
+        raise ValueError('Canonical total binding: ' + message)
+
+
+def _selected(root, source):
+    out = p.SavedArtifacts(root).read(source)
+    for key in source.get('selector', ()):
+        out = out[key]
+    return out
+
+
+def _total_config(original):
+    B._validate(original)
+    if original['spec'].get('schedule_adapter') is not None:
+        raise ValueError('Legacy A fixed-grid adapter needs its own versioned contract bridge; no silent grid conversion')
+    spec = deepcopy(original['spec']); policy = spec['rmse_policy']
+    if policy['error_contract'].get('decoder') != T.ORIGINAL_ESTIMATOR:
+        raise ValueError('Original decoder contract required; already-total or foreign decoder rejected')
+    policy['error_contract'].update(decoder=T.ESTIMATOR, decoder_source=deepcopy(DECODER_SOURCE),
+        estimator_rules=deepcopy(T.RULES),
+        risk_evaluation=dict(kind='DIRECT_MODEL_MSE_Q3_OPT_IN', source=deepcopy(RISK_SOURCE),
+            adopted=False, scientific_qualification='UNKNOWN',
+            minkowski_reference=deepcopy(original['spec']['rmse_policy']['error_contract']),
+            delta_E_added=False))
+    policy['scientific_status'] = 'PROPOSED_NOT_ADOPTED'
+    # Existing B owns all schedule generation, exact arithmetic and hashing.
+    mapper = None if spec['event_mapping']['kind'] == B.DRAFT_MAPPER else (
+        lambda s, row: deepcopy(original['rounds'][row['m']]['mapping']))
+    total = B.generate(spec, event_mapper=mapper)
+    for old, new in zip(original['rounds'], total['rounds']):
+        for key in old:
+            if key not in ('candidate', 'identity', 'law_binding'):
+                _same(new.get(key), old[key], 'physical schedule changed: '+key)
+        _same({k:v for k,v in new['candidate'].items() if k != 'id'},
+              {k:v for k,v in old['candidate'].items() if k != 'id'}, 'physical candidate changed')
+    return total
+
+
+def create(root, original, *, original_source):
+    """Metadata only. A proposed new contract; never adopts Q3 scientifically.
+
+    Production origin is read from pinned Git JSON, with a selector if needed.
+    Artificial fixtures use an explicit fixture SOURCE and never saved science.
+    """
+    if not original_source:
+        raise ValueError('Original canonical SOURCE required')
+    if 'fixture' not in original_source:
+        _same(_selected(root, original_source), original, 'original configuration differs from SOURCE')
+    total = _total_config(original)
+    if total['id'] == original['id']:
+        raise ValueError('Decoder change must change the canonical configuration')
+    out = dict(kind=KIND, original_configuration=deepcopy(original), total_configuration=total,
+        original_source=deepcopy(original_source), decoder_source=deepcopy(DECODER_SOURCE),
+        risk_source=deepcopy(RISK_SOURCE), C_source=C.SOURCE,
+        mapping=[dict(m=a['m'], original_candidate_id=a['candidate']['id'],
+            total_candidate_id=b['candidate']['id'], original_law_binding=deepcopy(a['law_binding']),
+            total_law_binding=deepcopy(b['law_binding'])) for a,b in zip(original['rounds'],total['rounds'])],
+        change_scope='ESTIMATOR_AND_DIRECT_MODEL_RISK_CONTRACT_ONLY',
+        physical_circuit_changed=False, scientific_adoption=False, sufficient_N=None, G_qualified=None)
+    out['id'] = B._id(out)
+    return out
+
+
+def validate(root, binding, total=None):
+    _same(binding, create(root, binding['original_configuration'], original_source=binding['original_source']),
+          'bridge/configuration/source mutated')
+    if total is not None:
+        _same(total, binding['total_configuration'], 'wrong new canonical configuration')
+
+
+def _plan(root, config, packet):
+    pipeline = C.interfaces(str(root)).pipeline
+    if not packet.get('implementation_sources'):
+        raise ValueError('This signal bridge requires the authoritative Pauli per-round SOURCE map')
+    options = dict(implementation_sources=packet['implementation_sources'])
+    if packet.get('pauli_dictionary') is not None:
+        options['pauli_dictionary'] = packet['pauli_dictionary']
+    return pipeline.plan(root, config, target=packet['target'], signal_source=packet['source'], **options)
+
+
+def bind_signal(root, binding, original_packet):
+    """Reuse C's physical-ID bridge; retain the unchanged original signal packet."""
+    validate(root, binding); old = binding['original_configuration']; new = binding['total_configuration']
+    if original_packet.get('canonical_binding') is not None:
+        raise ValueError('A bound view cannot substitute for the original saved signal')
+    _same(original_packet['configuration_id'], old['id'], 'original signal configuration')
+    pipeline = C.interfaces(str(root)).pipeline
+    if 'fixture' not in binding['original_source']:
+        from . import rpe_pauli_signal_intake as A
+        saved = A.accept_saved(root, integration=pipeline)['results']
+        matches = [r['signal_packet'] for r in saved if r['configuration']['id'] == old['id']]
+        if len(matches) != 1:
+            raise ValueError('Published Pauli intake for this original canonical SOURCE required')
+        _same(original_packet, matches[0], 'original signal/target/raw differs from saved SOURCE')
+    old_request = _plan(root, old, original_packet); new_request = _plan(root, new, original_packet)
+    means = original_packet['means']
+    _same([r['m'] for r in means], list(range(old['spec']['M']+1)), 'whole signal schedule required')
+    K.S.prepare(old, means, [], target=original_packet['target'],
+        shot_policy=dict(meaning='USER_SUPPLIED', source=binding['original_source']))
+    packet = deepcopy(original_packet); packet['configuration_id'] = new['id']
+    for old_row, new_row, original, view in zip(old['rounds'], new['rounds'], means, packet['means']):
+        if not original.get('provider_binding'):
+            raise ValueError('Explicit original signal physical/SOURCE binding required')
+        pipeline.provider_binding_check(old_request, original)
+        before = old_request['pending']['jobs'][old_row['m']]['physical_context']
+        after = new_request['pending']['jobs'][new_row['m']]['physical_context']
+        def physical(value):
+            value = deepcopy(value); value['physical_candidate'].pop('id')
+            return value
+        _same(physical(before), physical(after), 'signal physical circuit/law differs')
+        view.update(identity=deepcopy(new_row['identity']), law_binding=deepcopy(new_row['law_binding']))
+        view['provider_binding']['physical_context'] = deepcopy(after)
+        view['canonical_origin'] = dict(identity=deepcopy(original['identity']),
+            law_binding=deepcopy(original['law_binding']), provider_binding=deepcopy(original['provider_binding']))
+        pipeline.provider_binding_check(new_request, view)
+    packet.update(canonical_binding=binding['id'], origin_signal_packet=deepcopy(original_packet),
+        sufficient_N=None, global_RMSE_bound=None, G=None, winner=None)
+    return dict(configuration=new, request=new_request, signal_packet=packet,
+        signal_input=pipeline.signal_input(packet), science_calls=0, scientific_adoption=False)
+
+
+def evaluate(root, binding, signal_packet, allocations, *, evaluation_target, statistical_contract, source, options):
+    """Explicit numerical entry using Q's unchanged engine and old closure basis.
+
+    Q.evaluate's partial-decoder certificate API expects the old contract. Its
+    TOTAL-estimator result is then bound to the new canonical contract, retaining
+    the exact old kernel input. No old partial-state DP is rerun in this caller.
+    """
+    validate(root, binding)
+    origin = signal_packet.get('origin_signal_packet')
+    if origin is None:
+        raise ValueError('Source-bound original signal required')
+    _same(signal_packet, bind_signal(root, binding, origin)['signal_packet'], 'signal view modified')
+    if options.get('state_refinement') is not None:
+        raise ValueError('Old partial DP is excluded; use total_state_refinement explicitly')
+    api = C.interfaces(str(root)).pipeline
+    records = Q.evaluate(binding['original_configuration'], origin, allocations,
+        evaluation_target=evaluation_target, statistical_contract=statistical_contract,
+        integration=api, source=source, options=options)
+    new = binding['total_configuration']
+    for record in records:
+        kernel = deepcopy(record['deterministic_input'])
+        record.update(configuration_id=new['id'], signal_input=api.signal_input(signal_packet),
+            canonical_binding=binding['id'], n_packet=None, sufficient_N=None, global_RMSE_bound=None,
+            G=None, G_qualified=None)
+        record['deterministic_input'].update(configuration_id=new['id'],
+            signal_input=api.signal_input(signal_packet), canonical_binding=deepcopy(binding),
+            canonical_error_contract=deepcopy(new['spec']['rmse_policy']['error_contract']),
+            kernel_input=kernel, decoder_source=deepcopy(DECODER_SOURCE), risk_source=deepcopy(RISK_SOURCE))
+    return records
+
+
+def _price_view(root, binding, original_prices, original_sides, cohorts, policy):
+    old = binding['original_configuration']; new = binding['total_configuration']
+    checked = R.guard(root).check(str(root), old, original_prices, cohorts=cohorts, bindings=original_sides, policy=policy)
+    # No mean/cohort/lowering/interval/source is modified. C verifies receipt
+    # assertions at the ORIGINAL identity, then this validated decoder-only
+    # mapping connects them to the new identity. No assertion is reissued.
+    def views(values, side=False):
+        out = []
+        for value in values:
+            m = value['identity']['m']; original = old['rounds'][m]; total = new['rounds'][m]
+            _same(value['identity'], original['identity'], 'original price identity')
+            _same(value['law_binding'], original['law_binding'], 'original price law')
+            view = deepcopy(value)
+            view.update(identity=deepcopy(total['identity']), law_binding=deepcopy(total['law_binding']))
+            if side:
+                # C.price_context is defined by the same full physical recipe;
+                # only the Pauli canonical physical ID changes with the decoder.
+                context = view.get('physical_context') or {}
+                if context.get('physical_candidate', {}).get('id') == original['candidate']['id']:
+                    context['physical_candidate']['id'] = total['candidate']['id']
+                expected = dict(binding=old['spec']['binding'], profile=old['spec']['profile'],
+                    split=old['spec']['split'], law=old['spec']['law'])
+                for key, item in expected.items():
+                    _same(value.get('physical_context', {}).get(key), item, 'price physical '+key)
+                if old['spec']['method'] == 'PR':
+                    physical = value['physical_context']['physical_candidate']
+                    for key in ('method', 'system', 'formula', 'prefix', 'q', 'K', 'R_outer'):
+                        _same(physical.get(key), original['candidate'][key], 'price physical candidate '+key)
+                    for key in ('T', 'delta'):
+                        if B.a.exact_scalar(physical.get(key)) != B.a.exact_scalar(original['candidate'][key]):
+                            raise ValueError('Price physical time/width differs')
+                    _same(value['physical_context'].get('structure'), original['structure'], 'price structure')
+                if (view.get('mean_interval') or {}).get('domain') is not None:
+                    _same(value['mean_interval']['domain'], original['candidate'], 'price interval domain')
+                    view['mean_interval']['domain'] = deepcopy(total['candidate'])
+            if (value.get('model') or {}).get('domain') is not None:
+                # Model qualification is not transferred by a decoder bridge.
+                # An explicit new-domain validation is needed before use.
+                view['model']['qualified_for_candidate'] = False
+            view['decoder_binding'] = binding['id']
+            out.append(view)
+        return out
+    price_views, side_views = views(original_prices), views(original_sides, True)
+    new_cohorts = {}
+    known = {r['candidate']['id']:r['m'] for r in old['rounds']}
+    for (candidate, axis), cohort in cohorts.items():
+        if candidate not in known or axis not in p.AXES:
+            raise ValueError('Foreign price cohort candidate/axis')
+        new_cohorts[new['rounds'][known[candidate]]['candidate']['id'], axis] = cohort
+    return price_views, side_views, new_cohorts, checked
+
+
+def bind_prices(root, binding, prices, *, bindings, cohorts, policy):
+    """Metadata-only guarded view. No arithmetic, no price or model prediction."""
+    validate(root, binding)
+    pv, sv, cv, checked = _price_view(root, binding, prices, bindings, cohorts, policy)
+    return dict(canonical_binding=deepcopy(binding), original_prices=deepcopy(prices),
+        original_bindings=deepcopy(bindings), original_cohorts=deepcopy(cohorts), policy=deepcopy(policy),
+        prices=pv, bindings=sv, cohorts=cv, original_implementation_check=checked,
+        receipt_reissued=False, science_calls=0)
+
+
+def check_prices(root, config, prices, *, cohorts, bindings, policy, canonical_binding):
+    """Formal guard bridge: recheck original SOURCE assertions before arithmetic."""
+    origin = canonical_binding; bridge = origin['canonical_binding']
+    validate(root, bridge, config)
+    expected = bind_prices(root, bridge, origin['original_prices'], bindings=origin['original_bindings'],
+        cohorts=origin['original_cohorts'], policy=policy)
+    cohort_keys = ('cohorts', 'original_cohorts')
+    _same({k:v for k,v in origin.items() if k not in cohort_keys},
+          {k:v for k,v in expected.items() if k not in cohort_keys}, 'price receipt/source bridge changed')
+    if any(origin[k] != expected[k] for k in cohort_keys):
+        raise ValueError('Price bridge cohorts changed')
+    _same(prices, expected['prices'], 'bound price values/source changed')
+    _same(bindings, expected['bindings'], 'bound price sidecars changed')
+    if cohorts != expected['cohorts']:
+        raise ValueError('Bound price cohorts changed')
+    out = deepcopy(expected['original_implementation_check'])
+    out.update(canonical_binding_id=bridge['id'], original_configuration_id=bridge['original_configuration']['id'],
+        total_configuration_id=config['id'], receipt_reissued=False,
+        status='ORIGINAL_IMPLEMENTATION_CHECKED_AND_DECODER_ONLY_BRIDGE_VERIFIED')
+    return out
+
+
+def compare(root, binding, evaluations, prices, *, model_limit, qualifications, **options):
+    """Reuse D.compare/W.compare; external N evidence must match the new contract."""
+    validate(root, binding); config = binding['total_configuration']
+    contract = config['spec']['rmse_policy']['error_contract']
+    for record in evaluations:
+        if (record.get('canonical_binding') != binding['id']
+                or record['diagnostic']['deterministic_risk'].get('estimator') != T.ESTIMATOR):
+            raise ValueError('Total estimator canonical evaluation required')
+        supplied = record.get('deterministic_input') or {}
+        _same(supplied.get('canonical_binding'), binding, 'evaluation uses another canonical bridge')
+        _same(supplied.get('canonical_error_contract'), contract, 'evaluation uses another error contract')
+        _same(supplied.get('configuration_id'), config['id'], 'evaluation has old configuration ID')
+        if (supplied.get('options') or {}).get('estimator') != T.ESTIMATOR:
+            raise ValueError('Evaluation estimator option differs')
+    for packet in qualifications.values():
+        if (packet.get('configuration_id') != config['id']
+                or packet.get('evidence_kind') not in ('SCIENTIFIC', 'SYNTHETIC_ONLY')
+                or not p.same((packet.get('rmse_evidence') or {}).get('error_contract'), contract)):
+            raise ValueError('N packet uses another decoder/configuration/error contract or is nominal')
+    return Q.D.compare(config, evaluations, prices, model_limit=model_limit,
+                       qualifications=qualifications, root=root, **options)

@@ -163,6 +163,13 @@ def accept_saved(root, *, integration):
         result['signal_input'] = integration.signal_input(result['signal_packet'])
         _same(result['signal_input'], {k: result['signal_packet'][k] for k in ('configuration_id', 'target', 'source', 'means')},
               'C consumed signal input')
+        if hasattr(integration, 'provider_binding_check'):
+            view = result['signal_packet']
+            request = integration.plan(root, config, target=view['target'], signal_source=view['source'],
+                                       implementation_sources=view['implementation_sources'])
+            for mean in view['means']:
+                integration.provider_binding_check(request, mean)
+            result.update(request=request, C_plan_price_bridge='SOURCE_BOUND_PAULI_PHYSICAL_BRIDGE_METADATA_ONLY')
         results.append(result)
     return dict(status='SOURCE_BOUND_ALL_26_MEANS_NOT_RPE_QUALIFIED', results=results,
         source=deepcopy(HANDOFF), source_blobs=deepcopy(store.sources), science_calls=0,

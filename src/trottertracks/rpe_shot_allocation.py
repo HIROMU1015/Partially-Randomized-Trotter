@@ -176,7 +176,7 @@ def _linear_bounds(coefficients, bounds):
 def compare(config, allocations, evaluations, prices, *, cohorts, statistical_contract,
             price_extension=None, price_bindings=(), interval_contract=None,
             price_policy='qualified_expectation', unexplored_scope='OUTSIDE_EXPLICIT_FINITE_ALLOCATION_MENU',
-            root=None, comparison_policy=None):
+            root=None, comparison_policy=None, canonical_binding=None):
     """Exact finite-menu point comparison of qualified, externally supplied N.
 
     Missing diagnostics/N/C stay unknown. A point minimum is distinct from
@@ -195,7 +195,7 @@ def compare(config, allocations, evaluations, prices, *, cohorts, statistical_co
             raise ValueError('Repository root required for the SOURCE-bound implementation check')
         from . import rpe_price_implementation_guard as G
         implementation = G.check(root, config, prices, cohorts=cohorts, bindings=price_bindings,
-                                 policy=comparison_policy)
+                                 policy=comparison_policy, canonical_binding=canonical_binding)
     issues, price_coverage, bounds = _price_metadata(config, prices, cohorts,
         price_bindings, price_extension, interval_contract)
     if implementation is None and any(v['n_packet'].get('evidence_kind') != 'SYNTHETIC_ONLY'
