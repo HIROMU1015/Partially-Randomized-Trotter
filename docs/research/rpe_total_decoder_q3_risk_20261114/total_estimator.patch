@@ -1,0 +1,811 @@
+diff --git a/src/trottertracks/rpe_total_decoder.py b/src/trottertracks/rpe_total_decoder.py
+new file mode 100644
+index 000000000..bba1d8607
+--- /dev/null
++++ b/src/trottertracks/rpe_total_decoder.py
+@@ -0,0 +1,113 @@
++"""Opt-in TOTAL RPE estimator Z1+T1; the original partial decoder is unchanged.
++
++Z1: X=Y=0 at m=0 gives +0.0; at m>=1 the previous estimate is held.
++T1: a branch tie (gap <= 1e-12, or exact) keeps the computed argmin with the
++    lowest branch ID and is NOT an unresolved stop.
++Otherwise every operation is the original one: exact count -> binary64 mean,
++math.atan2, the reference wrap, and rpe_decoder_fast._nearest (scalar rule).
++On histories the original decoder resolves, outputs are bit-identical. Zero
++holds and tie choices are recorded as diagnostics. Not an RMSE qualification.
++"""
++import math
++
++from . import rpe_decoder_fast as F
++
++ESTIMATOR = 'consecutive_dyadic_nearest_branch_principal_energy_total_v1'
++ORIGINAL_ESTIMATOR = 'consecutive_dyadic_nearest_branch_principal_energy_v1'
++DECODED_TOTAL = 'DECODED_TOTAL_ZERO_HOLD_TIE_ARGMIN_NOT_RMSE_QUALIFIED'
++RULES = dict(zero='Z1_HOLD_PREVIOUS_ESTIMATE_M0_PLUS_ZERO',
++             tie='T1_COMPUTED_ARGMIN_LOWEST_BRANCH_ID_NO_UNRESOLVED_STOP',
++             tie_diagnostic_tolerance_rad=1e-12)
++TIE_TOLERANCE = 1e-12
++SOURCE = dict(module='src/trottertracks/rpe_total_decoder.py', estimator=ESTIMATOR,
++    original_estimator=ORIGINAL_ESTIMATOR, transition_kernel='src/trottertracks/rpe_decoder_fast.py:_nearest',
++    proposal=dict(commit='104dacdc64eb01c7f1b5207a32c4a4d1c6a83a37',
++                  path='docs/research/rpe_accuracy_contract_w0_20261114/REPORT.md'))
++
++
++def initial(principal, zero):
++    """Round 0: wrapped atan2 phase, or +0.0 for X=Y=0 (no prior is used)."""
++    import numpy as np
++    return np.where(zero, 0.0, principal)
++
++
++def step(principal, estimate, q, zero):
++    """ONE Z1+T1 transition, shared by the decoder and the exact DP.
++
++    Returns (estimate, tie) where tie flags non-zero rows whose two smallest
++    computed branch distances differ by <= 1e-12 (the original stop rule).
++    """
++    import numpy as np
++    value, _, best, runner, _ = F._nearest(principal, estimate, q)
++    tie = (np.abs(runner - best) <= TIE_TOLERANCE) & ~zero
++    return np.where(zero, estimate, value), tie
++
++
++def decode_coordinates_batch_total(coordinates, *, h):
++    """Array API (trials, rounds, X/Y); same input checks as the original."""
++    import numpy as np
++    if isinstance(h, bool) or not math.isfinite(float(h)) or float(h) <= 0:
++        raise ValueError('Positive finite h required')
++    xy = np.asarray(coordinates, dtype=np.float64)
++    if xy.ndim != 3 or xy.shape[1] == 0 or xy.shape[2] != 2:
++        raise ValueError('Coordinates must have shape (trials, nonempty rounds, 2)')
++    if not np.all(np.isfinite(xy)) or np.any(np.abs(xy) > 1):
++        raise ValueError('Finite binary-outcome means required')
++    if (1 << (xy.shape[1]-1)) > 2**52:
++        raise ValueError('Branch integer arithmetic outside exact binary64 domain')
++    zeros = np.all(xy == 0, axis=-1)
++    estimate = None; ties = np.zeros(zeros.shape, dtype=bool); path = []
++    for m in range(xy.shape[1]):
++        phase = np.fromiter(map(math.atan2, xy[:, m, 1], xy[:, m, 0]), dtype=np.float64, count=len(xy))
++        principal = F._wrap(phase)
++        if m:
++            estimate, ties[:, m] = step(principal, estimate, 1 << m, zeros[:, m])
++        else:
++            estimate = initial(principal, zeros[:, 0])
++        path.append(estimate)
++    out = []
++    for i in range(len(xy)):
++        zero_rounds = [m for m in range(xy.shape[1]) if zeros[i, m]]
++        tie_rounds = [m for m in range(xy.shape[1]) if ties[i, m]]
++        final = float(path[-1][i])
++        out.append(dict(status=DECODED_TOTAL, estimator=ESTIMATOR, energy_estimate_ha=-final/float(h),
++            final_phase_estimate=final, phase_path=[float(v[i]) for v in path],
++            zero_hold_rounds=zero_rounds, tie_argmin_rounds=tie_rounds,
++            partial_decoder_status=('UNRESOLVED_ZERO_COORDINATES' if zero_rounds else
++                                    'UNRESOLVED_BRANCH_TIE' if tie_rounds else F.DECODED),
++            rules=dict(RULES), prior_alias_qualified=False, rmse_guaranteed=False))
++    return out
++
++
++def decode_supplied_coordinates_total(coordinates, *, h):
++    """Scalar wrapper with the original accepted coordinate types."""
++    xy = list(coordinates)
++    if any(type(v) not in (int, float) for row in xy for v in row):
++        raise ValueError('Finite binary-outcome means required')
++    return decode_coordinates_batch_total([xy], h=h)[0]
++
++
++def decode_counts_total(rounds, *, h, M, prior):
++    """Original exact count conversion, then the total estimator.
++
++    The prior is diagnostic only, exactly as for the original decoder.
++    """
++    from copy import deepcopy
++    from . import rpe_decoder_statistics as S
++    S._integer(M, 'M')
++    if len(prior) != 2 or any(not math.isfinite(float(v)) for v in prior) or prior[0] >= prior[1]:
++        raise ValueError('Ordered finite energy prior required')
++    by_m = {r['m']: r for r in rounds}
++    if len(by_m) != len(rounds) or sorted(by_m) != list(range(M+1)):
++        raise ValueError('Complete consecutive measurement rounds required')
++    coordinates = []
++    for m in range(M+1):
++        row = {axis: S.count_mean(**by_m[m][axis]) for axis in S.p.AXES}
++        coordinates.append((row['X']['mean'], row['Y']['mean']))
++    out = decode_supplied_coordinates_total(coordinates, h=float(h))
++    energy = out['energy_estimate_ha']
++    out.update(count_conversion=S.COUNT_RULE, prior=deepcopy(prior), prior_applied_to_decoder=False,
++        estimate_in_supplied_prior=prior[0] <= energy <= prior[1], decoder_source=deepcopy(SOURCE),
++        output_range='[-pi_f/h, pi_f/h] binary64 principal range; not a certified real enclosure',
++        alias_qualified=False)
++    return out
+diff --git a/src/trottertracks/rpe_total_risk.py b/src/trottertracks/rpe_total_risk.py
+new file mode 100644
+index 000000000..bc2122eda
+--- /dev/null
++++ b/src/trottertracks/rpe_total_risk.py
+@@ -0,0 +1,349 @@
++"""Q3 direct model MSE for the opt-in total estimator Z1+T1 (no MC, exact rationals).
++
++Reuses B's evaluate/_bound (count tables, closure certificate, coarse and
++partial-state bounds) unchanged, and adds for the TOTAL estimator only:
++  * W0 N4 first-unsafe update-width bound (lightweight, O(M) after tables);
++  * an exact state DP in which zero/tie are transitions, not absorbed losses,
++    with a state-dependent bound for dropped states and exact E[E], E[E^2];
++  * min over completed VALID upper bounds; disagreement -> UNKNOWN.
++Proven real-arithmetic inequalities are kept apart from the declared binary64
++transition allowance. The MSE is conditional on the supplied raw means, the
++supplied target and the IID exact-affine count law; it is not a physical
++total-error guarantee, sufficient N, Minkowski budget or scientific contract.
++"""
++from copy import deepcopy
++from fractions import Fraction
++import math
++
++from . import rpe_deterministic_risk as D
++from . import rpe_total_decoder as T
++
++K, S, F, a = D.K, D.S, D.F, D.a
++PI_LO = Fraction(math.pi)                              # binary64 pi < real pi
++PI_UP = Fraction(math.nextafter(math.pi, math.inf))    # > real pi
++TRANSITION_ALLOWANCE = Fraction(1, 10**12)             # rad per transition, declared (not certified)
++DIVISION_RELATIVE = Fraction(1, 2**53)                 # round-to-nearest of fl(-theta/h)
++SUBNORMAL = Fraction(1, 2**1074)
++VERIFIED = 'VERIFIED_FINITE_BINARY64_SUPPORT'
++PREREQUISITES = ('MISSING_STATISTICAL_INPUT', 'OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN',
++                 'PHYSICAL_MEANS_UNQUALIFIED')
++ALLOWANCE = dict(per_transition_rad=a.exact_value(TRANSITION_ALLOWANCE),
++    status='DECLARED_BINARY64_ENGINEERING_ALLOWANCE_NOT_CERTIFIED',
++    proven_part='REAL_ARITHMETIC_UPDATE_WIDTH_PI_OVER_2M_AND_PRINCIPAL_GUARD',
++    division='|fl(x)-x| <= 2^-53|x| + 2^-1074 for fl(-theta/h)',
++    pi_enclosure='float(pi) < pi < nextafter(float(pi), inf)')
++
++
++def circular_upper(x, y):
++    """Upper bound of the real circular distance of two reals in [-pi_up, pi_up]."""
++    d = abs(Fraction(x) - Fraction(y))
++    return min(d, 2*PI_UP - d)
++
++
++def division_slack(h):
++    return PI_UP/h*DIVISION_RELATIVE + SUBNORMAL
++
++
++def energy_loss_cap(radius, *, h, theta, loss_upper):
++    """Squared-energy-error cap when the final phase is within `radius` of theta.
++
++    Real-arithmetic statement, valid ONLY under the principal guard
++    |theta| + radius < pi (no +-pi crossing, linear = circular distance).
++    """
++    if abs(theta) + radius < PI_LO:
++        return min(loss_upper, (radius/h + division_slack(h))**2), True
++    return loss_upper, False
++
++
++def loss_range(h, target):
++    """B's resolved-loss upper L_D and |E_hat| <= fl(pi_f/h) for the total output."""
++    edge = math.pi/h
++    if not math.isfinite(edge) or not math.isfinite(math.nextafter(edge, math.inf)):
++        return None, None
++    upper = a.exact_scalar(math.nextafter(edge, math.inf)); ee = a.exact_scalar(target)
++    return max((upper-ee)**2, (-upper-ee)**2), a.exact_scalar(edge)
++
++
++def tables_for(entry, options):
++    """The same count tables as rpe_deterministic_risk._bound (same arguments)."""
++    prepared = entry['prepared']; h = float(a.exact_scalar(prepared['h']))
++    target = entry['evaluation_target']['energy_ha']; radii = options['phase_radii']
++    return [D.round_distribution(dict(m=r['m'], raw=r['mean']['raw'], **{k: r['shots'][k] for k in ('N_X', 'N_Y')}),
++        h=h, target_energy=target, radius=radii[r['m']], probability_rule=options['probability_rule'],
++        maximum_outcomes=options['maximum_round_outcomes']) for r in prepared['rows']]
++
++
++def lemma_bound(tables, partial, *, h, target):
++    """W0 N4: U = J_M + sum_f P(F=f) l_f. Valid for the TOTAL estimator only.
++
++    Needs B's good-closure certificate (all-good prefix = oracle). f=0,1 keep
++    L_D. For f>=2 the start radius is the exact max distance of round f-1 good
++    oracle estimates, then pi(2^(1-f)-2^-M) plus the declared allowance.
++    """
++    M = len(tables)-1
++    if (partial.get('decoder_certificate') or {}).get('status') != VERIFIED:
++        return dict(status='UNKNOWN', MSE_upper=None, reason='GOOD_CLOSURE_CERTIFICATE_REQUIRED')
++    if partial.get('terminal_good_MSE_contribution') is None or partial.get('first_unsafe') is None:
++        return dict(status='UNKNOWN', MSE_upper=None, reason='PARTIAL_COARSE_TERMS_UNAVAILABLE')
++    hh = Fraction(h); theta = -hh*Fraction(target); L_D, _ = loss_range(h, target)
++    total = a.exact_scalar(partial['terminal_good_MSE_contribution']); caps = []
++    for f, row in enumerate(partial['first_unsafe']):
++        pf = a.exact_scalar(row['exact']); item = dict(f=f, probability=a.exact_value(pf))
++        good = [o['oracle_estimate'] for o in tables[f-1]['outcomes'] if o['good']] if f else []
++        if f <= 1 or not good:
++            cap = L_D; item.update(reason='F_LE_1_OR_NO_GOOD_PREVIOUS_STATE_KEEPS_L_D', principal_guard=None)
++        else:
++            start = max(circular_upper(v, theta) for v in good)
++            radius = start + PI_UP*(Fraction(2, 2**f)-Fraction(1, 2**M)) + (M-f+1)*TRANSITION_ALLOWANCE
++            cap, guard = energy_loss_cap(radius, h=hh, theta=theta, loss_upper=L_D)
++            item.update(start_radius=a.exact_value(start), radius=a.exact_value(radius), principal_guard=guard,
++                        reason=None if guard else 'PRINCIPAL_GUARD_FAILED_KEEPS_L_D')
++        total += pf*cap; item['loss_cap'] = a.exact_value(cap); caps.append(item)
++    return dict(status='TOTAL_ESTIMATOR_FIRST_UNSAFE_LEMMA_BOUND', MSE_upper=a.exact_value(total),
++        terminal_good_MSE_contribution=deepcopy(partial['terminal_good_MSE_contribution']), caps=caps,
++        loss_upper=a.exact_value(L_D), applies_to=T.ESTIMATOR, partial_decoder_loss_family=False)
++
++
++def _square_range(lo, hi):
++    if lo <= 0 <= hi:
++        return Fraction(0), max(lo*lo, hi*hi)
++    return min(lo*lo, hi*hi), max(lo*lo, hi*hi)
++
++
++def total_state_dp(tables, *, h, target, scope):
++    """Exact Z1+T1 state DP; zero holds and tie choices remain states.
++
++    Mass is integer over a common denominator. A state dropped by a declared
++    scope keeps its binary64 value s; its future loss is bounded by
++    d(s,theta)+pi(2^-m-2^-M)+allowance under the principal guard, else L_D.
++    The flag records whether the ORIGINAL partial decoder would be unresolved.
++    """
++    import numpy as np
++    if not isinstance(scope, dict) or not scope.get('source'):
++        raise ValueError('Explicit total-state scope/SOURCE required')
++    maximum_states = S._integer(scope.get('maximum_frontier_states'), 'maximum_frontier_states')
++    maximum_pairs = S._integer(scope.get('maximum_transition_pairs'), 'maximum_transition_pairs')
++    M = len(tables)-1; hh = Fraction(h); E = a.exact_scalar(target); theta = -hh*E
++    L_D, edge = loss_range(h, target); slack = division_slack(hh)
++    out = dict(status='UNKNOWN', estimator=T.ESTIMATOR, MSE_lower=None, MSE_upper=None, MSE_exact=None,
++        rounds=[], scope=deepcopy(scope), numerical='COMMON_DENOMINATOR_INTEGER_MASSES',
++        state_equivalence='(PARTIAL_UNRESOLVED_FLAG, IDENTICAL_BINARY64_HEX)', transition_allowance=deepcopy(ALLOWANCE))
++    if L_D is None:
++        out['reason'] = 'DECODER_ENERGY_NUMERICAL_RANGE'; return out
++    res = dict(mass=Fraction(0), loss=Fraction(0), lo=Fraction(0), hi=Fraction(0), sq_lo=Fraction(0),
++               sq_hi=Fraction(0), guard_failed=Fraction(0), flagged=Fraction(0), events=0)
++
++    def drop(flag, state, mass, completed):
++        if state is None:
++            cap, guard, lo, hi = L_D, False, -edge, edge
++        else:
++            s = Fraction(float.fromhex(state))
++            R = PI_UP*(Fraction(1, 2**completed)-Fraction(1, 2**M)) + (M-completed)*TRANSITION_ALLOWANCE
++            cap, guard = energy_loss_cap(circular_upper(s, theta)+R, h=hh, theta=theta, loss_upper=L_D)
++            lo, hi = -edge, edge
++            if abs(s) + R < PI_LO:   # the final phase stays in [s-R, s+R]
++                lo, hi = max(-edge, -(s+R)/hh-slack), min(edge, -(s-R)/hh+slack)
++        sq = _square_range(lo, hi)
++        res['mass'] += mass; res['loss'] += mass*cap; res['lo'] += mass*lo; res['hi'] += mass*hi
++        res['sq_lo'] += mass*sq[0]; res['sq_hi'] += mass*sq[1]; res['events'] += 1
++        res['guard_failed'] += 0 if guard else mass; res['flagged'] += mass if flag else 0
++
++    states = {(False, None): 1}; denominator = 1; pairs = 0; worst = None
++    for m, table in enumerate(tables):
++        if table.get('status') != 'ENUMERATED' or table['m'] != m or table['q'] != 1 << m:
++            out['reason'] = 'INCOMPLETE_CONSECUTIVE_COUNT_TABLES'; return out
++        den = table['denominator']; grouped = {}
++        for item in table['outcomes']:
++            phase = item['principal']; weight = item['weight']
++            if (not math.isfinite(phase) or not -math.pi <= phase < math.pi
++                    or type(weight) is not int or weight < 0):
++                out['reason'] = 'INVALID_COUNT_SUPPORT'; return out
++            key = (bool(item['zero']), float(phase).hex())
++            grouped[key] = grouped.get(key, 0) + weight
++        if type(den) is not int or den <= 0 or sum(grouped.values()) != den:
++            out['reason'] = 'COUNT_MASS_NOT_CONSERVED'; return out
++        groups = [(zero, float.fromhex(phase), weight) for (zero, phase), weight in grouped.items() if weight]
++        phases = np.array([v[1] for v in groups]); zeros = np.array([v[0] for v in groups], dtype=bool)
++        previous = denominator; denominator *= den; new = {}; zero_mass = tie_mass = 0
++        for (flag, state), mass in sorted(states.items(), key=lambda kv: (-kv[1], str(kv[0]))):
++            if pairs + len(groups) > maximum_pairs:
++                drop(flag, state, Fraction(mass, previous), m-1); continue
++            if m:
++                estimate = float.fromhex(state)
++                values, ties = T.step(phases, np.full(len(phases), estimate), table['q'], zeros)
++                if not np.all(np.isfinite(values)):
++                    out['reason'] = 'NONFINITE_TOTAL_DECODER_TRANSITION'; return out
++                if np.any(values < -math.pi) or np.any(values > math.pi):
++                    out['reason'] = 'TOTAL_DECODER_OUTSIDE_PRINCIPAL_RANGE'; return out
++                move = np.abs(values-estimate); move = np.minimum(move, 2*math.pi-move)
++                excess = float(np.max(move-math.pi/table['q']))
++                worst = excess if worst is None else max(worst, excess)
++            else:
++                values = T.initial(phases, zeros); ties = np.zeros(len(groups), dtype=bool)
++            pairs += len(groups)
++            for i, (zero, _, weight) in enumerate(groups):
++                contribution = mass*weight; tie = bool(ties[i])
++                key = (flag or zero or tie, float(values[i]).hex())
++                new[key] = new.get(key, 0) + contribution
++                if zero:
++                    zero_mass += contribution
++                elif tie:
++                    tie_mass += contribution
++        if m < M and len(new) > maximum_states:
++            ordered = sorted(new.items(), key=lambda kv: (-kv[1], str(kv[0])))
++            for (flag, state), mass in ordered[maximum_states:]:
++                drop(flag, state, Fraction(mass, denominator), m)
++            new = dict(ordered[:maximum_states])
++        states = new
++        if Fraction(sum(states.values()), denominator) + res['mass'] != 1:
++            out['reason'] = 'STATE_MASS_NOT_CONSERVED'; return out
++        out['rounds'].append(dict(m=m, grouped_count_outcomes=len(groups), retained_states=len(states),
++            transition_pairs_cumulative=pairs,
++            zero_hold_probability_tracked=a.exact_value(Fraction(zero_mass, denominator)),
++            tie_argmin_probability_tracked=a.exact_value(Fraction(tie_mass, denominator)),
++            residual_probability=a.exact_value(res['mass'])))
++    if worst is not None and worst > float(TRANSITION_ALLOWANCE):
++        out['reason'] = 'DECLARED_TRANSITION_ALLOWANCE_EXCEEDED'; out['max_observed_excess_rad'] = worst
++        return out
++    mse = m1 = m2 = eta = flagged = Fraction(0)
++    for (flag, state), mass in states.items():
++        w = Fraction(mass, denominator); e = a.exact_scalar(-float.fromhex(state)/h); loss = (e-E)**2
++        mse += w*loss; m1 += w*e; m2 += w*e*e
++        if flag:
++            flagged += w
++        else:
++            eta += w*loss
++    r = res['mass']; complete = r == 0
++    lower, upper = mse, mse + res['loss']
++    mean = (m1 + res['lo'], m1 + res['hi']); second = (m2 + res['sq_lo'], m2 + res['sq_hi'])
++    bias = (mean[0]-E, mean[1]-E); bias_sq = _square_range(*bias)
++    variance = (max(Fraction(0), lower-bias_sq[1]), upper-bias_sq[0])
++    if complete and (mse != bias_sq[0] + (m2-m1*m1) or bias_sq[0] != bias_sq[1]):
++        out['reason'] = 'MSE_BIAS_VARIANCE_IDENTITY_FAILED'; return out
++    out.update(status='COMPLETE_TOTAL_STATE_DP' if complete else 'PARTIAL_TOTAL_STATE_DP_WITH_STATE_RESIDUAL_BOUND',
++        MSE_lower=a.exact_value(lower), MSE_upper=a.exact_value(upper), MSE_exact=a.exact_value(mse) if complete else None,
++        retained_MSE_contribution=a.exact_value(mse), residual_probability=a.exact_value(r),
++        residual_loss_contribution_upper=a.exact_value(res['loss']), residual_dropped_states=res['events'],
++        residual_principal_guard_failed_probability=a.exact_value(res['guard_failed']),
++        moments=dict(status='EXACT' if complete else 'INTERVAL_FROM_STATE_RESIDUAL',
++            mean_energy=[a.exact_value(v) for v in mean], second_moment=[a.exact_value(v) for v in second],
++            bias=[a.exact_value(v) for v in bias], bias_squared=[a.exact_value(v) for v in bias_sq],
++            variance=[a.exact_value(m2-m1*m1)]*2 if complete else [a.exact_value(v) for v in variance],
++            meaning='DESIGN_DIAGNOSTIC_BIAS_AND_VARIANCE_OF_TOTAL_ESTIMATOR_NOT_QUALIFICATION'),
++        partial_decoder=dict(resolved_MSE_contribution=a.exact_value(eta) if complete else None,
++            resolved_MSE_contribution_lower=a.exact_value(eta),
++            unresolved_probability=a.exact_value(flagged) if complete else None,
++            unresolved_probability_bounds=[a.exact_value(flagged + res['flagged']), a.exact_value(flagged + r)]),
++        any_zero=a.exact_value(1-math.prod(1-Fraction(sum(o['weight'] for o in t['outcomes'] if o['zero']), t['denominator'])
++                                           for t in tables)),
++        transition_pairs=pairs, max_observed_transition_excess_rad=worst,
++        loss_upper=a.exact_value(L_D), applies_to=T.ESTIMATOR)
++    return out
++
++
++def _value(record, key):
++    value = record.get(key)
++    return None if value is None else a.exact_scalar(value)
++
++
++def _total(entry, partial, options):
++    out = dict(status='UNKNOWN', estimator=T.ESTIMATOR, rules=deepcopy(T.RULES), MSE_upper=None, MSE_lower=None,
++        RMSE_upper_display=None, bounds={}, moments=None, q3=None, MC_calls=0, sufficient_N=None,
++        global_RMSE_bound=None, G=None, scientific_energy_qualification='UNKNOWN',
++        transition_allowance=deepcopy(ALLOWANCE), physical_total_error_guarantee=False)
++    if partial.get('reason') in PREREQUISITES:
++        out['reason'] = partial['reason']; return out
++    model = options.get('model_loss_contract') or {}
++    if model.get('adopted') is not True or not model.get('source'):
++        out['reason'] = 'ALL_EVENT_LOSS_NOT_ADOPTED'; return out
++    prepared = entry['prepared']; h = float(a.exact_scalar(prepared['h']))
++    target = entry['evaluation_target']['energy_ha']
++    tables = tables_for(entry, options)
++    if any(t['status'] != 'ENUMERATED' for t in tables):
++        out['reason'] = 'OUTSIDE_DECLARED_COUNT_ENUMERATION_SCOPE'; return out
++    L_D, _ = loss_range(h, target)
++    if L_D is None:
++        out['reason'] = 'DECODER_ENERGY_NUMERICAL_RANGE'; return out
++    if partial.get('resolved_loss_upper') is not None and a.exact_scalar(partial['resolved_loss_upper']) != L_D:
++        out['reason'] = 'LOSS_RANGE_DIFFERS_FROM_PARTIAL_EVALUATOR'; return out
++    uppers = {}; lowers = {}
++    coarse = partial.get('coarse_MSE_upper', partial.get('MSE_upper') if 'state_refinement' not in partial else None)
++    if coarse is not None:   # bad_loss >= L_D: valid for the total estimator (W0 proposition 2)
++        uppers['partial_coarse'] = a.exact_scalar(coarse)
++    refined = partial.get('state_refinement') or {}
++    hi = _value(partial.get('unresolved_loss') or {}, 'upper')
++    if refined.get('MSE_upper') is not None:
++        if hi is not None and hi >= L_D:
++            uppers['partial_state_dp'] = a.exact_scalar(refined['MSE_upper'])
++        lowers['partial_resolved_contribution'] = a.exact_scalar(refined['resolved_MSE_contribution'])
++    out['bounds']['partial_state_dp_valid_for_total'] = None if not refined else 'partial_state_dp' in uppers
++    lemma = lemma_bound(tables, partial, h=h, target=target)
++    out['bounds']['lemma'] = lemma
++    if lemma['MSE_upper'] is not None:
++        uppers['lemma'] = a.exact_scalar(lemma['MSE_upper'])
++    dp = None
++    if options.get('total_state_refinement') is not None:
++        dp = total_state_dp(tables, h=h, target=target, scope=options['total_state_refinement'])
++        out['bounds']['total_state_dp'] = dp
++        if dp['MSE_upper'] is not None:
++            uppers['total_state_dp'] = a.exact_scalar(dp['MSE_upper'])
++            lowers['total_state_dp'] = a.exact_scalar(dp['MSE_lower'])
++            out['moments'] = deepcopy(dp['moments'])
++    out['bounds']['upper_candidates'] = {k: a.exact_value(v) for k, v in uppers.items()}
++    out['bounds']['lower_candidates'] = {k: a.exact_value(v) for k, v in lowers.items()}
++    if not uppers:
++        out['reason'] = 'NO_VALID_TOTAL_ESTIMATOR_UPPER_BOUND'; return out
++    method = min(uppers, key=lambda k: (uppers[k], k)); upper = uppers[method]
++    lower = max(lowers.values()) if lowers else Fraction(0)
++    if lower > upper:
++        out['reason'] = 'INCONSISTENT_TOTAL_ESTIMATOR_BOUNDS'; return out
++    if dp is not None and dp['status'] == 'COMPLETE_TOTAL_STATE_DP' and refined.get('status') == 'COMPLETE_STATE_LOSS_FAMILY_BOUND':
++        link = dp['partial_decoder']
++        if (a.exact_scalar(link['resolved_MSE_contribution']) != a.exact_scalar(refined['resolved_MSE_contribution'])
++                or a.exact_scalar(link['unresolved_probability']) != a.exact_scalar(refined['unresolved_probability'])):
++            out['reason'] = 'TOTAL_DP_INCONSISTENT_WITH_PARTIAL_DP'; return out
++    out.update(status='CONDITIONAL_BINARY64_TOTAL_ESTIMATOR_MODEL_BOUND', MSE_upper=a.exact_value(upper),
++        MSE_lower=a.exact_value(lower), MSE_upper_method='MIN_OF_COMPLETED_VALID_UPPER_BOUNDS:' + method,
++        RMSE_upper_display=D._sqrt_display_upper(upper),
++        combination_rule='MIN_ONLY_NO_SUM_ACROSS_FIRST_UNSAFE_AND_STATE_PARTITIONS')
++    out['q3'] = q3_summary(out, options.get('q3_limit'))
++    return out
++
++
++def q3_summary(total, limit=None):
++    """Q3 roles: pass/fail by the valid upper bound; bias^2/Var only for design."""
++    within = None
++    if limit is not None:
++        if not limit.get('source') or limit.get('scope') != 'MODEL_MSE_FILTER_ONLY':
++            raise ValueError('Explicit model MSE limit SOURCE/scope required; no contract inferred')
++        within = total['MSE_upper'] is not None and a.exact_scalar(total['MSE_upper']) <= a.exact_scalar(limit['MSE_upper'])
++    return dict(acceptance='MODEL_MSE_UPPER_LE_EPSILON_E_SQUARED', model_MSE_upper=deepcopy(total['MSE_upper']),
++        limit=deepcopy(limit), within_limit=within,
++        meaning='MODEL_CONDITIONAL_FILTER_NOT_SCIENTIFIC_QUALIFICATION_OR_SUFFICIENT_N',
++        design_diagnostics=deepcopy(total.get('moments')),
++        minkowski_reference=dict(status='SEPARATE_REFERENCE_NOT_COMBINED',
++            direct_risk_includes_PF_and_finite_K_phase_shift=True, delta_E_added=False),
++        claim_scope='CONDITIONAL_ON_SUPPLIED_RAW_MEANS_TARGET_AND_IID_EXACT_AFFINE_LAW',
++        transfer_terms=dict(target='UNKNOWN', raw_numerical_allowance='UNKNOWN', actual_sampler_law='UNKNOWN'),
++        physical_total_error_guarantee=False)
++
++
++def evaluate(config, signal_packet, allocations, *, evaluation_target, statistical_contract,
++             integration, source, options):
++    """B's evaluate (unchanged, kept as partial_decoder_risk) + total estimator risk.
++
++    The canonical configuration/error contract still names the original decoder;
++    the opt-in estimator is bound through deterministic_input.options.
++    """
++    if options.get('estimator') != T.ESTIMATOR:
++        raise ValueError('Explicit opt-in total estimator required: ' + T.ESTIMATOR)
++    records = D.evaluate(config, signal_packet, allocations, evaluation_target=evaluation_target,
++        statistical_contract=statistical_contract, integration=integration, source=source, options=options)
++    entries = K.prepare(config, signal_packet, allocations, evaluation_target=evaluation_target,
++        statistical_contract=statistical_contract, integration=integration)
++    for record, entry in zip(records, entries):
++        if record['allocation']['allocation_id'] != entry['allocation']['allocation_id']:
++            raise ValueError('Evaluation/allocation order mismatch')
++        partial = record['diagnostic']['deterministic_risk']
++        record['diagnostic'] = dict(deterministic_risk=_total(entry, partial, options), partial_decoder_risk=partial)
++    return records
+diff --git a/tests/check_rpe_total_decoder_risk.py b/tests/check_rpe_total_decoder_risk.py
+new file mode 100644
+index 000000000..78d8b613a
+--- /dev/null
++++ b/tests/check_rpe_total_decoder_risk.py
+@@ -0,0 +1,331 @@
++"""Artificial laws only: total estimator Z1+T1 and its Q3 risk. No MC, no saved raw."""
++from contextlib import ExitStack
++from copy import deepcopy
++from fractions import Fraction
++from itertools import product
++import math
++from pathlib import Path
++import sys
++import unittest
++from unittest.mock import patch
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path[:0] = [str(ROOT/'src'), str(ROOT/'tests')]
++import numpy as np
++from check_rpe_deterministic_risk import case, cost_fixture
++from check_rpe_signal_statistics_caller import MOCK
++from trottertracks import rpe_total_decoder as T
++from trottertracks import rpe_total_risk as R
++
++D, S, K, F, a = R.D, R.S, R.K, R.F, R.a
++BIG = dict(source=MOCK, maximum_frontier_states=10**6, maximum_transition_pairs=10**8)
++CASES = {   # W0 SYNTHETIC_CHECKS laws (B fixture: h=10, artificial loss family [0,20])
++    'B_fixture_like': dict(vector=(2, 2), raws=[(.25, -.5)]*2),
++    'zero_tie_rich': dict(vector=(2, 2, 2), raws=[(0., 0.)]*3),
++    'mixed_parity': dict(vector=(1, 3, 2), raws=[(.6, .1), (.3, -.2), (.5, .4)]),
++    'four_rounds': dict(vector=(2, 2, 2, 2), raws=[(.5, .2)]*4),
++    'five_rounds_N1': dict(vector=(1, 1, 1, 1, 1), raws=[(.4, .1)]*5),
++    'near_principal_edge': dict(vector=(2, 2, 2), target=-.3,
++        raws=[(.6*math.cos(3*2**m), .6*math.sin(3*2**m)) for m in range(3)]),
++    'odd_only': dict(vector=(3, 1, 3), raws=[(0., 0.)]*3),
++    'principal_edge_wrap': dict(vector=(1, 1, 1, 1, 1), target=-(math.pi-.02)/10,
++        raws=[(.9*math.cos((math.pi-.02)*2**m), .9*math.sin((math.pi-.02)*2**m)) for m in range(5)]),
++}
++
++
++def make(name=None, *, vector=None, raws=None, target=0., total=BIG, partial=BIG):
++    spec = CASES[name] if name else dict(vector=vector, raws=raws, target=target)
++    args = case(M=len(spec['vector'])-1, vectors=[tuple(spec['vector'])])
++    for mean, raw in zip(args['signal_packet']['means'], spec['raws']):
++        mean['raw'] = dict(real=raw[0], imag=raw[1])
++    args['evaluation_target']['energy_ha'] = spec.get('target', 0.)
++    args['options']['estimator'] = T.ESTIMATOR
++    if partial is not None:
++        args['options']['state_refinement'] = deepcopy(partial)
++    if total is not None:
++        args['options']['total_state_refinement'] = deepcopy(total)
++    return args
++
++
++def evaluate(args):
++    return R.evaluate(**args)[0]['diagnostic']
++
++
++def oracle(args):
++    """Independent comb/Fraction law over every count history; both decoders."""
++    h = float(a.exact_scalar(args['config']['spec']['h'])); E = a.exact_scalar(args['evaluation_target']['energy_ha'])
++    support = []
++    for m, (mean, shots) in enumerate(zip(args['signal_packet']['means'], args['allocations'][0]['shots'])):
++        axes = []
++        for axis, component in (('X', 'real'), ('Y', 'imag')):
++            n = shots['N_'+axis]; p = (1+a.exact_scalar(mean['raw'][component]))/2
++            axes.append([(k, Fraction(math.comb(n, k))*p**k*(1-p)**(n-k)) for k in range(n+1)])
++        support.append([(dict(m=m, X=dict(plus=kx, shots=shots['N_X']), Y=dict(plus=ky, shots=shots['N_Y'])), px*py)
++                        for (kx, px), (ky, py) in product(*axes) if px*py])
++    M = len(support)-1
++    out = dict(mse=Fraction(0), m1=Fraction(0), m2=Fraction(0), eta=Fraction(0), unresolved=Fraction(0),
++               zero_any=Fraction(0), identical=True, histories=0, decoded=0, zero_round=[Fraction(0)]*(M+1),
++               tie_round=[Fraction(0)]*(M+1), statuses_match=True, path_excess=None)
++    for history in product(*support):
++        w = math.prod(v[1] for v in history); rows = [v[0] for v in history]
++        old = S.decode_counts(rows, h=h, M=M, prior=[-1e3, 1e3])
++        new = T.decode_counts_total(rows, h=h, M=M, prior=[-1e3, 1e3])
++        e = a.exact_scalar(new['energy_estimate_ha']); loss = (e-E)**2
++        out['histories'] += 1; out['mse'] += w*loss; out['m1'] += w*e; out['m2'] += w*e*e
++        out['statuses_match'] &= old['status'] == new['partial_decoder_status']
++        if old['status'] == S.DECODED:
++            out['decoded'] += 1; out['eta'] += w*loss
++            out['identical'] &= old['energy_estimate_ha'].hex() == new['energy_estimate_ha'].hex()
++        else:
++            out['unresolved'] += w
++        if new['zero_hold_rounds']:
++            out['zero_any'] += w
++        for m in new['zero_hold_rounds']: out['zero_round'][m] += w
++        for m in new['tie_argmin_rounds']: out['tie_round'][m] += w
++        path = new['phase_path']
++        for m in range(1, M+1):
++            excess = R.circular_upper(path[m], path[m-1]) - R.PI_LO/2**m
++            out['path_excess'] = excess if out['path_excess'] is None else max(out['path_excess'], excess)
++    out['variance'] = out['m2']-out['m1']**2; out['bias'] = out['m1']-E
++    return out
++
++
++def X(value):
++    return a.exact_scalar(value)
++
++
++class TotalDecoderRiskTests(unittest.TestCase):
++    def setUp(self):
++        stack = ExitStack(); self.addCleanup(stack.close)
++        for module, name in ((S, 'simulate'), (S, 'simulate_prepared'), (K, 'diagnose'), (D.p, 'run_missing'),
++                             (D.p.SavedArtifacts, 'read')):
++            stack.enter_context(patch.object(module, name, side_effect=AssertionError('MC/saved/physical provider forbidden')))
++
++    @classmethod
++    def setUpClass(cls):
++        cls.oracles = {name: oracle(make(name)) for name in CASES}
++
++    def test_01_bit_identical_on_original_resolved_histories(self):
++        for name, o in self.oracles.items():
++            self.assertTrue(o['identical'], name); self.assertTrue(o['statuses_match'], name)
++        self.assertGreater(sum(o['decoded'] for o in self.oracles.values()), 7000)
++        rng = np.random.default_rng(20261114)
++        for M in range(13):
++            n = rng.choice([1, 3, 5, 7, 63], size=(400, M+1, 2))
++            k = rng.integers(0, n+1)
++            xy = np.vectorize(lambda kk, nn: S.count_mean(int(kk), int(nn))['mean'])(k, n)
++            old = F.decode_coordinates_batch(xy, h=.1); new = T.decode_coordinates_batch_total(xy, h=.1)
++            for x, y in zip(old, new):
++                self.assertEqual(x['status'], y['partial_decoder_status'])
++                if x['status'] == F.DECODED:
++                    self.assertEqual(x['energy_estimate_ha'].hex(), y['energy_estimate_ha'].hex())
++                    self.assertEqual(x['decoded']['final_phase_estimate'], y['final_phase_estimate'])
++                self.assertTrue(math.isfinite(y['energy_estimate_ha']))
++
++    def test_02_zero_and_tie_always_give_an_estimate_with_history(self):
++        zero = T.decode_supplied_coordinates_total([(0., 0.), (.5, .5), (0., 0.)], h=.1)
++        self.assertEqual(zero['phase_path'][0].hex(), (0.0).hex())            # +0.0, not -0.0
++        self.assertEqual(zero['phase_path'][2], zero['phase_path'][1])           # held
++        self.assertEqual(zero['zero_hold_rounds'], [0, 2]); self.assertEqual(zero['status'], T.DECODED_TOTAL)
++        self.assertEqual(zero['partial_decoder_status'], 'UNRESOLVED_ZERO_COORDINATES')
++        self.assertEqual(T.decode_supplied_coordinates_total([(0., 0.)], h=.1)['energy_estimate_ha'], 0.)
++        # Exact computed tie (rpe_decoder_fast test geometry): argmin lowest ID is kept.
++        q = 32; previous = 2.650718801466388
++        value, tie = T.step(np.array([0.]), np.array([previous]), q, np.array([False]))
++        candidates = F._wrap((0.+2*math.pi*np.arange(q))/q)
++        distances = np.abs(np.angle(np.exp(1j*(candidates-previous))))
++        self.assertTrue(bool(tie[0])); self.assertEqual(float(value[0]), float(candidates[int(np.argmin(distances))]))
++        self.assertGreater(self.oracles['zero_tie_rich']['zero_any'], 0)
++        self.assertGreater(sum(self.oracles['zero_tie_rich']['tie_round']), 0)
++
++    def test_03_complete_total_DP_equals_exhaustive_enumeration(self):
++        for name, o in self.oracles.items():
++            out = evaluate(make(name)); total = out['deterministic_risk']; dp = total['bounds']['total_state_dp']
++            self.assertEqual(dp['status'], 'COMPLETE_TOTAL_STATE_DP', name)
++            self.assertEqual(X(dp['MSE_exact']), o['mse'], name)
++            mom = dp['moments']; self.assertEqual(mom['status'], 'EXACT')
++            self.assertEqual(X(mom['mean_energy'][0]), o['m1']); self.assertEqual(X(mom['second_moment'][0]), o['m2'])
++            self.assertEqual(X(mom['variance'][0]), o['variance']); self.assertEqual(X(mom['bias'][0]), o['bias'])
++            self.assertEqual(X(mom['bias_squared'][0]) + X(mom['variance'][0]), o['mse'])
++            self.assertEqual(X(dp['partial_decoder']['resolved_MSE_contribution']), o['eta'])
++            self.assertEqual(X(dp['partial_decoder']['unresolved_probability']), o['unresolved'])
++            self.assertEqual(X(dp['any_zero']), o['zero_any'])
++            for m, row in enumerate(dp['rounds']):
++                self.assertEqual(X(row['zero_hold_probability_tracked']), o['zero_round'][m], (name, m))
++                self.assertEqual(X(row['tie_argmin_probability_tracked']), o['tie_round'][m], (name, m))
++            refined = out['partial_decoder_risk']['state_refinement']   # B's DP: identical resolved part
++            self.assertEqual(X(refined['resolved_MSE_contribution']), o['eta'])
++            self.assertEqual(X(refined['unresolved_probability']), o['unresolved'])
++            self.assertEqual(X(total['MSE_upper']), o['mse']); self.assertEqual(X(total['MSE_lower']), o['mse'])
++
++    def test_04_partial_scopes_keep_valid_residual_and_moment_intervals(self):
++        for name in ('zero_tie_rich', 'four_rounds', 'five_rounds_N1', 'mixed_parity', 'near_principal_edge'):
++            o = self.oracles[name]
++            for states, pairs in ((0, 0), (0, 10**6), (1, 10**6), (3, 10**6), (10**6, 7), (2, 40)):
++                dp = evaluate(make(name, total=dict(BIG, maximum_frontier_states=states,
++                    maximum_transition_pairs=pairs)))['deterministic_risk']['bounds']['total_state_dp']
++                if dp['status'] == 'COMPLETE_TOTAL_STATE_DP':
++                    self.assertEqual(X(dp['MSE_exact']), o['mse']); continue
++                self.assertEqual(dp['status'], 'PARTIAL_TOTAL_STATE_DP_WITH_STATE_RESIDUAL_BOUND', (name, states, pairs))
++                self.assertGreater(X(dp['residual_probability']), 0)
++                self.assertLessEqual(X(dp['MSE_lower']), o['mse']); self.assertGreaterEqual(X(dp['MSE_upper']), o['mse'])
++                mom = dp['moments']
++                for key, value in (('mean_energy', o['m1']), ('second_moment', o['m2']), ('bias', o['bias']),
++                                   ('bias_squared', o['bias']**2), ('variance', o['variance'])):
++                    self.assertLessEqual(X(mom[key][0]), value, (name, key)); self.assertGreaterEqual(X(mom[key][1]), value, (name, key))
++                lo, hi = dp['partial_decoder']['unresolved_probability_bounds']
++                self.assertLessEqual(X(lo), o['unresolved']); self.assertGreaterEqual(X(hi), o['unresolved'])
++                self.assertLessEqual(X(dp['partial_decoder']['resolved_MSE_contribution_lower']), o['eta'])
++
++    def test_05_update_width_lemma_guard_and_first_unsafe_caps(self):
++        for name, o in self.oracles.items():
++            self.assertLessEqual(o['path_excess'], R.TRANSITION_ALLOWANCE, name)
++            total = evaluate(make(name, total=None))['deterministic_risk']; lemma = total['bounds']['lemma']
++            self.assertEqual(lemma['status'], 'TOTAL_ESTIMATOR_FIRST_UNSAFE_LEMMA_BOUND', name)
++            self.assertGreaterEqual(X(lemma['MSE_upper']), o['mse'], name)
++            for cap in lemma['caps'][:2]:
++                self.assertEqual(X(cap['loss_cap']), X(lemma['loss_upper']))
++        # Negative controls: dropping the principal guard under-bounds near +-pi.
++        unguarded = lambda radius, *, h, theta, loss_upper: (min(loss_upper, (radius/h+R.division_slack(h))**2), True)
++        args = make('principal_edge_wrap', total=dict(BIG, maximum_frontier_states=1))
++        o = self.oracles['principal_edge_wrap']
++        with patch.object(R, 'energy_loss_cap', side_effect=unguarded):
++            bad = evaluate(args)['deterministic_risk']['bounds']
++        self.assertLess(X(bad['lemma']['MSE_upper']), o['mse'])
++        self.assertLess(X(bad['total_state_dp']['MSE_upper']), o['mse'])
++        good = evaluate(args)['deterministic_risk']['bounds']
++        self.assertGreaterEqual(X(good['lemma']['MSE_upper']), o['mse'])
++        self.assertGreaterEqual(X(good['total_state_dp']['MSE_upper']), o['mse'])
++        # Large-q transitions incl. computed midpoints: width <= pi/2^m + allowance.
++        rng = np.random.default_rng(7); worst = -1.
++        for m in range(1, 13):
++            q = 1 << m; n = 20000
++            principal = F._wrap(rng.uniform(-math.pi, math.pi, n)); estimate = F._wrap(rng.uniform(-math.pi, math.pi, n))
++            k = rng.integers(0, q, n//10)
++            estimate = np.concatenate([estimate, F._wrap((principal[:n//10]+2*math.pi*k)/q+math.pi/q)])
++            principal = np.concatenate([principal, principal[:n//10]])
++            zero = rng.random(len(principal)) < .05
++            value, _ = T.step(principal, estimate, q, zero)
++            self.assertTrue(np.all(value[zero] == estimate[zero]))
++            move = np.abs(value-estimate); move = np.minimum(move, 2*math.pi-move)
++            worst = max(worst, float(np.max(move-math.pi/q)))
++        self.assertLess(worst, float(R.TRANSITION_ALLOWANCE))
++
++    def test_06_existing_B_bounds_are_consistency_checks_for_the_total_MSE(self):
++        for name, o in self.oracles.items():
++            out = evaluate(make(name)); partial = out['partial_decoder_risk']; refined = partial['state_refinement']
++            self.assertGreaterEqual(X(partial['coarse_MSE_upper']), o['mse'], name)
++            self.assertLessEqual(X(refined['resolved_MSE_contribution']), o['mse'], name)
++            self.assertGreaterEqual(X(refined['MSE_upper']), o['mse'], name)
++            self.assertTrue(out['deterministic_risk']['bounds']['partial_state_dp_valid_for_total'])
++        # A family upper below L_D is NOT a valid bound for the total estimator.
++        args = make('zero_tie_rich'); args['statistical_contract']['summary_options']['unresolved_loss']['upper'] = 0
++        out = evaluate(args); bounds = out['deterministic_risk']['bounds']
++        self.assertFalse(bounds['partial_state_dp_valid_for_total'])
++        self.assertNotIn('partial_state_dp', bounds['upper_candidates'])
++        self.assertLess(X(out['partial_decoder_risk']['state_refinement']['MSE_upper']), self.oracles['zero_tie_rich']['mse'])
++        self.assertEqual(X(out['deterministic_risk']['MSE_upper']), self.oracles['zero_tie_rich']['mse'])
++
++    def test_07_parity_pi_and_binary64_boundaries(self):
++        o = self.oracles['odd_only']
++        self.assertEqual(o['zero_any'], 0); self.assertTrue(all(v == 0 for v in o['zero_round']))
++        self.assertTrue(all(S.count_mean(k, n)['mean'] != 0 for n in range(1, 101, 2) for k in range(n+1)))
++        dp = evaluate(make('odd_only'))['deterministic_risk']['bounds']['total_state_dp']
++        self.assertEqual(X(dp['any_zero']), 0)
++        for target in (0., math.nextafter(math.pi/10, -math.inf), math.nextafter(math.pi/10, math.inf), -math.pi/10):
++            args = make(vector=(2, 2), raws=[(-1., 0.), (-1., 0.)], target=target)
++            total = evaluate(args)['deterministic_risk']
++            self.assertEqual(X(total['bounds']['total_state_dp']['MSE_exact']), oracle(args)['mse'], target)
++        self.assertEqual(float(F._wrap(math.atan2(0., -1.))), -math.pi)
++        self.assertEqual(float(F._wrap(math.nextafter(-math.pi, -math.inf))), math.pi)   # endpoint +pi_f
++        table = dict(status='ENUMERATED', m=0, q=1, denominator=2,
++            outcomes=[dict(principal=v, zero=False, weight=1) for v in (-0., 0.)])
++        dp = R.total_state_dp([table], h=1., target=0., scope=dict(BIG))
++        self.assertEqual(dp['rounds'][0]['retained_states'], 2)      # signed zeros stay distinct states
++        self.assertEqual(X(dp['MSE_exact']), 0)
++
++    def test_08_numerically_unqualified_cases_are_UNKNOWN(self):
++        with self.assertRaises(ValueError):
++            args = make('B_fixture_like'); args['options'].pop('estimator'); R.evaluate(**args)
++        args = make('B_fixture_like'); args['options']['phase_radii'] = [2.6]*2      # closure fails
++        total = evaluate(args)['deterministic_risk']
++        self.assertEqual(total['bounds']['lemma']['reason'], 'GOOD_CLOSURE_CERTIFICATE_REQUIRED')
++        self.assertEqual(total['MSE_upper_method'], 'MIN_OF_COMPLETED_VALID_UPPER_BOUNDS:total_state_dp')
++        args = make('B_fixture_like', total=None); args['options']['phase_radii'] = [2.6]*2
++        self.assertEqual(evaluate(args)['deterministic_risk']['reason'], 'NO_VALID_TOTAL_ESTIMATOR_UPPER_BOUND')
++        args = make('B_fixture_like'); args['options']['model_loss_contract']['adopted'] = False
++        self.assertEqual(evaluate(args)['deterministic_risk']['reason'], 'ALL_EVENT_LOSS_NOT_ADOPTED')
++        args = make('B_fixture_like'); args['options']['maximum_round_outcomes'] = 1
++        self.assertEqual(evaluate(args)['deterministic_risk']['status'], 'UNKNOWN')
++        def nonfinite(principal, estimate, q, zero):
++            return np.full(len(principal), np.nan), np.zeros(len(principal), dtype=bool)
++        with patch.object(T, 'step', side_effect=nonfinite):
++            total = evaluate(make('B_fixture_like'))['deterministic_risk']
++        self.assertEqual(total['bounds']['total_state_dp']['reason'], 'NONFINITE_TOTAL_DECODER_TRANSITION')
++        self.assertNotIn('total_state_dp', total['bounds']['upper_candidates'])
++        with patch.object(R, 'TRANSITION_ALLOWANCE', Fraction(0)):
++            dp = evaluate(make('four_rounds'))['deterministic_risk']['bounds']['total_state_dp']
++        self.assertEqual(dp['reason'], 'DECLARED_TRANSITION_ALLOWANCE_EXCEEDED')
++        tables = R.tables_for(K.prepare(**{k: v for k, v in make('B_fixture_like').items()
++                                          if k not in ('source', 'options')})[0], make('B_fixture_like')['options'])
++        tables[0]['outcomes'][0]['weight'] += 1
++        self.assertEqual(R.total_state_dp(tables, h=10., target=0., scope=BIG)['reason'], 'COUNT_MASS_NOT_CONSERVED')
++        for scope in ({}, dict(BIG, maximum_frontier_states=-1), dict(BIG, maximum_transition_pairs=True)):
++            with self.assertRaises(ValueError): R.total_state_dp(tables, h=10., target=0., scope=scope)
++        args = make(vector=(1,)*14, raws=[(1., 0.)]*14)
++        self.assertEqual(evaluate(args)['deterministic_risk']['reason'], 'OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN')
++
++    def test_09_min_only_combination_bindings_and_unchanged_partial_output(self):
++        for name in CASES:
++            args = make(name); before = deepcopy(args)
++            records = R.evaluate(**args); total = records[0]['diagnostic']['deterministic_risk']
++            candidates = {k: X(v) for k, v in total['bounds']['upper_candidates'].items()}
++            self.assertEqual(X(total['MSE_upper']), min(candidates.values()))
++            self.assertIn(total['MSE_upper_method'].split(':')[1], candidates)
++            self.assertEqual(records[0]['deterministic_input']['options']['estimator'], T.ESTIMATOR)
++            legacy = deepcopy(before); legacy['options'] = {k: v for k, v in legacy['options'].items()}
++            self.assertEqual(records[0]['diagnostic']['partial_decoder_risk'],
++                             D.evaluate(**legacy)[0]['diagnostic']['deterministic_risk'])
++            self.assertEqual(args, before)
++            self.assertEqual(args['config']['spec']['rmse_policy']['error_contract'],
++                             before['config']['spec']['rmse_policy']['error_contract'])
++        args = case(vectors=[(1, 5), (8, 1)]); args['options'].update(estimator=T.ESTIMATOR, total_state_refinement=BIG)
++        records = R.evaluate(**args); prices, qualifications, options = cost_fixture(args, records)
++        out = D.compare(args['config'], records, prices, qualifications=qualifications,
++            model_limit=dict(MSE_upper=1, source=MOCK, scope='MODEL_MSE_FILTER_ONLY'), **options)
++        self.assertEqual(out['comparison']['point_minimum']['allocation_id'], 'v1')
++        qualifications['v0']['rmse_evidence']['deterministic_input']['options'].pop('estimator')
++        with self.assertRaises(ValueError):
++            D.compare(args['config'], records, prices, qualifications=qualifications,
++                model_limit=dict(MSE_upper=1, source=MOCK, scope='MODEL_MSE_FILTER_ONLY'), **options)
++
++    def test_10_q3_roles_and_no_delta_E_double_count(self):
++        o = self.oracles['four_rounds']; args = make('four_rounds')
++        args['options']['q3_limit'] = dict(MSE_upper=a.exact_value(o['mse']), source=MOCK, scope='MODEL_MSE_FILTER_ONLY')
++        q3 = evaluate(args)['deterministic_risk']['q3']
++        self.assertTrue(q3['within_limit']); self.assertFalse(q3['physical_total_error_guarantee'])
++        self.assertFalse(q3['minkowski_reference']['delta_E_added'])
++        self.assertEqual(set(q3['transfer_terms'].values()), {'UNKNOWN'})
++        d = q3['design_diagnostics']
++        self.assertEqual(X(d['bias_squared'][0]) + X(d['variance'][0]), X(q3['model_MSE_upper']))
++        args['options']['q3_limit']['MSE_upper'] = a.exact_value(o['mse'] - Fraction(1, 10**30))
++        self.assertFalse(evaluate(args)['deterministic_risk']['q3']['within_limit'])
++        args['options']['q3_limit'].pop('source')
++        with self.assertRaises(ValueError): evaluate(args)
++
++    def test_11_original_partial_decoder_still_stops_on_zero_and_tie(self):
++        rows = [dict(m=0, X=dict(plus=1, shots=2), Y=dict(plus=1, shots=2))]       # X=Y=0
++        self.assertEqual(S.decode_counts(rows, h=10., M=0, prior=[-1, 1])['status'], 'UNRESOLVED_ZERO_COORDINATES')
++        self.assertIsNone(S.decode_counts(rows, h=10., M=0, prior=[-1, 1])['energy_estimate_ha'])
++        self.assertEqual(T.decode_counts_total(rows, h=10., M=0, prior=[-1, 1])['energy_estimate_ha'], -0.)
++        self.assertNotIn(T.ESTIMATOR, (S.DECODER,)); self.assertEqual(T.ORIGINAL_ESTIMATOR, S.DECODER)
++        o = self.oracles['zero_tie_rich']
++        self.assertGreater(o['unresolved'], o['zero_any'])                     # original tie stops still exist
++        args = make('zero_tie_rich'); args['options'] = {k: v for k, v in args['options'].items()
++                                                       if k not in ('estimator', 'total_state_refinement')}
++        legacy = D.evaluate(**args)[0]['diagnostic']['deterministic_risk']
++        self.assertEqual(X(legacy['state_refinement']['unresolved_probability']), o['unresolved'])
++
++
++if __name__ == '__main__':
++    unittest.main(verbosity=2)

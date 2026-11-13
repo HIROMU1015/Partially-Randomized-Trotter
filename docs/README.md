@@ -1,5 +1,7 @@
 # 文書索引
 
+[全関数decoder Z1＋T1・Q3評価器 REPORT](research/rpe_total_decoder_q3_risk_20261114/REPORT.md)／[HANDOFF](research/rpe_total_decoder_q3_risk_20261114/HANDOFF.md)：新規3 fileの技術実装と人工検証。正式契約・実H4評価は未承認。
+
 [RPE精度評価契約W0 REPORT](research/rpe_accuracy_contract_w0_20261114/REPORT.md)／[数理メモ](research/rpe_accuracy_contract_w0_20261114/MATH_NOTES.md)／[人工検証](research/rpe_accuracy_contract_w0_20261114/SYNTHETIC_CHECKS.json)：zero/tie・unsafe loss・精度資格の選択肢と最小変更案。契約は未採択、実H4新値なし・STOP。
 
 [PR resource I1/I2/E1技術修正](research/pr_resource_technical_fixes_20261114/README.md)：配線preflight、共有moduleの歴史blob照合と現行API互換、SOURCE別candidate ID parse cache。旧科学SOURCE・結果・契約を保全、人工・技術検証のみ。

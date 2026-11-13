@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[全関数RPE decoder Z1＋T1とQ3直接モデルMSE評価器](docs/research/rpe_total_decoder_q3_risk_20261114/REPORT.md)：既存decoder/DP無変更の別version推定量、更新幅補題上界、zero/tieを遷移とする状態DP（bias²・Var）、有効上界のmin。人工全数列挙と一致、実H4未評価。[取込み・科学評価案](docs/research/rpe_total_decoder_q3_risk_20261114/HANDOFF.md)。
+
 [RPE精度評価契約の整理（W0）](docs/research/rpe_accuracy_contract_w0_20261114/REPORT.md)／[数理メモ](docs/research/rpe_accuracy_contract_w0_20261114/MATH_NOTES.md)：現行decoderの部分関数性とloss familyの構造的下限、全関数版（zero保持・tie argmin）の互換性、更新幅補題と初回unsafe上界・DP接続条件、直接モデルMSEとMinkowskiの比較とユーザー判断事項を整理。人工59/59 PASS、実H4科学計算・保存値再集計・decoder/契約変更0、公開後mandatory STOP。
 
 [PR resource I1/I2/E1技術修正](docs/research/pr_resource_technical_fixes_20261114/README.md)：実loaderを使う科学処理前の配線preflight、歴史SOURCE blobと現行API互換の分離、candidate IDのSOURCE別parse cache。科学kernel・固定契約は保全、技術検証のみ・mandatory STOP。
