@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Truncated PF T2：H_eff 42 cell](docs/research/truncated_pf_t2_results_20261114/REPORT.md)／[CELLS](docs/research/truncated_pf_t2_results_20261114/CELLS.csv)／[構成比較](docs/research/truncated_pf_t2_results_20261114/CONFIGURATIONS.csv)：承認済みT2を一回実行。p7/8/9×S2/Y4/M5の42 cell全PASS・UNKNOWN0、保存B0I 13round照合 最大2.7e−12。PF|retはFull PFと≤1.1e−7 Haの差、予算内最粗幅はFull PFと同じ（S2 16h/7・Y4 16h/3・M5 16h）、相殺依存0。T3候補p7×3 template（任意p8）。Track Cとは数値記録上整合・SOURCE同一性UNKNOWN。価格/N/G0、mandatory STOP。
+
 [Truncated PF T1：切断固有値シフト](docs/research/truncated_pf_t1_results_20261114/REPORT.md)／[一覧](docs/research/truncated_pf_t1_results_20261114/SHIFTS.csv)：承認済みT1を一回実行。保存H4 DF10・B0I p0..9の保持H固有系10件、全PASS/UNKNOWN0。p7 +8.336e−6 Ha（ε_trotの1.05%）、p8 −2.75e−6、p9 −2.9e−8、p≤6は1.7e−2 Ha以上。保存6構成のc_tail/λ_Rはextractorとbit一致。T2優先はp7→p8→p9（42 cell案）。PF/H_eff/価格/N/G0、公開後mandatory STOP。
 
 [Truncated PF誤差評価と有限最適化計画](docs/research/truncated_pf_optimization_plan_20261114/REPORT.md)／[段階計画](docs/research/truncated_pf_optimization_plan_20261114/SCIENCE_PLAN.md)：切断・保持H上PF・合計シフトの分解、符号相殺とoracle水準L1〜L3、p0..9×3公式×A同格子の99構成/154 cell metadata（既存ID再現）、T1〜T6の件数・SOURCE・STOP、PR公平比較の課題。toy 9/9 PASS、実H4科学計算・保存値再解析・compile0、公開後mandatory STOP。

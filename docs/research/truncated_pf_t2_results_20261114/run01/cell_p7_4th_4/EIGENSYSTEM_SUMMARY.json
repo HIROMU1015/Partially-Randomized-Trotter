@@ -1,0 +1,1095 @@
+{
+ "status": "EFFECTIVE_HAMILTONIAN_DIAGNOSTIC_AVAILABLE",
+ "operator": {
+  "kind": "TRUNCATED_PF",
+  "identity": {
+   "binding": {
+    "T": 0.8,
+    "basis": "STO-3G",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "control": "symmetric_directional",
+    "geometry": "linear_1Angstrom",
+    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+    "profile_is_reference_only": true,
+    "rank": 10,
+    "rank_is_saved_observation_not_generation_argument": true,
+    "rank_policy": "tol_only_1e-8",
+    "series": "H4_TOL_ONLY_DF10",
+    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+    "system": "H4",
+    "source": {
+     "input_source": {
+      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+     },
+     "composition_recipe": {
+      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+     },
+     "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+    },
+    "decomposition": {
+     "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+     "contract": {
+      "completion": "saved_weighted_Hermitian_completion",
+      "fragment_order": "saved_snapshot_order",
+      "preparation_binding": {
+       "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+       "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+       "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+      },
+      "state_preparation_cost": 0,
+      "input_source": {
+       "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+       "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+      }
+     },
+     "source": {
+      "input_source": {
+       "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+       "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+      },
+      "composition_recipe": {
+       "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+       "path": "src/trottertracks/pr_rpe_signal_provider.py",
+       "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+      },
+      "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+     }
+    }
+   },
+   "prefix": 7,
+   "formula": "4th",
+   "actual_delta_pf": {
+    "numerator": 3602879701896397,
+    "denominator": 9007199254740992
+   },
+   "signed_weights": [
+    1.3512071919596578,
+    -1.7024143839193153,
+    1.3512071919596578
+   ],
+   "first_check": {
+    "system": "H4",
+    "method": "B0I",
+    "prefix": 7,
+    "formula": "4th",
+    "T": 0.4,
+    "q": 1,
+    "delta": 0.4,
+    "R_outer": null,
+    "K": null,
+    "id": "9531e5eb957c0b00e08a"
+   }
+  },
+  "source": {
+   "commit": "cab3a9acb55b54c3d3c94bedb25bcbd53d50af72",
+   "caller": "scripts/run_h4_truncated_t2.py"
+  },
+  "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+  "retained_hamiltonian": {
+   "construction": "B0I",
+   "source": {
+    "commit": "5e6f9fd214631f7ce92fad0e9c0d273dfb479533",
+    "path": "docs/research/truncated_pf_t1_results_20261114/run01/"
+   },
+   "prefix": 7,
+   "c_tail_ha": 4.5302064712666724e-05
+  },
+  "scalar_policy": "INCLUDED_ONCE_AT_STEP_TIME"
+ },
+ "reference": {
+  "energy": -2.1663874486347634,
+  "definition": "SAVED_SOLVER_PROXY_NOT_REPLACED_BY_NEW_EIGH",
+  "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+  "source": {
+   "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+   "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+   "selector": [
+    "records",
+    5,
+    "diagnostics"
+   ]
+  },
+  "ground_state_certified": false,
+  "carrier": {
+   "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+   "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json",
+   "selector": [
+    "shared",
+    "target",
+    "reference_solver_energy_ha"
+   ]
+  }
+ },
+ "branch": {
+  "mode": "PRINCIPAL",
+  "source": {
+   "commit": "d48d8732ee7ef521aab5d67a0945439364f5a2f8",
+   "path": "docs/research/h4_full_pf_followup_plan_20261114/PLAN.json",
+   "selector": [
+    "step_cells",
+    6,
+    "branch"
+   ]
+  }
+ },
+ "tolerances": {
+  "unitarity": 1e-09,
+  "reconstruction": 1e-09,
+  "generator_hermiticity_ha": 1e-09,
+  "energy_cluster_ha": 1e-08,
+  "phase_guard_rad": 1e-08,
+  "source": {
+   "commit": "9af1ac8ed8adcaef059f439ce690b22b7a320de0",
+   "path": "docs/research/h4_full_pf_heff_preparation_20261113/PLAN.json",
+   "selector": [
+    "numerical_policy"
+   ]
+  }
+ },
+ "diagnostics": {
+  "input_state_norm_error": 0.0,
+  "unitarity_defect_fro": 1.840170190390186e-14,
+  "schur_offdiagonal_fro": 1.440306572530619e-14,
+  "eigenvalue_modulus_error": 3.885780586188048e-15,
+  "eigenvector_gram_defect_fro": 1.2017277804818722e-14,
+  "unitary_eigen_residual_fro": 1.5845279225634585e-14,
+  "principal_cut_clearance_rad": 2.2749647722934823,
+  "selected_cut_clearance_rad": 2.2749647722934823,
+  "H_eff_hermiticity_defect_fro": 7.976556568055499e-16,
+  "exponential_reconstruction_fro": 1.5880985524766856e-14,
+  "weight_sum_error": 1.1102230246251565e-15,
+  "reference_H_hermiticity_defect_fro": 0.0,
+  "reference_eigen_residual_fro": 1.2955714962740859e-14,
+  "reference_eigenvector_gram_defect_fro": 1.7873013348275928e-13,
+  "reference_weight_sum_error": 4.440892098500626e-16,
+  "delta_reference_H_norm": 0.8665549794539056,
+  "reference_norm_less_than_pi": true,
+  "delta_centered_reference_H_norm": 0.8665549794539056,
+  "centered_reference_norm_less_than_pi": true
+ },
+ "H_eff": "SAVED_IN_SPECTRUM_NPZ",
+ "spectrum": {
+  "energies_ha": [
+   -2.166569703240777,
+   -1.9338416987082543,
+   -1.7195998790569846,
+   -1.6497784186370912,
+   -1.623187333253076,
+   -1.4377554075791683,
+   -1.3324208670807314,
+   -1.2848717420025775,
+   -1.214611276881034,
+   -1.1469570727911287,
+   -1.1220761674019453,
+   -1.105991267613937,
+   -0.9834643870313328,
+   -0.9439408224277426,
+   -0.943417786674739,
+   -0.7795008473196248,
+   -0.7196965091395471,
+   -0.7007051433305911,
+   -0.6393517304028042,
+   -0.6246579637961609,
+   -0.5515504085801329,
+   -0.4755232563882276,
+   -0.41197845151709805,
+   -0.3820821679631432,
+   -0.2591213407174144,
+   -0.25808953916442107,
+   -0.21703999163957383,
+   -0.1783734428287093,
+   -0.08663613083140491,
+   0.1446578506309102,
+   0.20783086599654754,
+   0.2496489257703749,
+   0.2501130772449833,
+   0.5210151927426989,
+   0.65394655822582,
+   0.751052553417502
+  ],
+  "branch_integers": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "state_weights": [
+   0.9999999957149948,
+   3.232190646503345e-32,
+   1.2867393746021862e-31,
+   3.598438074521208e-10,
+   1.1167268783695768e-32,
+   1.3720492371325682e-33,
+   2.555098633396089e-10,
+   6.050504522552479e-32,
+   9.830409264073078e-32,
+   8.994218059322983e-10,
+   4.247049955456875e-34,
+   1.4838797692522903e-34,
+   2.6931918762816394e-34,
+   9.07383498127714e-34,
+   3.357723614769366e-10,
+   6.0787163869722145e-33,
+   8.970319642537361e-32,
+   4.513585828659896e-34,
+   1.5627115939379553e-32,
+   2.0404574222579096e-33,
+   3.382144955038521e-10,
+   1.7169392443767388e-09,
+   3.899422196790444e-33,
+   2.2165012752305013e-33,
+   7.115085779233582e-34,
+   8.746430286502349e-32,
+   2.8647318158941127e-33,
+   1.8802934419214618e-10,
+   9.844313042744699e-12,
+   2.1550290913850967e-32,
+   4.430970132296584e-33,
+   3.529567618832757e-32,
+   6.99958926087103e-11,
+   1.0179393813793441e-10,
+   4.423907574178041e-33,
+   9.641183560445748e-12
+  ],
+  "energy_groups": [
+   {
+    "indices": [
+     0
+    ],
+    "minimum_energy": -2.166569703240777,
+    "maximum_energy": -2.166569703240777,
+    "weight": 0.9999999957149948,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     1
+    ],
+    "minimum_energy": -1.9338416987082543,
+    "maximum_energy": -1.9338416987082543,
+    "weight": 3.232190646503345e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     2
+    ],
+    "minimum_energy": -1.7195998790569846,
+    "maximum_energy": -1.7195998790569846,
+    "weight": 1.2867393746021862e-31,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     3
+    ],
+    "minimum_energy": -1.6497784186370912,
+    "maximum_energy": -1.6497784186370912,
+    "weight": 3.598438074521208e-10,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     4
+    ],
+    "minimum_energy": -1.623187333253076,
+    "maximum_energy": -1.623187333253076,
+    "weight": 1.1167268783695768e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     5
+    ],
+    "minimum_energy": -1.4377554075791683,
+    "maximum_energy": -1.4377554075791683,
+    "weight": 1.3720492371325682e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     6
+    ],
+    "minimum_energy": -1.3324208670807314,
+    "maximum_energy": -1.3324208670807314,
+    "weight": 2.555098633396089e-10,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     7
+    ],
+    "minimum_energy": -1.2848717420025775,
+    "maximum_energy": -1.2848717420025775,
+    "weight": 6.050504522552479e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     8
+    ],
+    "minimum_energy": -1.214611276881034,
+    "maximum_energy": -1.214611276881034,
+    "weight": 9.830409264073078e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     9
+    ],
+    "minimum_energy": -1.1469570727911287,
+    "maximum_energy": -1.1469570727911287,
+    "weight": 8.994218059322983e-10,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     10
+    ],
+    "minimum_energy": -1.1220761674019453,
+    "maximum_energy": -1.1220761674019453,
+    "weight": 4.247049955456875e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     11
+    ],
+    "minimum_energy": -1.105991267613937,
+    "maximum_energy": -1.105991267613937,
+    "weight": 1.4838797692522903e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     12
+    ],
+    "minimum_energy": -0.9834643870313328,
+    "maximum_energy": -0.9834643870313328,
+    "weight": 2.6931918762816394e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     13
+    ],
+    "minimum_energy": -0.9439408224277426,
+    "maximum_energy": -0.9439408224277426,
+    "weight": 9.07383498127714e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     14
+    ],
+    "minimum_energy": -0.943417786674739,
+    "maximum_energy": -0.943417786674739,
+    "weight": 3.357723614769366e-10,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     15
+    ],
+    "minimum_energy": -0.7795008473196248,
+    "maximum_energy": -0.7795008473196248,
+    "weight": 6.0787163869722145e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     16
+    ],
+    "minimum_energy": -0.7196965091395471,
+    "maximum_energy": -0.7196965091395471,
+    "weight": 8.970319642537361e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     17
+    ],
+    "minimum_energy": -0.7007051433305911,
+    "maximum_energy": -0.7007051433305911,
+    "weight": 4.513585828659896e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     18
+    ],
+    "minimum_energy": -0.6393517304028042,
+    "maximum_energy": -0.6393517304028042,
+    "weight": 1.5627115939379553e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     19
+    ],
+    "minimum_energy": -0.6246579637961609,
+    "maximum_energy": -0.6246579637961609,
+    "weight": 2.0404574222579096e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     20
+    ],
+    "minimum_energy": -0.5515504085801329,
+    "maximum_energy": -0.5515504085801329,
+    "weight": 3.382144955038521e-10,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     21
+    ],
+    "minimum_energy": -0.4755232563882276,
+    "maximum_energy": -0.4755232563882276,
+    "weight": 1.7169392443767388e-09,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     22
+    ],
+    "minimum_energy": -0.41197845151709805,
+    "maximum_energy": -0.41197845151709805,
+    "weight": 3.899422196790444e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     23
+    ],
+    "minimum_energy": -0.3820821679631432,
+    "maximum_energy": -0.3820821679631432,
+    "weight": 2.2165012752305013e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     24
+    ],
+    "minimum_energy": -0.2591213407174144,
+    "maximum_energy": -0.2591213407174144,
+    "weight": 7.115085779233582e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     25
+    ],
+    "minimum_energy": -0.25808953916442107,
+    "maximum_energy": -0.25808953916442107,
+    "weight": 8.746430286502349e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     26
+    ],
+    "minimum_energy": -0.21703999163957383,
+    "maximum_energy": -0.21703999163957383,
+    "weight": 2.8647318158941127e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     27
+    ],
+    "minimum_energy": -0.1783734428287093,
+    "maximum_energy": -0.1783734428287093,
+    "weight": 1.8802934419214618e-10,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     28
+    ],
+    "minimum_energy": -0.08663613083140491,
+    "maximum_energy": -0.08663613083140491,
+    "weight": 9.844313042744699e-12,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     29
+    ],
+    "minimum_energy": 0.1446578506309102,
+    "maximum_energy": 0.1446578506309102,
+    "weight": 2.1550290913850967e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     30
+    ],
+    "minimum_energy": 0.20783086599654754,
+    "maximum_energy": 0.20783086599654754,
+    "weight": 4.430970132296584e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     31
+    ],
+    "minimum_energy": 0.2496489257703749,
+    "maximum_energy": 0.2496489257703749,
+    "weight": 3.529567618832757e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     32
+    ],
+    "minimum_energy": 0.2501130772449833,
+    "maximum_energy": 0.2501130772449833,
+    "weight": 6.99958926087103e-11,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     33
+    ],
+    "minimum_energy": 0.5210151927426989,
+    "maximum_energy": 0.5210151927426989,
+    "weight": 1.0179393813793441e-10,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     34
+    ],
+    "minimum_energy": 0.65394655822582,
+    "maximum_energy": 0.65394655822582,
+    "weight": 4.423907574178041e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     35
+    ],
+    "minimum_energy": 0.751052553417502,
+    "maximum_energy": 0.751052553417502,
+    "weight": 9.641183560445748e-12,
+    "multiplicity": 1
+   }
+  ],
+  "minimum_energy_group_weight": 0.9999999957149948,
+  "maximum_group_weight": 0.9999999957149948,
+  "degenerate_individual_weights_basis_dependent": true
+ },
+ "reference_comparison": {
+  "eigenvalues_ha": [
+   -2.1663874486347643,
+   -1.9337572335145732,
+   -1.719494142631177,
+   -1.649657886201269,
+   -1.623138026380541,
+   -1.4376912832528468,
+   -1.332275357451681,
+   -1.2848225661212125,
+   -1.2146565753844771,
+   -1.146804351832922,
+   -1.1219976564113459,
+   -1.1059814800549295,
+   -0.98344033538653,
+   -0.9439753961246241,
+   -0.9432502847533399,
+   -0.7795352235634319,
+   -0.7196923643854449,
+   -0.7006481808037608,
+   -0.6393791906141886,
+   -0.62464515354548,
+   -0.5515574047253968,
+   -0.4754683917016782,
+   -0.4120157338392316,
+   -0.38202499889333597,
+   -0.259136154822192,
+   -0.2580852039948325,
+   -0.21705710528118893,
+   -0.1784204232460328,
+   -0.08657631477307715,
+   0.14460131517171482,
+   0.2077804845754362,
+   0.24956697916571965,
+   0.24998945299185765,
+   0.520844457581609,
+   0.6538434212689659,
+   0.7509635882732985
+  ],
+  "eigensystem_origin": "SUPPLIED_SOURCE_BOUND_CACHE",
+  "supplied_eigensystem_source": {
+   "commit": "69ee0ff8898960d5f9959af8d34d89f223caec87",
+   "path": "docs/research/h4_full_pf_heff_results_20261113/run01/EIGENSYSTEM.json",
+   "selector": [
+    "reference_comparison"
+   ]
+  },
+  "state_weights": [
+   1.0000000000000004,
+   1.092509753268244e-33,
+   1.0022735032851152e-33,
+   6.933347799794049e-31,
+   9.255858096391497e-35,
+   1.2301186053672924e-34,
+   4.81482486096809e-31,
+   6.789655370349533e-35,
+   1.1849814246321801e-32,
+   3.774822690998982e-32,
+   8.441379857267015e-37,
+   7.976658883132719e-36,
+   3.0695693457712776e-36,
+   1.6324230161412324e-34,
+   2.3303752327085554e-32,
+   5.475526154527142e-35,
+   2.751714725839893e-34,
+   5.368038656861411e-35,
+   7.31748172122751e-34,
+   9.386650825632598e-35,
+   1.7333369499485123e-33,
+   1.7333369499485123e-33,
+   2.29224525293876e-34,
+   5.3941269616436505e-34,
+   8.006553835799686e-35,
+   1.553207134364382e-33,
+   1.1013718954344772e-34,
+   3.192529809375654e-32,
+   1.2037062152420224e-31,
+   2.0765044599070693e-33,
+   6.667806818175342e-34,
+   3.401174310704836e-38,
+   3.009265538105056e-32,
+   1.6266961024419143e-33,
+   8.634649352120968e-34,
+   4.333342374871281e-34
+  ],
+  "energy_groups": [
+   {
+    "indices": [
+     0
+    ],
+    "minimum_energy": -2.1663874486347643,
+    "maximum_energy": -2.1663874486347643,
+    "weight": 1.0000000000000004,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     1
+    ],
+    "minimum_energy": -1.9337572335145732,
+    "maximum_energy": -1.9337572335145732,
+    "weight": 1.092509753268244e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     2
+    ],
+    "minimum_energy": -1.719494142631177,
+    "maximum_energy": -1.719494142631177,
+    "weight": 1.0022735032851152e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     3
+    ],
+    "minimum_energy": -1.649657886201269,
+    "maximum_energy": -1.649657886201269,
+    "weight": 6.933347799794049e-31,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     4
+    ],
+    "minimum_energy": -1.623138026380541,
+    "maximum_energy": -1.623138026380541,
+    "weight": 9.255858096391497e-35,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     5
+    ],
+    "minimum_energy": -1.4376912832528468,
+    "maximum_energy": -1.4376912832528468,
+    "weight": 1.2301186053672924e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     6
+    ],
+    "minimum_energy": -1.332275357451681,
+    "maximum_energy": -1.332275357451681,
+    "weight": 4.81482486096809e-31,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     7
+    ],
+    "minimum_energy": -1.2848225661212125,
+    "maximum_energy": -1.2848225661212125,
+    "weight": 6.789655370349533e-35,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     8
+    ],
+    "minimum_energy": -1.2146565753844771,
+    "maximum_energy": -1.2146565753844771,
+    "weight": 1.1849814246321801e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     9
+    ],
+    "minimum_energy": -1.146804351832922,
+    "maximum_energy": -1.146804351832922,
+    "weight": 3.774822690998982e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     10
+    ],
+    "minimum_energy": -1.1219976564113459,
+    "maximum_energy": -1.1219976564113459,
+    "weight": 8.441379857267015e-37,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     11
+    ],
+    "minimum_energy": -1.1059814800549295,
+    "maximum_energy": -1.1059814800549295,
+    "weight": 7.976658883132719e-36,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     12
+    ],
+    "minimum_energy": -0.98344033538653,
+    "maximum_energy": -0.98344033538653,
+    "weight": 3.0695693457712776e-36,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     13
+    ],
+    "minimum_energy": -0.9439753961246241,
+    "maximum_energy": -0.9439753961246241,
+    "weight": 1.6324230161412324e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     14
+    ],
+    "minimum_energy": -0.9432502847533399,
+    "maximum_energy": -0.9432502847533399,
+    "weight": 2.3303752327085554e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     15
+    ],
+    "minimum_energy": -0.7795352235634319,
+    "maximum_energy": -0.7795352235634319,
+    "weight": 5.475526154527142e-35,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     16
+    ],
+    "minimum_energy": -0.7196923643854449,
+    "maximum_energy": -0.7196923643854449,
+    "weight": 2.751714725839893e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     17
+    ],
+    "minimum_energy": -0.7006481808037608,
+    "maximum_energy": -0.7006481808037608,
+    "weight": 5.368038656861411e-35,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     18
+    ],
+    "minimum_energy": -0.6393791906141886,
+    "maximum_energy": -0.6393791906141886,
+    "weight": 7.31748172122751e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     19
+    ],
+    "minimum_energy": -0.62464515354548,
+    "maximum_energy": -0.62464515354548,
+    "weight": 9.386650825632598e-35,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     20
+    ],
+    "minimum_energy": -0.5515574047253968,
+    "maximum_energy": -0.5515574047253968,
+    "weight": 1.7333369499485123e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     21
+    ],
+    "minimum_energy": -0.4754683917016782,
+    "maximum_energy": -0.4754683917016782,
+    "weight": 1.7333369499485123e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     22
+    ],
+    "minimum_energy": -0.4120157338392316,
+    "maximum_energy": -0.4120157338392316,
+    "weight": 2.29224525293876e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     23
+    ],
+    "minimum_energy": -0.38202499889333597,
+    "maximum_energy": -0.38202499889333597,
+    "weight": 5.3941269616436505e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     24
+    ],
+    "minimum_energy": -0.259136154822192,
+    "maximum_energy": -0.259136154822192,
+    "weight": 8.006553835799686e-35,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     25
+    ],
+    "minimum_energy": -0.2580852039948325,
+    "maximum_energy": -0.2580852039948325,
+    "weight": 1.553207134364382e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     26
+    ],
+    "minimum_energy": -0.21705710528118893,
+    "maximum_energy": -0.21705710528118893,
+    "weight": 1.1013718954344772e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     27
+    ],
+    "minimum_energy": -0.1784204232460328,
+    "maximum_energy": -0.1784204232460328,
+    "weight": 3.192529809375654e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     28
+    ],
+    "minimum_energy": -0.08657631477307715,
+    "maximum_energy": -0.08657631477307715,
+    "weight": 1.2037062152420224e-31,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     29
+    ],
+    "minimum_energy": 0.14460131517171482,
+    "maximum_energy": 0.14460131517171482,
+    "weight": 2.0765044599070693e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     30
+    ],
+    "minimum_energy": 0.2077804845754362,
+    "maximum_energy": 0.2077804845754362,
+    "weight": 6.667806818175342e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     31
+    ],
+    "minimum_energy": 0.24956697916571965,
+    "maximum_energy": 0.24956697916571965,
+    "weight": 3.401174310704836e-38,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     32
+    ],
+    "minimum_energy": 0.24998945299185765,
+    "maximum_energy": 0.24998945299185765,
+    "weight": 3.009265538105056e-32,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     33
+    ],
+    "minimum_energy": 0.520844457581609,
+    "maximum_energy": 0.520844457581609,
+    "weight": 1.6266961024419143e-33,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     34
+    ],
+    "minimum_energy": 0.6538434212689659,
+    "maximum_energy": 0.6538434212689659,
+    "weight": 8.634649352120968e-34,
+    "multiplicity": 1
+   },
+   {
+    "indices": [
+     35
+    ],
+    "minimum_energy": 0.7509635882732985,
+    "maximum_energy": 0.7509635882732985,
+    "weight": 4.333342374871281e-34,
+    "multiplicity": 1
+   }
+  ],
+  "reference_lowest_group_to_effective_groups_trace_overlap": [
+   0.999999995714995,
+   3.4912194259339497e-32,
+   1.1501007087692323e-31,
+   3.5984380742275795e-10,
+   1.1222440995527102e-32,
+   2.2298131254332802e-33,
+   2.5550986331968433e-10,
+   5.660392644714961e-32,
+   4.4416209211644816e-32,
+   8.994218059484551e-10,
+   5.14110125421675e-34,
+   5.205106721145525e-34,
+   2.698580056267943e-34,
+   1.8726858325206818e-34,
+   3.3577236148778694e-10,
+   5.250655102920348e-33,
+   6.611028886973555e-32,
+   4.0165400876438936e-34,
+   7.375258728953598e-33,
+   2.1115680024815846e-33,
+   3.3821449550911465e-10,
+   1.7169392443869912e-09,
+   2.841058878427459e-33,
+   2.5491492786845736e-33,
+   6.626218728907923e-34,
+   3.075362694694456e-32,
+   4.552218958989936e-33,
+   1.8802934419719322e-10,
+   9.844313045222422e-12,
+   1.5366087123525558e-32,
+   1.5156857499807313e-32,
+   2.9960280085133496e-32,
+   6.999589260443009e-11,
+   1.0179393814539518e-10,
+   2.6965510398297486e-32,
+   9.641183561463318e-12
+  ],
+  "trace_overlap_is_not_a_normalized_state_probability": true,
+  "matched_effective_group": null,
+  "degenerate_basis_correspondence_not_unique": true,
+  "reference_ground_energy_replaces_declared_reference": false,
+  "H_eff_minus_original_H_operator_norm": 0.0003532978575463345
+ },
+ "spectral_shift_diagnostics": {
+  "minimum_branched_energy_minus_declared_reference_ha": -0.000182254606013732,
+  "scope": "BRANCH_DEPENDENT_SPECTRAL_DIAGNOSTIC_NOT_RPE_BIAS",
+  "reference_energy_not_used_to_choose_branch": true,
+  "minimum_branched_energy_minus_reference_matrix_minimum_ha": -0.00018225460601284382,
+  "declared_reference_minus_matrix_minimum_ha": 8.881784197001252e-16
+ },
+ "rpe_bias_ha": null,
+ "sufficient_N": null,
+ "global_RMSE_bound": null,
+ "G": null,
+ "scientific_method_status": "ADOPTED_MAIN_DETERMINISTIC_PF_ERROR_ROUTE",
+ "physical_alias_qualified": false,
+ "ground_identification_qualified": false,
+ "numerical_error_certified": false,
+ "renormalized": false,
+ "unitary_repaired": false,
+ "branch_status": "CONVENTION_ONLY_ALIAS_EVIDENCE_NOT_SUPPLIED",
+ "branch_center_ha": 0.0
+}
