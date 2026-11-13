@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full PF追加幅の科学結果](research/h4_full_pf_followup_results_20261114/REPORT.md)：S2/Y4/M5の新5actual幅で全数値gate通過、局所予算内3点を[C/B HANDOFF](research/h4_full_pf_followup_results_20261114/HANDOFF.md)へ。保存M5/.8窓整合PASS、直接/spectral各10、人工13 PASS、元H新eigh/reference/N/C/G0、公開後STOP。
+
 [Full PF追加幅の有限案](research/h4_full_pf_followup_plan_20261114/REPORT.md)：S2/Y4の境界補完とM5粗化を5新actual幅で提案。[SCIENCE_PLAN](research/h4_full_pf_followup_plan_20261114/SCIENCE_PLAN.md)／[C・B HANDOFF](research/h4_full_pf_followup_plan_20261114/HANDOFF.md)。人工4test PASS、M5/32h分枝保留、新科学/保存再解析0、別承認待ちSTOP。
 
 [Full PF H_eff有限探索結果](research/h4_full_pf_heff_scan_results_20261114/REPORT.md)：H4 DF10/sector(2,2)/Full PF/prefix10、S2/Y4/M5×.05–.8の14新診断と旧1点。数値gate全通過、局所候補S2/.2・Y4/.4・M5/.8をCへ渡す。[図・表・HANDOFF](research/h4_full_pf_heff_scan_results_20261114/HANDOFF.md)。十分N/全RMSE/G未資格、公開後STOP。

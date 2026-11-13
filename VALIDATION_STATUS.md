@@ -1,5 +1,7 @@
 # Validation status
 
+[Full PF追加5点結果](docs/research/h4_full_pf_followup_results_20261114/REPORT.md)：H4 DF10/Full10/sector36、5step/Schurと二時点mean各10が数値gate1e−9通過（最大差2.811e−12、最大power unitarity1.271e−11）。保存M5/.8窓検査1 PASS、旧3入力hash不変。人工新caller5＋既存8＝13 PASS、新reference/元H eigh/旧signal再解析/N/C/G/retry0。局所予算内3/超2、global/十分N未資格、公開後STOP。
+
 [Full PF追加幅計画](docs/research/h4_full_pf_followup_plan_20261114/REPORT.md)：exact h-relativeの初回5配置・新5actual幅と保留M5/32hをmetadataで分離。exact q/ID/表示丸め/人工windowの4test PASS。実H4配列・新固有値・保存数値再解析・N/C/G0、十分N/global RMSE/G null、公開後STOP。
 
 [Full PF H_eff有限格子結果](docs/research/h4_full_pf_heff_scan_results_20261114/REPORT.md)：H4 DF10/sector36/Full10/S2・Y4・M5/Δ.05–.8の14新cellが全数値gate通過、既存S2/.1は参照のみ。最大二時点mean差1.056e−11、最大power unitarity1.174e−10（gate1e−9）。局所予算内11/超3、元H新eigh/reference/旧signal再解析/retry/N/MC/C/G0。caller4人工PASS、alias/ground/RMSE/十分N/G未資格。

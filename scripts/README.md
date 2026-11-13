@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_h4_full_pf_followup.py](run_h4_full_pf_followup.py)：d48d8732計画の承認済み5cell＋保存M5/.8窓検査だけを一回実行。SOURCE a3005d723/run01完了、無断再実行不可。[結果](../docs/research/h4_full_pf_followup_results_20261114/REPORT.md)／[新5人工test](../tests/check_h4_full_pf_followup_caller.py)。旧diagnose_cellへoptional branch引数のみ追加し、旧default PRINCIPALを保全。元H新eigh/reference/N/C/G/retry0。
+
 [prepare_h4_full_pf_followup.py](prepare_h4_full_pf_followup.py)：既存canonical APIを再利用した追加幅metadata専用入口。初回5新actual cellと分枝未解決M5/32hを分離し、全round ID/early/旧C statusを保存する。[REPORT/科学案](../docs/research/h4_full_pf_followup_plan_20261114/REPORT.md)／[人工4test](../tests/check_h4_full_pf_followup_plan.py)。科学leafなし、旧scannerを無変更で再実行しない。
 
 [run_h4_full_pf_heff_scan.py](run_h4_full_pf_heff_scan.py)：固定878000d8計画の新14cellと指定二時点のみ。SOURCE b64f22b9/run01完了済み、無断再実行不可。[結果/HANDOFF](../docs/research/h4_full_pf_heff_scan_results_20261114/REPORT.md)／[4人工test](../tests/check_h4_full_pf_heff_scan_caller.py)。元H新eigh/reference/旧signal再解析/N/C/G0。

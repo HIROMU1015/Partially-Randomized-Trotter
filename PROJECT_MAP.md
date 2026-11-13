@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full PF追加5点の実行結果](docs/research/h4_full_pf_followup_results_20261114/REPORT.md)：SOURCE a3005d723で承認scopeを一回実行し全数値gate通過。局所予算内S2/16h/7・Y4/16h/3・M5/16h、他2点は予算超過。M5窓/旧.8スペクトル検査PASS、新step/Schur5・直接/spectral各10、元H新eigh/reference/N/C/G0。[caller](scripts/run_h4_full_pf_followup.py)／[C packet](docs/research/h4_full_pf_followup_results_20261114/C_HANDOFF.json)。人工13 PASS、M5/3.2未実行、十分N/global RMSE未資格、公開後STOP。
+
 [Full PF追加幅の未実行計画](docs/research/h4_full_pf_followup_plan_20261114/REPORT.md)：S2の16h/7・8h/3、Y4の16h/3・32h/5、M5の16hを新5actual cellへ集約。[metadata CLI](scripts/prepare_h4_full_pf_followup.py)と[人工4test](tests/check_h4_full_pf_followup_plan.py) PASS。M5/16hはENERGY_WINDOW候補、32hは分枝未解決で初回範囲外。全13round ID/early/C statusを保持、新H4/保存数値再解析/N/C/G0、公開後STOP。
 
 [Full PF H_eff有限格子の実行結果](docs/research/h4_full_pf_heff_scan_results_20261114/REPORT.md)：承認済み新14step/Schur・元H新eigh0・直接/spectral各28が全数値gate通過。局所予算内の粗い候補はS2/.2、Y4/.4、M5/.8。S2/.2を全13roundの構造piece数からC比較優先とするがcompiled/G winnerではない。[caller](scripts/run_h4_full_pf_heff_scan.py)／[4人工test](tests/check_h4_full_pf_heff_scan_caller.py)／[C packet](docs/research/h4_full_pf_heff_scan_results_20261114/C_HANDOFF.json)。旧点/3入力保全、新reference/旧signal再解析/N/MC/C/G/retry0、公開後STOP。
