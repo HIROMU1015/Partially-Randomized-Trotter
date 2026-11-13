@@ -1,5 +1,7 @@
 # Validation status
 
+[保存LD1/LD2の決定論的risk初回適用](docs/research/pr_ld1_ld2_deterministic_risk_results_20261113/REPORT.md)：caller/入力43898ada1を固定し、既存Dで各1vectorを1回、計2科学評価を完了。各2,318,425 good遷移検査が成立し、モデルMSE上界約0.239895/0.239688 Ha²。保存SOURCE・exact質量/上界恒等式の事後確認PASS、元資格/nullを保全。実全体tie厳密値/energy資格UNKNOWN、十分N/global/G未取得、MC/追加配分/価格/δE加算0。公開後mandatory STOP。
+
 [保存LD1/LD2の決定論的risk適用準備](docs/research/pr_ld1_ld2_deterministic_application_preparation_20261113/REPORT.md)：既存保存fixture2件PASS、両13roundのSOURCE/physical identity/law/C binding/targetと原UNQUALIFIED/nullをmetadata確認。数値入口をmockで禁止し、保存rawの確率/phase/MSE/N/C/G・MC未実行。target/loss等の選択と科学実行は別許可待ち、production code・旧検証記録は変更なし。
 
 [決定論的risk・shot接続](docs/research/rpe_deterministic_risk_20261113/REPORT.md)：新13＋MCなし回帰32＝45技術test PASS。小count全列挙、極小確率、zero/tie/誤branch/alias、有限条件、13round、人工価格G選択を確認。実H4/保存科学値再解析/新MC/実N/C/G0。旧MC/risk_intervals・SOURCE/STOPを保全し、科学的energy資格はUNKNOWN。
