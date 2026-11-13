@@ -114,11 +114,19 @@ def prepare(config, signal_packet, allocations, *, evaluation_target=None,
     _target(evaluation_target, signal_packet['target'])
     if signal_packet.get('configuration_id') != config['id'] or not signal_packet.get('source'):
         raise ValueError('Signal packet configuration/SOURCE required')
+    sources = signal_packet.get('implementation_sources')
+    if sources is not None:
+        if (signal_packet.get('per_round_source_is_authoritative') is not True
+                or set(sources) != {str(r['m']) for r in config['rounds']}
+                or not all(sources.values())):
+            raise ValueError('Complete authoritative per-round implementation SOURCE required')
     for mean in signal_packet['means']:
         binding = mean.get('provider_binding') or {}
+        implementation = signal_packet['source'] if sources is None else sources.get(str(mean['m']))
         if (not binding.get('physical_context')
                 or not p.same(binding.get('numerical_source'), mean.get('source'))
-                or not p.same(mean.get('implementation_source'), signal_packet['source'])):
+                or not p.same(mean.get('implementation_source'), implementation)
+                or (sources is not None and not p.same(binding.get('implementation_source'), implementation))):
             raise ValueError('Source-bound C provider_binding required')
     entries = W.prepare(config, signal_packet['means'], allocations,
         target=signal_packet['target'], statistical_contract=statistical_contract)

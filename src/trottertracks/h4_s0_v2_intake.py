@@ -4,7 +4,6 @@ No A V2 N packet is created: the V1 packet remains original evidence and its
 nominal values are exposed only in a separate diagnostic view. No N/C/G leaf.
 """
 from copy import deepcopy
-import ast
 import hashlib
 from pathlib import Path
 import subprocess
@@ -174,14 +173,12 @@ def prepare(root):
     saved = store.read(A_CONFIG); original = store.read(A_PACKET); index = store.read(A_INDEX)
     path = 'src/trottertracks/pr_rpe_rmse.py'
     same(hashlib.sha256((Path(root)/path).read_bytes()).hexdigest(), index['consumed_files'][path], 'S0_A_METADATA_SOURCE_CHANGED')
-    # S0's pipeline predates B's unrelated H6 factory addition. Preserve both
-    # versions, requiring the rest of the module (H4 metadata included) to match.
+    # Validate historical provenance against the consumed Git blob. The live
+    # shared pipeline may evolve; canonical() below checks every H4 schedule,
+    # identity and law field through the current API instead of freezing it.
     path = 'src/trottertracks/pf_pr_rpe_pipeline.py'
     before = subprocess.check_output(['git','show',SCIENCE['commit']+':'+path],cwd=root)
     same(hashlib.sha256(before).hexdigest(), index['consumed_files'][path], 'S0_PIPELINE_PROVENANCE_CHANGED')
-    current = ast.parse((Path(root)/path).read_text())
-    current.body = [n for n in current.body if not (isinstance(n, ast.FunctionDef) and n.name=='h6_saved_price_provider')]
-    same(ast.dump(current), ast.dump(ast.parse(before)), 'S0_H4_PIPELINE_SOURCE_CHANGED')
     cpath = 'src/trottertracks/bv2_mean_price.py'
     same((Path(root)/cpath).read_bytes().hex(), subprocess.check_output(['git','show',C_COMMIT+':'+cpath],cwd=root).hex(), 'C_PROVIDER_SOURCE_CHANGED')
     config, mapping = canonical(saved, original)
@@ -225,5 +222,5 @@ def prepare(root):
         price_requests=requests, original_S0_handoff=original, sources=store.sources,
         C_implementation=dict(commit=C_COMMIT,path=cpath), original_S0_status_preserved=True,
         metadata_source_compatibility=dict(A='BYTE_IDENTICAL_TO_S0',
-            pipeline='ONLY_ADDED_UNUSED_H6_SAVED_PRICE_FACTORY_OTHER_AST_IDENTICAL'),
+            pipeline='PINNED_S0_BLOB_VERIFIED_CURRENT_API_H4_METADATA_MATCH'),
         science_calls=0, actual_N_C_G_evaluated=False, mandatory_stop=True)

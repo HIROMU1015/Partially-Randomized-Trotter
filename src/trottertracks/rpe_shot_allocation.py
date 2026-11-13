@@ -175,19 +175,32 @@ def _linear_bounds(coefficients, bounds):
 
 def compare(config, allocations, evaluations, prices, *, cohorts, statistical_contract,
             price_extension=None, price_bindings=(), interval_contract=None,
-            price_policy='qualified_expectation', unexplored_scope='OUTSIDE_EXPLICIT_FINITE_ALLOCATION_MENU'):
+            price_policy='qualified_expectation', unexplored_scope='OUTSIDE_EXPLICIT_FINITE_ALLOCATION_MENU',
+            root=None, comparison_policy=None):
     """Exact finite-menu point comparison of qualified, externally supplied N.
 
     Missing diagnostics/N/C stay unknown. A point minimum is distinct from
     strict interval dominance. An incomplete inner menu has no eligible outer
     representative. Interval-only prices are preserved but never midpoint-filled.
+    An explicit comparison_policy runs C's pinned implementation guard before
+    any price metadata/assess/cost/select; non-synthetic N without one stays pending.
     """
     _menu(config, allocations); _contract(statistical_contract)
     lookup = {v['allocation']['allocation_id']: v for v in evaluations}
     if len(lookup) != len(evaluations) or not set(lookup) <= {v['allocation_id'] for v in allocations}:
         raise ValueError('Duplicate or foreign allocation evaluation')
+    implementation = None
+    if comparison_policy is not None:
+        if root is None:
+            raise ValueError('Repository root required for the SOURCE-bound implementation check')
+        from . import rpe_price_implementation_guard as G
+        implementation = G.check(root, config, prices, cohorts=cohorts, bindings=price_bindings,
+                                 policy=comparison_policy)
     issues, price_coverage, bounds = _price_metadata(config, prices, cohorts,
         price_bindings, price_extension, interval_contract)
+    if implementation is None and any(v['n_packet'].get('evidence_kind') != 'SYNTHETIC_ONLY'
+                                      for v in evaluations if v.get('n_packet') is not None):
+        issues.append('MISSING_PRICE_COMPARISON_IMPLEMENTATION_POLICY')
     results = []; usable = []; pending = []; kinds = set()
     vectors = {v['allocation_id']: [r['N_' + axis] for r in v['shots'] for axis in p.AXES] for v in allocations}
     for allocation in allocations:
@@ -243,7 +256,8 @@ def compare(config, allocations, evaluations, prices, *, cohorts, statistical_co
         representative = deepcopy(selected['evaluation'])
         representative.update(allocation_id=ties[0], allocation_menu_complete=True,
             allocation=deepcopy(selected['allocation']), statistical_contract=deepcopy(statistical_contract),
-            unexplored_allocation_scope=deepcopy(unexplored_scope))
+            unexplored_allocation_scope=deepcopy(unexplored_scope),
+            price_implementation_check=deepcopy(implementation))
         outer = B.select([config], [representative], unexplored_scope=deepcopy(unexplored_scope))
     return dict(configuration_id=config['id'], statistical_contract=deepcopy(statistical_contract),
         allocations=results, price_coverage=price_coverage, price_interval_contract=deepcopy(interval_contract),
@@ -253,6 +267,7 @@ def compare(config, allocations, evaluations, prices, *, cohorts, statistical_co
         selection_scope='EXPLICIT_FINITE_ALLOCATION_MENU' if complete else 'AVAILABLE_QUALIFIED_SUBSET',
         unexplored_scope=deepcopy(unexplored_scope), outer_evaluation=representative, outer_selection=outer,
         N_evidence_kind=next(iter(kinds)) if kinds else None, price_policy=price_policy,
+        price_implementation_check=implementation,
         search_ranges_scientifically_adopted=False, scientific_claim_adopted=False,
         covariance=None, missing_covariance_is_zero=False,
         normalization_is_price_multiplier=False, classical_samples_are_shot_multipliers=False)

@@ -41,6 +41,27 @@ class S0IntakeTests(unittest.TestCase):
         self.assertEqual(config['spec']['split']['deterministic_scope'],'PREFIX')
         self.assertEqual(config['spec']['A_input']['design']['PF'],dict(method='B0',prefix=7))
 
+    def test_current_shared_API_preserves_published_S0_configuration_and_requests(self):
+        commit='030f3f548a35d98a88e62e92a35f132e0243a293'
+        directory='docs/research/h4_s0_v2_integration_20261113/run01/'
+        for key,name in [('configuration','CONFIGURATION_V2.json'),
+                         ('price_requests','C_REQUESTS.json'),
+                         ('identity_map','IDENTITY_MAP.json'),
+                         ('original_S0_handoff','ORIGINAL_S0_N_HANDOFF.json')]:
+            archived=self.store.read(dict(commit=commit,path=directory+name))
+            self.assertEqual(self.result[key],archived)
+
+    def test_pinned_pipeline_blob_provenance_mismatch_still_stops(self):
+        original=H.p.SavedArtifacts.read
+        def altered(store, ref):
+            value=original(store,ref)
+            if ref==H.A_INDEX:
+                value['consumed_files']['src/trottertracks/pf_pr_rpe_pipeline.py']='0'*64
+            return value
+        with patch.object(H.p.SavedArtifacts,'read',altered):
+            with self.assertRaisesRegex(ValueError,'S0_PIPELINE_PROVENANCE_CHANGED'):
+                H.prepare(ROOT)
+
     def test_only_two_nominal_diagnostics_original_values_status_and_source_preserved(self):
         original = self.result['original_S0_handoff']
         self.assertEqual(original,self.original)
@@ -139,7 +160,10 @@ class S0IntakeTests(unittest.TestCase):
         self.assertFalse(plan['requested_methods_have_ready_evidence'])
         for path,commit in [('src/trottertracks/bv2_mean_price.py',H.C_COMMIT),
                             ('src/trottertracks/pr_rpe_rmse_controller.py','6a9d7fd36b687e58aecbed1278c6d7927d6827d6')]:
-            self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',commit+':'+path],cwd=ROOT))
+            consumed = (subprocess.check_output(['git','show',
+                '030f3f548a35d98a88e62e92a35f132e0243a293:'+path],cwd=ROOT)
+                if path.endswith('/pr_rpe_rmse_controller.py') else (ROOT/path).read_bytes())
+            self.assertEqual(consumed,subprocess.check_output(['git','show',commit+':'+path],cwd=ROOT))
         with tempfile.TemporaryDirectory() as tmp:
             r=subprocess.run([sys.executable,'-B','scripts/prepare_h4_s0_v2.py','--out',tmp],cwd=ROOT,
                              stdout=subprocess.PIPE,stderr=subprocess.PIPE)

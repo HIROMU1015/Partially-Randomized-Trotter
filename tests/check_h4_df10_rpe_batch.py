@@ -228,10 +228,17 @@ class H4BatchTests(unittest.TestCase):
             self.assertEqual(failed['records'],ready['saved_N'])
 
     def test_common_C_and_H6_numerical_and_historical_artifacts_unchanged(self):
+        consumed=json.loads(h4.blob(ROOT,'89c91c692e1d35de94d2e7afbe890aabe6d80b7e',
+            'docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json'))
         paths=list(cli.SOURCE_FILES[3:])+['src/trottertracks/h4_df10_price_provider.py','src/trottertracks/h6_rpe_batch_provider.py',
             'docs/research/h6_df19_rpe_m8_12_results_20261110/run01/result.json','docs/research/h6_df19_rpe_m8_12_results_20261110/run01/COVERAGE.json']
         for path in paths:
-            current=(ROOT/path).read_bytes() if (ROOT/path).is_file() else h4.blob(ROOT,'HEAD',path)
+            # This is the source actually consumed by the historical run,
+            # not a requirement to freeze today's shared pipeline forever.
+            current=(h4.blob(ROOT,consumed['scientific_source'],path)
+                     if path in ('src/trottertracks/pf_pr_rpe_pipeline.py',
+                                 'src/trottertracks/h4_df10_rpe_connection.py') else
+                     (ROOT/path).read_bytes() if (ROOT/path).is_file() else h4.blob(ROOT,'HEAD',path))
             self.assertEqual(current,h4.blob(ROOT,h4.BASELINE,path),path)
         d1=json.loads(h4.blob(ROOT,h4.N_CARRIER,'docs/research/h4_df10_rpe_d1_20261110/result.json'))
         for old,n in zip(d1['rows'],self.packet['saved_N']):

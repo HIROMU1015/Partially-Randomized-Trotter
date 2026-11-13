@@ -15,6 +15,7 @@ import math
 import re
 import subprocess
 import sys
+from types import SimpleNamespace
 
 from . import h4_df10_rpe_connection as accounting
 
@@ -67,12 +68,35 @@ def _schedule():
     return module
 
 
-def candidate_id(candidate):
-    path=Path(__file__).resolve().parents[2]/'scripts/h46_long_time_signal.py'
-    node=next(n for n in ast.parse(path.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='cid')
+@lru_cache(maxsize=1)
+def _candidate_id_parser(path, source):
+    """Cache the callable, never candidate results; changed SOURCE reparses."""
+    node=next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name=='cid')
     scope={'json':json,'hashlib':hashlib}
     exec(compile(ast.Module(body=[node],type_ignores=[]),str(path),'exec'),scope)
-    return scope['cid'](candidate)
+    return scope['cid']
+
+
+def candidate_id(candidate):
+    path=Path(__file__).resolve().parents[2]/'scripts/h46_long_time_signal.py'
+    # Read exact bytes each time: an edited rule cannot reuse a stale callable,
+    # even when file size/mtime are unchanged. Each candidate is evaluated anew.
+    return _candidate_id_parser(str(path), path.read_bytes())(candidate)
+
+
+def cache_legacy_candidate_parser(module):
+    """Cache only parsing in an isolated, fixed-blob pipeline namespace.
+
+    Legacy candidate_id code and its live globals/path stay intact. This
+    namespace's sole AST consumer selects cid and never mutates its tree.
+    Each namespace keeps its own parser/rules and one source-content key;
+    changing script text reparses. The process-wide ast module is untouched.
+    """
+    if 'ast' not in module.candidate_id.__code__.co_names:
+        raise ValueError('Expected the legacy candidate_id AST consumer')
+    parser = module.ast
+    module.ast = SimpleNamespace(parse=lru_cache(maxsize=1)(parser.parse),
+        FunctionDef=parser.FunctionDef, Module=parser.Module)
 
 
 def structure(c):
