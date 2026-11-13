@@ -334,6 +334,23 @@ class Tests(unittest.TestCase):
                 messages.append(str(caught.exception))
             self.assertEqual(len(set(messages)), 1, messages)
 
+    def test_09_deterministic_risk_consumer_forwards_policy_to_guarded_compare(self):
+        from trottertracks import rpe_deterministic_risk as DR
+        v = fixture(kind='SCIENTIFIC')
+        records = [dict(configuration_id=v['config']['id'], allocation=a, n_packet=None, deterministic_input={},
+                        source=MOCK, statistical_contract=deepcopy(v['options']['statistical_contract']),
+                        diagnostic=dict(deterministic_risk=dict(MSE_upper=None))) for a in v['allocations']]
+        limit = dict(MSE_upper=1, source=MOCK, scope='MODEL_MSE_FILTER_ONLY')
+        call = lambda: DR.compare(v['config'], records, v['prices'], model_limit=limit, qualifications={}, **v['options'])
+        with patch.object(DR.W, 'compare', wraps=W.compare) as spy, \
+             patch.object(G, '_document', return_value=v['proofs']):
+            out = call()
+        self.assertEqual(spy.call_args.kwargs['comparison_policy'], v['options']['comparison_policy'])
+        self.assertEqual(out['comparison']['price_implementation_check']['policy'], v['options']['comparison_policy'])
+        mutate_fact(v, 'scalar_quantity', 'TAIL_ONLY')
+        with patch.object(G, '_document', return_value=v['proofs']):
+            self.assertRejected(call, 'scalar_quantity')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
