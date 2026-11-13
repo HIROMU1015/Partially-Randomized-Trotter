@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[RPE候補探索の価格評価・区間選別](docs/research/d_rpe_price_search_design_20261113/REPORT.md)／[候補・N・価格HANDOFF](docs/research/d_rpe_price_search_design_20261113/HANDOFF.md)／[段階的取得・有限科学案](docs/research/d_rpe_price_search_design_20261113/MINIMAL_SCIENCE_PLAN.md)：whole-schedule比較、部分下界と共通価格の差分、判断を左右するcellの精密化を設計。C1固定contextの一般化条件を明記。54人工・回帰PASS、新実H4/再解析/fit/E[C]/Gなし、公開後mandatory STOP。
+
 [全13roundのcompiled価格評価方法](docs/research/d_compiled_price_methods_20261113/REPORT.md)／[C向け特徴量](docs/research/d_compiled_price_methods_20261113/C_HANDOFF.md)／[最小科学案](docs/research/d_compiled_price_methods_20261113/MINIMAL_SCIENCE_PLAN.md)：保存E[S]＋target-R outer-window残差の検証を提案。connected恒等式と未証明tailを区別し、m12はUNKNOWN。人工・回帰42 PASS、新H4/fit/保存値再解析/E[C]/Gなし、公開後mandatory STOP。
 
 [P2直接paired pilot完了](docs/research/d_p2_direct_pilot_20261113/REPORT.md)／[HANDOFF](docs/research/d_p2_direct_pilot_20261113/HANDOFF.md)：SOURCE ea0706ab0、replay2 path全一致→fresh m0/m6各4 path、20 compile・retry0。m6履歴対replay全path時間は約3.56倍、fresh D平均187.5/74,388.75。有限pilotのみでlaw/rare/2%95%/全13round平均C/N/RMSE/G未資格。次のn/負荷案を記載、公開後STOP。

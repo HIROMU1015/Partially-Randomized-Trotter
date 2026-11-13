@@ -45,3 +45,7 @@
 ## 追補：全13roundへ向けた価格評価方法の設計（2026-11-13）
 
 [REPORT](../d_compiled_price_methods_20261113/REPORT.md)／[C_HANDOFF](../d_compiled_price_methods_20261113/C_HANDOFF.md)／[最小科学案](../d_compiled_price_methods_20261113/MINIMAL_SCIENCE_PLAN.md)。P2完了39ddd59edを基点に同branchを再利用。旧ladder/model必須案を実行前提にせず、保存E[S]＋target-R短outer-windowのconnected残差を検証候補にした。恒等式は厳密でも短windowから長qへのtail条件は未証明で、m12価格はUNKNOWN。既存C kernelのS出口閉包はcompiler閉包ではなく、符号付き残差を非負reward区間へ直接渡せない。C向けfeatureと最大24 local compileの診断案を定義したが、科学実行は未承認・未実行。人工・回帰42項目PASS、新実H4/保存P1/P2数値再解析/fit/E[C]/G/8次PF0。旧SOURCE・raw・STOPを保全し、公開照合後mandatory STOP。
+
+## 追補：RPE候補探索の価格区間・取得優先度の設計（2026-11-13）
+
+[REPORT](../d_rpe_price_search_design_20261113/REPORT.md)／[HANDOFF](../d_rpe_price_search_design_20261113/HANDOFF.md)／[有限科学案](../d_rpe_price_search_design_20261113/MINIMAL_SCIENCE_PLAN.md)。ユーザーの目的に合わせ、固定L_D1の全26軸高精度化や旧24 local compileを先行要件とせず、whole-schedule候補の同時価格区間・部分下界・共通価格差分による選別を設計した。C1 contextがH4 L_D1/S2/δ=.1に固定されるため新候補には薄いadapterが必要。既存C/B/DのSOURCE/APIを再利用し、候補生成/N solver/第二のcontrollerを作らない。54人工・回帰PASS、新実H4/保存値再解析/fit/E[C]/G0。外部menu/N/γ又はτが未供給で科学scopeはUNRESOLVED、必要時だけ最大16 compileの診断又は必要cellの直接取得を提案する。m12 UNKNOWN、旧SOURCE/raw/STOPを保全し、公開照合後mandatory STOP。

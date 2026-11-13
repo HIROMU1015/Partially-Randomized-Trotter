@@ -1,5 +1,7 @@
 # scripts 索引
 
+[RPE候補の価格取得設計](../docs/research/d_rpe_price_search_design_20261113/MINIMAL_SCIENCE_PLAN.md)：新runnerは追加しない。既存C1/P2は固定contextのまま、候補生成/N担当の外部menuを受けるadapter条件だけを定義。今回は `tests/test_rpe_price_search_design.py` と既存回帰の人工検証のみ。
+
 [全13round価格の設計・再現手順](../docs/research/d_compiled_price_methods_20261113/SOURCES.md)：新科学runnerは追加しない。受動的helper `outer_window_residual_design` と `tests/test_outer_window_residual_design.py` による人工検証だけを追加。提案24 local compileは未承認・未実行。
 
 [`run_p2_direct_pilot.py`](run_p2_direct_pilot.py)：固定PLAN/SOURCEで保存event replay2 path→全照合一致後fresh8 path、最大20 compileを1回実行。[結果](../docs/research/d_p2_direct_pilot_20261113/REPORT.md)。retry/resume・fit・強制rare・次段階の自動実行は実装しない。
