@@ -25,24 +25,29 @@ LAYOUTS = {0: dict(q=1, R_outer=2), 1: dict(q=1, R_outer=2)}
 SKIP = 'm', 'axis'
 
 
-def base(method='PR'):
+def base(method='PR', scientific=False):
     s = spec(method, M=1); s['binding'].update(system='H4', rank=10)
+    if scientific:  # fictional context so that only the implementation gate can block cost
+        s['binding'].update(geometry='ARTIFICIAL_GEOMETRY', basis='ARTIFICIAL_BASIS')
+        s['rmse_policy'].update(scientific_status='EXTERNALLY_QUALIFIED', error_contract=dict(
+            fixture='ARTIFICIAL_ONLY', state_assumption='ARTIFICIAL', energy_prior_ha=[-4, 4], decoder='ARTIFICIAL'))
     return s
 
 
-def configuration(method):
-    return deepcopy(_configuration(method))
+def configuration(method, scientific=False):
+    return deepcopy(_configuration(method, scientific))
 
 
 @lru_cache(maxsize=None)
-def _configuration(method):
+def _configuration(method, scientific=False):
     """Each comparison method through the existing B/D generators, one common binding."""
+    base_ = lambda kind='PR': base(kind, scientific)
     if method == 'PR':
-        return B.generate(base())
+        return B.generate(base_())
     if method == 'FULL_PF':
-        return D.generate(D.full_pf_spec(base(), formula='2nd', delta_pf=1, M=1, rank=10))
+        return D.generate(D.full_pf_spec(base_(), formula='2nd', delta_pf=1, M=1, rank=10))
     if method == 'FULL_H_RTE':
-        s = base()
+        s = base_()
         prep = dict(representation='DF', source=dict(D.SOURCES['full_h_prepare'], function='prepare_full_h'),
             one_body_policy='RANDOMIZED', one_body_components=1, deterministic_blocks=0,
             randomized_fragments=list(range(10)), all_fragments=10, lambda_R=3, one_body_lambda_R=1,
@@ -50,7 +55,7 @@ def _configuration(method):
             scalar=dict(constant=0, extracted_identity=0, application='ONCE_AT_TOTAL_T', identity_components_randomized=0),
             preparation_hash='MOCK_PREPARATION', binding=deepcopy(s['binding']))
         return D.generate(D.full_h_rte_spec(s, M=1, finite_K=2, kappa=None, preparation=prep), layout_by_round=LAYOUTS)
-    s = base('PF')
+    s = base_('PF')
     s['split'].update(deterministic_scope='TRUNCATED_H', original_PF_method='B0I', retained_hamiltonian=dict(
         construction='MOCK_B0I_KEEP_ONE_BODY_AND_PREFIX', prefix=s['L_D'],
         target_hamiltonian=s['binding']['hamiltonian'], source=MOCK))
@@ -83,7 +88,7 @@ def policy(lowering=NEW, ident='ARTIFICIAL_COMMON_NEW_ZZ_SCENARIO'):
 
 def fixture(method='PR', *, lowering=NEW, ident='ARTIFICIAL_COMMON_NEW_ZZ_SCENARIO', kind='SYNTHETIC_ONLY'):
     """B's whole-allocation fixture (G=[1002,216]) plus SOURCE-bound sidecars."""
-    config = configuration(method); s = config['spec']; method = B.comparison_method(s)
+    config = configuration(method, kind == 'SCIENTIFIC'); s = config['spec']; method = B.comparison_method(s)
     contract = dict(id='MOCK_STATISTICAL_CONTRACT', source=MOCK, claim_level='SYNTHETIC_ONLY')
     allocations = [dict(allocation_id=key, source=dict(fixture='ALLOCATION_'+key), shot_policy='USER_SUPPLIED',
         shots=[dict(m=m, N_X=n, N_Y=n) for m, n in enumerate(vector)]) for key, vector in (('a', (1, 5)), ('b', (8, 1)))]
@@ -277,9 +282,12 @@ class Tests(unittest.TestCase):
             out = W.compare(v['config'], v['allocations'], v['evaluations'], v['prices'], **options)
         self.assertIsNone(out['point_minimum']['cost']); self.assertIsNone(out['outer_evaluation'])
         self.assertTrue(all(r['G'] is None and r['G_status'] == 'UNKNOWN' for r in out['allocations']))
-        self.assertTrue(all('MISSING_PRICE_COMPARISON_IMPLEMENTATION_POLICY' in r['evaluation']['reasons']
+        self.assertTrue(all(r['evaluation']['reasons'] == ['MISSING_PRICE_COMPARISON_IMPLEMENTATION_POLICY']
                             for r in out['allocations']))
         self.assertEqual(out['pending_allocation_ids'], ['a', 'b'])
+        science = compare(v)                                   # the policy is the only missing gate
+        self.assertEqual([B.a.exact_scalar(r['G']) for r in science['allocations']], [1002, 216])
+        self.assertEqual(science['N_evidence_kind'], 'SCIENTIFIC')
         v = fixture(); v['prices'].pop()                       # missing price: UNKNOWN, never 0
         with patch.object(B, 'cost', side_effect=AssertionError('missing price reached B.cost')):
             out = compare(v)
