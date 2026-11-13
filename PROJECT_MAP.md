@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[B独立技術統合・Pauli signal受入](docs/research/b_rpe_pauli_integration_20261114/REPORT.md)／[APIと残るbridge](docs/research/b_rpe_pauli_integration_20261114/HANDOFF.md)：I1/I2/E1・固定C価格guardを再利用、Pauli各13round/26recordをSOURCE照合。二水準readinessはnominalとMSEを分離、科学N/G資格なし。元DP保全、技術137test PASS、新科学評価なし・STOP。
+
 [固定H4 LD1/LD2のDP上界結果](docs/research/h4_dp_risk_fixed_results_20261114/REPORT.md)／[分解正本](docs/research/h4_dp_risk_fixed_results_20261114/DECOMPOSITION.json)／[HANDOFF](docs/research/h4_dp_risk_fixed_results_20261114/HANDOFF.md)：承認済み各1件・計2評価完了。モデルMSE上界約9.0395e−4/9.0324e−4 Ha²へ約99.62%縮小。残余約1e−27、上界は未解決lossが支配。exact検算PASS、十分N/global/G null、MC/追加shot/δE加算なし、公開後STOP。
 
 [実H4 DP部分追跡の有限範囲案](docs/research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)／[範囲JSON](docs/research/rpe_dp_finite_scope_preparation_20261114/FINITE_SCOPE.json)／[引渡し](docs/research/rpe_dp_finite_scope_preparation_20261114/HANDOFF.md)：保持8192・遷移141,559,036組/構成、LD1/LD2各1件の未実行案。全round伝播のcount上限と人工3benchmarkで負荷を確認。元kernel/sourceは変更せず、実H4新評価/shot探索/MC/C/G0、別明示許可待ち・公開後STOP。

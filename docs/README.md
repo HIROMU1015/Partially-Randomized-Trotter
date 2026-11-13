@@ -1,5 +1,7 @@
 # 文書索引
 
+[Bの独立統合・Pauli全round受入](research/b_rpe_pauli_integration_20261114/REPORT.md)／[二水準APIとC bridge不足](research/b_rpe_pauli_integration_20261114/HANDOFF.md)：既存guard/I1/I2/E1、26recordのmetadataのみ。技術137件PASS、新N/MSE/C/Gなし・STOP。
+
 [実H4部分DPの結果](research/h4_dp_risk_fixed_results_20261114/REPORT.md)／[SOURCEと解釈](research/h4_dp_risk_fixed_results_20261114/HANDOFF.md)／[exact分解](research/h4_dp_risk_fixed_results_20261114/DECOMPOSITION.json)／[26round診断表](research/h4_dp_risk_fixed_results_20261114/ROUND_DIAGNOSTICS.csv)：固定2件・約2時間27分で完了、旧上界より約99.62%縮小。元loss/資格/nullを保持、正式N/価格/Gなし、公開後STOP。
 
 [H4 DP有限範囲の準備REPORT](research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)／[具体案](research/rpe_dp_finite_scope_preparation_20261114/FINITE_SCOPE.json)／[HANDOFF](research/rpe_dp_finite_scope_preparation_20261114/HANDOFF.md)：K8192、P141,559,036/構成を提案。人工幾何/3benchmark/整数probeのみ、実H4新riskは未計算。科学実行の別明示許可後に各LD1件だけ適用する案。
