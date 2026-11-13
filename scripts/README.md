@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_df_head_pauli_tail_p1.py](run_df_head_pauli_tail_p1.py)：固定P1をSOURCE05447d1d4で一回実行済み。[結果](../docs/research/df_head_pauli_tail_p1_results_20261114/REPORT.md)。P0辞書/operator・保存state/reference、既存direct-expm/finite-Kを再利用し、B canonical新IDで二時点4＋固定R/full対照2、最大6meanだけを評価。人工6＋既存17 PASS、normalizer5共有、N/MSE/compile/価格/Gなし、公開後STOP。
+
 [run_df_head_pauli_tail_p0.py](run_df_head_pauli_tail_p0.py)：固定75fb0ba1のP0だけをSOURCE fd111f989で一回実行済み。[結果](../docs/research/df_head_pauli_tail_p0_results_20261114/REPORT.md)／[人工5test](../tests/check_df_head_pauli_tail_p0.py)。metadata-only --preflightとfresh --execute --source --outを分離、operator/辞書/sectorのみ。既存4回帰PASS、P1/mean/B/N/C/Gなし、再実行自動化なし。
 
 [DF head＋Pauli tailの未承認計画](../docs/research/df_head_pauli_tail_preparation_20261114/SCIENCE_PLAN.md)：既存P3/O1と現providerを静的照合。新science runnerは追加せず、[人工契約test](../tests/check_df_head_pauli_tail_contract.py)4件のみ実施。DF prefixとPauli項prefixの混同・射影eventを避ける。実H/保存再解析/compile0、公開後STOP。

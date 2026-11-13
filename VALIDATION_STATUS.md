@@ -1,5 +1,7 @@
 # Validation status
 
+[Pauli tail限定P1](docs/research/df_head_pauli_tail_p1_results_20261114/REPORT.md)：SOURCE05447d1d4の6meanが全局所数値gate通過。LD1/m0/R2のDF/Pauli corrected差2.7756e−17、full256/36最大mean差3.4332e−16。共通κ4候補は旧DFとR不一致でsignal差を計算せず、元SOURCE/allowanceを保持。人工6＋既存17 PASS、normalizer5unique、新reference/DF mean/N/RMSE/compile/C/G0。全RPE未資格/null、公開後STOP。
+
 [DF head＋Pauli tail P0実行](docs/research/df_head_pauli_tail_p0_results_20261114/REPORT.md)：科学SOURCE fd111f989で保存H4 DF10/LD1・LD2を一回検証、81/81数値gate通過。full tail再構成残差最大7.1102e−15（gate1e−9）、state lift/norm一致。各184項中136labelは単独でsector漏れ、合計/headは保存。人工5＋回帰4 PASS。P1/mean/eigh/reference/finite B/compile/N/C/G0、厳密operator証明・全RPE未資格、公開後STOP。
 
 [DF head＋Pauli tailの技術条件](docs/research/df_head_pauli_tail_preparation_20261114/REPORT.md)：人工N1/3modeのPauli leakage・射影非involution、full/reduced mean、K0/K2 signed event平均、辞書依存normalizer・scalarを新4test PASS。実H4辞書・λ・sector資格・価格/G未取得。本番変更/保存再解析0、公開後STOP。

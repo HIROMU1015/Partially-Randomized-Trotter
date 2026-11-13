@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[DF head＋Pauli tail P1結果](docs/research/df_head_pauli_tail_p1_results_20261114/REPORT.md)：保存H4 DF10/LD1・LD2/S2/Δ.1/K2/元κ、m0/m6のPauli4mean＋LD1/m0 fixedR2/full256の計6件が全数値gate通過。18complex/normalizer5、新reference/P0再計算/N/MSE/compile/C/G0。[caller](scripts/run_df_head_pauli_tail_p1.py)／[adapter](src/trottertracks/df_head_pauli_tail_p1.py)／[人工6test](tests/check_df_head_pauli_tail_p1.py)＋既存17 PASS。B canonical新IDと[部分mean packet](docs/research/df_head_pauli_tail_p1_results_20261114/MEAN_HANDOFF.json)、他11round/prefix null、公開後STOP。
+
 [DF head＋Pauli tail P0結果](docs/research/df_head_pauli_tail_p0_results_20261114/REPORT.md)：保存H4 DF10/LD1・LD2、full256/sector(2,2)36の81数値gate通過。各184項/136個別label漏れ、合計tail/headはsector保存、Pauli λ3.3066052942/2.0550998769。[caller](scripts/run_df_head_pauli_tail_p0.py)／[module](src/trottertracks/df_head_pauli_tail_p0.py)／[新人工5test](tests/check_df_head_pauli_tail_p0.py)＋既存4 PASS。SOURCE fd111f989、入力1/拡張1/辞書2、P1 mean/reference/eigh/B/N/C/G0、公開照合後STOP。
 
 [DF head＋Pauli tail技術調査](docs/research/df_head_pauli_tail_preparation_20261114/REPORT.md)：P3/O1-M1と現A/B/C/DのSOURCEを照合。個別Pauliのsector漏れと合計ideal meanの縮約条件を分離、[人工4test](tests/check_df_head_pauli_tail_contract.py) PASS。LD1/2辞書2件と限定mean最大6件の[未承認科学案](docs/research/df_head_pauli_tail_preparation_20261114/SCIENCE_PLAN.md)。本番変更・実H/保存再解析/λ/N/C/G0、旧negative/STOP保全、公開後STOP。

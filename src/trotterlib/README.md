@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[DF head＋Pauli tail P1 adapter](../trottertracks/df_head_pauli_tail_p1.py)：P0 Pauli和を既存finite-K providerへ接続し、B canonical/dictionary/lawを保持。[限定6mean結果](../../docs/research/df_head_pauli_tail_p1_results_20261114/REPORT.md)と[人工6test](../../tests/check_df_head_pauli_tail_p1.py)。変更は辞書付きID検査と任意normalizer共有、旧DF default/数値式保全。全局所数値gate・既存17回帰PASS、full/36はLD1/m0/R2だけ。全RPE/N/compile/C/Gへ進まずSTOP。
+
 [DF head＋Pauli tail P0 adapter](../trottertracks/df_head_pauli_tail_p0.py)：既存save-only loader/CAR/M1 square-factor→JW/Pauli collectorを再利用。[実行結果](../../docs/research/df_head_pauli_tail_p0_results_20261114/REPORT.md)でfull256/36とbit順・scalar・sectorを照合し81数値gate通過。各184項/136個別label漏れ、Pauli λを新規記録。人工5＋回帰4 PASS、Pauli mean/provider本番採択・回路/N/C/Gへは進まない。
 
 [DF head＋Pauli tail再利用調査](../../docs/research/df_head_pauli_tail_preparation_20261114/REPORT.md)：`PauliHamiltonian`/finite RTE/P3・M1 event部品を再利用候補とし、現DF prefix用adapterと辞書identityは未実装。人工4PASS、本番コード・科学値変更0、公開後STOP。
