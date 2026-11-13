@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[ベースラインsignal pipelineの技術準備](../../docs/research/baseline_signal_pipeline_preparation_20261113/REPORT.md)（2026-11-13）：ベースライン全round signal経路を既存B/D/数値部品から接続。H4 DF10のFull PF・B0/B0I・Full-H pure RTE、S2/Y4/M5・prefix・明示q/R・有限Kを扱う。人工新12＋既存回帰12＝24 PASS、数値失敗値/欠測/未資格を保持。実H4・保存再解析・残screen・sampling/compile/N/RMSE/G0。
+
 [H4 PR全13roundの平均構造RZ結果](../../docs/research/h4_structural_schedule_results_20261113/REPORT.md)（2026-11-13）：固定H4 DF10/S2/p1/δ.1/K2・同preparationで残11lawのK0全PASS、新22 E[S]を取得。m0/m6四値を再実行せずcopyし全13round/26軸が同canonicalへ接続。SOURCE de2427d4a、99 wire-law検査、最大mass defect1.714e−12（tol1e−10）。元Sのideal有限law平均でE[C]/Gはnull。新sampling/full-path S/build/compile/fit/N/G0、計算再起動0、旧STOP保全。公開照合後mandatory STOP。
 
 [H4構造価格・全13round経路の技術準備](../../docs/research/h4_structural_schedule_preparation_20261113/REPORT.md)（2026-11-13）：固定B3216/同canonicalの13round metadataを接続し、m0/m6四値は83d219cc6からcopy専用。残11lawのK0→PASS時K1 batchを既存core/MeanKernelで準備、new8＋回帰18＝26技術test PASS。R255等を保持し、実T/terminal入力・同γ16外向き二乗法で巨大qR展開を回避。実新K0/E[S]/sampling/compile/fit/N/G0。最大22新Sの一括計画を公開、残差はD担当、公開照合後STOP。

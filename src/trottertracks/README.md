@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[ベースラインsignal pipelineの技術準備](../../docs/research/baseline_signal_pipeline_preparation_20261113/REPORT.md)（2026-11-13）：ベースライン全round signal経路を既存B/D/数値部品から接続。H4 DF10のFull PF・B0/B0I・Full-H pure RTE、S2/Y4/M5・prefix・明示q/R・有限Kを扱う。人工新12＋既存回帰12＝24 PASS、数値失敗値/欠測/未資格を保持。実H4・保存再解析・残screen・sampling/compile/N/RMSE/G0。
+
 [残差構造特徴量の期待値評価方法](../../docs/research/structural_feature_expectation_design_20261113/REPORT.md)（2026-11-13）：D P2のfeature定義を照合し、tail Z/ZZ/order/product数とbasis group/shareの解析式・小kernelを整備。新9＋既存19＝28人工/技術test PASS。native/compiled相殺や非線形joint量とは区別し、Dの直接残差法を置換しない。実H4確率解析/F0/K0/K1/E[S]/sampling/compile/fit/N/G0、旧26値とSTOP保全。
 
 [finite-K sampler law整合性](../../docs/research/finite_k_sampler_law_alignment_20261113/REPORT.md)（2026-11-13）：ideal finite-K/source lawとPCG64/CDFの接続調査。生成構造・rte.py blob対応を確認し、既存53-bit helperを再利用するTV分解/条件付き上界を追加。人工12＋既存toy5 PASS。実H4のlaw距離・PRNG joint-law・価格systematicはUNKNOWN/null、既存26 E[S]不変、新科学計算0。公開照合後mandatory STOP。

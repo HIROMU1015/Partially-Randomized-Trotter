@@ -1,5 +1,7 @@
 # 文書索引
 
+[ベースラインsignal pipelineの技術準備](research/baseline_signal_pipeline_preparation_20261113/REPORT.md)（2026-11-13）：ベースライン全round signal経路を既存B/D/数値部品から接続。H4 DF10のFull PF・B0/B0I・Full-H pure RTE、S2/Y4/M5・prefix・明示q/R・有限Kを扱う。人工新12＋既存回帰12＝24 PASS、数値失敗値/欠測/未資格を保持。実H4・保存再解析・残screen・sampling/compile/N/RMSE/G0。
+
 [全RPE比較ベースラインの最適化設計](research/rpe_baseline_optimization_design_20261113/REPORT.md)（2026-11-13）：Full PF(S2/Y4/M5)、B0/B0I切断PF、one-body込みFull-H pure RTEを全RPEのΣN E[C]で探索する計画。旧11案はseed、局所screen/構造proxyと根拠付きrisk/cost除外を区別。既存APIを再利用し新framework0、人工回帰20 PASS。実H4計算/保存再解析/候補最適化/compile/N/G0、正式選定なし、公開照合後STOP。
 
 [残差構造特徴量の期待値評価方法](research/structural_feature_expectation_design_20261113/REPORT.md)（2026-11-13）：D P2のfeature定義を照合し、tail Z/ZZ/order/product数とbasis group/shareの解析式・小kernelを整備。新9＋既存19＝28人工/技術test PASS。native/compiled相殺や非線形joint量とは区別し、Dの直接残差法を置換しない。実H4確率解析/F0/K0/K1/E[S]/sampling/compile/fit/N/G0、旧26値とSTOP保全。
