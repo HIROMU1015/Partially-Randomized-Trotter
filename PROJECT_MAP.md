@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[全13round平均compiled価格の最小検証戦略](docs/research/h4_mean_price_validation_strategy_20261113/REPORT.md)／[方法別計画](docs/research/h4_mean_price_validation_strategy_20261113/PRICE_VALIDATION_PLAN.md)／[D/C HANDOFF](docs/research/h4_mean_price_validation_strategy_20261113/HANDOFF.md)：未資格nominalを正式重みにせず、価格同時区間・N一様相対誤差・条件付きΣNbを整理。凍結方法のm12＋内部challengeを最小診断案とし、全域証拠なしの13round認定を拒否。37技術回帰PASS、Dモデル/C kernel新実装・実再解析/fit/compile/G0、公開後STOP。
+
 [H4 4方式の最小menu提案](docs/research/h4_four_method_minimal_menu_20261113/REPORT.md)／[証拠matrix](docs/research/h4_four_method_minimal_menu_20261113/BASELINE_EVIDENCE_MATRIX.md)／[有限な次作業](docs/research/h4_four_method_minimal_menu_20261113/NEXT_STEPS.md)：PR1・Full PF6・truncated2・Full-H RTE2の未採択案。B0全13保存signal、Full PF73直接価格、C26構造/D新P1の資格を分離。40技術回帰PASS、新科学計算/実G/ランキング0、公開後STOP。
 
 [S3固定H4 run01結果](docs/research/rpe_s3_final_plan_20261113/run01/REPORT.md)／[HANDOFF](docs/research/rpe_s3_final_plan_20261113/run01/HANDOFF.md)／[全trial原本](docs/research/rpe_s3_final_plan_20261113/run01/SIMULATION.json.gz)：採択済み推奨セット、13round/nominal1配分・43,819反復を1回完了。条件付きRMSE .000684720262 Ha、未解決0、CP97.5%上端約10^−4。感度RMSE上端5.38178 Haで目標精度未認定、十分N/global bound/C/G null、公開後STOP。

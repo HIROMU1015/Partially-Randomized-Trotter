@@ -1,5 +1,7 @@
 # Validation status
 
+[全13round平均価格の検証設計](docs/research/h4_mean_price_validation_strategy_20261113/REPORT.md)：既存pipeline12＋残差13＋lookup12＝37件を別processでPASS確認。初回の同process import干渉FAILは記録保持。N一様相対誤差/区間伝播・XY covariance/TV/unmeasured-domainの人工例をexact rationalで確認。新実H4価格/N/S3再解析・fit/simulation/compile/G0。価格精度/confidence/domainと11menuは未採択、公開後STOP。
+
 [H4 4方式最小menu調査](docs/research/h4_four_method_minimal_menu_20261113/REPORT.md)：既存method14/baseline14/evidence12＝40技術回帰PASS、C全26のidentity/lawとcompiled null、Full PF保存136/直接73のmenu一致、B0全13保存signal chain、D新旧lowering/cohortをmetadata照合。新科学計算・保存数値再解析/ランキング・新8次接続0。menu未採択/G/winner null、公開後STOP。
 
 [S3固定H4 PR run01](docs/research/rpe_s3_final_plan_20261113/run01/REPORT.md)：採択済みの供給mean/solver proxy・ideal IID条件下で、13round/保存nominal1配分・43,819反復を1回実行。経験的な解決条件付きRMSE .0006847202619833286 Ha、未解決0、97.5% CP上端9.999788982664716e−5。有界loss感度のRMSE上端5.381775983124338 Ha。pilot観測であり十分N/global RMSE達成は未認定。コード/入力無変更、全trial保存・hash/CRC/metadata確認、C/Gなし、公開後STOP。
