@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[pf_effective_hamiltonianの元固有系cache](../../docs/research/h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：optional reference_eigensystemで同元Hのeigh重複を避け、SOURCE/H binding・完全整列basis・既存residual gateを保持。cache失敗時fallbackなし。新cache3＋metadata3＋旧19 PASS、実科学0。
+
 [H4 Full PF H_eff実行結果](../../docs/research/h4_full_pf_heff_results_20261113/REPORT.md)：既存評価器/direct-expm/保存loaderを再利用したS2/Δ.1の限定実行。branch依存shift +1.33712e−4 Ha、二時点の全spectral再構成は数値gate通過。個別RPE bias/十分N/global RMSEはnull、公開後STOP。
 
 [pf_effective_hamiltonianの元H/state診断追加](../../docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：同じeigh結果から元state weights・縮退射影trace・固有系gateを追加。Full/Truncated PFの方法採用を反映し、個別RPE資格/nullは維持。新4＋旧15人工PASS、実科学0。

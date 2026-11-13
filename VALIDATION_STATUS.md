@@ -1,5 +1,7 @@
 # Validation status
 
+[Full PF H_effの有限探索準備](docs/research/h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：S2/Y4/M5×5要求幅15案を既存canonical APIでmetadata生成。元固有系cache3・early/grid/ID3・既存19の計25技術test PASS。実H4配列load/新step/固有値/保存数値再解析/価格/G0、14新H_eff案は未承認、全資格/nullを保持。
+
 [H4 Full PF H_eff実行結果](docs/research/h4_full_pf_heff_results_20261113/REPORT.md)：H4 DF10/sector36/Full PF S2/Δ.1の承認済みstep1・Schur1・元H eigh1・直接/spectral mean各2が全数値gate通過。shift +1.33712e−4 Ha、state支持.9999999243、m12照合差8.69e−12。新4人工PASS、新reference/旧signal再解析/retry/N/MC/C/G0。alias/ground/厳密数値認証false、十分N/global RMSE/G null。
 
 [準備9af1時点：H4 Full PF H_eff適用準備](docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：決定論PFの主評価方法採用と個別δE/RPE資格を分離。元H/state overlap、縮退射影、UNKNOWN gateの新4＋旧15人工回帰PASS。実H4 step/固有値/保存再解析0、十分N/global RMSE/G null。

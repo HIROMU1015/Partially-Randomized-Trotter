@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full PF公式・幅のH_eff有限探索準備](docs/research/h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：既存S2/Y4/M5×Δ.05/.1/.2/.4/.8の15案をB/D metadata APIで195roundへ接続。early actual幅15cell、旧S2/.1参照＋新14step/Schur・新元H eigh0の[科学案](docs/research/h4_full_pf_heff_scan_preparation_20261114/SCIENCE_PLAN.md)。[metadata CLI](scripts/prepare_h4_full_pf_heff_scan.py)／[cache人工](tests/check_pf_effective_reference_cache.py)／[plan test](tests/check_h4_full_pf_heff_scan_plan.py)。新6＋旧19 PASS、実科学/保存数値再解析0、公開後STOP。
+
 [H4 Full PF H_effの実数値診断](docs/research/h4_full_pf_heff_results_20261113/REPORT.md)：承認済みS2/prefix10/Δ.1、step1・Schur1・元H対角化1・m0/m12の直接/全spectral mean各2件が数値gate通過。minimum shift +1.3371206319456874e−4 Ha、m12再構成差8.69e−12。[caller](scripts/run_h4_full_pf_heff.py)／[4人工test](tests/check_h4_full_pf_heff_caller.py)／[B HANDOFF](docs/research/h4_full_pf_heff_results_20261113/HANDOFF.md)。RPE bias保証/N/RMSE/G未資格、新reference/旧mean再解析0、公開後STOP。
 
 [準備9af1時点：H4 Full PFのH_eff適用準備](docs/research/h4_full_pf_heff_preparation_20261113/REPORT.md)：決定論PFの主評価方法としてH_eff固有値シフトを採用。既存評価器へ元H/state支持・縮退射影・固有系gateを追加、新4＋旧15人工PASS。Full PF S2/Δ.1・m0/m12・元H対角化1回の[未実行案](docs/research/h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)。方法採用とRPE資格は分離、実科学/保存再解析0、公開後STOP。

@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[Full PF H_effの有限探索計画](h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：保存q格子に基づくS2/Y4/M5×5幅、195round/177 physical/15actual cellをmetadataで保持。既存点を除く新14step、元H eigh0、直接/spectral各最大28の有限案。新6＋旧19 PASS、実H4/保存再解析/C/G0、公開後STOP。
+
 [H4 Full PF H_eff実行結果](h4_full_pf_heff_results_20261113/REPORT.md)：固定準備9af1・科学SOURCE3a26でS2/Δ.1を一回実行。元最低groupへの最大overlapもeffective最低group、m0/m12のsignal差2.33e−15/8.69e−12。人工caller4PASS、実数値gate通過、N/全RMSE/C/G未資格、公開後STOP。
 
 [準備9af1時点：H4 Full PF H_eff適用準備](h4_full_pf_heff_preparation_20261113/REPORT.md)：決定論PFの主誤差評価にH_effシフトを採用。S2/Δ.1・m0/m12の[有限案](h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)と[B HANDOFF](h4_full_pf_heff_preparation_20261113/HANDOFF.md)を具体化。人工新4＋旧15PASS、実科学/保存再解析0、幅探索へ進まず公開後STOP。

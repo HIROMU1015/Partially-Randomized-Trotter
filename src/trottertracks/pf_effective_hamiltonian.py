@@ -58,12 +58,14 @@ def _groups(energies,weights,tolerance):
         weight=float(sum(weights[i] for i in g)),multiplicity=len(g)) for g in groups]
 
 
-def evaluate(unitary,delta,*,state,operator,reference,branch,tolerances,reference_hamiltonian=None):
+def evaluate(unitary,delta,*,state,operator,reference,branch,tolerances,reference_hamiltonian=None,reference_eigensystem=None):
     """Explicit numerical leaf, with UNKNOWN and observed diagnostics on failure.
 
     reference.energy is supplied, never inferred/replaced by a ground solver.
     H_eff minimum shift and spectral weights are diagnostics, not RPE bias.
     Method adoption is workflow metadata, never an individual qualification.
+    A supplied original-H eigensystem avoids a repeated eigh, but requires the
+    same explicit H and Hamiltonian/SOURCE binding and the original residual gates.
     """
     result=dict(status='UNKNOWN',operator=deepcopy(operator),reference=deepcopy(reference),
         branch=deepcopy(branch),tolerances=deepcopy(tolerances),diagnostics={},H_eff=None,spectrum=None,
@@ -84,6 +86,8 @@ def evaluate(unitary,delta,*,state,operator,reference,branch,tolerances,referenc
     diag=result['diagnostics']
     try:
         require(bool(operator.get('source')) and bool(operator.get('identity')),'Operator SOURCE/identity missing')
+        require(reference_eigensystem is None or reference_hamiltonian is not None,
+            'A cached reference eigensystem requires its original reference H')
         require(bool(reference.get('source')) and bool(reference.get('definition')),'Declared reference energy SOURCE/definition missing')
         require(operator.get('target_hamiltonian')==reference.get('hamiltonian') and reference.get('hamiltonian') is not None,
             'Original target Hamiltonian differs from reference')
@@ -164,7 +168,17 @@ def evaluate(unitary,delta,*,state,operator,reference,branch,tolerances,referenc
             require(h.shape==u.shape and np.isfinite(h).all(),'Reference H shape/finite mismatch')
             diag['reference_H_hermiticity_defect_fro']=float(np.linalg.norm(h-h.conj().T,'fro'))
             require(diag['reference_H_hermiticity_defect_fro']<=tol['generator_hermiticity_ha'],'Reference H is not Hermitian')
-            evals,basis=eigh(h,check_finite=True)
+            if reference_eigensystem is None:
+                evals,basis=eigh(h,check_finite=True)
+            else:
+                cache=reference_eigensystem
+                require(bool(cache.get('source')) and cache.get('hamiltonian')==reference['hamiltonian'],
+                    'Cached reference eigensystem SOURCE/Hamiltonian differs')
+                evals=np.asarray(cache['eigenvalues_ha'],dtype=float)
+                basis=np.asarray(cache['eigenvectors']['real'])+1j*np.asarray(cache['eigenvectors']['imag'])
+                require(evals.shape==(len(h),) and basis.shape==h.shape and np.isfinite(evals).all()
+                    and np.isfinite(basis).all() and np.all(np.diff(evals)>=0),
+                    'Finite sorted complete cached reference eigensystem required')
             reference_weights=abs(basis.conj().T@psi)**2
             reference_groups=_groups(evals,reference_weights,tol['energy_cluster_ha'])
             overlaps=abs(basis.conj().T@vectors)**2
@@ -180,6 +194,8 @@ def evaluate(unitary,delta,*,state,operator,reference,branch,tolerances,referenc
             diag['centered_reference_norm_less_than_pi']=diag['delta_centered_reference_H_norm']<math.pi
             # This is not a proof that the PF log follows the original H branch.
             result['reference_comparison']=dict(eigenvalues_ha=evals.tolist(),
+                eigensystem_origin='SUPPLIED_SOURCE_BOUND_CACHE' if reference_eigensystem is not None else 'EIGH_IN_THIS_CALL',
+                supplied_eigensystem_source=deepcopy(reference_eigensystem['source']) if reference_eigensystem is not None else None,
                 eigenvectors=encode(basis),state_weights=reference_weights.tolist(),energy_groups=reference_groups,
                 squared_eigenbasis_overlaps=overlaps.tolist(),
                 reference_lowest_group_to_effective_groups_trace_overlap=[

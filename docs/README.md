@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full PF公式・幅の有限探索準備](research/h4_full_pf_heff_scan_preparation_20261114/REPORT.md)：15要求配置のearly実幅とcanonical IDを固定し、旧S2/.1と元固有系を再利用する14新H_eff案を作成。[C HANDOFF](research/h4_full_pf_heff_scan_preparation_20261114/HANDOFF.md)、25技術test PASS、実科学0、別途承認待ちSTOP。
+
 [H4 Full PF H_eff実行結果](research/h4_full_pf_heff_results_20261113/REPORT.md)：保存H4 DF10/sector(2,2)/S2/Δ.1のminimum shift +1.33712e−4 Ha。二時点の直接PF/全spectral照合は数値gate通過、厳密RPE bias/全RMSE未資格。[HANDOFF](research/h4_full_pf_heff_results_20261113/HANDOFF.md)、新reference/旧mean再解析0、公開後STOP。
 
 [準備9af1時点：H4 Full PF H_eff適用準備](research/h4_full_pf_heff_preparation_20261113/REPORT.md)：方法の主経路採用を反映。元H/state overlapを最小拡張し人工4＋回帰15PASS。[有限案](research/h4_full_pf_heff_preparation_20261113/SCIENCE_PLAN.md)は実行承認待ち、実H4/保存signal再解析0、個別δE/RPE biasは未資格。
