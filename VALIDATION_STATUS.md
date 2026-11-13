@@ -1,5 +1,7 @@
 # Validation status
 
+[PR全round signal pipeline](docs/research/pr_rpe_signal_pipeline_20261113/REPORT.md)：非可換人工行列・逐次/旧finite kernelとの一致・signed PF・独立raw/corrected・scalar・norm/closure失敗・13round・架空保存loaderを新10件で検証し、旧metadata7件と計17PASS。[数値leaf](src/trottertracks/pr_rpe_signal_provider.py)は実H4未実行。実科学/保存再解析/N/C/G0、十分N/global RMSEは未資格/null。
+
 [PRの全RPE資源探索設計](docs/research/pr_rpe_search_design_20261113/REPORT.md)：B3216正本metadata関数によるMOCK全13round・physical/B identity・欠測/FAIL保全・q/実幅・policy分離を新7人工testで確認。旧V2接続10回帰と計17PASS。実λ評価・新実candidate menu・signal/N/C/G・保存再解析0。数値providerは設計段階、十分N/global RMSE・探索範囲採択は未資格。
 
 [H4 PF長時間の二経路診断](docs/research/pf_power_stability_h4_20261113/REPORT.md)：保存DF10/FullPF S2/prefix10/T409.6/q1024/Δ.4の同1点・2mean。元spectralのstate normは通過、operator unitarity1.007123e−9は失敗。direct expmの5.899875e−12は元1e−9 gate通過。Gram/half-step/macro/powerの観測を保存、原因の厳密な寄与分離は未実施。12人工回帰PASS・6保存整合性確認、十分N/global RMSE/winnerはnull。

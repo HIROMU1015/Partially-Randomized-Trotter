@@ -1,5 +1,7 @@
 # scripts 索引
 
+[PRの全round signal provider](../docs/research/pr_rpe_signal_pipeline_20261113/REPORT.md)：新CLIを増やさず[SignalBatch](../src/trottertracks/pr_rpe_signal_provider.py)を明示実行入口にした。constructorはmetadataのみ、runは別承認の科学leaf。新10＋既存7人工test PASS、実H4未実行。[呼出し例](../docs/research/pr_rpe_signal_pipeline_20261113/HANDOFF.md)。
+
 [PRの全RPE signal探索設計](../docs/research/pr_rpe_search_design_20261113/REPORT.md)：新しい科学runnerは追加していない。Track A `h46_long_time_signal.evolve_batch`/`h46_long_time_native.compose`と既存direct-PF処理を再利用する設計。[plan helper](../src/trottertracks/pr_rpe_signal_plan.py)はB検証済み全round要求をmetadataで接続し、[人工test](../tests/check_pr_rpe_signal_plan.py)はMOCKのみ。実科学は未実行。
 
 [run_pf_power_stability_h4.py](run_pf_power_stability_h4.py)：明示承認されたF2-COARSE/m12専用の二経路診断。元spectralとdirect expmを各1回、最大2mean、新reference0。`--source <fixed-runner-SHA> --out <fresh-directory>`。有限gate失敗も値を残し、計画済みの他経路は省略しない。[REPORT](../docs/research/pf_power_stability_h4_20261113/REPORT.md)／[4人工test](../tests/check_pf_power_stability_h4.py)。他セルへの拡張・無断再実行はしない。

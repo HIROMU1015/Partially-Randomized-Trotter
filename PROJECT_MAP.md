@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PRの全round signal provider](docs/research/pr_rpe_signal_pipeline_20261113/REPORT.md)：[数値入口](src/trottertracks/pr_rpe_signal_provider.py)を追加。B canonical scheduleを保持し、直接expm head＋既存finite-K＋独立raw/corrected・matrix power/cacheを接続。新10＋既存7人工/metadata test PASS、実H4・保存再解析・N/C/G・候補探索0。[HANDOFF](docs/research/pr_rpe_signal_pipeline_20261113/HANDOFF.md)／[未承認有限案](docs/research/pr_rpe_signal_pipeline_20261113/SCIENCE_PLAN.md)。公開照合後STOP。
+
 [PRの全RPE資源探索設計](docs/research/pr_rpe_search_design_20261113/REPORT.md)：Track Aの有限T順位を採択せず、prefix/formula/Δ/K・共通κの全schedule評価を設計。B V2のidentity/cost/selectを再利用し、[metadata-only signal plan](src/trottertracks/pr_rpe_signal_plan.py)と[7人工test](tests/check_pr_rpe_signal_plan.py)を追加、旧10と計17技術test PASS。PR-Y4/K横断/gridのAPI差分、[HANDOFF](docs/research/pr_rpe_search_design_20261113/HANDOFF.md)、[未承認有限案](docs/research/pr_rpe_search_design_20261113/SCIENCE_PLAN.md)を明記。実科学・保存再解析・候補最適化0、公開後STOP。
 
 [H4 PF長時間の二経路診断](docs/research/pf_power_stability_h4_20261113/REPORT.md)：F2-COARSE/m12を各1回、最大2mean・新reference0で比較。旧spectralのoperator unitarity1.0071e−9は失敗、直接expm5.8999e−12は固定gate通過、mean差4.3139e−11。元SOURCE/STOPは不変、全RMSE資格なし。入口は[runner](scripts/run_pf_power_stability_h4.py)、[4人工test](tests/check_pf_power_stability_h4.py)、[結果](docs/research/pf_power_stability_h4_20261113/run01/result.json)。残15セルをdirect PFで再開する案は未実行、公開後STOP。

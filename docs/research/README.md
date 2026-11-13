@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[PR全round signal pipeline](pr_rpe_signal_pipeline_20261113/REPORT.md)：uniform PR S2/M5・K2/4/6の数値provider、直接expm・有限RTE・独立raw/corrected・power/cacheを接続。17技術test PASS、実科学0。BのN/G・価格評価は重複実装せず、公開照合後STOP。
+
 [PRの全RPE資源探索設計](pr_rpe_search_design_20261113/REPORT.md)：Track Aの旧順位を使わず全scheduleで同RMSEのN×Cを比較する設計。B/価格接続、direct-head PF・finite-K独立meanの再利用差分、cheap優先順位と厳密除外の区別、未採択2schedule pilot案。17技術test PASS、実科学0、公開後STOP。
 
 [H4 PF長時間の二経路診断](pf_power_stability_h4_20261113/REPORT.md)：代表F2-COARSE/m12の旧spectral・direct expm、計2meanを評価。directは数値gate通過、物理biasや全RPE資格は別。PF/B0Iのdirect expm採用による残15セル再開を提案し、未承認の追加計算はせずSTOP。
