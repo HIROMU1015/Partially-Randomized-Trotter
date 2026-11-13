@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_pr_ld1_ld2_deterministic_risk.py](run_pr_ld1_ld2_deterministic_risk.py)：[採択された保存LD1/LD2の固定入力](../docs/research/pr_ld1_ld2_deterministic_risk_results_20261113/INPUTS.json)から各1whole-vector・計2件だけを既存D.evaluateへ渡すcaller。MC/価格/G/追加探索を呼ばず、新規run01へexact結果を保存する。prepare/executeは明示入口で、再実行は別の科学実行範囲の判断が必要。
+
 [決定論的RPE API](../docs/research/rpe_deterministic_risk_20261113/HANDOFF.md)：rpe_deterministic_risk.evaluate/compareを明示呼出しする。K.prepareと既存W/B会計を再利用し、MCを起動しない。実入力の適用は別明示許可の有限scopeのみ。新科学runner/CLIは追加しない。
 
 [RPE risk interval API](../docs/research/rpe_risk_intervals_20261113/RISK_INTERVAL_HANDOFF.md)：既存K.diagnoseの任意risk_optionsから固定family区間を付加する。confidence_familyは受動metadata、実入力のdiagnose/区間再解析は別許可の有限scopeのみ。新CLI/自動実行なし。
