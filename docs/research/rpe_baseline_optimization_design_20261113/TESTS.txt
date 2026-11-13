@@ -1,0 +1,34 @@
+2026-11-13 JST. Primary agent's own technical regression; not independent scientific review.
+No new production implementation or test framework was needed.
+Worktree: partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110
+Python: /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python
+Environment: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:tests:scripts OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+
+python -B -m unittest test_h46_m5_plan -v
+First attempt: 11 PASS, 1 ERROR (12 methods, 0.118 s).
+ERROR: test_exact_source_literals_and_operation_order could not read references/h46_m5_best_formula_v1.json.
+Reason: tracked reference existed in HEAD but was excluded by this worktree's sparse checkout (git ls-files flag S).
+No coefficient, test, input or threshold was changed. Restored the exact HEAD bytes of that one tracked file:
+git restore --ignore-skip-worktree-bits --source=HEAD --worktree -- references/h46_m5_best_formula_v1.json
+Rerun of the same command: 12 PASS (0.119 s).
+Covers original M5 binary64 literals/order, symmetry/negative signed piece, allocation, B0 versus B0I scalar,
+metadata scope/STOP isolation, and existing artificial 2x2 noncommuting fourth-order convergence.
+No eighth-order formula was evaluated. Historical pilot/scientific plans were not executed.
+
+python -B -m unittest \
+ check_pf_pr_rpe_pipeline.IntegrationTests.test_plan_is_non_numerical_and_keeps_q_variables \
+ check_pf_pr_rpe_pipeline.IntegrationTests.test_axis_costs_delegate_existing_arithmetic_without_extra_multipliers \
+ check_pf_pr_rpe_pipeline.IntegrationTests.test_foreign_science_profile_recipe_and_double_normalization_rejected \
+ check_pf_pr_rpe_pipeline.IntegrationTests.test_saved_rerun_duplicate_and_missing_round_never_sum \
+ check_pf_pr_rpe_pipeline.IntegrationTests.test_cohort_mean_and_model_extrapolation_have_distinct_qualification \
+ check_pf_pr_rpe_pipeline.IntegrationTests.test_joint_shared_calibration_and_paired_axes_remain_correlated \
+ check_pf_pr_rpe_pipeline.IntegrationTests.test_covariance_psd_and_complete_simultaneous_bounds \
+ check_pf_pr_rpe_pipeline.IntegrationTests.test_missing_batch_uses_one_call_and_reuses_cached_N -v
+8 PASS (1.372 s). TOY N/C only; no real saved scientific values are evaluated by these selected methods.
+Covers q_RPE/q_PF separation, full-round weighted arithmetic, missing/duplicate handling, identity/profile rejection,
+finite cohort/model/extrapolation qualification, paired covariance and simultaneous-price-bound handling.
+This is regression of common components, not a new complete test of B's later four-method API in this C checkout.
+
+Final: 20 distinct existing methods PASS. Initial missing-fixture error retained above.
+Real H4 signal/normalizer/N/RMSE/C/G/optimization, saved-science reanalysis, circuits/compile/sampling: zero.
+Fixed B/D four-method API/source tests are referenced from their published reports; not copied/repeated here.
