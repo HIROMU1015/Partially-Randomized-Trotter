@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[rpe_cost_preliminary](rpe_cost_preliminary.py)：固定保存P0〜P4の条件付き構造寄与・損益分岐・pilot比。既存SavedArtifacts/same/exact会計を再利用し、decoder/price providerや最適化器は作らない。[結果](../../docs/research/rpe_cost_preliminary_results_20261113/REPORT.md)／[人工4件](../../tests/check_rpe_cost_preliminary.py)。
+
 [rpe_shot_allocation](rpe_shot_allocation.py)：1つのV2 configuration内の有限whole-shot menu用prepare/diagnose/compare。既存MC/RMSE/cost/selectを再利用し、SOURCE/law/lowering/区間とpendingを保持。[HANDOFF](../../docs/research/rpe_shot_allocation_20261113/HANDOFF.md)。48技術test、実科学なし。
 
 [h4_s0_v2_intake](../../docs/research/h4_s0_v2_integration_20261113/HANDOFF.md)：固定S0のcanonical metadata・V1/V2照合・診断view・将来A V2 packetの検査。bv2_mean_priceはC1dbからbyte一致取込み。科学leaf/価格predictor・Gは呼ばない。

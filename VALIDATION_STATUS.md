@@ -1,5 +1,7 @@
 # Validation status
 
+[RPE総コスト有限予備分析](docs/research/rpe_cost_preliminary_results_20261113/REPORT.md)：caller6ec7d1958/計画80dade8eでP0〜P4を一回実行exit0。26構造軸/13round/4tail、16閾値＋8欠測軸、pilot4軸、29signalの範囲・exact算術・null保全を確認。人工4件PASS。m10〜12が条件付き構造proxyの96.9198%。十分N/compiled全law/global bound/正式G/winner未資格、新signal/MC/compile/fit/新候補最適化0。
+
 [RPE総コスト予備分析の準備](docs/research/rpe_cost_preliminary_analysis_preparation_20261113/REPORT.md)：A/C/S3全identity/law・nominal一致、C構造量とcompiled null、Full PF6lane receipt、D有限pilot、screen4局所recordの7 metadata確認。新科学数値再解析/感度/比率/ランキング0。条件付きproxyと正式Gを分離し、P0〜P4の有限保存再解析は承認待ち。
 
 [全RPE shot配分の技術接続](docs/research/rpe_shot_allocation_20261113/REPORT.md)：人工10＋既存統計16/batch5/controller17＝48件PASS。MC診断からN昇格なし、nominal/未資格/欠測CはG UNKNOWN、2^1200超N・有理数会計、同ID内側選択と外側unique-configを確認。元decoder/controllerは無変更、実H4/保存数値再解析/実N/RMSE/G評価0、公開後mandatory STOP。

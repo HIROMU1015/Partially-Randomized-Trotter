@@ -1,5 +1,7 @@
 # 文書索引
 
+[RPE総コスト予備分析結果](research/rpe_cost_preliminary_results_20261113/REPORT.md)／[DECISION_PACKET_V0](research/rpe_cost_preliminary_results_20261113/DECISION_PACKET_V0.md)／[NEXT_OPTIMIZATION_PLAN](research/rpe_cost_preliminary_results_20261113/NEXT_OPTIMIZATION_PLAN.md)／[HANDOFF](research/rpe_cost_preliminary_results_20261113/HANDOFF.md)：固定保存P0〜P4の承認済み再解析、m12構造寄与66.20%・最後3round96.92%。正式G/必要N認定なし、人工4件PASS。
+
 [総コスト予備分析REPORT](research/rpe_cost_preliminary_analysis_preparation_20261113/REPORT.md)／[DECISION_PACKET_V0](research/rpe_cost_preliminary_analysis_preparation_20261113/DECISION_PACKET_V0.md)／[NEXT_OPTIMIZATION_PLAN](research/rpe_cost_preliminary_analysis_preparation_20261113/NEXT_OPTIMIZATION_PLAN.md)／[HANDOFF](research/rpe_cost_preliminary_analysis_preparation_20261113/HANDOFF.md)：7 metadata確認と有限算術計画のみ。保存値の新比率・寄与率は実行許可待ち、G/winner null。
 
 [全RPE shot配分adapter](research/rpe_shot_allocation_20261113/REPORT.md)／[HANDOFF](research/rpe_shot_allocation_20261113/HANDOFF.md)／[初回有限案](research/rpe_shot_allocation_20261113/SCIENTIFIC_PLAN.md)：同physical IDの全round配分を受入れ、診断/資格/点G/区間優越・不足を分離。48技術test PASS、新科学実行なし。

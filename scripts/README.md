@@ -1,5 +1,7 @@
 # scripts 索引
 
+[analyze_rpe_cost_preliminary.py](analyze_rpe_cost_preliminary.py)：別途許可された固定保存P0〜P4の明示入口。80dade8eのSOURCE_SCOPEだけを読み、exact算術・表を新directoryへ保存する。新signal/MC/compile/fit/N/G最適化は呼ばない。[結果/STOP](../docs/research/rpe_cost_preliminary_results_20261113/REPORT.md)。再実行も科学範囲の判断が必要。
+
 [全RPE shot配分API](../docs/research/rpe_shot_allocation_20261113/HANDOFF.md)：rpe_shot_allocation.prepare/diagnose/compareを明示呼出しする。新しい科学runner/CLIは追加せず、metadata準備と実MC/費用算術を分離。実入力の呼出しは別途科学許可の有限scopeのみ。
 
 [`run_h4_s3_statistics.py`](run_h4_s3_statistics.py)：[採択済みS3固定1実験のcaller](../docs/research/rpe_s3_final_plan_20261113/run01/HANDOFF.md)。code ab12/input bf515を再利用し、n43,819/seed20261113・保存nominalを固定。新規出力専用、全trial gzipと主/副summaryを保存。run01は完了済みで、無断再実行しない。
