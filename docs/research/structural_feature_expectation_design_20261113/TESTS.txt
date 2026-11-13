@@ -1,0 +1,33 @@
+2026-11-13 JST. Primary agent's own technical checks; not independent scientific review.
+Python: /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python
+Working directory: partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:tests OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+
+python -B -m unittest check_structural_feature_means -v
+9 PASS (unittest reported 0.129 s).
+1. Exact linear means agree with pinned D P2 event_metrics on artificial order0/2 events.
+2. Basis formula and MeanKernel agree with original Accounting over 100 artificial two-event words.
+3. Inhomogeneous event laws keep state between events.
+4. Tail active reset is distinguished from native counter/pending-Z reset.
+5. Basis ID/hash are not collapsed by common support.
+6. Zero order2 and positive rare order2 are distinguished exactly.
+7. q4096/R8160 artificial-weight formulas and binary kernel use no full event sequence or RNG.
+8. Nonlinear products cannot be evaluated by plugging in feature means.
+9. Missing/unsupported physical feature assumptions are rejected, not approximated.
+
+python -B -m unittest \
+  check_finite_k_sampler_law \
+  check_mean_compiled_price.Tests.test_short_C1_structural_basis_and_literal_Z_cancellation \
+  check_mean_compiled_price.Tests.test_full_wrapper_signed_pieces_and_outer_boundaries_match_enumeration \
+  check_mean_compiled_price.Tests.test_reset_at_PF_RTE_boundary_would_change_the_answer \
+  check_mean_compiled_price.Tests.test_binary_repeat_matches_sequential_for_short_program \
+  check_mean_compiled_price.Tests.test_eleven_signed_pieces_large_q_R_use_fixed_memory_shapes \
+  check_h4_structural_kernel.Tests.test_interval_kernel_contains_exact_correlated_enumeration \
+  check_h4_structural_kernel.Tests.test_nominal_probabilities_are_not_repaired -v
+19 PASS (unittest reported 0.507 s).
+Includes 12 previous CDF/law pure tests, 5 mean-kernel artificial tests, 2 interval/nominal artificial tests.
+Existing test class setup uses an ARTIFICIAL 324-component descriptor; no physical probability arrays.
+Existing SyntaxWarnings in Almost_optimal_grouping.py at 222,382,636,747,792; unchanged.
+
+Total: 28 PASS. No H4 saved probability analysis, F0, physical K0/K1, new E[S], sampling, build/compile, residual fit, N/G.
+Old Accounting matches pinned 8457c443 blob. D helper is AST-loaded alone from 39ddd59e; D launcher/backend is not imported.

@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[残差構造特徴量の期待値評価方法](../../docs/research/structural_feature_expectation_design_20261113/REPORT.md)（2026-11-13）：D P2のfeature定義を照合し、tail Z/ZZ/order/product数とbasis group/shareの解析式・小kernelを整備。新9＋既存19＝28人工/技術test PASS。native/compiled相殺や非線形joint量とは区別し、Dの直接残差法を置換しない。実H4確率解析/F0/K0/K1/E[S]/sampling/compile/fit/N/G0、旧26値とSTOP保全。
+
 [finite-K sampler law整合性](../../docs/research/finite_k_sampler_law_alignment_20261113/REPORT.md)（2026-11-13）：ideal finite-K/source lawとPCG64/CDFの接続調査。生成構造・rte.py blob対応を確認し、既存53-bit helperを再利用するTV分解/条件付き上界を追加。人工12＋既存toy5 PASS。実H4のlaw距離・PRNG joint-law・価格systematicはUNKNOWN/null、既存26 E[S]不変、新科学計算0。公開照合後mandatory STOP。
 
 [H4 PR全13roundの平均構造RZ結果](../../docs/research/h4_structural_schedule_results_20261113/REPORT.md)（2026-11-13）：固定H4 DF10/S2/p1/δ.1/K2・同preparationで残11lawのK0全PASS、新22 E[S]を取得。m0/m6四値を再実行せずcopyし全13round/26軸が同canonicalへ接続。SOURCE de2427d4a、99 wire-law検査、最大mass defect1.714e−12（tol1e−10）。元Sのideal有限law平均でE[C]/Gはnull。新sampling/full-path S/build/compile/fit/N/G0、計算再起動0、旧STOP保全。公開照合後mandatory STOP。
