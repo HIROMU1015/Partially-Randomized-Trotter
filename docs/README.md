@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR resource I1/I2/E1技術修正](research/pr_resource_technical_fixes_20261114/README.md)：配線preflight、共有moduleの歴史blob照合と現行API互換、SOURCE別candidate ID parse cache。旧科学SOURCE・結果・契約を保全、人工・技術検証のみ。
+
 [H4 DP有限範囲の準備REPORT](research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)／[具体案](research/rpe_dp_finite_scope_preparation_20261114/FINITE_SCOPE.json)／[HANDOFF](research/rpe_dp_finite_scope_preparation_20261114/HANDOFF.md)：K8192、P141,559,036/構成を提案。人工幾何/3benchmark/整数probeのみ、実H4新riskは未計算。科学実行の別明示許可後に各LD1件だけ適用する案。
 
 [RPE MSE状態集約REPORT](research/rpe_mse_state_refinement_20261114/REPORT.md)／[成立条件・HANDOFF](research/rpe_mse_state_refinement_20261114/HANDOFF.md)／[有限適用・shot計画](research/rpe_mse_state_refinement_20261114/FINITE_PLAN.md)／[57件の結果](research/rpe_mse_state_refinement_20261114/TEST_RUN.txt)：旧最大lossを未知残余へ保持し、元decoderの解決状態をexactに伝播。人工の全履歴列挙一致、実H4新値なし・STOP。

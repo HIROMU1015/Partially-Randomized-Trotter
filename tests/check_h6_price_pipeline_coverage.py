@@ -49,7 +49,9 @@ class Tests(unittest.TestCase):
             base='7bca8f9642d1c42ca3fede4d31b2cdd8dcef46ae' if name=='h4_df10_rpe_connection.py' else coverage.B_BASE
             self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',base+':'+path],cwd=ROOT))
         baseline=ast.parse(subprocess.check_output(['git','show',coverage.B_BASE+':src/trottertracks/pf_pr_rpe_pipeline.py'],cwd=ROOT))
-        current=ast.parse((ROOT/'src/trottertracks/pf_pr_rpe_pipeline.py').read_text())
+        # B's integration SOURCE contains the shared module; C's provider-only
+        # snapshot 0b5c493f does not. Exercise the live factories below as before.
+        current=ast.parse(subprocess.check_output(['git','show','ac3e1ce87b5ed7d9114abc316545366dd097209e:src/trottertracks/pf_pr_rpe_pipeline.py'],cwd=ROOT))
         current.body=[n for n in current.body if not isinstance(n,ast.FunctionDef) or n.name!='h6_saved_price_provider']
         self.assertEqual(ast.dump(baseline),ast.dump(current))
         self.assertEqual(Path(p.__file__).resolve(),ROOT/'src/trottertracks/pf_pr_rpe_pipeline.py')

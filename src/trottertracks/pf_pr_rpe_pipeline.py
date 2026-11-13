@@ -67,12 +67,20 @@ def _schedule():
     return module
 
 
-def candidate_id(candidate):
-    path=Path(__file__).resolve().parents[2]/'scripts/h46_long_time_signal.py'
-    node=next(n for n in ast.parse(path.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='cid')
+@lru_cache(maxsize=1)
+def _candidate_id_parser(path, source):
+    """Cache the callable, never candidate results; changed SOURCE reparses."""
+    node=next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name=='cid')
     scope={'json':json,'hashlib':hashlib}
     exec(compile(ast.Module(body=[node],type_ignores=[]),str(path),'exec'),scope)
-    return scope['cid'](candidate)
+    return scope['cid']
+
+
+def candidate_id(candidate):
+    path=Path(__file__).resolve().parents[2]/'scripts/h46_long_time_signal.py'
+    # Read exact bytes each time: an edited rule cannot reuse a stale callable,
+    # even when file size/mtime are unchanged. Each candidate is evaluated anew.
+    return _candidate_id_parser(str(path), path.read_bytes())(candidate)
 
 
 def structure(c):

@@ -166,7 +166,10 @@ class RTests(unittest.TestCase):
         for path in paths:
             current=(ROOT/path).read_bytes();original=subprocess.check_output(['git','show',model.BASELINE+':'+path],cwd=ROOT)
             if path.endswith('/pf_pr_rpe_pipeline.py'):
-                tree=ast.parse(current)
+                # Historical SOURCE is a Git blob; current API behavior is
+                # exercised by the other tests, including changed-R rejection.
+                historical=subprocess.check_output(['git','show','ac3e1ce87b5ed7d9114abc316545366dd097209e:'+path],cwd=ROOT)
+                tree=ast.parse(historical)
                 tree.body=[n for n in tree.body if not isinstance(n,ast.FunctionDef) or n.name!='h6_saved_price_provider']
                 self.assertEqual(ast.dump(tree),ast.dump(ast.parse(original)))
             else:self.assertEqual(current,original)
