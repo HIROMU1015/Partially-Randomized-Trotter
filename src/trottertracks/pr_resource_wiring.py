@@ -111,6 +111,14 @@ def preflight(root, series, source, *, request=None, plan=None):
         checked.append(relative)
         return value
 
+    # These live shared modules are consumed by every profile. Historical
+    # provenance is checked separately; today's imports must match SOURCE too.
+    module('pf_pr_rpe_pipeline')
+    module('h4_df10_rpe_connection')
+    relative = 'scripts/h46_long_time_signal.py'
+    if (root/relative).read_bytes() != subprocess.check_output(['git','show',source+':'+relative],cwd=root):
+        raise ValueError('SOURCE candidate ID rule differs')
+
     if series == 'A':
         V = module('pr_rpe_rmse_s0_v2'); provider = module('pr_rpe_signal_provider')
         power = module('pr_rpe_power_mean')
@@ -156,6 +164,8 @@ def preflight(root, series, source, *, request=None, plan=None):
         context_definition(loader.load_context, root, fixed)
         from . import h4_pr_physical_closure as closure
         import trotterlib.rte as rte
+        if Path(rte.__file__).read_bytes() != loader.m.blob(root, loader.m.PROVIDER, 'src/trotterlib/rte.py'):
+            raise ValueError('Pinned descriptor API SOURCE differs')
         bind_calls(closure.make_law, 'make_rte_config', rte.make_rte_config)
         boundary = 'S-only context / preparation / law descriptor / mean S: NOT CALLED'
     elif series == 'D':
