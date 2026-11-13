@@ -1,5 +1,7 @@
 # 文書索引
 
+[Truncated PF T1結果](research/truncated_pf_t1_results_20261114/REPORT.md)／[SHIFTS.csv](research/truncated_pf_t1_results_20261114/SHIFTS.csv)／[run01](research/truncated_pf_t1_results_20261114/run01/RESULT.json)：p0..9の切断シフト・重なり・λ_R・c_tail。T2は未承認・STOP。
+
 [Truncated PF計画REPORT](research/truncated_pf_optimization_plan_20261114/REPORT.md)／[段階計画](research/truncated_pf_optimization_plan_20261114/SCIENCE_PLAN.md)／[schedule metadata](research/truncated_pf_optimization_plan_20261114/PLAN_METADATA.json)／[toy検証](research/truncated_pf_optimization_plan_20261114/TOY_CHECKS.json)：未承認の有限計画、新科学計算なし・STOP。
 
 [最新Full PF価格接続・S1比較guard](research/full_pf_latest_price_guard_20261114/REPORT.md)（2026-11-14）。
