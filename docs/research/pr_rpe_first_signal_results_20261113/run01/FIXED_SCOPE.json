@@ -1,0 +1,179 @@
+{
+  "plan_source": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+  "menu": {
+    "status": "PROPOSED_FINITE_MENU_AWAITING_USER_EXECUTION_PERMISSION",
+    "B_source": "437ba4acdb82708b6fc98e3cd119a2a734f7cf64",
+    "signal_source": {
+      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+    },
+    "conditions": {
+      "M": 12,
+      "round_count_M_plus_one": 13,
+      "h": 0.1,
+      "h_exact": "3602879701896397/36028797018963968",
+      "kappa_paper_exact": "13112614441153360648422410673503886836581176429267589536059228160/539496659426909122096437389293855970805348475396548904610992201",
+      "kappa_paper_approx": 24.305274577756407,
+      "target_rmse_ha_exact": "3890625249/2441406250000",
+      "qpe_budget_ha_exact": "3890625249/4882812500000",
+      "trot_budget_ha_exact": "3890625249/4882812500000",
+      "target_rmse_ha": 0.0015936001019904,
+      "qpe_budget_ha": 0.0007968000509952,
+      "trot_budget_ha": 0.0007968000509952,
+      "error_rule": "minkowski",
+      "normalization_rule": "finite_B_diagnostic"
+    },
+    "target": {
+      "energy_target": "ground energy of saved DF-H in sector (2,2)",
+      "reference_signal": "saved-state <psi|exp(-i H_DF T)|psi>, not automatically exp(-i E_ground T)",
+      "truth_proxy_source": {
+        "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+        "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+        "selector": [
+          "records",
+          5,
+          "diagnostics"
+        ]
+      },
+      "reference_solver_energy_ha": -2.1663874486347634,
+      "state_residual_ha": 1.9513566490707353e-15,
+      "ground_state_certified": false,
+      "truth_proxy_adopted_for_new_simulation": false,
+      "energy_shift": 0,
+      "reference_energy_used_for_prior_or_branch": false
+    },
+    "fixed_S0_source": {
+      "commit": "7da8a35f68e9fdc2b46c361dd2c68e2a799b1e75",
+      "path": "docs/research/pr_rpe_rmse_s0_results_20261113/run01/CONFIGURATION.json"
+    },
+    "changing_design_variable": "L_D_ONLY_R_DERIVED_FROM_UNCHANGED_COMMON_PAPER_KAPPA",
+    "candidates": [
+      {
+        "label": "PR-LD1",
+        "L_D": 1,
+        "configuration_file": "CONFIGURATION_LD1.json",
+        "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+        "tail_descriptor": {
+          "lambda_R": 2.8629570945298686,
+          "scalar": 0.4177175120626939
+        },
+        "tail_source": {
+          "index": {
+            "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+            "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+          },
+          "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+          "selector": [
+            "prefixes",
+            "1"
+          ]
+        },
+        "new_round_candidates": 13,
+        "new_complex_outputs": 39,
+        "new_normalizers": 13,
+        "saved_reference_pairs": 13,
+        "source_reuse": "INPUTS_TAIL_METADATA_FULL_H_REFERENCE_ONLY",
+        "published_physical_match_rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "track_a_archived_physical_match_rounds": [
+          3,
+          4
+        ],
+        "track_a_archive_source": {
+          "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+          "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz"
+        },
+        "direct_fefd_mean_accepted_rounds": [],
+        "baseline_physical_recipe_preserved": true
+      },
+      {
+        "label": "PR-LD2",
+        "L_D": 2,
+        "configuration_file": "CONFIGURATION_LD2.json",
+        "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+        "tail_descriptor": {
+          "lambda_R": 1.6030956277929231,
+          "scalar": 0.2223759094107018
+        },
+        "tail_source": {
+          "index": {
+            "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+            "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+          },
+          "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+          "selector": [
+            "prefixes",
+            "2"
+          ]
+        },
+        "new_round_candidates": 13,
+        "new_complex_outputs": 39,
+        "new_normalizers": 13,
+        "saved_reference_pairs": 13,
+        "source_reuse": "INPUTS_TAIL_METADATA_FULL_H_REFERENCE_ONLY",
+        "published_physical_match_rounds": [],
+        "track_a_archived_physical_match_rounds": [],
+        "track_a_archive_source": {
+          "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+          "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz"
+        },
+        "direct_fefd_mean_accepted_rounds": [],
+        "baseline_physical_recipe_preserved": false
+      }
+    ],
+    "deferred_prefixes": [
+      3,
+      5,
+      7,
+      9
+    ],
+    "unsupported_saved_prefixes": [
+      4,
+      6,
+      8
+    ],
+    "scientific_calls": 0,
+    "saved_signal_reanalysis": 0,
+    "sufficient_N": null,
+    "global_RMSE_bound": null,
+    "G": null,
+    "winner": null,
+    "limits": {
+      "round_candidates": 26,
+      "complex_outputs_raw_corrected_exact_tail": 78,
+      "finite_normalizer_piece_evaluations": 26,
+      "new_reference_actions": 0,
+      "new_signal_sampling": 0,
+      "new_state_or_hamiltonian_generation": 0,
+      "new_N": 0,
+      "new_C": 0,
+      "new_G": 0
+    },
+    "baseline_reference_compatible_but_old_means_not_relabelled": true,
+    "mandatory_stop": true
+  },
+  "configuration_sources": [
+    {
+      "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+      "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json"
+    },
+    {
+      "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+      "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json"
+    }
+  ]
+}
