@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full PF3候補のcompiled価格証拠接続](docs/research/full_pf_candidate_price_evidence_20261114/REPORT.md)（2026-11-14）：A3ae055faのFull PF S2/.2・Y4/.4・M5/.8を39round/78軸でD e7 receiptへ照合。direct5round/10軸、M5 m4欠測、他33roundはcatalog外。元native/scalar/wrapper/P0のD証拠を再利用し、consumer lowering採用は未実施。追加4セル/最大8wrapperの未承認q検証案、early幅/長q未資格・必要精度UNKNOWN。価格再集計/予測/fit/compile/N/G0、production変更0、公開後mandatory STOP。
+
 [B0I・Full-Hの全13round Raw signal取得](docs/research/truncated_fullh_signal_results_20261114/REPORT.md)（2026-11-14）：固定H4 DF10のB0I p7/S2/Δ.1とFull-H finite-K2/q=2^m/R448を各13round、一回評価。SOURCE5a172629d、26件すべて元数値gate PASS、Raw/corrected/reference/normalizationとB packetを保存。人工caller3件PASS、数値module不変、context復元1、旧signal受入/retry0。数値誤差・law距離・state誤差は未資格、MC/N/価格/G0。旧c546/6306計画・STOPを保全し公開後mandatory STOP。
 
 [B0I・Full-Hの26round Raw signal有限scope](docs/research/truncated_fullh_signal_scope_20261114/REPORT.md)（2026-11-14）：c546原本からB0I p7/S2/.1とFull-H K2/q=2^m/R448の26roundを同identity/SOURCE/gateで分離。Full PF・m6受入依存・旧signal再資格0。新reference/抽出0、共有saved context/cacheを再利用。metadata26件照合PASS、実input/数値計算/再解析/旧test再実施0。数値実行は明示許可待ちSTOP。
