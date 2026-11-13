@@ -175,6 +175,104 @@ def verify_good_transitions(tables, *, maximum_pairs):
         method='ALL_ADJACENT_GOOD_SUPPORT_PAIRS_ORIGINAL_SCALAR_TIE_TOLERANCE')
 
 
+def _refine_states(tables, *, h, target, lo, hi, resolved_limit, scope):
+    """Exact binary64-state DP; dropped histories retain the old loss envelope.
+
+    Called only after the existing count/law/loss/decoder certificate succeeds.
+    No approximate state bins: float.hex retains the sign of zero too. An
+    unresolved history can be absorbed because the original wrapper never
+    resolves it again and the same loss interval applies to zero AND tie.
+    """
+    import numpy as np
+    if not isinstance(scope, dict) or not scope.get('source'):
+        raise ValueError('Explicit state-refinement scope/SOURCE required')
+    maximum_states = S._integer(scope.get('maximum_frontier_states'), 'maximum_frontier_states')
+    maximum_pairs = S._integer(scope.get('maximum_transition_pairs'), 'maximum_transition_pairs')
+    out = dict(status='UNKNOWN', MSE_upper=None, MSE_lower=None, rounds=[],
+        transition_pairs=0, scope=deepcopy(scope), numerical='COMMON_DENOMINATOR_INTEGER_MASSES',
+        state_equivalence='IDENTICAL_BINARY64_HEX_NO_APPROXIMATE_BINNING')
+    # All masses share the prefix denominator, avoiding a Fraction/gcd at
+    # every transition. None is the unique pre-round-zero state.
+    states = {None: 1}; denominator = 1; unresolved = residual = 0
+    no_zero = Fraction(1); pairs = 0; bad_limit = max(resolved_limit, hi)
+    for m, table in enumerate(tables):
+        if table['status'] != 'ENUMERATED' or table['m'] != m or table['q'] != 1 << m:
+            out['reason'] = 'INCOMPLETE_CONSECUTIVE_COUNT_TABLES'; return out
+        den = table['denominator']; grouped = {}; zero_weight = 0
+        for item in table['outcomes']:
+            phase = item['principal']; weight = item['weight']
+            if (not math.isfinite(phase) or not -math.pi <= phase < math.pi
+                    or type(weight) is not int or weight < 0):
+                out['reason'] = 'INVALID_COUNT_SUPPORT'; return out
+            key = (item['zero'], float(phase).hex())
+            grouped[key] = grouped.get(key, 0) + weight
+            if item['zero']:
+                zero_weight += weight
+        if type(den) is not int or den <= 0 or sum(grouped.values()) != den:
+            out['reason'] = 'COUNT_MASS_NOT_CONSERVED'; return out
+        no_zero *= Fraction(den-zero_weight, den)
+        groups = [(zero, float.fromhex(phase), weight)
+                  for (zero, phase), weight in grouped.items() if weight]
+        phases = np.array([v[1] for v in groups])
+        new = {}; denominator *= den; unresolved *= den; residual *= den
+        # Deterministic largest-mass-first processing; all comparisons are of
+        # integer masses with the SAME denominator, never rounded probabilities.
+        for state, mass in sorted(states.items(), key=lambda kv: (-kv[1], str(kv[0]))):
+            if pairs + len(groups) > maximum_pairs:
+                residual += mass*den
+                continue
+            if m:
+                values, _, best, runner, _ = F._nearest(phases,
+                    np.full(len(phases), float.fromhex(state)), table['q'])
+                if not all(np.all(np.isfinite(v)) for v in (values, best, runner)):
+                    out['reason'] = 'NONFINITE_ORIGINAL_DECODER_TRANSITION'; return out
+                if np.any(values < -math.pi) or np.any(values >= math.pi):
+                    out['reason'] = 'ORIGINAL_DECODER_OUTSIDE_PRINCIPAL_DOMAIN'; return out
+                ties = np.abs(runner-best) <= TIE_TOLERANCE
+            else:
+                values = phases; ties = np.zeros(len(groups), dtype=bool)
+            pairs += len(groups)
+            for i, (zero, _, weight) in enumerate(groups):
+                contribution = mass*weight
+                if zero or ties[i]:
+                    unresolved += contribution
+                else:
+                    key = float(values[i]).hex()
+                    new[key] = new.get(key, 0) + contribution
+        if len(new) > maximum_states:
+            ordered = sorted(new.items(), key=lambda kv: (-kv[1], kv[0]))
+            residual += sum(mass for _, mass in ordered[maximum_states:])
+            new = dict(ordered[:maximum_states])
+        states = new
+        if sum(states.values()) + unresolved + residual != denominator:
+            out['reason'] = 'STATE_MASS_NOT_CONSERVED'; return out
+        out['rounds'].append(dict(m=m, grouped_count_outcomes=len(groups),
+            retained_states=len(states), transition_pairs_cumulative=pairs,
+            retained_probability=a.exact_value(Fraction(sum(states.values()), denominator)),
+            absorbed_unresolved_probability=a.exact_value(Fraction(unresolved, denominator)),
+            residual_probability=a.exact_value(Fraction(residual, denominator))))
+    resolved = sum((Fraction(mass, denominator)*
+        (a.exact_scalar(-float.fromhex(state)/h)-a.exact_scalar(target))**2
+        for state, mass in states.items()), Fraction(0))
+    u = Fraction(unresolved, denominator); r = Fraction(residual, denominator); z = 1-no_zero
+    if not 0 <= z <= u+r <= 1:
+        out['reason'] = 'UNRESOLVED_ZERO_MASS_INCONSISTENT'; return out
+    lower = resolved + u*lo
+    upper = resolved + u*hi + r*bad_limit
+    out.update(status='COMPLETE_STATE_LOSS_FAMILY_BOUND' if not residual else 'PARTIAL_STATE_BOUND_WITH_RESIDUAL',
+        MSE_lower=a.exact_value(lower), MSE_upper=a.exact_value(upper),
+        resolved_MSE_contribution=a.exact_value(resolved),
+        absorbed_unresolved_probability=a.exact_value(u),
+        residual_probability=a.exact_value(r), residual_loss_upper=a.exact_value(bad_limit),
+        any_zero=a.exact_value(z), transition_pairs=pairs,
+        unresolved_probability_bounds=dict(lower=a.exact_value(max(u,z)), upper=a.exact_value(u+r)),
+        actual_global_tie_probability_bounds=dict(lower=a.exact_value(max(Fraction(0),u-z)),
+            upper=a.exact_value(u+r-z)),
+        actual_global_tie_probability=a.exact_value(u-z) if not residual else None,
+        unresolved_probability=a.exact_value(u) if not residual else None)
+    return out
+
+
 def _bound(entry, options):
     prepared = entry['prepared']; rows = prepared['rows']
     out = dict(status='UNKNOWN', MSE_upper=None, RMSE_upper_display=None, rounds=[],
@@ -255,6 +353,24 @@ def _bound(entry, options):
         resolved_loss_upper=a.exact_value(resolved_loss), unsafe_loss_upper=a.exact_value(bad_loss),
         all_event_loss_contract=deepcopy(model), unresolved_loss=deepcopy(loss),
         drift_refinement='UNQUALIFIED_NOT_USED', confidence=None)
+    if options.get('state_refinement') is not None:
+        refinement = _refine_states(tables, h=h, target=target, lo=lo, hi=hi,
+            resolved_limit=resolved_loss, scope=options['state_refinement'])
+        out.update(coarse_MSE_upper=a.exact_value(bound), state_refinement=refinement)
+        if refinement['MSE_upper'] is None:
+            out.update(status='UNKNOWN', MSE_upper=None, RMSE_upper_display=None,
+                reason='STATE_REFINEMENT_UNVERIFIED:'+refinement.get('reason','UNKNOWN'))
+        else:
+            refined = a.exact_scalar(refinement['MSE_upper'])
+            if not 0 <= a.exact_scalar(refinement['MSE_lower']) <= min(bound, refined):
+                out['state_refinement'] = dict(status='UNKNOWN', MSE_upper=None,
+                    reason='INCONSISTENT_REFINEMENT_LOSS_INTERVAL')
+                out.update(status='UNKNOWN', MSE_upper=None, RMSE_upper_display=None,
+                    reason='INCONSISTENT_REFINEMENT_LOSS_INTERVAL')
+            else:
+                out.update(MSE_upper=a.exact_value(min(bound, refined)),
+                    RMSE_upper_display=_sqrt_display_upper(min(bound, refined)),
+                    MSE_upper_method='MIN_OF_COARSE_AND_STATE_DP_BOUNDS')
     return out
 
 

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[RPE MSEの状態集約上界](../../docs/research/rpe_mse_state_refinement_20261114/REPORT.md)：既存trottertracks.rpe_deterministic_riskに任意の完全binary64状態DPを追加。元count/R3/whole-vectorを再利用し、未解決lossと追跡残余の旧上界を保持。新12＋回帰45＝57件PASS、実H4適用・N資格は未実行。[API・証明](../../docs/research/rpe_mse_state_refinement_20261114/HANDOFF.md)。
+
 [決定論的RPE risk](../../docs/research/rpe_deterministic_risk_20261113/REPORT.md)：trottertracks.rpe_deterministic_riskが元count変換/R3/whole-shot/cost-selectを再利用。確率・MSEは有理数、branch閉包は有限support検査、科学的資格は別。MCなし45技術test PASS。
 
 [RPE risk interval](../../docs/research/rpe_risk_intervals_20261113/REPORT.md)：trottertracks.rpe_risk_intervalsが既存summary/CP/bounded-lossを再利用。p_L=0/support不足はUNKNOWN、同時budgetをwhole-shotの固定callへ結合。59技術test PASS、N資格producer/optimizerなし。

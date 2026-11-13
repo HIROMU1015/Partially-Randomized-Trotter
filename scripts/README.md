@@ -1,5 +1,7 @@
 # scripts 索引
 
+[状態集約risk API](../docs/research/rpe_mse_state_refinement_20261114/HANDOFF.md)：既存D.evaluateの任意state_refinementで旧上界とDP上界を同じcount表から計算する。新科学runnerは追加せず、旧run01 caller/結果を保全。[次の有限2適用案](../docs/research/rpe_mse_state_refinement_20261114/FINITE_PLAN.md)は未実行・別明示許可待ち。
+
 [run_pr_ld1_ld2_deterministic_risk.py](run_pr_ld1_ld2_deterministic_risk.py)：[採択された保存LD1/LD2の固定入力](../docs/research/pr_ld1_ld2_deterministic_risk_results_20261113/INPUTS.json)から各1whole-vector・計2件だけを既存D.evaluateへ渡すcaller。MC/価格/G/追加探索を呼ばず、新規run01へexact結果を保存する。prepare/executeは明示入口で、再実行は別の科学実行範囲の判断が必要。
 
 [決定論的RPE API](../docs/research/rpe_deterministic_risk_20261113/HANDOFF.md)：rpe_deterministic_risk.evaluate/compareを明示呼出しする。K.prepareと既存W/B会計を再利用し、MCを起動しない。実入力の適用は別明示許可の有限scopeのみ。新科学runner/CLIは追加しない。

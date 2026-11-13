@@ -1,5 +1,7 @@
 # 文書索引
 
+[RPE MSE状態集約REPORT](research/rpe_mse_state_refinement_20261114/REPORT.md)／[成立条件・HANDOFF](research/rpe_mse_state_refinement_20261114/HANDOFF.md)／[有限適用・shot計画](research/rpe_mse_state_refinement_20261114/FINITE_PLAN.md)／[57件の結果](research/rpe_mse_state_refinement_20261114/TEST_RUN.txt)：旧最大lossを未知残余へ保持し、元decoderの解決状態をexactに伝播。人工の全履歴列挙一致、実H4新値なし・STOP。
+
 [保存LD1/LD2の決定論的risk結果](research/pr_ld1_ld2_deterministic_risk_results_20261113/REPORT.md)／[入力](research/pr_ld1_ld2_deterministic_risk_results_20261113/INPUTS.json)／[HANDOFF](research/pr_ld1_ld2_deterministic_risk_results_20261113/HANDOFF.md)：各1件・計2診断完了。モデルMSE上界・全round unsafe/zero/reference-tie・未解決範囲を保存し、正式N/global/G nullを保全。MC・追加探索なし、公開後STOP。
 
 [LD1/LD2決定論的risk適用準備](research/pr_ld1_ld2_deterministic_application_preparation_20261113/REPORT.md)／[未採択条件・有限適用案](research/pr_ld1_ld2_deterministic_application_preparation_20261113/CONDITIONS_AND_FINITE_PLAN.md)／[SOURCE・各round](research/pr_ld1_ld2_deterministic_application_preparation_20261113/SOURCE_AND_CONDITIONS.json)／[HANDOFF](research/pr_ld1_ld2_deterministic_application_preparation_20261113/HANDOFF.md)：保存metadata照合と既存fixture2件PASS。条件選択・科学実行許可は別途必要、新確率/MSE/N/C/G計算なし。

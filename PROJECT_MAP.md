@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[状態集約によるRPE MSE上界改善](docs/research/rpe_mse_state_refinement_20261114/REPORT.md)／[証明・API](docs/research/rpe_mse_state_refinement_20261114/HANDOFF.md)／[有限shot計画](docs/research/rpe_mse_state_refinement_20261114/FINITE_PLAN.md)：元count/R3を使う任意DPを既存riskへ追加。解決終端の実loss・未解決loss・追跡残余を分け、旧/新min上界。完全binary64一致のみを集約、新12＋回帰45＝57人工/回帰PASS。実H4再解析/追加shot/MC/C/G0、公開後mandatory STOP。
+
 [保存LD1/LD2の初回決定論的risk結果](docs/research/pr_ld1_ld2_deterministic_risk_results_20261113/REPORT.md)／[HANDOFF](docs/research/pr_ld1_ld2_deterministic_risk_results_20261113/HANDOFF.md)：採択済み各1whole-vector・計2件を実行。有限good閉包が成立、モデルMSE上界約0.239895/0.239688 Ha²、未解決率の範囲をexactで保存。十分N/精度達成/LD順位は未認定、AδE加算/追加配分/MC/C/G0、公開後mandatory STOP。
 
 [保存LD1/LD2への決定論的risk適用準備](docs/research/pr_ld1_ld2_deterministic_application_preparation_20261113/REPORT.md)／[条件一覧・有限2評価案](docs/research/pr_ld1_ld2_deterministic_application_preparation_20261113/CONDITIONS_AND_FINITE_PLAN.md)／[HANDOFF](docs/research/pr_ld1_ld2_deterministic_application_preparation_20261113/HANDOFF.md)：A91349の各13roundを元configuration/carrier/lawへmetadata照合。既存fixture2件PASS、実装追加なし。target/loss/配分等は未採択、AのδE二重計上を避ける診断scopeを提示。保存rawの確率/MSE/N再解析・MC/C/G0、公開後mandatory STOP。
