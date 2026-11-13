@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-13：R3 decoder高速化](2026-11-13-rpe-decoder-r3.md)：独立decoder/B batch hook、32人工技術test、実S3は未実行。
+
 [2026-11-13：H4 PR物理誤差契約](2026-11-13-h4-pr-physical-error-contract.md)：13round SOURCE付きcopy・21技術test、科学再解析0。
 
 このディレクトリには、研究実装を進めた時点の方針、判断、検証結果および

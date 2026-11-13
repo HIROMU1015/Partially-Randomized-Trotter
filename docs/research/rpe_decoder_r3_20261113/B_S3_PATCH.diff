@@ -1,0 +1,28 @@
+--- a/src/trottertracks/rpe_decoder_statistics.py
++++ b/src/trottertracks/rpe_decoder_statistics.py
+@@ -172 +172 @@
+-def simulate_prepared(prepared, *, repetitions, seed, policy, allow_conditional_unqualified=False):
++def simulate_prepared(prepared, *, repetitions, seed, policy, allow_conditional_unqualified=False, batch_decoder=None):
+@@ -186 +186 @@
+-        repetitions=repetitions,seed=seed,policy=policy)
++        repetitions=repetitions,seed=seed,policy=policy,batch_decoder=batch_decoder)
+@@ -194 +194 @@
+-def simulate(rounds, *, M, h, prior, repetitions, seed, policy):
++def simulate(rounds, *, M, h, prior, repetitions, seed, policy, batch_decoder=None):
+@@ -217,6 +217,10 @@
+-    results=[]
+-    for i in range(repetitions):
+-        counts=[dict(m=r['m'],**{axis:dict(plus=int(samples[m][axis][i]),shots=r['N_'+axis]) for axis in p.AXES}) for m,r in enumerate(rounds)]
+-        result=decode_counts(counts,h=h,M=M,prior=prior)
+-        # Keep statuses/energies/branch diagnostics without retaining all counts.
+-        results.append({k:v for k,v in result.items() if k not in ('counts',)})
++    if batch_decoder is None:
++        results=[]
++        for i in range(repetitions):
++            counts=[dict(m=r['m'],**{axis:dict(plus=int(samples[m][axis][i]),shots=r['N_'+axis]) for axis in p.AXES}) for m,r in enumerate(rounds)]
++            result=decode_counts(counts,h=h,M=M,prior=prior)
++            # Keep statuses/energies/branch diagnostics without retaining all counts.
++            results.append({k:v for k,v in result.items() if k not in ('counts',)})
++    else:
++        results=batch_decoder(samples,rounds,M=M,h=h,prior=prior,
++            count_mean=count_mean,decoder_source=SOURCE)

@@ -1,5 +1,7 @@
 # scripts 索引
 
+[RPE decoder R3高速化・B S3接続](../docs/research/rpe_decoder_r3_20261113/REPORT.md)：独立R3 decoderの4候補branch選択を実装し、元scalar/vector各tie規則とBのcount/RNG/loss/CIを保全。新12＋旧20の32技術test PASS。人工M12/512trialで旧vector比96.3倍、B batch接続664.6倍、実H4/S3/保存再解析/C/G0。旧vector exact-tieのみ互換fallback、公開照合後STOP。
+
 [H4 PR全13roundの物理誤差契約](../docs/research/h4_pr_physical_error_contract_20261113/REPORT.md)：保存S0/m1/S1＋S2の全signal・bias・allowanceをSOURCE付きで転記。raw↔X/Y・PF/finite-K/state/lawとMinkowskiの適用条件をBへ整理。新8＋既存13の21技術テストPASS、新科学・保存再解析0、十分N/global RMSEは未資格/null。次は別承認のB ideal-law decoder統計、公開照合後STOP。
 
 [H4 PR S1＋S2・全13round nominal結果](../docs/research/h4_pr_s1_s2_rmse_results_20261113/REPORT.md)：固定SOURCE c76ffe5dbでS1＋S2を一回完了。全13roundの経験的nominal各軸64/60/56/52/47/43/38/34/30/25/21/17/12、旧3round不変。保存2mean＋新reference4 action＋高速mean8/対照＋m2直接照合。13技術test PASS、十分N/global RMSEはnull、S3/C/G0、公開照合後STOP。
