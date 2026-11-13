@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/scripts/run_h4_structural_kernel.py", line 16, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/scripts/run_h4_structural_kernel.py", line 13, in main
+    execute_batch(ROOT,a.source,a.out)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/h4_structural_kernel.py", line 487, in execute_batch
+    plan,saved,results,summary=k0(root,source,lambda msg:print(msg,flush=True))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/h4_structural_kernel.py", line 397, in run_K0
+    plan,saved,B=check_inputs(root)
+                 ^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/h4_structural_kernel.py", line 381, in check_inputs
+    official=c.read(root,B_LATEST,c.B_PATH)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/h4_pr_physical_closure.py", line 23, in read
+    def read(root,commit,path):return json.loads(blob(root,commit,path))
+                                                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/r_price_phase1.py", line 36, in blob
+    def blob(root, commit, path): return subprocess.check_output(['git', 'show', commit+':'+path], cwd=root, stderr=subprocess.PIPE)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'show', 'f0c4bb559d2a64dabe88e2eba31ff1dadad6fca8:docs/research/pr_rpe_s0_v2_connection_20261113/metadata01/V2_CONFIGURATION.json']' returned non-zero exit status 128.

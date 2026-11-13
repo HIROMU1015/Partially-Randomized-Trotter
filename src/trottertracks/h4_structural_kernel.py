@@ -22,6 +22,9 @@ from .mean_compiled_price import MeanKernel, MASS_TOLERANCE
 
 BASE='a637ed1b813dc3952339cb05f36beb79168ace23'
 B_LATEST='f0c4bb559d2a64dabe88e2eba31ff1dadad6fca8'
+B_INTAKE='docs/research/abc_d_v2_integration_20261114/PUBLISHED_INTAKE.json'
+B_CONFIGURATION_SOURCE='030f3f548a35d98a88e62e92a35f132e0243a293'
+B_CONFIGURATION_PATH='docs/research/h4_s0_v2_integration_20261113/run01/CONFIGURATION_V2.json'
 COUNTER='8457c443554af5fadaa3ba36f97f6316ca3c5050'
 COUNTER_PATH='src/trottertracks/h4_df10_price_v1.py'
 OLD='docs/research/h4_pr_physical_closure_20261113/'
@@ -378,15 +381,20 @@ def law_metadata_parity(context,model):
 
 def check_inputs(root):
     plan,old=c.check_publication(root)
-    official=c.read(root,B_LATEST,c.B_PATH)
-    if official['id']!=plan['B_V2_configuration_id']:raise ValueError('LATEST_B_CONFIGURATION')
+    intake=c.read(root,B_LATEST,B_INTAKE)
+    raw=c.blob(root,B_CONFIGURATION_SOURCE,B_CONFIGURATION_PATH)
+    key=B_CONFIGURATION_SOURCE+':'+B_CONFIGURATION_PATH
+    if hashlib.sha256(raw).hexdigest()!=intake['source_files'][key]:raise ValueError('LATEST_B_CONFIGURATION_SOURCE_BYTES')
+    official=json.loads(raw)
+    if official['id']!=plan['B_V2_configuration_id'] or official['id']!=intake['configuration_id']:raise ValueError('LATEST_B_CONFIGURATION')
     rows={r['m']:r for r in official['rounds']}
     for request in plan['focus_requests']:
         for field in ('identity','law_binding','physical_candidate'):
             if rows[request['m']][field]!=request[field]:raise ValueError('LATEST_B_REQUEST_BINDING')
     saved=c.read(root,BASE,OLD+'run02/RESULT.json');proof=c.read(root,BASE,OLD+'REDUCTION.json')
     if not all(proof['premises'].values()):raise ValueError('CLOSURE_PREMISES_NOT_CONFIRMED')
-    return plan,saved,dict(commit=B_LATEST,path=c.B_PATH,configuration_id=official['id'])
+    return plan,saved,dict(commit=B_LATEST,path=B_INTAKE,configuration_id=official['id'],
+        configuration_source=dict(commit=B_CONFIGURATION_SOURCE,path=B_CONFIGURATION_PATH,sha256=hashlib.sha256(raw).hexdigest()))
 
 
 def run_K0(root,source,progress):

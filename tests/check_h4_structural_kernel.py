@@ -11,7 +11,7 @@ import sys
 import tempfile
 import types
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock,patch
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'src'))
 import numpy as np
 from trottertracks import h4_structural_kernel as k
@@ -66,6 +66,14 @@ class Tests(unittest.TestCase):
             exact+=weight*(cost+state)
         self.assertLessEqual(Fraction.from_float(lo),exact);self.assertGreaterEqual(Fraction.from_float(hi),exact)
         self.assertLessEqual(lo,value);self.assertLessEqual(value,hi)
+
+    def test_latest_B_metadata_locator_follows_intake_source_without_science(self):
+        with patch.object(k,'Model',side_effect=AssertionError('No physical K0')):
+            plan,saved,binding=k.check_inputs(ROOT)
+        self.assertEqual(binding['configuration_id'],plan['B_V2_configuration_id'])
+        self.assertEqual(binding['configuration_source']['commit'],k.B_CONFIGURATION_SOURCE)
+        self.assertEqual(binding['configuration_source']['sha256'],'22a1bd1af8704006568c545eb8bcbce5bd476202ad59aaeaf79f50850815f943')
+        self.assertEqual([v['R_outer'] for v in saved['laws']],[2,128])
 
     def test_nominal_probabilities_are_not_repaired(self):
         probs=[.1,.2,.7]

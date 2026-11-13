@@ -1,0 +1,9 @@
+# 入力参照エラーと技術修正（科学再実行なし）
+
+初回SOURCE `0f7d65d5f20de26c449b33c8da9d110188245808`のrun01は、B最新commit内にA側configuration fileがあると誤って仮定したため、Git固定入力の読取りで停止した。B f0c4bb55は成果を複製せず、`PUBLISHED_INTAKE.json:source_files`から固定configurationを参照している。
+
+元K0.jsonのUNKNOWN・STOP.json・EXECUTION.txt・実行SOURCEを保全する。物理descriptor復元より前のエラーなので、実K0 transition/reward/parity/確率伝播は未開始、K1は未実行。既存閉包論証を反証する結果ではない。
+
+技術修正は、B最新のintakeから、B正本`030f3f548a35d98a88e62e92a35f132e0243a293:docs/research/h4_s0_v2_integration_20261113/run01/CONFIGURATION_V2.json`を読むことだけ。intakeに保存されたSHA256と元bytes、canonical ID・元A/C identity/lawを照合する。候補やlaw/演算/精度契約を変えない。新しいmetadata testはModel呼出しを例外化して、このlocatorを実際に検査する。
+
+指示§4のUNKNOWN時mandatory STOPと本実行計画を維持し、修正版の科学実行はしない。修正版SOURCEと新run02出力先を明示した再実行案だけを公開する。再開にはこのSTOPを踏まえたユーザーの明示指示が必要で、新grant/承認証明は不要。
