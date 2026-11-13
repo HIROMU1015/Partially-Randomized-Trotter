@@ -1,5 +1,7 @@
 # 標準Yoshida4 Full PF・Full-H RTE明示layoutの物理request接続（Codex D、2026-11-13）
 
+**更新（2026-11-13）**：B f0c4bb55への最終接続と保存価格17件のreceipt照合は[d_full_pf_full_h_v2_final_receipts_20261113](../d_full_pf_full_h_v2_final_receipts_20261113/REPORT.md)。
+
 前段のD adapter（`eecaa803`）を拡張した。
 
 - **物理schedule層**を先に作り、公開済みのB V2が生成できる範囲だけをV2 configurationへ結合する。

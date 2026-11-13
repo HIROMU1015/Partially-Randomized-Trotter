@@ -1,6 +1,12 @@
 # scripts 索引
 
+[`trace_full_pf_price_receipts.py`](trace_full_pf_price_receipts.py)：保存Full PF T=0.8再利用価格のreceipt照合とB V2結合例を[fresh dirへ出力](../docs/research/d_full_pf_full_h_v2_final_receipts_20261113/REPORT.md)。pinned Git・private読取のみ、build/compile/RZ再計数なし。
+
 [Full baseline request出力](../docs/research/d_full_pf_full_h_rte_v2_paths_20261113/HANDOFF.md)：report_full_baseline_v2_requests.pyはSOURCE_CATALOGと人工schema例をfresh dirへ出力。科学実行optionなし。
+
+[`intake_abc_s0_published.py`](intake_abc_s0_published.py)：B保存canonicalとA/C公開packetの[metadata専用受入](../docs/research/abc_d_v2_integration_20261114/HANDOFF.md)。旧S0 producerを起動せず、既存validator/plannerを再利用。新規出力file専用、科学/compile/G optionなし。
+
+[`prepare_h4_s0_v2.py`](prepare_h4_s0_v2.py)：固定A S0 metadataだけをcanonical V2/26軸planner/C requestへ接続。[HANDOFF](../docs/research/h4_s0_v2_integration_20261113/HANDOFF.md)。fresh出力directory専用、新N packet・signal/N/C/compile/G生成なし。
 
 [`plan_pr_rpe_rmse_evidence.py`](plan_pr_rpe_rmse_evidence.py)：ユーザー固定の有限V2 menu JSONから不足N/C/SOURCE・誤差契約を列挙する[metadata CLI](../docs/research/pr_rpe_evidence_preparation_20261113/HANDOFF.md)。候補生成・provider/compile/fit/G起動なし、fresh出力のみ。
 

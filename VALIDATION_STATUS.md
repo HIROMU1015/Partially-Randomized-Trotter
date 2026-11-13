@@ -1,10 +1,16 @@
 # Validation status
 
+[B最新V2接続・価格receipt照合](docs/research/d_full_pf_full_h_v2_final_receipts_20261113/REPORT.md)：D adapter 17＋receipt 8＋inventory 12＋B公開93（結合12・B版D14・controller17・4方式14・統合12・C12・evidence12、8次検証1 method除外）＋回帰22＝152 PASS。V2 IDはB公開moduleと一致、17件はresult SHA/pilot group/fingerprint/binding/SOURCE本文で照合。RZ再計数・compileなし。
+
 [Full PF保存成果inventory](docs/research/d_full_pf_saved_evidence_coverage_20261113/REPORT.md)：新12（DF10/DF12、Full/truncated、4th/m5、異SOURCE、signal/reference/価格の分離、X/Y、compiler/policy、MODEL/DIRECT、FAIL保持、V2 null結合、非起動・copy、bytes保全）＋D16＋回帰52＝80 PASS。保存値は再計算していない。
 
 [D interface更新](docs/research/d_full_baseline_interface_update_20261113/REPORT.md)：D16（4th/m5分離・係数順序・全rank・B0拒否・κなし・one-body・B3・scalar・q×R・grouping・A/C一致・B整合probe・非起動）＋B回帰80＝96 PASS。B controllerは030f3f548でも不変。
 
 [Full PF・Full-H RTE V2 adapter](docs/research/d_full_pf_full_h_rte_v2_paths_20261113/REPORT.md)：新14（Full/truncated、B0/p7、one-body・B3・scalar・公式/順序・grouping・DF/Pauli・binding・A/C同一候補・κ/K・null・非起動・SOURCE）＋B回帰80＝94 PASS。保存値は転記のみ、公式・κ・layoutは未採択。
+
+[A/C/D V2接続・Yoshida4/明示Full-H layout](docs/research/abc_d_v2_integration_20261114/REPORT.md)：新結合12＋D14＋controller17/4方式14/統合12/C12/planner12＝93技術test PASS。公開A/Cの正式照合、nominal/null、SOURCE/law/profile、全H one-body、κなしgroupingの非同一性を確認。8次新接続・検証と旧S0 workflow再実行なし。実N/C/G・科学的baseline採択なし、公開後STOP。
+
+[H4 S0 V2統合](docs/research/h4_s0_v2_integration_20261113/REPORT.md)：新10＋C12/planner13/4方式14/統合12＝61技術test PASS。13round物理一致、原nominal/null/SOURCE、C1有限cohort/false、26軸不足を保持。科学資格はUNQUALIFIED、実G/科学計算0、公開後mandatory STOP。
 
 [4方式RMSE有限menuの証拠準備](docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)：新13＋method coverage14/controller17/統合12＝56技術test PASS。V2全identity/SOURCE/誤差契約・局所診断/平均Cの区別・欠測と部分集合を確認。実menu未確定、実science/Gなし、公開後STOP。
 

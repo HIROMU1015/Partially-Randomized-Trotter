@@ -1,10 +1,16 @@
 # プロジェクト案内
 
+[Full PF・Full-H RTEのB最新V2接続と保存価格receipt照合（Codex D）](docs/research/d_full_pf_full_h_v2_final_receipts_20261113/REPORT.md)（2026-11-13）：B f0c4bb55をmergeし、標準Yoshida4（B ID `PF_STANDARD_YOSHIDA4_BINARY64_V1`＝D旧label、同一weights）とκなし明示Full-H layoutをV2へ結合（pending解消、B公開moduleとV2 ID一致）。保存light H4 q16/R16/K4/T0.8の物理ID一致。CONDITIONAL価格17件は元pf_common native結果12・M5 pilot結果5へ到達しX/Y全件EXACT（保存価格EXACT 73・欠測63）。152技術test PASS、科学計算・compile・8次0、公開後STOP。
+
 [Full PF保存成果のSOURCE照合・価格coverage（Codex D）](docs/research/d_full_pf_saved_evidence_coverage_20261113/REPORT.md)（2026-11-13）：長時間carrier（155529e20、記録SHA一致）とpf_commonを照合。H4 DF10/H6 DF19のFull PF 136候補全てにsignal/referenceあり（EXACT 134）、X/Y価格は73候補（EXACT 56・要確認17）、価格欠測63。grid外roundは全欠測。80技術test PASS、新科学計算・compile 0、公開後STOP。
 
 [標準Yoshida4・Full-H明示layoutの物理request（Codex D）](docs/research/d_full_baseline_interface_update_20261113/REPORT.md)（2026-11-13）：物理schedule層を追加。2nd/m5_bestはB V2へ結合し全round照合、標準4thとκなし明示layoutはV2 ID null（B interface待ち）で物理/A/C requestを完成。96技術test PASS、8次・科学計算0、公開後STOP。
 
 [Full PF・DF Full-H RTEのV2物理request（Codex D）](docs/research/d_full_pf_full_h_rte_v2_paths_20261113/REPORT.md)（2026-11-13）：既存PF公式（2nd/標準4th/m5_best/8次）と`prepare_full_h`のSOURCEを整理し、B V2へFull PF・Full-H RTE configurationとA/C requestを渡す薄いadapterを追加。B3・truncated・tail-only λ・grouping無視を拒否。94技術test PASS、科学計算0、公開後STOP。
+
+[A/C/D V2接続・4次PF/明示Full-H RTE](docs/research/abc_d_v2_integration_20261114/REPORT.md)／[D interface](docs/research/abc_d_v2_integration_20261114/INTERFACE.md)／[HANDOFF](docs/research/abc_d_v2_integration_20261114/HANDOFF.md)：A75b5の公開V2 packet/Cd458の価格requestをB保存正本へ正式照合。Yoshida4とm5、κ付き/κなしlayout、D外部physical bridgeを区別し93技術test PASS。nominal/null/C1 falseを保持、科学的baseline採択・実N/C/Gなし、公開後STOP。
+
+[H4 S0固定条件のV2接続](docs/research/h4_s0_v2_integration_20261113/REPORT.md)：A S0のexact inputsからPR1構成/13roundをcanonical生成し、元V1物理metadataと一致。nominal m0=64/m6=38だけを診断保全、十分N/global bound/適格Cは全26軸未取得。新10＋関連51＝61技術test、実science/G0、公開後STOP。
 
 [4方式RMSE有限menuの不足証拠plan](docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)（2026-11-13）：既存V2 assess/coverageを用い各configuration/round/axisのN/C/SOURCE・全体RMSE不足をA/Cへ対応付ける。新13＋回帰43＝56技術test、実menu未確定・G/winner null、科学計算0、公開後STOP。
 

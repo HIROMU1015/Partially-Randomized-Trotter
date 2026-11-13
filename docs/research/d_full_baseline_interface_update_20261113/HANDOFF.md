@@ -1,5 +1,7 @@
 # 標準Yoshida4・Full-H明示layoutのrequest：A/B/Cへの引渡し
 
+**更新（2026-11-13）**：B f0c4bb55への最終接続と保存価格17件のreceipt照合は[d_full_pf_full_h_v2_final_receipts_20261113](../d_full_pf_full_h_v2_final_receipts_20261113/REPORT.md)。
+
 [REPORT](REPORT.md)。adapterは`src/trottertracks/full_baseline_v2_requests.py`（branch `codex/d-full-pf-full-h-rte-v2-paths-20261113`）。このファイルは前段の[HANDOFF](../d_full_pf_full_h_rte_v2_paths_20261113/HANDOFF.md)を置き換える。前段との主な違いは2点：
 
 - Full-H RTEはκを受け付けない。

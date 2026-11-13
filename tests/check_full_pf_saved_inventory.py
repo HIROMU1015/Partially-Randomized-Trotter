@@ -119,12 +119,14 @@ class InventoryTests(unittest.TestCase):
         k = deepcopy(self.k); k['files']['signal_records.json.gz'][r['physical_candidate_id']]['signal'].pop('allowance_evidence')
         self.assertNotEqual(I.classify(r['physical_candidate'], k)['signal']['status'], I.EXACT)
 
-    def test_10_V2_IDs_stay_null_for_4th_and_join_by_physical_ID(self):
+    def test_10_V2_IDs_from_B_for_all_formulas_and_join_by_physical_ID(self):
         from check_full_baseline_v2_requests import pf_spec
-        for formula, expect_v2 in (('2nd', True), ('4th', False)):
+        for formula in ('2nd', '4th', '4th(m5_best)'):
             packet = D.bind(pf_spec(formula, M=4))
             joined = I.for_packet(packet, self.cov)
-            self.assertEqual(all(j['V2_candidate_id'] is not None for j in joined), expect_v2)
+            self.assertTrue(all(j['V2_candidate_id'] == v['candidate']['id'] and j['b_commit'] == D.B_LATEST
+                                for j, v in zip(joined, packet['v2_configuration']['rounds'])))
+            self.assertEqual({j['V2_formula_id'] for j in joined}, {D.FORMULAS[formula]['formula_id']})
             m3 = joined[3]
             self.assertEqual(m3['physical_candidate_id'], self.pick(system='H4', formula=formula, T=.8, q_PF=8)['physical_candidate_id'])
             self.assertEqual(joined[0]['group'], 'OUTSIDE_SAVED_GRID_ALL_MISSING')

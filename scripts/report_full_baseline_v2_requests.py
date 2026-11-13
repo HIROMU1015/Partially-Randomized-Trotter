@@ -2,7 +2,7 @@
 """Write the Full PF / DF Full-H RTE SOURCE catalog and an artificial request example.
 
 Metadata only: pinned Git text and the published light-study summary are read.
-The example uses a synthetic RMSE policy and a synthetic kappa; it is a schema
+The example uses a synthetic RMSE policy (Full-H RTE without kappa); it is a schema
 illustration, not a menu, adopted condition or scientific request.
 """
 import argparse
@@ -27,6 +27,7 @@ def artificial_example():
     def show(packet):
         out = D.requests(packet)
         return dict(v2_status=packet['v2_status'], identity_map=packet['identity_map'], b_interface=packet['b_interface'],
+                    resolved_pending=packet['resolved_pending'],
                     spec=packet['physical']['spec'], requests=dict(out, rounds=[r for r in out['rounds'] if r['m'] in (0, 3)]))
     return dict(status='ARTIFICIAL_SCHEMA_EXAMPLE_NOT_A_MENU_OR_ADOPTED_CONDITION',
         note='Synthetic RMSE policy, h=0.1, M=3, delta=0.1, K=4 and layout q16/R16 at m3 only; no kappa. '

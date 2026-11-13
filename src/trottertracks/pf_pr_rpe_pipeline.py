@@ -79,10 +79,13 @@ def structure(c):
     """Declared saved recipe, not a compiled-price or action qualification."""
     if c['formula'] == '2nd':
         weights, formula_id = [1.], 'S2'
-    elif c['formula'] == '4th(m5_best)':
+    elif c['formula'] in ('4th', '4th(m5_best)'):
+        if c['formula'] == '4th' and arm(c) != 'PF':
+            raise ValueError('Standard Yoshida4 extension covers deterministic PF only')
         # Read the existing fixed binary64 schedule through its passive module.
         schedule=_schedule()
-        weights, formula_id = list(schedule.weights(c['formula'])), schedule.FORMULA_ID
+        weights = list(schedule.weights(c['formula']))
+        formula_id = ('PF_STANDARD_YOSHIDA4_BINARY64_V1' if c['formula'] == '4th' else schedule.FORMULA_ID)
     else:
         raise ValueError('Supply a source-bound structure for other formulas')
     if arm(c) == 'PF':

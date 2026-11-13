@@ -1,5 +1,7 @@
 # Full PF保存成果のSOURCE照合とcompiled価格coverage（Codex D、2026-11-13）
 
+**更新（2026-11-13）**：B f0c4bb55への最終接続と保存価格17件のreceipt照合は[d_full_pf_full_h_v2_final_receipts_20261113](../d_full_pf_full_h_v2_final_receipts_20261113/REPORT.md)。
+
 H4 DF10・H6 DF19のFull PF（2nd・標準4th・m5_best）について、過去に保存されたsignal、reference、数値証拠、X/Yのcompiled価格を、SOURCE付きで照合した。
 
 **主な結論**

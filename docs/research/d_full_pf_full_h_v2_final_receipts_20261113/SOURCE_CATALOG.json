@@ -1,0 +1,494 @@
+{
+  "formulas": {
+    "2nd": {
+      "family": "S2",
+      "formula_id": "S2",
+      "coefficient_source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/h46_m5_plan.py",
+        "functions": [
+          "weights",
+          "schedule",
+          "allocation"
+        ]
+      },
+      "negative_time": false,
+      "h46_signal_path": true,
+      "h46_native_path": true,
+      "b_v2_generate": true,
+      "d_request": true,
+      "signed_weights": [
+        1.0
+      ],
+      "v2_status": "B_V2_SUPPORTED"
+    },
+    "4th": {
+      "family": "STANDARD_YOSHIDA4",
+      "formula_id": "PF_STANDARD_YOSHIDA4_BINARY64_V1",
+      "physical_formula_label": "YOSHIDA4_STANDARD_H46_M5_PLAN_BINARY64",
+      "formula_id_source": "b_formula_id",
+      "coefficient_source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/h46_m5_plan.py",
+        "functions": [
+          "weights",
+          "schedule",
+          "allocation"
+        ]
+      },
+      "negative_time": true,
+      "h46_signal_path": true,
+      "h46_native_path": true,
+      "b_v2_generate": true,
+      "d_request": true,
+      "not_alias_of": "4th(m5_best)",
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "v2_status": "B_V2_SUPPORTED"
+    },
+    "4th(m5_best)": {
+      "family": "M5_BEST_BINARY64",
+      "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+      "coefficient_source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/h46_m5_plan.py",
+        "functions": [
+          "weights",
+          "schedule",
+          "allocation"
+        ]
+      },
+      "negative_time": true,
+      "h46_signal_path": true,
+      "h46_native_path": true,
+      "b_v2_generate": true,
+      "d_request": true,
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "v2_status": "B_V2_SUPPORTED"
+    },
+    "8th(Morales)": {
+      "family": "MORALES8",
+      "coefficient_source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/product_formula.py",
+        "functions": [
+          "_get_w_list"
+        ]
+      },
+      "negative_time": true,
+      "h46_signal_path": false,
+      "h46_native_path": false,
+      "b_v2_generate": false,
+      "d_request": false,
+      "signed_weights": null,
+      "v2_status": "OUT_OF_SCOPE_NO_DF_CONTROLLED_FULL_WRAPPER_PATH"
+    },
+    "8th(Yoshida)": {
+      "family": "YOSHIDA8",
+      "coefficient_source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/product_formula.py",
+        "functions": [
+          "_get_w_list"
+        ]
+      },
+      "negative_time": true,
+      "h46_signal_path": false,
+      "h46_native_path": false,
+      "b_v2_generate": false,
+      "d_request": false,
+      "signed_weights": null,
+      "v2_status": "OUT_OF_SCOPE_NO_DF_CONTROLLED_FULL_WRAPPER_PATH"
+    }
+  },
+  "sources": {
+    "pf_weights": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/h46_m5_plan.py",
+      "functions": [
+        "weights",
+        "schedule",
+        "allocation"
+      ]
+    },
+    "pf_signal": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/h46_long_time_signal.py",
+      "functions": [
+        "candidates",
+        "cid",
+        "context",
+        "evolve_batch"
+      ]
+    },
+    "pf_native": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/h46_long_time_native.py",
+      "functions": [
+        "compose",
+        "cost_trial"
+      ]
+    },
+    "pf_native_lowering": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py",
+      "functions": [
+        "build_deterministic_native",
+        "build_partial_native"
+      ]
+    },
+    "pf_common_cost": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/pf_common_run_native.py",
+      "functions": [
+        "cost_one"
+      ]
+    },
+    "pf_higher_order": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/product_formula.py",
+      "functions": [
+        "_get_w_list"
+      ]
+    },
+    "pf_decomposition": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/pf_decomposition.py",
+      "functions": [
+        "iter_pf_steps"
+      ]
+    },
+    "b_formula_id": {
+      "commit": "f0c4bb559d2a64dabe88e2eba31ff1dadad6fca8",
+      "path": "src/trottertracks/pf_pr_rpe_pipeline.py",
+      "functions": [
+        "structure"
+      ]
+    },
+    "full_h_prepare": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "scripts/h46_full_h_pure_rte.py",
+      "functions": [
+        "prepare_full_h",
+        "context",
+        "validate"
+      ]
+    },
+    "full_h_saved_summary": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/input_and_validation_summary.json"
+    },
+    "full_h_saved_selection": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/selection.json"
+    },
+    "full_h_saved_prices": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/price_trials.json"
+    },
+    "full_h_t20": {
+      "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+      "path": "scripts/h46_full_h_t20_opt.py",
+      "functions": [
+        "evaluate"
+      ],
+      "priced_equivalence_claim": false
+    },
+    "rte_law": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/rte.py",
+      "functions": [
+        "finite_rte_distribution"
+      ]
+    },
+    "pauli_hamiltonian": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/pauli_signal_adapter.py",
+      "functions": [
+        "PauliHamiltonian"
+      ]
+    },
+    "pauli_law": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/h4_pauli_pr_search.py",
+      "functions": [
+        "law_descriptor",
+        "central_trajectory"
+      ]
+    },
+    "pauli_mean": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/h4_pauli_pr_mean.py"
+    },
+    "pauli_price": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/pauli_h2_h6_study.py",
+      "functions": [
+        "initial",
+        "price_job"
+      ]
+    }
+  },
+  "grid": {
+    "rank": {
+      "H4": 10,
+      "H6": 19
+    },
+    "q": {
+      "0.8": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ],
+      "1.2": [
+        1,
+        2,
+        4,
+        6,
+        8,
+        16
+      ],
+      "1.6": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ],
+      "2.0": [
+        1,
+        2,
+        4,
+        8,
+        10,
+        16
+      ]
+    },
+    "formulas": [
+      "2nd",
+      "4th",
+      "4th(m5_best)"
+    ]
+  },
+  "pauli": {
+    "representation": "PAULI_JW",
+    "status": "SOURCE_ONLY_NOT_CONNECTED_BY_D",
+    "full_h_rule": "L_D=0 randomizes every non-identity Pauli term; the identity constant is a global phase",
+    "law": "C_EFFECTIVE_GRID_LAW_EXACT_RETAINED_PRODUCTS_NATIVE_STEP_SCALAR (53-bit uniform grid); not the ideal law",
+    "sources": {
+      "pauli_hamiltonian": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/pauli_signal_adapter.py",
+        "functions": [
+          "PauliHamiltonian"
+        ]
+      },
+      "pauli_law": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/h4_pauli_pr_search.py",
+        "functions": [
+          "law_descriptor",
+          "central_trajectory"
+        ]
+      },
+      "pauli_mean": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/h4_pauli_pr_mean.py"
+      },
+      "pauli_price": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "scripts/pauli_h2_h6_study.py",
+        "functions": [
+          "initial",
+          "price_job"
+        ]
+      }
+    },
+    "same_numerical_H_state_as_DF": false
+  },
+  "b_interface": {
+    "commit": "f0c4bb559d2a64dabe88e2eba31ff1dadad6fca8",
+    "path": "docs/research/abc_d_v2_integration_20261114/INTERFACE.md",
+    "pre_publication": "575598983059fdf5238da877f62b40250fd9eae9"
+  },
+  "resolved_pending": {
+    "PENDING_B_FORMULA_INTERFACE": {
+      "resolved_by": "f0c4bb559d2a64dabe88e2eba31ff1dadad6fca8",
+      "interface": {
+        "commit": "f0c4bb559d2a64dabe88e2eba31ff1dadad6fca8",
+        "path": "docs/research/abc_d_v2_integration_20261114/INTERFACE.md",
+        "pre_publication": "575598983059fdf5238da877f62b40250fd9eae9"
+      },
+      "previous_D_commit": "0536646b843781a0e0fb6629473526c05f16a30e",
+      "condition": "B pf_pr_rpe_pipeline.structure/generate accept method PF formula '4th' with the pinned h46_m5_plan.weights('4th') binary64 tuple and formula_id PF_STANDARD_YOSHIDA4_BINARY64_V1"
+    },
+    "PENDING_B_KAPPA_FREE_EXPLICIT_LAYOUT_INTERFACE": {
+      "resolved_by": "f0c4bb559d2a64dabe88e2eba31ff1dadad6fca8",
+      "interface": {
+        "commit": "f0c4bb559d2a64dabe88e2eba31ff1dadad6fca8",
+        "path": "docs/research/abc_d_v2_integration_20261114/INTERFACE.md",
+        "pre_publication": "575598983059fdf5238da877f62b40250fd9eae9"
+      },
+      "previous_D_commit": "0536646b843781a0e0fb6629473526c05f16a30e",
+      "condition": "B generate accepts FULL_H_RTE with kappa=None under kind FULL_H_EXPLICIT_LAYOUT_NO_KAPPA_V1 and checks the D q x R layout, K, scalar, preparation and priced_equivalence_claim=false"
+    }
+  },
+  "science_calls": 0,
+  "formula_adopted": false,
+  "saved_full_h_preparation": {
+    "H4": {
+      "representation": "DF",
+      "source": {
+        "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+        "path": "scripts/h46_full_h_pure_rte.py",
+        "functions": [
+          "prepare_full_h",
+          "context",
+          "validate"
+        ],
+        "function": "prepare_full_h"
+      },
+      "one_body_policy": "RANDOMIZED",
+      "one_body_components": 8,
+      "deterministic_blocks": 0,
+      "randomized_fragments": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "all_fragments": 10,
+      "lambda_R": 21.02794414280327,
+      "one_body_lambda_R": 7.30424549435506,
+      "lambda_source": {
+        "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+        "path": "artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/input_and_validation_summary.json",
+        "field": "H4.lambda_R"
+      },
+      "normalization_policy": "full_h_df_plus_one_body_exact_Z",
+      "scalar": {
+        "constant": 2.29310124732,
+        "extracted_identity": -2.6245790607368162,
+        "total": -0.33147781341681615,
+        "application": "ONCE_AT_TOTAL_T",
+        "identity_components_randomized": 0
+      },
+      "preparation_hash": "0e3989e739d0e17a5d7af0fe809bd7c10ee765f09c934fe6ebb1f0e8b5c1046d",
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4"
+      },
+      "components": 368,
+      "transcribed_not_recomputed": true
+    },
+    "H6": {
+      "representation": "DF",
+      "source": {
+        "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+        "path": "scripts/h46_full_h_pure_rte.py",
+        "functions": [
+          "prepare_full_h",
+          "context",
+          "validate"
+        ],
+        "function": "prepare_full_h"
+      },
+      "one_body_policy": "RANDOMIZED",
+      "one_body_components": 12,
+      "deterministic_blocks": 0,
+      "randomized_fragments": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "all_fragments": 19,
+      "lambda_R": 41.22791519417388,
+      "one_body_lambda_R": 13.17927638777401,
+      "lambda_source": {
+        "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+        "path": "artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/input_and_validation_summary.json",
+        "field": "H6.lambda_R"
+      },
+      "normalization_policy": "full_h_df_plus_one_body_exact_Z",
+      "scalar": {
+        "constant": 4.603841735004002,
+        "extracted_identity": -4.928683271094016,
+        "total": -0.3248415360900143,
+        "application": "ONCE_AT_TOTAL_T",
+        "identity_components_randomized": 0
+      },
+      "preparation_hash": "87c245ddf752b83fd17424cf668b5407276a62f8a9e6c1e3e96c99f5b0bf7187",
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 19,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H6_TOL_ONLY_DF19",
+        "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+        "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+        "system": "H6"
+      },
+      "components": 1494,
+      "transcribed_not_recomputed": true
+    }
+  }
+}

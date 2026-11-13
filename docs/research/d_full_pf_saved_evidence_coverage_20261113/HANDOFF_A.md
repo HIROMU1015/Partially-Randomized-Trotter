@@ -1,5 +1,7 @@
 # Codex A向け：Full PFの保存signal・referenceとN/RMSEに必要な追加情報
 
+**更新（2026-11-13）**：B f0c4bb55への最終接続と保存価格17件のreceipt照合は[d_full_pf_full_h_v2_final_receipts_20261113](../d_full_pf_full_h_v2_final_receipts_20261113/REPORT.md)。
+
 [REPORT](REPORT.md)／[COVERAGE.csv](COVERAGE.csv)（`signal_*`、`reference_*`、`independent_pair`、`numerical_endpoints`の列）。
 
 ## 1. 再利用できる情報（技術的な再利用候補。科学的な資格は未確定）

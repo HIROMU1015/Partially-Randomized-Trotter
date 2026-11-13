@@ -1,6 +1,10 @@
 # 研究別SOURCE
 
+[Full PF価格receipt照合](../../docs/research/d_full_pf_full_h_v2_final_receipts_20261113/REPORT.md)：full_pf_price_receipts（load/source_checks/trace/update）。full_baseline_v2_requestsはB f0c4bb55のgenerate/requests/validate_requestsと物理schedule・bindを統合。
+
 [Full PF・Full-H RTE V2 request](../../docs/research/d_full_pf_full_h_rte_v2_paths_20261113/REPORT.md)：full_baseline_v2_requests（full_pf_spec/full_h_rte_spec/layout_mapper/requests/check_full_h_preparation）。B controller・A/C moduleは不変。
+
+[h4_s0_v2_intake](../../docs/research/h4_s0_v2_integration_20261113/HANDOFF.md)：固定S0のcanonical metadata・V1/V2照合・診断view・将来A V2 packetの検査。bv2_mean_priceはC1dbからbyte一致取込み。科学leaf/価格predictor・Gは呼ばない。
 
 [pr_rpe_rmse_evidence](../../docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)：供給V2 finite menuから全schedule/axisの不足証拠・保存再利用条件・A/C next_workを出す薄いadapter。既存controller/providerは不変、実G/最適化なし。
 

@@ -219,7 +219,9 @@ def _best(sources, axis):
 
 def classify(c, k):
     reasons = check_physical(c, k)
-    row = dict(system=c['system'], formula=c['formula'], formula_id=D.FORMULAS.get(c['formula'], {}).get('formula_id'),
+    fact = D.FORMULAS.get(c['formula'], {})
+    row = dict(system=c['system'], formula=c['formula'], formula_id=fact.get('formula_id'),
+               physical_formula_label=fact.get('physical_formula_label', fact.get('formula_id')),
                T=c['T'], q_PF=c['q'], actual_width=c['delta'], prefix=c['prefix'], scope='FULL_H_ONE_BODY_PLUS_ALL_FRAGMENTS',
                physical_candidate_id=c['id'], physical_candidate=deepcopy(c), physical_reasons=reasons,
                binding=dict(status=EXACT if not reasons else MISMATCH, source=dict(commit=D.BASE, path=LONG + 'scientific_provenance.json')))
@@ -280,6 +282,7 @@ def for_packet(packet, cov):
         r = rows.get(phys['physical_candidate_id'])
         out.append(dict(m=phys['m'], physical_candidate_id=phys['physical_candidate_id'],
             V2_configuration_id=mapping['V2_configuration_id'], V2_candidate_id=mapping['V2_candidate_id'],
+            V2_formula_id=mapping.get('V2_formula_id'), V2_resolution=mapping.get('V2_resolution'), b_commit=mapping.get('b_commit'),
             saved=None if r is None else dict(group=r['group'], signal=r['signal']['status'], reference=r['reference']['status'],
                                               X=r['X'], Y=r['Y']),
             group=r['group'] if r else 'OUTSIDE_SAVED_GRID_ALL_MISSING'))

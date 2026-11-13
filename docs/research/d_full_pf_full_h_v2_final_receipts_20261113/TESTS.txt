@@ -1,0 +1,268 @@
+Technical tests, 2026-11-13 (Codex D). Python 3.11 venv (numpy 1.26.4, qiskit 1.3.0 installed but not imported by these suites).
+Metadata and artificial tests only: no scientific runner, signal/N/RMSE, sampling, build/compile/transpile, RZ recount, fit or real G.
+Total: 152 PASS, 0 failures, 0 errors.
+  D: check_full_baseline_v2_requests 17, check_full_pf_price_receipts 8, check_full_pf_saved_inventory 12
+  B published (f0c4bb55): check_abc_d_v2_integration 12, B copy of check_full_baseline_v2_requests 14, check_pr_rpe_rmse_controller 17,
+    check_pr_rpe_method_coverage 14, check_pr_rpe_rmse_integration 12, check_bv2_mean_price 12, check_pr_rpe_rmse_evidence 12
+    (EvidenceTests.test_explicit_menu_sources_cohorts_and_empty_inputs excluded: it contains eighth-order validation; same exclusion as B)
+  Related regression: check_h6_df19_price_provider 10, check_pf_pr_rpe_pipeline 12
+B's copy of tests/check_full_baseline_v2_requests.py was read from git blob f0c4bb55 and run against this worktree's module:
+    """Run B's pinned copy of tests/check_full_baseline_v2_requests.py against this worktree."""
+    import subprocess, sys, types, unittest
+    from pathlib import Path
+    root = Path(sys.argv[1]).resolve(); commit = sys.argv[2]
+    src = subprocess.check_output(['git', 'show', commit + ':tests/check_full_baseline_v2_requests.py'], cwd=root).decode()
+    mod = types.ModuleType('b_pinned_full_baseline_tests'); mod.__file__ = str(root / 'tests' / '_b_pinned_full_baseline_tests.py')
+    exec(compile(src, 'B_pinned:tests/check_full_baseline_v2_requests.py', 'exec'), mod.__dict__)
+    suite = unittest.defaultTestLoader.loadTestsFromModule(mod)
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    sys.exit(not result.wasSuccessful())
+Mutation checks (guard disabled -> named test fails): receipt fingerprint check, result SHA check, pilot group check (receipts test_02/03); B formula_id round check (adapter test_12).
+
+===== check_full_baseline_v2_requests
+test_01_standard_4th_maps_to_B_canonical_ID_and_stays_distinct_from_m5 (__main__.FullBaselineTests.test_01_standard_4th_maps_to_B_canonical_ID_and_stays_distinct_from_m5) ... ok
+test_02_standard_4th_signed_weights_order_and_negative_time (__main__.FullBaselineTests.test_02_standard_4th_signed_weights_order_and_negative_time) ... ok
+test_03_full_PF_keeps_one_body_and_all_fragments (__main__.FullBaselineTests.test_03_full_PF_keeps_one_body_and_all_fragments) ... ok
+test_04_H4_B0_prefix7_is_not_full_PF (__main__.FullBaselineTests.test_04_H4_B0_prefix7_is_not_full_PF) ... ok
+test_05_full_PF_has_no_kappa_K_or_layout (__main__.FullBaselineTests.test_05_full_PF_has_no_kappa_K_or_layout) ... ok
+test_06_full_H_RTE_randomizes_every_one_body_component (__main__.FullBaselineTests.test_06_full_H_RTE_randomizes_every_one_body_component) ... ok
+test_07_DF_B3_is_not_full_H_RTE (__main__.FullBaselineTests.test_07_DF_B3_is_not_full_H_RTE) ... ok
+test_08_identity_scalar_is_not_double_counted (__main__.FullBaselineTests.test_08_identity_scalar_is_not_double_counted) ... ok
+test_09_kappa_free_layout_keeps_q_by_R_and_is_not_a_kappa_schedule (__main__.FullBaselineTests.test_09_kappa_free_layout_keeps_q_by_R_and_is_not_a_kappa_schedule) ... ok
+test_10_same_event_count_different_grouping_are_different_candidates (__main__.FullBaselineTests.test_10_same_event_count_different_grouping_are_different_candidates) ... ok
+test_11_A_and_C_requests_point_to_one_physical_candidate (__main__.FullBaselineTests.test_11_A_and_C_requests_point_to_one_physical_candidate) ... ok
+test_12_V2_IDs_are_those_of_the_published_B_interface (__main__.FullBaselineTests.test_12_V2_IDs_are_those_of_the_published_B_interface) ... ok
+test_13_no_scientific_runner_or_compile_is_started (__main__.FullBaselineTests.test_13_no_scientific_runner_or_compile_is_started) ... ok
+test_14_missing_N_C_stay_null (__main__.FullBaselineTests.test_14_missing_N_C_stay_null) ... ok
+test_15_DF_Pauli_and_bindings_are_not_mixed (__main__.FullBaselineTests.test_15_DF_Pauli_and_bindings_are_not_mixed) ... ok
+test_16_pinned_sources_exist (__main__.FullBaselineTests.test_16_pinned_sources_exist) ... ok
+test_17_eighth_order_PF_is_not_connected (__main__.FullBaselineTests.test_17_eighth_order_PF_is_not_connected) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 6.612s
+
+OK
+
+===== check_full_pf_price_receipts
+test_01_seventeen_conditional_prices_trace_to_their_saved_results (__main__.ReceiptTests.test_01_seventeen_conditional_prices_trace_to_their_saved_results) ... ok
+test_02_X_and_Y_are_judged_separately (__main__.ReceiptTests.test_02_X_and_Y_are_judged_separately) ... ok
+test_03_conditional_is_not_promoted_without_a_candidate_proof (__main__.ReceiptTests.test_03_conditional_is_not_promoted_without_a_candidate_proof) ... ok
+test_04_binding_wrapper_compiler_and_SOURCE_are_required (__main__.ReceiptTests.test_04_binding_wrapper_compiler_and_SOURCE_are_required) ... ok
+test_05_other_EXACT_and_missing_rows_are_unchanged (__main__.ReceiptTests.test_05_other_EXACT_and_missing_rows_are_unchanged) ... ok
+test_06_saved_MODEL_is_never_a_direct_price (__main__.ReceiptTests.test_06_saved_MODEL_is_never_a_direct_price) ... ok
+test_07_V2_join_keeps_physical_and_V2_identity_separate (__main__.ReceiptTests.test_07_V2_join_keeps_physical_and_V2_identity_separate) ... ok
+test_08_no_science_compile_or_recount_and_bytes_preserved (__main__.ReceiptTests.test_08_no_science_compile_or_recount_and_bytes_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 42.887s
+
+OK
+
+===== check_full_pf_saved_inventory
+test_01_DF10_is_not_mixed_with_old_DF12 (__main__.InventoryTests.test_01_DF10_is_not_mixed_with_old_DF12) ... ok
+test_02_truncated_PF_is_not_full (__main__.InventoryTests.test_02_truncated_PF_is_not_full) ... ok
+test_03_standard_4th_and_m5_best_are_separate (__main__.InventoryTests.test_03_standard_4th_and_m5_best_are_separate) ... ok
+test_04_same_T_q_different_SOURCE_is_not_identical (__main__.InventoryTests.test_04_same_T_q_different_SOURCE_is_not_identical) ... ok
+test_05_signal_reference_and_price_are_judged_separately (__main__.InventoryTests.test_05_signal_reference_and_price_are_judged_separately) ... ok
+test_06_X_and_Y_prices_are_not_filled_from_each_other (__main__.InventoryTests.test_06_X_and_Y_prices_are_not_filled_from_each_other) ... ok
+test_07_compiler_or_cost_policy_mismatch_is_detected (__main__.InventoryTests.test_07_compiler_or_cost_policy_mismatch_is_detected) ... ok
+test_08_saved_MODEL_is_not_a_direct_price (__main__.InventoryTests.test_08_saved_MODEL_is_not_a_direct_price) ... ok
+test_09_saved_FAIL_or_ineligible_is_not_promoted (__main__.InventoryTests.test_09_saved_FAIL_or_ineligible_is_not_promoted) ... ok
+test_10_V2_IDs_from_B_for_all_formulas_and_join_by_physical_ID (__main__.InventoryTests.test_10_V2_IDs_from_B_for_all_formulas_and_join_by_physical_ID) ... ok
+test_11_no_science_and_values_are_copied (__main__.InventoryTests.test_11_no_science_and_values_are_copied) ... ok
+test_12_sources_and_private_carriers_are_byte_preserved (__main__.InventoryTests.test_12_sources_and_private_carriers_are_byte_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 54.213s
+
+OK
+
+===== check_abc_d_v2_integration
+test_04_Yoshida4_and_m5_signed_formulas_full_truncated_PF (__main__.LayoutExtensionTests.test_04_Yoshida4_and_m5_signed_formulas_full_truncated_PF) ... ok
+test_05_explicit_no_kappa_keeps_schedule_and_full_context (__main__.LayoutExtensionTests.test_05_explicit_no_kappa_keeps_schedule_and_full_context) ... ok
+test_06_kappa_schedule_is_distinct_and_not_invented (__main__.LayoutExtensionTests.test_06_kappa_schedule_is_distinct_and_not_invented) ... ok
+test_07_equal_events_different_grouping_and_source_distinct (__main__.LayoutExtensionTests.test_07_equal_events_different_grouping_and_source_distinct) ... ok
+test_08_full_H_one_body_B3_scalar_and_source_guards (__main__.LayoutExtensionTests.test_08_full_H_one_body_B3_scalar_and_source_guards) ... ok
+test_09_layout_integrity_and_missing_round_are_not_guessed (__main__.LayoutExtensionTests.test_09_layout_integrity_and_missing_round_are_not_guessed) ... ok
+test_10_external_bridge_rejects_identity_law_profile_and_physical_id_changes (__main__.LayoutExtensionTests.test_10_external_bridge_rejects_identity_law_profile_and_physical_id_changes) ... ok
+test_11_only_mock_values_sum_select_and_finite_cohort_MODEL_false_stays_unqualified (__main__.LayoutExtensionTests.test_11_only_mock_values_sum_select_and_finite_cohort_MODEL_false_stays_unqualified) ... ok
+test_12_planner_and_D_requests_never_run_science_or_real_cost (__main__.LayoutExtensionTests.test_12_planner_and_D_requests_never_run_science_or_real_cost) ... ok
+test_01_official_A_C_intake_and_nulls_without_S0_producers (__main__.PublishedIntakeTests.test_01_official_A_C_intake_and_nulls_without_S0_producers) ... ok
+test_02_A_source_law_identity_and_diagnostics_rejected (__main__.PublishedIntakeTests.test_02_A_source_law_identity_and_diagnostics_rejected) ... ok
+test_03_C_focus_all_round_axis_and_source_mismatches_rejected (__main__.PublishedIntakeTests.test_03_C_focus_all_round_axis_and_source_mismatches_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 24.629s
+
+OK
+
+===== B_published_check_full_baseline_v2_requests
+test_01_full_and_truncated_PF_are_distinct (b_pinned_full_baseline_tests.FullBaselineTests.test_01_full_and_truncated_PF_are_distinct) ... ok
+test_02_H4_B0_prefix7_is_not_full_PF (b_pinned_full_baseline_tests.FullBaselineTests.test_02_H4_B0_prefix7_is_not_full_PF) ... ok
+test_03_full_H_RTE_keeps_one_body_randomized (b_pinned_full_baseline_tests.FullBaselineTests.test_03_full_H_RTE_keeps_one_body_randomized) ... ok
+test_04_DF_B3_is_not_full_H_RTE (b_pinned_full_baseline_tests.FullBaselineTests.test_04_DF_B3_is_not_full_H_RTE) ... ok
+test_05_identity_scalar_is_applied_once (b_pinned_full_baseline_tests.FullBaselineTests.test_05_identity_scalar_is_applied_once) ... ok
+test_06_formula_signed_coefficients_and_fragment_order_are_kept (b_pinned_full_baseline_tests.FullBaselineTests.test_06_formula_signed_coefficients_and_fragment_order_are_kept) ... ok
+test_07_same_event_count_different_grouping_is_not_the_same_request (b_pinned_full_baseline_tests.FullBaselineTests.test_07_same_event_count_different_grouping_is_not_the_same_request) ... ok
+test_08_DF_and_Pauli_sources_are_not_mixed (b_pinned_full_baseline_tests.FullBaselineTests.test_08_DF_and_Pauli_sources_are_not_mixed) ... ok
+test_09_saved_H_state_snapshot_match_the_V2_binding (b_pinned_full_baseline_tests.FullBaselineTests.test_09_saved_H_state_snapshot_match_the_V2_binding) ... ok
+test_10_A_and_C_requests_point_to_one_physical_candidate (b_pinned_full_baseline_tests.FullBaselineTests.test_10_A_and_C_requests_point_to_one_physical_candidate) ... ok
+test_11_full_PF_never_carries_kappa_or_finite_K (b_pinned_full_baseline_tests.FullBaselineTests.test_11_full_PF_never_carries_kappa_or_finite_K) ... ok
+test_12_missing_N_C_stay_null_and_B_planner_reports_next_work (b_pinned_full_baseline_tests.FullBaselineTests.test_12_missing_N_C_stay_null_and_B_planner_reports_next_work) ... ok
+test_13_no_scientific_runner_or_compile_is_started (b_pinned_full_baseline_tests.FullBaselineTests.test_13_no_scientific_runner_or_compile_is_started) ... ok
+test_14_pinned_sources_exist (b_pinned_full_baseline_tests.FullBaselineTests.test_14_pinned_sources_exist) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 4.690s
+
+OK
+
+===== check_pr_rpe_rmse_controller
+test_MODEL_domain_and_C1_false_remain_disqualified (__main__.ControllerTests.test_MODEL_domain_and_C1_false_remain_disqualified) ... ok
+test_M_changes_all_round_identities_and_N_not_reused (__main__.ControllerTests.test_M_changes_all_round_identities_and_N_not_reused) ... ok
+test_M_kappa_outer_groups_missing_infeasible_ties_and_scope (__main__.ControllerTests.test_M_kappa_outer_groups_missing_infeasible_ties_and_scope) ... ok
+test_PF_PR_full_H_RTE_and_B3_are_distinct (__main__.ControllerTests.test_PF_PR_full_H_RTE_and_B3_are_distinct) ... ok
+test_common_kappa_selects_whole_schedule_not_roundwise_hybrid (__main__.ControllerTests.test_common_kappa_selects_whole_schedule_not_roundwise_hybrid) ... ok
+test_finite_cohort_is_explicit_conditional_and_unknown_law_distance_stays_false (__main__.ControllerTests.test_finite_cohort_is_explicit_conditional_and_unknown_law_distance_stays_false) ... ok
+test_fixed_h_formula_K_policy_and_price_scope_not_hidden_search_variables (__main__.ControllerTests.test_fixed_h_formula_K_policy_and_price_scope_not_hidden_search_variables) ... ok
+test_full_identity_law_source_compiler_cohort_measurement_mismatch (__main__.ControllerTests.test_full_identity_law_source_compiler_cohort_measurement_mismatch) ... ok
+test_generation_qualification_and_aggregation_are_separate (__main__.ControllerTests.test_generation_qualification_and_aggregation_are_separate) ... ok
+test_high_probability_N_and_unadopted_scientific_contract_not_reinterpreted (__main__.ControllerTests.test_high_probability_N_and_unadopted_scientific_contract_not_reinterpreted) ... ok
+test_huge_integer_N_and_binary64_price_exactness (__main__.ControllerTests.test_huge_integer_N_and_binary64_price_exactness) ... ok
+test_missing_null_duplicate_price_never_filled_or_multiplied (__main__.ControllerTests.test_missing_null_duplicate_price_never_filled_or_multiplied) ... ok
+test_no_backend_or_scientific_import_in_metadata_and_synthetic_entries (__main__.ControllerTests.test_no_backend_or_scientific_import_in_metadata_and_synthetic_entries) ... ok
+test_shared_kappa_exact_schedule_integer_rounding (__main__.ControllerTests.test_shared_kappa_exact_schedule_integer_rounding) ... ok
+test_signed_schedule_and_existing_allocation_are_reused (__main__.ControllerTests.test_signed_schedule_and_existing_allocation_are_reused) ... ok
+test_supplied_RMSE_bound_and_unstable_infeasible_statuses (__main__.ControllerTests.test_supplied_RMSE_bound_and_unstable_infeasible_statuses) ... ok
+test_unknown_mapper_remains_unresolved_and_custom_mapper_echo_checked (__main__.ControllerTests.test_unknown_mapper_remains_unresolved_and_custom_mapper_echo_checked) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.349s
+
+OK
+
+===== check_pr_rpe_method_coverage
+test_A_H4_B0_is_truncated_PF_and_H6_early_recipe_is_preserved (__main__.MethodCoverageTests.test_A_H4_B0_is_truncated_PF_and_H6_early_recipe_is_preserved) ... ok
+test_all_four_methods_use_existing_exact_cost_and_whole_schedule_selection (__main__.MethodCoverageTests.test_all_four_methods_use_existing_exact_cost_and_whole_schedule_selection) ... ok
+test_explicit_formula_menu_allows_different_method_design_freedoms (__main__.MethodCoverageTests.test_explicit_formula_menu_allows_different_method_design_freedoms) ... ok
+test_foreign_candidate_law_compiler_and_high_probability_N_are_rejected (__main__.MethodCoverageTests.test_foreign_candidate_law_compiler_and_high_probability_N_are_rejected) ... ok
+test_full_and_truncated_PF_have_separate_target_retained_identity (__main__.MethodCoverageTests.test_full_and_truncated_PF_have_separate_target_retained_identity) ... ok
+test_missing_null_and_unqualified_MODEL_do_not_select (__main__.MethodCoverageTests.test_missing_null_and_unqualified_MODEL_do_not_select) ... ok
+test_mixed_kappa_rounds_cannot_become_a_configuration (__main__.MethodCoverageTests.test_mixed_kappa_rounds_cannot_become_a_configuration) ... ok
+test_no_provider_compile_fit_signal_or_cost_call_from_metadata (__main__.MethodCoverageTests.test_no_provider_compile_fit_signal_or_cost_call_from_metadata) ... ok
+test_per_axis_coverage_separates_saved_presence_from_qualification (__main__.MethodCoverageTests.test_per_axis_coverage_separates_saved_presence_from_qualification) ... ok
+test_pure_RTE_rejects_B3_and_deterministic_one_body (__main__.MethodCoverageTests.test_pure_RTE_rejects_B3_and_deterministic_one_body) ... ok
+test_saved_coverage_is_metadata_not_new_RMSE_N_C_or_G (__main__.MethodCoverageTests.test_saved_coverage_is_metadata_not_new_RMSE_N_C_or_G) ... ok
+test_scientific_record_requires_explicit_prior_decoder_and_molecular_context (__main__.MethodCoverageTests.test_scientific_record_requires_explicit_prior_decoder_and_molecular_context) ... ok
+test_truncated_requires_original_H_error_not_just_retained_H_PASS (__main__.MethodCoverageTests.test_truncated_requires_original_H_error_not_just_retained_H_PASS) ... ok
+test_two_round_pilot_and_S0a_do_not_become_global_N_or_mean_C (__main__.MethodCoverageTests.test_two_round_pilot_and_S0a_do_not_become_global_N_or_mean_C) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.262s
+
+OK
+
+===== check_pr_rpe_rmse_integration
+test_A_B_C_final_end_to_end_with_separate_mock_N (__main__.IntegrationTests.test_A_B_C_final_end_to_end_with_separate_mock_N) ... ok
+test_A_and_B_common_event_counts_match_on_regular_rounds (__main__.IntegrationTests.test_A_and_B_common_event_counts_match_on_regular_rounds) ... ok
+test_A_fixed_grid_differs_from_B_ceil_and_is_not_relaxed (__main__.IntegrationTests.test_A_fixed_grid_differs_from_B_ceil_and_is_not_relaxed) ... ok
+test_C_foreign_identity_law_compiler_and_old_schedule_not_relabelled (__main__.IntegrationTests.test_C_foreign_identity_law_compiler_and_old_schedule_not_relabelled) ... ok
+test_C_model_false_and_missing_remain_unqualified (__main__.IntegrationTests.test_C_model_false_and_missing_remain_unqualified) ... ok
+test_H6_eleven_pieces_and_m0_3_exceptions_preserved (__main__.IntegrationTests.test_H6_eleven_pieces_and_m0_3_exceptions_preserved) ... ok
+test_M_and_kappa_bind_entire_schedule_PF_has_no_kappa (__main__.IntegrationTests.test_M_and_kappa_bind_entire_schedule_PF_has_no_kappa) ... ok
+test_changed_A_candidate_policy_law_and_nominal_promotion_rejected (__main__.IntegrationTests.test_changed_A_candidate_policy_law_and_nominal_promotion_rejected) ... ok
+test_no_roundwise_hybrid_and_M_kappa_menu_selection (__main__.IntegrationTests.test_no_roundwise_hybrid_and_M_kappa_menu_selection) ... ok
+test_passive_C_provider_no_price_calculation_or_new_signal_N (__main__.IntegrationTests.test_passive_C_provider_no_price_calculation_or_new_signal_N) ... ok
+test_scalar_factors_not_counted_twice_and_huge_mock_N_exact (__main__.IntegrationTests.test_scalar_factors_not_counted_twice_and_huge_mock_N_exact) ... ok
+test_source_A_C_implementations_byte_preserved (__main__.IntegrationTests.test_source_A_C_implementations_byte_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 29.712s
+
+OK
+
+===== check_bv2_mean_price
+test_Full_H_RTE_event_count_route_missing_not_PR_or_B3 (__main__.Tests.test_Full_H_RTE_event_count_route_missing_not_PR_or_B3) ... ok
+test_H6_early_prefix5_remains_missing_regular11piece_preserved (__main__.Tests.test_H6_early_prefix5_remains_missing_regular11piece_preserved) ... ok
+test_M_kappa_and_H_or_PF_retained_scope_are_distinct (__main__.Tests.test_M_kappa_and_H_or_PF_retained_scope_are_distinct) ... ok
+test_cohort_choice_paired_axes_and_no_pooling (__main__.Tests.test_cohort_choice_paired_axes_and_no_pooling) ... ok
+test_existing_B_adapter_preserves_new_schema_identity_law_source_and_cohort (__main__.Tests.test_existing_B_adapter_preserves_new_schema_identity_law_source_and_cohort) ... ok
+test_finite_cohort_is_not_qualified_expectation_and_no_G_is_called (__main__.Tests.test_finite_cohort_is_not_qualified_expectation_and_no_G_is_called) ... ok
+test_foreign_law_identity_compiler_and_missing_source_are_rejected (__main__.Tests.test_foreign_law_identity_compiler_and_missing_source_are_rejected) ... ok
+test_lookup_never_calls_scientific_or_mean_or_accounting_entries (__main__.Tests.test_lookup_never_calls_scientific_or_mean_or_accounting_entries) ... ok
+test_model_remains_unqualified_and_unknown_uncertainty_null (__main__.Tests.test_model_remains_unqualified_and_unknown_uncertainty_null) ... ok
+test_old_C1_id_is_never_relabelled_to_B_V2 (__main__.Tests.test_old_C1_id_is_never_relabelled_to_B_V2) ... ok
+test_saved_118_candidate_inventory_projects_no_price_or_N_values (__main__.Tests.test_saved_118_candidate_inventory_projects_no_price_or_N_values) ... ok
+test_structural_single_path_local_and_omitted_mean_unit_are_rejected (__main__.Tests.test_structural_single_path_local_and_omitted_mean_unit_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 11.979s
+
+OK
+
+===== check_pr_rpe_rmse_evidence
+test_C1_false_finite_cohort_and_outside_domain_keep_their_meaning (check_pr_rpe_rmse_evidence.EvidenceTests.test_C1_false_finite_cohort_and_outside_domain_keep_their_meaning) ... ok
+test_PR_common_kappa_H6_early_override_and_B3 (check_pr_rpe_rmse_evidence.EvidenceTests.test_PR_common_kappa_H6_early_override_and_B3) ... ok
+test_cli_requires_explicit_menu_and_writes_new_output_only (check_pr_rpe_rmse_evidence.EvidenceTests.test_cli_requires_explicit_menu_and_writes_new_output_only) ... ok
+test_comparison_H_state_sector_RMSE_h_profile_must_match (check_pr_rpe_rmse_evidence.EvidenceTests.test_comparison_H_state_sector_RMSE_h_profile_must_match) ... ok
+test_four_methods_ready_evidence_never_costs_or_selects_a_winner (check_pr_rpe_rmse_evidence.EvidenceTests.test_four_methods_ready_evidence_never_costs_or_selects_a_winner) ... ok
+test_full_RTE_total_events_do_not_erase_source_grouping (check_pr_rpe_rmse_evidence.EvidenceTests.test_full_RTE_total_events_do_not_erase_source_grouping) ... ok
+test_full_identity_legacy_record_and_required_source_mismatch (check_pr_rpe_rmse_evidence.EvidenceTests.test_full_identity_legacy_record_and_required_source_mismatch) ... ok
+test_high_probability_N_and_S0a_are_not_N_C (check_pr_rpe_rmse_evidence.EvidenceTests.test_high_probability_N_and_S0a_are_not_N_C) ... ok
+test_infeasible_does_not_request_unnecessary_C_but_source_mismatch_cannot_prune (check_pr_rpe_rmse_evidence.EvidenceTests.test_infeasible_does_not_request_unnecessary_C_but_source_mismatch_cannot_prune) ... ok
+test_local_two_time_packet_keeps_other_rounds_and_sufficient_N_null (check_pr_rpe_rmse_evidence.EvidenceTests.test_local_two_time_packet_keeps_other_rounds_and_sufficient_N_null) ... ok
+test_metadata_never_calls_science_provider_cost_or_G_selection (check_pr_rpe_rmse_evidence.EvidenceTests.test_metadata_never_calls_science_provider_cost_or_G_selection) ... ok
+test_missing_axes_and_unexplored_configs_are_explicit (check_pr_rpe_rmse_evidence.EvidenceTests.test_missing_axes_and_unexplored_configs_are_explicit) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 1.871s
+
+OK
+excluded (contains eighth-order validation; same exclusion as B f0c4bb55): ['check_pr_rpe_rmse_evidence.EvidenceTests.test_explicit_menu_sources_cohorts_and_empty_inputs']
+
+===== check_h6_df19_price_provider
+test_B_early_PR_family_is_unavailable_without_fallback (__main__.ProviderTests.test_B_early_PR_family_is_unavailable_without_fallback) ... ok
+test_B_finite_model_policy_and_mock_extrapolation_stay_separate (__main__.ProviderTests.test_B_finite_model_policy_and_mock_extrapolation_stay_separate) ... ok
+test_B_run_missing_preserves_nulls_and_never_calculates_real_G (__main__.ProviderTests.test_B_run_missing_preserves_nulls_and_never_calculates_real_G) ... ok
+test_all_saved_catalog_prices_are_lookup_only (__main__.ProviderTests.test_all_saved_catalog_prices_are_lookup_only) ... ok
+test_calibration_q4_and_unacquired_q_roles_without_new_H6_predictions (__main__.ProviderTests.test_calibration_q4_and_unacquired_q_roles_without_new_H6_predictions) ... ok
+test_domain_profile_and_preparation_fail_closed (__main__.ProviderTests.test_domain_profile_and_preparation_fail_closed) ... ok
+test_frozen_coefficients_and_B_snapshot_are_exact (__main__.ProviderTests.test_frozen_coefficients_and_B_snapshot_are_exact) ... ok
+test_nominal_covariance_survives_without_joint_or_law_promotion (__main__.ProviderTests.test_nominal_covariance_survives_without_joint_or_law_promotion) ... ok
+test_path_means_and_digest_types_stay_distinct (__main__.ProviderTests.test_path_means_and_digest_types_stay_distinct) ... ok
+test_q1_cohorts_and_model_miss_are_not_pooled_or_substituted (__main__.ProviderTests.test_q1_cohorts_and_model_miss_are_not_pooled_or_substituted) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 4.161s
+
+OK
+SAVED_CATALOG_SCALAR_MATCHES=138
+
+===== check_pf_pr_rpe_pipeline
+test_axis_costs_delegate_existing_arithmetic_without_extra_multipliers (__main__.IntegrationTests.test_axis_costs_delegate_existing_arithmetic_without_extra_multipliers) ... ok
+test_batch_fail_stops_before_price_without_retry_or_scope_expansion (__main__.IntegrationTests.test_batch_fail_stops_before_price_without_retry_or_scope_expansion) ... ok
+test_cohort_mean_and_model_extrapolation_have_distinct_qualification (__main__.IntegrationTests.test_cohort_mean_and_model_extrapolation_have_distinct_qualification) ... ok
+test_covariance_psd_and_complete_simultaneous_bounds (__main__.IntegrationTests.test_covariance_psd_and_complete_simultaneous_bounds) ... ok
+test_foreign_science_profile_recipe_and_double_normalization_rejected (__main__.IntegrationTests.test_foreign_science_profile_recipe_and_double_normalization_rejected) ... ok
+test_h6_future_batch_mock_shares_context_references_and_cache (__main__.IntegrationTests.test_h6_future_batch_mock_shares_context_references_and_cache) ... src/trotterlib/Almost_optimal_grouping.py:222: DeprecationWarning: invalid escape sequence '\s'
+  """
+src/trotterlib/Almost_optimal_grouping.py:382: DeprecationWarning: invalid escape sequence '\s'
+  """
+src/trotterlib/Almost_optimal_grouping.py:636: DeprecationWarning: invalid escape sequence '\s'
+  """
+src/trotterlib/Almost_optimal_grouping.py:747: DeprecationWarning: invalid escape sequence '\s'
+  """
+src/trotterlib/Almost_optimal_grouping.py:792: DeprecationWarning: invalid escape sequence '\s'
+  """
+ok
+test_joint_shared_calibration_and_paired_axes_remain_correlated (__main__.IntegrationTests.test_joint_shared_calibration_and_paired_axes_remain_correlated) ... ok
+test_missing_batch_uses_one_call_and_reuses_cached_N (__main__.IntegrationTests.test_missing_batch_uses_one_call_and_reuses_cached_N) ... ok
+test_one_explicit_entry_reaches_costs_using_only_mock_missing_providers (__main__.IntegrationTests.test_one_explicit_entry_reaches_costs_using_only_mock_missing_providers) ... ok
+test_plan_is_non_numerical_and_keeps_q_variables (__main__.IntegrationTests.test_plan_is_non_numerical_and_keeps_q_variables) ... ok
+test_saved_rerun_duplicate_and_missing_round_never_sum (__main__.IntegrationTests.test_saved_rerun_duplicate_and_missing_round_never_sum) ... ok
+test_static_real_carriers_only_copy_saved_N_C_and_qualifications (__main__.IntegrationTests.test_static_real_carriers_only_copy_saved_N_C_and_qualifications) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 7.904s
+
+OK

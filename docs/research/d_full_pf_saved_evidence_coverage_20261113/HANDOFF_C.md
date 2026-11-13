@@ -1,5 +1,7 @@
 # Codex C向け：Full PFの保存compiled価格と新しい価格取得の条件
 
+**更新（2026-11-13）**：B f0c4bb55への最終接続と保存価格17件のreceipt照合は[d_full_pf_full_h_v2_final_receipts_20261113](../d_full_pf_full_h_v2_final_receipts_20261113/REPORT.md)。
+
 [REPORT](REPORT.md)／[COVERAGE.csv](COVERAGE.csv)（`X_status`、`X_rz_count`、`Y_status`、`Y_rz_count`、`price_kind`、`price_carrier`、`mismatch_or_conditional_reasons`の列）。価格は、1回のRPE interrogation（controlled時間発展＋full Hadamard wrapper＋測定、P0）のRZ gate数で、cosine（X）とsine（Y）を別々に扱う。
 
 ## 1. 区分
