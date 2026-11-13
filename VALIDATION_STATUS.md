@@ -1,5 +1,7 @@
 # Validation status
 
+[DF head＋Pauli tail P0実行](docs/research/df_head_pauli_tail_p0_results_20261114/REPORT.md)：科学SOURCE fd111f989で保存H4 DF10/LD1・LD2を一回検証、81/81数値gate通過。full tail再構成残差最大7.1102e−15（gate1e−9）、state lift/norm一致。各184項中136labelは単独でsector漏れ、合計/headは保存。人工5＋回帰4 PASS。P1/mean/eigh/reference/finite B/compile/N/C/G0、厳密operator証明・全RPE未資格、公開後STOP。
+
 [DF head＋Pauli tailの技術条件](docs/research/df_head_pauli_tail_preparation_20261114/REPORT.md)：人工N1/3modeのPauli leakage・射影非involution、full/reduced mean、K0/K2 signed event平均、辞書依存normalizer・scalarを新4test PASS。実H4辞書・λ・sector資格・価格/G未取得。本番変更/保存再解析0、公開後STOP。
 
 [Full PF追加5点結果](docs/research/h4_full_pf_followup_results_20261114/REPORT.md)：H4 DF10/Full10/sector36、5step/Schurと二時点mean各10が数値gate1e−9通過（最大差2.811e−12、最大power unitarity1.271e−11）。保存M5/.8窓検査1 PASS、旧3入力hash不変。人工新caller5＋既存8＝13 PASS、新reference/元H eigh/旧signal再解析/N/C/G/retry0。局所予算内3/超2、global/十分N未資格、公開後STOP。
