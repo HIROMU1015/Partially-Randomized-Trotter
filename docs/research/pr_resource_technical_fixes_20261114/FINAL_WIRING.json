@@ -1,0 +1,99 @@
+[
+  {
+    "series": "B",
+    "rc": 0,
+    "result": {
+      "positive": {
+        "status": "TECHNICAL_WIRING_PASS_NOT_SCIENTIFIC_QUALIFICATION",
+        "series": "B",
+        "source": "6cdd8b37d901d683a26fddf72090d829649a014b",
+        "checked_modules": [
+          "src/trottertracks/pf_pr_rpe_pipeline.py",
+          "src/trottertracks/h4_df10_rpe_connection.py",
+          "src/trottertracks/h4_s0_v2_intake.py"
+        ],
+        "boundary": "N/C/G providers: NOT CALLED",
+        "science_calls": 0,
+        "mandatory_stop": true
+      },
+      "negative": [
+        {
+          "check": "foreign SOURCE object",
+          "error_type": "CalledProcessError"
+        }
+      ],
+      "scientific_boundary_calls": []
+    }
+  },
+  {
+    "series": "C",
+    "rc": 0,
+    "result": {
+      "positive": {
+        "status": "TECHNICAL_WIRING_PASS_NOT_SCIENTIFIC_QUALIFICATION",
+        "series": "C",
+        "source": "e9a67e65ea77270984b5a0caab92f3be6f839f75",
+        "checked_modules": [
+          "src/trottertracks/pf_pr_rpe_pipeline.py",
+          "src/trottertracks/h4_df10_rpe_connection.py",
+          "src/trottertracks/h4_structural_kernel.py",
+          "src/trottertracks/s0a_structure_context.py"
+        ],
+        "boundary": "S-only context / preparation / law descriptor / mean S: NOT CALLED",
+        "science_calls": 0,
+        "mandatory_stop": true
+      },
+      "negative": [
+        {
+          "check": "missing ast in actual fixed context scope",
+          "error_type": "ValueError"
+        },
+        {
+          "check": "descriptor API mismatch",
+          "error_type": "TypeError"
+        },
+        {
+          "check": "historical seed=None with actual integer validator",
+          "error_type": "TypeError"
+        },
+        {
+          "check": "wrong configuration commit",
+          "error_type": "KeyError"
+        }
+      ],
+      "scientific_boundary_calls": []
+    }
+  },
+  {
+    "series": "D",
+    "rc": 0,
+    "result": {
+      "positive": {
+        "status": "TECHNICAL_WIRING_PASS_NOT_SCIENTIFIC_QUALIFICATION",
+        "series": "D",
+        "source": "01e068af7e06d9f1f5621a5b3800c30eb32ecb06",
+        "checked_modules": [
+          "src/trottertracks/pf_pr_rpe_pipeline.py",
+          "src/trottertracks/h4_df10_rpe_connection.py",
+          "src/trottertracks/p1_efficient_zz.py",
+          "src/trottertracks/candidate_price_adapter.py",
+          "src/trottertracks/ld12_price_requests.py"
+        ],
+        "boundary": "NativeRuntime.context / restore / sampling / build / compile: NOT CALLED",
+        "science_calls": 0,
+        "mandatory_stop": true
+      },
+      "negative": [
+        {
+          "check": "missing Backend plan source",
+          "error_type": "ValueError"
+        },
+        {
+          "check": "tail-only scalar rehashed as total",
+          "error_type": "ValueError"
+        }
+      ],
+      "scientific_boundary_calls": []
+    }
+  }
+]

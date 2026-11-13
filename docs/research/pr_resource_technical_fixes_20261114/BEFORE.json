@@ -1,0 +1,103 @@
+[
+  {
+    "series": "B",
+    "test": "check_h4_s0_v2_intake",
+    "rc": 1,
+    "seconds": 0.45067298179492354,
+    "tests": 0,
+    "failure_tail": "    cls.result = H.prepare(ROOT)\n                 ^^^^^^^^^^^^^^^\n  File \"/tmp/pr-resource-technical-fixes-20261114/B/src/trottertracks/h4_s0_v2_intake.py\", line 184, in prepare\n    same(ast.dump(current), ast.dump(ast.parse(before)), 'S0_H4_PIPELINE_SOURCE_CHANGED')\n  File \"/tmp/pr-resource-technical-fixes-20261114/B/src/trottertracks/h4_s0_v2_intake.py\", line 34, in same\n    raise ValueError(label)\nValueError: S0_H4_PIPELINE_SOURCE_CHANGED\n\n----------------------------------------------------------------------\nRan 0 tests in 0.136s\n\nFAILED (errors=1)"
+  },
+  {
+    "series": "B",
+    "test": "check_pr_r_dependent_n",
+    "rc": 1,
+    "seconds": 28.00323844421655,
+    "tests": 12,
+    "failure_tail": "======================================================================\nFAIL: test_historical_sources_and_artifacts_are_unchanged (__main__.RTests.test_historical_sources_and_artifacts_are_unchanged)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/pr-resource-technical-fixes-20261114/B/tests/check_pr_r_dependent_n.py\", line 171, in test_historical_sources_and_artifacts_are_unchanged\n    self.assertEqual(ast.dump(tree),ast.dump(ast.parse(original)))\nAssertionError: 'Modu[13206 chars]ops=[In()], comparators=[Tuple(elts=[Constant([129333 chars]=[])' != 'Modu[13206 chars]ops=[Eq()], comparators=[Constant(value=\\'4th([128552 chars]=[])'\n\n----------------------------------------------------------------------\nRan 12 tests in 27.426s\n\nFAILED (failures=1)"
+  },
+  {
+    "series": "B",
+    "test": "check_h4_df10_rpe_batch",
+    "rc": 1,
+    "seconds": 15.769306458998471,
+    "tests": 13,
+    "failure_tail": "======================================================================\nFAIL: test_common_C_and_H6_numerical_and_historical_artifacts_unchanged (__main__.H4BatchTests.test_common_C_and_H6_numerical_and_historical_artifacts_unchanged)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/pr-resource-technical-fixes-20261114/B/tests/check_h4_df10_rpe_batch.py\", line 235, in test_common_C_and_H6_numerical_and_historical_artifacts_unchanged\n    self.assertEqual(current,h4.blob(ROOT,h4.BASELINE,path),path)\nAssertionError: b'\"\"\"[3233 chars]a\\'] in (\\'4th\\', \\'4th(m5_best)\\'):\\n        [31341 chars]ds\\n' != b'\"\"\"[3233 chars]a\\'] == \\'4th(m5_best)\\':\\n        # Read the [30792 chars]ds\\n' : src/trottertracks/pf_pr_rpe_pipeline.py\n\n----------------------------------------------------------------------\nRan 13 tests in 15.200s\n\nFAILED (failures=1)"
+  },
+  {
+    "series": "B",
+    "test": "check_h6_price_pipeline_coverage",
+    "rc": 1,
+    "seconds": 8.449321442982182,
+    "tests": 7,
+    "failure_tail": "======================================================================\nFAIL: test_fixed_components_and_actual_module_are_used (__main__.Tests.test_fixed_components_and_actual_module_are_used)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/pr-resource-technical-fixes-20261114/B/tests/check_h6_price_pipeline_coverage.py\", line 54, in test_fixed_components_and_actual_module_are_used\n    self.assertEqual(ast.dump(baseline),ast.dump(current))\nAssertionError: 'Modu[13206 chars]ops=[Eq()], comparators=[Constant(value=\\'4th([128552 chars]=[])' != 'Modu[13206 chars]ops=[In()], comparators=[Tuple(elts=[Constant([129333 chars]=[])'\n\n----------------------------------------------------------------------\nRan 7 tests in 8.141s\n\nFAILED (failures=1)"
+  },
+  {
+    "series": "B",
+    "test": "check_r_variable_compiled_price",
+    "rc": 1,
+    "seconds": 1.8929120309185237,
+    "tests": 9,
+    "failure_tail": "======================================================================\nFAIL: test_original_science_modules_unchanged (__main__.Tests.test_original_science_modules_unchanged)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/pr-resource-technical-fixes-20261114/B/tests/check_r_variable_compiled_price.py\", line 142, in test_original_science_modules_unchanged\n    self.assertEqual((ROOT/path).read_bytes(), subprocess.check_output(['git', 'show', '4cb61ef4633467446122954ed6cc43462e0306a9:'+path], cwd=ROOT))\nAssertionError: b'\"\"\"[3233 chars]a\\'] in (\\'4th\\', \\'4th(m5_best)\\'):\\n        [31341 chars]ds\\n' != b'\"\"\"[3233 chars]a\\'] == \\'4th(m5_best)\\':\\n        # Read the [31096 chars]ds\\n'\n\n----------------------------------------------------------------------\nRan 9 tests in 1.747s\n\nFAILED (failures=1)"
+  },
+  {
+    "series": "D",
+    "test": "check_h4_s0_v2_intake",
+    "rc": 1,
+    "seconds": 0.45218799193389714,
+    "tests": 0,
+    "failure_tail": "    cls.result = H.prepare(ROOT)\n                 ^^^^^^^^^^^^^^^\n  File \"/tmp/pr-resource-technical-fixes-20261114/D/src/trottertracks/h4_s0_v2_intake.py\", line 184, in prepare\n    same(ast.dump(current), ast.dump(ast.parse(before)), 'S0_H4_PIPELINE_SOURCE_CHANGED')\n  File \"/tmp/pr-resource-technical-fixes-20261114/D/src/trottertracks/h4_s0_v2_intake.py\", line 34, in same\n    raise ValueError(label)\nValueError: S0_H4_PIPELINE_SOURCE_CHANGED\n\n----------------------------------------------------------------------\nRan 0 tests in 0.127s\n\nFAILED (errors=1)"
+  },
+  {
+    "series": "D",
+    "test": "check_pr_r_dependent_n",
+    "rc": 1,
+    "seconds": 28.673206518869847,
+    "tests": 12,
+    "failure_tail": "======================================================================\nFAIL: test_historical_sources_and_artifacts_are_unchanged (__main__.RTests.test_historical_sources_and_artifacts_are_unchanged)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/pr-resource-technical-fixes-20261114/D/tests/check_pr_r_dependent_n.py\", line 171, in test_historical_sources_and_artifacts_are_unchanged\n    self.assertEqual(ast.dump(tree),ast.dump(ast.parse(original)))\nAssertionError: 'Modu[13206 chars]ops=[In()], comparators=[Tuple(elts=[Constant([129333 chars]=[])' != 'Modu[13206 chars]ops=[Eq()], comparators=[Constant(value=\\'4th([128552 chars]=[])'\n\n----------------------------------------------------------------------\nRan 12 tests in 28.108s\n\nFAILED (failures=1)"
+  },
+  {
+    "series": "D",
+    "test": "check_h4_df10_rpe_batch",
+    "rc": 1,
+    "seconds": 15.596203533001244,
+    "tests": 13,
+    "failure_tail": "======================================================================\nFAIL: test_common_C_and_H6_numerical_and_historical_artifacts_unchanged (__main__.H4BatchTests.test_common_C_and_H6_numerical_and_historical_artifacts_unchanged)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/pr-resource-technical-fixes-20261114/D/tests/check_h4_df10_rpe_batch.py\", line 235, in test_common_C_and_H6_numerical_and_historical_artifacts_unchanged\n    self.assertEqual(current,h4.blob(ROOT,h4.BASELINE,path),path)\nAssertionError: b'\"\"\"[3233 chars]a\\'] in (\\'4th\\', \\'4th(m5_best)\\'):\\n        [31341 chars]ds\\n' != b'\"\"\"[3233 chars]a\\'] == \\'4th(m5_best)\\':\\n        # Read the [30792 chars]ds\\n' : src/trottertracks/pf_pr_rpe_pipeline.py\n\n----------------------------------------------------------------------\nRan 13 tests in 15.026s\n\nFAILED (failures=1)"
+  },
+  {
+    "series": "D",
+    "test": "check_h6_price_pipeline_coverage",
+    "rc": 1,
+    "seconds": 8.497938049957156,
+    "tests": 7,
+    "failure_tail": "======================================================================\nFAIL: test_fixed_components_and_actual_module_are_used (__main__.Tests.test_fixed_components_and_actual_module_are_used)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/pr-resource-technical-fixes-20261114/D/tests/check_h6_price_pipeline_coverage.py\", line 54, in test_fixed_components_and_actual_module_are_used\n    self.assertEqual(ast.dump(baseline),ast.dump(current))\nAssertionError: 'Modu[13206 chars]ops=[Eq()], comparators=[Constant(value=\\'4th([128552 chars]=[])' != 'Modu[13206 chars]ops=[In()], comparators=[Tuple(elts=[Constant([129333 chars]=[])'\n\n----------------------------------------------------------------------\nRan 7 tests in 8.154s\n\nFAILED (failures=1)"
+  },
+  {
+    "series": "D",
+    "test": "check_r_variable_compiled_price",
+    "rc": 1,
+    "seconds": 1.9369682050310075,
+    "tests": 9,
+    "failure_tail": "======================================================================\nFAIL: test_original_science_modules_unchanged (__main__.Tests.test_original_science_modules_unchanged)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/pr-resource-technical-fixes-20261114/D/tests/check_r_variable_compiled_price.py\", line 142, in test_original_science_modules_unchanged\n    self.assertEqual((ROOT/path).read_bytes(), subprocess.check_output(['git', 'show', '4cb61ef4633467446122954ed6cc43462e0306a9:'+path], cwd=ROOT))\nAssertionError: b'\"\"\"[3233 chars]a\\'] in (\\'4th\\', \\'4th(m5_best)\\'):\\n        [31341 chars]ds\\n' != b'\"\"\"[3233 chars]a\\'] == \\'4th(m5_best)\\':\\n        # Read the [31096 chars]ds\\n'\n\n----------------------------------------------------------------------\nRan 9 tests in 1.813s\n\nFAILED (failures=1)"
+  },
+  {
+    "series": "B",
+    "test": "check_rpe_r_price_intake",
+    "rc": 0,
+    "seconds": 129.46130374306813,
+    "tests": 15
+  },
+  {
+    "series": "A",
+    "test": "check_pr_rpe_rmse_s0_v2",
+    "rc": 0,
+    "seconds": 54.10323234414682,
+    "tests": 10
+  },
+  {
+    "series": "C",
+    "test": "check_h4_s0_price_plan",
+    "rc": 0,
+    "seconds": 81.39491152693518,
+    "tests": 7
+  }
+]

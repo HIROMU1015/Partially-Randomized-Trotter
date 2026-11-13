@@ -1,0 +1,123 @@
+[
+  {
+    "series": "A",
+    "rc": 0,
+    "result": {
+      "positive": {
+        "status": "TECHNICAL_WIRING_PASS_NOT_SCIENTIFIC_QUALIFICATION",
+        "series": "A",
+        "source": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "checked_modules": [
+          "src/trottertracks/pf_pr_rpe_pipeline.py",
+          "src/trottertracks/h4_df10_rpe_connection.py",
+          "src/trottertracks/pr_rpe_rmse_s0_v2.py",
+          "src/trottertracks/pr_rpe_signal_provider.py",
+          "src/trottertracks/pr_rpe_power_mean.py"
+        ],
+        "boundary": "SignalBatch.run / saved H4 restore / spectrum / evolve: NOT CALLED",
+        "science_calls": 0,
+        "mandatory_stop": true
+      },
+      "negative": [
+        {
+          "check": "missing actual scripts import path",
+          "error_type": "ValueError"
+        }
+      ],
+      "scientific_boundary_calls": []
+    }
+  },
+  {
+    "series": "B",
+    "rc": 0,
+    "result": {
+      "positive": {
+        "status": "TECHNICAL_WIRING_PASS_NOT_SCIENTIFIC_QUALIFICATION",
+        "series": "B",
+        "source": "700e495a170915d93c942e44c702c50cc03e0ea6",
+        "checked_modules": [
+          "src/trottertracks/pf_pr_rpe_pipeline.py",
+          "src/trottertracks/h4_df10_rpe_connection.py",
+          "src/trottertracks/h4_s0_v2_intake.py"
+        ],
+        "boundary": "N/C/G providers: NOT CALLED",
+        "science_calls": 0,
+        "mandatory_stop": true
+      },
+      "negative": [
+        {
+          "check": "foreign SOURCE object",
+          "error_type": "CalledProcessError"
+        }
+      ],
+      "scientific_boundary_calls": []
+    }
+  },
+  {
+    "series": "C",
+    "rc": 0,
+    "result": {
+      "positive": {
+        "status": "TECHNICAL_WIRING_PASS_NOT_SCIENTIFIC_QUALIFICATION",
+        "series": "C",
+        "source": "d7c09ef2e2521bb1815d1d11970529fc7030c2e3",
+        "checked_modules": [
+          "src/trottertracks/pf_pr_rpe_pipeline.py",
+          "src/trottertracks/h4_df10_rpe_connection.py",
+          "src/trottertracks/h4_structural_kernel.py",
+          "src/trottertracks/s0a_structure_context.py"
+        ],
+        "boundary": "S-only context / preparation / law descriptor / mean S: NOT CALLED",
+        "science_calls": 0,
+        "mandatory_stop": true
+      },
+      "negative": [
+        {
+          "check": "missing ast in actual fixed context scope",
+          "error_type": "ValueError"
+        },
+        {
+          "check": "descriptor API mismatch",
+          "error_type": "TypeError"
+        },
+        {
+          "check": "wrong configuration commit",
+          "error_type": "KeyError"
+        }
+      ],
+      "scientific_boundary_calls": []
+    }
+  },
+  {
+    "series": "D",
+    "rc": 0,
+    "result": {
+      "positive": {
+        "status": "TECHNICAL_WIRING_PASS_NOT_SCIENTIFIC_QUALIFICATION",
+        "series": "D",
+        "source": "01e068af7e06d9f1f5621a5b3800c30eb32ecb06",
+        "checked_modules": [
+          "src/trottertracks/pf_pr_rpe_pipeline.py",
+          "src/trottertracks/h4_df10_rpe_connection.py",
+          "src/trottertracks/p1_efficient_zz.py",
+          "src/trottertracks/candidate_price_adapter.py",
+          "src/trottertracks/ld12_price_requests.py"
+        ],
+        "boundary": "NativeRuntime.context / restore / sampling / build / compile: NOT CALLED",
+        "science_calls": 0,
+        "mandatory_stop": true
+      },
+      "negative": [
+        {
+          "check": "missing Backend plan source",
+          "error_type": "ValueError"
+        },
+        {
+          "check": "tail-only scalar rehashed as total",
+          "error_type": "ValueError"
+        }
+      ],
+      "scientific_boundary_calls": []
+    }
+  }
+]

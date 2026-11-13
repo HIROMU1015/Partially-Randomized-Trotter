@@ -4,6 +4,8 @@
 実装は `codex/pr-resource-technical-fixes-20261114` に分離した。
 科学kernel、旧SOURCE、結果、契約、grant、ledger、marker、STOPは変更しない。
 
+実装・回帰・性能・branch適用状況の最終結果は [REPORT](REPORT.md)。
+
 ## 配線preflight
 
 専用Python環境を使い、系列ごとに新しいprocessで実行する。

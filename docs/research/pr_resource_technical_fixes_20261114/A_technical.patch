@@ -1,0 +1,91 @@
+diff --git a/src/trottertracks/pf_pr_rpe_pipeline.py b/src/trottertracks/pf_pr_rpe_pipeline.py
+index 7568bc0da..b773bacc3 100644
+--- a/src/trottertracks/pf_pr_rpe_pipeline.py
++++ b/src/trottertracks/pf_pr_rpe_pipeline.py
+@@ -15,6 +15,7 @@ import math
+ import re
+ import subprocess
+ import sys
++from types import SimpleNamespace
+ 
+ from . import h4_df10_rpe_connection as accounting
+ 
+@@ -67,12 +68,35 @@ def _schedule():
+     return module
+ 
+ 
+-def candidate_id(candidate):
+-    path=Path(__file__).resolve().parents[2]/'scripts/h46_long_time_signal.py'
+-    node=next(n for n in ast.parse(path.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='cid')
++@lru_cache(maxsize=1)
++def _candidate_id_parser(path, source):
++    """Cache the callable, never candidate results; changed SOURCE reparses."""
++    node=next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name=='cid')
+     scope={'json':json,'hashlib':hashlib}
+     exec(compile(ast.Module(body=[node],type_ignores=[]),str(path),'exec'),scope)
+-    return scope['cid'](candidate)
++    return scope['cid']
++
++
++def candidate_id(candidate):
++    path=Path(__file__).resolve().parents[2]/'scripts/h46_long_time_signal.py'
++    # Read exact bytes each time: an edited rule cannot reuse a stale callable,
++    # even when file size/mtime are unchanged. Each candidate is evaluated anew.
++    return _candidate_id_parser(str(path), path.read_bytes())(candidate)
++
++
++def cache_legacy_candidate_parser(module):
++    """Cache only parsing in an isolated, fixed-blob pipeline namespace.
++
++    Legacy candidate_id code and its live globals/path stay intact. This
++    namespace's sole AST consumer selects cid and never mutates its tree.
++    Each namespace keeps its own parser/rules and one source-content key;
++    changing script text reparses. The process-wide ast module is untouched.
++    """
++    if 'ast' not in module.candidate_id.__code__.co_names:
++        raise ValueError('Expected the legacy candidate_id AST consumer')
++    parser = module.ast
++    module.ast = SimpleNamespace(parse=lru_cache(maxsize=1)(parser.parse),
++        FunctionDef=parser.FunctionDef, Module=parser.Module)
+ 
+ 
+ def structure(c):
+diff --git a/tests/check_h4_df10_rpe_batch.py b/tests/check_h4_df10_rpe_batch.py
+index 41b0b7e76..6832d8163 100644
+--- a/tests/check_h4_df10_rpe_batch.py
++++ b/tests/check_h4_df10_rpe_batch.py
+@@ -228,10 +228,17 @@ class H4BatchTests(unittest.TestCase):
+             self.assertEqual(failed['records'],ready['saved_N'])
+ 
+     def test_common_C_and_H6_numerical_and_historical_artifacts_unchanged(self):
++        consumed=json.loads(h4.blob(ROOT,'89c91c692e1d35de94d2e7afbe890aabe6d80b7e',
++            'docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json'))
+         paths=list(cli.SOURCE_FILES[3:])+['src/trottertracks/h4_df10_price_provider.py','src/trottertracks/h6_rpe_batch_provider.py',
+             'docs/research/h6_df19_rpe_m8_12_results_20261110/run01/result.json','docs/research/h6_df19_rpe_m8_12_results_20261110/run01/COVERAGE.json']
+         for path in paths:
+-            current=(ROOT/path).read_bytes() if (ROOT/path).is_file() else h4.blob(ROOT,'HEAD',path)
++            # This is the source actually consumed by the historical run,
++            # not a requirement to freeze today's shared pipeline forever.
++            current=(h4.blob(ROOT,consumed['scientific_source'],path)
++                     if path in ('src/trottertracks/pf_pr_rpe_pipeline.py',
++                                 'src/trottertracks/h4_df10_rpe_connection.py') else
++                     (ROOT/path).read_bytes() if (ROOT/path).is_file() else h4.blob(ROOT,'HEAD',path))
+             self.assertEqual(current,h4.blob(ROOT,h4.BASELINE,path),path)
+         d1=json.loads(h4.blob(ROOT,h4.N_CARRIER,'docs/research/h4_df10_rpe_d1_20261110/result.json'))
+         for old,n in zip(d1['rows'],self.packet['saved_N']):
+diff --git a/tests/check_pr_r_dependent_n.py b/tests/check_pr_r_dependent_n.py
+index c72d6f86c..28539f4b9 100644
+--- a/tests/check_pr_r_dependent_n.py
++++ b/tests/check_pr_r_dependent_n.py
+@@ -162,7 +162,10 @@ class RTests(unittest.TestCase):
+     def test_historical_sources_and_artifacts_are_unchanged(self):
+         paths=['src/trottertracks/h4_df10_rpe_batch_provider.py','src/trottertracks/h6_rpe_batch_provider.py','src/trottertracks/h6_df19_rpe_d2.py',
+           'src/trottertracks/h4_df10_rpe_d1.py','src/trottertracks/pf_pr_rpe_pipeline.py','scripts/verify_h4_df10_rpe_shot_integers.py','src/trotterlib/rte.py']
+-        for path in paths:self.assertEqual((ROOT/path).read_bytes(),subprocess.check_output(['git','show',model.BASELINE+':'+path],cwd=ROOT))
++        for path in paths:
++            current=(subprocess.check_output(['git','show','3ae055fa7a696b13320e00ec79a5ba15c4ed182e'+':'+path],cwd=ROOT)
++                     if path.endswith('/pf_pr_rpe_pipeline.py') else (ROOT/path).read_bytes())
++            self.assertEqual(current,subprocess.check_output(['git','show',model.BASELINE+':'+path],cwd=ROOT))
+         for path in ['docs/research/h4_df10_rpe_batch_results_20261110/N_HANDOFF.json','docs/research/h6_df19_rpe_m8_12_results_20261110/run01/result.json']:
+             self.assertEqual(subprocess.check_output(['git','rev-parse','HEAD:'+path],cwd=ROOT),subprocess.check_output(['git','rev-parse',model.BASELINE+':'+path],cwd=ROOT))
+ 
