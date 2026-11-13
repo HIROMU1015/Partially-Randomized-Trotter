@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PF power安定性の人工調査](docs/research/pf_power_stability_artificial_20261113/REPORT.md)：36次元・192条件で旧再構成gate通過後のunitarity失敗を再現。EVR7/48・EVD4/48・EV1/48、直接expm0/48の人工観測。実H4原因は未確定、旧SOURCE/STOP/production不変。入口は[diagnostic helper](src/trottertracks/pf_power_stability.py)、[人工runner](scripts/check_pf_power_stability_artificial.py)、[8新test](tests/check_pf_power_stability_artificial.py)、[結果](docs/research/pf_power_stability_artificial_20261113/RESULT.json)。旧9を含め17技術test PASS、実科学0、公開後STOP。
+
 [H4・4方式screen run02の部分結果](docs/research/h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：承認済み再実行でm6のFull PF4セルを保存、固定norm/unitarity gate6失敗・9未開始・1空例外未解決でSTOP。旧run01/SOURCE/保存40不変、新reference0、閾値変更・追加retryなし。全RMSE/C/G/winnerは未認定。
 
 [H4・4方式screenの入力STOP](docs/research/h4_four_method_signal_screen_results_20261113/REPORT.md)：固定256caad34でbatchを1回起動、`scripts/`のimport経路欠落によりcontext構築でSTOP。新mean0/20・normalizer0/6・新reference0、保存40不変、retryなし。20セルは未評価/null、方式FAILやwinnerではない。停止結果/HANDOFFを公開照合後STOP。

@@ -1,5 +1,7 @@
 # Validation status
 
+[PF power安定性の人工調査](docs/research/pf_power_stability_artificial_20261113/REPORT.md)：192人工条件＋手動Gram defect対照で旧gateの観測不足を確認。元EVR7/48、EVD4/48、EV1/48でoperator unitarity gate失敗、直接expm0/48。新8＋旧9技術test PASS。実H4の原因・代替backendの実科学資格は未検証、元gate1e−9/旧SOURCE/結果は保全。新実H4・保存数値再解析0。
+
 [H4・4方式screen run02の部分結果](docs/research/h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：固定SOURCE256caad34のm6 Full PF/S2・Y4×Δ.1/.4の4局所recordが数値gateを通過。別6件はnorm/unitarity gate失敗、残り9未開始・1空例外未解決。失敗時の残差scalarは未保存で新再計算なし。normalizer保存record0・総call数正確値null（0〜1）。7 metadata整合性確認、十分N/global RMSE・winner未認定。
 
 [H4・4方式screenの入力STOP](docs/research/h4_four_method_signal_screen_results_20261113/REPORT.md)：SOURCE/PLAN一致、1回の起動が`h46_new2_core` importでSTOP。新mean/normalizer/reference0、科学数値gateは未到達。5件の静的・metadata確認で原因と未評価保持を確認。旧17人工testを実loader起動成功とは扱わない。retry・十分N/global RMSE/C/G・winnerなし。

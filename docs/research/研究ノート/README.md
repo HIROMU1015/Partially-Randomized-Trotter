@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-13：PF power安定性の人工調査](2026-11-13-pf-power-stability-artificial.md)：192人工条件、17技術test。直接expmは次の実照合候補、旧SOURCE/STOPと未資格を保全。
+
 [2026-11-13：4方式screen run02追補](2026-11-13-four-method-signal-screen-stop.md)：再実行承認後に4局所recordを取得、6数値gate失敗でSTOP。旧run01・元SOURCEを保持。
 
 [2026-11-13：4方式screenの入力STOP](2026-11-13-four-method-signal-screen-stop.md)：固定20セルの1回起動がimport経路不備で停止。新mean0、retryなし、全セル未評価を保全。

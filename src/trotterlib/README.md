@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[pf_power_stability](../trottertracks/pf_power_stability.py)：供給matrix/specのGram・再構成診断、明示driver・同順expm、失敗時も残差を返すpower診断。既存`h46_m5_plan.weights`・screenのsigned順・`algorithm_codesign.numerics.Spectrum` observerを再利用。旧screenへは未接続。[人工REPORT](../../docs/research/pf_power_stability_artificial_20261113/REPORT.md)／[test](../../tests/check_pf_power_stability_artificial.py)。実H4未実行。
+
 [H4・4方式signal screen](../trottertracks/h4_four_method_screen.py)／[数値leaf](../trottertracks/h4_four_method_screen_mean.py)：既存`h46_m5_plan`のsigned weights、`rte.finite_rte_distribution`、旧spectral polynomialとNumPy powerを再利用。metadata-only入口と明示的な将来science leafを分離。[REPORT](../../docs/research/h4_four_method_signal_screen_preparation_20261113/REPORT.md)／[人工test](../../tests/check_h4_four_method_screen.py)。17技術test PASS、実科学0。
 
 [RPE decoder R3高速化・B S3接続](../../docs/research/rpe_decoder_r3_20261113/REPORT.md)：独立R3 decoderの4候補branch選択を実装し、元scalar/vector各tie規則とBのcount/RNG/loss/CIを保全。新12＋旧20の32技術test PASS。人工M12/512trialで旧vector比96.3倍、B batch接続664.6倍、実H4/S3/保存再解析/C/G0。旧vector exact-tieのみ互換fallback、公開照合後STOP。

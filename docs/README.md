@@ -1,5 +1,7 @@
 # 文書索引
 
+[PF power安定性の人工調査](research/pf_power_stability_artificial_20261113/REPORT.md)：[測定値](research/pf_power_stability_artificial_20261113/RESULT.json)／[集計](research/pf_power_stability_artificial_20261113/SUMMARY.json)／[B HANDOFF](research/pf_power_stability_artificial_20261113/HANDOFF.md)／[未承認の代表1点診断案](research/pf_power_stability_artificial_20261113/NEXT_SCIENCE_PLAN.md)。192人工条件・17技術test、実H4は再計算せずSTOP。
+
 [H4・4方式screen run02の部分結果](research/h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：[20セル状態](research/h4_four_method_signal_screen_results_20261113/run02/SCREEN_STATUS.json)／[CSV](research/h4_four_method_signal_screen_results_20261113/run02/SCREEN_SUMMARY.csv)／[B HANDOFF](research/h4_four_method_signal_screen_results_20261113/run02/HANDOFF.md)。4保存・6数値gate失敗でSTOP、旧run01を保全。
 
 [H4・4方式screenの入力STOP](research/h4_four_method_signal_screen_results_20261113/REPORT.md)：[原STOP](research/h4_four_method_signal_screen_results_20261113/run01/result.json)／[未評価20セル](research/h4_four_method_signal_screen_results_20261113/STOP_SUMMARY.json)／[B HANDOFF](research/h4_four_method_signal_screen_results_20261113/HANDOFF.md)。import経路不備、新mean0/20、retryせず公開後STOP。
