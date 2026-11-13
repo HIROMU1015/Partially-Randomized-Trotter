@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full-H κ型schedule移行REPORT](research/d_full_h_kappa_schedule_20261114/REPORT.md)／[有限科学計画](research/d_full_h_kappa_schedule_20261114/FINITE_SCIENCE_PLAN.md)／[HANDOFF](research/d_full_h_kappa_schedule_20261114/HANDOFF.md)：R448の問題と有効範囲、κ→q/Rの最小helper、λ/B/raw/N/価格の依存、新ZZ比較条件を整理。人工・metadata 10 PASS、新科学実行なし、mandatory STOP。
+
 [DF head＋Pauli tail REPORT](research/d_df_head_pauli_tail_20261114/REPORT.md)／[builderとA/C HANDOFF](research/d_df_head_pauli_tail_20261114/BUILDERS_AND_HANDOFF.md)／[価格・短回路有限案](research/d_df_head_pauli_tail_20261114/PRICE_AND_VALIDATION_PLAN.md)：既存D2/nativeの接続を人工9件で確認。全RZと非Clifford診断、旧P3/O1のdomain、C guardのPauli未対応を整理。新価格取得・分子計算なし、mandatory STOP。
 
 [S1/V1 compiled価格のD REPORT](research/d_s1_v1_price_alignment_20261114/REPORT.md)／[C/B HANDOFF](research/d_s1_v1_price_alignment_20261114/HANDOFF.md)／[有限科学案](research/d_s1_v1_price_alignment_20261114/FINITE_VALIDATION_PLAN.md)：旧Full-Hと新PRのlowering・Full PF/Truncatedの適用区分をSOURCE確認。C最新shortlist/receiptと整合し、10静的assertionのみ、新科学実行なし、mandatory STOP。

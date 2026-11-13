@@ -1,5 +1,7 @@
 # Validation status
 
+[Full-H κ型schedule移行のD調査](docs/research/d_full_h_kappa_schedule_20261114/REPORT.md)：既存D/B/C route（full_h_rte_spec(kappa)→configure→_validate→prepare、C guard）がκ供給layoutを無変更で通ることを人工testで確認。保存R448 configuration `cfa6aee3`と13 physical IDを同builderで再現し、κ2 `54ac3eb3`／κ1 `f4fec351`／κ4 `e442b9a5`をmetadata生成。人工τ gridでb≤exp(τ²)はbinary64で1 ULP超過があり、logB包絡gateにone-ULP余裕が必要。実H4 signal・normalizer・sampling・compile・N・価格・Gは0、mandatory STOP。
+
 [DF head＋Pauli tailの技術調査](docs/research/d_df_head_pauli_tail_20261114/REPORT.md)：既存Pauli D2→native DF controlled_tails→measured X/Yを新9人工testで確認（最終4.92秒）。正負時間/K0/K2・ordinary/directional・相対phase/scalar一回・full matrix/測定符号、weight3/identity除外を検査。再利用primitive6 fileは固定P3/providerとD基点でbyte一致。P3 run03/run04・旧O1の価格は元domainのみで新価格受入なし。A75fb0の実辞書/λとBの辞書identity待ち、C3a8b37はPauli route未対応。production/新分子build/price compile/sampling/保存値再集計/新λ/N/G0。K0科学採択/新価格modelなし、公開後mandatory STOP。
 
 [S1/V1価格整合のD引渡し](docs/research/d_s1_v1_price_alignment_20261114/REPORT.md)：監査51d324のSOURCE調査、旧Full-H汎用control/新PR CX–CRZ–CXとPFのRTE非該当を10固定SOURCE assertionで確認。A3ae/Cd7cの完成済みFull PF coverage/receiptを再利用、Bce0517は固定DP診断inputで適格Nではない。C案のS2/.2 m5 XY最大2 compile、現C Full-H m0 q1/R448/K2 normal1 path XY最大2 compileを独立の未承認案として具体化。比較guardはCへの改善案で未実装、production・新prepare/sampling/build/compile/価格集計/fit/G0。旧価格・raw・STOPは保全、長時間model誤差/正式G UNKNOWN、公開照合後mandatory STOP。
