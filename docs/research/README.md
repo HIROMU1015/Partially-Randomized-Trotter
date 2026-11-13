@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[PRの全RPE資源探索設計](pr_rpe_search_design_20261113/REPORT.md)：Track Aの旧順位を使わず全scheduleで同RMSEのN×Cを比較する設計。B/価格接続、direct-head PF・finite-K独立meanの再利用差分、cheap優先順位と厳密除外の区別、未採択2schedule pilot案。17技術test PASS、実科学0、公開後STOP。
+
 [H4 PF長時間の二経路診断](pf_power_stability_h4_20261113/REPORT.md)：代表F2-COARSE/m12の旧spectral・direct expm、計2meanを評価。directは数値gate通過、物理biasや全RPE資格は別。PF/B0Iのdirect expm採用による残15セル再開を提案し、未承認の追加計算はせずSTOP。
 
 [PF power安定性の人工調査](pf_power_stability_artificial_20261113/REPORT.md)：再構成だけでは見えないGram defectとpower増幅を人工入力で確認。直接expmを次の限定検証候補とし、実H4の採用は保留。17技術test PASS、実科学・保存再解析0、旧STOPを保持。

@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-13：PRの全RPE資源探索設計](2026-11-13-pr-rpe-search-design.md)：Track A順位を非採択、全schedule/B接続・direct PF方針。17技術test、実科学0。
+
 [2026-11-13：H4 PF長時間の二経路診断](2026-11-13-pf-power-stability-h4.md)：1候補2mean、旧spectral operator gate失敗・direct通過を保存。残15再開は未実行。
 
 [2026-11-13：PF power安定性の人工調査](2026-11-13-pf-power-stability-artificial.md)：192人工条件、17技術test。直接expmは次の実照合候補、旧SOURCE/STOPと未資格を保全。

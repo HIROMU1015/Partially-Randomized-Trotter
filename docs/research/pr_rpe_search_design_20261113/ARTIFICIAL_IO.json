@@ -1,0 +1,4578 @@
+{
+  "scope": "SYNTHETIC_ONLY_NOT_A_REAL_CANDIDATE_MENU",
+  "B_source": "3216d27a69ac8532d2a22e78f5f94491d202d238",
+  "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+  "spec": {
+    "method": "PR",
+    "M": 12,
+    "L_D": 1,
+    "delta_pf": {
+      "numerator": 3602879701896397,
+      "denominator": 36028797018963968
+    },
+    "formula": "2nd",
+    "h": {
+      "numerator": 3602879701896397,
+      "denominator": 36028797018963968
+    },
+    "binding": {
+      "system": "MOCK",
+      "rank": 10,
+      "hamiltonian": "MOCK_H",
+      "state": "MOCK_S",
+      "snapshot": "MOCK_SNAPSHOT",
+      "decomposition": "MOCK_DF",
+      "source": {
+        "fixture": "SYNTHETIC_ONLY"
+      }
+    },
+    "split": {
+      "L_D": 1,
+      "source": {
+        "fixture": "SYNTHETIC_ONLY"
+      },
+      "randomized_scope": "TAIL_AFTER_PREFIX",
+      "lambda_R": {
+        "numerator": 1,
+        "denominator": 2
+      },
+      "lambda_source": {
+        "fixture": "SYNTHETIC_ONLY"
+      },
+      "one_body_policy": "DETERMINISTIC",
+      "deterministic_scope": "PREFIX"
+    },
+    "law": {
+      "model": "ideal_finite_RTE_law",
+      "source": {
+        "fixture": "SYNTHETIC_ONLY"
+      },
+      "sampling": "MOCK_IDEAL"
+    },
+    "kappa": {
+      "kind": "PAPER_TOTAL_ROTATIONS",
+      "value": {
+        "numerator": 2,
+        "denominator": 1
+      },
+      "definition_source": {
+        "fixture": "SYNTHETIC_ONLY"
+      }
+    },
+    "event_mapping": {
+      "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+      "source": {
+        "fixture": "SYNTHETIC_ONLY"
+      }
+    },
+    "finite_K": 2,
+    "rmse_policy": {
+      "family": "PR_PAPER_RMSE",
+      "id": "MOCK_POLICY",
+      "source": {
+        "fixture": "SYNTHETIC_ONLY"
+      },
+      "target_rmse_ha": {
+        "numerator": 1,
+        "denominator": 1000
+      },
+      "error_contract": {
+        "fixture": "MOCK_ONLY"
+      },
+      "scientific_status": "PROPOSED"
+    },
+    "profile": {
+      "compiler": "MOCK_COMPILER",
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "scope": "single_hadamard_interrogation_without_state_preparation",
+      "P": 0,
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    }
+  },
+  "plan": {
+    "status": "WHOLE_SCHEDULE_METADATA_ONLY",
+    "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+    "jobs": [
+      {
+        "m": 0,
+        "q_RPE": 1,
+        "q_PF": 1,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:b3ff043a9c2cf148335969aaa961c31aba4c7555f15a514a02f568b5397100f8",
+        "B_identity": {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "id": "RMSE:b3ff043a9c2cf148335969aaa961c31aba4c7555f15a514a02f568b5397100f8",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "q": 1,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 1
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 1,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:b3ff043a9c2cf148335969aaa961c31aba4c7555f15a514a02f568b5397100f8",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "c726306a62ddf152a2ae"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 1,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 1,
+        "q_RPE": 2,
+        "q_PF": 2,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:343aba7dc2471a1920d6829946fb060d2c95533e9daaa4a6d7724d22a44b20b4",
+        "B_identity": {
+          "m": 1,
+          "q_RPE": 2,
+          "q_PF": 2,
+          "candidate": {
+            "id": "RMSE:343aba7dc2471a1920d6829946fb060d2c95533e9daaa4a6d7724d22a44b20b4",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 18014398509481984
+            },
+            "q": 2,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 2
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 2,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:343aba7dc2471a1920d6829946fb060d2c95533e9daaa4a6d7724d22a44b20b4",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.2,
+            "q": 2,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "13e2a02e75d305d26903"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 2,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 2,
+        "q_RPE": 4,
+        "q_PF": 4,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 9007199254740992
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:e48c87c09047fa233a6d2cb13f811d42deb80ff3614c0619145bd3ab7471efff",
+        "B_identity": {
+          "m": 2,
+          "q_RPE": 4,
+          "q_PF": 4,
+          "candidate": {
+            "id": "RMSE:e48c87c09047fa233a6d2cb13f811d42deb80ff3614c0619145bd3ab7471efff",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 9007199254740992
+            },
+            "q": 4,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 4
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 4,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:e48c87c09047fa233a6d2cb13f811d42deb80ff3614c0619145bd3ab7471efff",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.4,
+            "q": 4,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "a14779af285f7cfa1605"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 4,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 3,
+        "q_RPE": 8,
+        "q_PF": 8,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 4503599627370496
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:f229939898e297d20d85f542815df33fbfbda0e66077ca7588f0e9c0f4218fae",
+        "B_identity": {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 8,
+          "candidate": {
+            "id": "RMSE:f229939898e297d20d85f542815df33fbfbda0e66077ca7588f0e9c0f4218fae",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "q": 8,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 8
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 8,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:f229939898e297d20d85f542815df33fbfbda0e66077ca7588f0e9c0f4218fae",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.8,
+            "q": 8,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "655da4eb74b4ed3ea9f3"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 8,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 4,
+        "q_RPE": 16,
+        "q_PF": 16,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 2251799813685248
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:d62a9ef6414ef18b88e80bf758af7524b853634b56379db1e0935b4fab988004",
+        "B_identity": {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 16,
+          "candidate": {
+            "id": "RMSE:d62a9ef6414ef18b88e80bf758af7524b853634b56379db1e0935b4fab988004",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 2251799813685248
+            },
+            "q": 16,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 16
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 16,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:d62a9ef6414ef18b88e80bf758af7524b853634b56379db1e0935b4fab988004",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 1.6,
+            "q": 16,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "73c018ac6139501222a4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 16,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 5,
+        "q_RPE": 32,
+        "q_PF": 32,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 1125899906842624
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:5dff50de4eeec0f1da385b344cc515c3b459d8815ecd7d7db3c7805a134ead84",
+        "B_identity": {
+          "m": 5,
+          "q_RPE": 32,
+          "q_PF": 32,
+          "candidate": {
+            "id": "RMSE:5dff50de4eeec0f1da385b344cc515c3b459d8815ecd7d7db3c7805a134ead84",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 1125899906842624
+            },
+            "q": 32,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 32
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:5dff50de4eeec0f1da385b344cc515c3b459d8815ecd7d7db3c7805a134ead84",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 3.2,
+            "q": 32,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "922c5f471f0dc026142e"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 6,
+        "q_RPE": 64,
+        "q_PF": 64,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 562949953421312
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:5829ca721d5a2e8f48c2f092f537f3c6b7bac686c8b661a3a7ff470d528aaeff",
+        "B_identity": {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 64,
+          "candidate": {
+            "id": "RMSE:5829ca721d5a2e8f48c2f092f537f3c6b7bac686c8b661a3a7ff470d528aaeff",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 562949953421312
+            },
+            "q": 64,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 64
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 64,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:5829ca721d5a2e8f48c2f092f537f3c6b7bac686c8b661a3a7ff470d528aaeff",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 6.4,
+            "q": 64,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "5f60b1b51aeb4ce6b7ee"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 64,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 7,
+        "q_RPE": 128,
+        "q_PF": 128,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 281474976710656
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:27bddbd48ef4370af0086617915c92b2db0db6e8f45f24e775f76d490ba1926f",
+        "B_identity": {
+          "m": 7,
+          "q_RPE": 128,
+          "q_PF": 128,
+          "candidate": {
+            "id": "RMSE:27bddbd48ef4370af0086617915c92b2db0db6e8f45f24e775f76d490ba1926f",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 281474976710656
+            },
+            "q": 128,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 128
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:27bddbd48ef4370af0086617915c92b2db0db6e8f45f24e775f76d490ba1926f",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 12.8,
+            "q": 128,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "79b55ec86d5ac91c6994"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 8,
+        "q_RPE": 256,
+        "q_PF": 256,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 140737488355328
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:39771e6b20772e2a9a92a36aac113216cc158c91d0108603f8692d1b0bc31846",
+        "B_identity": {
+          "m": 8,
+          "q_RPE": 256,
+          "q_PF": 256,
+          "candidate": {
+            "id": "RMSE:39771e6b20772e2a9a92a36aac113216cc158c91d0108603f8692d1b0bc31846",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 140737488355328
+            },
+            "q": 256,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 2,
+            "event_count": 512
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              2
+            ],
+            "event_count": 512,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:39771e6b20772e2a9a92a36aac113216cc158c91d0108603f8692d1b0bc31846",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 25.6,
+            "q": 256,
+            "delta": 0.1,
+            "R_outer": 2,
+            "K": 2,
+            "id": "c8ac74dbb60fb346dbe8"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              2
+            ],
+            "event_count": 512,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 9,
+        "q_RPE": 512,
+        "q_PF": 512,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 70368744177664
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:7074aede578620b4b459c23a69af5c181fd08ad1fe46300b692ee1d07095130e",
+        "B_identity": {
+          "m": 9,
+          "q_RPE": 512,
+          "q_PF": 512,
+          "candidate": {
+            "id": "RMSE:7074aede578620b4b459c23a69af5c181fd08ad1fe46300b692ee1d07095130e",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 70368744177664
+            },
+            "q": 512,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 3,
+            "event_count": 1536
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              3
+            ],
+            "event_count": 1536,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:7074aede578620b4b459c23a69af5c181fd08ad1fe46300b692ee1d07095130e",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 51.2,
+            "q": 512,
+            "delta": 0.1,
+            "R_outer": 3,
+            "K": 2,
+            "id": "dcdd59300ac95f77a6fa"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              3
+            ],
+            "event_count": 1536,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 10,
+        "q_RPE": 1024,
+        "q_PF": 1024,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 35184372088832
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:7c572da3e41a9213f6bf7d3d388b2b48d5579182bdccc51a385f32bd53c35244",
+        "B_identity": {
+          "m": 10,
+          "q_RPE": 1024,
+          "q_PF": 1024,
+          "candidate": {
+            "id": "RMSE:7c572da3e41a9213f6bf7d3d388b2b48d5579182bdccc51a385f32bd53c35244",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 35184372088832
+            },
+            "q": 1024,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 6,
+            "event_count": 6144
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              6
+            ],
+            "event_count": 6144,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:7c572da3e41a9213f6bf7d3d388b2b48d5579182bdccc51a385f32bd53c35244",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 102.4,
+            "q": 1024,
+            "delta": 0.1,
+            "R_outer": 6,
+            "K": 2,
+            "id": "1dc2af26d0ca50d20c3c"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              6
+            ],
+            "event_count": 6144,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 11,
+        "q_RPE": 2048,
+        "q_PF": 2048,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 17592186044416
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:51c650f9be99c341f10d6c423bed15c808dc75f42bc13c5a4d8d4f57f9eeb23f",
+        "B_identity": {
+          "m": 11,
+          "q_RPE": 2048,
+          "q_PF": 2048,
+          "candidate": {
+            "id": "RMSE:51c650f9be99c341f10d6c423bed15c808dc75f42bc13c5a4d8d4f57f9eeb23f",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 17592186044416
+            },
+            "q": 2048,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 11,
+            "event_count": 22528
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              11
+            ],
+            "event_count": 22528,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:51c650f9be99c341f10d6c423bed15c808dc75f42bc13c5a4d8d4f57f9eeb23f",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 204.8,
+            "q": 2048,
+            "delta": 0.1,
+            "R_outer": 11,
+            "K": 2,
+            "id": "d519e9c102874204bb3e"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              11
+            ],
+            "event_count": 22528,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      },
+      {
+        "m": 12,
+        "q_RPE": 4096,
+        "q_PF": 4096,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 8796093022208
+        },
+        "B_configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+        "B_candidate_id": "RMSE:adb0c891954e5fb4f22034de96c4ccf05c6a4daf6214941bedd173e2a7a5e4f7",
+        "B_identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "candidate": {
+            "id": "RMSE:adb0c891954e5fb4f22034de96c4ccf05c6a4daf6214941bedd173e2a7a5e4f7",
+            "method": "PR",
+            "system": "MOCK",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 8796093022208
+            },
+            "q": 4096,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 21,
+            "event_count": 86016
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              21
+            ],
+            "event_count": 86016,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": {
+                "numerator": 1,
+                "denominator": 2
+              },
+              "lambda_source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "one_body_policy": "DETERMINISTIC",
+              "deterministic_scope": "PREFIX"
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_POLICY",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "target_rmse_ha": {
+                "numerator": 1,
+                "denominator": 1000
+              },
+              "error_contract": {
+                "fixture": "MOCK_ONLY"
+              },
+              "scientific_status": "PROPOSED"
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "fixture": "SYNTHETIC_ONLY"
+              },
+              "sampling": "MOCK_IDEAL"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V2",
+            "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+            "spec": {
+              "method": "PR",
+              "M": 12,
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "binding": {
+                "system": "MOCK",
+                "rank": 10,
+                "hamiltonian": "MOCK_H",
+                "state": "MOCK_S",
+                "snapshot": "MOCK_SNAPSHOT",
+                "decomposition": "MOCK_DF",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": {
+                  "numerator": 1,
+                  "denominator": 2
+                },
+                "lambda_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "one_body_policy": "DETERMINISTIC",
+                "deterministic_scope": "PREFIX"
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "sampling": "MOCK_IDEAL"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_POLICY",
+                "source": {
+                  "fixture": "SYNTHETIC_ONLY"
+                },
+                "target_rmse_ha": {
+                  "numerator": 1,
+                  "denominator": 1000
+                },
+                "error_contract": {
+                  "fixture": "MOCK_ONLY"
+                },
+                "scientific_status": "PROPOSED"
+              },
+              "profile": {
+                "compiler": "MOCK_COMPILER",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              }
+            }
+          }
+        },
+        "B_law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "configuration_id": "e4cb44769df00bcfcabe0769416e778087d98d0717b981b3f195c2340c11b559",
+          "candidate_id": "RMSE:adb0c891954e5fb4f22034de96c4ccf05c6a4daf6214941bedd173e2a7a5e4f7",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          }
+        },
+        "physical_context": {
+          "physical_candidate": {
+            "system": "MOCK",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 409.6,
+            "q": 4096,
+            "delta": 0.1,
+            "R_outer": 21,
+            "K": 2,
+            "id": "d8c8199d99e9c7cc8def"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              21
+            ],
+            "event_count": 86016,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "MOCK",
+            "rank": 10,
+            "hamiltonian": "MOCK_H",
+            "state": "MOCK_S",
+            "snapshot": "MOCK_SNAPSHOT",
+            "decomposition": "MOCK_DF",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            }
+          },
+          "profile": {
+            "compiler": "MOCK_COMPILER",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "split": {
+            "L_D": 1,
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 2
+            },
+            "lambda_source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "deterministic_scope": "PREFIX"
+          },
+          "law": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "sampling": "MOCK_IDEAL"
+          },
+          "numerical_recipe": {
+            "source": {
+              "fixture": "SYNTHETIC_ONLY"
+            },
+            "deterministic_PF": "DIRECT_EXPM",
+            "finite_RTE": "EXISTING_PAIRED_TAYLOR",
+            "sampling": false
+          }
+        },
+        "status": "MISSING_MEAN_REQUIRES_PERMISSION",
+        "saved_source": null,
+        "missing_fields": [
+          "allowance_evidence",
+          "corrected",
+          "exact_tail",
+          "log_B",
+          "raw",
+          "reference"
+        ],
+        "N_X": null,
+        "N_Y": null,
+        "C": null,
+        "G": null,
+        "scientific_PASS_FAIL": null,
+        "automatic_retry": false
+      }
+    ],
+    "round_count": 13,
+    "science_calls": 0,
+    "external_provider_calls": 0,
+    "cost_optimizer_implemented": false,
+    "scientific_range_adopted": false,
+    "global_RMSE_bound": null,
+    "sufficient_N": null,
+    "winner": null,
+    "mandatory_stop": true
+  },
+  "real_science_calls": 0,
+  "final_candidate_selection": null,
+  "global_RMSE_bound": null
+}

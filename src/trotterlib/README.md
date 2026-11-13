@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[pr_rpe_signal_plan](../trottertracks/pr_rpe_signal_plan.py)：Bのvalidator/exact_scalarと既存physical recipeを受け、全M+1roundのsignal job・欠測・SOURCEを整理するmetadata-only helper。candidate生成/管理・normalizer/N/C/G・optimizerなし。[REPORT](../../docs/research/pr_rpe_search_design_20261113/REPORT.md)／[7人工test](../../tests/check_pr_rpe_signal_plan.py)。新numerical PR providerは設計段階。
+
 [H4 PF長時間の二経路診断](../../docs/research/pf_power_stability_h4_20261113/REPORT.md)：既存`pf_power_stability`の同順expm・失敗値保持、screenのdeterministic_step、保存H/state loaderを再利用。helper dd24dd329、recipe256caad34を保全し、[専用runner](../../scripts/run_pf_power_stability_h4.py)で1候補2meanのみ実行。directの局所gate通過と全RMSEを区別し、production screen backendを勝手に変更しない。
 
 [pf_power_stability](../trottertracks/pf_power_stability.py)：供給matrix/specのGram・再構成診断、明示driver・同順expm、失敗時も残差を返すpower診断。既存`h46_m5_plan.weights`・screenのsigned順・`algorithm_codesign.numerics.Spectrum` observerを再利用。旧screenへは未接続。[人工REPORT](../../docs/research/pf_power_stability_artificial_20261113/REPORT.md)／[test](../../tests/check_pf_power_stability_artificial.py)。実H4未実行。
