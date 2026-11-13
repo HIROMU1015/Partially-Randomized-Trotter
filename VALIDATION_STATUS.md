@@ -1,5 +1,7 @@
 # Validation status
 
+[Pauli LD1/2全13round signal](docs/research/df_head_pauli_tail_all_round_results_20261114/REPORT.md)：承認済み未評価22件が全局所gate通過、旧P1の4件をSOURCE付き再利用し全26row完成。最大closure4.3728735746e−10・power unitarity8.81894e−12（gate1e−9）、reference pair9.27981e−12（gate1e−10）。人工6＋P1回帰6 PASS、新reference/旧mean再計算/full256 mean/N/MSE/compile/C/G0。十分N/global RMSEは未資格、公開後STOP。
+
 [Pauli tail限定P1](docs/research/df_head_pauli_tail_p1_results_20261114/REPORT.md)：SOURCE05447d1d4の6meanが全局所数値gate通過。LD1/m0/R2のDF/Pauli corrected差2.7756e−17、full256/36最大mean差3.4332e−16。共通κ4候補は旧DFとR不一致でsignal差を計算せず、元SOURCE/allowanceを保持。人工6＋既存17 PASS、normalizer5unique、新reference/DF mean/N/RMSE/compile/C/G0。全RPE未資格/null、公開後STOP。
 
 [DF head＋Pauli tail P0実行](docs/research/df_head_pauli_tail_p0_results_20261114/REPORT.md)：科学SOURCE fd111f989で保存H4 DF10/LD1・LD2を一回検証、81/81数値gate通過。full tail再構成残差最大7.1102e−15（gate1e−9）、state lift/norm一致。各184項中136labelは単独でsector漏れ、合計/headは保存。人工5＋回帰4 PASS。P1/mean/eigh/reference/finite B/compile/N/C/G0、厳密operator証明・全RPE未資格、公開後STOP。

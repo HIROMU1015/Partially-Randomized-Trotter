@@ -1,5 +1,7 @@
 # 文書索引
 
+[DF head＋Pauli tail全13round結果](research/df_head_pauli_tail_all_round_results_20261114/REPORT.md)：新22mean＋P1再利用4mean、LD1/LD2各13round packet完成。[B/C/D HANDOFF](research/df_head_pauli_tail_all_round_results_20261114/HANDOFF.md)／[全26row](research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json)。数値gate全通過、技術12 PASS、canonical/旧SOURCE保全、新reference/N/MSE/C/G0、公開後STOP。
+
 [DF head＋Pauli tail P1科学結果](research/df_head_pauli_tail_p1_results_20261114/REPORT.md)：LD1/2二時点・固定R/full対照の6mean、全局所数値gate通過。[B/C/D HANDOFF](research/df_head_pauli_tail_p1_results_20261114/HANDOFF.md)／[B partial mean packet](research/df_head_pauli_tail_p1_results_20261114/MEAN_HANDOFF.json)。B辞書付き新ID、全13round metadata・取得2点/prefixだけを分離。技術23 PASS、新reference/N/C/G0、公開後STOP。
 
 [DF head＋Pauli tail P0科学結果](research/df_head_pauli_tail_p0_results_20261114/REPORT.md)：LD1/2の184項辞書・λ/scalar・full256/sector36に81数値gate通過。個別136label漏れと合計sector保存を分離。[B/C/D HANDOFF](research/df_head_pauli_tail_p0_results_20261114/HANDOFF.md)、人工9 PASS、mean/価格/N/Gなし、公開後STOP。
