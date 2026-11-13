@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`run_h4_s3_statistics.py`](run_h4_s3_statistics.py)：[採択済みS3固定1実験のcaller](../docs/research/rpe_s3_final_plan_20261113/run01/HANDOFF.md)。code ab12/input bf515を再利用し、n43,819/seed20261113・保存nominalを固定。新規出力専用、全trial gzipと主/副summaryを保存。run01は完了済みで、無断再実行しない。
+
 [`bench_rpe_s3_batch_artificial.py`](bench_rpe_s3_batch_artificial.py)：[R3統合後の性能比較](../docs/research/rpe_decoder_r3_integration_20261113/REPORT.md)。実B simulateのscalar/batchを人工13round/512trialで測定し、fresh subprocessの時間・peak RSS・全出力digestを保存する。実分子artifactを読まない、新規JSON出力のみ。
 
 [`prepare_rpe_s3_intake.py`](prepare_rpe_s3_intake.py)：A169d/bba物理packet、C83d K0/K1、Daf6残差interfaceと受入済みFull PF coverageを[metadata接続](../docs/research/rpe_s3_readiness_20261113/HANDOFF.md)。新規出力専用、S3/確率生成/実C−S/Gの実行optionなし。

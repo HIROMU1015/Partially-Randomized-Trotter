@@ -1,5 +1,7 @@
 # 文書索引
 
+[S3 run01 REPORT](research/rpe_s3_final_plan_20261113/run01/REPORT.md)／[結果の資格とHANDOFF](research/rpe_s3_final_plan_20261113/run01/HANDOFF.md)／[主評価](research/rpe_s3_final_plan_20261113/run01/PRIMARY.json)：固定43,819反復、条件付きRMSE .000684720262 Ha、未解決0/CP上端約10^−4。供給mean/proxy/IIDのpilot観測。全population RMSE・十分N/global bound/実Gの認定なし、全trial保全。
+
 [S3最終科学計画案](research/rpe_s3_final_plan_20261113/SCIENTIFIC_PLAN.md)／[REPORT](research/rpe_s3_final_plan_20261113/REPORT.md)／[ユーザー採択・B実行HANDOFF](research/rpe_s3_final_plan_20261113/HANDOFF.md)：固定13round/1 nominal、proxy/IID/loss/support/精度/confidenceと43,819反復を提案。未採択・未実行、科学実行許可は別途必要。
 
 [R3→S3統合REPORT](research/rpe_decoder_r3_integration_20261113/REPORT.md)／[scalar/batch切替](research/rpe_decoder_r3_integration_20261113/HANDOFF.md)／[人工性能](research/rpe_decoder_r3_integration_20261113/BENCHMARK.json)：60技術test、人工512trialで約652倍、実H4 S3/科学的RMSE認定なし。旧科学SOURCE・未資格/null保持。

@@ -1,0 +1,93 @@
+{
+  "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+  "code_source": "ab12b69120323379b0aae572e7f62692a5819125",
+  "caller_source": {
+    "commit": "7486b91582c01e0313257c03ca9f58e9c3326847",
+    "path": "scripts/run_h4_s3_statistics.py"
+  },
+  "input_source": {
+    "commit": "bf515a976f1987ad6a19c61d14689b27b0894542",
+    "path": "docs/research/rpe_s3_readiness_20261113/metadata01/STATISTICS_INPUTS.json",
+    "sha256": "bfe44b64045fae39e2f5ff5fd996309ffc8411335d571c7e0328695eaa20a8f8"
+  },
+  "configuration_source": {
+    "commit": "bf515a976f1987ad6a19c61d14689b27b0894542",
+    "path": "docs/research/h4_s0_v2_integration_20261113/run01/CONFIGURATION_V2.json"
+  },
+  "plan_source": {
+    "commit": "ee1d456dcd1cb47ae1f404b01a62447ede22a8c1",
+    "path": "docs/research/rpe_s3_final_plan_20261113/SCIENTIFIC_PLAN.md"
+  },
+  "A_physical_contract": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+  "A_thirteen_round_results": "169d3316dd008eb98dd9be56fe4ecefc5c1a7d60",
+  "scientific_conditions_adopted": true,
+  "repetitions": 43819,
+  "seed": 20261113,
+  "RNG": "PCG64",
+  "nominal_N_XY": [
+    64,
+    60,
+    56,
+    52,
+    47,
+    43,
+    38,
+    34,
+    30,
+    25,
+    21,
+    17,
+    12
+  ],
+  "policy": {
+    "kind": "IID_SHOTS_INDEPENDENT_AXES_ROUNDS_AND_REPETITIONS",
+    "source": {
+      "commit": "ee1d456dcd1cb47ae1f404b01a62447ede22a8c1",
+      "path": "docs/research/rpe_s3_final_plan_20261113/SCIENTIFIC_PLAN.md"
+    },
+    "target_law": "ideal_finite_RTE_law"
+  },
+  "count_caller": "EXACT_SIGNED_INTEGER_SUM_THEN_BINARY64_RATIO_V1",
+  "batch_decoder": "trottertracks.rpe_decoder_fast.decode_sampled_counts",
+  "target": {
+    "kind": "CONDITIONAL_SAVED_SOLVER_PROXY",
+    "energy_ha": -2.1663874486347634,
+    "source": {
+      "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+      "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+      "selector": [
+        "records",
+        5,
+        "diagnostics"
+      ]
+    },
+    "energy_shift_ha": 0,
+    "ground_state_certified": false
+  },
+  "primary_unresolved_loss": "UNDEFINED",
+  "include_loss_envelope": true,
+  "envelope_unresolved_loss_interval_Ha2": [
+    0.0,
+    4096.0
+  ],
+  "energy_support_Ha": [
+    -32.0,
+    32.0
+  ],
+  "uniform_loss_upper_Ha2": 4096.0,
+  "planned_MSE_endpoint_half_width_Ha2": 40.96,
+  "component_confidence": 0.975,
+  "joint_nominal_confidence": 0.95,
+  "numerical_scope": "BINARY64_FIXED_SUPPLIED_MEANS_PROXY_IID_MODEL_NOT_PHYSICAL_CERTIFICATION",
+  "physical_error_contract_source": {
+    "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+    "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json"
+  },
+  "original_prepared_target_and_qualification_unchanged": true,
+  "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+  "numpy_version": "1.26.4",
+  "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39",
+  "sufficient_N": null,
+  "global_RMSE_bound": null,
+  "G": null
+}

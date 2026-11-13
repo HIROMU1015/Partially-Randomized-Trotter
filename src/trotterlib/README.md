@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[S3固定H4科学run01](../../docs/research/rpe_s3_final_plan_20261113/run01/REPORT.md)：既存rpe_decoder_statistics/fastを無変更で再利用し43,819反復。条件付きRMSEと未解決率・任意loss感度を区別。主population RMSE/十分N/global bound/C/Gの認定なし、追加実行は別scope。
+
 [R3のS3統計接続](../../docs/research/rpe_decoder_r3_integration_20261113/HANDOFF.md)：trottertracks.rpe_decoder_fastをA7f1fから無変更取込み、rpe_decoder_statisticsの任意batch hookへ接続。元scalar/vectorizedは無変更、scalar規則・exact count・RNG・loss/CIを保持。60技術test、実S3なし。
 
 [S3入力のV2統合](../../docs/research/rpe_s3_readiness_20261113/REPORT.md)：trottertracks.rpe_s3_intakeとrpe_diagnostic_intakeの新10round validatorが既存mean_from_a/prepare/構造受入を再利用。D compiled_residualをbyte一致で取込み、値なし残差・law不一致・未資格sumを分離。149技術test、decoder/controller/統計核は不変。
