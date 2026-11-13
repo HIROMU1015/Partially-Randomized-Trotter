@@ -54,8 +54,12 @@ def price_metadata(price, axis):
     return out
 
 
-def build():
-    a, d, trace, native = (read(SOURCES[k]) for k in ('A', 'D', 'D_TRACE', 'D_INPUT'))
+def build(*, a_source=None, labels=None):
+    sources=deepcopy(SOURCES)
+    if a_source is not None:sources['A']=deepcopy(a_source)
+    a, d, trace, native = (read(sources[k]) for k in ('A', 'D', 'D_TRACE', 'D_INPUT'))
+    candidate_key='shortlist' if 'shortlist' in a else 'configurations'
+    science_source=a.get('scientific_source',a.get('science_source'))
     api = C.published_api(str(ROOT))
     physical_binding = native['inputs']['H4']['binding']
     assert all(C.p.same(v, a['shared']['binding'].get(k)) for k, v in physical_binding.items())
@@ -70,11 +74,12 @@ def build():
     assert trace['source_checks']['status'] == 'EXACT_METADATA_MATCH'
     assert trace['source_checks']['items']['long_time_schedule_and_scalar'] is True
     weights_path = 'src/trotterlib/h46_m5_plan.py'
-    assert C.blob(ROOT, a['scientific_source'], weights_path) == C.blob(ROOT, SOURCES['D']['commit'], weights_path)
+    assert C.blob(ROOT, science_source, weights_path) == C.blob(ROOT, SOURCES['D']['commit'], weights_path)
     by_id = {r['physical_candidate_id']: (i, r) for i, r in enumerate(d['rows'])}
     assert len(by_id) == len(d['rows'])
     candidates, cells = [], []
-    for index, candidate in enumerate(a['shortlist']):
+    for index, candidate in enumerate(a[candidate_key]):
+        if labels is not None and candidate['label'] not in labels:continue
         ctor = candidate['constructor']
         base = read(ctor['base'])
         for key in ctor['base_selector']:
@@ -88,10 +93,10 @@ def build():
         assert C.p.same(config['spec']['profile'], profile)
         label = candidate['label']
         candidates.append(dict(label=label, configuration_id=config['id'], constructor=deepcopy(ctor),
-            candidate_source=dict(SOURCES['A'], selector=['shortlist', index]),
+            candidate_source=dict(sources['A'], selector=[candidate_key, index]),
             interpretation='CURRENT_COMPARISON_CANDIDATE_NOT_COST_WINNER',
             law=deepcopy(config['spec']['law']),
-            science_source=a['scientific_source'], preparation_source=a['preparation']))
+            science_source=science_source, preparation_source=a.get('preparation',a.get('plan_source'))))
         for req, row in zip(requests, candidate['rounds'], strict=True):
             physical = row['physical_candidate']; m = row['m']
             assert req['m'] == m and C.p.same(req['physical_candidate'], physical)
@@ -119,13 +124,17 @@ def build():
                 cells.append(dict(label=label, configuration_id=config['id'], m=m, axis=axis,
                     canonical_candidate_id=row['canonical_candidate_id'],
                     identity_and_law_source=dict(generator='C.configure+D.full_pf_spec; canonical B round',
-                        constructor_ref=['candidates', index, 'constructor'], round_index=m),
+                        constructor_ref=['candidates', len(candidates)-1, 'constructor'], round_index=m),
                     physical_candidate=deepcopy(physical),
                     T=deepcopy(row['T']), q_PF=row['q_PF'], q_RPE=row['q_RPE'],
                     requested_delta=deepcopy(ctor['delta_pf']), actual_delta=deepcopy(row['actual_delta_pf']),
                     structure=deepcopy(req['structure']),
-                    candidate_source=dict(SOURCES['A'], selector=['shortlist', index, 'rounds', m]),
-                    numerical_step_source=step_source(row['eigensystem_source']),
+                    candidate_source=dict(sources['A'], selector=[candidate_key, index, 'rounds', m]),
+                    numerical_step_source=(step_source(row['eigensystem_source']) if 'eigensystem_source' in row else
+                        deepcopy(row['effective_spectrum_source']) if 'commit' in row['effective_spectrum_source'] else
+                        dict(commit=sources['A']['commit'],
+                            path='docs/research/h4_full_pf_followup_results_20261114/'+row['effective_spectrum_source']['path'],
+                            science_source=row['effective_spectrum_source']['science_source'])),
                     receipt_catalog_status=status, direct_evidence=evidence,
                     reuse=('SAVED_NATIVE_DIRECT_AVAILABLE_CONSUMER_LOWERING_NOT_ADOPTED' if evidence else
                            'MISSING_IN_CATALOG' if match else 'OUTSIDE_CHECKED_CATALOG'),
@@ -136,9 +145,9 @@ def build():
                     consumer_price_record_created=False, mean_C=None, qualified_for_full_RPE=False,
                     numerical_model_error=None, N=None, G=None))
     assert len(candidates) == 3 and len(cells) == 78
-    assert sum(bool(r['direct_evidence']) for r in cells) == 10
+    if labels is None:assert sum(bool(r['direct_evidence']) for r in cells) == 10
     assert not any(k in sys.modules for k in ('numpy', 'scipy', 'qiskit', 'pyscf'))
-    return dict(status='STATIC_METADATA_CONNECTION_NO_PRICE_ARITHMETIC', sources=SOURCES,
+    return dict(status='STATIC_METADATA_CONNECTION_NO_PRICE_ARITHMETIC', sources=sources,
         physical_binding=physical_binding, profile=profile, native_cost_policy=native['cost_policy'],
         D_receipt_source_checks_reused=trace['source_checks'],
         D_preparation_trace_reused=trace['private_preparation_check']['H4'],

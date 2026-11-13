@@ -129,9 +129,10 @@ class PriceProvider:
     DIRECT evidence remains externally supplied; no receipt acceptance audit or
     numeric model evaluation occurs. Missing cells reuse I's pending metadata.
     """
-    def __init__(self,root,request,records=(),*,profile_extension,selections=None):
+    def __init__(self,root,request,records=(),*,profile_extension,selections=None,comparison_policy=None):
         self.root=root;self.request=deepcopy(request);self.records=deepcopy(list(records))
         self.extension=deepcopy(profile_extension);self.selections=deepcopy(selections or {})
+        self.comparison_policy=deepcopy(comparison_policy)
 
     def __call__(self):
         req=self.request;B=I.providers(str(self.root)).B;I._validate(self.root,req)
@@ -174,4 +175,11 @@ class PriceProvider:
             bindings.append(dict(identity=deepcopy(row['identity']),law_binding=deepcopy(row['law_binding']),axis=axis,
                 cohort=chosen['cohort'],price_source=deepcopy(chosen['source']),source=dict(module=MODULE),
                 physical_context=deepcopy(scope['physical_context']),profile_extension=deepcopy(self.extension),mean_interval=None))
-        return dict(prices=prices,price_bindings=bindings,cohorts=cohorts,price_extension=deepcopy(self.extension))
+            for field in ('implementation','implementation_evidence'):
+                if field in chosen:bindings[-1][field]=deepcopy(chosen[field])
+        out=dict(prices=prices,price_bindings=bindings,cohorts=cohorts,price_extension=deepcopy(self.extension))
+        if self.comparison_policy is not None:
+            from .price_implementation_guard import check
+            check(self.root,req['configuration'],prices,cohorts=cohorts,bindings=bindings,policy=self.comparison_policy)
+            out['comparison_policy']=deepcopy(self.comparison_policy)
+        return out

@@ -217,7 +217,8 @@ def price_requests(root,request,*,input_source=None,execution_source=None,axes=(
 
 def compare(root, request, signal_packet, allocations, evaluations, prices, *, statistical_contract,
             cohorts, price_extension=None, price_bindings=(), interval_contract=None,
-            price_policy='qualified_expectation',unexplored_scope='OUTSIDE_EXPLICIT_ALLOCATION_MENU'):
+            price_policy='qualified_expectation',unexplored_scope='OUTSIDE_EXPLICIT_ALLOCATION_MENU',
+            comparison_policy=None):
     """Existing W.prepare/compare. No diagnostic or provider runs implicitly.
 
     External risk evidence must name the actual consumed signal input. Missing
@@ -245,6 +246,16 @@ def compare(root, request, signal_packet, allocations, evaluations, prices, *, s
             blockers.append('N_SIGNAL_INPUT_BINDING_MISSING:'+evaluation['allocation']['allocation_id']);continue
         if not C.p.same(binding,signal_input(signal_packet)):raise ValueError('N evidence used different signal/SOURCE/target')
         accepted.append(evaluation)
+    # Legacy synthetic fixtures keep their original API. Scientific arithmetic
+    # requires an explicit scenario plus SOURCE-bound implementation sidecars.
+    synthetic_only=bool(accepted) and all((e.get('n_packet') or {}).get('evidence_kind')=='SYNTHETIC_ONLY' for e in accepted)
+    implementation=None
+    if comparison_policy is not None:
+        from .price_implementation_guard import check
+        implementation=check(root,config,prices,cohorts=cohorts,bindings=price_bindings,policy=comparison_policy)
+    elif not synthetic_only:
+        blockers.append('MISSING_PRICE_COMPARISON_IMPLEMENTATION_POLICY')
+        ready=False
     physical_ready=not any((p.get('mean') or {}).get('rz_count') is not None and 'quantity' not in p for p in prices)
     for binding in price_bindings:
         m=binding.get('identity',{}).get('m')
@@ -262,6 +273,7 @@ def compare(root, request, signal_packet, allocations, evaluations, prices, *, s
     return dict(request=deepcopy(request),signal_input=signal_input(signal_packet),shot_entries=entries,
         supplied_evaluations=deepcopy(evaluations),supplied_prices=deepcopy(prices),
         comparison=result,blockers=sorted(set(blockers)),
+        price_implementation_check=implementation,
         source=dict(module=MODULE,A=A_SOURCE,B=B_SOURCE,C=C_SOURCE,D_HANDOFF=D_SOURCE),scientific_claim_adopted=False)
 
 
@@ -270,5 +282,11 @@ def select(root, results, *, formula_menu=None, unexplored_scope='OUTSIDE_EXPLIC
     api=providers(str(root));configs=[r['request']['configuration'] for r in results]
     kinds={e['n_packet']['evidence_kind'] for r in results for e in r['supplied_evaluations'] if e.get('n_packet')}
     if len(kinds)>1:raise ValueError('Synthetic and scientific N evidence cannot share a menu')
+    policies=[(r.get('price_implementation_check') or {}).get('policy') for r in results]
+    if any(p is not None for p in policies):
+        if any(p is None or not C.p.same(p,policies[0]) for p in policies):
+            raise ValueError('One common SOURCE-bound implementation comparison policy required')
+    elif kinds!={'SYNTHETIC_ONLY'} and any(r['comparison']['outer_evaluation'] is not None for r in results):
+        raise ValueError('Scientific selection requires implementation comparison policy')
     representatives=[r['comparison']['outer_evaluation'] for r in results if r['comparison']['outer_evaluation'] is not None]
     return api.B.select(configs,representatives,formula_menu=formula_menu,unexplored_scope=unexplored_scope)
