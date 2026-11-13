@@ -16,6 +16,8 @@ PHYSICAL_PATH = 'src/trottertracks/full_baseline_v2_requests.py'
 COVERAGE_PATH = 'src/trottertracks/full_pf_saved_inventory.py'
 COVERAGE_JSON = 'docs/research/d_full_pf_saved_evidence_coverage_20261113/COVERAGE.json'
 EXAMPLE_JSON = 'docs/research/d_full_baseline_interface_update_20261113/REQUEST_EXAMPLE_ARTIFICIAL.json'
+RECEIPT_RELEASE = 'e7dca5f7301c8633b17a59b6a7161331303aef2d'
+RECEIPT_DIR = 'docs/research/d_full_pf_full_h_v2_final_receipts_20261113/'
 
 
 @lru_cache(maxsize=2)
@@ -184,3 +186,62 @@ def join_saved_coverage(packet, cov):
         if saved:
             _same(row['physical_candidate'], saved['physical_candidate'], 'D_SAVED_PHYSICAL_ID_COLLISION')
     return source.for_packet(packet, cov)
+
+
+def accept_receipt_coverage(previous, current, receipts):
+    """Accept D e7dca5f's published 73/0/63; no receipt rerun/RZ recount.
+
+    The old 56/17/63 inventory remains immutable historical evidence. This
+    classifies saved physical C, not RMSE adequacy or an adopted V2 menu.
+    """
+    old=accept_saved_coverage(previous)
+    _same(current['previous_coverage_commit'],COVERAGE,'D_PREVIOUS_COVERAGE_SOURCE_CHANGED')
+    _same(receipts['previous_coverage_commit'],COVERAGE,'D_RECEIPTS_PREVIOUS_SOURCE_CHANGED')
+    _same(current['status'],'FULL_PF_SAVED_EVIDENCE_COVERAGE_RECEIPTS_TRACED_METADATA_ONLY','D_RECEIPT_COVERAGE_KIND')
+    for packet in (current,receipts):
+        for field,value in dict(values_recomputed=False,new_compile=0,rz_recount=0).items():
+            _same(packet[field],value,'D_NEW_NUMERICAL_WORK_NOT_METADATA:' + field)
+    _same(current['rmse_policy_qualified'],False,'D_RECEIPTS_ARE_NOT_RMSE_QUALIFICATION')
+    _same(current['receipt_source_checks'],receipts['source_checks'],'D_RECEIPT_SOURCE_CHECKS_DIFFER')
+    _same(receipts['source_checks']['status'],'EXACT_METADATA_MATCH','D_RECEIPT_SOURCE_UNRESOLVED')
+    _same(current['changes'],receipts['changes'],'D_RECEIPT_CHANGE_LIST_DIFFERS')
+    for field in ('candidates','groups','signal','reference'):
+        _same(current['totals'][field],previous['totals'][field],'D_NONPRICE_TOTALS_CHANGED:' + field)
+    byid={r['physical_candidate_id']:r for r in current['rows']}
+    if len(byid)!=len(current['rows']) or set(byid)!={r['physical_candidate_id'] for r in previous['rows']}:
+        raise ValueError('D_RECEIPT_CANDIDATE_SCOPE_CHANGED')
+    changed=[]
+    for before in previous['rows']:
+        after=byid[before['physical_candidate_id']]
+        for field in ('physical_candidate','signal','reference','numerical','binding','physical_reasons','group','missing'):
+            _same(after[field],before[field],'D_RECEIPT_NONPRICE_EVIDENCE_CHANGED:' + field)
+        expected_formula=p.structure(dict(formula=before['formula'],method='FULL',q=1,R_outer=None))['formula_id']
+        _same(after['formula_id'],expected_formula,'D_RECEIPT_CANONICAL_FORMULA_MISMATCH')
+        _same(after['physical_formula_label'],before['formula_id'],'D_PHYSICAL_FORMULA_HISTORY_LOST')
+        if len(before['prices'])!=len(after['prices']):raise ValueError('D_RECEIPT_PRICE_SCOPE_CHANGED')
+        for old_price,new_price in zip(before['prices'],after['prices']):
+            for field in ('kind','cohort','n','carrier'):
+                _same(new_price[field],old_price[field],'D_SAVED_DIRECT_C_SOURCE_OR_COHORT_CHANGED')
+            if not new_price['kind'].startswith('DIRECT_COMPILED_DETERMINISTIC'):
+                raise ValueError('D_STRUCTURE_OR_MODEL_IS_NOT_DIRECT_C')
+            for axis in p.AXES:
+                _same(new_price['axes'][axis]['rz_count'],old_price['axes'][axis]['rz_count'],'D_PRICE_VALUE_CHANGED')
+        for axis in p.AXES:
+            was=before[axis];now=after[axis]
+            _same(now,'EXACT_METADATA_MATCH' if was=='CONDITIONAL_REUSE' else was,'D_RECEIPT_STATUS_UNEXPECTED')
+            if was=='CONDITIONAL_REUSE':
+                price=next(v for v in after['prices'] if v.get('receipt_trace'))
+                if (price['axes'][axis]['status']!='EXACT_METADATA_MATCH'
+                        or not any(e['axes'].get(axis,{}).get('status')=='EXACT_METADATA_MATCH' for e in price['receipt_trace']['evidence'])):
+                    raise ValueError('D_EXACT_STATUS_REQUIRES_PUBLISHED_AXIS_RECEIPT')
+        if before['X']=='CONDITIONAL_REUSE' or before['Y']=='CONDITIONAL_REUSE':changed.append(after['physical_candidate_id'])
+    if set(changed)!={v['physical_candidate_id'] for v in current['changes']}:
+        raise ValueError('D_RECEIPT_PROMOTION_SCOPE_DIFFERS')
+    for axis in p.AXES:
+        _same(dict(Counter(r[axis] for r in current['rows'])),current['totals'][axis],'D_RECEIPT_TOTALS_DIFFERS')
+    return dict(source=dict(commit=RECEIPT_RELEASE,path=RECEIPT_DIR+'COVERAGE_V2.json'),
+        receipt_source=dict(commit=RECEIPT_RELEASE,path=RECEIPT_DIR+'RECEIPTS.json'),
+        previous_source=old['source'],previous_totals=old['totals'],totals=deepcopy(current['totals']),
+        promoted_physical_ids=changed,receipt_traces_copied_not_reexecuted=True,
+        current_RMSE_qualification=False,candidates_adopted_as_menu=False,G=None,
+        sufficient_N=None,global_RMSE_bound=None)

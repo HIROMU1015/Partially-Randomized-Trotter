@@ -1,0 +1,592 @@
+{
+  "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+  "M": 12,
+  "h": {
+    "numerator": 3602879701896397,
+    "denominator": 36028797018963968
+  },
+  "kappa": {
+    "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+    "value": {
+      "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+      "denominator": 539496659426909122096437389293855970805348475396548904610992201
+    },
+    "definition_source": {
+      "url": "https://arxiv.org/pdf/2503.05647v2",
+      "sections": [
+        "B.2",
+        "E.1",
+        "E.3"
+      ],
+      "equations": [
+        "A38",
+        "B30",
+        "E1",
+        "E2",
+        "E21",
+        "E22"
+      ]
+    }
+  },
+  "rmse_policy": {
+    "family": "PR_PAPER_RMSE",
+    "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+    "source": {
+      "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+      "path": "scripts/run_pr_rpe_rmse_s0.py",
+      "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+    },
+    "target_rmse_ha": {
+      "numerator": 3890625249,
+      "denominator": 2441406250000
+    },
+    "error_contract": {
+      "A_policy": {
+        "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+        "metric": "energy_RMSE",
+        "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+        "family": "PR_PAPER_RMSE",
+        "target_rmse": "3890625249/2441406250000",
+        "qpe_rmse": "3890625249/4882812500000",
+        "evolution_rmse": "3890625249/4882812500000",
+        "error_rule": "minkowski",
+        "normalization_rule": "finite_B_diagnostic",
+        "N_terminal": 11,
+        "slope_D": 4,
+        "Cmax": {
+          "PF": 0.08,
+          "PR": 0.1
+        },
+        "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+        "source": {
+          "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+          "path": "scripts/run_pr_rpe_rmse_s0.py",
+          "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+        },
+        "paper": {
+          "url": "https://arxiv.org/pdf/2503.05647v2",
+          "sections": [
+            "B.2",
+            "E.1",
+            "E.3"
+          ],
+          "equations": [
+            "A38",
+            "B30",
+            "E1",
+            "E2",
+            "E21",
+            "E22"
+          ]
+        },
+        "high_probability_compatible": false
+      },
+      "state_assumption": "saved_numerical_state_conditional_ground",
+      "energy_prior_ha": [
+        -4.994249624417489,
+        -2.0985459369977186
+      ],
+      "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+    },
+    "scientific_status": "PROPOSED_NOT_ADOPTED"
+  },
+  "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1",
+  "prior": [
+    -4.994249624417489,
+    -2.0985459369977186
+  ],
+  "target": {
+    "quantity": "ORIGINAL_DF_H_TARGET_ENERGY",
+    "binding": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 10,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H4_TOL_ONLY_DF10",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "system": "H4",
+      "source": {
+        "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+        "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+      },
+      "decomposition": {
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "contract": {
+          "completion": "saved_weighted_Hermitian_completion",
+          "fragment_order": "saved_snapshot_order",
+          "preparation_binding": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+            "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+          },
+          "state_preparation_cost": 0,
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          }
+        },
+        "source": {
+          "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+          "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+        }
+      }
+    },
+    "energy_shift_ha": 0,
+    "energy_ha": null,
+    "uncertainty_ha": null,
+    "source": {
+      "requirement": "A_ORIGINAL_H_TARGET_REFERENCE_AND_STATE_ERROR"
+    }
+  },
+  "shot_policy": {
+    "meaning": "NOMINAL",
+    "source": {
+      "commit": "3e035c0d61386010f59ad7ea792bc7a5cefd18ac",
+      "path": "docs/research/h4_pr_m1_rmse_results_20261113/run01/N_HANDOFF.json"
+    }
+  },
+  "decoder_SOURCE": {
+    "commit": "3216d27a69ac8532d2a22e78f5f94491d202d238",
+    "wrapper": "src/trottertracks/pr_rpe_rmse.py:decode_supplied_coordinates",
+    "scalar_decoder": "src/trotterlib/rpe_four_round_phase_validation.py:reconstruct_rpe_phase",
+    "statistics": "src/trotterlib/rpe_hadamard_failure_validation.py"
+  },
+  "mean_values_imported_for_statistics": false,
+  "input_complete": false,
+  "statistics_executed": false,
+  "nominal_rounds": [
+    0,
+    1,
+    6
+  ],
+  "sufficient_N": null,
+  "global_RMSE_bound": null,
+  "empirical_H4_RMSE": null,
+  "G": null,
+  "rows": [
+    {
+      "m": 0,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.1,
+        "q": 1,
+        "delta": 0.1,
+        "R_outer": 2,
+        "K": 2,
+        "id": "53e00d8b07d1547d19a7"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT"
+      ],
+      "shots": {
+        "m": 0,
+        "N_X": 64,
+        "N_Y": 64
+      },
+      "canonical_candidate_id": "RMSE:e9ac70f2efddf2b25d621da1a2ee0f3d43c1248eb15ef8ddabeaae3c840954c8",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 1,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.2,
+        "q": 2,
+        "delta": 0.1,
+        "R_outer": 4,
+        "K": 2,
+        "id": "c00e00dc1e9c414fb7d9"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT"
+      ],
+      "shots": {
+        "m": 1,
+        "N_X": 60,
+        "N_Y": 60
+      },
+      "canonical_candidate_id": "RMSE:d4d3cc0cdefcd7ffeebfe958d43b6fffa86a2afa212d9412622e98a1c148a165",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 2,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.4,
+        "q": 4,
+        "delta": 0.1,
+        "R_outer": 8,
+        "K": 2,
+        "id": "f2fcd66b1ef9ae2da5df"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 2,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:63450d74dfa5e01ae02eea22337b9664edf14c6ae51bbb61fc53e7be47324800",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 3,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.8,
+        "q": 8,
+        "delta": 0.1,
+        "R_outer": 16,
+        "K": 2,
+        "id": "045843b2429bece6f29b"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 3,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:f9b12b7760639ec8ea4f24eab861e169925cd74bb5132b5f53084d5dba932a50",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 4,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 1.6,
+        "q": 16,
+        "delta": 0.1,
+        "R_outer": 32,
+        "K": 2,
+        "id": "3df0cfd3356c358aeda8"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 4,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 5,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 3.2,
+        "q": 32,
+        "delta": 0.1,
+        "R_outer": 64,
+        "K": 2,
+        "id": "57d641a831d76360b570"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 5,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:ad971e4d72980ca542dd355b90508d890ac3e0cb015f4864a1165d750a783fa9",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 6,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 6.4,
+        "q": 64,
+        "delta": 0.1,
+        "R_outer": 128,
+        "K": 2,
+        "id": "2a8c6718220eec59d419"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT"
+      ],
+      "shots": {
+        "m": 6,
+        "N_X": 38,
+        "N_Y": 38
+      },
+      "canonical_candidate_id": "RMSE:a4ed2fac90ddbd6bf8e7d5e0077157a66eade4a657d8db01ebf4ad973781def0",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 7,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 12.8,
+        "q": 128,
+        "delta": 0.1,
+        "R_outer": 255,
+        "K": 2,
+        "id": "b42287268e5249dfb4d1"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 7,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:b930b26240f919355695dde78746986abc0532f6ed7f3b2099645e67fde9b019",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 8,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 25.6,
+        "q": 256,
+        "delta": 0.1,
+        "R_outer": 510,
+        "K": 2,
+        "id": "224aef0a626068b43184"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 8,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:009fbcb8271c284163ec32892f8647dfc2923b0b23f4affb3bcfdb7401186d84",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 9,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 51.2,
+        "q": 512,
+        "delta": 0.1,
+        "R_outer": 1020,
+        "K": 2,
+        "id": "06a78c7f9856f373336f"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 9,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:d5cb90de7197434890d7aa09a4c31c961b3328850cc7c06000d2233d78bf4058",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 10,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 102.4,
+        "q": 1024,
+        "delta": 0.1,
+        "R_outer": 2040,
+        "K": 2,
+        "id": "b872ad1347a35c8f4315"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 10,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:d73c35596eba956aa72bbb7fb838ea54eeb58f07e2e917bc09ebd67311da03b8",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 11,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 204.8,
+        "q": 2048,
+        "delta": 0.1,
+        "R_outer": 4080,
+        "K": 2,
+        "id": "d48210cc27c599e268c2"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 11,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:28a56f218e65c55df16725f0a6c781bfb575ef4503ca2122658a6844566724bc",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    },
+    {
+      "m": 12,
+      "candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 409.6,
+        "q": 4096,
+        "delta": 0.1,
+        "R_outer": 8160,
+        "K": 2,
+        "id": "b55c521fdce6a448dbcb"
+      },
+      "issues": [
+        "MISSING_RAW_MEAN",
+        "MISSING_CORRECTED_MEAN_METADATA",
+        "MISSING_FINITE_NORMALIZATION_METADATA",
+        "PHYSICAL_MEAN_UNQUALIFIED",
+        "UNKNOWN_PHYSICAL_ERROR_CONTRACT",
+        "MISSING_N_X",
+        "MISSING_N_Y"
+      ],
+      "shots": {
+        "m": 12,
+        "N_X": null,
+        "N_Y": null
+      },
+      "canonical_candidate_id": "RMSE:0a093e570d2ac17559c024aa58fa17d765457d86ff9bcef98b532a5622f56859",
+      "mean_input": "NOT_SUPPLIED_TO_STATISTICS",
+      "normalization_qualification": null
+    }
+  ],
+  "unresolved_loss_policy": {
+    "kind": "UNDEFINED",
+    "source": "Existing decoder provides no unresolved-trial energy/loss"
+  },
+  "new_scientific_simulation": false,
+  "mandatory_stop": true
+}

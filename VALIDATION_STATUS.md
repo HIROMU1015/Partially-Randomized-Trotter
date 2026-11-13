@@ -1,5 +1,7 @@
 # Validation status
 
+[decoder有限shot/RMSE準備](docs/research/rpe_decoder_statistics_20261113/REPORT.md)：123技術test PASS（新16＋元decoder1＋旧V2 106）。人工解析分布の未解決質量/loss/CI、元branch規則、欠測/未資格/巨大整数とD73/0/63を確認。実H4 Monte Carlo・保存数値再解析・十分N/global bound/実Gは未実行、decoderとA coreは不変、公開後STOP。
+
 [新A/C/D証拠V2受入](docs/research/rpe_new_evidence_intake_20261113/REPORT.md)：人工/回帰106件＋公開A3e035実packetのmetadata受入PASS。m1新scope/元S0、数値SOURCE/identity/law、SとC、D標準4次係数/κなしlayout/全H、136保存分類の非採択を確認。C K0/K1未受入、十分N/global bound/適格C/Gはnull。新科学計算/8次新接続0、公開後STOP。
 
 [A/C/D V2接続・Yoshida4/明示Full-H layout](docs/research/abc_d_v2_integration_20261114/REPORT.md)：新結合12＋D14＋controller17/4方式14/統合12/C12/planner12＝93技術test PASS。公開A/Cの正式照合、nominal/null、SOURCE/law/profile、全H one-body、κなしgroupingの非同一性を確認。8次新接続・検証と旧S0 workflow再実行なし。実N/C/G・科学的baseline採択なし、公開後STOP。
