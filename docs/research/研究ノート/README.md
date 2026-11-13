@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-13：初回PR signal menuの承認待ち案](2026-11-13-pr-rpe-first-signal-menu.md)：LD1対2、26round metadata、exactκ固定、科学実行0。
+
 [2026-11-13：PR全round signal pipeline](2026-11-13-pr-rpe-signal-pipeline.md)：直接expm・finite-Kの数値provider、17人工/metadata test、実科学0。
 
 [2026-11-13：PRの全RPE資源探索設計](2026-11-13-pr-rpe-search-design.md)：Track A順位を非採択、全schedule/B接続・direct PF方針。17技術test、実科学0。

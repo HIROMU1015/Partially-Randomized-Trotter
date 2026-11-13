@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[初回PR全RPE signal menu（承認待ち）](docs/research/pr_rpe_first_signal_menu_20261113/REPORT.md)：prefix1対2、元exactκ/S2/Δ.1/K2/h.1/M12を維持したB V2全26roundをmetadataだけで具体化。[MENU](docs/research/pr_rpe_first_signal_menu_20261113/MENU.json)／[実行案](docs/research/pr_rpe_first_signal_menu_20261113/SCIENCE_PLAN.md)。最大26候補/78complex/normalizer26・新reference0の提案、科学実行/保存再解析0。正式採択・winnerではなく、承認前STOP。
+
 [PRの全round signal provider](docs/research/pr_rpe_signal_pipeline_20261113/REPORT.md)：[数値入口](src/trottertracks/pr_rpe_signal_provider.py)を追加。B canonical scheduleを保持し、直接expm head＋既存finite-K＋独立raw/corrected・matrix power/cacheを接続。新10＋既存7人工/metadata test PASS、実H4・保存再解析・N/C/G・候補探索0。[HANDOFF](docs/research/pr_rpe_signal_pipeline_20261113/HANDOFF.md)／[未承認有限案](docs/research/pr_rpe_signal_pipeline_20261113/SCIENCE_PLAN.md)。公開照合後STOP。
 
 [PRの全RPE資源探索設計](docs/research/pr_rpe_search_design_20261113/REPORT.md)：Track Aの有限T順位を採択せず、prefix/formula/Δ/K・共通κの全schedule評価を設計。B V2のidentity/cost/selectを再利用し、[metadata-only signal plan](src/trottertracks/pr_rpe_signal_plan.py)と[7人工test](tests/check_pr_rpe_signal_plan.py)を追加、旧10と計17技術test PASS。PR-Y4/K横断/gridのAPI差分、[HANDOFF](docs/research/pr_rpe_search_design_20261113/HANDOFF.md)、[未承認有限案](docs/research/pr_rpe_search_design_20261113/SCIENCE_PLAN.md)を明記。実科学・保存再解析・候補最適化0、公開後STOP。

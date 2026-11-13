@@ -1,5 +1,7 @@
 # Validation status
 
+[初回PR全RPE signal menu（承認待ち）](docs/research/pr_rpe_first_signal_menu_20261113/REPORT.md)：既存B validator/metadata生成でLD1/2の2configuration・26round・元exactκ/physical bridgeを照合。NumPy/SciPy/Qiskit非load、実科学・保存signal再解析0。providerの既存17人工/metadata PASSを参照し、科学PASSやN/G資格は追加していない。
+
 [PR全round signal pipeline](docs/research/pr_rpe_signal_pipeline_20261113/REPORT.md)：非可換人工行列・逐次/旧finite kernelとの一致・signed PF・独立raw/corrected・scalar・norm/closure失敗・13round・架空保存loaderを新10件で検証し、旧metadata7件と計17PASS。[数値leaf](src/trottertracks/pr_rpe_signal_provider.py)は実H4未実行。実科学/保存再解析/N/C/G0、十分N/global RMSEは未資格/null。
 
 [PRの全RPE資源探索設計](docs/research/pr_rpe_search_design_20261113/REPORT.md)：B3216正本metadata関数によるMOCK全13round・physical/B identity・欠測/FAIL保全・q/実幅・policy分離を新7人工testで確認。旧V2接続10回帰と計17PASS。実λ評価・新実candidate menu・signal/N/C/G・保存再解析0。数値providerは設計段階、十分N/global RMSE・探索範囲採択は未資格。

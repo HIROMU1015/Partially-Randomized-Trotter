@@ -1,5 +1,7 @@
 # 文書索引
 
+[初回PR全RPE signal menu（承認待ち）](research/pr_rpe_first_signal_menu_20261113/REPORT.md)：LD1/LD2のB canonical configuration・全round整数schedule・exactκを固定した提案。実signal/N/C/Gは未実行、最大26候補/78complex・新reference0。[HANDOFF](research/pr_rpe_first_signal_menu_20261113/HANDOFF.md)。
+
 [PR全round signal pipeline](research/pr_rpe_signal_pipeline_20261113/REPORT.md)：B canonical identity・saved H4 context/referenceと直接expm/finite-Kを接続。10新規＋7metadata test PASS、実科学/保存再解析/候補探索0。[HANDOFF](research/pr_rpe_signal_pipeline_20261113/HANDOFF.md)／[有限案](research/pr_rpe_signal_pipeline_20261113/SCIENCE_PLAN.md)。
 
 [PRの全RPE資源探索設計](research/pr_rpe_search_design_20261113/REPORT.md)：[SOURCE_MAP](research/pr_rpe_search_design_20261113/SOURCE_MAP.json)／[B・価格HANDOFF](research/pr_rpe_search_design_20261113/HANDOFF.md)／[有限科学計画](research/pr_rpe_search_design_20261113/SCIENCE_PLAN.md)／[MOCK入出力](research/pr_rpe_search_design_20261113/ARTIFICIAL_IO.json)。17技術test PASS、実科学・候補最適化0。

@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[初回PR全RPE signal menu（承認待ち）](pr_rpe_first_signal_menu_20261113/REPORT.md)：保存descriptorの隣接prefix1/2、同exactκ/外側条件、B437ba4acdのfixed-A V2で26metadata rowを具体化。保存input/reference再利用、旧meanを新backendへ再ラベルせず、新科学/保存再解析0でSTOP。
+
 [PR全round signal pipeline](pr_rpe_signal_pipeline_20261113/REPORT.md)：uniform PR S2/M5・K2/4/6の数値provider、直接expm・有限RTE・独立raw/corrected・power/cacheを接続。17技術test PASS、実科学0。BのN/G・価格評価は重複実装せず、公開照合後STOP。
 
 [PRの全RPE資源探索設計](pr_rpe_search_design_20261113/REPORT.md)：Track Aの旧順位を使わず全scheduleで同RMSEのN×Cを比較する設計。B/価格接続、direct-head PF・finite-K独立meanの再利用差分、cheap優先順位と厳密除外の区別、未採択2schedule pilot案。17技術test PASS、実科学0、公開後STOP。
