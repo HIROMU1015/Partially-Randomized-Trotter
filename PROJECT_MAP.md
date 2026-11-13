@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR候補依存価格adapter](docs/research/d_candidate_price_adapter_20261113/REPORT.md)／[A/C/B HANDOFF](docs/research/d_candidate_price_adapter_20261113/HANDOFF.md)／[初回取得計画](docs/research/d_candidate_price_adapter_20261113/FIRST_ACQUISITION_PLAN.md)：候補ごとのprepare/head/tail/signed scheduleを既存fast pipelineへ接続。H4 S2/m5・even K、軸指定、source/context/cache照合、mean未資格保持。人工・回帰49 PASS、実H4/保存値再解析/fit/E[C]/Gなし、公開後mandatory STOP。
+
 [RPE候補探索の価格評価・区間選別](docs/research/d_rpe_price_search_design_20261113/REPORT.md)／[候補・N・価格HANDOFF](docs/research/d_rpe_price_search_design_20261113/HANDOFF.md)／[段階的取得・有限科学案](docs/research/d_rpe_price_search_design_20261113/MINIMAL_SCIENCE_PLAN.md)：whole-schedule比較、部分下界と共通価格の差分、判断を左右するcellの精密化を設計。C1固定contextの一般化条件を明記。54人工・回帰PASS、新実H4/再解析/fit/E[C]/Gなし、公開後mandatory STOP。
 
 [全13roundのcompiled価格評価方法](docs/research/d_compiled_price_methods_20261113/REPORT.md)／[C向け特徴量](docs/research/d_compiled_price_methods_20261113/C_HANDOFF.md)／[最小科学案](docs/research/d_compiled_price_methods_20261113/MINIMAL_SCIENCE_PLAN.md)：保存E[S]＋target-R outer-window残差の検証を提案。connected恒等式と未証明tailを区別し、m12はUNKNOWN。人工・回帰42 PASS、新H4/fit/保存値再解析/E[C]/Gなし、公開後mandatory STOP。

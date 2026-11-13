@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[PR候補価格adapter](../../docs/research/d_candidate_price_adapter_20261113/HANDOFF.md)：trottertracks.candidate_price_adapterが既存prepare/DFPartialS2StepRequest/compose/native/compilerを再利用。H4 S2/m5・even Kの候補contextを分離し、signal/N/平均価格推定器を追加しない。
+
 [RPE候補価格の再利用条件](../../docs/research/d_rpe_price_search_design_20261113/HANDOFF.md)：元prepare/compose/wrapper/compilerを使うcandidate-context adapterと、構造S・compiled mean・区間sidecarの接続仕様。新production実装・科学実行なし、人工/既存回帰54 PASS。
 
 [全13roundの残差評価設計](../../docs/research/d_compiled_price_methods_20261113/REPORT.md)：既存compiler/Accountingを変更せず、trottertracks.outer_window_residual_designに与えられた数の差分・共分散・条件付きtail和だけを追加。実H4・fit・価格推定なし、C特徴量定義と未実行の有限診断案。

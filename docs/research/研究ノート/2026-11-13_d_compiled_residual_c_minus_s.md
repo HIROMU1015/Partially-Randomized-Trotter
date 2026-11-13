@@ -49,3 +49,7 @@
 ## 追補：RPE候補探索の価格区間・取得優先度の設計（2026-11-13）
 
 [REPORT](../d_rpe_price_search_design_20261113/REPORT.md)／[HANDOFF](../d_rpe_price_search_design_20261113/HANDOFF.md)／[有限科学案](../d_rpe_price_search_design_20261113/MINIMAL_SCIENCE_PLAN.md)。ユーザーの目的に合わせ、固定L_D1の全26軸高精度化や旧24 local compileを先行要件とせず、whole-schedule候補の同時価格区間・部分下界・共通価格差分による選別を設計した。C1 contextがH4 L_D1/S2/δ=.1に固定されるため新候補には薄いadapterが必要。既存C/B/DのSOURCE/APIを再利用し、候補生成/N solver/第二のcontrollerを作らない。54人工・回帰PASS、新実H4/保存値再解析/fit/E[C]/G0。外部menu/N/γ又はτが未供給で科学scopeはUNRESOLVED、必要時だけ最大16 compileの診断又は必要cellの直接取得を提案する。m12 UNKNOWN、旧SOURCE/raw/STOPを保全し、公開照合後mandatory STOP。
+
+## 追補：候補依存contextと価格取得adapterの技術実装（2026-11-13）
+
+[REPORT](../d_candidate_price_adapter_20261113/REPORT.md)／[HANDOFF](../d_candidate_price_adapter_20261113/HANDOFF.md)／[初回取得計画](../d_candidate_price_adapter_20261113/FIRST_ACQUISITION_PLAN.md)。基点24b0a6eb1から同D branchを継続し、A/B metadata request→候補prepare/head/tail/signed piece→既存fast取得へ接続した。H4 S2/m5、非空ordered split、even K、指定axisを扱い、旧C1 system-only contextを他L_Dへ使わない。fastはaxesの小拡張、compile/cache/fingerprint/Accounting/new ZZは既存を再利用。新20＋fast10/P2 metadata6/残差13＝49技術項目PASS。実H4新build/compile、保存値再解析、fit/E[C]/G0。path価格を平均へ昇格せず、初回対象/round/n/精度/confidenceは未採択。過去SOURCE/raw/STOPを保持し、公開後mandatory STOP。

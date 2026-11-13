@@ -71,13 +71,16 @@ def structural_pair(Accounting, blocks, row, scalar, events):
     return out
 
 
-def make_backend_class(base, science):
+def make_backend_class(base, science, *, axes=('cosine', 'sine')):
     """Extend the pinned C1 Backend explicitly; does not load any scientific input.
 
     `science` is the r_price_phase1_science module from p1_efficient_zz.load_c1_backend.
     Callers must activate efficient_controlled_zz before pricing. A future scientific
     use requires its own fixed SOURCE, inputs, finite scope and explicit permission.
     """
+    axes = tuple(axes)
+    if not axes or len(set(axes)) != len(axes) or any(a not in ('cosine', 'sine') for a in axes):
+        raise ValueError('Explicit unique Hadamard axes required')
     class AcceleratedBackend(base):
         def price_requests(self, cell, index, directory, requests, seeds, laws, *, conditional):
             m, write, read = science.m, science.write, science.read
@@ -109,14 +112,15 @@ def make_backend_class(base, science):
             timed('event_write', lambda: write(directory / 'events_PRIVATE.json', dict(
                 events=events, seeds=seeds, laws=laws, conditional=conditional)))
             event_digest = timed('event_digest', lambda: m.digest(events))
-            S = timed('structural', lambda: [v['structural_rz'] for v in structural_pair(
-                ctx.Accounting, ctx.blocks, c, ctx.scalar, events)])
+            pair = timed('structural', lambda: structural_pair(
+                ctx.Accounting, ctx.blocks, c, ctx.scalar, events))
+            S = [pair[('cosine', 'sine').index(axis)]['structural_rz'] for axis in axes]
             write(directory / 'STRUCTURAL.json', dict(S=S, event_digest=event_digest, scientific_source=self.plan['source']))
             C, fingerprints, hits = [], [], 0
             with use_fast_fingerprint() as fp:
                 # Reuse the exact carrier compose and provider wrapper; no gate emitter fork.
                 evolution = timed('compose', lambda: ctx.h['compose'](c, ctx.prep, requests, ctx.scalar, fp.fingerprint))
-                for axis in m.AXES:
+                for axis in axes:
                     wrapper = timed(axis + '_wrapper', lambda: ctx.native.build_native_hadamard_wrapper(
                         evolution, axis=axis, include_measurement=True, max_instructions=len(evolution.circuit.data) + 4))
                     fingerprint = timed(axis + '_fingerprint', lambda: fp.fingerprint(wrapper))
@@ -151,8 +155,10 @@ def make_backend_class(base, science):
             result = dict(cell_id=cell['id'], candidate_id=c['id'], index=index, cohort=cell['cohort'],
                 conditional=conditional, C=C, S=S, source=dict(execution_source=self.plan['source'],
                 private_result=str(directory / 'result.json')), event_digest=event_digest,
-                compiler=m.p.PROFILE['compiler'], fingerprints=fingerprints, cache_hits=hits, new_compiles=2 - hits,
+                compiler=m.p.PROFILE['compiler'], fingerprints=fingerprints, cache_hits=hits, new_compiles=len(axes) - hits,
                 full_wrapper_statevector_validation=False, signal_N_G_computed=False)
+            if axes != ('cosine', 'sine'):
+                result['axes'] = list(axes)
             write(directory / 'result.json', result)
             write(directory / 'TECHNICAL_TIMING.json', dict(stages_seconds=stages,
                 total_seconds=time.perf_counter() - start, fingerprint=hash_stats))

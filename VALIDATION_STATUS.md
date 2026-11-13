@@ -1,5 +1,7 @@
 # Validation status
 
+[candidate-context/price-request adapter](docs/research/d_candidate_price_adapter_20261113/REPORT.md)：新20＋既存fast10/P2 metadata6＋別process残差13＝49項目PASS。任意8-wire人工行列・明示event・新adapterのmock compilerと既存小人工Qiskit回帰。旧C1 head/S/fingerprint/6指標、別L_D・signed/K・単軸/逆順・cache非流用を確認。実H4価格/mean/CI/N/G未評価、初回科学scope未採択、公開後mandatory STOP。
+
 [RPE候補価格の探索設計](docs/research/d_rpe_price_search_design_20261113/REPORT.md)：新12＋既存42＝54人工・回帰項目PASS。部分下界・差分区間・N集合/巨大整数と既存V2 identity/quantity/lowering拒否を確認。production code変更なし、bound-only選別/候補adapterは設計仕様。新H4/保存値再解析/fit/E[C]/Gなし、未確定価格はUNKNOWN、公開後mandatory STOP。
 
 [全13roundの残差評価設計](docs/research/d_compiled_price_methods_20261113/REPORT.md)：新14＋既存mean15＋既存残差13＝42人工・回帰項目PASS。passiveな差分/stencil/共分散/tail和と小Qiskit反例のみ。C既存kernelのcompiler閉包は未証明、局所測定24 compileは未承認の診断案。新実H4/保存P1/P2 fit・数値再解析/E[C]/Gなし、m12 UNKNOWN、公開後mandatory STOP。
