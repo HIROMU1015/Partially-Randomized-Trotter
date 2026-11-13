@@ -1,5 +1,7 @@
 # 文書索引
 
+[4方式最小比較menu REPORT](research/h4_four_method_minimal_menu_20261113/REPORT.md)／[menu](research/h4_four_method_minimal_menu_20261113/MINIMAL_COMPARISON_MENU.md)／[証拠matrix](research/h4_four_method_minimal_menu_20261113/BASELINE_EVIDENCE_MATRIX.md)／[HANDOFF](research/h4_four_method_minimal_menu_20261113/HANDOFF.md)：11案・最大20セルの初期signal screenを提案。未採択、保存metadata調査＋40人工回帰のみ、新科学計算/Gなし。
+
 [S3 run01 REPORT](research/rpe_s3_final_plan_20261113/run01/REPORT.md)／[結果の資格とHANDOFF](research/rpe_s3_final_plan_20261113/run01/HANDOFF.md)／[主評価](research/rpe_s3_final_plan_20261113/run01/PRIMARY.json)：固定43,819反復、条件付きRMSE .000684720262 Ha、未解決0/CP上端約10^−4。供給mean/proxy/IIDのpilot観測。全population RMSE・十分N/global bound/実Gの認定なし、全trial保全。
 
 [S3最終科学計画案](research/rpe_s3_final_plan_20261113/SCIENTIFIC_PLAN.md)／[REPORT](research/rpe_s3_final_plan_20261113/REPORT.md)／[ユーザー採択・B実行HANDOFF](research/rpe_s3_final_plan_20261113/HANDOFF.md)：固定13round/1 nominal、proxy/IID/loss/support/精度/confidenceと43,819反復を提案。未採択・未実行、科学実行許可は別途必要。

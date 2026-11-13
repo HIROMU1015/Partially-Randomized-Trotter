@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 4方式の最小menu提案](docs/research/h4_four_method_minimal_menu_20261113/REPORT.md)／[証拠matrix](docs/research/h4_four_method_minimal_menu_20261113/BASELINE_EVIDENCE_MATRIX.md)／[有限な次作業](docs/research/h4_four_method_minimal_menu_20261113/NEXT_STEPS.md)：PR1・Full PF6・truncated2・Full-H RTE2の未採択案。B0全13保存signal、Full PF73直接価格、C26構造/D新P1の資格を分離。40技術回帰PASS、新科学計算/実G/ランキング0、公開後STOP。
+
 [S3固定H4 run01結果](docs/research/rpe_s3_final_plan_20261113/run01/REPORT.md)／[HANDOFF](docs/research/rpe_s3_final_plan_20261113/run01/HANDOFF.md)／[全trial原本](docs/research/rpe_s3_final_plan_20261113/run01/SIMULATION.json.gz)：採択済み推奨セット、13round/nominal1配分・43,819反復を1回完了。条件付きRMSE .000684720262 Ha、未解決0、CP97.5%上端約10^−4。感度RMSE上端5.38178 Haで目標精度未認定、十分N/global bound/C/G null、公開後STOP。
 
 [S3最終科学実行計画案](docs/research/rpe_s3_final_plan_20261113/SCIENTIFIC_PLAN.md)／[REPORT](docs/research/rpe_s3_final_plan_20261113/REPORT.md)／[採択HANDOFF](docs/research/rpe_s3_final_plan_20261113/HANDOFF.md)：B ab12/bf515・A bba/169dを固定し、13round/nominal1配分の条件付きRMSE＋未解決率を推奨。任意の有界loss感度・粗いpilot精度・有限43,819反復を設計。全条件未採択、実S3/保存mean再解析/N最適化/C/G0、計画公開後STOP。
