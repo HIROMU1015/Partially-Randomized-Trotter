@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-13：PF有効Hamiltonianの技術基盤](2026-11-13-pf-effective-hamiltonian.md)：明示branch・state overlap・UNKNOWNとB契約、23人工回帰PASS、実科学0。
+
 [2026-11-13：PR-LD1/LD2全round signal結果](2026-11-13-pr-rpe-first-signal-results.md)：26候補の局所数値gate通過、78complex、N/C/G0。B/D接続と未資格を保持。
 
 [2026-11-13：初回PR signal menuの承認待ち案](2026-11-13-pr-rpe-first-signal-menu.md)：LD1対2、26round metadata、exactκ固定、科学実行0。

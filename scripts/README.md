@@ -1,5 +1,7 @@
 # scripts 索引
 
+[PF有効Hamiltonian技術基盤](../docs/research/pf_effective_hamiltonian_20261113/REPORT.md)：新科学CLIは追加せず、人工入口は[check_pf_effective_hamiltonian.py](../tests/check_pf_effective_hamiltonian.py)。既存direct PF生成のunitaryを[評価器](../src/trottertracks/pf_effective_hamiltonian.py)へ渡す。新15＋旧8PASS、実H4/H6/保存signal再解析0、公開後STOP。
+
 [run_pr_rpe_first_signal.py](run_pr_rpe_first_signal.py)：明示承認された固定a9abf8deのLD1/LD2全roundを既存fefd providerで順に実行し、失敗時は全menu STOP。26候補完了、retry0。[REPORT](../docs/research/pr_rpe_first_signal_results_20261113/REPORT.md)／[mock5件](../tests/check_pr_rpe_first_signal_caller.py)。fresh output専用で、追加runの自動承認ではない。
 
 [PRの全round signal provider](../docs/research/pr_rpe_signal_pipeline_20261113/REPORT.md)：新CLIを増やさず[SignalBatch](../src/trottertracks/pr_rpe_signal_provider.py)を明示実行入口にした。constructorはmetadataのみ、runは別承認の科学leaf。新10＋既存7人工test PASS、実H4未実行。[呼出し例](../docs/research/pr_rpe_signal_pipeline_20261113/HANDOFF.md)。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PF有効Hamiltonianの技術基盤](docs/research/pf_effective_hamiltonian_20261113/REPORT.md)：[供給unitary評価器](src/trottertracks/pf_effective_hamiltonian.py)で明示log branch・再構成・state overlap/縮退group・元Hと保持Hを区別。新15＋旧8人工/回帰PASS、実科学/保存signal再解析0。最小eigenvalue shiftをRPE biasへ昇格せず、rpe_bias/N/global RMSE/G null。[HANDOFF](docs/research/pf_effective_hamiltonian_20261113/HANDOFF.md)／[未実行有限案](docs/research/pf_effective_hamiltonian_20261113/SCIENCE_PLAN.md)、公開後STOP。
+
 [PR-LD1/LD2全13round signal結果](docs/research/pr_rpe_first_signal_results_20261113/REPORT.md)：固定a9abf8de計画、数値fefd・caller041ac435で26候補/78complex/normalizer26が全数値gate通過。新reference/旧mean再解析/retry/N/MC/C/G0。入口は[scripts/run_pr_rpe_first_signal.py](scripts/run_pr_rpe_first_signal.py)、[5mock test](tests/check_pr_rpe_first_signal_caller.py)、[B/D HANDOFF](docs/research/pr_rpe_first_signal_results_20261113/HANDOFF.md)。十分N/global RMSE/winner未資格、公開照合後STOP。
 
 [初回PR全RPE signal menu（承認待ち）](docs/research/pr_rpe_first_signal_menu_20261113/REPORT.md)：prefix1対2、元exactκ/S2/Δ.1/K2/h.1/M12を維持したB V2全26roundをmetadataだけで具体化。[MENU](docs/research/pr_rpe_first_signal_menu_20261113/MENU.json)／[実行案](docs/research/pr_rpe_first_signal_menu_20261113/SCIENCE_PLAN.md)。最大26候補/78complex/normalizer26・新reference0の提案、科学実行/保存再解析0。正式採択・winnerではなく、承認前STOP。

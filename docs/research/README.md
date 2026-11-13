@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[PF有効Hamiltonian技術基盤](pf_effective_hamiltonian_20261113/REPORT.md)：Full/Truncated/head/PR exact-tailのunitary診断とfinite-K corrected/raw対象外を分離。minimum shiftとRPE biasを区別し、新15＋旧8人工回帰PASS。実H4/H6・保存signal再解析・幅選択/N/G0、手法未採択、公開後STOP。
+
 [PR-LD1/LD2全round signal結果](pr_rpe_first_signal_results_20261113/REPORT.md)：同保存H4 DF10・S2/Δ.1/K2・元exactκ/h.1/M12で26候補が全数値gate通過。B canonical全meanとD52軸metadataを供給、新reference/旧mean再解析/retry/N/MC/C/G0。初回二候補の最適性は未認定、公開後STOP。
 
 [初回PR全RPE signal menu（承認待ち）](pr_rpe_first_signal_menu_20261113/REPORT.md)：保存descriptorの隣接prefix1/2、同exactκ/外側条件、B437ba4acdのfixed-A V2で26metadata rowを具体化。保存input/reference再利用、旧meanを新backendへ再ラベルせず、新科学/保存再解析0でSTOP。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[PF有効Hamiltonianの技術基盤](research/pf_effective_hamiltonian_20261113/REPORT.md)：既存direct PFを再利用し、branch/alias/重なりを区別するSchur評価器。人工15＋旧8PASS、実科学/保存再解析0、正式手法未採択。[HANDOFF](research/pf_effective_hamiltonian_20261113/HANDOFF.md)／[有限科学案](research/pf_effective_hamiltonian_20261113/SCIENCE_PLAN.md)。
+
 [PR-LD1/LD2全round signal結果](research/pr_rpe_first_signal_results_20261113/REPORT.md)：全26候補の局所数値gate通過、78complex・normalizer26、新reference0・旧mean再解析0。[ROUND_SUMMARY](research/pr_rpe_first_signal_results_20261113/ROUND_SUMMARY.csv)／[B/D HANDOFF](research/pr_rpe_first_signal_results_20261113/HANDOFF.md)。N/global RMSE/G/winnerはnull、公開照合後STOP。
 
 [初回PR全RPE signal menu（承認待ち）](research/pr_rpe_first_signal_menu_20261113/REPORT.md)：LD1/LD2のB canonical configuration・全round整数schedule・exactκを固定した提案。実signal/N/C/Gは未実行、最大26候補/78complex・新reference0。[HANDOFF](research/pr_rpe_first_signal_menu_20261113/HANDOFF.md)。
