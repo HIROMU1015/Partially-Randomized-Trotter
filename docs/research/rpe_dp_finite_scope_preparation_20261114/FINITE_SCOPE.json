@@ -1,0 +1,94 @@
+{
+  "status": "FINITE_PROPOSAL_ONLY_NO_REAL_APPLICATION",
+  "engine_source": {
+    "commit": "06db9aefec13bb5c5be6d7c0f81f29b3a10b929c",
+    "path": "src/trottertracks/rpe_deterministic_risk.py"
+  },
+  "inherited_scientific_inputs": {
+    "commit": "43898ada12e405eacda27b5bccf1d464a0362ed2",
+    "path": "docs/research/pr_ld1_ld2_deterministic_risk_results_20261113/INPUTS.json"
+  },
+  "intended_cases": [
+    {
+      "label": "LD1",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "bundle_source": {
+        "commit": "91349e703e0d09ef702ccd108745dfaf1acc29f7",
+        "path": "docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD1.json"
+      }
+    },
+    {
+      "label": "LD2",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "bundle_source": {
+        "commit": "91349e703e0d09ef702ccd108745dfaf1acc29f7",
+        "path": "docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD2.json"
+      }
+    }
+  ],
+  "evaluations": 2,
+  "whole_vectors_per_configuration": 1,
+  "unchanged_conditions": [
+    "raw",
+    "target",
+    "loss",
+    "IID",
+    "physical_configuration",
+    "whole_shot_vector",
+    "phase_radii",
+    "count_rule",
+    "probability_rule",
+    "Minkowski_contract"
+  ],
+  "N_XY_each_axis": [
+    64,
+    60,
+    56,
+    52,
+    47,
+    43,
+    38,
+    34,
+    30,
+    25,
+    21,
+    17,
+    12
+  ],
+  "maximum_round_outcomes": 4225,
+  "maximum_verification_pairs": 55043173,
+  "proposed_state_refinement": {
+    "maximum_frontier_states": 8192,
+    "maximum_transition_pairs": 141559036
+  },
+  "two_case_transition_pair_limit": 283118072,
+  "pair_limit_definition": "C0 + sum(min(K,2**(m-1)*C[m-1])*C[m],m=1..12), C[m]=(N_X[m]+1)*(N_Y[m]+1)",
+  "raw_independent_grouped_geometry_transition_bound": 86171598,
+  "retained_state_full_support_guaranteed_rounds": [
+    0,
+    1,
+    2
+  ],
+  "runtime": {
+    "python": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+    "version": "3.11.0rc1",
+    "numpy": "1.26.4",
+    "independent_workers": 2,
+    "OS_or_shared_resource_limit_changes": false
+  },
+  "execution_policy": {
+    "new_output_directory": true,
+    "automatic_retry": false,
+    "automatic_scope_expansion": false,
+    "Monte_Carlo": false,
+    "additional_allocations": false,
+    "prices_or_G": false
+  },
+  "real_H4_evaluations_performed": 0,
+  "new_real_risk_result": null,
+  "sufficient_N": null,
+  "global_RMSE_bound": null,
+  "G": null,
+  "winner": null,
+  "mandatory_stop": true
+}

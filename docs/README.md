@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 DP有限範囲の準備REPORT](research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)／[具体案](research/rpe_dp_finite_scope_preparation_20261114/FINITE_SCOPE.json)／[HANDOFF](research/rpe_dp_finite_scope_preparation_20261114/HANDOFF.md)：K8192、P141,559,036/構成を提案。人工幾何/3benchmark/整数probeのみ、実H4新riskは未計算。科学実行の別明示許可後に各LD1件だけ適用する案。
+
 [RPE MSE状態集約REPORT](research/rpe_mse_state_refinement_20261114/REPORT.md)／[成立条件・HANDOFF](research/rpe_mse_state_refinement_20261114/HANDOFF.md)／[有限適用・shot計画](research/rpe_mse_state_refinement_20261114/FINITE_PLAN.md)／[57件の結果](research/rpe_mse_state_refinement_20261114/TEST_RUN.txt)：旧最大lossを未知残余へ保持し、元decoderの解決状態をexactに伝播。人工の全履歴列挙一致、実H4新値なし・STOP。
 
 [保存LD1/LD2の決定論的risk結果](research/pr_ld1_ld2_deterministic_risk_results_20261113/REPORT.md)／[入力](research/pr_ld1_ld2_deterministic_risk_results_20261113/INPUTS.json)／[HANDOFF](research/pr_ld1_ld2_deterministic_risk_results_20261113/HANDOFF.md)：各1件・計2診断完了。モデルMSE上界・全round unsafe/zero/reference-tie・未解決範囲を保存し、正式N/global/G nullを保全。MC・追加探索なし、公開後STOP。

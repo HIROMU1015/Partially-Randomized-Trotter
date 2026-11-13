@@ -1,5 +1,7 @@
 # Validation status
 
+[実H4 DPの有限範囲準備](docs/research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)：数値kernel06db9aefeを変更せず、人工3モデル・count格子・整数3probeを実行。prefix64/60約203秒、人工13round/N8のK4096/8192で約18/31秒。保持8192で全roundを伝播できる保守的組数141,559,036/構成を提案。実H4新risk/旧結果再解析/追加shot/MC/C/G0、既存57件は再実行せず保全、範囲の明示許可待ち・STOP。
+
 [状態集約によるRPE MSE上界改善](docs/research/rpe_mse_state_refinement_20261114/REPORT.md)：新12＋既存45＝57人工/回帰PASS。小count全履歴の独立comb/Fraction＋元scalar decoderと完全DPがexact一致。部分DPの残余保守上界・旧/新min、zero/tie/alias/境界/極小質量、13round/whole-vector/既存会計、SOURCE/nullを確認。実H4保存raw適用/旧結果再解析/追加shot探索/MC/C/Gは0、科学的energy/N資格未取得、公開後STOP。
 
 [保存LD1/LD2の決定論的risk初回適用](docs/research/pr_ld1_ld2_deterministic_risk_results_20261113/REPORT.md)：caller/入力43898ada1を固定し、既存Dで各1vectorを1回、計2科学評価を完了。各2,318,425 good遷移検査が成立し、モデルMSE上界約0.239895/0.239688 Ha²。保存SOURCE・exact質量/上界恒等式の事後確認PASS、元資格/nullを保全。実全体tie厳密値/energy資格UNKNOWN、十分N/global/G未取得、MC/追加配分/価格/δE加算0。公開後mandatory STOP。
