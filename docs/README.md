@@ -1,5 +1,7 @@
 # 文書索引
 
+[総コスト予備分析REPORT](research/rpe_cost_preliminary_analysis_preparation_20261113/REPORT.md)／[DECISION_PACKET_V0](research/rpe_cost_preliminary_analysis_preparation_20261113/DECISION_PACKET_V0.md)／[NEXT_OPTIMIZATION_PLAN](research/rpe_cost_preliminary_analysis_preparation_20261113/NEXT_OPTIMIZATION_PLAN.md)／[HANDOFF](research/rpe_cost_preliminary_analysis_preparation_20261113/HANDOFF.md)：7 metadata確認と有限算術計画のみ。保存値の新比率・寄与率は実行許可待ち、G/winner null。
+
 [全RPE shot配分adapter](research/rpe_shot_allocation_20261113/REPORT.md)／[HANDOFF](research/rpe_shot_allocation_20261113/HANDOFF.md)／[初回有限案](research/rpe_shot_allocation_20261113/SCIENTIFIC_PLAN.md)：同physical IDの全round配分を受入れ、診断/資格/点G/区間優越・不足を分離。48技術test PASS、新科学実行なし。
 
 [RPE精度・N評価REPORT](research/rpe_shot_evaluation_design_20261113/REPORT.md)／[再利用設計](research/rpe_shot_evaluation_design_20261113/DESIGN.md)／[供給signalとN出力](research/rpe_shot_evaluation_design_20261113/HANDOFF.md)／[科学実行案](research/rpe_shot_evaluation_design_20261113/SCIENTIFIC_PLAN.md)：全round結合、nominal/経験的/上側risk資格、Gへの内側allocation接続。69人工/回帰PASS、実H4再解析・MC/N最適化/実Gなし、L1未採択。

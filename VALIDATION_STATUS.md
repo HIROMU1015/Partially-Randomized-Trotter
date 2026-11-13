@@ -1,5 +1,7 @@
 # Validation status
 
+[RPE総コスト予備分析の準備](docs/research/rpe_cost_preliminary_analysis_preparation_20261113/REPORT.md)：A/C/S3全identity/law・nominal一致、C構造量とcompiled null、Full PF6lane receipt、D有限pilot、screen4局所recordの7 metadata確認。新科学数値再解析/感度/比率/ランキング0。条件付きproxyと正式Gを分離し、P0〜P4の有限保存再解析は承認待ち。
+
 [全RPE shot配分の技術接続](docs/research/rpe_shot_allocation_20261113/REPORT.md)：人工10＋既存統計16/batch5/controller17＝48件PASS。MC診断からN昇格なし、nominal/未資格/欠測CはG UNKNOWN、2^1200超N・有理数会計、同ID内側選択と外側unique-configを確認。元decoder/controllerは無変更、実H4/保存数値再解析/実N/RMSE/G評価0、公開後mandatory STOP。
 
 [全RPE精度・shot評価設計](docs/research/rpe_shot_evaluation_design_20261113/REPORT.md)：新7＋decoder回帰33＋controller/evidence29＝69技術test PASS。供給signal/full-shot vector→既存統計API、診断N昇格拒否、mock N×C、巨大N/backend制限、zero格子・全round結合とselect unique-config制約を確認。production code無変更、新実H4 MC/保存数値再解析/N最適化/RMSE/実G0。claim/L1/十分N未採択、公開後STOP。

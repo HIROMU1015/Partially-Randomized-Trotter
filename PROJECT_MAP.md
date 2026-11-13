@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[RPE総コスト予備分析の準備](docs/research/rpe_cost_preliminary_analysis_preparation_20261113/REPORT.md)／[DECISION_PACKET_V0](docs/research/rpe_cost_preliminary_analysis_preparation_20261113/DECISION_PACKET_V0.md)／[有限保存再解析案](docs/research/rpe_cost_preliminary_analysis_preparation_20261113/NEXT_OPTIMIZATION_PLAN.md)／[HANDOFF](docs/research/rpe_cost_preliminary_analysis_preparation_20261113/HANDOFF.md)：固定PRの構造寄与・短round損益分岐・D pilot内比率の計画。7 metadata確認、保存科学値の新算術/再集計/ランキング0、数値欄null。公開後STOPしP0〜P4の実行許可を求める。
+
 [全RPE shot配分adapter](docs/research/rpe_shot_allocation_20261113/REPORT.md)／[A/C/D HANDOFF](docs/research/rpe_shot_allocation_20261113/HANDOFF.md)／[有限科学案](docs/research/rpe_shot_allocation_20261113/SCIENTIFIC_PLAN.md)：同physical configurationの複数whole-vectorを既存prepare/MC/assess/cost/selectへ接続。exact N×C、lowering/SOURCE・区間資格、共有価格差分・pendingを保持。新10＋既存38＝48技術test PASS、新実H4/保存再解析/実N/G最適化0、公開後STOP。
 
 [全RPE精度・shot配分の再利用設計](docs/research/rpe_shot_evaluation_design_20261113/REPORT.md)／[設計](docs/research/rpe_shot_evaluation_design_20261113/DESIGN.md)／[signal/N/G HANDOFF](docs/research/rpe_shot_evaluation_design_20261113/HANDOFF.md)／[有限科学案](docs/research/rpe_shot_evaluation_design_20261113/SCIENTIFIC_PLAN.md)：供給全round signal＋whole-shot familyを既存prepare/MC/R3/summaryへ接続。nominal/L1診断と十分Nを分離し、G目的の内側配分選択の必要差分を明示。新7＋回帰62＝69技術test PASS、production無変更・新H4/N最適化/G0、公開後STOP。
