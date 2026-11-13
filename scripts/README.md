@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H4 kernel run02：K0 PASS・K1平均構造RZ四値](../docs/research/h4_structural_kernel_20261113/run02/REPORT.md)（2026-11-13）：SOURCE19b95d8b3で同H4 DF10/S2/p1/δ.1/K2・1prep/2lawを一回実行。K0全9wire PASS、kernel/状態辞書を保存後、m0/m6×XYの実E[S]四値を取得（各mでX=Y、1743.6682557187337/1764659.275564426）。数値区間・元Accounting parityを保存。sampling/full-path S/build/compile/fit/N/G0、E[C]はnull・C1未資格のまま。旧run01/STOP保全、公開照合後mandatory STOP。
+
 [H4 K0入力STOPと技術修正版](../docs/research/h4_structural_kernel_20261113/REPORT.md)（2026-11-13）：K0→PASS時K1 runnerと数値契約を実装、新8（人工7/固定metadata1）＋旧10技術test PASS。SOURCE0f7d65d5fはB configuration locator誤りで物理K0前にUNKNOWN STOP。実descriptor/kernel/parity/平均S四値は未実施・null。参照chainを修正版19b95d8b3でmetadata照合し、科学再実行なし。指示§4 STOP保全、run02案のみ公開。新sampling/full-path S/compile/fit/N/G0。
 
 [H4 PRの物理閉状態診断](../docs/research/h4_pr_physical_closure_20261113/REPORT.md)（2026-11-13）：固定H4 DF10/S2/p1/δ.1/K2の1prep・R2/R128を診断。324非identity/9basis、reset/phase/head境界からS observableの有限wire-marginal状態の十分条件を確認（tail enclosure80〜120）。物理kernel/parity/実平均S/Cは未取得、MODEL false。最終10技術test PASS。初回seed設定STOPを保全し同scope修正、成功SOURCE eeccdf18e・縮約解析2b3b0ee7f。新sampling/full-path S/build/compile/fit/N/G0、旧S0a等を保全、公開照合後STOP。
