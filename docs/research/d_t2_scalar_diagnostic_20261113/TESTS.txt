@@ -1,0 +1,16 @@
+Primary author's artificial technical checks, not an independent review.
+
+PYTHONPATH=src:tests:scripts /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -m pytest -q tests/test_t2_scalar_diagnostic.py
+9 passed in 4.52s (after adding metadata-failure preservation).
+Head-basis inventory extension: 9 passed in 4.45s.
+py_compile PASS; git diff --check PASS.
+
+The checks use invented scalars and mock preparation metadata. No real H4
+restore/preparation, event generation, sampling, native circuit or compile.
+They verify decimal/hex, positive/negative adjacent ULPs, one context call,
+unchanged guard/request, no retry on early failure, exclusive output, and
+retention of captured scalars if optional metadata collection fails.
+
+Existing T2 loader/runtime and their published technical evidence are reused;
+the previous 40 checks are not rerun or pooled with these 9 checks. Scientific
+execution is a separate one-restore/one-context diagnostic at a fixed commit.
