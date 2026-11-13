@@ -1,5 +1,7 @@
 # Validation status
 
+[T2 scalarの限定診断](docs/research/d_t2_scalar_diagnostic_20261113/REPORT.md)：SOURCE244609df5b704723cae5ccd01f78468bca9588b3、入力復元1/context1、fresh preparation cache1。A descriptor=抽出identity0.2223759094107018（0 ULP差）、D total2.515477156730702、Hamiltonian定数2.29310124732。D専用selectorがtail-only値をtotalのexpected欄へ結んだことを特定。実値/hex/差/ULP/hashを保存、元guardは停止を維持。新9人工PASS、sampling/native/full wrapper/compile/T2 retry0、修正・新値採用・E[C]/Gなし、公開後mandatory STOP。旧T2 STOPは保全。
+
 [LD2/m12 T2の停止結果](docs/research/d_ld2_m12_t2_20261113/REPORT.md)：SOURCE8291f16ceb6b88cc8a43dbe508db419b9a26f373、承認された一attemptを起動。保存入力SHA/復元は成功、NativeRuntime.contextの既存scalar完全一致条件でSTOP。normal sampling/generated path/event/full native/wrapper/新compile0、S/C/D null、retry0。全wall4.694852s・worker peak354,508,800bytesは巨大compileの性能でない。40人工項目PASS、実LD2価格同値性・実行可能性・mean/CIは未検証/UNKNOWN。旧入力と実行コード不変、公開後mandatory STOP。
 
 [長時間価格の資格付け計画](docs/research/d_long_time_price_plan_20261113/REPORT.md)：人工metadata5件PASS。C5ccの固定関数でD748 scalar追加時のkey/再構成・anchor/path照合不足を再現した。Cの修正完了・full integration・科学資格を意味しない。production変更・既存52軸再生成・実H4 preparation/sampling/build/compile・保存数値再解析・fit・新mean/区間/G0。m12価格UNKNOWN、科学案未承認、公開照合後mandatory STOP。

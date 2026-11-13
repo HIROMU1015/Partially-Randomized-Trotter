@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[T2 scalar原因診断](docs/research/d_t2_scalar_diagnostic_20261113/REPORT.md)／[DIAGNOSTIC_RESULT](docs/research/d_t2_scalar_diagnostic_20261113/run01/DIAGNOSTIC_RESULT.json)／[NEXT_STEPS](docs/research/d_t2_scalar_diagnostic_20261113/NEXT_STEPS.md)：SOURCE244609df5、入力復元/context各1回。Aのtail identity0.2223759094107018をD total2.515477156730702のexpectedへ渡すquantity取り違えと特定。tail値自体は0 ULP差、Hamiltonian定数2.29310124732を別に要する。guard/prepare/expected値は無変更、sampling/build/compile/修正/T2 retry0。人工9PASS、公開後mandatory STOP。
+
 [PR-LD2/m12 T2のscalar STOP](docs/research/d_ld2_m12_t2_20261113/REPORT.md)／[部分結果](docs/research/d_ld2_m12_t2_20261113/run01/T2_PATH_RESULT.json)／[HANDOFF](docs/research/d_ld2_m12_t2_20261113/HANDOFF.md)：SOURCE8291f16ceで一attempt。保存入力復元後に既存expected scalar完全一致gateで停止、sampling/event/native/full-wrapper/新compile0、retry0、S/C/D未知。全wall4.695秒・worker peak354.5MBは失敗attemptの観測で、巨大回路性能ではない。40人工・回帰PASS、次のpreparation-only診断は別承認、公開後mandatory STOP。
 
 [LD1/LD2長時間compiled価格の資格付け設計](docs/research/d_long_time_price_plan_20261113/REPORT.md)／[方式・資格](docs/research/d_long_time_price_plan_20261113/LONG_TIME_PRICE_EVALUATION_PLAN.md)／[有限科学案](docs/research/d_long_time_price_plan_20261113/FINITE_PRICE_SCIENCE_PLAN.md)／[B/C HANDOFF](docs/research/d_long_time_price_plan_20261113/HANDOFF.md)：直接full参照・構造平均＋paired残差・未証明windowを区別。最大domain技術pilotと正式G用価格点を分離し、n/精度は未採択。C5cc/D748のscalar接続差を人工metadata5件で再現、production変更・52軸再生成・実H4/再解析/fit/E[C]/G0。公開照合後mandatory STOP。

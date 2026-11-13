@@ -1,5 +1,7 @@
 # 文書索引
 
+[T2 scalar診断REPORT](research/d_t2_scalar_diagnostic_20261113/REPORT.md)／[実値・hash](research/d_t2_scalar_diagnostic_20261113/run01/DIAGNOSTIC_RESULT.json)／[修正提案](research/d_t2_scalar_diagnostic_20261113/NEXT_STEPS.md)：preparation一回で、tail-only対totalの接続取り違えを確認。修正・T2再実行は未承認/未実施、mandatory STOP。
+
 [T2実行REPORT](research/d_ld2_m12_t2_20261113/REPORT.md)／[部分STOP結果](research/d_ld2_m12_t2_20261113/run01/T2_PATH_RESULT.json)／[HANDOFF](research/d_ld2_m12_t2_20261113/HANDOFF.md)／[次の有限診断案](research/d_ld2_m12_t2_20261113/NEXT_SCIENCE_PLAN.md)：LD2/m12は入力復元後のscalar不一致で停止。sampling/compile0、価格未取得、無retry、mandatory STOP。
 
 [長時間compiled価格REPORT](research/d_long_time_price_plan_20261113/REPORT.md)／[評価・資格条件](research/d_long_time_price_plan_20261113/LONG_TIME_PRICE_EVALUATION_PLAN.md)／[有限科学案](research/d_long_time_price_plan_20261113/FINITE_PRICE_SCIENCE_PLAN.md)／[HANDOFF](research/d_long_time_price_plan_20261113/HANDOFF.md)：LD1/LD2最大使用域の実行可能性、law/rare/model/同時区間、BのN依存選別を設計。人工metadata5件のみ、新H4・保存値再解析・平均/区間/G計算0、mandatory STOP。

@@ -1,5 +1,7 @@
 # scripts 索引
 
+[diagnose_t2_scalar.py](diagnose_t2_scalar.py)：保存入力復元/context各一回の承認済み診断をSOURCE244609df5で完了。元guardの同一例外frameから実値を記録し、quantity取り違えと特定。sampling/build/compile/T2 retry0。[REPORT・STOP](../docs/research/d_t2_scalar_diagnostic_20261113/REPORT.md)。診断は消費済みで、無断再実行しない。
+
 [run_ld2_m12_t2.py](run_ld2_m12_t2.py) は固定PLANの一path/X-Y/最大2 compileだけを起動する専用caller。run01はSOURCE8291f16ceでscalar gate STOPし、sampling/compile0・retry禁止を維持。[結果とSTOP](../docs/research/d_ld2_m12_t2_20261113/REPORT.md)、[次の診断案](../docs/research/d_ld2_m12_t2_20261113/NEXT_SCIENCE_PLAN.md)を先に読む。`--execute`を新しい承認なしに再呼出ししない。
 
 [LD1/LD2 metadata publisher](../docs/research/d_ld12_price_requests_20261113/PREPARE_PRICE_REQUESTS.py)：既存ld12_price_requests.prepareで26 paired requestの索引と52軸coverageを生成するだけ。科学runnerは追加せず、context/sample/acquireを呼ばない。[再現手順](../docs/research/d_ld12_price_requests_20261113/SOURCES.md)。
