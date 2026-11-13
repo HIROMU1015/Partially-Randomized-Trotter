@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 K0入力STOPと技術修正版](research/h4_structural_kernel_20261113/REPORT.md)（2026-11-13）：K0→PASS時K1 runnerと数値契約を実装、新8（人工7/固定metadata1）＋旧10技術test PASS。SOURCE0f7d65d5fはB configuration locator誤りで物理K0前にUNKNOWN STOP。実descriptor/kernel/parity/平均S四値は未実施・null。参照chainを修正版19b95d8b3でmetadata照合し、科学再実行なし。指示§4 STOP保全、run02案のみ公開。新sampling/full-path S/compile/fit/N/G0。
+
 [H4 PRの物理閉状態診断](research/h4_pr_physical_closure_20261113/REPORT.md)（2026-11-13）：固定H4 DF10/S2/p1/δ.1/K2の1prep・R2/R128を診断。324非identity/9basis、reset/phase/head境界からS observableの有限wire-marginal状態の十分条件を確認（tail enclosure80〜120）。物理kernel/parity/実平均S/Cは未取得、MODEL false。最終10技術test PASS。初回seed設定STOPを保全し同scope修正、成功SOURCE eeccdf18e・縮約解析2b3b0ee7f。新sampling/full-path S/build/compile/fit/N/G0、旧S0a等を保全、公開照合後STOP。
 
 [固定H4 S0の平均compiled価格検証計画](research/h4_s0_mean_price_plan_20261113/REPORT.md)（2026-11-13）：SOURCE bdd2b9356。固定A S0のexactκ/M12・H4 m0(q1/R2)/m6(q64/R128)を公開B V2へmetadata接続。新7技術test PASS、13round価格null。両候補の一致direct/modelは公開索引に未確認。閉状態診断1prep/2law・compile0を第一案、別案は有限4path/最大8wrapper。新S/価格再解析/sampling/compile/fit/N/G0、C1未資格・S0a履歴を保全し、公開照合後STOP。
