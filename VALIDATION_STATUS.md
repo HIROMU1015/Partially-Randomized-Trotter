@@ -1,5 +1,7 @@
 # Validation status
 
+[D bridge接続・価格分類修正](docs/research/d_price_records_c_bridge_20261114/REPORT.md)：Cのguard（c628e9e8）がcanonical候補のPauli sidecarを受理し、旧形式ID・辞書SHA・law・SOURCE・scalar・route・lowering・emitter・scalar quantityの不一致を拒否。paper_costでPauliはFINITE_COHORT_SCENARIO、Full/TruncatedはDETERMINISTIC_DIRECT、旧名はUnknown compiled price kind。seed 14788159701244282917不変。D37（circuit・oracle・bit順・X/Y回帰含む）＋C48 PASS、実H4 sampling/build/compile/価格0。
+
 [S1価格比較guard](docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：人工14＋回帰37＝51 PASS。実価格資格・B直接consumerの修正は未完了、新科学計算0。
 
 [Full PF3候補のcompiled価格証拠接続](docs/research/full_pf_candidate_price_evidence_20261114/REPORT.md)（2026-11-14）：A3ae055faのFull PF S2/.2・Y4/.4・M5/.8を39round/78軸でD e7 receiptへ照合。direct5round/10軸、M5 m4欠測、他33roundはcatalog外。元native/scalar/wrapper/P0のD証拠を再利用し、consumer lowering採用は未実施。追加4セル/最大8wrapperの未承認q検証案、early幅/長q未資格・必要精度UNKNOWN。価格再集計/予測/fit/compile/N/G0、production変更0、公開後mandatory STOP。
