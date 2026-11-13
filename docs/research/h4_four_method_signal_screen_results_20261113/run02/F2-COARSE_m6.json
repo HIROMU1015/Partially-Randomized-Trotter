@@ -1,0 +1,175 @@
+{
+  "candidate": {
+    "system": "H4",
+    "method": "FULL",
+    "formula": "2nd",
+    "prefix": 10,
+    "T": 6.4,
+    "q": 16,
+    "delta": 0.4,
+    "R_outer": null,
+    "K": null,
+    "id": "ad136c58d4184a236b9c"
+  },
+  "structure": {
+    "formula_id": "S2",
+    "signed_weights": [
+      1.0
+    ],
+    "allocation": [
+      0
+    ],
+    "event_count": 0,
+    "scalar_policy": "scalar_identity_once_at_total_T",
+    "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+    "law_model": "deterministic"
+  },
+  "backend": "SIGNED_S2_MACRO_STEP_MATRIX_POWER",
+  "signal": {
+    "reference": {
+      "real": 0.2689351412041076,
+      "imag": 0.9631582890810391
+    },
+    "corrected": {
+      "real": 0.2821546061502322,
+      "imag": 0.959353764366455
+    },
+    "raw": {
+      "real": 0.2821546061502322,
+      "imag": 0.959353764366455
+    },
+    "total_signed_bias": {
+      "real": 0.013219464946124582,
+      "imag": -0.0038045247145840344
+    },
+    "log_B": 0.0,
+    "attenuation": 1.0,
+    "B": 1.0,
+    "allowance_evidence": {
+      "maximum_intermediate_norm": 1.000000000000656,
+      "raw_corrected_vector_closure": 0.0,
+      "maximum_norm_domain": "POWER_OUTPUT_BOUNDARIES_NOT_EVERY_EVENT",
+      "exact_tail_norm_error": 6.559197629485425e-13
+    },
+    "exact_tail": {
+      "real": 0.2821546061502322,
+      "imag": 0.959353764366455
+    },
+    "outer_PF_or_discard_bias": {
+      "real": 0.013219464946124582,
+      "imag": -0.0038045247145840344
+    },
+    "finite_RTE_bias": {
+      "real": 0.0,
+      "imag": 0.0
+    },
+    "exact_tail_is_saved_reference": false
+  },
+  "local": {
+    "absolute_corrected_bias": 0.01375604091901799,
+    "corrected_phase_to_reference": -0.013756241861452974,
+    "raw_phase_to_reference": -0.013756241861452974,
+    "corrected_radius": 0.999985433381847,
+    "raw_radius": 0.999985433381847,
+    "reference_radius": 0.9999999999999939
+  },
+  "allowance": {
+    "u": 1.000005964543397e-09,
+    "log_B_margin": 5.243805389909539e-12,
+    "stages": 368,
+    "roundoff": 1.0487610779822518e-11,
+    "certified": false,
+    "policy": "R_AWARE_EMPIRICAL_ACTION_COUNT_V1",
+    "normalizer_sensitivity": 0.0,
+    "rigorous_bound": false,
+    "source": {
+      "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+      "path": "src/trottertracks/pr_r_dependent_n.py",
+      "function": "analyze:allowance_prefix"
+    },
+    "logical_stages_conservative_for_full_h_zero_head": true,
+    "full_h_exact_tail_norm_observation": 6.559197629485425e-13
+  },
+  "numerical": {
+    "norm_error": 6.559197629485425e-13,
+    "power_unitarity_error": 2.3256452289766402e-11,
+    "closure": 0.0,
+    "spectral_residuals": [
+      5.196086146441816e-13,
+      9.824499691256898e-14,
+      4.347089769158053e-15,
+      5.2517396631727265e-15,
+      1.6898654266325185e-15,
+      2.2043043871790385e-16,
+      9.49131055142673e-17,
+      1.0854187408974128e-16,
+      7.534508391379821e-19,
+      4.350779769553472e-19,
+      2.0599453298384287e-21,
+      6.466515017981401e-14
+    ],
+    "gates_passed": true,
+    "certified": false
+  },
+  "scalar_once": true,
+  "raw_corrected_independent_propagation": false,
+  "raw_equals_corrected_at_B1": true,
+  "finite_normalizer_calls": 0,
+  "reference_recomputed": false,
+  "N_X": null,
+  "N_Y": null,
+  "global_RMSE_bound": null,
+  "scientific_PASS_FAIL": null,
+  "qualification": "LOCAL_SCREEN_NOT_GLOBAL_RMSE",
+  "label": "F2-COARSE",
+  "m": 6,
+  "comparison_method": "FULL_PF",
+  "reference_source": {
+    "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+    "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+    "selector": [
+      "rounds",
+      6,
+      "diagnostics",
+      "reference_pair"
+    ]
+  },
+  "source": {
+    "commit": "256caad3414a80de02fb68eca89c13c957ed6354",
+    "module": "src/trottertracks/h4_four_method_screen.py",
+    "numerical_leaf": "src/trottertracks/h4_four_method_screen_mean.py"
+  },
+  "binding": {
+    "T": 0.8,
+    "basis": "STO-3G",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "control": "symmetric_directional",
+    "geometry": "linear_1Angstrom",
+    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+    "profile_is_reference_only": true,
+    "rank": 10,
+    "rank_is_saved_observation_not_generation_argument": true,
+    "rank_policy": "tol_only_1e-8",
+    "series": "H4_TOL_ONLY_DF10",
+    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+    "system": "H4"
+  },
+  "profile": {
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "control": "symmetric_directional",
+    "wrapper": "full_Hadamard_with_measurement",
+    "scope": "single_hadamard_interrogation_without_state_preparation",
+    "P": 0,
+    "qiskit_version": "1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17
+  }
+}

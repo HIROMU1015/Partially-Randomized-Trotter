@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4・4方式screen run02の部分結果](research/h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：[20セル状態](research/h4_four_method_signal_screen_results_20261113/run02/SCREEN_STATUS.json)／[CSV](research/h4_four_method_signal_screen_results_20261113/run02/SCREEN_SUMMARY.csv)／[B HANDOFF](research/h4_four_method_signal_screen_results_20261113/run02/HANDOFF.md)。4保存・6数値gate失敗でSTOP、旧run01を保全。
+
 [H4・4方式screenの入力STOP](research/h4_four_method_signal_screen_results_20261113/REPORT.md)：[原STOP](research/h4_four_method_signal_screen_results_20261113/run01/result.json)／[未評価20セル](research/h4_four_method_signal_screen_results_20261113/STOP_SUMMARY.json)／[B HANDOFF](research/h4_four_method_signal_screen_results_20261113/HANDOFF.md)。import経路不備、新mean0/20、retryせず公開後STOP。
 
 [H4・4方式signal screen準備](research/h4_four_method_signal_screen_preparation_20261113/REPORT.md)：新20セル・保存40セルのidentityとSOURCE、[有限科学計画](research/h4_four_method_signal_screen_preparation_20261113/SCREEN_PLAN.md)、[B HANDOFF](research/h4_four_method_signal_screen_preparation_20261113/HANDOFF.md)。17技術test PASS、実科学・保存再解析0、reference追加0の未承認計画。

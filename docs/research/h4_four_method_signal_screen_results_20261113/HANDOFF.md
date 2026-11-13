@@ -34,3 +34,7 @@ execute(root,
 使用Pythonは元のNumPy1.26.4環境。run01を保持してfresh出力を使い、新mean最大20・normalizer6・新reference0・保存40再計算0のscopeを変えない。別の依存不備や数値gate失敗があれば、その結果もSTOPとして保存し自動retryしない。
 
 **ユーザー**が再実行可否を決定し、**A**が承認後のみ実行する。**B**はそのscreen結果取得後に全13round候補の判断材料へ接続する。C/Dへの新価格作業はない。今回の停止成果公開・照合後、Aはmandatory STOP。
+
+## 追補：再実行承認後
+
+ユーザー承認を受け、上記import差分でrun02を実行した。4保存・6数値gate失敗・9未開始・1空例外未解決でSTOP。[最新HANDOFF](run02/HANDOFF.md)を参照。run01と本来歴は保全し、追加retryは行っていない。

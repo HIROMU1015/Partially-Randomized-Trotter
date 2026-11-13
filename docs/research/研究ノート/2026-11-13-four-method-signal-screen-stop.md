@@ -7,3 +7,9 @@
 新mean0/20、normalizer0/6、新reference0。保存40の元SOURCEとlocatorを保持し、新しい科学再解析・比較判定なし。十分N/global RMSE・winnerはnull。無断retry禁止に従い再実行せず、旧SOURCE/raw/STOPは保全した。
 
 未確認：全20セルのbias・減衰・数値安定性と後続候補の選択材料。次はユーザーが`scripts/`を含む同一scopeの再実行可否を判断し、承認後だけCodex Aがfresh出力で実行、Bが結果に接続する。今回の停止成果公開・照合後mandatory STOP。
+
+## 追補：run02の再実行承認後
+
+ユーザーが再実行を明示承認したため、元SOURCE256caad34を変更せず`src/`＋`scripts/`でfresh run02を1回実行した。[部分結果REPORT](../h4_four_method_signal_screen_results_20261113/run02/REPORT.md)参照。m6 Full PF4セルを保存し、6件の固定norm/unitarity gate失敗、9未開始・1空例外未解決でSTOP。追加retry・閾値緩和なし。
+
+新reference0、旧40セル再計算0、run01 bytes保全。normalizerは保存record上0、空例外1件の型が未保存なので実call数の確定値はnull（0〜1）。7件のmetadata・保存gate整合性確認を行ったが、新しいscientific leafを呼ぶ再検証ではない。十分N/global RMSE・winnerを認定せず、次は数値安定性のSOURCE・人工入力による技術調査案。実H4追加診断は別途ユーザー承認後。部分成果公開・照合後mandatory STOP。

@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-13：4方式screen run02追補](2026-11-13-four-method-signal-screen-stop.md)：再実行承認後に4局所recordを取得、6数値gate失敗でSTOP。旧run01・元SOURCEを保持。
+
 [2026-11-13：4方式screenの入力STOP](2026-11-13-four-method-signal-screen-stop.md)：固定20セルの1回起動がimport経路不備で停止。新mean0、retryなし、全セル未評価を保全。
 
 [2026-11-13：4方式限定signal screen準備](2026-11-13-four-method-signal-screen.md)：新20セル・保存40セルを固定、17技術test PASS、科学計算・保存再解析0。

@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[H4・4方式screen run02の部分結果](h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：同一SOURCEの再実行でFull PF4セルを取得、6数値gate失敗・9未開始・1空例外未解決。新reference0、保存40不変。全13round候補の判断材料は未完了で、次は数値安定性の技術調査案。
+
 [H4・4方式screenの入力STOP](h4_four_method_signal_screen_results_20261113/REPORT.md)：固定20セルbatchはcontext importで停止、新mean/normalizer/reference0。保存40・SOURCE・PLANを保持。数値による候補判断は未取得、再実行はユーザー判断後。
 
 [H4・4方式signal screen準備](h4_four_method_signal_screen_preparation_20261113/REPORT.md)：B51500の暫定11案、新20セル・保存40セルとreference再利用を固定。17人工・回帰test PASS、実signal/N/RMSE/C/G・保存再解析0。科学実行と正式候補採択は別段階。

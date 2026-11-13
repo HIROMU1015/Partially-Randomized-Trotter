@@ -51,3 +51,7 @@ Full PFのm3/m4計12、B0Iのm3/m4計2、PRとB0の各13、合計40は`run01/PLA
 **Codex A**：承認後だけ、元run01を保全し、同じ固定科学SOURCEとPLAN・fresh出力で1回実行する。SOURCE、閾値、formula/q/R/Kを変えず、以降の失敗でも部分保存・STOPを維持する。**B**：現時点ではSTOPと未評価状態を受け取り、全13round候補の採択を保留する。
 
 十分N/global RMSE・C/G・winnerの認定、全13round追加、最適化・samplingは未実施。本STOP結果をcommit/pushしremote SHA/tree/主要ファイルを確認した後、mandatory STOP。
+
+## 追補：ユーザー承認後のrun02
+
+import経路を補正し同じ固定SOURCEで再実行した。[run02 REPORT](run02/REPORT.md)／[HANDOFF](run02/HANDOFF.md)を参照。4セルを保存し数値gateでSTOP、6失敗・9未開始・1空例外未解決。run01の原STOP・本記録・旧STOP_SUMMARYを保持し、run02の部分結果で過去を上書きしない。

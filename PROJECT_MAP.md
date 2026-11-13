@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4・4方式screen run02の部分結果](docs/research/h4_four_method_signal_screen_results_20261113/run02/REPORT.md)：承認済み再実行でm6のFull PF4セルを保存、固定norm/unitarity gate6失敗・9未開始・1空例外未解決でSTOP。旧run01/SOURCE/保存40不変、新reference0、閾値変更・追加retryなし。全RMSE/C/G/winnerは未認定。
+
 [H4・4方式screenの入力STOP](docs/research/h4_four_method_signal_screen_results_20261113/REPORT.md)：固定256caad34でbatchを1回起動、`scripts/`のimport経路欠落によりcontext構築でSTOP。新mean0/20・normalizer0/6・新reference0、保存40不変、retryなし。20セルは未評価/null、方式FAILやwinnerではない。停止結果/HANDOFFを公開照合後STOP。
 
 [H4・4方式signal screen準備](docs/research/h4_four_method_signal_screen_preparation_20261113/REPORT.md)：暫定11案の新20セル・保存40セルをSOURCE付きで固定し、reference追加0の有限案を用意。新9＋旧8技術test PASS、実科学・保存再解析0。入口は[plan/batch](src/trottertracks/h4_four_method_screen.py)、[数値leaf](src/trottertracks/h4_four_method_screen_mean.py)、[metadata-only runner](scripts/prepare_h4_four_method_screen.py)、[人工test](tests/check_h4_four_method_screen.py)、[PLAN](docs/research/h4_four_method_signal_screen_preparation_20261113/PLAN.json)。未承認の科学実行・全RMSE資格へ進まず公開後STOP。
