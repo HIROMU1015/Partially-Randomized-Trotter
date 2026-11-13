@@ -1,5 +1,7 @@
 # Validation status
 
+[LD1/LD2 caller・C signal binding](docs/research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)：新9＋回帰38＝47技術test PASS。両13meanは読取専用SOURCE照合のみ。人工target/MCのscalar-R3全trial/summary一致、欠測targetのMC前拒否、元UNQUALIFIED・C正式gate・十分N/G nullを確認。C全runtime/scientific graphや実H4 MCは未実行。
+
 [LD1/LD2 risk・N評価計画](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/REPORT.md)：6 metadata確認PASS。両A config/全13 identity/law/共通task、shots=[]での既存prepare、UNQUALIFIED/null、C packet不足とtarget scalar未採択を確認。新risk producer/optimizer/production変更0、新MC/保存再解析/N/RMSE/G0。科学水準A〜C・loss/precisionは未採択、公開後mandatory STOP。
 
 [RPE総コスト有限予備分析](docs/research/rpe_cost_preliminary_results_20261113/REPORT.md)：caller6ec7d1958/計画80dade8eでP0〜P4を一回実行exit0。26構造軸/13round/4tail、16閾値＋8欠測軸、pilot4軸、29signalの範囲・exact算術・null保全を確認。人工4件PASS。m10〜12が条件付き構造proxyの96.9198%。十分N/compiled全law/global bound/正式G/winner未資格、新signal/MC/compile/fit/新候補最適化0。

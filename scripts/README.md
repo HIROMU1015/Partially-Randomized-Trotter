@@ -1,5 +1,7 @@
 # scripts 索引
 
+[LD1/LD2明示target caller API](../docs/research/pr_ld1_ld2_statistical_caller_20261113/HANDOFF.md)：rpe_signal_statistics_caller.accept_saved/prepareは受動metadata、diagnoseは別許可が必要な明示科学入口。新CLIや自動MCは追加せず、target/loss/反復等の採択を要求する。
+
 [analyze_rpe_cost_preliminary.py](analyze_rpe_cost_preliminary.py)：別途許可された固定保存P0〜P4の明示入口。80dade8eのSOURCE_SCOPEだけを読み、exact算術・表を新directoryへ保存する。新signal/MC/compile/fit/N/G最適化は呼ばない。[結果/STOP](../docs/research/rpe_cost_preliminary_results_20261113/REPORT.md)。再実行も科学範囲の判断が必要。
 
 [全RPE shot配分API](../docs/research/rpe_shot_allocation_20261113/HANDOFF.md)：rpe_shot_allocation.prepare/diagnose/compareを明示呼出しする。新しい科学runner/CLIは追加せず、metadata準備と実MC/費用算術を分離。実入力の呼出しは別途科学許可の有限scopeのみ。

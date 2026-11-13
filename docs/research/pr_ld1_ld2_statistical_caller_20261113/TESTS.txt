@@ -1,0 +1,52 @@
+2026-11-13 JST. Primary-agent technical checks; not an independent scientific review.
+Worktree: r-variable-rpe-cost-pipeline-20261111
+Branch: codex/rpe-decoder-statistics-20261113
+Python: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B
+
+Executed (each from the worktree above):
+python -B -m unittest discover -s tests -p 'check_rpe_signal_statistics_caller.py'
+  Ran 9 tests in 41.788s. OK (exit 0); final run includes bounded-loss regression.
+python -B -m unittest discover -s tests -p 'check_rpe_shot_allocation.py'
+  Ran 10 tests in 3.117s. OK (exit 0).
+python -B -m unittest discover -s tests -p 'check_rpe_decoder_statistics.py'
+  Ran 16 tests in 18.689s. OK (exit 0).
+python -B -m unittest discover -s tests -p 'check_rpe_decoder_fast.py'
+  Ran 12 tests in 6.080s. OK (exit 0).
+Total: 9 new + 38 existing = 47 PASS.
+Existing Almost_optimal_grouping.py invalid-escape DeprecationWarnings were emitted;
+that unrelated legacy module was not changed.
+
+New checks:
+1. No evaluation_target (including A-shaped solver-only target), missing scope,
+   nonfinite value, or original target/source mismatch -> rejection BEFORE MC.
+2. Synthetic explicit target -> unchanged scalar simulation/summary; R3 same
+   trials except acceleration provenance and identical summary/CI; input immutable.
+3. Whole 13-round X/Y vectors retained; separate axis counts. Exact huge N kept
+   in metadata and rejected by original binomial int64 domain without rounding.
+4. Missing/invalid integer shots rejected; incomplete raw or unqualified physical
+   evidence with conditional scope disabled -> NOT_EVALUATED, no simulation.
+5. Target/consumed signal/allocation/implementation SOURCE/loss/confidence changes
+   rejected before MC.
+6. Original decoder exact zero/tie statuses remain unresolved and energy=None;
+   undefined failure loss gives no all-trial/population RMSE certification.
+7. Fixed A LD1/LD2 13-round bundles/carriers accepted as READ-ONLY METADATA.
+   Original mean/target/normalization/uncertainty/qualification/status/null/STOP
+   unchanged; raw carrier and implementation/input/reference provenance separate.
+8. Fixed C plan/price_context/signal_input/compare function bodies reused with
+   passive providers. UNQUALIFIED physical gate remains closed; G/winner null.
+9. LD/configuration/law/implementation/carrier/input/signal mismatch rejected.
+
+All MC uses synthetic toy means/targets/shots only. Saved A tests patch MC and
+real G entry points to fail if called. A signal production and C full scientific
+provider graph are not invoked. No H4 numerical ratios, phases, risk/RMSE/N/G,
+price predictions, compile, sampling, residual fit or optimization were computed.
+Original B statistics/decoder/controller/allocation/cost APIs are unchanged.
+
+Technical debugging resolved two initial test assumptions: existing simulate
+intentionally omits per-trial counts, and carrier qualification is a dictionary
+where bundle qualification is a status string. Neither scientific definition
+was changed; both original formats are retained.
+
+Final technical checks PASS: original controller/decoder/statistics/allocation/
+common pipeline bytes equal B91d730ac3; all prior manifest entries unchanged;
+new direct artifact links resolve; git diff --check clean.

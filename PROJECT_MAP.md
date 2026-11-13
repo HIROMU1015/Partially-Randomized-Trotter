@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[LD1/LD2明示target付き統計caller](docs/research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)／[HANDOFF](docs/research/pr_ld1_ld2_statistical_caller_20261113/HANDOFF.md)：既存whole-shot/MC/R3/summaryとC plan/signal_inputを再利用。元target・UNQUALIFIEDを保つ受入view、実消費signal binding、MC前の明示evaluation_target検査を実装。新9＋既存38＝47技術test PASS、実H4 MC/保存再解析/N/RMSE/G0、公開後mandatory STOP。
+
 [PR-LD1/LD2全RPE risk・shot評価計画](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/REPORT.md)／[risk水準A〜C](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/RISK_AND_N_EVALUATION_PLAN.md)／[有限科学案](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/FINITE_SCIENCE_PLAN.md)／[HANDOFF](docs/research/pr_ld1_ld2_rpe_risk_shot_plan_20261113/HANDOFF.md)：A91349の両13meanをmetadata確認。評価target energy_ha欠落とC signal binding不足を明示し、元Minkowski/全outcome/whole-vectorを保つ。6 metadata確認PASS、計画のみ・新MC/再解析/N/RMSE/G0、公開後STOP。
 
 [RPE総コスト予備分析P0〜P4結果](docs/research/rpe_cost_preliminary_results_20261113/REPORT.md)／[数値packet](docs/research/rpe_cost_preliminary_results_20261113/DECISION_PACKET_V0.md)／[次の計画](docs/research/rpe_cost_preliminary_results_20261113/NEXT_OPTIMIZATION_PLAN.md)／[HANDOFF](docs/research/rpe_cost_preliminary_results_20261113/HANDOFF.md)：承認済み保存再解析を一回完了。固定nominal×E[S]でm12=66.2031%、m10〜12=96.9198%、短round閾値16軸、pilot C/S≈1.111/1.042。29signal転記、人工4件PASS、新signal/MC/compile/fit/N最適化0、正式G/winner null、公開後STOP。

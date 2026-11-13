@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[LD1/LD2統計caller](../../docs/research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)：trottertracks.rpe_signal_statistics_callerが既存W/S/R3とC APIを再利用。evaluation_targetを元targetと分離し、受入viewと実消費signal_inputを保全。元decoder/資格gateは不変、47技術test PASS、実H4科学実行なし。
+
 [全RPE費用予備分析P0〜P4](../../docs/research/rpe_cost_preliminary_results_20261113/REPORT.md)：既存exact_scalar/exact_valueとmetadata loaderをtrottertracks.rpe_cost_preliminaryから再利用。nominal×構造Sを正式Gから分離し、人工4件と固定scope結果確認。旧decoder/統計/controller無変更。
 
 [全RPE shot配分adapter](../../docs/research/rpe_shot_allocation_20261113/REPORT.md)：trottertracks.rpe_shot_allocationが既存統計/R3/controller/exact会計を再利用。元decoder・費用器は無変更、複数allocationを同physical IDで管理し、診断と十分Nを分離。48人工/回帰PASS。
