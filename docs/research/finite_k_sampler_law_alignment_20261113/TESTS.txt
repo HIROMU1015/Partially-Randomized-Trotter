@@ -1,0 +1,27 @@
+2026-11-13, primary agent's own technical checks (not independent scientific review).
+Working directory: partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110
+Python: /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python
+NumPy 1.26.4. PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+
+python -B -m unittest discover -s tests -p check_finite_k_sampler_law.py -v
+12 tests PASS (0.043 s reported by unittest).
+- exact dyadic law / zero plateaus / artificial exhaustive 8-point grid
+- side=right including zero, exact boundary, nextafter
+- tiny first interval receives the zero grid point
+- tiny positive last interval can have zero effective mass
+- exact P/Q/F/G decomposition and unchanged legacy cdf_law agreement
+- reference normalization kept separate
+- invalid/missing/malformed input rejected without repair
+- artificial full K2 label enumeration bounded by conditional coupling
+- equal law / support checks
+- large integer position count without event generation; unknown joint law returns None
+- equal marginal laws do not imply equal joint laws
+- cost bound requires known full-support oscillation
+
+python -B -m pytest tests/test_rte.py -q -k 'streaming_event_apis or finite_distribution_round_trip or finite_taylor_distribution_is_normalized or all_finite_event_probabilities_sum_to_one or fixed_seed_reproduces_event_sequence' -p no:cacheprovider
+5 PASS, 11 deselected (2.42 s reported by pytest).
+Existing SyntaxWarnings: invalid escape sequences in Almost_optimal_grouping.py (222,382,636,747,792); unchanged.
+Selected tests use the existing 2x2 Pauli/artificial finite-K inputs only.
+
+SOURCE inspection: 71ba49/c31ef/de2427 rte.py blobs identical; current six relevant functions AST-identical to pinned 71ba49.
+No original H4 probability data passed to the diagnostic. No new real molecular sampling, reanalysis, K0/K1, build/compile, fit, E[S]/E[C], N/G.
