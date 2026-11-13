@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-13：4方式限定signal screen準備](2026-11-13-four-method-signal-screen.md)：新20セル・保存40セルを固定、17技術test PASS、科学計算・保存再解析0。
+
 [2026-11-13：S3と全RMSEの接続](2026-11-13-s3-global-rmse-connection.md)：不足証拠・最小有限案、保存再解析0。
 
 [2026-11-13：R3 decoder高速化](2026-11-13-rpe-decoder-r3.md)：独立decoder/B batch hook、32人工技術test、実S3は未実行。
