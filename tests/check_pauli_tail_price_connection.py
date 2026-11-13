@@ -148,10 +148,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(plan['configuration_id'], 'd905d2197d4b01df3074b3844c0f4a2b990c21b9c3e1a0e3b6ea13a488b1fd27')
         self.assertIsNone(plan['execution_caller'])
 
-    def test_c_guard_does_not_yet_know_the_pauli_route(self):
+    def test_c_guard_registered_pauli_route_matches_d_constants(self):
         from trottertracks import price_implementation_guard as G
+        self.assertEqual((P.LOWERING_ID, P.ROUTE), (G.PAULI_D2, 'PR_PAULI_TAIL'))
+        G._rte_source(str(ROOT), P.LOWERING_ID, P.D2_SOURCE['commit'], P.D2_SOURCE['path'])
         with self.assertRaises(ValueError):
-            G._rte_source(str(ROOT), P.LOWERING_ID, 'a' * 40, P.MODULE)
+            G._rte_source(str(ROOT), P.LOWERING_ID, '01e068af7e06d9f1f5621a5b3800c30eb32ecb06', 'src/trottertracks/efficient_controlled_zz.py')
 
 
 if __name__ == '__main__':

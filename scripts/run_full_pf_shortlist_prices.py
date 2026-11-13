@@ -8,6 +8,9 @@ configurations (constructor of C 3a8b37f1 COVERAGE). Calibration m4/m5 and
 holdout m6 follow C's plan; a cell whose X and Y both have an EXACT saved receipt
 (M5 m4) is NOT recompiled and is handed to C for acceptance.
 
+Record schema (this version, on C bridge c628e9e8): DIRECT_COMPILED_DETERMINISTIC /
+DETERMINISTIC (B PRICE_KINDS), same as the Truncated v2 records.
+
 Default: metadata preflight. `--execute-approved-full-pf` (separate approval) runs
 the provider-root child for the new cells only (at most 16 wrappers). No retry.
 """
@@ -20,7 +23,6 @@ from pathlib import Path
 import subprocess
 import sys
 import time
-import types
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / 'scripts') not in sys.path:
@@ -33,9 +35,9 @@ COVERAGE = dict(commit='3a8b37f1a282c0c06ac1a363b070f4376e9ff41a',
                 path='docs/research/full_pf_latest_price_guard_20261114/COVERAGE.json')
 C_PLAN = dict(commit='cfc0fae6f1399bbc46689b4d88998b415fa47781',
               path='docs/research/paper_g_price_routes_20261114/PRICE_VALIDATION_PLAN.md')
-C_MODEL = dict(commit='cfc0fae6f1399bbc46689b4d88998b415fa47781', path='src/trottertracks/price_model_validation.py')
 ROLES = {4: 'CALIBRATION', 5: 'CALIBRATION', 6: 'HOLDOUT'}
 COHORT = 'D_FULL_PF_SHORTLIST_DETERMINISTIC_V1'
+RECORD_SCHEMA = T3.RECORD_SCHEMA
 SCALAR_QUANTITY = 'HAMILTONIAN_CONSTANT'
 SCALAR_SOURCE = dict(T3.NATIVE, selector='cost_trial scalar = ctx.ham.constant for method FULL (saved snapshot constant)')
 OUTPUT = 'docs/research/d_full_pf_shortlist_prices_20261114/run01'
@@ -126,7 +128,8 @@ def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, ev
         axis = req['axis']; metrics = trial['prices']['cosine' if axis == 'X' else 'sine']
         price = deepcopy(req)
         price.update(cohort=COHORT, n_paths=1, mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),
-            classification='DIRECT_DETERMINISTIC', expectation='EXACT_DETERMINISTIC_CIRCUIT', price_status='UNQUALIFIED_FOR_C_MODEL',
+            classification='DIRECT_COMPILED_DETERMINISTIC', expectation='DETERMINISTIC', price_status='DIRECT_DETERMINISTIC_AVAILABLE',
+            record_schema=RECORD_SCHEMA, diagnostic=dict(record_role='EXACT_DETERMINISTIC_CIRCUIT_PRICE', model_qualified=False),
             source=deepcopy(price_source), price_profile=dict(profile, lowering_id=T3.NATIVE_POLICY),
             profile_extension=dict(lowering_id=T3.NATIVE_POLICY, source=T3.NATIVE), normalization_is_price_multiplier=False)
         facts = dict(method='FULL_PF', profile=deepcopy(profile), native_policy=T3.NATIVE_POLICY,
@@ -146,17 +149,12 @@ def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, ev
 
 
 def c_model(root=ROOT):
-    """C's price_model_validation from its pinned blob (record/fit/validate; not reimplemented)."""
-    name = 'trottertracks._price_model_validation_cfc0fae6'
-    if name not in sys.modules:
-        src = str(root / 'src')
-        if src not in sys.path:
-            sys.path.insert(0, src)
-        import trottertracks  # noqa: F401
-        mod = types.ModuleType(name); mod.__package__ = 'trottertracks'; sys.modules[name] = mod
-        code = subprocess.check_output(['git', 'show', C_MODEL['commit'] + ':' + C_MODEL['path']], cwd=root)
-        exec(compile(code, C_MODEL['commit'] + ':' + C_MODEL['path'], 'exec'), mod.__dict__)
-    return sys.modules[name]
+    """C's price_model_validation (in this tree at c628e9e8; record/fit/validate, not reimplemented)."""
+    src = str(root / 'src')
+    if src not in sys.path:
+        sys.path.insert(0, src)
+    from trottertracks import price_model_validation
+    return price_model_validation
 
 
 def fit_inputs(prices, *, route, formula, width_over_h, roles=ROLES, root=ROOT):

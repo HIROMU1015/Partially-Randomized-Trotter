@@ -15,6 +15,10 @@ carried by the physical row only:
   against the fixed T2 PLAN_METADATA.
 Same quantity as Full PF: FULL_WRAPPER_MEAN_COMPILED_PRICE, measured X/Y wrapper.
 
+Record schema (this version, on C bridge c628e9e8): classification
+DIRECT_COMPILED_DETERMINISTIC / expectation DETERMINISTIC (B PRICE_KINDS); the
+04bead11 labels are kept only as a diagnostic. Circuits/cells/gates unchanged.
+
 Default: metadata preflight. `--execute-approved-t3` (separate approval) runs the
 child (original install() first, provider c31ef424 bytes checked). No retry.
 """
@@ -51,6 +55,7 @@ WRAPPER = dict(commit=NATIVE['commit'], path='src/trottertracks/resource_applica
 SCALAR_SOURCE = dict(commit='5cc7c07e112ce97205948465c94441cba0042416', path='src/trottertracks/baseline_signal_numerics.py',
                      selector='Context.tail_scalars[7] (saved INDEX context prefixes.7.scalar)')
 COHORT = 'D_TRUNCATED_P7_DETERMINISTIC_T3_V1'
+RECORD_SCHEMA = 'D_PRICE_RECORD_B_KINDS_V2'  # B kinds: DIRECT_COMPILED_DETERMINISTIC / DETERMINISTIC
 NO_RTE = 'NOT_APPLICABLE_NO_RTE'
 NATIVE_POLICY = 'H46_LONG_TIME_NATIVE_COMPOSE'
 SCALAR_QUANTITY = 'HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY'
@@ -175,7 +180,8 @@ def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, ev
         axis = req['axis']; metrics = trial['prices']['cosine' if axis == 'X' else 'sine']
         price = deepcopy(req)
         price.update(cohort=COHORT, n_paths=1, mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),
-            classification='DIRECT_DETERMINISTIC', expectation='EXACT_DETERMINISTIC_CIRCUIT', price_status='UNQUALIFIED_FOR_C_MODEL',
+            classification='DIRECT_COMPILED_DETERMINISTIC', expectation='DETERMINISTIC', price_status='DIRECT_DETERMINISTIC_AVAILABLE',
+            record_schema=RECORD_SCHEMA, diagnostic=dict(record_role='EXACT_DETERMINISTIC_CIRCUIT_PRICE', model_qualified=False),
             source=deepcopy(price_source), price_profile=dict(profile, lowering_id=NATIVE_POLICY),
             profile_extension=dict(lowering_id=NATIVE_POLICY, source=NATIVE), normalization_is_price_multiplier=False)
         facts = dict(method='TRUNCATED_PF', profile=deepcopy(profile), native_policy=NATIVE_POLICY,

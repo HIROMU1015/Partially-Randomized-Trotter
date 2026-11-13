@@ -13,7 +13,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'scripts'), str(ROOT / 'tests')]
 import run_full_pf_shortlist_prices as FP  # noqa: E402
 import run_truncated_p7_prices as T3  # noqa: E402
-from check_pauli_ld1_m0_pilot_prep import guard  # noqa: E402  (C cfc0fae6 guard from its blob)
+from trottertracks import price_implementation_guard as G_TREE  # noqa: E402  (C c628e9e8 guard in tree)
+from trottertracks import paper_nominal_cost as PN  # noqa: E402
+
+
+def guard():
+    return G_TREE
 
 PLANS = FP.plans()
 
@@ -67,6 +72,35 @@ class Tests(unittest.TestCase):
         cohorts = {(full['plan']['configuration']['rounds'][4]['candidate']['id'], a): FP.COHORT for a in ('X', 'Y')}
         with patch.object(G, '_document', return_value=proofs), self.assertRaises(ValueError):
             G.check(ROOT, full['plan']['configuration'], prices, cohorts=cohorts, bindings=sides, policy=bad)
+
+    def test_B_price_kinds_and_paper_level_deterministic_tier(self):
+        G = guard(); B = PN._api(ROOT)[0].B
+        for plan, bind, trial, q, method in ((PLANS[0], FP.price_bindings, fake_trial(2.29310124732, 900), FP.SCALAR_QUANTITY, 'FULL_PF'),
+                (T3.plans()[0], T3.price_bindings, fake_trial(2.29310124732 + 4.5302064712666724e-05, 700), T3.SCALAR_QUANTITY, 'TRUNCATED_PF')):
+            config = plan['plan']['configuration']; c = plan['cells'][0]
+            prices, sides, proofs = bind(ROOT, plan['plan'], c, trial, price_source=dict(fixture='ARTIFICIAL'),
+                                         evidence_commit='a' * 40, evidence_path='ARTIFICIAL.json')
+            for p in prices:
+                self.assertEqual((p['classification'], p['expectation']), ('DIRECT_COMPILED_DETERMINISTIC', 'DETERMINISTIC'))
+                self.assertIn(p['classification'], B.a.PRICE_KINDS)
+                self.assertEqual(p['record_schema'], 'D_PRICE_RECORD_B_KINDS_V2')
+                self.assertEqual(PN._tier(B, p, method), 'DETERMINISTIC_DIRECT')
+            old = dict(deepcopy(prices[0]), classification='DIRECT_DETERMINISTIC', expectation='EXACT_DETERMINISTIC_CIRCUIT')
+            with self.assertRaisesRegex(ValueError, 'Unknown compiled price kind'):
+                PN._tier(B, old, method)
+            with self.assertRaises(ValueError):
+                PN._tier(B, dict(deepcopy(prices[0]), expectation='QUALIFIED_EXPECTATION'), method)
+            means = [dict(m=r['m'], identity=r['identity'], law_binding=r['law_binding'], normalization=dict(log_B=0))
+                     for r in config['rounds']]
+            packet = PN.nominal_packet(ROOT, config, dict(configuration_id=config['id'], target={}, source=dict(fixture='A'),
+                                       means=means), source=dict(fixture='ARTIFICIAL'))
+            pol = dict(id='ARTIFICIAL_PF', source=dict(fixture='ARTIFICIAL'), profile=deepcopy(config['spec']['profile']),
+                       by_method={method: dict(native_policy=T3.NATIVE_POLICY, rte_rotation_lowering=G.NO_RTE, scalar_quantity=q)})
+            cohorts = {(config['rounds'][c['m']]['candidate']['id'], a): prices[0]['cohort'] for a in ('X', 'Y')}
+            with patch.object(G, '_document', return_value=proofs):
+                out = PN.paper_cost(ROOT, config, packet, prices, cohorts=cohorts, price_bindings=sides, comparison_policy=pol)
+            self.assertEqual([x['tier'] for x in out['cells'] if x['m'] == c['m']], ['DETERMINISTIC_DIRECT'] * 2)
+            self.assertIsNone(out['G_paper'])  # other rounds have no (fictional) price: UNKNOWN, not zero
 
     def test_C_fit_inputs_from_full_and_truncated_records(self):
         V = FP.c_model()

@@ -14,6 +14,12 @@ first; the Pauli modules absent from the provider root are registered from the
 pinned 9c4006bf blobs. Index-0 gates compare the circuit with an independent
 full-2^n oracle (saved P0 head blocks, A's reverse_bits, dense Pauli events).
 
+Physical identity (this version): the price context and physical candidate come from
+C's Pauli bridge planner (`rpe_optimization_pipeline.plan` -> `price_context`,
+rows via `rpe_d_price_connection.pauli_requests`); the canonical candidate ID is
+also the unchanged seed key. Records use B's kinds DIRECT_COMPILED_FINITE_SAMPLE /
+FINITE_COHORT_ONLY (one normal path; never a law expectation).
+
 Default: metadata preflight. `--execute-approved-pauli-b0` needs a separate
 approval (sampling, native build, 2 compiles). No retry, mandatory STOP.
 """
@@ -46,6 +52,10 @@ PROVIDER_MODULES = ('trotterlib.rte', 'trotterlib.df_trotter.circuit', 'trotterl
                     'trottertracks.resource_applicability.ax2b_native_df_v5',
                     'trottertracks.resource_applicability.h6_hash_reuse_v1')
 HAMILTONIAN_CONSTANT = 2.29310124732
+A_HANDOFF = dict(commit='714247619afb4714fd663eb15c0470ef32bdc7af',
+                 path='docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json')
+TARGET = dict(commit='91349e703e0d09ef702ccd108745dfaf1acc29f7', path='docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD1.json')
+FIXED_SEEDS = [14788159701244282917]  # 8b28dce0 plan; keyed by the canonical candidate ID (unchanged by the bridge)
 PREFIX, M = 1, 0
 OUTPUT = 'docs/research/d_pauli_ld1_m0_pilot_results_20261114/run01'
 PRIVATE_OUTPUT = Path('/home/AbeHiromu/projects/d-pauli-ld1-m0-20261114-private/run01')
@@ -175,14 +185,37 @@ def child(job_path):
 
 
 def _meta():
+    """This tree's C planner/guard/D-connection (parent process only)."""
     if str(ROOT / 'src') not in sys.path:
         sys.path.insert(0, str(ROOT / 'src'))
-    from trottertracks import baseline_signal_pipeline as C
-    return C
+    from trottertracks import rpe_optimization_pipeline as I
+    from trottertracks import rpe_d_price_connection as DC
+    from trottertracks import price_implementation_guard as G
+    return I, DC, G
+
+
+def canonical_request(root=ROOT):
+    """C's Pauli bridge planner on A's LD1 canonical configuration (metadata only).
+
+    Same inputs as C's RealPauliBridge: A handoff as signal SOURCE, B LD1 target, and
+    the per-round numerical SOURCE map read from A's carrier records ('source' field only).
+    """
+    I, DC, G = _meta()
+    handoff = I._pinned_json(str(root), A_HANDOFF['commit'], A_HANDOFF['path'])
+    packet = next(p for p in handoff['packets'] if p['prefix'] == PREFIX)
+    sources = {}
+    for r in packet['rounds']:
+        rec = I._pinned_json(str(root), r['mean_source']['commit'], r['mean_source']['path'])
+        for key in r['mean_source']['selector']:
+            rec = rec[key]
+        sources[str(r['m'])] = deepcopy(rec['source'])
+    target = I._pinned_json(str(root), TARGET['commit'], TARGET['path'])['target']
+    req = I.plan(root, packet['configuration'], target=target, signal_source=dict(A_HANDOFF), implementation_sources=sources)
+    return req, packet
 
 
 def preflight(root=ROOT):
-    C = _meta(); P = connection()
+    I, DC, G = _meta(); P = connection()
     for name in PAULI_MODULES['names']:
         rel = 'src/' + name.replace('.', '/') + '.py'
         if blob(PAULI_MODULES['commit'], rel) != (Path(root) / rel).read_bytes():
@@ -191,23 +224,34 @@ def preflight(root=ROOT):
         if blob(d['commit'], d['path']) != (Path(root) / d['path']).read_bytes():
             raise ValueError('Native SOURCE differs: ' + d['path'])
     plan = P.pilot_plan(root, prefix=PREFIX, m=M)
-    c = P.legacy_physical_candidate(plan['request'], candidate_id=C.p.candidate_id)
-    return dict(status='PREFLIGHT_METADATA_ONLY', configuration_id=plan['configuration_id'], canonical_candidate=plan['request']['candidate_id'],
-                legacy_physical_candidate=c, seeds=plan['seeds'], cohort=plan['cohort'], scalar=plan['scalar'],
-                dictionary_sha256=plan['dictionary_sha256'], scope=SCOPE, output=OUTPUT, private_output=str(PRIVATE_OUTPUT))
+    req, packet = canonical_request(root)
+    B = I.providers(str(root)).B
+    context = I.price_context(req, M); c = context['physical_candidate']; r = plan['request']
+    if (req['provider'] != 'A_PR_PAULI' or G.route(B, req['configuration']['spec']) != P.ROUTE
+            or req['configuration']['id'] != plan['configuration_id'] or c['id'] != r['candidate_id']
+            or (c['q'], c['R_outer'], c['K'], c['prefix']) != (r['q'], r['R'], r['K'], r['prefix'])
+            or B.a.exact_scalar(c['T']) != r['T']
+            or context['split']['tail_dictionary']['dictionary_sha256'] != plan['dictionary_sha256']
+            or not I.C.p.same(context['law']['tail_dictionary'], context['split']['tail_dictionary'])):
+        raise ValueError('C canonical physical candidate differs from the frozen Pauli pilot request')
+    if plan['seeds'] != FIXED_SEEDS or [P.seed(c['id'], plan['cohort'], 0, 0, 0)] != FIXED_SEEDS:
+        raise ValueError('Pauli pilot seeds changed; the canonical candidate ID must stay the seed key')
+    return dict(status='PREFLIGHT_METADATA_ONLY', configuration_id=plan['configuration_id'], provider=req['provider'],
+                canonical_physical_candidate=c, route=P.ROUTE, seeds=plan['seeds'], cohort=plan['cohort'], scalar=plan['scalar'],
+                dictionary_sha256=plan['dictionary_sha256'], record_schema=P.RECORD_SCHEMA, price_kind=P.FINITE_SAMPLE,
+                scope=SCOPE, output=OUTPUT, private_output=str(PRIVATE_OUTPUT))
 
 
 def records(root, result, *, source, evidence_commit, evidence_path):
-    """Parent: price records + PR_PAULI_TAIL sidecars from a child result."""
-    C = _meta(); P = connection()
-    handoff = json.loads(blob(P.PACKETS['commit'], P.PACKETS['path']))
-    packet = next(p for p in handoff['packets'] if p['prefix'] == PREFIX)
+    """Parent: records + PR_PAULI_TAIL sidecars on C's planner rows for m0 (finite cohort, n=1)."""
+    I, DC, G = _meta(); P = connection()
+    req, packet = canonical_request(root)
     plan = P.pilot_plan(root, prefix=PREFIX, m=M)
-    c = P.legacy_physical_candidate(plan['request'], candidate_id=C.p.candidate_id)
-    B = C.published_api(str(root)).B
-    return P.price_records(packet['configuration'], M, trial_prices=result['prices'], scalar=result['scalar'],
-        physical_candidate=c, native_source=dict(commit=source['commit'], path=CONNECTION), cohort=plan['cohort'],
-        price_source=source, evidence_commit=evidence_commit, evidence_path=evidence_path, measurement=B.p.measurement)
+    base = [row for row in DC.pauli_requests(root, req) if row['m'] == M]
+    B = I.providers(str(root)).B
+    return P.price_records(base, req['configuration'], trial_prices=result['prices'], scalar=result['scalar'],
+        native_source=dict(commit=source['commit'], path=CONNECTION), cohort=plan['cohort'], price_source=source,
+        evidence_commit=evidence_commit, evidence_path=evidence_path, measurement=B.p.measurement)
 
 
 def execute(root=ROOT):

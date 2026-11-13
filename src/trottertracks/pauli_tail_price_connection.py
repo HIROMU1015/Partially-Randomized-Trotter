@@ -291,43 +291,50 @@ def index0_checks(evolution, state, expected, *, tolerance=1e-9):
     return checks, z, wrappers
 
 
-def price_records(config, m, *, trial_prices, scalar, physical_candidate, native_source, cohort, price_source,
+RECORD_SCHEMA = 'D_PRICE_RECORD_B_KINDS_V2'
+FINITE_SAMPLE = dict(classification='DIRECT_COMPILED_FINITE_SAMPLE', expectation='FINITE_COHORT_ONLY')
+
+
+def price_records(base_rows, config, *, trial_prices, scalar, native_source, cohort, price_source,
                   evidence_commit, evidence_path, measurement):
-    """Direct single-path records + guard sidecars/proofs for PR_PAULI_TAIL (no law mean)."""
-    row = config['rounds'][m]; s = config['spec']; profile = s['profile']
-    physical = dict(binding=deepcopy(s['binding']), profile=deepcopy(profile), physical_candidate=deepcopy(physical_candidate),
-                    structure=deepcopy(row['structure']), split=deepcopy(s['split']), law=deepcopy(s['law']))
+    """Records + PR_PAULI_TAIL sidecars on C's planner rows (rpe_d_price_connection.pauli_requests).
+
+    base_rows carry C's identity/law/measurement and physical_context = I.price_context(req, m)
+    (canonical physical candidate = B canonical candidate ID; dictionary identity in split/law).
+    One fresh normal path is a finite cohort (n_paths=1), never a law expectation.
+    """
     prices, sides, proofs = [], [], {}
-    for axis in ('X', 'Y'):
-        meas = measurement(row, axis); meas['law_context']['ideal_sampler_distance_qualified'] = None
+    profile = config['spec']['profile']; s = config['spec']
+    for base in base_rows:
+        if (base.get('expected_route') != ROUTE or base.get('expected_lowering_id') != LOWERING_ID
+                or base.get('expected_native_policy') != NATIVE_POLICY or base.get('expected_scalar_quantity') != SCALAR_QUANTITY
+                or base['physical_context']['physical_candidate']['id'] != base['identity']['candidate']['id']):
+            raise ValueError('C planner row differs from the D Pauli route/lowering/canonical candidate')
+        m, axis = base['m'], base['axis']; row = config['rounds'][m]
         metrics = trial_prices['cosine' if axis == 'X' else 'sine']
-        price = dict(configuration_id=config['id'], m=m, axis=axis, identity=deepcopy(row['identity']),
-            law_binding=deepcopy(row['law_binding']), **meas, physical_context=deepcopy(physical), quantity=QUANTITY,
-            P=0, cohort=cohort, n_paths=1, mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),
-            classification='DIRECT_SINGLE_PATH_WIRING', expectation='NOT_A_LAW_MEAN', price_status='UNQUALIFIED_SINGLE_PATH',
+        price = deepcopy(base)
+        for key in ('expected_route', 'expected_lowering_id', 'expected_native_policy', 'expected_scalar_quantity',
+                    'expected_lowering_source', 'd_pauli_round'):
+            price.pop(key, None)
+        price.update(**FINITE_SAMPLE, law_context=measurement(row, axis, saved_sampler=True)['law_context'],
+            cohort=cohort, n_paths=1, mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),
+            price_status='DIRECT_FINITE_COHORT', record_schema=RECORD_SCHEMA,
+            diagnostic=dict(pilot_role='DIRECT_SINGLE_PATH_WIRING', law_expectation=False,
+                            qualified_expectation_promotion='FORBIDDEN', d_pauli_round=deepcopy(base.get('d_pauli_round'))),
             source=deepcopy(price_source), price_profile=dict(profile, lowering_id=LOWERING_ID),
             profile_extension=dict(lowering_id=LOWERING_ID, source=D2_SOURCE), normalization_is_price_multiplier=False)
         facts = implementation_facts(profile, native_source=native_source, measurement=measurement(row, axis),
                                      scalar=scalar, scalar_source=dict(s['split']['tail_dictionary']['source'],
                                      selector=['saved_DF_scalar'], plus='HAMILTONIAN_CONSTANT_OF_BOUND_SNAPSHOT'))
         key = 'm%d%s' % (m, axis)
-        side = dict(identity=deepcopy(row['identity']), law_binding=deepcopy(row['law_binding']), axis=axis, cohort=cohort,
-            price_source=deepcopy(price_source), physical_context=deepcopy(physical),
+        side = dict(identity=deepcopy(base['identity']), law_binding=deepcopy(base['law_binding']), axis=axis, cohort=cohort,
+            price_source=deepcopy(price_source), physical_context=deepcopy(base['physical_context']),
             profile_extension=dict(lowering_id=LOWERING_ID, source=D2_SOURCE), implementation=facts,
             implementation_evidence=dict(commit=evidence_commit, path=evidence_path, selector=[key]))
         proofs[key] = {k: deepcopy(side[k]) for k in ('price_source', 'identity', 'law_binding', 'axis', 'cohort',
                        'physical_context', 'profile_extension', 'implementation')}
         prices.append(price); sides.append(side)
     return prices, sides, proofs
-
-
-def legacy_physical_candidate(request, *, candidate_id):
-    """Legacy PR physical row (no dictionary in its CID; C's bridge keeps the canonical identity)."""
-    T = float(request['T'])
-    c = dict(system='H4', method='PR', formula='2nd', prefix=request['prefix'], T=T, q=request['q'],
-             delta=T / request['q'], R_outer=request['R'], K=request['K'])
-    c['id'] = candidate_id(c)
-    return c
 
 
 PACKETS = dict(commit='714247619afb4714fd663eb15c0470ef32bdc7af',

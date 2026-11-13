@@ -1,79 +1,156 @@
-"""Pauli LD1/m0 pilot, parent side: frozen plan, saved-P0 bit order, C guard PR_PAULI_TAIL sidecar.
+"""Pauli LD1/m0 pilot, parent side, on C's bridge planner/guard/paper accounting (c628e9e8 in tree).
 
-C's route-aware guard is loaded from its pinned blob (cfc0fae6) without merging.
-Fictional prices only; the artificial circuits run in their own provider-root process.
+Metadata, saved P0 representation check and FICTIONAL prices only. No sampling,
+build, compile or real price. The artificial circuits run in their own
+provider-root process (see check_pauli_ld1_m0_pilot_circuits.py).
 """
 from copy import deepcopy
-import importlib.util
 from pathlib import Path
 import subprocess
 import sys
-import types
 import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'scripts')]
 import run_pauli_ld1_m0_pilot as PILOT  # noqa: E402
+from trottertracks import price_implementation_guard as G  # noqa: E402
+from trottertracks import rpe_optimization_pipeline as I  # noqa: E402
+from trottertracks import paper_nominal_cost as PN  # noqa: E402
 P = PILOT.connection()
-GUARD_COMMIT = 'cfc0fae6f1399bbc46689b4d88998b415fa47781'
+B = I.providers(str(ROOT)).B
+SOURCE = dict(fixture='ARTIFICIAL_PRICE_NOT_MEASURED', commit='1e5c2c15bef7c1ccb92f8d7b3b75805e30019f60')
 
 
 def guard():
-    name = 'trottertracks._price_guard_cfc0fae6'
-    if name not in sys.modules:
-        path = 'src/trottertracks/price_implementation_guard.py'
-        mod = types.ModuleType(name); mod.__package__ = 'trottertracks'; sys.modules[name] = mod
-        exec(compile(PILOT.blob(GUARD_COMMIT, path), GUARD_COMMIT + ':' + path, 'exec'), mod.__dict__)
-    return sys.modules[name]
+    return G
+
+
+def fictional(meta):
+    return dict(prices={a: dict(rz_count=500 + i) for i, a in enumerate(('cosine', 'sine'))}, scalar=meta['scalar'])
+
+
+def policy(config, **kw):
+    entry = dict(native_policy=P.NATIVE_POLICY, rte_rotation_lowering=G.PAULI_D2, scalar_quantity=P.SCALAR_QUANTITY)
+    entry.update(kw)
+    return dict(id='ARTIFICIAL_PAULI', source=dict(fixture='ARTIFICIAL'), profile=deepcopy(config['spec']['profile']),
+                by_method=dict(PR_PAULI_TAIL=entry))
 
 
 class Tests(unittest.TestCase):
-    def test_frozen_plan_and_existing_seed_family(self):
-        meta = PILOT.preflight()
-        self.assertEqual(meta['configuration_id'], 'd905d2197d4b01df3074b3844c0f4a2b990c21b9c3e1a0e3b6ea13a488b1fd27')
-        c = meta['legacy_physical_candidate']
+    @classmethod
+    def setUpClass(cls):
+        cls.meta = PILOT.preflight()
+        cls.req, cls.packet = PILOT.canonical_request()
+        cls.config = cls.req['configuration']
+        cls.prices, cls.sides, cls.proofs = PILOT.records(ROOT, fictional(cls.meta), source=SOURCE,
+                                                          evidence_commit='a' * 40, evidence_path='ARTIFICIAL.json')
+        cls.cohorts = {(cls.config['rounds'][0]['candidate']['id'], a): cls.meta['cohort'] for a in ('X', 'Y')}
+
+    def check(self, sides=None, proofs=None, prices=None, pol=None):
+        with patch.object(G, '_document', return_value=proofs or self.proofs):
+            return G.check(ROOT, self.config, prices or self.prices, cohorts=self.cohorts, bindings=sides or self.sides,
+                           policy=pol or policy(self.config))
+
+    def mutated(self, fn):
+        sides, proofs = deepcopy(self.sides), deepcopy(self.proofs)
+        for s in sides:
+            fn(s)
+            proofs['m0' + s['axis']] = {k: deepcopy(s[k]) for k in proofs['m0' + s['axis']]}
+        return sides, proofs
+
+    def test_canonical_candidate_from_C_planner_and_unchanged_seed(self):
+        c = self.meta['canonical_physical_candidate']
+        self.assertEqual(self.meta['configuration_id'], 'd905d2197d4b01df3074b3844c0f4a2b990c21b9c3e1a0e3b6ea13a488b1fd27')
+        self.assertEqual(c, I.price_context(self.req, 0)['physical_candidate'])
+        self.assertEqual(c['id'], 'RMSE:62a9a6b68c2c88951f1055d1da7f9b6a89da94a91092c9488cf5fce503288e54')
         self.assertEqual((c['T'], c['q'], c['R_outer'], c['K'], c['prefix']), (.1, 1, 3, 2, 1))
-        fn = P.existing_trial_seed()
-        self.assertEqual(meta['seeds'], [fn(dict(id=meta['canonical_candidate']), meta['cohort'], 0, 0, 0)])
-        self.assertEqual(meta['scalar'], 2.29310124732 + 0.4177175120626939)
+        self.assertEqual(self.meta['route'], G.route(B, self.config['spec']))
+        self.assertEqual(self.meta['seeds'], [14788159701244282917])
+        self.assertEqual(self.meta['seeds'], [P.seed(c['id'], self.meta['cohort'], 0, 0, 0)])
+        legacy = dict(system='H4', method='PR', formula='2nd', prefix=1, T=.1, q=1, delta=.1, R_outer=3, K=2)
+        legacy['id'] = I.C.p.candidate_id(legacy)
+        self.assertNotEqual(legacy['id'], c['id'])
+        self.assertNotEqual(P.seed(legacy['id'], self.meta['cohort'], 0, 0, 0), self.meta['seeds'][0])
+
+    def test_records_use_B_finite_sample_kinds_and_are_not_expectations(self):
+        for p in self.prices:
+            self.assertEqual((p['classification'], p['expectation'], p['n_paths']), ('DIRECT_COMPILED_FINITE_SAMPLE', 'FINITE_COHORT_ONLY', 1))
+            self.assertIn(p['classification'], B.a.PRICE_KINDS)
+            self.assertEqual(p['diagnostic']['pilot_role'], 'DIRECT_SINGLE_PATH_WIRING')
+            self.assertFalse(p['diagnostic']['law_expectation'])
+            self.assertEqual(p['law_context']['ideal_sampler_distance_qualified'], False)
+            self.assertEqual(p['physical_context'], I.price_context(self.req, 0))
+            self.assertEqual(p['record_schema'], P.RECORD_SCHEMA)
+        self.assertEqual(PN._tier(B, self.prices[0], 'PR'), 'FINITE_COHORT_SCENARIO')
+        promoted = dict(deepcopy(self.prices[0]), expectation='QUALIFIED_EXPECTATION')
+        self.assertEqual(PN._tier(B, promoted, 'PR'), 'FINITE_COHORT_SCENARIO')  # sampler law not qualified
+        det = dict(deepcopy(self.prices[0]), classification='DIRECT_COMPILED_DETERMINISTIC', expectation='DETERMINISTIC')
+        with self.assertRaises(ValueError):
+            PN._tier(B, det, 'PR')
+        for old in (dict(classification='DIRECT_SINGLE_PATH_WIRING', expectation='NOT_A_LAW_MEAN'),):
+            with self.assertRaisesRegex(ValueError, 'Unknown compiled price kind'):
+                PN._tier(B, dict(deepcopy(self.prices[0]), **old), 'PR')
+
+    def test_C_guard_accepts_canonical_sidecar(self):
+        self.assertEqual(len(self.check()['checked']), 2)
+        self.assertEqual(P.LOWERING_ID, G.PAULI_D2)
+
+    def test_legacy_physical_id_rejected(self):
+        legacy = dict(system='H4', method='PR', formula='2nd', prefix=1, T=.1, q=1, delta=.1, R_outer=3, K=2)
+        legacy['id'] = I.C.p.candidate_id(legacy)
+        sides, proofs = self.mutated(lambda s: s['physical_context'].update(physical_candidate=deepcopy(legacy)))
+        with self.assertRaises(ValueError):
+            self.check(sides, proofs)
+
+    def test_dictionary_law_source_scalar_route_lowering_mismatches_rejected(self):
+        def dict_hash(s):
+            s['physical_context']['split']['tail_dictionary']['dictionary_sha256'] = '0' * 64
+        def law(s):
+            s['physical_context']['law']['tail_dictionary'] = dict(s['physical_context']['law']['tail_dictionary'], prefix=2)
+        def native(s):
+            s['implementation']['native_source'] = dict(path=P.MODULE)
+        def wrapper(s):
+            s['implementation']['wrapper_source'] = dict(commit=None, path='x')
+        def scalar(s):
+            s['implementation']['resolved_scalar'] = s['implementation']['resolved_scalar'] + 1e-12
+        def route(s):
+            s['implementation'].pop('route')
+        def lowering(s):
+            s['implementation'].update(rte_rotation_lowering=G.NEW_ZZ)
+        def emitter(s):
+            s['implementation'].update(rte_lowering_source=dict(commit='01e068af7e06d9f1f5621a5b3800c30eb32ecb06',
+                                                                path='src/trottertracks/efficient_controlled_zz.py'))
+        def quantity(s):
+            s['implementation'].update(scalar_quantity='HAMILTONIAN_CONSTANT')
+        for fn in (dict_hash, law, native, wrapper, scalar, route, lowering, emitter, quantity):
+            sides, proofs = self.mutated(fn)
+            with self.assertRaises((ValueError, subprocess.CalledProcessError), msg=fn.__name__):
+                self.check(sides, proofs)
+        with self.assertRaises(ValueError):
+            self.check(pol=policy(self.config, rte_rotation_lowering=G.NEW_ZZ))
+        dfpol = policy(self.config); dfpol['by_method'] = dict(PR=dfpol['by_method']['PR_PAULI_TAIL'])
+        with self.assertRaises(ValueError):
+            self.check(pol=dfpol)
+
+    def test_paper_level_accounting_accepts_shape_and_marks_finite_cohort(self):
+        means = [dict(m=r['m'], identity=r['identity'], law_binding=r['law_binding'],
+                      normalization=dict(log_B=.04)) for r in self.config['rounds']]
+        packet = PN.nominal_packet(ROOT, self.config, dict(configuration_id=self.config['id'], target={}, source=SOURCE, means=means),
+                                   source=SOURCE)
+        with patch.object(G, '_document', return_value=self.proofs):
+            out = PN.paper_cost(ROOT, self.config, packet, self.prices, cohorts=self.cohorts, price_bindings=self.sides,
+                                comparison_policy=policy(self.config))
+        self.assertEqual(out['status'], 'NOT_EVALUATED_MISSING_PRICE_OR_N')  # only m0 has (fictional) prices
+        self.assertEqual([c['tier'] for c in out['cells'] if c['m'] == 0], ['FINITE_COHORT_SCENARIO'] * 2)
+        self.assertIsNone(out['G_paper']); self.assertIsNone(out['G_qualified'])
 
     def test_saved_P0_bit_order_for_A(self):
-        spec = importlib.util.spec_from_file_location('p0check', ROOT / 'docs/research/d_pauli_pilot_full_pf_prices_20261114/CHECK_P0_BIT_ORDER.py')
-        mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
-        out = mod.main()
-        self.assertTrue(out['pass'])
-        for v in out['prefixes'].values():
-            self.assertTrue(v['labels_reversed']); self.assertGreater(v['unconverted_mismatch'], 1.)
-
-    def test_sidecar_passes_C_PR_PAULI_TAIL_guard(self):
-        G = guard()
-        meta = PILOT.preflight()
-        result = dict(prices={a: dict(rz_count=500 + i) for i, a in enumerate(('cosine', 'sine'))}, scalar=meta['scalar'])
-        source = dict(fixture='ARTIFICIAL', commit='5ccc1dfc341236d3fce2f745e7e9023447a027a7')
-        prices, sides, proofs = PILOT.records(ROOT, result, source=source, evidence_commit='a' * 40, evidence_path='ARTIFICIAL.json')
-        handoff = __import__('json').loads(PILOT.blob(P.PACKETS['commit'], P.PACKETS['path']))
-        config = next(p for p in handoff['packets'] if p['prefix'] == 1)['configuration']
-        cohorts = {(config['rounds'][0]['candidate']['id'], a): meta['cohort'] for a in ('X', 'Y')}
-        policy = dict(id='ARTIFICIAL_PAULI', source=dict(fixture='ARTIFICIAL'), profile=deepcopy(config['spec']['profile']),
-                      by_method=dict(PR_PAULI_TAIL=dict(native_policy=P.NATIVE_POLICY, rte_rotation_lowering=G.PAULI_D2,
-                                                        scalar_quantity=P.SCALAR_QUANTITY)))
-        self.assertEqual(P.LOWERING_ID, G.PAULI_D2)
-        with patch.object(G, '_document', return_value=proofs):
-            out = G.check(ROOT, config, prices, cohorts=cohorts, bindings=sides, policy=policy)
-        self.assertEqual(len(out['checked']), 2)
-        for mutate in (lambda f: f.pop('route'), lambda f: f.update(rte_rotation_lowering=G.NEW_ZZ),
-                       lambda f: f.update(resolved_scalar=0.)):
-            bad, badp = deepcopy(sides), deepcopy(proofs)
-            for s in bad:
-                mutate(s['implementation'])
-            for k, v in badp.items():
-                v['implementation'] = deepcopy(bad[0]['implementation'] if k.endswith('X') else bad[1]['implementation'])
-            with patch.object(G, '_document', return_value=badp), self.assertRaises(ValueError):
-                G.check(ROOT, config, prices, cohorts=cohorts, bindings=bad, policy=policy)
-        dfpolicy = deepcopy(policy); dfpolicy['by_method'] = dict(PR=policy['by_method']['PR_PAULI_TAIL'])
-        with patch.object(G, '_document', return_value=proofs), self.assertRaises(ValueError):
-            G.check(ROOT, config, prices, cohorts=cohorts, bindings=sides, policy=dfpolicy)
+        import json
+        ops, blocks, basis = PILOT.p0_arrays()
+        d = json.loads(PILOT.blob(PILOT.P0['commit'], PILOT.P0['directory'] + 'LD1_DICTIONARY.json'))
+        out = P.bit_order_checks(d, ops, blocks)
+        self.assertTrue(out['pass']); self.assertGreater(out['unconverted_mismatch'], 1.)
 
     def test_artificial_circuits_in_provider_root_process(self):
         out = subprocess.run([sys.executable, '-B', '-W', 'ignore', str(ROOT / 'tests/check_pauli_ld1_m0_pilot_circuits.py')],

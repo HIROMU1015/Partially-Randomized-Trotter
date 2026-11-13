@@ -41,6 +41,8 @@ class Tests(unittest.TestCase):
         policy = dict(id='ARTIFICIAL_PF', source=dict(fixture='ARTIFICIAL'), profile=deepcopy(config['spec']['profile']),
                       by_method=dict(TRUNCATED_PF=dict(native_policy=T3.NATIVE_POLICY, rte_rotation_lowering=G.NO_RTE,
                                                        scalar_quantity=T3.SCALAR_QUANTITY)))
+        self.assertEqual({(x['classification'], x['expectation']) for x in prices}, {('DIRECT_COMPILED_DETERMINISTIC', 'DETERMINISTIC')})
+        self.assertEqual({x['diagnostic']['record_role'] for x in prices}, {'EXACT_DETERMINISTIC_CIRCUIT_PRICE'})
         with patch.object(G, '_document', return_value=proofs):
             self.assertEqual(len(G.check(T3.ROOT, config, prices, cohorts=cohorts, bindings=sides, policy=policy)['checked']), 2)
         bad, badp = deepcopy(sides), deepcopy(proofs)
