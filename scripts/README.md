@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_h4_dp_risk_fixed.py](run_h4_dp_risk_fixed.py)：[固定DP入力](../docs/research/h4_dp_risk_fixed_results_20261114/INPUTS.json)を旧evaluate_one/既存kernelへ渡す各LD1件・計2評価専用caller。科学条件を継承し保持8192/組141,559,036を固定、新規出力だけに保存。自分の2workerのCPU/RSSを観測し、MC/追加配分/価格/G/自動retryなし。
+
 [DP有限追跡の人工benchmark](../docs/research/rpe_dp_finite_scope_preparation_20261114/BENCHMARK_SYNTHETIC.py)：固定人工3モデルとcount幾何・整数演算probeだけを既存DPで測る。保存mean/target/resultを読む入口や実H4実行optionはない。[範囲案](../docs/research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)の科学2評価は未実行、別許可待ち。
 
 [状態集約risk API](../docs/research/rpe_mse_state_refinement_20261114/HANDOFF.md)：既存D.evaluateの任意state_refinementで旧上界とDP上界を同じcount表から計算する。新科学runnerは追加せず、旧run01 caller/結果を保全。[次の有限2適用案](../docs/research/rpe_mse_state_refinement_20261114/FINITE_PLAN.md)は未実行・別明示許可待ち。
