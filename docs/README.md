@@ -1,5 +1,7 @@
 # 文書索引
 
+[RPE精度・N評価REPORT](research/rpe_shot_evaluation_design_20261113/REPORT.md)／[再利用設計](research/rpe_shot_evaluation_design_20261113/DESIGN.md)／[供給signalとN出力](research/rpe_shot_evaluation_design_20261113/HANDOFF.md)／[科学実行案](research/rpe_shot_evaluation_design_20261113/SCIENTIFIC_PLAN.md)：全round結合、nominal/経験的/上側risk資格、Gへの内側allocation接続。69人工/回帰PASS、実H4再解析・MC/N最適化/実Gなし、L1未採択。
+
 [平均compiled価格精度REPORT](research/h4_mean_price_validation_strategy_20261113/REPORT.md)／[PRICE_VALIDATION_PLAN](research/h4_mean_price_validation_strategy_20261113/PRICE_VALIDATION_PLAN.md)／[有限scope](research/h4_mean_price_validation_strategy_20261113/FINITE_SCIENTIFIC_PLAN.md)／[HANDOFF](research/h4_mean_price_validation_strategy_20261113/HANDOFF.md)：N未確定の誤差契約、直接/解析/model、独立holdout・rare/law/covariance、domain限定を整理。2%/95%未採択、37回帰PASS、新科学計算なし。
 
 [4方式最小比較menu REPORT](research/h4_four_method_minimal_menu_20261113/REPORT.md)／[menu](research/h4_four_method_minimal_menu_20261113/MINIMAL_COMPARISON_MENU.md)／[証拠matrix](research/h4_four_method_minimal_menu_20261113/BASELINE_EVIDENCE_MATRIX.md)／[HANDOFF](research/h4_four_method_minimal_menu_20261113/HANDOFF.md)：11案・最大20セルの初期signal screenを提案。未採択、保存metadata調査＋40人工回帰のみ、新科学計算/Gなし。

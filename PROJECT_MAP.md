@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[全RPE精度・shot配分の再利用設計](docs/research/rpe_shot_evaluation_design_20261113/REPORT.md)／[設計](docs/research/rpe_shot_evaluation_design_20261113/DESIGN.md)／[signal/N/G HANDOFF](docs/research/rpe_shot_evaluation_design_20261113/HANDOFF.md)／[有限科学案](docs/research/rpe_shot_evaluation_design_20261113/SCIENTIFIC_PLAN.md)：供給全round signal＋whole-shot familyを既存prepare/MC/R3/summaryへ接続。nominal/L1診断と十分Nを分離し、G目的の内側配分選択の必要差分を明示。新7＋回帰62＝69技術test PASS、production無変更・新H4/N最適化/G0、公開後STOP。
+
 [全13round平均compiled価格の最小検証戦略](docs/research/h4_mean_price_validation_strategy_20261113/REPORT.md)／[方法別計画](docs/research/h4_mean_price_validation_strategy_20261113/PRICE_VALIDATION_PLAN.md)／[D/C HANDOFF](docs/research/h4_mean_price_validation_strategy_20261113/HANDOFF.md)：未資格nominalを正式重みにせず、価格同時区間・N一様相対誤差・条件付きΣNbを整理。凍結方法のm12＋内部challengeを最小診断案とし、全域証拠なしの13round認定を拒否。37技術回帰PASS、Dモデル/C kernel新実装・実再解析/fit/compile/G0、公開後STOP。
 
 [H4 4方式の最小menu提案](docs/research/h4_four_method_minimal_menu_20261113/REPORT.md)／[証拠matrix](docs/research/h4_four_method_minimal_menu_20261113/BASELINE_EVIDENCE_MATRIX.md)／[有限な次作業](docs/research/h4_four_method_minimal_menu_20261113/NEXT_STEPS.md)：PR1・Full PF6・truncated2・Full-H RTE2の未採択案。B0全13保存signal、Full PF73直接価格、C26構造/D新P1の資格を分離。40技術回帰PASS、新科学計算/実G/ランキング0、公開後STOP。
