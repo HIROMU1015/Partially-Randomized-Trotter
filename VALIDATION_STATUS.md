@@ -1,5 +1,7 @@
 # Validation status
 
+[RPE総コストpipelineの人工統合](docs/research/rpe_optimization_integration_20261113/REPORT.md)（2026-11-13）：A PR・C baselineの全round signalをB shot配分/cost/selectへ接続。D向け未評価requestとphysical/lowering bindingを整備。人工新10＋B metadata2＋C/M5回帰24＝36 PASS、4方式の人工全13round・shot最小/G最小・点/区間・未資格/欠測を区別。実H4/saved再解析/実N・価格・G0、科学N資格producerとD価格は未取得。
+
 [ベースラインsignal pipelineの技術準備](docs/research/baseline_signal_pipeline_preparation_20261113/REPORT.md)（2026-11-13）：ベースライン全round signal経路を既存B/D/数値部品から接続。H4 DF10のFull PF・B0/B0I・Full-H pure RTE、S2/Y4/M5・prefix・明示q/R・有限Kを扱う。人工新12＋既存回帰12＝24 PASS、数値失敗値/欠測/未資格を保持。実H4・保存再解析・残screen・sampling/compile/N/RMSE/G0。
 
 [全RPE比較ベースラインの最適化設計](docs/research/rpe_baseline_optimization_design_20261113/REPORT.md)（2026-11-13）：Full PF(S2/Y4/M5)、B0/B0I切断PF、one-body込みFull-H pure RTEを全RPEのΣN E[C]で探索する計画。旧11案はseed、局所screen/構造proxyと根拠付きrisk/cost除外を区別。既存APIを再利用し新framework0、人工回帰20 PASS。実H4計算/保存再解析/候補最適化/compile/N/G0、正式選定なし、公開照合後STOP。
