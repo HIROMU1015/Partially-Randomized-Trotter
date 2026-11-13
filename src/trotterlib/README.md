@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[compiled価格pipeline高速化](../../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)：trottertracks.compiled_price_fast（RZ-only Accounting、X/Y共通prefix、pinned Backendの明示拡張）。既存compose/wrapper/compiler・新ZZ・canonical bytesを維持し、既存fast writerを再利用。科学実行入口は追加しない。
+
 [効率的controlled ZZ](../../docs/research/d_p1_efficient_czz_20261113/REPORT.md)：trottertracks.efficient_controlled_zz（provider builder subclass・明示切替・tail parity）、p1_efficient_zz（P1 plan、C1 Backend読込、plan key guard）。
 
 [P0 controlled ZZ](../../docs/research/d_controlled_zz_p0_20261113/REPORT.md)：trottertracks.controlled_zz_p0（保存support/basis/law由来の8回路、C1 Accounting計数、operator照合、既存transpile_and_measure_costの呼出し）。

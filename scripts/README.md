@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`benchmark_compiled_price_artificial.py`](benchmark_compiled_price_artificial.py)：pinned C1と高速化版の人工price pipelineを交互・隔離processで比較し、S/C・fingerprint・6指標一致とwall/peak RSS/段階時間を出力。[技術引継ぎ](../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)。分子入力・科学sampling・実H4 compileなし。
+
 [`run_p1_efficient_zz.py`](run_p1_efficient_zz.py)：P1固定PLAN出力と、phase A（seed/parity）→phase B（固定C1 Backendでpaired S/C、効率的ZZ有効化）の実行。[REPORT](../docs/research/d_p1_efficient_czz_20261113/REPORT.md)。
 
 [`run_controlled_zz_p0.py`](run_controlled_zz_p0.py)：P0固定PLAN出力（--plan-out）と、承認範囲8小回路compile（--execute、固定SOURCE/provider/counter照合）。[REPORT](../docs/research/d_controlled_zz_p0_20261113/REPORT.md)。

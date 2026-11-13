@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[compiled価格pipeline高速化](docs/research/d_compiled_price_pipeline_20261113/REPORT.md)／[技術引継ぎ](docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)／[最小P2提案](docs/research/d_compiled_price_pipeline_20261113/P2_MINIMAL_PLAN.md)：元C1 compose/wrapper/compilerと新ZZを維持し、SのRZ投影・共通prefixと既存fast canonical writerを接続。人工55項目PASS、人工性能比較のみ。実H4倍率未測定、P2/fit/平均C認定/N/RMSE/G未実行。
+
 [効率的controlled ZZ・P1（Codex D）](docs/research/d_p1_efficient_czz_20261113/REPORT.md)（2026-11-13）：PR/Full-H RTE tailのcontrolled ZZを`CX·CRZ·CX`で生成する新SOURCE（provider subclass、明示切替、旧SOURCE不変）と44技術test。P1はrun01（compile前のrunner STOP、保全）を経て、明示指示のrun02（SOURCE 20fe1194）で完了：run01 event SHA一致・parity全PASS後に8 compile。D＝C−Sはm0で+61/+145、m6で+78,848/+64,803（C比3.6〜4.3%）、X＝Y。fit・E[C]・N/RMSE/Gは未実施。
 
 [P0 controlled ZZ lowering検証（Codex D）](docs/research/d_controlled_zz_p0_20261113/REPORT.md)（2026-11-13）：承認範囲の小回路8 compile（sampling 0）。汎用`RZZGate.control(1)`（CCX·CRZ·CCX）は`CX·CRZ·CX`とunitary同一（global phase含む）だが、compile後ZZ回転当たりRZ +19/+17（単独/保存basis対）・CX +10、角度非依存。保存basis対内ではcompiler相殺でC−S=−140。案B（S維持＋δ_ZZ·N_ZZ）推奨、P1は未実施・STOP。

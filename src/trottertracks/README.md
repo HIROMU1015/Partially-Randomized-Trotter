@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[compiled_price_fast](../../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)：元AccountingのRZ投影とS共通本体、既存fast hashによる明示C1拡張。人工同値性・性能のみ、実H4/P2未実行。
+
 [h4_s0_v2_intake](../../docs/research/h4_s0_v2_integration_20261113/HANDOFF.md)：固定S0のcanonical metadata・V1/V2照合・診断view・将来A V2 packetの検査。bv2_mean_priceはC1dbからbyte一致取込み。科学leaf/価格predictor・Gは呼ばない。
 
 [pr_rpe_rmse_evidence](../../docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)：供給V2 finite menuから全schedule/axisの不足証拠・保存再利用条件・A/C next_workを出す薄いadapter。既存controller/providerは不変、実G/最適化なし。

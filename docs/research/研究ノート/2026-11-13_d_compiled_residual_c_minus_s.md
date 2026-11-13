@@ -33,3 +33,7 @@
 - [REPORT](../d_compiled_residual_c_minus_s_20261113/REPORT.md)。
 - 新13件と回帰を合わせて140 PASS。既存C byte固定test 1件は以前からのFAILで、今回の変更によるものではない。
 - 新しいsampling・compile・fit・保存値の再解析・N/Gは0件。mandatory STOP。
+
+## 追補：技術高速化と最小P2計画（2026-11-13）
+
+[新REPORT](../d_compiled_price_pipeline_20261113/REPORT.md)と[最小P2提案](../d_compiled_price_pipeline_20261113/P2_MINIMAL_PLAN.md)。P1完了54b64ef7を基点に、元AccountingのRZ-only projection・X/Y共通本体と既存fast canonical writerをC1へ接続。人工55項目PASS・人工wall/RSS比較のみで、実H4倍率は未測定。平均価格への直接paired法を優先し、旧n=8全ladderやm8以上のmodel必須という上記提案を今回の実行前提にしない。実H4科学実行・保存値数値再解析・fit・平均C認定/N/RMSE/Gは0、P2は別途明示許可待ち。旧計画・結果・STOPは保全。

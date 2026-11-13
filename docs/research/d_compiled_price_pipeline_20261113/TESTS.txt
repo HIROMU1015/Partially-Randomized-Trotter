@@ -1,0 +1,24 @@
+Environment: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python
+NumPy 1.26.4, Qiskit 1.3.0, Python 3.11.
+All inputs used for builds/compiles were synthetic; no real H4 execution.
+
+55 distinct test cases passed across the following records:
+  TEST_PIPELINE.txt: 27 passed (new pipeline 9, existing lowering 10, existing fast fingerprint 8).
+  TEST_ISOLATED_RESIDUAL.txt: 13 passed, in a fresh process.
+  TEST_COMBINED_IMPORT_CONFLICT.txt: mean price 15 passed; these unchanged checks were not repeated.
+
+Initial combined invocation: 54 passed, 1 failed.
+The failure was check_compiled_residual::test_13_no_science_is_started, whose
+process-wide no-science-library-import assertion conflicts with synthetic Qiskit
+tests in the same pytest process. Original failure log is preserved. No test was
+rewritten or disabled; the required isolated residual invocation passed all 13.
+
+Commands:
+PYTHONPATH=src:tests:scripts python -m pytest -q --disable-warnings tests/test_compiled_price_fast.py tests/check_efficient_controlled_zz.py tests/test_h46_b3_fast_fingerprint.py
+PYTHONPATH=src:tests:scripts python -m pytest -q --disable-warnings tests/check_compiled_residual.py
+Initial combined command additionally included tests/check_mean_compiled_price.py.
+
+Final BENCHMARK.json: 12 observations, 2 synthetic sizes x 2 modes x 3 repeats.
+All paired records, event digests, fingerprints and six metrics match.
+The code SHA256 entries in the final benchmark match the delivered implementation.
+BENCHMARK_INITIAL.json predates only the provider-context import-order correction.
