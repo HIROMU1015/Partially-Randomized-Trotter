@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[全13roundのcompiled価格評価方法](docs/research/d_compiled_price_methods_20261113/REPORT.md)／[C向け特徴量](docs/research/d_compiled_price_methods_20261113/C_HANDOFF.md)／[最小科学案](docs/research/d_compiled_price_methods_20261113/MINIMAL_SCIENCE_PLAN.md)：保存E[S]＋target-R outer-window残差の検証を提案。connected恒等式と未証明tailを区別し、m12はUNKNOWN。人工・回帰42 PASS、新H4/fit/保存値再解析/E[C]/Gなし、公開後mandatory STOP。
+
 [P2直接paired pilot完了](docs/research/d_p2_direct_pilot_20261113/REPORT.md)／[HANDOFF](docs/research/d_p2_direct_pilot_20261113/HANDOFF.md)：SOURCE ea0706ab0、replay2 path全一致→fresh m0/m6各4 path、20 compile・retry0。m6履歴対replay全path時間は約3.56倍、fresh D平均187.5/74,388.75。有限pilotのみでlaw/rare/2%95%/全13round平均C/N/RMSE/G未資格。次のn/負荷案を記載、公開後STOP。
 
 [compiled価格pipeline高速化](docs/research/d_compiled_price_pipeline_20261113/REPORT.md)／[技術引継ぎ](docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)／[最小P2提案](docs/research/d_compiled_price_pipeline_20261113/P2_MINIMAL_PLAN.md)：元C1 compose/wrapper/compilerと新ZZを維持し、SのRZ投影・共通prefixと既存fast canonical writerを接続。人工55項目PASS、人工性能比較のみ。実H4倍率未測定、P2/fit/平均C認定/N/RMSE/G未実行。

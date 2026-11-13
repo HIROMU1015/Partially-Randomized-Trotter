@@ -41,3 +41,7 @@
 ## 追補：P2直接paired pilot完了（2026-11-13）
 
 [REPORT](../d_p2_direct_pilot_20261113/REPORT.md)／[HANDOFF](../d_p2_direct_pilot_20261113/HANDOFF.md)。ユーザーが有限20 compileを明示承認し、SOURCE ea0706ab0で保存replay2 pathの全照合後にfresh8 pathを取得した。m6履歴対replay全path時間比3.56、fresh D平均はm0=187.5/m6=74,388.75。P1/replayはfresh統計に加えず、全8 freshでorder2未観測を寄与0と解釈しない。条件付きn/負荷の候補を報告したが、2%/95%・全law C・他round・N/RMSE/Gは未資格、fit/外挿・追加path・retry0。次の本格平均価格評価へ進まず公開後mandatory STOP。
+
+## 追補：全13roundへ向けた価格評価方法の設計（2026-11-13）
+
+[REPORT](../d_compiled_price_methods_20261113/REPORT.md)／[C_HANDOFF](../d_compiled_price_methods_20261113/C_HANDOFF.md)／[最小科学案](../d_compiled_price_methods_20261113/MINIMAL_SCIENCE_PLAN.md)。P2完了39ddd59edを基点に同branchを再利用。旧ladder/model必須案を実行前提にせず、保存E[S]＋target-R短outer-windowのconnected残差を検証候補にした。恒等式は厳密でも短windowから長qへのtail条件は未証明で、m12価格はUNKNOWN。既存C kernelのS出口閉包はcompiler閉包ではなく、符号付き残差を非負reward区間へ直接渡せない。C向けfeatureと最大24 local compileの診断案を定義したが、科学実行は未承認・未実行。人工・回帰42項目PASS、新実H4/保存P1/P2数値再解析/fit/E[C]/G/8次PF0。旧SOURCE・raw・STOPを保全し、公開照合後mandatory STOP。

@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[outer_window_residual_design](../../docs/research/d_compiled_price_methods_20261113/SOURCES.md)：connected_coefficients / truncation_coefficients / paired_mean_variance / conditional_geometric_tail。I/O・compiler・fitを呼ばない設計代数。未知tailを0とせず、常に価格未資格。[C向け特徴量](../../docs/research/d_compiled_price_methods_20261113/C_HANDOFF.md)。
+
 [p2_direct_pilot](../../docs/research/d_p2_direct_pilot_20261113/REPORT.md)：基点5a67cea7の高速化本体を維持し、明示承認のreplay2＋fresh8 pathをSOURCE ea0706ab0で実行。20 compile、fresh統計のみ、価格資格・N/Gは供給しない。
 
 [compiled_price_fast](../../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)：元AccountingのRZ投影とS共通本体、既存fast hashによる明示C1拡張。人工同値性・性能のみ、実H4/P2未実行。

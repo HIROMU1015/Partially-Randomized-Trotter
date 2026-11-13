@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[全13roundの残差評価設計](../../docs/research/d_compiled_price_methods_20261113/REPORT.md)：既存compiler/Accountingを変更せず、trottertracks.outer_window_residual_designに与えられた数の差分・共分散・条件付きtail和だけを追加。実H4・fit・価格推定なし、C特徴量定義と未実行の有限診断案。
+
 [P2直接paired pilot](../../docs/research/d_p2_direct_pilot_20261113/HANDOFF.md)：trottertracks.p2_direct_pilotの固定seed/予算plan、保存eventの無乱数復元、replay照合、既存paired adapterを使うfresh-only exact統計。元sampler/compose/compileは再利用し、結果はfinite pilotに限定。
 
 [compiled価格pipeline高速化](../../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)：trottertracks.compiled_price_fast（RZ-only Accounting、X/Y共通prefix、pinned Backendの明示拡張）。既存compose/wrapper/compiler・新ZZ・canonical bytesを維持し、既存fast writerを再利用。科学実行入口は追加しない。

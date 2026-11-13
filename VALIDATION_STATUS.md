@@ -1,5 +1,7 @@
 # Validation status
 
+[全13roundの残差評価設計](docs/research/d_compiled_price_methods_20261113/REPORT.md)：新14＋既存mean15＋既存残差13＝42人工・回帰項目PASS。passiveな差分/stencil/共分散/tail和と小Qiskit反例のみ。C既存kernelのcompiler閉包は未証明、局所測定24 compileは未承認の診断案。新実H4/保存P1/P2 fit・数値再解析/E[C]/Gなし、m12 UNKNOWN、公開後mandatory STOP。
+
 [P2直接paired pilot](docs/research/d_p2_direct_pilot_20261113/REPORT.md)：SOURCE ea0706ab05313423f336614912758a93e9e8285c、replay2 pathのevent/seed/C/S/wrapper fingerprint/6指標全一致後、fresh m0/m6各4 pathを取得。20 compile・cache hit0・retry0、人工16 PASS。m6の履歴対replay全path時間比3.56（単回・計時境界/並列負荷差あり）、fresh D平均187.5/74,388.75。有限cohort統計のみ、全law C/law距離/rare/2%95%/他11round/N/RMSE/Gは未資格、mandatory STOP。
 
 [compiled価格pipelineの技術高速化](docs/research/d_compiled_price_pipeline_20261113/REPORT.md)：人工55 distinct項目PASS（初回の合同process import検査失敗は原記録を保全し、残差adapterを隔離processで13 PASS確認）。同eventのS、X/Y wrapper/compiled fingerprint、全6価格指標とcache/mutation条件が一致。人工wall/RSSのみ実測、実H4倍率・全law E[C]・P2/fit/N/RMSE/G未評価、mandatory STOP。

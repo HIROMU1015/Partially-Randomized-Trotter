@@ -1,5 +1,7 @@
 # 文書索引
 
+[全13round価格のREPORT](research/d_compiled_price_methods_20261113/REPORT.md)／[C_HANDOFF](research/d_compiled_price_methods_20261113/C_HANDOFF.md)／[最小科学案](research/d_compiled_price_methods_20261113/MINIMAL_SCIENCE_PLAN.md)／[SOURCE・人工テスト](research/d_compiled_price_methods_20261113/SOURCES.md)：4方法比較、outer-window恒等式とtail条件。全26 E[S]再利用、全13 E[C]未推定、42技術test。
+
 [P2直接paired REPORT](research/d_p2_direct_pilot_20261113/REPORT.md)／[HANDOFF](research/d_p2_direct_pilot_20261113/HANDOFF.md)／[RESULT](research/d_p2_direct_pilot_20261113/run01/RESULT.json)／[PATHS.csv](research/d_p2_direct_pilot_20261113/PATHS.csv)：replay gate通過後のfresh8 path・20 compileの有限結果、実H4性能と残差記述統計・将来nの候補。
 
 [compiled価格pipeline REPORT](research/d_compiled_price_pipeline_20261113/REPORT.md)／[TECHNICAL_HANDOFF](research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)／[最小P2計画（未承認）](research/d_compiled_price_pipeline_20261113/P2_MINIMAL_PLAN.md)：科学回路・compiler・canonical identityを維持した技術高速化と人工比較。
