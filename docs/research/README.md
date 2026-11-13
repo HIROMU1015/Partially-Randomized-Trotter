@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[H4・4方式screenの入力STOP](h4_four_method_signal_screen_results_20261113/REPORT.md)：固定20セルbatchはcontext importで停止、新mean/normalizer/reference0。保存40・SOURCE・PLANを保持。数値による候補判断は未取得、再実行はユーザー判断後。
+
 [H4・4方式signal screen準備](h4_four_method_signal_screen_preparation_20261113/REPORT.md)：B51500の暫定11案、新20セル・保存40セルとreference再利用を固定。17人工・回帰test PASS、実signal/N/RMSE/C/G・保存再解析0。科学実行と正式候補採択は別段階。
 
 [S3から全energy RMSEへの接続調査](rpe_s3_global_rmse_connection_20261113/REPORT.md)：固定S3の条件付き点RMSEと全population riskを区別し、target包含・全事象loss・raw数値/law証拠を整理。直接riskと既定Minkowski成分の経路を分け、PF/finite-K二重計上を防ぐ。不足表/B HANDOFF/有限案を作成、既存8技術回帰PASS、新科学・保存再解析0。十分N/global boundは未資格、公開照合後STOP。

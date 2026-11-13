@@ -1,5 +1,7 @@
 # Validation status
 
+[H4・4方式screenの入力STOP](docs/research/h4_four_method_signal_screen_results_20261113/REPORT.md)：SOURCE/PLAN一致、1回の起動が`h46_new2_core` importでSTOP。新mean/normalizer/reference0、科学数値gateは未到達。5件の静的・metadata確認で原因と未評価保持を確認。旧17人工testを実loader起動成功とは扱わない。retry・十分N/global RMSE/C/G・winnerなし。
+
 [H4・4方式signal screen準備](docs/research/h4_four_method_signal_screen_preparation_20261113/REPORT.md)：新9＋旧8＝17件の人工・技術回帰PASS。20新規physical ID、保存40セルとの非重複、D確定18候補一致、元PF/B0I/no-head RTEとの人工照合、m12相当人工power、部分STOPを検証。実H4科学・保存数値再解析0、実行案は未承認。十分N/global RMSE/候補順位は未取得。
 
 [S3から全energy RMSEへの接続調査](docs/research/rpe_s3_global_rmse_connection_20261113/REPORT.md)：固定S3の条件付き点RMSEと全population riskを区別し、target包含・全事象loss・raw数値/law証拠を整理。直接riskと既定Minkowski成分の経路を分け、PF/finite-K二重計上を防ぐ。不足表/B HANDOFF/有限案を作成、既存8技術回帰PASS、新科学・保存再解析0。十分N/global boundは未資格、公開照合後STOP。

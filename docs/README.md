@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4・4方式screenの入力STOP](research/h4_four_method_signal_screen_results_20261113/REPORT.md)：[原STOP](research/h4_four_method_signal_screen_results_20261113/run01/result.json)／[未評価20セル](research/h4_four_method_signal_screen_results_20261113/STOP_SUMMARY.json)／[B HANDOFF](research/h4_four_method_signal_screen_results_20261113/HANDOFF.md)。import経路不備、新mean0/20、retryせず公開後STOP。
+
 [H4・4方式signal screen準備](research/h4_four_method_signal_screen_preparation_20261113/REPORT.md)：新20セル・保存40セルのidentityとSOURCE、[有限科学計画](research/h4_four_method_signal_screen_preparation_20261113/SCREEN_PLAN.md)、[B HANDOFF](research/h4_four_method_signal_screen_preparation_20261113/HANDOFF.md)。17技術test PASS、実科学・保存再解析0、reference追加0の未承認計画。
 
 [S3から全energy RMSEへの接続調査](research/rpe_s3_global_rmse_connection_20261113/REPORT.md)：固定S3の条件付き点RMSEと全population riskを区別し、target包含・全事象loss・raw数値/law証拠を整理。直接riskと既定Minkowski成分の経路を分け、PF/finite-K二重計上を防ぐ。不足表/B HANDOFF/有限案を作成、既存8技術回帰PASS、新科学・保存再解析0。十分N/global boundは未資格、公開照合後STOP。

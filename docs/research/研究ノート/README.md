@@ -1,5 +1,7 @@
 # 研究ノート
 
+[2026-11-13：4方式screenの入力STOP](2026-11-13-four-method-signal-screen-stop.md)：固定20セルの1回起動がimport経路不備で停止。新mean0、retryなし、全セル未評価を保全。
+
 [2026-11-13：4方式限定signal screen準備](2026-11-13-four-method-signal-screen.md)：新20セル・保存40セルを固定、17技術test PASS、科学計算・保存再解析0。
 
 [2026-11-13：S3と全RMSEの接続](2026-11-13-s3-global-rmse-connection.md)：不足証拠・最小有限案、保存再解析0。
