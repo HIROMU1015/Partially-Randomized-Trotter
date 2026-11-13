@@ -1,0 +1,292 @@
+{
+  "status": "DESIGN_RANK_ONLY_NO_DATA",
+  "analyses": [
+    {
+      "name": "S0_FOCUS_m0_m6_THREE_TERM",
+      "points": [
+        [
+          1,
+          2
+        ],
+        [
+          64,
+          128
+        ]
+      ],
+      "features": [
+        "intercept",
+        "q",
+        "qR"
+      ],
+      "rank": 2,
+      "parameters": 3,
+      "identifiable": false,
+      "lack_of_fit_dof": 0,
+      "R_over_q_constant": true,
+      "R_over_q_range": [
+        "2",
+        "2"
+      ],
+      "holdout": [],
+      "note": "A constant R/q makes q and R effects inseparable even when rank suffices along that line"
+    },
+    {
+      "name": "S0_FOCUS_m0_m6_Q_R_SEPARATE",
+      "points": [
+        [
+          1,
+          2
+        ],
+        [
+          64,
+          128
+        ]
+      ],
+      "features": [
+        "intercept",
+        "q",
+        "R",
+        "qR"
+      ],
+      "rank": 2,
+      "parameters": 4,
+      "identifiable": false,
+      "lack_of_fit_dof": 0,
+      "R_over_q_constant": true,
+      "R_over_q_range": [
+        "2",
+        "2"
+      ],
+      "holdout": [],
+      "note": "A constant R/q makes q and R effects inseparable even when rank suffices along that line"
+    },
+    {
+      "name": "S0_PATH_m0_m6_Q_R_SEPARATE",
+      "points": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          8,
+          16
+        ],
+        [
+          16,
+          32
+        ],
+        [
+          32,
+          64
+        ],
+        [
+          64,
+          128
+        ]
+      ],
+      "features": [
+        "intercept",
+        "q",
+        "R",
+        "qR"
+      ],
+      "rank": 3,
+      "parameters": 4,
+      "identifiable": false,
+      "lack_of_fit_dof": 4,
+      "R_over_q_constant": true,
+      "R_over_q_range": [
+        "2",
+        "2"
+      ],
+      "holdout": [],
+      "note": "A constant R/q makes q and R effects inseparable even when rank suffices along that line"
+    },
+    {
+      "name": "S0_PATH_m0_m12_Q_R_SEPARATE",
+      "points": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          8,
+          16
+        ],
+        [
+          16,
+          32
+        ],
+        [
+          32,
+          64
+        ],
+        [
+          64,
+          128
+        ],
+        [
+          128,
+          255
+        ],
+        [
+          256,
+          510
+        ],
+        [
+          512,
+          1020
+        ],
+        [
+          1024,
+          2040
+        ],
+        [
+          2048,
+          4080
+        ],
+        [
+          4096,
+          8160
+        ]
+      ],
+      "features": [
+        "intercept",
+        "q",
+        "R",
+        "qR"
+      ],
+      "rank": 4,
+      "parameters": 4,
+      "identifiable": true,
+      "lack_of_fit_dof": 9,
+      "R_over_q_constant": false,
+      "R_over_q_range": [
+        "255/128",
+        "2"
+      ],
+      "holdout": [],
+      "note": "A constant R/q makes q and R effects inseparable even when rank suffices along that line"
+    },
+    {
+      "name": "C1_H4_SAVED_DESIGN",
+      "points": [
+        [
+          8,
+          4
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          16,
+          4
+        ]
+      ],
+      "features": [
+        "intercept",
+        "q",
+        "qR"
+      ],
+      "rank": 3,
+      "parameters": 3,
+      "identifiable": true,
+      "lack_of_fit_dof": 0,
+      "R_over_q_constant": false,
+      "R_over_q_range": [
+        "1/4",
+        "1"
+      ],
+      "holdout": [
+        {
+          "point": [
+            16,
+            8
+          ],
+          "transfer": "CROSS_OF_SEEN_LEVELS"
+        }
+      ],
+      "note": "A constant R/q makes q and R effects inseparable even when rank suffices along that line"
+    },
+    {
+      "name": "PROPOSED_ON_PATH_LADDER",
+      "points": [
+        [
+          2,
+          4
+        ],
+        [
+          8,
+          16
+        ],
+        [
+          32,
+          64
+        ]
+      ],
+      "features": [
+        "intercept",
+        "q",
+        "qR"
+      ],
+      "rank": 3,
+      "parameters": 3,
+      "identifiable": true,
+      "lack_of_fit_dof": 0,
+      "R_over_q_constant": true,
+      "R_over_q_range": [
+        "2",
+        "2"
+      ],
+      "holdout": [
+        {
+          "point": [
+            4,
+            8
+          ],
+          "transfer": "JOINT_NEW"
+        },
+        {
+          "point": [
+            16,
+            32
+          ],
+          "transfer": "JOINT_NEW"
+        },
+        {
+          "point": [
+            64,
+            128
+          ],
+          "transfer": "JOINT_NEW"
+        },
+        {
+          "point": [
+            128,
+            255
+          ],
+          "transfer": "JOINT_NEW"
+        }
+      ],
+      "note": "A constant R/q makes q and R effects inseparable even when rank suffices along that line"
+    }
+  ],
+  "note": "X/Y are paired responses of the same design point and add no rows. Exact rank only; an exactly full rank with R/q nearly constant (m7..m12 use R=2q-1..) is still ill-conditioned for separating q from R. These analyses fit nothing."
+}

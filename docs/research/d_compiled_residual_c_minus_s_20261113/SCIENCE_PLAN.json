@@ -1,0 +1,63 @@
+{
+  "status": "PROPOSAL_NOT_APPROVED_NOT_EXECUTED",
+  "objective": "Evaluate E[C] = E[S] + E[C-S] for the fixed H4 S0 rounds under one law, one full Hadamard wrapper with measurement and one compiler profile",
+  "fixed_conditions": {
+    "B_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+    "B_source": "3216d27a69ac8532d2a22e78f5f94491d202d238",
+    "system": "Linear H4, 1.00 Angstrom, STO-3G, saved tol-only DF10, saved H/state/snapshot, saved fragment order",
+    "split": "PR L_D=1, S2, delta_PF=0.1, K=2, h=0.1, M=12, symmetric_directional control, P=0",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b (Qiskit 1.3.0, rz/sx/x/cx, opt1, seed17)",
+    "paired_acquisition_source": "C1 r_price_phase1_science.Backend.price_requests (1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7): S by Accounting and C by compose -> build_native_hadamard_wrapper(include_measurement=True) -> transpile_and_measure_cost on the same requests",
+    "structural_expectation_source": "C h4_structural_kernel K1 (7aca17fe..., currently NOT executed; K0 PASS required)"
+  },
+  "stages": [
+    {
+      "id": "P0_CONTROLLED_ZZ_LOWERING_UNIT",
+      "purpose": "Confirm or refute the SOURCE-level lowering difference: compiled RZZGate(2theta).control(1) via generic add_control (CCX.CRZ.CCX) versus the structural counter's crzz (CX.CRZ.CX)",
+      "scope": "Tiny circuits only: one controlled ZZ rotation in each form at a few non-special angles, alone and between one basis-change pair taken from the saved support metadata",
+      "compile_budget": 8,
+      "sampling": 0,
+      "outputs": "Compiled RZ/CX counts per unit; no price, no model fit",
+      "decision": "If confirmed, the user chooses (i) asking C for a separate structural quantity S' that counts the actual lowering, or (ii) a mechanism term in the residual model. If refuted, the residual is treated as compiler-context driven only"
+    },
+    {
+      "id": "P1_PAIRED_DEVELOPMENT_PILOT",
+      "reuses": "C d458b5e4 option D: m0 (q1/R2) and m6 (q64/R128), normal n=2 paths per round, same-path X/Y",
+      "change_proposed_by_D": "S is taken on the same requests in the same call (no separate S run); records go through compiled_residual.paired_residuals with role DEVELOPMENT",
+      "compile_budget": 8,
+      "structural_counts": 8,
+      "seeds": "Fixed before execution with the C1 trial_seed scheme and a new cohort name; recorded in the plan",
+      "cache": "Existing fingerprint cache reused only after compiler/fingerprint binding checks",
+      "measurements": "Per-path C, S, D per axis, event digest, fingerprints, wall time and peak RSS of m6 compile",
+      "not_claimed": "No calibration, no all-law mean price, no precision guarantee (n=2), no rare order2 contribution"
+    },
+    {
+      "id": "P2_ON_PATH_LADDER",
+      "preconditions": "P1 complete; C K1 E[S] available (K0 PASS) for the rounds used, or the user accepts a finite-cohort S mean as a separate scenario",
+      "calibration_rounds": [1, 3, 5],
+      "holdout_rounds": [2, 4, 6],
+      "far_holdout": "m7 (q128/R255, 32640 event positions) only if the P1 m6 resource record makes it feasible",
+      "sample_size_rule": "Start n0=8 normal paths per round; then n = ceil((z * s_D / (eps_C * E[C]))^2) with z and eps_C fixed by the user/B before holdout prices are observed",
+      "rare_order2": "Separate forced-conditional stratum per round, weighted by the law probability of at least one order2 event; not pooled with normal paths",
+      "model_forms_allowed": [
+        "On-path three-term form theta0 + theta_q q + theta_L qR restricted to R ~ 2q (identifiable with >=3 rounds; q and R not separable)",
+        "Mechanism form E[#controlled-ZZ rotations] * d_ZZ + q * d_outer + d_0, with E[#ZZ rotations] from the law (only if P0 confirms the mechanism)"
+      ],
+      "acceptance": "Holdout tolerance and metric fixed before holdout data; calibration and holdout cohorts disjoint; X/Y paired, n counts paths",
+      "compile_budget_formula": "2 * n_per_round * rounds (+ forced stratum)"
+    },
+    {
+      "id": "P3_OFF_PATH_CONTROLS",
+      "only_if": "The residual model must transfer to a kappa schedule other than the fixed S0 (R != ~2q)",
+      "design": "q-only and R-only points disjoint from P2, with fresh holdout"
+    }
+  ],
+  "design_arithmetic_not_results": {
+    "per_event_P_order2_saved": {"R2": 0.010051742947234783, "R128": 2.5013685907457728e-06},
+    "P_path_has_at_least_one_order2": {"m0_R2_2_positions": 0.0200, "m6_R128_8192_positions": 0.0203},
+    "tau_lambda_delta_over_R": {"R2": 0.14314785472649344, "R4": 0.07157392736324672, "R8": 0.03578696368162336, "R128": 0.00223668523010146}
+  },
+  "not_included": ["new signal/N/RMSE", "fit or adoption of a residual model", "reanalysis of saved C1 values", "H6 or other rounds beyond the stages above", "N x C / G", "eighth-order PF"],
+  "approval_needed_for_each_stage": true,
+  "mandatory_stop_after_each_stage": true
+}
