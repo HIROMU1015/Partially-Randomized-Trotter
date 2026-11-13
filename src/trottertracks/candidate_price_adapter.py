@@ -258,8 +258,9 @@ def _law_records(ctx, c, requests):
 
 class Adapter:
     """Per-process acquisition facade; delegates all pricing to existing fast C1."""
-    def __init__(self, root, runtime, *, cache_root):
+    def __init__(self, root, runtime, *, cache_root, observer=None):
         self.root, self.runtime, self.cache_root = Path(root), runtime, Path(cache_root)
+        self.observer = observer
 
     def acquire(self, request, requests, *, cohort, index, directory, conditional=False):
         """Acquire one supplied path only; no expectation, fitting or G arithmetic."""
@@ -270,7 +271,7 @@ class Adapter:
         seeds, laws = _law_records(ctx, c, requests)
         science = self.runtime.science
         axes = tuple(AXES[a] for a in request['axes'])
-        cls = fast.make_backend_class(science.Backend, science, axes=axes)
+        cls = fast.make_backend_class(science.Backend, science, axes=axes, observer=self.observer)
         cell = dict(id=request['request_id'], system='H4', candidate_id=c['id'], cohort=cohort)
         plan = dict(source=pc['execution_source'], menus=dict(H4=dict(candidates=[
             dict(candidate=deepcopy(c), structure=deepcopy(pc['structure']))])),

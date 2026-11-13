@@ -71,7 +71,7 @@ def structural_pair(Accounting, blocks, row, scalar, events):
     return out
 
 
-def make_backend_class(base, science, *, axes=('cosine', 'sine')):
+def make_backend_class(base, science, *, axes=('cosine', 'sine'), observer=None):
     """Extend the pinned C1 Backend explicitly; does not load any scientific input.
 
     `science` is the r_price_phase1_science module from p1_efficient_zz.load_c1_backend.
@@ -103,9 +103,13 @@ def make_backend_class(base, science, *, axes=('cosine', 'sine')):
                 raise ValueError('SIGNED_EVENT_ALLOCATION_OR_TIME')
             stages = {}
             def timed(name, fn):
+                if observer is not None:
+                    observer(name, 'STARTED', 0., None)
                 start = time.perf_counter()
                 value = fn()
                 stages[name] = time.perf_counter() - start
+                if observer is not None:
+                    observer(name, 'COMPLETE', stages[name], value)
                 return value
             start = time.perf_counter()
             events = timed('event_dicts', lambda: [[e.to_dict() for e in r.rte_occurrence.events] for r in requests])
@@ -139,8 +143,8 @@ def make_backend_class(base, science, *, axes=('cosine', 'sine')):
                             wrapper, settings, actual_circuit_fingerprint=fingerprint))
                         if cost.compiler_settings_hash != m.p.PROFILE['compiler']:
                             raise ValueError('COMPILER_HASH')
-                        metrics = {k: getattr(cost, k) for k in (
-                            'rz_count', 'rz_depth', 'cx_count', 'cx_depth', 'total_depth', 'circuit_size')}
+                        metrics = timed(axis + '_metrics_extract', lambda: {k: getattr(cost, k) for k in (
+                            'rz_count', 'rz_depth', 'cx_count', 'cx_depth', 'total_depth', 'circuit_size')})
                         del cost
                     value = metrics['rz_count']
                     after = timed(axis + '_mutation_check', lambda: fp.fingerprint(wrapper))
