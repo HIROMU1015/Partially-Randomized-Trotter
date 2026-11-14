@@ -46,7 +46,9 @@ def validate_predictions(models, plan):
     for group_id, (i, cell) in sorted(expected.items()):
         model = models[group_id]; pred = model['m6_prediction']
         if (model.get('model_group_id') != group_id or model.get('model_group') != cell['model_group']
-                or model.get('formula') != cell['formula'] or model.get('status') != 'CALIBRATED_UNVALIDATED'
+                # C's top-level formula is the price-model expression; the PF
+                # formula is model_group[1] and physical_candidate.formula.
+                or model.get('formula') != 'C(q)=beta_one+beta_q*q' or model.get('status') != 'CALIBRATED_UNVALIDATED'
                 or model.get('qualified_for_candidate') is not False
                 or model['domain']['route'] != cell['route'] or model['domain']['axis'] != cell['axis']
                 or pred['configuration_id'] != cell['configuration_id']
@@ -164,7 +166,8 @@ def main():
     p.add_argument('--output', type=Path)
     args = p.parse_args()
     if args.preopen_output:
-        with args.preopen_output.open('x') as f: json.dump(preopen(), f, indent=2); f.write('\n')
+        result = preopen()
+        with args.preopen_output.open('x') as f: json.dump(result, f, indent=2); f.write('\n')
         return
     if not args.evaluate_publications or not args.output: p.error('preopen-output or evaluate-publications/output required')
     result = evaluate(ROOT, json.loads(args.evaluate_publications.read_text()))

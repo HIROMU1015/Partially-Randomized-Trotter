@@ -15,7 +15,7 @@ def fixture():
                 row=dict(model_group=group,m=6,formula=formula,width_over_h=width,route=route,axis=axis,
                     configuration_id='ARTIFICIAL_'+route+formula,physical_candidate=dict(id='TOY_'+route+formula,q=q,T=6.4,delta=6.4/q),
                     features=dict(one=1,q=q));rows.append(row)
-                models[key]=dict(model_group_id=key,model_group=group,formula=formula,status='CALIBRATED_UNVALIDATED',
+                models[key]=dict(model_group_id=key,model_group=group,formula='C(q)=beta_one+beta_q*q',status='CALIBRATED_UNVALIDATED',
                     qualified_for_candidate=False,domain=dict(route=route,axis=axis),m6_prediction=dict(
                     configuration_id=row['configuration_id'],physical_candidate=deepcopy(row['physical_candidate']),axis=axis,q=q,
                     features=row['features'],m=6,observed_RZ=None,holdout_pass=None,independent_holdout_status='NOT_EVALUATED',
@@ -47,6 +47,8 @@ class Tests(unittest.TestCase):
         bad=deepcopy(rows);bad[0]['physical_candidate']['delta']=.25
         with self.assertRaises(ValueError):H.validate_predictions(models,bad)
         bad=deepcopy(models);bad.pop(key)
+        with self.assertRaises(ValueError):H.validate_predictions(bad,rows)
+        bad=deepcopy(models);bad[key]['formula']='2nd'
         with self.assertRaises(ValueError):H.validate_predictions(bad,rows)
 
 if __name__=='__main__':unittest.main(verbosity=2)
