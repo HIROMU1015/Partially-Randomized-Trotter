@@ -75,7 +75,8 @@ def inspect_wrappers(trial, checked):
     out={}
     for axis,fp in FINGERPRINTS.items():
         ref=CACHE/(fp+'.json'); raw=ref.read_bytes(); receipt=json.loads(raw)
-        wrapper=CACHE/(fp+'_wrapper.qpy.gz'); data=wrapper.read_bytes(); known=checked[axis]
+        wrapper=CACHE/(fp+'_wrapper.qpy.gz'); data=wrapper.read_bytes()
+        known={k:checked[axis][k] for k in ('fingerprint_saved','fingerprint_loaded','match','wrapper_sha256','common_body_digest')}
         if (receipt['fingerprint']!=fp or receipt['compiler']!=M.document(ROOT,dict(commit=M.CARRIER,path=M.BASE+'scientific_provenance.json'))['compiler']['hash']
                 or receipt['metrics']!=trial['prices']['cosine' if axis=='X' else 'sine']
                 or known['fingerprint_saved']!=fp or known['fingerprint_loaded']!=fp or known['match'] is not True
