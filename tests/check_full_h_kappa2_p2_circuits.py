@@ -1,5 +1,6 @@
 """Toy Full-H only. Reuse P-1 fixtures/gates, normal events, fake compiler. No H4 input."""
 from pathlib import Path
+import json
 import sys
 import unittest
 
@@ -36,6 +37,9 @@ class Tests(unittest.TestCase):
             parents.append(dict(events=P.event_projection([r.rte_occurrence.events for r in requests]), seeds=actual_seeds))
         out = P.acquire_path(self.full, row, P.P1.COHORT, 0, seeds, compile_cached=self.fake_compile)
         self.assertEqual(P.check_composition(out, parents)['status'], 'PAIRED_EVENTS_IDENTICAL')
+        # Parent receipts will have crossed the publication/JSON boundary.
+        restored = json.loads(json.dumps(parents))
+        self.assertEqual(P.check_composition(out, restored)['status'], 'PAIRED_EVENTS_IDENTICAL')
 
 
 if __name__ == '__main__': unittest.main(verbosity=2)

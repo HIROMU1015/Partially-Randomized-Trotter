@@ -109,7 +109,9 @@ def event_projection(batches):
 def check_composition(actual, parents):
     """Ordered request boundaries are retained; equality includes event phase/application order."""
     expected = [batch for p in parents for batch in p['events']]
-    if actual['events'] != expected or actual['seeds'] != [s for p in parents for s in p['seeds']]:
+    # RTEEvent.to_dict retains tuples; published JSON receipts restore lists.
+    # Compare the same ordered JSON representation, without rounding any value.
+    if json.dumps(actual['events'], sort_keys=True) != json.dumps(expected, sort_keys=True) or actual['seeds'] != [s for p in parents for s in p['seeds']]:
         raise ValueError('Paired seed/event order or phase differs from parent group paths')
     if all('trial' in p for p in parents) and any(p['trial']['scalar'] != actual['trial']['scalar'] for p in parents):
         raise ValueError('Paired parent scalar quantity differs')
