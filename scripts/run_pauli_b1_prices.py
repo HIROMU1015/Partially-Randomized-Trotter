@@ -355,19 +355,20 @@ def write(path, value):
 
 def child(path):
     job = json.loads(Path(path).read_text()); plan = job['plan']; validate(plan, execution=True)
-    import h46_long_time_signal as signal
-    signal.install(); B0.provider_checks(); B0.register_pauli_modules()
-    import qiskit
-    if qiskit.__version__ != '1.3.0':
-        raise ValueError('Qiskit 1.3.0 required')
-    P = B0.connection(); dictionary = P.load_dictionary(ROOT, job['dictionary_identity'])
-    import h46_long_time_native as native
-    native.PUBLIC, native.PRIVATE = Path(job['output']), Path(job['private'])
-    ctx = native.native_context('H4', (plan['prefix'],)); results = []
-    if ctx.ham.constant != B0.HAMILTONIAN_CONSTANT:
-        raise ValueError('Hamiltonian constant differs from the B0 bound snapshot')
-    cell = next(c for c in plan['cells'] if c['cell_id'] == job['cell_id'])
+    results = []
     try:
+        import h46_long_time_signal as signal
+        signal.install(); B0.provider_checks(); B0.register_pauli_modules()
+        import qiskit
+        if qiskit.__version__ != '1.3.0':
+            raise ValueError('Qiskit 1.3.0 required')
+        P = B0.connection(); dictionary = P.load_dictionary(ROOT, job['dictionary_identity'])
+        import h46_long_time_native as native
+        native.PUBLIC, native.PRIVATE = Path(job['output']), Path(job['private'])
+        ctx = native.native_context('H4', (plan['prefix'],))
+        if ctx.ham.constant != B0.HAMILTONIAN_CONSTANT:
+            raise ValueError('Hamiltonian constant differs from the B0 bound snapshot')
+        cell = next(c for c in plan['cells'] if c['cell_id'] == job['cell_id'])
         for index, seeds in enumerate(job['step_seeds']):
             if plan.get('reuse_b0') and index == 0:
                 # Saved B0 remains the original path, with its original SOURCE. No new sample/compile.
