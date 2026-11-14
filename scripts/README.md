@@ -1,6 +1,6 @@
 # scripts 索引
 
-[Full PF／p7価格stage改訂](../docs/research/d_pf_price_saved4_revision_20261114/REPORT.md)：既存pf_price_stagesと2 callerを再利用。保存4（p7 2待ち）・新規20＋12、重複preflight、C未公開のscience gate。人工/回帰PASS、実compileなし・STOP。
+[Full PF／p7保存4件の接続](../docs/research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)：既存stage/callerをC新版CELL_PLAN・p7正式受入へ束縛。新規20＋12、元SOURCE/cohortの保存4、別IDの物理schedule重複照合。18 metadata/人工test PASS、実compileなし・STOP。
 
 [最新Full PF metadata接続](../docs/research/full_pf_latest_price_guard_20261114/BUILD_COVERAGE.py)：旧coverage builderを再利用。科学runnerの新設なし。
 

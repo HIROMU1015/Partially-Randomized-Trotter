@@ -1,5 +1,7 @@
 # Full PF／Truncated p7：保存4件・新規32件へのStage 0改訂
 
+**現在の状態は[保存4件binding完了の追補](ADMISSION_UPDATE.md)を参照。** Cのp7受入・新版CELL_PLAN・共通指示の取得は解消し、SOURCE22ccf3972へ接続済み。policy/許容差は未採択で科学実行STOP。以下は初版0501096bd時点の記録を保全したもの。
+
 2026-11-14、Codex D。**技術改訂と人工検証を完了。Stage 1は開始不可、mandatory STOP。**
 新規選択はCALIBRATION 20 wrapper＋HOLDOUT 12 wrapperへ変更した。
 ただしCのp7保存receipt受入と新版CELL_PLANは、確認した公開branchでは未発行である。

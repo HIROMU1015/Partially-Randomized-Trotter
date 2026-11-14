@@ -1,5 +1,7 @@
 # C/D接続：保存4件・新規20＋12件（p7受入待ち）
 
+**現在の状態は[保存4件binding完了の追補](ADMISSION_UPDATE.md)を参照。** Cのp7受入・新版CELL_PLAN・共通指示の取得は解消し、SOURCE22ccf3972へ接続済み。policy/許容差は未採択で科学実行STOP。以下は初版0501096bd時点の記録を保全したもの。
+
 改訂SOURCE：`2b9983590a642e67fda794521baac7e5eaf0496f`。
 現時点では**技術準備のみ、Stage 1開始不可、mandatory STOP**。
 [REPORT](REPORT.md)／[実行前条件](NEXT_EXECUTION.md)／[coverage提案](CELL_PLAN_PROPOSED.json)。

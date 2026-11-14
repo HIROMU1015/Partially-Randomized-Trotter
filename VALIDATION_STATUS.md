@@ -1,6 +1,6 @@
 # Validation status
 
-[D：保存4件／新規32件の技術準備](docs/research/d_pf_price_saved4_revision_20261114/REPORT.md)：Stage parent17＋人工child3、Full親6（子2）・p7親3（子5）、C guard14 PASS。p7の正例は人工受入fixtureで、実p7受入の証拠ではない。全36行のうちp7 M5/m4 X/Y actionのみ変更、保存4除外・新規20＋12、全12 groupのm4/m5・m6混入/重複/未freeze拒否を確認。C新版表/受入、policy/許容差、11/14共通運用指示の正本が未取得・未確定でStage1不可。新science0、mandatory STOP。
+[D：保存4件のC受入接続](docs/research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)：Cのp7正式受入2件と新版表43c15bfaをD22ccf3972へ束縛し、Full2＋p7 2の元record一致を確認。Stage parent18 PASS（人工stage処理＋実C receipt metadata）。前の人工回路/guard回帰を再利用。新規20＋12、36行・12 group・元SOURCE/cohortを保持。11/14共通指示を確認し、別IDの同物理scheduleも重複検出。science0、policy/許容差未採択・Stage1不可・mandatory STOP。
 
 [D価格stage分離](docs/research/d_pf_price_stage_split_20261114/REPORT.md)：CELL_PLAN照合でCALIBRATION 22／HOLDOUT 12／計34新規wrapper、保存M5/m4はjobに入らない。CELL_PLAN不一致8種・凍結model不備8種・model group混合・未公開/未bind/実行中改変を拒否、HOLDOUTはm6のみでCALIBRATION byte不変。D54（新規17）＋C48 PASS（人工・架空価格のみ）。policy未採択でStage 1未開始、実compile/価格0。
 

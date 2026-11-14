@@ -1,5 +1,7 @@
 # 有限価格取得の開始条件と段階（今回未実行）
 
+**現在の状態は[保存4件binding完了の追補](ADMISSION_UPDATE.md)を参照。** Cのp7受入・新版CELL_PLAN・共通指示の取得は解消し、SOURCE22ccf3972へ接続済み。policy/許容差は未採択で科学実行STOP。以下は初版0501096bd時点の記録を保全したもの。
+
 改訂SOURCE `2b9983590a642e67fda794521baac7e5eaf0496f`は**Stage 0用**。
 `P7_CELL_PLAN/P7_ADMISSION=None`なので、実行flagを指定してもscience child前でSTOPする。
 この技術PASSをStage 1の開始許可に読み替えない。

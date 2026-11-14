@@ -20,3 +20,9 @@ p7正例は人工fixtureだけで、実receiptの受入や実fitではない。
 [C HANDOFF](../d_pf_price_saved4_revision_20261114/HANDOFF.md)／
 [次段条件](../d_pf_price_saved4_revision_20261114/NEXT_EXECUTION.md)。
 Cの受入公開とユーザーによる条件確定を待ち、技術成果の公開・remote照合後mandatory STOP。
+
+## 同日追補：共通指示取得とC保存4件の正式binding
+
+ユーザーから追加連絡を受け11/14共通運用指示を全文確認した。Cの新受入e50524f4/43c15bfa/2b945397も公開され、D SOURCE22ccf3972へ固定接続した。初版の保留状態は上記の履歴として残す。保存4件は元SOURCE/cohort/axisのrecordと一致し、新規20＋12・全36行・12モデルを維持。旧IDの物理schedule一致の検出を加え、18 metadata/人工test PASS。新しい実H4や実fit/判定/N/Gは0。policy/許容差は未採択なのでscience STOPを維持する。
+
+[現在のREPORT/HANDOFF追補](../d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)。

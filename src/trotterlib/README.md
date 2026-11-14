@@ -1,6 +1,6 @@
 # trotterlib モジュール索引
 
-[決定論PF価格callerの保存再利用改訂](../../docs/research/d_pf_price_saved4_revision_20261114/REPORT.md)：native library・wrapper・compilerを変更せず、scripts側の保存bindingとstage選択だけを拡張。p7 C受入待ち、実scienceなし・STOP。
+[決定論PF保存4件のSOURCE接続](../../docs/research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)：native library/wrapper/compiler不変。scripts側でCのp7正式受入・新版表を接続し、保存4・新規20＋12を維持。science0、policy/許容差未採択・STOP。
 
 [S1価格比較guardの検証](../../docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：guard実装はtrottertracks、物理library変更なし。
 

@@ -1,6 +1,6 @@
 # 文書索引
 
-[D保存4件・32新規価格のStage 0改訂](research/d_pf_price_saved4_revision_20261114/REPORT.md)／[HANDOFF](research/d_pf_price_saved4_revision_20261114/HANDOFF.md)／[CELL_PLAN提案](research/d_pf_price_saved4_revision_20261114/CELL_PLAN_PROPOSED.json)／[次段条件](research/d_pf_price_saved4_revision_20261114/NEXT_EXECUTION.md)：p7受入待ち、metadata/人工技術準備のみ。20＋12、12モデル、Stage1未開始・mandatory STOP。
+[D保存4件の正式binding追補](research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)／[bound metadata](research/d_pf_price_saved4_revision_20261114/admission_bound/PREFLIGHT_METADATA.json)：C新版表・p7受入へ接続、保存4＋新規20/12、18 metadata/人工test PASS。共通指示取得済み、policy/許容差未採択、実compile/fitなし・STOP。
 
 [D価格stage分離REPORT](research/d_pf_price_stage_split_20261114/REPORT.md)／[実行手順](research/d_pf_price_stage_split_20261114/NEXT_EXECUTION.md)：固定SOURCE `1fd47847`、D54＋C48 test PASS、比較policy未採択でcompileなし、mandatory STOP。
 
