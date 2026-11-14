@@ -37,7 +37,7 @@ def design_api():
     return module
 
 
-def proposal(prefix=1, kind='B1-CAL', *, reuse_b0=False):
+def proposal(prefix=1, kind='B1-CAL', *, reuse_b0=False, reuse_wiring_source=None):
     if prefix not in (1, 2) or kind not in ('B1-W', 'B1-V', 'B1-CAL'):
         raise ValueError('Supported prefixes LD1/LD2 and B1-W/V/CAL required')
     if kind == 'B1-W' and prefix != 2:
@@ -53,8 +53,16 @@ def proposal(prefix=1, kind='B1-CAL', *, reuse_b0=False):
                   expectation='FINITE_COHORT_ONLY', cohort='D_PAULI_LD%d_%s_%s_PROPOSED_V1' % (prefix, kind, c['cell_id'])) for c in cells]
     if reuse_b0:
         cells[0].update(cohort=B0.connection().PILOT_COHORT, declared_reuse=dict(path_indices=[0], source=deepcopy(B0_SOURCE)))
+    if (prefix, kind) == (2, 'B1-V'):
+        # A's optional V continues W's cohort; path0 is not an independent new sample.
+        # Its published SOURCE is deliberately unknown until a separately approved W exists.
+        cells[0].update(cohort=proposal(2, 'B1-W')['cells'][0]['cohort'],
+                        declared_reuse=dict(path_indices=[0], source=deepcopy(reuse_wiring_source)))
+    elif reuse_wiring_source is not None:
+        raise ValueError('LD2 wiring reuse belongs only to LD2 B1-V')
     return dict(prefix=prefix, kind=kind, purpose='MODEL_DESIGN' if kind == 'B1-CAL' else 'WIRING_OR_VARIABILITY_ONLY',
                 feature_map='PR_STEP_V1', cells=cells, axes=['X', 'Y'], adopted=False, reuse_b0=reuse_b0,
+                reuse_wiring_source=deepcopy(reuse_wiring_source),
                 design_source=dict(commit=A_SOURCE, path=A_DESIGNS, status='PROPOSAL_NOT_ADOPTED'))
 
 
@@ -69,7 +77,8 @@ def validate(plan, *, execution=False):
         # retain its rank rejection as a prohibition on price-model calibration.
         summary = dict(status='WIRING_ONLY_NOT_A_PRICE_MODEL', model_rejection=str(exc),
                        identifiability=D.identifiability(plan['cells'], plan['feature_map']))
-    fixed = proposal(plan['prefix'], plan['kind'], reuse_b0=plan.get('reuse_b0', False))
+    fixed = proposal(plan['prefix'], plan['kind'], reuse_b0=plan.get('reuse_b0', False),
+                     reuse_wiring_source=plan.get('reuse_wiring_source'))
     if plan['design_source'] != fixed['design_source']:
         raise ValueError('A design SOURCE differs')
     if (plan.get('axes') != ['X', 'Y'] or plan['feature_map'] != fixed['feature_map']
@@ -79,8 +88,8 @@ def validate(plan, *, execution=False):
         keys = ('cell_id', 'role', 'q', 'R', 's', 'T', 'n_paths', 'composed_of', 'declared_reuse') + D.DOMAIN_KEYS
         if any(c.get(k) != expected.get(k) for k in keys) or c['s'] != c['q'] * c['R'] or not c.get('cohort'):
             raise ValueError('Pauli q/R/s/T/domain/reuse differs from A: ' + c['cell_id'])
-        if c.get('declared_reuse') and c['cohort'] != B0.connection().PILOT_COHORT:
-            raise ValueError('B0 original cohort must be preserved')
+        if c.get('declared_reuse') and c['cohort'] != expected['cohort']:
+            raise ValueError('Original wiring cohort must be preserved')
     if execution and plan.get('adopted') is not True:
         raise ValueError('Proposed B1 plan is not adopted for scientific execution')
     return summary
@@ -277,6 +286,12 @@ def execute(job):
         frozen_model_gate(plan, job['frozen_model_source'])
     if plan['prefix'] == 2 and plan['purpose'] == 'MODEL_DESIGN':
         ld2_wiring_gate(job.get('ld2_wiring_source'))
+    if (plan['prefix'], plan['kind']) == (2, 'B1-V'):
+        ld2_wiring_gate(plan.get('reuse_wiring_source'))
+        ref = plan['reuse_wiring_source']; path0 = json.loads(B0.blob(ref['commit'], ref['path']))['child']['paths'][0]
+        if (path0['cohort'] != cell['cohort'] or path0['index'] != 0
+                or path0['result']['seeds'] != job['step_seeds'][0]):
+            raise ValueError('LD2 W path0 cohort/index/seed provenance differs')
     parents = job.get('parents', [])
     if cell.get('composed_of') and (len(parents) != cell['q'] or
             [p['result']['seeds'][0] for p in parents] != job['step_seeds'][0]):
@@ -359,6 +374,12 @@ def child(path):
                 r = json.loads(B0.blob(B0_SOURCE['commit'], B0_SOURCE['path']))['result']
                 results.append(dict(index=0, cohort=cell['cohort'], request=job['request'], result=r,
                                     reused=True, original_source=deepcopy(B0_SOURCE), independent_new=False))
+                continue
+            if (plan['prefix'], plan['kind'], index) == (2, 'B1-V', 0):
+                ref = plan['reuse_wiring_source']
+                r = json.loads(B0.blob(ref['commit'], ref['path']))['child']['paths'][0]['result']
+                results.append(dict(index=0, cohort=cell['cohort'], request=job['request'], result=r,
+                                    reused=True, original_source=deepcopy(ref), independent_new=False))
                 continue
             r = acquire_path(native, ctx, dictionary, job['request'], cohort=cell['cohort'], index=index, seeds=seeds)
             if cell.get('composed_of'):

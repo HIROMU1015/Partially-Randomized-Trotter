@@ -84,6 +84,19 @@ class Tests(unittest.TestCase):
             bad=deepcopy(paths);mutate(bad)
             with self.assertRaises(ValueError): P.records(plan, cell, bad, source=dict(fixture='ARTIFICIAL'), evidence_path='A.json')
 
+    def test_LD2_optional_V_continues_W_without_recompiling_path0(self):
+        wire=P.proposal(2,'B1-W'); plan=P.proposal(2,'B1-V')
+        self.assertEqual(P.seed_table(plan,'M0')[0],P.seed_table(wire,'M0')[0])
+        self.assertEqual(P.preflight(plan)['acquisition_budget'],dict(new_compiles=2,reused_compiles=2))
+        self.assertIsNone(plan['cells'][0]['declared_reuse']['source'])
+        plan['adopted']=True
+        job=dict(plan=plan,cell_id='M0',stage='CALIBRATION',step_seeds=P.seed_table(plan,'M0'),duplicate_preflight_complete=True)
+        with patch.object(P.subprocess,'call') as child,self.assertRaisesRegex(ValueError,'LD2 B1-W SOURCE'):
+            P.execute(job)
+        child.assert_not_called()
+        wrong=deepcopy(plan);wrong['cells'][0]['cohort']='FRESH_DIFFERENT_COHORT'
+        with self.assertRaises(ValueError):P.validate(wrong)
+
     def test_C_fixed_guard_canonical_LD2_wiring_and_wrong_axis_rejection(self):
         p = P.proposal(2, 'B1-W'); c = p['cells'][0]
         out = P.records(p, c, fictional(p,c), source=dict(fixture='ARTIFICIAL',commit='00f74f86d16cc6878e1d4c5977eb9abd9ce9c076'), evidence_path='ARTIFICIAL.json')
