@@ -79,7 +79,9 @@ D c848の段階分離で前回の一括取得問題は解消した。ただし�
 
 今回、新8＋変更したFull PF受入helperの回帰7＝**15 test method PASS**。P1参照追加後は影響するmetadata testを再確認した。無変更のC guard/modelの既存48 PASS記録（C2fa）と、E[S]/C1/P1/P2の固定検証記録は再利用し、科学再実行・同じ回帰48件の重複実行をしない。作者自身の技術確認で、独立科学レビューではない。
 
-指定`research_project_instructions_unified_2026-11-14.md`の実体は、既知の共通位置/各worktree直下では取得できず、保存パスを照会中。本文の未確認条項を適用済みとは記載しない。依頼で明示された§10.5の重複照合は、既存実装・固定証拠の再利用と差分検査として実施した。既存AGENTSの保全・科学実行境界を維持した。
+初回公開e50524f4bの時点では、指定`research_project_instructions_unified_2026-11-14.md`が既知の保存位置で未取得だったため、本文確認を保留していた。利用者の「追加した」という回答後、`/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research_project_instructions_unified_2026-11-14.md`を取得・読了し、この確認待ちを解消した。
+
+同版§10.5と既存成果を静的に照合した。候補/round/軸/cohort単位の一次記録・scalar/実装/測定操作への対応、保存4件の再利用と新規取得候補からの除外、C1/P1/P2の独立性・role保全、未取得/未資格部分の保留、科学実行承認とSTOPの維持は整合している。受入結果・コード・価格値・セル計画・資格を変更する必要はなかった。残る32件は固定参照範囲での新規取得候補であり、実行前に他担当の取得状況やSOURCEが変わった場合は影響する項目だけを再照合する。資料未取得を「過去に未実施」と数えず、証拠不足の項目は再利用・新規取得とも保留する。指示確認に伴う科学再計算・テストの重複実行は行っていない。
 
 同目的のC branch `codex/m5-m4-receipt-admission-20261114`を継続。A/B/Dのworktree・実行領域には介入せず、PRについては公開Git metadataだけを参照した。原C1/C2/T2/旧CELL_PLAN/guard/model係数/資格/SOURCE/raw/grant/ledger/marker/KEEP/STOPを変更していない。
 
