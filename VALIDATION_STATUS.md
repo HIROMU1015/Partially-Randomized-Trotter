@@ -1,5 +1,7 @@
 # Validation status
 
+[Pauli B0実行attemptのSTOP](docs/research/d_pauli_ld1_m0_pilot_results_20261114/REPORT.md)：SOURCE62ae1bd56718287de5d958cf0ed6411f5b7395c9で一回起動。C c628の元canonical d905/RMSE:62a9…、184項辞書SHA、seed14788159701244282917・Pauli D2 routeのpreflight PASS、親8・内部子5人工test PASS。実native contextのrestore importで、sparse checkoutが除外したreferences/h46_m5_tol_pilot_inputs_v1.json欠測によりchild exit1/parent2。実入力復元/prepare/path/event/native/wrapper/compile0、価格・sidecarなし、全実作用/scalar gate未到達。wall6.72秒/peak604088 KiBは起動失敗の観測、科学SOURCE/guard無変更・retry0。partial/旧原本を保全、公開後mandatory STOP。
+
 [S1価格比較guard](docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：人工14＋回帰37＝51 PASS。実価格資格・B直接consumerの修正は未完了、新科学計算0。
 
 [Full PF3候補のcompiled価格証拠接続](docs/research/full_pf_candidate_price_evidence_20261114/REPORT.md)（2026-11-14）：A3ae055faのFull PF S2/.2・Y4/.4・M5/.8を39round/78軸でD e7 receiptへ照合。direct5round/10軸、M5 m4欠測、他33roundはcatalog外。元native/scalar/wrapper/P0のD証拠を再利用し、consumer lowering採用は未実施。追加4セル/最大8wrapperの未承認q検証案、early幅/長q未資格・必要精度UNKNOWN。価格再集計/予測/fit/compile/N/G0、production変更0、公開後mandatory STOP。
