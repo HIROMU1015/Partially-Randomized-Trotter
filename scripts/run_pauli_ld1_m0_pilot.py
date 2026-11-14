@@ -57,8 +57,8 @@ A_HANDOFF = dict(commit='714247619afb4714fd663eb15c0470ef32bdc7af',
 TARGET = dict(commit='91349e703e0d09ef702ccd108745dfaf1acc29f7', path='docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD1.json')
 FIXED_SEEDS = [14788159701244282917]  # 8b28dce0 plan; keyed by the canonical candidate ID (unchanged by the bridge)
 PREFIX, M = 1, 0
-OUTPUT = 'docs/research/d_pauli_ld1_m0_pilot_results_20261114/run01'
-PRIVATE_OUTPUT = Path('/home/AbeHiromu/projects/d-pauli-ld1-m0-20261114-private/run01')
+OUTPUT = 'docs/research/d_pauli_ld1_m0_pilot_results_20261114/run02'
+PRIVATE_OUTPUT = Path('/home/AbeHiromu/projects/d-pauli-ld1-m0-20261114-private/run02')
 SCOPE = dict(configuration='LD1', m=0, normal_paths=1, index=0, axes=['X', 'Y'], compile_maximum=2,
              new_reference=0, retry=False, mean=None, N=None, G=None)
 
@@ -99,6 +99,28 @@ def provider_checks():
         if Path(module.__file__).read_bytes() != blob(PROVIDER, rel):
             raise ValueError('Provider SOURCE mismatch: ' + name)
     return True
+
+
+def import_preflight():
+    """Fresh provider-first process; import the real restore chain, never call it."""
+    import h46_long_time_signal as signal
+    if any(k.startswith('trottertracks.') for k in sys.modules):
+        raise ValueError('Import preflight must start before project trottertracks imports')
+    references = {}
+    for path in ('references/h46_m5_tol_pilot_inputs_v1.json', 'references/h46_m5_best_formula_v1.json'):
+        data = (ROOT / path).read_bytes()
+        if data != blob('62ae1bd56718287de5d958cf0ed6411f5b7395c9', path):
+            raise ValueError('Fixed restore reference differs: ' + path)
+        references[path] = hashlib.sha256(data).hexdigest()
+    signal.install()
+    provider_checks(); register_pauli_modules()
+    import h46_m5_tol_native as saved
+    import h46_new2_native as head
+    import h46_long_time_native as native
+    if not all(callable(f) for f in (saved.restore, head.prepare, head.OccupationOracle, native.native_context)):
+        raise ValueError('Real restore/preparation import chain unresolved')
+    return dict(status='RESTORE_IMPORT_CHAIN_READY_NO_SCIENCE', references=references,
+                input_restores=0, preparations=0, sampling=0, circuit_builds=0, compiles=0)
 
 
 def p0_arrays():
@@ -260,10 +282,14 @@ def execute(root=ROOT):
         if blob(commit, path) != (Path(root) / path).read_bytes():
             raise ValueError('Execution SOURCE bytes differ from HEAD: ' + path)
     meta = preflight(root)
+    imports = json.loads(subprocess.check_output(
+        [sys.executable, '-B', str(Path(root) / CALLER), '--import-preflight'], cwd=root))
     out = Path(root) / OUTPUT; out.mkdir(parents=True, exist_ok=False); PRIVATE_OUTPUT.mkdir(parents=True, exist_ok=False)
     source = dict(commit=commit, caller=CALLER, connection=CONNECTION, P0=P0, pauli_modules=PAULI_MODULES, provider=PROVIDER)
     (out / 'SOURCE.json').write_text(json.dumps(dict(source=source, scope=SCOPE, preflight=meta, python=sys.version,
-        platform=platform.platform(), started_utc=datetime.now(timezone.utc).isoformat(), automatic_retry=False), indent=2))
+        platform=platform.platform(), started_utc=datetime.now(timezone.utc).isoformat(), automatic_retry=False,
+        restore_import_preflight=imports, recovery_of=dict(commit='b5fc2f97d3ab31fb4e1648c8a77eed051d378491',
+            path='docs/research/d_pauli_ld1_m0_pilot_results_20261114/run01/RESULT.json')), indent=2))
     job = dict(cohort=meta['cohort'], public=str(out / 'child_public'), private=str(PRIVATE_OUTPUT),
                result=str(PRIVATE_OUTPUT / 'child.json'), connection=str(Path(root) / CONNECTION))
     (PRIVATE_OUTPUT / 'job.json').write_text(json.dumps(job))
@@ -288,9 +314,14 @@ def main(argv=None):
     parser.add_argument('--execute-approved-pauli-b0', action='store_true',
                         help='sample one LD1/m0 path, build and compile X/Y (separate approval)')
     parser.add_argument('--child', help=argparse.SUPPRESS)
+    parser.add_argument('--import-preflight', action='store_true',
+                        help='provider-first real restore imports only; no H4 restore/preparation')
     args = parser.parse_args(argv)
     if args.child:
         return child(args.child)
+    if args.import_preflight:
+        print(json.dumps(import_preflight(), indent=2))
+        return 0
     if args.execute_approved_pauli_b0:
         return execute(ROOT)
     print(json.dumps(preflight(ROOT), indent=1, default=str))

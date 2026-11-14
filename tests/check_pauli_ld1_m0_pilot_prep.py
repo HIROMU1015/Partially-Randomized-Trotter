@@ -158,6 +158,24 @@ class Tests(unittest.TestCase):
         self.assertEqual(out.returncode, 0, out.stderr[-3000:])
         self.assertIn('Ran 5 tests', out.stderr)
 
+    def test_recovery_import_chain_and_unchanged_scientific_functions(self):
+        import ast
+        import json
+        out = subprocess.run([sys.executable, '-B', '-W', 'ignore', str(ROOT / PILOT.CALLER), '--import-preflight'],
+                             cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr[-3000:])
+        checked = json.loads(out.stdout)
+        self.assertEqual(checked['status'], 'RESTORE_IMPORT_CHAIN_READY_NO_SCIENCE')
+        self.assertTrue(all(checked[k] == 0 for k in ('input_restores', 'preparations', 'sampling', 'circuit_builds', 'compiles')))
+        self.assertEqual(len(checked['references']), 2)
+        old = ast.parse(PILOT.blob('62ae1bd56718287de5d958cf0ed6411f5b7395c9', PILOT.CALLER))
+        new = ast.parse((ROOT / PILOT.CALLER).read_bytes())
+        for name in ('pilot_core', 'child', 'records', 'canonical_request', 'preflight'):
+            f = lambda tree: next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name)
+            self.assertEqual(ast.dump(f(old)), ast.dump(f(new)), name)
+        self.assertEqual(PILOT.OUTPUT, 'docs/research/d_pauli_ld1_m0_pilot_results_20261114/run02')
+        self.assertTrue(str(PILOT.PRIVATE_OUTPUT).endswith('/run02'))
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
