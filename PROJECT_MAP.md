@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-Pauli B1 caller技術準備](docs/research/d_pauli_b1_caller_preparation_20261114/REPORT.md)：SOURCE `bd1b1b286`。LD1/LD2のW/V/CAL、辞書/physical ID、paired seed・D2 metadata、C受渡しを技術対応。新H4 sampling/build/compile/statevector0。ただし保存P0演算子の数値再検査を誤って1回実行し、範囲逸脱として保全・科学証拠非採用。 全科学計画未採択、公開後mandatory STOP。
+
 [Pauli LD1/m0 B0：run02復旧PASS](docs/research/d_pauli_ld1_m0_pilot_results_20261114/RECOVERY_REPORT.md)／[C HANDOFF](docs/research/d_pauli_ld1_m0_pilot_results_20261114/RECOVERY_HANDOFF.md)：承認後の一回の手動復旧。tracked referencesを展開し、実行SOURCE9abbcc563を固定。保存H4/1Å/STO-3G/tol-only DF10、Pauli LD1/m0/S2/Δ.1/q1/R3/K2/P0、元canonical ID・184項・seedを保持。normal1 path/3event、測定付きXYを個別2compile、全固定gate PASS。両軸RZ1380/CX578/depth834、wall13.48秒/peak626888KiB。有限sample限定、C guard metadata PASS、law平均/CI/N/G/B1未着手。旧run01/STOP保全、公開照合後mandatory STOP。
 
 [Pauli LD1/m0 B0：入力import STOP](docs/research/d_pauli_ld1_m0_pilot_results_20261114/REPORT.md)／[raw RESULT](docs/research/d_pauli_ld1_m0_pilot_results_20261114/run01/RESULT.json)／[C HANDOFF](docs/research/d_pauli_ld1_m0_pilot_results_20261114/HANDOFF.md)／[次回条件](docs/research/d_pauli_ld1_m0_pilot_results_20261114/NEXT_STEPS.md)：SOURCE62ae1bd5の一attempt。元canonical ID/辞書/seedのpreflightと親8・内部子5人工test PASS後、sparse checkoutでtracked references JSONが未展開のため実H4 restore importで停止。prepare/sample/event/build/compile0、価格/sidecarなし、retry0。起動失敗のwall6.72秒/peak604088 KiBを保全し、新科学/修正へ進まず公開後mandatory STOP。
