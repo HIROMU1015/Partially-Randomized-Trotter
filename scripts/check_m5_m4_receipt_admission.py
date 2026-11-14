@@ -52,24 +52,26 @@ def d_callers(root):
         return SimpleNamespace(**scope)
     t = selected('run_truncated_p7_prices',
         ('CALLER', 'H', 'TEMPLATES', 'PREFIX', 'ROUNDS', 'T3', 'PLAN_META', 'A_MENU', 'MANIFEST',
-         'NATIVE', 'WRAPPER', 'NO_RTE', 'NATIVE_POLICY', 'RECORD_SCHEMA'),
-        ('_meta', 'read', 'enc', 'plans'))
+         'NATIVE', 'WRAPPER', 'NO_RTE', 'NATIVE_POLICY', 'RECORD_SCHEMA',
+         'COHORT', 'SCALAR_SOURCE', 'SCALAR_QUANTITY'),
+        ('_meta', 'read', 'enc', 'plans', 'price_bindings'))
     f = selected('run_full_pf_shortlist_prices',
         ('CALLER', 'RANK', 'COVERAGE', 'ROLES', 'COHORT', 'RECORD_SCHEMA', 'SCALAR_QUANTITY', 'SCALAR_SOURCE'),
         ('plans', 'price_bindings', 'c_model', 'fit_inputs'), dict(T3=t))
     return t, f
 
 
-def inspect(trial, carrier, catalog, expected, provenance, profile, constant):
+def inspect(trial, carrier, catalog, expected, provenance, profile, constant, *,
+            method='FULL', prefix=10, pid=PID):
     """Equality and original gate checks only; no price averages or state action."""
     def require(ok, why):
         if not ok:
             raise ValueError(why)
     require(trial['candidate'] == expected == carrier['candidate'] == catalog['physical_candidate'],
             'Physical candidate/formula/q/actual width differs')
-    require((expected['system'], expected['method'], expected['prefix'], expected['q']) == ('H4', 'FULL', 10, 1),
+    require((expected['system'], expected['method'], expected['prefix'], expected['q']) == ('H4', method, prefix, 1),
             'Wrong saved M5 scope')
-    require(expected['formula'] == '4th(m5_best)' and expected['id'] == PID, 'Wrong saved M5 id')
+    require(expected['formula'] == '4th(m5_best)' and expected['id'] == pid, 'Wrong saved M5 id')
     require(trial['scalar'] == constant, 'Hamiltonian constant scalar differs')
     require(trial['status'] == 'PASS' and trial['cohort'] == carrier['cohort'] == 'EXPLORATION'
             and trial['index'] == 0 and carrier['n'] == 1 and carrier['paired_cosine_sine'] is True,
@@ -172,15 +174,18 @@ def probe(root, packet, bundle_commit):
     for side in sides:
         side['implementation_evidence']['commit'] = bundle_commit
     config = packet['plan']['configuration']
+    B = C.published_api(str(root)).B
+    method = B.comparison_method(config['spec'])
+    scalar_quantity = {'FULL_PF': 'HAMILTONIAN_CONSTANT',
+                       'TRUNCATED_PF': 'HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY'}[method]
     policy = dict(id='TECHNICAL_COMPATIBILITY_PROBE_ONLY_NOT_ADOPTED',
         source=dict(commit=C_SOURCE, path='src/trottertracks/price_implementation_guard.py'),
         profile=deepcopy(config['spec']['profile']),
-        by_method=dict(FULL_PF=dict(native_policy='H46_LONG_TIME_NATIVE_COMPOSE',
-            rte_rotation_lowering=G.NO_RTE, scalar_quantity='HAMILTONIAN_CONSTANT')))
+        by_method={method: dict(native_policy='H46_LONG_TIME_NATIVE_COMPOSE',
+            rte_rotation_lowering=G.NO_RTE, scalar_quantity=scalar_quantity)})
     cohorts = {(config['rounds'][4]['candidate']['id'], a): 'EXPLORATION' for a in ('X', 'Y')}
     checked = G.check(root, config, prices, cohorts=cohorts, bindings=sides, policy=policy)
-    B = C.published_api(str(root)).B
-    tiers = {p['axis']: PN._tier(B, p, 'FULL_PF') for p in prices}
+    tiers = {p['axis']: PN._tier(B, p, method) for p in prices}
     return dict(guard=checked, tiers=tiers, sides=sides, comparison_policy_adopted=False, G=None)
 
 

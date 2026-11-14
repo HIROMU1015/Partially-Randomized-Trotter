@@ -1,0 +1,4528 @@
+{
+  "status": "REUSED_STATIC_EVIDENCE_NO_NEW_S_C_ANALYSIS",
+  "source": {
+    "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+    "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json"
+  },
+  "sources": {
+    "A_MENU": {
+      "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+      "path": "docs/research/pr_rpe_first_signal_menu_20261113/"
+    },
+    "A_CURRENT": {
+      "commit": "2f0de95304000af251a179fefdddf2a10b8fdc14",
+      "path": "docs/research/pf_effective_hamiltonian_20261113/SCIENCE_PLAN.md"
+    },
+    "B_CURRENT": {
+      "commit": "d71721f30c7b7fc13ba0789eefffd6238aca3ebc",
+      "path": "docs/research/rpe_deterministic_risk_20261113/NEXT_SCIENCE_PLAN.md"
+    },
+    "B_PROXY": {
+      "commit": "23d74855135e718554d824a269427de9943213d1",
+      "path": "docs/research/rpe_cost_preliminary_results_20261113/NEXT_OPTIMIZATION_PLAN.md"
+    },
+    "D_CORRECTED": {
+      "commit": "e827367629ca6c2920d9d908fc1631314399db86",
+      "path": "docs/research/d_t2_scalar_binding_fix_20261113/HANDOFF.md"
+    },
+    "D_REQUESTS": {
+      "commit": "748be6875b5007707d864e16aa7a4fc4250f3714",
+      "path": "docs/research/d_ld12_price_requests_20261113/PRICE_REQUEST_COVERAGE.json"
+    },
+    "PF_RECEIPTS": {
+      "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+      "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.csv"
+    },
+    "P2": {
+      "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+      "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json"
+    },
+    "ES": {
+      "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+      "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json"
+    },
+    "C1": {
+      "commit": "2e6a0cdf5a647058cc7afeeb5741bfafa24c974b",
+      "path": "docs/research/r_price_phase1_results_20261111/REPORT.md"
+    },
+    "C_MODEL": {
+      "commit": "1914d0764115d82ec860e08810dafeb50f8d9a42",
+      "path": "src/trottertracks/rpe_mean_price_model.py"
+    },
+    "P1": {
+      "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+      "path": "docs/research/d_p1_efficient_czz_20261113/run02/RESULT.json"
+    }
+  },
+  "coverage": [
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 0,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:2f58bda2872e3881f83f4fb0e2b70db9b7e6c516aed30c9419665bfe22e0fb69",
+      "physical_id": "53e00d8b07d1547d19a7",
+      "T": 0.1,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 1,
+      "R_outer": 2,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          0
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [
+        {
+          "source": "P2",
+          "selector": [
+            "summary",
+            0
+          ],
+          "axis": "X",
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "n_paths": 4,
+          "expectation": "FINITE_COHORT_ONLY",
+          "role": "DEVELOPMENT",
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "status": "SAVED_PAIRED_FINITE_COHORT_ONLY",
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        },
+        {
+          "source": "P1",
+          "selector": [
+            "summary",
+            0
+          ],
+          "axis": "X",
+          "cohort": "D_P1_EFFICIENT_CZZ_20261113",
+          "n_paths": 2,
+          "expectation": "FINITE_DEVELOPMENT_COHORT_ONLY",
+          "consumer_role": "REFERENCE_DEVELOPMENT_NOT_NEW_HOLDOUT",
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "consumer_bridge": "PENDING_NO_ADMISSION",
+          "status": "SAVED_PAIRED_FINITE_COHORT_ONLY"
+        }
+      ],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            0
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "29be4f43d73c4f7f2d8510aee0043c6067536f1303562d9e0f24692f605004c0",
+        "context_key": "57ce8f2ad2d62e07e6a3e0be62b67e0b5630ae9285129579054d77493ecea5bd",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          0
+        ]
+      },
+      "saved_direct_path_price": true,
+      "finite_cohort_available": true,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "FINITE_COHORT_SCENARIO_PENDING_BINDING",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 0,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:2f58bda2872e3881f83f4fb0e2b70db9b7e6c516aed30c9419665bfe22e0fb69",
+      "physical_id": "53e00d8b07d1547d19a7",
+      "T": 0.1,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 1,
+      "R_outer": 2,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          0
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [
+        {
+          "source": "P2",
+          "selector": [
+            "summary",
+            0
+          ],
+          "axis": "Y",
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "n_paths": 4,
+          "expectation": "FINITE_COHORT_ONLY",
+          "role": "DEVELOPMENT",
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "status": "SAVED_PAIRED_FINITE_COHORT_ONLY",
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        },
+        {
+          "source": "P1",
+          "selector": [
+            "summary",
+            0
+          ],
+          "axis": "Y",
+          "cohort": "D_P1_EFFICIENT_CZZ_20261113",
+          "n_paths": 2,
+          "expectation": "FINITE_DEVELOPMENT_COHORT_ONLY",
+          "consumer_role": "REFERENCE_DEVELOPMENT_NOT_NEW_HOLDOUT",
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "consumer_bridge": "PENDING_NO_ADMISSION",
+          "status": "SAVED_PAIRED_FINITE_COHORT_ONLY"
+        }
+      ],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            1
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "29be4f43d73c4f7f2d8510aee0043c6067536f1303562d9e0f24692f605004c0",
+        "context_key": "57ce8f2ad2d62e07e6a3e0be62b67e0b5630ae9285129579054d77493ecea5bd",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          1
+        ]
+      },
+      "saved_direct_path_price": true,
+      "finite_cohort_available": true,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "FINITE_COHORT_SCENARIO_PENDING_BINDING",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 1,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:36529fea1b1db624a84ed1018bad484d0c33bcc55c12353bf672cc65f52937ea",
+      "physical_id": "c00e00dc1e9c414fb7d9",
+      "T": 0.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 2,
+      "R_outer": 4,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          1
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            4
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "4ae80152f1f48e8fe3b5a3b66de225759d3a60d01f0250dc85acfba018e30d8c",
+        "context_key": "f064eb39a7d6b870cd939c9b461dd1c9b84e1ed03b7e2725e256f8d556180c77",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          2
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 1,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:36529fea1b1db624a84ed1018bad484d0c33bcc55c12353bf672cc65f52937ea",
+      "physical_id": "c00e00dc1e9c414fb7d9",
+      "T": 0.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 2,
+      "R_outer": 4,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          1
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            5
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "4ae80152f1f48e8fe3b5a3b66de225759d3a60d01f0250dc85acfba018e30d8c",
+        "context_key": "f064eb39a7d6b870cd939c9b461dd1c9b84e1ed03b7e2725e256f8d556180c77",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          3
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 2,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:62635d1af6b739e3d65444c438a6a89e2aa6f02017193c0b05ca9ef81df0eb3c",
+      "physical_id": "f2fcd66b1ef9ae2da5df",
+      "T": 0.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 4,
+      "R_outer": 8,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          2
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            6
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "b5793db97e18c683e41ae78de3cad069d6cd3ea2c8d6501185a6dd0fe67940e9",
+        "context_key": "b450d2b5c6407d35a0d9b2deb80bb8255bc9aeea54c641d44dc39cd9ca06e85f",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          4
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 2,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:62635d1af6b739e3d65444c438a6a89e2aa6f02017193c0b05ca9ef81df0eb3c",
+      "physical_id": "f2fcd66b1ef9ae2da5df",
+      "T": 0.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 4,
+      "R_outer": 8,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          2
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            7
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "b5793db97e18c683e41ae78de3cad069d6cd3ea2c8d6501185a6dd0fe67940e9",
+        "context_key": "b450d2b5c6407d35a0d9b2deb80bb8255bc9aeea54c641d44dc39cd9ca06e85f",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          5
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 3,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:ea40d9bbfacd7a72f2c204dee6920cd52c4be4f859c08c7a184ff98f3ba78833",
+      "physical_id": "045843b2429bece6f29b",
+      "T": 0.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 8,
+      "R_outer": 16,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          3
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            8
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "f4492099c6af0db6cc258f5d60e206c8581f1ad35e3206fefa6418a97248339d",
+        "context_key": "15985b0e558a3fd51be151dd19c2328e33aefffa89617b4dfbfa84b1914b6c09",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          6
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 3,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:ea40d9bbfacd7a72f2c204dee6920cd52c4be4f859c08c7a184ff98f3ba78833",
+      "physical_id": "045843b2429bece6f29b",
+      "T": 0.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 8,
+      "R_outer": 16,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          3
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            9
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "f4492099c6af0db6cc258f5d60e206c8581f1ad35e3206fefa6418a97248339d",
+        "context_key": "15985b0e558a3fd51be151dd19c2328e33aefffa89617b4dfbfa84b1914b6c09",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          7
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 4,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:8bbdb84e72567c9fdcdbd8db9edb956393a663a02da2f8e1b3569ad97254ce24",
+      "physical_id": "3df0cfd3356c358aeda8",
+      "T": 1.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 16,
+      "R_outer": 32,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          4
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            10
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "1f2f3e67424df8eaa028b7166629c5d5e1445e352ff9227d0fa8c2e76b35c473",
+        "context_key": "b3689730285977d99592ea000b50f972380ad383449923a70583545104cf45e9",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          8
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 4,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:8bbdb84e72567c9fdcdbd8db9edb956393a663a02da2f8e1b3569ad97254ce24",
+      "physical_id": "3df0cfd3356c358aeda8",
+      "T": 1.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 16,
+      "R_outer": 32,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          4
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            11
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "1f2f3e67424df8eaa028b7166629c5d5e1445e352ff9227d0fa8c2e76b35c473",
+        "context_key": "b3689730285977d99592ea000b50f972380ad383449923a70583545104cf45e9",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          9
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 5,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:b2e78d9132c2e525ce692584923d418072a252eea3dc8a85ca36467e35d9e6a2",
+      "physical_id": "57d641a831d76360b570",
+      "T": 3.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 32,
+      "R_outer": 64,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          5
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            12
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "732d891313e405eb8416af7f85cd30e03cc42dfc2c525302e7ecbfbd4fc78e6e",
+        "context_key": "c53dd5e4b9e2a1374173ca1a4df6374a2020f4f018a803d75b8deeadbbca3f61",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          10
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 5,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:b2e78d9132c2e525ce692584923d418072a252eea3dc8a85ca36467e35d9e6a2",
+      "physical_id": "57d641a831d76360b570",
+      "T": 3.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 32,
+      "R_outer": 64,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          5
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            13
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "732d891313e405eb8416af7f85cd30e03cc42dfc2c525302e7ecbfbd4fc78e6e",
+        "context_key": "c53dd5e4b9e2a1374173ca1a4df6374a2020f4f018a803d75b8deeadbbca3f61",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          11
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 6,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:03ba1ef070b5bdcb468f8ff171f58f1e62c63d293e1cae330f8f4a651988cd54",
+      "physical_id": "2a8c6718220eec59d419",
+      "T": 6.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 64,
+      "R_outer": 128,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          6
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [
+        {
+          "source": "P2",
+          "selector": [
+            "summary",
+            1
+          ],
+          "axis": "X",
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "n_paths": 4,
+          "expectation": "FINITE_COHORT_ONLY",
+          "role": "DEVELOPMENT",
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "status": "SAVED_PAIRED_FINITE_COHORT_ONLY",
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        },
+        {
+          "source": "P1",
+          "selector": [
+            "summary",
+            1
+          ],
+          "axis": "X",
+          "cohort": "D_P1_EFFICIENT_CZZ_20261113",
+          "n_paths": 2,
+          "expectation": "FINITE_DEVELOPMENT_COHORT_ONLY",
+          "consumer_role": "REFERENCE_DEVELOPMENT_NOT_NEW_HOLDOUT",
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "consumer_bridge": "PENDING_NO_ADMISSION",
+          "status": "SAVED_PAIRED_FINITE_COHORT_ONLY"
+        }
+      ],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            2
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "26ae62142ccc76246b984d7200ea72dc39f6cd0f79b88716d83b747d2f5a708e",
+        "context_key": "9769df283bf073db074b3996e1dfd84d694f8c72feafe46b8b44bbf973edd0f5",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          12
+        ]
+      },
+      "saved_direct_path_price": true,
+      "finite_cohort_available": true,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "FINITE_COHORT_SCENARIO_PENDING_BINDING",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 6,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:03ba1ef070b5bdcb468f8ff171f58f1e62c63d293e1cae330f8f4a651988cd54",
+      "physical_id": "2a8c6718220eec59d419",
+      "T": 6.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 64,
+      "R_outer": 128,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          6
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [
+        {
+          "source": "P2",
+          "selector": [
+            "summary",
+            1
+          ],
+          "axis": "Y",
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "n_paths": 4,
+          "expectation": "FINITE_COHORT_ONLY",
+          "role": "DEVELOPMENT",
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "status": "SAVED_PAIRED_FINITE_COHORT_ONLY",
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        },
+        {
+          "source": "P1",
+          "selector": [
+            "summary",
+            1
+          ],
+          "axis": "Y",
+          "cohort": "D_P1_EFFICIENT_CZZ_20261113",
+          "n_paths": 2,
+          "expectation": "FINITE_DEVELOPMENT_COHORT_ONLY",
+          "consumer_role": "REFERENCE_DEVELOPMENT_NOT_NEW_HOLDOUT",
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "consumer_bridge": "PENDING_NO_ADMISSION",
+          "status": "SAVED_PAIRED_FINITE_COHORT_ONLY"
+        }
+      ],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            3
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "26ae62142ccc76246b984d7200ea72dc39f6cd0f79b88716d83b747d2f5a708e",
+        "context_key": "9769df283bf073db074b3996e1dfd84d694f8c72feafe46b8b44bbf973edd0f5",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          13
+        ]
+      },
+      "saved_direct_path_price": true,
+      "finite_cohort_available": true,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "FINITE_COHORT_SCENARIO_PENDING_BINDING",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 7,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:0233bb66c825d2ccfedb5b159090c68380814abebd2130afb4f4958e2571eb19",
+      "physical_id": "b42287268e5249dfb4d1",
+      "T": 12.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 128,
+      "R_outer": 255,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          7
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            14
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "fa88b1568629ce32cd88a8953c2768d5b7afc4117ad5452ae685d241ec39d64d",
+        "context_key": "a6e490667db04a78ff685c5f037626b05f366175595722c59cfb1eb207a3f357",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          14
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 7,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:0233bb66c825d2ccfedb5b159090c68380814abebd2130afb4f4958e2571eb19",
+      "physical_id": "b42287268e5249dfb4d1",
+      "T": 12.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 128,
+      "R_outer": 255,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          7
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            15
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "fa88b1568629ce32cd88a8953c2768d5b7afc4117ad5452ae685d241ec39d64d",
+        "context_key": "a6e490667db04a78ff685c5f037626b05f366175595722c59cfb1eb207a3f357",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          15
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 8,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:06dca30b81b4858f7fa9c2357fd3c757d1d5afdac93a7363203c8196af46c203",
+      "physical_id": "224aef0a626068b43184",
+      "T": 25.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 256,
+      "R_outer": 510,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          8
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            16
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "e7ef7150493164f5b25c36a17640bfabe4eae8e7fb7c4313b4f211e70b2f511b",
+        "context_key": "8d83e0470cc4df66fcfc905f9cacce20fc855f0766b3dd08b0aa8f783cace5f1",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          16
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 8,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:06dca30b81b4858f7fa9c2357fd3c757d1d5afdac93a7363203c8196af46c203",
+      "physical_id": "224aef0a626068b43184",
+      "T": 25.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 256,
+      "R_outer": 510,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          8
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            17
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "e7ef7150493164f5b25c36a17640bfabe4eae8e7fb7c4313b4f211e70b2f511b",
+        "context_key": "8d83e0470cc4df66fcfc905f9cacce20fc855f0766b3dd08b0aa8f783cace5f1",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          17
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 9,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:a3a40ba1fd60f7e2c7eab247ca27887a41ee7c3dd0c66b6a5bdff7885992dd7f",
+      "physical_id": "06a78c7f9856f373336f",
+      "T": 51.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 512,
+      "R_outer": 1020,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          9
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            18
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "a0bc0a4ed616c96df03cc5dfb8366be50de3e1befde5fe20c6e979ccf1a6ff6b",
+        "context_key": "27a658294670198e9beebaddd9d20b0393d5f46e8480623c2c825866a75ca9d4",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          18
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 9,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:a3a40ba1fd60f7e2c7eab247ca27887a41ee7c3dd0c66b6a5bdff7885992dd7f",
+      "physical_id": "06a78c7f9856f373336f",
+      "T": 51.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 512,
+      "R_outer": 1020,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          9
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            19
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "a0bc0a4ed616c96df03cc5dfb8366be50de3e1befde5fe20c6e979ccf1a6ff6b",
+        "context_key": "27a658294670198e9beebaddd9d20b0393d5f46e8480623c2c825866a75ca9d4",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          19
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 10,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:c421a4111771d4640061ba9062f6106e8626cb6addd2bd6519e143f5efedf053",
+      "physical_id": "b872ad1347a35c8f4315",
+      "T": 102.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 1024,
+      "R_outer": 2040,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          10
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            20
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "0573ca70f41a8b6d15d1289d32f0ac9ed9f74569c97e73fd27d7bac481bdd271",
+        "context_key": "8b6ad7772df9c9bd473ac2bda4d90ed4cae68b740eeb3c4a6b1ae2c0f8a6437f",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          20
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 10,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:c421a4111771d4640061ba9062f6106e8626cb6addd2bd6519e143f5efedf053",
+      "physical_id": "b872ad1347a35c8f4315",
+      "T": 102.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 1024,
+      "R_outer": 2040,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          10
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            21
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "0573ca70f41a8b6d15d1289d32f0ac9ed9f74569c97e73fd27d7bac481bdd271",
+        "context_key": "8b6ad7772df9c9bd473ac2bda4d90ed4cae68b740eeb3c4a6b1ae2c0f8a6437f",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          21
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 11,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:b8ffd71db34862c8ea62c84eb08c915a01baa62e6afa30d1017b9cb999a27a33",
+      "physical_id": "d48210cc27c599e268c2",
+      "T": 204.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 2048,
+      "R_outer": 4080,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          11
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            22
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "d5bd05d210f251e4e336179589532dcd0b68142dc76fee5f0d58f1919f03edbf",
+        "context_key": "01016712aa74c0a2bd22b0c53956f7d1d44626a6130e5267fcc2f7c4188bcc17",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          22
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 11,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:b8ffd71db34862c8ea62c84eb08c915a01baa62e6afa30d1017b9cb999a27a33",
+      "physical_id": "d48210cc27c599e268c2",
+      "T": 204.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 2048,
+      "R_outer": 4080,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          11
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            23
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "d5bd05d210f251e4e336179589532dcd0b68142dc76fee5f0d58f1919f03edbf",
+        "context_key": "01016712aa74c0a2bd22b0c53956f7d1d44626a6130e5267fcc2f7c4188bcc17",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          23
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 12,
+      "axis": "X",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:015b3d0db4ee69602dae794510be740d7a00f61625cc5211db648120bdf5b0c6",
+      "physical_id": "b55c521fdce6a448dbcb",
+      "T": 409.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 4096,
+      "R_outer": 8160,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          12
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            24
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "c89564025a15fbd8ffe72b1d0ae4debe329ccebce1a89af8d2ef834bc174bd81",
+        "context_key": "be944c7737a7897fff641c183ce7f20aba3028cdc66ab9b1944a816ca84dc33a",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          24
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD1",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 12,
+      "axis": "Y",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "canonical_candidate_id": "RMSE:015b3d0db4ee69602dae794510be740d7a00f61625cc5211db648120bdf5b0c6",
+      "physical_id": "b55c521fdce6a448dbcb",
+      "T": 409.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 1,
+      "q_PF": 4096,
+      "R_outer": 8160,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD1.json",
+        "selector": [
+          "rounds",
+          12
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [
+        {
+          "source": "ES",
+          "selector": [
+            "values",
+            25
+          ],
+          "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+          "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+          "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+          "source_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "canonical_identity_equal": false,
+          "law_binding_equal": false,
+          "consumer_bridge": "PENDING_NO_ADMISSION"
+        }
+      ],
+      "C1": {
+        "source": "C1",
+        "status": "OUTSIDE_FROZEN_Q_R_AND_LOWERING_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "c89564025a15fbd8ffe72b1d0ae4debe329ccebce1a89af8d2ef834bc174bd81",
+        "context_key": "be944c7737a7897fff641c183ce7f20aba3028cdc66ab9b1944a816ca84dc33a",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          25
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": true,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 0,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:183545d923ab7d3ae8c4dc68af4e739f26125694930a76b5460319dba6f3c28e",
+      "physical_id": "ce7ef02e7926c1a6c924",
+      "T": 0.1,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 1,
+      "R_outer": 1,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          0
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "3395e4495c00244028c1ece30f91657b0090b40f4849843cedcd35b17de395ac",
+        "context_key": "42a76d9d7e4387d14437722a03714e931ffaf45248b0351fe94df9069ba458f8",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          26
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 0,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:183545d923ab7d3ae8c4dc68af4e739f26125694930a76b5460319dba6f3c28e",
+      "physical_id": "ce7ef02e7926c1a6c924",
+      "T": 0.1,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 1,
+      "R_outer": 1,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          0
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "3395e4495c00244028c1ece30f91657b0090b40f4849843cedcd35b17de395ac",
+        "context_key": "42a76d9d7e4387d14437722a03714e931ffaf45248b0351fe94df9069ba458f8",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          27
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 1,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:f0448a7771e5b10e6eebc06bbdfb7413d379cd828efb438bb1b3dcda4452150e",
+      "physical_id": "8f889f60c3a813858814",
+      "T": 0.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 2,
+      "R_outer": 2,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          1
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "1a1a91a98de47c16902bfaa64dc520b1b869eeac43ef0aa782c90300c024f30a",
+        "context_key": "f6728a079b31ebbd38f7d88bfea8c6e460983009bb08840767e156ffa6733311",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          28
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 1,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:f0448a7771e5b10e6eebc06bbdfb7413d379cd828efb438bb1b3dcda4452150e",
+      "physical_id": "8f889f60c3a813858814",
+      "T": 0.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 2,
+      "R_outer": 2,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          1
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "1a1a91a98de47c16902bfaa64dc520b1b869eeac43ef0aa782c90300c024f30a",
+        "context_key": "f6728a079b31ebbd38f7d88bfea8c6e460983009bb08840767e156ffa6733311",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          29
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 2,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:d3b81e4a7b2721e1e286a1935f3040fa4b9a470ca2fe86f25d12361394231034",
+      "physical_id": "8a5aad480758a7cff292",
+      "T": 0.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 4,
+      "R_outer": 3,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          2
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "dc8602feeacf1ce0b4d482c0434bd173b45a59878e4784a31d3b088e27a7f21a",
+        "context_key": "94b8bdc1c48526cd268bcbc1951716d42503bef9508c7f05c34698ad6b4db3eb",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          30
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 2,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:d3b81e4a7b2721e1e286a1935f3040fa4b9a470ca2fe86f25d12361394231034",
+      "physical_id": "8a5aad480758a7cff292",
+      "T": 0.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 4,
+      "R_outer": 3,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          2
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "dc8602feeacf1ce0b4d482c0434bd173b45a59878e4784a31d3b088e27a7f21a",
+        "context_key": "94b8bdc1c48526cd268bcbc1951716d42503bef9508c7f05c34698ad6b4db3eb",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          31
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 3,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:464b6965136fa1a02829017dd0acdd7fb357884535a4aa90a005bc084d150ab0",
+      "physical_id": "334b1fd35cb2f1ad32b0",
+      "T": 0.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 8,
+      "R_outer": 5,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          3
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "938cf722a4f4522ae91996670f5bdaa85b14e14b1dc1d3d75f7a10bb8fa7659f",
+        "context_key": "12504fbc985a4e5c49725be0edcaac7796deb62f3475f184718a6813b7d67eab",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          32
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 3,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:464b6965136fa1a02829017dd0acdd7fb357884535a4aa90a005bc084d150ab0",
+      "physical_id": "334b1fd35cb2f1ad32b0",
+      "T": 0.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 8,
+      "R_outer": 5,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          3
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "938cf722a4f4522ae91996670f5bdaa85b14e14b1dc1d3d75f7a10bb8fa7659f",
+        "context_key": "12504fbc985a4e5c49725be0edcaac7796deb62f3475f184718a6813b7d67eab",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          33
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 4,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:b8ba31e6ef5190baac92a88a855416341d62f648249c0e8821a0274927888e4b",
+      "physical_id": "cef49970538ca248d77e",
+      "T": 1.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 16,
+      "R_outer": 10,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          4
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "f178747412807b3d7113bfa4b57326906c2a1051d84d7b37336bde9e17860733",
+        "context_key": "25df3850603cb54c5c2c5fe2dda2048247fc17491855bee17cde3ba3e7a5d71d",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          34
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 4,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:b8ba31e6ef5190baac92a88a855416341d62f648249c0e8821a0274927888e4b",
+      "physical_id": "cef49970538ca248d77e",
+      "T": 1.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 16,
+      "R_outer": 10,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          4
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "f178747412807b3d7113bfa4b57326906c2a1051d84d7b37336bde9e17860733",
+        "context_key": "25df3850603cb54c5c2c5fe2dda2048247fc17491855bee17cde3ba3e7a5d71d",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          35
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 5,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:71138e64a1908424ad6464096224f532f12d4133a2d1dd5ff1a5baba50cc79e5",
+      "physical_id": "5812e05afec3a9cdcbf4",
+      "T": 3.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 32,
+      "R_outer": 20,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          5
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "599397ed690da09399752ffb604df30244a7e98bbf8feeb6bcff965ef800dfbd",
+        "context_key": "0fa357a3fea1ace065ef2ed79ddd90ac0c4dee66d09d1cf4833f795bee71b293",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          36
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 5,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:71138e64a1908424ad6464096224f532f12d4133a2d1dd5ff1a5baba50cc79e5",
+      "physical_id": "5812e05afec3a9cdcbf4",
+      "T": 3.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 32,
+      "R_outer": 20,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          5
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "599397ed690da09399752ffb604df30244a7e98bbf8feeb6bcff965ef800dfbd",
+        "context_key": "0fa357a3fea1ace065ef2ed79ddd90ac0c4dee66d09d1cf4833f795bee71b293",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          37
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 6,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:e12232d3696d7e8a1fa8115883065ab0d6f39092278ce67a0d9542cfc0576f3e",
+      "physical_id": "fe234d98b289ae91869c",
+      "T": 6.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 64,
+      "R_outer": 40,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          6
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "1cc00de1ed2d1dacef8baeaabe52b1b3136d67a082497ebcdc4211ba3805a6c6",
+        "context_key": "db4144d7bc71c654046353b6ecdf566b37211b68cb60a90c50bb6cbc2c412ff6",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          38
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 6,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:e12232d3696d7e8a1fa8115883065ab0d6f39092278ce67a0d9542cfc0576f3e",
+      "physical_id": "fe234d98b289ae91869c",
+      "T": 6.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 64,
+      "R_outer": 40,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          6
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "1cc00de1ed2d1dacef8baeaabe52b1b3136d67a082497ebcdc4211ba3805a6c6",
+        "context_key": "db4144d7bc71c654046353b6ecdf566b37211b68cb60a90c50bb6cbc2c412ff6",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          39
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 7,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:ac6c2fd63ce94b4daa50edeee82c0c4cfa5f63c1fe3915cee0dab3e4cb055530",
+      "physical_id": "8425b1e4da150d855b29",
+      "T": 12.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 128,
+      "R_outer": 80,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          7
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "c5cf8cd2101debe7ceaacfedf9555807fa9da7e1eb99817796f1e61d457ccc9c",
+        "context_key": "9ea3c27e34d5c5a09a91a0f12060fa632f59c324968bc79488fc35264ac78079",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          40
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 7,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:ac6c2fd63ce94b4daa50edeee82c0c4cfa5f63c1fe3915cee0dab3e4cb055530",
+      "physical_id": "8425b1e4da150d855b29",
+      "T": 12.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 128,
+      "R_outer": 80,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          7
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "c5cf8cd2101debe7ceaacfedf9555807fa9da7e1eb99817796f1e61d457ccc9c",
+        "context_key": "9ea3c27e34d5c5a09a91a0f12060fa632f59c324968bc79488fc35264ac78079",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          41
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 8,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:1e630e0e699d3320f58b2c7e0d16e176861f77066f2bc289e92d150b320f389f",
+      "physical_id": "3f8def82f66ab24905a1",
+      "T": 25.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 256,
+      "R_outer": 160,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          8
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "4cafe74bc88fd889acb5b827b271d9a5a279cc894ed1ad54a4b58e43cdd1fc26",
+        "context_key": "bfaeee31db2053bdc2051435ed39d7b4707d549362657d5028d23656dcb2e6cd",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          42
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 8,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:1e630e0e699d3320f58b2c7e0d16e176861f77066f2bc289e92d150b320f389f",
+      "physical_id": "3f8def82f66ab24905a1",
+      "T": 25.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 256,
+      "R_outer": 160,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          8
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "4cafe74bc88fd889acb5b827b271d9a5a279cc894ed1ad54a4b58e43cdd1fc26",
+        "context_key": "bfaeee31db2053bdc2051435ed39d7b4707d549362657d5028d23656dcb2e6cd",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          43
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 9,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:90db25348891a2002ccfc0fa5351104bedb4a98212f25c5bec3750db6c684414",
+      "physical_id": "4e84fb24b5fc0777a44b",
+      "T": 51.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 512,
+      "R_outer": 320,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          9
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "48b6f1b2bd9fdc3aad811fb909cee23d066a2b7c2f3834c36ade3ee9d2bd03ce",
+        "context_key": "2b96127e7335798fab73e81fa3dc1eb04545afce7552201d0106e7355af467ff",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          44
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 9,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:90db25348891a2002ccfc0fa5351104bedb4a98212f25c5bec3750db6c684414",
+      "physical_id": "4e84fb24b5fc0777a44b",
+      "T": 51.2,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 512,
+      "R_outer": 320,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          9
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "48b6f1b2bd9fdc3aad811fb909cee23d066a2b7c2f3834c36ade3ee9d2bd03ce",
+        "context_key": "2b96127e7335798fab73e81fa3dc1eb04545afce7552201d0106e7355af467ff",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          45
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 10,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:e5ac56b8a4406f959c12beac3d3b4a8c5c55ab3147436362b1ad68118d30b80a",
+      "physical_id": "44077408e13b64b85978",
+      "T": 102.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 1024,
+      "R_outer": 640,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          10
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "9c81f50b40931114e888e0aa64a61c86c7757d682b75c055aaf2ff32c536159a",
+        "context_key": "bb440ffe345ae140fd8a144f8e3019a272b35fdb0296a3156bfea6656b167caf",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          46
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 10,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:e5ac56b8a4406f959c12beac3d3b4a8c5c55ab3147436362b1ad68118d30b80a",
+      "physical_id": "44077408e13b64b85978",
+      "T": 102.4,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 1024,
+      "R_outer": 640,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          10
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "9c81f50b40931114e888e0aa64a61c86c7757d682b75c055aaf2ff32c536159a",
+        "context_key": "bb440ffe345ae140fd8a144f8e3019a272b35fdb0296a3156bfea6656b167caf",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          47
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 11,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:4e42906c5781bb7ecd7aad7f37aee7761b05df89a9d9cd63b54629dab1382bfb",
+      "physical_id": "93a7c992650daf2be173",
+      "T": 204.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 2048,
+      "R_outer": 1280,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          11
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "3ae4d22851ad1f61df4bdf6d8ad44124e6824d22f7f6835719a271a100715b4c",
+        "context_key": "b11eb68e9f7c39585b2896bb052e693f975e25ba99fe895794d872a23dfb671e",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          48
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 11,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:4e42906c5781bb7ecd7aad7f37aee7761b05df89a9d9cd63b54629dab1382bfb",
+      "physical_id": "93a7c992650daf2be173",
+      "T": 204.8,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 2048,
+      "R_outer": 1280,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          11
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "3ae4d22851ad1f61df4bdf6d8ad44124e6824d22f7f6835719a271a100715b4c",
+        "context_key": "b11eb68e9f7c39585b2896bb052e693f975e25ba99fe895794d872a23dfb671e",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          49
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 12,
+      "axis": "X",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:297b94b4ae8e6fab9079b0c1eee6c9f69e919c90e09bddd9ac640cb564af3c1e",
+      "physical_id": "f73c8ae19a25ef249f0a",
+      "T": 409.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 4096,
+      "R_outer": 2559,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          12
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "210dd403901d35234c37175237cd7be111b8d1e2321c5b3b90f96f0ba778152c",
+        "context_key": "d56a57c11594f2e7e9e8ade6cd7564cb78a9d710a3e0669d545dd9aa8a72eaf2",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          50
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    },
+    {
+      "label": "PR-LD2",
+      "catalog_role": "B_FIXED_PR_SCHEDULE",
+      "m": 12,
+      "axis": "Y",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "canonical_candidate_id": "RMSE:297b94b4ae8e6fab9079b0c1eee6c9f69e919c90e09bddd9ac640cb564af3c1e",
+      "physical_id": "f73c8ae19a25ef249f0a",
+      "T": 409.6,
+      "formula": "2nd",
+      "actual_delta": 0.1,
+      "prefix": 2,
+      "q_PF": 4096,
+      "R_outer": 2559,
+      "K": 2,
+      "candidate_source": {
+        "source": "A_MENU",
+        "file": "CONFIGURATION_LD2.json",
+        "selector": [
+          "rounds",
+          12
+        ]
+      },
+      "direct_deterministic": [],
+      "finite_cohort": [],
+      "structural_mean": [],
+      "C1": {
+        "source": "C1",
+        "status": "FIXED_PREFIX1_MODEL_OUTSIDE_PREFIX2_DOMAIN",
+        "qualified": false
+      },
+      "additive": {
+        "source": "C_MODEL",
+        "status": "IMPLEMENTED_NOT_EVALUATED",
+        "prediction": null,
+        "qualified": false
+      },
+      "old_D_request": {
+        "request_id": "210dd403901d35234c37175237cd7be111b8d1e2321c5b3b90f96f0ba778152c",
+        "context_key": "d56a57c11594f2e7e9e8ade6cd7564cb78a9d710a3e0669d545dd9aa8a72eaf2",
+        "source": "D_REQUESTS",
+        "status": "LEGACY_TAIL_ONLY_EXPECTED_SCALAR_ID_DO_NOT_REUSE_FOR_CORRECTED_REQUEST"
+      },
+      "scalar": {
+        "status": "USE_D_CORRECTED_TOTAL_SELECTOR_NOT_MATERIALIZED_HERE",
+        "source": "D_CORRECTED"
+      },
+      "profile_ref": "PR_NEW_ZZ",
+      "target_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "compiled_mean_qualified": false,
+      "mean_C": null,
+      "total_CI": null,
+      "reused_source": {
+        "commit": "3ae2e605dd6efcc63ed3742fe3076a8be3e6afae",
+        "path": "docs/research/rpe_price_evidence_validation_20261113/COVERAGE.json",
+        "selector": [
+          "coverage",
+          51
+        ]
+      },
+      "saved_direct_path_price": false,
+      "finite_cohort_available": false,
+      "structural_expectation_available": false,
+      "residual_model_in_current_domain": false,
+      "qualified_compiled_expectation_available": false,
+      "unqualified_model_implementation": true,
+      "model_prediction": null,
+      "G_paper_tier": "MISSING_COMPILED_PRICE",
+      "level2_qualified": false,
+      "unknown": [
+        "LAW_DISTANCE",
+        "RARE_CONTRIBUTION",
+        "TRANSFER_ERROR",
+        "TOTAL_CI"
+      ]
+    }
+  ],
+  "price_means_recomputed": false,
+  "fit_or_prediction": false,
+  "G": null
+}
