@@ -1,0 +1,395 @@
+{
+  "status": "M9_FROZEN_PREDICTIONS_BOUND_BEFORE_OBSERVATION",
+  "predictions": {
+    "commit": "b1a7cd358daeab51ce538c747d0cdb8ad86c97d4",
+    "path": "docs/research/pf_m9_prediction_freeze_20261115/run01/PREDICTIONS.json"
+  },
+  "sha256": "e5e00558669fd9568d40fcc2deba5e157a2c21c5505c5bb3268ea1a185701fc5",
+  "policy": {
+    "id": "DETERMINISTIC_PF_M9_FROZEN_OBSERVED_1_OVER_50_V1",
+    "status": "ADOPTED_FOR_THIS_FIXED_M9_SCOPE_ONLY",
+    "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+    "metric": "compiled_rz_count",
+    "kind": "RELATIVE",
+    "scale": "observed",
+    "value": {
+      "numerator": 1,
+      "denominator": 50
+    },
+    "formula": "abs(frozen_predicted_RZ-observed_RZ)/observed_RZ",
+    "rounds": [
+      9
+    ],
+    "axes": [
+      "X",
+      "Y"
+    ],
+    "physical_ids": [
+      "a4ec53ff4e60d60a2930",
+      "1bd0a5dd4bbf876da1d6",
+      "b2c479e7805c4d1f0b30",
+      "9924c226ee246283ec54",
+      "a53547a5fb707b9550d5",
+      "60111109e0024d1a1064"
+    ],
+    "required_individual_results": 12,
+    "comparison": "EXACT_UNROUNDED_LESS_THAN_OR_EQUAL",
+    "PASS": "VALID_OBSERVATION_AND_RELATIVE_ERROR_LE_1_OVER_50",
+    "FAIL": "VALID_OBSERVATION_AND_RELATIVE_ERROR_GT_1_OVER_50",
+    "UNKNOWN": "ACQUISITION_OR_SOURCE_OR_IMPLEMENTATION_GATE_NOT_ESTABLISHED",
+    "required_prerequisites": [
+      "SAME_PHYSICAL_ID_AND_AXIS_Q_ACTUAL_WIDTH_SCALAR_SPLIT",
+      "SAME_FULL_MEASURED_CONTROLLED_WRAPPER_P0_COMPILER_AND_LOWERING",
+      "ORIGINAL_D_IMPLEMENTATION_ACTION_GATES_AND_TOLERANCES_UNCHANGED"
+    ],
+    "campaign_success": "ALL_12_INDIVIDUAL_PASS",
+    "zero_observed": "UNKNOWN_RELATIVE_DENOMINATOR_UNDEFINED",
+    "automatic_refit": false,
+    "automatic_feature_or_threshold_change": false,
+    "other_round_qualification": false,
+    "confidence_statement": "NOT_A_STATISTICAL_95_PERCENT_GUARANTEE"
+  },
+  "selected": {
+    "FULL_PF": [
+      {
+        "prediction_index": 0,
+        "model_group_id": "FULL_PF|2nd|16/7|X",
+        "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+        "axis": "X",
+        "physical_id": "a4ec53ff4e60d60a2930"
+      },
+      {
+        "prediction_index": 1,
+        "model_group_id": "FULL_PF|2nd|16/7|Y",
+        "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+        "axis": "Y",
+        "physical_id": "a4ec53ff4e60d60a2930"
+      },
+      {
+        "prediction_index": 4,
+        "model_group_id": "FULL_PF|4th|16/3|X",
+        "configuration_id": "a799697fc8ca36b024acec26af43313777948ead432e66804c670649a18afe76",
+        "axis": "X",
+        "physical_id": "b2c479e7805c4d1f0b30"
+      },
+      {
+        "prediction_index": 5,
+        "model_group_id": "FULL_PF|4th|16/3|Y",
+        "configuration_id": "a799697fc8ca36b024acec26af43313777948ead432e66804c670649a18afe76",
+        "axis": "Y",
+        "physical_id": "b2c479e7805c4d1f0b30"
+      },
+      {
+        "prediction_index": 8,
+        "model_group_id": "FULL_PF|4th(m5_best)|16|X",
+        "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+        "axis": "X",
+        "physical_id": "a53547a5fb707b9550d5"
+      },
+      {
+        "prediction_index": 9,
+        "model_group_id": "FULL_PF|4th(m5_best)|16|Y",
+        "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+        "axis": "Y",
+        "physical_id": "a53547a5fb707b9550d5"
+      }
+    ],
+    "TRUNCATED_PF": [
+      {
+        "prediction_index": 2,
+        "model_group_id": "TRUNCATED_PF|2nd|16/7|X",
+        "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+        "axis": "X",
+        "physical_id": "1bd0a5dd4bbf876da1d6"
+      },
+      {
+        "prediction_index": 3,
+        "model_group_id": "TRUNCATED_PF|2nd|16/7|Y",
+        "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+        "axis": "Y",
+        "physical_id": "1bd0a5dd4bbf876da1d6"
+      },
+      {
+        "prediction_index": 6,
+        "model_group_id": "TRUNCATED_PF|4th|16/3|X",
+        "configuration_id": "defc5e88ff4da2e43c99ecdf7157aa41cc47cd32f905f5aa3a1266aa3ecf5416",
+        "axis": "X",
+        "physical_id": "9924c226ee246283ec54"
+      },
+      {
+        "prediction_index": 7,
+        "model_group_id": "TRUNCATED_PF|4th|16/3|Y",
+        "configuration_id": "defc5e88ff4da2e43c99ecdf7157aa41cc47cd32f905f5aa3a1266aa3ecf5416",
+        "axis": "Y",
+        "physical_id": "9924c226ee246283ec54"
+      },
+      {
+        "prediction_index": 10,
+        "model_group_id": "TRUNCATED_PF|4th(m5_best)|16|X",
+        "configuration_id": "424eecbfdad0fceeb966884e82521ed1df18a360641695c120f090490ddc62ab",
+        "axis": "X",
+        "physical_id": "60111109e0024d1a1064"
+      },
+      {
+        "prediction_index": 11,
+        "model_group_id": "TRUNCATED_PF|4th(m5_best)|16|Y",
+        "configuration_id": "424eecbfdad0fceeb966884e82521ed1df18a360641695c120f090490ddc62ab",
+        "axis": "Y",
+        "physical_id": "60111109e0024d1a1064"
+      }
+    ]
+  },
+  "protected_snapshots": {
+    "FULL_PF": {
+      "CALIBRATION": {
+        "commit": "b190bd815c886446291fac8b281c3c7df7343372",
+        "sha256": {
+          "RESULT.json": "6ed0cba81d08a93846d465e75ca782a474807fcc3f355e08e18d5732e4d01338",
+          "PRICES.json": "af022a085bd5b2459f47d198257ca859e6f18bcbd6c3a6e159482aa85c0fc763",
+          "SIDECARS_UNBOUND.json": "f194f1951a55ca5febd7271f8c233c86a09273ce5738b2dec84650e1f8e2cf7f",
+          "IMPLEMENTATION_EVIDENCE.json": "d03b23b319ab6b98dde2065a8a92c0f3d50c1b05cd861c336113dfaf3ac79ce4",
+          "C_INPUTS.json": "3b3e31f8bd63ffcd9d5bb382e6b46edf96793e2f6bd2f4cdb473bd811a7c08b5",
+          "SIDECARS.json": "251ae1af44f4cc3536f20a6d4a719a86afd3688f107cd4d5cb37dc9b2e0f6d42",
+          "GUARD_CHECK.json": "b29134a34dd11c29487f7df0cd768e9c3dc5565355f79cb10a3a82d2b9c286ed"
+        }
+      },
+      "HOLDOUT": {
+        "commit": "a55813373b84b9128cbd10c6812c0d26143a4280",
+        "sha256": {
+          "RESULT.json": "dea3406b35e619169ea2cb76b157e55b503607b567a1423e8dce67bbe29cf405",
+          "PRICES.json": "98f5bef45f0bcc66d31003dcd24668d53bf2d1426e36c3721b1ac98c2a48002c",
+          "SIDECARS_UNBOUND.json": "c12487224f2d1daef7babe379b341aeba1b3a1f89f36f4561bf341c22b80f932",
+          "IMPLEMENTATION_EVIDENCE.json": "5708c479ccc748b172f8ee05b7cda9431160ffe9cf527f4bfd23409631c76a89",
+          "C_INPUTS.json": "d4828b5d836778465eeb58e88469896fe55884186de3181246ef99ccf91e5c6f",
+          "SIDECARS.json": "bc662d8ccbbfd95b467d0fb00be2610ba76df2bbbfa0392c806871311cc48237",
+          "GUARD_CHECK.json": "8dfe59fa13b9577e40de8b14e251105095402adec4ce22ef31129d6575467e87"
+        }
+      }
+    },
+    "TRUNCATED_PF": {
+      "CALIBRATION": {
+        "commit": "b190bd815c886446291fac8b281c3c7df7343372",
+        "sha256": {
+          "RESULT.json": "c5abd85ff6558c82f7d30f159b1819fadcb41d04e3c3cb81de5d278e8267ec2b",
+          "PRICES.json": "a629eb4c0e55518fc944375f0f33d0808cdd33a85f2d0af8b6ba9f19012098d5",
+          "SIDECARS_UNBOUND.json": "ff2479d2b6ecd1e1f08a3c91e36c06f7516e947d0cdcde079ab5cb022ce5c0a5",
+          "IMPLEMENTATION_EVIDENCE.json": "a0e3c5b9723f70fd9aef7c1e6791486c2a05b370aab2f6387b09b10499fece4e",
+          "C_INPUTS.json": "8cf8b0b9e6ee49342949765a6be0286c54ee950d56e5ce7697226f8cb3aaf59f",
+          "SIDECARS.json": "c3403dcfd410dcdf424fe14ac336fe680169826e55e720d719cd701a9c98d102",
+          "GUARD_CHECK.json": "b866685c0f08a985fc107f1f796383b236d1098aca15f6e551085ac42eb28586"
+        }
+      },
+      "HOLDOUT": {
+        "commit": "a55813373b84b9128cbd10c6812c0d26143a4280",
+        "sha256": {
+          "RESULT.json": "b439f75a3e20c5ffc2a56429c93489dfbe87d901dfd3b84dfdbf13af652e8e1c",
+          "PRICES.json": "184ef57663e1579ab6040ef6bf6682088a6d5ced1263118d255190d9367de4da",
+          "SIDECARS_UNBOUND.json": "247d88d67c4e5c793fdb461c2256179242b6187cdb4dd8e4c2af6ee0fb21dead",
+          "IMPLEMENTATION_EVIDENCE.json": "3283121d26e1b32310236db88434b687ddd0bf95a4b7e641fe91b14fb0c6eddc",
+          "C_INPUTS.json": "557a12a8982dd221dbc2664d1a0144f8180eed15b9bf3aade31a1255cd2d734b",
+          "SIDECARS.json": "aa33864323b5db3f428a9d6839c2872326d50a1a3deb857483ae3f712f70f9bb",
+          "GUARD_CHECK.json": "3c17b1b8f6514596e46c02b33e07d67a5ec409c3eb03a059ac741b2551e31c99"
+        }
+      }
+    }
+  },
+  "inherited_C_checks": {
+    "PREOPEN_CHECK": {
+      "checked_at_UTC": "2026-11-14T19:38:52.102973+00:00",
+      "public_refs": [
+        "bcb67b2b2bb78776db1dd8d0625a3facb37cd298\trefs/heads/codex/d-price-records-c-bridge-20261114",
+        "3b1301738507d612694bf865d904b9376e038f69\trefs/heads/codex/m5-m4-receipt-admission-20261114"
+      ],
+      "other_prediction_path_candidates": [],
+      "relevant_same_user_jobs": [],
+      "acquisition_namespaces": [
+        {
+          "root": "/home/AbeHiromu/projects/d-full-pf-shortlist-20261114-private",
+          "exists": true,
+          "top_level_names": [
+            "calibration",
+            "holdout"
+          ],
+          "target_names": []
+        },
+        {
+          "root": "/home/AbeHiromu/projects/d-truncated-p7-t3-20261114-private",
+          "exists": true,
+          "top_level_names": [
+            "calibration",
+            "holdout"
+          ],
+          "target_names": []
+        }
+      ],
+      "target_result_file_existence": [
+        {
+          "physical_id": "1bd0a5dd4bbf876da1d6",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/1bd0a5dd4bbf876da1d6/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "1bd0a5dd4bbf876da1d6",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/1bd0a5dd4bbf876da1d6/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "60111109e0024d1a1064",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/60111109e0024d1a1064/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "60111109e0024d1a1064",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/60111109e0024d1a1064/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "9924c226ee246283ec54",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/9924c226ee246283ec54/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "9924c226ee246283ec54",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/9924c226ee246283ec54/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "a4ec53ff4e60d60a2930",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/a4ec53ff4e60d60a2930/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "a4ec53ff4e60d60a2930",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/a4ec53ff4e60d60a2930/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "a53547a5fb707b9550d5",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/a53547a5fb707b9550d5/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "a53547a5fb707b9550d5",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/a53547a5fb707b9550d5/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "b2c479e7805c4d1f0b30",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/b2c479e7805c4d1f0b30/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "b2c479e7805c4d1f0b30",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/b2c479e7805c4d1f0b30/0/result.json",
+          "exists": false
+        }
+      ],
+      "held_physical_ids": [],
+      "reasons": [],
+      "observed_price_files_opened": 0,
+      "status": "CLEAR_IN_CHECKED_SOURCE_AND_SERVER_METADATA",
+      "scope": "C/D published refs; C tracked result names excluding unrelated PR structural m9; same-user relevant job names; two known D PF namespaces and exact legacy target result paths",
+      "limitation": "Unlisted names/archives/other servers are not claimed exhaustively checked; no observation content or private worktree changes"
+    },
+    "PUBLICATION_PRECHECK": {
+      "checked_at_UTC": "2026-11-14T19:47:08.123426+00:00",
+      "public_refs": [
+        "bcb67b2b2bb78776db1dd8d0625a3facb37cd298\trefs/heads/codex/d-price-records-c-bridge-20261114",
+        "3b1301738507d612694bf865d904b9376e038f69\trefs/heads/codex/m5-m4-receipt-admission-20261114"
+      ],
+      "other_prediction_path_candidates": [],
+      "relevant_same_user_jobs": [],
+      "acquisition_namespaces": [
+        {
+          "root": "/home/AbeHiromu/projects/d-full-pf-shortlist-20261114-private",
+          "exists": true,
+          "top_level_names": [
+            "calibration",
+            "holdout"
+          ],
+          "target_names": []
+        },
+        {
+          "root": "/home/AbeHiromu/projects/d-truncated-p7-t3-20261114-private",
+          "exists": true,
+          "top_level_names": [
+            "calibration",
+            "holdout"
+          ],
+          "target_names": []
+        }
+      ],
+      "target_result_file_existence": [
+        {
+          "physical_id": "1bd0a5dd4bbf876da1d6",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/1bd0a5dd4bbf876da1d6/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "1bd0a5dd4bbf876da1d6",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/1bd0a5dd4bbf876da1d6/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "60111109e0024d1a1064",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/60111109e0024d1a1064/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "60111109e0024d1a1064",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/60111109e0024d1a1064/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "9924c226ee246283ec54",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/9924c226ee246283ec54/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "9924c226ee246283ec54",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/9924c226ee246283ec54/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "a4ec53ff4e60d60a2930",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/a4ec53ff4e60d60a2930/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "a4ec53ff4e60d60a2930",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/a4ec53ff4e60d60a2930/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "a53547a5fb707b9550d5",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/a53547a5fb707b9550d5/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "a53547a5fb707b9550d5",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/a53547a5fb707b9550d5/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "b2c479e7805c4d1f0b30",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/b2c479e7805c4d1f0b30/0/result.json",
+          "exists": false
+        },
+        {
+          "physical_id": "b2c479e7805c4d1f0b30",
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/CONFIRMATION/b2c479e7805c4d1f0b30/0/result.json",
+          "exists": false
+        }
+      ],
+      "held_physical_ids": [],
+      "reasons": [],
+      "observed_price_files_opened": 0,
+      "status": "CLEAR_IN_CHECKED_SOURCE_AND_SERVER_METADATA",
+      "scope": "C/D published refs; C tracked result names excluding unrelated PR structural m9; same-user relevant job names; two known D PF namespaces and exact legacy target result paths",
+      "limitation": "Unlisted names/archives/other servers are not claimed exhaustively checked; no observation content or private worktree changes"
+    }
+  },
+  "observed_m9_prices_opened": 0,
+  "prediction_recalculations": 0,
+  "fit_calls": 0
+}
