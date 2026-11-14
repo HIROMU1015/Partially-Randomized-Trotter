@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[決定論PF m0の12軸直接価格](../../docs/research/d_pf_m0_direct_prices_20261115/REPORT.md)：Full10/B0I p7 × S2/標準Yoshida4/M5、m0/T=.1/q1/actual幅.1、P0除外。再利用0・新規12・有効12・保留/欠測0、元作用gate/C guard完了。X/Y別compile、取得wall100.876 s、最大worker RSS575.16 MiB。モデル予測/2%判定/fit/他round資格拡張/N/G0、mandatory STOP。
+
 [決定論PF保存4件のSOURCE接続](../../docs/research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)：native library/wrapper/compiler不変。scripts側でCのp7正式受入・新版表を接続し、保存4・新規20＋12を維持。science0、policy/許容差未採択・STOP。
 
 [S1価格比較guardの検証](../../docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：guard実装はtrottertracks、物理library変更なし。

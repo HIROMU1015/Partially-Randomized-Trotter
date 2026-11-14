@@ -1,5 +1,11 @@
 # 並列化・高速化手法の再利用索引
 
+## 決定論PF m0（2026-11-15）
+
+[実測・適用条件](research/d_pf_m0_direct_prices_20261115/REPORT.md)、[入口](../scripts/run_pf_m0_prices.py)。既存PF fast contextをFull/p7の元trialへ最初から適用し、別contextの2 route・6物理cellをprocess並列化した。各cellのevolutionはX/Yで共有し、両軸を個別compileする。新規12価格と元作用gate/C guard12軸が有効。取得wall100.876 s、最大worker RSS575.16 MiB。同条件baseline再実行をせず、速度倍率は未測定。
+
+元`pf_price_stages._cell`を使い、公開multiprocessing APIで終了code/signalを記録。compose / fingerprint / measured wrapper / compile＋保存 / statevector gateを変更せずcontext内でSTART/END/ERRORを観測する。人工fork入口で計測と復元、異常終了時の部分保存・追加投入停止も検査した。metadataの`_meta()`をnative childより先に呼ぶとprovider解決が変わるため、metadata親と`install()`先行の科学childをexecで分離する。固定SOURCE / native provider bytesはchild内のstdlib Git読取で照合する。新規namespace専用、旧runのresume/retryには使用しない。
+
 共通手法集は[Full-H系列の固定版](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aa09e0ee56f6190bb278058de38074e9fea0d477/docs/PERFORMANCE_METHODS.md)を参照する。本文を複製せず、このbranchで追加したPF手法を以下に記録する。科学実行範囲や稼働SOURCEを変更する許可にはならない。
 
 ## 決定論PF m9（2026-11-15）

@@ -1,5 +1,7 @@
 # Validation status
 
+[決定論PF m0の12軸直接価格](docs/research/d_pf_m0_direct_prices_20261115/REPORT.md)：Full10/B0I p7 × S2/標準Yoshida4/M5、m0/T=.1/q1/actual幅.1、P0除外。再利用0・新規12・有効12・保留/欠測0、元作用gate/C guard完了。X/Y別compile、取得wall100.876 s、最大worker RSS575.16 MiB。モデル予測/2%判定/fit/他round資格拡張/N/G0、mandatory STOP。
+
 [決定論PF m9独立検証](docs/research/d_pf_m9_holdout_20261115/REPORT.md)：決定論PF m9：新規12直接価格・固定12予測すべて完全一致。作用/実装guard12軸、有効直接価格12、モデルPASS/FAIL/UNKNOWN=12/0/0。Full SOURCE c02e2416a、p7加速SOURCE7ed93d24d。予測再計算/refit/N/G/他round資格拡張0、mandatory STOP。 判定データSOURCE389ae1573。これは指定m9点だけの証拠。
 
 [D：保存4件のC受入接続](docs/research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)：Cのp7正式受入2件と新版表43c15bfaをD22ccf3972へ束縛し、Full2＋p7 2の元record一致を確認。Stage parent18 PASS（人工stage処理＋実C receipt metadata）。前の人工回路/guard回帰を再利用。新規20＋12、36行・12 group・元SOURCE/cohortを保持。11/14共通指示を確認し、別IDの同物理scheduleも重複検出。science0、policy/許容差未採択・Stage1不可・mandatory STOP。

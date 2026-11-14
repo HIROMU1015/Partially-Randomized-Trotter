@@ -1,5 +1,7 @@
 # 文書索引
 
+[決定論PF m0の12軸直接価格](research/d_pf_m0_direct_prices_20261115/REPORT.md)：Full10/B0I p7 × S2/標準Yoshida4/M5、m0/T=.1/q1/actual幅.1、P0除外。再利用0・新規12・有効12・保留/欠測0、元作用gate/C guard完了。X/Y別compile、取得wall100.876 s、最大worker RSS575.16 MiB。モデル予測/2%判定/fit/他round資格拡張/N/G0、mandatory STOP。
+
 [決定論PF m9の取得・独立判定](research/d_pf_m9_holdout_20261115/REPORT.md)：決定論PF m9：新規12直接価格・固定12予測すべて完全一致。作用/実装guard12軸、有効直接価格12、モデルPASS/FAIL/UNKNOWN=12/0/0。Full SOURCE c02e2416a、p7加速SOURCE7ed93d24d。予測再計算/refit/N/G/他round資格拡張0、mandatory STOP。
 
 [並列化・高速化手法の再利用索引](PERFORMANCE_METHODS.md)：共通手法集への固定参照と、決定論PFの通常入口・同一S2再利用・高速fingerprintの適用条件／検証範囲。
