@@ -1,9 +1,10 @@
 """CALIBRATION / HOLDOUT stage split of the Full PF and Truncated p7 price callers (parent side).
 
-Metadata, C CELL_PLAN and FICTIONAL prices only. The provider-root child is
+Metadata, C CELL_PLAN, saved C record bindings and FICTIONAL new prices only. The provider-root child is
 replaced by a fake that writes fictional trials (no build, compile or H4 input);
 outputs go to temporary namespaces. C guard and C model functions are the
-in-tree c628e9e8 ones; the fictional fits only exercise the frozen-model gate.
+in-tree c628e9e8 ones; all fits replace RZ values with fictional data and only
+exercise the frozen-model gate. No saved scientific values are fitted.
 """
 from contextlib import ExitStack
 from copy import deepcopy
@@ -159,7 +160,7 @@ class Tests(unittest.TestCase):
     def env(self, route):
         return Env(route, self.tmp / route)
 
-    def test_pending_plan_changes_only_two_actions_from_fixed_C_table(self):
+    def test_revised_plan_changes_only_two_actions_and_matches_published_C_table(self):
         self.assertEqual(REAL_READ(ROOT, S.CELL_PLAN), REAL_READ(ROOT, dict(S.CELL_PLAN, commit=S.ADMISSION)))
         self.assertEqual(len(REAL_PLAN), 36)
         self.assertEqual({(r['m'], r['role']) for r in REAL_PLAN}, {(4, 'CALIBRATION'), (5, 'CALIBRATION'), (6, 'HOLDOUT')})
@@ -172,6 +173,32 @@ class Tests(unittest.TestCase):
         if S.P7_CELL_PLAN is None:
             with self.assertRaisesRegex(ValueError, 'C p7'):
                 S.admission_gate(ROOT)
+        else:
+            self.assertEqual(REAL_PLAN, json.loads(REAL_READ(ROOT, S.P7_CELL_PLAN)))
+            self.assertEqual(S.admission_gate(ROOT), S.P7_CELL_PLAN)
+
+    def test_real_C_admission_binds_four_original_axis_records_without_relabelling(self):
+        registry = json.loads(REAL_READ(ROOT, dict(commit='e50524f4b59f268735a682bd4b2eaa8278949c89',
+            path='docs/research/truncated_p7_admission_pr_df_evidence_20261114/SAVED_RECEIPT_SOURCES.json')))
+        self.assertEqual(registry['cell_plan'], S.P7_CELL_PLAN)
+        seen = []
+        for route, templates in TEMPLATES.items():
+            chosen = S.select(ROOT, templates, route, 'CALIBRATION')
+            saved = S.saved_calibration(ROOT, chosen)
+            self.assertEqual(len(saved), 2)
+            for value in saved.values():
+                rec = value['record']; axis = rec['axis']
+                ref = next(r for r in registry['receipts'] if r['route'] == route and r['axis'] == axis)
+                source = ref['references']['SAVED_CALIBRATION_INPUTS.json']
+                pinned = json.loads(REAL_READ(ROOT, source))
+                for step in source['selector']:
+                    pinned = pinned[step]
+                self.assertEqual(rec, pinned)  # copy original integer/SOURCE/cohort, no new mean or fit
+                self.assertEqual(rec['source']['key'], ref['physical_id'])
+                self.assertEqual(rec['source']['commit'], S.SAVED_TABLE['commit'])
+                self.assertEqual(ref['cohort'], 'EXPLORATION')
+                seen.append((route, axis))
+        self.assertEqual(set(seen), {(r, a) for r in ROUTES for a in ('X', 'Y')})
 
     def test_stage_split_20_calibration_12_holdout_32_new_saved_never_compiled(self):
         total = {}
@@ -276,6 +303,16 @@ class Tests(unittest.TestCase):
         with patch.object(S, 'read_pinned', side_effect=extra_saved), patch.object(S, 'active_price_jobs', return_value=[]), \
                 patch.object(S, 'OLD_TRIAL_ROOT', self.tmp / 'absent'):
             with self.assertRaisesRegex(ValueError, 'SAVED_TABLE_REUSE_CANDIDATE'):
+                S.duplicate_preflight(ROOT, e.spec, [cell])
+        def renamed(root, ref):
+            import gzip
+            if ref == S.SAVED_TABLE:
+                return gzip.compress(json.dumps({'OLD_RENAMED_ID': dict(candidate=dict(cell['row'], id='OLD_RENAMED_ID'),
+                                                                           trial_files=['ARTIFICIAL'])}).encode())
+            return documents(root, ref)
+        with patch.object(S, 'read_pinned', side_effect=renamed), patch.object(S, 'active_price_jobs', return_value=[]), \
+                patch.object(S, 'OLD_TRIAL_ROOT', self.tmp / 'absent'):
+            with self.assertRaisesRegex(ValueError, 'OLD_RENAMED_ID'):
                 S.duplicate_preflight(ROOT, e.spec, [cell])
 
     def test_cell_plan_disagreement_stops_selection(self):

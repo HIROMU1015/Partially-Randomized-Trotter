@@ -13,9 +13,8 @@ index-0 gates and price records come unchanged from the two callers
   models (one per (route, formula, actual width, axis), fitted on exactly the
   published m4/m5 inputs); it re-checks the CALIBRATION files after the run.
 - C inputs are grouped by model group; mixing groups or stages is rejected.
-- Full PF and Truncated p7 M5/m4 X/Y are excluded from new jobs. The p7
-  admission and revised C CELL_PLAN must be published before execution; until
-  then the two action changes are a metadata-only proposal, not C acceptance.
+- Full PF and Truncated p7 M5/m4 X/Y are C-admitted saved prices, excluded
+  from new jobs. Their original SOURCE/cohort/axis binding is retained.
 - Sidecars carry an evidence placeholder until the stage outputs are published;
   `bind` then fills the published commit and runs C's guard with an explicit
   technical-compatibility probe policy (not an adopted comparison policy).
@@ -40,10 +39,12 @@ ADMISSION_DIR = 'docs/research/m5_m4_receipt_admission_20261114'
 BUNDLE = '3368805575d459d948e3afe7b1e54b4814f64129'      # C fixed receipt bundle (CELL_PLAN, saved inputs/prices)
 ADMISSION = '2fa88065318f0f2ab13937ef610828200b35874c'   # C publication (bound sidecars, guard check)
 CELL_PLAN = dict(commit=BUNDLE, path=ADMISSION_DIR + '/CELL_PLAN.json')
-# Pending C publication: fill these with fixed blob locators, never a working
-# tree or a fabricated receipt. Full PF admission remains exactly the old one.
-P7_CELL_PLAN = None
-P7_ADMISSION = None  # dict(bundle=<commit>, admission=<commit>, directory=<path>)
+# C's revised table and admitted p7 bundle; Full PF keeps its original binding.
+P7_CELL_PLAN = dict(commit='43c15bfa34a22f313e55b824223b200332b7f23f',
+                    path='docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json')
+P7_ADMISSION = dict(bundle='43c15bfa34a22f313e55b824223b200332b7f23f',
+                    admission='2b94539784995790c8ff1ba7dee578137bfc6034',
+                    directory='docs/research/truncated_p7_admission_pr_df_evidence_20261114')
 GUARD_SOURCE = dict(commit='c628e9e8447c11c984064b922cbce6c52dc72d48', path='src/trottertracks/price_implementation_guard.py')
 STAGES = dict(CALIBRATION=(4, 5), HOLDOUT=(6,))
 NEW_WRAPPERS = {('FULL_PF', 'CALIBRATION'): 10, ('FULL_PF', 'HOLDOUT'): 6,
@@ -164,15 +165,21 @@ def duplicate_preflight(root, spec, new):
             for r in json.loads(path.read_text())['results']:
                 done.append((r['cell']['row']['id'], str(path)))
     cells = []
+    def parameters(candidate):
+        # An old/renamed ID is a search clue, not a reason to miss the same
+        # physical schedule. Hits still require SOURCE/H/scalar/axis review.
+        return {k: candidate.get(k) for k in ('system', 'method', 'prefix', 'formula', 'T', 'q', 'delta', 'R_outer', 'K')}
     for c in new:
         ident = c['row']['id']; hits = []
         if ident in SAVED_IDS.values():
             hits.append(dict(kind='SAVED_CELL_MUST_NOT_BE_COMPILED'))
-        if ident in table:
-            hits.append(dict(kind='SAVED_TABLE_REUSE_CANDIDATE', source=dict(SAVED_TABLE, key=ident),
-                             candidate=table[ident]['candidate'], trial_files=table[ident]['trial_files']))
+        for old_id, record in table.items():
+            if old_id == ident or parameters(record['candidate']) == parameters(c['row']):
+                hits.append(dict(kind='SAVED_TABLE_REUSE_CANDIDATE', source=dict(SAVED_TABLE, key=old_id),
+                                 candidate=record['candidate'], trial_files=record['trial_files']))
         for row in catalog:
-            if row.get('physical_candidate_id') == ident and row.get('prices'):
+            if row.get('prices') and (row.get('physical_candidate_id') == ident
+                    or parameters(row.get('physical_candidate') or {}) == parameters(c['row'])):
                 hits.append(dict(kind='CATALOG_REUSE_CANDIDATE', source=CATALOG, receipts=row['prices']))
         trial = OLD_TRIAL_ROOT / ident / '0/result.json'
         if trial.exists():
