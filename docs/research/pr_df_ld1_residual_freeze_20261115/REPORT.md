@@ -4,6 +4,8 @@
 
 正本：[run01/FROZEN_MODELS.json](run01/FROZEN_MODELS.json)。各pathの整数S/C・残差から平均、係数、構造/残差の予測項、最終Pまでたどれる。[RESIDUALS.csv](run01/RESIDUALS.csv)／[CELL_MEANS.csv](run01/CELL_MEANS.csv)は保存JSONからの転記。[INPUTS.json](INPUTS.json)は実行前の受入済み入力snapshotで、`science_executed=false`は準備時点を示す。実行済みの範囲はFROZEN_MODELSのcall件数を正本とする。
 
+係数/予測の固定commit：**`3cac53da1a4a8b2228245593c74c1ff9ec1f5212`**。[HANDOFF_D2.md](HANDOFF_D2.md)にD2の読取手順と固定locatorを示す。[PUBLICATION_PRECHECK.json](PUBLICATION_PRECHECK.json)で公開直前にもmetadataだけを再確認し、確認範囲でm4取得開始/重複fitの未解決項目なし。係数/予測の再計算はしていない。
+
 ## 固定SOURCEと重複・観測前確認
 
 - 科学実行SOURCE：**`d83737b6d5241962ce39c81d39c56af3506c0cdd`**、`scripts/freeze_pr_df_ld1_residual_models.py`。既存C branchを継続し、固定入力と人工testをcommitしてからfresh run01を一回だけ実行した。

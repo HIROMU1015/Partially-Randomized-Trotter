@@ -1,5 +1,7 @@
 # scripts 索引
 
+`freeze_pr_df_ld1_residual_models.py`：[LD1残差2モデルとm4予測固定](../docs/research/pr_df_ld1_residual_freeze_20261115/REPORT.md)。--prepareはmetadata照合のみ。--executeの固定run01は完了済み、再fit/予測/上書き禁止。price_model_validationのexact solverを再利用。m4観測reader/compile/CI/Gなし。
+
 `admit_pr_df_ld1_q3_prices.py`：[LD1固定Q3と保存価格のmetadata接続](../docs/research/pr_df_ld1_q3_price_admission_20261115/REPORT.md)。元receipt copyと26軸索引のみ。実物理kernel・sampling・価格平均・fit・費用会計は呼ばない。受入正本 c99d511e2、STOP。
 
 `freeze_pf_m9_predictions.py`：[m9の固定12予測](../docs/research/pf_m9_prediction_freeze_20261115/REPORT.md)。引数なしは入力metadata確認のみ。元係数のexact predictを12回実施済み、run01の再実行・上書き禁止。fit/観測readerなし、観測取得・判定はD後続。

@@ -1,5 +1,7 @@
 # Validation status
 
+[LD1残差fitとm4予測固定](docs/research/pr_df_ld1_residual_freeze_20261115/REPORT.md)：保存P2 fresh m0/m6とD2 m3の24軸pairから6残差平均、X/Y別[1,q,qR] exact fitを2件実施。両軸rank3、保留0、m4予測2件を3cac53da1へ観測前固定。SOURCE d83737b6、人工5＋既存回帰3＝8 PASS。m4開封0、許容差/PASS・FAILなし、全law E[C]/CI/N/Gは未評価。D2独立m4取得・記述的比較待ち、mandatory STOP。
+
 [PR-DF LD1 Q3価格証拠の接続](docs/research/pr_df_ld1_q3_price_admission_20261115/REPORT.md)：LD1固定Q3候補へE[S]26/26軸とm0/m6各X/Yの保存P1 n2・P2 fresh n4をSOURCE付きで接続、保留0。P1 replayは参照のみ。適格E[C]は0/26、平均/残差fit/Q3再評価/N/G0、新科学計算・compile0。人工8＋guard回帰14＝22 PASS。次は未承認のm3較正・凍結後m4 holdout案（初回仮8wrapper、後続仮8）。公開照合後mandatory STOP。
 
 [決定論PF m9予測固定](docs/research/pf_m9_prediction_freeze_20261115/REPORT.md)：Full PF/p7×S2/Y4/M5×X/Yのm9予測12件を元凍結係数からexactに固定、保留0。m9限定の観測値分母・相対誤差≤1/50、全12個別PASS規則を事前採択。SOURCE375f026a、予測b1a7cd358。人工/metadata7 test PASS。観測未開封・未判定、refit/compile/N/G0、直接価格実績48軸は不変。D取得・独立判定待ち、mandatory STOP。
