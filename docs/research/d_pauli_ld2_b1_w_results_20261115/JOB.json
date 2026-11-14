@@ -1,0 +1,76 @@
+{
+  "plan": {
+    "prefix": 2,
+    "kind": "B1-W",
+    "purpose": "WIRING_OR_VARIABILITY_ONLY",
+    "feature_map": "PR_STEP_V1",
+    "cells": [
+      {
+        "route": "PR_PAULI_TAIL",
+        "law": {
+          "model": "ideal_finite_RTE_law",
+          "K": 2,
+          "price_law": "PCG64_numpy_float64_CDF_saved_cohort",
+          "dictionary": "LD2"
+        },
+        "implementation": {
+          "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+          "native": "DF_HEAD_NATIVE_S2",
+          "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_SAVED_S_R",
+          "scalar_application": "ONCE_AT_TOTAL_T"
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "qiskit": "1.3.0",
+          "basis": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "P": 0
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+        "cell_id": "M0",
+        "role": "CALIBRATION",
+        "q": 1,
+        "R": 2,
+        "n_paths": 1,
+        "T": 0.1,
+        "s": 2,
+        "expectation": "FINITE_COHORT_ONLY",
+        "cohort": "D_PAULI_LD2_B1-W_M0_PROPOSED_V1"
+      }
+    ],
+    "axes": [
+      "X",
+      "Y"
+    ],
+    "adopted": true,
+    "reuse_b0": false,
+    "reuse_wiring_source": null,
+    "design_source": {
+      "commit": "7a0c9468b2499fac9fa1cd279ae2980c9dab048e",
+      "path": "docs/research/a_full_h_p2_pauli_b1_price_design_20261114/DESIGNS.json",
+      "status": "PROPOSAL_NOT_ADOPTED"
+    }
+  },
+  "stage": "CALIBRATION",
+  "cell_id": "M0",
+  "step_seeds": [
+    [
+      3788801539369037729
+    ]
+  ],
+  "duplicate_preflight_complete": true,
+  "output": "docs/research/d_pauli_ld2_b1_w_results_20261115/run01",
+  "private": "/home/AbeHiromu/projects/d-pauli-ld2-b1-w-20261115-private/run01",
+  "parents": [],
+  "frozen_model_source": null,
+  "ld2_wiring_source": null
+}
