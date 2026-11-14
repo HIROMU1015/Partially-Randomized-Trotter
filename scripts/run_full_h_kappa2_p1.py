@@ -329,7 +329,7 @@ def xy_phase_gate(wrappers, n, requests_events, scalar, expected_scalar, T, *, p
                 evolution_instructions={a: len(s) for a, s in segments.items()}, axes=per_axis)
 
 
-def pilot(full, row, *, compile_cached=None):
+def pilot(full, row, *, compile_cached=None, cohort=COHORT, index=0):
     """setup -> context -> cost_trial(index0) under the swap; legacy replay for parity."""
     native = full.setup()
     ctx = full.context(row['system'])
@@ -349,7 +349,7 @@ def pilot(full, row, *, compile_cached=None):
     native.compose = spy
     try:
         with zz.efficient_controlled_zz(provider):
-            trial = native.cost_trial((row, COHORT, 0))
+            trial = native.cost_trial((row, cohort, index))
     finally:
         native.compose = original_compose
     if getattr(provider.QiskitDFRTEEventCircuitBuilder, 'lowering_id', None) is not None:
@@ -375,7 +375,7 @@ def pilot(full, row, *, compile_cached=None):
     ok = (checks['builder_lowering_id'] == LOWERING_ID and checks['legacy_rzz_control_instructions'] == 0
           and parity['status'] == 'PASS' and parity['replaced_controlled_zz'] > 0 and one_body > 0
           and checks['scalar'] == expected_scalar and phase_gate['status'] == 'PASS'
-          and trial['status'] == 'PASS' and trial['index'] == 0 and set(trial['prices']) == {'cosine', 'sine'})
+          and trial['status'] == 'PASS' and trial['index'] == index and set(trial['prices']) == {'cosine', 'sine'})
     return trial, checks, ok
 
 
@@ -439,17 +439,17 @@ def child_import_preflight(root=ROOT):
     return report
 
 
-def price_bindings(root, prepared, trial, *, price_source, evidence_commit, evidence_path):
+def price_bindings(root, prepared, trial, *, price_source, evidence_commit, evidence_path, m=M, cohort=COHORT):
     """Direct single-path records + C guard sidecars/proofs (not a law mean)."""
     C, I, S1 = _meta()
     profile = prepared['plan']['configuration']['spec']['profile']
-    base = [r for r in I.price_requests(root, prepared['plan']) if r['m'] == M]
-    row = prepared['plan']['configuration']['rounds'][M]
+    base = [r for r in I.price_requests(root, prepared['plan']) if r['m'] == m]
+    row = prepared['plan']['configuration']['rounds'][m]
     prices, sides, proofs = [], [], {}
     for req in base:
         axis = req['axis']; metrics = trial['prices']['cosine' if axis == 'X' else 'sine']
         price = deepcopy(req)
-        price.update(**FINITE_SAMPLE, cohort=COHORT, n_paths=1, law_expectation=False,
+        price.update(**FINITE_SAMPLE, cohort=cohort, n_paths=1, law_expectation=False,
             law_context=I.providers(str(root)).B.p.measurement(row, axis, saved_sampler=True)['law_context'],
             mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),
             price_status='DIRECT_FINITE_COHORT', record_schema=RECORD_SCHEMA,
@@ -464,10 +464,10 @@ def price_bindings(root, prepared, trial, *, price_source, evidence_commit, evid
             scalar_application='ONCE_AT_TOTAL_T', measurement=I.providers(str(root)).B.p.measurement(row, axis),
             resolved_scalar=trial['scalar'], expected_scalar=trial['scalar'])
         side = dict(identity=deepcopy(req['identity']), law_binding=deepcopy(req['law_binding']), axis=axis,
-            cohort=COHORT, price_source=deepcopy(price_source), physical_context=deepcopy(req['physical_context']),
+            cohort=cohort, price_source=deepcopy(price_source), physical_context=deepcopy(req['physical_context']),
             profile_extension=dict(lowering_id=LOWERING_ID, source=NEW_ZZ), implementation=facts,
-            implementation_evidence=dict(commit=evidence_commit, path=evidence_path, selector=[str(M) + axis]))
-        proofs[str(M) + axis] = {k: deepcopy(side[k]) for k in ('price_source', 'identity', 'law_binding', 'axis',
+            implementation_evidence=dict(commit=evidence_commit, path=evidence_path, selector=[str(m) + axis]))
+        proofs[str(m) + axis] = {k: deepcopy(side[k]) for k in ('price_source', 'identity', 'law_binding', 'axis',
                                  'cohort', 'physical_context', 'profile_extension', 'implementation')}
         prices.append(price); sides.append(side)
     return prices, sides, proofs
