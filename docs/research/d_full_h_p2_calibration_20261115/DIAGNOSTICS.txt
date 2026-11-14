@@ -1,0 +1,61 @@
+2026-11-15 JST: primary agent's local technical checks, not independent review or CI.
+Interpreter: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python
+Working directory: /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-p2-caller-prep-20261114
+Scientific implementation: 6069605d50270111d1510478b08e11b8e5a18d86 (unchanged)
+
+Recorded observations (summarized; large toy event payload omitted):
+- P.validate(P.proposal('D7')): rank 3, full design 24 compiles, calibration 18.
+- proposal == published PROPOSALS.json['proposals']['D7']['plan']: True.
+- all saved D7 step_seeds equal seed_table(): True.
+- P2 caller/P1 caller/A checker equal 6069605d5 blobs: True / True / True.
+- P1.source_checks(): True.
+- P1.child_import_preflight(): PASS; 23 modules, failed_imports {}, missing_source_paths [].
+  H4_tol_receipt.json / H4_tol_snapshot.npz / reference_bytes / saved_context_binding: all True.
+- Paired toy acquisition AFTER saving both toy parents:
+  native.sample_requests spy: call_count 1, regenerated groups 2.
+  parent seeds identical: True.
+  check_composition: PAIRED_EVENTS_IDENTICAL, requests 2, ONCE_AT_COMPOSED_TOTAL_T.
+  fake compiler calls 2, real compiler calls 0, H4 calls 0.
+- Artificial records via existing fictional_paths(), separately for all five calibration cells:
+  output keys: C_inputs, path_receipts, law_expectation, model_qualified.
+  execute() defaults: PRICES [], SIDECARS_UNBOUND [], IMPLEMENTATION_EVIDENCE {}.
+  No real price, fit or prediction was evaluated.
+- Old light and T2.0 saved trials: metadata rows 18 / 90; physical ID OR expanded
+  (system,method,formula,prefix,T,q,R_outer,K) matching any D7 calibration cell: 0 / 0.
+
+Reproduction of the paired check (same existing fixture and spy; display shortened):
+
+python -B - <<'PY'
+import sys
+from unittest.mock import patch
+sys.path[:0] = ['scripts', 'tests']
+import check_full_h_kappa2_p1_circuits as T
+import run_full_h_kappa2_p2 as P
+fixture = T.Tests()
+fixture.setUp()
+try:
+    native = fixture.full.setup()
+    row = T.TOY_ROW
+    seeds = [P.P1.seed_function()(row, P.P1.COHORT, 0, g, 0) for g in range(row['q'])]
+    parent_row = dict(row, q=1, T=row['T']/2, s=row['R_outer'], delta=row['T']/2)
+    parents = []
+    for seed in seeds:
+        with patch.object(native, 'trial_seed', return_value=seed):
+            requests, actual, laws = native.sample_requests(
+                parent_row, fixture.ctx.preparations[0], 'TOY_PARENT', 0)
+        parents.append(dict(events=P.event_projection([r.rte_occurrence.events for r in requests]), seeds=actual))
+    with patch.object(native, 'sample_requests', wraps=native.sample_requests) as sampler:
+        result = P.acquire_path(fixture.full, row, P.P1.COHORT, 0, seeds, compile_cached=fixture.fake_compile)
+        print('paired sampler calls:', sampler.call_count)
+        print('paired groups:', len(result['events']))
+        print('event equality:', P.check_composition(result, parents))
+        print('fake compiler calls:', len(fixture.compiles))
+finally:
+    fixture.doCleanups()
+PY
+
+The original diagnostic printed the toy parent events too. The reduced display above
+does not change the acquisition or spy. Tests were not expanded into real H4 science.
+The earlier published P1/P2 suites were inspected and reused, not counted as new runs.
+No --execute-approved-job, --child acquisition, H4 restore/sampling/build/statevector,
+real compile, saved-value reanalysis, fit, N or G was invoked. Mandatory STOP.

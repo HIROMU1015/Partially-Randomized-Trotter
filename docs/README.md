@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full-H κ2 P-2 D7較正の実行前STOP](research/d_full_h_p2_calibration_20261115/REPORT.md)／[PREFLIGHT](research/d_full_h_p2_calibration_20261115/PREFLIGHT.json)／[C引渡し](research/d_full_h_p2_calibration_20261115/HANDOFF_C.md)：予定18 compile・実行0。rank3とSOURCE/inputは確認済み。paired再samplingと較正実装証拠欠落のため固定SOURCE変更・再開指示待ち。
+
 [Full-H κ2 P-2 caller・人工回帰・次の有限実行案](research/d_full_h_p2_caller_preparation_20261114/REPORT.md)。22/24/26 compileの未採択案、rank検査、explicit cell/paired seed、C受渡しを技術対応。新H4計算・保存科学値再解析0。m5 HOLDOUTとA資源順序の整合は採択前に要解決。 mandatory STOP。
 
 [Full-H κ2 P-1 run01・run02 STOP](research/d_full_h_kappa2_p1_results_20261114/REPORT.md)／[実行記録](research/d_full_h_kappa2_p1_results_20261114/EXECUTION.txt)：run01はtracked file欠落で科学計算前に停止。run02は作用検査PASS・2 compile済みだが、`scalar_once`判定の偽陰性で停止（[研究ノート](research/研究ノート/2026-11-14_d_full_h_kappa2_p1_run02_stop.md)）。run02の[再検証](research/d_full_h_kappa2_p1_results_20261114/run02_revalidation01/REPORT.md)：修正判定でPASS、価格record・sidecarをC guardで受理（[研究ノート](research/研究ノート/2026-11-14_d_full_h_kappa2_p1_run02_revalidation.md)）。
