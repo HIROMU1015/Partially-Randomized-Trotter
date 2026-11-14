@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`run_pr_df_ld1_m4.py`](run_pr_df_ld1_m4.py)：固定INPUTSのliteral seedを元samplerへ渡し、P2/m3 S/C workerでm4だけ4 path取得。別入口で公開照合済みreceiptからexact二比較。[完了結果](../docs/research/d_pr_df_ld1_m4_holdout_results_20261115/REPORT.md)。再実行/追加path/fit不可、STOP。
+
 [PR-DF LD1 m3 S/C取得](../docs/research/d_pr_df_ld1_m3_results_20261115/REPORT.md)：physical045843b2429bece6f29b、q8/R16/T.8、normal fresh4 path・X/Y新規8 compile、有効8・再利用/欠測0。同event/axisのS/Cと元receipt固定locatorをCへ引渡し。元P1/P2新ZZ・S/C backendを再利用、full-wrapper statevector未実施を維持。残差集計/fit・m4は未実行、m4規則/cohort/seedは取得前固定、公開後STOP。
 
 [`run_p2_direct_pilot.py`](run_p2_direct_pilot.py)：固定PLAN/SOURCEで保存event replay2 path→全照合一致後fresh8 path、最大20 compileを1回実行。[結果](../docs/research/d_p2_direct_pilot_20261113/REPORT.md)。retry/resume・fit・強制rare・次段階の自動実行は実装しない。

@@ -1,5 +1,7 @@
 # Validation status
 
+[PR-DF LD1 m4独立holdout](docs/research/d_pr_df_ld1_m4_holdout_results_20261115/REPORT.md)：2026-11-15：PR-DF LD1 m4独立holdout。H4 DF10/LD1/S2/Δ.1/K2、physical3df0cfd3356c358aeda8、q16/R32/T1.6、固定normal fresh4 path・X/Y8実compile、有効8・再利用/欠測0。両軸O=259385/2 RZ、P−O=−1188941146855657/1683627180032、相対約−0.544502%。DESCRIPTIVE_COMPLETE、許容差なし・モデルPASS/FAILなし。全law E[C]/CI・長round・N/G/winner未認定、m3/旧STOPを保全し公開後STOP。
+
 [PR-DF LD1 m3 S/C取得](docs/research/d_pr_df_ld1_m3_results_20261115/REPORT.md)：physical045843b2429bece6f29b、q8/R16/T.8、normal fresh4 path・X/Y新規8 compile、有効8・再利用/欠測0。同event/axisのS/Cと元receipt固定locatorをCへ引渡し。元P1/P2新ZZ・S/C backendを再利用、full-wrapper statevector未実施を維持。残差集計/fit・m4は未実行、m4規則/cohort/seedは取得前固定、公開後STOP。
 
 [P2直接paired pilot](docs/research/d_p2_direct_pilot_20261113/REPORT.md)：SOURCE ea0706ab05313423f336614912758a93e9e8285c、replay2 pathのevent/seed/C/S/wrapper fingerprint/6指標全一致後、fresh m0/m6各4 pathを取得。20 compile・cache hit0・retry0、人工16 PASS。m6の履歴対replay全path時間比3.56（単回・計時境界/並列負荷差あり）、fresh D平均187.5/74,388.75。有限cohort統計のみ、全law C/law距離/rare/2%95%/他11round/N/RMSE/Gは未資格、mandatory STOP。
