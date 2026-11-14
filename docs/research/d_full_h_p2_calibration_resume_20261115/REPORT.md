@@ -33,7 +33,7 @@ index0の各cellでlow/high control/leakage、independent occupation vector、Ha
 
 [DELTA_PREFLIGHT.json](DELTA_PREFLIGHT.json)はdf0e11fd1の§10.5調査を継承し、関連ref/job・新出力・保存価格とSOURCE差分を照合した。旧light18/T2.0 90はphysical条件・旧loweringが一致せず、P1 m3 q8/R71はcohort/R/pathが異なる。受入可能な事前保存価格の再利用0。G36223の内部checkpoint2軸は今回同scopeで先に取得した結果を再利用するもので、18上限へ再加算しない。
 
-各cellのPRICES.jsonはDIRECT_COMPILED_PATH_PRICE_V1、C_INPUTS.jsonはPRICE_CALIBRATION_RECORD_V1、IMPLEMENTATION_EVIDENCE.jsonは実際のchecks・compile記録・価格・固定SOURCEへ結ぶ。COMPILE_RECORDSには元native compiler JSONのbytesをhash照合して保存する。巨大RESULTは元rawをlocal保全し、lossless gzipで公開する。RAW_RECEIPT.jsonに原bytes/hash・gzip hash・復号一致を記録する。公開後はREAD_RECEIPT.pyで明示復号し元recordと照合する。
+各cellのPRICES.jsonはDIRECT_COMPILED_PATH_PRICE_V1、C_INPUTS.jsonはPRICE_CALIBRATION_RECORD_V1、IMPLEMENTATION_EVIDENCE.jsonは実際のchecks・compile記録・価格・固定SOURCEへ結ぶ。COMPILE_RECORDSには元native compiler JSONのbytesをhash照合して保存する。巨大RESULTは元rawをlocal保全し、lossless gzipで公開する。RAW_RECEIPT.jsonに原bytes/hash・gzip hash・復号一致を記録する。結果commit `7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f` をpushした。4 cell・14軸について公開READ_RECEIPT.pyで明示復号し、元recordとの完全一致とC metadata readerの読み取りをPASSした。固定locatorは [HANDOFF_C.md](HANDOFF_C.md)／[HANDOFF_C.json](HANDOFF_C.json)。
 
 Cのc628e9e8 evidence readerは小さいJSONを読む。D1がこれを使ってlocatorと証拠対応を検査することと、C担当の科学的受入は区別する。C科学的受入は未実施。非configuration cellへcanonical round guardや架空round IDを適用しない。
 

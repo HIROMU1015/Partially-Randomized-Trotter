@@ -1,6 +1,8 @@
 # プロジェクト案内
 
-[Full-H P-2 process並列化・高速化](docs/research/d_full_h_p2_acceleration_20261115/REPORT.md)：path/X/Yのprocess並列化、controlled gate再利用、legacy fast fingerprint、保存checkpointのsampling/compile再実行なしの継続を実装。8 synthetic test PASS、H4追加compile0。稼働中workerの停止・切替は自動承認レビュー拒否により未実施、旧run継続。
+[Full-H κ2 D7較正取得・checkpoint並列継続](docs/research/d_full_h_p2_calibration_resume_20261115/REPORT.md)：G566/G4528/Q8R566/P2R566の14軸完了・公開対応PASS。G36223は許可済みSOURCE887で保存path0をsampling/compileなしで引継ぎ、未着手path1のX/Yを並列compile中。全18上限、C受入/fit/HOLDOUT/E[C]/N/Gは未実施。
+
+[Full-H P-2 process並列化・高速化](docs/research/d_full_h_p2_acceleration_20261115/REPORT.md)：path/X/Yのprocess並列化、controlled gate再利用、legacy fast fingerprint、保存checkpointのsampling/compile再実行なしの継続を実装。9 synthetic test PASS。ユーザーの明示許可後に保存checkpointから継続し、G36223の残2 compileを並列実行中。旧拒否・SOURCE・rawは保全。
 
 [Full-H κ2 P-2 D7較正・実行前STOP](docs/research/d_full_h_p2_calibration_20261115/REPORT.md)：D7採択・較正18 compile許可済み、実行0。固定callerはpairedを再samplingし、較正implementation evidenceを空で出力する。rank3・SOURCE/input確認済み、限定SOURCE変更と再開指示待ち。HOLDOUT/fit/N/Gなし。
 

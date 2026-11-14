@@ -1,5 +1,7 @@
 # 文書索引
 
+- [Full-H κ2 D7較正取得](research/d_full_h_p2_calibration_resume_20261115/REPORT.md)／[C向け部分HANDOFF](research/d_full_h_p2_calibration_resume_20261115/HANDOFF_C.md)：14軸公開検査PASS、G36223並列継続中。全18上限、全較正未完了・C受入未確認。
+
 [Full-H P-2並列化・高速化](research/d_full_h_p2_acceleration_20261115/REPORT.md)／[8 test](research/d_full_h_p2_acceleration_20261115/TESTS.txt)：path/X/Y process並列、gate構築再利用、legacy fast writer、保存checkpointの継続。H4での適用は未実施、旧worker停止には明示許可が必要（自動承認レビュー拒否）。
 
 [Full-H κ2 P-2 D7較正の実行前STOP](research/d_full_h_p2_calibration_20261115/REPORT.md)／[PREFLIGHT](research/d_full_h_p2_calibration_20261115/PREFLIGHT.json)／[C引渡し](research/d_full_h_p2_calibration_20261115/HANDOFF_C.md)：予定18 compile・実行0。rank3とSOURCE/inputは確認済み。paired再samplingと較正実装証拠欠落のため固定SOURCE変更・再開指示待ち。
