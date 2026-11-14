@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[PR-Pauli LD2 m5/m6独立holdout](../../docs/research/d_pauli_ld2_b1_holdout_results_20261115/REPORT.md)：固定fresh3 path・新規6 compile、個別6 receiptと固定作用gate21件を確認。4比較はDESCRIPTIVE_COMPLETE、符号付き相対差はm5 X/Y各+0.044612%、m6 X/Y各+0.157666%（exact値を保存）。数値許容差なし、model_verdict=NOT_ASSESSED_NO_ADOPTED_TOLERANCE。実order2/非自明位相は未観測UNKNOWN、全law E[C]/CI・長round・N/G・winner未資格、公開後STOP。
+
 [D2の較正receipt接続・保存親event直接連結](../../docs/research/d_pauli_b1_receipt_pair_repair_20261115/REPORT.md)：SOURCE `13ab1acfa`、26人工/toy PASS。5 cell×X/Yの価格→path/axis/公開compile receipt/実装証拠を照合するC入口を追加。pairedはsampler0回、order2/非自明位相はtoyのみ。実H4科学call/compile0、実LD2較正18・実価格受入・fit/holdout/E[C]/Gは保留/未判定。技術公開後STOP。
 
 [S1価格比較guardの検証](../../docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：guard実装はtrottertracks、物理library変更なし。
