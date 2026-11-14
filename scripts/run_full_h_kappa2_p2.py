@@ -310,14 +310,14 @@ def execute(job):
 
 def child(path):
     job = json.loads(Path(path).read_text()); plan = job['plan']; validate(plan, execution=True)
-    import h46_long_time_signal as signal
-    signal.install(); P1.provider_checks()
-    import qiskit
-    if qiskit.__version__ != '1.3.0':
-        raise ValueError('Qiskit 1.3.0 required')
-    full = P1.full_h_module(job['output'], job['private']); cell = selected(plan, job['stage'], job['cell_id'])
     results = []
     try:
+        import h46_long_time_signal as signal
+        signal.install(); P1.provider_checks()
+        import qiskit
+        if qiskit.__version__ != '1.3.0':
+            raise ValueError('Qiskit 1.3.0 required')
+        full = P1.full_h_module(job['output'], job['private']); cell = selected(plan, job['stage'], job['cell_id'])
         for index, seeds in enumerate(job['step_seeds']):
             r = acquire_path(full, physical_row(cell), cell['cohort'], index, seeds)
             if cell.get('composed_of'):

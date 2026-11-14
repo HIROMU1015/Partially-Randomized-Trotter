@@ -1,6 +1,8 @@
 """P-2 metadata/fictional-price tests. No H4 restore, sampling, circuit, vector, compile or fit."""
 from copy import deepcopy
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 from unittest.mock import patch
 import json
 import sys
@@ -20,6 +22,17 @@ def fictional_paths(plan, cell):
 
 
 class Tests(unittest.TestCase):
+    def test_child_setup_failure_is_saved_without_scientific_calls(self):
+        plan=P.proposal();plan['adopted']=True
+        def failed_install():raise ValueError('ARTIFICIAL_IMPORT_STOP')
+        with TemporaryDirectory() as temp:
+            path=Path(temp)/'job.json';result=Path(temp)/'child.json'
+            path.write_text(json.dumps(dict(plan=plan,result=str(result))))
+            with patch.dict(sys.modules,{'h46_long_time_signal':SimpleNamespace(install=failed_install)}):
+                self.assertEqual(P.child(path),2)
+            saved=json.loads(result.read_text())
+            self.assertEqual(saved['paths'],[]);self.assertIn('ARTIFICIAL_IMPORT_STOP',saved['error'])
+
     def test_rank_before_acquisition_and_22_24_26_budgets(self):
         for name, budget in (('D6', 22), ('D7', 24), ('D7_H2', 26)):
             self.assertEqual(P.validate(P.proposal(name))['new_compiles'], budget)
