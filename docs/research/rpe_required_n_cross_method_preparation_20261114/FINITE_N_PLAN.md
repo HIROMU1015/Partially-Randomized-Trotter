@@ -40,11 +40,26 @@
 
 実測済みbase2件の高速版負荷は既存REPORTにあり、新vectorの計算時間保証へは外挿しない。独立job・count batch・exact集約・遅延約分を再利用し、共有環境の設定を変えない。
 
+## 実行前の重複照合（11/14版§10.5）
+
+以下は計画時の[READINESS](READINESS.json)・[適用一覧](SIGNAL_APPLICABILITY.md)を再利用する。実行までに計画・SOURCE・他担当の取得状況が変われば、影響する項目だけを一次記録で再確認する。照合完了は科学実行許可ではない。
+
+| 予定する項目 | 既存成果の扱い・新規候補との差分 |
+|---|---|
+| Pauli base2件・coarse/lemma | caf1417の元runと固定SOURCEをそのまま再利用し、新規取得から除外。今回これらを再計算しない |
+| 新whole-vectorのPauli risk | 同じraw/辞書/normalization/target/lawは再取得不要。新allocationでのriskだけが別の科学評価候補。実行前に同一allocation・decoder・契約の保存結果又は他担当の実行中runがないか確認する |
+| PR-DFのtotal適用 | 旧partial DPは推定量・lossが異なるためtotal評価へ転用しない。保存13rawは再利用候補のまま、旧gridを保つ契約bridge不足を解消するまで該当分を保留 |
+| Full-H κ2・Truncated p7 | 保存13rawを再利用し、新しいsignal取得から除外。次のriskは明示された新decoder/shot/loss契約の評価だけ。R448や旧DFとの同一視は拒否 |
+| Full PF全round入力 | 確認したSOURCEではH_eff・二時点mean・限定catalogが利用可能。全13packet未同定を「過去に未実施」と数えない。関連一次記録・SOURCE・actual幅/物理IDを確認し、保存値を受入可能なroundは除外、差分を特定できたroundだけ新規取得候補とする。証拠不足なら取得も保留 |
+| 価格・G | 今回の対象外。将来は候補×round×X/Y×cohortごとに元receipt・測定操作・law/compiler/loweringを照合する。保存単一pathを全law期待値へ昇格しない |
+
+IDだけの相違は実パラメータ・結果に寄与するSOURCE差分を確認し、契約上受入可能な場合だけ元識別子付きで再利用する。証拠不足・矛盾は該当項目をSTOPし、回収すべき原記録を示す。独立検証が必要ならその目的と既存証拠では満たせない範囲を明示する。元runの再読・同cohort再集計を独立反復と数えない。
+
 ## 別途承認が必要な科学範囲
 
 - **Pauli N1**：採択target/loss/τ/数値scopeの下で、提案scale3/4×LD1/LD2の計2評価＋許可された閾値filter。base2診断の再計算なし。価格・G・十分Nの自動認定なし。
 - **他方式初回**：Full-H κ2とp7の各1外部指定whole-vector・計2診断を別案とする。ベクトルやrisk/law条件はPauliから自動採択しない。現在はmetadata readyのみ。
-- **Full PF**：採択PF menuについて欠測roundのrawを得る有限signal計算、又は保存固有系からの全round spectral再構成を別途承認する。その後でdecoder契約・モデルriskの有限範囲を定める。新eigh不要でもspectral mean評価は新しい科学計算である。
+- **Full PF**：上記照合で既存成果を受入できない具体的なround・条件を特定した後に限り、採択PF menuの差分signal計算、又は必要なroundの保存固有系からのspectral再構成を新規候補とする。取得済みか判断できなければ該当分は保留。その後で別途承認範囲とdecoder/model riskの有限範囲を定める。新eigh不要でもspectral mean評価は新しい科学計算である。
 - **PR-DF**：旧fixed-A gridを保つ版付きcanonical契約bridgeを先に技術整備する。科学的にdecoderを採択したことにはしない。raw再取得やPauli scheduleへの変換は不要。
 
 ユーザーの判断と有限科学実行許可を待つ。**mandatory STOP**。

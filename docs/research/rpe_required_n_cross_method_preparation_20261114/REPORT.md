@@ -33,7 +33,9 @@ total decoderはzeroを定義済み更新規則で保持し、tieは決定論arg
 
 Z1＋T1の主推定量採択、model/physical riskの主張、target ground包含、state・sampler law移送、数値certificate、元Minkowskiへの接続は未確定。`sufficient_N/global_RMSE_bound/G/G_qualified/winner=null`を維持する。raw直接riskは近似を含み得るのでAのδEを加算しない。
 
-指定の`research_project_instructions_unified_2026-11-14.md`は既知の共通配置先と関連Git資料で取得できず、絶対pathをユーザーへ照会した。§10.5を読了したとは扱わない。現行`/home/AbeHiromu/projects/AGENTS.md`と取得済み11/09版・今回の明示制約に従い、Pauli完了2件・旧DF DP・coarse/lemma・保存26round・Full-H/PF既存成果の重複を確認し、科学計算を起動していない。
+**初回報告時点の履歴**：指定の`research_project_instructions_unified_2026-11-14.md`は既知の配置先で未取得だったため、§10.5を読了したとは扱わず、現行AGENTS.mdと取得済み11/09版・今回の明示制約に従って照合した。
+
+**追補（2026-11-14、共通指示追加後）**：[11/14版共通指示](/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research_project_instructions_unified_2026-11-14.md)を確認した。既読11/09版からの差分は§10.5の重複照合と関連参照の追加で、今後は11/14版を運用正本とする。前回のPauli完了2件・旧DF DP・coarse/lemma・保存signal・Full-H/PF成果の技術照合を再利用し、[有限案](FINITE_N_PLAN.md)に実行前の差分確認を追記した。Full PFの全13rawは確認したSOURCE内で未同定であり、資料未取得を「過去に未実施」と断定しない。証拠不足項目は新規取得を含め保留する。今回も新科学call・数値再解析は0で、初回履歴・旧判定・STOPを変更しない。
 
 **ユーザー**：[有限案](FINITE_N_PLAN.md)の契約・範囲を判断し、必要なら別途科学実行を明示許可する。**Codex B**：許可後だけ固定範囲を実行する。**A/C/D**：不足入力・価格を取得する場合も各担当の別scopeとする。今回、他担当への実行依頼や起動はない。
 

@@ -41,7 +41,7 @@ records = T.evaluate(root, bridge, view['signal_packet'], whole_allocations,
 
 ## 担当と次の判断
 
-- **ユーザー**：主推定量、target/risk/loss/数値scope、閾値τ、有限shot案と実行範囲を採択する。11/14版共通指示の所在も未確認。
+- **ユーザー**：主推定量、target/risk/loss/数値scope、閾値τ、有限shot案と実行範囲を採択する。共通指示は追加後に11/14版を確認済みで、所在の照会は解消した。
 - **Codex B**：採択後の固定範囲だけを実行。PR-DFでは旧grid保持の版付きbridgeが先に必要で、既存generatorを緩める作業は今回行っていない。
 - **A/C**：Full PFの採択menuに対応する全round raw/SOURCEが不足。H_effだけでmeanを作ったことにしない。新spectral再構成も別科学scope。
 - **C/D**：価格入力は別契約・別SOURCEのまま供給。新decoderのIDを理由にモデルdomainの未資格を解除しない。
