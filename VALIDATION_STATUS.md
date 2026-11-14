@@ -1,5 +1,7 @@
 # Validation status
 
+[D：保存4件／新規32件の技術準備](docs/research/d_pf_price_saved4_revision_20261114/REPORT.md)：Stage parent17＋人工child3、Full親6（子2）・p7親3（子5）、C guard14 PASS。p7の正例は人工受入fixtureで、実p7受入の証拠ではない。全36行のうちp7 M5/m4 X/Y actionのみ変更、保存4除外・新規20＋12、全12 groupのm4/m5・m6混入/重複/未freeze拒否を確認。C新版表/受入、policy/許容差、11/14共通運用指示の正本が未取得・未確定でStage1不可。新science0、mandatory STOP。
+
 [D価格stage分離](docs/research/d_pf_price_stage_split_20261114/REPORT.md)：CELL_PLAN照合でCALIBRATION 22／HOLDOUT 12／計34新規wrapper、保存M5/m4はjobに入らない。CELL_PLAN不一致8種・凍結model不備8種・model group混合・未公開/未bind/実行中改変を拒否、HOLDOUTはm6のみでCALIBRATION byte不変。D54（新規17）＋C48 PASS（人工・架空価格のみ）。policy未採択でStage 1未開始、実compile/価格0。
 
 [D bridge接続・価格分類修正](docs/research/d_price_records_c_bridge_20261114/REPORT.md)：Cのguard（c628e9e8）がcanonical候補のPauli sidecarを受理し、旧形式ID・辞書SHA・law・SOURCE・scalar・route・lowering・emitter・scalar quantityの不一致を拒否。paper_costでPauliはFINITE_COHORT_SCENARIO、Full/TruncatedはDETERMINISTIC_DIRECT、旧名はUnknown compiled price kind。seed 14788159701244282917不変。D37（circuit・oracle・bit順・X/Y回帰含む）＋C48 PASS、実H4 sampling/build/compile/価格0。
