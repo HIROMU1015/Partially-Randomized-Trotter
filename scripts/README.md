@@ -1,5 +1,7 @@
 # scripts 索引
 
+`freeze_pauli_ld2_prices.py`：C2の固定LD2 10 record→軸別exact OLS・4予測。実行SOURCEと凍結結果は[HANDOFF](../docs/research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/HANDOFF_D2.md)。実価格fit実行済み、再実行・holdoutへの自動進行はしない。
+
 [最新Full PF metadata接続](../docs/research/full_pf_latest_price_guard_20261114/BUILD_COVERAGE.py)：旧coverage builderを再利用。科学runnerの新設なし。
 
 [B0I・Full-Hの全13round Raw signal取得](../docs/research/truncated_fullh_signal_results_20261114/REPORT.md)（2026-11-14）：固定H4 DF10のB0I p7/S2/Δ.1とFull-H finite-K2/q=2^m/R448を各13round、一回評価。SOURCE5a172629d、26件すべて元数値gate PASS、Raw/corrected/reference/normalizationとB packetを保存。人工caller3件PASS、数値module不変、context復元1、旧signal受入/retry0。数値誤差・law距離・state誤差は未資格、MC/N/価格/G0。旧c546/6306計画・STOPを保全し公開後mandatory STOP。
