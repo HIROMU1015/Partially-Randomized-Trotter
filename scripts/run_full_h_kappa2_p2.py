@@ -17,8 +17,10 @@ import ast
 import hashlib
 import importlib
 import json
+import resource
 import subprocess
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
@@ -118,15 +120,82 @@ def check_composition(actual, parents):
     return dict(status='PAIRED_EVENTS_IDENTICAL', requests=len(expected), scalar='ONCE_AT_COMPOSED_TOTAL_T')
 
 
-def acquire_path(full, row, cohort, index, seeds, *, compile_cached=None):
+def parent_receipts(plan, cell, references, execution_commit):
+    """Read the saved successful G566 result; never regenerate a parent trajectory."""
+    parents = []
+    if len(references) != cell['q']:
+        raise ValueError('Paired parent receipts required')
+    for token, ref, seed in zip(cell['composed_of'], references, seed_table(plan, cell['cell_id'])[0], strict=True):
+        cid, index, group = token.split('#'); parent_cell = selected(plan, 'CALIBRATION', cid)
+        path = (ROOT / ref['path']).resolve()
+        if not path.is_relative_to(ROOT) or ref['selector'] != ['child', 'paths', int(index[1:])]:
+            raise ValueError('Paired parent receipt locator differs')
+        raw = path.read_bytes(); saved = json.loads(raw)
+        if (hashlib.sha256(raw).hexdigest() != ref['sha256'] or group != 'g0'
+                or saved['status'] != 'FINITE_CELL_COMPLETE' or saved['child']['status'] != 'PASS'
+                or saved['source']['result_path'] != ref['path']
+                or saved['source']['commit'] != execution_commit or saved['source']['caller'] != CALLER
+                or saved['source']['cell'] != cid or saved['source']['cohort'] != parent_cell['cohort']
+                or saved['source']['step_seeds'] != seed_table(plan, cid)):
+            raise ValueError('Paired parent SOURCE/result binding differs')
+        parent = saved['child']['paths'][int(index[1:])]
+        if (parent['row'] != physical_row(parent_cell) or parent['cohort'] != parent_cell['cohort']
+                or parent['index'] != int(index[1:]) or parent['seeds'] != [seed]
+                or parent['trial']['status'] != 'PASS' or parent['xy_phase_gate']['status'] != 'PASS'):
+            raise ValueError('Paired parent physical/cohort/index/seed/check binding differs')
+        parents.append(dict(parent, receipt_source=dict(ref, execution_commit=execution_commit)))
+    return parents
+
+
+def restore_parent_requests(row, prep, seeds, parents, scalar):
+    """Reuse the existing saved-event decoder and request dataclasses, with no sampler."""
+    from h46_same_event import decode_event
+    from h46_m5_contract import core
+    from h46_pr_pilot_repair import canonical_tau
+    from trotterlib import rte
+    from trotterlib.df_rte_circuit import DFRTEEventSequenceCircuitRequest
+    from trotterlib.df_partial_s2 import DFPartialS2StepRequest
+    from trotterlib.pr2_matched_accuracy_m1_execution import _explicit_cutoff_tolerance
+    steps = core.schedule(row['formula'], row['q'], 'ABS_TIME_PER_OUTER', row['R_outer'], T=row['T'])
+    if len(parents) != len(steps) or seeds != [p['seeds'][0] for p in parents]:
+        raise ValueError('Paired parent order/seed allocation differs')
+    requests, laws = [], []
+    for step, seed, parent in zip(steps, seeds, parents, strict=True):
+        if (parent['trial']['scalar'] != scalar or parent['trial']['preparation_hash'] != prep.preparation_hash
+                or len(parent['events']) != 1 or len(parent['events'][0]) != step['rte_steps']
+                or parent['row']['T'] != step['signed_time']):
+            raise ValueError('Paired parent scalar/preparation/time/event allocation differs')
+        events = tuple(decode_event(rte, e) for e in parent['events'][0])
+        tau = canonical_tau(prep, step['signed_time'], step['rte_steps'])
+        config, distribution = rte.make_rte_config(prep.rte_preparation.symbolic_tail,
+            evolution_time=step['signed_time'], rte_steps=step['rte_steps'], finite_taylor_order=row['K'],
+            truncation_tolerance=_explicit_cutoff_tolerance(tau, row['K']), seed=seed)
+        law = dict(steps=step['rte_steps'], orders=list(distribution.orders), probabilities=list(distribution.order_probabilities))
+        if parent['trial']['laws'] != [law]:
+            raise ValueError('Paired parent finite law differs')
+        for event in events:
+            prep.rte_preparation.resolve_event_basis_definitions(event)
+        occurrence = DFRTEEventSequenceCircuitRequest(events=events, component_specs=prep.rte_preparation.component_specs,
+            controlled=True, ancilla_qubit=prep.num_system_qubits, tail_id=config.tail_id,
+            tail_hash=config.tail_hash, occurrence_rte_steps=step['rte_steps'])
+        requests.append(DFPartialS2StepRequest(preparation=prep, step_time=step['signed_time'], rte_config=config,
+            rte_distribution=distribution, rte_occurrence=occurrence, controlled=True,
+            ancilla_qubit=prep.num_system_qubits, seed=seed))
+        laws.append(law)
+    check_composition(dict(events=event_projection([r.rte_occurrence.events for r in requests]),
+                           seeds=seeds, trial=dict(scalar=scalar)), parents)
+    return requests, list(seeds), laws
+
+
+def acquire_path(full, row, cohort, index, seeds, *, compile_cached=None, parents=None):
     """Scientific API: existing normal sampler and P-1 trial; explicit seeds only replace trial_seed.
 
     Called only after validate(execution=True). Tests pass a toy context/compiler.
-    No second sampling of a parent path is needed: parent seed/event receipts are compared afterwards.
+    Paired requests are restored and checked before compose; normal sampling is unchanged.
     """
     native = full.setup(); ctx = full.context(row['system'])
     facade = SimpleNamespace(setup=lambda: native, context=lambda system: ctx)
-    captured, wrappers, fps = {}, {}, {}
+    captured, wrappers, fps, compile_receipts = {}, {}, {}, {}
     original = native.compose; compiler = compile_cached or native.compile_cached
     def fixed_seed(r, co, i, outer, piece):
         if r != row or co != cohort or i != index or piece != 0 or not 0 <= outer < len(seeds):
@@ -141,18 +210,38 @@ def acquire_path(full, row, cohort, index, seeds, *, compile_cached=None):
         axis = 'sine' if any(i.operation.name == 'sdg' and wrapper.find_bit(i.qubits[0]).index == ctx.ham.n_qubits
                             for i in wrapper.data[-4:]) else 'cosine'
         wrappers[axis] = wrapper; fps[axis] = fingerprint
-        return compiler(wrapper, fingerprint, representative)
+        started = time.monotonic()
+        result = compiler(wrapper, fingerprint, representative)
+        record, _, reused = result
+        path = native.PRIVATE / 'compiled_cache' / (fingerprint + '.json')
+        raw = path.read_bytes() if path.exists() else None
+        if raw is not None and json.loads(raw) != record:
+            raise ValueError('Saved individual compile record differs from returned record')
+        compile_receipts[axis] = dict(record=deepcopy(record), fingerprint=fingerprint, reused=bool(reused),
+            locator=dict(path=str(path), sha256=hashlib.sha256(raw).hexdigest() if raw is not None else None),
+            wall_seconds=time.monotonic()-started, peak_RSS_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024)
+        return result
     with ExitStack() as stack:
         stack.enter_context(patch.object(native, 'trial_seed', fixed_seed))
         stack.enter_context(patch.object(native, 'compose', compose))
         stack.enter_context(patch.object(native, 'compile_cached', native.compile_cached))
+        if parents is not None:
+            restored = restore_parent_requests(row, ctx.preparations[row['prefix']], seeds, parents,
+                ctx.ham.constant + ctx.preparations[row['prefix']].extracted_identity_coefficient)
+            def replay(r, prep, co, i):
+                if r != row or prep is not ctx.preparations[row['prefix']] or co != cohort or i != index:
+                    raise ValueError('Unexpected paired request replay')
+                return restored
+            stack.enter_context(patch.object(native, 'sample_requests', replay))
         trial, facts, ok = P1.pilot(facade, row, compile_cached=compile_one, cohort=cohort, index=index)
     provider = importlib.import_module('trotterlib.df_rte_qiskit')
     xy = P1.xy_phase_gate(wrappers, captured['n'], captured['events'], captured['scalar'], captured['scalar'], row['T'], provider=provider)
     if not ok or xy['status'] != 'PASS' or len(captured['events']) != row['q'] or any(len(b) != row['R_outer'] for b in captured['events']):
         raise ValueError('P-1 correctness/phase/XY/allocation gate failed')
     return dict(trial=trial, checks=facts, xy_phase_gate=xy, events=captured['events'], seeds=list(seeds),
-                fingerprints=fps, index=index, cohort=cohort, row=row)
+                fingerprints=fps, compile_receipts=compile_receipts, index=index, cohort=cohort, row=row,
+                sampling='SAVED_PARENT_EVENTS_NO_DRAW' if parents is not None else 'ORIGINAL_NORMAL_SAMPLER',
+                parents=[p['receipt_source'] for p in parents] if parents is not None else [])
 
 
 def selected(plan, stage, cell_id):
@@ -224,6 +313,45 @@ def records(plan, cell, results, *, source, prepared=None, evidence_path='IMPLEM
         implementation=cell['implementation'], profile=cell['profile'], n_paths=len(results), law=cell['law'])
         for axis, a in (('X', 'cosine'), ('Y', 'sine'))]
     out = dict(C_inputs=inputs, path_receipts=results, law_expectation=False, model_qualified=False)
+    if cell['role'] == 'CALIBRATION':
+        prices, sides, proofs = [], [], {}
+        directory = str(Path(source['result_path']).parent)
+        for record in inputs:
+            axis = record['axis']; a = 'cosine' if axis == 'X' else 'sine'
+            paths = []
+            for r in results:
+                receipt = r['compile_receipts'][a]; compiled = receipt['record']
+                if (r['trial']['status'] != 'PASS' or r['xy_phase_gate']['status'] != 'PASS'
+                        or r['checks']['scalar_event_phases']['status'] != 'PASS'
+                        or r['checks']['builder_lowering_id'] != P1.LOWERING_ID
+                        or r['checks']['parity']['status'] != 'PASS'
+                        or compiled['compiler'] != cell['profile']['compiler']
+                        or compiled['fingerprint'] != r['fingerprints'][a] or receipt['fingerprint'] != compiled['fingerprint']
+                        or compiled['metrics'] != r['trial']['prices'][a] or not receipt['locator']['sha256']):
+                    raise ValueError('Calibration path checks/compile record/price binding differs')
+                price = dict(record='DIRECT_COMPILED_PATH_PRICE_V1', cell_id=cell['cell_id'], axis=axis,
+                    index=r['index'], cohort=r['cohort'], seeds=r['seeds'], physical=r['row'],
+                    classification='DIRECT_COMPILED_FINITE_SAMPLE', expectation='FINITE_COHORT_ONLY',
+                    metrics=compiled['metrics'], fingerprint=compiled['fingerprint'], source=source,
+                    compile_receipt=receipt, path_receipt=dict(path=source['result_path'], selector=['child','paths',r['index']]))
+                prices.append(price)
+                paths.append(dict(price=price, checks=r['checks'], xy_phase_gate=r['xy_phase_gate'],
+                    scalar=r['trial']['scalar'], preparation_hash=r['trial']['preparation_hash'],
+                    sampling=r['sampling'], parents=r.get('parents', []),
+                    trial_checks=r['trial']['checks'], resources={k:r['trial'][k] for k in ('wall_seconds','peak_RSS_bytes')}))
+            proof = dict(calibration_record=record, paths=paths, implementation=cell['implementation'], profile=cell['profile'],
+                native_source=P1.NATIVE, wrapper_source=P1.WRAPPER, lowering_source=P1.NEW_ZZ, preparation_source=P1.FULL_H,
+                measurement=dict(axis=axis, include_measurement=True, state_preparation_cost_included=False),
+                correctness_scope='ACTION_AND_COMPILED_VECTOR_ON_INDEX0; PHASE_PARITY_XY_ALL_PATHS',
+                paired_dependence=cell.get('composed_of'), law_expectation=False)
+            proofs[axis] = proof
+            sides.append(dict(record='PRICE_CALIBRATION_IMPLEMENTATION_SIDECAR_V1', cell_id=cell['cell_id'], axis=axis,
+                price_source=source, implementation_evidence=dict(commit=None,path=evidence_path,selector=[axis]),
+                price_records=dict(commit=None,path=directory+'/PRICES.json',selector=[]),
+                C_input=dict(commit=None,path=directory+'/C_INPUTS.json',selector=[len(sides)]),
+                path_receipts=dict(commit=None,path=source['result_path'],selector=['child','paths']),
+                C_admission='NOT_PERFORMED_NON_CONFIGURATION_RECORD'))
+        out.update(prices=prices, sidecars=sides, implementation_evidence=proofs)
     if cell['cell_id'] in ('M5_ROUND', 'M6_ROUND'):
         prepared = prepared or P1.plan_row()[0]; m = int(cell['cell_id'][1])
         req = prepared['plan']['pending']['requests'][m]
@@ -237,6 +365,32 @@ def records(plan, cell, results, *, source, prepared=None, evidence_path='IMPLEM
             p.update(n_paths=len(results)); p['diagnostic'].update(pilot_role='P2_FINITE_CELL', model_calibration_point=False)
         out.update(prices=prices, sidecars=sides, implementation_evidence=proofs)
     return out
+
+
+def bind_calibration_publication(plan, cell_id, commit, directory):
+    """D1's SOURCE/record check using C's pinned metadata reader; not C scientific admission."""
+    import revalidate_full_h_kappa2_p1_run02 as R
+    cell = selected(plan, 'CALIBRATION', cell_id)
+    read = lambda filename: json.loads(P1.blob(commit, directory+'/'+filename))
+    result = read('RESULT.json')
+    if result['status'] != 'FINITE_CELL_COMPLETE' or result['child']['status'] != 'PASS':
+        raise ValueError('Complete published calibration receipt required')
+    produced = records(plan, cell, result['child']['paths'], source=result['source'],
+                       evidence_path=directory+'/IMPLEMENTATION_EVIDENCE.json')
+    for name,key in (('C_INPUTS.json','C_inputs'),('PRICES.json','prices'),
+                     ('SIDECARS_UNBOUND.json','sidecars'),('IMPLEMENTATION_EVIDENCE.json','implementation_evidence')):
+        if read(name) != produced[key]:
+            raise ValueError('Published calibration record/receipt/evidence differs: '+name)
+    sides = deepcopy(produced['sidecars']); reader = R.c_guard()
+    for side in sides:
+        for key in ('implementation_evidence','price_records','C_input','path_receipts'):
+            side[key]['commit'] = commit
+        if reader.evidence(ROOT, side['implementation_evidence']) != produced['implementation_evidence'][side['axis']]:
+            raise ValueError('C metadata reader returned different implementation evidence')
+    return dict(status='D1_PUBLICATION_LINKS_CHECKED_USING_C_EVIDENCE_READER_NOT_C_ADMISSION',
+                publication=dict(commit=commit,directory=directory), bound_sidecars=sides,
+                checked_path_axes=len(produced['prices']), C_scientific_admission='NOT_PERFORMED',
+                canonical_round_guard_invoked=False, law_expectation=False)
 
 
 def check_round_records(prepared, cell, prices, sides, *, evidence_commit):
@@ -273,13 +427,8 @@ def execute(job):
         raise FileExistsError('Fresh cell namespace required')
     if cell.get('composed_of') and len(job.get('parents', [])) != cell['q']:
         raise ValueError('Paired parent seed/event receipts required before context')
-    if cell.get('composed_of'):
-        for token, parent, seed in zip(cell['composed_of'], job['parents'], job['step_seeds'][0], strict=True):
-            cid, index, _ = token.split('#'); old = selected(plan, 'CALIBRATION', cid)
-            if (parent['row'] != physical_row(old) or parent['cohort'] != old['cohort']
-                    or parent['index'] != int(index[1:]) or parent['seeds'] != [seed]):
-                raise ValueError('Paired parent SOURCE/cell/cohort/seed binding differs')
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+    parents = parent_receipts(plan,cell,job['parents'],commit) if cell.get('composed_of') else None
     for path in (CALLER, P1.CALLER, A_MODULE['path']):
         if (ROOT / path).read_bytes() != P1.blob(commit, path):
             raise ValueError('Execution SOURCE differs from HEAD')
@@ -287,7 +436,7 @@ def execute(job):
     P1.child_import_preflight(ROOT)
     # Only the child takes the scientific path, install() before project imports.
     out.mkdir(parents=True); private.mkdir(parents=True)
-    P1.write(private / 'job.json', dict(job, output=str(out), private=str(private), result=str(private / 'child.json')))
+    P1.write(private / 'job.json', dict(job, parents=parents, output=str(out), private=str(private), result=str(private / 'child.json')))
     code = subprocess.call([sys.executable, '-B', str(ROOT / CALLER), '--child', str(private / 'job.json')], cwd=ROOT)
     child = json.loads((private / 'child.json').read_text()) if (private / 'child.json').exists() else None
     ok = code == 0 and child is not None and child['status'] == 'PASS' and len(child['paths']) == cell['n_paths']
@@ -321,7 +470,7 @@ def child(path):
             raise ValueError('Qiskit 1.3.0 required')
         full = P1.full_h_module(job['output'], job['private']); cell = selected(plan, job['stage'], job['cell_id'])
         for index, seeds in enumerate(job['step_seeds']):
-            r = acquire_path(full, physical_row(cell), cell['cohort'], index, seeds)
+            r = acquire_path(full, physical_row(cell), cell['cohort'], index, seeds, parents=job.get('parents'))
             if cell.get('composed_of'):
                 r['paired_check'] = check_composition(r, job['parents'])
             results.append(r)

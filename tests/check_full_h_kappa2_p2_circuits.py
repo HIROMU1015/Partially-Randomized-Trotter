@@ -25,21 +25,37 @@ class Tests(unittest.TestCase):
         self.assertIs(native.compile_cached, before)
         self.assertTrue(out['checks']['scalar_event_phases']['event_phases'])
 
-    def test_paired_seed_requests_equal_individually_sampled_groups(self):
-        native = self.full.setup(); row = T.TOY_ROW
+    def test_paired_saved_JSON_events_without_sampler_and_with_new_XY_compiles(self):
+        native = self.full.setup(); row = T.ORDER2_ROW
         seeds = [P.P1.seed_function()(row, P.P1.COHORT, 0, g, 0) for g in range(row['q'])]
         parent_row = dict(row, q=1, T=row['T'] / 2, s=row['R_outer'], delta=row['T'] / 2)
         parents = []
         from unittest.mock import patch
-        for seed in seeds:
-            with patch.object(native, 'trial_seed', return_value=seed):
-                requests, actual_seeds, laws = native.sample_requests(parent_row, self.ctx.preparations[0], 'TOY_PARENT', 0)
-            parents.append(dict(events=P.event_projection([r.rte_occurrence.events for r in requests]), seeds=actual_seeds))
-        out = P.acquire_path(self.full, row, P.P1.COHORT, 0, seeds, compile_cached=self.fake_compile)
+        for i, seed in enumerate(seeds):
+            parent = P.acquire_path(self.full,parent_row,'TOY_PARENT',i,[seed],compile_cached=self.fake_compile)
+            parent['receipt_source'] = dict(fixture='ARTIFICIAL_PARENT',index=i)
+            parents.append(parent)
+        parents = json.loads(json.dumps(parents))
+        self.compiles.clear()
+        with patch.object(native,'sample_requests',side_effect=AssertionError('PARENT_RESAMPLED')) as sampler, \
+             patch.object(type(self.ctx.preparations[0].rte_preparation),'sample_events',side_effect=AssertionError('RNG_CALLED')) as draws:
+            out = P.acquire_path(self.full, row, P.P1.COHORT, 0, seeds, compile_cached=self.fake_compile,parents=parents)
+            sampler.assert_not_called(); draws.assert_not_called()
+        self.assertEqual(len(self.compiles),2)
+        self.assertEqual(out['sampling'],'SAVED_PARENT_EVENTS_NO_DRAW')
+        self.assertEqual(out['parents'],[p['receipt_source'] for p in parents])
         self.assertEqual(P.check_composition(out, parents)['status'], 'PAIRED_EVENTS_IDENTICAL')
-        # Parent receipts will have crossed the publication/JSON boundary.
-        restored = json.loads(json.dumps(parents))
-        self.assertEqual(P.check_composition(out, restored)['status'], 'PAIRED_EVENTS_IDENTICAL')
+        self.assertTrue(out['checks']['scalar_event_phases']['event_phases'])
+        from copy import deepcopy
+        for kind in ('scalar','phase','seed'):
+            bad=deepcopy(parents)
+            if kind=='scalar':bad[0]['trial']['scalar']+=1
+            elif kind=='phase':bad[0]['events'][0][0]['phase']['real']*=-1
+            else:bad[0]['seeds'][0]+=1
+            with patch.object(native,'compose',side_effect=AssertionError('BUILD_BEFORE_PARENT_CHECK')) as build:
+                with self.assertRaises(ValueError):
+                    P.acquire_path(self.full,row,P.P1.COHORT,0,seeds,compile_cached=self.fake_compile,parents=bad)
+                build.assert_not_called()
 
 
 if __name__ == '__main__': unittest.main(verbosity=2)

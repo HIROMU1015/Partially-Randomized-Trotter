@@ -5,6 +5,7 @@ from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest.mock import patch
 import json
+import hashlib
 import sys
 import unittest
 
@@ -15,10 +16,17 @@ import revalidate_full_h_kappa2_p1_run02 as R
 
 
 def fictional_paths(plan, cell):
-    return [dict(index=i, cohort=cell['cohort'], row=P.physical_row(cell), seeds=seeds,
-                 trial=dict(scalar=.3, prices={a: dict(rz_count=100 + i, cx_count=10, rz_depth=10,
-                    cx_depth=10, total_depth=20, circuit_size=200) for a in ('cosine', 'sine')}))
-            for i, seeds in enumerate(P.seed_table(plan, cell['cell_id']))]
+    paths=[]
+    for i,seeds in enumerate(P.seed_table(plan,cell['cell_id'])):
+        prices={a:dict(rz_count=100+i,cx_count=10,rz_depth=10,cx_depth=10,total_depth=20,circuit_size=200) for a in ('cosine','sine')}
+        fps={a:'ARTIFICIAL_'+str(i)+a for a in prices}
+        paths.append(dict(index=i,cohort=cell['cohort'],row=P.physical_row(cell),seeds=seeds,fingerprints=fps,
+            trial=dict(status='PASS',scalar=.3,preparation_hash='ARTIFICIAL_PREPARATION',prices=prices,checks=[],wall_seconds=0.,peak_RSS_bytes=0),
+            checks=dict(scalar_event_phases=dict(status='PASS'),builder_lowering_id=P.P1.LOWERING_ID,parity=dict(status='PASS')),
+            xy_phase_gate=dict(status='PASS'),sampling='ARTIFICIAL_NO_SAMPLER',parents=[],
+            compile_receipts={a:dict(record=dict(metrics=prices[a],fingerprint=fps[a],compiler=cell['profile']['compiler']),
+                fingerprint=fps[a],reused=False,locator=dict(path='ARTIFICIAL_COMPILE.json',sha256='a'*64)) for a in prices}))
+    return paths
 
 
 class Tests(unittest.TestCase):
@@ -78,13 +86,54 @@ class Tests(unittest.TestCase):
             with self.assertRaises(ValueError): P.check_composition(bad, parents)
 
     def test_fictional_non_configuration_C_input_is_not_EC(self):
-        plan = P.proposal(); cell = plan['cells'][0]
-        out = P.records(plan, cell, fictional_paths(plan, cell), source=dict(fixture='ARTIFICIAL'))
-        self.assertNotIn('prices', out)
-        self.assertEqual({r['axis'] for r in out['C_inputs']}, {'X', 'Y'})
-        self.assertTrue(all(r['n_paths'] == 2 and r['finite_sample_mean_is_law_expectation'] is False for r in out['C_inputs']))
-        self.assertEqual(out['C_inputs'][0]['rz_count'], dict(numerator=201, denominator=2))
-        self.assertFalse(out['model_qualified'])
+        plan=P.proposal()
+        for cell in (c for c in plan['cells'] if c['role']=='CALIBRATION'):
+            source=dict(fixture='ARTIFICIAL',result_path='ARTIFICIAL/RESULT.json')
+            paths=fictional_paths(plan,cell)
+            out=P.records(plan,cell,paths,source=source,evidence_path='ARTIFICIAL/IMPLEMENTATION_EVIDENCE.json')
+            self.assertEqual(len(out['prices']),2*cell['n_paths'])
+            self.assertEqual({r['axis'] for r in out['C_inputs']},{'X','Y'})
+            self.assertTrue(all(r['finite_sample_mean_is_law_expectation'] is False for r in out['C_inputs']))
+            for record,side in zip(out['C_inputs'],out['sidecars']):
+                proof=out['implementation_evidence'][side['axis']]
+                self.assertEqual(proof['calibration_record'],record)
+                for e in proof['paths']:
+                    price=e['price'];r=paths[price['index']];a='cosine' if side['axis']=='X' else 'sine'
+                    self.assertEqual(price['metrics'],r['compile_receipts'][a]['record']['metrics'])
+                    self.assertEqual(price['path_receipt']['selector'],['child','paths',r['index']])
+                    self.assertEqual(e['checks'],r['checks'])
+            docs={'RESULT.json':dict(status='FINITE_CELL_COMPLETE',child=dict(status='PASS',paths=paths),source=source),
+                'C_INPUTS.json':out['C_inputs'],'PRICES.json':out['prices'],
+                'SIDECARS_UNBOUND.json':out['sidecars'],'IMPLEMENTATION_EVIDENCE.json':out['implementation_evidence']}
+            original=P.P1.blob
+            def read(commit,path):
+                return json.dumps(docs[path.split('/')[-1]]).encode() if path.startswith('ARTIFICIAL/') else original(commit,path)
+            guard=R.c_guard()
+            with patch.object(P.P1,'blob',side_effect=read),patch.object(guard,'evidence',side_effect=lambda root,loc:docs['IMPLEMENTATION_EVIDENCE.json'][loc['selector'][0]]):
+                checked=P.bind_calibration_publication(plan,cell['cell_id'],'a'*40,'ARTIFICIAL')
+            self.assertEqual(checked['checked_path_axes'],2*cell['n_paths'])
+            self.assertTrue(all(s['implementation_evidence']['commit']=='a'*40 for s in checked['bound_sidecars']))
+            bad=deepcopy(paths);m=bad[0]['compile_receipts']['cosine']['record']['metrics']
+            bad[0]['compile_receipts']['cosine']['record']['metrics']=dict(m,rz_count=m['rz_count']+1)
+            with self.assertRaisesRegex(ValueError,'binding differs'):P.records(plan,cell,bad,source=source)
+
+    def test_saved_parent_SOURCE_and_order_are_checked_before_context(self):
+        plan=P.proposal();cell=P.selected(plan,'CALIBRATION','P2R566');parent=P.selected(plan,'CALIBRATION','G566')
+        paths=fictional_paths(plan,parent);commit='b'*40
+        with TemporaryDirectory(dir=ROOT,prefix='__p2_parent_fixture_') as temp:
+            path=Path(temp)/'RESULT.json';rel=str(path.relative_to(ROOT))
+            source=dict(commit=commit,caller=P.CALLER,cell='G566',cohort=parent['cohort'],
+                step_seeds=P.seed_table(plan,'G566'),result_path=rel)
+            value=dict(status='FINITE_CELL_COMPLETE',child=dict(status='PASS',paths=paths),source=source)
+            path.write_text(json.dumps(value));digest=hashlib.sha256(path.read_bytes()).hexdigest()
+            refs=[dict(path=rel,sha256=digest,selector=['child','paths',i]) for i in (0,1)]
+            got=P.parent_receipts(plan,cell,refs,commit)
+            self.assertEqual([r['index'] for r in got],[0,1])
+            self.assertEqual(got[0]['receipt_source']['execution_commit'],commit)
+            with self.assertRaises(ValueError):P.parent_receipts(plan,cell,list(reversed(refs)),commit)
+            with self.assertRaises(ValueError):P.parent_receipts(plan,cell,refs,'c'*40)
+            path.write_text(json.dumps(dict(value,source=dict(source,cohort='FOREIGN'))))
+            with self.assertRaises(ValueError):P.parent_receipts(plan,cell,refs,commit)
 
     def test_C_fixed_guard_round_receipts_and_rejection(self):
         plan = P.proposal(); cell = P.selected(plan, 'HOLDOUT', 'M5_ROUND'); prepared = P.P1.plan_row()[0]
