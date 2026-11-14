@@ -1,5 +1,7 @@
 # scripts 索引
 
+`admit_pf_m3_saved_prices.py`：[m3の保存PF価格受入](../docs/research/pf_m3_saved_price_admission_20261115/REPORT.md)。metadata bundle作成と固定evidenceへのguard結合だけ。受入済み結果は上書きせず、新compile/fit/予測/Gは起動しない。
+
 `freeze_pf_stage1_models.py`：[固定PF Stage1の12モデル凍結](../docs/research/pf_stage1_model_freeze_20261115/REPORT.md)。既存C exact fit/predict、D受入済み24価格を使用。引数なしはmetadata確認のみ。承認済みrun01は完了済み、再fit・holdout・他roundを起動しない。
 
 [最新Full PF metadata接続](../docs/research/full_pf_latest_price_guard_20261114/BUILD_COVERAGE.py)：旧coverage builderを再利用。科学runnerの新設なし。

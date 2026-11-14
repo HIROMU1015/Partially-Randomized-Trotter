@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[m3保存価格のconsumer binding](docs/research/pf_m3_saved_price_admission_20261115/REPORT.md)：既存D同等性証拠・C guard/price tierを再利用。12行ADMISSION、元36receipt参照、scope外計算なし。入口 scripts/admit_pf_m3_saved_prices.py。
+
 [決定論PF Stage1モデル凍結](docs/research/pf_stage1_model_freeze_20261115/REPORT.md)：固定24価格から12個別fit、係数・m6予測・SOURCEを保存。既存price_model_validationを再利用。m6独立holdout未評価。入口 scripts/freeze_pf_stage1_models.py。
 
 [Pauli physical-ID bridgeと共通価格評価経路](docs/research/paper_g_price_routes_20261114/PAULI_BRIDGE.md)：C正式plannerにPauli bridge（provider A_PR_PAULI、canonical candidate ID＝physical ID、Aのjob/dictionary_identityを固定blobから再利用、辞書SHA-256・λ_P・s_R・round別SOURCEを照合、旧形式IDは拒否）。guardはDの最新sidecar（8b28dce0：`PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF`、route明示）と整合。Dの実`price_records`は、canonical候補なら受理、`legacy_physical_candidate`なら拒否。D2発行元の照合に`central_control_body`・`append_pauli_event`を追加。Dの記録名はBの価格kindでないため、G会計で拒否。`pauli_requests`でDのround_requestと照合。実LD1/LD2の13 round×2でAのcarrier physical contextと完全一致（metadataのみ）。Bの新decoder bridgeのinterface仕様、受入条件と許容差の選択肢（未採択）。34＋56＝90 PASS。価格・compile・N/Gは0、mandatory STOP。
