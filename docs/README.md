@@ -1,5 +1,7 @@
 # 文書索引
 
+[並列化・高速化手法の再利用索引](PERFORMANCE_METHODS.md)：共通手法集への固定参照と、決定論PFの通常入口・同一S2再利用・高速fingerprintの適用条件／検証範囲。
+
 [決定論PF 6候補の全round価格coverage・次の有限検証案](research/d_pf_allround_price_coverage_plan_20261115/REPORT.md)（2026-11-15、Codex D）。Cの156軸表へのmetadata差分。保存m3～m6の48軸が再利用可能、短幅36＋長q72軸はモデル適用未検証。m3の現consumer bindingは未完了。最初の新規案はm9・6候補・XY最大12 compile、m6再取得不要。66 metadata check、科学計算/価格予測/N/G0、計画公開でmandatory STOP。
 
 [決定論PF Stage 2：m6独立holdout PASS](research/d_pf_stage2_holdout_20261115/REPORT.md)（2026-11-15、Codex D）。C凍結12モデルを元predicted_RZで比較し、PASS/FAIL/UNKNOWN=12/0/0。再利用0、新規12 wrapper、作用/実装guard完了。Stage1と凍結JSON不変、refit/外挿/MSE/N/Gなし、mandatory STOP。
