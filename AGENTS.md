@@ -58,17 +58,66 @@ requested material. In particular:
 
 ## Documentation updates
 
-When a research decision or validation result changes:
+Scale documentation updates to the research significance of a change:
 
-1. update `docs/research/研究概要・現状.md`;
-2. update the relevant normative or validation-specific document;
-3. append the decision and reason to the dated research note rather than silently
-   rewriting its earlier history; and
-4. update the machine-readable manifest when the evidence inventory or status
-   changes.
+1. Individual researchers maintain their fixed SOURCE, raw results, REPORTs,
+   and relevant normative or validation-specific documents. Record research
+   decisions and reasons in the dated research note, preserving earlier history.
+2. Update `docs/research/研究概要・現状.md` and research-wide indexes only when
+   the change affects the overall synthesis or discoverability; routine minor
+   changes do not require a full documentation update.
+3. Update the machine-readable manifest when the scientific evidence inventory
+   or status changes. Preserve updates required by an applicable fixed contract.
+4. Handle the integrated roadmap through the responsibility rules below;
+   updating an individual REPORT does not require an immediate roadmap edit.
 
 When adding a new validation path, keep the library module, runner, test,
-validation document, and artifact directory discoverable through the indexes in
-`PROJECT_MAP.md`, `scripts/README.md`, `src/trotterlib/README.md`, and
-`docs/README.md`. Do not move evidence or rename public paths merely for tidiness
-without updating all references and provenance records.
+validation document, and artifact directory discoverable through the applicable
+indexes in `PROJECT_MAP.md`, `scripts/README.md`, `src/trotterlib/README.md`, and
+`docs/README.md`, updating affected entries as needed. Do not move evidence or
+rename public paths merely for tidiness without updating all references and
+provenance records.
+
+## Integrated research roadmap: impact reports and updates (2026-11-14)
+
+On completing research, implementation, or validation work, assess whether the
+outcome materially affects:
+
+1. progress toward the research objectives;
+2. implementation or validation progress;
+3. scientific qualification or the scope of a result;
+4. unresolved questions;
+5. the next necessary validation or implementation;
+6. dependencies between tasks or their owners; or
+7. formal adoption, execution approval, or mandatory STOP.
+
+For a material impact, briefly include in the final report or an existing REPORT:
+the affected research issue, completed implementation or validation, new evidence
+with fixed SOURCE and REPORT links, resolved issues, remaining questions, and
+next work with dependencies and approval requirements. This is handoff information
+for the integration owner, not permission to edit the roadmap directly. Do not
+create a new management file or ledger solely for this handoff.
+
+Minor bug fixes, artificial or regression test additions, confirmations of an
+unchanged conclusion, documentation edits without research impact, and internal
+refactoring that changes neither execution conditions nor scientific qualification
+normally require no roadmap update. A brief "roadmap update unnecessary" in the
+final report is optional.
+
+Individual researchers, including A/B/C/D, must not directly edit
+[`docs/research/RESEARCH_ROADMAP.md`](docs/research/RESEARCH_ROADMAP.md) unless
+explicitly instructed. A Codex explicitly assigned as integration owner checks
+the individual fixed REPORTs and SOURCE and updates only materially affected
+parts under its section 12. Important changes may be batched; an immediate roadmap
+edit is not a completion condition for each researcher. Avoid concurrent edits
+to the same roadmap.
+
+The roadmap is an entry point for overall progress, open questions, dependencies,
+and direction. Individual REPORTs, raw results, and fixed SOURCE remain the
+scientific source of truth. Do not merge distinct research series, physical
+candidates, scientific contracts, or SOURCE without checking their conditions.
+Roadmap edits do not change scientific qualification, formal adoption, execution
+approval, or mandatory STOP, and authorize no new scientific computation, compile,
+experiment, or review. Before new scientific computation, compile, or experiments,
+apply the existing-results overlap check in section 10.5 of
+`research_project_instructions_unified_2026-11-14.md`.
