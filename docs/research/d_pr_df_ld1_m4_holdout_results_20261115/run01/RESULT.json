@@ -1,0 +1,1540 @@
+{
+  "execution_source": "7bdfc6f629aa74a5c1347abf84ad6486c669c9d8",
+  "pipeline_source": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+  "inputs_sha256": "258d5ed3ef57da1696715f71f23cc47c8a49a999359e0a3b38c2657a12efcc72",
+  "compile_budget": 8,
+  "resources_before": {
+    "affinity_cpu_count": 64,
+    "loadavg": [
+      0.32275390625,
+      0.638671875,
+      1.40625
+    ],
+    "meminfo": {
+      "MemTotal": "528127736 kB",
+      "MemAvailable": "512298716 kB"
+    },
+    "host": "GPUA100-gleap02",
+    "parent_peak_rss_bytes": 39845888
+  },
+  "mandatory_stop": true,
+  "status": "M4_SC_PAIRS_ACQUIRED",
+  "records": [
+    {
+      "index": 0,
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m4_q16_R32",
+        "candidate_id": "3df0cfd3356c358aeda8",
+        "index": 0,
+        "cohort": "D_PR_DF_LD1_M4_HOLDOUT_NORMAL_20261115_V1",
+        "conditional": false,
+        "C": [
+          129955,
+          129955
+        ],
+        "S": [
+          124411,
+          124411
+        ],
+        "source": {
+          "execution_source": "7bdfc6f629aa74a5c1347abf84ad6486c669c9d8",
+          "private_result": "/home/AbeHiromu/projects/d2-pr-df-ld1-m4-holdout-20261115-private/run01/fresh/H4_S0_m4_q16_R32/0/result.json"
+        },
+        "event_digest": "0a4214967d43862c1b4db6df4ceb04b4793334b452e16ea229cf7c6a54dc1ead",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "42b39ce7c7df8d138016e54dcc6c63fa9d7680ae8d4acae16b168b32728a15fa",
+          "55309a78623f7cfd69664c27c00bc8d4b86081c8433c92a4532e0c583cdc0d1a"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "m": 4,
+        "phase": "fresh",
+        "role": "HOLDOUT",
+        "request": {
+          "K": 2,
+          "R_outer": 32,
+          "T": 1.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "3df0cfd3356c358aeda8",
+          "method": "PR",
+          "prefix": 1,
+          "q": 16,
+          "system": "H4"
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "3df0cfd3356c358aeda8",
+              "R_outer": 32,
+              "K": 2,
+              "q_PF": 16,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+              "denominator": 539496659426909122096437389293855970805348475396548904610992201
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "seeds": [
+          14646197473806357520,
+          16747901711665483975,
+          11986204884078336154,
+          17796284543260594391,
+          1240582131796536406,
+          2199222395989115912,
+          16225669741982230372,
+          18284757314310983212,
+          6575455923561265226,
+          7025050764599770934,
+          1081312784084050097,
+          9405295871312617531,
+          15560573962018212479,
+          10097303277518062979,
+          8645960457082908603,
+          606879115854555434
+        ],
+        "laws": [
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          }
+        ],
+        "events": {
+          "events": 512,
+          "rotation_ZZ": 465,
+          "rotation_Z": 47,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 512
+          }
+        },
+        "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": 2.7108187593826942,
+        "scalar_hex": "0x1.5afc1bee774aap+1",
+        "scalar_application": "ONCE_AT_TOTAL_T",
+        "compiled": {
+          "cosine": {
+            "rz_count": 129955,
+            "rz_depth": 34605,
+            "cx_count": 41390,
+            "cx_depth": 20541,
+            "total_depth": 77760,
+            "circuit_size": 259489
+          },
+          "sine": {
+            "rz_count": 129955,
+            "rz_depth": 34605,
+            "cx_count": 41390,
+            "cx_depth": 20541,
+            "total_depth": 77760,
+            "circuit_size": 259489
+          }
+        },
+        "compile_log": [
+          {
+            "axis": "cosine",
+            "status": "COMPLETE",
+            "seconds": 12.856532444013283,
+            "peak_rss_bytes": 562692096
+          },
+          {
+            "axis": "sine",
+            "status": "COMPLETE",
+            "seconds": 12.82915418711491,
+            "peak_rss_bytes": 589946880
+          }
+        ],
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 0.24466610397212207,
+            "event_write": 0.4764758520759642,
+            "event_digest": 0.08210060303099453,
+            "structural": 5.1841094449628145,
+            "compose": 10.187770998105407,
+            "cosine_wrapper": 2.596308748004958,
+            "cosine_fingerprint": 2.2171256199944764,
+            "cosine_compile": 12.857406286057085,
+            "cosine_mutation_check": 2.410102351102978,
+            "sine_wrapper": 2.519073711009696,
+            "sine_fingerprint": 2.090667993063107,
+            "sine_compile": 12.829990420024842,
+            "sine_mutation_check": 2.3521321760490537
+          },
+          "total_seconds": 56.06161212781444,
+          "fingerprint": {
+            "calls": 23,
+            "hits": 643332,
+            "misses": 34634
+          }
+        },
+        "path_wall_seconds": 56.513108981074765,
+        "peak_rss_bytes": 589946880,
+        "private_directory": "/home/AbeHiromu/projects/d2-pr-df-ld1-m4-holdout-20261115-private/run01/fresh/H4_S0_m4_q16_R32/0",
+        "gate_status": "INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED",
+        "numerical_action_gate": "NOT_RUN_AS_IN_ORIGINAL_P2_FRESH"
+      }
+    },
+    {
+      "index": 1,
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m4_q16_R32",
+        "candidate_id": "3df0cfd3356c358aeda8",
+        "index": 1,
+        "cohort": "D_PR_DF_LD1_M4_HOLDOUT_NORMAL_20261115_V1",
+        "conditional": false,
+        "C": [
+          131685,
+          131685
+        ],
+        "S": [
+          125935,
+          125935
+        ],
+        "source": {
+          "execution_source": "7bdfc6f629aa74a5c1347abf84ad6486c669c9d8",
+          "private_result": "/home/AbeHiromu/projects/d2-pr-df-ld1-m4-holdout-20261115-private/run01/fresh/H4_S0_m4_q16_R32/1/result.json"
+        },
+        "event_digest": "f697bab965dae8f08fc95aaeca2ecd81b871c3f849b12ff6bb306480a2c4f569",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "57fe91b4294f95a951182be4672b3bdd51ff5378fdad578473be71ce81e4a6e3",
+          "4019e2fff85b6964e861abb7e1b055719b67222dd2daaca6b06fb6291941b216"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "m": 4,
+        "phase": "fresh",
+        "role": "HOLDOUT",
+        "request": {
+          "K": 2,
+          "R_outer": 32,
+          "T": 1.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "3df0cfd3356c358aeda8",
+          "method": "PR",
+          "prefix": 1,
+          "q": 16,
+          "system": "H4"
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "3df0cfd3356c358aeda8",
+              "R_outer": 32,
+              "K": 2,
+              "q_PF": 16,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+              "denominator": 539496659426909122096437389293855970805348475396548904610992201
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "seeds": [
+          18414135097610168177,
+          12230470430746218115,
+          314827374670879847,
+          4165625077687652521,
+          10901524662192809211,
+          9418353279282472125,
+          16974223203530265806,
+          14241824751190918074,
+          646891425020192129,
+          14857492889947384471,
+          926842021972158839,
+          1241141900085249222,
+          10796616362945264385,
+          9817601214844414517,
+          666348202114648174,
+          3108934311098965894
+        ],
+        "laws": [
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          }
+        ],
+        "events": {
+          "events": 512,
+          "rotation_ZZ": 473,
+          "rotation_Z": 39,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 512
+          }
+        },
+        "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": 2.7108187593826942,
+        "scalar_hex": "0x1.5afc1bee774aap+1",
+        "scalar_application": "ONCE_AT_TOTAL_T",
+        "compiled": {
+          "cosine": {
+            "rz_count": 131685,
+            "rz_depth": 35027,
+            "cx_count": 41890,
+            "cx_depth": 20782,
+            "total_depth": 78793,
+            "circuit_size": 263242
+          },
+          "sine": {
+            "rz_count": 131685,
+            "rz_depth": 35027,
+            "cx_count": 41890,
+            "cx_depth": 20782,
+            "total_depth": 78793,
+            "circuit_size": 263242
+          }
+        },
+        "compile_log": [
+          {
+            "axis": "cosine",
+            "status": "COMPLETE",
+            "seconds": 13.049826011061668,
+            "peak_rss_bytes": 561643520
+          },
+          {
+            "axis": "sine",
+            "status": "COMPLETE",
+            "seconds": 13.038978253956884,
+            "peak_rss_bytes": 583577600
+          }
+        ],
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 0.24485674197785556,
+            "event_write": 0.46795424702577293,
+            "event_digest": 0.07971359393559396,
+            "structural": 5.299490527017042,
+            "compose": 10.174633199116215,
+            "cosine_wrapper": 2.6154698219615966,
+            "cosine_fingerprint": 2.257112530991435,
+            "cosine_compile": 13.050731733907014,
+            "cosine_mutation_check": 2.3385521869640797,
+            "sine_wrapper": 2.5736780411098152,
+            "sine_fingerprint": 2.3628466171212494,
+            "sine_compile": 13.039840107085183,
+            "sine_mutation_check": 2.2692443679552525
+          },
+          "total_seconds": 56.787755124038085,
+          "fingerprint": {
+            "calls": 23,
+            "hits": 649600,
+            "misses": 34454
+          }
+        },
+        "path_wall_seconds": 57.24618001608178,
+        "peak_rss_bytes": 583577600,
+        "private_directory": "/home/AbeHiromu/projects/d2-pr-df-ld1-m4-holdout-20261115-private/run01/fresh/H4_S0_m4_q16_R32/1",
+        "gate_status": "INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED",
+        "numerical_action_gate": "NOT_RUN_AS_IN_ORIGINAL_P2_FRESH"
+      }
+    },
+    {
+      "index": 2,
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m4_q16_R32",
+        "candidate_id": "3df0cfd3356c358aeda8",
+        "index": 2,
+        "cohort": "D_PR_DF_LD1_M4_HOLDOUT_NORMAL_20261115_V1",
+        "conditional": false,
+        "C": [
+          133389,
+          133389
+        ],
+        "S": [
+          128133,
+          128133
+        ],
+        "source": {
+          "execution_source": "7bdfc6f629aa74a5c1347abf84ad6486c669c9d8",
+          "private_result": "/home/AbeHiromu/projects/d2-pr-df-ld1-m4-holdout-20261115-private/run01/fresh/H4_S0_m4_q16_R32/2/result.json"
+        },
+        "event_digest": "0fa9d9419368566e08e98e25b9e4fc0abe1fde2f2b2c5094525ff463032add2b",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "915df8ae0ca0b920c1869c702168d40317680589fd61af6339accdc5a39f42b0",
+          "8efcd6d495aa0cf63c7d782ec03c1810c13b97c5cfc2508aa592f20e22716d7c"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "m": 4,
+        "phase": "fresh",
+        "role": "HOLDOUT",
+        "request": {
+          "K": 2,
+          "R_outer": 32,
+          "T": 1.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "3df0cfd3356c358aeda8",
+          "method": "PR",
+          "prefix": 1,
+          "q": 16,
+          "system": "H4"
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "3df0cfd3356c358aeda8",
+              "R_outer": 32,
+              "K": 2,
+              "q_PF": 16,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+              "denominator": 539496659426909122096437389293855970805348475396548904610992201
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "seeds": [
+          3769210469785096312,
+          4127638131555001433,
+          8872060400168430830,
+          60681103949751023,
+          12979725876796436763,
+          7374789798540280944,
+          8162440662766096932,
+          3010353868426676142,
+          18432903797771897784,
+          3890059057185208805,
+          13109568787416706699,
+          18398486862895689737,
+          12429164164478446402,
+          16361889268313534006,
+          9758620469387643200,
+          9836735443123761577
+        ],
+        "laws": [
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          }
+        ],
+        "events": {
+          "events": 512,
+          "rotation_ZZ": 476,
+          "rotation_Z": 36,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 512
+          }
+        },
+        "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": 2.7108187593826942,
+        "scalar_hex": "0x1.5afc1bee774aap+1",
+        "scalar_application": "ONCE_AT_TOTAL_T",
+        "compiled": {
+          "cosine": {
+            "rz_count": 133389,
+            "rz_depth": 35431,
+            "cx_count": 42436,
+            "cx_depth": 21010,
+            "total_depth": 79629,
+            "circuit_size": 266331
+          },
+          "sine": {
+            "rz_count": 133389,
+            "rz_depth": 35431,
+            "cx_count": 42436,
+            "cx_depth": 21010,
+            "total_depth": 79629,
+            "circuit_size": 266331
+          }
+        },
+        "compile_log": [
+          {
+            "axis": "cosine",
+            "status": "COMPLETE",
+            "seconds": 13.071644696872681,
+            "peak_rss_bytes": 564264960
+          },
+          {
+            "axis": "sine",
+            "status": "COMPLETE",
+            "seconds": 13.179976833984256,
+            "peak_rss_bytes": 586801152
+          }
+        ],
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 0.2541791188996285,
+            "event_write": 0.4793201358988881,
+            "event_digest": 0.08108948217704892,
+            "structural": 5.401164942188188,
+            "compose": 10.80005550920032,
+            "cosine_wrapper": 2.3811475140973926,
+            "cosine_fingerprint": 2.453702866099775,
+            "cosine_compile": 13.07289971690625,
+            "cosine_mutation_check": 2.4786828979849815,
+            "sine_wrapper": 2.5199324178975075,
+            "sine_fingerprint": 2.268215826014057,
+            "sine_compile": 13.180889126844704,
+            "sine_mutation_check": 2.285943433176726
+          },
+          "total_seconds": 57.67235777317546,
+          "fingerprint": {
+            "calls": 23,
+            "hits": 661290,
+            "misses": 35250
+          }
+        },
+        "path_wall_seconds": 58.19095020298846,
+        "peak_rss_bytes": 586801152,
+        "private_directory": "/home/AbeHiromu/projects/d2-pr-df-ld1-m4-holdout-20261115-private/run01/fresh/H4_S0_m4_q16_R32/2",
+        "gate_status": "INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED",
+        "numerical_action_gate": "NOT_RUN_AS_IN_ORIGINAL_P2_FRESH"
+      }
+    },
+    {
+      "index": 3,
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m4_q16_R32",
+        "candidate_id": "3df0cfd3356c358aeda8",
+        "index": 3,
+        "cohort": "D_PR_DF_LD1_M4_HOLDOUT_NORMAL_20261115_V1",
+        "conditional": false,
+        "C": [
+          123741,
+          123741
+        ],
+        "S": [
+          118424,
+          118424
+        ],
+        "source": {
+          "execution_source": "7bdfc6f629aa74a5c1347abf84ad6486c669c9d8",
+          "private_result": "/home/AbeHiromu/projects/d2-pr-df-ld1-m4-holdout-20261115-private/run01/fresh/H4_S0_m4_q16_R32/3/result.json"
+        },
+        "event_digest": "4cc82a47a00e9cac570159432cfd0d0dcbe6eb25e4e0f117d38a3f9b65619375",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "65de85f4606bdbb0eedb94c1bcb75329387f3c68fb8cea36009841ab40939dd2",
+          "8b5e52c8dfdc6f414c99c40d8c1440326b7542bb90c3b22ade22f9c502bbbf77"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "m": 4,
+        "phase": "fresh",
+        "role": "HOLDOUT",
+        "request": {
+          "K": 2,
+          "R_outer": 32,
+          "T": 1.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "3df0cfd3356c358aeda8",
+          "method": "PR",
+          "prefix": 1,
+          "q": 16,
+          "system": "H4"
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "3df0cfd3356c358aeda8",
+              "R_outer": 32,
+              "K": 2,
+              "q_PF": 16,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+              "denominator": 539496659426909122096437389293855970805348475396548904610992201
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "seeds": [
+          6907747655116071635,
+          16481651377855967308,
+          13717847812654953038,
+          3773473711089476584,
+          769917856683467544,
+          8323757746657416507,
+          15315283223940753606,
+          3347030529104765426,
+          338726930981462715,
+          8730259112396205708,
+          5956765789562464725,
+          14119400855631439567,
+          13046401607084280404,
+          11879077225435588637,
+          4909216742975627705,
+          1115864744333980296
+        ],
+        "laws": [
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          },
+          {
+            "steps": 32,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999599809387455,
+              4.0019061254454096e-05
+            ]
+          }
+        ],
+        "events": {
+          "events": 512,
+          "rotation_ZZ": 472,
+          "rotation_Z": 40,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 512
+          }
+        },
+        "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": 2.7108187593826942,
+        "scalar_hex": "0x1.5afc1bee774aap+1",
+        "scalar_application": "ONCE_AT_TOTAL_T",
+        "compiled": {
+          "cosine": {
+            "rz_count": 123741,
+            "rz_depth": 33000,
+            "cx_count": 39620,
+            "cx_depth": 19674,
+            "total_depth": 74136,
+            "circuit_size": 247024
+          },
+          "sine": {
+            "rz_count": 123741,
+            "rz_depth": 33000,
+            "cx_count": 39620,
+            "cx_depth": 19674,
+            "total_depth": 74136,
+            "circuit_size": 247024
+          }
+        },
+        "compile_log": [
+          {
+            "axis": "cosine",
+            "status": "COMPLETE",
+            "seconds": 12.219605430029333,
+            "peak_rss_bytes": 553287680
+          },
+          {
+            "axis": "sine",
+            "status": "COMPLETE",
+            "seconds": 12.178296813974157,
+            "peak_rss_bytes": 578363392
+          }
+        ],
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 0.24512780993245542,
+            "event_write": 0.4745946289040148,
+            "event_digest": 0.08074946491979063,
+            "structural": 4.964732273016125,
+            "compose": 9.906007895013317,
+            "cosine_wrapper": 2.388722024857998,
+            "cosine_fingerprint": 2.1689225749578327,
+            "cosine_compile": 12.220463450998068,
+            "cosine_mutation_check": 2.1753628191072494,
+            "sine_wrapper": 2.473187212832272,
+            "sine_fingerprint": 2.1346685672178864,
+            "sine_compile": 12.179128097137436,
+            "sine_mutation_check": 2.1430322248488665
+          },
+          "total_seconds": 53.56886037113145,
+          "fingerprint": {
+            "calls": 23,
+            "hits": 615354,
+            "misses": 33778
+          }
+        },
+        "path_wall_seconds": 54.06984447594732,
+        "peak_rss_bytes": 578363392,
+        "private_directory": "/home/AbeHiromu/projects/d2-pr-df-ld1-m4-holdout-20261115-private/run01/fresh/H4_S0_m4_q16_R32/3",
+        "gate_status": "INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED",
+        "numerical_action_gate": "NOT_RUN_AS_IN_ORIGINAL_P2_FRESH"
+      }
+    }
+  ],
+  "new_compiles": 8,
+  "compile_attempts": 8,
+  "total_wall_seconds": 60.3829171359539,
+  "resources_after": {
+    "affinity_cpu_count": 64,
+    "loadavg": [
+      2.4755859375,
+      1.19580078125,
+      1.55078125
+    ],
+    "meminfo": {
+      "MemTotal": "528127736 kB",
+      "MemAvailable": "512063272 kB"
+    },
+    "host": "GPUA100-gleap02",
+    "parent_peak_rss_bytes": 505544704
+  },
+  "fit": false,
+  "prediction_regeneration": false,
+  "full_wrapper_statevector_validation": false,
+  "all_law_E_C": null,
+  "CI": null,
+  "N": null,
+  "G": null
+}
