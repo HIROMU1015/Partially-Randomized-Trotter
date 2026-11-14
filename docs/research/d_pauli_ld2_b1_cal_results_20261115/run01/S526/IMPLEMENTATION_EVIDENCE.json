@@ -1,0 +1,724 @@
+{
+  "X": {
+    "record": "PAULI_B1_CELL_IMPLEMENTATION_V1",
+    "C_input": {
+      "record": "PRICE_CALIBRATION_RECORD_V1",
+      "cell_id": "S526",
+      "role": "CALIBRATION",
+      "route": "PR_PAULI_TAIL",
+      "axis": "X",
+      "features": {
+        "event_count": {
+          "numerator": 526,
+          "denominator": 1
+        },
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "pf_step_count": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "rz_count": {
+        "numerator": 11045,
+        "denominator": 2
+      },
+      "kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+      "n_paths": 2,
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "K": 2,
+        "price_law": "PCG64_numpy_float64_CDF_saved_cohort",
+        "dictionary": "LD2"
+      },
+      "source": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "result_path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/RESULT.json",
+        "caller": "scripts/run_pauli_b1_prices.py",
+        "prefix": 2,
+        "kind": "B1-CAL",
+        "cell": "S526",
+        "cohort": "D_PAULI_LD2_B1-CAL_S526_PROPOSED_V1",
+        "step_seeds": [
+          [
+            14818349744279419530
+          ],
+          [
+            11577419478386750467
+          ]
+        ]
+      },
+      "implementation": {
+        "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+        "native": "DF_HEAD_NATIVE_S2",
+        "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_SAVED_S_R",
+        "scalar_application": "ONCE_AT_TOTAL_T"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "qiskit": "1.3.0",
+        "basis": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "P": 0
+      },
+      "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+      "finite_sample_mean_is_law_expectation": false
+    },
+    "request": {
+      "m": null,
+      "prefix": 2,
+      "q": 1,
+      "R": 526,
+      "K": 2,
+      "T": 0.1,
+      "step_time": 0.1,
+      "lambda_P": 2.0550998769244275,
+      "candidate_id": "PAULI_PRICE_CELL:d75c1bd5eafd6baf59012f990d723dcdda7731bede1b13653512c0cb3356532c",
+      "physical_cell": {
+        "kind": "NON_CONFIGURATION_PAULI_PRICE_CELL",
+        "binding": {
+          "T": 0.8,
+          "basis": "STO-3G",
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "geometry": "linear_1Angstrom",
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+          "profile_is_reference_only": true,
+          "rank": 10,
+          "rank_is_saved_observation_not_generation_argument": true,
+          "rank_policy": "tol_only_1e-8",
+          "series": "H4_TOL_ONLY_DF10",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "system": "H4",
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          },
+          "decomposition": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "contract": {
+              "completion": "saved_weighted_Hermitian_completion",
+              "fragment_order": "saved_snapshot_order",
+              "preparation_binding": {
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+              },
+              "state_preparation_cost": 0,
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              }
+            },
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            }
+          }
+        },
+        "split": {
+          "L_D": 2,
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          },
+          "randomized_scope": "TAIL_AFTER_PREFIX",
+          "deterministic_scope": "PREFIX",
+          "original_PF_method": "B0",
+          "lambda_R": {
+            "numerator": 2313836759981501,
+            "denominator": 1125899906842624
+          },
+          "lambda_source": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_DICTIONARY.json",
+            "selector": [
+              "lambda_P"
+            ]
+          },
+          "tail_dictionary": {
+            "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+            "dictionary_sha256": "dd986e52057aa01a330a83dd147316696dbae669dc8a51828ee2a54734016ea7",
+            "source": {
+              "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+              "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_DICTIONARY.json"
+            },
+            "prefix": 2,
+            "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+            "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+            "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+            "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+            "P0_operator_residual_source": {
+              "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+              "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/result.json"
+            }
+          },
+          "one_body_policy": "DETERMINISTIC",
+          "scalar": 0.2223759094107018
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17
+        },
+        "route": "PR_PAULI_TAIL",
+        "lowering": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+        "q": 1,
+        "R": 526,
+        "T": 0.1,
+        "K": 2
+      },
+      "normalization": "EXISTING_FINITE_K_RULE_NOT_EVALUATED_IN_METADATA"
+    },
+    "dictionary_identity": {
+      "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+      "dictionary_sha256": "dd986e52057aa01a330a83dd147316696dbae669dc8a51828ee2a54734016ea7",
+      "source": {
+        "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+        "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_DICTIONARY.json"
+      },
+      "prefix": 2,
+      "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+      "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+      "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+      "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+      "P0_operator_residual_source": {
+        "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+        "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/result.json"
+      }
+    },
+    "implementation": {
+      "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+      "native": "DF_HEAD_NATIVE_S2",
+      "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_SAVED_S_R",
+      "scalar_application": "ONCE_AT_TOTAL_T"
+    },
+    "profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "qiskit": "1.3.0",
+      "basis": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "P": 0
+    },
+    "implementation_sources": {
+      "caller": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "scripts/run_pauli_b1_prices.py"
+      },
+      "connection": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "src/trottertracks/pauli_tail_price_connection.py"
+      },
+      "core": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "scripts/run_pauli_ld1_m0_pilot.py"
+      },
+      "native": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "scripts/h46_long_time_native.py"
+      },
+      "wrapper": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+      },
+      "lowering": {
+        "commit": "9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c",
+        "path": "src/trotterlib/h4_d2_pauli_control.py"
+      },
+      "receipts": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "src/trottertracks/pauli_b1_receipts.py"
+      },
+      "saved_event_decoder": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "scripts/h46_same_event.py"
+      },
+      "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_SAVED_DF_TAIL_IDENTITY_sR",
+      "scalar_application": "ONCE_AT_TOTAL_T"
+    },
+    "scalar": 2.515477156730702,
+    "measurement": {
+      "axis": "X",
+      "include_measurement": true,
+      "state_preparation_cost_included": false
+    },
+    "paths": [
+      {
+        "index": 0,
+        "axis": "X",
+        "metrics": {
+          "rz_count": 5522,
+          "rz_depth": 2357,
+          "cx_count": 5558,
+          "cx_depth": 4681,
+          "total_depth": 7460,
+          "circuit_size": 13921
+        },
+        "fingerprint": "b5b1ae3d7b61a497f6fa371df59c8439f6b3ba8ff69c70be04b126afc55119be",
+        "path_receipt": {
+          "commit": null,
+          "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/RESULT.json",
+          "selector": [
+            "child",
+            "paths",
+            0
+          ]
+        },
+        "compile_receipt": {
+          "commit": null,
+          "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/COMPILE_RECEIPTS.json",
+          "selector": [
+            "p0X"
+          ]
+        }
+      },
+      {
+        "index": 1,
+        "axis": "X",
+        "metrics": {
+          "rz_count": 5523,
+          "rz_depth": 2339,
+          "cx_count": 5502,
+          "cx_depth": 4594,
+          "total_depth": 7360,
+          "circuit_size": 13853
+        },
+        "fingerprint": "e82573b96c64bedce299d8e0825aa357e6ba0ef8011473384397e15929150e50",
+        "path_receipt": {
+          "commit": null,
+          "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/RESULT.json",
+          "selector": [
+            "child",
+            "paths",
+            1
+          ]
+        },
+        "compile_receipt": {
+          "commit": null,
+          "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/COMPILE_RECEIPTS.json",
+          "selector": [
+            "p1X"
+          ]
+        }
+      }
+    ],
+    "paired_dependence": null,
+    "law_expectation": false
+  },
+  "Y": {
+    "record": "PAULI_B1_CELL_IMPLEMENTATION_V1",
+    "C_input": {
+      "record": "PRICE_CALIBRATION_RECORD_V1",
+      "cell_id": "S526",
+      "role": "CALIBRATION",
+      "route": "PR_PAULI_TAIL",
+      "axis": "Y",
+      "features": {
+        "event_count": {
+          "numerator": 526,
+          "denominator": 1
+        },
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "pf_step_count": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "rz_count": {
+        "numerator": 11045,
+        "denominator": 2
+      },
+      "kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+      "n_paths": 2,
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "K": 2,
+        "price_law": "PCG64_numpy_float64_CDF_saved_cohort",
+        "dictionary": "LD2"
+      },
+      "source": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "result_path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/RESULT.json",
+        "caller": "scripts/run_pauli_b1_prices.py",
+        "prefix": 2,
+        "kind": "B1-CAL",
+        "cell": "S526",
+        "cohort": "D_PAULI_LD2_B1-CAL_S526_PROPOSED_V1",
+        "step_seeds": [
+          [
+            14818349744279419530
+          ],
+          [
+            11577419478386750467
+          ]
+        ]
+      },
+      "implementation": {
+        "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+        "native": "DF_HEAD_NATIVE_S2",
+        "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_SAVED_S_R",
+        "scalar_application": "ONCE_AT_TOTAL_T"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "qiskit": "1.3.0",
+        "basis": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "P": 0
+      },
+      "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+      "finite_sample_mean_is_law_expectation": false
+    },
+    "request": {
+      "m": null,
+      "prefix": 2,
+      "q": 1,
+      "R": 526,
+      "K": 2,
+      "T": 0.1,
+      "step_time": 0.1,
+      "lambda_P": 2.0550998769244275,
+      "candidate_id": "PAULI_PRICE_CELL:d75c1bd5eafd6baf59012f990d723dcdda7731bede1b13653512c0cb3356532c",
+      "physical_cell": {
+        "kind": "NON_CONFIGURATION_PAULI_PRICE_CELL",
+        "binding": {
+          "T": 0.8,
+          "basis": "STO-3G",
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "geometry": "linear_1Angstrom",
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+          "profile_is_reference_only": true,
+          "rank": 10,
+          "rank_is_saved_observation_not_generation_argument": true,
+          "rank_policy": "tol_only_1e-8",
+          "series": "H4_TOL_ONLY_DF10",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "system": "H4",
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          },
+          "decomposition": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "contract": {
+              "completion": "saved_weighted_Hermitian_completion",
+              "fragment_order": "saved_snapshot_order",
+              "preparation_binding": {
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+              },
+              "state_preparation_cost": 0,
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              }
+            },
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            }
+          }
+        },
+        "split": {
+          "L_D": 2,
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          },
+          "randomized_scope": "TAIL_AFTER_PREFIX",
+          "deterministic_scope": "PREFIX",
+          "original_PF_method": "B0",
+          "lambda_R": {
+            "numerator": 2313836759981501,
+            "denominator": 1125899906842624
+          },
+          "lambda_source": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_DICTIONARY.json",
+            "selector": [
+              "lambda_P"
+            ]
+          },
+          "tail_dictionary": {
+            "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+            "dictionary_sha256": "dd986e52057aa01a330a83dd147316696dbae669dc8a51828ee2a54734016ea7",
+            "source": {
+              "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+              "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_DICTIONARY.json"
+            },
+            "prefix": 2,
+            "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+            "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+            "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+            "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+            "P0_operator_residual_source": {
+              "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+              "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/result.json"
+            }
+          },
+          "one_body_policy": "DETERMINISTIC",
+          "scalar": 0.2223759094107018
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17
+        },
+        "route": "PR_PAULI_TAIL",
+        "lowering": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+        "q": 1,
+        "R": 526,
+        "T": 0.1,
+        "K": 2
+      },
+      "normalization": "EXISTING_FINITE_K_RULE_NOT_EVALUATED_IN_METADATA"
+    },
+    "dictionary_identity": {
+      "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+      "dictionary_sha256": "dd986e52057aa01a330a83dd147316696dbae669dc8a51828ee2a54734016ea7",
+      "source": {
+        "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+        "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_DICTIONARY.json"
+      },
+      "prefix": 2,
+      "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+      "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+      "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+      "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+      "P0_operator_residual_source": {
+        "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+        "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/result.json"
+      }
+    },
+    "implementation": {
+      "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+      "native": "DF_HEAD_NATIVE_S2",
+      "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_SAVED_S_R",
+      "scalar_application": "ONCE_AT_TOTAL_T"
+    },
+    "profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "qiskit": "1.3.0",
+      "basis": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "P": 0
+    },
+    "implementation_sources": {
+      "caller": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "scripts/run_pauli_b1_prices.py"
+      },
+      "connection": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "src/trottertracks/pauli_tail_price_connection.py"
+      },
+      "core": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "scripts/run_pauli_ld1_m0_pilot.py"
+      },
+      "native": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "scripts/h46_long_time_native.py"
+      },
+      "wrapper": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+      },
+      "lowering": {
+        "commit": "9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c",
+        "path": "src/trotterlib/h4_d2_pauli_control.py"
+      },
+      "receipts": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "src/trottertracks/pauli_b1_receipts.py"
+      },
+      "saved_event_decoder": {
+        "commit": "ff536ed2a6effc6c01899a7dcde76e5361448b85",
+        "path": "scripts/h46_same_event.py"
+      },
+      "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_SAVED_DF_TAIL_IDENTITY_sR",
+      "scalar_application": "ONCE_AT_TOTAL_T"
+    },
+    "scalar": 2.515477156730702,
+    "measurement": {
+      "axis": "Y",
+      "include_measurement": true,
+      "state_preparation_cost_included": false
+    },
+    "paths": [
+      {
+        "index": 0,
+        "axis": "Y",
+        "metrics": {
+          "rz_count": 5522,
+          "rz_depth": 2357,
+          "cx_count": 5558,
+          "cx_depth": 4681,
+          "total_depth": 7460,
+          "circuit_size": 13921
+        },
+        "fingerprint": "8408cea21918d880469d938d8edce52c25ea4951dd764c6eb4f78501f81ef1cf",
+        "path_receipt": {
+          "commit": null,
+          "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/RESULT.json",
+          "selector": [
+            "child",
+            "paths",
+            0
+          ]
+        },
+        "compile_receipt": {
+          "commit": null,
+          "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/COMPILE_RECEIPTS.json",
+          "selector": [
+            "p0Y"
+          ]
+        }
+      },
+      {
+        "index": 1,
+        "axis": "Y",
+        "metrics": {
+          "rz_count": 5523,
+          "rz_depth": 2339,
+          "cx_count": 5502,
+          "cx_depth": 4594,
+          "total_depth": 7360,
+          "circuit_size": 13853
+        },
+        "fingerprint": "1e262788821b1d8d5fdc54ee2fa46ac2a15aff983c0d42ab5ea38b3c8f82fe09",
+        "path_receipt": {
+          "commit": null,
+          "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/RESULT.json",
+          "selector": [
+            "child",
+            "paths",
+            1
+          ]
+        },
+        "compile_receipt": {
+          "commit": null,
+          "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/run01/S526/COMPILE_RECEIPTS.json",
+          "selector": [
+            "p1Y"
+          ]
+        }
+      }
+    ],
+    "paired_dependence": null,
+    "law_expectation": false
+  }
+}
