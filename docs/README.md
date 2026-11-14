@@ -1,5 +1,7 @@
 # 文書索引
 
+[Pauli LD1/m0 B0 run02復旧REPORT](research/d_pauli_ld1_m0_pilot_results_20261114/RECOVERY_REPORT.md)／[C HANDOFF](research/d_pauli_ld1_m0_pilot_results_20261114/RECOVERY_HANDOFF.md)／[結果](research/d_pauli_ld1_m0_pilot_results_20261114/run02/RESULT.json)／[published sidecar](research/d_pauli_ld1_m0_pilot_results_20261114/run02/SIDECARS_PUBLISHED.json)：承認後の一回の復旧が成功。元ID・seedのnormal1 path、X/Y2compile、全固定gate PASS。各RZ1380/CX578/depth834、有限cohortのみ、平均/N/Gなし。旧run01保全、mandatory STOP。
+
 [Pauli LD1/m0 B0停止REPORT](research/d_pauli_ld1_m0_pilot_results_20261114/REPORT.md)／[CHECKS](research/d_pauli_ld1_m0_pilot_results_20261114/CHECKS.json)／[HANDOFF](research/d_pauli_ld1_m0_pilot_results_20261114/HANDOFF.md)／[復旧条件](research/d_pauli_ld1_m0_pilot_results_20261114/NEXT_STEPS.md)：固定62aeの一回起動はtracked referenceのsparse未展開で入力import STOP。実prepare/sampling/compile0、価格/sidecar未生成、retryなし、mandatory STOP。
 
 [Pauli physical-ID bridge](research/paper_g_price_routes_20261114/PAULI_BRIDGE.md)：Cのplannerに、Pauli canonical physical ID（辞書hash・λ・scalar・round別SOURCE）を接続。guardをDの最新sidecar（8b28dce0）と整合させ、旧形式IDは拒否。実LD1/LD2の26 roundでmetadataが一致。新decoder bridgeの仕様。34＋56＝90 PASS。STOP。

@@ -1,5 +1,7 @@
 # Validation status
 
+[Pauli LD1/m0 B0 run02](docs/research/d_pauli_ld1_m0_pilot_results_20261114/RECOVERY_REPORT.md)（2026-11-14）：実行SOURCE9abbcc563、raw結果8502dd33a。linear H4/1Å/STO-3G/保存tol-only DF10、Pauli LD1/S2/Δ.1/m0/q1/R3/K2/P0、normal1 pathを明示承認後に復旧実行。測定付きX/Y計2compile、bit順/scalar/control/oracle vector/compiled vector PASS。各RZ1380/CX578/depth834、wall13.48秒/peak626888KiB。DIRECT_COMPILED_FINITE_SAMPLE/FINITE_COHORT_ONLY/n_paths1/law_expectation=false。C guardは実装metadataのみPASS、法則平均/CI・長時間/model・N/Gは未資格。旧入力import STOPは下記に保全、mandatory STOP。
+
 [Pauli B0実行attemptのSTOP](docs/research/d_pauli_ld1_m0_pilot_results_20261114/REPORT.md)：SOURCE62ae1bd56718287de5d958cf0ed6411f5b7395c9で一回起動。C c628の元canonical d905/RMSE:62a9…、184項辞書SHA、seed14788159701244282917・Pauli D2 routeのpreflight PASS、親8・内部子5人工test PASS。実native contextのrestore importで、sparse checkoutが除外したreferences/h46_m5_tol_pilot_inputs_v1.json欠測によりchild exit1/parent2。実入力復元/prepare/path/event/native/wrapper/compile0、価格・sidecarなし、全実作用/scalar gate未到達。wall6.72秒/peak604088 KiBは起動失敗の観測、科学SOURCE/guard無変更・retry0。partial/旧原本を保全、公開後mandatory STOP。
 
 [S1価格比較guard](docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：人工14＋回帰37＝51 PASS。実価格資格・B直接consumerの修正は未完了、新科学計算0。
