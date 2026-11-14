@@ -2,7 +2,7 @@
 
 **技術実装完了・科学計画は未採択・mandatory STOP。** 新しいH4 preparation、sampling、回路build/compile、statevector、保存科学値の数値再解析、fit、E[C]、N/Gは実行していない。
 
-実装SOURCEは `0a5dcfbe99b42d2d94c1f12d1c8028694767b54c`。branchは `codex/d-full-h-p2-caller-prep-20261114`、基点はP-1結果 `a04470c0ad489eea1798856e648f863f9092cfb1`。既存branchを確認し、P-1の系列を保ちつつPauli・決定論PFの並行作業から分離した。merge、main変更、他worktree変更は行っていない。
+実装SOURCEは `6069605d50270111d1510478b08e11b8e5a18d86`。branchは `codex/d-full-h-p2-caller-prep-20261114`、基点はP-1結果 `a04470c0ad489eea1798856e648f863f9092cfb1`。既存branchを確認し、P-1の系列を保ちつつPauli・決定論PFの並行作業から分離した。merge、main変更、他worktree変更は行っていない。
 
 ## 実装とA設計の対応
 
@@ -18,7 +18,7 @@ q1 groupはT=0.1、その他は元binary64規則 `T=0.1*q`、`s=q*R`。holdout�
 
 A `7a0c9468b2499fac9fa1cd279ae2980c9dab048e` の `finite_price_design.py` をbyte一致で再利用する。取得入口の最初に `check_plan` を呼び、旧q=1のみの18 compile案（rank 2）を拒否する。D6/D7/H2はrank 3。これは識別可能性の検査であり、モデル妥当性や精度の証明ではない。
 
-paired q2はG566のpath0/group0、path1/group0のseedをその順で再利用する。親receiptのphysical row・cohort・index・seedをcontext前に確認し、生成された順序付きevent（位相を含む）と親の連結を比較する。親は独立標本、paired cellは親と相関する。独立較正点として誤ったSEを計算してはいけない。
+paired q2はG566のpath0/group0、path1/group0のseedをその順で再利用する。親receiptのphysical row・cohort・index・seedをcontext前に確認し、生成された順序付きevent（位相を含む）と親の連結を比較する。保存JSONでtupleがlistになる表現差は、値を丸めない順序付きJSON比較で吸収する。toyの親receiptをJSON往復させて確認した。親は独立標本、paired cellは親と相関する。独立較正点として誤ったSEを計算してはいけない。
 
 ## correctnessと価格quantity
 
@@ -32,8 +32,8 @@ P-1の修正済み `SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1`、event order-2位�
 
 | suite | 結果 | 対象 |
 |---|---:|---|
-| [P-2 metadata](d1-p2-prep-tests.txt) | 10 PASS、4.766 s | rank、q/R/s/T、domain、未採択拒否、stage/cohort分離、seed、人工C recordと固定guard、凍結metadata |
-| [P-2 toy回路](d1-p2-circuit-tests.txt) | 2 PASS、4.469 s | toy 4-mode、order-2、scalar/event位相、X/Y、paired seedのevent一致、compiler patch復元 |
+| [P-2 metadata](d1-p2-prep-tests.txt) | 10 PASS、4.705 s | rank、q/R/s/T、domain、未採択拒否、stage/cohort分離、seed、人工C recordと固定guard、凍結metadata |
+| [P-2 toy回路](d1-p2-circuit-tests.txt) | 2 PASS、4.258 s | toy 4-mode、order-2、scalar/event位相、X/Y、paired seedのevent一致、compiler patch復元 |
 | [元P-1回帰](d1-p1-regression-tests.txt) | 親4 PASS、18.218 s | 内部の既存toy 11件、metadata/子import-only、元C guard |
 
 toyの価格はfake compiler。実H4の回路・compile・statevectorを含まない。テストは作者自身のlocal検証であり、独立レビューやCI再現ではない。実施時の作業treeと同じcodeを上記SOURCEで固定した。実H4の性能・資源上限・長時間価格は未測定。

@@ -1,6 +1,6 @@
 # Full-H P-2：A/Cへの接続
 
-実装SOURCE：`0a5dcfbe99b42d2d94c1f12d1c8028694767b54c`。正本設計：A `7a0c9468b2499fac9fa1cd279ae2980c9dab048e`。C model/guardは `c628e9e8447c11c984064b922cbce6c52dc72d48` を再利用する。実科学実行・モデル採択は未承認、mandatory STOP。
+実装SOURCE：`6069605d50270111d1510478b08e11b8e5a18d86`。正本設計：A `7a0c9468b2499fac9fa1cd279ae2980c9dab048e`。C model/guardは `c628e9e8447c11c984064b922cbce6c52dc72d48` を再利用する。実科学実行・モデル採択は未承認、mandatory STOP。
 
 ## metadataの利用
 

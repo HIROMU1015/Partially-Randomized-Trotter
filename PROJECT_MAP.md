@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-[Full-H κ2 P-2 caller技術準備](docs/research/d_full_h_p2_caller_preparation_20261114/REPORT.md)：SOURCE `0a5dcfbe9`。22/24/26 compileの未採択案、rank検査、explicit cell/paired seed、C受渡しを技術対応。新H4計算・保存科学値再解析0。m5 HOLDOUTとA資源順序の整合は採択前に要解決。 全科学計画未採択、公開後mandatory STOP。
+[Full-H κ2 P-2 caller技術準備](docs/research/d_full_h_p2_caller_preparation_20261114/REPORT.md)：SOURCE `6069605d5`。22/24/26 compileの未採択案、rank検査、explicit cell/paired seed、C受渡しを技術対応。新H4計算・保存科学値再解析0。m5 HOLDOUTとA資源順序の整合は採択前に要解決。 全科学計画未採択、公開後mandatory STOP。
 
 [Full-H κ2 P-1 run01・run02（STOP）とrun02再検証（PASS）](docs/research/d_full_h_kappa2_p1_results_20261114/REPORT.md)：run01はreferences/欠落で科学計算0。run02（caller 72d4f4ff2）は`scalar_once`の偽陰性でSTOP（記録は保全）。[再検証](docs/research/d_full_h_kappa2_p1_results_20261114/run02_revalidation01/REPORT.md)（SOURCE 8258b2200、証拠 6d188defd）は修正したscalar/event位相判定で23条件PASS。X/Y RZ 92,448の単一path direct価格をC c628e9e8 guardで受理し、Cへ引渡し（E[C]・P-2・Gには使わない）。
 

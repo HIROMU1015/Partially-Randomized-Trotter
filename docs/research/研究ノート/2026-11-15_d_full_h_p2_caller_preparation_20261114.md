@@ -7,3 +7,5 @@
 独立した研究系列のbranchを使い、旧raw/STOP、決定論PF Stage0と32件計画、他担当worktreeを変更していない。科学計画の採択・実行へ進まない。
 
 [REPORT](../d_full_h_p2_caller_preparation_20261114/REPORT.md)／[HANDOFF](../d_full_h_p2_caller_preparation_20261114/HANDOFF.md)／[次の有限実行案](../d_full_h_p2_caller_preparation_20261114/NEXT_SCIENCE_PLAN.md)。mandatory STOP。
+
+追補：実装SOURCE `6069605d50270111d1510478b08e11b8e5a18d86`。保存JSONのtuple/list表現差だけを吸収するpaired event比較を追加。親receiptのJSON往復toyとmetadata回帰をPASSし、phase/order/scalar/compilerは不変。新H4科学計算なし、STOPを継続する。
