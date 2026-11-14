@@ -19,6 +19,18 @@ checkout lacked the tracked `references/` file that the child imports. Changes
 from the fixed SOURCE 04bead115 are the output label (run01 is kept) and a
 child import-only preflight (install() first, then the real-input import chain
 and the files context() reads); scientific conditions are unchanged.
+
+Scalar/event phase gate (A, 2026-11-14, after the run02 STOP): the old
+`scalar_once` ("exactly one ancilla p") cannot tell the scalar phase from the
+per-request event phase that the pinned provider builder appends (c31ef424
+`_build`: one PhaseGate(sum of event/identity/product phases) at the end of a
+request tail iff the sum != 0). `scalar_event_phase_gate` replaces it in the ok
+decision: the ordered list of ancilla-touching instructions must equal the one
+derived from the sampled events by the provider's own rule (products -> cz,
+rotation -> crz (new ZZ: target s1), event phase -> p, scalar p(-scalar*T) last),
+with exact float equality as in `instruction_parity`. `scalar_once` is kept only
+as a diagnostic. The price records use B's kinds (DIRECT_COMPILED_FINITE_SAMPLE /
+FINITE_COHORT_ONLY, n_paths=1, law_expectation=False).
 """
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -26,6 +38,7 @@ import argparse
 import hashlib
 import importlib
 import json
+import math
 from pathlib import Path
 import platform
 import subprocess
@@ -162,9 +175,158 @@ def op_counts(circuit):
 
 
 def scalar_once(circuit, n, expected_angle):
+    """Legacy diagnostic only (false negative with order>=2 event phases; see module docstring)."""
     phases = [i for i in circuit.data if i.operation.name == 'p'
               and [circuit.find_bit(q).index for q in i.qubits] == [n]]
     return len(phases) == 1 and float(phases[0].operation.params[0]) == expected_angle
+
+
+PHASE_GATE_ID = 'SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1'
+RECORD_SCHEMA = 'D_PRICE_RECORD_B_KINDS_V2'
+FINITE_SAMPLE = dict(classification='DIRECT_COMPILED_FINITE_SAMPLE', expectation='FINITE_COHORT_ONLY')
+
+
+def _event_view(event):
+    """RTEEvent.to_dict() (live or JSON-saved) -> the fields the c31ef424 builder reads."""
+    apps = [types.SimpleNamespace(role=a['role'], is_identity=bool(a['is_identity']),
+                                  coefficient_sign=int(a['coefficient_sign']),
+                                  support=None if a['diagonal_pauli_support'] is None
+                                  else tuple(int(q) for q in a['diagonal_pauli_support']))
+            for a in event['application_sequence']]
+    angle = float(event['rotation_angle'])
+    return types.SimpleNamespace(phase=complex(event['phase']['real'], event['phase']['imag']), apps=apps,
+                                 taylor_order=int(event['taylor_order']),
+                                 unsigned_rotation_angle=apps[-1].coefficient_sign * angle)  # RTEEvent property
+
+
+def central_phase(app):
+    """Phase returned by c31ef424 `_append_central_application` (01e068af returns the same 0.0 for ZZ)."""
+    if app.role == 'product':
+        return math.pi if app.coefficient_sign == -1 else 0.0
+    if app.role == 'rotation':
+        return 0.0
+    raise ValueError('Unsupported RTE application role: ' + str(app.role))
+
+
+def request_phase(events, provider):
+    """Accumulated ancilla phase of one request tail, in the order of c31ef424 `_build`:
+    all event phases first (provider `_event_phase_angle`), then per application the
+    identity phase (provider `_identity_application_phase`) or the central return value."""
+    views = [_event_view(e) for e in events]
+    builder = provider.QiskitDFRTEEventCircuitBuilder
+    total = 0.0
+    for v in views:
+        total += provider._event_phase_angle(v.phase)
+    for v in views:
+        for a in v.apps:
+            total += builder._identity_application_phase(v, a) if a.is_identity else central_phase(a)
+    return total
+
+
+def expected_ancilla_ops(requests_events, n, scalar, T, provider, lowering=LOWERING_ID):
+    """Ordered ancilla-touching instructions that compose() + the provider builder emit."""
+    ops = []
+    for r, events in enumerate(requests_events):
+        for k, event in enumerate(events):
+            v = _event_view(event)
+            for a in v.apps:
+                if a.is_identity:
+                    continue
+                if a.role == 'product':
+                    ops += [dict(kind='product', request=r, event=k, op=('cz', (n, q), ())) for q in a.support]
+                    continue
+                angle = 2.0 * v.unsigned_rotation_angle
+                if len(a.support) == 1:
+                    op = ('crz', (n, a.support[0]), (angle,))
+                elif lowering == LOWERING_ID:
+                    op = ('crz', (n, a.support[1]), (angle,))
+                else:
+                    op = ('crzz', (n,) + a.support, (angle,))
+                ops.append(dict(kind='rotation', request=r, event=k, op=op))
+        phase = request_phase(events, provider)
+        if phase != 0.0:
+            ops.append(dict(kind='event_phase', request=r, op=('p', (n,), (phase,)),
+                            minus_one_events=[k for k, e in enumerate(events) if _event_view(e).phase == -1]))
+    if scalar * T != 0:
+        ops.append(dict(kind='scalar', op=('p', (n,), (-scalar * T,))))
+    return ops
+
+
+def ancilla_ops(circuit, n, start=0, stop=None):
+    stop = len(circuit.data) if stop is None else stop
+    out = []
+    for i in range(start, stop):
+        item = circuit.data[i]
+        qubits = tuple(circuit.find_bit(q).index for q in item.qubits)
+        if n in qubits:
+            out.append(dict(index=i, op=(item.operation.name, qubits, tuple(float(p) for p in item.operation.params))))
+    return out
+
+
+def scalar_event_phase_gate(circuit, n, requests_events, scalar, expected_scalar, T, *, provider,
+                            lowering=LOWERING_ID, start=0, stop=None):
+    """Scalar vs event phases on the ancilla of one controlled evolution [start, stop).
+
+    PASS iff (1) the scalar equals the preparation value, (2) the ancilla-touching
+    instruction list equals expected_ancilla_ops (so each event phase sits after the
+    last event of its own request and before the first ancilla instruction of the next,
+    and nothing is missing, duplicated, reordered or moved to another request), and
+    (3) the scalar p is the last instruction of the evolution (compose appends it last).
+    Placement relative to system-only gates inside one request gap is not resolved;
+    those gates act on other qubits and commute with an ancilla phase."""
+    stop = len(circuit.data) if stop is None else stop
+    expected = expected_ancilla_ops(requests_events, n, scalar, T, provider, lowering)
+    actual = ancilla_ops(circuit, n, start, stop)
+    reasons = []
+    if scalar != expected_scalar:
+        reasons.append('SCALAR_VALUE_DIFFERS_FROM_PREPARATION')
+    got, want = [a['op'] for a in actual], [e['op'] for e in expected]
+    first = next((i for i, (a, b) in enumerate(zip(got, want)) if a != b), None if len(got) == len(want) else min(len(got), len(want)))
+    if first is not None:
+        reasons.append('ANCILLA_SIGNATURE_DIFFERS')
+    scalar_angle = -scalar * T
+    if not expected or expected[-1]['kind'] != 'scalar' or not actual or actual[-1]['index'] != stop - 1:
+        reasons.append('SCALAR_NOT_LAST_INSTRUCTION_OF_EVOLUTION')
+    phases = [dict(request=e['request'], angle=e['op'][2][0], minus_one_events=e['minus_one_events'],
+                   index=a['index'] if a['op'] == e['op'] else None)
+              for e, a in zip(expected, actual) if e['kind'] == 'event_phase']
+    p_ops = [a for a in actual if a['op'][0] == 'p']
+    return dict(gate=PHASE_GATE_ID, status='FAIL' if reasons else 'PASS', reasons=reasons,
+                first_mismatch=None if first is None else dict(position=first, actual=got[first] if first < len(got) else None,
+                                                               expected=want[first] if first < len(want) else None),
+                scalar=scalar, expected_scalar=expected_scalar, scalar_angle=scalar_angle,
+                scalar_index=actual[-1]['index'] if actual and actual[-1]['op'] == ('p', (n,), (scalar_angle,)) else None,
+                evolution_bounds=[start, stop], ancilla_instructions=len(actual), expected_ancilla_instructions=len(expected),
+                ancilla_p=len(p_ops), event_phases=phases, requests=len(requests_events),
+                rule='c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last',
+                legacy_scalar_once=len(p_ops) == 1 and p_ops[0]['op'][2] == (scalar_angle,))
+
+
+def wrapper_evolution_bounds(wrapper, n, axis):
+    """[start, stop) of U inside the af284d85 measured wrapper h(n) U [sdg(n)] h(n) measure(n)."""
+    def op(i):
+        item = wrapper.data[i]
+        return item.operation.name, tuple(wrapper.find_bit(q).index for q in item.qubits)
+    suffix = [('sdg', (n,))] if axis == 'sine' else []
+    suffix += [('h', (n,)), ('measure', (n,))]
+    if op(0) != ('h', (n,)) or [op(i) for i in range(len(wrapper.data) - len(suffix), len(wrapper.data))] != suffix:
+        raise ValueError('Wrapper is not h(n) U [sdg(n)] h(n) measure(n) for axis ' + axis)
+    return 1, len(wrapper.data) - len(suffix)
+
+
+def xy_phase_gate(wrappers, n, requests_events, scalar, expected_scalar, T, *, provider, lowering=LOWERING_ID):
+    """Apply the phase gate to each measured X/Y wrapper and require the same controlled U in both."""
+    per_axis, segments = {}, {}
+    for axis, wrapper in wrappers.items():
+        start, stop = wrapper_evolution_bounds(wrapper, n, axis)
+        per_axis[axis] = scalar_event_phase_gate(wrapper, n, requests_events, scalar, expected_scalar, T,
+                                                 provider=provider, lowering=lowering, start=start, stop=stop)
+        segments[axis] = [(i.operation.name, tuple(wrapper.find_bit(q).index for q in i.qubits),
+                           tuple(float(p) for p in i.operation.params)) for i in wrapper.data[start:stop]]
+    same = len({json.dumps(s) for s in segments.values()}) == 1
+    ok = same and set(per_axis) == {'cosine', 'sine'} and all(g['status'] == 'PASS' for g in per_axis.values())
+    return dict(gate=PHASE_GATE_ID, status='PASS' if ok else 'FAIL', same_controlled_evolution=same,
+                evolution_instructions={a: len(s) for a, s in segments.items()}, axes=per_axis)
 
 
 def pilot(full, row, *, compile_cached=None):
@@ -201,14 +363,18 @@ def pilot(full, row, *, compile_cached=None):
     one_body = sum(app.component_id in one_ids for r in captured['requests']
                    for e in r.rte_occurrence.events for app in e.application_sequence)
     expected_scalar = ctx.ham.constant + captured['prep'].extracted_identity_coefficient
+    events = [[e.to_dict() for e in r.rte_occurrence.events] for r in captured['requests']]
+    phase_gate = scalar_event_phase_gate(captured['circuit'], n, events, captured['scalar'], expected_scalar, row['T'],
+                                         provider=provider)
     checks = dict(trial_gates=[c['check'] for c in trial['checks']], builder_lowering_id=captured['builder'],
         legacy_rzz_control_instructions=counts.get('crzz', 0), new_crz=counts.get('crz', 0), parity=parity,
         one_body_applications=one_body, scalar=captured['scalar'], scalar_expected=expected_scalar,
-        scalar_once=scalar_once(captured['circuit'], n, -captured['scalar'] * row['T']),
+        scalar_event_phases=phase_gate,
+        scalar_once_legacy_diagnostic=scalar_once(captured['circuit'], n, -captured['scalar'] * row['T']),
         provider_file=str(provider.__file__))
     ok = (checks['builder_lowering_id'] == LOWERING_ID and checks['legacy_rzz_control_instructions'] == 0
           and parity['status'] == 'PASS' and parity['replaced_controlled_zz'] > 0 and one_body > 0
-          and checks['scalar'] == expected_scalar and checks['scalar_once']
+          and checks['scalar'] == expected_scalar and phase_gate['status'] == 'PASS'
           and trial['status'] == 'PASS' and trial['index'] == 0 and set(trial['prices']) == {'cosine', 'sine'})
     return trial, checks, ok
 
@@ -283,8 +449,13 @@ def price_bindings(root, prepared, trial, *, price_source, evidence_commit, evid
     for req in base:
         axis = req['axis']; metrics = trial['prices']['cosine' if axis == 'X' else 'sine']
         price = deepcopy(req)
-        price.update(cohort=COHORT, n_paths=1, mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),
-            classification='DIRECT_SINGLE_PATH_WIRING', expectation='NOT_A_LAW_MEAN', price_status='UNQUALIFIED_SINGLE_PATH',
+        price.update(**FINITE_SAMPLE, cohort=COHORT, n_paths=1, law_expectation=False,
+            law_context=I.providers(str(root)).B.p.measurement(row, axis, saved_sampler=True)['law_context'],
+            mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),
+            price_status='DIRECT_FINITE_COHORT', record_schema=RECORD_SCHEMA,
+            diagnostic=dict(pilot_role='DIRECT_SINGLE_PATH_WIRING', previous_labels=dict(
+                classification='DIRECT_SINGLE_PATH_WIRING', expectation='NOT_A_LAW_MEAN', price_status='UNQUALIFIED_SINGLE_PATH'),
+                qualified_expectation_promotion='FORBIDDEN', model_calibration_point=False, G_input=False),
             source=deepcopy(price_source), price_profile=dict(profile, lowering_id=LOWERING_ID),
             profile_extension=dict(lowering_id=LOWERING_ID, source=NEW_ZZ), normalization_is_price_multiplier=False)
         facts = dict(method='FULL_H_RTE', profile=deepcopy(profile), native_policy='H46_LONG_TIME_NATIVE_COMPOSE',
