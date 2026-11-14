@@ -134,6 +134,69 @@ def sample_steps(comps, request, cohort, index, *, step_seeds=None):
     return steps, dist
 
 
+def restore_parent_steps(dictionary, request, parents, seeds, *, scalar):
+    """Decode saved ordered events and validate phase/tokens BEFORE any circuit build.
+
+    Reuses h46_same_event.decode_event and the ordinary event dataclasses. This
+    path never calls sample_steps/sample_rte_events or draws from a PRNG.
+    """
+    from h46_same_event import decode_event
+    from trotterlib import rte
+    comps, labels, n = components(dictionary)
+    by_id = {c.component_id: c for c in comps}
+    dist = rte.finite_rte_distribution(request['lambda_P'] * (request['step_time'] / request['R']), request['K'])
+    law = dict(orders=list(dist.orders), probabilities=list(dist.order_probabilities))
+    if len(parents) != request['q'] or len(seeds) != request['q']:
+        raise ValueError('Saved parent count differs')
+    steps = []
+    for outer, (parent, seed) in enumerate(zip(parents, seeds, strict=True)):
+        result = parent['result']; metadata = result['event_metadata']
+        if (result['status'] != 'PASS' or result['scalar'] != scalar or result['seeds'] != [seed]
+                or result['distribution'] != law or len(metadata) != 1):
+            raise ValueError('Saved parent scalar/seed/distribution differs')
+        st = metadata[0]
+        if (st['outer'] != 0 or st['seed'] != seed or st['signed_time'] != request['step_time']
+                or len(st['events']) != request['R']):
+            raise ValueError('Saved parent time/event allocation differs')
+        events, tokens, phase = [], [], 0.0
+        for saved in st['events']:
+            e = decode_event(rte, saved['event'])
+            if (e.taylor_order not in dist.orders or e.event_normalization != dist.exact_finite_distribution
+                    or saved['selected_labels'] != [labels[k] for k in e.selected_component_ids]):
+                raise ValueError('Saved Pauli label/order/normalization differs')
+            for app in e.application_sequence:
+                c = by_id[app.component_id]
+                if app.coefficient_abs != c.coefficient_abs or app.coefficient_sign != c.coefficient_sign:
+                    raise ValueError('Saved Pauli dictionary coefficient differs')
+                label = labels[app.component_id]
+                if app.role == 'product':
+                    tokens.extend(dict(kind='product', axis=a.lower(), wires=[q])
+                                  for q, a in enumerate(reversed(label)) if a != 'I')
+                    if app.coefficient_sign < 0:
+                        phase = (phase + math.pi) % (2 * math.pi)
+                else:
+                    tokens.append(dict(kind='evolution', label=label, coefficient=float(app.coefficient_sign),
+                        time=e.rotation_angle, central_rz_angle=2 * app.coefficient_sign * e.rotation_angle,
+                        wires=list(range(n))))
+            phase = (phase + math.atan2(e.phase.imag, e.phase.real)) % (2 * math.pi)
+            events.append(e)
+        d2 = st['D2']
+        mapping = d2['instruction_mapping']
+        phase_value = d2['aggregate_source_global_phase']
+        if (d2['ancilla'] != n or d2['phase_owner'] != 'saved_body_aggregate_only_no_event_phase_readdition'
+                or d2['control_policy'] != 'D2_candidate_central_rotation_control'
+                or d2['source_instruction_count'] != len(tokens)
+                or json.loads(json.dumps([m['source_token'] for m in mapping])) != tokens
+                or [m['source_instruction'] for m in mapping] != list(range(len(tokens)))
+                or [m['output_start'] for m in mapping] != [0] + [m['output_stop'] for m in mapping[:-1]]
+                or d2['phase_instruction'] != mapping[-1]['output_stop']
+                or not math.isfinite(phase_value)
+                or abs(math.remainder(phase_value - phase, 2 * math.pi)) > 1e-12):
+            raise ValueError('Saved parent D2 product/token/phase differs')
+        steps.append(dict(outer=outer, signed_time=st['signed_time'], seed=seed, events=tuple(events)))
+    return steps, dist
+
+
 def controlled_tail(events, labels, n, *, diagnostics=None):
     """Full-space Pauli events; D2 controls only the central rotations."""
     from qiskit import QuantumCircuit

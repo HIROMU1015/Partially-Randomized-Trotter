@@ -89,7 +89,11 @@ class Tests(unittest.TestCase):
 
     def test_fictional_C_records_no_promotion_and_path_mix_rejected(self):
         plan = P.proposal(); cell = plan['cells'][0]; paths = fictional(plan, cell)
-        out = P.records(plan, cell, paths, source=dict(fixture='ARTIFICIAL'), evidence_path='ARTIFICIAL.json')
+        # This old test isolates C record normalization. The public receipt
+        # chain is exercised with saved Git fixtures in check_pauli_b1_receipts.
+        with patch.object(P.receipts(), 'evidence', return_value={}):
+            out = P.records(plan, cell, paths, source=dict(fixture='ARTIFICIAL', commit='a'*40),
+                            evidence_path='ARTIFICIAL.json', compile_receipts={})
         self.assertNotIn('prices', out)
         self.assertTrue(all(r['finite_sample_mean_is_law_expectation'] is False and r['n_paths']==2 for r in out['C_inputs']))
         for mutate in (lambda ps: ps[0].update(cohort='FOREIGN'), lambda ps: ps[0].update(index=1),

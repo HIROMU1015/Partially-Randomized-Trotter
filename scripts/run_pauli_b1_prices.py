@@ -25,6 +25,24 @@ A_PATH = 'src/trottertracks/finite_price_design.py'
 A_DESIGNS = 'docs/research/a_full_h_p2_pauli_b1_price_design_20261114/DESIGNS.json'
 B0_SOURCE = dict(commit='8502dd33ad16dc012fb3558668ef3e4cd8a4405c',
                  path='docs/research/d_pauli_ld1_m0_pilot_results_20261114/run02/RESULT.json')
+RECEIPTS = 'src/trottertracks/pauli_b1_receipts.py'
+REPLAY_SOURCES = (CALLER, B0.CALLER, B0.CONNECTION, RECEIPTS, 'scripts/h46_same_event.py')
+
+
+@lru_cache(maxsize=1)
+def receipts():
+    spec = importlib.util.spec_from_file_location('_d_pauli_b1_receipts', ROOT / RECEIPTS)
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module
+
+
+def implementation_sources(commit):
+    P = B0.connection()
+    return dict(caller=dict(commit=commit, path=CALLER), connection=dict(commit=commit, path=B0.CONNECTION),
+                core=dict(commit=commit, path=B0.CALLER), native=P.NATIVE, wrapper=P.WRAPPER,
+                lowering=P.D2_SOURCE, receipts=dict(commit=commit, path=RECEIPTS),
+                saved_event_decoder=dict(commit=commit, path='scripts/h46_same_event.py'),
+                scalar_quantity=P.SCALAR_QUANTITY, scalar_application='ONCE_AT_TOTAL_T')
 
 
 @lru_cache(maxsize=1)
@@ -196,14 +214,59 @@ def preflight(plan):
         adopted=plan.get('adopted', False), mean=None, fit=None, N=None, G=None, mandatory_stop=True)
 
 
-def acquire_path(native, ctx, dictionary, request, *, cohort, index, seeds, operators=None, blocks=None, compile_cached=None):
+def acquire_path(native, ctx, dictionary, request, *, cohort, index, seeds, operators=None, blocks=None, compile_cached=None,
+                 parents=None, dictionary_identity=None):
     """Scientific API; B0 core and full 2^n oracle unchanged. Tests supply a toy saved-operator fixture."""
     if request['prefix'] != dictionary['prefix'] or len(seeds) != request['q']:
         raise ValueError('Prefix/dictionary or seed table mismatch')
+    saved = None
+    if parents is not None:
+        if dictionary_identity is None or B0.connection().canonical_sha256(dictionary) != dictionary_identity['dictionary_sha256']:
+            raise ValueError('Saved parent dictionary hash differs')
+        for i, parent in enumerate(parents):
+            r = parent['request']
+            if (parent['index'] != i or parent['dictionary_identity'] != dictionary_identity
+                    or parent['cohort'] != parents[0]['cohort'] or not parent.get('receipt_source')
+                    or any(r[k] != request[k] for k in ('prefix', 'R', 'K', 'lambda_P', 'step_time'))
+                    or r['q'] != 1 or r['T'] != request['step_time']):
+                raise ValueError('Saved parent order/physical/dictionary binding differs')
+        scalar = B0.connection().total_scalar(dictionary, ctx.ham.constant)
+        saved = B0.connection().restore_parent_steps(dictionary, request, parents, seeds, scalar=scalar)
     if operators is None:
         operators, blocks, _ = B0.p0_arrays(request['prefix'])
-    return B0.pilot_core(native, ctx, dictionary, request, operators, blocks, cohort=cohort,
-                         compile_cached=compile_cached or native.compile_cached, index=index, step_seeds=seeds, event_metadata=True)
+    compiler = compile_cached or native.compile_cached; captured = {}
+    def compile_one(wrapper, fingerprint, representative):
+        compiled, qc, reused = compiler(wrapper, fingerprint, representative)
+        captured[fingerprint] = deepcopy(compiled)
+        if qc is None and 'compiler' in compiled:
+            # A repeated trajectory may reuse a compile. Check its saved compiled
+            # circuit on this state as well; no recompile or fresh sampling.
+            import gzip, io
+            from qiskit import qpy
+            file = native.PRIVATE / 'compiled_cache' / (fingerprint + '_compiled.qpy.gz')
+            qc = qpy.load(io.BytesIO(gzip.decompress(file.read_bytes())))[0]
+        return compiled, qc, reused
+    result = B0.pilot_core(native, ctx, dictionary, request, operators, blocks, cohort=cohort,
+        compile_cached=compile_one, index=index, step_seeds=seeds, event_metadata=True, saved_step_data=saved)
+    result['compile_receipts'] = {a: captured[f['fingerprint']] for a, f in result['fingerprints'].items()}
+    result['sampling'] = 'SAVED_PARENT_EVENTS_NO_DRAW' if parents is not None else 'ORIGINAL_NORMAL_SAMPLER'
+    if parents is not None:
+        result['paired_check'] = check_composition(result, parents)
+        result['parents'] = [deepcopy(p['receipt_source']) for p in parents]
+    return result
+
+
+def parent_paths(plan, cell, references, *, root=ROOT):
+    expected = []; dictionary = canonical(plan['prefix'])[1]['dictionary_identity']
+    for token in cell['composed_of']:
+        cid, index, group = token.split('#'); i = int(index[1:])
+        old = next(c for c in plan['cells'] if c['cell_id'] == cid)
+        if group != 'g0':
+            raise ValueError('One saved step per parent required')
+        expected.append(dict(cell_id=cid, caller=CALLER, request=request_for(plan, old)[0], dictionary=dictionary,
+            cohort=old['cohort'], index=i, seeds=seed_table(plan, cid)[i], cell_seeds=seed_table(plan, cid)))
+    return receipts().read_parents(root, references, expected,
+                                  source_files={p: (ROOT / p).read_bytes() for p in REPLAY_SOURCES})
 
 
 def ld2_wiring_gate(reference):
@@ -222,7 +285,7 @@ def ld2_wiring_gate(reference):
     return dict(status='LD2_WIRING_METADATA_CHECKED', source=deepcopy(reference))
 
 
-def records(plan, cell, paths, *, source, evidence_path):
+def records(plan, cell, paths, *, source, evidence_path, compile_receipts=None):
     """Finite path receipts -> C records/round sidecars; no fit or promotion of the law expectation."""
     validate(plan); D = design_api(); P = B0.connection(); physical, req, packet, dictionary = request_for(plan, cell)
     if len(paths) != cell['n_paths'] or [p['index'] for p in paths] != list(range(cell['n_paths'])):
@@ -251,7 +314,25 @@ def records(plan, cell, paths, *, source, evidence_path):
         for price in prices:
             price.update(n_paths=len(paths)); price['diagnostic'].update(pilot_role=plan['purpose'], law_expectation=False)
         result.update(prices=prices, sidecars=sides, implementation_evidence=proofs)
+    elif plan['purpose'] == 'MODEL_DESIGN':
+        if compile_receipts is None:
+            raise ValueError('Non-configuration compiled receipts required')
+        result.update(receipts().evidence(cell, paths, result['C_inputs'], source, packet['dictionary_identity'],
+            implementation_sources(source['commit']), compile_receipts))
     return result
+
+
+def bind_calibration_records(*, publication_commit, result_path, root=ROOT):
+    """After raw publication, return separate C inputs/sidecars with pinned locators."""
+    return receipts().bind(root, publication_commit=publication_commit, result_path=result_path)
+
+
+def read_calibration_records(plan, cell, records, sidecars, *, root=ROOT):
+    """C's metadata/receipt gate before fit; does not fit or qualify a price model."""
+    physical, _, packet, _ = request_for(plan, cell)
+    return receipts().check(root, cell=cell, request=physical, dictionary=packet['dictionary_identity'],
+        seeds=seed_table(plan, cell['cell_id']), facts=implementation_sources(records[0]['source']['commit']),
+        records=records, sidecars=sidecars)
 
 
 def check_round_records(plan, cell, prices, sides, *, evidence_commit):
@@ -292,16 +373,7 @@ def execute(job):
         if (path0['cohort'] != cell['cohort'] or path0['index'] != 0
                 or path0['result']['seeds'] != job['step_seeds'][0]):
             raise ValueError('LD2 W path0 cohort/index/seed provenance differs')
-    parents = job.get('parents', [])
-    if cell.get('composed_of') and (len(parents) != cell['q'] or
-            [p['result']['seeds'][0] for p in parents] != job['step_seeds'][0]):
-        raise ValueError('Paired parent step seed receipts required')
-    if cell.get('composed_of'):
-        for token, parent in zip(cell['composed_of'], parents, strict=True):
-            cid, index, _ = token.split('#'); old = next(c for c in plan['cells'] if c['cell_id'] == cid)
-            if (parent['request'] != request_for(plan, old)[0] or parent['cohort'] != old['cohort']
-                    or parent['index'] != int(index[1:])):
-                raise ValueError('Paired parent dictionary/physical/cohort/index binding differs')
+    parents = parent_paths(plan, cell, job.get('parents', [])) if cell.get('composed_of') else None
     physical, req, packet, dictionary = request_for(plan, cell)
     out, private = (ROOT / job['output']).resolve(), (ROOT / job['private']).resolve()
     if not out.is_relative_to(ROOT):
@@ -309,7 +381,7 @@ def execute(job):
     if out.exists() or private.exists():
         raise FileExistsError('Fresh cell namespace required')
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    for path in (CALLER, B0.CALLER, B0.CONNECTION, A_PATH):
+    for path in (*REPLAY_SOURCES, A_PATH):
         if (ROOT / path).read_bytes() != B0.blob(commit, path):
             raise ValueError('Execution SOURCE differs from HEAD')
     P = B0.connection()
@@ -325,7 +397,7 @@ def execute(job):
     if imports.get('status') != 'RESTORE_IMPORT_CHAIN_READY_NO_SCIENCE':
         raise ValueError('B0 import-only preflight failed')
     out.mkdir(parents=True); private.mkdir(parents=True)
-    task = dict(job, output=str(out), private=str(private), request=physical,
+    task = dict(job, parents=parents, output=str(out), private=str(private), request=physical,
                 dictionary_identity=packet['dictionary_identity'], result=str(private / 'child.json'))
     (private / 'job.json').write_text(json.dumps(task, default=str))
     code = subprocess.call([sys.executable, '-B', str(ROOT / CALLER), '--child', str(private / 'job.json')], cwd=ROOT)
@@ -336,8 +408,13 @@ def execute(job):
                   prefix=plan['prefix'], kind=plan['kind'], cell=cell['cell_id'], cohort=cell['cohort'], step_seeds=job['step_seeds'])
     if ok:
         try:
+            compiled_receipts = None
+            if physical['m'] is None:
+                compiled_receipts = receipts().compile_receipts(child['paths'], source, packet['dictionary_identity'], private)
+                write(out / 'COMPILE_RECEIPTS.json', compiled_receipts)
             r = records(plan, cell, child['paths'], source=source,
-                        evidence_path=str(out.relative_to(ROOT)) + '/IMPLEMENTATION_EVIDENCE.json')
+                        evidence_path=str(out.relative_to(ROOT)) + '/IMPLEMENTATION_EVIDENCE.json',
+                        compile_receipts=compiled_receipts)
             for name, value in (('C_INPUTS.json', r['C_inputs']), ('PRICES.json', r.get('prices', [])),
                                ('SIDECARS_UNBOUND.json', r.get('sidecars', [])), ('IMPLEMENTATION_EVIDENCE.json', r.get('implementation_evidence', {}))):
                 write(out / name, value)
@@ -382,10 +459,12 @@ def child(path):
                 results.append(dict(index=0, cohort=cell['cohort'], request=job['request'], result=r,
                                     reused=True, original_source=deepcopy(ref), independent_new=False))
                 continue
-            r = acquire_path(native, ctx, dictionary, job['request'], cohort=cell['cohort'], index=index, seeds=seeds)
-            if cell.get('composed_of'):
-                r['paired_check'] = check_composition(r, job['parents'])
-            results.append(dict(index=index, cohort=cell['cohort'], request=job['request'], result=r, reused=False))
+            r = acquire_path(native, ctx, dictionary, job['request'], cohort=cell['cohort'], index=index, seeds=seeds,
+                parents=job.get('parents') if cell.get('composed_of') else None, dictionary_identity=job['dictionary_identity'])
+            path = dict(index=index, cohort=cell['cohort'], request=job['request'], result=r, reused=False)
+            if plan['purpose'] == 'MODEL_DESIGN':
+                path['dictionary_identity'] = job['dictionary_identity']
+            results.append(path)
         write(Path(job['result']), dict(status='PASS', paths=results)); return 0
     except Exception as exc:
         write(Path(job['result']), dict(status='STOP', error=type(exc).__name__ + ': ' + str(exc), paths=results)); return 2

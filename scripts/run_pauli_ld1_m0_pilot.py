@@ -131,7 +131,7 @@ def p0_arrays(prefix=PREFIX):
     return {k: ld1[k] for k in ld1.files}, common['blocks'], common['sector_basis_indices']
 
 
-def pilot_core(native, ctx, dictionary, request, operators, blocks_saved, *, cohort, compile_cached, index=0, step_seeds=None, event_metadata=False):
+def pilot_core(native, ctx, dictionary, request, operators, blocks_saved, *, cohort, compile_cached, index=0, step_seeds=None, event_metadata=False, saved_step_data=None):
     """Shared by the child and the artificial tests (toy ctx/dictionary/operators)."""
     import numpy as np
     from trottertracks.resource_applicability.h6_hash_reuse_v1 import use_fingerprint_reuse
@@ -150,7 +150,12 @@ def pilot_core(native, ctx, dictionary, request, operators, blocks_saved, *, coh
     if n != ctx.ham.n_qubits:
         raise ValueError('Pauli word width differs from the native system')
     scalar = P.total_scalar(dictionary, ctx.ham.constant); T = float(request['T'])
-    steps, dist = P.sample_steps(comps, request, cohort, index, step_seeds=step_seeds)
+    if saved_step_data is None:
+        steps, dist = P.sample_steps(comps, request, cohort, index, step_seeds=step_seeds)
+    else:
+        steps, dist = saved_step_data
+        if len(steps) != request['q'] or [s['seed'] for s in steps] != step_seeds:
+            raise ValueError('Saved paired step allocation/seed differs')
     expected = P.full_space_expected(list(blocks_saved[:request['prefix'] + 1]), steps, labels,
                                      scalar=scalar, T=T, state=ctx.qstate)
     prices = {}; compiled_checks = []; fingerprints = {}
