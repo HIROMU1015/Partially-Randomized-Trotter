@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[高速化・並列化の実装事例集](docs/acceleration_casebook.md)：過去の課題・工夫・効果・再利用先を横断して探す入口。新しい実装後に短く追記する。
+
 [固定Pauli total/Q3高速版の結果](docs/research/pauli_total_q3_accelerated_results_20261114/REPORT.md)／[exact SUMMARY](docs/research/pauli_total_q3_accelerated_results_20261114/SUMMARY.json)：ユーザー承認で旧2 jobを保全停止し、同じ2条件を高速版で各1回完了。2件並列約235秒、MSE上界約4.72462e-7/4.72415e-7 Ha²。残余・bias²/Varも保存、十分N/global/G null・STOP。
 
 [Total DP高速化・process並列化](docs/research/rpe_total_dp_acceleration_20261114/REPORT.md)：exact整数の集約と遅延約分、旧kernelのbody再利用。人工219万遷移で80.9秒→3.8秒、全output一致、43技術test PASS。実行中固定2件へ未適用。

@@ -58,6 +58,13 @@ requested material. In particular:
 
 ## Documentation updates
 
+For acceleration or parallelization work, consult relevant entries in
+[`docs/acceleration_casebook.md`](docs/acceleration_casebook.md). After an
+implementation, add or update a short case entry: bottleneck, change, observed
+effect and scope, reusable code/SOURCE, and links to existing evidence. Record
+unmeasured effects as such; do not create extra reports or computations merely
+to populate the casebook.
+
 When a research decision or validation result changes:
 
 1. update `docs/research/研究概要・現状.md`;
