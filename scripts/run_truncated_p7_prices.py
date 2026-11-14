@@ -264,7 +264,7 @@ def preflight(root=ROOT):
                         cells=[dict(m=c['m'], id=c['row']['id'], q=c['row']['q'], signed_pieces=c['signed_pieces'], action=c['action'],
                                     actual_delta_over_h=c['actual_delta_over_h']) for c in p['cells']]))
     saved = None if S.P7_ADMISSION is None else S.saved_calibration(root, S.select(root, templates, 'TRUNCATED_PF', 'CALIBRATION'))
-    return dict(status='PREFLIGHT_METADATA_ONLY', scope=SCOPE, templates=out, stages=stages, cell_plan=S.CELL_PLAN,
+    return dict(status='PREFLIGHT_METADATA_ONLY', scope=SCOPE, templates=out, stages=stages, cell_plan=S.P7_CELL_PLAN,
                 revised_plan=S.plan_status(), cohort=COHORT,
                 saved_calibration=saved, saved_binding_status='PENDING_C_ACCEPTANCE' if saved is None else 'C_ADMITTED')
 
