@@ -1,5 +1,7 @@
 # 文書索引
 
+[決定論PF Stage 1：新規20 wrapper PASS・保存4再利用](research/d_pf_stage1_calibration_20261115/REPORT.md)（2026-11-15、Codex D）。Full PF/p7各10新規価格とC guard公開を完了、12 model_group各m4/m5の2点を引渡し。H-b 2% observed分母は採択済み、実fit/係数凍結・HOLDOUT m6・N/Gは未実行。mandatory STOP。
+
 [D保存4件の正式binding追補](research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)／[bound metadata](research/d_pf_price_saved4_revision_20261114/admission_bound/PREFLIGHT_METADATA.json)：C新版表・p7受入へ接続、保存4＋新規20/12、18 metadata/人工test PASS。共通指示取得済み、policy/許容差未採択、実compile/fitなし・STOP。
 
 [D価格stage分離REPORT](research/d_pf_price_stage_split_20261114/REPORT.md)／[実行手順](research/d_pf_price_stage_split_20261114/NEXT_EXECUTION.md)：固定SOURCE `1fd47847`、D54＋C48 test PASS、比較policy未採択でcompileなし、mandatory STOP。

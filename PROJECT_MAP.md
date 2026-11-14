@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[決定論PF Stage 1：新規20 wrapper PASS・保存4再利用](docs/research/d_pf_stage1_calibration_20261115/REPORT.md)（2026-11-15、Codex D）。Full PF/p7各10新規価格とC guard公開を完了、12 model_group各m4/m5の2点を引渡し。H-b 2% observed分母は採択済み、実fit/係数凍結・HOLDOUT m6・N/Gは未実行。mandatory STOP。
+
 [D：保存4件の正式binding完了](docs/research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)：SOURCE22ccf3972。C e50524f4/43c15bfa/2b945397のp7受入・新版CELL_PLANを接続し、Full/P7保存4件を元SOURCE/cohort/軸のまま再利用。全36価格・新規20＋12・12モデルを維持。共通運用指示11/14全文確認、旧IDの物理schedule一致も重複候補として検出。18 metadata/人工test PASS、新実H4/再集計/実fit/N/G0。policy/許容差未採択、Stage1未開始・mandatory STOP。
 
 [D：Full PF A1・Truncated p7 T3価格のCALIBRATION／HOLDOUT段階分離](docs/research/d_pf_price_stage_split_20261114/REPORT.md)／[実行手順](docs/research/d_pf_price_stage_split_20261114/NEXT_EXECUTION.md)／[HANDOFF](docs/research/d_pf_price_stage_split_20261114/HANDOFF.md)：固定SOURCE `1fd47847`（Stage 0）。C CELL_PLAN（3368805575）を役割の正本に、CALIBRATION m4/m5＝Full 10＋保存M5/m4参照・Truncated 12、HOLDOUT m6＝6＋6（計34）。stage別namespace、HOLDOUTは公開済みCALIBRATIONの不変とCの凍結model（group別・m4/m5のみ）を要求、model group別C入力、証拠commit束縛＋C guard probe、並列子process。比較policy・許容差は未採択のためcompile 0、mandatory STOP。
