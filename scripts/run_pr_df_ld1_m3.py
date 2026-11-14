@@ -136,14 +136,14 @@ def run_path(index, state=None):
                 raise ValueError('AXIS_RECEIPT_DIFFERS')
             if any(type(v) is not int or v<0 for v in (result['S'][ai],result['C'][ai])):raise ValueError('INVALID_INTEGER_SC_PRICE')
             if r['cache_hit']:raise ValueError('OLD_CACHE_ORIGINAL_EXECUTION_SOURCE_REQUIRES_ADMISSION_STOP')
-        record=dict(result,m=3,phase='fresh',role='CALIBRATION',request=candidate,law_binding=science.m.row_for(plan,cell)['law_binding'],
+        record=dict(result,m=cell['m'],phase='fresh',role=cell['role'],request=candidate,law_binding=science.m.row_for(plan,cell)['law_binding'],
             seeds=seeds,laws=laws,events=event_metrics,lowering=E.LOWERING_ID,scalar=ctx.scalar,scalar_hex=float(ctx.scalar).hex(),
             scalar_application='ONCE_AT_TOTAL_T',compiled={a:r['metrics'] for a,r in axes.items()},
             compile_log=compile_log,timing=json.loads((directory/'TECHNICAL_TIMING.json').read_text()),
             path_wall_seconds=time.perf_counter()-start,peak_rss_bytes=R.rss(),private_directory=str(directory),
             gate_status='INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED',
             numerical_action_gate='NOT_RUN_AS_IN_ORIGINAL_P2_FRESH',full_wrapper_statevector_validation=False)
-        R.write(directory/'M3_PATH.json',record);progress(log,'path','COMPLETE',index=index)
+        R.write(directory/('M%d_PATH.json'%cell['m']),record);progress(log,'path','COMPLETE',index=index)
         return record
     except BaseException:
         R.write(private/f'STOP_p{index}.json',dict(index=index,compile_log=compile_log,error=traceback.format_exc(),partial_directory=str(directory)))

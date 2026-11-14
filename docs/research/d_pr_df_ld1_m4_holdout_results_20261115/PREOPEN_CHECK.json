@@ -1,0 +1,326 @@
+{
+  "schema": "PR_DF_LD1_M4_PREOPEN_METADATA_V1",
+  "time_utc": "2026-11-14T21:51:36.589519+00:00",
+  "observation_price_reads": 0,
+  "status": "FIXED_METADATA_MATCHED_NO_ELIGIBLE_RECEIPT_FOUND",
+  "target": {
+    "id": "H4_S0_m4_q16_R32",
+    "system": "H4",
+    "m": 4,
+    "candidate_id": "3df0cfd3356c358aeda8",
+    "role": "HOLDOUT",
+    "cohort": "D_PR_DF_LD1_M4_HOLDOUT_NORMAL_20261115_V1",
+    "n": 4,
+    "path_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "seeds": [
+      [
+        14646197473806357520,
+        16747901711665483975,
+        11986204884078336154,
+        17796284543260594391,
+        1240582131796536406,
+        2199222395989115912,
+        16225669741982230372,
+        18284757314310983212,
+        6575455923561265226,
+        7025050764599770934,
+        1081312784084050097,
+        9405295871312617531,
+        15560573962018212479,
+        10097303277518062979,
+        8645960457082908603,
+        606879115854555434
+      ],
+      [
+        18414135097610168177,
+        12230470430746218115,
+        314827374670879847,
+        4165625077687652521,
+        10901524662192809211,
+        9418353279282472125,
+        16974223203530265806,
+        14241824751190918074,
+        646891425020192129,
+        14857492889947384471,
+        926842021972158839,
+        1241141900085249222,
+        10796616362945264385,
+        9817601214844414517,
+        666348202114648174,
+        3108934311098965894
+      ],
+      [
+        3769210469785096312,
+        4127638131555001433,
+        8872060400168430830,
+        60681103949751023,
+        12979725876796436763,
+        7374789798540280944,
+        8162440662766096932,
+        3010353868426676142,
+        18432903797771897784,
+        3890059057185208805,
+        13109568787416706699,
+        18398486862895689737,
+        12429164164478446402,
+        16361889268313534006,
+        9758620469387643200,
+        9836735443123761577
+      ],
+      [
+        6907747655116071635,
+        16481651377855967308,
+        13717847812654953038,
+        3773473711089476584,
+        769917856683467544,
+        8323757746657416507,
+        15315283223940753606,
+        3347030529104765426,
+        338726930981462715,
+        8730259112396205708,
+        5956765789562464725,
+        14119400855631439567,
+        13046401607084280404,
+        11879077225435588637,
+        4909216742975627705,
+        1115864744333980296
+      ]
+    ]
+  },
+  "physical": {
+    "m": 4,
+    "q_RPE": 16,
+    "q_PF": 16,
+    "candidate": {
+      "K": 2,
+      "R_outer": 32,
+      "T": 1.6,
+      "delta": 0.1,
+      "formula": "2nd",
+      "id": "3df0cfd3356c358aeda8",
+      "method": "PR",
+      "prefix": 1,
+      "q": 16,
+      "system": "H4"
+    },
+    "structure": {
+      "formula_id": "S2",
+      "signed_weights": [
+        1.0
+      ],
+      "allocation": [
+        32
+      ],
+      "event_count": 512,
+      "scalar_policy": "scalar_identity_once_at_total_T",
+      "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+      "law_model": "ideal_finite_RTE_law"
+    },
+    "V2_candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+    "identity_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+    "law_binding": {
+      "definition": {
+        "model": "ideal_finite_RTE_law",
+        "source": {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "src/trotterlib/rte.py"
+        },
+        "A_declaration": {
+          "model": "ideal_finite_RTE_law",
+          "candidate_id": "3df0cfd3356c358aeda8",
+          "R_outer": 32,
+          "K": 2,
+          "q_PF": 16,
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          }
+        }
+      },
+      "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+      "candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+      "kappa": {
+        "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+        "value": {
+          "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+          "denominator": 539496659426909122096437389293855970805348475396548904610992201
+        },
+        "definition_source": {
+          "url": "https://arxiv.org/pdf/2503.05647v2",
+          "sections": [
+            "B.2",
+            "E.1",
+            "E.3"
+          ],
+          "equations": [
+            "A38",
+            "B30",
+            "E1",
+            "E2",
+            "E21",
+            "E22"
+          ]
+        }
+      },
+      "event_mapping": {
+        "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+        "source": {
+          "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+          "path": "src/trottertracks/pr_rpe_rmse.py"
+        },
+        "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+      }
+    }
+  },
+  "predictions": {
+    "X": {
+      "source": {
+        "commit": "3cac53da1a4a8b2228245593c74c1ff9ec1f5212",
+        "path": "docs/research/pr_df_ld1_residual_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X",
+          "m4_prediction"
+        ]
+      },
+      "predicted_RZ": {
+        "numerator": 217164876899444503,
+        "denominator": 1683627180032
+      },
+      "identity": {
+        "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+        "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+        "physical_id": "3df0cfd3356c358aeda8",
+        "original_canonical_id": "RMSE:8bbdb84e72567c9fdcdbd8db9edb956393a663a02da2f8e1b3569ad97254ce24",
+        "total_candidate_id": "RMSE:be0d92505bd97c33b58cd5b07776dcab4d98eb29f454fca4a244011672275261"
+      },
+      "semantics": "MIXED_IDEAL_STRUCTURAL_PLUS_SAMPLER_FINITE_COHORT_RESIDUAL_MODEL_NOT_QUALIFIED_E_C"
+    },
+    "Y": {
+      "source": {
+        "commit": "3cac53da1a4a8b2228245593c74c1ff9ec1f5212",
+        "path": "docs/research/pr_df_ld1_residual_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y",
+          "m4_prediction"
+        ]
+      },
+      "predicted_RZ": {
+        "numerator": 217164876899444503,
+        "denominator": 1683627180032
+      },
+      "identity": {
+        "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+        "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+        "physical_id": "3df0cfd3356c358aeda8",
+        "original_canonical_id": "RMSE:8bbdb84e72567c9fdcdbd8db9edb956393a663a02da2f8e1b3569ad97254ce24",
+        "total_candidate_id": "RMSE:be0d92505bd97c33b58cd5b07776dcab4d98eb29f454fca4a244011672275261"
+      },
+      "semantics": "MIXED_IDEAL_STRUCTURAL_PLUS_SAMPLER_FINITE_COHORT_RESIDUAL_MODEL_NOT_QUALIFIED_E_C"
+    }
+  },
+  "rule": {
+    "n_paths": 4,
+    "axes": [
+      "X",
+      "Y"
+    ],
+    "O": "same-axis sum of four compiled RZ / 4",
+    "signed_error": "P-O",
+    "absolute_error": "abs(P-O)",
+    "signed_relative": "(P-O)/O",
+    "absolute_relative": "abs(P-O)/O",
+    "zero_observed": "relative null: ZERO_OBSERVED_PRICE",
+    "missing": "O and errors null; never change n_paths",
+    "tolerance": null,
+    "model_verdict": "NOT_ASSESSED_NO_ADOPTED_TOLERANCE"
+  },
+  "fixed_sources": {
+    "prior": {
+      "commit": "2f423befbba5075bad4ede3057f89edd788d2661",
+      "path": "docs/research/d_pr_df_ld1_m3_results_20261115/INPUTS.json"
+    },
+    "prediction": {
+      "commit": "3cac53da1a4a8b2228245593c74c1ff9ec1f5212",
+      "path": "docs/research/pr_df_ld1_residual_freeze_20261115/run01/FROZEN_MODELS.json"
+    },
+    "C_handoff": {
+      "commit": "890755f0aeea3abfcdd5c849422bb198666a477e",
+      "path": "docs/research/pr_df_ld1_residual_freeze_20261115/HANDOFF_D2.md"
+    },
+    "pipeline": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+    "m3_final": "2592d442ae8f36f71e42820a26e847b1fa38b59d"
+  },
+  "duplicate_check": {
+    "reused_prior": "C frozen PREOPEN + D2 m3 §10.5 scoped inventory/admission metadata",
+    "current_remote_refs": [
+      "26d4f23e79e91385087669d4ee091632efa0c87c\trefs/heads/codex/d-compiled-residual-c-minus-s-20261113",
+      "0a35101914c6833244b6e0bad7bc2767a49b5a47\trefs/heads/codex/d-price-records-c-bridge-20261114",
+      "2592d442ae8f36f71e42820a26e847b1fa38b59d\trefs/heads/codex/d2-pr-df-ld1-m3-acquisition-20261115",
+      "890755f0aeea3abfcdd5c849422bb198666a477e\trefs/heads/codex/m5-m4-receipt-admission-20261114"
+    ],
+    "delta": [
+      {
+        "ref": "codex/d-price-records-c-bridge-20261114",
+        "head": "5e3abcf30d33df4b19bd59eea298dc2ba5635f72",
+        "finding": "name-only delta after previous inventory is PF m9 acceleration source/docs, no PR-DF m4 compiled receipts"
+      },
+      {
+        "ref": "codex/m5-m4-receipt-admission-20261114",
+        "head": "890755f0aeea3abfcdd5c849422bb198666a477e",
+        "finding": "fixed C handoff, no later m4 receipt publication"
+      },
+      {
+        "ref": "codex/d-compiled-residual-c-minus-s-20261113",
+        "head": "26d4f23e79e91385087669d4ee091632efa0c87c",
+        "finding": "previous scoped inventory; physical-ID metadata/structural requests are not m4 compiled receipts"
+      }
+    ],
+    "local_matching_acquisition_jobs": [],
+    "eligible_compiles": 0,
+    "reused": 0,
+    "unresolved_candidates": 0,
+    "old_configuration_other_IDs": "legacy ZZ/q-R/cohort differ; ideal structural means are not compiled holdout receipts",
+    "access_scope": "known repository refs, accepted inventory and local matching script processes; inaccessible external jobs not claimed absent"
+  },
+  "outputs": {
+    "public": "docs/research/d_pr_df_ld1_m4_holdout_results_20261115",
+    "private": "/home/AbeHiromu/projects/d2-pr-df-ld1-m4-holdout-20261115-private/run01",
+    "public_run_unused": true,
+    "private_run_unused": true
+  },
+  "inputs_sha256": "258d5ed3ef57da1696715f71f23cc47c8a49a999359e0a3b38c2657a12efcc72",
+  "saved_input_hashes_match": {
+    "H4_tol_receipt.json": true,
+    "H4_tol_snapshot.npz": true
+  },
+  "runtime": {
+    "python": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "parallel_paths": 4,
+    "compiler_inner_processes": 1
+  },
+  "tests": {
+    "log": "docs/research/d_pr_df_ld1_m4_holdout_results_20261115/tests/TECHNICAL_TESTS_01.txt",
+    "passed": 13,
+    "real_H4_calls": 0,
+    "real_compiles": 0,
+    "full_P0_suite": false
+  },
+  "identity_note": "Historical future_holdout execution_authorized=false/role=HOLDOUT_NOT_AUTHORIZED retained verbatim as the old plan; active cells[0] role HOLDOUT follows current user scope. No approval artifact is required.",
+  "source_commit": "Commit containing this file and INPUTS; execute requires its HEAD SHA via --source.",
+  "semantics": "Fixed I-structural/Q-finite-cohort residual prediction versus declared Q holdout mean; no fit, tolerance or model qualification",
+  "limits": {
+    "max_paths": 4,
+    "max_compiles": 8,
+    "retry": false,
+    "additional_paths": false,
+    "model_verdict": "NOT_ASSESSED_NO_ADOPTED_TOLERANCE",
+    "mandatory_stop": true
+  }
+}
