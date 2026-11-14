@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-DF固定grid→total/Q3](research/rpe_pr_df_total_bridge_20261115/REPORT.md)／[5方式の精度側readiness](research/rpe_pr_df_total_bridge_20261115/READINESS.md)：元schedule・κ・物理ID・signalを保持し、decoder契約だけを新版へ接続。33人工/metadata回帰PASS、科学資格/N/Gなし・STOP。
+
 [必要Nの有限案・共通decoderの他方式受入](research/rpe_required_n_cross_method_preparation_20261114/REPORT.md)／[API](research/rpe_required_n_cross_method_preparation_20261114/HANDOFF.md)／[未採択の有限案](research/rpe_required_n_cross_method_preparation_20261114/FINITE_N_PLAN.md)：Full-H κ2/p7保存metadataを再利用。新MSE/DP/shot探索/Gは未実行・STOP。
 
 [高速化・並列化の実装事例集](acceleration_casebook.md)：DP・decoder・parser cache・命令列streamなどの過去事例と、今後の追記先。

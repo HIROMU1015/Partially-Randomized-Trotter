@@ -219,7 +219,7 @@ class SavedMetadataTests(unittest.TestCase):
         for path in ('src/trottertracks/rpe_total_decoder.py','src/trottertracks/rpe_total_risk.py','tests/check_rpe_total_decoder_risk.py'):
             self.assertEqual((ROOT/path).read_bytes(),R.blob(ROOT,T.DECODER_SOURCE['commit'],path))
         for path in ('src/trottertracks/rpe_deterministic_risk.py','src/trottertracks/rpe_decoder_fast.py',
-                     'src/trottertracks/pr_rpe_rmse_controller.py','scripts/run_h4_dp_risk_fixed.py'):
+                     'src/trottertracks/pr_rpe_rmse_integration.py','scripts/run_h4_dp_risk_fixed.py'):
             self.assertEqual((ROOT/path).read_bytes(),R.blob(ROOT,'e7ce23803b5644bd9df0e83c877b390aeb9405e0',path))
 
 

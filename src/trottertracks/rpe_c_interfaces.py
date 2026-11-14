@@ -16,6 +16,7 @@ from . import rpe_shot_allocation as W
 from . import pr_rpe_rmse as A
 
 SOURCE = R.GUARD['commit']
+PR_DF_METADATA_SOURCE = 'fefd548ecd56f60d72031b3d385f6f5e6ee95d06'
 
 
 @lru_cache(maxsize=None)
@@ -54,6 +55,19 @@ def interfaces(root):
                     shim.__dict__[target.id] = ast.literal_eval(node.value)
     shim.deepcopy = deepcopy
     selected(SOURCE, baseline_path, ('prepare',), shim.__dict__)
+
+    # C's PR route needs A's metadata planner/recipe only. Exclude every signal
+    # producer, matrix builder and numerical provider from this private shim.
+    plan_scope = dict(deepcopy=deepcopy, common=R.B.p)
+    selected(PR_DF_METADATA_SOURCE, 'src/trottertracks/pr_rpe_signal_plan.py', ('plan',), plan_scope)
+    recipe_path = 'src/trottertracks/pr_rpe_signal_provider.py'
+    recipe_tree = ast.parse(R.blob(root, PR_DF_METADATA_SOURCE, recipe_path))
+    recipe = next(ast.literal_eval(n.value) for n in recipe_tree.body if isinstance(n, ast.Assign)
+        and any(isinstance(t, ast.Name) and t.id == 'RECIPE' for t in n.targets))
+    recipe_scope = dict(deepcopy=deepcopy, RECIPE=recipe)
+    selected(PR_DF_METADATA_SOURCE, recipe_path, ('numerical_recipe',), recipe_scope)
+    api.A = types.SimpleNamespace(metadata=types.SimpleNamespace(plan=plan_scope['plan']),
+                                  numerical_recipe=recipe_scope['numerical_recipe'])
 
     loader = register('r_price_phase1_science')
     loader.__dict__.update(ast=ast, m=types.SimpleNamespace(blob=R.blob))

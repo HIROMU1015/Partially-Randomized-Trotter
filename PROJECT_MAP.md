@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-DF固定gridのtotal bridgeと5方式readiness](docs/research/rpe_pr_df_total_bridge_20261115/REPORT.md)／[A/C HANDOFF](docs/research/rpe_pr_df_total_bridge_20261115/HANDOFF.md)：旧A grid・物理ID・元raw/lawを保持した版付きcanonical view。新6＋回帰27＝33技術test PASS。5方式14構成を区別し、旧partial MSEは転用しない。新実MSE/DP/N/Gなし・STOP。
+
 [必要N有限計画・他方式total受入](docs/research/rpe_required_n_cross_method_preparation_20261114/REPORT.md)／[適用一覧](docs/research/rpe_required_n_cross_method_preparation_20261114/SIGNAL_APPLICABILITY.md)：保存Pauli Q3を再計算せず照合。Full-H κ2/p7は13round metadata接続、PR-DF fixed-gridとFull PF欠測を保持。15技術test PASS、新科学MSE/N/DP/Gなし・STOP。
 
 [高速化・並列化の実装事例集](docs/acceleration_casebook.md)：過去の課題・工夫・効果・再利用先を横断して探す入口。新しい実装後に短く追記する。

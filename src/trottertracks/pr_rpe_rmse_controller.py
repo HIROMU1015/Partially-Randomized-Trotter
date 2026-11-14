@@ -97,6 +97,13 @@ def generate(spec, *, event_mapper=None):
             raise ValueError('A fixed-grid schedule uses the pinned A mapper only')
         from .pr_rpe_rmse_integration import generate_from_a_spec
         return generate_from_a_spec(spec)
+    if spec.get('schedule_adapter') == 'A_FIXED_GRID_510FBACD_TOTAL_DECODER_VIEW_V1':
+        if event_mapper is not None:
+            raise ValueError('Decoder-only fixed grid does not accept an external mapper')
+        from .rpe_total_binding import generate_fixed_grid_view
+        return generate_fixed_grid_view(spec)
+    if spec.get('schedule_adapter') is not None:
+        raise ValueError('Unsupported schedule adapter; no implicit generic-grid conversion')
     s = deepcopy(spec)
     json.dumps(s, allow_nan=False)
     if s['method'] not in METHODS:
@@ -236,7 +243,8 @@ def _assemble(s, rounds):
 
 
 def _validate(config):
-    if config['spec'].get('schedule_adapter') == 'A_FIXED_GRID_510FBACD_V1':
+    if config['spec'].get('schedule_adapter') in (
+            'A_FIXED_GRID_510FBACD_V1', 'A_FIXED_GRID_510FBACD_TOTAL_DECODER_VIEW_V1'):
         if not p.same(config, generate(config['spec'])):
             raise ValueError('A configuration/schedule/identity mutated after generation')
         return

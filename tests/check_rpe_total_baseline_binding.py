@@ -88,12 +88,14 @@ class BaselineBindingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'configuration'):
                 T.bind_signal(ROOT, bridge, T._selected(ROOT, other), original_packet_source=other)
 
-    def test_PR_fixed_grid_and_Pauli_shortcut_remain_rejected(self):
+    def test_PR_fixed_grid_uses_versioned_view_and_Pauli_shortcut_is_rejected(self):
         with no_science():
             source = dict(commit='a9abf8de75bf3432fcd714e868e5c14c8884b8f8',
                 path='docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json')
-            with self.assertRaisesRegex(ValueError, 'fixed-grid'):
-                T.create(ROOT, T._selected(ROOT, source), original_source=source)
+            original = T._selected(ROOT, source)
+            bridge = T.create(ROOT, original, original_source=source)
+            self.assertEqual(bridge['total_configuration']['spec']['schedule_adapter'], T.FIXED_GRID_TOTAL)
+            self.assertEqual(bridge['total_configuration']['spec']['decoder_origin_spec'], original['spec'])
             args, _ = pauli(); bridge = T.create(ROOT, args['config'], original_source=MOCK)
             with self.assertRaisesRegex(ValueError, 'baseline-only'):
                 T.bind_signal(ROOT, bridge, args['signal_packet'], original_packet_source=MOCK)
