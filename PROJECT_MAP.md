@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[決定論PF 6候補の全round価格coverage・次の有限検証案](docs/research/d_pf_allround_price_coverage_plan_20261115/REPORT.md)（2026-11-15、Codex D）。Cの156軸表へのmetadata差分。保存m3～m6の48軸が再利用可能、短幅36＋長q72軸はモデル適用未検証。m3の現consumer bindingは未完了。最初の新規案はm9・6候補・XY最大12 compile、m6再取得不要。66 metadata check、科学計算/価格予測/N/G0、計画公開でmandatory STOP。
+
 [決定論PF Stage 2：m6独立holdout PASS](docs/research/d_pf_stage2_holdout_20261115/REPORT.md)（2026-11-15、Codex D）。C凍結12モデルを元predicted_RZで比較し、PASS/FAIL/UNKNOWN=12/0/0。再利用0、新規12 wrapper、作用/実装guard完了。Stage1と凍結JSON不変、refit/外挿/MSE/N/Gなし、mandatory STOP。
 
 [決定論PF Stage 1：新規20 wrapper PASS・保存4再利用](docs/research/d_pf_stage1_calibration_20261115/REPORT.md)（2026-11-15、Codex D）。Full PF/p7各10新規価格とC guard公開を完了、12 model_group各m4/m5の2点を引渡し。H-b 2% observed分母は採択済み、実fit/係数凍結・HOLDOUT m6・N/Gは未実行。mandatory STOP。
