@@ -1,0 +1,97 @@
+.F...                                                                    [100%]
+=================================== FAILURES ===================================
+__________ test_actual_entry_uses_one_sample_and_two_axes_same_digest __________
+
+toy = ({'plan': {'source': 'ARTIFICIAL_TECHNICAL_TEST', 'menus': {'H4': {'candidates': [{...}]}}, 'runtime': {'old_cache': '...6d5917acbc960d82a82a8f619c584fc6a53eae1edadf5cc9', 'a438d05a91f254eab1042dc5f73aac19a56287f00268f0e9863c90d7e82c38bc'])
+
+    def test_actual_entry_uses_one_sample_and_two_axes_same_digest(toy):
+>       state,draws,compiles=toy;result=M.run_path(0,state)
+                                        ^^^^^^^^^^^^^^^^^^^
+
+tests/test_pr_df_ld1_m3.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+index = 0
+state = {'plan': {'source': 'ARTIFICIAL_TECHNICAL_TEST', 'menus': {'H4': {'candidates': [{'candidate': {...}, 'structure': {.....y-randomized-trotter-worktrees/d2-pr-df-ld1-m3-acquisition-20261115/src/trottertracks/r_price_phase1_science.py'>, ...}
+
+    def run_path(index, state=None):
+        state=STATE if state is None else state
+        plan,ctx,backend,science=(state[k] for k in ('plan','ctx','backend','science'))
+        cell=plan['cells'][0];candidate=science.m.row_for(plan,cell)['candidate']
+        private=Path(state['private']);log=private/f'PROGRESS_p{index}.jsonl';start=time.perf_counter()
+        directory=private/'fresh'/cell['id']/str(index)
+        compile_log=[];active_axis={'value':None};original_compile=ctx.compile;original_compose=ctx.h['compose'];original_struct=F.structural_pair
+        original_write=science.write;stack=(private/f'STACK_p{index}.txt').open('a')
+        faulthandler.dump_traceback_later(60,repeat=True,file=stack)
+        def timed(name,fn):
+            progress(log,name,'START')
+            try:return fn()
+            finally:progress(log,name,'END')
+        def compile_one(wrapper,settings,**kw):
+            if len(compile_log)>=2:raise ValueError('PER_PATH_TWO_COMPILE_LIMIT')
+            axis=active_axis['value']
+            if axis not in ('cosine','sine'):raise ValueError('AXIS_COMPILE_START_NOT_IDENTIFIED')
+            if wrapper.num_qubits!=ctx.prep.num_system_qubits+1 or wrapper.num_clbits!=1 or dict(wrapper.count_ops()).get('measure')!=1:raise ValueError('FULL_MEASURED_WRAPPER_REQUIRED')
+            entry=dict(axis=axis,status='STARTED');compile_log.append(entry);then=time.perf_counter()
+            try:
+                value=timed(axis+'_compile',lambda:original_compile(wrapper,settings,**kw));entry['status']='COMPLETE';return value
+            finally:entry.update(seconds=time.perf_counter()-then,peak_rss_bytes=R.rss())
+        def write_observed(path,value):
+            name=Path(path).name
+            if name in ('cosine.started.json','sine.started.json'):active_axis['value']=name.split('.')[0]
+            return timed('save_'+name,lambda:original_write(path,value))
+        ctx.compile=compile_one
+        ctx.h['compose']=lambda *a,**k:timed('compose',lambda:original_compose(*a,**k))
+        F.structural_pair=lambda *a,**k:timed('structural_pair',lambda:original_struct(*a,**k))
+        science.write=write_observed
+        try:
+            requests,seeds,laws=timed('sample_requests',lambda:ctx.h['sample_requests'](candidate,ctx.prep,cell['cohort'],index))
+            if seeds!=cell['seeds'][index]:raise ValueError('FROZEN_NORMAL_SEEDS_DIFFER')
+            batches=[[e.to_dict() for e in r.rte_occurrence.events] for r in requests]
+            event_digest=science.m.digest(batches);event_metrics=P.event_metrics([e for row in batches for e in row]);del batches
+            with E.efficient_controlled_zz(state['dfq']):
+                result=timed('price_requests',lambda:backend.price_requests(cell,index,directory,requests,seeds,laws,conditional=False))
+            if result['new_compiles']!=len(compile_log) or result['event_digest']!=event_digest:raise ValueError('COMPILE_COUNT_OR_SAME_EVENT_DIGEST_DIFFERS')
+            axes={a:json.loads((directory/(a+'.json')).read_text()) for a in science.m.AXES}
+            for ai,axis in enumerate(science.m.AXES):
+                r=axes[axis]
+                if r['compiler']!=plan['compiler']['settings_hash'] or r['fingerprint']!=result['fingerprints'][ai] or r['metrics']['rz_count']!=result['C'][ai]:
+                    raise ValueError('AXIS_RECEIPT_DIFFERS')
+                if any(type(v) is not int or v<0 for v in (result['S'][ai],result['C'][ai])):raise ValueError('INVALID_INTEGER_SC_PRICE')
+                if r['cache_hit']:raise ValueError('OLD_CACHE_ORIGINAL_EXECUTION_SOURCE_REQUIRES_ADMISSION_STOP')
+>           record=dict(result,m=3,phase='fresh',role='CALIBRATION',request=candidate,law_binding=science.m.row_for(plan,cell)['law_binding'],
+                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                seeds=seeds,laws=laws,events=event_metrics,lowering=E.LOWERING_ID,scalar=ctx.scalar,scalar_hex=float(ctx.scalar).hex(),
+                scalar_application='ONCE_AT_TOTAL_T',compiled={a:r['metrics'] for a,r in axes.items()},
+                compile_log=compile_log,timing=json.loads((directory/'TECHNICAL_TIMING.json').read_text()),
+                path_wall_seconds=time.perf_counter()-start,peak_rss_bytes=R.rss(),private_directory=str(directory),
+                gate_status='INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED',
+                numerical_action_gate='NOT_RUN_AS_IN_ORIGINAL_P2_FRESH',full_wrapper_statevector_validation=False)
+E               KeyError: 'law_binding'
+
+scripts/run_pr_df_ld1_m3.py:139: KeyError
+=============================== warnings summary ===============================
+src/trotterlib/Almost_optimal_grouping.py:222
+  /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld1-m3-acquisition-20261115/src/trotterlib/Almost_optimal_grouping.py:222: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+src/trotterlib/Almost_optimal_grouping.py:382
+  /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld1-m3-acquisition-20261115/src/trotterlib/Almost_optimal_grouping.py:382: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+src/trotterlib/Almost_optimal_grouping.py:636
+  /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld1-m3-acquisition-20261115/src/trotterlib/Almost_optimal_grouping.py:636: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+src/trotterlib/Almost_optimal_grouping.py:747
+  /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld1-m3-acquisition-20261115/src/trotterlib/Almost_optimal_grouping.py:747: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+src/trotterlib/Almost_optimal_grouping.py:792
+  /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld1-m3-acquisition-20261115/src/trotterlib/Almost_optimal_grouping.py:792: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pr_df_ld1_m3.py::test_actual_entry_uses_one_sample_and_two_axes_same_digest
+1 failed, 4 passed, 5 warnings in 6.61s

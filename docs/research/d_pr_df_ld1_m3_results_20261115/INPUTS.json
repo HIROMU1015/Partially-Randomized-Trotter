@@ -1,0 +1,1514 @@
+{
+  "schema": "PR_DF_LD1_M3_INPUTS_V1",
+  "status": "FIXED_BEFORE_SCIENCE",
+  "source_label": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+  "lowering": {
+    "id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+    "legacy": "CONTROLLED_ZZ_GENERIC_RZZ_CONTROL1_PROVIDER_C31EF424",
+    "provider": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+    "p0": {
+      "result": "442cafa14f75aeee9e04696df54aaaff1f53260e",
+      "source": "a287b8e6cb629c6a089c99b66b758751910ee15a"
+    }
+  },
+  "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+  "menus": {
+    "H4": {
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4"
+      },
+      "candidates": [
+        {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 8,
+          "candidate": {
+            "K": 2,
+            "R_outer": 16,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "045843b2429bece6f29b",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              16
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "V2_candidate_id": "RMSE:f9b12b7760639ec8ea4f24eab861e169925cd74bb5132b5f53084d5dba932a50",
+          "identity_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "law_binding": {
+            "definition": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              },
+              "A_declaration": {
+                "model": "ideal_finite_RTE_law",
+                "candidate_id": "045843b2429bece6f29b",
+                "R_outer": 16,
+                "K": 2,
+                "q_PF": 8,
+                "source": {
+                  "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                  "path": "src/trotterlib/rte.py"
+                }
+              }
+            },
+            "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+            "candidate_id": "RMSE:f9b12b7760639ec8ea4f24eab861e169925cd74bb5132b5f53084d5dba932a50",
+            "kappa": {
+              "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+              "value": {
+                "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+                "denominator": 539496659426909122096437389293855970805348475396548904610992201
+              },
+              "definition_source": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              }
+            },
+            "event_mapping": {
+              "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+              "source": {
+                "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+                "path": "src/trottertracks/pr_rpe_rmse.py"
+              },
+              "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "cells": [
+    {
+      "id": "H4_S0_m3_q8_R16",
+      "system": "H4",
+      "m": 3,
+      "candidate_id": "045843b2429bece6f29b",
+      "role": "CALIBRATION",
+      "cohort": "D_PR_DF_LD1_M3_CAL_NORMAL_20261115_V1",
+      "n": 4,
+      "path_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "seeds": [
+        [
+          15862913925240177422,
+          15488494183284887498,
+          1564618460637046632,
+          15951578195070489213,
+          11877523266972387155,
+          4998606641673919988,
+          8253659132168221718,
+          40379074505873190
+        ],
+        [
+          10409054108943232250,
+          11486726811224441181,
+          11374354341832797247,
+          8291415789898524037,
+          2019907091040116393,
+          15682791137492008947,
+          11712921529814513929,
+          16714130235662496306
+        ],
+        [
+          15324599187504318185,
+          13079556660754730992,
+          12100886403759053449,
+          17918824316954827411,
+          12078721924440473102,
+          13144854910264968149,
+          4007335094648087618,
+          7307631667800312627
+        ],
+        [
+          883157306594615801,
+          16296768479466403408,
+          16353480948952342901,
+          10822101084101100194,
+          1306560166932882043,
+          1359644337304596467,
+          14367493619153835072,
+          15931023610610172649
+        ]
+      ]
+    }
+  ],
+  "runtime": {
+    "provider_root": "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider",
+    "input_config": "/home/AbeHiromu/projects/h46-pr-exploration-execution/20261021/private/authorization_run01/H4_PR_EXPLORATION/config_APPROVED_PRIVATE.json",
+    "old_cache": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/compiled_cache"
+  },
+  "science_backend": {
+    "commit": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+    "modules": [
+      "r_price_phase1",
+      "r_price_phase1_runner",
+      "r_price_phase1_science"
+    ]
+  },
+  "compile_budget": 8,
+  "trajectory_paths": 4,
+  "sampling_law": "UNCHANGED_PCG64_NUMPY_CDF_FINITE_K2 (carrier sample_requests)",
+  "compiler": {
+    "settings_hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "qiskit": "1.3.0"
+  },
+  "not_in_scope": [
+    "m0/m6 recompile",
+    "P1/replay pool",
+    "m4 acquisition/opening",
+    "residual aggregation",
+    "fit",
+    "m4 prediction",
+    "law distance",
+    "CI",
+    "N/G",
+    "retry",
+    "additional paths"
+  ],
+  "calibration_saved_cells": [
+    {
+      "id": "H4_S0_m0_q1_R2",
+      "system": "H4",
+      "m": 0,
+      "candidate_id": "53e00d8b07d1547d19a7",
+      "role": "DEVELOPMENT",
+      "cohort": "D_P2_DIRECT_PILOT_V1",
+      "n": 4,
+      "seeds": [
+        [
+          6494583135280095015
+        ],
+        [
+          1174945148794258079
+        ],
+        [
+          13788256810838376845
+        ],
+        [
+          9247620065673401157
+        ]
+      ]
+    },
+    {
+      "id": "H4_S0_m6_q64_R128",
+      "system": "H4",
+      "m": 6,
+      "candidate_id": "2a8c6718220eec59d419",
+      "role": "DEVELOPMENT",
+      "cohort": "D_P2_DIRECT_PILOT_V1",
+      "n": 4,
+      "seeds": [
+        [
+          14083211977435771970,
+          11263000092847435339,
+          13697949336253628235,
+          14412226720408705970,
+          1032916216640402906,
+          13532471863008974526,
+          14722607613913032144,
+          12949589147566479129,
+          14407085564736090065,
+          2924646524233207422,
+          3369646201445257352,
+          11261539454941484864,
+          16968682481403180204,
+          2982547861738514593,
+          4398337597559194683,
+          773597742892587980,
+          6878575292358812683,
+          7169562095031259273,
+          2121698771402820574,
+          11480273463691439716,
+          9790054893237325890,
+          4013177289165158040,
+          2448924016529457616,
+          9571798227480660890,
+          10320722471518370042,
+          5330356742119442060,
+          3738602598432271644,
+          5269731668774228348,
+          1415113316103784503,
+          15918558616732092144,
+          3859543622791287360,
+          577600927737383081,
+          7433886729630376190,
+          10593777152784087755,
+          4120310278088655085,
+          13228511252618770759,
+          13702693601538325058,
+          15368130698564574414,
+          14960582004271520535,
+          7038504350549330821,
+          5842747549849156592,
+          3255677034329673650,
+          7821384415640671125,
+          4890443290170130178,
+          8431637063506538781,
+          4587016179260391724,
+          4255918225909170714,
+          13469068217072787926,
+          675174027240985062,
+          11195775904025849367,
+          12394984075753385908,
+          5793509466995544878,
+          4635045394354970004,
+          10719111155422187913,
+          607714591884390484,
+          11886428852451301205,
+          8753883830897383425,
+          3810698189361133800,
+          11889732483265971873,
+          1823970574883345668,
+          10719506613187865313,
+          14188879098127947705,
+          10830311465161420969,
+          13068775585791268980
+        ],
+        [
+          17131964775402094692,
+          2198080243339762730,
+          10402123538138330686,
+          14424411149345309080,
+          5145585694726409056,
+          17494989875693702436,
+          2017573558562160873,
+          7777800479585893136,
+          15716625288902168754,
+          11070207353427066510,
+          8701631340832143811,
+          11467779569687205052,
+          15005977058987481983,
+          3549238328775112963,
+          15431978860712977537,
+          5077291003901027896,
+          1427774447674048881,
+          16560151420452800285,
+          15845000333581601757,
+          14143307252747901578,
+          3650589402978166578,
+          10279174244737782218,
+          5808431525710488495,
+          403167712932516237,
+          5815476968184435171,
+          8136429465254128285,
+          4433576548482792192,
+          3772910806650150740,
+          2384831820611329354,
+          13141335412111641477,
+          10431275823537707156,
+          17061433567470417722,
+          6968262489746983525,
+          18226938242011779259,
+          11638193020744765641,
+          4353567789441962914,
+          4981403712596752011,
+          6585662661634871617,
+          13894734972322382677,
+          10061324886976766738,
+          10692865461643747092,
+          6693538047037561050,
+          2623691363102626523,
+          7401176475090380521,
+          3642946345455041329,
+          11931840391494273614,
+          12013829040838085654,
+          2640694574135545034,
+          129061245532991944,
+          10796070588343267849,
+          9416226495033853822,
+          4353142635387406746,
+          2861308972130978539,
+          206816810473028154,
+          922950578596231749,
+          12238642087738795857,
+          7549704051362626969,
+          1580788576915977431,
+          16511833666566929528,
+          2711451944262881096,
+          4129221157793241390,
+          9944019464226969006,
+          15273552762022020663,
+          5440612950247338765
+        ],
+        [
+          3547374542517723810,
+          17172712393823805849,
+          9938363743115577707,
+          7960147748507979596,
+          10521435386468089552,
+          6348496540909530865,
+          8029768218724015606,
+          13918867283747834289,
+          5336363145813864255,
+          2543443011569794959,
+          7428469722363095755,
+          3335135608551806124,
+          8067644422690792246,
+          11084792257869899512,
+          12176261808747045333,
+          18120965808031139390,
+          10788806915626507140,
+          3075441750385124025,
+          3837431695061492758,
+          11691252534697855617,
+          14365006091012449692,
+          17361250328645638708,
+          11736600881934325978,
+          4424399996255803281,
+          6554788157013818740,
+          13171570086045317858,
+          2518791546239950922,
+          18047092273799193639,
+          15321962784351370799,
+          16620140404650146497,
+          6034301624777308128,
+          7287799535895565998,
+          10512267444705597402,
+          8816501642166949042,
+          1514987303599579695,
+          3402755401546207174,
+          4680272609543299828,
+          10079529348168545712,
+          8001919402200071639,
+          5051179473316564190,
+          8512098764429938910,
+          4060671271845709338,
+          7967361943157527573,
+          2090354648929435292,
+          8412586437568829335,
+          3892093426634968509,
+          7956261844521712136,
+          4774605640794764030,
+          16175210455704599818,
+          6160868824269235028,
+          186736278955339752,
+          3367855296948723614,
+          16151092913888191149,
+          2219034230182199513,
+          9715078894142181057,
+          15443961419374064472,
+          13006286294165729973,
+          904274570412778950,
+          5426915829200365901,
+          1948918709896423596,
+          2446897822435198308,
+          3787442977520469800,
+          2695536453261810759,
+          15898967635975189746
+        ],
+        [
+          9592718823409684482,
+          8313710998027813425,
+          7645901456186406103,
+          10005295883106929882,
+          2529249378028682320,
+          14901083311089469467,
+          3529317354420959034,
+          9613802451932355992,
+          16513201186847826295,
+          5022720055722637530,
+          8532311879774887124,
+          15826104313186480860,
+          11756503689595155145,
+          3034693315519909385,
+          778706048711374088,
+          8001400534431236533,
+          2262702589833846236,
+          2026098875995258125,
+          6555879203864926455,
+          16439347682905246091,
+          14216700656677900546,
+          5598045774506731685,
+          5089197648386116411,
+          7447007983502586337,
+          2304890818694613496,
+          5092052049685725993,
+          3852868508297278819,
+          3672095031538966720,
+          17607918173735606972,
+          13354912196525188911,
+          9429800505499688810,
+          9494204623666862610,
+          17718096470069581364,
+          12987521005555621530,
+          8989491120461795704,
+          9586637284684493240,
+          7149989251489400295,
+          9920519212807427179,
+          11568169634620684820,
+          3151736048540256273,
+          179858950060160828,
+          10703725620084769214,
+          1269797628006221020,
+          4953533093734504712,
+          8289101024433285696,
+          5469928977338220433,
+          3838740834735428696,
+          8565032003642554168,
+          17194787490220760140,
+          16380157419766144812,
+          3913371821967871968,
+          2964616802168195543,
+          10175967834916422819,
+          18171737880152921887,
+          6704570822670718813,
+          8523792467907632752,
+          4284073851797808893,
+          5898886706349340122,
+          17966468799936030331,
+          17559887894701568,
+          5164209514574267287,
+          7227252703008334750,
+          11939972940134142130,
+          1983727617009911124
+        ]
+      ]
+    }
+  ],
+  "saved_P2_fresh_inputs": [
+    {
+      "m": 0,
+      "axis": "X",
+      "admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          0
+        ]
+      },
+      "paths": [
+        {
+          "index": 0,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              2
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              2,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              2,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/0/result.json",
+            "sha256": "94003e72caa6a34e99ac8666d5bb9d2768944302a3eb3a599115c20545681ba5",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/94003e72caa6a34e99ac8666d5bb9d2768944302a3eb3a599115c20545681ba5.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/0/cosine.json",
+            "sha256": "b9709fb45fde8395991a6d5e29c881fdb723d21ad80173ed949e6c468b54a469",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/b9709fb45fde8395991a6d5e29c881fdb723d21ad80173ed949e6c468b54a469.json"
+          }
+        },
+        {
+          "index": 1,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              3
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              3,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              3,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/1/result.json",
+            "sha256": "c0d87d537c509e143bf86599e04239c246f768eece8781d1bc1d4323e4056a2d",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/c0d87d537c509e143bf86599e04239c246f768eece8781d1bc1d4323e4056a2d.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/1/cosine.json",
+            "sha256": "a3ef83e0b492a003ec571494f07f58012bb01ccb4b9739aaa2dead4594eba2d7",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/a3ef83e0b492a003ec571494f07f58012bb01ccb4b9739aaa2dead4594eba2d7.json"
+          }
+        },
+        {
+          "index": 2,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              4
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              4,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              4,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/2/result.json",
+            "sha256": "a8e39957b98d5d8dc052faef8754f787ece538aee2ce927e600869bae49e72f1",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/a8e39957b98d5d8dc052faef8754f787ece538aee2ce927e600869bae49e72f1.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/2/cosine.json",
+            "sha256": "02f517ce26d70b5382e59b64b1e0956854ea32220a56015e962fdbdc30403086",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/02f517ce26d70b5382e59b64b1e0956854ea32220a56015e962fdbdc30403086.json"
+          }
+        },
+        {
+          "index": 3,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              5
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              5,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              5,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/3/result.json",
+            "sha256": "75cf896e0a57e2fd02f0d993a232f466a9fc2468bf61c495de8bc5fedfcbe542",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/75cf896e0a57e2fd02f0d993a232f466a9fc2468bf61c495de8bc5fedfcbe542.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/3/cosine.json",
+            "sha256": "05fc9ce277a9220f0683ebbf33ee72191cd918286bbc6d4c42441629e5e987d4",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/05fc9ce277a9220f0683ebbf33ee72191cd918286bbc6d4c42441629e5e987d4.json"
+          }
+        }
+      ]
+    },
+    {
+      "m": 0,
+      "axis": "Y",
+      "admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          1
+        ]
+      },
+      "paths": [
+        {
+          "index": 0,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              2
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              2,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              2,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/0/result.json",
+            "sha256": "94003e72caa6a34e99ac8666d5bb9d2768944302a3eb3a599115c20545681ba5",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/94003e72caa6a34e99ac8666d5bb9d2768944302a3eb3a599115c20545681ba5.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/0/sine.json",
+            "sha256": "ca592317dedac15a3012366c4adf0d6a6ad2cbaf1d5581e54a7c3ffb48693253",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/ca592317dedac15a3012366c4adf0d6a6ad2cbaf1d5581e54a7c3ffb48693253.json"
+          }
+        },
+        {
+          "index": 1,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              3
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              3,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              3,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/1/result.json",
+            "sha256": "c0d87d537c509e143bf86599e04239c246f768eece8781d1bc1d4323e4056a2d",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/c0d87d537c509e143bf86599e04239c246f768eece8781d1bc1d4323e4056a2d.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/1/sine.json",
+            "sha256": "71146aaa2d4fc6b78712549ad1bd779682c3daa039ab15ddbb0df2d89bbea788",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/71146aaa2d4fc6b78712549ad1bd779682c3daa039ab15ddbb0df2d89bbea788.json"
+          }
+        },
+        {
+          "index": 2,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              4
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              4,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              4,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/2/result.json",
+            "sha256": "a8e39957b98d5d8dc052faef8754f787ece538aee2ce927e600869bae49e72f1",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/a8e39957b98d5d8dc052faef8754f787ece538aee2ce927e600869bae49e72f1.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/2/sine.json",
+            "sha256": "ad7796ac642ce53c11e0e5efba1260aacce19ef1412c7a5387732c656a5ede80",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/ad7796ac642ce53c11e0e5efba1260aacce19ef1412c7a5387732c656a5ede80.json"
+          }
+        },
+        {
+          "index": 3,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              5
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              5,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              5,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/3/result.json",
+            "sha256": "75cf896e0a57e2fd02f0d993a232f466a9fc2468bf61c495de8bc5fedfcbe542",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/75cf896e0a57e2fd02f0d993a232f466a9fc2468bf61c495de8bc5fedfcbe542.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m0_q1_R2/3/sine.json",
+            "sha256": "58988641cd91c938b93ddb3dfbe2167b5b8f95d7616f1e782eed4b4781bc342d",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/58988641cd91c938b93ddb3dfbe2167b5b8f95d7616f1e782eed4b4781bc342d.json"
+          }
+        }
+      ]
+    },
+    {
+      "m": 6,
+      "axis": "X",
+      "admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          12
+        ]
+      },
+      "paths": [
+        {
+          "index": 0,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              6
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              6,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              6,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/0/result.json",
+            "sha256": "f1868449232b58366195711b61fb1c9a3c356838255ded598baca3db32379eb6",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/f1868449232b58366195711b61fb1c9a3c356838255ded598baca3db32379eb6.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/0/cosine.json",
+            "sha256": "7d033ed7af1d3bae779d8bc8bc179a8dc92395a72e4e4a392ed4586c327f7c78",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/7d033ed7af1d3bae779d8bc8bc179a8dc92395a72e4e4a392ed4586c327f7c78.json"
+          }
+        },
+        {
+          "index": 1,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              7
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              7,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              7,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/1/result.json",
+            "sha256": "30865bb58f1af4e4034097e8dc957c0692521a0a402590b4d00d5c5061d34cf1",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/30865bb58f1af4e4034097e8dc957c0692521a0a402590b4d00d5c5061d34cf1.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/1/cosine.json",
+            "sha256": "e41d50cd1b210cb50f4cb57a504baaab243b0b2c731f0ed6967b273ab0ef0919",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/e41d50cd1b210cb50f4cb57a504baaab243b0b2c731f0ed6967b273ab0ef0919.json"
+          }
+        },
+        {
+          "index": 2,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              8
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              8,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              8,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/2/result.json",
+            "sha256": "d3df12be5ea2dcc4cfac1beeab2bb8f9dafc49e0c603bba16e1333c9cf8e266e",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/d3df12be5ea2dcc4cfac1beeab2bb8f9dafc49e0c603bba16e1333c9cf8e266e.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/2/cosine.json",
+            "sha256": "d4ee77bea525fdcc1105f036e3fff982bc29d8ff23d2e420c26c475c449b15b2",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/d4ee77bea525fdcc1105f036e3fff982bc29d8ff23d2e420c26c475c449b15b2.json"
+          }
+        },
+        {
+          "index": 3,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              9
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              9,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              9,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/3/result.json",
+            "sha256": "56a24274e3961df9ffdfee5251acc8befef51509297aa024140bfff3cc90a1dc",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/56a24274e3961df9ffdfee5251acc8befef51509297aa024140bfff3cc90a1dc.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/3/cosine.json",
+            "sha256": "647d011085fb93fca7d055b28eb772ab0cd02404c0c8f37bf89076f7c4f10b06",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/647d011085fb93fca7d055b28eb772ab0cd02404c0c8f37bf89076f7c4f10b06.json"
+          }
+        }
+      ]
+    },
+    {
+      "m": 6,
+      "axis": "Y",
+      "admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          13
+        ]
+      },
+      "paths": [
+        {
+          "index": 0,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              6
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              6,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              6,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/0/result.json",
+            "sha256": "f1868449232b58366195711b61fb1c9a3c356838255ded598baca3db32379eb6",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/f1868449232b58366195711b61fb1c9a3c356838255ded598baca3db32379eb6.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/0/sine.json",
+            "sha256": "d0b5c88461cfc18532ba7292b6cfb179fa2f23fd432a67f0ea06c08afb0e0bb1",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/d0b5c88461cfc18532ba7292b6cfb179fa2f23fd432a67f0ea06c08afb0e0bb1.json"
+          }
+        },
+        {
+          "index": 1,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              7
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              7,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              7,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/1/result.json",
+            "sha256": "30865bb58f1af4e4034097e8dc957c0692521a0a402590b4d00d5c5061d34cf1",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/30865bb58f1af4e4034097e8dc957c0692521a0a402590b4d00d5c5061d34cf1.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/1/sine.json",
+            "sha256": "b49f799dc07e4e15f0b7c0401e74feb2d026bf43a9d3e9c6cf84981d9a7d3032",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/b49f799dc07e4e15f0b7c0401e74feb2d026bf43a9d3e9c6cf84981d9a7d3032.json"
+          }
+        },
+        {
+          "index": 2,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              8
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              8,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              8,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/2/result.json",
+            "sha256": "d3df12be5ea2dcc4cfac1beeab2bb8f9dafc49e0c603bba16e1333c9cf8e266e",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/d3df12be5ea2dcc4cfac1beeab2bb8f9dafc49e0c603bba16e1333c9cf8e266e.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/2/sine.json",
+            "sha256": "cb959655e5b87c84d608a4536921dfbfdd0557b0fe2a761e623817588c274a9d",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/cb959655e5b87c84d608a4536921dfbfdd0557b0fe2a761e623817588c274a9d.json"
+          }
+        },
+        {
+          "index": 3,
+          "cohort": "D_P2_DIRECT_PILOT_V1",
+          "role": "DEVELOPMENT",
+          "source": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              9
+            ]
+          },
+          "scientific_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "seeds": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              9,
+              "seeds"
+            ]
+          },
+          "laws": {
+            "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+            "path": "docs/research/d_p2_direct_pilot_20261113/run01/RESULT.json",
+            "selector": [
+              "rows",
+              9,
+              "laws"
+            ]
+          },
+          "original_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/3/result.json",
+            "sha256": "56a24274e3961df9ffdfee5251acc8befef51509297aa024140bfff3cc90a1dc",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/56a24274e3961df9ffdfee5251acc8befef51509297aa024140bfff3cc90a1dc.json"
+          },
+          "axis_receipt": {
+            "original_path": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/fresh/H4_S0_m6_q64_R128/3/sine.json",
+            "sha256": "2a75c866247fb832e3203e3bab8fd9e14b440bd474199e41826c7817190d7531",
+            "archived_path": "docs/research/pr_df_ld1_q3_price_admission_20261115/receipts/2a75c866247fb832e3203e3bab8fd9e14b440bd474199e41826c7817190d7531.json"
+          }
+        }
+      ]
+    }
+  ],
+  "future_holdout": {
+    "row": {
+      "m": 4,
+      "q_RPE": 16,
+      "q_PF": 16,
+      "candidate": {
+        "K": 2,
+        "R_outer": 32,
+        "T": 1.6,
+        "delta": 0.1,
+        "formula": "2nd",
+        "id": "3df0cfd3356c358aeda8",
+        "method": "PR",
+        "prefix": 1,
+        "q": 16,
+        "system": "H4"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          32
+        ],
+        "event_count": 512,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "V2_candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+      "identity_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "3df0cfd3356c358aeda8",
+            "R_outer": 32,
+            "K": 2,
+            "q_PF": 16,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      }
+    },
+    "cell": {
+      "id": "H4_S0_m4_q16_R32",
+      "system": "H4",
+      "m": 4,
+      "candidate_id": "3df0cfd3356c358aeda8",
+      "role": "HOLDOUT_NOT_AUTHORIZED",
+      "cohort": "D_PR_DF_LD1_M4_HOLDOUT_NORMAL_20261115_V1",
+      "n": 4,
+      "path_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "seeds": [
+        [
+          14646197473806357520,
+          16747901711665483975,
+          11986204884078336154,
+          17796284543260594391,
+          1240582131796536406,
+          2199222395989115912,
+          16225669741982230372,
+          18284757314310983212,
+          6575455923561265226,
+          7025050764599770934,
+          1081312784084050097,
+          9405295871312617531,
+          15560573962018212479,
+          10097303277518062979,
+          8645960457082908603,
+          606879115854555434
+        ],
+        [
+          18414135097610168177,
+          12230470430746218115,
+          314827374670879847,
+          4165625077687652521,
+          10901524662192809211,
+          9418353279282472125,
+          16974223203530265806,
+          14241824751190918074,
+          646891425020192129,
+          14857492889947384471,
+          926842021972158839,
+          1241141900085249222,
+          10796616362945264385,
+          9817601214844414517,
+          666348202114648174,
+          3108934311098965894
+        ],
+        [
+          3769210469785096312,
+          4127638131555001433,
+          8872060400168430830,
+          60681103949751023,
+          12979725876796436763,
+          7374789798540280944,
+          8162440662766096932,
+          3010353868426676142,
+          18432903797771897784,
+          3890059057185208805,
+          13109568787416706699,
+          18398486862895689737,
+          12429164164478446402,
+          16361889268313534006,
+          9758620469387643200,
+          9836735443123761577
+        ],
+        [
+          6907747655116071635,
+          16481651377855967308,
+          13717847812654953038,
+          3773473711089476584,
+          769917856683467544,
+          8323757746657416507,
+          15315283223940753606,
+          3347030529104765426,
+          338726930981462715,
+          8730259112396205708,
+          5956765789562464725,
+          14119400855631439567,
+          13046401607084280404,
+          11879077225435588637,
+          4909216742975627705,
+          1115864744333980296
+        ]
+      ]
+    },
+    "execution_authorized": false,
+    "prices_opened": false
+  },
+  "model_plan": {
+    "formula": "saved_E_I[S] + theta0 + thetaq*q + thetaL*qR",
+    "calibration_rounds": [
+      0,
+      3,
+      6
+    ],
+    "holdout_round": 4,
+    "responses": [
+      "X",
+      "Y"
+    ],
+    "target": "Q_SPECIFIED_FINITE_COHORT",
+    "residual_aggregation_authorized": false,
+    "fit_authorized": false,
+    "holdout_rule": {
+      "n_paths": 4,
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "O": "same-axis sum of four compiled RZ / 4",
+      "signed_error": "P-O",
+      "absolute_error": "abs(P-O)",
+      "signed_relative": "(P-O)/O",
+      "absolute_relative": "abs(P-O)/O",
+      "zero_observed": "relative null: ZERO_OBSERVED_PRICE",
+      "missing": "O and errors null; never change n_paths",
+      "tolerance": null,
+      "model_verdict": "NOT_ASSESSED_NO_ADOPTED_TOLERANCE"
+    }
+  },
+  "C_plan": {
+    "commit": "8eef0ad7a9b04e04d766f5e05b3b32eee50a794e",
+    "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/NEXT_VALIDATION_PLAN.md"
+  },
+  "C_admission": {
+    "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+    "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json"
+  },
+  "source_facts": {
+    "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+    "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/SOURCE_FACTS.json"
+  },
+  "scalar_saved": {
+    "value": 2.7108187593826942,
+    "hex": "0x1.5afc1bee774aap+1",
+    "policy": "-scalar*T once after q outers"
+  },
+  "expected_preparation_hash": "b99720d6189a9975a46f064ba895d2f83514671e668ce42c34a4d71e834568d7",
+  "profile": {
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "control": "symmetric_directional",
+    "wrapper": "full_Hadamard_with_measurement",
+    "scope": "single_hadamard_interrogation_without_state_preparation",
+    "P": 0,
+    "qiskit_version": "1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17
+  },
+  "pipeline_source": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+  "public": "docs/research/d_pr_df_ld1_m3_results_20261115",
+  "private": "/home/AbeHiromu/projects/d2-pr-df-ld1-m3-20261115-private/run01",
+  "saved_input_files": {
+    "H4_tol_receipt.json": {
+      "bytes": 7080,
+      "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+      "role": "tol_receipt",
+      "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+    },
+    "H4_tol_snapshot.npz": {
+      "bytes": 18126,
+      "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+      "role": "tol_snapshot",
+      "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+    }
+  }
+}
