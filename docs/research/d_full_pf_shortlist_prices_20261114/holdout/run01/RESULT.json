@@ -1,0 +1,1985 @@
+{
+  "status": "HOLDOUT_PRICES_COMPLETE",
+  "stage": "HOLDOUT",
+  "route": "FULL_PF",
+  "source": {
+    "caller": "scripts/run_full_pf_shortlist_prices.py",
+    "native": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/h46_long_time_native.py"
+    },
+    "wrapper": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+    },
+    "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+    "commit": "e276ab70fdd6ff988928703ec79fd3a9aa8c1603",
+    "stage": "HOLDOUT",
+    "stage_module": "scripts/pf_price_stages.py",
+    "cell_plan": {
+      "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+      "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+    },
+    "comparison_policy": {
+      "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+      "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+      "metric": "compiled_rz_count",
+      "state_preparation": "P0_EXCLUDED",
+      "control": "symmetric_directional",
+      "measurement": "full_Hadamard_with_measurement",
+      "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+      "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+      "compiler": {
+        "qiskit": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed": 17
+      },
+      "scalar_by_route": {
+        "FULL_PF": "HAMILTONIAN_CONSTANT",
+        "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+      },
+      "scalar_application": "ONCE_AT_TOTAL_T",
+      "holdout": {
+        "name": "H-b",
+        "kind": "RELATIVE",
+        "scale": "observed",
+        "value": {
+          "numerator": 1,
+          "denominator": 50
+        },
+        "calibration_rounds": [
+          4,
+          5
+        ],
+        "holdout_rounds": [
+          6
+        ],
+        "individual_models": 12,
+        "success": "ALL_12_PASS",
+        "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+      }
+    }
+  },
+  "cells": [
+    {
+      "formula": "2nd",
+      "m": 6,
+      "id": "4f3984c6d381fa0ca848",
+      "q": 28,
+      "model_groups": [
+        [
+          "FULL_PF",
+          "2nd",
+          "16/7",
+          "X"
+        ],
+        [
+          "FULL_PF",
+          "2nd",
+          "16/7",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "4th",
+      "m": 6,
+      "id": "7727a3fec25e033629f1",
+      "q": 12,
+      "model_groups": [
+        [
+          "FULL_PF",
+          "4th",
+          "16/3",
+          "X"
+        ],
+        [
+          "FULL_PF",
+          "4th",
+          "16/3",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "4th(m5_best)",
+      "m": 6,
+      "id": "8db0bd3c1a5e1eeb541f",
+      "q": 4,
+      "model_groups": [
+        [
+          "FULL_PF",
+          "4th(m5_best)",
+          "16",
+          "X"
+        ],
+        [
+          "FULL_PF",
+          "4th(m5_best)",
+          "16",
+          "Y"
+        ]
+      ]
+    }
+  ],
+  "saved_calibration": [],
+  "duplicate_preflight": {
+    "status": "NO_DUPLICATE_IN_CHECKED_SOURCES",
+    "table": {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz"
+    },
+    "catalog": {
+      "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+      "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json"
+    },
+    "original_trial_root": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION",
+    "checked_stage_roots": [
+      "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01",
+      "docs/research/d_full_pf_shortlist_prices_20261114/holdout/run01"
+    ],
+    "running_jobs": [],
+    "cells": [
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 6.4,
+          "q": 28,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "4f3984c6d381fa0ca848"
+        },
+        "m": 6,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th",
+          "T": 6.4,
+          "q": 12,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "7727a3fec25e033629f1"
+        },
+        "m": 6,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th(m5_best)",
+          "T": 6.4,
+          "q": 4,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "8db0bd3c1a5e1eeb541f"
+        },
+        "m": 6,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      }
+    ],
+    "scope": "KNOWN_TABLE_CATALOG_EXACT_TRIAL_PATHS_ROUTE_STAGE_RECEIPTS_AND_RELEVANT_USER_JOBS",
+    "unlisted_private_evidence": "UNKNOWN_REQUIRES_OPERATOR_CHECK_BEFORE_SCIENCE",
+    "prices_reestimated": false,
+    "automatic_reuse": false
+  },
+  "holdout_gate": {
+    "calibration": {
+      "commit": "e276ab70fdd6ff988928703ec79fd3a9aa8c1603",
+      "sha256": {
+        "RESULT.json": "6ed0cba81d08a93846d465e75ca782a474807fcc3f355e08e18d5732e4d01338",
+        "PRICES.json": "af022a085bd5b2459f47d198257ca859e6f18bcbd6c3a6e159482aa85c0fc763",
+        "SIDECARS_UNBOUND.json": "f194f1951a55ca5febd7271f8c233c86a09273ce5738b2dec84650e1f8e2cf7f",
+        "IMPLEMENTATION_EVIDENCE.json": "d03b23b319ab6b98dde2065a8a92c0f3d50c1b05cd861c336113dfaf3ac79ce4",
+        "C_INPUTS.json": "3b3e31f8bd63ffcd9d5bb382e6b46edf96793e2f6bd2f4cdb473bd811a7c08b5",
+        "SIDECARS.json": "251ae1af44f4cc3536f20a6d4a719a86afd3688f107cd4d5cb37dc9b2e0f6d42",
+        "GUARD_CHECK.json": "b29134a34dd11c29487f7df0cd768e9c3dc5565355f79cb10a3a82d2b9c286ed"
+      }
+    },
+    "frozen_models": {
+      "source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json"
+      },
+      "sha256": "845c705082565a2b44d198bddb3034497620d991a00604454394ae5acda9651a",
+      "models": {
+        "FULL_PF|2nd|16/7|X": {
+          "coefficients": {
+            "one": {
+              "numerator": 307,
+              "denominator": 1
+            },
+            "q": {
+              "numerator": 7791,
+              "denominator": 1
+            }
+          },
+          "calibration": [
+            {
+              "cell_id": "FULL_PF:2nd:16/7:m4",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            },
+            {
+              "cell_id": "FULL_PF:2nd:16/7:m5",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            }
+          ],
+          "design_source": {
+            "source": "79c951b38bf9d8f1c80f28b2e7f82846d85c67e5",
+            "plan": {
+              "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+              "path": "scripts/pf_price_stages.py"
+            },
+            "comparison_policy": {
+              "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+              "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+              "metric": "compiled_rz_count",
+              "state_preparation": "P0_EXCLUDED",
+              "control": "symmetric_directional",
+              "measurement": "full_Hadamard_with_measurement",
+              "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+              "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+              "compiler": {
+                "qiskit": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed": 17
+              },
+              "scalar_by_route": {
+                "FULL_PF": "HAMILTONIAN_CONSTANT",
+                "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+              },
+              "scalar_application": "ONCE_AT_TOTAL_T",
+              "holdout": {
+                "name": "H-b",
+                "kind": "RELATIVE",
+                "scale": "observed",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 50
+                },
+                "calibration_rounds": [
+                  4,
+                  5
+                ],
+                "holdout_rounds": [
+                  6
+                ],
+                "individual_models": 12,
+                "success": "ALL_12_PASS",
+                "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+              }
+            },
+            "C_inputs_source": {
+              "commit": "1078d23621566728521d8056fead17118244be42",
+              "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+              "selector": [
+                "FULL_PF|2nd|16/7|X"
+              ]
+            },
+            "model_group": [
+              "FULL_PF",
+              "2nd",
+              "16/7",
+              "X"
+            ]
+          }
+        },
+        "FULL_PF|2nd|16/7|Y": {
+          "coefficients": {
+            "one": {
+              "numerator": 307,
+              "denominator": 1
+            },
+            "q": {
+              "numerator": 7791,
+              "denominator": 1
+            }
+          },
+          "calibration": [
+            {
+              "cell_id": "FULL_PF:2nd:16/7:m4",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            },
+            {
+              "cell_id": "FULL_PF:2nd:16/7:m5",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            }
+          ],
+          "design_source": {
+            "source": "79c951b38bf9d8f1c80f28b2e7f82846d85c67e5",
+            "plan": {
+              "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+              "path": "scripts/pf_price_stages.py"
+            },
+            "comparison_policy": {
+              "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+              "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+              "metric": "compiled_rz_count",
+              "state_preparation": "P0_EXCLUDED",
+              "control": "symmetric_directional",
+              "measurement": "full_Hadamard_with_measurement",
+              "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+              "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+              "compiler": {
+                "qiskit": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed": 17
+              },
+              "scalar_by_route": {
+                "FULL_PF": "HAMILTONIAN_CONSTANT",
+                "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+              },
+              "scalar_application": "ONCE_AT_TOTAL_T",
+              "holdout": {
+                "name": "H-b",
+                "kind": "RELATIVE",
+                "scale": "observed",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 50
+                },
+                "calibration_rounds": [
+                  4,
+                  5
+                ],
+                "holdout_rounds": [
+                  6
+                ],
+                "individual_models": 12,
+                "success": "ALL_12_PASS",
+                "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+              }
+            },
+            "C_inputs_source": {
+              "commit": "1078d23621566728521d8056fead17118244be42",
+              "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+              "selector": [
+                "FULL_PF|2nd|16/7|Y"
+              ]
+            },
+            "model_group": [
+              "FULL_PF",
+              "2nd",
+              "16/7",
+              "Y"
+            ]
+          }
+        },
+        "FULL_PF|4th(m5_best)|16|X": {
+          "coefficients": {
+            "one": {
+              "numerator": 307,
+              "denominator": 1
+            },
+            "q": {
+              "numerator": 85653,
+              "denominator": 1
+            }
+          },
+          "calibration": [
+            {
+              "cell_id": "FULL_PF:4th(m5_best):16:m4",
+              "source": {
+                "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+                "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz",
+                "key": "0cd1527c80f7b9841a83",
+                "original_trial": {
+                  "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/0cd1527c80f7b9841a83/0/result.json",
+                  "sha256": "1b70f9cf01c351778cf4ba0c5a7c04f6c698ca68046ef676ae97d20c52a60269"
+                },
+                "catalog": {
+                  "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+                  "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json"
+                }
+              }
+            },
+            {
+              "cell_id": "FULL_PF:4th(m5_best):16:m5",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            }
+          ],
+          "design_source": {
+            "source": "79c951b38bf9d8f1c80f28b2e7f82846d85c67e5",
+            "plan": {
+              "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+              "path": "scripts/pf_price_stages.py"
+            },
+            "comparison_policy": {
+              "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+              "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+              "metric": "compiled_rz_count",
+              "state_preparation": "P0_EXCLUDED",
+              "control": "symmetric_directional",
+              "measurement": "full_Hadamard_with_measurement",
+              "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+              "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+              "compiler": {
+                "qiskit": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed": 17
+              },
+              "scalar_by_route": {
+                "FULL_PF": "HAMILTONIAN_CONSTANT",
+                "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+              },
+              "scalar_application": "ONCE_AT_TOTAL_T",
+              "holdout": {
+                "name": "H-b",
+                "kind": "RELATIVE",
+                "scale": "observed",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 50
+                },
+                "calibration_rounds": [
+                  4,
+                  5
+                ],
+                "holdout_rounds": [
+                  6
+                ],
+                "individual_models": 12,
+                "success": "ALL_12_PASS",
+                "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+              }
+            },
+            "C_inputs_source": {
+              "commit": "1078d23621566728521d8056fead17118244be42",
+              "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+              "selector": [
+                "FULL_PF|4th(m5_best)|16|X"
+              ]
+            },
+            "model_group": [
+              "FULL_PF",
+              "4th(m5_best)",
+              "16",
+              "X"
+            ]
+          }
+        },
+        "FULL_PF|4th(m5_best)|16|Y": {
+          "coefficients": {
+            "one": {
+              "numerator": 307,
+              "denominator": 1
+            },
+            "q": {
+              "numerator": 85653,
+              "denominator": 1
+            }
+          },
+          "calibration": [
+            {
+              "cell_id": "FULL_PF:4th(m5_best):16:m4",
+              "source": {
+                "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+                "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz",
+                "key": "0cd1527c80f7b9841a83",
+                "original_trial": {
+                  "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/0cd1527c80f7b9841a83/0/result.json",
+                  "sha256": "1b70f9cf01c351778cf4ba0c5a7c04f6c698ca68046ef676ae97d20c52a60269"
+                },
+                "catalog": {
+                  "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+                  "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json"
+                }
+              }
+            },
+            {
+              "cell_id": "FULL_PF:4th(m5_best):16:m5",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            }
+          ],
+          "design_source": {
+            "source": "79c951b38bf9d8f1c80f28b2e7f82846d85c67e5",
+            "plan": {
+              "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+              "path": "scripts/pf_price_stages.py"
+            },
+            "comparison_policy": {
+              "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+              "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+              "metric": "compiled_rz_count",
+              "state_preparation": "P0_EXCLUDED",
+              "control": "symmetric_directional",
+              "measurement": "full_Hadamard_with_measurement",
+              "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+              "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+              "compiler": {
+                "qiskit": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed": 17
+              },
+              "scalar_by_route": {
+                "FULL_PF": "HAMILTONIAN_CONSTANT",
+                "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+              },
+              "scalar_application": "ONCE_AT_TOTAL_T",
+              "holdout": {
+                "name": "H-b",
+                "kind": "RELATIVE",
+                "scale": "observed",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 50
+                },
+                "calibration_rounds": [
+                  4,
+                  5
+                ],
+                "holdout_rounds": [
+                  6
+                ],
+                "individual_models": 12,
+                "success": "ALL_12_PASS",
+                "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+              }
+            },
+            "C_inputs_source": {
+              "commit": "1078d23621566728521d8056fead17118244be42",
+              "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+              "selector": [
+                "FULL_PF|4th(m5_best)|16|Y"
+              ]
+            },
+            "model_group": [
+              "FULL_PF",
+              "4th(m5_best)",
+              "16",
+              "Y"
+            ]
+          }
+        },
+        "FULL_PF|4th|16/3|X": {
+          "coefficients": {
+            "one": {
+              "numerator": 307,
+              "denominator": 1
+            },
+            "q": {
+              "numerator": 23535,
+              "denominator": 1
+            }
+          },
+          "calibration": [
+            {
+              "cell_id": "FULL_PF:4th:16/3:m4",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            },
+            {
+              "cell_id": "FULL_PF:4th:16/3:m5",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            }
+          ],
+          "design_source": {
+            "source": "79c951b38bf9d8f1c80f28b2e7f82846d85c67e5",
+            "plan": {
+              "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+              "path": "scripts/pf_price_stages.py"
+            },
+            "comparison_policy": {
+              "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+              "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+              "metric": "compiled_rz_count",
+              "state_preparation": "P0_EXCLUDED",
+              "control": "symmetric_directional",
+              "measurement": "full_Hadamard_with_measurement",
+              "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+              "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+              "compiler": {
+                "qiskit": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed": 17
+              },
+              "scalar_by_route": {
+                "FULL_PF": "HAMILTONIAN_CONSTANT",
+                "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+              },
+              "scalar_application": "ONCE_AT_TOTAL_T",
+              "holdout": {
+                "name": "H-b",
+                "kind": "RELATIVE",
+                "scale": "observed",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 50
+                },
+                "calibration_rounds": [
+                  4,
+                  5
+                ],
+                "holdout_rounds": [
+                  6
+                ],
+                "individual_models": 12,
+                "success": "ALL_12_PASS",
+                "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+              }
+            },
+            "C_inputs_source": {
+              "commit": "1078d23621566728521d8056fead17118244be42",
+              "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+              "selector": [
+                "FULL_PF|4th|16/3|X"
+              ]
+            },
+            "model_group": [
+              "FULL_PF",
+              "4th",
+              "16/3",
+              "X"
+            ]
+          }
+        },
+        "FULL_PF|4th|16/3|Y": {
+          "coefficients": {
+            "one": {
+              "numerator": 307,
+              "denominator": 1
+            },
+            "q": {
+              "numerator": 23535,
+              "denominator": 1
+            }
+          },
+          "calibration": [
+            {
+              "cell_id": "FULL_PF:4th:16/3:m4",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            },
+            {
+              "cell_id": "FULL_PF:4th:16/3:m5",
+              "source": {
+                "caller": "scripts/run_full_pf_shortlist_prices.py",
+                "native": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "scripts/h46_long_time_native.py"
+                },
+                "wrapper": {
+                  "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+                  "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+                },
+                "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+                "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+                "stage": "CALIBRATION",
+                "stage_module": "scripts/pf_price_stages.py",
+                "cell_plan": {
+                  "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+                  "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+                },
+                "comparison_policy": {
+                  "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+                  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+                  "metric": "compiled_rz_count",
+                  "state_preparation": "P0_EXCLUDED",
+                  "control": "symmetric_directional",
+                  "measurement": "full_Hadamard_with_measurement",
+                  "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+                  "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+                  "compiler": {
+                    "qiskit": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed": 17
+                  },
+                  "scalar_by_route": {
+                    "FULL_PF": "HAMILTONIAN_CONSTANT",
+                    "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+                  },
+                  "scalar_application": "ONCE_AT_TOTAL_T",
+                  "holdout": {
+                    "name": "H-b",
+                    "kind": "RELATIVE",
+                    "scale": "observed",
+                    "value": {
+                      "numerator": 1,
+                      "denominator": 50
+                    },
+                    "calibration_rounds": [
+                      4,
+                      5
+                    ],
+                    "holdout_rounds": [
+                      6
+                    ],
+                    "individual_models": 12,
+                    "success": "ALL_12_PASS",
+                    "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+                  }
+                },
+                "record": "RESULT.json"
+              }
+            }
+          ],
+          "design_source": {
+            "source": "79c951b38bf9d8f1c80f28b2e7f82846d85c67e5",
+            "plan": {
+              "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+              "path": "scripts/pf_price_stages.py"
+            },
+            "comparison_policy": {
+              "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+              "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+              "metric": "compiled_rz_count",
+              "state_preparation": "P0_EXCLUDED",
+              "control": "symmetric_directional",
+              "measurement": "full_Hadamard_with_measurement",
+              "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+              "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+              "compiler": {
+                "qiskit": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed": 17
+              },
+              "scalar_by_route": {
+                "FULL_PF": "HAMILTONIAN_CONSTANT",
+                "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+              },
+              "scalar_application": "ONCE_AT_TOTAL_T",
+              "holdout": {
+                "name": "H-b",
+                "kind": "RELATIVE",
+                "scale": "observed",
+                "value": {
+                  "numerator": 1,
+                  "denominator": 50
+                },
+                "calibration_rounds": [
+                  4,
+                  5
+                ],
+                "holdout_rounds": [
+                  6
+                ],
+                "individual_models": 12,
+                "success": "ALL_12_PASS",
+                "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+              }
+            },
+            "C_inputs_source": {
+              "commit": "1078d23621566728521d8056fead17118244be42",
+              "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+              "selector": [
+                "FULL_PF|4th|16/3|Y"
+              ]
+            },
+            "model_group": [
+              "FULL_PF",
+              "4th",
+              "16/3",
+              "Y"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "calibration_after": {
+    "commit": "e276ab70fdd6ff988928703ec79fd3a9aa8c1603",
+    "sha256": {
+      "RESULT.json": "6ed0cba81d08a93846d465e75ca782a474807fcc3f355e08e18d5732e4d01338",
+      "PRICES.json": "af022a085bd5b2459f47d198257ca859e6f18bcbd6c3a6e159482aa85c0fc763",
+      "SIDECARS_UNBOUND.json": "f194f1951a55ca5febd7271f8c233c86a09273ce5738b2dec84650e1f8e2cf7f",
+      "IMPLEMENTATION_EVIDENCE.json": "d03b23b319ab6b98dde2065a8a92c0f3d50c1b05cd861c336113dfaf3ac79ce4",
+      "C_INPUTS.json": "3b3e31f8bd63ffcd9d5bb382e6b46edf96793e2f6bd2f4cdb473bd811a7c08b5",
+      "SIDECARS.json": "251ae1af44f4cc3536f20a6d4a719a86afd3688f107cd4d5cb37dc9b2e0f6d42",
+      "GUARD_CHECK.json": "b29134a34dd11c29487f7df0cd768e9c3dc5565355f79cb10a3a82d2b9c286ed"
+    }
+  },
+  "child_exit": 0,
+  "error": null,
+  "results": [
+    {
+      "cell": {
+        "m": 6,
+        "role": "HOLDOUT",
+        "row": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 6.4,
+          "q": 28,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "4f3984c6d381fa0ca848"
+        },
+        "actual_delta": {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        "signed_pieces": 28,
+        "action": "NEW_COMPILE",
+        "saved_receipts": null,
+        "model_groups": [
+          [
+            "FULL_PF",
+            "2nd",
+            "16/7",
+            "X"
+          ],
+          [
+            "FULL_PF",
+            "2nd",
+            "16/7",
+            "Y"
+          ]
+        ],
+        "formula": "2nd"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 6.4,
+          "q": 28,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "4f3984c6d381fa0ca848"
+        },
+        "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 218455,
+            "rz_depth": 59715,
+            "cx_count": 104016,
+            "cx_depth": 56876,
+            "total_depth": 147153,
+            "circuit_size": 458328
+          },
+          "sine": {
+            "rz_count": 218455,
+            "rz_depth": 59715,
+            "cx_count": 104016,
+            "cx_depth": 56876,
+            "total_depth": 147153,
+            "circuit_size": 458328
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 1.1995178815180005e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 2.8925762318129263e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 2.2648549702353193e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 8.88265170457189e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 6.650235917504688e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 8.696578751778654e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.29310124732,
+        "log_B": 0,
+        "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+        "cache_hits": 0,
+        "wall_seconds": 369.4967008011881,
+        "peak_RSS_bytes": 922177536
+      },
+      "facts": {
+        "retained_blocks": 11,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scalar": 2.29310124732,
+        "tail_identity": 0.0,
+        "signed_pieces": 28,
+        "negative_pieces": 0,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "c363d42d381820c406095aba63b1250a8b1fbea8f3329d2d0445f6a966f7ee65",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "e25ac86177e48a9f37f344d3aa6a0611e2fd0aeebfad9e4ebb4cfb36a4ffaa64",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 369.4976909828838
+    },
+    {
+      "cell": {
+        "m": 6,
+        "role": "HOLDOUT",
+        "row": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th",
+          "T": 6.4,
+          "q": 12,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "7727a3fec25e033629f1"
+        },
+        "actual_delta": {
+          "numerator": 3602879701896397,
+          "denominator": 6755399441055744
+        },
+        "signed_pieces": 36,
+        "action": "NEW_COMPILE",
+        "saved_receipts": null,
+        "model_groups": [
+          [
+            "FULL_PF",
+            "4th",
+            "16/3",
+            "X"
+          ],
+          [
+            "FULL_PF",
+            "4th",
+            "16/3",
+            "Y"
+          ]
+        ],
+        "formula": "4th"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th",
+          "T": 6.4,
+          "q": 12,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "7727a3fec25e033629f1"
+        },
+        "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 282727,
+            "rz_depth": 77043,
+            "cx_count": 135872,
+            "cx_depth": 74412,
+            "total_depth": 190809,
+            "circuit_size": 594304
+          },
+          "sine": {
+            "rz_count": 282727,
+            "rz_depth": 77043,
+            "cx_count": 135872,
+            "cx_depth": 74412,
+            "total_depth": 190809,
+            "circuit_size": 594304
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 4.9366583821648544e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 4.1936711805205703e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 4.801714581503802e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 1.305020201353737e-10,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 1.425526363618701e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 1.2803371154499798e-10,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.29310124732,
+        "log_B": 0,
+        "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+        "cache_hits": 0,
+        "wall_seconds": 477.2384140260983,
+        "peak_RSS_bytes": 1102999552
+      },
+      "facts": {
+        "retained_blocks": 11,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scalar": 2.29310124732,
+        "tail_identity": 0.0,
+        "signed_pieces": 36,
+        "negative_pieces": 12,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "0d30977bda5b534f0f5319db6532fc8e841b78c13f542bd859bad81a25f09871",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "5179318255cfc1e52097aee8c165d36afa3483d5cb7dd3598a7180f9241dceba",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 477.2392811628524
+    },
+    {
+      "cell": {
+        "m": 6,
+        "role": "HOLDOUT",
+        "row": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th(m5_best)",
+          "T": 6.4,
+          "q": 4,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "8db0bd3c1a5e1eeb541f"
+        },
+        "actual_delta": {
+          "numerator": 3602879701896397,
+          "denominator": 2251799813685248
+        },
+        "signed_pieces": 44,
+        "action": "NEW_COMPILE",
+        "saved_receipts": null,
+        "model_groups": [
+          [
+            "FULL_PF",
+            "4th(m5_best)",
+            "16",
+            "X"
+          ],
+          [
+            "FULL_PF",
+            "4th(m5_best)",
+            "16",
+            "Y"
+          ]
+        ],
+        "formula": "4th(m5_best)"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th(m5_best)",
+          "T": 6.4,
+          "q": 4,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "8db0bd3c1a5e1eeb541f"
+        },
+        "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 342919,
+            "rz_depth": 93771,
+            "cx_count": 163216,
+            "cx_depth": 89236,
+            "total_depth": 231129,
+            "circuit_size": 719528
+          },
+          "sine": {
+            "rz_count": 342919,
+            "rz_depth": 93771,
+            "cx_count": 163216,
+            "cx_depth": 89236,
+            "total_depth": 231129,
+            "circuit_size": 719528
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 3.2045318263908465e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 5.405492663404436e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 6.972200594645983e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 1.3411229296845447e-10,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 2.6856294965682537e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 1.3123916768132607e-10,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.29310124732,
+        "log_B": 0,
+        "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+        "cache_hits": 0,
+        "wall_seconds": 659.739083440043,
+        "peak_RSS_bytes": 1196343296
+      },
+      "facts": {
+        "retained_blocks": 11,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scalar": 2.29310124732,
+        "tail_identity": 0.0,
+        "signed_pieces": 44,
+        "negative_pieces": 4,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "5f7fa4d445b77447cf0978e6895d07b0097381e7aa50a69f4a38cce6fff72622",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "471da81d0596a1c9b62d83e6606f561c1eab12f54549481d08955de6734d0676",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 659.7401741249487
+    }
+  ],
+  "resources": {
+    "workers": 3,
+    "observation": {
+      "affinity": 64,
+      "idle_cpu": 58.18279569892473,
+      "available_ram": 517395214336,
+      "free_disk": 494717624320,
+      "arbitrary_caps": null,
+      "shared_system_changes": false
+    },
+    "cells": 3,
+    "started": 3,
+    "not_started_after_failure": 0
+  },
+  "elapsed_seconds": 663.9021564288996,
+  "finished_utc": "2026-11-14T17:55:32.757218+00:00",
+  "mandatory_stop": true,
+  "retry_performed": false,
+  "fit": null,
+  "prediction": null,
+  "holdout_judgement": null,
+  "N": null,
+  "G": null
+}
