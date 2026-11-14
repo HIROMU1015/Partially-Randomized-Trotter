@@ -1,0 +1,40 @@
+Technical checks (metadata only; no new mean/spectrum/normalizer/MSE/N/price/G). System python3 (stdlib only).
+branch codex/a-full-h-p2-pauli-b1-price-design-20261114 (base 7a0c9468b)
+
+== python3 -B docs/research/a_signal_candidate_identity_coverage_20261114/BUILD_SIGNAL_COVERAGE.py --check
+FULL_H R448 K2 q=2^m (separate candidate)        S1_SAVED_13ROUND_PACKET_NO_INTAKE_RECORD                   13
+FULL_H kappa2 K2 q=2^m                           S1_SAVED_13ROUND_PACKET_SOURCE_BOUND                       13
+FULL_PF M5_16h                                   S2_SAVED_ROUND_MEAN_PACKET_BRIDGE_AND_INTAKE_CHECK_NEEDED   6
+FULL_PF M5_16h                                   S3_SAVED_STEP_SPECTRUM_NEW_MEAN_NOT_EXECUTED                7
+FULL_PF S2_0.1 (C manifest FULL_PF_S2_D01)       S2L_SAVED_LEGACY_MEAN_QUALIFICATION_NEEDED                  3
+FULL_PF S2_0.1 (C manifest FULL_PF_S2_D01)       S2_SAVED_ROUND_MEAN_PACKET_BRIDGE_AND_INTAKE_CHECK_NEEDED   2
+FULL_PF S2_0.1 (C manifest FULL_PF_S2_D01)       S3_SAVED_STEP_SPECTRUM_NEW_MEAN_NOT_EXECUTED                8
+FULL_PF S2_16h_over_7                            S2L_SAVED_LEGACY_MEAN_QUALIFICATION_NEEDED                  1
+FULL_PF S2_16h_over_7                            S2_SAVED_ROUND_MEAN_PACKET_BRIDGE_AND_INTAKE_CHECK_NEEDED   4
+FULL_PF S2_16h_over_7                            S3_SAVED_STEP_SPECTRUM_NEW_MEAN_NOT_EXECUTED                8
+FULL_PF Y4_16h_over_3                            S2L_SAVED_LEGACY_MEAN_QUALIFICATION_NEEDED                  1
+FULL_PF Y4_16h_over_3                            S2_SAVED_ROUND_MEAN_PACKET_BRIDGE_AND_INTAKE_CHECK_NEEDED   5
+FULL_PF Y4_16h_over_3                            S3_SAVED_STEP_SPECTRUM_NEW_MEAN_NOT_EXECUTED                7
+PR-DF LD1                                        S1B_SAVED_13ROUND_PACKET_TOTAL_VIEW_BRIDGE_PENDING         13
+PR-DF LD2                                        S1B_SAVED_13ROUND_PACKET_TOTAL_VIEW_BRIDGE_PENDING         13
+PR-Pauli LD1                                     S1_SAVED_13ROUND_PACKET_SOURCE_BOUND                       13
+PR-Pauli LD2                                     S1_SAVED_13ROUND_PACKET_SOURCE_BOUND                       13
+TRUNCATED_B0I_P7 M5_16h                          S2_SAVED_ROUND_MEAN_PACKET_BRIDGE_AND_INTAKE_CHECK_NEEDED   6
+TRUNCATED_B0I_P7 M5_16h                          S3_SAVED_STEP_SPECTRUM_NEW_MEAN_NOT_EXECUTED                7
+TRUNCATED_B0I_P7 S2_0.1                          S1_SAVED_13ROUND_PACKET_SOURCE_BOUND                       13
+TRUNCATED_B0I_P7 S2_16h_over_7                   S2L_SAVED_LEGACY_MEAN_QUALIFICATION_NEEDED                  1
+TRUNCATED_B0I_P7 S2_16h_over_7                   S2_SAVED_ROUND_MEAN_PACKET_BRIDGE_AND_INTAKE_CHECK_NEEDED   4
+TRUNCATED_B0I_P7 S2_16h_over_7                   S3_SAVED_STEP_SPECTRUM_NEW_MEAN_NOT_EXECUTED                8
+TRUNCATED_B0I_P7 Y4_16h_over_3                   S2L_SAVED_LEGACY_MEAN_QUALIFICATION_NEEDED                  1
+TRUNCATED_B0I_P7 Y4_16h_over_3                   S2_SAVED_ROUND_MEAN_PACKET_BRIDGE_AND_INTAKE_CHECK_NEEDED   5
+TRUNCATED_B0I_P7 Y4_16h_over_3                   S3_SAVED_STEP_SPECTRUM_NEW_MEAN_NOT_EXECUTED                7
+exit=0
+
+Invariants checked by --check / builder:
+- every saved record's physical id equals the Track A cid recomputed from its own fields (710 records)
+- Full PF shortlist round physical ids (A follow-up C_HANDOFF) equal cid(H4, FULL, formula, 10, T_m, q_m)
+- 364 rows = 182 candidate-rounds x X/Y; no row without a status
+- no signal/price identity mismatch (PR-DF physical ids vs C PR_DF_COVERAGE; Pauli LD1 m0 and Full-H kappa2 m3 identity+law vs price records)
+
+rows 364
+identity flags (X axis): {'NO_PRICE_CELL': 136, 'PHYSICAL_ID_EQUAL': 44, 'IDENTITY_AND_LAW_EQUAL': 2}

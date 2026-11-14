@@ -1,5 +1,7 @@
 # 文書索引
 
+[5方式の信号coverage・Full PF 13round調査](research/a_signal_candidate_identity_coverage_20261114/REPORT.md)／[B HANDOFF](research/a_signal_candidate_identity_coverage_20261114/HANDOFF_B.md)／[C HANDOFF](research/a_signal_candidate_identity_coverage_20261114/HANDOFF_C.md)：保存信号と価格候補の同一性照合（新規計算なし）。
+
 [Full-H P-2較正設計・Pauli B1価格検証計画](research/a_full_h_p2_pauli_b1_price_design_20261114/REPORT.md)／[A1](research/a_full_h_p2_pauli_b1_price_design_20261114/A1_FULL_H_P2_PLAN.md)／[A2](research/a_full_h_p2_pauli_b1_price_design_20261114/A2_PAULI_B1_PLAN.md)／[HANDOFF](research/a_full_h_p2_pauli_b1_price_design_20261114/HANDOFF.md)：識別可能性の検査と改訂設計案（未採択・未実行）。
 
 [Full-H κ2 P-1 run01・run02 STOP](research/d_full_h_kappa2_p1_results_20261114/REPORT.md)／[実行記録](research/d_full_h_kappa2_p1_results_20261114/EXECUTION.txt)：run01はtracked file欠落で科学計算前に停止。run02は作用検査PASS・2 compile済みだが、`scalar_once`判定の偽陰性で停止（[研究ノート](research/研究ノート/2026-11-14_d_full_h_kappa2_p1_run02_stop.md)）。run02の[再検証](research/d_full_h_kappa2_p1_results_20261114/run02_revalidation01/REPORT.md)：修正判定でPASS、価格record・sidecarをC guardで受理（[研究ノート](research/研究ノート/2026-11-14_d_full_h_kappa2_p1_run02_revalidation.md)）。

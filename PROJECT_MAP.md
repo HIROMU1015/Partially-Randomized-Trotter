@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[5方式の物理候補・保存信号の対応とFull PF全13round原本調査（照合のみ）](docs/research/a_signal_candidate_identity_coverage_20261114/REPORT.md)：候補×round×X/Yの信号coverage（364行）。全13round packetが揃うのはPR-Pauli・Full-H κ2・B0I p7 S2/0.1（PR-DFはbridge待ち、R448は別候補）。Full PFは正式packet未同定、shortlistはm5〜m11が保存mean無し（step spectrum保存済み、計算は承認待ち。Full PF/B0I各22〜24件）。精度・価格のID不一致0。新規計算0。
+
 [Full-H κ2 P-2較正設計の修正・PR-Pauli B1価格検証計画（設計のみ）](docs/research/a_full_h_p2_pauli_b1_price_design_20261114/REPORT.md)：現行P-2（q=1のみ）はcが識別不能（rank2）。取得前の識別・領域・分離検査`finite_price_design`（Cのfitはc628e9e8 blobを無変更で使用）。改訂案D7（q8独立＋paired q2、24 compile）／D6（22）。Pauli B1の2 pathはmodel不可（rank1）、B1-W（LD2配線）とB1-CAL（辞書あたり24）を提案。科学実行0、未採択。
 
 [Full-H κ2 P-1 run01・run02（STOP）とrun02再検証（PASS）](docs/research/d_full_h_kappa2_p1_results_20261114/REPORT.md)：run01はreferences/欠落で科学計算0。run02（caller 72d4f4ff2）は`scalar_once`の偽陰性でSTOP（記録は保全）。[再検証](docs/research/d_full_h_kappa2_p1_results_20261114/run02_revalidation01/REPORT.md)（SOURCE 8258b2200、証拠 6d188defd）は修正したscalar/event位相判定で23条件PASS。X/Y RZ 92,448の単一path direct価格をC c628e9e8 guardで受理し、Cへ引渡し（E[C]・P-2・Gには使わない）。
