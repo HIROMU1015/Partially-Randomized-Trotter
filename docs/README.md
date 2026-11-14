@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 5方式の信号・精度・価格の物理候補対応](research/h4_five_method_candidate_alignment_20261115/REPORT.md)（2026-11-15）：A c212の信号原本調査、B 9c0のPR-DF新版total bridge、C保存receipt/52軸coverage、D CELL_PLANを14 schedule・364軸で照合。G/十分Nはnull、42技術・人工回帰PASS。新科学計算なし、mandatory STOP。
+
 [Pauli physical-ID bridge](research/paper_g_price_routes_20261114/PAULI_BRIDGE.md)：Cのplannerに、Pauli canonical physical ID（辞書hash・λ・scalar・round別SOURCE）を接続。guardをDの最新sidecar（8b28dce0）と整合させ、旧形式IDは拒否。実LD1/LD2の26 roundでmetadataが一致。新decoder bridgeの仕様。34＋56＝90 PASS。STOP。
 [第1水準G価格経路REPORT](research/paper_g_price_routes_20261114/REPORT.md)／[価格検証計画](research/paper_g_price_routes_20261114/PRICE_VALIDATION_PLAN.md)／[B HANDOFF](research/paper_g_price_routes_20261114/HANDOFF_B.md)／[テスト](research/paper_g_price_routes_20261114/TESTS.txt)：Pauli D2 route・nominal N・G_paper会計・model検査。未承認の取得計画、STOP。
 
