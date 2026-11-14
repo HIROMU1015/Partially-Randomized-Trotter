@@ -11,7 +11,8 @@
 - [M9_POLICY.json](M9_POLICY.json)：12点だけに適用する事前固定規則。
 - [PREOPEN_CHECK.json](PREOPEN_CHECK.json)、[PLAN.json](PLAN.json)：SOURCE/重複/取得開始のmetadata照合と固定対象。実行時にも確認し、価格の内容を開かない。
 - [TESTS.txt](TESTS.txt)：人工係数によるexact予測、固定metadata、scope/欠測保持等の**7 test method PASS**。テストでは実12予測を禁止している。
-- D向けHANDOFFでは予測結果の固定commitとpathを提示する。元モデルを新モデルとして再発行しない。
+- [HANDOFF_D.md](HANDOFF_D.md)：予測結果の固定commit **`b1a7cd358daeab51ce538c747d0cdb8ad86c97d4`**とpathを提示する。元モデルを新モデルとして再発行しない。
+- [PUBLICATION_PRECHECK.json](PUBLICATION_PRECHECK.json)：公開直前にもmetadataだけを再確認し、確認範囲で取得開始・同一予測の反対証拠なし、保留0。予測の再計算や観測開封はない。
 
 科学実行SOURCE：**`375f026a30e3c1ed3179a73cbbe333578abff00f`**。
 

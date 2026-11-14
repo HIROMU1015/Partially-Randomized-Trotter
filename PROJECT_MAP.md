@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[決定論PF m9の観測前予測固定](docs/research/pf_m9_prediction_freeze_20261115/REPORT.md)／[D HANDOFF](docs/research/pf_m9_prediction_freeze_20261115/HANDOFF_D.md)：Full PF/p7×S2/Y4/M5×X/Yのm9予測12件を元凍結係数からexactに固定、保留0。m9限定の観測値分母・相対誤差≤1/50、全12個別PASS規則を事前採択。SOURCE375f026a、予測b1a7cd358。人工/metadata7 test PASS。観測未開封・未判定、refit/compile/N/G0、直接価格実績48軸は不変。D取得・独立判定待ち、mandatory STOP。 入口 scripts/freeze_pf_m9_predictions.py。
+
 [m3保存価格のconsumer binding](docs/research/pf_m3_saved_price_admission_20261115/REPORT.md)：既存D同等性証拠・C guard/price tierを再利用。12行ADMISSION、元36receipt参照、scope外計算なし。入口 scripts/admit_pf_m3_saved_prices.py。
 
 [決定論PF Stage1モデル凍結](docs/research/pf_stage1_model_freeze_20261115/REPORT.md)：固定24価格から12個別fit、係数・m6予測・SOURCEを保存。既存price_model_validationを再利用。m6独立holdout未評価。入口 scripts/freeze_pf_stage1_models.py。

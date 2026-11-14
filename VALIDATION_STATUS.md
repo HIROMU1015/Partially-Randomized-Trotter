@@ -1,5 +1,7 @@
 # Validation status
 
+[決定論PF m9予測固定](docs/research/pf_m9_prediction_freeze_20261115/REPORT.md)：Full PF/p7×S2/Y4/M5×X/Yのm9予測12件を元凍結係数からexactに固定、保留0。m9限定の観測値分母・相対誤差≤1/50、全12個別PASS規則を事前採択。SOURCE375f026a、予測b1a7cd358。人工/metadata7 test PASS。観測未開封・未判定、refit/compile/N/G0、直接価格実績48軸は不変。D取得・独立判定待ち、mandatory STOP。
+
 [m3保存PF価格のC受入](docs/research/pf_m3_saved_price_admission_20261115/REPORT.md)：決定論PF shortlistのm3保存価格12軸をCの現行ID/測定軸へSOURCE付きで接続し、実guard/tierで12受入・0保留。元cohort未記録はnull、旧trial/receipt/fingerprintを保持。m4/m5較正24＋m6独立holdout12は元locatorを参照し計48軸の直接価格。新7＋既存5＝12技術test PASS。fit/予測/compile/MSE/N/G0、mandatory STOP。
 
 [決定論PF Stage1価格モデル凍結](docs/research/pf_stage1_model_freeze_20261115/REPORT.md)：決定論PF Stage1価格モデル（2026-11-15）：D b190bd815の保存4＋新規20価格からFull/p7×S2/Y4/M5×X/Yの12モデルをexact fit、係数とm6予測を凍結。SOURCE 79c951b38、結果 12372fa6b。新7＋既存15＝22技術test PASS。m6独立holdout未取得・未開封・未判定、qualified=false、長q外挿/N/Gなし、mandatory STOP。

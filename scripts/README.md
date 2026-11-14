@@ -1,5 +1,7 @@
 # scripts 索引
 
+`freeze_pf_m9_predictions.py`：[m9の固定12予測](../docs/research/pf_m9_prediction_freeze_20261115/REPORT.md)。引数なしは入力metadata確認のみ。元係数のexact predictを12回実施済み、run01の再実行・上書き禁止。fit/観測readerなし、観測取得・判定はD後続。
+
 `admit_pf_m3_saved_prices.py`：[m3の保存PF価格受入](../docs/research/pf_m3_saved_price_admission_20261115/REPORT.md)。metadata bundle作成と固定evidenceへのguard結合だけ。受入済み結果は上書きせず、新compile/fit/予測/Gは起動しない。
 
 `freeze_pf_stage1_models.py`：[固定PF Stage1の12モデル凍結](../docs/research/pf_stage1_model_freeze_20261115/REPORT.md)。既存C exact fit/predict、D受入済み24価格を使用。引数なしはmetadata確認のみ。承認済みrun01は完了済み、再fit・holdout・他roundを起動しない。
