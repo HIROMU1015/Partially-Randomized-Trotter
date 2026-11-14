@@ -16,6 +16,7 @@ import run_full_h_kappa2_p2 as P
 import full_h_p2_acceleration as A
 import run_full_h_kappa2_p2_accelerated as Runner
 import continue_full_h_p2_checkpoint as Transfer
+import complete_full_h_p2_checkpoint as Completion
 from qiskit.quantum_info import Operator
 import numpy as np
 
@@ -93,12 +94,56 @@ class Tests(unittest.TestCase):
         with patch.object(native,'sample_requests',side_effect=AssertionError('CHECKPOINT_RESAMPLED')) as sampler, \
              patch.object(native,'compile_cached',side_effect=AssertionError('CHECKPOINT_RECOMPILED')) as compiler, \
              patch.object(legacy._Writer,'_circuit',side_effect=AssertionError('SLOW_FINGERPRINT_FALLBACK')):
-            restored=A.resume_saved_path(P,self.full,row,cohort,0,seeds,cp)
+            stages=[]
+            restored=A.resume_saved_path(P,self.full,row,cohort,0,seeds,cp,progress=stages.append)
             sampler.assert_not_called();compiler.assert_not_called()
+        self.assertEqual(stages[0],'checkpoint_hashes_and_receipts')
+        self.assertEqual(stages[-1],'saved_path_checks_complete')
+        self.assertLess(stages.index('wrapper_and_fingerprint_cosine'),stages.index('wrapper_and_fingerprint_sine'))
         self.assertEqual(original['events'],restored['events'])
         self.assertEqual(original['fingerprints'],restored['fingerprints'])
         self.assertEqual(restored['xy_phase_gate']['status'],'PASS')
         self.assertEqual(restored['acceleration']['new_compiles'],0)
+        finished=self.tmp/'finished_path.json';P.P1.write(finished,dict(status='PASS',path=original))
+        receipt=dict(path=str(finished),sha256=A.file_hash(finished),source_commit='ARTIFICIAL')
+        with patch.object(native,'sample_requests',side_effect=AssertionError('FINISHED_RESAMPLED')) as sampler, \
+             patch.object(native,'compile_cached',side_effect=AssertionError('FINISHED_RECOMPILED')) as compiler:
+            reused=Completion.finished_path(receipt,row,cohort,0,seeds,native.COMPILER_HASH)
+            sampler.assert_not_called();compiler.assert_not_called()
+        self.assertEqual(json.dumps(reused['events'],sort_keys=True),json.dumps(original['events'],sort_keys=True))
+        self.assertTrue(all(r['reused'] and r['producer_commit']=='ARTIFICIAL' for r in reused['compile_receipts'].values()))
+        with self.assertRaisesRegex(ValueError,'identity/correctness'):
+            Completion.finished_path(receipt,row,cohort,0,[0]*len(seeds),native.COMPILER_HASH)
+        with self.assertRaisesRegex(ValueError,'receipt changed'):
+            Completion.finished_path(dict(receipt,sha256='0'*64),row,cohort,0,seeds,native.COMPILER_HASH)
+
+    def test_completion_child_reuses_finished_path_and_records_progress(self):
+        private=self.tmp/'completion';private.mkdir()
+        job=dict(private=str(private),output=str(private/'public'),result=str(private/'child.json'),
+            plan={},stage='CALIBRATION',cell_id='ARTIFICIAL',step_seeds=[[1],[2]],checkpoint0={},finished1={})
+        path=private/'job.json';P.P1.write(path,job)
+        def restore(*args,progress,**kwargs):progress('ARTIFICIAL_NO_H4');return dict(index=0)
+        with patch.object(P,'selected',return_value=dict(cohort='ARTIFICIAL',profile=dict(compiler='ARTIFICIAL'))), \
+             patch.object(P,'physical_row',return_value={}),patch.object(P.P1,'provider_checks'), \
+             patch.object(P.P1,'full_h_module',return_value=self.full), \
+             patch.object(A,'resume_saved_path',side_effect=restore), \
+             patch.object(Completion,'finished_path',return_value=dict(index=1)):
+            self.assertEqual(Completion.child(path),0)
+        value=json.loads(Path(job['result']).read_text())
+        self.assertEqual(value['new_compiles'],0);self.assertEqual([r['index'] for r in value['paths']],[0,1])
+        stages=[json.loads(line)['stage'] for line in (private/'PROGRESS.jsonl').read_text().splitlines()]
+        self.assertEqual(stages[-1],'COMPLETE');self.assertIn('reuse_completed_path1',stages)
+
+    def test_completion_refuses_active_worker_or_scientific_failure(self):
+        terminal=self.tmp/'terminal.json'
+        job=dict(old_run=dict(source_commit='ARTIFICIAL',processes=[dict(pid=os.getpid())],result=str(terminal)),
+            handoff_reason='CONTROLLED_SAVED_PATH_HANDOFF')
+        with self.assertRaisesRegex(ValueError,'still active'):Completion.stopped(job)
+        job['old_run']['processes']=[]
+        value=dict(source=dict(commit='ARTIFICIAL'),status='STOP_CELL',child=dict(status='STOP'),error=None)
+        P.P1.write(terminal,value)
+        with self.assertRaisesRegex(ValueError,'no failure retry'):Completion.stopped(job)
+        value['child']=None;terminal.write_text(json.dumps(value));Completion.stopped(job)
 
     def test_path_workers_are_parallel_and_return_ordered_receipts(self):
         plan=P.proposal();plan['adopted']=True

@@ -199,9 +199,11 @@ def file_hash(path):
     return h.hexdigest()
 
 
-def resume_saved_path(P,full,row,cohort,index,seeds,checkpoint):
+def resume_saved_path(P,full,row,cohort,index,seeds,checkpoint,*,progress=None):
     """Finish the original parity/phase checks; reuse sampling/compile/numeric gates."""
     started=time.monotonic()
+    mark=progress or (lambda stage:None)
+    mark('checkpoint_hashes_and_receipts')
     for path,digest in checkpoint['files'].items():
         if file_hash(path)!=digest:raise ValueError('Saved checkpoint bytes changed: '+path)
     trial=json.loads(Path(checkpoint['trial']).read_text())
@@ -214,10 +216,12 @@ def resume_saved_path(P,full,row,cohort,index,seeds,checkpoint):
         'Hadamard_cosine','Hadamard_sine','compiled_vector_cosine','compiled_vector_sine'} if index==0 else set()
     if {g['check'] for g in trial['checks']}!=expected:
         raise ValueError('Saved numerical correctness gates incomplete')
+    mark('restore_context')
     native=full.setup();ctx=full.context(row['system']);prep=ctx.preparations[row['prefix']]
     scalar=ctx.ham.constant+prep.extracted_identity_coefficient
     if scalar!=trial['scalar'] or prep.preparation_hash!=trial['preparation_hash']:
         raise ValueError('Saved scalar/preparation differs')
+    mark('restore_saved_events')
     requests=restore_saved_requests(row,prep,payload,trial['laws'])
     provider=__import__('trotterlib.df_rte_qiskit',fromlist=['x'])
     from h46_b3_fast_fingerprint import FingerprintSession
@@ -226,9 +230,13 @@ def resume_saved_path(P,full,row,cohort,index,seeds,checkpoint):
     with memoized_controlled_rotations(provider) as cache,fast_legacy_builds(native) as builds:
         with P.P1.zz_module().efficient_controlled_zz(provider):
             builder_lowering=getattr(provider.QiskitDFRTEEventCircuitBuilder,'lowering_id',None)
+            mark('build_new_evolution')
             evolution=native.compose(row,prep,requests,scalar,fp)
+        mark('build_legacy_evolution')
         legacy=native.compose(row,prep,requests,scalar,lambda qc:'LEGACY_REPLAY')
+        mark('instruction_parity')
         parity=P.P1.zz_module().instruction_parity(legacy.circuit,evolution.circuit)
+    mark('saved_event_identity_and_scalar_phase')
     n=prep.num_system_qubits;counts=P.P1.op_counts(evolution.circuit)
     one_ids={c.component_id for c in prep.rte_preparation.symbolic_tail.components if c.df_fragment_id=='full-h-one-body'}
     events=P.event_projection([r.rte_occurrence.events for r in requests])
@@ -246,6 +254,7 @@ def resume_saved_path(P,full,row,cohort,index,seeds,checkpoint):
     from h46_b3_fast_fingerprint import use_fast_fingerprint
     with use_fast_fingerprint():
         for axis in ('cosine','sine'):
+            mark('wrapper_and_fingerprint_'+axis)
             w=wrapper_api.build_native_hadamard_wrapper(evolution,axis=axis,include_measurement=True,
                 max_instructions=len(evolution.circuit.data)+4)
             digest=fp(w);path=Path(checkpoint['private'])/'compiled_cache'/(digest+'.json')
@@ -256,10 +265,12 @@ def resume_saved_path(P,full,row,cohort,index,seeds,checkpoint):
             wrappers[axis]=w;fps[axis]=digest
             receipts[axis]=dict(record=rec,fingerprint=digest,reused=True,locator=dict(path=str(path),sha256=file_hash(path)),
                 producer_commit=checkpoint['source_commit'],wall_seconds=0.,checkpoint_reused=True)
+    mark('xy_phase_gate')
     xy=P.P1.xy_phase_gate(wrappers,n,events,scalar,scalar,row['T'],provider=provider)
     if (builder_lowering!=P.P1.LOWERING_ID or parity['status']!='PASS' or parity['replaced_controlled_zz']<=0 or facts['legacy_rzz_control_instructions']!=0
             or facts['one_body_applications']<=0 or facts['scalar_event_phases']['status']!='PASS' or xy['status']!='PASS'):
         raise ValueError('Restored checkpoint parity/phase/XY correctness failed')
+    mark('saved_path_checks_complete')
     return dict(trial=trial,checks=facts,xy_phase_gate=xy,events=events,seeds=seeds,fingerprints=fps,
         compile_receipts=receipts,index=index,cohort=cohort,row=row,sampling='SAVED_NORMAL_EVENTS_NO_DRAW',parents=[],
         checkpoint=checkpoint,acceleration=dict(gate_cache=dict(cache),verification_seconds=time.monotonic()-started,
