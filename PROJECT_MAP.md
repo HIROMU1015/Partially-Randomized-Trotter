@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full-H P-2 process並列化・高速化](docs/research/d_full_h_p2_acceleration_20261115/REPORT.md)：path/X/Yのprocess並列化、controlled gate再利用、legacy fast fingerprint、保存checkpointのsampling/compile再実行なしの継続を実装。8 synthetic test PASS、H4追加compile0。稼働中workerの停止・切替は自動承認レビュー拒否により未実施、旧run継続。
+
 [Full-H κ2 P-2 D7較正・実行前STOP](docs/research/d_full_h_p2_calibration_20261115/REPORT.md)：D7採択・較正18 compile許可済み、実行0。固定callerはpairedを再samplingし、較正implementation evidenceを空で出力する。rank3・SOURCE/input確認済み、限定SOURCE変更と再開指示待ち。HOLDOUT/fit/N/Gなし。
 
 [Full-H κ2 P-2 caller技術準備](docs/research/d_full_h_p2_caller_preparation_20261114/REPORT.md)：SOURCE `6069605d5`。22/24/26 compileの未採択案、rank検査、explicit cell/paired seed、C受渡しを技術対応。新H4計算・保存科学値再解析0。m5 HOLDOUTとA資源順序の整合は採択前に要解決。 全科学計画未採択、公開後mandatory STOP。

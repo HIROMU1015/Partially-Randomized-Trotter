@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full-H P-2並列化・高速化](research/d_full_h_p2_acceleration_20261115/REPORT.md)／[8 test](research/d_full_h_p2_acceleration_20261115/TESTS.txt)：path/X/Y process並列、gate構築再利用、legacy fast writer、保存checkpointの継続。H4での適用は未実施、旧worker停止には明示許可が必要（自動承認レビュー拒否）。
+
 [Full-H κ2 P-2 D7較正の実行前STOP](research/d_full_h_p2_calibration_20261115/REPORT.md)／[PREFLIGHT](research/d_full_h_p2_calibration_20261115/PREFLIGHT.json)／[C引渡し](research/d_full_h_p2_calibration_20261115/HANDOFF_C.md)：予定18 compile・実行0。rank3とSOURCE/inputは確認済み。paired再samplingと較正実装証拠欠落のため固定SOURCE変更・再開指示待ち。
 
 [Full-H κ2 P-2 caller・人工回帰・次の有限実行案](research/d_full_h_p2_caller_preparation_20261114/REPORT.md)。22/24/26 compileの未採択案、rank検査、explicit cell/paired seed、C受渡しを技術対応。新H4計算・保存科学値再解析0。m5 HOLDOUTとA資源順序の整合は採択前に要解決。 mandatory STOP。
