@@ -1,5 +1,7 @@
 # scripts 索引
 
+`freeze_pf_stage1_models.py`：[固定PF Stage1の12モデル凍結](../docs/research/pf_stage1_model_freeze_20261115/REPORT.md)。既存C exact fit/predict、D受入済み24価格を使用。引数なしはmetadata確認のみ。承認済みrun01は完了済み、再fit・holdout・他roundを起動しない。
+
 [最新Full PF metadata接続](../docs/research/full_pf_latest_price_guard_20261114/BUILD_COVERAGE.py)：旧coverage builderを再利用。科学runnerの新設なし。
 
 [B0I・Full-Hの全13round Raw signal取得](../docs/research/truncated_fullh_signal_results_20261114/REPORT.md)（2026-11-14）：固定H4 DF10のB0I p7/S2/Δ.1とFull-H finite-K2/q=2^m/R448を各13round、一回評価。SOURCE5a172629d、26件すべて元数値gate PASS、Raw/corrected/reference/normalizationとB packetを保存。人工caller3件PASS、数値module不変、context復元1、旧signal受入/retry0。数値誤差・law距離・state誤差は未資格、MC/N/価格/G0。旧c546/6306計画・STOPを保全し公開後mandatory STOP。

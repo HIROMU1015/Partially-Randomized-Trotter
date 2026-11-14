@@ -1,5 +1,7 @@
 # 文書索引
 
+[決定論PF 12価格モデルの凍結](research/pf_stage1_model_freeze_20261115/REPORT.md)／[D HANDOFF](research/pf_stage1_model_freeze_20261115/HANDOFF_D.md)：決定論PF Stage1価格モデル（2026-11-15）：D b190bd815の保存4＋新規20価格からFull/p7×S2/Y4/M5×X/Yの12モデルをexact fit、係数とm6予測を凍結。SOURCE 79c951b38、結果 12372fa6b。新7＋既存15＝22技術test PASS。m6独立holdout未取得・未開封・未判定、qualified=false、長q外挿/N/Gなし、mandatory STOP。
+
 [H4 5方式の信号・精度・価格の物理候補対応](research/h4_five_method_candidate_alignment_20261115/REPORT.md)（2026-11-15）：A c212の信号原本調査、B 9c0のPR-DF新版total bridge、C保存receipt/52軸coverage、D CELL_PLANを14 schedule・364軸で照合。G/十分Nはnull、42技術・人工回帰PASS。新科学計算なし、mandatory STOP。
 
 [Pauli physical-ID bridge](research/paper_g_price_routes_20261114/PAULI_BRIDGE.md)：Cのplannerに、Pauli canonical physical ID（辞書hash・λ・scalar・round別SOURCE）を接続。guardをDの最新sidecar（8b28dce0）と整合させ、旧形式IDは拒否。実LD1/LD2の26 roundでmetadataが一致。新decoder bridgeの仕様。34＋56＝90 PASS。STOP。

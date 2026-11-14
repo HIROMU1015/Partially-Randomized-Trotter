@@ -11,7 +11,8 @@
 - [run01/INPUT_AND_EXECUTION_CHECKS.json](run01/INPUT_AND_EXECUTION_CHECKS.json)：受入12 group、保存4＋新規20、12 fit＋12予測、SOURCE、compile/holdout開封0。
 - [PLAN.json](PLAN.json)：固定入力・モデル・比較policy・重複preflight。
 - [TESTS.txt](TESTS.txt)：新規7＋既存15＝**22 test method PASS、skip 0**。fitは人工価格のみ。実24価格はmetadata照合だけ。
-- `HANDOFF_D.md`：凍結結果commitとpath、Dの読取・判定条件。独立holdout取得・判定はDの別作業。
+- [HANDOFF_D.md](HANDOFF_D.md)：凍結結果commitとpath、Dの読取・判定条件。独立holdout取得・判定はDの別作業。
+- [D_CONSUMER_CHECK.json](D_CONSUMER_CHECK.json)：固定D readerが**結果commit `12372fa6b53c878dc5dd124e036572ba0cd82061`**を全12・各route6 groupとして読取PASS。ここで新fit/予測/holdout開封は0。
 
 ## 固定入力と重複照合
 
