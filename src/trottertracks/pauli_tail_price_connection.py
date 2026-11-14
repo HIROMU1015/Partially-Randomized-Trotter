@@ -119,20 +119,22 @@ def seed(candidate_id, cohort, index, outer, piece):
     return existing_trial_seed()(dict(id=candidate_id), cohort, index, outer, piece)
 
 
-def sample_steps(comps, request, cohort, index):
+def sample_steps(comps, request, cohort, index, *, step_seeds=None):
     """Per outer step: R events from the existing sampler (q*R events in total)."""
     from trotterlib.rte import finite_rte_distribution, sample_rte_events
     dist = finite_rte_distribution(request['lambda_P'] * (request['step_time'] / request['R']), request['K'])
+    if step_seeds is not None and (len(step_seeds) != request['q'] or any(type(s) is not int or s < 0 for s in step_seeds)):
+        raise ValueError('Exactly q nonnegative integer step seeds required')
     steps = []
     for outer in range(request['q']):
         events = sample_rte_events(comps, dist, sample_count=request['R'],
-                                   seed=seed(request['candidate_id'], cohort, index, outer, 0))
+                                   seed=seed(request['candidate_id'], cohort, index, outer, 0) if step_seeds is None else step_seeds[outer])
         steps.append(dict(outer=outer, signed_time=request['step_time'], events=events,
-                          seed=seed(request['candidate_id'], cohort, index, outer, 0)))
+                          seed=seed(request['candidate_id'], cohort, index, outer, 0) if step_seeds is None else step_seeds[outer]))
     return steps, dist
 
 
-def controlled_tail(events, labels, n):
+def controlled_tail(events, labels, n, *, diagnostics=None):
     """Full-space Pauli events; D2 controls only the central rotations."""
     from qiskit import QuantumCircuit
     from trotterlib.pauli_signal_adapter import append_pauli_event
@@ -140,10 +142,13 @@ def controlled_tail(events, labels, n):
     source = QuantumCircuit(n)
     for event in events:
         append_pauli_event(source, event, labels)
-    return central_control_body(source).body
+    controlled = central_control_body(source)
+    if diagnostics is not None:
+        diagnostics.append(controlled.sidecar)
+    return controlled.body
 
 
-def compose(blocks, n, steps, labels, *, T, scalar, control_policy='symmetric_directional', fingerprint=None):
+def compose(blocks, n, steps, labels, *, T, scalar, control_policy='symmetric_directional', fingerprint=None, step_diagnostics=None):
     """Existing native head with controlled Pauli tails; scalar once at total T."""
     from qiskit import QuantumCircuit
     from trottertracks.resource_applicability import ax2b_native_df_v5 as native
@@ -152,7 +157,7 @@ def compose(blocks, n, steps, labels, *, T, scalar, control_policy='symmetric_di
     modes = ('ORDINARY', 'ORDINARY') if control_policy == 'ordinary' else ('UNCONTROLLED', 'DIRECTIONAL')
     base = sum(native.block_instruction_bound(b, mode) for b in blocks for mode in modes)
     for step in steps:
-        tail = controlled_tail(step['events'], labels, n)
+        tail = controlled_tail(step['events'], labels, n, diagnostics=step_diagnostics)
         part = native.build_partial_native(blocks, num_system_qubits=n, T=step['signed_time'], q=1, scalar=0.,
             controlled_tails=[tail], control_policy=control_policy, max_instructions=base + len(tail.data) + 1)
         qc.compose(part.circuit, inplace=True); bound += part.instruction_upper_bound

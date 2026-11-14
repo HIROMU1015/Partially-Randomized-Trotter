@@ -145,6 +145,8 @@ class Tests(unittest.TestCase):
         self.assertEqual([c['tier'] for c in out['cells'] if c['m'] == 0], ['FINITE_COHORT_SCENARIO'] * 2)
         self.assertIsNone(out['G_paper']); self.assertIsNone(out['G_qualified'])
 
+    @unittest.skipUnless('--include-saved-numerical' in sys.argv,
+                         'Saved H4 numerical revalidation requires a separately permitted scope')
     def test_saved_P0_bit_order_for_A(self):
         import json
         ops, blocks, basis = PILOT.p0_arrays()
@@ -158,7 +160,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(out.returncode, 0, out.stderr[-3000:])
         self.assertIn('Ran 5 tests', out.stderr)
 
-    def test_recovery_import_chain_and_unchanged_scientific_functions(self):
+    def test_recovery_import_chain_and_B0_default_compatibility(self):
         import ast
         import json
         out = subprocess.run([sys.executable, '-B', '-W', 'ignore', str(ROOT / PILOT.CALLER), '--import-preflight'],
@@ -170,12 +172,29 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(checked['references']), 2)
         old = ast.parse(PILOT.blob('62ae1bd56718287de5d958cf0ed6411f5b7395c9', PILOT.CALLER))
         new = ast.parse((ROOT / PILOT.CALLER).read_bytes())
-        for name in ('pilot_core', 'child', 'records', 'canonical_request', 'preflight'):
+        # B1 adds prefix/seed/index/diagnostic arguments to canonical_request
+        # and pilot_core. Their default behavior is compared on toy circuits
+        # against the frozen B0 implementation in the B1 circuit tests.
+        for name in ('child', 'records', 'preflight'):
             f = lambda tree: next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name)
             self.assertEqual(ast.dump(f(old)), ast.dump(f(new)), name)
+        import inspect
+        self.assertEqual(inspect.signature(PILOT.canonical_request).parameters['prefix'].default, 1)
+        self.assertEqual(inspect.signature(PILOT.pilot_core).parameters['index'].default, 0)
+        self.assertIsNone(inspect.signature(PILOT.pilot_core).parameters['step_seeds'].default)
+        self.assertFalse(inspect.signature(PILOT.pilot_core).parameters['event_metadata'].default)
         self.assertEqual(PILOT.OUTPUT, 'docs/research/d_pauli_ld1_m0_pilot_results_20261114/run02')
         self.assertTrue(str(PILOT.PRIVATE_OUTPUT).endswith('/run02'))
 
 
 if __name__ == '__main__':
+    if '--include-saved-numerical' not in sys.argv:
+        # The saved-H4 operator check is numerical revalidation, not a metadata
+        # regression. Keep it available for separately authorized work, but do
+        # not run it in B1 technical preparation.
+        names = [n for n in unittest.defaultTestLoader.getTestCaseNames(Tests)
+                 if n != 'test_saved_P0_bit_order_for_A']
+        suite = unittest.TestSuite(Tests(n) for n in names)
+        sys.exit(0 if unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful() else 1)
+    sys.argv.remove('--include-saved-numerical')
     unittest.main(verbosity=2)

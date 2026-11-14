@@ -123,15 +123,15 @@ def import_preflight():
                 input_restores=0, preparations=0, sampling=0, circuit_builds=0, compiles=0)
 
 
-def p0_arrays():
+def p0_arrays(prefix=PREFIX):
     """A P0 saved full-2^n operators (saved mode-0-MSB basis) from the pinned commit."""
     import numpy as np
     common = np.load(io.BytesIO(blob(P0['commit'], P0['directory'] + 'COMMON_OPERATORS.npz')))
-    ld1 = np.load(io.BytesIO(blob(P0['commit'], P0['directory'] + 'LD1_OPERATORS.npz')))
+    ld1 = np.load(io.BytesIO(blob(P0['commit'], P0['directory'] + 'LD%d_OPERATORS.npz' % prefix)))
     return {k: ld1[k] for k in ld1.files}, common['blocks'], common['sector_basis_indices']
 
 
-def pilot_core(native, ctx, dictionary, request, operators, blocks_saved, *, cohort, compile_cached):
+def pilot_core(native, ctx, dictionary, request, operators, blocks_saved, *, cohort, compile_cached, index=0, step_seeds=None, event_metadata=False):
     """Shared by the child and the artificial tests (toy ctx/dictionary/operators)."""
     import numpy as np
     from trottertracks.resource_applicability.h6_hash_reuse_v1 import use_fingerprint_reuse
@@ -150,12 +150,14 @@ def pilot_core(native, ctx, dictionary, request, operators, blocks_saved, *, coh
     if n != ctx.ham.n_qubits:
         raise ValueError('Pauli word width differs from the native system')
     scalar = P.total_scalar(dictionary, ctx.ham.constant); T = float(request['T'])
-    steps, dist = P.sample_steps(comps, request, cohort, 0)
+    steps, dist = P.sample_steps(comps, request, cohort, index, step_seeds=step_seeds)
     expected = P.full_space_expected(list(blocks_saved[:request['prefix'] + 1]), steps, labels,
                                      scalar=scalar, T=T, state=ctx.qstate)
-    prices = {}; compiled_checks = []
+    prices = {}; compiled_checks = []; fingerprints = {}
     with use_fingerprint_reuse() as fp:
-        evolution = P.compose(prep.deterministic_blocks, n, steps, labels, T=T, scalar=scalar, fingerprint=fp.fingerprint)
+        step_diagnostics = [] if event_metadata else None
+        evolution = P.compose(prep.deterministic_blocks, n, steps, labels, T=T, scalar=scalar, fingerprint=fp.fingerprint,
+                              step_diagnostics=step_diagnostics)
         last = evolution.circuit.data[-1]
         once = [i for i in evolution.circuit.data if i.operation.name == 'p' and float(i.operation.params[0]) == -scalar * T]
         if (last.operation.name != 'p' or float(last.operation.params[0]) != -scalar * T or len(once) != 1):
@@ -165,6 +167,8 @@ def pilot_core(native, ctx, dictionary, request, operators, blocks_saved, *, coh
         for axis, wrapper in wrappers.items():
             fingerprint = fp.fingerprint(wrapper)
             compiled, qc, reused = compile_cached(wrapper, fingerprint, True)
+            fingerprints[axis] = dict(fingerprint=fingerprint, cache_reused=bool(reused),
+                                      wrapper_qubits=wrapper.num_qubits, measurement=bool(wrapper.num_clbits))
             prices[axis] = compiled['metrics']
             if qc is not None:
                 before = simulate_statevector(wrapper.remove_final_measurements(inplace=False), low)
@@ -174,9 +178,15 @@ def pilot_core(native, ctx, dictionary, request, operators, blocks_saved, *, coh
                     raise ValueError('compiled_vector_' + axis + ':' + str(error))
                 compiled_checks.append(dict(check='compiled_vector_' + axis, error=error, tolerance=1e-7))
     events = [[dict(selected=list(e.selected_component_ids), order=e.taylor_order) for e in s['events']] for s in steps]
-    return dict(status='PASS', prices=prices, scalar=scalar, z=[z.real, z.imag], seeds=[s['seed'] for s in steps],
+    result = dict(status='PASS', prices=prices, scalar=scalar, z=[z.real, z.imag], seeds=[s['seed'] for s in steps],
                 checks=checks + compiled_checks, bit_order=gates, distribution=dict(orders=list(dist.orders),
                 probabilities=list(dist.order_probabilities)), events=events, n=n, terms=len(comps))
+    if event_metadata:
+        result['fingerprints'] = fingerprints
+        result['event_metadata'] = [dict(outer=st['outer'], signed_time=st['signed_time'], seed=st['seed'],
+            events=[dict(event=e.to_dict(), selected_labels=[labels[k] for k in e.selected_component_ids]) for e in st['events']],
+            D2=diag) for st, diag in zip(steps, step_diagnostics, strict=True)]
+    return result
 
 
 def child(job_path):
@@ -216,7 +226,7 @@ def _meta():
     return I, DC, G
 
 
-def canonical_request(root=ROOT):
+def canonical_request(root=ROOT, *, prefix=PREFIX):
     """C's Pauli bridge planner on A's LD1 canonical configuration (metadata only).
 
     Same inputs as C's RealPauliBridge: A handoff as signal SOURCE, B LD1 target, and
@@ -224,14 +234,14 @@ def canonical_request(root=ROOT):
     """
     I, DC, G = _meta()
     handoff = I._pinned_json(str(root), A_HANDOFF['commit'], A_HANDOFF['path'])
-    packet = next(p for p in handoff['packets'] if p['prefix'] == PREFIX)
+    packet = next(p for p in handoff['packets'] if p['prefix'] == prefix)
     sources = {}
     for r in packet['rounds']:
         rec = I._pinned_json(str(root), r['mean_source']['commit'], r['mean_source']['path'])
         for key in r['mean_source']['selector']:
             rec = rec[key]
         sources[str(r['m'])] = deepcopy(rec['source'])
-    target = I._pinned_json(str(root), TARGET['commit'], TARGET['path'])['target']
+    target = I._pinned_json(str(root), TARGET['commit'], TARGET['path'].replace('LD1', 'LD%d' % prefix))['target']
     req = I.plan(root, packet['configuration'], target=target, signal_source=dict(A_HANDOFF), implementation_sources=sources)
     return req, packet
 
