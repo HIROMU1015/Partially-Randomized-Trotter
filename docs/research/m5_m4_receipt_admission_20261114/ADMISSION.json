@@ -1,0 +1,122 @@
+{
+  "status": "ACCEPT_SAVED_DETERMINISTIC_RECEIPT",
+  "recompile": false,
+  "original_preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+  "scalar": 2.29310124732,
+  "classification": "DIRECT_COMPILED_DETERMINISTIC",
+  "expectation": "DETERMINISTIC",
+  "source": {
+    "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+    "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz",
+    "key": "0cd1527c80f7b9841a83",
+    "original_trial": {
+      "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION/0cd1527c80f7b9841a83/0/result.json",
+      "sha256": "1b70f9cf01c351778cf4ba0c5a7c04f6c698ca68046ef676ae97d20c52a60269"
+    },
+    "catalog": {
+      "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+      "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json"
+    }
+  },
+  "native_source_checks": {
+    "scripts/h46_long_time_native.py:whole_file_bytes": true,
+    "scripts/h46_long_time_signal.py:whole_file_bytes": true,
+    "scripts/h46_m5_tol_native.py:whole_file_bytes": true,
+    "scripts/h46_m5_contract.py:whole_file_bytes": true,
+    "scripts/h46_long_time_native.py:compose": true,
+    "scripts/h46_long_time_native.py:native_context": true,
+    "scripts/h46_long_time_native.py:compile_cached": true,
+    "scripts/h46_long_time_native.py:cost_trial": true,
+    "src/trottertracks/resource_applicability/ax2b_native_df_v5.py:build_deterministic_native": true,
+    "src/trottertracks/resource_applicability/ax2b_native_df_v5.py:build_native_hadamard_wrapper": true
+  },
+  "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+  "physical_candidate": {
+    "system": "H4",
+    "method": "FULL",
+    "formula": "4th(m5_best)",
+    "prefix": 10,
+    "T": 1.6,
+    "q": 1,
+    "delta": 1.6,
+    "R_outer": null,
+    "K": null,
+    "id": "0cd1527c80f7b9841a83"
+  },
+  "profile": {
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "control": "symmetric_directional",
+    "wrapper": "full_Hadamard_with_measurement",
+    "scope": "single_hadamard_interrogation_without_state_preparation",
+    "P": 0,
+    "qiskit_version": "1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17
+  },
+  "original_checks": [
+    {
+      "check": "low_control",
+      "error": 1.1540746684141812e-14,
+      "phase_alignment": false,
+      "tolerance": 1e-09
+    },
+    {
+      "check": "high_control_leakage",
+      "error": 0.0,
+      "phase_alignment": false,
+      "tolerance": 1e-09
+    },
+    {
+      "check": "independent_occupation_vector",
+      "error": 3.6800834264974706e-13,
+      "phase_alignment": false,
+      "tolerance": 1e-09
+    },
+    {
+      "check": "Hadamard_cosine",
+      "error": 6.472600233564663e-14,
+      "phase_alignment": false,
+      "tolerance": 1e-09
+    },
+    {
+      "check": "compiled_vector_cosine",
+      "error": 3.4908933006845614e-11,
+      "phase_alignment": false,
+      "tolerance": 1e-07
+    },
+    {
+      "check": "Hadamard_sine",
+      "error": 2.964295475749168e-14,
+      "phase_alignment": false,
+      "tolerance": 1e-09
+    },
+    {
+      "check": "compiled_vector_sine",
+      "error": 3.556107623852281e-11,
+      "phase_alignment": false,
+      "tolerance": 1e-07
+    }
+  ],
+  "original_scalar_metadata": {
+    "source": {
+      "commit": "c5466946ab0ef9b50511210ca1e58fb7147bb0f0",
+      "path": "docs/research/baseline_finite_signal_plan_20261113/BASELINE_FINITE_MANIFEST.json"
+    },
+    "selector": [
+      "shared",
+      "full_h_preparation",
+      "scalar",
+      "constant"
+    ]
+  },
+  "quantities_reestimated": false,
+  "model_fit": null,
+  "G": null,
+  "comparison_policy_adopted": false
+}
