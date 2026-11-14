@@ -1,0 +1,38 @@
+2026-11-15 JST / project Python3.11.0rc1 venv
+
+Before scientific SOURCE313ed1950 was fixed:
+tests/check_pf_shortlist_q3_caller.py : 5 PASS (1.142s)
+tests/check_rpe_total_baseline_binding.py : 7 PASS (4.031s)
+Metadata six bindings, source/raw/normalization/law, exact decimal threshold,
+fixed integer vector and count-only scope checks PASS.
+Those tests did NOT exercise the parent's pending-Future monitor loop.
+
+Scientific execution (not synthetic tests):
+Exactly six SCIENTIFIC_CALL_START and six EVALUATION_COMPLETE stages.
+Each worker saved coarse, lemma, total DP and progress.
+All stage model classifications: MODEL_BOUND_MEETS_ADOPTED_THRESHOLD.
+Driver TypeError: Path / Future in resource monitoring.
+Original API RESULT files0; final worker return / CPU / peak RSS not saved.
+No retry, no new vector, no scientific rerun.
+
+Technical correction:
+monitor_pending now uses pending.values() (candidate labels).
+Added artificial Future-key regression; no six scientific jobs rerun.
+New caller suite6 PASS (1.086s); existing baseline7 PASS =>13 unique test methods PASS.
+
+Saved component recovery:
+Risk/DP/binomial/count-table/MC/cost/select entries forbidden during recovery.
+Only source-bound metadata, saved endpoints/moments, exact comparisons,
+and the existing Q3 threshold helper used. New scientific calls0.
+Recovered classification matches each worker's saved completion stage.
+Exact first-unsafe partition+all-good=1; each good+unsafe=1.
+Saved DP retained loss+residual loss upper equals DP upper exactly.
+Bias-squared/variance intervals overlap the saved MSE interval consistently.
+All six saved DP endpoints attain min of saved valid upper bounds.
+All scope/ordered-bound/exact-threshold checks PASS; no new N/G qualification.
+
+Original DP/coarse/lemma/stage files are the numerical evidence.
+RECOVERED_RESULT is explicitly not an original API return.
+Driver operational status remains UNKNOWN; missing CPU/RAM remain null.
+Final metadata checks: 156 C-join rows/law selectors and local links PASS.
+Frozen INPUTS/scope and old kernel/decoder/binding/backend bytes unchanged.

@@ -122,6 +122,12 @@ def init_worker(flag):
     FAILURE = flag
 
 
+def monitor_pending(output, pending, start, peaks):
+    # pending maps Future -> label; resource paths must use its values.
+    for label in pending.values():
+        R.resources(output/label, ['job'], start, peaks[label])
+
+
 def worker(case, inputs, source, output):
     output = Path(output); start = time.perf_counter(); cpu = time.process_time()
     child_start = resource.getrusage(resource.RUSAGE_CHILDREN); calls = 0
@@ -225,8 +231,7 @@ def execute():
                     print(label+': '+result['status'],flush=True)
                 except Exception as exc:
                     failure.set(); errors.append(dict(label=label,type=type(exc).__name__,message=str(exc)))
-            for label in pending:
-                R.resources(output/label,['job'],start,peaks[label])
+            monitor_pending(output, pending, start, peaks)
     R.write_new(output/'COMPLETION.json',dict(status='SIX_RESULTS_SAVED' if not unknown and not errors else 'UNKNOWN_STOP_NO_RETRY',
         completed=sorted(completed),unknown=unknown,errors=errors,scientific_evaluation_calls_in_saved_results=calls,
         wall_seconds=time.perf_counter()-start,finished_UTC=R.utc(),

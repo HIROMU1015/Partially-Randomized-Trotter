@@ -1,5 +1,6 @@
 """Artificial caller risks and saved metadata only; no real H4 Q3 calls."""
 from copy import deepcopy
+from concurrent.futures import Future
 import importlib.util
 import json
 from pathlib import Path
@@ -27,6 +28,13 @@ def artificial():
 
 
 class CallerTests(unittest.TestCase):
+    def test_monitor_uses_candidate_values_not_future_keys(self):
+        future=Future();pending={future:'ARTIFICIAL_ONLY'};peaks={'ARTIFICIAL_ONLY':{}}
+        with patch.object(M.R,'resources')as observe:
+            M.monitor_pending(Path('/tmp/artificial_pf_monitor'),pending,0.,peaks)
+        observe.assert_called_once_with(Path('/tmp/artificial_pf_monitor/ARTIFICIAL_ONLY'),
+                                        ['job'],0.,peaks['ARTIFICIAL_ONLY'])
+
     def test_fixed_integer_vector_and_deterministic_contract(self):
         inputs=json.loads((ROOT/M.INPUT).read_text())
         self.assertEqual([c['label'] for c in inputs['cases']],M.LABELS)
