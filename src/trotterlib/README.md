@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[D2の較正receipt接続・保存親event直接連結](../../docs/research/d_pauli_b1_receipt_pair_repair_20261115/REPORT.md)：SOURCE `13ab1acfa`、26人工/toy PASS。5 cell×X/Yの価格→path/axis/公開compile receipt/実装証拠を照合するC入口を追加。pairedはsampler0回、order2/非自明位相はtoyのみ。実H4科学call/compile0、実LD2較正18・実価格受入・fit/holdout/E[C]/Gは保留/未判定。技術公開後STOP。
+
 [S1価格比較guardの検証](../../docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：guard実装はtrottertracks、物理library変更なし。
 
 [B0I・Full-Hの全13round Raw signal取得](../../docs/research/truncated_fullh_signal_results_20261114/REPORT.md)（2026-11-14）：固定H4 DF10のB0I p7/S2/Δ.1とFull-H finite-K2/q=2^m/R448を各13round、一回評価。SOURCE5a172629d、26件すべて元数値gate PASS、Raw/corrected/reference/normalizationとB packetを保存。人工caller3件PASS、数値module不変、context復元1、旧signal受入/retry0。数値誤差・law距離・state誤差は未資格、MC/N/価格/G0。旧c546/6306計画・STOPを保全し公開後mandatory STOP。

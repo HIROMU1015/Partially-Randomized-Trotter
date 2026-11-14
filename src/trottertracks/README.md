@@ -1,12 +1,14 @@
 # 研究別SOURCE
 
+[D2の較正receipt接続・保存親event直接連結](../../docs/research/d_pauli_b1_receipt_pair_repair_20261115/HANDOFF.md)：SOURCE `13ab1acfa`、26人工/toy PASS。5 cell×X/Yの価格→path/axis/公開compile receipt/実装証拠を照合するC入口を追加。pairedはsampler0回、order2/非自明位相はtoyのみ。実H4科学call/compile0、実LD2較正18・実価格受入・fit/holdout/E[C]/Gは保留/未判定。技術公開後STOP。
+
 [price_implementation_guard](price_implementation_guard.py)：既存C/B価格算術前のnative/lowering検査。[SOURCE・51人工/回帰結果](../../docs/research/full_pf_latest_price_guard_20261114/REPORT.md)。
 
 [B0I・Full-Hの全13round Raw signal取得](../../docs/research/truncated_fullh_signal_results_20261114/REPORT.md)（2026-11-14）：固定H4 DF10のB0I p7/S2/Δ.1とFull-H finite-K2/q=2^m/R448を各13round、一回評価。SOURCE5a172629d、26件すべて元数値gate PASS、Raw/corrected/reference/normalizationとB packetを保存。人工caller3件PASS、数値module不変、context復元1、旧signal受入/retry0。数値誤差・law距離・state誤差は未資格、MC/N/価格/G0。旧c546/6306計画・STOPを保全し公開後mandatory STOP。
 
 [全方式の平均compiled価格モデル技術準備](../../docs/research/rpe_mean_price_model_preparation_20261113/REPORT.md)（2026-11-13）：外部係数の加法式・境界covers・既存S＋単一C−S・4方式の受動B接続を追加。人工新11＋既存27＝38 PASS。全モデル未資格、実H4/H6の新S/C・保存再解析・sampling/compile/fit/G0。C1係数/26 E[S]/D requestと既存STOPを保全、公開照合後STOP。
 
-[D最新版scalar bindingの技術接続](../../docs/research/d_scalar_binding_connection_20261113/REPORT.md)（2026-11-13）：C価格bindingをD748へ接続し、expected_scalarの生成/再構成・schedule anchor・resolved pathのbinary64完全一致を追加。新5＋既存20＝25人工/回帰PASS、省略時の旧request互換を保持。実H4/preparation/sampling/compile/保存科学再解析/E[C]・G0、D T2のscalar原因はUNKNOWNのまま。ベースライン科学計画の未承認STOPを保全、公開照合後STOP。
+[D最新版scalar bindingの技術接続](../../docs/research/d_scalar_binding_connection_20261113/REPORT.md)（2026-11-13）：C価格bindingをD748へ接続し、expected_scalarの生成/再構成・schedule anchor・resolved pathのbinary64完全一致を追加。新5＋既存20＝26人工/回帰PASS、省略時の旧request互換を保持。実H4/preparation/sampling/compile/保存科学再解析/E[C]・G0、D T2のscalar原因はUNKNOWNのまま。ベースライン科学計画の未承認STOPを保全、公開照合後STOP。
 
 [D価格adapterとRPE pipelineの統合](../../docs/research/d_price_pipeline_integration_20261113/REPORT.md)（2026-11-13）：公開D candidate_price_adapterをC price_requestsへ接続。A固定LD1/LD2の13round metadataとD path→pending/外部mean→B会計を照合し、新8＋既存36＝44 PASS。path/S/finite cohortを適格E[C]へ昇格せず、軸・SOURCE/law/preparation/compiler/loweringを保持。実H4/preparation/sampling/compile/保存再解析/実N・G0、D物理資格と平均/N証拠は後続。
 

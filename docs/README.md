@@ -1,5 +1,7 @@
 # 文書索引
 
+[D2の較正receipt接続・保存親event直接連結](research/d_pauli_b1_receipt_pair_repair_20261115/REPORT.md)：SOURCE `13ab1acfa`、26人工/toy PASS。5 cell×X/Yの価格→path/axis/公開compile receipt/実装証拠を照合するC入口を追加。pairedはsampler0回、order2/非自明位相はtoyのみ。実H4科学call/compile0、実LD2較正18・実価格受入・fit/holdout/E[C]/Gは保留/未判定。技術公開後STOP。
+
 [PR-Pauli W後のCAL計画更新](research/d_pauli_b1_caller_preparation_20261114/CAL_AFTER_W_PLAN.md)（静的のみ）：D2のpairedは親seedで再生成後照合、非configuration較正cellの公開実装証拠・receipt束縛が不足。直近はCAL保留、限定接続の補完後にLD2較正18を第一候補、C fit・凍結後の独立holdout6は別指示。両辞書各24と最初18を区別し、B0/WをCALへ繰り入れず、Pauli許容差は未採択。code/test/科学call0、計画公開後STOP。
 
 [PR-Pauli LD2 B1-W実回路結果](research/d_pauli_ld2_b1_w_results_20261115/REPORT.md)（2026-11-15、Codex D2）：保存H4/1Å/STO-3G/DF10・LD2/S2/m0/T.1/q1/R2/K2、SOURCE `1a7eed91d`、元辞書/physical ID/cohort/seedのnormal1 path・XY個別2compile。両軸RZ2236/CX960/depth1416、観測path gateと公開SOURCE付きC guardはPASS。order0×2でLD2 order2 product/非自明位相は未観測UNKNOWN。有限1 pathのみ、C_INPUTS空、期待価格/model/N/G未資格、公開後mandatory STOP。
@@ -31,7 +33,7 @@
 
 [全方式の平均compiled価格モデル技術準備](research/rpe_mean_price_model_preparation_20261113/REPORT.md)（2026-11-13）：外部係数の加法式・境界covers・既存S＋単一C−S・4方式の受動B接続を追加。人工新11＋既存27＝38 PASS。全モデル未資格、実H4/H6の新S/C・保存再解析・sampling/compile/fit/G0。C1係数/26 E[S]/D requestと既存STOPを保全、公開照合後STOP。
 
-[D最新版scalar bindingの技術接続](research/d_scalar_binding_connection_20261113/REPORT.md)（2026-11-13）：C価格bindingをD748へ接続し、expected_scalarの生成/再構成・schedule anchor・resolved pathのbinary64完全一致を追加。新5＋既存20＝25人工/回帰PASS、省略時の旧request互換を保持。実H4/preparation/sampling/compile/保存科学再解析/E[C]・G0、D T2のscalar原因はUNKNOWNのまま。ベースライン科学計画の未承認STOPを保全、公開照合後STOP。
+[D最新版scalar bindingの技術接続](research/d_scalar_binding_connection_20261113/REPORT.md)（2026-11-13）：C価格bindingをD748へ接続し、expected_scalarの生成/再構成・schedule anchor・resolved pathのbinary64完全一致を追加。新5＋既存20＝26人工/回帰PASS、省略時の旧request互換を保持。実H4/preparation/sampling/compile/保存科学再解析/E[C]・G0、D T2のscalar原因はUNKNOWNのまま。ベースライン科学計画の未承認STOPを保全、公開照合後STOP。
 
 [ベースライン3系列・全RPE signal有限実行計画](research/baseline_finite_signal_plan_20261113/REPORT.md)（2026-11-13）：Full PF S2/.1/Full10、B0I p7/S2/.1、Full-H K2/q=2^m/R448の3 canonical schedule・39roundを固定。提案は保存Full PF m6の受入再資格1件→PASS時だけ新38 mean。無条件再利用0、X/Yは倍計数しない。既存13 reference pair/保存scalarを利用し、新reference/抽出0。metadataのみ、実input読込/再資格/新signal/旧test再実施/N・価格・G0、明示科学許可待ちSTOP。
 

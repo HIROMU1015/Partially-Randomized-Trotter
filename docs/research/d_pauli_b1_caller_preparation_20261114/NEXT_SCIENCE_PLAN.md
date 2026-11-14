@@ -1,5 +1,9 @@
 # Pauli B1：採択前の有限実行案
 
+## 追補：技術修正完了、実18 compileは引き続き保留（2026-11-15）
+
+[修正REPORT](../d_pauli_b1_receipt_pair_repair_20261115/REPORT.md)／[C読取・親入力形式](../d_pauli_b1_receipt_pair_repair_20261115/HANDOFF.md)。SOURCE `13ab1acfa`で非configuration価格の証拠接続と保存親event直接連結を実装し、26人工/toy PASS。今回指定されたpaired仕様は案(b)で、再samplingしない。技術不足2点の人工検証が完了したことと、実LD2較正18の採択・実行を区別する。後者は未許可のままであり、実価格受入・実order2・fit/holdout/E[C]/Gは未判定。以下の計画と過去状態は履歴として保全し、科学cell/cohort/seedを変えない。技術公開後mandatory STOP。
+
 ## 追補：B1-W完了後の計画（2026-11-15）
 
 最新の静的更新は[CAL_AFTER_W_PLAN.md](CAL_AFTER_W_PLAN.md)、cell/cohort/seedの元表転記は[CAL_AFTER_W_METADATA.json](CAL_AFTER_W_METADATA.json)。LD2 Wは`1e2639a1b`で限定完了、B `50be68b80`のQ3は両辞書で閾値適合。Wのorder2 product・非自明位相は未観測UNKNOWN、B0/WはCALへ繰り入れない。

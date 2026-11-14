@@ -1,5 +1,9 @@
 # Pauli B1：A/Cへの接続
 
+## 追補：2点の技術修正を固定（2026-11-15）
+
+実装SOURCE `13ab1acfaebe5f33958e1db67862f5c45725ab91`、[新HANDOFF](../d_pauli_b1_receipt_pair_repair_20261115/HANDOFF.md)。非configuration較正cellの公開compile receipt・実装証拠・Cのfit前読取と、保存親eventの直接連結（paired sampler0回）を実装し、26人工/toy test PASS。以下の追補にあった再生成方式・空証拠は旧SOURCEの状態であり、新SOURCEで修正した。実LD2の較正18 compile・実価格のC受入・order2観測・fit/holdout/E[C]/Gは未実行/未判定、技術公開後mandatory STOP。
+
 ## 追補：W完了後のCAL引渡し計画（2026-11-15）
 
 最新の判断材料は[CAL_AFTER_W_PLAN.md](CAL_AFTER_W_PLAN.md) §4–7、辞書別cell/physical ID/cohort/seedは[CAL_AFTER_W_METADATA.json](CAL_AFTER_W_METADATA.json)。W公開SOURCEは`1e2639a1b`（raw `6c4709f85`）。V/CALは今回も未採択・未実行。
