@@ -1,0 +1,1197 @@
+{
+  "status": "CALIBRATION_PRICES_COMPLETE",
+  "stage": "CALIBRATION",
+  "route": "FULL_PF",
+  "source": {
+    "caller": "scripts/run_full_pf_shortlist_prices.py",
+    "native": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/h46_long_time_native.py"
+    },
+    "wrapper": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+    },
+    "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+    "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+    "stage": "CALIBRATION",
+    "stage_module": "scripts/pf_price_stages.py",
+    "cell_plan": {
+      "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+      "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+    },
+    "comparison_policy": {
+      "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+      "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+      "metric": "compiled_rz_count",
+      "state_preparation": "P0_EXCLUDED",
+      "control": "symmetric_directional",
+      "measurement": "full_Hadamard_with_measurement",
+      "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+      "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+      "compiler": {
+        "qiskit": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed": 17
+      },
+      "scalar_by_route": {
+        "FULL_PF": "HAMILTONIAN_CONSTANT",
+        "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+      },
+      "scalar_application": "ONCE_AT_TOTAL_T",
+      "holdout": {
+        "name": "H-b",
+        "kind": "RELATIVE",
+        "scale": "observed",
+        "value": {
+          "numerator": 1,
+          "denominator": 50
+        },
+        "calibration_rounds": [
+          4,
+          5
+        ],
+        "holdout_rounds": [
+          6
+        ],
+        "individual_models": 12,
+        "success": "ALL_12_PASS",
+        "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+      }
+    }
+  },
+  "cells": [
+    {
+      "formula": "2nd",
+      "m": 4,
+      "id": "b7c4e73538ec19070cde",
+      "q": 7,
+      "model_groups": [
+        [
+          "FULL_PF",
+          "2nd",
+          "16/7",
+          "X"
+        ],
+        [
+          "FULL_PF",
+          "2nd",
+          "16/7",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "2nd",
+      "m": 5,
+      "id": "8df73ab164fac57bfd6c",
+      "q": 14,
+      "model_groups": [
+        [
+          "FULL_PF",
+          "2nd",
+          "16/7",
+          "X"
+        ],
+        [
+          "FULL_PF",
+          "2nd",
+          "16/7",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "4th",
+      "m": 4,
+      "id": "3cf8eddfb3b78e96f5d2",
+      "q": 3,
+      "model_groups": [
+        [
+          "FULL_PF",
+          "4th",
+          "16/3",
+          "X"
+        ],
+        [
+          "FULL_PF",
+          "4th",
+          "16/3",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "4th",
+      "m": 5,
+      "id": "72383d110445e479155d",
+      "q": 6,
+      "model_groups": [
+        [
+          "FULL_PF",
+          "4th",
+          "16/3",
+          "X"
+        ],
+        [
+          "FULL_PF",
+          "4th",
+          "16/3",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "4th(m5_best)",
+      "m": 5,
+      "id": "c63a835541462a1c264b",
+      "q": 2,
+      "model_groups": [
+        [
+          "FULL_PF",
+          "4th(m5_best)",
+          "16",
+          "X"
+        ],
+        [
+          "FULL_PF",
+          "4th(m5_best)",
+          "16",
+          "Y"
+        ]
+      ]
+    }
+  ],
+  "saved_calibration": [
+    "FULL_PF|4th(m5_best)|16|X",
+    "FULL_PF|4th(m5_best)|16|Y"
+  ],
+  "duplicate_preflight": {
+    "status": "NO_DUPLICATE_IN_CHECKED_SOURCES",
+    "table": {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz"
+    },
+    "catalog": {
+      "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+      "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json"
+    },
+    "original_trial_root": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION",
+    "checked_stage_roots": [
+      "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01",
+      "docs/research/d_full_pf_shortlist_prices_20261114/holdout/run01"
+    ],
+    "running_jobs": [],
+    "cells": [
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 1.6,
+          "q": 7,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "b7c4e73538ec19070cde"
+        },
+        "m": 4,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 3.2,
+          "q": 14,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "8df73ab164fac57bfd6c"
+        },
+        "m": 5,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th",
+          "T": 1.6,
+          "q": 3,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "3cf8eddfb3b78e96f5d2"
+        },
+        "m": 4,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th",
+          "T": 3.2,
+          "q": 6,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "72383d110445e479155d"
+        },
+        "m": 5,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th(m5_best)",
+          "T": 3.2,
+          "q": 2,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "c63a835541462a1c264b"
+        },
+        "m": 5,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      }
+    ],
+    "scope": "KNOWN_TABLE_CATALOG_EXACT_TRIAL_PATHS_ROUTE_STAGE_RECEIPTS_AND_RELEVANT_USER_JOBS",
+    "unlisted_private_evidence": "UNKNOWN_REQUIRES_OPERATOR_CHECK_BEFORE_SCIENCE",
+    "prices_reestimated": false,
+    "automatic_reuse": false
+  },
+  "holdout_gate": null,
+  "calibration_after": null,
+  "child_exit": 0,
+  "error": null,
+  "results": [
+    {
+      "cell": {
+        "m": 4,
+        "role": "CALIBRATION",
+        "row": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 1.6,
+          "q": 7,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "b7c4e73538ec19070cde"
+        },
+        "actual_delta": {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        "signed_pieces": 7,
+        "action": "NEW_COMPILE",
+        "saved_receipts": null,
+        "model_groups": [
+          [
+            "FULL_PF",
+            "2nd",
+            "16/7",
+            "X"
+          ],
+          [
+            "FULL_PF",
+            "2nd",
+            "16/7",
+            "Y"
+          ]
+        ],
+        "formula": "2nd"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 1.6,
+          "q": 7,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "b7c4e73538ec19070cde"
+        },
+        "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 54844,
+            "rz_depth": 14985,
+            "cx_count": 26064,
+            "cx_depth": 14246,
+            "total_depth": 36903,
+            "circuit_size": 114999
+          },
+          "sine": {
+            "rz_count": 54844,
+            "rz_depth": 14985,
+            "cx_count": 26064,
+            "cx_depth": 14246,
+            "total_depth": 36903,
+            "circuit_size": 114999
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 2.8413717155442793e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 2.0936603543783152e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 1.9317880628477724e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 2.2307149293795073e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 6.716849298982197e-15,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 2.274243688358236e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.29310124732,
+        "log_B": 0,
+        "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+        "cache_hits": 0,
+        "wall_seconds": 93.79613789892755,
+        "peak_RSS_bytes": 505712640
+      },
+      "facts": {
+        "retained_blocks": 11,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scalar": 2.29310124732,
+        "tail_identity": 0.0,
+        "signed_pieces": 7,
+        "negative_pieces": 0,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "bbd361f740f66b8fc97b6e3c9b8db03122001d72ea90bb0ec0a5999cbd192b6b",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "863f4c274101ba572e8fdb99592d95755d5f5ca9a1b0d3a0ab67036df64ff67c",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 93.79710277216509
+    },
+    {
+      "cell": {
+        "m": 5,
+        "role": "CALIBRATION",
+        "row": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 3.2,
+          "q": 14,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "8df73ab164fac57bfd6c"
+        },
+        "actual_delta": {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        "signed_pieces": 14,
+        "action": "NEW_COMPILE",
+        "saved_receipts": null,
+        "model_groups": [
+          [
+            "FULL_PF",
+            "2nd",
+            "16/7",
+            "X"
+          ],
+          [
+            "FULL_PF",
+            "2nd",
+            "16/7",
+            "Y"
+          ]
+        ],
+        "formula": "2nd"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 3.2,
+          "q": 14,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "8df73ab164fac57bfd6c"
+        },
+        "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 109381,
+            "rz_depth": 29895,
+            "cx_count": 52048,
+            "cx_depth": 28456,
+            "total_depth": 73653,
+            "circuit_size": 229442
+          },
+          "sine": {
+            "rz_count": 109381,
+            "rz_depth": 29895,
+            "cx_count": 52048,
+            "cx_depth": 28456,
+            "total_depth": 73653,
+            "circuit_size": 229442
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 5.933675888646873e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 2.496137352676599e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 2.930988785010413e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 4.423832713135857e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 2.220446049250313e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 4.514791835721412e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.29310124732,
+        "log_B": 0,
+        "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+        "cache_hits": 0,
+        "wall_seconds": 184.21270692907274,
+        "peak_RSS_bytes": 658153472
+      },
+      "facts": {
+        "retained_blocks": 11,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scalar": 2.29310124732,
+        "tail_identity": 0.0,
+        "signed_pieces": 14,
+        "negative_pieces": 0,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "de43b1d42fb0050e47f717968521caaf997de805dd36e8ae2e7c1c0a2e6bcee8",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "1d6bf80ab44c12e09c57fa6692c27f184c91fd6a890680eca3c9a0c0795d5a36",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 184.2135099528823
+    },
+    {
+      "cell": {
+        "m": 4,
+        "role": "CALIBRATION",
+        "row": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th",
+          "T": 1.6,
+          "q": 3,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "3cf8eddfb3b78e96f5d2"
+        },
+        "actual_delta": {
+          "numerator": 3602879701896397,
+          "denominator": 6755399441055744
+        },
+        "signed_pieces": 9,
+        "action": "NEW_COMPILE",
+        "saved_receipts": null,
+        "model_groups": [
+          [
+            "FULL_PF",
+            "4th",
+            "16/3",
+            "X"
+          ],
+          [
+            "FULL_PF",
+            "4th",
+            "16/3",
+            "Y"
+          ]
+        ],
+        "formula": "4th"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th",
+          "T": 1.6,
+          "q": 3,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "3cf8eddfb3b78e96f5d2"
+        },
+        "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 70912,
+            "rz_depth": 19317,
+            "cx_count": 34028,
+            "cx_depth": 18630,
+            "total_depth": 47817,
+            "circuit_size": 148993
+          },
+          "sine": {
+            "rz_count": 70912,
+            "rz_depth": 19317,
+            "cx_count": 34028,
+            "cx_depth": 18630,
+            "total_depth": 47817,
+            "circuit_size": 148993
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 1.2609256258175331e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 2.7658002956475626e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 3.863576125695545e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 3.203604777773954e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 8.770761894538737e-15,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 3.262558065863703e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.29310124732,
+        "log_B": 0,
+        "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+        "cache_hits": 0,
+        "wall_seconds": 121.9080188269727,
+        "peak_RSS_bytes": 559702016
+      },
+      "facts": {
+        "retained_blocks": 11,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scalar": 2.29310124732,
+        "tail_identity": 0.0,
+        "signed_pieces": 9,
+        "negative_pieces": 3,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "272562c3532b6ac8a007a0a1ec96982eb4d54072812e87eb16ee836a182b00ed",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "cdecdeb77be64eb100f0322d839775eb8b1c03e1f8ba031f50183b9e44eb09db",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 121.90901838894933
+    },
+    {
+      "cell": {
+        "m": 5,
+        "role": "CALIBRATION",
+        "row": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th",
+          "T": 3.2,
+          "q": 6,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "72383d110445e479155d"
+        },
+        "actual_delta": {
+          "numerator": 3602879701896397,
+          "denominator": 6755399441055744
+        },
+        "signed_pieces": 18,
+        "action": "NEW_COMPILE",
+        "saved_receipts": null,
+        "model_groups": [
+          [
+            "FULL_PF",
+            "4th",
+            "16/3",
+            "X"
+          ],
+          [
+            "FULL_PF",
+            "4th",
+            "16/3",
+            "Y"
+          ]
+        ],
+        "formula": "4th"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th",
+          "T": 3.2,
+          "q": 6,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "72383d110445e479155d"
+        },
+        "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 141517,
+            "rz_depth": 38559,
+            "cx_count": 67976,
+            "cx_depth": 37224,
+            "total_depth": 95481,
+            "circuit_size": 297430
+          },
+          "sine": {
+            "rz_count": 141517,
+            "rz_depth": 38559,
+            "cx_count": 67976,
+            "cx_depth": 37224,
+            "total_depth": 95481,
+            "circuit_size": 297430
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 2.1927128870018133e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 3.3540771999419685e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 6.228351168147128e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 6.438156204537157e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 3.5083047578154947e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 6.561505926436307e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.29310124732,
+        "log_B": 0,
+        "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+        "cache_hits": 0,
+        "wall_seconds": 238.17222112300806,
+        "peak_RSS_bytes": 741695488
+      },
+      "facts": {
+        "retained_blocks": 11,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scalar": 2.29310124732,
+        "tail_identity": 0.0,
+        "signed_pieces": 18,
+        "negative_pieces": 6,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "d518207e691b76a0656697678d48f74032fdb4f48ea8e8122e1209f67fa1bb4f",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "e198f1dab8860be0cd57e369c6013fc0af5400b6db400c3c9864dbd1a3d50469",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 238.17334369407035
+    },
+    {
+      "cell": {
+        "m": 5,
+        "role": "CALIBRATION",
+        "row": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th(m5_best)",
+          "T": 3.2,
+          "q": 2,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "c63a835541462a1c264b"
+        },
+        "actual_delta": {
+          "numerator": 3602879701896397,
+          "denominator": 2251799813685248
+        },
+        "signed_pieces": 22,
+        "action": "NEW_COMPILE",
+        "saved_receipts": null,
+        "model_groups": [
+          [
+            "FULL_PF",
+            "4th(m5_best)",
+            "16",
+            "X"
+          ],
+          [
+            "FULL_PF",
+            "4th(m5_best)",
+            "16",
+            "Y"
+          ]
+        ],
+        "formula": "4th(m5_best)"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "4th(m5_best)",
+          "T": 3.2,
+          "q": 2,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "c63a835541462a1c264b"
+        },
+        "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 171613,
+            "rz_depth": 46923,
+            "cx_count": 81648,
+            "cx_depth": 44636,
+            "total_depth": 115641,
+            "circuit_size": 360042
+          },
+          "sine": {
+            "rz_count": 171613,
+            "rz_depth": 46923,
+            "cx_count": 81648,
+            "cx_depth": 44636,
+            "total_depth": 115641,
+            "circuit_size": 360042
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 1.8230063178210718e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 4.3122539350439863e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 1.0591527654923993e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 6.816781578423048e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 8.315570454442422e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 6.957089158439311e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.29310124732,
+        "log_B": 0,
+        "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+        "cache_hits": 0,
+        "wall_seconds": 331.177711897064,
+        "peak_RSS_bytes": 820506624
+      },
+      "facts": {
+        "retained_blocks": 11,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scalar": 2.29310124732,
+        "tail_identity": 0.0,
+        "signed_pieces": 22,
+        "negative_pieces": 2,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "da0025e0ecd28c7068c3e5f1d2cf8ae044a3eb82be7bd5a805847c3d7edc2ffb",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "de603ef2f6ba005373405a1d58f85470262c50b82b383b165cc8460e53c15f0a",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 331.17874971893616
+    }
+  ],
+  "resources": {
+    "workers": 5,
+    "observation": {
+      "affinity": 64,
+      "idle_cpu": 61.24026696329255,
+      "available_ram": 524396089344,
+      "free_disk": 495641690112,
+      "arbitrary_caps": null,
+      "shared_system_changes": false
+    },
+    "cells": 5,
+    "started": 5,
+    "not_started_after_failure": 0
+  },
+  "elapsed_seconds": 335.5002725981176,
+  "finished_utc": "2026-11-14T16:44:40.764029+00:00",
+  "mandatory_stop": true,
+  "retry_performed": false,
+  "fit": null,
+  "prediction": null,
+  "holdout_judgement": null,
+  "N": null,
+  "G": null
+}
