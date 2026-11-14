@@ -15,6 +15,7 @@ import check_full_h_kappa2_p1_circuits as T
 import run_full_h_kappa2_p2 as P
 import full_h_p2_acceleration as A
 import run_full_h_kappa2_p2_accelerated as Runner
+import continue_full_h_p2_checkpoint as Transfer
 from qiskit.quantum_info import Operator
 import numpy as np
 
@@ -163,6 +164,23 @@ class Tests(unittest.TestCase):
         self.assertEqual(result['trial']['cache_hits'],0)
         self.assertEqual(result['xy_phase_gate']['status'],'PASS')
         self.assertTrue(all(c['record']['compiler']==self.full.setup().COMPILER_HASH for c in result['compile_receipts'].values()))
+
+    def test_transfer_uses_only_completed_native_boundaries(self):
+        plan=P.proposal();plan['adopted']=True;cell=P.selected(plan,'CALIBRATION','G36223');row=P.physical_row(cell)
+        private=self.tmp/'transfer';cache=private/'compiled_cache';cache.mkdir(parents=True)
+        previous=dict(plan=plan,stage='CALIBRATION',cell_id=cell['cell_id'],step_seeds=P.seed_table(plan,cell['cell_id']),private=str(private))
+        d=private/'cost'/cell['cohort']/row['id']/'0';d.mkdir(parents=True)
+        checks=[dict(check=k,error=0.,tolerance=1e-9,phase_alignment=False) for k in ('low_control','high_control_leakage',
+            'independent_occupation_vector','Hadamard_cosine','Hadamard_sine','compiled_vector_cosine','compiled_vector_sine')]
+        (d/'result.json').write_text(json.dumps(dict(status='PASS',candidate=row,cohort=cell['cohort'],index=0,checks=checks)))
+        (d/'events_PRIVATE.json').write_text(json.dumps(dict(cohort=cell['cohort'],seeds=previous['step_seeds'][0],scope='ARTIFICIAL_METADATA')))
+        for a in ('X','Y'):(cache/(a+'.json')).write_text(json.dumps(dict(scope='ARTIFICIAL_METADATA',axis=a)))
+        self.assertEqual(Transfer.completed_paths(previous),('READY',[0]))
+        cp=Transfer.snapshot(previous,'ARTIFICIAL_SOURCE',[0]);self.assertEqual(set(cp),{'0'})
+        d1=d.parent/'1';d1.mkdir()
+        self.assertEqual(Transfer.completed_paths(previous),('NATIVE_WORK_IN_PROGRESS',[]))
+        d1.rmdir();(d/'STOP.json').write_text('{}')
+        with self.assertRaisesRegex(ValueError,'Old scientific STOP'):Transfer.completed_paths(previous)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

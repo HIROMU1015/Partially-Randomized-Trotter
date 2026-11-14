@@ -1,5 +1,7 @@
 # Full-H P-2のprocess並列化・高速化
 
+**追補：ユーザーがcheckpointからの引継ぎを許可した。** 元の拒否記録は以下に保全する。新controller `scripts/continue_full_h_p2_checkpoint.py` と [FROZEN_CONTINUATION.json](FROZEN_CONTINUATION.json) を固定し、path0 native trialの両compile・7数値gate PASSを引き継ぐ。path1は未着手、新compile上限2、D7累計上限18。[TRANSFER_TESTS.txt](TRANSFER_TESTS.txt) は9 PASS（H4追加試運転なし）。実際の切替結果はrun01のTRANSFER.jsonと継続結果に別途記録する。
+
 **実装・synthetic検証済み。実行中G36223への切替は未実施。**
 
 ユーザーの「並列化と高速化を行って」に対応した。稼働中SOURCE `d323fee1ca8cd6893c4b705f990cdc931bdb5c87` を保全するため、同SOURCEから専用worktree/branch `codex/d-full-h-p2-acceleration-20261115` を作成した。既存D1 branch・旧SOURCE・旧raw・旧STOPは変更していない。
