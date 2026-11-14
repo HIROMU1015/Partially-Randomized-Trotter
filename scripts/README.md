@@ -311,3 +311,7 @@ artifacts/<validation_name>/
 
 `run_track_d_cut_h4_select.py`：hash一致したq4_sample00だけから不変ruleで一回decisionを価格参照前に保存。`run_track_d_cut_h4_reuse.py`：中央cut選択時だけ、旧QPY/PASS/全7価格を照合して新compileなしでSTOP。[完了済み結果](../docs/research/track_d_cut_h4_q4_completion_20261108/REPORT.md)。再実行しない。
 [C7-4保存再解析runner](run_track_d_c7_4.py)／[結果projection](summarize_track_d_c7_4.py)：保存88 pathのみの探索fit/CV/bootstrapと固定人工6系列/短P0 2本。新H4 sampling/build/compileなし。既存runのmain/guardを変更しない。
+
+## Full-H κ2 P-2：metadata専用の既定入口
+
+`run_full_h_kappa2_p2.py` はA固定設計のcell/request/seedを表示する。科学計画は未採択。実行用flagは別途許可された有限scope専用。[REPORT](../docs/research/d_full_h_p2_caller_preparation_20261114/REPORT.md)／[HANDOFF](../docs/research/d_full_h_p2_caller_preparation_20261114/HANDOFF.md)／[テスト](../docs/research/d_full_h_p2_caller_preparation_20261114/TEST_RESULTS.json)。
