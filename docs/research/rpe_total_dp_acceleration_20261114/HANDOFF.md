@@ -53,3 +53,7 @@ with P.installed(workers=8, outcome_batch=8) as engine:
 5. 終了後はMSE/moments/残余だけを報告し、十分N・G・主推定量採択へ進まない。
 
 現時点では技術実装と人工benchmarkだけ完了。**現行固定2 jobは旧SOURCEで継続中**。切替許可は未取得。
+
+## 技術公開後の切替・実行結果
+
+2026-11-14：ユーザーが旧run保全停止と高速版での代替2評価を明示許可した。固定条件は同一で、各1件・計2件が約235秒で完了。[結果](../pauli_total_q3_accelerated_results_20261114/REPORT.md)。上記の「未適用・旧job継続」は技術公開時点の履歴。旧2 jobは未完了のまま別branchに保全されている。新しいshot探索・十分N/G・主推定量採択へ進まずSTOP。

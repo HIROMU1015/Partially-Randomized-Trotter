@@ -1,5 +1,7 @@
 # 文書索引
 
+[Pauli高速版の固定2診断](research/pauli_total_q3_accelerated_results_20261114/REPORT.md)／[検算](research/pauli_total_q3_accelerated_results_20261114/VERIFY_RESULTS.txt)：約3分55秒で完了。raw-model MSEの上下界・moments・残余・zero/tieを保存、精度filter/十分N/Gなし・STOP。
+
 [Total DPの高速化](research/rpe_total_dp_acceleration_20261114/REPORT.md)／[APIと適用境界](research/rpe_total_dp_acceleration_20261114/HANDOFF.md)：人工で最大約21倍、旧DP出力と一致。実H4新実行なし、旧固定2 jobは保全。
 
 [Z1＋T1/Q3のB統合](research/b_total_q3_canonical_integration_20261114/REPORT.md)／[canonical/price HANDOFF](research/b_total_q3_canonical_integration_20261114/HANDOFF.md)／[未承認の有限2評価案](research/b_total_q3_canonical_integration_20261114/FINITE_SCIENCE_PLAN.md)：110人工/回帰PASS、新科学評価0。

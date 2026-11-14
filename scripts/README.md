@@ -1,5 +1,7 @@
 # scripts 索引
 
+[Pauli total/Q3高速版runner](run_pauli_total_q3_accelerated.py)：元固定callerを再利用し、同じ科学条件にexact DP高速backendだけを追加。[固定2件の結果](../docs/research/pauli_total_q3_accelerated_results_20261114/REPORT.md)。各8 worker、約235秒、次の科学実行はしない。
+
 B統合のSOURCE wiring確認：`preflight_pr_resource_wiring.py --series B --source <full-commit>`（metadataのみ）。[Pauli intake・価格guard統合](../docs/research/b_rpe_pauli_integration_20261114/REPORT.md)を参照。科学runを起動しない。
 
 [run_h4_dp_risk_fixed.py](run_h4_dp_risk_fixed.py)：[固定DP入力](../docs/research/h4_dp_risk_fixed_results_20261114/INPUTS.json)を旧evaluate_one/既存kernelへ渡す各LD1件・計2評価専用caller。科学条件を継承し保持8192/組141,559,036を固定、新規出力だけに保存。自分の2workerのCPU/RSSを観測し、MC/追加配分/価格/G/自動retryなし。[run01完了結果](../docs/research/h4_dp_risk_fixed_results_20261114/REPORT.md)、再実行しない。VERIFY_RESULTS.pyは保存値の検算のみ。
