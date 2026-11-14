@@ -56,3 +56,11 @@ Q8R566・G4528も完了（既存session 47841/90597ともexit 0）。元の較�
 新worktree：`/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-p2-acceleration-20261115`。HEAD/source887を固定。新session48999、path worker初期PID3247396（p0保存結果の残検査）と3247398（p1初取得）。新privateは `/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/acceleration01/G36223`。出力は `docs/research/d_full_h_p2_acceleration_20261115/run01/G36223`。**再投入しないこと。** 残新compileはX/Y各1の計2、path0はsampling/compileを再実行しない。
 
 元D1 branchは旧worker終了後に887へfast-forwardした。公開資料・結果commitは元D1 worktreeで行い、実行中の新worktreeHEADは変更しない。G566/P2R566/Q8R566/G4528の14軸価格・個別compile原記録・lossless gzipは取得済み。G36223完了後の証拠公開、C metadata readerでの照合、HANDOFF、remote照合が残る。Cの科学的受入・fit/凍結・HOLDOUT・law期待値・N/Gはいずれも未実施。
+
+## 最新追補：path1完了・path0長時間化と再発防止修正
+
+G36223新privateの `path_result_1.json` はPASSで保存済み（約1.04GB、X/Y各RZ5572406、両compile完了）。path0はSOURCE887のworker PID3247396で残検査を継続している。外部nonblocking stack取得は通常OS権限で拒否され、root/sudoや共有設定変更はしていない。CPU稼働・STOP未検出だけでは検査の前進や最終PASSを断定しない。総残時間は不明。
+
+元D1 worktreeだけでcheckpoint wrapperの高速fingerprint適用漏れを修正した。既存checkpoint toy testへ旧writer禁止を追加し、修正前は実wrapper内部の旧writer呼出しでFAIL、修正後は9 test PASS。詳細は `../d_full_h_p2_acceleration_20261115/RELIABILITY_FIX.md`。**修正は実行中のacceleration worktreeには適用していない。新たな科学jobは起動していない。再投入しないこと。**
+
+共通AGENTSにも、実経路の適用確認・長時間処理の観測・根拠付き見積り・小さい再発検査を追加した。既存のSOURCE固定・科学許可・保全・mandatory STOPは変えていない。全較正の取得・公開・C引渡しはまだ未完了。

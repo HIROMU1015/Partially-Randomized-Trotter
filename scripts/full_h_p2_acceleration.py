@@ -241,17 +241,21 @@ def resume_saved_path(P,full,row,cohort,index,seeds,checkpoint):
         scalar_event_phases=P.P1.scalar_event_phase_gate(evolution.circuit,n,events,scalar,scalar,row['T'],provider=provider),
         scalar_once_legacy_diagnostic=P.P1.scalar_once(evolution.circuit,n,-scalar*row['T']),provider_file=str(provider.__file__))
     wrappers={};fps={};receipts={}
-    for axis in ('cosine','sine'):
-        w=wrapper_api.build_native_hadamard_wrapper(evolution,axis=axis,include_measurement=True,
-            max_instructions=len(evolution.circuit.data)+4)
-        digest=fp(w);path=Path(checkpoint['private'])/'compiled_cache'/(digest+'.json')
-        if str(path) not in checkpoint['files']:raise ValueError('Wrapper not in checkpoint compile set')
-        rec=json.loads(path.read_text())
-        if rec['fingerprint']!=digest or rec['compiler']!=native.COMPILER_HASH or rec['metrics']!=trial['prices'][axis]:
-            raise ValueError('Saved wrapper/compile/price binding differs')
-        wrappers[axis]=w;fps[axis]=digest
-        receipts[axis]=dict(record=rec,fingerprint=digest,reused=True,locator=dict(path=str(path),sha256=file_hash(path)),
-            producer_commit=checkpoint['source_commit'],wall_seconds=0.,checkpoint_reused=True)
+    # The wrapper validates the evolution through its module's canonical alias.
+    # Keep that internal check on the identical-byte fast writer too.
+    from h46_b3_fast_fingerprint import use_fast_fingerprint
+    with use_fast_fingerprint():
+        for axis in ('cosine','sine'):
+            w=wrapper_api.build_native_hadamard_wrapper(evolution,axis=axis,include_measurement=True,
+                max_instructions=len(evolution.circuit.data)+4)
+            digest=fp(w);path=Path(checkpoint['private'])/'compiled_cache'/(digest+'.json')
+            if str(path) not in checkpoint['files']:raise ValueError('Wrapper not in checkpoint compile set')
+            rec=json.loads(path.read_text())
+            if rec['fingerprint']!=digest or rec['compiler']!=native.COMPILER_HASH or rec['metrics']!=trial['prices'][axis]:
+                raise ValueError('Saved wrapper/compile/price binding differs')
+            wrappers[axis]=w;fps[axis]=digest
+            receipts[axis]=dict(record=rec,fingerprint=digest,reused=True,locator=dict(path=str(path),sha256=file_hash(path)),
+                producer_commit=checkpoint['source_commit'],wall_seconds=0.,checkpoint_reused=True)
     xy=P.P1.xy_phase_gate(wrappers,n,events,scalar,scalar,row['T'],provider=provider)
     if (builder_lowering!=P.P1.LOWERING_ID or parity['status']!='PASS' or parity['replaced_controlled_zz']<=0 or facts['legacy_rzz_control_instructions']!=0
             or facts['one_body_applications']<=0 or facts['scalar_event_phases']['status']!='PASS' or xy['status']!='PASS'):

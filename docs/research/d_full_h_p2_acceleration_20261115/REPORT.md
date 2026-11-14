@@ -1,5 +1,7 @@
 # Full-H P-2のprocess並列化・高速化
 
+**再発防止の追補：** [RELIABILITY_FIX.md](RELIABILITY_FIX.md)でcheckpoint wrapper内部の遅いfingerprintへのfallbackを人工testで再現し、適用範囲の最小修正後に9 test PASSを確認した。実行中SOURCE887には未適用で、workerは継続中。新H4試運転・追加compile0。
+
 **現在の状態：許可済みcheckpoint引継ぎを実施し、新SOURCE887で実行中。** [TRANSFER.json](run01/TRANSFER.json)に旧workerの終了・保存checkpoint・新namespaceへの引継ぎを記録した。path0は旧sampling/compileを再利用し残り検査を実行、path1は初回samplingとX/Yの並列compileを行う。旧parentのSTOP_CELL/exit2は計画的な引継ぎであり、科学gate失敗ではない。以下の未適用・拒否・旧worker継続の記載は、その時点の履歴として保持する。取得済み4 cell・14 compile PASS、D7全体の引渡しは未完了。
 
 **追補：ユーザーがcheckpointからの引継ぎを許可した。** 元の拒否記録は以下に保全する。新controller `scripts/continue_full_h_p2_checkpoint.py` と [FROZEN_CONTINUATION.json](FROZEN_CONTINUATION.json) を固定し、path0 native trialの両compile・7数値gate PASSを引き継ぐ。path1は未着手、新compile上限2、D7累計上限18。[TRANSFER_TESTS.txt](TRANSFER_TESTS.txt) は9 PASS（H4追加試運転なし）。実際の切替結果はrun01のTRANSFER.jsonと継続結果に別途記録する。

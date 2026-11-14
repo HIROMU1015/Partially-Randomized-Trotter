@@ -89,8 +89,10 @@ class Tests(unittest.TestCase):
         files=[directory/'result.json',directory/'events_PRIVATE.json',*list((native.PRIVATE/'compiled_cache').glob('*.json'))]
         cp=dict(private=str(native.PRIVATE),trial=str(directory/'result.json'),events=str(directory/'events_PRIVATE.json'),
             source_commit='ARTIFICIAL',files={str(p):A.file_hash(p) for p in files})
+        from trottertracks.resource_applicability import ax2b_stream_fingerprint_v5 as legacy
         with patch.object(native,'sample_requests',side_effect=AssertionError('CHECKPOINT_RESAMPLED')) as sampler, \
-             patch.object(native,'compile_cached',side_effect=AssertionError('CHECKPOINT_RECOMPILED')) as compiler:
+             patch.object(native,'compile_cached',side_effect=AssertionError('CHECKPOINT_RECOMPILED')) as compiler, \
+             patch.object(legacy._Writer,'_circuit',side_effect=AssertionError('SLOW_FINGERPRINT_FALLBACK')):
             restored=A.resume_saved_path(P,self.full,row,cohort,0,seeds,cp)
             sampler.assert_not_called();compiler.assert_not_called()
         self.assertEqual(original['events'],restored['events'])
