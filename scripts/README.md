@@ -1,5 +1,7 @@
 # scripts 索引
 
+`admit_pr_df_ld1_m4_holdout.py`：[LD1 m4の保存receipt/比較受入](../docs/research/pr_df_ld1_m4_holdout_admission_20261115/HANDOFF.md)。既存reader/path_bindingを再利用し、8元receiptと2保存exact比較を照合・copyする。平均/誤差/予測/fitは計算せず、元凍結値とD2結果を保持する。
+
 `freeze_pr_df_ld1_residual_models.py`：[LD1残差2モデルとm4予測固定](../docs/research/pr_df_ld1_residual_freeze_20261115/REPORT.md)。--prepareはmetadata照合のみ。--executeの固定run01は完了済み、再fit/予測/上書き禁止。price_model_validationのexact solverを再利用。m4観測reader/compile/CI/Gなし。
 
 `admit_pr_df_ld1_q3_prices.py`：[LD1固定Q3と保存価格のmetadata接続](../docs/research/pr_df_ld1_q3_price_admission_20261115/REPORT.md)。元receipt copyと26軸索引のみ。実物理kernel・sampling・価格平均・fit・費用会計は呼ばない。受入正本 c99d511e2、STOP。
