@@ -4,6 +4,7 @@ Metadata and fictional price values only. The circuit checks run in their own
 process (provider root first), exactly like the real child.
 """
 from copy import deepcopy
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -51,6 +52,17 @@ class Tests(unittest.TestCase):
         wrong = deepcopy(sides); wrong[0]['implementation']['resolved_scalar'] = 0.
         with patch.object(G, '_document', return_value=proofs), self.assertRaises(ValueError):
             G.check(ROOT, config, prices, cohorts=cohorts, bindings=wrong, policy=policy)
+
+    def test_child_import_preflight_and_failed_import_control(self):
+        report = P1.child_import_preflight()  # import-only + saved-input SHA; no restore or science
+        self.assertEqual((report['status'], report['failed_imports'], report['missing_source_paths']), ('PASS', {}, []))
+        self.assertTrue(all(report['input_checks'].values()))
+        code = ('import json, sys; sys.path.insert(0, sys.argv[1]); import run_full_h_kappa2_p1 as P1; '
+                'print(json.dumps(P1.import_preflight(P1.CHILD_IMPORTS + ("h46_absent_module_for_check",))))')
+        out = subprocess.run([sys.executable, '-B', '-c', code, str(ROOT / 'scripts')], cwd=ROOT, capture_output=True, text=True)
+        bad = json.loads(out.stdout)
+        self.assertEqual(bad['status'], 'FAIL')
+        self.assertEqual(list(bad['failed_imports']), ['h46_absent_module_for_check'])
 
     def test_circuit_checks_in_provider_root_process(self):
         out = subprocess.run([sys.executable, '-B', '-W', 'ignore', str(ROOT / 'tests/check_full_h_kappa2_p1_circuits.py')],

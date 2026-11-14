@@ -13,6 +13,12 @@ root (c31ef424 bytes, checked), then runs cost_trial under the swap.
 Default mode is a metadata-only preflight. Only `--execute-approved-p1`
 restores the saved H4 input, samples, builds and compiles (separate approval).
 No retry, mandatory STOP. This module imports no project package at import time.
+
+run02 (A, 2026-11-14): run01 STOPPED before any science because the execution
+checkout lacked the tracked `references/` file that the child imports. Changes
+from the fixed SOURCE 04bead115 are the output label (run01 is kept) and a
+child import-only preflight (install() first, then the real-input import chain
+and the files context() reads); scientific conditions are unchanged.
 """
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -48,8 +54,17 @@ NATIVE_SCRIPTS = ('scripts/h46_long_time_native.py', 'scripts/h46_long_time_sign
                   'scripts/h46_m5_contract.py', 'scripts/h46_pr_pilot_repair.py', 'scripts/h46_b3_fast_fingerprint.py')
 LOWERING_ID = 'CONTROLLED_ZZ_CX_CRZ_CX_V1'
 SCALAR_QUANTITY = 'HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY'
-OUTPUT = 'docs/research/d_full_h_kappa2_p1_results_20261114/run01'
-PRIVATE_OUTPUT = Path('/home/AbeHiromu/projects/d-full-h-kappa-20261114-private/P1-KAPPA2-M3/run01')
+RUN = 'run02'  # run01 (STOP_WIRING_CHECK before science) is preserved unchanged
+OUTPUT = 'docs/research/d_full_h_kappa2_p1_results_20261114/' + RUN
+PRIVATE_OUTPUT = Path('/home/AbeHiromu/projects/d-full-h-kappa-20261114-private/P1-KAPPA2-M3') / RUN
+# Modules that setup()/context()/prepare_full_h/full_oracle/cost_trial import (many lazily) in the child.
+CHILD_IMPORTS = ('numpy', 'scipy.linalg', 'qiskit', 'qiskit.qpy', 'qiskit.circuit.library',
+                 'h46_m5_contract', 'h46_m5_tol_contract', 'h46_m5_tol_native', 'h46_m5_tol_saved_input',
+                 'h46_new2_core', 'h46_new2_native', 'h46_pr_pilot_repair', 'h46_long_time_native',
+                 'h46_b3_fast_fingerprint', 'trotterlib.rte', 'trotterlib.rte_compiled_cost', 'trotterlib.df_hamiltonian',
+                 'trotterlib.df_rte_tail', 'trotterlib.df_trotter.decompose', 'trotterlib.df_trotter.ops',
+                 'trotterlib.df_trotter.circuit', 'trotterlib.pr2_matched_accuracy_m1_execution',
+                 'trottertracks.resource_applicability.h6_hash_reuse_v1')
 SCOPE = dict(cells=1, normal_paths=1, index=0, axes=['X', 'Y'], compile_maximum=2, extra_uncompiled_legacy_compose=1,
              new_reference=0, retry=False, N=None, mean=None, G=None)
 
@@ -213,6 +228,51 @@ def child(job_path):
     return 0 if ok else 2
 
 
+def import_preflight(modules=CHILD_IMPORTS, system='H4'):
+    """Child, no science: install() first and provider bytes as in child(), then import-only of the real-input
+    chain and presence/SHA-256 of the files context() reads. No restore, sampling, circuit or compile."""
+    import h46_long_time_signal as signal
+    signal.install()
+    if any(name.split('.')[0] == 'trottertracks' and name != 'trottertracks' for name in list(sys.modules)):
+        raise ValueError('Project trottertracks imported before the provider root')
+    provider_checks()
+    failed = {}
+    for name in modules:
+        try:
+            importlib.import_module(name)
+        except Exception as error:
+            failed[name] = type(error).__name__ + ': ' + str(error)
+    missing = []
+    for name in ('h46_m5_contract', 'h46_m5_tol_contract'):
+        if name in sys.modules:
+            missing += [p for p in sys.modules[name].SOURCE_PATHS if not (ROOT / p).exists() and p not in missing]
+    info = signal.origin_config()['systems'][system]
+    files = {key: Path(item['path']).exists() and signal.sha(item['path']) == item['sha256']
+             for key, item in info['inputs'].items()}
+    base = load_blob_module(FULL_H, '_p1_import_preflight_full_h').BASE_PRIVATE / (system + '_context.json')
+    files['saved_context_binding'] = base.exists() and signal.read(base)['binding'] == info['binding']
+    reference = Path(info['reference_root']) / 'reference.npz'
+    receipt = reference.parent / 'receipt.json'
+    files['reference_bytes'] = (reference.exists() and receipt.exists()
+                                and signal.sha(reference) == signal.read(receipt)['reference_sha256'])
+    ok = not failed and not missing and all(files.values())
+    return dict(status='PASS' if ok else 'FAIL', modules=len(modules), failed_imports=failed,
+                missing_source_paths=missing, input_checks=files)
+
+
+def child_import_preflight(root=ROOT):
+    """Parent: run import_preflight() in a fresh child process (same interpreter and order as the real child)."""
+    out = subprocess.run([sys.executable, '-B', str(Path(root) / CALLER), '--child-import-preflight'],
+                         cwd=root, capture_output=True, text=True)
+    try:
+        report = json.loads(out.stdout)
+    except ValueError:
+        report = dict(status='FAIL', exit=out.returncode, stderr=out.stderr[-3000:])
+    if out.returncode != 0 or report.get('status') != 'PASS':
+        raise ValueError('Child import preflight failed: ' + json.dumps(report))
+    return report
+
+
 def price_bindings(root, prepared, trial, *, price_source, evidence_commit, evidence_path):
     """Direct single-path records + C guard sidecars/proofs (not a law mean)."""
     C, I, S1 = _meta()
@@ -256,11 +316,13 @@ def execute(root=ROOT):
             raise ValueError('Execution SOURCE bytes differ from HEAD: ' + path)
     source_checks(root)
     prepared, req, row, seeds = plan_row(root)
+    imports = child_import_preflight(root)
     out = Path(root) / OUTPUT; out.mkdir(parents=True, exist_ok=False)
     PRIVATE_OUTPUT.mkdir(parents=True, exist_ok=False)
     source = dict(commit=commit, caller=CALLER, full_h=FULL_H, native=NATIVE, wrapper=WRAPPER, provider=PROVIDER,
                   lowering=NEW_ZZ, cohort=COHORT)
-    write(out / 'SOURCE.json', dict(source=source, scope=SCOPE, row=row, seeds=seeds, python=sys.version,
+    write(out / 'SOURCE.json', dict(source=source, scope=SCOPE, row=row, seeds=seeds, child_import_preflight=imports,
+          python=sys.version,
           platform=platform.platform(), started_utc=datetime.now(timezone.utc).isoformat(), automatic_retry=False))
     start = time.perf_counter(); result = dict(status='STOP_UNKNOWN', errors=[])
     job = dict(row=row, public=str(out / 'child_public'), private=str(PRIVATE_OUTPUT), result=str(PRIVATE_OUTPUT / 'child.json'))
@@ -290,7 +352,8 @@ def preflight(root=ROOT):
     source_checks(root)
     prepared, req, row, seeds = plan_row(root)
     return dict(status='PREFLIGHT_METADATA_ONLY', configuration_id=prepared['plan']['configuration']['id'],
-                row=row, cohort=COHORT, seeds=seeds, scope=SCOPE, output=OUTPUT, private_output=str(PRIVATE_OUTPUT))
+                row=row, cohort=COHORT, seeds=seeds, scope=SCOPE, output=OUTPUT, private_output=str(PRIVATE_OUTPUT),
+                child_import_preflight=child_import_preflight(root))
 
 
 def main(argv=None):
@@ -298,9 +361,14 @@ def main(argv=None):
     parser.add_argument('--execute-approved-p1', action='store_true',
                         help='restore saved H4, sample one path, build and compile X/Y (separate approval)')
     parser.add_argument('--child', help=argparse.SUPPRESS)
+    parser.add_argument('--child-import-preflight', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.child:
         return child(args.child)
+    if args.child_import_preflight:
+        report = import_preflight()
+        print(json.dumps(report))
+        return 0 if report['status'] == 'PASS' else 2
     if args.execute_approved_p1:
         return execute(ROOT)
     print(json.dumps(preflight(ROOT), indent=1))
