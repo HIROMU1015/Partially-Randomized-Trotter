@@ -110,6 +110,24 @@ class Tests(unittest.TestCase):
         self.assertTrue(all(f['cache_reused'] for f in result['fingerprints'].values()))
         self.assertTrue({'compiled_vector_cosine','compiled_vector_sine'} <= {g['check'] for g in result['checks']})
 
+    def test_child_rejects_bad_phase_before_context_restore(self):
+        plan = P.proposal(2, 'B1-CAL'); plan['adopted'] = True
+        parents = deepcopy(self.parents)
+        # Make the scalar agree with the child's fixed input contract so the
+        # intended D2 phase check, rather than the scalar check, rejects it.
+        scalar = P.B0.connection().total_scalar(self.d, P.B0.HAMILTONIAN_CONSTANT)
+        for parent in parents: parent['result']['scalar'] = scalar
+        parents[0]['result']['event_metadata'][0]['D2']['aggregate_source_global_phase'] += .2
+        job = dict(plan=plan, cell_id='P2R66', dictionary_identity=self.identity, request=self.pair_request,
+            parents=parents, step_seeds=[[11,12]], output=str(self.tmp/'public'), private=str(self.tmp/'private'),
+            result=str(self.tmp/'artificial_child.json'))
+        file = self.tmp/'artificial_job.json'; file.write_text(json.dumps(job))
+        with (patch.object(P.B0.connection(), 'load_dictionary', return_value=self.d),
+              patch.object(self.native, 'native_context') as context):
+            self.assertEqual(P.child(file), 2)
+            context.assert_not_called()
+        self.assertIn('phase differs', json.loads((self.tmp/'artificial_child.json').read_text())['error'])
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

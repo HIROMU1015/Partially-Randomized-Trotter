@@ -215,7 +215,7 @@ def preflight(plan):
 
 
 def acquire_path(native, ctx, dictionary, request, *, cohort, index, seeds, operators=None, blocks=None, compile_cached=None,
-                 parents=None, dictionary_identity=None):
+                 parents=None, dictionary_identity=None, prepared_parent_data=None):
     """Scientific API; B0 core and full 2^n oracle unchanged. Tests supply a toy saved-operator fixture."""
     if request['prefix'] != dictionary['prefix'] or len(seeds) != request['q']:
         raise ValueError('Prefix/dictionary or seed table mismatch')
@@ -231,7 +231,8 @@ def acquire_path(native, ctx, dictionary, request, *, cohort, index, seeds, oper
                     or r['q'] != 1 or r['T'] != request['step_time']):
                 raise ValueError('Saved parent order/physical/dictionary binding differs')
         scalar = B0.connection().total_scalar(dictionary, ctx.ham.constant)
-        saved = B0.connection().restore_parent_steps(dictionary, request, parents, seeds, scalar=scalar)
+        saved = prepared_parent_data if prepared_parent_data is not None else B0.connection().restore_parent_steps(
+            dictionary, request, parents, seeds, scalar=scalar)
     if operators is None:
         operators, blocks, _ = B0.p0_arrays(request['prefix'])
     compiler = compile_cached or native.compile_cached; captured = {}
@@ -442,10 +443,15 @@ def child(path):
         P = B0.connection(); dictionary = P.load_dictionary(ROOT, job['dictionary_identity'])
         import h46_long_time_native as native
         native.PUBLIC, native.PRIVATE = Path(job['output']), Path(job['private'])
+        cell = next(c for c in plan['cells'] if c['cell_id'] == job['cell_id'])
+        prepared_parents = None
+        if cell.get('composed_of'):
+            # Validate saved phases before even restoring/preparing the context.
+            prepared_parents = P.restore_parent_steps(dictionary, job['request'], job['parents'], job['step_seeds'][0],
+                scalar=P.total_scalar(dictionary, B0.HAMILTONIAN_CONSTANT))
         ctx = native.native_context('H4', (plan['prefix'],))
         if ctx.ham.constant != B0.HAMILTONIAN_CONSTANT:
             raise ValueError('Hamiltonian constant differs from the B0 bound snapshot')
-        cell = next(c for c in plan['cells'] if c['cell_id'] == job['cell_id'])
         for index, seeds in enumerate(job['step_seeds']):
             if plan.get('reuse_b0') and index == 0:
                 # Saved B0 remains the original path, with its original SOURCE. No new sample/compile.
@@ -460,7 +466,8 @@ def child(path):
                                     reused=True, original_source=deepcopy(ref), independent_new=False))
                 continue
             r = acquire_path(native, ctx, dictionary, job['request'], cohort=cell['cohort'], index=index, seeds=seeds,
-                parents=job.get('parents') if cell.get('composed_of') else None, dictionary_identity=job['dictionary_identity'])
+                parents=job.get('parents') if cell.get('composed_of') else None, dictionary_identity=job['dictionary_identity'],
+                prepared_parent_data=prepared_parents)
             path = dict(index=index, cohort=cell['cohort'], request=job['request'], result=r, reused=False)
             if plan['purpose'] == 'MODEL_DESIGN':
                 path['dictionary_identity'] = job['dictionary_identity']
