@@ -18,6 +18,15 @@
 | 同じcanonical bytesを速くfingerprintする | [use_fast_fingerprint](../scripts/h46_b3_fast_fingerprint.py)、[fast_legacy_builds / resume_saved_path](../scripts/full_h_p2_acceleration.py) | nested context・module alias・復元を確認する。wrapper内部のmutation検査など、呼出し先が行う再計算もcontext内に入れる | checkpoint wrapperがcontext外だと旧writerへ戻る不具合を人工再現。dfab06ee0で修正し、旧writer禁止を含む9 test PASS。修正の実H4適用・性能は未確認。[回帰修正](research/d_full_h_p2_acceleration_20261115/RELIABILITY_FIX.md) |
 | 保存済みnative結果から残検査を継続する | [resume_saved_path](../scripts/full_h_p2_acceleration.py)、[checkpoint controller](../scripts/continue_full_h_p2_checkpoint.py) | 元event/compile/QPY・SOURCE/physical/cohort/index/seed・gateを照合し、sampling/compileを再実行しない。固定契約・停止/継続条件を守る。controllerのPIDや入力を他jobへそのまま転用しない | 人工でsampling/compile 0と元event/fingerprint/phase一致を確認。実G36223 path0の最終検査は未完了。[固定入力・移管記録](research/d_full_h_p2_acceleration_20261115/REPORT.md) |
 
+完了済みpathを再処理しない継続は [complete_full_h_p2_checkpoint.py](../scripts/complete_full_h_p2_checkpoint.py) を参照する。
+SOURCE `0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4` は保存native path0と完了path1を組み合わせ、
+sampler/compilerを禁止して残検査だけを行う。11人工test PASS。段階別PROGRESS.jsonlと120秒ごとの
+worker内STACKS.txtを記録する。STACKSの `Timeout` は定期dumpの表示であり、設定された実行打切りではない。
+ただし0dcの実workerは2回目dump付近で異常終了し原因未特定。11人工test PASSだけで長時間実行の
+安定性を認めず、現段階ではこの継続経路を実対象で完了確認済みとして流用しない。子終了code/signalの
+保存と、timer発火を含む観測自体の検証が必要。科学retryはしていない。
+[固定入力と移管報告](research/d_full_h_p2_completion_20261115/REPORT.md)に適用条件を残す。
+
 ## 以前からある関連例
 
 [PR-2 S2並列実行層](pr2_s2_parallel_execution.md)は、cell単位のspawn pool、phase barrier、

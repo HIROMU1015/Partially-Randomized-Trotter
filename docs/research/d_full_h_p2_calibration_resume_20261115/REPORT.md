@@ -1,6 +1,6 @@
 # Full-H κ2 D7 CALIBRATION取得
 
-現在は4 cell・14 compileが完了し、G36223を許可済みcheckpointから継続している。D7全体の引渡し・mandatory STOPは未完了。
+**MANDATORY STOP：全18 compileの価格は保存済み、最終path検査は16軸PASS・2軸UNKNOWN。** 4 cellの較正recordは完成したが、G36223 path0の最終receiptが未取得で全較正は未完了。SOURCE0dcのworkerが異常終了し、再投入せず停止した。[終了報告](../d_full_h_p2_completion_20261115/REPORT.md)／[STOP_DETAIL](../d_full_h_p2_completion_20261115/STOP_DETAIL.json)。
 
 ## 固定条件とSOURCE
 
@@ -19,7 +19,7 @@ H4 linear 1 Å/STO-3G、保存tol-only DF10、one-bodyを含むFull-H pure RTE�
 |---|---|---|---|---|
 | G566 | 1/566 | 82785 / 82785 | 87375 / 87375 | 4 PASS |
 | G4528 | 1/4528 | 695637 / 695637 | 691505 / 691505 | 4 PASS |
-| G36223 | 1/36223 | checkpoint保存済み | 実行中 | 最終receipt未取得 |
+| G36223 | 1/36223 | 5552901 / 5552901（最終検査UNKNOWN） | 5572406 / 5572406（PASS） | 2 PASS / 2 UNKNOWN・cell未完了 |
 | Q8R566 | 8/566 | 696593 / 696593 | 689039 / 689039 | 4 PASS |
 | P2R566 | 2/566 | 169888 / 169888 | 該当なし | 2 PASS |
 
@@ -45,6 +45,12 @@ Cのc628e9e8 evidence readerは小さいJSONを読む。D1がこれを使ってl
 
 cellごとに独立jobとし、親G566の保存後にpairedを実行、独立cellは重ねて取得した。G566全job wall4:47.06 / peakRSS606688 KiB、P2R566 5:34.31 / 933960 KiB、Q8R566 38:39.61 / 2219544 KiB、G4528 39:05.27 / 2210804 KiB。正確な元計時はrun01/*.time.txt。高速化はpath/process、X/Y compiler/process、exact controlled-gate cache、同一canonical bytesのfast fingerprintを使う。共有設定は変更していない。toy primitiveの速度比をH4全体の速度比へ外挿しない。
 
-現在G36223の最終receiptとC向け公開後locator結合が未取得。全較正引渡し、または重大gate失敗でmandatory STOP。HOLDOUT6 compile、fit/係数凍結、長時間外挿、E[C]、N/Gは実施しない。finite-cohort CI/confidence、sampler/ideal-law距離、rare寄与、group境界の一般化、m7–m12資格は未確認。
+G36223のpath0最終receiptが未取得。compile自体の未取得0、最終path検査PASS16/FAIL0/UNKNOWN2、較正cell完了4/未完了1。新0dc runは4:14.99で予期せず終了し、child receipt/終了signalが欠けて原因は未特定。原d32316 compile＋887 2 compile＝18 unique、completionでの新compile0。計画的切替による旧terminal STOPを科学FAILへ数えず、今回の異常終了も数値gateの不一致とは区別する。全較正引渡し、または重大gate失敗でmandatory STOP。HOLDOUT6 compile、fit/係数凍結、長時間外挿、E[C]、N/Gは実施しない。finite-cohort CI/confidence、sampler/ideal-law距離、rare寄与、group境界の一般化、m7–m12資格は未確認。
 
-ロードマップへの影響：D7のrank3較正データを取得する段階であり、Cの後続fit/凍結とD1の別指示によるHOLDOUTの依存順序を維持する。ロードマップ本体は統合担当が更新する。
+ロードマップへの影響：D7の全較正引渡しは未完了であり、Cの後続fit/凍結とD1の別指示によるHOLDOUTの依存順序を維持する。ロードマップ本体は統合担当が更新する。
+
+## 最終の保存・受入状態
+
+D7予定5 cell・9観測path・18実compile、事前同等価格再利用0。実取得18、内訳SOURCEd323が16・887が2・0dcが0。継続時に再利用した4 compileはこの18件の内数。独立normal pathは8本、paired観測1本はG566親2本に依存する。G36223のnative7 gateは保存済みPASSだが、path0最終phase/parity/XY/fingerprint receiptはUNKNOWN。path1は全path検査PASSで保存済み。完全なG36223 PRICE_CALIBRATION_RECORD_V1や有限cohort平均を捏造しない。
+
+追加sampling/compile、科学retry、閾値緩和、seed差替え、fit/凍結、HOLDOUT、law E[C]/N/Gは行っていない。母law CI/confidence・rare寄与・sampler/ideal距離・長時間一般化は未資格。最終C引渡しは完成4 cellと未完了G36223の部分証拠を明確に区別し、C科学的受入はNOT_PERFORMED。ロードマップ本体は編集しない。

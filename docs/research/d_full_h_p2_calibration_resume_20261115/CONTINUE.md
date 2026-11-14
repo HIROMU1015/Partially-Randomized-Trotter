@@ -64,3 +64,19 @@ G36223新privateの `path_result_1.json` はPASSで保存済み（約1.04GB、X/
 元D1 worktreeだけでcheckpoint wrapperの高速fingerprint適用漏れを修正した。既存checkpoint toy testへ旧writer禁止を追加し、修正前は実wrapper内部の旧writer呼出しでFAIL、修正後は9 test PASS。詳細は `../d_full_h_p2_acceleration_20261115/RELIABILITY_FIX.md`。**修正は実行中のacceleration worktreeには適用していない。新たな科学jobは起動していない。再投入しないこと。**
 
 共通AGENTSにも、実経路の適用確認・長時間処理の観測・根拠付き見積り・小さい再発検査を追加した。既存のSOURCE固定・科学許可・保全・mandatory STOPは変えていない。全較正の取得・公開・C引渡しはまだ未完了。
+
+## 最新追補：修正版0dc1eeaeeへ切替済み・新compile0
+
+ユーザーが修正版への切替を許可したため、旧SOURCE887のmanager3247191と残検査worker3247396を保存済み境界で終了し、旧root STOP_CELL/child=null/error=nullを保全した。旧session48999はexit2、計画的移管であり科学gate失敗ではない。旧SOURCE・raw/QPY・完了path1は保全済み。
+
+新SOURCE `0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4`、worktree `/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-p2-completion-20261115`、branch `codex/d-full-h-p2-completion-20261115`、session72424。出力 `docs/research/d_full_h_p2_completion_20261115/run01/G36223`、private `/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/completion01/G36223`。**再投入しないこと。**
+
+旧path0 native（SOURCEd323・7 gate/2compile）と旧完了path1（SOURCE887・全path gate/2compile）を再利用し、path0残検査だけを実行する。追加sampling/compileとも0、D7合計18 unique compileのまま。childではsampler/compilerを禁止する。PROGRESS.jsonlに段階開始と直前段階完了・秒数、STACKS.txtに120秒ごとの内部stackが出る。SOURCE/import23 modules、11人工test PASS。SOURCE0dcはremote公開済み、稼働中の新worktreeHEADは固定する。
+
+原D1 worktreeで公開準備を続ける。新runの完了後、G36223の原記録4軸・lossless raw receipt・公開後C evidence reader照合を追加し、既存14軸と合わせたHANDOFFを作り、commit/push/remote照合後mandatory STOP。fit/凍結・HOLDOUT・law E[C]/N/Gへ進まない。
+
+## 最終追補：MANDATORY STOP・再投入禁止
+
+session72424はexit2。SOURCE0dcの新workerは4:14.99で最終child receiptを書かず異常終了した。新root RESULTはSTOP_CELL/child=null/error=nullである。これは予期した切替STOPではなく未解決の実行異常で、終了signalは既存executorが保存していないため不明。stageはbuild_new_evolution、内部stackはfast writer内、2回目dumpは途中で切れている。cgroup OOM記録なし。単純人工timer診断はexit0で実異常を再現できなかった。
+
+追加sampling/compile0。18 unique compile価格は保存済み。最終path検査16軸PASS/2軸UNKNOWN、全較正4 cell完了・G36223未完了。path0の元native7 gate/2compileとevent/QPY、完了path1の全receipt/2compileを保全する。**無断retry・新規科学投入をせずmandatory STOPを維持する。** 最新REPORT/HANDOFFの公開とremote照合を完了する。fit/凍結・HOLDOUT・law E[C]/N/Gへ進まない。

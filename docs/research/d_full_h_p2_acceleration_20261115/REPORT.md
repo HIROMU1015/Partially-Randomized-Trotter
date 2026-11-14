@@ -1,5 +1,7 @@
 # Full-H P-2のprocess並列化・高速化
 
+**現在の最終状態：** 旧SOURCE887は保存結果を保全して計画的に終了し、SOURCE0dcの残検査へ移管したが、同workerが予期せず終了して [mandatory STOP](../d_full_h_p2_completion_20261115/REPORT.md)。18 compile保存済み、最終path検査16軸PASS/2軸UNKNOWN。以下の実行中という記載は過去の観測である。
+
 **再発防止の追補：** [RELIABILITY_FIX.md](RELIABILITY_FIX.md)でcheckpoint wrapper内部の遅いfingerprintへのfallbackを人工testで再現し、適用範囲の最小修正後に9 test PASSを確認した。実行中SOURCE887には未適用で、workerは継続中。新H4試運転・追加compile0。
 
 **現在の状態：許可済みcheckpoint引継ぎを実施し、新SOURCE887で実行中。** [TRANSFER.json](run01/TRANSFER.json)に旧workerの終了・保存checkpoint・新namespaceへの引継ぎを記録した。path0は旧sampling/compileを再利用し残り検査を実行、path1は初回samplingとX/Yの並列compileを行う。旧parentのSTOP_CELL/exit2は計画的な引継ぎであり、科学gate失敗ではない。以下の未適用・拒否・旧worker継続の記載は、その時点の履歴として保持する。取得済み4 cell・14 compile PASS、D7全体の引渡しは未完了。

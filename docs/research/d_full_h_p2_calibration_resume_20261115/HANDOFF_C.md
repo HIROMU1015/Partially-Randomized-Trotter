@@ -1,6 +1,6 @@
 # C向け部分引渡し：D7 CALIBRATION
 
-**G36223取得中・全較正未完了。C fit/凍結は実施しない。** 4 cell・14軸の公開後対応検査はPASS。完全な各cell/path/X/Y locatorは [HANDOFF_C.json](HANDOFF_C.json) の `cells.*.path_axis_bindings` にある。
+**MANDATORY STOP・全較正未完了。C fit/凍結は実施しない。** 18 compileの価格は全て保存したが、最終path検査は16軸PASS/2軸UNKNOWN。4 cell・14軸の公開後対応検査はPASS。G36223 path1は保存済みPASS、path0残検査のworkerが異常終了した。完全な各cell/path/X/Y locatorは [HANDOFF_C.json](HANDOFF_C.json) の `cells.*.path_axis_bindings` にある。
 
 結果SHA：`7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f`。取得SOURCEはd323fee1c、G36223の許可済みcheckpoint継続SOURCEは887c3b9d0。D7のplan/cohort/seedはFROZEN_JOBSから変更していない。
 
@@ -19,6 +19,14 @@
 
 P2R566はG566 path0/group0（seed11290319720649780064）→path1/group0（seed9014355981526777692）の順に、実取得親event receiptを直接復元・連結した。親SOURCE/physical/cohort/index/seed・順序・phase・scalarをbuild前に照合し、子X/Yはそれぞれcompileした。sampler呼出し0、同seed再生成0、親価格copy0。親2標本と相関するpaired1観測であり、独立な第3標本として数えない。親の公開manifest locatorとdecoded selectorはHANDOFF_C.jsonのpairedに固定した。
 
-G36223のpath0は旧SOURCEでnative7 gateと2 compileが保存済み。許可された計画的引継ぎにより旧workerを終了したため、旧parentのSTOP_CELL/exit2を科学FAILへ数えない。旧record/raw/QPYは保全した。新SOURCEではpath0をsampling/compileなしで復元し残検査を行い、未着手path1の2 compileだけを初回取得中。全体上限18は維持する。
+G36223のpath0は旧SOURCEでnative7 gateと2 compileが保存済み。許可された計画的引継ぎにより旧workerを終了したため、旧parentのSTOP_CELL/exit2を科学FAILへ数えない。旧record/raw/QPYは保全した。新SOURCEではpath0をsampling/compileなしで復元し残検査を行い、未着手path1の2 compileを初回取得し、全path検査PASSで保存した。その後SOURCE0dcの0 compile継続へ切り替えたが、同workerは4:14.99でchild receiptを書かず異常終了した。全体上限18は維持した。新runは計画的STOPではない。
 
-未取得：G36223の最終path receipt・公開後binding。未確認：C受入、finite-cohort CI/confidence、sampler/ideal距離、rare寄与、境界一般化、長時間資格、E[C]/N/G。全較正引渡し後又は重大gate失敗でmandatory STOP。後続のfit/凍結・HOLDOUTは別指示の作業である。
+未取得：G36223 path0の最終path receipt（2軸）。compile価格の未取得0。G36223の完全な較正平均recordは作らず、4 cellの8較正recordとG36223の部分証拠を区別する。SOURCEd323のpath0 X/Y各5552901、SOURCE887のpath1 X/Y各5572406は保存済み。新SOURCE0dcでの追加sampling/compile0。未確認：C受入、finite-cohort CI/confidence、sampler/ideal距離、rare寄与、境界一般化、長時間資格、E[C]/N/G。全較正引渡し後又は重大gate失敗でmandatory STOP。後続のfit/凍結・HOLDOUTは別指示の作業である。
+
+## 異常終了と部分証拠の扱い
+
+[終了報告](../d_full_h_p2_completion_20261115/REPORT.md)／[STOP_DETAIL](../d_full_h_p2_completion_20261115/STOP_DETAIL.json)。source0dcの最後の段階はbuild_new_evolution。例外・child receipt・子終了signalがなく原因未特定。cgroup OOM記録0、単純人工timer診断では再現できなかった。数値gate不一致は観測していないが、必要な残検査のPASSを確認できないためmandatory STOPとして扱う。科学retryはしていない。
+
+G36223のCOMPILE_RECORDSは元JSON bytes/hashを保存し、OBSERVED_COMPILESで軸・producer SOURCE・測定RZ・受入状態を照合する。path0のX/Yは保存QPY末尾の測定軸と固定hashで確認した。元native7 gateは7d0のNATIVE_CHECKPOINT_PATH0.jsonに固定される。原eventはSAVED_PATH0_EVENTS、完了path1原receiptはSAVED_PATH1にlossless gzipで保存する。これらは部分証拠であり、G36223の完成PRICE_CALIBRATION_RECORD_V1や全D7の受入を意味しない。
+
+既存4 cellの固定locatorは7d0c39066のまま維持する。G36223部分証拠の公開SHAとD1の公開後読取検査は、HANDOFF_C.jsonのG36223_partialへ結合する。C担当の科学的受入は全て未実施。非configuration cellへcanonical round identityを割り当てない。

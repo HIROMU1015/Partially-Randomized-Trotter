@@ -16,6 +16,40 @@ import run_full_h_kappa2_p2 as P
 import revalidate_full_h_kappa2_p1_run02 as R
 
 
+def archive_result(directory, part_bytes=64*2**20):
+    """Preserve raw bytes; verify lossless gzip and publish bounded byte parts."""
+    directory=Path(directory).resolve();directory.relative_to(ROOT)
+    raw_path=directory/'RESULT.json';zpath=directory/'RESULT.json.gz'
+    manifest_path=directory/'RAW_RECEIPT.json'
+    if manifest_path.exists() or zpath.exists():raise FileExistsError('Receipt already archived')
+    digest=hashlib.sha256();size=0
+    with raw_path.open('rb') as source,zpath.open('xb') as target:
+        with gzip.GzipFile(filename='',mode='wb',compresslevel=6,mtime=0,fileobj=target) as zipped:
+            for block in iter(lambda:source.read(2**20),b''):
+                digest.update(block);size+=len(block);zipped.write(block)
+    checked=hashlib.sha256();decoded_size=0
+    with gzip.open(zpath,'rb') as decoded:
+        for block in iter(lambda:decoded.read(2**20),b''):
+            checked.update(block);decoded_size+=len(block)
+    if checked.digest()!=digest.digest() or decoded_size!=size:raise ValueError('Lossless archive differs')
+    compressed_hash=hashlib.sha256();parts=[]
+    with zpath.open('rb') as source:
+        for number,block in enumerate(iter(lambda:source.read(part_bytes),b'')):
+            compressed_hash.update(block)
+            if zpath.stat().st_size>part_bytes:
+                part=directory/('RESULT.json.gz.part'+str(number).zfill(3))
+                with part.open('xb') as target:target.write(block)
+                parts.append(dict(path=part.relative_to(ROOT).as_posix(),bytes=len(block),sha256=hashlib.sha256(block).hexdigest()))
+    manifest=dict(raw_path=raw_path.relative_to(ROOT).as_posix(),raw_bytes=size,raw_sha256=digest.hexdigest(),
+        published_path=zpath.relative_to(ROOT).as_posix(),encoding='gzip',compressed_bytes=zpath.stat().st_size,
+        compressed_sha256=compressed_hash.hexdigest(),roundtrip_bytes_identical=True,raw_preserved_locally=True)
+    if parts:
+        manifest['parts']=parts
+        with (directory/'.gitignore').open('x') as ignored:ignored.write('RESULT.json.gz\n')
+    with manifest_path.open('x') as target:json.dump(manifest,target,indent=2);target.write('\n')
+    return manifest
+
+
 def read_receipt(commit, manifest_path):
     manifest = json.loads(P.P1.blob(commit, manifest_path))
     parts = manifest['parts'] if 'parts' in manifest else [dict(path=manifest['published_path'])]
@@ -77,6 +111,7 @@ def bind(commit, cell_id, directory, plan):
             compile_producer_source=receipt.get('producer_commit', result['source']['commit']),
             compile_reused_at_continuation=receipt['reused'],
             checkpoint=result['child']['paths'][index].get('checkpoint'),
+            completed_receipt=result['child']['paths'][index].get('completed_receipt'),
             parents=result['child']['paths'][index].get('parents', [])))
     return dict(status='D1_PUBLICATION_LINKS_CHECKED_USING_C_EVIDENCE_READER_NOT_C_ADMISSION',
         publication=dict(commit=commit,directory=directory), bound_sidecars=sides,
