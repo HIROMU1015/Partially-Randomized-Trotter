@@ -1,0 +1,2385 @@
+{
+  "model_source": {
+    "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+    "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json"
+  },
+  "physical_plan": {
+    "commit": "bcb67b2b2bb78776db1dd8d0625a3facb37cd298",
+    "path": "docs/research/d_pf_allround_price_coverage_plan_20261115/NEXT_VALIDATION_PLAN.md"
+  },
+  "targets": [
+    {
+      "model_group_id": "FULL_PF|2nd|16/7|X",
+      "model_group": [
+        "FULL_PF",
+        "2nd",
+        "16/7",
+        "X"
+      ],
+      "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+      "canonical_id": "RMSE:6c45d3029062e7ed7eab64a4b6a4faf4181768c96653fb29af291f32b33d8e4e",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 51.2,
+        "q": 224,
+        "delta": 0.2285714285714286,
+        "R_outer": null,
+        "K": null,
+        "id": "a4ec53ff4e60d60a2930"
+      },
+      "physical_id": "a4ec53ff4e60d60a2930",
+      "axis": "X",
+      "q": 224,
+      "actual_delta": 0.2285714285714286,
+      "actual_delta_binary64_hex": "0x1.d41d41d41d41ep-3",
+      "features": {
+        "one": 1,
+        "q": 224
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          36
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|2nd|16/7|X",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 7791,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|2nd|16/7|X"
+        ]
+      },
+      "domain": {
+        "route": "FULL_PF",
+        "axis": "X",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.29310124732,
+        "quantity": "HAMILTONIAN_CONSTANT",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_native.py",
+          "selector": "cost_trial scalar = ctx.ham.constant for method FULL (saved snapshot constant)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 10,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "FULL_H",
+        "original_PF_method": "FULL",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "FULL_H",
+          "prefix": 10,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "FULL_PF|2nd|16/7|Y",
+      "model_group": [
+        "FULL_PF",
+        "2nd",
+        "16/7",
+        "Y"
+      ],
+      "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+      "canonical_id": "RMSE:6c45d3029062e7ed7eab64a4b6a4faf4181768c96653fb29af291f32b33d8e4e",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 51.2,
+        "q": 224,
+        "delta": 0.2285714285714286,
+        "R_outer": null,
+        "K": null,
+        "id": "a4ec53ff4e60d60a2930"
+      },
+      "physical_id": "a4ec53ff4e60d60a2930",
+      "axis": "Y",
+      "q": 224,
+      "actual_delta": 0.2285714285714286,
+      "actual_delta_binary64_hex": "0x1.d41d41d41d41ep-3",
+      "features": {
+        "one": 1,
+        "q": 224
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          37
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|2nd|16/7|Y",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 7791,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|2nd|16/7|Y"
+        ]
+      },
+      "domain": {
+        "route": "FULL_PF",
+        "axis": "Y",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.29310124732,
+        "quantity": "HAMILTONIAN_CONSTANT",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_native.py",
+          "selector": "cost_trial scalar = ctx.ham.constant for method FULL (saved snapshot constant)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 10,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "FULL_H",
+        "original_PF_method": "FULL",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "FULL_H",
+          "prefix": 10,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "TRUNCATED_PF|2nd|16/7|X",
+      "model_group": [
+        "TRUNCATED_PF",
+        "2nd",
+        "16/7",
+        "X"
+      ],
+      "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+      "canonical_id": "RMSE:7e677950df4f7677f3a319ffc48c3a039e33011d95b8c0c7061e9505750887d3",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "2nd",
+        "T": 51.2,
+        "q": 224,
+        "delta": 0.2285714285714286,
+        "R_outer": null,
+        "K": null,
+        "id": "1bd0a5dd4bbf876da1d6"
+      },
+      "physical_id": "1bd0a5dd4bbf876da1d6",
+      "axis": "X",
+      "q": 224,
+      "actual_delta": 0.2285714285714286,
+      "actual_delta_binary64_hex": "0x1.d41d41d41d41ep-3",
+      "features": {
+        "one": 1,
+        "q": 224
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          38
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|2nd|16/7|X",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 5513,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|2nd|16/7|X"
+        ]
+      },
+      "domain": {
+        "route": "TRUNCATED_PF",
+        "axis": "X",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.293146549384713,
+        "quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "5cc7c07e112ce97205948465c94441cba0042416",
+          "path": "src/trottertracks/baseline_signal_numerics.py",
+          "selector": "Context.tail_scalars[7] (saved INDEX context prefixes.7.scalar)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 7,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "TRUNCATED_H",
+        "original_PF_method": "B0I",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "B0I",
+          "prefix": 7,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "TRUNCATED_PF|2nd|16/7|Y",
+      "model_group": [
+        "TRUNCATED_PF",
+        "2nd",
+        "16/7",
+        "Y"
+      ],
+      "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+      "canonical_id": "RMSE:7e677950df4f7677f3a319ffc48c3a039e33011d95b8c0c7061e9505750887d3",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "2nd",
+        "T": 51.2,
+        "q": 224,
+        "delta": 0.2285714285714286,
+        "R_outer": null,
+        "K": null,
+        "id": "1bd0a5dd4bbf876da1d6"
+      },
+      "physical_id": "1bd0a5dd4bbf876da1d6",
+      "axis": "Y",
+      "q": 224,
+      "actual_delta": 0.2285714285714286,
+      "actual_delta_binary64_hex": "0x1.d41d41d41d41ep-3",
+      "features": {
+        "one": 1,
+        "q": 224
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          39
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|2nd|16/7|Y",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 5513,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|2nd|16/7|Y"
+        ]
+      },
+      "domain": {
+        "route": "TRUNCATED_PF",
+        "axis": "Y",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.293146549384713,
+        "quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "5cc7c07e112ce97205948465c94441cba0042416",
+          "path": "src/trottertracks/baseline_signal_numerics.py",
+          "selector": "Context.tail_scalars[7] (saved INDEX context prefixes.7.scalar)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 7,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "TRUNCATED_H",
+        "original_PF_method": "B0I",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "B0I",
+          "prefix": 7,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "FULL_PF|4th|16/3|X",
+      "model_group": [
+        "FULL_PF",
+        "4th",
+        "16/3",
+        "X"
+      ],
+      "configuration_id": "a799697fc8ca36b024acec26af43313777948ead432e66804c670649a18afe76",
+      "canonical_id": "RMSE:b1a30ac1be4336213b9698fe190e4adcda0bfc44ca195c38e499b54b548c6d15",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "4th",
+        "prefix": 10,
+        "T": 51.2,
+        "q": 96,
+        "delta": 0.5333333333333333,
+        "R_outer": null,
+        "K": null,
+        "id": "b2c479e7805c4d1f0b30"
+      },
+      "physical_id": "b2c479e7805c4d1f0b30",
+      "axis": "X",
+      "q": 96,
+      "actual_delta": 0.5333333333333333,
+      "actual_delta_binary64_hex": "0x1.1111111111111p-1",
+      "features": {
+        "one": 1,
+        "q": 96
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          88
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|4th|16/3|X",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 23535,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|4th|16/3|X"
+        ]
+      },
+      "domain": {
+        "route": "FULL_PF",
+        "axis": "X",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.29310124732,
+        "quantity": "HAMILTONIAN_CONSTANT",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_native.py",
+          "selector": "cost_trial scalar = ctx.ham.constant for method FULL (saved snapshot constant)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 10,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "FULL_H",
+        "original_PF_method": "FULL",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "FULL_H",
+          "prefix": 10,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "PF_STANDARD_YOSHIDA4_BINARY64_V1",
+          "signed_weights": [
+            1.3512071919596578,
+            -1.7024143839193153,
+            1.3512071919596578
+          ],
+          "allocation": [
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "PF_STANDARD_YOSHIDA4_BINARY64_V1",
+          "signed_weights": [
+            1.3512071919596578,
+            -1.7024143839193153,
+            1.3512071919596578
+          ],
+          "allocation": [
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "FULL_PF|4th|16/3|Y",
+      "model_group": [
+        "FULL_PF",
+        "4th",
+        "16/3",
+        "Y"
+      ],
+      "configuration_id": "a799697fc8ca36b024acec26af43313777948ead432e66804c670649a18afe76",
+      "canonical_id": "RMSE:b1a30ac1be4336213b9698fe190e4adcda0bfc44ca195c38e499b54b548c6d15",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "4th",
+        "prefix": 10,
+        "T": 51.2,
+        "q": 96,
+        "delta": 0.5333333333333333,
+        "R_outer": null,
+        "K": null,
+        "id": "b2c479e7805c4d1f0b30"
+      },
+      "physical_id": "b2c479e7805c4d1f0b30",
+      "axis": "Y",
+      "q": 96,
+      "actual_delta": 0.5333333333333333,
+      "actual_delta_binary64_hex": "0x1.1111111111111p-1",
+      "features": {
+        "one": 1,
+        "q": 96
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          89
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|4th|16/3|Y",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 23535,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|4th|16/3|Y"
+        ]
+      },
+      "domain": {
+        "route": "FULL_PF",
+        "axis": "Y",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.29310124732,
+        "quantity": "HAMILTONIAN_CONSTANT",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_native.py",
+          "selector": "cost_trial scalar = ctx.ham.constant for method FULL (saved snapshot constant)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 10,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "FULL_H",
+        "original_PF_method": "FULL",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "FULL_H",
+          "prefix": 10,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "PF_STANDARD_YOSHIDA4_BINARY64_V1",
+          "signed_weights": [
+            1.3512071919596578,
+            -1.7024143839193153,
+            1.3512071919596578
+          ],
+          "allocation": [
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "PF_STANDARD_YOSHIDA4_BINARY64_V1",
+          "signed_weights": [
+            1.3512071919596578,
+            -1.7024143839193153,
+            1.3512071919596578
+          ],
+          "allocation": [
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "TRUNCATED_PF|4th|16/3|X",
+      "model_group": [
+        "TRUNCATED_PF",
+        "4th",
+        "16/3",
+        "X"
+      ],
+      "configuration_id": "defc5e88ff4da2e43c99ecdf7157aa41cc47cd32f905f5aa3a1266aa3ecf5416",
+      "canonical_id": "RMSE:dd9446a9cac5be3f25f52d9d81d7d94c4c3f0a25520de7169fd85a964416d95e",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "4th",
+        "T": 51.2,
+        "q": 96,
+        "delta": 0.5333333333333333,
+        "R_outer": null,
+        "K": null,
+        "id": "9924c226ee246283ec54"
+      },
+      "physical_id": "9924c226ee246283ec54",
+      "axis": "X",
+      "q": 96,
+      "actual_delta": 0.5333333333333333,
+      "actual_delta_binary64_hex": "0x1.1111111111111p-1",
+      "features": {
+        "one": 1,
+        "q": 96
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          90
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|4th|16/3|X",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 16539,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|4th|16/3|X"
+        ]
+      },
+      "domain": {
+        "route": "TRUNCATED_PF",
+        "axis": "X",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.293146549384713,
+        "quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "5cc7c07e112ce97205948465c94441cba0042416",
+          "path": "src/trottertracks/baseline_signal_numerics.py",
+          "selector": "Context.tail_scalars[7] (saved INDEX context prefixes.7.scalar)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 7,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "TRUNCATED_H",
+        "original_PF_method": "B0I",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "B0I",
+          "prefix": 7,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "PF_STANDARD_YOSHIDA4_BINARY64_V1",
+          "signed_weights": [
+            1.3512071919596578,
+            -1.7024143839193153,
+            1.3512071919596578
+          ],
+          "allocation": [
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "PF_STANDARD_YOSHIDA4_BINARY64_V1",
+          "signed_weights": [
+            1.3512071919596578,
+            -1.7024143839193153,
+            1.3512071919596578
+          ],
+          "allocation": [
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "TRUNCATED_PF|4th|16/3|Y",
+      "model_group": [
+        "TRUNCATED_PF",
+        "4th",
+        "16/3",
+        "Y"
+      ],
+      "configuration_id": "defc5e88ff4da2e43c99ecdf7157aa41cc47cd32f905f5aa3a1266aa3ecf5416",
+      "canonical_id": "RMSE:dd9446a9cac5be3f25f52d9d81d7d94c4c3f0a25520de7169fd85a964416d95e",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "4th",
+        "T": 51.2,
+        "q": 96,
+        "delta": 0.5333333333333333,
+        "R_outer": null,
+        "K": null,
+        "id": "9924c226ee246283ec54"
+      },
+      "physical_id": "9924c226ee246283ec54",
+      "axis": "Y",
+      "q": 96,
+      "actual_delta": 0.5333333333333333,
+      "actual_delta_binary64_hex": "0x1.1111111111111p-1",
+      "features": {
+        "one": 1,
+        "q": 96
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          91
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|4th|16/3|Y",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 16539,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|4th|16/3|Y"
+        ]
+      },
+      "domain": {
+        "route": "TRUNCATED_PF",
+        "axis": "Y",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.293146549384713,
+        "quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "5cc7c07e112ce97205948465c94441cba0042416",
+          "path": "src/trottertracks/baseline_signal_numerics.py",
+          "selector": "Context.tail_scalars[7] (saved INDEX context prefixes.7.scalar)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 7,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "TRUNCATED_H",
+        "original_PF_method": "B0I",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "B0I",
+          "prefix": 7,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "PF_STANDARD_YOSHIDA4_BINARY64_V1",
+          "signed_weights": [
+            1.3512071919596578,
+            -1.7024143839193153,
+            1.3512071919596578
+          ],
+          "allocation": [
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "PF_STANDARD_YOSHIDA4_BINARY64_V1",
+          "signed_weights": [
+            1.3512071919596578,
+            -1.7024143839193153,
+            1.3512071919596578
+          ],
+          "allocation": [
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "FULL_PF|4th(m5_best)|16|X",
+      "model_group": [
+        "FULL_PF",
+        "4th(m5_best)",
+        "16",
+        "X"
+      ],
+      "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+      "canonical_id": "RMSE:cbe9ee1c7ace3e4f283ad49b03210900881263336e9f49674f72873ea2129990",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "4th(m5_best)",
+        "prefix": 10,
+        "T": 51.2,
+        "q": 32,
+        "delta": 1.6,
+        "R_outer": null,
+        "K": null,
+        "id": "a53547a5fb707b9550d5"
+      },
+      "physical_id": "a53547a5fb707b9550d5",
+      "axis": "X",
+      "q": 32,
+      "actual_delta": 1.6,
+      "actual_delta_binary64_hex": "0x1.999999999999ap+0",
+      "features": {
+        "one": 1,
+        "q": 32
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          140
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|4th(m5_best)|16|X",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 85653,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|4th(m5_best)|16|X"
+        ]
+      },
+      "domain": {
+        "route": "FULL_PF",
+        "axis": "X",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.29310124732,
+        "quantity": "HAMILTONIAN_CONSTANT",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_native.py",
+          "selector": "cost_trial scalar = ctx.ham.constant for method FULL (saved snapshot constant)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 10,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "FULL_H",
+        "original_PF_method": "FULL",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "FULL_H",
+          "prefix": 10,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+          "signed_weights": [
+            0.12547397927357543,
+            0.13781643533753404,
+            0.1211920365713068,
+            0.14181961643121604,
+            0.11225428783206336,
+            -0.27711271089139133,
+            0.11225428783206336,
+            0.14181961643121604,
+            0.1211920365713068,
+            0.13781643533753404,
+            0.12547397927357543
+          ],
+          "allocation": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+          "signed_weights": [
+            0.12547397927357543,
+            0.13781643533753404,
+            0.1211920365713068,
+            0.14181961643121604,
+            0.11225428783206336,
+            -0.27711271089139133,
+            0.11225428783206336,
+            0.14181961643121604,
+            0.1211920365713068,
+            0.13781643533753404,
+            0.12547397927357543
+          ],
+          "allocation": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "FULL_PF|4th(m5_best)|16|Y",
+      "model_group": [
+        "FULL_PF",
+        "4th(m5_best)",
+        "16",
+        "Y"
+      ],
+      "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+      "canonical_id": "RMSE:cbe9ee1c7ace3e4f283ad49b03210900881263336e9f49674f72873ea2129990",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "4th(m5_best)",
+        "prefix": 10,
+        "T": 51.2,
+        "q": 32,
+        "delta": 1.6,
+        "R_outer": null,
+        "K": null,
+        "id": "a53547a5fb707b9550d5"
+      },
+      "physical_id": "a53547a5fb707b9550d5",
+      "axis": "Y",
+      "q": 32,
+      "actual_delta": 1.6,
+      "actual_delta_binary64_hex": "0x1.999999999999ap+0",
+      "features": {
+        "one": 1,
+        "q": 32
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          141
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|4th(m5_best)|16|Y",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 85653,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "FULL_PF|4th(m5_best)|16|Y"
+        ]
+      },
+      "domain": {
+        "route": "FULL_PF",
+        "axis": "Y",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.29310124732,
+        "quantity": "HAMILTONIAN_CONSTANT",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_native.py",
+          "selector": "cost_trial scalar = ctx.ham.constant for method FULL (saved snapshot constant)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 10,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "FULL_H",
+        "original_PF_method": "FULL",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "FULL_H",
+          "prefix": 10,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+          "signed_weights": [
+            0.12547397927357543,
+            0.13781643533753404,
+            0.1211920365713068,
+            0.14181961643121604,
+            0.11225428783206336,
+            -0.27711271089139133,
+            0.11225428783206336,
+            0.14181961643121604,
+            0.1211920365713068,
+            0.13781643533753404,
+            0.12547397927357543
+          ],
+          "allocation": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+          "signed_weights": [
+            0.12547397927357543,
+            0.13781643533753404,
+            0.1211920365713068,
+            0.14181961643121604,
+            0.11225428783206336,
+            -0.27711271089139133,
+            0.11225428783206336,
+            0.14181961643121604,
+            0.1211920365713068,
+            0.13781643533753404,
+            0.12547397927357543
+          ],
+          "allocation": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "TRUNCATED_PF|4th(m5_best)|16|X",
+      "model_group": [
+        "TRUNCATED_PF",
+        "4th(m5_best)",
+        "16",
+        "X"
+      ],
+      "configuration_id": "424eecbfdad0fceeb966884e82521ed1df18a360641695c120f090490ddc62ab",
+      "canonical_id": "RMSE:c22f86d7f55e9e53dd0ba92dbf6475b82743e987848bd65a96b17bf0028ecdf6",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "4th(m5_best)",
+        "T": 51.2,
+        "q": 32,
+        "delta": 1.6,
+        "R_outer": null,
+        "K": null,
+        "id": "60111109e0024d1a1064"
+      },
+      "physical_id": "60111109e0024d1a1064",
+      "axis": "X",
+      "q": 32,
+      "actual_delta": 1.6,
+      "actual_delta_binary64_hex": "0x1.999999999999ap+0",
+      "features": {
+        "one": 1,
+        "q": 32
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          142
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|4th(m5_best)|16|X",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 60643,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|4th(m5_best)|16|X"
+        ]
+      },
+      "domain": {
+        "route": "TRUNCATED_PF",
+        "axis": "X",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.293146549384713,
+        "quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "5cc7c07e112ce97205948465c94441cba0042416",
+          "path": "src/trottertracks/baseline_signal_numerics.py",
+          "selector": "Context.tail_scalars[7] (saved INDEX context prefixes.7.scalar)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 7,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "TRUNCATED_H",
+        "original_PF_method": "B0I",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "B0I",
+          "prefix": 7,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+          "signed_weights": [
+            0.12547397927357543,
+            0.13781643533753404,
+            0.1211920365713068,
+            0.14181961643121604,
+            0.11225428783206336,
+            -0.27711271089139133,
+            0.11225428783206336,
+            0.14181961643121604,
+            0.1211920365713068,
+            0.13781643533753404,
+            0.12547397927357543
+          ],
+          "allocation": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+          "signed_weights": [
+            0.12547397927357543,
+            0.13781643533753404,
+            0.1211920365713068,
+            0.14181961643121604,
+            0.11225428783206336,
+            -0.27711271089139133,
+            0.11225428783206336,
+            0.14181961643121604,
+            0.1211920365713068,
+            0.13781643533753404,
+            0.12547397927357543
+          ],
+          "allocation": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    },
+    {
+      "model_group_id": "TRUNCATED_PF|4th(m5_best)|16|Y",
+      "model_group": [
+        "TRUNCATED_PF",
+        "4th(m5_best)",
+        "16",
+        "Y"
+      ],
+      "configuration_id": "424eecbfdad0fceeb966884e82521ed1df18a360641695c120f090490ddc62ab",
+      "canonical_id": "RMSE:c22f86d7f55e9e53dd0ba92dbf6475b82743e987848bd65a96b17bf0028ecdf6",
+      "m": 9,
+      "T": 51.2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "4th(m5_best)",
+        "T": 51.2,
+        "q": 32,
+        "delta": 1.6,
+        "R_outer": null,
+        "K": null,
+        "id": "60111109e0024d1a1064"
+      },
+      "physical_id": "60111109e0024d1a1064",
+      "axis": "Y",
+      "q": 32,
+      "actual_delta": 1.6,
+      "actual_delta_binary64_hex": "0x1.999999999999ap+0",
+      "features": {
+        "one": 1,
+        "q": 32
+      },
+      "alignment_source": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          143
+        ]
+      },
+      "coefficient_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|4th(m5_best)|16|Y",
+          "coefficients"
+        ]
+      },
+      "coefficients": {
+        "one": {
+          "numerator": 307,
+          "denominator": 1
+        },
+        "q": {
+          "numerator": 60643,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "12372fa6b53c878dc5dd124e036572ba0cd82061",
+        "path": "docs/research/pf_stage1_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "TRUNCATED_PF|4th(m5_best)|16|Y"
+        ]
+      },
+      "domain": {
+        "route": "TRUNCATED_PF",
+        "axis": "Y",
+        "implementation": {
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "native": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_native.py"
+          }
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "lowering_id": "H46_LONG_TIME_NATIVE_COMPOSE"
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_DETERMINISTIC",
+        "law": null
+      },
+      "scalar": {
+        "value": 2.293146549384713,
+        "quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY",
+        "application": "ONCE_AT_TOTAL_T",
+        "source": {
+          "commit": "5cc7c07e112ce97205948465c94441cba0042416",
+          "path": "src/trottertracks/baseline_signal_numerics.py",
+          "selector": "Context.tail_scalars[7] (saved INDEX context prefixes.7.scalar)"
+        }
+      },
+      "input_binding": {
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "basis": "STO-3G",
+        "rank": 10,
+        "geometry": "linear_1Angstrom",
+        "rank_policy": "tol_only_1e-8"
+      },
+      "split": {
+        "L_D": 7,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "randomized_scope": "NONE",
+        "deterministic_scope": "TRUNCATED_H",
+        "original_PF_method": "B0I",
+        "lambda_R": null,
+        "lambda_source": null,
+        "retained_hamiltonian": {
+          "construction": "B0I",
+          "prefix": 7,
+          "source": {
+            "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+            "path": "scripts/h46_long_time_signal.py",
+            "functions": [
+              "candidates",
+              "cid",
+              "context",
+              "evolve_batch"
+            ]
+          },
+          "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+        }
+      },
+      "fragment_order": "saved_snapshot_order",
+      "signed_structure": {
+        "canonical": {
+          "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+          "signed_weights": [
+            0.12547397927357543,
+            0.13781643533753404,
+            0.1211920365713068,
+            0.14181961643121604,
+            0.11225428783206336,
+            -0.27711271089139133,
+            0.11225428783206336,
+            0.14181961643121604,
+            0.1211920365713068,
+            0.13781643533753404,
+            0.12547397927357543
+          ],
+          "allocation": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "physical": {
+          "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+          "signed_weights": [
+            0.12547397927357543,
+            0.13781643533753404,
+            0.1211920365713068,
+            0.14181961643121604,
+            0.11225428783206336,
+            -0.27711271089139133,
+            0.11225428783206336,
+            0.14181961643121604,
+            0.1211920365713068,
+            0.13781643533753404,
+            0.12547397927357543
+          ],
+          "allocation": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        }
+      }
+    }
+  ],
+  "policy_source": "docs/research/pf_m9_prediction_freeze_20261115/M9_POLICY.json",
+  "prediction_calls_planned": 12,
+  "refit": 0,
+  "observation_reads": 0,
+  "acquisition": 0,
+  "judgement": 0,
+  "N": null,
+  "G": null,
+  "mandatory_stop": true
+}

@@ -1,0 +1,44 @@
+{
+  "id": "DETERMINISTIC_PF_M9_FROZEN_OBSERVED_1_OVER_50_V1",
+  "status": "ADOPTED_FOR_THIS_FIXED_M9_SCOPE_ONLY",
+  "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+  "metric": "compiled_rz_count",
+  "kind": "RELATIVE",
+  "scale": "observed",
+  "value": {
+    "numerator": 1,
+    "denominator": 50
+  },
+  "formula": "abs(frozen_predicted_RZ-observed_RZ)/observed_RZ",
+  "rounds": [
+    9
+  ],
+  "axes": [
+    "X",
+    "Y"
+  ],
+  "physical_ids": [
+    "a4ec53ff4e60d60a2930",
+    "1bd0a5dd4bbf876da1d6",
+    "b2c479e7805c4d1f0b30",
+    "9924c226ee246283ec54",
+    "a53547a5fb707b9550d5",
+    "60111109e0024d1a1064"
+  ],
+  "required_individual_results": 12,
+  "comparison": "EXACT_UNROUNDED_LESS_THAN_OR_EQUAL",
+  "PASS": "VALID_OBSERVATION_AND_RELATIVE_ERROR_LE_1_OVER_50",
+  "FAIL": "VALID_OBSERVATION_AND_RELATIVE_ERROR_GT_1_OVER_50",
+  "UNKNOWN": "ACQUISITION_OR_SOURCE_OR_IMPLEMENTATION_GATE_NOT_ESTABLISHED",
+  "required_prerequisites": [
+    "SAME_PHYSICAL_ID_AND_AXIS_Q_ACTUAL_WIDTH_SCALAR_SPLIT",
+    "SAME_FULL_MEASURED_CONTROLLED_WRAPPER_P0_COMPILER_AND_LOWERING",
+    "ORIGINAL_D_IMPLEMENTATION_ACTION_GATES_AND_TOLERANCES_UNCHANGED"
+  ],
+  "campaign_success": "ALL_12_INDIVIDUAL_PASS",
+  "zero_observed": "UNKNOWN_RELATIVE_DENOMINATOR_UNDEFINED",
+  "automatic_refit": false,
+  "automatic_feature_or_threshold_change": false,
+  "other_round_qualification": false,
+  "confidence_statement": "NOT_A_STATISTICAL_95_PERCENT_GUARANTEE"
+}
