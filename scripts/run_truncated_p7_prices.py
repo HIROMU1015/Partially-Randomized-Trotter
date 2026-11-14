@@ -22,6 +22,8 @@ DIRECT_COMPILED_DETERMINISTIC / expectation DETERMINISTIC (B PRICE_KINDS); the
 Stages (scripts/pf_price_stages.py): C's CELL_PLAN assigns m4/m5 to CALIBRATION
 and m6 to HOLDOUT; each stage is executed, published and bound separately and
 HOLDOUT needs C's frozen models. The 62ae1bd5 all-cells path is not kept.
+M5/m4 X/Y are reserved for saved C-admitted receipts, not new jobs. While C's
+p7 admission/revised plan is pending, metadata selection works but execution stops.
 
 Default: metadata preflight. `--execute-approved-stage CALIBRATION|HOLDOUT`
 (separate approval) runs the child (original install() first, provider c31ef424
@@ -65,8 +67,9 @@ NATIVE_POLICY = 'H46_LONG_TIME_NATIVE_COMPOSE'
 SCALAR_QUANTITY = 'HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY'
 OUTPUT_ROOT = 'docs/research/d_truncated_p7_t3_prices_20261114'  # + /calibration/run01, /holdout/run01
 PRIVATE_ROOT = Path('/home/AbeHiromu/projects/d-truncated-p7-t3-20261114-private')
-SCOPE = dict(templates=3, rounds=list(ROUNDS), cells=9, axes=['X', 'Y'], compile_maximum=18,
-             stage_wrappers=dict(CALIBRATION=12, HOLDOUT=6), sampling=0, retry=False, fit=None, N=None, G=None)
+SCOPE = dict(templates=3, rounds=list(ROUNDS), cells=9, new_cells=8, saved_receipt_cells=1,
+             axes=['X', 'Y'], compile_maximum=16,
+             stage_wrappers=dict(CALIBRATION=10, HOLDOUT=6), sampling=0, retry=False, fit=None, N=None, G=None)
 
 
 def _meta():
@@ -112,7 +115,8 @@ def plans(root=ROOT):
                 raise ValueError('Regenerated physical round differs at m=' + str(req['m']))
             if req['m'] in ROUNDS:
                 cells.append(dict(m=req['m'], row=deepcopy(c), signed_pieces=r['signed_pieces'],
-                                  actual_delta_over_h=r['actual_delta_over_h']))
+                                  actual_delta_over_h=r['actual_delta_over_h'],
+                                  action=S.SAVED if c['id'] == S.SAVED_IDS['TRUNCATED_PF'] else S.NEW))
         out.append(dict(formula=formula, width_over_h=str(width / H), configuration_id=config['id'], plan=plan, cells=cells))
     return out
 
@@ -257,10 +261,12 @@ def preflight(root=ROOT):
     out = []
     for p in templates:
         out.append(dict(formula=p['formula'], width_over_h=p['width_over_h'], configuration_id=p['configuration_id'],
-                        cells=[dict(m=c['m'], id=c['row']['id'], q=c['row']['q'], signed_pieces=c['signed_pieces'],
+                        cells=[dict(m=c['m'], id=c['row']['id'], q=c['row']['q'], signed_pieces=c['signed_pieces'], action=c['action'],
                                     actual_delta_over_h=c['actual_delta_over_h']) for c in p['cells']]))
+    saved = None if S.P7_ADMISSION is None else S.saved_calibration(root, S.select(root, templates, 'TRUNCATED_PF', 'CALIBRATION'))
     return dict(status='PREFLIGHT_METADATA_ONLY', scope=SCOPE, templates=out, stages=stages, cell_plan=S.CELL_PLAN,
-                cohort=COHORT)
+                revised_plan=S.plan_status(), cohort=COHORT,
+                saved_calibration=saved, saved_binding_status='PENDING_C_ACCEPTANCE' if saved is None else 'C_ADMITTED')
 
 
 def execute(root=ROOT, stage=None, frozen=None):

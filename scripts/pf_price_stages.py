@@ -4,7 +4,7 @@ Stage selection, gates and packaging only. Cells, circuits, compiler, scalar,
 index-0 gates and price records come unchanged from the two callers
 (`plans`, `checked_trial`/`full_trial`, `price_bindings`, `fit_inputs`).
 
-- C's CELL_PLAN (receipt-admission bundle 3368805575) is the canonical role
+- C's old CELL_PLAN (receipt-admission bundle 3368805575) is the fixed role
   table: every regenerated cell must equal its two plan rows (route, formula,
   actual width, configuration, m, axis, physical candidate, action, features,
   model group) before a stage is selected. CALIBRATION = m4/m5, HOLDOUT = m6.
@@ -13,8 +13,9 @@ index-0 gates and price records come unchanged from the two callers
   models (one per (route, formula, actual width, axis), fitted on exactly the
   published m4/m5 inputs); it re-checks the CALIBRATION files after the run.
 - C inputs are grouped by model group; mixing groups or stages is rejected.
-- The saved Full PF M5/m4 X/Y receipts admitted by C are referenced, never
-  recompiled or moved to a new cohort.
+- Full PF and Truncated p7 M5/m4 X/Y are excluded from new jobs. The p7
+  admission and revised C CELL_PLAN must be published before execution; until
+  then the two action changes are a metadata-only proposal, not C acceptance.
 - Sidecars carry an evidence placeholder until the stage outputs are published;
   `bind` then fills the published commit and runs C's guard with an explicit
   technical-compatibility probe policy (not an adopted comparison policy).
@@ -25,8 +26,10 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
+import gzip
 import json
 import multiprocessing as mp
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -37,19 +40,29 @@ ADMISSION_DIR = 'docs/research/m5_m4_receipt_admission_20261114'
 BUNDLE = '3368805575d459d948e3afe7b1e54b4814f64129'      # C fixed receipt bundle (CELL_PLAN, saved inputs/prices)
 ADMISSION = '2fa88065318f0f2ab13937ef610828200b35874c'   # C publication (bound sidecars, guard check)
 CELL_PLAN = dict(commit=BUNDLE, path=ADMISSION_DIR + '/CELL_PLAN.json')
+# Pending C publication: fill these with fixed blob locators, never a working
+# tree or a fabricated receipt. Full PF admission remains exactly the old one.
+P7_CELL_PLAN = None
+P7_ADMISSION = None  # dict(bundle=<commit>, admission=<commit>, directory=<path>)
 GUARD_SOURCE = dict(commit='c628e9e8447c11c984064b922cbce6c52dc72d48', path='src/trottertracks/price_implementation_guard.py')
 STAGES = dict(CALIBRATION=(4, 5), HOLDOUT=(6,))
 NEW_WRAPPERS = {('FULL_PF', 'CALIBRATION'): 10, ('FULL_PF', 'HOLDOUT'): 6,
-                ('TRUNCATED_PF', 'CALIBRATION'): 12, ('TRUNCATED_PF', 'HOLDOUT'): 6}
+                ('TRUNCATED_PF', 'CALIBRATION'): 10, ('TRUNCATED_PF', 'HOLDOUT'): 6}
 NEW = 'NEW_COMPILE'
 SAVED = 'SAVED_RECEIPT_FOR_C_ACCEPTANCE'
 SAVED_ID = '0cd1527c80f7b9841a83'
+SAVED_IDS = dict(FULL_PF=SAVED_ID, TRUNCATED_PF='13d1cd4869951cdf1e2c')
 PLACEHOLDER = 'FILL_WITH_PUBLISHED_COMMIT'
 STAGE_FILES = ('RESULT.json', 'PRICES.json', 'SIDECARS_UNBOUND.json', 'IMPLEMENTATION_EVIDENCE.json', 'C_INPUTS.json')
 BOUND_FILES = ('SIDECARS.json', 'GUARD_CHECK.json')
 MODEL = 'PRICE_LINEAR_FEATURE_MODEL_V1'
 PROBE = 'TECHNICAL_COMPATIBILITY_PROBE_ONLY_NOT_ADOPTED'
 FEATURES = ['one', 'q']
+SAVED_TABLE = dict(commit='155529e20a8fac39e00786c40b57830b71203c4f',
+                   path='artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz')
+CATALOG = dict(commit='e7dca5f7301c8633b17a59b6a7161331303aef2d',
+               path='docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json')
+OLD_TRIAL_ROOT = Path('/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION')
 
 
 def _T3():
@@ -72,15 +85,127 @@ def paths(spec, stage):
     return '%s/%s/run01' % (spec['output'], stage.lower()), Path(spec['private']) / stage.lower() / 'run01'
 
 
+def plan_rows(root):
+    """Only the p7 M5/m4 X/Y actions change; all old physical/role metadata stays fixed."""
+    rows = json.loads(read_pinned(root, CELL_PLAN))
+    revised = deepcopy(rows)
+    changed = []
+    for r in revised:
+        if r['route'] == 'TRUNCATED_PF' and r['physical_candidate']['id'] == SAVED_IDS['TRUNCATED_PF']:
+            if (r['formula'], r['width_over_h'], r['m'], r['role'], r['action']) != (
+                    '4th(m5_best)', '16', 4, 'CALIBRATION', NEW):
+                raise ValueError('Old p7 M5/m4 CELL_PLAN changed')
+            r['action'] = SAVED
+            changed.append(r['axis'])
+    if sorted(changed) != ['X', 'Y'] or len(revised) != 36:
+        raise ValueError('Exactly two p7 saved actions in the unchanged 36-price design required')
+    ids = [(r['route'], r['configuration_id'], r['m'], r['axis']) for r in revised]
+    if len(ids) != len(set(ids)):
+        raise ValueError('Duplicate cell/axis in CELL_PLAN')
+    if P7_CELL_PLAN is not None:
+        pinned = json.loads(read_pinned(root, P7_CELL_PLAN))
+        if pinned != revised:
+            raise ValueError('C revised CELL_PLAN changes more than the two saved p7 actions')
+        return pinned
+    return revised
+
+
+def admission_gate(root):
+    """Science cannot start on the provisional action table or an unaccepted p7 receipt."""
+    if P7_CELL_PLAN is None or P7_ADMISSION is None:
+        raise ValueError('STOP: C p7 saved receipt admission and revised CELL_PLAN not published/bound')
+    plan_rows(root)
+    return deepcopy(P7_CELL_PLAN)
+
+
+def plan_status():
+    return dict(status='C_REVISED_PLAN_BOUND' if P7_CELL_PLAN and P7_ADMISSION else 'PENDING_C_P7_ADMISSION_AND_CELL_PLAN',
+                legacy_cell_plan=deepcopy(CELL_PLAN), revised_cell_plan=deepcopy(P7_CELL_PLAN),
+                p7_admission=deepcopy(P7_ADMISSION), provisional_metadata_only=not bool(P7_CELL_PLAN and P7_ADMISSION))
+
+
+def active_price_jobs():
+    """Read only this user's relevant running callers/jobs; never stop or alter another process."""
+    callers = {'run_full_pf_shortlist_prices.py', 'run_truncated_p7_prices.py', 'h46_long_time_native.py'}
+    jobs = []
+    for pid in subprocess.check_output(['ps', '-u', str(os.getuid()), '-o', 'pid='], text=True).split():
+        if int(pid) == os.getpid():
+            continue
+        try:
+            args = Path('/proc', pid, 'cmdline').read_bytes().decode().strip('\0').split('\0')
+        except FileNotFoundError:  # process ended between ps and read
+            continue
+        if not args or not Path(args[0]).name.startswith('python') or not any(Path(a).name in callers for a in args[1:]):
+            continue
+        if '--child' in args:
+            path = args[args.index('--child') + 1]
+            job = json.loads(Path(path).read_text())
+            ids = [c['row']['id'] for c in job['cells']]
+            jobs.append(dict(pid=int(pid), job=path, physical_ids=ids))
+        elif '--execute-approved-stage' in args or any(Path(a).name == 'h46_long_time_native.py' for a in args[1:]):
+            jobs.append(dict(pid=int(pid), physical_ids=None))  # overlap unresolved: no duplicate job is started
+    return jobs
+
+
+def duplicate_preflight(root, spec, new):
+    """Before any context/build: fixed table/catalog, exact trial paths, stage receipts and live jobs.
+
+    A hit is a reuse candidate requiring evidence review, never an automatic new
+    compile or automatic acceptance. This is a scoped inventory, not a claim
+    that every private server/cache has been searched.
+    """
+    table = json.loads(gzip.decompress(read_pinned(root, SAVED_TABLE)))
+    catalog = json.loads(read_pinned(root, CATALOG))['rows']
+    jobs = active_price_jobs()
+    done = []
+    for stage in STAGES:
+        path = Path(root) / paths(spec, stage)[0] / 'RESULT.json'
+        if path.exists():
+            for r in json.loads(path.read_text())['results']:
+                done.append((r['cell']['row']['id'], str(path)))
+    cells = []
+    for c in new:
+        ident = c['row']['id']; hits = []
+        if ident in SAVED_IDS.values():
+            hits.append(dict(kind='SAVED_CELL_MUST_NOT_BE_COMPILED'))
+        if ident in table:
+            hits.append(dict(kind='SAVED_TABLE_REUSE_CANDIDATE', source=dict(SAVED_TABLE, key=ident),
+                             candidate=table[ident]['candidate'], trial_files=table[ident]['trial_files']))
+        for row in catalog:
+            if row.get('physical_candidate_id') == ident and row.get('prices'):
+                hits.append(dict(kind='CATALOG_REUSE_CANDIDATE', source=CATALOG, receipts=row['prices']))
+        trial = OLD_TRIAL_ROOT / ident / '0/result.json'
+        if trial.exists():
+            hits.append(dict(kind='ORIGINAL_TRIAL_REQUIRES_REUSE_REVIEW', path=str(trial),
+                             sha256=hashlib.sha256(trial.read_bytes()).hexdigest()))
+        hits += [dict(kind='EXISTING_STAGE_RECEIPT', path=path) for i, path in done if i == ident]
+        hits += [dict(kind='RUNNING_JOB_OVERLAP_OR_UNKNOWN', **job) for job in jobs
+                 if job['physical_ids'] is None or ident in job['physical_ids']]
+        cells.append(dict(physical_candidate=deepcopy(c['row']), m=c['m'], axes=['X', 'Y'], findings=hits))
+    report = dict(status='STOP_REUSE_CANDIDATE_OR_UNRESOLVED_JOB' if any(c['findings'] for c in cells)
+                  else 'NO_DUPLICATE_IN_CHECKED_SOURCES', table=SAVED_TABLE, catalog=CATALOG,
+                  original_trial_root=str(OLD_TRIAL_ROOT), checked_stage_roots=[paths(spec, s)[0] for s in STAGES],
+                  running_jobs=jobs, cells=cells, scope='KNOWN_TABLE_CATALOG_EXACT_TRIAL_PATHS_ROUTE_STAGE_RECEIPTS_AND_RELEVANT_USER_JOBS',
+                  unlisted_private_evidence='UNKNOWN_REQUIRES_OPERATOR_CHECK_BEFORE_SCIENCE',
+                  prices_reestimated=False, automatic_reuse=False)
+    if any(c['findings'] for c in cells):
+        raise ValueError('Duplicate preflight STOP: ' + json.dumps(report, default=str))
+    return report
+
+
 def select(root, templates, route, stage):
     """Cells of one stage. The role comes from C's CELL_PLAN; any disagreement is a STOP before compile."""
     if stage not in STAGES:
         raise ValueError('Unknown stage: %r' % (stage,))
-    rows = [r for r in json.loads(read_pinned(root, CELL_PLAN)) if r['route'] == route]
-    used, out = 0, []
+    rows = [r for r in plan_rows(root) if r['route'] == route]
+    used, out, seen = 0, [], set()
     for p in templates:
         cells = []
         for c in p['cells']:
+            identity = (p['configuration_id'], c['m'])
+            if identity in seen:
+                raise ValueError('Duplicate cell/axis in regenerated templates')
+            seen.add(identity)
             mine = sorted((r for r in rows if (r['formula'], r['width_over_h'], r['configuration_id'], r['m'])
                            == (p['formula'], p['width_over_h'], p['configuration_id'], c['m'])), key=lambda r: r['axis'])
             role = mine[0]['role'] if mine else None
@@ -120,14 +245,20 @@ def check_group(records, group, stage):
 
 
 def saved_calibration(root, templates):
-    """C-admitted saved Full PF M5/m4 X/Y: C's own input records and their SOURCE, by axis (no recompile)."""
+    """C-admitted M5/m4 X/Y, separated by route; copy C's inputs and provenance, never new means/cohorts."""
     saved = [c for p in templates for c in p['cells'] if c.get('action') == SAVED]
-    if (len(saved) != 1 or saved[0]['row']['id'] != SAVED_ID or saved[0]['m'] != 4
+    route = saved[0]['model_groups'][0][0] if saved else None
+    if (route not in SAVED_IDS or len(saved) != 1 or saved[0]['row']['id'] != SAVED_IDS[route] or saved[0]['m'] != 4
             or saved[0]['row']['formula'] != '4th(m5_best)' or saved[0].get('role') != 'CALIBRATION'):
         raise ValueError('Saved M5/m4 receipt cell differs from C admission')
     cell = saved[0]
-    ref = {n: dict(commit=BUNDLE, path=ADMISSION_DIR + '/' + n) for n in ('SAVED_CALIBRATION_INPUTS.json', 'PRICES.json')}
-    ref.update({n: dict(commit=ADMISSION, path=ADMISSION_DIR + '/' + n) for n in ('SIDECARS.json', 'GUARD_CHECK.json')})
+    binding = dict(bundle=BUNDLE, admission=ADMISSION, directory=ADMISSION_DIR) if route == 'FULL_PF' else P7_ADMISSION
+    if binding is None:
+        raise ValueError('STOP: C p7 saved receipt admission not published/bound')
+    ref = {n: dict(commit=binding['bundle'], path=binding['directory'] + '/' + n)
+           for n in ('SAVED_CALIBRATION_INPUTS.json', 'PRICES.json')}
+    ref.update({n: dict(commit=binding['admission'], path=binding['directory'] + '/' + n)
+                for n in ('SIDECARS.json', 'GUARD_CHECK.json')})
     doc = {n: json.loads(read_pinned(root, r)) for n, r in ref.items()}
     guard = doc['GUARD_CHECK.json']['guard']
     if (guard['status'] != 'IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION'
@@ -141,12 +272,18 @@ def saved_calibration(root, templates):
                 raise ValueError('Saved receipt %s axis ambiguous' % axis)
             return hit[0]
         rec, price, side = (one(doc[n]) for n in ('SAVED_CALIBRATION_INPUTS.json', 'PRICES.json', 'SIDECARS.json'))
-        if (rec['cell_id'] != 'FULL_PF:4th(m5_best):16:m4' or rec['role'] != 'CALIBRATION' or rec['route'] != 'FULL_PF'
-                or rec['kind'] != 'DIRECT_COMPILED_DETERMINISTIC' or rec['source'].get('key') != SAVED_ID
+        template = next(p for p in templates if cell in p['cells'])
+        if (rec['cell_id'] != route + ':4th(m5_best):16:m4' or rec['role'] != 'CALIBRATION' or rec['route'] != route
+                or rec['kind'] != 'DIRECT_COMPILED_DETERMINISTIC' or rec['source'].get('key') != SAVED_IDS[route]
                 or rec['features'] != {k: dict(numerator=1, denominator=1) for k in FEATURES}
                 or price['physical_context']['physical_candidate'] != cell['row'] or price['source'] != rec['source']
+                or price['configuration_id'] != template['configuration_id']
+                or price['classification'] != rec['kind'] or price['expectation'] != 'DETERMINISTIC'
+                or side['price_source'] != rec['source'] or side['cohort'] != price['cohort']
+                or side['identity'] != price['identity'] or side['law_binding'] != price['law_binding']
+                or side['physical_context'] != price['physical_context'] or price['price_profile'] != rec['profile']
                 or rec['rz_count'] != dict(numerator=price['mean']['rz_count'], denominator=1)
-                or side['implementation_evidence']['commit'] != BUNDLE):
+                or side['implementation_evidence']['commit'] != binding['bundle']):
             raise ValueError('Saved M5/m4 receipt record differs from C admission: ' + axis)
         group = next(g for g in cell['model_groups'] if g[3] == axis)
         out[key(group)] = dict(record=rec, origin='C_ADMITTED_SAVED_RECEIPT_NOT_RECOMPILED',
@@ -265,12 +402,14 @@ def execute_stage(root, spec, stage, *, frozen=None, workers=None):
     if stage not in STAGES or (stage == 'HOLDOUT') != (frozen is not None):
         raise ValueError('HOLDOUT needs C frozen models; CALIBRATION takes none')
     commit = source_gate(root, spec['sources'])
+    revised_plan = admission_gate(root)
     templates = select(root, spec['plans'](root), spec['route'], stage)
     new = [dict(c, formula=p['formula'], row=spec['native_row'](c['row'])) for p in templates for c in p['cells']
            if c.get('action', NEW) == NEW]
     if 2 * len(new) != NEW_WRAPPERS[(spec['route'], stage)]:
         raise ValueError('Fixed %s %s scope is %d wrappers' % (spec['route'], stage, NEW_WRAPPERS[(spec['route'], stage)]))
-    saved = saved_calibration(root, templates) if (spec['route'], stage) == ('FULL_PF', 'CALIBRATION') else {}
+    saved = saved_calibration(root, templates) if stage == 'CALIBRATION' else {}
+    duplicates = duplicate_preflight(root, spec, new)
     gate = _holdout_gate(root, spec, new, frozen) if stage == 'HOLDOUT' else None
     extra = spec['job_extra'](root)  # e.g. the saved B0I tail scalar, read before any output exists
     out_rel, private = paths(spec, stage)
@@ -285,7 +424,7 @@ def execute_stage(root, spec, stage, *, frozen=None, workers=None):
     child = json.loads(Path(job['result']).read_text()) if Path(job['result']).exists() else dict(results=[], resources=None)
     results = child['results']
     ok = code == 0 and len(results) == len(new) and all(r['ok'] for r in results)
-    source = dict(spec['source'], commit=commit, stage=stage, stage_module=MODULE, cell_plan=CELL_PLAN)
+    source = dict(spec['source'], commit=commit, stage=stage, stage_module=MODULE, cell_plan=revised_plan)
     error = None
     try:
         if ok:
@@ -303,7 +442,8 @@ def execute_stage(root, spec, stage, *, frozen=None, workers=None):
     _write(out / 'RESULT.json', dict(status=status, stage=stage, route=spec['route'], source=source,
         cells=[dict(formula=c['formula'], m=c['m'], id=c['row']['id'], q=c['row']['q'], model_groups=c['model_groups'])
                for c in new],
-        saved_calibration=sorted(saved), holdout_gate=gate, calibration_after=after, child_exit=code, error=error,
+        saved_calibration=sorted(saved), duplicate_preflight=duplicates,
+        holdout_gate=gate, calibration_after=after, child_exit=code, error=error,
         results=results, resources=child.get('resources'), elapsed_seconds=time.perf_counter() - start,
         finished_utc=datetime.now(timezone.utc).isoformat(), mandatory_stop=True, retry_performed=False,
         fit=None, prediction=None, holdout_judgement=None, N=None, G=None))

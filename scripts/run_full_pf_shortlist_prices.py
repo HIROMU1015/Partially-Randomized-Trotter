@@ -170,6 +170,7 @@ def preflight(root=ROOT):
     new = sum(c['action'] == 'NEW_COMPILE' for t in out for c in t['cells'])
     return dict(status='PREFLIGHT_METADATA_ONLY', scope=SCOPE, new_cells=new, compile_maximum=2 * new,
                 templates=out, stages=stages, cell_plan=S.CELL_PLAN, cohort=COHORT, plan=C_PLAN,
+                revised_plan=S.plan_status(),
                 saved_calibration={k: dict(cell_id=v['record']['cell_id'], axis=v['record']['axis'],
                                            rz_count=v['record']['rz_count'], references=v['references'])
                                    for k, v in saved.items()})

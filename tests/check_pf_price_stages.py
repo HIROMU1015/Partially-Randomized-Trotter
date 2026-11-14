@@ -29,7 +29,8 @@ TAIL = 4.5302064712666724e-05
 ROUTES = dict(FULL_PF=FP, TRUNCATED_PF=T3)
 TEMPLATES = {r: m.plans() for r, m in ROUTES.items()}
 REAL_READ = S.read_pinned
-REAL_PLAN = json.loads(REAL_READ(ROOT, S.CELL_PLAN))
+REAL_LEGACY = json.loads(REAL_READ(ROOT, S.CELL_PLAN))
+REAL_PLAN = S.plan_rows(ROOT)
 METRICS = ('rz_count', 'rz_depth', 'cx_count', 'cx_depth', 'total_depth', 'circuit_size')
 
 
@@ -37,6 +38,28 @@ def fictional_trial(row, scalar):
     base = 1000 * row['q'] + (300 if row['method'] == 'FULL' else 0)
     prices = {a: {k: base + i + j for j, k in enumerate(METRICS)} for i, a in enumerate(('cosine', 'sine'))}
     return dict(status='PASS', candidate=row, scalar=scalar, prices=prices, checks=[], wall_seconds=0., peak_RSS_bytes=0)
+
+
+def p7_fixture():
+    """Fictional C acceptance interface only; no real p7 saved RZ value is used or admitted."""
+    ref = dict(bundle='a' * 40, admission='a' * 40, directory='ARTIFICIAL_P7')
+    p = TEMPLATES['TRUNCATED_PF'][-1]; c = p['cells'][0]
+    prices, sides, proofs = T3.price_bindings(ROOT, p['plan'], c, fictional_trial(c['row'], CONST + TAIL),
+        price_source=dict(fixture='ARTIFICIAL_SAVED_NOT_MEASURED', key=S.SAVED_IDS['TRUNCATED_PF']),
+        evidence_commit=ref['bundle'], evidence_path='ARTIFICIAL_P7/IMPLEMENTATION_EVIDENCE.json')
+    for row in prices + sides:
+        row['cohort'] = 'ARTIFICIAL_ORIGINAL_COHORT'
+    inputs = T3.fit_inputs(prices, route='TRUNCATED_PF', formula=p['formula'], width_over_h=p['width_over_h'],
+                          roles={4: 'CALIBRATION'}, root=ROOT)
+    docs = {'PRICES.json': prices, 'SIDECARS.json': sides, 'SAVED_CALIBRATION_INPUTS.json': inputs,
+            'GUARD_CHECK.json': dict(fixture='ARTIFICIAL_C_INTERFACE', guard=dict(
+                status='IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION',
+                checked=[dict(axis=a) for a in ('X', 'Y')]))}
+    return ref, {(ref['bundle'], ref['directory'] + '/' + n): json.dumps(v).encode() for n, v in docs.items()}
+
+
+P7_FIXTURE, P7_DOCUMENTS = p7_fixture()
+FIXTURE_PLAN = dict(commit='a' * 40, path='ARTIFICIAL_P7/CELL_PLAN.json')
 
 
 class Env:
@@ -80,6 +103,10 @@ class Env:
                 self.published[(rel, f.name)] = f.read_bytes()
 
     def read(self, root, ref):
+        if ref == FIXTURE_PLAN:
+            return json.dumps(REAL_PLAN).encode()
+        if (ref['commit'], ref['path']) in P7_DOCUMENTS:
+            return P7_DOCUMENTS[(ref['commit'], ref['path'])]
         if (ref['commit'], ref['path']) in self.frozen:
             return self.frozen[(ref['commit'], ref['path'])]
         return REAL_READ(root, ref)
@@ -87,6 +114,9 @@ class Env:
     def patches(self):
         stack = ExitStack()
         stack.enter_context(patch.object(S, 'source_gate', return_value='e' * 40))
+        stack.enter_context(patch.object(S, 'P7_CELL_PLAN', FIXTURE_PLAN))
+        stack.enter_context(patch.object(S, 'P7_ADMISSION', P7_FIXTURE))
+        stack.enter_context(patch.object(S, 'duplicate_preflight', return_value=dict(status='ARTIFICIAL_NO_SCIENCE')))
         stack.enter_context(patch.object(S.subprocess, 'call', side_effect=self.child))
         stack.enter_context(patch.object(S, 'committed', side_effect=self.committed))
         stack.enter_context(patch.object(S, 'read_pinned', side_effect=self.read))
@@ -129,12 +159,21 @@ class Tests(unittest.TestCase):
     def env(self, route):
         return Env(route, self.tmp / route)
 
-    def test_cell_plan_is_C_canonical_table_and_matches_admission_publication(self):
+    def test_pending_plan_changes_only_two_actions_from_fixed_C_table(self):
         self.assertEqual(REAL_READ(ROOT, S.CELL_PLAN), REAL_READ(ROOT, dict(S.CELL_PLAN, commit=S.ADMISSION)))
         self.assertEqual(len(REAL_PLAN), 36)
         self.assertEqual({(r['m'], r['role']) for r in REAL_PLAN}, {(4, 'CALIBRATION'), (5, 'CALIBRATION'), (6, 'HOLDOUT')})
+        delta = []
+        for old, new in zip(REAL_LEGACY, REAL_PLAN, strict=True):
+            if old != new:
+                self.assertEqual(new, dict(old, action=S.SAVED))
+                delta.append((new['route'], new['physical_candidate']['id'], new['axis']))
+        self.assertEqual(delta, [('TRUNCATED_PF', S.SAVED_IDS['TRUNCATED_PF'], a) for a in ('X', 'Y')])
+        if S.P7_CELL_PLAN is None:
+            with self.assertRaisesRegex(ValueError, 'C p7'):
+                S.admission_gate(ROOT)
 
-    def test_stage_split_22_calibration_12_holdout_34_new_saved_never_compiled(self):
+    def test_stage_split_20_calibration_12_holdout_32_new_saved_never_compiled(self):
         total = {}
         for route, templates in TEMPLATES.items():
             for stage, rounds in S.STAGES.items():
@@ -144,15 +183,15 @@ class Tests(unittest.TestCase):
                 self.assertEqual({c['role'] for c in cells}, {stage})
                 total[(route, stage)] = 2 * len(S.new_cells(chosen))
                 saved = [c for c in cells if c.get('action') == S.SAVED]
-                if (route, stage) == ('FULL_PF', 'CALIBRATION'):
-                    self.assertEqual([(c['row']['id'], c['m'], c['row']['formula']) for c in saved], [(S.SAVED_ID, 4, '4th(m5_best)')])
-                    self.assertNotIn(S.SAVED_ID, [c['row']['id'] for c in S.new_cells(chosen)])
+                if stage == 'CALIBRATION':
+                    self.assertEqual([(c['row']['id'], c['m'], c['row']['formula']) for c in saved], [(S.SAVED_IDS[route], 4, '4th(m5_best)')])
+                    self.assertNotIn(S.SAVED_IDS[route], [c['row']['id'] for c in S.new_cells(chosen)])
                 else:
                     self.assertEqual(saved, [])
         self.assertEqual(total, S.NEW_WRAPPERS)
-        self.assertEqual(sum(v for (r, s), v in total.items() if s == 'CALIBRATION'), 22)
+        self.assertEqual(sum(v for (r, s), v in total.items() if s == 'CALIBRATION'), 20)
         self.assertEqual(sum(v for (r, s), v in total.items() if s == 'HOLDOUT'), 12)
-        self.assertEqual(sum(total.values()), 34)
+        self.assertEqual(sum(total.values()), 32)
 
     def test_formula_width_q_round_and_axis_mapping(self):
         q = {'2nd': ('16/7', [7, 14, 28]), '4th': ('16/3', [3, 6, 12]), '4th(m5_best)': ('16', [1, 2, 4])}
@@ -170,6 +209,74 @@ class Tests(unittest.TestCase):
                 f = full[(p['formula'], c['m'])]
                 self.assertEqual((c['row']['q'], c['row']['T'], c['row']['delta']), (f['q'], f['T'], f['delta']))
                 self.assertEqual(((c['row']['method'], c['row']['prefix']), (f['method'], f['prefix'])), (('B0I', 7), ('FULL', 10)))
+
+    def test_unpublished_p7_admission_stops_both_routes_before_child_or_output(self):
+        for route in ROUTES:
+            e = self.env(route)
+            with patch.object(S, 'source_gate', return_value='e' * 40), patch.object(S, 'P7_ADMISSION', None), \
+                    patch.object(S.subprocess, 'call') as child:
+                with self.assertRaisesRegex(ValueError, 'C p7'):
+                    S.execute_stage(ROOT, e.spec, 'CALIBRATION')
+                child.assert_not_called()
+            self.assertFalse(Path(S.paths(e.spec, 'CALIBRATION')[0]).exists())
+        chosen = S.select(ROOT, TEMPLATES['TRUNCATED_PF'], 'TRUNCATED_PF', 'CALIBRATION')
+        with patch.object(S, 'P7_ADMISSION', None), self.assertRaisesRegex(ValueError, 'C p7'):
+            S.saved_calibration(ROOT, chosen)
+
+    def test_saved_binding_keeps_original_record_and_rejects_foreign_source_axis_physical_profile(self):
+        e = self.env('TRUNCATED_PF')
+        with e.patches():
+            chosen = S.select(ROOT, TEMPLATES['TRUNCATED_PF'], 'TRUNCATED_PF', 'CALIBRATION')
+            bound = S.saved_calibration(ROOT, chosen)
+        original = json.loads(P7_DOCUMENTS[(P7_FIXTURE['bundle'], 'ARTIFICIAL_P7/SAVED_CALIBRATION_INPUTS.json')])
+        self.assertEqual([v['record'] for v in bound.values()], original)
+        self.assertEqual({v['record']['source']['fixture'] for v in bound.values()}, {'ARTIFICIAL_SAVED_NOT_MEASURED'})
+        def changed(name, fn):
+            docs = deepcopy(P7_DOCUMENTS); k = (P7_FIXTURE['bundle'], 'ARTIFICIAL_P7/' + name)
+            rows = json.loads(docs[k]); fn(rows); docs[k] = json.dumps(rows).encode()
+            return docs
+        mutations = (
+            ('PRICES.json', lambda rows: rows[0]['physical_context']['physical_candidate'].update(prefix=10)),
+            ('PRICES.json', lambda rows: rows[0]['price_profile'].update(compiler='foreign')),
+            ('SAVED_CALIBRATION_INPUTS.json', lambda rows: rows[0]['source'].update(key=S.SAVED_ID)),
+            ('SAVED_CALIBRATION_INPUTS.json', lambda rows: rows[0].update(axis='Y')),
+            ('SIDECARS.json', lambda rows: rows[0].update(cohort='NEW_COHORT')),
+            ('SIDECARS.json', lambda rows: rows[0]['implementation_evidence'].update(commit='f' * 40)),
+        )
+        for name, fn in mutations:
+            with e.patches(), patch.dict(P7_DOCUMENTS, changed(name, fn)), self.assertRaises(ValueError):
+                S.saved_calibration(ROOT, chosen)
+
+    def test_duplicate_cells_and_additional_reuse_or_running_job_are_rejected(self):
+        templates = deepcopy(TEMPLATES['TRUNCATED_PF']); templates[0]['cells'].append(deepcopy(templates[0]['cells'][0]))
+        with self.assertRaisesRegex(ValueError, 'Duplicate cell'):
+            S.select(ROOT, templates, 'TRUNCATED_PF', 'CALIBRATION')
+        e = self.env('FULL_PF'); cell = deepcopy(TEMPLATES['FULL_PF'][0]['cells'][0]); ident = cell['row']['id']
+        def documents(root, ref):
+            import gzip
+            if ref == S.SAVED_TABLE:
+                return gzip.compress(json.dumps({}).encode())
+            if ref == S.CATALOG:
+                return json.dumps(dict(rows=[])).encode()
+            return REAL_READ(root, ref)
+        with patch.object(S, 'read_pinned', side_effect=documents), patch.object(S, 'active_price_jobs', return_value=[]), \
+                patch.object(S, 'OLD_TRIAL_ROOT', self.tmp / 'old'):
+            self.assertEqual(S.duplicate_preflight(ROOT, e.spec, [cell])['status'], 'NO_DUPLICATE_IN_CHECKED_SOURCES')
+            with patch.object(S, 'active_price_jobs', return_value=[dict(pid=123, physical_ids=[ident])]):
+                with self.assertRaisesRegex(ValueError, 'RUNNING_JOB'):
+                    S.duplicate_preflight(ROOT, e.spec, [cell])
+            trial = S.OLD_TRIAL_ROOT / ident / '0/result.json'; trial.parent.mkdir(parents=True); trial.write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'ORIGINAL_TRIAL'):
+                S.duplicate_preflight(ROOT, e.spec, [cell])
+        def extra_saved(root, ref):
+            import gzip
+            if ref == S.SAVED_TABLE:
+                return gzip.compress(json.dumps({ident: dict(candidate=cell['row'], trial_files=['ARTIFICIAL'])}).encode())
+            return documents(root, ref)
+        with patch.object(S, 'read_pinned', side_effect=extra_saved), patch.object(S, 'active_price_jobs', return_value=[]), \
+                patch.object(S, 'OLD_TRIAL_ROOT', self.tmp / 'absent'):
+            with self.assertRaisesRegex(ValueError, 'SAVED_TABLE_REUSE_CANDIDATE'):
+                S.duplicate_preflight(ROOT, e.spec, [cell])
 
     def test_cell_plan_disagreement_stops_selection(self):
         def m6_calibration(rows):
@@ -193,7 +300,7 @@ class Tests(unittest.TestCase):
         def group(rows):
             rows[0]['model_group'][1] = '4th'
         for fn in (m6_calibration, m5_holdout, physical, saved_recompiled, axis_role_split, missing, extra, group):
-            rows = deepcopy(REAL_PLAN); fn(rows)
+            rows = deepcopy(REAL_LEGACY); fn(rows)
             with patch.object(S, 'read_pinned', return_value=json.dumps(rows).encode()):
                 with self.assertRaises(ValueError, msg=fn.__name__):
                     for route, templates in TEMPLATES.items():
@@ -223,7 +330,7 @@ class Tests(unittest.TestCase):
             job = e.jobs[0]
             self.assertEqual(2 * len(job['cells']), S.NEW_WRAPPERS[(route, 'CALIBRATION')])
             self.assertEqual({c['m'] for c in job['cells']}, {4, 5})
-            self.assertNotIn(S.SAVED_ID, [c['row']['id'] for c in job['cells']])
+            self.assertFalse(set(S.SAVED_IDS.values()) & {c['row']['id'] for c in job['cells']})
             rel, private = S.paths(e.spec, 'CALIBRATION')
             self.assertTrue(rel.endswith('/calibration/run01') and str(private).endswith('/calibration/run01'))
             self.assertEqual(e.load('CALIBRATION', 'RESULT.json')['status'], 'CALIBRATION_PRICES_COMPLETE')
@@ -244,12 +351,12 @@ class Tests(unittest.TestCase):
                 self.assertEqual(sorted(r['cell_id'][-2:] for r in records), ['m4', 'm5'])
                 self.assertEqual({r['role'] for r in records}, {'CALIBRATION'})
                 S.check_group(records, g['model_group'], 'CALIBRATION')
-                saved = route == 'FULL_PF' and '4th(m5_best)' in k
+                saved = '4th(m5_best)' in k
                 self.assertEqual(len(g['saved_records']), int(saved))
                 if saved:
                     s = g['saved_records'][0]
-                    self.assertEqual((s['record']['source']['key'], s['origin']), (S.SAVED_ID, 'C_ADMITTED_SAVED_RECEIPT_NOT_RECOMPILED'))
-                    self.assertEqual(s['references']['SIDECARS.json']['commit'], S.ADMISSION)
+                    self.assertEqual((s['record']['source']['key'], s['origin']), (S.SAVED_IDS[route], 'C_ADMITTED_SAVED_RECEIPT_NOT_RECOMPILED'))
+                    self.assertEqual(s['references']['SIDECARS.json']['commit'], S.ADMISSION if route == 'FULL_PF' else P7_FIXTURE['admission'])
                     self.assertNotEqual(s['record']['source'], g['new_records'][0]['source'])
             calls = len(e.jobs)
             with self.assertRaises(FileExistsError):
@@ -361,7 +468,7 @@ class Tests(unittest.TestCase):
         result = e.load('CALIBRATION', 'RESULT.json')
         self.assertEqual(result['status'], 'STOP_CALIBRATION_PRICE_CHECK')
         self.assertIn('KeyError', result['error'])
-        self.assertEqual(len(result['results']), 6)  # trials kept as the partial result
+        self.assertEqual(len(result['results']), 5)  # trials kept as the partial result; saved cell never started
         self.assertFalse((Path(S.paths(e.spec, 'CALIBRATION')[0]) / 'PRICES.json').exists())
 
     def test_committed_and_source_gate_on_real_git(self):

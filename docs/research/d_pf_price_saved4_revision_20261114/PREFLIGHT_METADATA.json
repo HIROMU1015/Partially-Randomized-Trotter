@@ -1,0 +1,624 @@
+{
+  "FULL_PF": {
+    "status": "PREFLIGHT_METADATA_ONLY",
+    "scope": {
+      "templates": 3,
+      "rounds": [
+        4,
+        5,
+        6
+      ],
+      "cells": 9,
+      "new_cells": 8,
+      "saved_receipt_cells": 1,
+      "compile_maximum": 16,
+      "stage_wrappers": {
+        "CALIBRATION": 10,
+        "HOLDOUT": 6
+      },
+      "sampling": 0,
+      "retry": false,
+      "fit": null,
+      "N": null,
+      "G": null
+    },
+    "new_cells": 8,
+    "compile_maximum": 16,
+    "templates": [
+      {
+        "formula": "2nd",
+        "width_over_h": "16/7",
+        "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+        "cells": [
+          {
+            "m": 4,
+            "role": "CALIBRATION",
+            "id": "b7c4e73538ec19070cde",
+            "q": 7,
+            "signed_pieces": 7,
+            "actual_delta": {
+              "numerator": 3602879701896397,
+              "denominator": 15762598695796736
+            },
+            "action": "NEW_COMPILE"
+          },
+          {
+            "m": 5,
+            "role": "CALIBRATION",
+            "id": "8df73ab164fac57bfd6c",
+            "q": 14,
+            "signed_pieces": 14,
+            "actual_delta": {
+              "numerator": 3602879701896397,
+              "denominator": 15762598695796736
+            },
+            "action": "NEW_COMPILE"
+          },
+          {
+            "m": 6,
+            "role": "HOLDOUT",
+            "id": "4f3984c6d381fa0ca848",
+            "q": 28,
+            "signed_pieces": 28,
+            "actual_delta": {
+              "numerator": 3602879701896397,
+              "denominator": 15762598695796736
+            },
+            "action": "NEW_COMPILE"
+          }
+        ]
+      },
+      {
+        "formula": "4th",
+        "width_over_h": "16/3",
+        "configuration_id": "a799697fc8ca36b024acec26af43313777948ead432e66804c670649a18afe76",
+        "cells": [
+          {
+            "m": 4,
+            "role": "CALIBRATION",
+            "id": "3cf8eddfb3b78e96f5d2",
+            "q": 3,
+            "signed_pieces": 9,
+            "actual_delta": {
+              "numerator": 3602879701896397,
+              "denominator": 6755399441055744
+            },
+            "action": "NEW_COMPILE"
+          },
+          {
+            "m": 5,
+            "role": "CALIBRATION",
+            "id": "72383d110445e479155d",
+            "q": 6,
+            "signed_pieces": 18,
+            "actual_delta": {
+              "numerator": 3602879701896397,
+              "denominator": 6755399441055744
+            },
+            "action": "NEW_COMPILE"
+          },
+          {
+            "m": 6,
+            "role": "HOLDOUT",
+            "id": "7727a3fec25e033629f1",
+            "q": 12,
+            "signed_pieces": 36,
+            "actual_delta": {
+              "numerator": 3602879701896397,
+              "denominator": 6755399441055744
+            },
+            "action": "NEW_COMPILE"
+          }
+        ]
+      },
+      {
+        "formula": "4th(m5_best)",
+        "width_over_h": "16",
+        "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+        "cells": [
+          {
+            "m": 4,
+            "role": "CALIBRATION",
+            "id": "0cd1527c80f7b9841a83",
+            "q": 1,
+            "signed_pieces": 11,
+            "actual_delta": {
+              "numerator": 3602879701896397,
+              "denominator": 2251799813685248
+            },
+            "action": "SAVED_RECEIPT_FOR_C_ACCEPTANCE"
+          },
+          {
+            "m": 5,
+            "role": "CALIBRATION",
+            "id": "c63a835541462a1c264b",
+            "q": 2,
+            "signed_pieces": 22,
+            "actual_delta": {
+              "numerator": 3602879701896397,
+              "denominator": 2251799813685248
+            },
+            "action": "NEW_COMPILE"
+          },
+          {
+            "m": 6,
+            "role": "HOLDOUT",
+            "id": "8db0bd3c1a5e1eeb541f",
+            "q": 4,
+            "signed_pieces": 44,
+            "actual_delta": {
+              "numerator": 3602879701896397,
+              "denominator": 2251799813685248
+            },
+            "action": "NEW_COMPILE"
+          }
+        ]
+      }
+    ],
+    "stages": {
+      "CALIBRATION": {
+        "output": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01",
+        "new_wrappers": 10,
+        "cells": [
+          {
+            "formula": "2nd",
+            "width_over_h": "16/7",
+            "m": 4,
+            "id": "b7c4e73538ec19070cde",
+            "q": 7,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "FULL_PF|2nd|16/7|X",
+              "FULL_PF|2nd|16/7|Y"
+            ]
+          },
+          {
+            "formula": "2nd",
+            "width_over_h": "16/7",
+            "m": 5,
+            "id": "8df73ab164fac57bfd6c",
+            "q": 14,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "FULL_PF|2nd|16/7|X",
+              "FULL_PF|2nd|16/7|Y"
+            ]
+          },
+          {
+            "formula": "4th",
+            "width_over_h": "16/3",
+            "m": 4,
+            "id": "3cf8eddfb3b78e96f5d2",
+            "q": 3,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "FULL_PF|4th|16/3|X",
+              "FULL_PF|4th|16/3|Y"
+            ]
+          },
+          {
+            "formula": "4th",
+            "width_over_h": "16/3",
+            "m": 5,
+            "id": "72383d110445e479155d",
+            "q": 6,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "FULL_PF|4th|16/3|X",
+              "FULL_PF|4th|16/3|Y"
+            ]
+          },
+          {
+            "formula": "4th(m5_best)",
+            "width_over_h": "16",
+            "m": 4,
+            "id": "0cd1527c80f7b9841a83",
+            "q": 1,
+            "action": "SAVED_RECEIPT_FOR_C_ACCEPTANCE",
+            "model_groups": [
+              "FULL_PF|4th(m5_best)|16|X",
+              "FULL_PF|4th(m5_best)|16|Y"
+            ]
+          },
+          {
+            "formula": "4th(m5_best)",
+            "width_over_h": "16",
+            "m": 5,
+            "id": "c63a835541462a1c264b",
+            "q": 2,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "FULL_PF|4th(m5_best)|16|X",
+              "FULL_PF|4th(m5_best)|16|Y"
+            ]
+          }
+        ]
+      },
+      "HOLDOUT": {
+        "output": "docs/research/d_full_pf_shortlist_prices_20261114/holdout/run01",
+        "new_wrappers": 6,
+        "cells": [
+          {
+            "formula": "2nd",
+            "width_over_h": "16/7",
+            "m": 6,
+            "id": "4f3984c6d381fa0ca848",
+            "q": 28,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "FULL_PF|2nd|16/7|X",
+              "FULL_PF|2nd|16/7|Y"
+            ]
+          },
+          {
+            "formula": "4th",
+            "width_over_h": "16/3",
+            "m": 6,
+            "id": "7727a3fec25e033629f1",
+            "q": 12,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "FULL_PF|4th|16/3|X",
+              "FULL_PF|4th|16/3|Y"
+            ]
+          },
+          {
+            "formula": "4th(m5_best)",
+            "width_over_h": "16",
+            "m": 6,
+            "id": "8db0bd3c1a5e1eeb541f",
+            "q": 4,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "FULL_PF|4th(m5_best)|16|X",
+              "FULL_PF|4th(m5_best)|16|Y"
+            ]
+          }
+        ]
+      }
+    },
+    "cell_plan": {
+      "commit": "3368805575d459d948e3afe7b1e54b4814f64129",
+      "path": "docs/research/m5_m4_receipt_admission_20261114/CELL_PLAN.json"
+    },
+    "cohort": "D_FULL_PF_SHORTLIST_DETERMINISTIC_V1",
+    "plan": {
+      "commit": "cfc0fae6f1399bbc46689b4d88998b415fa47781",
+      "path": "docs/research/paper_g_price_routes_20261114/PRICE_VALIDATION_PLAN.md"
+    },
+    "revised_plan": {
+      "status": "PENDING_C_P7_ADMISSION_AND_CELL_PLAN",
+      "legacy_cell_plan": {
+        "commit": "3368805575d459d948e3afe7b1e54b4814f64129",
+        "path": "docs/research/m5_m4_receipt_admission_20261114/CELL_PLAN.json"
+      },
+      "revised_cell_plan": null,
+      "p7_admission": null,
+      "provisional_metadata_only": true
+    },
+    "saved_calibration": {
+      "FULL_PF|4th(m5_best)|16|X": {
+        "cell_id": "FULL_PF:4th(m5_best):16:m4",
+        "axis": "X",
+        "rz_count": {
+          "numerator": 85960,
+          "denominator": 1
+        },
+        "references": {
+          "SAVED_CALIBRATION_INPUTS.json": {
+            "commit": "3368805575d459d948e3afe7b1e54b4814f64129",
+            "path": "docs/research/m5_m4_receipt_admission_20261114/SAVED_CALIBRATION_INPUTS.json",
+            "axis": "X"
+          },
+          "PRICES.json": {
+            "commit": "3368805575d459d948e3afe7b1e54b4814f64129",
+            "path": "docs/research/m5_m4_receipt_admission_20261114/PRICES.json",
+            "axis": "X"
+          },
+          "SIDECARS.json": {
+            "commit": "2fa88065318f0f2ab13937ef610828200b35874c",
+            "path": "docs/research/m5_m4_receipt_admission_20261114/SIDECARS.json",
+            "axis": "X"
+          },
+          "GUARD_CHECK.json": {
+            "commit": "2fa88065318f0f2ab13937ef610828200b35874c",
+            "path": "docs/research/m5_m4_receipt_admission_20261114/GUARD_CHECK.json",
+            "axis": "X"
+          }
+        }
+      },
+      "FULL_PF|4th(m5_best)|16|Y": {
+        "cell_id": "FULL_PF:4th(m5_best):16:m4",
+        "axis": "Y",
+        "rz_count": {
+          "numerator": 85960,
+          "denominator": 1
+        },
+        "references": {
+          "SAVED_CALIBRATION_INPUTS.json": {
+            "commit": "3368805575d459d948e3afe7b1e54b4814f64129",
+            "path": "docs/research/m5_m4_receipt_admission_20261114/SAVED_CALIBRATION_INPUTS.json",
+            "axis": "Y"
+          },
+          "PRICES.json": {
+            "commit": "3368805575d459d948e3afe7b1e54b4814f64129",
+            "path": "docs/research/m5_m4_receipt_admission_20261114/PRICES.json",
+            "axis": "Y"
+          },
+          "SIDECARS.json": {
+            "commit": "2fa88065318f0f2ab13937ef610828200b35874c",
+            "path": "docs/research/m5_m4_receipt_admission_20261114/SIDECARS.json",
+            "axis": "Y"
+          },
+          "GUARD_CHECK.json": {
+            "commit": "2fa88065318f0f2ab13937ef610828200b35874c",
+            "path": "docs/research/m5_m4_receipt_admission_20261114/GUARD_CHECK.json",
+            "axis": "Y"
+          }
+        }
+      }
+    }
+  },
+  "TRUNCATED_PF": {
+    "status": "PREFLIGHT_METADATA_ONLY",
+    "scope": {
+      "templates": 3,
+      "rounds": [
+        4,
+        5,
+        6
+      ],
+      "cells": 9,
+      "new_cells": 8,
+      "saved_receipt_cells": 1,
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "compile_maximum": 16,
+      "stage_wrappers": {
+        "CALIBRATION": 10,
+        "HOLDOUT": 6
+      },
+      "sampling": 0,
+      "retry": false,
+      "fit": null,
+      "N": null,
+      "G": null
+    },
+    "templates": [
+      {
+        "formula": "2nd",
+        "width_over_h": "16/7",
+        "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+        "cells": [
+          {
+            "m": 4,
+            "id": "5447667fe98e43fcaa15",
+            "q": 7,
+            "signed_pieces": 7,
+            "action": "NEW_COMPILE",
+            "actual_delta_over_h": "16/7"
+          },
+          {
+            "m": 5,
+            "id": "f4ac1ca5a9bbd331e740",
+            "q": 14,
+            "signed_pieces": 14,
+            "action": "NEW_COMPILE",
+            "actual_delta_over_h": "16/7"
+          },
+          {
+            "m": 6,
+            "id": "fb512f2d5762df64bfae",
+            "q": 28,
+            "signed_pieces": 28,
+            "action": "NEW_COMPILE",
+            "actual_delta_over_h": "16/7"
+          }
+        ]
+      },
+      {
+        "formula": "4th",
+        "width_over_h": "16/3",
+        "configuration_id": "defc5e88ff4da2e43c99ecdf7157aa41cc47cd32f905f5aa3a1266aa3ecf5416",
+        "cells": [
+          {
+            "m": 4,
+            "id": "91100691c8f55c5a3ab0",
+            "q": 3,
+            "signed_pieces": 9,
+            "action": "NEW_COMPILE",
+            "actual_delta_over_h": "16/3"
+          },
+          {
+            "m": 5,
+            "id": "ab88d1a1b056176a8e8b",
+            "q": 6,
+            "signed_pieces": 18,
+            "action": "NEW_COMPILE",
+            "actual_delta_over_h": "16/3"
+          },
+          {
+            "m": 6,
+            "id": "5e19b5ded7386572684f",
+            "q": 12,
+            "signed_pieces": 36,
+            "action": "NEW_COMPILE",
+            "actual_delta_over_h": "16/3"
+          }
+        ]
+      },
+      {
+        "formula": "4th(m5_best)",
+        "width_over_h": "16",
+        "configuration_id": "424eecbfdad0fceeb966884e82521ed1df18a360641695c120f090490ddc62ab",
+        "cells": [
+          {
+            "m": 4,
+            "id": "13d1cd4869951cdf1e2c",
+            "q": 1,
+            "signed_pieces": 11,
+            "action": "SAVED_RECEIPT_FOR_C_ACCEPTANCE",
+            "actual_delta_over_h": "16"
+          },
+          {
+            "m": 5,
+            "id": "d6fa66973e455333114e",
+            "q": 2,
+            "signed_pieces": 22,
+            "action": "NEW_COMPILE",
+            "actual_delta_over_h": "16"
+          },
+          {
+            "m": 6,
+            "id": "4bc967fe8dbc6f814146",
+            "q": 4,
+            "signed_pieces": 44,
+            "action": "NEW_COMPILE",
+            "actual_delta_over_h": "16"
+          }
+        ]
+      }
+    ],
+    "stages": {
+      "CALIBRATION": {
+        "output": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01",
+        "new_wrappers": 10,
+        "cells": [
+          {
+            "formula": "2nd",
+            "width_over_h": "16/7",
+            "m": 4,
+            "id": "5447667fe98e43fcaa15",
+            "q": 7,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "TRUNCATED_PF|2nd|16/7|X",
+              "TRUNCATED_PF|2nd|16/7|Y"
+            ]
+          },
+          {
+            "formula": "2nd",
+            "width_over_h": "16/7",
+            "m": 5,
+            "id": "f4ac1ca5a9bbd331e740",
+            "q": 14,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "TRUNCATED_PF|2nd|16/7|X",
+              "TRUNCATED_PF|2nd|16/7|Y"
+            ]
+          },
+          {
+            "formula": "4th",
+            "width_over_h": "16/3",
+            "m": 4,
+            "id": "91100691c8f55c5a3ab0",
+            "q": 3,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "TRUNCATED_PF|4th|16/3|X",
+              "TRUNCATED_PF|4th|16/3|Y"
+            ]
+          },
+          {
+            "formula": "4th",
+            "width_over_h": "16/3",
+            "m": 5,
+            "id": "ab88d1a1b056176a8e8b",
+            "q": 6,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "TRUNCATED_PF|4th|16/3|X",
+              "TRUNCATED_PF|4th|16/3|Y"
+            ]
+          },
+          {
+            "formula": "4th(m5_best)",
+            "width_over_h": "16",
+            "m": 4,
+            "id": "13d1cd4869951cdf1e2c",
+            "q": 1,
+            "action": "SAVED_RECEIPT_FOR_C_ACCEPTANCE",
+            "model_groups": [
+              "TRUNCATED_PF|4th(m5_best)|16|X",
+              "TRUNCATED_PF|4th(m5_best)|16|Y"
+            ]
+          },
+          {
+            "formula": "4th(m5_best)",
+            "width_over_h": "16",
+            "m": 5,
+            "id": "d6fa66973e455333114e",
+            "q": 2,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "TRUNCATED_PF|4th(m5_best)|16|X",
+              "TRUNCATED_PF|4th(m5_best)|16|Y"
+            ]
+          }
+        ]
+      },
+      "HOLDOUT": {
+        "output": "docs/research/d_truncated_p7_t3_prices_20261114/holdout/run01",
+        "new_wrappers": 6,
+        "cells": [
+          {
+            "formula": "2nd",
+            "width_over_h": "16/7",
+            "m": 6,
+            "id": "fb512f2d5762df64bfae",
+            "q": 28,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "TRUNCATED_PF|2nd|16/7|X",
+              "TRUNCATED_PF|2nd|16/7|Y"
+            ]
+          },
+          {
+            "formula": "4th",
+            "width_over_h": "16/3",
+            "m": 6,
+            "id": "5e19b5ded7386572684f",
+            "q": 12,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "TRUNCATED_PF|4th|16/3|X",
+              "TRUNCATED_PF|4th|16/3|Y"
+            ]
+          },
+          {
+            "formula": "4th(m5_best)",
+            "width_over_h": "16",
+            "m": 6,
+            "id": "4bc967fe8dbc6f814146",
+            "q": 4,
+            "action": "NEW_COMPILE",
+            "model_groups": [
+              "TRUNCATED_PF|4th(m5_best)|16|X",
+              "TRUNCATED_PF|4th(m5_best)|16|Y"
+            ]
+          }
+        ]
+      }
+    },
+    "cell_plan": {
+      "commit": "3368805575d459d948e3afe7b1e54b4814f64129",
+      "path": "docs/research/m5_m4_receipt_admission_20261114/CELL_PLAN.json"
+    },
+    "revised_plan": {
+      "status": "PENDING_C_P7_ADMISSION_AND_CELL_PLAN",
+      "legacy_cell_plan": {
+        "commit": "3368805575d459d948e3afe7b1e54b4814f64129",
+        "path": "docs/research/m5_m4_receipt_admission_20261114/CELL_PLAN.json"
+      },
+      "revised_cell_plan": null,
+      "p7_admission": null,
+      "provisional_metadata_only": true
+    },
+    "cohort": "D_TRUNCATED_P7_DETERMINISTIC_T3_V1",
+    "saved_calibration": null,
+    "saved_binding_status": "PENDING_C_ACCEPTANCE"
+  }
+}
