@@ -19,11 +19,15 @@ Record schema (this version, on C bridge c628e9e8): classification
 DIRECT_COMPILED_DETERMINISTIC / expectation DETERMINISTIC (B PRICE_KINDS); the
 04bead11 labels are kept only as a diagnostic. Circuits/cells/gates unchanged.
 
-Default: metadata preflight. `--execute-approved-t3` (separate approval) runs the
-child (original install() first, provider c31ef424 bytes checked). No retry.
+Stages (scripts/pf_price_stages.py): C's CELL_PLAN assigns m4/m5 to CALIBRATION
+and m6 to HOLDOUT; each stage is executed, published and bound separately and
+HOLDOUT needs C's frozen models. The 62ae1bd5 all-cells path is not kept.
+
+Default: metadata preflight. `--execute-approved-stage CALIBRATION|HOLDOUT`
+(separate approval) runs the child (original install() first, provider c31ef424
+bytes checked) for that stage's cells only. No retry.
 """
 from copy import deepcopy
-from datetime import datetime, timezone
 from fractions import Fraction
 import argparse
 import importlib
@@ -31,17 +35,17 @@ import json
 from pathlib import Path
 import subprocess
 import sys
-import time
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / 'scripts') not in sys.path:
     sys.path.insert(0, str(ROOT / 'scripts'))
+import pf_price_stages as S  # noqa: E402  (stage selection/gates only; stdlib imports at module level)
 
 CALLER = 'scripts/run_truncated_p7_prices.py'
 H = Fraction(.1)
 TEMPLATES = (('2nd', 16 * H / 7), ('4th', 16 * H / 3), ('4th(m5_best)', 16 * H))
 PREFIX = 7
-ROUNDS = (4, 5, 6)  # T3 plan: m4/m5 calibration, m6 holdout (C scope)
+ROUNDS = (4, 5, 6)  # T3 plan: m4/m5 calibration, m6 holdout (C scope; roles from C CELL_PLAN)
 T3 = dict(commit='5fb2c32e39e63267ea1748861269c362a93a1b86',
           path='docs/research/truncated_pf_t2_results_20261114/T3_CANDIDATES.json')
 PLAN_META = dict(commit='c3ae31f353d27a9f720f51fa0b089acd3d57e211',
@@ -59,10 +63,10 @@ RECORD_SCHEMA = 'D_PRICE_RECORD_B_KINDS_V2'  # B kinds: DIRECT_COMPILED_DETERMIN
 NO_RTE = 'NOT_APPLICABLE_NO_RTE'
 NATIVE_POLICY = 'H46_LONG_TIME_NATIVE_COMPOSE'
 SCALAR_QUANTITY = 'HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY'
-OUTPUT = 'docs/research/d_truncated_p7_t3_prices_20261114/run01'
-PRIVATE_OUTPUT = Path('/home/AbeHiromu/projects/d-truncated-p7-t3-20261114-private/run01')
-SCOPE = dict(templates=3, rounds=list(ROUNDS), cells=9, axes=['X', 'Y'], compile_maximum=18, sampling=0,
-             retry=False, fit=None, N=None, G=None)
+OUTPUT_ROOT = 'docs/research/d_truncated_p7_t3_prices_20261114'  # + /calibration/run01, /holdout/run01
+PRIVATE_ROOT = Path('/home/AbeHiromu/projects/d-truncated-p7-t3-20261114-private')
+SCOPE = dict(templates=3, rounds=list(ROUNDS), cells=9, axes=['X', 'Y'], compile_maximum=18,
+             stage_wrappers=dict(CALIBRATION=12, HOLDOUT=6), sampling=0, retry=False, fit=None, N=None, G=None)
 
 
 def _meta():
@@ -161,13 +165,9 @@ def child(job_path):
     native.PUBLIC, native.PRIVATE = Path(job['public']), Path(job['private'])
     ctx = native.native_context('H4', (PREFIX,))
     native.CONTEXT['H4'] = ctx
-    results = []
-    for cell in job['cells']:
-        trial, facts, ok = checked_trial(native, ctx, cell['row'], COHORT, expected_tail_scalar=job['saved_tail_scalar'])
-        results.append(dict(cell=cell, trial=trial, facts=facts, ok=ok))
-        if not ok:
-            break
-    Path(job['result']).write_text(json.dumps(results, indent=2, default=str))
+    results, resources = S.run_cells(native, ctx, checked_trial, COHORT, job['cells'],
+                                     kw=dict(expected_tail_scalar=job['saved_tail_scalar']), workers=job.get('workers'))
+    Path(job['result']).write_text(json.dumps(dict(results=results, resources=resources), indent=2, default=str))
     return 0 if len(results) == len(job['cells']) and all(r['ok'] for r in results) else 2
 
 
@@ -200,63 +200,95 @@ def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, ev
     return prices, sides, proofs
 
 
+def c_model(root=ROOT):
+    """C's price_model_validation (in this tree at c628e9e8; record/fit/validate, not reimplemented)."""
+    src = str(Path(root) / 'src')
+    if src not in sys.path:
+        sys.path.insert(0, src)
+    from trottertracks import price_model_validation
+    return price_model_validation
+
+
+def fit_inputs(prices, *, route, formula, width_over_h, roles, root=ROOT):
+    """Full PF / Truncated price records -> C calibration/holdout records (features one, q_PF).
+
+    `roles` maps m to its stage role (from C CELL_PLAN); one call = one formula/actual width.
+    """
+    V = c_model(root); out = []
+    for p in prices:
+        c = p['physical_context']['physical_candidate']; m = p['m']
+        out.append(V.record(cell_id='%s:%s:%s:m%d' % (route, formula, width_over_h, m), role=roles[m], route=route,
+            axis=p['axis'], features=dict(one=1, q=c['q']), rz_count=p['mean']['rz_count'],
+            kind='DIRECT_COMPILED_DETERMINISTIC', source=p['source'],
+            implementation=dict(lowering_id=p['profile_extension']['lowering_id'], native=p['profile_extension']['source']),
+            profile=p['price_profile']))
+    return out
+
+
+def saved_tail_scalar(root):
+    """Execution only: the saved prefix-7 scalar used by the B0I signals (gate inside checked_trial)."""
+    C, _ = _meta()
+    from trottertracks import baseline_signal_numerics as N
+    restored = N.load_shared_h4(root, read(C, MANIFEST)['shared']['binding'])
+    return dict(saved_tail_scalar=float(restored[2]['prefixes'][str(PREFIX)]['scalar']))
+
+
+def stage_spec():
+    return dict(route='TRUNCATED_PF', caller=CALLER, sources=(CALLER, S.MODULE), cohort=COHORT,
+                scalar_quantity=SCALAR_QUANTITY, output=OUTPUT_ROOT, private=PRIVATE_ROOT, plans=plans,
+                native_row=native_row, bindings=price_bindings, job_extra=saved_tail_scalar,
+                source=dict(caller=CALLER, native=NATIVE, wrapper=WRAPPER, scalar=SCALAR_SOURCE, cohort=COHORT))
+
+
+def stage_summary(root, spec):
+    """Metadata only: the CELL_PLAN stage split of the regenerated cells."""
+    templates = spec['plans'](root); out = {}
+    for stage in S.STAGES:
+        chosen = S.select(root, templates, spec['route'], stage)
+        out[stage] = dict(output=S.paths(spec, stage)[0], new_wrappers=2 * len(S.new_cells(chosen)),
+            cells=[dict(formula=p['formula'], width_over_h=p['width_over_h'], m=c['m'], id=c['row']['id'], q=c['row']['q'],
+                        action=c.get('action', S.NEW), model_groups=[S.key(g) for g in c['model_groups']])
+                   for p in chosen for c in p['cells']])
+    return templates, out
+
+
 def preflight(root=ROOT):
+    templates, stages = stage_summary(root, stage_spec())
     out = []
-    for p in plans(root):
+    for p in templates:
         out.append(dict(formula=p['formula'], width_over_h=p['width_over_h'], configuration_id=p['configuration_id'],
                         cells=[dict(m=c['m'], id=c['row']['id'], q=c['row']['q'], signed_pieces=c['signed_pieces'],
                                     actual_delta_over_h=c['actual_delta_over_h']) for c in p['cells']]))
-    return dict(status='PREFLIGHT_METADATA_ONLY', scope=SCOPE, templates=out, output=OUTPUT, cohort=COHORT)
+    return dict(status='PREFLIGHT_METADATA_ONLY', scope=SCOPE, templates=out, stages=stages, cell_plan=S.CELL_PLAN,
+                cohort=COHORT)
 
 
-def execute(root=ROOT):
-    C, I = _meta()
-    commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-    if C.blob(root, commit, CALLER) != (Path(root) / CALLER).read_bytes():
-        raise ValueError('Caller bytes differ from HEAD')
-    for d in (NATIVE, WRAPPER):
-        if C.blob(root, d['commit'], d['path']) != (Path(root) / d['path']).read_bytes():
-            raise ValueError('Pinned native SOURCE differs: ' + d['path'])
-    templates = plans(root)
-    out = Path(root) / OUTPUT; out.mkdir(parents=True, exist_ok=False); PRIVATE_OUTPUT.mkdir(parents=True, exist_ok=False)
-    from trottertracks import baseline_signal_numerics as N
-    restored = N.load_shared_h4(root, read(C, MANIFEST)['shared']['binding'])
-    tail_scalar = float(restored[2]['prefixes'][str(PREFIX)]['scalar'])
-    cells = [dict(c, formula=p['formula'], row=native_row(c['row'])) for p in templates for c in p['cells']]
-    job = dict(cells=cells, public=str(out / 'child_public'), private=str(PRIVATE_OUTPUT),
-               result=str(PRIVATE_OUTPUT / 'child.json'), saved_tail_scalar=tail_scalar)
-    (PRIVATE_OUTPUT / 'job.json').write_text(json.dumps(job))
-    start = time.perf_counter()
-    code = subprocess.call([sys.executable, '-B', str(Path(root) / CALLER), '--child', str(PRIVATE_OUTPUT / 'job.json')], cwd=root)
-    results = json.loads(Path(job['result']).read_text()) if Path(job['result']).exists() else []
-    status = 'T3_PRICES_COMPLETE' if code == 0 else 'STOP_T3_PRICE_CHECK'
-    source = dict(commit=commit, caller=CALLER, native=NATIVE, wrapper=WRAPPER, scalar=SCALAR_SOURCE, cohort=COHORT)
-    if code == 0:
-        prices, sides, proofs = [], [], {}
-        for p in templates:
-            for c in p['cells']:
-                r = next(x for x in results if x['cell']['row']['id'] == c['row']['id'])
-                a, b, d = price_bindings(root, p['plan'], c, r['trial'], price_source=dict(source, record='RESULT.json'),
-                    evidence_commit='FILL_WITH_PUBLISHED_COMMIT', evidence_path=OUTPUT + '/IMPLEMENTATION_EVIDENCE.json')
-                prices += a; sides += b; proofs.update(d)
-        for name, value in (('PRICES.json', prices), ('SIDECARS.json', sides), ('IMPLEMENTATION_EVIDENCE.json', proofs)):
-            (out / name).write_text(json.dumps(value, indent=2, default=str))
-    (out / 'RESULT.json').write_text(json.dumps(dict(status=status, source=source, scope=SCOPE, results=results,
-        elapsed_seconds=time.perf_counter() - start, finished_utc=datetime.now(timezone.utc).isoformat(),
-        mandatory_stop=True, retry_performed=False, fit=None, N=None, G=None), indent=2, default=str))
-    print(json.dumps(dict(status=status)))
-    return 0 if code == 0 else 2
+def execute(root=ROOT, stage=None, frozen=None):
+    return S.execute_stage(root, stage_spec(), stage, frozen=frozen)
+
+
+def _pinned(text):
+    commit, _, path = (text or '').partition(':')
+    return dict(commit=commit, path=path)
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--execute-approved-t3', action='store_true', help='deterministic 9-cell X/Y compile (separate approval)')
+    parser.add_argument('--execute-approved-stage', choices=sorted(S.STAGES),
+                        help='one stage of the approved deterministic compile (C CELL_PLAN roles; separate approval)')
+    parser.add_argument('--frozen-models', help='HOLDOUT only: COMMIT:PATH of C frozen calibration models')
+    parser.add_argument('--bind-stage-evidence', choices=sorted(S.STAGES), help='after publishing a stage: fill the commit, C guard')
+    parser.add_argument('--evidence-commit', help='published commit of the stage outputs (with --bind-stage-evidence)')
     parser.add_argument('--child', help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.child:
         return child(args.child)
-    if args.execute_approved_t3:
-        return execute(ROOT)
+    if args.execute_approved_stage:
+        frozen = _pinned(args.frozen_models) if args.frozen_models else None
+        return execute(ROOT, args.execute_approved_stage, frozen)
+    if args.bind_stage_evidence:
+        print(json.dumps(S.bind(ROOT, stage_spec(), args.bind_stage_evidence, args.evidence_commit)))
+        return 0
     print(json.dumps(preflight(ROOT), indent=1))
     return 0
 

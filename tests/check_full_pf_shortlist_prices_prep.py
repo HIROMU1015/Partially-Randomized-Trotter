@@ -110,7 +110,7 @@ class Tests(unittest.TestCase):
             for i, c in enumerate(plan['cells']):
                 got += bind(ROOT, plan['plan'], c, fake_trial(2.3, 100 * (i + 1)), price_source=dict(fixture='ARTIFICIAL'),
                             evidence_commit='a' * 40, evidence_path='ARTIFICIAL.json')[0]
-            fits = FP.fit_inputs(got, route=route, formula=plan['formula'], width_over_h=plan['width_over_h'])
+            fits = FP.fit_inputs(got, route=route, formula=plan['formula'], width_over_h=plan['width_over_h'], roles=FP.ROLES)
             self.assertEqual([f['role'] for f in fits], ['CALIBRATION'] * 4 + ['HOLDOUT'] * 2)
             self.assertEqual({f['record'] for f in fits}, {V.RECORD})
             records.append(fits)

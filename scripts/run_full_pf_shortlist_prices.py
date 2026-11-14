@@ -11,23 +11,27 @@ holdout m6 follow C's plan; a cell whose X and Y both have an EXACT saved receip
 Record schema (this version, on C bridge c628e9e8): DIRECT_COMPILED_DETERMINISTIC /
 DETERMINISTIC (B PRICE_KINDS), same as the Truncated v2 records.
 
-Default: metadata preflight. `--execute-approved-full-pf` (separate approval) runs
-the provider-root child for the new cells only (at most 16 wrappers). No retry.
+Stages (scripts/pf_price_stages.py): C's CELL_PLAN assigns m4/m5 to CALIBRATION
+(10 new wrappers + the C-admitted saved M5/m4 X/Y, referenced only) and m6 to
+HOLDOUT (6 wrappers, needs C's frozen models). The 62ae1bd5 all-cells path is
+not kept.
+
+Default: metadata preflight. `--execute-approved-stage CALIBRATION|HOLDOUT`
+(separate approval) runs the provider-root child for that stage's new cells only.
+No retry.
 """
 from copy import deepcopy
-from datetime import datetime, timezone
 from fractions import Fraction
 import argparse
 import json
 from pathlib import Path
-import subprocess
 import sys
-import time
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / 'scripts') not in sys.path:
     sys.path.insert(0, str(ROOT / 'scripts'))
 import run_truncated_p7_prices as T3  # noqa: E402  (frozen T3 caller; functions reused only)
+import pf_price_stages as S  # noqa: E402
 
 CALLER = 'scripts/run_full_pf_shortlist_prices.py'
 RANK = 10
@@ -35,15 +39,15 @@ COVERAGE = dict(commit='3a8b37f1a282c0c06ac1a363b070f4376e9ff41a',
                 path='docs/research/full_pf_latest_price_guard_20261114/COVERAGE.json')
 C_PLAN = dict(commit='cfc0fae6f1399bbc46689b4d88998b415fa47781',
               path='docs/research/paper_g_price_routes_20261114/PRICE_VALIDATION_PLAN.md')
-ROLES = {4: 'CALIBRATION', 5: 'CALIBRATION', 6: 'HOLDOUT'}
+ROLES = {4: 'CALIBRATION', 5: 'CALIBRATION', 6: 'HOLDOUT'}  # cross-checked against C CELL_PLAN by S.select
 COHORT = 'D_FULL_PF_SHORTLIST_DETERMINISTIC_V1'
 RECORD_SCHEMA = T3.RECORD_SCHEMA
 SCALAR_QUANTITY = 'HAMILTONIAN_CONSTANT'
 SCALAR_SOURCE = dict(T3.NATIVE, selector='cost_trial scalar = ctx.ham.constant for method FULL (saved snapshot constant)')
-OUTPUT = 'docs/research/d_full_pf_shortlist_prices_20261114/run01'
-PRIVATE_OUTPUT = Path('/home/AbeHiromu/projects/d-full-pf-shortlist-20261114-private/run01')
+OUTPUT_ROOT = 'docs/research/d_full_pf_shortlist_prices_20261114'  # + /calibration/run01, /holdout/run01
+PRIVATE_ROOT = Path('/home/AbeHiromu/projects/d-full-pf-shortlist-20261114-private')
 SCOPE = dict(templates=3, rounds=[4, 5, 6], cells=9, new_cells=8, saved_receipt_cells=1, compile_maximum=16,
-             sampling=0, retry=False, fit=None, N=None, G=None)
+             stage_wrappers=dict(CALIBRATION=10, HOLDOUT=6), sampling=0, retry=False, fit=None, N=None, G=None)
 
 
 def plans(root=ROOT):
@@ -109,13 +113,8 @@ def child(job_path):
     native.PUBLIC, native.PRIVATE = Path(job['public']), Path(job['private'])
     ctx = native.native_context('H4', (RANK,))
     native.CONTEXT['H4'] = ctx
-    results = []
-    for cell in job['cells']:
-        trial, facts, ok = full_trial(native, ctx, cell['row'], COHORT)
-        results.append(dict(cell=cell, trial=trial, facts=facts, ok=ok))
-        if not ok:
-            break
-    Path(job['result']).write_text(json.dumps(results, indent=2, default=str))
+    results, resources = S.run_cells(native, ctx, full_trial, COHORT, job['cells'], workers=job.get('workers'))
+    Path(job['result']).write_text(json.dumps(dict(results=results, resources=resources), indent=2, default=str))
     return 0 if len(results) == len(job['cells']) and all(r['ok'] for r in results) else 2
 
 
@@ -148,93 +147,55 @@ def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, ev
     return prices, sides, proofs
 
 
-def c_model(root=ROOT):
-    """C's price_model_validation (in this tree at c628e9e8; record/fit/validate, not reimplemented)."""
-    src = str(root / 'src')
-    if src not in sys.path:
-        sys.path.insert(0, src)
-    from trottertracks import price_model_validation
-    return price_model_validation
+c_model = T3.c_model
+fit_inputs = T3.fit_inputs  # roles are explicit (C CELL_PLAN), no default
 
 
-def fit_inputs(prices, *, route, formula, width_over_h, roles=ROLES, root=ROOT):
-    """Full PF / Truncated price records -> C calibration/holdout records (features one, q_PF)."""
-    V = c_model(root); out = []
-    for p in prices:
-        c = p['physical_context']['physical_candidate']; m = p['m']
-        out.append(V.record(cell_id='%s:%s:%s:m%d' % (route, formula, width_over_h, m), role=roles[m], route=route,
-            axis=p['axis'], features=dict(one=1, q=c['q']), rz_count=p['mean']['rz_count'],
-            kind='DIRECT_COMPILED_DETERMINISTIC', source=p['source'],
-            implementation=dict(lowering_id=p['profile_extension']['lowering_id'], native=p['profile_extension']['source']),
-            profile=p['price_profile']))
-    return out
+def stage_spec():
+    return dict(route='FULL_PF', caller=CALLER, sources=(CALLER, T3.CALLER, S.MODULE), cohort=COHORT,
+                scalar_quantity=SCALAR_QUANTITY, output=OUTPUT_ROOT, private=PRIVATE_ROOT, plans=plans,
+                native_row=native_row, bindings=price_bindings, job_extra=lambda root: {},
+                source=dict(caller=CALLER, native=T3.NATIVE, wrapper=T3.WRAPPER, cohort=COHORT))
 
 
 def preflight(root=ROOT):
+    spec = stage_spec()
+    templates, stages = T3.stage_summary(root, spec)
     out = []
-    for p in plans(root):
+    for p in templates:
         out.append(dict(formula=p['formula'], width_over_h=p['width_over_h'], configuration_id=p['configuration_id'],
                         cells=[dict(m=c['m'], role=c['role'], id=c['row']['id'], q=c['row']['q'], signed_pieces=c['signed_pieces'],
                                     actual_delta=c['actual_delta'], action=c['action']) for c in p['cells']]))
+    saved = S.saved_calibration(root, S.select(root, templates, spec['route'], 'CALIBRATION'))
     new = sum(c['action'] == 'NEW_COMPILE' for t in out for c in t['cells'])
     return dict(status='PREFLIGHT_METADATA_ONLY', scope=SCOPE, new_cells=new, compile_maximum=2 * new,
-                templates=out, output=OUTPUT, cohort=COHORT, plan=C_PLAN)
+                templates=out, stages=stages, cell_plan=S.CELL_PLAN, cohort=COHORT, plan=C_PLAN,
+                saved_calibration={k: dict(cell_id=v['record']['cell_id'], axis=v['record']['axis'],
+                                           rz_count=v['record']['rz_count'], references=v['references'])
+                                   for k, v in saved.items()})
 
 
-def execute(root=ROOT):
-    C, I = T3._meta()
-    commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-    for path in (CALLER, T3.CALLER):
-        if C.blob(root, commit, path) != (Path(root) / path).read_bytes():
-            raise ValueError('Execution SOURCE bytes differ from HEAD: ' + path)
-    for d in (T3.NATIVE, T3.WRAPPER):
-        if C.blob(root, d['commit'], d['path']) != (Path(root) / d['path']).read_bytes():
-            raise ValueError('Pinned native SOURCE differs: ' + d['path'])
-    templates = plans(root)
-    new = [dict(c, formula=p['formula'], row=native_row(c['row'])) for p in templates for c in p['cells'] if c['action'] == 'NEW_COMPILE']
-    if len(new) != 8:
-        raise ValueError('Fixed Full PF scope is 8 new cells / 16 wrappers')
-    out = Path(root) / OUTPUT; out.mkdir(parents=True, exist_ok=False); PRIVATE_OUTPUT.mkdir(parents=True, exist_ok=False)
-    job = dict(cells=new, public=str(out / 'child_public'), private=str(PRIVATE_OUTPUT), result=str(PRIVATE_OUTPUT / 'child.json'))
-    (PRIVATE_OUTPUT / 'job.json').write_text(json.dumps(job))
-    start = time.perf_counter()
-    code = subprocess.call([sys.executable, '-B', str(Path(root) / CALLER), '--child', str(PRIVATE_OUTPUT / 'job.json')], cwd=root)
-    results = json.loads(Path(job['result']).read_text()) if Path(job['result']).exists() else []
-    status = 'FULL_PF_PRICES_COMPLETE' if code == 0 else 'STOP_FULL_PF_PRICE_CHECK'
-    source = dict(commit=commit, caller=CALLER, native=T3.NATIVE, wrapper=T3.WRAPPER, cohort=COHORT)
-    if code == 0:
-        prices, sides, proofs, fits = [], [], {}, []
-        for p in templates:
-            got = []
-            for c in p['cells']:
-                if c['action'] != 'NEW_COMPILE':
-                    continue
-                r = next(x for x in results if x['cell']['row']['id'] == c['row']['id'])
-                a, b, d = price_bindings(root, p['plan'], c, r['trial'], price_source=dict(source, record='RESULT.json'),
-                    evidence_commit='FILL_WITH_PUBLISHED_COMMIT', evidence_path=OUTPUT + '/IMPLEMENTATION_EVIDENCE.json')
-                prices += a; sides += b; proofs.update(d); got += a
-            fits += fit_inputs(got, route='FULL_PF', formula=p['formula'], width_over_h=p['width_over_h'])
-        saved = [dict(configuration_id=p['configuration_id'], m=c['m'], receipts=c['saved_receipts'])
-                 for p in templates for c in p['cells'] if c['action'] != 'NEW_COMPILE']
-        for name, value in (('PRICES.json', prices), ('SIDECARS.json', sides), ('IMPLEMENTATION_EVIDENCE.json', proofs),
-                            ('C_FIT_INPUTS.json', fits), ('SAVED_RECEIPTS_FOR_C.json', saved)):
-            (out / name).write_text(json.dumps(value, indent=2, default=str))
-    (out / 'RESULT.json').write_text(json.dumps(dict(status=status, source=source, scope=SCOPE, results=results,
-        elapsed_seconds=time.perf_counter() - start, finished_utc=datetime.now(timezone.utc).isoformat(),
-        mandatory_stop=True, retry_performed=False, fit=None, N=None, G=None), indent=2, default=str))
-    print(json.dumps(dict(status=status)))
-    return 0 if code == 0 else 2
+def execute(root=ROOT, stage=None, frozen=None):
+    return S.execute_stage(root, stage_spec(), stage, frozen=frozen)
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--execute-approved-full-pf', action='store_true', help='8 new deterministic cells, 16 wrappers (separate approval)')
+    parser.add_argument('--execute-approved-stage', choices=sorted(S.STAGES),
+                        help='one stage of the approved deterministic compile (C CELL_PLAN roles; separate approval)')
+    parser.add_argument('--frozen-models', help='HOLDOUT only: COMMIT:PATH of C frozen calibration models')
+    parser.add_argument('--bind-stage-evidence', choices=sorted(S.STAGES), help='after publishing a stage: fill the commit, C guard')
+    parser.add_argument('--evidence-commit', help='published commit of the stage outputs (with --bind-stage-evidence)')
     parser.add_argument('--child', help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     if args.child:
         return child(args.child)
-    if args.execute_approved_full_pf:
-        return execute(ROOT)
+    if args.execute_approved_stage:
+        frozen = T3._pinned(args.frozen_models) if args.frozen_models else None
+        return execute(ROOT, args.execute_approved_stage, frozen)
+    if args.bind_stage_evidence:
+        print(json.dumps(S.bind(ROOT, stage_spec(), args.bind_stage_evidence, args.evidence_commit)))
+        return 0
     print(json.dumps(preflight(ROOT), indent=1))
     return 0
 
