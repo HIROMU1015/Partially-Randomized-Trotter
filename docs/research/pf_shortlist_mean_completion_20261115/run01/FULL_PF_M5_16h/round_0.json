@@ -1,0 +1,395 @@
+{
+  "domain": {
+    "binding": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 10,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H4_TOL_ONLY_DF10",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "system": "H4",
+      "source": {
+        "input_source": {
+          "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+          "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+        },
+        "composition_recipe": {
+          "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "path": "src/trottertracks/pr_rpe_signal_provider.py",
+          "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+        },
+        "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+      },
+      "decomposition": {
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "contract": {
+          "completion": "saved_weighted_Hermitian_completion",
+          "fragment_order": "saved_snapshot_order",
+          "preparation_binding": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+            "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+          },
+          "state_preparation_cost": 0,
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          }
+        },
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        }
+      }
+    },
+    "profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "scope": "single_hadamard_interrogation_without_state_preparation",
+      "P": 0,
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    },
+    "physical_candidate": {
+      "system": "H4",
+      "method": "FULL",
+      "formula": "4th(m5_best)",
+      "prefix": 10,
+      "T": 0.1,
+      "q": 1,
+      "delta": 0.1,
+      "R_outer": null,
+      "K": null,
+      "id": "715f0d9f996ec0e62951"
+    },
+    "structure": {
+      "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "allocation": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "event_count": 0,
+      "scalar_policy": "scalar_identity_once_at_total_T",
+      "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+      "law_model": "deterministic"
+    },
+    "law": {
+      "model": "deterministic",
+      "source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/h46_m5_plan.py",
+        "functions": [
+          "weights",
+          "schedule",
+          "allocation"
+        ]
+      }
+    },
+    "split": {
+      "L_D": 10,
+      "source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "scripts/h46_long_time_signal.py",
+        "functions": [
+          "candidates",
+          "cid",
+          "context",
+          "evolve_batch"
+        ]
+      },
+      "randomized_scope": "NONE",
+      "deterministic_scope": "FULL_H",
+      "original_PF_method": "FULL",
+      "lambda_R": null,
+      "lambda_source": null,
+      "retained_hamiltonian": {
+        "construction": "FULL_H",
+        "prefix": 10,
+        "source": {
+          "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+          "path": "scripts/h46_long_time_signal.py",
+          "functions": [
+            "candidates",
+            "cid",
+            "context",
+            "evolve_batch"
+          ]
+        },
+        "target_hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0"
+      }
+    },
+    "preparation": null,
+    "target": {
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4",
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        },
+        "decomposition": {
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          }
+        }
+      },
+      "energy_shift_ha": 0,
+      "quantity": "ORIGINAL_DF_H_TARGET_ENERGY",
+      "source": {
+        "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+        "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+        "selector": [
+          "target"
+        ]
+      },
+      "state_assumption": "saved_numerical_state_conditional_ground",
+      "ground_state_certified": false,
+      "truth_proxy_source": {
+        "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+        "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+        "selector": [
+          "records",
+          5,
+          "diagnostics"
+        ]
+      },
+      "reference_solver_energy_ha": -2.1663874486347634,
+      "truth_proxy_adopted_for_new_simulation": false,
+      "qualification": "UNQUALIFIED"
+    },
+    "numeric_policy": "SOURCE_GATES_1E9_REFERENCE_PAIR_1E10_NO_REPAIR",
+    "reference": {
+      "m": 0,
+      "T": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4",
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        },
+        "decomposition": {
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          }
+        }
+      },
+      "source": {
+        "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+        "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+        "selector": [
+          "rounds",
+          0,
+          "diagnostics",
+          "reference_pair"
+        ]
+      }
+    }
+  },
+  "source": {
+    "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+    "caller": "scripts/run_pf_shortlist_mean_completion.py",
+    "module": "src/trottertracks/pf_shortlist_mean_completion.py",
+    "numerical_kernel": "baseline_signal_numerics.evaluate PF branch; unchanged",
+    "recipe": "SAVED_DIRECT_EXPM_PF_OPERATOR_MATRIX_POWER_V1",
+    "P": 0
+  },
+  "status": "NUMERICAL_MEAN_AVAILABLE",
+  "signal": {
+    "raw": {
+      "real": 0.9766254605298466,
+      "imag": 0.2149481561792558
+    },
+    "corrected": {
+      "real": 0.9766254605298466,
+      "imag": 0.2149481561792558
+    },
+    "reference": {
+      "real": 0.9766254605337832,
+      "imag": 0.21494815616137702
+    },
+    "log_B": 0.0,
+    "B": 1.0,
+    "attenuation": 1.0,
+    "total_signed_bias": null
+  },
+  "numerical": {
+    "q": 1,
+    "step_unitarity_error": 3.529512909131789e-14,
+    "norm_error": 1.6653345369377348e-15,
+    "power_unitarity_error": 3.529512909131789e-14,
+    "threshold": 1e-09,
+    "norm_gate_pass": true,
+    "unitarity_gate_pass": true,
+    "gate_pass": true,
+    "repaired": false,
+    "certified": false,
+    "gates_passed": true,
+    "reference_pair_difference": 1.1102230246251565e-16,
+    "backend": "SAVED_DIRECT_PF_MEAN",
+    "origin_note": "A_HEFF_SCAN_DIRECT_MEAN",
+    "scalar_once": true,
+    "staging": "SAVED_VALUE_BOUND_NO_RECOMPUTATION"
+  },
+  "input_source": {
+    "saved_mean": {
+      "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+      "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_11/round_0.json"
+    },
+    "origin_note": "A_HEFF_SCAN_DIRECT_MEAN",
+    "origin_cell": {
+      "label": "4th(m5_best) / 0.1",
+      "source": "b64f22b97c641fc97d13e9872b723f789e4fa454",
+      "status": "LOCAL_DIAGNOSTIC_COMPLETE_NOT_RPE_QUALIFIED"
+    },
+    "origin_round_m": 0,
+    "physical_round_shared_with_origin_cell": true,
+    "scalar": {
+      "quantity": "HAMILTONIAN_CONSTANT",
+      "application": "ONCE_AT_TOTAL_T",
+      "hamiltonian_constant": {
+        "value": 2.29310124732,
+        "source": "saved producer cell result.json"
+      }
+    }
+  }
+}
