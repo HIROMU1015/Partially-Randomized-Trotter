@@ -279,3 +279,7 @@ DF部分ランダム化研究と混同しない。
 
 `trottertracks.track_d_cut_h4_saved` は既存archive/recordのlossless hash binding、`track_d_cut_h4_reuse` は中央cutの同request/P0/旧PASS資格を確認する薄いguard。既存selector/C3/Strong/gadget/compilerは変更なし。人工guardは`tests/check_track_d_cut_h4_saved.py`と`check_track_d_cut_h4_reuse.py`。[資料](../../docs/research/track_d_cut_h4_q4_completion_20261108/IMPLEMENTATION_AND_REUSE.md)。
 C7-4の[保存モデル再解析](../trottertracks/track_d_c7_4_models.py)と[人工native比較](../trottertracks/track_d_c7_4_stability.py)は明示runnerだけから利用する。q≥64分子計算を含まず、[技術報告](../../docs/research/track_d_c7_4_model_stability_20261107/REPORT.md)を参照する。
+
+## 決定論PF m6独立holdout
+
+既存native/sampler/wrapper/compilerを変更せず、Full/p7各6 wrapperを取得。凍結予測の照合は[`pf_m6_holdout_evidence.py`](../../scripts/pf_m6_holdout_evidence.py)、人工testは[`check_pf_m6_holdout_evidence.py`](../../tests/check_pf_m6_holdout_evidence.py)。[REPORT](../../docs/research/d_pf_stage2_holdout_20261115/REPORT.md)。結論はm6点のみで、追加実行には進まない。

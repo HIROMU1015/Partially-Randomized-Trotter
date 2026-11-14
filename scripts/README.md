@@ -313,3 +313,7 @@ artifacts/<validation_name>/
 
 `run_track_d_cut_h4_select.py`：hash一致したq4_sample00だけから不変ruleで一回decisionを価格参照前に保存。`run_track_d_cut_h4_reuse.py`：中央cut選択時だけ、旧QPY/PASS/全7価格を照合して新compileなしでSTOP。[完了済み結果](../docs/research/track_d_cut_h4_q4_completion_20261108/REPORT.md)。再実行しない。
 [C7-4保存再解析runner](run_track_d_c7_4.py)／[結果projection](summarize_track_d_c7_4.py)：保存88 pathのみの探索fit/CV/bootstrapと固定人工6系列/短P0 2本。新H4 sampling/build/compileなし。既存runのmain/guardを変更しない。
+
+## 決定論PF m6凍結holdoutの照合
+
+`pf_m6_holdout_evidence.py` は開封前の凍結hash/12 identity検査と、既存公開receiptのexact 1/50判定だけを行う。取得・fit・予測を起動しない。人工testは`tests/check_pf_m6_holdout_evidence.py`。[完了REPORT](../docs/research/d_pf_stage2_holdout_20261115/REPORT.md)、[12行結果](../docs/research/d_pf_stage2_holdout_20261115/run01/HOLDOUT.csv)。当該科学実行は完了しmandatory STOP。

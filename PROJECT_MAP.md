@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[決定論PF Stage 2：m6独立holdout PASS](docs/research/d_pf_stage2_holdout_20261115/REPORT.md)（2026-11-15、Codex D）。C凍結12モデルを元predicted_RZで比較し、PASS/FAIL/UNKNOWN=12/0/0。再利用0、新規12 wrapper、作用/実装guard完了。Stage1と凍結JSON不変、refit/外挿/MSE/N/Gなし、mandatory STOP。
+
 [決定論PF Stage 1：新規20 wrapper PASS・保存4再利用](docs/research/d_pf_stage1_calibration_20261115/REPORT.md)（2026-11-15、Codex D）。Full PF/p7各10新規価格とC guard公開を完了、12 model_group各m4/m5の2点を引渡し。H-b 2% observed分母は採択済み、実fit/係数凍結・HOLDOUT m6・N/Gは未実行。mandatory STOP。
 
 [D：保存4件の正式binding完了](docs/research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)：SOURCE22ccf3972。C e50524f4/43c15bfa/2b945397のp7受入・新版CELL_PLANを接続し、Full/P7保存4件を元SOURCE/cohort/軸のまま再利用。全36価格・新規20＋12・12モデルを維持。共通運用指示11/14全文確認、旧IDの物理schedule一致も重複候補として検出。18 metadata/人工test PASS、新実H4/再集計/実fit/N/G0。policy/許容差未採択、Stage1未開始・mandatory STOP。
