@@ -1,5 +1,7 @@
 # Validation status
 
+[PR-DF LD1 m3 S/C取得](docs/research/d_pr_df_ld1_m3_results_20261115/REPORT.md)：physical045843b2429bece6f29b、q8/R16/T.8、normal fresh4 path・X/Y新規8 compile、有効8・再利用/欠測0。同event/axisのS/Cと元receipt固定locatorをCへ引渡し。元P1/P2新ZZ・S/C backendを再利用、full-wrapper statevector未実施を維持。残差集計/fit・m4は未実行、m4規則/cohort/seedは取得前固定、公開後STOP。
+
 [P2直接paired pilot](docs/research/d_p2_direct_pilot_20261113/REPORT.md)：SOURCE ea0706ab05313423f336614912758a93e9e8285c、replay2 pathのevent/seed/C/S/wrapper fingerprint/6指標全一致後、fresh m0/m6各4 pathを取得。20 compile・cache hit0・retry0、人工16 PASS。m6の履歴対replay全path時間比3.56（単回・計時境界/並列負荷差あり）、fresh D平均187.5/74,388.75。有限cohort統計のみ、全law C/law距離/rare/2%95%/他11round/N/RMSE/Gは未資格、mandatory STOP。
 
 [compiled価格pipelineの技術高速化](docs/research/d_compiled_price_pipeline_20261113/REPORT.md)：人工55 distinct項目PASS（初回の合同process import検査失敗は原記録を保全し、残差adapterを隔離processで13 PASS確認）。同eventのS、X/Y wrapper/compiled fingerprint、全6価格指標とcache/mutation条件が一致。人工wall/RSSのみ実測、実H4倍率・全law E[C]・P2/fit/N/RMSE/G未評価、mandatory STOP。

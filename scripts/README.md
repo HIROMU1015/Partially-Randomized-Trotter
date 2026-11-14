@@ -1,5 +1,7 @@
 # scripts 索引
 
+[PR-DF LD1 m3 S/C取得](../docs/research/d_pr_df_ld1_m3_results_20261115/REPORT.md)：physical045843b2429bece6f29b、q8/R16/T.8、normal fresh4 path・X/Y新規8 compile、有効8・再利用/欠測0。同event/axisのS/Cと元receipt固定locatorをCへ引渡し。元P1/P2新ZZ・S/C backendを再利用、full-wrapper statevector未実施を維持。残差集計/fit・m4は未実行、m4規則/cohort/seedは取得前固定、公開後STOP。
+
 [`run_p2_direct_pilot.py`](run_p2_direct_pilot.py)：固定PLAN/SOURCEで保存event replay2 path→全照合一致後fresh8 path、最大20 compileを1回実行。[結果](../docs/research/d_p2_direct_pilot_20261113/REPORT.md)。retry/resume・fit・強制rare・次段階の自動実行は実装しない。
 
 [`benchmark_compiled_price_artificial.py`](benchmark_compiled_price_artificial.py)：pinned C1と高速化版の人工price pipelineを交互・隔離processで比較し、S/C・fingerprint・6指標一致とwall/peak RSS/段階時間を出力。[技術引継ぎ](../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)。分子入力・科学sampling・実H4 compileなし。

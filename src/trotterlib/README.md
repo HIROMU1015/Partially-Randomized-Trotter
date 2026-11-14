@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[PR-DF LD1 m3 S/C取得](../../docs/research/d_pr_df_ld1_m3_results_20261115/REPORT.md)：physical045843b2429bece6f29b、q8/R16/T.8、normal fresh4 path・X/Y新規8 compile、有効8・再利用/欠測0。同event/axisのS/Cと元receipt固定locatorをCへ引渡し。元P1/P2新ZZ・S/C backendを再利用、full-wrapper statevector未実施を維持。残差集計/fit・m4は未実行、m4規則/cohort/seedは取得前固定、公開後STOP。
+
 [P2直接paired pilot](../../docs/research/d_p2_direct_pilot_20261113/HANDOFF.md)：trottertracks.p2_direct_pilotの固定seed/予算plan、保存eventの無乱数復元、replay照合、既存paired adapterを使うfresh-only exact統計。元sampler/compose/compileは再利用し、結果はfinite pilotに限定。
 
 [compiled価格pipeline高速化](../../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)：trottertracks.compiled_price_fast（RZ-only Accounting、X/Y共通prefix、pinned Backendの明示拡張）。既存compose/wrapper/compiler・新ZZ・canonical bytesを維持し、既存fast writerを再利用。科学実行入口は追加しない。

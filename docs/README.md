@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-DF LD1 m3 S/C取得](research/d_pr_df_ld1_m3_results_20261115/REPORT.md)：physical045843b2429bece6f29b、q8/R16/T.8、normal fresh4 path・X/Y新規8 compile、有効8・再利用/欠測0。同event/axisのS/Cと元receipt固定locatorをCへ引渡し。元P1/P2新ZZ・S/C backendを再利用、full-wrapper statevector未実施を維持。残差集計/fit・m4は未実行、m4規則/cohort/seedは取得前固定、公開後STOP。
+
 [P2直接paired REPORT](research/d_p2_direct_pilot_20261113/REPORT.md)／[HANDOFF](research/d_p2_direct_pilot_20261113/HANDOFF.md)／[RESULT](research/d_p2_direct_pilot_20261113/run01/RESULT.json)／[PATHS.csv](research/d_p2_direct_pilot_20261113/PATHS.csv)：replay gate通過後のfresh8 path・20 compileの有限結果、実H4性能と残差記述統計・将来nの候補。
 
 [compiled価格pipeline REPORT](research/d_compiled_price_pipeline_20261113/REPORT.md)／[TECHNICAL_HANDOFF](research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)／[最小P2計画（未承認）](research/d_compiled_price_pipeline_20261113/P2_MINIMAL_PLAN.md)：科学回路・compiler・canonical identityを維持した技術高速化と人工比較。
