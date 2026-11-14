@@ -1,0 +1,1082 @@
+{
+  "X": {
+    "calibration_record": {
+      "record": "PRICE_CALIBRATION_RECORD_V1",
+      "cell_id": "G4528",
+      "role": "CALIBRATION",
+      "route": "FULL_H_RTE",
+      "axis": "X",
+      "features": {
+        "event_count": {
+          "numerator": 4528,
+          "denominator": 1
+        },
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 0,
+          "denominator": 1
+        }
+      },
+      "rz_count": {
+        "numerator": 693571,
+        "denominator": 1
+      },
+      "kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+      "n_paths": 2,
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "K": 2,
+        "price_law": "PCG64_numpy_float64_CDF_saved_cohort",
+        "preparation": "9b83b96b:prepare_full_h"
+      },
+      "source": {
+        "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+        "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+        "caller": "scripts/run_full_h_kappa2_p2.py",
+        "plan": "D7",
+        "cell": "G4528",
+        "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+        "step_seeds": [
+          [
+            17246386368192181302
+          ],
+          [
+            826347982126353897
+          ]
+        ]
+      },
+      "implementation": {
+        "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "native": "H46_LONG_TIME_NATIVE_COMPOSE",
+        "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY",
+        "scalar_application": "ONCE_AT_TOTAL_T"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "qiskit": "1.3.0",
+        "basis": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "P": 0
+      },
+      "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+      "finite_sample_mean_is_law_expectation": false
+    },
+    "paths": [
+      {
+        "price": {
+          "record": "DIRECT_COMPILED_PATH_PRICE_V1",
+          "cell_id": "G4528",
+          "axis": "X",
+          "index": 0,
+          "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+          "seeds": [
+            17246386368192181302
+          ],
+          "physical": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 0,
+            "T": 0.1,
+            "q": 1,
+            "R_outer": 4528,
+            "K": 2,
+            "delta": 0.1,
+            "s": 4528,
+            "family": "FULL_H_PURE_RTE",
+            "L_D": 0,
+            "id": "FULL_H_26dfb15bbbefdc88fe66"
+          },
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "expectation": "FINITE_COHORT_ONLY",
+          "metrics": {
+            "rz_count": 695637,
+            "rz_depth": 197021,
+            "cx_count": 208738,
+            "cx_depth": 105577,
+            "total_depth": 416274,
+            "circuit_size": 1325951
+          },
+          "fingerprint": "d54b641215bdb2b933208c282dd8e4d3ea19a5a197b501e5d482e1554e47f020",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "G4528",
+            "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+            "step_seeds": [
+              [
+                17246386368192181302
+              ],
+              [
+                826347982126353897
+              ]
+            ]
+          },
+          "compile_receipt": {
+            "record": {
+              "metrics": {
+                "rz_count": 695637,
+                "rz_depth": 197021,
+                "cx_count": 208738,
+                "cx_depth": 105577,
+                "total_depth": 416274,
+                "circuit_size": 1325951
+              },
+              "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+              "fingerprint": "d54b641215bdb2b933208c282dd8e4d3ea19a5a197b501e5d482e1554e47f020"
+            },
+            "fingerprint": "d54b641215bdb2b933208c282dd8e4d3ea19a5a197b501e5d482e1554e47f020",
+            "reused": false,
+            "locator": {
+              "path": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G4528/compiled_cache/d54b641215bdb2b933208c282dd8e4d3ea19a5a197b501e5d482e1554e47f020.json",
+              "sha256": "09eccdf7d0f4311ddf1b2faa9c553ed09c133f0eabf67d0e734b56ccba43c2c9"
+            },
+            "wall_seconds": 100.8584672799334,
+            "peak_RSS_bytes": 1717633024
+          },
+          "path_receipt": {
+            "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "selector": [
+              "child",
+              "paths",
+              0
+            ]
+          }
+        },
+        "checks": {
+          "trial_gates": [
+            "low_control",
+            "high_control_leakage",
+            "independent_occupation_vector",
+            "Hadamard_cosine",
+            "compiled_vector_cosine",
+            "Hadamard_sine",
+            "compiled_vector_sine"
+          ],
+          "builder_lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "legacy_rzz_control_instructions": 0,
+          "new_crz": 4528,
+          "parity": {
+            "status": "PASS",
+            "replaced_controlled_zz": 1279,
+            "legacy_instructions": 421599,
+            "new_instructions": 424157
+          },
+          "one_body_applications": 1520,
+          "scalar": -0.33147781341681615,
+          "scalar_expected": -0.33147781341681615,
+          "scalar_event_phases": {
+            "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+            "status": "PASS",
+            "reasons": [],
+            "first_mismatch": null,
+            "scalar": -0.33147781341681615,
+            "expected_scalar": -0.33147781341681615,
+            "scalar_angle": 0.033147781341681615,
+            "scalar_index": 424156,
+            "evolution_bounds": [
+              0,
+              424157
+            ],
+            "ancilla_instructions": 4529,
+            "expected_ancilla_instructions": 4529,
+            "ancilla_p": 1,
+            "event_phases": [],
+            "requests": 1,
+            "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+            "legacy_scalar_once": true
+          },
+          "scalar_once_legacy_diagnostic": true,
+          "provider_file": "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider/src/trotterlib/df_rte_qiskit.py"
+        },
+        "xy_phase_gate": {
+          "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+          "status": "PASS",
+          "same_controlled_evolution": true,
+          "evolution_instructions": {
+            "cosine": 424157,
+            "sine": 424157
+          },
+          "axes": {
+            "cosine": {
+              "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+              "status": "PASS",
+              "reasons": [],
+              "first_mismatch": null,
+              "scalar": -0.33147781341681615,
+              "expected_scalar": -0.33147781341681615,
+              "scalar_angle": 0.033147781341681615,
+              "scalar_index": 424157,
+              "evolution_bounds": [
+                1,
+                424158
+              ],
+              "ancilla_instructions": 4529,
+              "expected_ancilla_instructions": 4529,
+              "ancilla_p": 1,
+              "event_phases": [],
+              "requests": 1,
+              "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+              "legacy_scalar_once": true
+            },
+            "sine": {
+              "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+              "status": "PASS",
+              "reasons": [],
+              "first_mismatch": null,
+              "scalar": -0.33147781341681615,
+              "expected_scalar": -0.33147781341681615,
+              "scalar_angle": 0.033147781341681615,
+              "scalar_index": 424157,
+              "evolution_bounds": [
+                1,
+                424158
+              ],
+              "ancilla_instructions": 4529,
+              "expected_ancilla_instructions": 4529,
+              "ancilla_p": 1,
+              "event_phases": [],
+              "requests": 1,
+              "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+              "legacy_scalar_once": true
+            }
+          }
+        },
+        "scalar": -0.33147781341681615,
+        "preparation_hash": "92325333cfe8c5e6c5f9bf69cdfc0ea6538f8eaa66327a3820d390dc2e8aa100",
+        "sampling": "ORIGINAL_NORMAL_SAMPLER",
+        "parents": [],
+        "trial_checks": [
+          {
+            "check": "low_control",
+            "error": 3.834796748020645e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 1.1852474480426756e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 1.2212453270876722e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 8.041082222847113e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 1.9872992140790302e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 7.547702091842301e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "resources": {
+          "wall_seconds": 613.4760218209121,
+          "peak_RSS_bytes": 2263863296
+        }
+      },
+      {
+        "price": {
+          "record": "DIRECT_COMPILED_PATH_PRICE_V1",
+          "cell_id": "G4528",
+          "axis": "X",
+          "index": 1,
+          "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+          "seeds": [
+            826347982126353897
+          ],
+          "physical": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 0,
+            "T": 0.1,
+            "q": 1,
+            "R_outer": 4528,
+            "K": 2,
+            "delta": 0.1,
+            "s": 4528,
+            "family": "FULL_H_PURE_RTE",
+            "L_D": 0,
+            "id": "FULL_H_26dfb15bbbefdc88fe66"
+          },
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "expectation": "FINITE_COHORT_ONLY",
+          "metrics": {
+            "rz_count": 691505,
+            "rz_depth": 196634,
+            "cx_count": 207872,
+            "cx_depth": 105467,
+            "total_depth": 415410,
+            "circuit_size": 1317278
+          },
+          "fingerprint": "6f7c1ad95cefdc17d8182abab29271646274b693c77f681d16fe009eb544a70c",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "G4528",
+            "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+            "step_seeds": [
+              [
+                17246386368192181302
+              ],
+              [
+                826347982126353897
+              ]
+            ]
+          },
+          "compile_receipt": {
+            "record": {
+              "metrics": {
+                "rz_count": 691505,
+                "rz_depth": 196634,
+                "cx_count": 207872,
+                "cx_depth": 105467,
+                "total_depth": 415410,
+                "circuit_size": 1317278
+              },
+              "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+              "fingerprint": "6f7c1ad95cefdc17d8182abab29271646274b693c77f681d16fe009eb544a70c"
+            },
+            "fingerprint": "6f7c1ad95cefdc17d8182abab29271646274b693c77f681d16fe009eb544a70c",
+            "reused": false,
+            "locator": {
+              "path": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G4528/compiled_cache/6f7c1ad95cefdc17d8182abab29271646274b693c77f681d16fe009eb544a70c.json",
+              "sha256": "9a208ebb51d247c48923bc33386050175a5187d88e7b1772ad7ae853a92b45b3"
+            },
+            "wall_seconds": 84.81310638017021,
+            "peak_RSS_bytes": 2263863296
+          },
+          "path_receipt": {
+            "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "selector": [
+              "child",
+              "paths",
+              1
+            ]
+          }
+        },
+        "checks": {
+          "trial_gates": [],
+          "builder_lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "legacy_rzz_control_instructions": 0,
+          "new_crz": 4528,
+          "parity": {
+            "status": "PASS",
+            "replaced_controlled_zz": 1296,
+            "legacy_instructions": 424549,
+            "new_instructions": 427141
+          },
+          "one_body_applications": 1527,
+          "scalar": -0.33147781341681615,
+          "scalar_expected": -0.33147781341681615,
+          "scalar_event_phases": {
+            "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+            "status": "PASS",
+            "reasons": [],
+            "first_mismatch": null,
+            "scalar": -0.33147781341681615,
+            "expected_scalar": -0.33147781341681615,
+            "scalar_angle": 0.033147781341681615,
+            "scalar_index": 427140,
+            "evolution_bounds": [
+              0,
+              427141
+            ],
+            "ancilla_instructions": 4529,
+            "expected_ancilla_instructions": 4529,
+            "ancilla_p": 1,
+            "event_phases": [],
+            "requests": 1,
+            "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+            "legacy_scalar_once": true
+          },
+          "scalar_once_legacy_diagnostic": true,
+          "provider_file": "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider/src/trotterlib/df_rte_qiskit.py"
+        },
+        "xy_phase_gate": {
+          "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+          "status": "PASS",
+          "same_controlled_evolution": true,
+          "evolution_instructions": {
+            "cosine": 427141,
+            "sine": 427141
+          },
+          "axes": {
+            "cosine": {
+              "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+              "status": "PASS",
+              "reasons": [],
+              "first_mismatch": null,
+              "scalar": -0.33147781341681615,
+              "expected_scalar": -0.33147781341681615,
+              "scalar_angle": 0.033147781341681615,
+              "scalar_index": 427141,
+              "evolution_bounds": [
+                1,
+                427142
+              ],
+              "ancilla_instructions": 4529,
+              "expected_ancilla_instructions": 4529,
+              "ancilla_p": 1,
+              "event_phases": [],
+              "requests": 1,
+              "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+              "legacy_scalar_once": true
+            },
+            "sine": {
+              "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+              "status": "PASS",
+              "reasons": [],
+              "first_mismatch": null,
+              "scalar": -0.33147781341681615,
+              "expected_scalar": -0.33147781341681615,
+              "scalar_angle": 0.033147781341681615,
+              "scalar_index": 427141,
+              "evolution_bounds": [
+                1,
+                427142
+              ],
+              "ancilla_instructions": 4529,
+              "expected_ancilla_instructions": 4529,
+              "ancilla_p": 1,
+              "event_phases": [],
+              "requests": 1,
+              "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+              "legacy_scalar_once": true
+            }
+          }
+        },
+        "scalar": -0.33147781341681615,
+        "preparation_hash": "92325333cfe8c5e6c5f9bf69cdfc0ea6538f8eaa66327a3820d390dc2e8aa100",
+        "sampling": "ORIGINAL_NORMAL_SAMPLER",
+        "parents": [],
+        "trial_checks": [],
+        "resources": {
+          "wall_seconds": 291.75907087000087,
+          "peak_RSS_bytes": 2263863296
+        }
+      }
+    ],
+    "implementation": {
+      "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "native": "H46_LONG_TIME_NATIVE_COMPOSE",
+      "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY",
+      "scalar_application": "ONCE_AT_TOTAL_T"
+    },
+    "profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "qiskit": "1.3.0",
+      "basis": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "P": 0
+    },
+    "native_source": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/h46_long_time_native.py"
+    },
+    "wrapper_source": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+    },
+    "lowering_source": {
+      "commit": "01e068af7e06d9f1f5621a5b3800c30eb32ecb06",
+      "path": "src/trottertracks/efficient_controlled_zz.py"
+    },
+    "preparation_source": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "scripts/h46_full_h_pure_rte.py"
+    },
+    "measurement": {
+      "axis": "X",
+      "include_measurement": true,
+      "state_preparation_cost_included": false
+    },
+    "correctness_scope": "ACTION_AND_COMPILED_VECTOR_ON_INDEX0; PHASE_PARITY_XY_ALL_PATHS",
+    "paired_dependence": null,
+    "law_expectation": false
+  },
+  "Y": {
+    "calibration_record": {
+      "record": "PRICE_CALIBRATION_RECORD_V1",
+      "cell_id": "G4528",
+      "role": "CALIBRATION",
+      "route": "FULL_H_RTE",
+      "axis": "Y",
+      "features": {
+        "event_count": {
+          "numerator": 4528,
+          "denominator": 1
+        },
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 0,
+          "denominator": 1
+        }
+      },
+      "rz_count": {
+        "numerator": 693571,
+        "denominator": 1
+      },
+      "kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+      "n_paths": 2,
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "K": 2,
+        "price_law": "PCG64_numpy_float64_CDF_saved_cohort",
+        "preparation": "9b83b96b:prepare_full_h"
+      },
+      "source": {
+        "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+        "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+        "caller": "scripts/run_full_h_kappa2_p2.py",
+        "plan": "D7",
+        "cell": "G4528",
+        "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+        "step_seeds": [
+          [
+            17246386368192181302
+          ],
+          [
+            826347982126353897
+          ]
+        ]
+      },
+      "implementation": {
+        "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "native": "H46_LONG_TIME_NATIVE_COMPOSE",
+        "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY",
+        "scalar_application": "ONCE_AT_TOTAL_T"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "qiskit": "1.3.0",
+        "basis": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "P": 0
+      },
+      "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+      "finite_sample_mean_is_law_expectation": false
+    },
+    "paths": [
+      {
+        "price": {
+          "record": "DIRECT_COMPILED_PATH_PRICE_V1",
+          "cell_id": "G4528",
+          "axis": "Y",
+          "index": 0,
+          "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+          "seeds": [
+            17246386368192181302
+          ],
+          "physical": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 0,
+            "T": 0.1,
+            "q": 1,
+            "R_outer": 4528,
+            "K": 2,
+            "delta": 0.1,
+            "s": 4528,
+            "family": "FULL_H_PURE_RTE",
+            "L_D": 0,
+            "id": "FULL_H_26dfb15bbbefdc88fe66"
+          },
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "expectation": "FINITE_COHORT_ONLY",
+          "metrics": {
+            "rz_count": 695637,
+            "rz_depth": 197021,
+            "cx_count": 208738,
+            "cx_depth": 105577,
+            "total_depth": 416274,
+            "circuit_size": 1325951
+          },
+          "fingerprint": "e035f9fe70daa1a6cabb79cf766a77adfd54d8341d66e8f692233ee21df825c9",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "G4528",
+            "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+            "step_seeds": [
+              [
+                17246386368192181302
+              ],
+              [
+                826347982126353897
+              ]
+            ]
+          },
+          "compile_receipt": {
+            "record": {
+              "metrics": {
+                "rz_count": 695637,
+                "rz_depth": 197021,
+                "cx_count": 208738,
+                "cx_depth": 105577,
+                "total_depth": 416274,
+                "circuit_size": 1325951
+              },
+              "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+              "fingerprint": "e035f9fe70daa1a6cabb79cf766a77adfd54d8341d66e8f692233ee21df825c9"
+            },
+            "fingerprint": "e035f9fe70daa1a6cabb79cf766a77adfd54d8341d66e8f692233ee21df825c9",
+            "reused": false,
+            "locator": {
+              "path": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G4528/compiled_cache/e035f9fe70daa1a6cabb79cf766a77adfd54d8341d66e8f692233ee21df825c9.json",
+              "sha256": "e853438bf13dd68fea5784e316fecd412c99d3bd87914d562d356b637c031ecc"
+            },
+            "wall_seconds": 100.62041626917198,
+            "peak_RSS_bytes": 2151288832
+          },
+          "path_receipt": {
+            "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "selector": [
+              "child",
+              "paths",
+              0
+            ]
+          }
+        },
+        "checks": {
+          "trial_gates": [
+            "low_control",
+            "high_control_leakage",
+            "independent_occupation_vector",
+            "Hadamard_cosine",
+            "compiled_vector_cosine",
+            "Hadamard_sine",
+            "compiled_vector_sine"
+          ],
+          "builder_lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "legacy_rzz_control_instructions": 0,
+          "new_crz": 4528,
+          "parity": {
+            "status": "PASS",
+            "replaced_controlled_zz": 1279,
+            "legacy_instructions": 421599,
+            "new_instructions": 424157
+          },
+          "one_body_applications": 1520,
+          "scalar": -0.33147781341681615,
+          "scalar_expected": -0.33147781341681615,
+          "scalar_event_phases": {
+            "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+            "status": "PASS",
+            "reasons": [],
+            "first_mismatch": null,
+            "scalar": -0.33147781341681615,
+            "expected_scalar": -0.33147781341681615,
+            "scalar_angle": 0.033147781341681615,
+            "scalar_index": 424156,
+            "evolution_bounds": [
+              0,
+              424157
+            ],
+            "ancilla_instructions": 4529,
+            "expected_ancilla_instructions": 4529,
+            "ancilla_p": 1,
+            "event_phases": [],
+            "requests": 1,
+            "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+            "legacy_scalar_once": true
+          },
+          "scalar_once_legacy_diagnostic": true,
+          "provider_file": "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider/src/trotterlib/df_rte_qiskit.py"
+        },
+        "xy_phase_gate": {
+          "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+          "status": "PASS",
+          "same_controlled_evolution": true,
+          "evolution_instructions": {
+            "cosine": 424157,
+            "sine": 424157
+          },
+          "axes": {
+            "cosine": {
+              "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+              "status": "PASS",
+              "reasons": [],
+              "first_mismatch": null,
+              "scalar": -0.33147781341681615,
+              "expected_scalar": -0.33147781341681615,
+              "scalar_angle": 0.033147781341681615,
+              "scalar_index": 424157,
+              "evolution_bounds": [
+                1,
+                424158
+              ],
+              "ancilla_instructions": 4529,
+              "expected_ancilla_instructions": 4529,
+              "ancilla_p": 1,
+              "event_phases": [],
+              "requests": 1,
+              "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+              "legacy_scalar_once": true
+            },
+            "sine": {
+              "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+              "status": "PASS",
+              "reasons": [],
+              "first_mismatch": null,
+              "scalar": -0.33147781341681615,
+              "expected_scalar": -0.33147781341681615,
+              "scalar_angle": 0.033147781341681615,
+              "scalar_index": 424157,
+              "evolution_bounds": [
+                1,
+                424158
+              ],
+              "ancilla_instructions": 4529,
+              "expected_ancilla_instructions": 4529,
+              "ancilla_p": 1,
+              "event_phases": [],
+              "requests": 1,
+              "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+              "legacy_scalar_once": true
+            }
+          }
+        },
+        "scalar": -0.33147781341681615,
+        "preparation_hash": "92325333cfe8c5e6c5f9bf69cdfc0ea6538f8eaa66327a3820d390dc2e8aa100",
+        "sampling": "ORIGINAL_NORMAL_SAMPLER",
+        "parents": [],
+        "trial_checks": [
+          {
+            "check": "low_control",
+            "error": 3.834796748020645e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 1.1852474480426756e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 1.2212453270876722e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 8.041082222847113e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 1.9872992140790302e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 7.547702091842301e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "resources": {
+          "wall_seconds": 613.4760218209121,
+          "peak_RSS_bytes": 2263863296
+        }
+      },
+      {
+        "price": {
+          "record": "DIRECT_COMPILED_PATH_PRICE_V1",
+          "cell_id": "G4528",
+          "axis": "Y",
+          "index": 1,
+          "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+          "seeds": [
+            826347982126353897
+          ],
+          "physical": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 0,
+            "T": 0.1,
+            "q": 1,
+            "R_outer": 4528,
+            "K": 2,
+            "delta": 0.1,
+            "s": 4528,
+            "family": "FULL_H_PURE_RTE",
+            "L_D": 0,
+            "id": "FULL_H_26dfb15bbbefdc88fe66"
+          },
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "expectation": "FINITE_COHORT_ONLY",
+          "metrics": {
+            "rz_count": 691505,
+            "rz_depth": 196634,
+            "cx_count": 207872,
+            "cx_depth": 105467,
+            "total_depth": 415410,
+            "circuit_size": 1317278
+          },
+          "fingerprint": "ccd3bf9fce653d7a49a81fa238b5a144c9902badba8ec44b29b2853c147a9447",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "G4528",
+            "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+            "step_seeds": [
+              [
+                17246386368192181302
+              ],
+              [
+                826347982126353897
+              ]
+            ]
+          },
+          "compile_receipt": {
+            "record": {
+              "metrics": {
+                "rz_count": 691505,
+                "rz_depth": 196634,
+                "cx_count": 207872,
+                "cx_depth": 105467,
+                "total_depth": 415410,
+                "circuit_size": 1317278
+              },
+              "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+              "fingerprint": "ccd3bf9fce653d7a49a81fa238b5a144c9902badba8ec44b29b2853c147a9447"
+            },
+            "fingerprint": "ccd3bf9fce653d7a49a81fa238b5a144c9902badba8ec44b29b2853c147a9447",
+            "reused": false,
+            "locator": {
+              "path": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G4528/compiled_cache/ccd3bf9fce653d7a49a81fa238b5a144c9902badba8ec44b29b2853c147a9447.json",
+              "sha256": "27c61066004262ca1cc46e085a43b5a9accad980a98776fcb40a924aa6234628"
+            },
+            "wall_seconds": 84.56801899592392,
+            "peak_RSS_bytes": 2263863296
+          },
+          "path_receipt": {
+            "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "selector": [
+              "child",
+              "paths",
+              1
+            ]
+          }
+        },
+        "checks": {
+          "trial_gates": [],
+          "builder_lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "legacy_rzz_control_instructions": 0,
+          "new_crz": 4528,
+          "parity": {
+            "status": "PASS",
+            "replaced_controlled_zz": 1296,
+            "legacy_instructions": 424549,
+            "new_instructions": 427141
+          },
+          "one_body_applications": 1527,
+          "scalar": -0.33147781341681615,
+          "scalar_expected": -0.33147781341681615,
+          "scalar_event_phases": {
+            "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+            "status": "PASS",
+            "reasons": [],
+            "first_mismatch": null,
+            "scalar": -0.33147781341681615,
+            "expected_scalar": -0.33147781341681615,
+            "scalar_angle": 0.033147781341681615,
+            "scalar_index": 427140,
+            "evolution_bounds": [
+              0,
+              427141
+            ],
+            "ancilla_instructions": 4529,
+            "expected_ancilla_instructions": 4529,
+            "ancilla_p": 1,
+            "event_phases": [],
+            "requests": 1,
+            "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+            "legacy_scalar_once": true
+          },
+          "scalar_once_legacy_diagnostic": true,
+          "provider_file": "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider/src/trotterlib/df_rte_qiskit.py"
+        },
+        "xy_phase_gate": {
+          "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+          "status": "PASS",
+          "same_controlled_evolution": true,
+          "evolution_instructions": {
+            "cosine": 427141,
+            "sine": 427141
+          },
+          "axes": {
+            "cosine": {
+              "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+              "status": "PASS",
+              "reasons": [],
+              "first_mismatch": null,
+              "scalar": -0.33147781341681615,
+              "expected_scalar": -0.33147781341681615,
+              "scalar_angle": 0.033147781341681615,
+              "scalar_index": 427141,
+              "evolution_bounds": [
+                1,
+                427142
+              ],
+              "ancilla_instructions": 4529,
+              "expected_ancilla_instructions": 4529,
+              "ancilla_p": 1,
+              "event_phases": [],
+              "requests": 1,
+              "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+              "legacy_scalar_once": true
+            },
+            "sine": {
+              "gate": "SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1",
+              "status": "PASS",
+              "reasons": [],
+              "first_mismatch": null,
+              "scalar": -0.33147781341681615,
+              "expected_scalar": -0.33147781341681615,
+              "scalar_angle": 0.033147781341681615,
+              "scalar_index": 427141,
+              "evolution_bounds": [
+                1,
+                427142
+              ],
+              "ancilla_instructions": 4529,
+              "expected_ancilla_instructions": 4529,
+              "ancilla_p": 1,
+              "event_phases": [],
+              "requests": 1,
+              "rule": "c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last",
+              "legacy_scalar_once": true
+            }
+          }
+        },
+        "scalar": -0.33147781341681615,
+        "preparation_hash": "92325333cfe8c5e6c5f9bf69cdfc0ea6538f8eaa66327a3820d390dc2e8aa100",
+        "sampling": "ORIGINAL_NORMAL_SAMPLER",
+        "parents": [],
+        "trial_checks": [],
+        "resources": {
+          "wall_seconds": 291.75907087000087,
+          "peak_RSS_bytes": 2263863296
+        }
+      }
+    ],
+    "implementation": {
+      "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+      "native": "H46_LONG_TIME_NATIVE_COMPOSE",
+      "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY",
+      "scalar_application": "ONCE_AT_TOTAL_T"
+    },
+    "profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "qiskit": "1.3.0",
+      "basis": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "P": 0
+    },
+    "native_source": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/h46_long_time_native.py"
+    },
+    "wrapper_source": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+    },
+    "lowering_source": {
+      "commit": "01e068af7e06d9f1f5621a5b3800c30eb32ecb06",
+      "path": "src/trottertracks/efficient_controlled_zz.py"
+    },
+    "preparation_source": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "scripts/h46_full_h_pure_rte.py"
+    },
+    "measurement": {
+      "axis": "Y",
+      "include_measurement": true,
+      "state_preparation_cost_included": false
+    },
+    "correctness_scope": "ACTION_AND_COMPILED_VECTOR_ON_INDEX0; PHASE_PARITY_XY_ALL_PATHS",
+    "paired_dependence": null,
+    "law_expectation": false
+  }
+}
