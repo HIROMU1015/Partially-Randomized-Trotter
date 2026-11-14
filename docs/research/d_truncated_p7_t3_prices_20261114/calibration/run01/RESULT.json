@@ -1,0 +1,1167 @@
+{
+  "status": "CALIBRATION_PRICES_COMPLETE",
+  "stage": "CALIBRATION",
+  "route": "TRUNCATED_PF",
+  "source": {
+    "caller": "scripts/run_truncated_p7_prices.py",
+    "native": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/h46_long_time_native.py"
+    },
+    "wrapper": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py"
+    },
+    "scalar": {
+      "commit": "5cc7c07e112ce97205948465c94441cba0042416",
+      "path": "src/trottertracks/baseline_signal_numerics.py",
+      "selector": "Context.tail_scalars[7] (saved INDEX context prefixes.7.scalar)"
+    },
+    "cohort": "D_TRUNCATED_P7_DETERMINISTIC_T3_V1",
+    "commit": "a393a65cc2f00cdad596e11b9910bae0394e2407",
+    "stage": "CALIBRATION",
+    "stage_module": "scripts/pf_price_stages.py",
+    "cell_plan": {
+      "commit": "43c15bfa34a22f313e55b824223b200332b7f23f",
+      "path": "docs/research/truncated_p7_admission_pr_df_evidence_20261114/CELL_PLAN_V2.json"
+    },
+    "comparison_policy": {
+      "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+      "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+      "metric": "compiled_rz_count",
+      "state_preparation": "P0_EXCLUDED",
+      "control": "symmetric_directional",
+      "measurement": "full_Hadamard_with_measurement",
+      "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+      "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+      "compiler": {
+        "qiskit": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed": 17
+      },
+      "scalar_by_route": {
+        "FULL_PF": "HAMILTONIAN_CONSTANT",
+        "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+      },
+      "scalar_application": "ONCE_AT_TOTAL_T",
+      "holdout": {
+        "name": "H-b",
+        "kind": "RELATIVE",
+        "scale": "observed",
+        "value": {
+          "numerator": 1,
+          "denominator": 50
+        },
+        "calibration_rounds": [
+          4,
+          5
+        ],
+        "holdout_rounds": [
+          6
+        ],
+        "individual_models": 12,
+        "success": "ALL_12_PASS",
+        "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+      }
+    }
+  },
+  "cells": [
+    {
+      "formula": "2nd",
+      "m": 4,
+      "id": "5447667fe98e43fcaa15",
+      "q": 7,
+      "model_groups": [
+        [
+          "TRUNCATED_PF",
+          "2nd",
+          "16/7",
+          "X"
+        ],
+        [
+          "TRUNCATED_PF",
+          "2nd",
+          "16/7",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "2nd",
+      "m": 5,
+      "id": "f4ac1ca5a9bbd331e740",
+      "q": 14,
+      "model_groups": [
+        [
+          "TRUNCATED_PF",
+          "2nd",
+          "16/7",
+          "X"
+        ],
+        [
+          "TRUNCATED_PF",
+          "2nd",
+          "16/7",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "4th",
+      "m": 4,
+      "id": "91100691c8f55c5a3ab0",
+      "q": 3,
+      "model_groups": [
+        [
+          "TRUNCATED_PF",
+          "4th",
+          "16/3",
+          "X"
+        ],
+        [
+          "TRUNCATED_PF",
+          "4th",
+          "16/3",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "4th",
+      "m": 5,
+      "id": "ab88d1a1b056176a8e8b",
+      "q": 6,
+      "model_groups": [
+        [
+          "TRUNCATED_PF",
+          "4th",
+          "16/3",
+          "X"
+        ],
+        [
+          "TRUNCATED_PF",
+          "4th",
+          "16/3",
+          "Y"
+        ]
+      ]
+    },
+    {
+      "formula": "4th(m5_best)",
+      "m": 5,
+      "id": "d6fa66973e455333114e",
+      "q": 2,
+      "model_groups": [
+        [
+          "TRUNCATED_PF",
+          "4th(m5_best)",
+          "16",
+          "X"
+        ],
+        [
+          "TRUNCATED_PF",
+          "4th(m5_best)",
+          "16",
+          "Y"
+        ]
+      ]
+    }
+  ],
+  "saved_calibration": [
+    "TRUNCATED_PF|4th(m5_best)|16|X",
+    "TRUNCATED_PF|4th(m5_best)|16|Y"
+  ],
+  "duplicate_preflight": {
+    "status": "NO_DUPLICATE_IN_CHECKED_SOURCES",
+    "table": {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz"
+    },
+    "catalog": {
+      "commit": "e7dca5f7301c8633b17a59b6a7161331303aef2d",
+      "path": "docs/research/d_full_pf_full_h_v2_final_receipts_20261113/COVERAGE_V2.json"
+    },
+    "original_trial_root": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/cost/EXPLORATION",
+    "checked_stage_roots": [
+      "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01",
+      "docs/research/d_truncated_p7_t3_prices_20261114/holdout/run01"
+    ],
+    "running_jobs": [],
+    "cells": [
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "2nd",
+          "T": 1.6,
+          "q": 7,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "5447667fe98e43fcaa15"
+        },
+        "m": 4,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "2nd",
+          "T": 3.2,
+          "q": 14,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "f4ac1ca5a9bbd331e740"
+        },
+        "m": 5,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "4th",
+          "T": 1.6,
+          "q": 3,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "91100691c8f55c5a3ab0"
+        },
+        "m": 4,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "4th",
+          "T": 3.2,
+          "q": 6,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "ab88d1a1b056176a8e8b"
+        },
+        "m": 5,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      },
+      {
+        "physical_candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "4th(m5_best)",
+          "T": 3.2,
+          "q": 2,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "d6fa66973e455333114e"
+        },
+        "m": 5,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "findings": []
+      }
+    ],
+    "scope": "KNOWN_TABLE_CATALOG_EXACT_TRIAL_PATHS_ROUTE_STAGE_RECEIPTS_AND_RELEVANT_USER_JOBS",
+    "unlisted_private_evidence": "UNKNOWN_REQUIRES_OPERATOR_CHECK_BEFORE_SCIENCE",
+    "prices_reestimated": false,
+    "automatic_reuse": false
+  },
+  "holdout_gate": null,
+  "calibration_after": null,
+  "child_exit": 0,
+  "error": null,
+  "results": [
+    {
+      "cell": {
+        "m": 4,
+        "row": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "2nd",
+          "T": 1.6,
+          "q": 7,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "5447667fe98e43fcaa15"
+        },
+        "signed_pieces": 7,
+        "actual_delta_over_h": "16/7",
+        "action": "NEW_COMPILE",
+        "role": "CALIBRATION",
+        "model_groups": [
+          [
+            "TRUNCATED_PF",
+            "2nd",
+            "16/7",
+            "X"
+          ],
+          [
+            "TRUNCATED_PF",
+            "2nd",
+            "16/7",
+            "Y"
+          ]
+        ],
+        "formula": "2nd"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "2nd",
+          "T": 1.6,
+          "q": 7,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "5447667fe98e43fcaa15"
+        },
+        "cohort": "D_TRUNCATED_P7_DETERMINISTIC_T3_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 38898,
+            "rz_depth": 10554,
+            "cx_count": 18756,
+            "cx_depth": 10284,
+            "total_depth": 26151,
+            "circuit_size": 81259
+          },
+          "sine": {
+            "rz_count": 38898,
+            "rz_depth": 10554,
+            "cx_count": 18756,
+            "cx_depth": 10284,
+            "total_depth": 26151,
+            "circuit_size": 81259
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 7.180079544492772e-15,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 7.112361437801553e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 3.219646771412954e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 4.520261215672476e-12,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 5.329070518200751e-15,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 4.1891337351934425e-12,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.293146549384713,
+        "log_B": 0,
+        "preparation_hash": "fc83f26f1612a41d1d34caae79e78d3b5ce8e961d0e442ca4a9e92168006cf31",
+        "cache_hits": 0,
+        "wall_seconds": 66.86454823217355,
+        "peak_RSS_bytes": 464891904
+      },
+      "facts": {
+        "retained_blocks": 8,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "scalar": 2.293146549384713,
+        "tail_identity": 4.5302064712666724e-05,
+        "signed_pieces": 7,
+        "negative_pieces": 0,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "3f853b0e73fb8cf2267837b8c01addf90f7d976240d9a567ad20f22a1c14b680",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "c007890db736705b0a21cb442604905c32c51c75561c54f1a7d62881eacff479",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 66.86527888616547
+    },
+    {
+      "cell": {
+        "m": 5,
+        "row": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "2nd",
+          "T": 3.2,
+          "q": 14,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "f4ac1ca5a9bbd331e740"
+        },
+        "signed_pieces": 14,
+        "actual_delta_over_h": "16/7",
+        "action": "NEW_COMPILE",
+        "role": "CALIBRATION",
+        "model_groups": [
+          [
+            "TRUNCATED_PF",
+            "2nd",
+            "16/7",
+            "X"
+          ],
+          [
+            "TRUNCATED_PF",
+            "2nd",
+            "16/7",
+            "Y"
+          ]
+        ],
+        "formula": "2nd"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "2nd",
+          "T": 3.2,
+          "q": 14,
+          "delta": 0.2285714285714286,
+          "R_outer": null,
+          "K": null,
+          "id": "f4ac1ca5a9bbd331e740"
+        },
+        "cohort": "D_TRUNCATED_P7_DETERMINISTIC_T3_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 77489,
+            "rz_depth": 21033,
+            "cx_count": 37432,
+            "cx_depth": 20532,
+            "total_depth": 52149,
+            "circuit_size": 161962
+          },
+          "sine": {
+            "rz_count": 77489,
+            "rz_depth": 21033,
+            "cx_count": 37432,
+            "cx_depth": 20532,
+            "total_depth": 52149,
+            "circuit_size": 161962
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 1.6460956393372557e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 9.182188017403353e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 5.573319583618286e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 8.92004805485661e-12,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 3.4638958368304884e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 8.18420157798208e-12,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.293146549384713,
+        "log_B": 0,
+        "preparation_hash": "fc83f26f1612a41d1d34caae79e78d3b5ce8e961d0e442ca4a9e92168006cf31",
+        "cache_hits": 0,
+        "wall_seconds": 134.17366897896864,
+        "peak_RSS_bytes": 568684544
+      },
+      "facts": {
+        "retained_blocks": 8,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "scalar": 2.293146549384713,
+        "tail_identity": 4.5302064712666724e-05,
+        "signed_pieces": 14,
+        "negative_pieces": 0,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "2aa4e6ccaf66531b58a346c3ee1aab64b9608d80915025c7da481bf865660a57",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "a7b1155c8e7cc59188f55b0b02c18a5935db0b0ba631152d1fede762e68c9ec7",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 134.17449795198627
+    },
+    {
+      "cell": {
+        "m": 4,
+        "row": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "4th",
+          "T": 1.6,
+          "q": 3,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "91100691c8f55c5a3ab0"
+        },
+        "signed_pieces": 9,
+        "actual_delta_over_h": "16/3",
+        "action": "NEW_COMPILE",
+        "role": "CALIBRATION",
+        "model_groups": [
+          [
+            "TRUNCATED_PF",
+            "4th",
+            "16/3",
+            "X"
+          ],
+          [
+            "TRUNCATED_PF",
+            "4th",
+            "16/3",
+            "Y"
+          ]
+        ],
+        "formula": "4th"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "4th",
+          "T": 1.6,
+          "q": 3,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "91100691c8f55c5a3ab0"
+        },
+        "cohort": "D_TRUNCATED_P7_DETERMINISTIC_T3_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 49924,
+            "rz_depth": 13548,
+            "cx_count": 24092,
+            "cx_depth": 13212,
+            "total_depth": 33579,
+            "circuit_size": 104317
+          },
+          "sine": {
+            "rz_count": 49924,
+            "rz_depth": 13548,
+            "cx_count": 24092,
+            "cx_depth": 13212,
+            "total_depth": 33579,
+            "circuit_size": 104317
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 8.813524328534084e-15,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 7.807326040580547e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 1.432187701766452e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 5.7828699635532945e-12,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 5.162537064506978e-15,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 5.356110702123964e-12,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.293146549384713,
+        "log_B": 0,
+        "preparation_hash": "fc83f26f1612a41d1d34caae79e78d3b5ce8e961d0e442ca4a9e92168006cf31",
+        "cache_hits": 0,
+        "wall_seconds": 91.30892235203646,
+        "peak_RSS_bytes": 495710208
+      },
+      "facts": {
+        "retained_blocks": 8,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "scalar": 2.293146549384713,
+        "tail_identity": 4.5302064712666724e-05,
+        "signed_pieces": 9,
+        "negative_pieces": 3,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "48b44025e8665708cc639f686f92fd52e0cc767bfd177b79602ff115e43ba5d6",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "dbb0ef4ead44b2d60a1644e7cd86cd27232476439fd10a58e440deda0386bfdf",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 91.30996642401442
+    },
+    {
+      "cell": {
+        "m": 5,
+        "row": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "4th",
+          "T": 3.2,
+          "q": 6,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "ab88d1a1b056176a8e8b"
+        },
+        "signed_pieces": 18,
+        "actual_delta_over_h": "16/3",
+        "action": "NEW_COMPILE",
+        "role": "CALIBRATION",
+        "model_groups": [
+          [
+            "TRUNCATED_PF",
+            "4th",
+            "16/3",
+            "X"
+          ],
+          [
+            "TRUNCATED_PF",
+            "4th",
+            "16/3",
+            "Y"
+          ]
+        ],
+        "formula": "4th"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "4th",
+          "T": 3.2,
+          "q": 6,
+          "delta": 0.5333333333333333,
+          "R_outer": null,
+          "K": null,
+          "id": "ab88d1a1b056176a8e8b"
+        },
+        "cohort": "D_TRUNCATED_P7_DETERMINISTIC_T3_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 99541,
+            "rz_depth": 27021,
+            "cx_count": 48104,
+            "cx_depth": 26388,
+            "total_depth": 67005,
+            "circuit_size": 208078
+          },
+          "sine": {
+            "rz_count": 99541,
+            "rz_depth": 27021,
+            "cx_count": 48104,
+            "cx_depth": 26388,
+            "total_depth": 67005,
+            "circuit_size": 208078
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 1.2976550453288235e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 1.016037406350269e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 1.8318679906315083e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 1.1426224288138675e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 1.4876988529977098e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 1.0496804468036817e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.293146549384713,
+        "log_B": 0,
+        "preparation_hash": "fc83f26f1612a41d1d34caae79e78d3b5ce8e961d0e442ca4a9e92168006cf31",
+        "cache_hits": 0,
+        "wall_seconds": 173.07130479603074,
+        "peak_RSS_bytes": 627441664
+      },
+      "facts": {
+        "retained_blocks": 8,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "scalar": 2.293146549384713,
+        "tail_identity": 4.5302064712666724e-05,
+        "signed_pieces": 18,
+        "negative_pieces": 6,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "15ff7c4b5f960ba3c0b0219888673077410b3594ca82d6c145217ad8de38bccf",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "283996c283ba94cc5b5b04f00907605f4d115a8947d08d04ef72f1957a9d42a5",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 173.07216306985356
+    },
+    {
+      "cell": {
+        "m": 5,
+        "row": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "4th(m5_best)",
+          "T": 3.2,
+          "q": 2,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "d6fa66973e455333114e"
+        },
+        "signed_pieces": 22,
+        "actual_delta_over_h": "16",
+        "action": "NEW_COMPILE",
+        "role": "CALIBRATION",
+        "model_groups": [
+          [
+            "TRUNCATED_PF",
+            "4th(m5_best)",
+            "16",
+            "X"
+          ],
+          [
+            "TRUNCATED_PF",
+            "4th(m5_best)",
+            "16",
+            "Y"
+          ]
+        ],
+        "formula": "4th(m5_best)"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "B0I",
+          "prefix": 7,
+          "formula": "4th(m5_best)",
+          "T": 3.2,
+          "q": 2,
+          "delta": 1.6,
+          "R_outer": null,
+          "K": null,
+          "id": "d6fa66973e455333114e"
+        },
+        "cohort": "D_TRUNCATED_P7_DETERMINISTIC_T3_V1",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 121593,
+            "rz_depth": 33009,
+            "cx_count": 58776,
+            "cx_depth": 32244,
+            "total_depth": 81861,
+            "circuit_size": 254194
+          },
+          "sine": {
+            "rz_count": 121593,
+            "rz_depth": 33009,
+            "cx_count": 58776,
+            "cx_depth": 32244,
+            "total_depth": 81861,
+            "circuit_size": 254194
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 2.030162122669106e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 1.3988326840723203e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 5.484501741648273e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 1.3989405267326838e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 3.108624468950438e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 1.2834344058851703e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.293146549384713,
+        "log_B": 0,
+        "preparation_hash": "fc83f26f1612a41d1d34caae79e78d3b5ce8e961d0e442ca4a9e92168006cf31",
+        "cache_hits": 0,
+        "wall_seconds": 222.30451686005108,
+        "peak_RSS_bytes": 676458496
+      },
+      "facts": {
+        "retained_blocks": 8,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "scalar": 2.293146549384713,
+        "tail_identity": 4.5302064712666724e-05,
+        "signed_pieces": 22,
+        "negative_pieces": 2,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "b9d984cf43ca78aba49fa7f248fe0a66105da8e528de5964a0d18cd53637d91c",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "def955c7cc1bf3c92ebf7309da8f3d26ae68f2882fb761902bd0fe30c00b5464",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 222.30572218005545
+    }
+  ],
+  "resources": {
+    "workers": 5,
+    "observation": {
+      "affinity": 64,
+      "idle_cpu": 59.83021346469622,
+      "available_ram": 524068716544,
+      "free_disk": 495619792896,
+      "arbitrary_caps": null,
+      "shared_system_changes": false
+    },
+    "cells": 5,
+    "started": 5,
+    "not_started_after_failure": 0
+  },
+  "elapsed_seconds": 226.19069137098268,
+  "finished_utc": "2026-11-14T16:51:02.928896+00:00",
+  "mandatory_stop": true,
+  "retry_performed": false,
+  "fit": null,
+  "prediction": null,
+  "holdout_judgement": null,
+  "N": null,
+  "G": null
+}
