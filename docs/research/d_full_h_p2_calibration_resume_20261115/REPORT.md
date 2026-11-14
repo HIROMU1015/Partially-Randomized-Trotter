@@ -54,3 +54,5 @@ G36223のpath0最終receiptが未取得。compile自体の未取得0、最終pat
 D7予定5 cell・9観測path・18実compile、事前同等価格再利用0。実取得18、内訳SOURCEd323が16・887が2・0dcが0。継続時に再利用した4 compileはこの18件の内数。独立normal pathは8本、paired観測1本はG566親2本に依存する。G36223のnative7 gateは保存済みPASSだが、path0最終phase/parity/XY/fingerprint receiptはUNKNOWN。path1は全path検査PASSで保存済み。完全なG36223 PRICE_CALIBRATION_RECORD_V1や有限cohort平均を捏造しない。
 
 追加sampling/compile、科学retry、閾値緩和、seed差替え、fit/凍結、HOLDOUT、law E[C]/N/Gは行っていない。母law CI/confidence・rare寄与・sampler/ideal距離・長時間一般化は未資格。最終C引渡しは完成4 cellと未完了G36223の部分証拠を明確に区別し、C科学的受入はNOT_PERFORMED。ロードマップ本体は編集しない。
+
+公開結果SHA：`1fdb5dd42f65d6286848dc76e686f62c5b3accf8`。保存済みraw/compile・部分証拠を公開commitから読取り照合しPASSした。旧4 cellの結果は7d0c39066へ固定済み。C向け固定locatorと実際の検査範囲はHANDOFF_C.json／PUBLICATION_CHECK.jsonを参照。これは公開後のD1技術照合であり、path0残検査やC科学受入のPASSではない。

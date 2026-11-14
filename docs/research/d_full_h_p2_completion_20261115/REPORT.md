@@ -33,3 +33,7 @@ G36223の価格はpath0 X/Y各5552901、path1 X/Y各5572406。[OBSERVED_COMPILES
 G36223の完全なPRICE_CALIBRATION_RECORD_V1は作成しない。既存4 cell・8個のC入力recordと14軸の公開済み証拠を維持し、G36223の保存4価格・path1 PASS・path0未確認を部分引渡しとして渡す。D1の公開後技術照合とC科学的受入NOT_PERFORMEDを区別する。canonical-round guardは呼ばない。
 
 ロードマップへの影響：D7全較正引渡しの前提は未達であり、C fit/凍結と、その後のHOLDOUTには進めない。原因特定と未確認path0の扱いが後続課題。価格モデルの否定や量子的correctness失敗とは結論しない。ロードマップ本体は統合担当が更新する。
+
+公開結果SHA：`1fdb5dd42f65d6286848dc76e686f62c5b3accf8`。保存済みraw/compile・部分証拠を公開commitから読取り照合しPASSした。旧4 cellの結果は7d0c39066へ固定済み。C向け固定locatorと実際の検査範囲はHANDOFF_C.json／PUBLICATION_CHECK.jsonを参照。これは公開後のD1技術照合であり、path0残検査やC科学受入のPASSではない。
+
+[C向け固定locator](../d_full_h_p2_calibration_resume_20261115/HANDOFF_C.json)／[公開後検査](PUBLICATION_CHECK.json)。

@@ -80,3 +80,7 @@ G36223新privateの `path_result_1.json` はPASSで保存済み（約1.04GB、X/
 session72424はexit2。SOURCE0dcの新workerは4:14.99で最終child receiptを書かず異常終了した。新root RESULTはSTOP_CELL/child=null/error=nullである。これは予期した切替STOPではなく未解決の実行異常で、終了signalは既存executorが保存していないため不明。stageはbuild_new_evolution、内部stackはfast writer内、2回目dumpは途中で切れている。cgroup OOM記録なし。単純人工timer診断はexit0で実異常を再現できなかった。
 
 追加sampling/compile0。18 unique compile価格は保存済み。最終path検査16軸PASS/2軸UNKNOWN、全較正4 cell完了・G36223未完了。path0の元native7 gate/2compileとevent/QPY、完了path1の全receipt/2compileを保全する。**無断retry・新規科学投入をせずmandatory STOPを維持する。** 最新REPORT/HANDOFFの公開とremote照合を完了する。fit/凍結・HOLDOUT・law E[C]/N/Gへ進まない。
+
+## 公開後検査完了
+
+部分結果commit `1fdb5dd42f65d6286848dc76e686f62c5b3accf8` をpush済み。保存event0と完了path1を公開commitからlossless復号・hash/seed/実装証拠照合し、4原compile JSONと元native gate file hashを確認。C generic evidence readerの読取もPASS。PUBLICATION_CHECK.jsonとHANDOFF_C.jsonへlocator結合済み。これはpath0 UNKNOWNを解消する検査ではなく、mandatory STOPを維持する。科学retry・fit/HOLDOUT/E[C]/N/Gへ進まない。

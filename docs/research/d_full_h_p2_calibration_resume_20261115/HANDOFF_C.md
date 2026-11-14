@@ -30,3 +30,11 @@ G36223のpath0は旧SOURCEでnative7 gateと2 compileが保存済み。許可さ
 G36223のCOMPILE_RECORDSは元JSON bytes/hashを保存し、OBSERVED_COMPILESで軸・producer SOURCE・測定RZ・受入状態を照合する。path0のX/Yは保存QPY末尾の測定軸と固定hashで確認した。元native7 gateは7d0のNATIVE_CHECKPOINT_PATH0.jsonに固定される。原eventはSAVED_PATH0_EVENTS、完了path1原receiptはSAVED_PATH1にlossless gzipで保存する。これらは部分証拠であり、G36223の完成PRICE_CALIBRATION_RECORD_V1や全D7の受入を意味しない。
 
 既存4 cellの固定locatorは7d0c39066のまま維持する。G36223部分証拠の公開SHAとD1の公開後読取検査は、HANDOFF_C.jsonのG36223_partialへ結合する。C担当の科学的受入は全て未実施。非configuration cellへcanonical round identityを割り当てない。
+
+## 最終公開locatorの結合
+
+G36223の部分結果SHA：`1fdb5dd42f65d6286848dc76e686f62c5b3accf8`。各path/軸の元compile JSON・観測価格・producer SOURCE・raw manifest・実装証拠の固定locatorはHANDOFF_C.jsonの `G36223_partial.path_axis_bindings`。完成4 cellの8個のPRICE_CALIBRATION_RECORD_V1は `available_PRICE_CALIBRATION_RECORD_V1_locators` に列挙し、元7d0のlocatorを維持する。
+
+D1は公開SHAから両raw archiveを復号し、path0の元event hash/cohort/seed、path1の完了receipt hashと全実装証拠、4つの元compiler JSON bytes/hash/metrics/fingerprint、元native7 gateの公開file hashを確認した。[公開後検査](../d_full_h_p2_completion_20261115/PUBLICATION_CHECK.json)。C c628e9e8のgeneric evidence readerで部分JSONが読めることも確認した。D1技術検査であり、C科学的受入はNOT_PERFORMEDのまま。
+
+G36223のC_INPUTSは存在せず、完成較正recordを作っていないことも照合した。path0最終検査2軸UNKNOWN・全D7未完了・mandatory STOPを維持する。
