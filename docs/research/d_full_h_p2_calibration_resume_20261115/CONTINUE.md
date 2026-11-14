@@ -1,5 +1,28 @@
 # D7較正の継続用メモ（チャットを一旦終了、計算は継続）
 
+## 現在の優先事項：監視不具合修正後の残検査再開（8cce54064）
+
+以下の旧記録は履歴。利用者の「原因を調査して修正して再実行してよい」を受けて、
+同環境の人工FastWriter＋定期stack dumpでSIGSEGVを再現した。worker内dumpを除去し、
+親processによる段階・資源・実終了code/signalの記録へ変更。13人工test・保存入力照合PASS。
+SOURCE/input `8cce540645b99e515d72888b817782a1b9f97334` をpush/remote照合してから残検査を再開した。
+
+- 実行checkout：`/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-p2-recovery-20261115`（detached HEAD固定）
+- session：21666。**同一jobを再投入しない。正常workerを中断しない。**
+- public：`docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RESULT.json`
+- console/time：同recovery01直下の `G36223.console.txt` / `G36223.time.txt`
+- private：`/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/recovery01/G36223`
+- 観測：PROGRESS.jsonl、OBSERVATIONS.jsonl、CHILD_EXIT.json（終了時）。worker内STACKSは作らない。
+- 範囲：元d323のnative path0残検査のみ。887の完了path1はそのまま再利用。sampling/compileは明示禁止。
+- compile上限：18 uniqueは全て取得済み。新実行での追加compile 0。
+
+旧887/0dc checkout・STOP・raw/compiled QPYを保持している。今回も重大gate失敗時はSTOP。
+成功後は元D1 worktreeでG36223のreceiptをlossless公開し、元4 compile JSONをbyte保存し、
+READ_RECEIPT.bindで公開SHAの4軸対応を確認する。既存4 cellの14軸locatorは7d0のまま再利用する。
+全5 cell/18軸のHANDOFFを公開・remote照合し、mandatory STOP。C科学受入は未実施。
+fit/凍結・HOLDOUT6compile・外挿・E[C]/N/Gへ進まない。
+[修正と再現証拠](../d_full_h_p2_completion_20261115/RECOVERY.md)。
+
 ユーザーが計算待ちのチャット終了を許可した。科学workerは停止・再起動していない。**再開時に再投入しないこと。** 最終報告・結果公開は未完了。
 
 ## 固定SOURCEと範囲

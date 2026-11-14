@@ -46,3 +46,14 @@ native/provider/compiler/profile/数値gateは変更しない。sampler/compiler
 関連する科学jobの重複稼働0を確認。[RECOVERY_PREFLIGHT.json](RECOVERY_PREFLIGHT.json)。
 追加testの初回では人工fixtureの既存fileへの排他writeで1件ERRORとなり、fixtureのみ修正して13件を再検査した。
 実行状況：このSOURCEと入力を固定してから残検査を再開する。実H4残検査はまだ再開していない。
+
+## 固定後の実行
+
+SOURCE/input `8cce540645b99e515d72888b817782a1b9f97334` をcommit/pushし、remote SHA一致を確認した。
+旧887/0dcのHEADを保持して専用detached checkout `d-full-h-p2-recovery-20261115` を作成した。
+session21666で `--recover-approved-job FROZEN_RECOVERY.json` を実行中。追加sampling/compileは禁止。
+進捗はrecovery01のconsole/time、private/recovery01/G36223のPROGRESS/OBSERVATIONS/CHILD_EXITへ保存する。
+実行前の記載は履歴であり、最終gateのPASSはまだ未確認。
+
+共通AGENTS.mdにも、親からの観測を優先し、このPython環境での非同期dumpを使わない指示を追記した。
+Claudeは既存CLAUDE.mdの共通AGENTS importから同じ指示を読む。別AIによる検査は行っていない。

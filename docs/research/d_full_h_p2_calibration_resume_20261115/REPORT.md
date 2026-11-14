@@ -1,5 +1,12 @@
 # Full-H κ2 D7 CALIBRATION取得
 
+**最新：利用者許可により監視不具合を修正し、SOURCE8cce54064で残検査を再開中。**
+同環境の人工FastWriter＋定期stack dumpでSIGSEGVを再現し、worker内dumpを親process観測へ変更した。
+13人工test PASS、固定input/hash照合PASS、commit/push/remote照合済み。
+18実compileは再利用し、追加sampling/compile0。G36223 path0残検査のみ、path1は完了receiptを再利用する。
+[修正と現在の実行](../d_full_h_p2_completion_20261115/RECOVERY.md)／[再投入禁止の継続メモ](CONTINUE.md)。
+以下の0dc STOP報告は保全された履歴。最終検査の現受入状態は16軸PASS/2軸UNKNOWNで、全較正引渡しは未完了。
+
 **MANDATORY STOP：全18 compileの価格は保存済み、最終path検査は16軸PASS・2軸UNKNOWN。** 4 cellの較正recordは完成したが、G36223 path0の最終receiptが未取得で全較正は未完了。SOURCE0dcのworkerが異常終了し、再投入せず停止した。[終了報告](../d_full_h_p2_completion_20261115/REPORT.md)／[STOP_DETAIL](../d_full_h_p2_completion_20261115/STOP_DETAIL.json)。
 
 ## 固定条件とSOURCE

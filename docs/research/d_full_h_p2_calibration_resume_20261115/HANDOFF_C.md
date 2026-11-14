@@ -1,5 +1,7 @@
 # C向け部分引渡し：D7 CALIBRATION
 
+最新：利用者許可によりSOURCE8cce54064でG36223 path0残検査を再開中。人工負荷で監視dumpのSIGSEGVを再現し、親process観測へ修正した。追加sampling/compile0。下記STOPは履歴、現受入は16軸PASS/2軸UNKNOWNのまま。[修正と実行](../d_full_h_p2_completion_20261115/RECOVERY.md)。
+
 **MANDATORY STOP・全較正未完了。C fit/凍結は実施しない。** 18 compileの価格は全て保存したが、最終path検査は16軸PASS/2軸UNKNOWN。4 cell・14軸の公開後対応検査はPASS。G36223 path1は保存済みPASS、path0残検査のworkerが異常終了した。完全な各cell/path/X/Y locatorは [HANDOFF_C.json](HANDOFF_C.json) の `cells.*.path_axis_bindings` にある。
 
 結果SHA：`7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f`。取得SOURCEはd323fee1c、G36223の許可済みcheckpoint継続SOURCEは887c3b9d0。D7のplan/cohort/seedはFROZEN_JOBSから変更していない。

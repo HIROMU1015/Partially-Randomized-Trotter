@@ -17,3 +17,7 @@ G566/G4528/Q8R566/P2R566の14軸は結果7d0c39066へ公開し、lossless receip
 利用者の切替許可後、旧887の完了path1と元d323のpath0 nativeをhash固定して保全し、SOURCE0dcへ追加sampling/compile0で引き継いだ。旧manager/workerだけを制御付きで終了し、2:22:05の旧terminal STOPを移管理由付きで保存した。新workerは4:14.99でchild receiptを書かず異常終了、終了signalは未記録で原因未特定。最初の内部stackはfast writer内、2回目の定期dumpは途中で切れている。cgroup OOM記録0、単純人工timer診断はexit0で再現せず。
 
 価格18 compileは保存済み（d323で16、887で2）、最終path検査16軸PASS/2軸UNKNOWN、4 cell完成・G36223未完了。数値gateの不一致を観測したとは言わず、path0残検査の欠落をPASSにしない。G36223完全較正平均recordを作らず、4 cellの完成recordと保存4価格の部分証拠をCへ分けて渡す。科学retry・条件緩和・seed変更0、mandatory STOPを維持。C fit/凍結・HOLDOUT・E[C]/N/Gには進まず、ロードマップ本体は編集しない。最新REPORT/HANDOFFと固定公開locatorを正本とする。
+
+## 監視クラッシュの人工再現と利用者許可後の残検査再開
+
+Python3.11.0rc1＋人工3-qubit FastWriterで定期faulthandler dump有効時にSIGSEGV(-11)、無効時に完了を確認。旧実workerのsignalは欠落しており同一原因と断定しない。利用者の修正・再実行許可を受け、親process観測へ変更、13人工testと元input/hash照合PASS。SOURCE8cce540645b99e515d72888b817782a1b9f97334をpush/remote照合後、隔離checkoutでpath0残検査のみ再開。完了path1と18 compileを再利用、追加sampling/compile0。旧SOURCE/STOP保全、最終受入16PASS/2UNKNOWNのまま。全較正引渡し又は重大gate失敗でmandatory STOP、fit/HOLDOUT/E[C]/N/Gへ進まない。
