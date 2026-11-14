@@ -4,6 +4,8 @@
 
 [ADMISSION.json](ADMISSION.json)は既存ALIGNMENTへの差分索引、[COVERAGE.csv](COVERAGE.csv)は26行の一覧。[SOURCE_FACTS.json](SOURCE_FACTS.json)に実行済みSOURCEとscalar/preparation/profileを結び、[HANDOFF.md](HANDOFF.md)からB原Q3結果と元receiptをたどれる。[NEXT_VALIDATION_PLAN.md](NEXT_VALIDATION_PLAN.md)は未採択・未承認の追加検証1案。
 
+受入索引・reader・元receipt copyの固定commitは**`c99d511e2422b8f250490b11054f754a81e536c5`**。公開時のCSV改行整備はmetadata表の書式だけで、ADMISSION/receipt bytes・科学値・役割を変更していない。
+
 ## 重複確認と再利用
 
 既存C branch `codex/m5-m4-receipt-admission-20261114`を継続。開始HEAD/公開refは`04a68f5932f53377595b2d69bbf8f46e02e82a01`、worktree clean。関連branch/refとtracked結果path名に同等のLD1-Q3価格受入を認めず、同Linuxユーザーの関連Python script名にも同じ受入jobを観測しなかった。確認範囲外の別名archive/別serverを網羅する主張ではない。他担当のworktree/process/cacheは変更していない。

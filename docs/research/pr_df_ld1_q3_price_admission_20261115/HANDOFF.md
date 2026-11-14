@@ -2,6 +2,8 @@
 
 本ディレクトリの[REPORT](REPORT.md)／[ADMISSION.json](ADMISSION.json)／[COVERAGE.csv](COVERAGE.csv)／[SOURCE_FACTS](SOURCE_FACTS.json)／[追加検証1案](NEXT_VALIDATION_PLAN.md)。E[S]26/26接続、P1/P2 freshのm0/m6各X/Yを有限pathとして受入、保留0。新科学計算・compile・平均・残差fit・Q3再評価・Gは0。
 
+**受入索引・reader・原receipt copyの固定commit：`c99d511e2422b8f250490b11054f754a81e536c5`。** 入口は同commitの`docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json`。各`archived_path`はこのcommitで解決できる。元価格の生成SOURCEやcohortをこのconsumer commitへ付け替えない。
+
 ## Bの正本からたどる
 
 1. `a82b0f0ec7f0f11d9981ddb2343fcd5378a87503:docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json`の`candidates[label=PR_DF_LD1].rows`から元configuration/physical ID/m/axis、元candidate、total decoder用candidate、評価済みallocationを読む。
