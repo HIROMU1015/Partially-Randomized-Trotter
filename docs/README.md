@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full PF/B0I p7 shortlist全13round結果](research/pf_shortlist_mean_completion_20261115/REPORT.md)：新48PASS＋保存30、6packet完成。[B引渡し](research/pf_shortlist_mean_completion_20261115/HANDOFF_B.md)／[C・roadmap影響](research/pf_shortlist_mean_completion_20261115/HANDOFF_C.md)。既存B intake6/6、28技術testPASS、N/MSE/E[C]/G未取得、公開後STOP。
+
 [保存PF meanのpacket化](research/a_saved_pf_mean_staging_20261115/REPORT.md)／[C HANDOFF](research/a_saved_pf_mean_staging_20261115/HANDOFF_C.md)／[B HANDOFF](research/a_saved_pf_mean_staging_20261115/HANDOFF_B.md)：Full PF・B0I p7 shortlistのS2 30 round受入準備、S2L 4・S3 44（新規計算なし）。
 
 [5方式の信号coverage・Full PF 13round調査](research/a_signal_candidate_identity_coverage_20261114/REPORT.md)／[B HANDOFF](research/a_signal_candidate_identity_coverage_20261114/HANDOFF_B.md)／[C HANDOFF](research/a_signal_candidate_identity_coverage_20261114/HANDOFF_C.md)：保存信号と価格候補の同一性照合（新規計算なし）。

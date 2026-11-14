@@ -1,5 +1,7 @@
 # Validation status
 
+[Full PF/B0I shortlistの全13round完成](docs/research/pf_shortlist_mean_completion_20261115/REPORT.md)：承認済み48新meanが全gatePASS、30保存再利用、6packet/78round。新power unitarity最大5.8107e−12（gate1e−9）、ref pair4.7671e−12（gate1e−10）。B固定intake6/6、人工回帰28PASS。新step/spectrum/reference/MSE/N/compile/C/G0、全RPE/十分N未資格、公開後STOP。
+
 [D κ2 S-1/P-1・価格接続の準備](docs/research/d_kappa_s1_price_builders_20261114/REPORT.md)：C数値`5cc7c07e`とR448 reference readerをbyte照合して再利用。toy Context・人工normalizerでS-1全13round・post-gate・STOP経路、toy DFで新旧ZZの全制御行列一致・oracle・X/Y、Truncatedの保持block/B0I scalar/負時間piece、Pauli D2＋DF headの全制御行列を確認（30 PASS）。C guardはFull-H/Truncated sidecarを無変更で受理、Pauli routeは未登録で拒否。実κ2 normalizer/mean・H4入力読込・compile0。
 
 [S1価格比較guard](docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：人工14＋回帰37＝51 PASS。実価格資格・B直接consumerの修正は未完了、新科学計算0。

@@ -1,0 +1,754 @@
+{
+  "science_source": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+  "raw_carrier": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+  "code_sources": [
+    {
+      "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+      "path": "src/trottertracks/pf_shortlist_mean_completion.py",
+      "sha256": "514bbcd61f1094dc32b68e1627fe39a8ef2d5c7273f84ea64416854602fea53b"
+    },
+    {
+      "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+      "path": "scripts/run_pf_shortlist_mean_completion.py",
+      "sha256": "b722f66be3fd2edbe2d4e89ace8a8a72df6bf52d8677815be90464dac01fd34b"
+    },
+    {
+      "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+      "path": "src/trottertracks/baseline_signal_pipeline.py",
+      "sha256": "35ee2a4d762a97ee06eaae15fb34f9dbd060cdaccf1a84d913141f2b2602be9e"
+    },
+    {
+      "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+      "path": "src/trottertracks/baseline_signal_numerics.py",
+      "sha256": "bfdbe5a7b2d50b418f0123cc3431574f3bdbb42460bee223dd7ac5e6519ad35e"
+    },
+    {
+      "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+      "path": "src/trottertracks/rpe_optimization_pipeline.py",
+      "sha256": "82b498e75b99bb7d35dce7c4a12c89456cead9cd2e9595757d2c4beb0169fcd4"
+    },
+    {
+      "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+      "path": "src/trottertracks/saved_pf_mean_staging.py",
+      "sha256": "7acdf6e427d08a876220a95f26fce6f07134ac789c98940f60fb0fe2347c3a41"
+    }
+  ],
+  "staging_source": "217eab647b540a34ca98c285fbc00063cf1d4923",
+  "preflight_source": {
+    "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+    "path": "docs/research/pf_shortlist_mean_completion_20261115/preflight/PLAN.json"
+  },
+  "duplicate_source": {
+    "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+    "path": "docs/research/pf_shortlist_mean_completion_20261115/preflight/DUPLICATE_CHECK.json"
+  },
+  "saved_input": {
+    "index": {
+      "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+      "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+    },
+    "inputs": {
+      "H4_tol_receipt.json": {
+        "bytes": 7080,
+        "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+        "role": "tol_receipt",
+        "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+      },
+      "H4_tol_snapshot.npz": {
+        "bytes": 18126,
+        "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+        "role": "tol_snapshot",
+        "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+      }
+    },
+    "context": {
+      "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json",
+      "sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f"
+    },
+    "loader": "155529e20a8fac39e00786c40b57830b71203c4f"
+  },
+  "observed_input": {
+    "hamiltonian_hash": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+    "state_hash": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+    "rank": 10,
+    "projection": {
+      "policy": "WEIGHTED_HERMITIAN_PROJECTION_FROM_SAVED_RAW_V1",
+      "full_fock_N": 8,
+      "eta_hartree_decimal": "8.28302763270557563608973977308412588896909922729329177456339E-14",
+      "decision_limit": "9.9e-11",
+      "corrected_one_body_change": 5.551115123125783e-17,
+      "fragment_terms": [
+        "5.97729470229138471189673947313127845343842923469351986105063E-17",
+        "2.61261907098598073693639224816998238340321692528426582720703E-16",
+        "1.62761702169566359762608659450262140677450893875734040247414E-16",
+        "1.34177007395198703829208178292674299372393604806555064988007E-16",
+        "1.70004200747691558449315373708739262672680303691637769056213E-16",
+        "1.93318642257910238450450040282803881265836840470252254529430E-16",
+        "4.72918729304939189831563389233152026716290641353751625819492E-17",
+        "1.00471413273480655385094187410144024709704738391544490970582E-16",
+        "9.00070756546114885073784883905443075532041450769649521117030E-17",
+        "6.82174051558741205815562556120329014006911789411513239590349E-17"
+      ],
+      "signed_weights_preserved": true,
+      "all_returned_fragments": true,
+      "coefficient_cutoff": 0.0,
+      "status": "PASS_ENGINEERING",
+      "representation_error_certified": false
+    }
+  },
+  "reused_step_sources": [
+    {
+      "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+      "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_02/OPERATORS.npz",
+      "field": "PF_step_without_global_scalar",
+      "sha256": "c007693a996e053f156b421f189e6f3a0fb7b45c45dd166b583ec48a9e989d9f",
+      "scope_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_02/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_02/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 0.2,
+        "q": 1,
+        "delta": 0.2,
+        "R_outer": null,
+        "K": null,
+        "id": "eb745e6e4759d15f75bc"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 18014398509481984
+      },
+      "signed_weights": [
+        1.0
+      ],
+      "scalar_constant": 2.29310124732,
+      "tail_scalar": null
+    },
+    {
+      "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+      "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_02/OPERATORS.npz",
+      "field": "PF_step_without_global_scalar",
+      "sha256": "46721c21cf5ce5ce312fbc56ef3e7da37b8501a1337146fa47403efbaff5ddc3",
+      "scope_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_02/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_02/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "2nd",
+        "prefix": 10,
+        "T": 1.6,
+        "q": 7,
+        "delta": 0.2285714285714286,
+        "R_outer": null,
+        "K": null,
+        "id": "b7c4e73538ec19070cde"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 15762598695796736
+      },
+      "signed_weights": [
+        1.0
+      ],
+      "scalar_constant": 2.29310124732,
+      "tail_scalar": null
+    },
+    {
+      "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+      "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_08/OPERATORS.npz",
+      "field": "PF_step_without_global_scalar",
+      "sha256": "c39e1edfad55b05098e6d7200a210225cb90dafcad4c673cb4c1b95525e4b1f8",
+      "scope_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_08/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "3ae055fa7a696b13320e00ec79a5ba15c4ed182e",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_08/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "4th",
+        "prefix": 10,
+        "T": 0.4,
+        "q": 1,
+        "delta": 0.4,
+        "R_outer": null,
+        "K": null,
+        "id": "21951422c4c3cb249055"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 9007199254740992
+      },
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "scalar_constant": 2.29310124732,
+      "tail_scalar": null
+    },
+    {
+      "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+      "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_07/OPERATORS.npz",
+      "field": "PF_step_without_global_scalar",
+      "sha256": "d19933184c9570065577fe15e085a9309bf2d0bf33568ca8ac373a46462cdab6",
+      "scope_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_07/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_07/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "4th",
+        "prefix": 10,
+        "T": 1.6,
+        "q": 3,
+        "delta": 0.5333333333333333,
+        "R_outer": null,
+        "K": null,
+        "id": "3cf8eddfb3b78e96f5d2"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 6755399441055744
+      },
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "scalar_constant": 2.29310124732,
+      "tail_scalar": null
+    },
+    {
+      "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+      "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_13/OPERATORS.npz",
+      "field": "PF_step_without_global_scalar",
+      "sha256": "8b0287c2a4ea65368ecc036b95b7c24c8f768b13ffdc26aaa060baf8a06e1932",
+      "scope_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_13/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_13/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "FULL",
+        "formula": "4th(m5_best)",
+        "prefix": 10,
+        "T": 1.6,
+        "q": 1,
+        "delta": 1.6,
+        "R_outer": null,
+        "K": null,
+        "id": "0cd1527c80f7b9841a83"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 2251799813685248
+      },
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "scalar_constant": 2.29310124732,
+      "tail_scalar": null
+    },
+    {
+      "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+      "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_2/OPERATORS.npz",
+      "field": "PF_step_without_global_scalars",
+      "sha256": "9435d0980c634a43b33b88aff3ecda8be8fca843aab14ced8f2b1ee5833e0918",
+      "scope_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_2/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_2/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "2nd",
+        "T": 0.2,
+        "q": 1,
+        "delta": 0.2,
+        "R_outer": null,
+        "K": null,
+        "id": "79a56d848e8320740165"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 18014398509481984
+      },
+      "signed_weights": [
+        1.0
+      ],
+      "scalar_constant": null,
+      "tail_scalar": 4.5302064712666724e-05
+    },
+    {
+      "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+      "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_16o7/OPERATORS.npz",
+      "field": "PF_step_without_global_scalars",
+      "sha256": "6c679389c8971a8f7d28c97ef34d3bdf4f61f1e6541541d3466edb45dfcfe6f6",
+      "scope_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_16o7/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_16o7/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "2nd",
+        "T": 1.6,
+        "q": 7,
+        "delta": 0.2285714285714286,
+        "R_outer": null,
+        "K": null,
+        "id": "5447667fe98e43fcaa15"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 15762598695796736
+      },
+      "signed_weights": [
+        1.0
+      ],
+      "scalar_constant": null,
+      "tail_scalar": 4.5302064712666724e-05
+    },
+    {
+      "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+      "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_4/OPERATORS.npz",
+      "field": "PF_step_without_global_scalars",
+      "sha256": "4ef3a56125c52312f766f6fe843cacf0d6ba6e85fbd2d4751695458c069bf930",
+      "scope_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_4/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_4/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "4th",
+        "T": 0.4,
+        "q": 1,
+        "delta": 0.4,
+        "R_outer": null,
+        "K": null,
+        "id": "9531e5eb957c0b00e08a"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 9007199254740992
+      },
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "scalar_constant": null,
+      "tail_scalar": 4.5302064712666724e-05
+    },
+    {
+      "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+      "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_16o3/OPERATORS.npz",
+      "field": "PF_step_without_global_scalars",
+      "sha256": "6204c9d9b5ea4a440a33795ee96eae419cc2ff393977e92e4ff576f4817c16a5",
+      "scope_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_16o3/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_16o3/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "4th",
+        "T": 1.6,
+        "q": 3,
+        "delta": 0.5333333333333333,
+        "R_outer": null,
+        "K": null,
+        "id": "91100691c8f55c5a3ab0"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 6755399441055744
+      },
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "scalar_constant": null,
+      "tail_scalar": 4.5302064712666724e-05
+    },
+    {
+      "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+      "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_m5_best_16/OPERATORS.npz",
+      "field": "PF_step_without_global_scalars",
+      "sha256": "78eaddf18851d03e6eb50437401bf5158a447efd6dbd0be73ec06468c37a5e16",
+      "scope_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_m5_best_16/CELL_SCOPE.json"
+      },
+      "cell_result_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_m5_best_16/result.json"
+      },
+      "physical_recipe": {
+        "system": "H4",
+        "method": "B0I",
+        "prefix": 7,
+        "formula": "4th(m5_best)",
+        "T": 1.6,
+        "q": 1,
+        "delta": 1.6,
+        "R_outer": null,
+        "K": null,
+        "id": "13d1cd4869951cdf1e2c"
+      },
+      "actual_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 2251799813685248
+      },
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "scalar_constant": null,
+      "tail_scalar": 4.5302064712666724e-05
+    }
+  ],
+  "saved_mean_origins": [
+    {
+      "label": "FULL_PF_S2_16h_over_7",
+      "m": 0,
+      "physical_id": "5669f142d693eee92583",
+      "source": {
+        "commit": "69ee0ff8898960d5f9959af8d34d89f223caec87",
+        "path": "docs/research/h4_full_pf_heff_results_20261113/run01/round_0.json"
+      }
+    },
+    {
+      "label": "FULL_PF_S2_16h_over_7",
+      "m": 1,
+      "physical_id": "eb745e6e4759d15f75bc",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_02/round_1.json"
+      }
+    },
+    {
+      "label": "FULL_PF_S2_16h_over_7",
+      "m": 4,
+      "physical_id": "b7c4e73538ec19070cde",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_02/round_4.json"
+      }
+    },
+    {
+      "label": "FULL_PF_S2_16h_over_7",
+      "m": 12,
+      "physical_id": "923d811dd2e493ca3f37",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_02/round_12.json"
+      }
+    },
+    {
+      "label": "FULL_PF_Y4_16h_over_3",
+      "m": 0,
+      "physical_id": "03df026eb51a56241eef",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_06/round_0.json"
+      }
+    },
+    {
+      "label": "FULL_PF_Y4_16h_over_3",
+      "m": 1,
+      "physical_id": "ce89c91c95889ed4a657",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_07/round_1.json"
+      }
+    },
+    {
+      "label": "FULL_PF_Y4_16h_over_3",
+      "m": 2,
+      "physical_id": "21951422c4c3cb249055",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_08/round_2.json"
+      }
+    },
+    {
+      "label": "FULL_PF_Y4_16h_over_3",
+      "m": 4,
+      "physical_id": "3cf8eddfb3b78e96f5d2",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_07/round_4.json"
+      }
+    },
+    {
+      "label": "FULL_PF_Y4_16h_over_3",
+      "m": 12,
+      "physical_id": "2bc57e7f7ab3040a45f5",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_07/round_12.json"
+      }
+    },
+    {
+      "label": "FULL_PF_M5_16h",
+      "m": 0,
+      "physical_id": "715f0d9f996ec0e62951",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_11/round_0.json"
+      }
+    },
+    {
+      "label": "FULL_PF_M5_16h",
+      "m": 1,
+      "physical_id": "67211ee2c1c1aa51f15f",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_12/round_1.json"
+      }
+    },
+    {
+      "label": "FULL_PF_M5_16h",
+      "m": 2,
+      "physical_id": "d7b8233d8219e2575ebb",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_13/round_2.json"
+      }
+    },
+    {
+      "label": "FULL_PF_M5_16h",
+      "m": 3,
+      "physical_id": "1b3aa083ff69842d8f31",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_heff_scan_results_20261114/run01/cell_14/round_3.json"
+      }
+    },
+    {
+      "label": "FULL_PF_M5_16h",
+      "m": 4,
+      "physical_id": "0cd1527c80f7b9841a83",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_13/round_4.json"
+      }
+    },
+    {
+      "label": "FULL_PF_M5_16h",
+      "m": 12,
+      "physical_id": "8980fe4c3c86362a844a",
+      "source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/h4_full_pf_followup_results_20261114/run01/cell_13/round_12.json"
+      }
+    },
+    {
+      "label": "B0I_P7_S2_16h_over_7",
+      "m": 0,
+      "physical_id": "d2da7de820833a4c6334",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_1/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_S2_16h_over_7",
+      "m": 1,
+      "physical_id": "79a56d848e8320740165",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_2/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_S2_16h_over_7",
+      "m": 4,
+      "physical_id": "5447667fe98e43fcaa15",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_16o7/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_S2_16h_over_7",
+      "m": 12,
+      "physical_id": "0db981eb3994c07fa82f",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_2nd_16o7/round_m12_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_Y4_16h_over_3",
+      "m": 0,
+      "physical_id": "6c100b1fcb67060431a8",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_1/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_Y4_16h_over_3",
+      "m": 1,
+      "physical_id": "c841e095f0f12a2fcdbe",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_2/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_Y4_16h_over_3",
+      "m": 2,
+      "physical_id": "9531e5eb957c0b00e08a",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_4/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_Y4_16h_over_3",
+      "m": 4,
+      "physical_id": "91100691c8f55c5a3ab0",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_16o3/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_Y4_16h_over_3",
+      "m": 12,
+      "physical_id": "880ea5b753a192ec60ca",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_16o3/round_m12_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_M5_16h",
+      "m": 0,
+      "physical_id": "fc389f45fb639698ae84",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_m5_best_1/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_M5_16h",
+      "m": 1,
+      "physical_id": "20fffbb6bfbc62a79e22",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_m5_best_2/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_M5_16h",
+      "m": 2,
+      "physical_id": "6dcfa24120296b4b0266",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_m5_best_4/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_M5_16h",
+      "m": 3,
+      "physical_id": "4bf5a2525d402abaad45",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_m5_best_8/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_M5_16h",
+      "m": 4,
+      "physical_id": "13d1cd4869951cdf1e2c",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_m5_best_16/round_first_check.json"
+      }
+    },
+    {
+      "label": "B0I_P7_M5_16h",
+      "m": 12,
+      "physical_id": "87b854d0f64baccbbccd",
+      "source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p7_4th_m5_best_16/round_m12_check.json"
+      }
+    }
+  ],
+  "B_intake_source": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+  "B_intake_scientific_calls": 0,
+  "packet_index": "PACKET_INDEX.json"
+}

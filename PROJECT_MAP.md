@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full PF/B0I p7 shortlistの48 mean補完](docs/research/pf_shortlist_mean_completion_20261115/REPORT.md)：保存H4 DF10、S2 16h/7・Y4 16h/3・M5 16hのFull/B0I6候補。SOURCE fb9a1878bで新48件PASS、保存30copy、全6×13round完成。10保存step再利用・新固有系/reference0。[caller](scripts/run_pf_shortlist_mean_completion.py)／[保存step adapter](src/trottertracks/pf_shortlist_mean_completion.py)／[新人工6test](tests/check_pf_shortlist_mean_completion.py)。B9c0e12の既存intake6/6 PASS、技術計28PASS、N/MSE/C/G未評価、公開後STOP。
+
 [Full PF・B0I p7 shortlist保存meanのpacket化（新規計算なし）](docs/research/a_saved_pf_mean_staging_20261115/REPORT.md)：既存C baseline経路（I.plan→C.prepare→C.b_mean）で6候補の保存S2 mean 30 roundを束縛（raw=corrected=保存値、B=1、ref bba15083、scalar規則束縛）。S2L 4（Track A m3、gate証拠不足で未昇格）、S3 44。未完成packetは`require_complete`とB `T.bind_signal`が拒否、人工完成fixtureはB既存checkを通過。追加取得44（＋4、＋2）。
 
 [5方式の物理候補・保存信号の対応とFull PF全13round原本調査（照合のみ）](docs/research/a_signal_candidate_identity_coverage_20261114/REPORT.md)：候補×round×X/Yの信号coverage（364行）。全13round packetが揃うのはPR-Pauli・Full-H κ2・B0I p7 S2/0.1（PR-DFはbridge待ち、R448は別候補）。Full PFは正式packet未同定、shortlistはm5〜m11が保存mean無し（step spectrum保存済み、計算は承認待ち。Full PF/B0I各22〜24件）。精度・価格のID不一致0。新規計算0。
