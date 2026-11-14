@@ -1,0 +1,294 @@
+{
+  "status": "FIXED_CALIBRATION_AND_M6_PREDICTION_ONLY",
+  "index": {
+    "commit": "b190bd815c886446291fac8b281c3c7df7343372",
+    "path": "docs/research/d_pf_stage1_calibration_20261115/C_HANDOFF_INDEX.json"
+  },
+  "comparison_policy_source": {
+    "commit": "91365dcf0610362a96aab101fbe0ec0e78f58af1",
+    "path": "scripts/pf_price_stages.py"
+  },
+  "comparison_policy": {
+    "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+    "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+    "metric": "compiled_rz_count",
+    "state_preparation": "P0_EXCLUDED",
+    "control": "symmetric_directional",
+    "measurement": "full_Hadamard_with_measurement",
+    "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+    "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+    "compiler": {
+      "qiskit": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed": 17
+    },
+    "scalar_by_route": {
+      "FULL_PF": "HAMILTONIAN_CONSTANT",
+      "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+    },
+    "scalar_application": "ONCE_AT_TOTAL_T",
+    "holdout": {
+      "name": "H-b",
+      "kind": "RELATIVE",
+      "scale": "observed",
+      "value": {
+        "numerator": 1,
+        "denominator": 50
+      },
+      "calibration_rounds": [
+        4,
+        5
+      ],
+      "holdout_rounds": [
+        6
+      ],
+      "individual_models": 12,
+      "success": "ALL_12_PASS",
+      "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+    }
+  },
+  "features": [
+    "one",
+    "q"
+  ],
+  "formula": "C_g(q)=beta_one_g+beta_q_g*q",
+  "groups": {
+    "FULL_PF|2nd|16/7|X": {
+      "model_group": [
+        "FULL_PF",
+        "2nd",
+        "16/7",
+        "X"
+      ],
+      "C_inputs_source": {
+        "commit": "1078d23621566728521d8056fead17118244be42",
+        "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "FULL_PF|2nd|16/7|X"
+        ]
+      }
+    },
+    "FULL_PF|2nd|16/7|Y": {
+      "model_group": [
+        "FULL_PF",
+        "2nd",
+        "16/7",
+        "Y"
+      ],
+      "C_inputs_source": {
+        "commit": "1078d23621566728521d8056fead17118244be42",
+        "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "FULL_PF|2nd|16/7|Y"
+        ]
+      }
+    },
+    "FULL_PF|4th|16/3|X": {
+      "model_group": [
+        "FULL_PF",
+        "4th",
+        "16/3",
+        "X"
+      ],
+      "C_inputs_source": {
+        "commit": "1078d23621566728521d8056fead17118244be42",
+        "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "FULL_PF|4th|16/3|X"
+        ]
+      }
+    },
+    "FULL_PF|4th|16/3|Y": {
+      "model_group": [
+        "FULL_PF",
+        "4th",
+        "16/3",
+        "Y"
+      ],
+      "C_inputs_source": {
+        "commit": "1078d23621566728521d8056fead17118244be42",
+        "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "FULL_PF|4th|16/3|Y"
+        ]
+      }
+    },
+    "FULL_PF|4th(m5_best)|16|X": {
+      "model_group": [
+        "FULL_PF",
+        "4th(m5_best)",
+        "16",
+        "X"
+      ],
+      "C_inputs_source": {
+        "commit": "1078d23621566728521d8056fead17118244be42",
+        "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "FULL_PF|4th(m5_best)|16|X"
+        ]
+      }
+    },
+    "FULL_PF|4th(m5_best)|16|Y": {
+      "model_group": [
+        "FULL_PF",
+        "4th(m5_best)",
+        "16",
+        "Y"
+      ],
+      "C_inputs_source": {
+        "commit": "1078d23621566728521d8056fead17118244be42",
+        "path": "docs/research/d_full_pf_shortlist_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "FULL_PF|4th(m5_best)|16|Y"
+        ]
+      }
+    },
+    "TRUNCATED_PF|2nd|16/7|X": {
+      "model_group": [
+        "TRUNCATED_PF",
+        "2nd",
+        "16/7",
+        "X"
+      ],
+      "C_inputs_source": {
+        "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+        "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "TRUNCATED_PF|2nd|16/7|X"
+        ]
+      }
+    },
+    "TRUNCATED_PF|2nd|16/7|Y": {
+      "model_group": [
+        "TRUNCATED_PF",
+        "2nd",
+        "16/7",
+        "Y"
+      ],
+      "C_inputs_source": {
+        "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+        "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "TRUNCATED_PF|2nd|16/7|Y"
+        ]
+      }
+    },
+    "TRUNCATED_PF|4th|16/3|X": {
+      "model_group": [
+        "TRUNCATED_PF",
+        "4th",
+        "16/3",
+        "X"
+      ],
+      "C_inputs_source": {
+        "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+        "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "TRUNCATED_PF|4th|16/3|X"
+        ]
+      }
+    },
+    "TRUNCATED_PF|4th|16/3|Y": {
+      "model_group": [
+        "TRUNCATED_PF",
+        "4th",
+        "16/3",
+        "Y"
+      ],
+      "C_inputs_source": {
+        "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+        "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "TRUNCATED_PF|4th|16/3|Y"
+        ]
+      }
+    },
+    "TRUNCATED_PF|4th(m5_best)|16|X": {
+      "model_group": [
+        "TRUNCATED_PF",
+        "4th(m5_best)",
+        "16",
+        "X"
+      ],
+      "C_inputs_source": {
+        "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+        "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "TRUNCATED_PF|4th(m5_best)|16|X"
+        ]
+      }
+    },
+    "TRUNCATED_PF|4th(m5_best)|16|Y": {
+      "model_group": [
+        "TRUNCATED_PF",
+        "4th(m5_best)",
+        "16",
+        "Y"
+      ],
+      "C_inputs_source": {
+        "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+        "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/C_INPUTS.json",
+        "selector": [
+          "TRUNCATED_PF|4th(m5_best)|16|Y"
+        ]
+      }
+    }
+  },
+  "calibration_points": 24,
+  "saved": 4,
+  "new_stage1": 20,
+  "calibration_rounds": [
+    4,
+    5
+  ],
+  "prediction_rounds": [
+    6
+  ],
+  "expected_q": {
+    "2nd": [
+      7,
+      14,
+      28
+    ],
+    "4th": [
+      3,
+      6,
+      12
+    ],
+    "4th(m5_best)": [
+      1,
+      2,
+      4
+    ]
+  },
+  "exact_arithmetic": "fractions.Fraction via unchanged C price_model_validation.fit/predict",
+  "output": "docs/research/pf_stage1_model_freeze_20261115/run01",
+  "holdout_observation_access": false,
+  "independent_holdout_judgement": null,
+  "long_time_extrapolation": false,
+  "compile_calls": 0,
+  "N": null,
+  "G": null,
+  "winner": null,
+  "mandatory_stop_after_publication": true,
+  "duplicate_preflight": {
+    "checked_at_UTC": "2026-11-14T17:21:52.276831+00:00",
+    "C_branch": "codex/m5-m4-receipt-admission-20261114",
+    "C_HEAD": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+    "known_frozen_path_matches": [],
+    "relevant_same_user_running_jobs": [],
+    "checked_public_refs": [
+      "0b4b2d941cd669aaa45231e1236bc2d3158a9d12\trefs/heads/codex/m5-m4-receipt-admission-20261114"
+    ],
+    "D_index_fit": null,
+    "D_index_coefficient_freeze": null,
+    "result": "NO_SAME_INPUT_FROZEN_MODEL_OR_OVERLAPPING_JOB_IN_CHECKED_C_SOURCE_AND_PUBLIC_REFS",
+    "scope": "C tracked result paths and published relevant branch names; D fixed Stage1 index; same-user relevant Python job names; no private worktree or holdout values opened"
+  }
+}
