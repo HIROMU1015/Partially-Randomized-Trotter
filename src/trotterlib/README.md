@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[保存Pauliの限定total/Q3診断](../../docs/research/pauli_total_q3_fixed_results_20261114/EXECUTION_SCOPE.md)：Bの既存intake/canonical binding/total kernelを使用し、libraryは変更しない。固定2件後STOP。
+
 BのPauli受入・二水準readinessは `src/trottertracks/rpe_pauli_signal_intake.py` / `rpe_evaluation_levels.py`。既存library/decoderは不変。[独立統合REPORT](../../docs/research/b_rpe_pauli_integration_20261114/REPORT.md)。
 
 [実H4への固定DP適用結果](../../docs/research/h4_dp_risk_fixed_results_20261114/REPORT.md)：06db9aefeの既存D/count/R3を変更せず保存LD1/LD2各1件を評価。上界約99.62%縮小、未解決lossが主制約。exact検算PASS、正式N/global/G未取得、追加実行は別scope。元MC・旧科学結果は保全。

@@ -1,5 +1,7 @@
 # scripts 索引
 
+[固定Pauli total/Q3 runner](run_pauli_total_q3_fixed.py)／[collector](collect_pauli_total_q3_fixed.py)：保存LD1/LD2×control1本の限定2診断。既存SOURCE/APIを再利用、旧部分DP/MC/N探索/C/Gなし。[固定条件](../docs/research/pauli_total_q3_fixed_results_20261114/EXECUTION_SCOPE.md)。
+
 B統合のSOURCE wiring確認：`preflight_pr_resource_wiring.py --series B --source <full-commit>`（metadataのみ）。[Pauli intake・価格guard統合](../docs/research/b_rpe_pauli_integration_20261114/REPORT.md)を参照。科学runを起動しない。
 
 [run_h4_dp_risk_fixed.py](run_h4_dp_risk_fixed.py)：[固定DP入力](../docs/research/h4_dp_risk_fixed_results_20261114/INPUTS.json)を旧evaluate_one/既存kernelへ渡す各LD1件・計2評価専用caller。科学条件を継承し保持8192/組141,559,036を固定、新規出力だけに保存。自分の2workerのCPU/RSSを観測し、MC/追加配分/価格/G/自動retryなし。[run01完了結果](../docs/research/h4_dp_risk_fixed_results_20261114/REPORT.md)、再実行しない。VERIFY_RESULTS.pyは保存値の検算のみ。
