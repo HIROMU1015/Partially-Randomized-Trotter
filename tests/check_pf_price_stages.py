@@ -411,7 +411,10 @@ class Tests(unittest.TestCase):
             rel = S.paths(e.spec, 'CALIBRATION')[0]
             self.assertNotIn(S.PLACEHOLDER, (Path(rel) / 'SIDECARS.json').read_text())
             check = e.load('CALIBRATION', 'GUARD_CHECK.json')
-            self.assertEqual((check['policy_id'], check['comparison_policy_adopted']), (S.PROBE, False))
+            self.assertEqual((check['policy_id'], check['comparison_policy_adopted']), (S.COMPARISON_POLICY['id'], True))
+            self.assertEqual(check['comparison_policy']['holdout']['value'], dict(numerator=1, denominator=50))
+            self.assertEqual(check['comparison_policy']['holdout']['scale'], 'observed')
+            self.assertFalse(check['model_qualified']); self.assertIsNone(check['holdout_judgement'])
             self.assertEqual({t for c in check['checks'] for t in c['tiers'].values()}, {'DETERMINISTIC_DIRECT'})
             self.assertEqual({c['guard']['status'] for c in check['checks']}, {'IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION'})
             with self.assertRaises(ValueError):

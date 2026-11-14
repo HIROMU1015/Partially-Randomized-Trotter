@@ -16,8 +16,8 @@ index-0 gates and price records come unchanged from the two callers
 - Full PF and Truncated p7 M5/m4 X/Y are C-admitted saved prices, excluded
   from new jobs. Their original SOURCE/cohort/axis binding is retained.
 - Sidecars carry an evidence placeholder until the stage outputs are published;
-  `bind` then fills the published commit and runs C's guard with an explicit
-  technical-compatibility probe policy (not an adopted comparison policy).
+  `bind` then fills the published commit and runs C's implementation guard.
+  The adopted comparison conditions below do not qualify a price model.
 
 No fit, prediction, holdout judgement, N or G is computed here.
 """
@@ -57,7 +57,18 @@ PLACEHOLDER = 'FILL_WITH_PUBLISHED_COMMIT'
 STAGE_FILES = ('RESULT.json', 'PRICES.json', 'SIDECARS_UNBOUND.json', 'IMPLEMENTATION_EVIDENCE.json', 'C_INPUTS.json')
 BOUND_FILES = ('SIDECARS.json', 'GUARD_CHECK.json')
 MODEL = 'PRICE_LINEAR_FEATURE_MODEL_V1'
-PROBE = 'TECHNICAL_COMPATIBILITY_PROBE_ONLY_NOT_ADOPTED'
+COMPARISON_POLICY = dict(
+    id='DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1',
+    quantity='FULL_WRAPPER_MEAN_COMPILED_PRICE', metric='compiled_rz_count',
+    state_preparation='P0_EXCLUDED', control='symmetric_directional',
+    measurement='full_Hadamard_with_measurement', native_policy='H46_LONG_TIME_NATIVE_COMPOSE',
+    rte_rotation_lowering='NOT_APPLICABLE_NO_RTE',
+    compiler=dict(qiskit='1.3.0', basis_gates=['rz', 'sx', 'x', 'cx'], optimization_level=1, seed=17),
+    scalar_by_route=dict(FULL_PF='HAMILTONIAN_CONSTANT', TRUNCATED_PF='HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY'),
+    scalar_application='ONCE_AT_TOTAL_T',
+    holdout=dict(name='H-b', kind='RELATIVE', scale='observed', value=dict(numerator=1, denominator=50),
+                 calibration_rounds=[4, 5], holdout_rounds=[6], individual_models=12,
+                 success='ALL_12_PASS', failure='NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE'))
 FEATURES = ['one', 'q']
 SAVED_TABLE = dict(commit='155529e20a8fac39e00786c40b57830b71203c4f',
                    path='artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz')
@@ -431,7 +442,8 @@ def execute_stage(root, spec, stage, *, frozen=None, workers=None):
     child = json.loads(Path(job['result']).read_text()) if Path(job['result']).exists() else dict(results=[], resources=None)
     results = child['results']
     ok = code == 0 and len(results) == len(new) and all(r['ok'] for r in results)
-    source = dict(spec['source'], commit=commit, stage=stage, stage_module=MODULE, cell_plan=revised_plan)
+    source = dict(spec['source'], commit=commit, stage=stage, stage_module=MODULE, cell_plan=revised_plan,
+                  comparison_policy=deepcopy(COMPARISON_POLICY))
     error = None
     try:
         if ok:
@@ -489,7 +501,7 @@ def _records(root, spec, stage, templates, results, saved, source, out, out_rel)
 
 
 def bind(root, spec, stage, evidence_commit):
-    """Fill the published evidence commit into the sidecars and run C's guard (technical probe policy)."""
+    """Bind published evidence and check the adopted implementation conditions; no model qualification."""
     T3 = _T3(); T3._meta()  # C modules of this tree on sys.path
     from trottertracks import paper_nominal_cost as PN
     from trottertracks import price_implementation_guard as G
@@ -514,7 +526,7 @@ def bind(root, spec, stage, evidence_commit):
         mine = [x for x in prices if x['configuration_id'] == config['id']]
         if not mine:
             continue
-        policy = dict(id=PROBE, source=dict(GUARD_SOURCE), profile=deepcopy(config['spec']['profile']),
+        policy = dict(id=COMPARISON_POLICY['id'], source=dict(GUARD_SOURCE), profile=deepcopy(config['spec']['profile']),
                       by_method={spec['route']: dict(native_policy=T3.NATIVE_POLICY, rte_rotation_lowering=G.NO_RTE,
                                                      scalar_quantity=spec['scalar_quantity'])})
         cohorts = {(config['rounds'][x['m']]['candidate']['id'], x['axis']): spec['cohort'] for x in mine}
@@ -528,8 +540,10 @@ def bind(root, spec, stage, evidence_commit):
     if sum(len(c['guard']['checked']) for c in checks) != len(prices):
         raise ValueError('Every stage price must be guard-checked')
     _write(out / 'SIDECARS.json', sides)
-    _write(out / 'GUARD_CHECK.json', dict(stage=stage, route=spec['route'], evidence=published, policy_id=PROBE,
-        comparison_policy_adopted=False, checks=checks, G=None))
+    _write(out / 'GUARD_CHECK.json', dict(stage=stage, route=spec['route'], evidence=published,
+        policy_id=COMPARISON_POLICY['id'], comparison_policy_adopted=True,
+        comparison_policy=deepcopy(COMPARISON_POLICY), model_qualified=False, holdout_judgement=None,
+        checks=checks, G=None))
     return dict(status='BOUND_AND_GUARD_CHECKED', checked=len(prices), output=rel)
 
 
