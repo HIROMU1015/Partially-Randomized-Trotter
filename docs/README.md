@@ -1,5 +1,7 @@
 # 文書索引
 
+[保存PF meanのpacket化](research/a_saved_pf_mean_staging_20261115/REPORT.md)／[C HANDOFF](research/a_saved_pf_mean_staging_20261115/HANDOFF_C.md)／[B HANDOFF](research/a_saved_pf_mean_staging_20261115/HANDOFF_B.md)：Full PF・B0I p7 shortlistのS2 30 round受入準備、S2L 4・S3 44（新規計算なし）。
+
 [5方式の信号coverage・Full PF 13round調査](research/a_signal_candidate_identity_coverage_20261114/REPORT.md)／[B HANDOFF](research/a_signal_candidate_identity_coverage_20261114/HANDOFF_B.md)／[C HANDOFF](research/a_signal_candidate_identity_coverage_20261114/HANDOFF_C.md)：保存信号と価格候補の同一性照合（新規計算なし）。
 
 [Full-H P-2較正設計・Pauli B1価格検証計画](research/a_full_h_p2_pauli_b1_price_design_20261114/REPORT.md)／[A1](research/a_full_h_p2_pauli_b1_price_design_20261114/A1_FULL_H_P2_PLAN.md)／[A2](research/a_full_h_p2_pauli_b1_price_design_20261114/A2_PAULI_B1_PLAN.md)／[HANDOFF](research/a_full_h_p2_pauli_b1_price_design_20261114/HANDOFF.md)：識別可能性の検査と改訂設計案（未採択・未実行）。

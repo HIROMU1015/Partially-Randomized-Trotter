@@ -1,0 +1,27 @@
+Technical checks (metadata / artificial only; no H4 science). h6 venv Python 3.11.0rc1.
+A branch codex/a-full-h-p2-pauli-b1-price-design-20261114: staging SOURCE 3d64d6891, staged outputs bb5fe14ad
+
+== tests/check_saved_pf_mean_staging.py: Ran 9 tests in 1.045s OK
+  test_10_sources_unchanged_and_no_new_numbers ... ok
+  test_1_saved_means_map_one_to_one_to_their_source_files ... ok
+  test_2_configuration_and_physical_ids_match_price_plan_and_coverage ... ok
+  test_3_raw_corrected_normalization_reference ... ok
+  test_4_full_pf_and_b0i_scalars_are_not_confused ... ok
+  test_5_formula_width_round_cannot_be_swapped ... ok
+  test_6_s2l_is_not_promoted ... ok
+  test_7_s3_is_never_filled ... ok
+  test_8_incomplete_packet_is_not_a_risk_input ... ok
+
+== B regression (unmodified detached checkout of B 9c0e12d87, sparse src/tests/scripts/references)
+  check_rpe_total_baseline_binding: Ran 7 tests in 4.080s OK
+  check_rpe_fixed_grid_total: Ran 6 tests in 14.370s OK
+
+== scripts/check_staged_pf_b_interface.py --b-root <B checkout> --packets-commit bb5fe14ad192eefc3565e2563a5e65b479547e2a  (exit 0)
+  FULL_PF_S2_16h_over_7    config_id_equal=True | real staged: REFUSED: Canonical total binding: single-source signal provenance differ | missing rounds w/ packet SOURCE: REFUSED: ValueError: Explicit original signal physical/SOURCE binding re | artificial complete: ACCEPTED, staged rounds unchanged=True, artificial rounds=[2, 3, 5, 6, 7, 8, 9, 10, 11]
+  FULL_PF_Y4_16h_over_3    config_id_equal=True | real staged: REFUSED: Canonical total binding: single-source signal provenance differ | missing rounds w/ packet SOURCE: REFUSED: ValueError: Explicit original signal physical/SOURCE binding re | artificial complete: ACCEPTED, staged rounds unchanged=True, artificial rounds=[3, 5, 6, 7, 8, 9, 10, 11]
+  FULL_PF_M5_16h           config_id_equal=True | real staged: REFUSED: Canonical total binding: single-source signal provenance differ | missing rounds w/ packet SOURCE: REFUSED: ValueError: Explicit original signal physical/SOURCE binding re | artificial complete: ACCEPTED, staged rounds unchanged=True, artificial rounds=[5, 6, 7, 8, 9, 10, 11]
+  B0I_P7_S2_16h_over_7     config_id_equal=True | real staged: REFUSED: Canonical total binding: single-source signal provenance differ | missing rounds w/ packet SOURCE: REFUSED: ValueError: Explicit original signal physical/SOURCE binding re | artificial complete: ACCEPTED, staged rounds unchanged=True, artificial rounds=[2, 3, 5, 6, 7, 8, 9, 10, 11]
+  B0I_P7_Y4_16h_over_3     config_id_equal=True | real staged: REFUSED: Canonical total binding: single-source signal provenance differ | missing rounds w/ packet SOURCE: REFUSED: ValueError: Explicit original signal physical/SOURCE binding re | artificial complete: ACCEPTED, staged rounds unchanged=True, artificial rounds=[3, 5, 6, 7, 8, 9, 10, 11]
+  B0I_P7_M5_16h            config_id_equal=True | real staged: REFUSED: Canonical total binding: single-source signal provenance differ | missing rounds w/ packet SOURCE: REFUSED: ValueError: Explicit original signal physical/SOURCE binding re | artificial complete: ACCEPTED, staged rounds unchanged=True, artificial rounds=[5, 6, 7, 8, 9, 10, 11]
+
+Artificial fixture = staged available rounds unchanged + missing rounds filled with artificial values (0.25-0.5i) and B's own physical context. Its acceptance is a format/identity check only, not an H4 acceptance.
