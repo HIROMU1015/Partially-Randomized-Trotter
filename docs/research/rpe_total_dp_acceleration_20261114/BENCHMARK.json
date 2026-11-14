@@ -1,0 +1,136 @@
+{
+  "scope": "ARTIFICIAL_ONLY_NOT_H4_RISK",
+  "warmup": 0,
+  "repetitions": 1,
+  "method": "perf_counter; precomputed count tables excluded equally from both DP timings",
+  "environment": "existing Python3.11.0rc1 / NumPy1.26.4; original fixed real workers continued concurrently",
+  "cases": [
+    {
+      "case": "small",
+      "rounds": 5,
+      "N_X": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "N_Y": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "raw": {
+        "real": 0.213847162847,
+        "imag": 0.47193847582
+      },
+      "h": 10.0,
+      "target": 0.0,
+      "maximum_frontier_states": 512,
+      "transition_pairs": 144918,
+      "original_wall_seconds": 4.335139668080956,
+      "accelerated": [
+        {
+          "workers": 1,
+          "wall_seconds": 0.772174027049914,
+          "speedup": 5.614200317826448,
+          "full_output_exact_match": true
+        },
+        {
+          "workers": 2,
+          "wall_seconds": 0.8217627331614494,
+          "speedup": 5.275415266646368,
+          "full_output_exact_match": true
+        },
+        {
+          "workers": 4,
+          "wall_seconds": 0.7430220111273229,
+          "speedup": 5.834470046861228,
+          "full_output_exact_match": true
+        },
+        {
+          "workers": 8,
+          "wall_seconds": 0.7634468290489167,
+          "speedup": 5.678377986691707,
+          "full_output_exact_match": true
+        }
+      ],
+      "maximum_transition_pairs": 2000000
+    },
+    {
+      "case": "medium",
+      "rounds": 5,
+      "N_X": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "N_Y": [
+        24,
+        24,
+        24,
+        24,
+        24
+      ],
+      "raw": {
+        "real": 0.213847162847,
+        "imag": 0.47193847582
+      },
+      "h": 10.0,
+      "target": 0.0,
+      "maximum_frontier_states": 2048,
+      "transition_pairs": 2191510,
+      "original_wall_seconds": 80.93603698303923,
+      "accelerated": [
+        {
+          "workers": 1,
+          "wall_seconds": 5.5391626202035695,
+          "speedup": 14.611601523997999,
+          "full_output_exact_match": true
+        },
+        {
+          "workers": 2,
+          "wall_seconds": 4.522361749084666,
+          "speedup": 17.896851573057113,
+          "full_output_exact_match": true
+        },
+        {
+          "workers": 4,
+          "wall_seconds": 3.9784331789705902,
+          "speedup": 20.343696460922143,
+          "full_output_exact_match": true
+        },
+        {
+          "workers": 8,
+          "wall_seconds": 3.8268160400912166,
+          "speedup": 21.149706736650458,
+          "full_output_exact_match": true
+        },
+        {
+          "workers": 16,
+          "wall_seconds": 3.78241307195276,
+          "speedup": 21.397989971849924,
+          "full_output_exact_match": true
+        }
+      ],
+      "maximum_transition_pairs": 8000000
+    }
+  ],
+  "automatic_worker_additional_check": {
+    "case": "medium",
+    "serial_wall_seconds": 5.616695750970393,
+    "auto_wall_seconds": 3.8755717671010643,
+    "selected_workers_by_round": [
+      1,
+      47,
+      47,
+      47,
+      47
+    ],
+    "full_output_exact_match_to_serial": true
+  }
+}
