@@ -1,0 +1,1158 @@
+{
+  "execution_source": "2f423befbba5075bad4ede3057f89edd788d2661",
+  "pipeline_source": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+  "inputs_sha256": "b23f0f211fdad99c1d06aad81750fa299648a72abc4dafdae15b9f25d87c4a70",
+  "compile_budget": 8,
+  "resources_before": {
+    "affinity_cpu_count": 64,
+    "loadavg": [
+      6.3193359375,
+      6.20263671875,
+      5.67333984375
+    ],
+    "meminfo": {
+      "MemTotal": "528127736 kB",
+      "MemAvailable": "486789452 kB"
+    },
+    "host": "GPUA100-gleap02",
+    "parent_peak_rss_bytes": 46292992
+  },
+  "mandatory_stop": true,
+  "status": "M3_SC_PAIRS_ACQUIRED",
+  "records": [
+    {
+      "index": 0,
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m3_q8_R16",
+        "candidate_id": "045843b2429bece6f29b",
+        "index": 0,
+        "cohort": "D_PR_DF_LD1_M3_CAL_NORMAL_20261115_V1",
+        "conditional": false,
+        "C": [
+          37973,
+          37973
+        ],
+        "S": [
+          36370,
+          36370
+        ],
+        "source": {
+          "execution_source": "2f423befbba5075bad4ede3057f89edd788d2661",
+          "private_result": "/home/AbeHiromu/projects/d2-pr-df-ld1-m3-20261115-private/run01/fresh/H4_S0_m3_q8_R16/0/result.json"
+        },
+        "event_digest": "a013c577aeec732fbb4ec22433fffb007e1de0b5ac333525ae154c64e5a699af",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "5b556aec13c164d48d636f502076594fe91cb688b72b9d5709303a13285f06af",
+          "112836037b0d829370502c404593491541dbdb4845042944099c23753cb91462"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "m": 3,
+        "phase": "fresh",
+        "role": "CALIBRATION",
+        "request": {
+          "K": 2,
+          "R_outer": 16,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "045843b2429bece6f29b",
+          "method": "PR",
+          "prefix": 1,
+          "q": 8,
+          "system": "H4"
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "045843b2429bece6f29b",
+              "R_outer": 16,
+              "K": 2,
+              "q_PF": 8,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "candidate_id": "RMSE:f9b12b7760639ec8ea4f24eab861e169925cd74bb5132b5f53084d5dba932a50",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+              "denominator": 539496659426909122096437389293855970805348475396548904610992201
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "seeds": [
+          15862913925240177422,
+          15488494183284887498,
+          1564618460637046632,
+          15951578195070489213,
+          11877523266972387155,
+          4998606641673919988,
+          8253659132168221718,
+          40379074505873190
+        ],
+        "laws": [
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          }
+        ],
+        "events": {
+          "events": 128,
+          "rotation_ZZ": 123,
+          "rotation_Z": 5,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 128
+          }
+        },
+        "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": 2.7108187593826942,
+        "scalar_hex": "0x1.5afc1bee774aap+1",
+        "scalar_application": "ONCE_AT_TOTAL_T",
+        "compiled": {
+          "cosine": {
+            "rz_count": 37973,
+            "rz_depth": 10053,
+            "cx_count": 12584,
+            "cx_depth": 6259,
+            "total_depth": 22641,
+            "circuit_size": 75695
+          },
+          "sine": {
+            "rz_count": 37973,
+            "rz_depth": 10053,
+            "cx_count": 12584,
+            "cx_depth": 6259,
+            "total_depth": 22641,
+            "circuit_size": 75695
+          }
+        },
+        "compile_log": [
+          {
+            "axis": "cosine",
+            "status": "COMPLETE",
+            "seconds": 3.173113622935489,
+            "peak_rss_bytes": 412901376
+          },
+          {
+            "axis": "sine",
+            "status": "COMPLETE",
+            "seconds": 3.00401731999591,
+            "peak_rss_bytes": 421867520
+          }
+        ],
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 0.03832750488072634,
+            "event_write": 0.11766064586117864,
+            "event_digest": 0.01903306320309639,
+            "structural": 1.5126806581392884,
+            "compose": 4.265565308043733,
+            "cosine_wrapper": 1.0991901401430368,
+            "cosine_fingerprint": 0.8668444780632854,
+            "cosine_compile": 3.1734384109731764,
+            "cosine_mutation_check": 0.8796185990795493,
+            "sine_wrapper": 1.0480737928301096,
+            "sine_fingerprint": 1.0100851270835847,
+            "sine_compile": 3.0044049969874322,
+            "sine_mutation_check": 0.9975729219149798
+          },
+          "total_seconds": 18.045866294996813,
+          "fingerprint": {
+            "calls": 15,
+            "hits": 220610,
+            "misses": 23510
+          }
+        },
+        "path_wall_seconds": 18.134028712986037,
+        "peak_rss_bytes": 421867520,
+        "private_directory": "/home/AbeHiromu/projects/d2-pr-df-ld1-m3-20261115-private/run01/fresh/H4_S0_m3_q8_R16/0",
+        "gate_status": "INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED",
+        "numerical_action_gate": "NOT_RUN_AS_IN_ORIGINAL_P2_FRESH"
+      }
+    },
+    {
+      "index": 1,
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m3_q8_R16",
+        "candidate_id": "045843b2429bece6f29b",
+        "index": 1,
+        "cohort": "D_PR_DF_LD1_M3_CAL_NORMAL_20261115_V1",
+        "conditional": false,
+        "C": [
+          35455,
+          35455
+        ],
+        "S": [
+          33795,
+          33795
+        ],
+        "source": {
+          "execution_source": "2f423befbba5075bad4ede3057f89edd788d2661",
+          "private_result": "/home/AbeHiromu/projects/d2-pr-df-ld1-m3-20261115-private/run01/fresh/H4_S0_m3_q8_R16/1/result.json"
+        },
+        "event_digest": "87f431f5d674606fcff0a744b799de37510bbc70c56645e9f055284d484cf773",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "45019eeeae7c99ae09acc85e1bbe9709867510b71f53c263f2f10e2891f7afdd",
+          "78e141a45bddd13a88090717cfbc1d972641389c0acad03b60083402970362ff"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "m": 3,
+        "phase": "fresh",
+        "role": "CALIBRATION",
+        "request": {
+          "K": 2,
+          "R_outer": 16,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "045843b2429bece6f29b",
+          "method": "PR",
+          "prefix": 1,
+          "q": 8,
+          "system": "H4"
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "045843b2429bece6f29b",
+              "R_outer": 16,
+              "K": 2,
+              "q_PF": 8,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "candidate_id": "RMSE:f9b12b7760639ec8ea4f24eab861e169925cd74bb5132b5f53084d5dba932a50",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+              "denominator": 539496659426909122096437389293855970805348475396548904610992201
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "seeds": [
+          10409054108943232250,
+          11486726811224441181,
+          11374354341832797247,
+          8291415789898524037,
+          2019907091040116393,
+          15682791137492008947,
+          11712921529814513929,
+          16714130235662496306
+        ],
+        "laws": [
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          }
+        ],
+        "events": {
+          "events": 128,
+          "rotation_ZZ": 115,
+          "rotation_Z": 13,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 128
+          }
+        },
+        "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": 2.7108187593826942,
+        "scalar_hex": "0x1.5afc1bee774aap+1",
+        "scalar_application": "ONCE_AT_TOTAL_T",
+        "compiled": {
+          "cosine": {
+            "rz_count": 35455,
+            "rz_depth": 9361,
+            "cx_count": 11844,
+            "cx_depth": 5879,
+            "total_depth": 21061,
+            "circuit_size": 70575
+          },
+          "sine": {
+            "rz_count": 35455,
+            "rz_depth": 9361,
+            "cx_count": 11844,
+            "cx_depth": 5879,
+            "total_depth": 21061,
+            "circuit_size": 70575
+          }
+        },
+        "compile_log": [
+          {
+            "axis": "cosine",
+            "status": "COMPLETE",
+            "seconds": 2.983127021929249,
+            "peak_rss_bytes": 409260032
+          },
+          {
+            "axis": "sine",
+            "status": "COMPLETE",
+            "seconds": 2.9502477010246366,
+            "peak_rss_bytes": 416194560
+          }
+        ],
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 0.03826295491307974,
+            "event_write": 0.11694537103176117,
+            "event_digest": 0.018364486983045936,
+            "structural": 1.4123030651826411,
+            "compose": 4.274547242792323,
+            "cosine_wrapper": 0.9783503729850054,
+            "cosine_fingerprint": 1.003494538133964,
+            "cosine_compile": 2.983443469973281,
+            "cosine_mutation_check": 0.8755704241339117,
+            "sine_wrapper": 1.1355570051819086,
+            "sine_fingerprint": 1.1870496878400445,
+            "sine_compile": 2.9505425181705505,
+            "sine_mutation_check": 1.019409999018535
+          },
+          "total_seconds": 18.009326479863375,
+          "fingerprint": {
+            "calls": 15,
+            "hits": 208196,
+            "misses": 22946
+          }
+        },
+        "path_wall_seconds": 18.098281793063506,
+        "peak_rss_bytes": 416194560,
+        "private_directory": "/home/AbeHiromu/projects/d2-pr-df-ld1-m3-20261115-private/run01/fresh/H4_S0_m3_q8_R16/1",
+        "gate_status": "INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED",
+        "numerical_action_gate": "NOT_RUN_AS_IN_ORIGINAL_P2_FRESH"
+      }
+    },
+    {
+      "index": 2,
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m3_q8_R16",
+        "candidate_id": "045843b2429bece6f29b",
+        "index": 2,
+        "cohort": "D_PR_DF_LD1_M3_CAL_NORMAL_20261115_V1",
+        "conditional": false,
+        "C": [
+          37267,
+          37267
+        ],
+        "S": [
+          35333,
+          35333
+        ],
+        "source": {
+          "execution_source": "2f423befbba5075bad4ede3057f89edd788d2661",
+          "private_result": "/home/AbeHiromu/projects/d2-pr-df-ld1-m3-20261115-private/run01/fresh/H4_S0_m3_q8_R16/2/result.json"
+        },
+        "event_digest": "f5d0486c3bcc3457d7cbb3b1b53b4cd88d4a39f4ec10d2da3378553afa3f1318",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "378ad026e18927183bc1cfed25691429f80511b66ff7966b35aaa83920515cdd",
+          "4eab5c6910a986be1089cb83526be7233d904dd1fbd8ffa906634e61b3fc6140"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "m": 3,
+        "phase": "fresh",
+        "role": "CALIBRATION",
+        "request": {
+          "K": 2,
+          "R_outer": 16,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "045843b2429bece6f29b",
+          "method": "PR",
+          "prefix": 1,
+          "q": 8,
+          "system": "H4"
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "045843b2429bece6f29b",
+              "R_outer": 16,
+              "K": 2,
+              "q_PF": 8,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "candidate_id": "RMSE:f9b12b7760639ec8ea4f24eab861e169925cd74bb5132b5f53084d5dba932a50",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+              "denominator": 539496659426909122096437389293855970805348475396548904610992201
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "seeds": [
+          15324599187504318185,
+          13079556660754730992,
+          12100886403759053449,
+          17918824316954827411,
+          12078721924440473102,
+          13144854910264968149,
+          4007335094648087618,
+          7307631667800312627
+        ],
+        "laws": [
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          }
+        ],
+        "events": {
+          "events": 128,
+          "rotation_ZZ": 114,
+          "rotation_Z": 14,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 128
+          }
+        },
+        "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": 2.7108187593826942,
+        "scalar_hex": "0x1.5afc1bee774aap+1",
+        "scalar_application": "ONCE_AT_TOTAL_T",
+        "compiled": {
+          "cosine": {
+            "rz_count": 37267,
+            "rz_depth": 9823,
+            "cx_count": 12386,
+            "cx_depth": 6189,
+            "total_depth": 22174,
+            "circuit_size": 74252
+          },
+          "sine": {
+            "rz_count": 37267,
+            "rz_depth": 9823,
+            "cx_count": 12386,
+            "cx_depth": 6189,
+            "total_depth": 22174,
+            "circuit_size": 74252
+          }
+        },
+        "compile_log": [
+          {
+            "axis": "cosine",
+            "status": "COMPLETE",
+            "seconds": 2.9306662341114134,
+            "peak_rss_bytes": 408719360
+          },
+          {
+            "axis": "sine",
+            "status": "COMPLETE",
+            "seconds": 2.9007167760282755,
+            "peak_rss_bytes": 418648064
+          }
+        ],
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 0.03838006383739412,
+            "event_write": 0.11687125079333782,
+            "event_digest": 0.019235691986978054,
+            "structural": 1.4670037089381367,
+            "compose": 4.176517856074497,
+            "cosine_wrapper": 0.8938155430369079,
+            "cosine_fingerprint": 0.9679148269351572,
+            "cosine_compile": 2.9309680031146854,
+            "cosine_mutation_check": 0.9504495928995311,
+            "sine_wrapper": 1.0541840051300824,
+            "sine_fingerprint": 0.8348078548442572,
+            "sine_compile": 2.9009917040821165,
+            "sine_mutation_check": 0.9725340669974685
+          },
+          "total_seconds": 17.33659285795875,
+          "fingerprint": {
+            "calls": 15,
+            "hits": 211952,
+            "misses": 21954
+          }
+        },
+        "path_wall_seconds": 17.432843767106533,
+        "peak_rss_bytes": 418648064,
+        "private_directory": "/home/AbeHiromu/projects/d2-pr-df-ld1-m3-20261115-private/run01/fresh/H4_S0_m3_q8_R16/2",
+        "gate_status": "INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED",
+        "numerical_action_gate": "NOT_RUN_AS_IN_ORIGINAL_P2_FRESH"
+      }
+    },
+    {
+      "index": 3,
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m3_q8_R16",
+        "candidate_id": "045843b2429bece6f29b",
+        "index": 3,
+        "cohort": "D_PR_DF_LD1_M3_CAL_NORMAL_20261115_V1",
+        "conditional": false,
+        "C": [
+          35834,
+          35834
+        ],
+        "S": [
+          34116,
+          34116
+        ],
+        "source": {
+          "execution_source": "2f423befbba5075bad4ede3057f89edd788d2661",
+          "private_result": "/home/AbeHiromu/projects/d2-pr-df-ld1-m3-20261115-private/run01/fresh/H4_S0_m3_q8_R16/3/result.json"
+        },
+        "event_digest": "5d34d98bcbedaecdda1b412f71d7c3df614a6097eae0c8b5ef288b9667e88ed7",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "cb00f80c3b89fcc13dd009399df267b4de62dc75c7f20d28c48fc59d0a345afe",
+          "ea4f25b8ad0984e6e74ed44d72baffddc5e01915b551ead7b364a46abad953c4"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "m": 3,
+        "phase": "fresh",
+        "role": "CALIBRATION",
+        "request": {
+          "K": 2,
+          "R_outer": 16,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "045843b2429bece6f29b",
+          "method": "PR",
+          "prefix": 1,
+          "q": 8,
+          "system": "H4"
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            },
+            "A_declaration": {
+              "model": "ideal_finite_RTE_law",
+              "candidate_id": "045843b2429bece6f29b",
+              "R_outer": 16,
+              "K": 2,
+              "q_PF": 8,
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+          "candidate_id": "RMSE:f9b12b7760639ec8ea4f24eab861e169925cd74bb5132b5f53084d5dba932a50",
+          "kappa": {
+            "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "value": {
+              "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+              "denominator": 539496659426909122096437389293855970805348475396548904610992201
+            },
+            "definition_source": {
+              "url": "https://arxiv.org/pdf/2503.05647v2",
+              "sections": [
+                "B.2",
+                "E.1",
+                "E.3"
+              ],
+              "equations": [
+                "A38",
+                "B30",
+                "E1",
+                "E2",
+                "E21",
+                "E22"
+              ]
+            }
+          },
+          "event_mapping": {
+            "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+            "source": {
+              "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+              "path": "src/trottertracks/pr_rpe_rmse.py"
+            },
+            "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+          }
+        },
+        "seeds": [
+          883157306594615801,
+          16296768479466403408,
+          16353480948952342901,
+          10822101084101100194,
+          1306560166932882043,
+          1359644337304596467,
+          14367493619153835072,
+          15931023610610172649
+        ],
+        "laws": [
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          },
+          {
+            "steps": 16,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9998399600457135,
+              0.00016003995428642202
+            ]
+          }
+        ],
+        "events": {
+          "events": 128,
+          "rotation_ZZ": 117,
+          "rotation_Z": 11,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 128
+          }
+        },
+        "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": 2.7108187593826942,
+        "scalar_hex": "0x1.5afc1bee774aap+1",
+        "scalar_application": "ONCE_AT_TOTAL_T",
+        "compiled": {
+          "cosine": {
+            "rz_count": 35834,
+            "rz_depth": 9534,
+            "cx_count": 11948,
+            "cx_depth": 6001,
+            "total_depth": 21487,
+            "circuit_size": 71445
+          },
+          "sine": {
+            "rz_count": 35834,
+            "rz_depth": 9534,
+            "cx_count": 11948,
+            "cx_depth": 6001,
+            "total_depth": 21487,
+            "circuit_size": 71445
+          }
+        },
+        "compile_log": [
+          {
+            "axis": "cosine",
+            "status": "COMPLETE",
+            "seconds": 2.872616132022813,
+            "peak_rss_bytes": 407674880
+          },
+          {
+            "axis": "sine",
+            "status": "COMPLETE",
+            "seconds": 2.8373613751027733,
+            "peak_rss_bytes": 416886784
+          }
+        ],
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 0.038280494045466185,
+            "event_write": 0.11665696301497519,
+            "event_digest": 0.019200041890144348,
+            "structural": 1.414125073933974,
+            "compose": 4.073467198992148,
+            "cosine_wrapper": 0.8860477199777961,
+            "cosine_fingerprint": 0.9766785728279501,
+            "cosine_compile": 2.872921070083976,
+            "cosine_mutation_check": 0.8327162081841379,
+            "sine_wrapper": 1.023983791936189,
+            "sine_fingerprint": 0.8130852980539203,
+            "sine_compile": 2.837644113926217,
+            "sine_mutation_check": 0.9413825881201774
+          },
+          "total_seconds": 16.86110507301055,
+          "fingerprint": {
+            "calls": 15,
+            "hits": 205556,
+            "misses": 21498
+          }
+        },
+        "path_wall_seconds": 16.949583620065823,
+        "peak_rss_bytes": 416886784,
+        "private_directory": "/home/AbeHiromu/projects/d2-pr-df-ld1-m3-20261115-private/run01/fresh/H4_S0_m3_q8_R16/3",
+        "gate_status": "INPUT_PREPARATION_REQUEST_LOWERING_COMPILER_FINGERPRINT_CHECKED",
+        "numerical_action_gate": "NOT_RUN_AS_IN_ORIGINAL_P2_FRESH"
+      }
+    }
+  ],
+  "new_compiles": 8,
+  "compile_attempts": 8,
+  "total_wall_seconds": 20.473143010167405,
+  "resources_after": {
+    "affinity_cpu_count": 64,
+    "loadavg": [
+      7.17822265625,
+      6.40234375,
+      5.75048828125
+    ],
+    "meminfo": {
+      "MemTotal": "528127736 kB",
+      "MemAvailable": "486125028 kB"
+    },
+    "host": "GPUA100-gleap02",
+    "parent_peak_rss_bytes": 504664064
+  },
+  "residual_aggregation": false,
+  "fit": false,
+  "m4_acquisition": false,
+  "m4_prediction": false,
+  "all_law_E_C": null,
+  "law_distance": null,
+  "CI": null,
+  "N": null,
+  "G": null
+}
