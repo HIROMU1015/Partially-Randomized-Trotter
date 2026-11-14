@@ -1,0 +1,97 @@
+P-1 run02 revalidation (method A, approved in comment(A1109).md, 2026-11-14) -- read-only, no new science
+
+original run02: results cd56422a8cea155b0c0d88271a355f4e34f44a75, run SOURCE 72d4f4ff2, status STOP_WIRING_CHECK (unchanged)
+corrected gate + revalidation SOURCE: 8258b22009d03757d7bc55df3f516f22b8fecfb2 (scripts/run_full_h_kappa2_p1.py, scripts/revalidate_full_h_kappa2_p1_run02.py, tests)
+revalidation evidence commit: 6d188defdfccd52194b826610bf77a333869ec11 (REVALIDATION.json, REQUEST_PHASES.json, IMPLEMENTATION_EVIDENCE.json)
+python: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python (3.11.0rc1; qiskit 1.3.0, numpy 1.26.4)
+
+== tests at HEAD 6d188defd (same SOURCE bytes as 8258b2200)
+check_full_h_kappa2_p1_prep: Ran 4 tests in 19.693s OK
+  test_child_import_preflight_and_failed_import_control ... ok
+  test_circuit_checks_in_provider_root_process ... ok
+  test_fixed_row_seeds_and_pinned_sources ... ok
+  test_price_sidecar_format_passes_unchanged_c_guard ... ok
+check_full_h_kappa2_p1_circuits: Ran 11 tests in 9.484s OK
+  test_central_phase_matches_provider_return ... ok
+  test_controlled_action_low_identity_scalar_once ... ok
+  test_phase_gate_order0_toy_passes ... ok
+  test_phase_gate_order2_event_and_scalar_phases_coexist ... ok
+  test_phase_gate_rejects_event_phase_errors ... ok
+  test_phase_gate_rejects_scalar_errors ... ok
+  test_provider_root_modules_are_pinned ... ok
+  test_toy_pilot_end_to_end_without_compile ... ok
+  test_toy_pilot_with_order2_events_keeps_all_existing_gates ... ok
+  test_xy_gate_rejects_axis_mismatch ... ok
+  test_xy_measurement_sign ... ok
+check_full_h_kappa2_s1_caller: Ran 7 tests in 4.120s OK
+  test_context_failure_is_caller_stop ... ok
+  test_envelope_violation_stops_without_packet ... ok
+  test_first_numerical_failure_stops_without_retry ... ok
+  test_metadata_plan_is_fixed_kappa2_and_disjoint_from_r448 ... ok
+  test_one_ulp_allowance_is_needed_and_kept ... ok
+  test_tampered_candidate_or_r448_overlap_rejected ... ok
+  test_toy_batch_complete_with_envelope_gate_and_packet ... ok
+
+== metadata preflight: python -B scripts/revalidate_full_h_kappa2_p1_run02.py
+PREFLIGHT_METADATA_ONLY output docs/research/d_full_h_kappa2_p1_results_20261114/run02_revalidation01
+public sha256 {"docs/research/d_full_h_kappa2_p1_results_20261114/run02/SOURCE.json": "84791ad2c73c909b2bce98d4f460c3801746a253877aa30a0c3d1626df0ac808", "docs/research/d_full_h_kappa2_p1_results_20261114/run02/P1_RESULT.json": "48b9a0c840e1ee85566c7fa845d4ece846a12649cd0bcb9b163e6757a6f55d12", "docs/research/d_full_h_kappa2_p1_results_20261114/RUN02_SCALAR_ONCE_DIAGNOSIS.json": "8da0ec59f2aac8b979cd897326cce1b1d55edd2e4a222fdd5902d4e623bf06c9"}
+private files 11 fingerprints ['8de2cd2bceea0ac035fc0998c67a742b60fe9e031a797e76a106b03b89c55040', 'f5448c774286486e7061e87d14b4f0f22a309c271b922b8aec867f6988eb718c']
+
+== dry run before the commit (same bytes): child gate to scratchpad, acceptance evaluated in memory -> 23/23 True; price/guard in memory -> checked 2
+
+== revalidation (once): python -B scripts/revalidate_full_h_kappa2_p1_run02.py --revalidate  (HEAD 8258b2200; /usr/bin/time -v)
+start/end UTC: 2026-11-14T09:36:02Z 2026-11-14T09:39:26Z 
+exit=0
+{"status": "REVALIDATION_PASS", "failed": [], "elapsed_seconds": 204.60649231891148}
+	User time (seconds): 204.99
+	System time (seconds): 11.78
+	Percent of CPU this job got: 105%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:24.70
+	Maximum resident set size (kbytes): 7635012
+status REVALIDATION_PASS | failed [] | child_exit 0 | new sampling/compile/build/statevector 0 0 0 0
+  condition run02_source True
+  condition configuration True
+  condition physical_candidate True
+  condition seeds True
+  condition events True
+  condition original_status_kept True
+  condition child_result_matches_public True
+  condition trial True
+  condition action_gates True
+  condition new_zz True
+  condition parity True
+  condition one_body True
+  condition scalar_value True
+  condition preparation True
+  condition provider_bytes True
+  condition wrapper_fingerprints True
+  condition published_fingerprints True
+  condition compiler True
+  condition compiled_metrics True
+  condition phase_gate True
+  condition phase_gate_requests True
+  condition old_gate_false_negative_reproduced True
+  condition no_new_science True
+phase gate PASS same controlled U True {'cosine': 56899, 'sine': 56899}
+  cosine PASS ancilla instr 581 / 581 ancilla p 4 scalar index 56899 angle 0.2651822507334529 event phases [(0, 3.141592653589793, 7039, [7]), (3, 3.141592653589793, 28625, [68]), (7, 3.141592653589793, 56898, [64])] legacy scalar_once False
+  sine PASS ancilla instr 581 / 581 ancilla p 4 scalar index 56899 angle 0.2651822507334529 event phases [(0, 3.141592653589793, 7039, [7]), (3, 3.141592653589793, 28625, [68]), (7, 3.141592653589793, 56898, [64])] legacy scalar_once False
+  X fp 8de2cd2bceea0ac035fc0998c67a742b60fe9e031a797e76a106b03b89c55040 = recomputed True | metrics record=recount=trial True {'circuit_size': 176866, 'cx_count': 27719, 'cx_depth': 13996, 'rz_count': 92448, 'rz_depth': 26079, 'total_depth': 55352}
+  Y fp f5448c774286486e7061e87d14b4f0f22a309c271b922b8aec867f6988eb718c = recomputed True | metrics record=recount=trial True {'circuit_size': 176866, 'cx_count': 27719, 'cx_depth': 13996, 'rz_count': 92448, 'rz_depth': 26079, 'total_depth': 55352}
+
+== issue (once): python -B scripts/revalidate_full_h_kappa2_p1_run02.py --issue --evidence-commit 6d188defdfccd52194b826610bf77a333869ec11
+{"status": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION", "checked": 2}
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.62
+	Maximum resident set size (kbytes): 37720
+
+== C guard (c628e9e8 blob) negative controls on the issued records (in memory, after issue)
+{
+ "published": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION",
+ "sidecar_old_lowering": "REJECTED ValueError: Pinned implementation evidence contradicts SOURCE/axis/scalar/domain",
+ "sidecar_scalar": "REJECTED ValueError: Pinned implementation evidence contradicts SOURCE/axis/scalar/domain",
+ "evidence_commit_without_file": "REJECTED CalledProcessError: Command '['git', 'show', '8258b22009d03757d7bc55df3f516f22b8fecfb2:docs/research/d_full_h_kappa2_p1_results_20261114/run",
+ "price_source": "REJECTED ValueError: Price implementation producer SOURCE differs",
+ "axis_measurement": "REJECTED ValueError: Pinned implementation evidence contradicts SOURCE/axis/scalar/domain",
+ "policy_old_zz": "REJECTED ValueError: Comparison implementation differs: rte_rotation_lowering"
+}
+placeholder scan (FILL / all-zero / all-f commits) in PRICES, SIDECARS, GUARD_CHECK, IMPLEMENTATION_EVIDENCE, REVALIDATION: 0 hits
+mandatory STOP: no P-2, S-2, N/MSE/G, model fit or run03.

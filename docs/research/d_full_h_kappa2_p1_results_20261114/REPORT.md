@@ -6,6 +6,7 @@
 |---|---|---|
 | run01 | `STOP_WIRING_CHECK`（科学計算前） | 実行treeのsparse checkoutに`references/`が無く、子processがimport時に`FileNotFoundError`。sampling・compose・compileは0（§5）。出力は無変更で保全 |
 | run02 | `STOP_WIRING_CHECK`（科学計算後） | 利用者がチャットで再実行を承認。科学計算を1回実施し、**作用検査7件はすべてPASS、新ZZは有効、compile 2件**。ただし固定callerの`scalar_once`判定が`false`となり、`ok=false`でSTOPした（終了コード2）。retryなし |
+| run02の再検証 | **PASS**（修正SOURCE `8258b2200`、事後の再検証） | 利用者が方式A（再計算なしの再検証）を承認した。修正したscalar/event位相判定を保存run02に適用し、23条件すべてPASS。価格record・sidecarを発行し、Cの`c628e9e8` guardが受理した。原run02の記録は無変更。詳細は[run02_revalidation01/REPORT.md](run02_revalidation01/REPORT.md) |
 
 **run02のSTOP原因（STOP後の構造診断）**
 

@@ -1,0 +1,96 @@
+{
+  "guard": {
+    "commit": "c628e9e8447c11c984064b922cbce6c52dc72d48",
+    "path": "src/trottertracks/price_implementation_guard.py"
+  },
+  "guard_dependency": {
+    "path": "src/trottertracks/baseline_signal_pipeline.py",
+    "same_bytes": true
+  },
+  "evidence_commit": "6d188defdfccd52194b826610bf77a333869ec11",
+  "result": {
+    "status": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION",
+    "policy": {
+      "id": "D_FULL_H_KAPPA2_NEW_ZZ_P1_IMPLEMENTATION_ACCEPTANCE_V1",
+      "source": {
+        "plan": {
+          "commit": "5ccc1dfc341236d3fce2f745e7e9023447a027a7",
+          "path": "docs/research/d_kappa_s1_price_builders_20261114/NEXT_EXECUTION.md"
+        },
+        "c_routes": {
+          "commit": "c628e9e8447c11c984064b922cbce6c52dc72d48",
+          "path": "docs/research/paper_g_price_routes_20261114/PRICE_VALIDATION_PLAN.md"
+        },
+        "scope": "P-1 implementation acceptance only; not an adopted comparison scenario"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "by_method": {
+        "FULL_H_RTE": {
+          "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "rte_rotation_lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY"
+        }
+      }
+    },
+    "checked": [
+      {
+        "m": 3,
+        "axis": "X",
+        "evidence": {
+          "commit": "6d188defdfccd52194b826610bf77a333869ec11",
+          "path": "docs/research/d_full_h_kappa2_p1_results_20261114/run02_revalidation01/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "3X"
+          ]
+        }
+      },
+      {
+        "m": 3,
+        "axis": "Y",
+        "evidence": {
+          "commit": "6d188defdfccd52194b826610bf77a333869ec11",
+          "path": "docs/research/d_full_h_kappa2_p1_results_20261114/run02_revalidation01/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "3Y"
+          ]
+        }
+      }
+    ]
+  },
+  "cohorts": [
+    [
+      "RMSE:080ec1aae3da1adb6f977653707c75ae4225839c878d1c5a8ded958d66303ead",
+      "X",
+      "D_FULL_H_KAPPA2_NEW_ZZ_M3_WIRING_V1"
+    ],
+    [
+      "RMSE:080ec1aae3da1adb6f977653707c75ae4225839c878d1c5a8ded958d66303ead",
+      "Y",
+      "D_FULL_H_KAPPA2_NEW_ZZ_M3_WIRING_V1"
+    ]
+  ],
+  "prices_checked": 2,
+  "handoff": "C_PRICE_ACCEPTANCE_SINGLE_PATH_FINITE_COHORT",
+  "not_for": [
+    "E[C]",
+    "mean event price",
+    "P-2 model calibration point",
+    "G",
+    "method comparison"
+  ]
+}

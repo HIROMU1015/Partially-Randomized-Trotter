@@ -1,0 +1,480 @@
+diff --git a/scripts/run_full_h_kappa2_p1.py b/scripts/run_full_h_kappa2_p1.py
+index 0c412a688..85f33c6b4 100644
+--- a/scripts/run_full_h_kappa2_p1.py
++++ b/scripts/run_full_h_kappa2_p1.py
+@@ -19,6 +19,18 @@ checkout lacked the tracked `references/` file that the child imports. Changes
+ from the fixed SOURCE 04bead115 are the output label (run01 is kept) and a
+ child import-only preflight (install() first, then the real-input import chain
+ and the files context() reads); scientific conditions are unchanged.
++
++Scalar/event phase gate (A, 2026-11-14, after the run02 STOP): the old
++`scalar_once` ("exactly one ancilla p") cannot tell the scalar phase from the
++per-request event phase that the pinned provider builder appends (c31ef424
++`_build`: one PhaseGate(sum of event/identity/product phases) at the end of a
++request tail iff the sum != 0). `scalar_event_phase_gate` replaces it in the ok
++decision: the ordered list of ancilla-touching instructions must equal the one
++derived from the sampled events by the provider's own rule (products -> cz,
++rotation -> crz (new ZZ: target s1), event phase -> p, scalar p(-scalar*T) last),
++with exact float equality as in `instruction_parity`. `scalar_once` is kept only
++as a diagnostic. The price records use B's kinds (DIRECT_COMPILED_FINITE_SAMPLE /
++FINITE_COHORT_ONLY, n_paths=1, law_expectation=False).
+ """
+ from copy import deepcopy
+ from datetime import datetime, timezone
+@@ -26,6 +38,7 @@ import argparse
+ import hashlib
+ import importlib
+ import json
++import math
+ from pathlib import Path
+ import platform
+ import subprocess
+@@ -162,11 +175,160 @@ def op_counts(circuit):
+ 
+ 
+ def scalar_once(circuit, n, expected_angle):
++    """Legacy diagnostic only (false negative with order>=2 event phases; see module docstring)."""
+     phases = [i for i in circuit.data if i.operation.name == 'p'
+               and [circuit.find_bit(q).index for q in i.qubits] == [n]]
+     return len(phases) == 1 and float(phases[0].operation.params[0]) == expected_angle
+ 
+ 
++PHASE_GATE_ID = 'SCALAR_EVENT_PHASE_ANCILLA_SIGNATURE_V1'
++RECORD_SCHEMA = 'D_PRICE_RECORD_B_KINDS_V2'
++FINITE_SAMPLE = dict(classification='DIRECT_COMPILED_FINITE_SAMPLE', expectation='FINITE_COHORT_ONLY')
++
++
++def _event_view(event):
++    """RTEEvent.to_dict() (live or JSON-saved) -> the fields the c31ef424 builder reads."""
++    apps = [types.SimpleNamespace(role=a['role'], is_identity=bool(a['is_identity']),
++                                  coefficient_sign=int(a['coefficient_sign']),
++                                  support=None if a['diagonal_pauli_support'] is None
++                                  else tuple(int(q) for q in a['diagonal_pauli_support']))
++            for a in event['application_sequence']]
++    angle = float(event['rotation_angle'])
++    return types.SimpleNamespace(phase=complex(event['phase']['real'], event['phase']['imag']), apps=apps,
++                                 taylor_order=int(event['taylor_order']),
++                                 unsigned_rotation_angle=apps[-1].coefficient_sign * angle)  # RTEEvent property
++
++
++def central_phase(app):
++    """Phase returned by c31ef424 `_append_central_application` (01e068af returns the same 0.0 for ZZ)."""
++    if app.role == 'product':
++        return math.pi if app.coefficient_sign == -1 else 0.0
++    if app.role == 'rotation':
++        return 0.0
++    raise ValueError('Unsupported RTE application role: ' + str(app.role))
++
++
++def request_phase(events, provider):
++    """Accumulated ancilla phase of one request tail, in the order of c31ef424 `_build`:
++    all event phases first (provider `_event_phase_angle`), then per application the
++    identity phase (provider `_identity_application_phase`) or the central return value."""
++    views = [_event_view(e) for e in events]
++    builder = provider.QiskitDFRTEEventCircuitBuilder
++    total = 0.0
++    for v in views:
++        total += provider._event_phase_angle(v.phase)
++    for v in views:
++        for a in v.apps:
++            total += builder._identity_application_phase(v, a) if a.is_identity else central_phase(a)
++    return total
++
++
++def expected_ancilla_ops(requests_events, n, scalar, T, provider, lowering=LOWERING_ID):
++    """Ordered ancilla-touching instructions that compose() + the provider builder emit."""
++    ops = []
++    for r, events in enumerate(requests_events):
++        for k, event in enumerate(events):
++            v = _event_view(event)
++            for a in v.apps:
++                if a.is_identity:
++                    continue
++                if a.role == 'product':
++                    ops += [dict(kind='product', request=r, event=k, op=('cz', (n, q), ())) for q in a.support]
++                    continue
++                angle = 2.0 * v.unsigned_rotation_angle
++                if len(a.support) == 1:
++                    op = ('crz', (n, a.support[0]), (angle,))
++                elif lowering == LOWERING_ID:
++                    op = ('crz', (n, a.support[1]), (angle,))
++                else:
++                    op = ('crzz', (n,) + a.support, (angle,))
++                ops.append(dict(kind='rotation', request=r, event=k, op=op))
++        phase = request_phase(events, provider)
++        if phase != 0.0:
++            ops.append(dict(kind='event_phase', request=r, op=('p', (n,), (phase,)),
++                            minus_one_events=[k for k, e in enumerate(events) if _event_view(e).phase == -1]))
++    if scalar * T != 0:
++        ops.append(dict(kind='scalar', op=('p', (n,), (-scalar * T,))))
++    return ops
++
++
++def ancilla_ops(circuit, n, start=0, stop=None):
++    stop = len(circuit.data) if stop is None else stop
++    out = []
++    for i in range(start, stop):
++        item = circuit.data[i]
++        qubits = tuple(circuit.find_bit(q).index for q in item.qubits)
++        if n in qubits:
++            out.append(dict(index=i, op=(item.operation.name, qubits, tuple(float(p) for p in item.operation.params))))
++    return out
++
++
++def scalar_event_phase_gate(circuit, n, requests_events, scalar, expected_scalar, T, *, provider,
++                            lowering=LOWERING_ID, start=0, stop=None):
++    """Scalar vs event phases on the ancilla of one controlled evolution [start, stop).
++
++    PASS iff (1) the scalar equals the preparation value, (2) the ancilla-touching
++    instruction list equals expected_ancilla_ops (so each event phase sits after the
++    last event of its own request and before the first ancilla instruction of the next,
++    and nothing is missing, duplicated, reordered or moved to another request), and
++    (3) the scalar p is the last instruction of the evolution (compose appends it last).
++    Placement relative to system-only gates inside one request gap is not resolved;
++    those gates act on other qubits and commute with an ancilla phase."""
++    stop = len(circuit.data) if stop is None else stop
++    expected = expected_ancilla_ops(requests_events, n, scalar, T, provider, lowering)
++    actual = ancilla_ops(circuit, n, start, stop)
++    reasons = []
++    if scalar != expected_scalar:
++        reasons.append('SCALAR_VALUE_DIFFERS_FROM_PREPARATION')
++    got, want = [a['op'] for a in actual], [e['op'] for e in expected]
++    first = next((i for i, (a, b) in enumerate(zip(got, want)) if a != b), None if len(got) == len(want) else min(len(got), len(want)))
++    if first is not None:
++        reasons.append('ANCILLA_SIGNATURE_DIFFERS')
++    scalar_angle = -scalar * T
++    if not expected or expected[-1]['kind'] != 'scalar' or not actual or actual[-1]['index'] != stop - 1:
++        reasons.append('SCALAR_NOT_LAST_INSTRUCTION_OF_EVOLUTION')
++    phases = [dict(request=e['request'], angle=e['op'][2][0], minus_one_events=e['minus_one_events'],
++                   index=a['index'] if a['op'] == e['op'] else None)
++              for e, a in zip(expected, actual) if e['kind'] == 'event_phase']
++    p_ops = [a for a in actual if a['op'][0] == 'p']
++    return dict(gate=PHASE_GATE_ID, status='FAIL' if reasons else 'PASS', reasons=reasons,
++                first_mismatch=None if first is None else dict(position=first, actual=got[first] if first < len(got) else None,
++                                                               expected=want[first] if first < len(want) else None),
++                scalar=scalar, expected_scalar=expected_scalar, scalar_angle=scalar_angle,
++                scalar_index=actual[-1]['index'] if actual and actual[-1]['op'] == ('p', (n,), (scalar_angle,)) else None,
++                evolution_bounds=[start, stop], ancilla_instructions=len(actual), expected_ancilla_instructions=len(expected),
++                ancilla_p=len(p_ops), event_phases=phases, requests=len(requests_events),
++                rule='c31ef424 _build: one PhaseGate(sum) per request tail iff sum != 0; compose: p(-scalar*T) last',
++                legacy_scalar_once=len(p_ops) == 1 and p_ops[0]['op'][2] == (scalar_angle,))
++
++
++def wrapper_evolution_bounds(wrapper, n, axis):
++    """[start, stop) of U inside the af284d85 measured wrapper h(n) U [sdg(n)] h(n) measure(n)."""
++    def op(i):
++        item = wrapper.data[i]
++        return item.operation.name, tuple(wrapper.find_bit(q).index for q in item.qubits)
++    suffix = [('sdg', (n,))] if axis == 'sine' else []
++    suffix += [('h', (n,)), ('measure', (n,))]
++    if op(0) != ('h', (n,)) or [op(i) for i in range(len(wrapper.data) - len(suffix), len(wrapper.data))] != suffix:
++        raise ValueError('Wrapper is not h(n) U [sdg(n)] h(n) measure(n) for axis ' + axis)
++    return 1, len(wrapper.data) - len(suffix)
++
++
++def xy_phase_gate(wrappers, n, requests_events, scalar, expected_scalar, T, *, provider, lowering=LOWERING_ID):
++    """Apply the phase gate to each measured X/Y wrapper and require the same controlled U in both."""
++    per_axis, segments = {}, {}
++    for axis, wrapper in wrappers.items():
++        start, stop = wrapper_evolution_bounds(wrapper, n, axis)
++        per_axis[axis] = scalar_event_phase_gate(wrapper, n, requests_events, scalar, expected_scalar, T,
++                                                 provider=provider, lowering=lowering, start=start, stop=stop)
++        segments[axis] = [(i.operation.name, tuple(wrapper.find_bit(q).index for q in i.qubits),
++                           tuple(float(p) for p in i.operation.params)) for i in wrapper.data[start:stop]]
++    same = len({json.dumps(s) for s in segments.values()}) == 1
++    ok = same and set(per_axis) == {'cosine', 'sine'} and all(g['status'] == 'PASS' for g in per_axis.values())
++    return dict(gate=PHASE_GATE_ID, status='PASS' if ok else 'FAIL', same_controlled_evolution=same,
++                evolution_instructions={a: len(s) for a, s in segments.items()}, axes=per_axis)
++
++
+ def pilot(full, row, *, compile_cached=None):
+     """setup -> context -> cost_trial(index0) under the swap; legacy replay for parity."""
+     native = full.setup()
+@@ -201,14 +363,18 @@ def pilot(full, row, *, compile_cached=None):
+     one_body = sum(app.component_id in one_ids for r in captured['requests']
+                    for e in r.rte_occurrence.events for app in e.application_sequence)
+     expected_scalar = ctx.ham.constant + captured['prep'].extracted_identity_coefficient
++    events = [[e.to_dict() for e in r.rte_occurrence.events] for r in captured['requests']]
++    phase_gate = scalar_event_phase_gate(captured['circuit'], n, events, captured['scalar'], expected_scalar, row['T'],
++                                         provider=provider)
+     checks = dict(trial_gates=[c['check'] for c in trial['checks']], builder_lowering_id=captured['builder'],
+         legacy_rzz_control_instructions=counts.get('crzz', 0), new_crz=counts.get('crz', 0), parity=parity,
+         one_body_applications=one_body, scalar=captured['scalar'], scalar_expected=expected_scalar,
+-        scalar_once=scalar_once(captured['circuit'], n, -captured['scalar'] * row['T']),
++        scalar_event_phases=phase_gate,
++        scalar_once_legacy_diagnostic=scalar_once(captured['circuit'], n, -captured['scalar'] * row['T']),
+         provider_file=str(provider.__file__))
+     ok = (checks['builder_lowering_id'] == LOWERING_ID and checks['legacy_rzz_control_instructions'] == 0
+           and parity['status'] == 'PASS' and parity['replaced_controlled_zz'] > 0 and one_body > 0
+-          and checks['scalar'] == expected_scalar and checks['scalar_once']
++          and checks['scalar'] == expected_scalar and phase_gate['status'] == 'PASS'
+           and trial['status'] == 'PASS' and trial['index'] == 0 and set(trial['prices']) == {'cosine', 'sine'})
+     return trial, checks, ok
+ 
+@@ -283,8 +449,13 @@ def price_bindings(root, prepared, trial, *, price_source, evidence_commit, evid
+     for req in base:
+         axis = req['axis']; metrics = trial['prices']['cosine' if axis == 'X' else 'sine']
+         price = deepcopy(req)
+-        price.update(cohort=COHORT, n_paths=1, mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),
+-            classification='DIRECT_SINGLE_PATH_WIRING', expectation='NOT_A_LAW_MEAN', price_status='UNQUALIFIED_SINGLE_PATH',
++        price.update(**FINITE_SAMPLE, cohort=COHORT, n_paths=1, law_expectation=False,
++            law_context=I.providers(str(root)).B.p.measurement(row, axis, saved_sampler=True)['law_context'],
++            mean=dict(rz_count=metrics['rz_count']), metrics=deepcopy(metrics),
++            price_status='DIRECT_FINITE_COHORT', record_schema=RECORD_SCHEMA,
++            diagnostic=dict(pilot_role='DIRECT_SINGLE_PATH_WIRING', previous_labels=dict(
++                classification='DIRECT_SINGLE_PATH_WIRING', expectation='NOT_A_LAW_MEAN', price_status='UNQUALIFIED_SINGLE_PATH'),
++                qualified_expectation_promotion='FORBIDDEN', model_calibration_point=False, G_input=False),
+             source=deepcopy(price_source), price_profile=dict(profile, lowering_id=LOWERING_ID),
+             profile_extension=dict(lowering_id=LOWERING_ID, source=NEW_ZZ), normalization_is_price_multiplier=False)
+         facts = dict(method='FULL_H_RTE', profile=deepcopy(profile), native_policy='H46_LONG_TIME_NATIVE_COMPOSE',
+diff --git a/tests/check_full_h_kappa2_p1_circuits.py b/tests/check_full_h_kappa2_p1_circuits.py
+index 0aaf55425..8d2720200 100644
+--- a/tests/check_full_h_kappa2_p1_circuits.py
++++ b/tests/check_full_h_kappa2_p1_circuits.py
+@@ -1,5 +1,9 @@
+ """Artificial circuits for P-1, in the same import order as the real child process.
+ 
++Also the scalar/event phase gate: order-0 and order-2 toys, provider phase rule, and
++negative controls (scalar doubled/missing/misplaced, event phase missing/duplicated/
++reordered/moved to another request, X/Y mismatch). No H4 input, sampling of H4 or compile.
++
+ The original install() puts the pinned provider root first (only its private
+ config path is read); then a toy 4-qubit DF Hamiltonian goes through the ORIGINAL
+ prepare_full_h/full_oracle (9b83 blob), the long-time native sample/compose/
+@@ -24,6 +28,10 @@ from qiskit.quantum_info import Operator  # noqa: E402
+ 
+ TOY_ROW = dict(system='TOY', method='PR', formula='2nd', prefix=0, T=.8, q=2, R_outer=8, K=2, delta=.4, s=16,
+                family='FULL_H_PURE_RTE', L_D=0, id='FULL_H_TOY_ARTIFICIAL_P1')
++# Same toy at T=1.6: its index-0 path (fixed seed key) has one order-2 event (phase -1) in each
++# request plus 2 / 1 sign -1 products, so the provider appends p(3*pi) and p(2*pi) per request
++# (event and product phases accumulated) next to the scalar phase.
++ORDER2_ROW = dict(TOY_ROW, T=1.6, delta=.8, id='FULL_H_TOY_ARTIFICIAL_P1_ORDER2_9')
+ 
+ 
+ def toy_hamiltonian():
+@@ -84,7 +92,8 @@ class Tests(unittest.TestCase):
+         self.assertGreater(checks['parity']['replaced_controlled_zz'], 0)
+         self.assertEqual(checks['legacy_rzz_control_instructions'], 0)
+         self.assertGreater(checks['one_body_applications'], 0)
+-        self.assertTrue(checks['scalar_once'])
++        self.assertEqual(checks['scalar_event_phases']['status'], 'PASS')
++        self.assertTrue(checks['scalar_once_legacy_diagnostic'])  # order-0 toy: no event phase
+ 
+     def test_controlled_action_low_identity_scalar_once(self):
+         native, prep, requests, scalar, legacy, new = self.evolutions()
+@@ -125,6 +134,145 @@ class Tests(unittest.TestCase):
+                 v = simulate_statevector(w.remove_final_measurements(inplace=False), low)
+                 self.assertAlmostEqual(float(np.vdot(v[:d], v[:d]).real - np.vdot(v[d:], v[d:]).real), value, delta=1e-10)
+ 
++    # ---- scalar/event phase gate (replaces the legacy "exactly one ancilla p" scalar_once)
++
++    def phase_case(self, row):
++        native = self.full.setup(); prep = self.ctx.preparations[0]
++        requests, _, _ = native.sample_requests(row, prep, P1.COHORT, 0)
++        scalar = self.ctx.ham.constant + prep.extracted_identity_coefficient
++        from trottertracks.resource_applicability import ax2b_native_df_v5 as nat
++        from trottertracks.resource_applicability.h6_hash_reuse_v1 import use_fingerprint_reuse
++        provider = __import__('trotterlib.df_rte_qiskit', fromlist=['x'])
++        with use_fingerprint_reuse() as fp, P1.zz_module().efficient_controlled_zz(provider):
++            new = native.compose(row, prep, requests, scalar, fp.fingerprint)
++            wrappers = {a: nat.build_native_hadamard_wrapper(new, axis=a, include_measurement=True,
++                                                             max_instructions=len(new.circuit.data) + 4) for a in ('cosine', 'sine')}
++        events = [[e.to_dict() for e in r.rte_occurrence.events] for r in requests]
++        return SimpleNamespace(circuit=new.circuit, wrappers=wrappers, events=events, scalar=scalar, T=row['T'],
++                               n=prep.num_system_qubits, provider=provider, requests=requests)
++
++    def gate(self, c, circuit=None, **kw):
++        return P1.scalar_event_phase_gate(c.circuit if circuit is None else circuit, c.n, kw.pop('events', c.events),
++                                          c.scalar, kw.pop('expected', c.scalar), c.T, provider=c.provider, **kw)
++
++    @staticmethod
++    def rebuilt(circuit, edit):
++        items = list(circuit.data); edit(items)
++        out = circuit.copy_empty_like()
++        for item in items:
++            out.append(item.operation, item.qubits, item.clbits)
++        return out
++
++    def ancilla_p(self, c, circuit=None):
++        circuit = c.circuit if circuit is None else circuit
++        return [i for i, item in enumerate(circuit.data) if item.operation.name == 'p'
++                and [circuit.find_bit(q).index for q in item.qubits] == [c.n]]
++
++    def test_phase_gate_order0_toy_passes(self):
++        c = self.phase_case(TOY_ROW)
++        g = self.gate(c)
++        self.assertEqual((g['status'], g['event_phases'], g['ancilla_p']), ('PASS', [], 1), g)
++        self.assertTrue(g['legacy_scalar_once'])
++        self.assertEqual(P1.xy_phase_gate(c.wrappers, c.n, c.events, c.scalar, c.scalar, c.T, provider=c.provider)['status'], 'PASS')
++
++    def test_phase_gate_order2_event_and_scalar_phases_coexist(self):
++        c = self.phase_case(ORDER2_ROW)
++        orders = [[e['taylor_order'] for e in batch] for batch in c.events]
++        self.assertEqual([o.count(2) for o in orders], [1, 1])
++        neg = [sum(a['role'] == 'product' and a['coefficient_sign'] == -1 for e in b for a in e['application_sequence'])
++               for b in c.events]
++        self.assertEqual(neg, [2, 1])
++        g = self.gate(c)
++        self.assertEqual(g['status'], 'PASS', g)
++        self.assertEqual([(p['request'], round(p['angle'] / np.pi, 12)) for p in g['event_phases']], [(0, 3.0), (1, 2.0)])
++        self.assertEqual([p['angle'] for p in g['event_phases']], [P1.request_phase(b, c.provider) for b in c.events])
++        self.assertEqual([p['minus_one_events'] != [] for p in g['event_phases']], [True, True])
++        self.assertEqual(g['ancilla_p'], 3)
++        self.assertFalse(g['legacy_scalar_once'])                 # the run02 false negative, reproduced
++        self.assertFalse(P1.scalar_once(c.circuit, c.n, -c.scalar * c.T))
++        p = self.ancilla_p(c)                                      # scalar is the last instruction and last ancilla p
++        self.assertEqual(p[-1], len(c.circuit.data) - 1)
++        self.assertEqual(float(c.circuit.data[p[-1]].operation.params[0]), -c.scalar * c.T)
++        xy = P1.xy_phase_gate(c.wrappers, c.n, c.events, c.scalar, c.scalar, c.T, provider=c.provider)
++        self.assertEqual((xy['status'], xy['same_controlled_evolution']), ('PASS', True), xy)
++
++    def test_central_phase_matches_provider_return(self):
++        from qiskit import QuantumCircuit
++        c = self.phase_case(ORDER2_ROW)
++        builder = c.provider.QiskitDFRTEEventCircuitBuilder
++        seen = set()
++        for r in c.requests:
++            for event in r.rte_occurrence.events:
++                for app in event.application_sequence:
++                    if app.is_identity:
++                        continue
++                    got = builder._append_central_application(QuantumCircuit(c.n + 1), event, app, controlled=True, ancilla_qubit=c.n)
++                    view = P1._event_view(event.to_dict()).apps[app.application_index]
++                    self.assertEqual(P1.central_phase(view), got); seen.add((app.role, app.coefficient_sign))
++        self.assertTrue({'rotation', 'product'} <= {role for role, _ in seen}, seen)
++        for sign in (1, -1):                                       # product sign rule incl. the -1 branch
++            fake = SimpleNamespace(role='product', coefficient_sign=sign, diagonal_pauli_support=(0,))
++            self.assertEqual(P1.central_phase(fake), builder._append_central_application(
++                QuantumCircuit(c.n + 1), None, fake, controlled=True, ancilla_qubit=c.n))
++
++    def test_phase_gate_rejects_scalar_errors(self):
++        c = self.phase_case(ORDER2_ROW)
++        last = len(c.circuit.data) - 1
++        doubled = c.circuit.copy(); doubled.p(-c.scalar * c.T, c.n)
++        missing = self.rebuilt(c.circuit, lambda items: items.pop())
++        early = self.rebuilt(c.circuit, lambda items: items.insert(self.ancilla_p(c)[0], items.pop()))
++        late_event = self.rebuilt(c.circuit, lambda items: items.insert(last, items.pop(self.ancilla_p(c)[1])))
++        for name, circuit in dict(doubled=doubled, missing=missing, before_event_phase=early, event_after_scalar=late_event).items():
++            self.assertEqual(self.gate(c, circuit)['status'], 'FAIL', name)
++        self.assertEqual(self.gate(c, expected=c.scalar + 1e-12)['reasons'], ['SCALAR_VALUE_DIFFERS_FROM_PREPARATION'])
++
++    def test_phase_gate_rejects_event_phase_errors(self):
++        c = self.phase_case(ORDER2_ROW)
++        p0, p1, ps = self.ancilla_p(c)
++        crz = [i for i, item in enumerate(c.circuit.data) if item.operation.name == 'crz']
++        first_crz_r1 = crz[len(c.events[0])]
++        dup = self.rebuilt(c.circuit, lambda items: items.insert(p0, items[p0]))
++        drop = self.rebuilt(c.circuit, lambda items: items.pop(p0))
++        moved = self.rebuilt(c.circuit, lambda items: items.insert(first_crz_r1 + 1, items.pop(p0)))  # into request 1
++        def swap(items):
++            items[p0], items[p1] = items[p1], items[p0]
++        swapped = self.rebuilt(c.circuit, swap)                     # 3*pi <-> 2*pi between requests
++        for name, circuit in dict(duplicate=dup, missing=drop, other_request=moved, swapped_order=swapped).items():
++            g = self.gate(c, circuit)
++            self.assertEqual((g['status'], g['reasons']), ('FAIL', ['ANCILLA_SIGNATURE_DIFFERS']), name)
++        flipped = [[dict(e, phase=dict(real=1.0, imag=0.0)) for e in batch] for batch in c.events]
++        self.assertEqual(self.gate(c, events=flipped)['status'], 'FAIL')   # event record without its sign
++        other = [c.events[1], c.events[0]]
++        self.assertEqual(self.gate(c, events=other)['status'], 'FAIL')     # request/event correspondence
++
++    def test_xy_gate_rejects_axis_mismatch(self):
++        c = self.phase_case(ORDER2_ROW)
++        w = dict(c.wrappers)
++        start, stop = P1.wrapper_evolution_bounds(w['sine'], c.n, 'sine')
++        p = [i for i in range(start, stop) if w['sine'].data[i].operation.name == 'p'
++             and [w['sine'].find_bit(q).index for q in w['sine'].data[i].qubits] == [c.n]]
++        w['sine'] = self.rebuilt(w['sine'], lambda items: items.pop(p[0]))
++        g = P1.xy_phase_gate(w, c.n, c.events, c.scalar, c.scalar, c.T, provider=c.provider)
++        self.assertEqual((g['status'], g['same_controlled_evolution'], g['axes']['cosine']['status']), ('FAIL', False, 'PASS'))
++        w2 = dict(c.wrappers)                                       # same phases, one system gate differs
++        k = next(i for i in range(start, stop) if w2['sine'].data[i].operation.name == 'xx_plus_yy')
++        def bend(items):
++            op = items[k].operation; items[k] = items[k].replace(operation=type(op)(op.params[0] + 1e-3, op.params[1]))
++        w2['sine'] = self.rebuilt(w2['sine'], bend)
++        g2 = P1.xy_phase_gate(w2, c.n, c.events, c.scalar, c.scalar, c.T, provider=c.provider)
++        self.assertEqual((g2['status'], g2['same_controlled_evolution']), ('FAIL', False))
++
++    def test_toy_pilot_with_order2_events_keeps_all_existing_gates(self):
++        trial, checks, ok = P1.pilot(self.full, ORDER2_ROW, compile_cached=self.fake_compile)
++        self.assertTrue(ok, checks)
++        self.assertEqual(set(checks['trial_gates']), {'low_control', 'high_control_leakage',
++                         'independent_occupation_vector', 'Hadamard_cosine', 'Hadamard_sine'})
++        self.assertEqual((checks['parity']['status'], checks['legacy_rzz_control_instructions']), ('PASS', 0))
++        self.assertGreater(checks['one_body_applications'], 0)
++        self.assertEqual(checks['scalar_event_phases']['status'], 'PASS')
++        self.assertFalse(checks['scalar_once_legacy_diagnostic'])
++        self.assertEqual(len(checks['scalar_event_phases']['event_phases']), 2)
++
+ 
+ if __name__ == '__main__':
+     unittest.main(verbosity=2)
+diff --git a/tests/check_full_h_kappa2_p1_prep.py b/tests/check_full_h_kappa2_p1_prep.py
+index 2d4b6c9af..2a7ea057c 100644
+--- a/tests/check_full_h_kappa2_p1_prep.py
++++ b/tests/check_full_h_kappa2_p1_prep.py
+@@ -14,6 +14,7 @@ from unittest.mock import patch
+ ROOT = Path(__file__).resolve().parents[1]
+ sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'scripts')]
+ import run_full_h_kappa2_p1 as P1  # noqa: E402
++import revalidate_full_h_kappa2_p1_run02 as R  # noqa: E402
+ from trottertracks import price_implementation_guard as G  # noqa: E402
+ 
+ OLD = 'CONTROLLED_ZZ_GENERIC_RZZ_CONTROL1_PROVIDER_C31EF424'
+@@ -33,25 +34,31 @@ class Tests(unittest.TestCase):
+         prices, sides, proofs = P1.price_bindings(ROOT, prepared, trial, price_source=dict(fixture='ARTIFICIAL'),
+             evidence_commit='a' * 40, evidence_path='ARTIFICIAL_IMPLEMENTATION_EVIDENCE.json')
+         self.assertEqual([p['axis'] for p in prices], ['X', 'Y'])
+-        self.assertEqual({p['expectation'] for p in prices}, {'NOT_A_LAW_MEAN'})
++        self.assertEqual({(p['classification'], p['expectation'], p['n_paths'], p['law_expectation'], p['record_schema'])
++                          for p in prices}, {('DIRECT_COMPILED_FINITE_SAMPLE', 'FINITE_COHORT_ONLY', 1, False, P1.RECORD_SCHEMA)})
++        self.assertEqual({p['diagnostic']['pilot_role'] for p in prices}, {'DIRECT_SINGLE_PATH_WIRING'})
+         config = prepared['plan']['configuration']
+         cohorts = {(config['rounds'][P1.M]['candidate']['id'], a): P1.COHORT for a in ('X', 'Y')}
+-        policy = dict(id='ARTIFICIAL_NEW_ZZ', source=dict(fixture='ARTIFICIAL'), profile=deepcopy(config['spec']['profile']),
+-                      by_method=dict(FULL_H_RTE=dict(native_policy='H46_LONG_TIME_NATIVE_COMPOSE',
+-                                                     rte_rotation_lowering=G.NEW_ZZ, scalar_quantity=P1.SCALAR_QUANTITY)))
+-        with patch.object(G, '_document', return_value=proofs):
+-            out = G.check(ROOT, config, prices, cohorts=cohorts, bindings=sides, policy=policy)
+-        self.assertEqual(len(out['checked']), 2)
+-        bad, bad_proofs = deepcopy(sides), deepcopy(proofs)
+-        for s in bad:
+-            s['implementation']['rte_rotation_lowering'] = OLD
+-        for p in bad_proofs.values():
+-            p['implementation']['rte_rotation_lowering'] = OLD
+-        with patch.object(G, '_document', return_value=bad_proofs), self.assertRaises(ValueError):
+-            G.check(ROOT, config, prices, cohorts=cohorts, bindings=bad, policy=policy)
+-        wrong = deepcopy(sides); wrong[0]['implementation']['resolved_scalar'] = 0.
+-        with patch.object(G, '_document', return_value=proofs), self.assertRaises(ValueError):
+-            G.check(ROOT, config, prices, cohorts=cohorts, bindings=wrong, policy=policy)
++        policy = R.policy(config)
++        # This tree's guard and C's fixed guard (c628e9e8 blob, executed unchanged).
++        for guard in (G, R.c_guard()):
++            with patch.object(guard, '_document', return_value=proofs):
++                out = guard.check(ROOT, config, prices, cohorts=cohorts, bindings=sides, policy=policy)
++            self.assertEqual(len(out['checked']), 2)
++            bad, bad_proofs = deepcopy(sides), deepcopy(proofs)
++            for s in bad:
++                s['implementation']['rte_rotation_lowering'] = OLD
++            for p in bad_proofs.values():
++                p['implementation']['rte_rotation_lowering'] = OLD
++            with patch.object(guard, '_document', return_value=bad_proofs), self.assertRaises(ValueError):
++                guard.check(ROOT, config, prices, cohorts=cohorts, bindings=bad, policy=policy)
++            wrong = deepcopy(sides); wrong[0]['implementation']['resolved_scalar'] = 0.
++            with patch.object(guard, '_document', return_value=proofs), self.assertRaises(ValueError):
++                guard.check(ROOT, config, prices, cohorts=cohorts, bindings=wrong, policy=policy)
++            stale = deepcopy(proofs); stale['3X']['price_source'] = dict(fixture='OTHER')
++            with patch.object(guard, '_document', return_value=stale), self.assertRaises(ValueError):
++                guard.check(ROOT, config, prices, cohorts=cohorts, bindings=sides, policy=policy)
++        self.assertEqual(R.c_guard().__file__, R.C_GUARD['commit'] + ':' + R.C_GUARD['path'])
+ 
+     def test_child_import_preflight_and_failed_import_control(self):
+         report = P1.child_import_preflight()  # import-only + saved-input SHA; no restore or science
+@@ -68,7 +75,7 @@ class Tests(unittest.TestCase):
+         out = subprocess.run([sys.executable, '-B', '-W', 'ignore', str(ROOT / 'tests/check_full_h_kappa2_p1_circuits.py')],
+                              cwd=ROOT, capture_output=True, text=True)
+         self.assertEqual(out.returncode, 0, out.stderr[-3000:])
+-        self.assertIn('Ran 4 tests', out.stderr)
++        self.assertIn('Ran 11 tests', out.stderr)
+ 
+ 
+ if __name__ == '__main__':
