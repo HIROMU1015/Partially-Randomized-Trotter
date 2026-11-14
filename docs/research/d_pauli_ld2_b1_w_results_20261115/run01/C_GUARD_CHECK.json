@@ -1,0 +1,57 @@
+{
+  "status": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION",
+  "policy": {
+    "id": "B1_TECHNICAL_COMPATIBILITY_NOT_ADOPTED",
+    "source": {
+      "commit": "7a0c9468b2499fac9fa1cd279ae2980c9dab048e",
+      "path": "docs/research/a_full_h_p2_pauli_b1_price_design_20261114/DESIGNS.json"
+    },
+    "profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "scope": "single_hadamard_interrogation_without_state_preparation",
+      "P": 0,
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    },
+    "by_method": {
+      "PR_PAULI_TAIL": {
+        "native_policy": "NATIVE_DF_HEAD_PLUS_PAULI_D2_TAIL",
+        "rte_rotation_lowering": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+        "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_SAVED_DF_TAIL_IDENTITY_sR"
+      }
+    }
+  },
+  "checked": [
+    {
+      "m": 0,
+      "axis": "X",
+      "evidence": {
+        "commit": "6c4709f85d0f28ce7c6957e9a70c85e378d8cad0",
+        "path": "docs/research/d_pauli_ld2_b1_w_results_20261115/run01/IMPLEMENTATION_EVIDENCE.json",
+        "selector": [
+          "m0X"
+        ]
+      }
+    },
+    {
+      "m": 0,
+      "axis": "Y",
+      "evidence": {
+        "commit": "6c4709f85d0f28ce7c6957e9a70c85e378d8cad0",
+        "path": "docs/research/d_pauli_ld2_b1_w_results_20261115/run01/IMPLEMENTATION_EVIDENCE.json",
+        "selector": [
+          "m0Y"
+        ]
+      }
+    }
+  ]
+}

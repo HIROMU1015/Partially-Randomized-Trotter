@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli LD2 B1-W実回路結果](research/d_pauli_ld2_b1_w_results_20261115/REPORT.md)（2026-11-15、Codex D2）：保存H4/1Å/STO-3G/DF10・LD2/S2/m0/T.1/q1/R2/K2、SOURCE `1a7eed91d`、元辞書/physical ID/cohort/seedのnormal1 path・XY個別2compile。両軸RZ2236/CX960/depth1416、観測path gateと公開SOURCE付きC guardはPASS。order0×2でLD2 order2 product/非自明位相は未観測UNKNOWN。有限1 pathのみ、C_INPUTS空、期待価格/model/N/G未資格、公開後mandatory STOP。
+
 [PR-Pauli B1 caller・人工回帰・次の有限実行案](research/d_pauli_b1_caller_preparation_20261114/REPORT.md)。LD1/LD2のW/V/CAL、辞書/physical ID、paired seed・D2 metadata、C受渡しを技術対応。新H4 sampling/build/compile/statevector0。ただし保存P0演算子の数値再検査を誤って1回実行し、範囲逸脱として保全・科学証拠非採用。 mandatory STOP。
 
 [Pauli LD1/m0 B0 run02復旧REPORT](research/d_pauli_ld1_m0_pilot_results_20261114/RECOVERY_REPORT.md)／[C HANDOFF](research/d_pauli_ld1_m0_pilot_results_20261114/RECOVERY_HANDOFF.md)／[結果](research/d_pauli_ld1_m0_pilot_results_20261114/run02/RESULT.json)／[published sidecar](research/d_pauli_ld1_m0_pilot_results_20261114/run02/SIDECARS_PUBLISHED.json)：承認後の一回の復旧が成功。元ID・seedのnormal1 path、X/Y2compile、全固定gate PASS。各RZ1380/CX578/depth834、有限cohortのみ、平均/N/Gなし。旧run01保全、mandatory STOP。

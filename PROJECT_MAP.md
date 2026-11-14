@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-Pauli LD2 B1-W実回路結果](docs/research/d_pauli_ld2_b1_w_results_20261115/REPORT.md)（2026-11-15、Codex D2）：保存H4/1Å/STO-3G/DF10・LD2/S2/m0/T.1/q1/R2/K2、SOURCE `1a7eed91d`、元辞書/physical ID/cohort/seedのnormal1 path・XY個別2compile。両軸RZ2236/CX960/depth1416、観測path gateと公開SOURCE付きC guardはPASS。order0×2でLD2 order2 product/非自明位相は未観測UNKNOWN。有限1 pathのみ、C_INPUTS空、期待価格/model/N/G未資格、公開後mandatory STOP。
+
 [PR-Pauli B1 caller技術準備](docs/research/d_pauli_b1_caller_preparation_20261114/REPORT.md)：SOURCE `bd1b1b286`。LD1/LD2のW/V/CAL、辞書/physical ID、paired seed・D2 metadata、C受渡しを技術対応。新H4 sampling/build/compile/statevector0。ただし保存P0演算子の数値再検査を誤って1回実行し、範囲逸脱として保全・科学証拠非採用。 全科学計画未採択、公開後mandatory STOP。
 
 [Pauli LD1/m0 B0：run02復旧PASS](docs/research/d_pauli_ld1_m0_pilot_results_20261114/RECOVERY_REPORT.md)／[C HANDOFF](docs/research/d_pauli_ld1_m0_pilot_results_20261114/RECOVERY_HANDOFF.md)：承認後の一回の手動復旧。tracked referencesを展開し、実行SOURCE9abbcc563を固定。保存H4/1Å/STO-3G/tol-only DF10、Pauli LD1/m0/S2/Δ.1/q1/R3/K2/P0、元canonical ID・184項・seedを保持。normal1 path/3event、測定付きXYを個別2compile、全固定gate PASS。両軸RZ1380/CX578/depth834、wall13.48秒/peak626888KiB。有限sample限定、C guard metadata PASS、law平均/CI/N/G/B1未着手。旧run01/STOP保全、公開照合後mandatory STOP。
