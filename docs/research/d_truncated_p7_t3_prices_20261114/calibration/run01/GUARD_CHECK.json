@@ -1,0 +1,309 @@
+{
+  "stage": "CALIBRATION",
+  "route": "TRUNCATED_PF",
+  "evidence": {
+    "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+    "sha256": {
+      "RESULT.json": "c5abd85ff6558c82f7d30f159b1819fadcb41d04e3c3cb81de5d278e8267ec2b",
+      "PRICES.json": "a629eb4c0e55518fc944375f0f33d0808cdd33a85f2d0af8b6ba9f19012098d5",
+      "SIDECARS_UNBOUND.json": "ff2479d2b6ecd1e1f08a3c91e36c06f7516e947d0cdcde079ab5cb022ce5c0a5",
+      "IMPLEMENTATION_EVIDENCE.json": "a0e3c5b9723f70fd9aef7c1e6791486c2a05b370aab2f6387b09b10499fece4e",
+      "C_INPUTS.json": "8cf8b0b9e6ee49342949765a6be0286c54ee950d56e5ce7697226f8cb3aaf59f"
+    }
+  },
+  "policy_id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+  "comparison_policy_adopted": true,
+  "comparison_policy": {
+    "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+    "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+    "metric": "compiled_rz_count",
+    "state_preparation": "P0_EXCLUDED",
+    "control": "symmetric_directional",
+    "measurement": "full_Hadamard_with_measurement",
+    "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+    "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+    "compiler": {
+      "qiskit": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed": 17
+    },
+    "scalar_by_route": {
+      "FULL_PF": "HAMILTONIAN_CONSTANT",
+      "TRUNCATED_PF": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+    },
+    "scalar_application": "ONCE_AT_TOTAL_T",
+    "holdout": {
+      "name": "H-b",
+      "kind": "RELATIVE",
+      "scale": "observed",
+      "value": {
+        "numerator": 1,
+        "denominator": 50
+      },
+      "calibration_rounds": [
+        4,
+        5
+      ],
+      "holdout_rounds": [
+        6
+      ],
+      "individual_models": 12,
+      "success": "ALL_12_PASS",
+      "failure": "NO_AUTOMATIC_REFIT_FEATURE_OR_THRESHOLD_CHANGE"
+    }
+  },
+  "model_qualified": false,
+  "holdout_judgement": null,
+  "checks": [
+    {
+      "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+      "formula": "2nd",
+      "guard": {
+        "status": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION",
+        "policy": {
+          "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+          "source": {
+            "commit": "c628e9e8447c11c984064b922cbce6c52dc72d48",
+            "path": "src/trottertracks/price_implementation_guard.py"
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "by_method": {
+            "TRUNCATED_PF": {
+              "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+              "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+              "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+            }
+          }
+        },
+        "checked": [
+          {
+            "m": 4,
+            "axis": "X",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "2nd_m4X"
+              ]
+            }
+          },
+          {
+            "m": 4,
+            "axis": "Y",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "2nd_m4Y"
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "X",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "2nd_m5X"
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "Y",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "2nd_m5Y"
+              ]
+            }
+          }
+        ]
+      },
+      "tiers": {
+        "m4X": "DETERMINISTIC_DIRECT",
+        "m4Y": "DETERMINISTIC_DIRECT",
+        "m5X": "DETERMINISTIC_DIRECT",
+        "m5Y": "DETERMINISTIC_DIRECT"
+      }
+    },
+    {
+      "configuration_id": "defc5e88ff4da2e43c99ecdf7157aa41cc47cd32f905f5aa3a1266aa3ecf5416",
+      "formula": "4th",
+      "guard": {
+        "status": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION",
+        "policy": {
+          "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+          "source": {
+            "commit": "c628e9e8447c11c984064b922cbce6c52dc72d48",
+            "path": "src/trottertracks/price_implementation_guard.py"
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "by_method": {
+            "TRUNCATED_PF": {
+              "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+              "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+              "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+            }
+          }
+        },
+        "checked": [
+          {
+            "m": 4,
+            "axis": "X",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "4th_m4X"
+              ]
+            }
+          },
+          {
+            "m": 4,
+            "axis": "Y",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "4th_m4Y"
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "X",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "4th_m5X"
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "Y",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "4th_m5Y"
+              ]
+            }
+          }
+        ]
+      },
+      "tiers": {
+        "m4X": "DETERMINISTIC_DIRECT",
+        "m4Y": "DETERMINISTIC_DIRECT",
+        "m5X": "DETERMINISTIC_DIRECT",
+        "m5Y": "DETERMINISTIC_DIRECT"
+      }
+    },
+    {
+      "configuration_id": "424eecbfdad0fceeb966884e82521ed1df18a360641695c120f090490ddc62ab",
+      "formula": "4th(m5_best)",
+      "guard": {
+        "status": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION",
+        "policy": {
+          "id": "DETERMINISTIC_PF_FULL_MEASURED_WRAPPER_HB_OBSERVED_1_OVER_50_V1",
+          "source": {
+            "commit": "c628e9e8447c11c984064b922cbce6c52dc72d48",
+            "path": "src/trottertracks/price_implementation_guard.py"
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "by_method": {
+            "TRUNCATED_PF": {
+              "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+              "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+              "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+            }
+          }
+        },
+        "checked": [
+          {
+            "m": 5,
+            "axis": "X",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "4th(m5_best)_m5X"
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "Y",
+            "evidence": {
+              "commit": "a04d40fe4d8f4bcf8083e4feebdf1535b5e7f5cd",
+              "path": "docs/research/d_truncated_p7_t3_prices_20261114/calibration/run01/IMPLEMENTATION_EVIDENCE.json",
+              "selector": [
+                "4th(m5_best)_m5Y"
+              ]
+            }
+          }
+        ]
+      },
+      "tiers": {
+        "m5X": "DETERMINISTIC_DIRECT",
+        "m5Y": "DETERMINISTIC_DIRECT"
+      }
+    }
+  ],
+  "G": null
+}
