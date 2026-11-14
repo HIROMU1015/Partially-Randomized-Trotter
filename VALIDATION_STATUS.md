@@ -1,5 +1,7 @@
 # Validation status
 
+[必要N計画・baseline total binding](docs/research/rpe_required_n_cross_method_preparation_20261114/REPORT.md)：新7＋既存8＝15人工/metadata回帰PASS。Full-H κ2/p7全13保存rowのSOURCE・物理/lawを照合。R448/κ2混在・SOURCE改変・Pauli shortcutを拒否、旧PR-DF fixed-grid拒否を保全。Pauli完了2件は保存field照合のみで再計算なし。十分N/global/G null、科学採択なし・STOP。
+
 [固定H4部分DP 2評価結果](docs/research/h4_dp_risk_fixed_results_20261114/REPORT.md)：ce0517de6 caller/入力と06db9aefe kernelで各LD1件を実行、両方86,036,445組・全13round完了。モデルMSE上界約9.03952798e−4/9.03244132e−4 Ha²、約99.62%縮小。原SOURCE/科学条件・旧上界exact一致、DP質量/分解・scope/nullの保存検算PASS。実tie/unresolvedはr>0の範囲、energy資格UNKNOWN/十分N/global/G null。追加shot/MC/価格/δE加算なし・公開後STOP。
 
 [実H4 DPの有限範囲準備](docs/research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)：数値kernel06db9aefeを変更せず、人工3モデル・count格子・整数3probeを実行。prefix64/60約203秒、人工13round/N8のK4096/8192で約18/31秒。保持8192で全roundを伝播できる保守的組数141,559,036/構成を提案。実H4新risk/旧結果再解析/追加shot/MC/C/G0、既存57件は再実行せず保全、範囲の明示許可待ち・STOP。

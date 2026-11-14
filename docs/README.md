@@ -1,5 +1,7 @@
 # 文書索引
 
+[必要Nの有限案・共通decoderの他方式受入](research/rpe_required_n_cross_method_preparation_20261114/REPORT.md)／[API](research/rpe_required_n_cross_method_preparation_20261114/HANDOFF.md)／[未採択の有限案](research/rpe_required_n_cross_method_preparation_20261114/FINITE_N_PLAN.md)：Full-H κ2/p7保存metadataを再利用。新MSE/DP/shot探索/Gは未実行・STOP。
+
 [高速化・並列化の実装事例集](acceleration_casebook.md)：DP・decoder・parser cache・命令列streamなどの過去事例と、今後の追記先。
 
 [Pauli高速版の固定2診断](research/pauli_total_q3_accelerated_results_20261114/REPORT.md)／[検算](research/pauli_total_q3_accelerated_results_20261114/VERIFY_RESULTS.txt)：約3分55秒で完了。raw-model MSEの上下界・moments・残余・zero/tieを保存、精度filter/十分N/Gなし・STOP。

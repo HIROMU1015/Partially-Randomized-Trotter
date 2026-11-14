@@ -92,40 +92,56 @@ def validate(root, binding, total=None):
 
 def _plan(root, config, packet):
     pipeline = C.interfaces(str(root)).pipeline
-    if not packet.get('implementation_sources'):
-        raise ValueError('This signal bridge requires the authoritative Pauli per-round SOURCE map')
-    options = dict(implementation_sources=packet['implementation_sources'])
+    options = {}
+    if packet.get('implementation_sources') is not None:
+        options['implementation_sources'] = packet['implementation_sources']
     if packet.get('pauli_dictionary') is not None:
         options['pauli_dictionary'] = packet['pauli_dictionary']
     return pipeline.plan(root, config, target=packet['target'], signal_source=packet['source'], **options)
 
 
-def bind_signal(root, binding, original_packet):
+def bind_signal(root, binding, original_packet, *, original_packet_source=None):
     """Reuse C's physical-ID bridge; retain the unchanged original signal packet."""
     validate(root, binding); old = binding['original_configuration']; new = binding['total_configuration']
     if original_packet.get('canonical_binding') is not None:
         raise ValueError('A bound view cannot substitute for the original saved signal')
     _same(original_packet['configuration_id'], old['id'], 'original signal configuration')
     pipeline = C.interfaces(str(root)).pipeline
-    if 'fixture' not in binding['original_source']:
+    if original_packet_source is not None:
+        if B.comparison_method(old['spec']) not in ('FULL_PF', 'TRUNCATED_PF', 'FULL_H_RTE'):
+            raise ValueError('Explicit saved packet adapter is baseline-only; use authoritative A intake for PR')
+        _same(_selected(root, original_packet_source), original_packet, 'original packet differs from saved SOURCE')
+    elif 'fixture' not in binding['original_source']:
         from . import rpe_pauli_signal_intake as A
         saved = A.accept_saved(root, integration=pipeline)['results']
         matches = [r['signal_packet'] for r in saved if r['configuration']['id'] == old['id']]
         if len(matches) != 1:
             raise ValueError('Published Pauli intake for this original canonical SOURCE required')
         _same(original_packet, matches[0], 'original signal/target/raw differs from saved SOURCE')
-    old_request = _plan(root, old, original_packet); new_request = _plan(root, new, original_packet)
-    means = original_packet['means']
+    # A saved baseline packet uses one implementation SOURCE for all rounds.
+    # Add only the caller's explicit field in a view, never edit its carrier.
+    kernel_packet = deepcopy(original_packet)
+    if original_packet_source is not None and not kernel_packet.get('implementation_sources'):
+        for mean in kernel_packet['means']:
+            _same(mean.get('source'), kernel_packet['source'], 'single-source signal provenance differs')
+            mean.setdefault('implementation_source', deepcopy(kernel_packet['source']))
+            _same(mean['implementation_source'], kernel_packet['source'], 'implementation SOURCE differs')
+    old_request = _plan(root, old, kernel_packet); new_request = _plan(root, new, kernel_packet)
+    means = kernel_packet['means']
     _same([r['m'] for r in means], list(range(old['spec']['M']+1)), 'whole signal schedule required')
     K.S.prepare(old, means, [], target=original_packet['target'],
         shot_policy=dict(meaning='USER_SUPPLIED', source=binding['original_source']))
-    packet = deepcopy(original_packet); packet['configuration_id'] = new['id']
+    packet = deepcopy(kernel_packet); packet['configuration_id'] = new['id']
     for old_row, new_row, original, view in zip(old['rounds'], new['rounds'], means, packet['means']):
         if not original.get('provider_binding'):
             raise ValueError('Explicit original signal physical/SOURCE binding required')
         pipeline.provider_binding_check(old_request, original)
-        before = old_request['pending']['jobs'][old_row['m']]['physical_context']
-        after = new_request['pending']['jobs'][new_row['m']]['physical_context']
+        before = (old_request['pending']['jobs'][old_row['m']]['physical_context']
+                  if old_request['provider'] == 'A_PR_PAULI' else pipeline.price_context(old_request, old_row['m']))
+        after = (new_request['pending']['jobs'][new_row['m']]['physical_context']
+                 if new_request['provider'] == 'A_PR_PAULI' else pipeline.price_context(new_request, new_row['m']))
+        if original_packet_source is not None:
+            _same(original.get('physical_candidate'), before['physical_candidate'], 'saved signal physical candidate differs')
         def physical(value):
             value = deepcopy(value); value['physical_candidate'].pop('id')
             return value
@@ -137,6 +153,8 @@ def bind_signal(root, binding, original_packet):
         pipeline.provider_binding_check(new_request, view)
     packet.update(canonical_binding=binding['id'], origin_signal_packet=deepcopy(original_packet),
         sufficient_N=None, global_RMSE_bound=None, G=None, winner=None)
+    if original_packet_source is not None:
+        packet.update(origin_packet_source=deepcopy(original_packet_source), kernel_signal_packet=kernel_packet)
     return dict(configuration=new, request=new_request, signal_packet=packet,
         signal_input=pipeline.signal_input(packet), science_calls=0, scientific_adoption=False)
 
@@ -152,11 +170,12 @@ def evaluate(root, binding, signal_packet, allocations, *, evaluation_target, st
     origin = signal_packet.get('origin_signal_packet')
     if origin is None:
         raise ValueError('Source-bound original signal required')
-    _same(signal_packet, bind_signal(root, binding, origin)['signal_packet'], 'signal view modified')
+    _same(signal_packet, bind_signal(root, binding, origin,
+        original_packet_source=signal_packet.get('origin_packet_source'))['signal_packet'], 'signal view modified')
     if options.get('state_refinement') is not None:
         raise ValueError('Old partial DP is excluded; use total_state_refinement explicitly')
     api = C.interfaces(str(root)).pipeline
-    records = Q.evaluate(binding['original_configuration'], origin, allocations,
+    records = Q.evaluate(binding['original_configuration'], signal_packet.get('kernel_signal_packet', origin), allocations,
         evaluation_target=evaluation_target, statistical_contract=statistical_contract,
         integration=api, source=source, options=options)
     new = binding['total_configuration']
@@ -169,6 +188,8 @@ def evaluate(root, binding, signal_packet, allocations, *, evaluation_target, st
             signal_input=api.signal_input(signal_packet), canonical_binding=deepcopy(binding),
             canonical_error_contract=deepcopy(new['spec']['rmse_policy']['error_contract']),
             kernel_input=kernel, decoder_source=deepcopy(DECODER_SOURCE), risk_source=deepcopy(RISK_SOURCE))
+        if signal_packet.get('origin_packet_source') is not None:
+            record['deterministic_input']['origin_packet_source'] = deepcopy(signal_packet['origin_packet_source'])
     return records
 
 

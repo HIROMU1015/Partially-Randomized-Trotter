@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[必要N有限計画・他方式total受入](docs/research/rpe_required_n_cross_method_preparation_20261114/REPORT.md)／[適用一覧](docs/research/rpe_required_n_cross_method_preparation_20261114/SIGNAL_APPLICABILITY.md)：保存Pauli Q3を再計算せず照合。Full-H κ2/p7は13round metadata接続、PR-DF fixed-gridとFull PF欠測を保持。15技術test PASS、新科学MSE/N/DP/Gなし・STOP。
+
 [高速化・並列化の実装事例集](docs/acceleration_casebook.md)：過去の課題・工夫・効果・再利用先を横断して探す入口。新しい実装後に短く追記する。
 
 [固定Pauli total/Q3高速版の結果](docs/research/pauli_total_q3_accelerated_results_20261114/REPORT.md)／[exact SUMMARY](docs/research/pauli_total_q3_accelerated_results_20261114/SUMMARY.json)：ユーザー承認で旧2 jobを保全停止し、同じ2条件を高速版で各1回完了。2件並列約235秒、MSE上界約4.72462e-7/4.72415e-7 Ha²。残余・bias²/Varも保存、十分N/global/G null・STOP。

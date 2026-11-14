@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[total bindingのbaseline対応と必要N計画](../../docs/research/rpe_required_n_cross_method_preparation_20261114/HANDOFF.md)：固定C.prepareを再利用し、Full-H κ2/p7の保存signalをdecoder-only viewへ受入。Full PFは人工fixtureのみ、PR-DF fixed-gridは拒否を維持。科学risk/N/Gは起動しない。
+
 [高速total/Q3の固定Pauli検証](../../docs/research/pauli_total_q3_accelerated_results_20261114/REPORT.md)：元API＋rpe_total_dp_parallelを使う限定2件完了。MSE上下界/残余/moments整合、旧SOURCE保全、十分N/G未認定。
 
 [rpe_total_dp_parallel](rpe_total_dp_parallel.py)：total DPの整数集約・process並列化・遅延約分。元decoder/geometry/finite scopeを維持したopt-in。[人工検証とbenchmark](../../docs/research/rpe_total_dp_acceleration_20261114/REPORT.md)。

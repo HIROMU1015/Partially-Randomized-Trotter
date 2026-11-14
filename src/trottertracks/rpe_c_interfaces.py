@@ -42,6 +42,19 @@ def interfaces(root):
         exec(compile(ast.fix_missing_locations(ast.Module(body=nodes, type_ignores=[])),
                      commit+':'+path, 'exec'), scope)
 
+    # Baseline planning needs only C's existing passive prepare(), not its
+    # numerical producers or private environment. Keep its implementation exact.
+    baseline_path = 'src/trottertracks/baseline_signal_pipeline.py'
+    constants = {'B_SOURCE', 'D_SOURCE', 'FORMULAS', 'MODULE', 'NUMERIC_POLICY'}
+    tree = ast.parse(R.blob(root, SOURCE, baseline_path))
+    for node in tree.body:
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name) and target.id in constants:
+                    shim.__dict__[target.id] = ast.literal_eval(node.value)
+    shim.deepcopy = deepcopy
+    selected(SOURCE, baseline_path, ('prepare',), shim.__dict__)
+
     loader = register('r_price_phase1_science')
     loader.__dict__.update(ast=ast, m=types.SimpleNamespace(blob=R.blob))
     selected(SOURCE, 'src/trottertracks/r_price_phase1_science.py', ('functions',), loader.__dict__)
