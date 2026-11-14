@@ -27,6 +27,13 @@ worker内STACKS.txtを記録する。STACKSの `Timeout` は定期dumpの表示�
 保存と、timer発火を含む観測自体の検証が必要。科学retryはしていない。
 [固定入力と移管報告](research/d_full_h_p2_completion_20261115/REPORT.md)に適用条件を残す。
 
+0dcの監視異常は同じPython 3.11.0rc1＋人工FastWriter反復で再現した：定期frame dumpありは
+SIGSEGV、なしは完了。旧実workerのsignalは記録欠落で不明。修正はworker内の非同期dumpを除去し、
+親processで段階・資源・終了code/signalを記録する `observe_child`。計算workerへthreadを追加せず、
+fast fingerprintのsingle-thread条件を保持する。旧入力と18 compileを再利用し、科学条件は変えない。
+[再現証拠・修正・適用範囲](research/d_full_h_p2_completion_20261115/RECOVERY.md)。
+実対象での修正後完了は検査中であり、人工再現と区別する。
+
 ## 以前からある関連例
 
 [PR-2 S2並列実行層](pr2_s2_parallel_execution.md)は、cell単位のspawn pool、phase barrier、

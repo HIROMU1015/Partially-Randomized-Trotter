@@ -1,13 +1,12 @@
 """Authorized zero-compile completion: saved native path0 and finished path1.
 
 Reuse the existing P2 executor, SOURCE gates, phase checks and record producer.
-The old manager and verification worker are ended only after immutable inputs
-are checked. A naturally completed old result takes precedence. No retry.
+The historical handoff preserves its stopped SOURCE. Explicitly authorized
+recovery uses the same saved inputs in a fresh namespace; no automatic retry.
 """
 from pathlib import Path
 from datetime import datetime, timezone
 import argparse
-import faulthandler
 import json
 import os
 import signal
@@ -25,6 +24,7 @@ from continue_full_h_p2_checkpoint import identity
 
 CALLER='scripts/complete_full_h_p2_checkpoint.py'
 FROZEN='docs/research/d_full_h_p2_completion_20261115/FROZEN_COMPLETION.json'
+RECOVERY='docs/research/d_full_h_p2_completion_20261115/FROZEN_RECOVERY.json'
 
 
 def finished_path(receipt,row,cohort,index,seeds,compiler):
@@ -92,13 +92,12 @@ def stopped(job):
 
 def child(path):
     job=json.loads(Path(path).read_text());private=Path(job['private']);started=time.monotonic();last=[None,started]
-    with (private/'PROGRESS.jsonl').open('x') as log,(private/'STACKS.txt').open('x') as stacks:
+    with (private/'PROGRESS.jsonl').open('x') as log:
         def progress(stage):
             now=time.monotonic()
             log.write(json.dumps(dict(utc=datetime.now(timezone.utc).isoformat(),stage=stage,
                 elapsed_seconds=now-started,previous_completed=last[0],previous_seconds=now-last[1]))+'\n')
             log.flush();last[:]=[stage,now]
-        faulthandler.dump_traceback_later(120,repeat=True,file=stacks)
         results=[]
         try:
             import h46_long_time_signal as S
@@ -121,7 +120,47 @@ def child(path):
             progress('STOP')
             P.P1.write(Path(job['result']),dict(status='STOP',error=traceback.format_exc(),paths=results))
             return 2
-        finally:faulthandler.cancel_dump_traceback_later()
+
+
+def observe_child(command, *, cwd, private, interval=30):
+    """Observe from the parent; never walk concurrently changing Python frames.
+
+    Monitoring delays/errors do not terminate a worker. wait() reaps it and
+    retains its actual return code/signal even when no child receipt was made.
+    """
+    private=Path(private);started=time.monotonic()
+    process=subprocess.Popen(command,cwd=cwd)
+    with (private/'OBSERVATIONS.jsonl').open('x') as log:
+        while True:
+            observation=dict(utc=datetime.now(timezone.utc).isoformat(),pid=process.pid,
+                elapsed_seconds=time.monotonic()-started)
+            try:
+                observation['proc_status']=Path('/proc',str(process.pid),'status').read_text()
+                observation['proc_stat']=Path('/proc',str(process.pid),'stat').read_text()
+                progress=private/'PROGRESS.jsonl'
+                observation['progress']=progress.read_text().splitlines()[-1] if progress.exists() and progress.stat().st_size else None
+            except OSError as exc:observation['observation_error']=str(exc)
+            log.write(json.dumps(observation)+'\n');log.flush()
+            try:code=process.wait(timeout=interval);break
+            except subprocess.TimeoutExpired:pass
+    P.P1.write(private/'CHILD_EXIT.json',dict(pid=process.pid,returncode=code,
+        signal=signal.Signals(-code).name if code<0 else None,elapsed_seconds=time.monotonic()-started))
+    return code
+
+
+def recovery_inputs(job):
+    """Reuse the original saved inputs; preserve the failed verification run."""
+    inputs(job);stopped(job)
+    failed=job['recovery_of']
+    for name in ('job','result'):
+        if A.file_hash(failed[name])!=failed[name+'_sha256']:raise ValueError('Failed run evidence changed')
+    old=json.loads(Path(failed['job']).read_text())
+    if any(old[k]!=job[k] for k in ('plan','stage','cell_id','step_seeds','checkpoint0','finished1','old_run')):
+        raise ValueError('Recovery scientific inputs differ')
+    terminal=json.loads(Path(failed['result']).read_text())
+    if (terminal['source']['commit']!=failed['source_commit'] or terminal['status']!='STOP_CELL'
+            or terminal['child'] is not None or terminal['error'] is not None):
+        raise ValueError('Recovery cannot waive a scientific failure')
 
 
 def owned(who):
@@ -187,18 +226,23 @@ def handoff(job):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--handoff');parser.add_argument('--execute-approved-job');parser.add_argument('--child')
+    parser.add_argument('--handoff');parser.add_argument('--execute-approved-job');parser.add_argument('--recover-approved-job');parser.add_argument('--child')
     args=parser.parse_args();P.CALLER=CALLER
     if args.child:return child(args.child)
-    path=args.handoff or args.execute_approved_job
+    path=args.handoff or args.execute_approved_job or args.recover_approved_job
     if not path:parser.error('Fixed job required')
     job=json.loads(Path(path).read_text());source=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
-    for filename in (CALLER,'scripts/full_h_p2_acceleration.py'):
+    for filename in (CALLER,'scripts/full_h_p2_acceleration.py','scripts/run_full_h_kappa2_p2.py'):
         if (ROOT/filename).read_bytes()!=P.P1.blob(source,filename):raise ValueError('Completion SOURCE not committed')
-    frozen=json.loads(P.P1.blob(source,FROZEN))
-    if {k:v for k,v in job.items() if k!='handoff_reason'}!=frozen:
+    frozen=json.loads(P.P1.blob(source,RECOVERY if args.recover_approved_job else FROZEN))
+    actual=job if args.recover_approved_job else {k:v for k,v in job.items() if k!='handoff_reason'}
+    if actual!=frozen:
         raise ValueError('Completion inputs differ from fixed SOURCE')
     if args.handoff:return handoff(job)
+    if args.recover_approved_job:
+        recovery_inputs(job)
+        from functools import partial
+        return P.execute(job,run_child=partial(observe_child,private=job['private']))
     inputs(job);stopped(job)
     return P.execute(job)
 

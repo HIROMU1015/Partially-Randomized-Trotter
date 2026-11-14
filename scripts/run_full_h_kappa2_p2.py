@@ -408,7 +408,7 @@ def check_round_records(prepared, cell, prices, sides, *, evidence_commit):
     return dict(checked, bound_sidecars=sides)
 
 
-def execute(job):
+def execute(job, *, run_child=None):
     """One explicit finite cell, fresh output only. No automatic stage progression or retry."""
     plan = job['plan']; validate(plan, execution=True)
     cell = selected(plan, job['stage'], job['cell_id'])
@@ -437,7 +437,7 @@ def execute(job):
     # Only the child takes the scientific path, install() before project imports.
     out.mkdir(parents=True); private.mkdir(parents=True)
     P1.write(private / 'job.json', dict(job, parents=parents, output=str(out), private=str(private), result=str(private / 'child.json')))
-    code = subprocess.call([sys.executable, '-B', str(ROOT / CALLER), '--child', str(private / 'job.json')], cwd=ROOT)
+    code = (run_child or subprocess.call)([sys.executable, '-B', str(ROOT / CALLER), '--child', str(private / 'job.json')], cwd=ROOT)
     child = json.loads((private / 'child.json').read_text()) if (private / 'child.json').exists() else None
     ok = code == 0 and child is not None and child['status'] == 'PASS' and len(child['paths']) == cell['n_paths']
     error = None
@@ -454,7 +454,7 @@ def execute(job):
         except Exception as exc:
             ok, error = False, type(exc).__name__ + ': ' + str(exc)
     P1.write(out / 'RESULT.json', dict(status='FINITE_CELL_COMPLETE' if ok else 'STOP_CELL', child=child, error=error,
-              source=source,
+              source=source, child_exit_code=code, child_exit_signal=-code if code < 0 else None,
               mandatory_stop=True, mean=None, fit=None, N=None, G=None))
     return 0 if ok else 2
 

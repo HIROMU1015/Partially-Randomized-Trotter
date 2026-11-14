@@ -1,0 +1,38 @@
+[
+  {
+    "case": "frames_timer",
+    "returncode": 0,
+    "signal": null,
+    "stdout": "{\"scope\": \"ARTIFICIAL_NO_H4_NO_COMPILE\", \"mode\": \"frames\", \"timed\": true, \"iterations\": 220333, \"seconds\": 8.000118151074275, \"python\": \"3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]\"}\n",
+    "stderr": "",
+    "stack_bytes": 562307,
+    "trace_tail": "dfde740 (most recent call first):\n  File \"/tmp/d7-runtime-reproducer-20261115.py\", line 23 in <module>\nTimeout (0:00:00.002000)!\nThread 0x00000f883dfde740 (most recent call first):\n  File \"/tmp/d7-runtime-reproducer-20261115.py\", line 18 in <module>\n"
+  },
+  {
+    "case": "frames_no_timer",
+    "returncode": 0,
+    "signal": null,
+    "stdout": "{\"scope\": \"ARTIFICIAL_NO_H4_NO_COMPILE\", \"mode\": \"frames\", \"timed\": false, \"iterations\": 220710, \"seconds\": 8.000061671016738, \"python\": \"3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]\"}\n",
+    "stderr": "",
+    "stack_bytes": 0,
+    "trace_tail": ""
+  },
+  {
+    "case": "fast_writer_timer",
+    "returncode": -11,
+    "signal": "SIGSEGV",
+    "stdout": "",
+    "stderr": "",
+    "stack_bytes": 7603,
+    "trace_tail": "0 in <module>\nTimeout (0:00:00.002000)!\nThread 0x000006ee421f5740 (most recent call first):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-p2-caller-prep-20261114/scripts/h46_b3_fast_fingerprint.py\", line 61 in node\n"
+  },
+  {
+    "case": "fast_writer_no_timer",
+    "returncode": 0,
+    "signal": null,
+    "stdout": "{\"scope\": \"ARTIFICIAL_NO_H4_NO_COMPILE\", \"mode\": \"fast_writer\", \"timed\": false, \"iterations\": 308, \"seconds\": 8.010650594951585, \"python\": \"3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]\"}\n",
+    "stderr": "",
+    "stack_bytes": 0,
+    "trace_tail": ""
+  }
+]

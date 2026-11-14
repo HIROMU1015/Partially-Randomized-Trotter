@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 import multiprocessing as mp
 import os
+import signal
 import sys
 import time
 import unittest
@@ -133,6 +134,40 @@ class Tests(unittest.TestCase):
         self.assertEqual(value['new_compiles'],0);self.assertEqual([r['index'] for r in value['paths']],[0,1])
         stages=[json.loads(line)['stage'] for line in (private/'PROGRESS.jsonl').read_text().splitlines()]
         self.assertEqual(stages[-1],'COMPLETE');self.assertIn('reuse_completed_path1',stages)
+        self.assertFalse((private/'STACKS.txt').exists())
+
+    def test_parent_observer_records_progress_and_actual_exit_signal(self):
+        for name,program,expected in (
+                ('normal','import time; time.sleep(.08)',0),
+                ('signal','import os,signal,time; time.sleep(.08); os.kill(os.getpid(),signal.SIGTERM)',-signal.SIGTERM)):
+            directory=self.tmp/name;directory.mkdir()
+            (directory/'PROGRESS.jsonl').write_text('{"stage":"ARTIFICIAL_NO_H4"}\n')
+            code=Completion.observe_child([sys.executable,'-c',program],cwd=ROOT,private=directory,interval=.01)
+            self.assertEqual(code,expected)
+            saved=json.loads((directory/'CHILD_EXIT.json').read_text())
+            self.assertEqual(saved['returncode'],expected)
+            self.assertEqual(saved['signal'],'SIGTERM' if expected<0 else None)
+            observations=[json.loads(line) for line in (directory/'OBSERVATIONS.jsonl').read_text().splitlines()]
+            self.assertGreater(len(observations),1)
+            self.assertEqual(json.loads(observations[0]['progress'])['stage'],'ARTIFICIAL_NO_H4')
+
+    def test_recovery_reuses_inputs_and_refuses_scientific_failure(self):
+        old={k:{} for k in ('plan','checkpoint0','finished1','old_run')}
+        old.update(stage='CALIBRATION',cell_id='G36223',step_seeds=[[1],[2]])
+        jobfile=self.tmp/'failed_job.json';P.P1.write(jobfile,old)
+        result=self.tmp/'failed_result.json'
+        terminal=dict(source=dict(commit='ARTIFICIAL'),status='STOP_CELL',child=None,error=None)
+        P.P1.write(result,terminal)
+        job=dict(old,recovery_of=dict(job=str(jobfile),job_sha256=A.file_hash(jobfile),
+            result=str(result),result_sha256=A.file_hash(result),source_commit='ARTIFICIAL'))
+        with patch.object(Completion,'inputs'),patch.object(Completion,'stopped'):
+            Completion.recovery_inputs(job)
+            job['step_seeds']=[[9],[2]]
+            with self.assertRaisesRegex(ValueError,'scientific inputs differ'):Completion.recovery_inputs(job)
+            job['step_seeds']=old['step_seeds']
+            terminal['child']=dict(status='STOP',error='ARTIFICIAL_GATE_FAILURE');result.write_text(json.dumps(terminal))
+            job['recovery_of']['result_sha256']=A.file_hash(result)
+            with self.assertRaisesRegex(ValueError,'scientific failure'):Completion.recovery_inputs(job)
 
     def test_completion_refuses_active_worker_or_scientific_failure(self):
         terminal=self.tmp/'terminal.json'
