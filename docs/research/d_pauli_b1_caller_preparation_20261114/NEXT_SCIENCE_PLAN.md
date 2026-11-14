@@ -1,5 +1,15 @@
 # Pauli B1：採択前の有限実行案
 
+## 追補：B1-W完了後の計画（2026-11-15）
+
+最新の静的更新は[CAL_AFTER_W_PLAN.md](CAL_AFTER_W_PLAN.md)、cell/cohort/seedの元表転記は[CAL_AFTER_W_METADATA.json](CAL_AFTER_W_METADATA.json)。LD2 Wは`1e2639a1b`で限定完了、B `50be68b80`のQ3は両辞書で閾値適合。Wのorder2 product・非自明位相は未観測UNKNOWN、B0/WはCALへ繰り入れない。
+
+直近の推奨はCAL保留。D2の非configuration cellの実装証拠・receipt・公開SOURCE接続を先に補い、pairedが親seedでの再生成後照合であることを実行条件に明記する。修正後に別途採択を検討する第一候補はLD2較正18 compileのみ。その後はCのfit・公開凍結、別指示で独立holdout6。辞書ごとの総24を最初の18と分け、48件一括・V先行を前提にしない。Pauli用許容差は未採択（PFの2%を移さない）。今回code修正・test・科学実行0、計画公開後mandatory STOP。
+
+以下は固定SOURCE `1a7eed91`時点の履歴であり、W未実施という記述は当時の状態として保全する。
+
+## 元計画
+
 **B1-W/V/CALの科学実行は未採択・未実行。mandatory STOP。** 以下はAの提案をcallerに対応付けたもので、承認済み予算ではない。範囲逸脱した保存P0演算子検査のPASSを科学的なpreflight証拠にしない。
 
 | 候補段階 | 有限scopeの提案例 | 条件 |

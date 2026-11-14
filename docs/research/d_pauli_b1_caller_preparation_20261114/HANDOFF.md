@@ -1,5 +1,17 @@
 # Pauli B1：A/Cへの接続
 
+## 追補：W完了後のCAL引渡し計画（2026-11-15）
+
+最新の判断材料は[CAL_AFTER_W_PLAN.md](CAL_AFTER_W_PLAN.md) §4–7、辞書別cell/physical ID/cohort/seedは[CAL_AFTER_W_METADATA.json](CAL_AFTER_W_METADATA.json)。W公開SOURCEは`1e2639a1b`（raw `6c4709f85`）。V/CALは今回も未採択・未実行。
+
+- paired q2の現実装は、inline親receiptと元seed表を入力に**同seedで再生成**し、X/Y compile後に親のevent順・product/位相・scalarの一致を検査する。保存親event列の直接連結ではない。公開親locatorの読取とcompile前の一致検査、または直接連結の実装は限定した次作業の提案。
+- 非configuration較正cellはX/Yの`PRICE_CALIBRATION_RECORD_V1`を出すが、実装証拠は空、round用guardはm=Noneを拒否する。実path/axis/compile receiptと公開SOURCEを結ぶ小さな受入経路を補ってから、既存`finite_price_design.fit_identified`→C固定`price_model_validation.fit`へ渡す。元code SHAと生成後の結果公開SHAを区別する。
+- 現時点はCAL保留を推奨。技術不足の解消後に最初に採択を検討する科学範囲はLD2較正18 compile、C fit・凍結後の独立holdout6は別指示。有限cohortの点fitを全law E[C]/CIへ昇格しない。B0/WはCALに使わず、LD2 order2/非自明位相UNKNOWN、Pauli許容差未採択を維持する。
+
+以下の元HANDOFFは`1a7eed91`時点の実装・未取得状態の履歴である。今回回路・consumerのcode修正やtestはしていない。計画公開後mandatory STOP。
+
+## 元HANDOFF
+
 実装SOURCE：`bd1b1b2862da6d174fa521e7612051810a636e7f`。A正本：`7a0c9468b2499fac9fa1cd279ae2980c9dab048e`。基点B0：`00f74f86d16cc6878e1d4c5977eb9abd9ce9c076`。C planner/model/guardは `c628e9e8447c11c984064b922cbce6c52dc72d48`。科学計画は全て未採択、mandatory STOP。
 
 ## metadata caller

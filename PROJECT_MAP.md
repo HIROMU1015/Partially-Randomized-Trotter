@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-Pauli W後のCAL計画更新](docs/research/d_pauli_b1_caller_preparation_20261114/CAL_AFTER_W_PLAN.md)（静的のみ）：D2のpairedは親seedで再生成後照合、非configuration較正cellの公開実装証拠・receipt束縛が不足。直近はCAL保留、限定接続の補完後にLD2較正18を第一候補、C fit・凍結後の独立holdout6は別指示。両辞書各24と最初18を区別し、B0/WをCALへ繰り入れず、Pauli許容差は未採択。code/test/科学call0、計画公開後STOP。
+
 [PR-Pauli LD2 B1-W実回路結果](docs/research/d_pauli_ld2_b1_w_results_20261115/REPORT.md)（2026-11-15、Codex D2）：保存H4/1Å/STO-3G/DF10・LD2/S2/m0/T.1/q1/R2/K2、SOURCE `1a7eed91d`、元辞書/physical ID/cohort/seedのnormal1 path・XY個別2compile。両軸RZ2236/CX960/depth1416、観測path gateと公開SOURCE付きC guardはPASS。order0×2でLD2 order2 product/非自明位相は未観測UNKNOWN。有限1 pathのみ、C_INPUTS空、期待価格/model/N/G未資格、公開後mandatory STOP。
 
 [PR-Pauli B1 caller技術準備](docs/research/d_pauli_b1_caller_preparation_20261114/REPORT.md)：SOURCE `bd1b1b286`。LD1/LD2のW/V/CAL、辞書/physical ID、paired seed・D2 metadata、C受渡しを技術対応。新H4 sampling/build/compile/statevector0。ただし保存P0演算子の数値再検査を誤って1回実行し、範囲逸脱として保全・科学証拠非採用。 全科学計画未採択、公開後mandatory STOP。
