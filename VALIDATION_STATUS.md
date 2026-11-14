@@ -1,5 +1,7 @@
 # Validation status
 
+[決定論PF m9独立検証](docs/research/d_pf_m9_holdout_20261115/REPORT.md)：決定論PF m9：新規12直接価格・固定12予測すべて完全一致。作用/実装guard12軸、有効直接価格12、モデルPASS/FAIL/UNKNOWN=12/0/0。Full SOURCE c02e2416a、p7加速SOURCE7ed93d24d。予測再計算/refit/N/G/他round資格拡張0、mandatory STOP。 判定データSOURCE389ae1573。これは指定m9点だけの証拠。
+
 [D：保存4件のC受入接続](docs/research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)：Cのp7正式受入2件と新版表43c15bfaをD22ccf3972へ束縛し、Full2＋p7 2の元record一致を確認。Stage parent18 PASS（人工stage処理＋実C receipt metadata）。前の人工回路/guard回帰を再利用。新規20＋12、36行・12 group・元SOURCE/cohortを保持。11/14共通指示を確認し、別IDの同物理scheduleも重複検出。science0、policy/許容差未採択・Stage1不可・mandatory STOP。
 
 [D価格stage分離](docs/research/d_pf_price_stage_split_20261114/REPORT.md)：CELL_PLAN照合でCALIBRATION 22／HOLDOUT 12／計34新規wrapper、保存M5/m4はjobに入らない。CELL_PLAN不一致8種・凍結model不備8種・model group混合・未公開/未bind/実行中改変を拒否、HOLDOUTはm6のみでCALIBRATION byte不変。D54（新規17）＋C48 PASS（人工・架空価格のみ）。policy未採択でStage 1未開始、実compile/価格0。

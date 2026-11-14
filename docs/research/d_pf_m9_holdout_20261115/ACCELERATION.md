@@ -32,3 +32,7 @@ Full 3 cellとp7 3 cellを独立processで並列に扱う。実CPU/RAMの余裕�
 全回路の保持・compose・canonical hashの走査、native/compiled statevector検査、個々のtranspileは残る。これ以上の変更は今回の未開始cellへの投入に対する費用対効果が下がるため増やさない。**実H4の同一条件での改善倍率は未測定**で、Full/p7のwall比を倍率にしない。p7実行ではcompose時間とtemplate再利用数を技術annotationとしてRESULT内に保存する。
 
 Full/p7の実行SOURCEを区別して報告する。直接価格の有効性と固定モデルのPASS/FAIL/UNKNOWNは別に判定し、有効なmodel-FAIL観測も保全する。最大12軸の判定・公開後、または重大異常でmandatory STOP。追加compile、他round、refit、N/G/winnerへ進まない。
+
+## 取得完了追記
+
+実p7 m9の全6軸が7作用gate/C guardを完了し、固定予測とも完全一致した。composeはS2 17.145 s、Y4 22.545 s、M5 33.305 s、builder実生成1/2/6を記録した。Fullも全6軸完了。科学結果・資源・固定locatorは[REPORT](REPORT.md)と[HANDOFF](HANDOFF.md)、判定データSOURCE389ae157371b267a819357da1212f3115f7350f9へ引き継ぐ。実H4の同条件速度倍率は追加測定せず、未測定を維持する。mandatory STOP。

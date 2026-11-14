@@ -1,5 +1,7 @@
 # scripts 索引
 
+[決定論PF m9の取得・独立判定](../docs/research/d_pf_m9_holdout_20261115/REPORT.md)：決定論PF m9：新規12直接価格・固定12予測すべて完全一致。作用/実装guard12軸、有効直接価格12、モデルPASS/FAIL/UNKNOWN=12/0/0。Full SOURCE c02e2416a、p7加速SOURCE7ed93d24d。予測再計算/refit/N/G/他round資格拡張0、mandatory STOP。
+
 [Full PF／p7保存4件の接続](../docs/research/d_pf_price_saved4_revision_20261114/ADMISSION_UPDATE.md)：既存stage/callerをC新版CELL_PLAN・p7正式受入へ束縛。新規20＋12、元SOURCE/cohortの保存4、別IDの物理schedule重複照合。18 metadata/人工test PASS、実compileなし・STOP。
 
 [最新Full PF metadata接続](../docs/research/full_pf_latest_price_guard_20261114/BUILD_COVERAGE.py)：旧coverage builderを再利用。科学runnerの新設なし。

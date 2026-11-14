@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[決定論PF m9の取得・独立判定](docs/research/d_pf_m9_holdout_20261115/REPORT.md)：決定論PF m9：新規12直接価格・固定12予測すべて完全一致。作用/実装guard12軸、有効直接価格12、モデルPASS/FAIL/UNKNOWN=12/0/0。Full SOURCE c02e2416a、p7加速SOURCE7ed93d24d。予測再計算/refit/N/G/他round資格拡張0、mandatory STOP。
+
 [決定論PF 6候補の全round価格coverage・次の有限検証案](docs/research/d_pf_allround_price_coverage_plan_20261115/REPORT.md)（2026-11-15、Codex D）。Cの156軸表へのmetadata差分。保存m3～m6の48軸が再利用可能、短幅36＋長q72軸はモデル適用未検証。m3の現consumer bindingは未完了。最初の新規案はm9・6候補・XY最大12 compile、m6再取得不要。66 metadata check、科学計算/価格予測/N/G0、計画公開でmandatory STOP。
 
 [決定論PF Stage 2：m6独立holdout PASS](docs/research/d_pf_stage2_holdout_20261115/REPORT.md)（2026-11-15、Codex D）。C凍結12モデルを元predicted_RZで比較し、PASS/FAIL/UNKNOWN=12/0/0。再利用0、新規12 wrapper、作用/実装guard完了。Stage1と凍結JSON不変、refit/外挿/MSE/N/Gなし、mandatory STOP。
