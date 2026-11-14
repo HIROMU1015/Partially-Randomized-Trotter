@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-[Full-H κ2 P-1 run01：STOP（実行treeのreferences/欠落、科学計算0）](docs/research/d_full_h_kappa2_p1_results_20261114/REPORT.md)：固定caller 04bead115、compile 0、retryなし。run02には実行tree修正と出力label変更・承認が必要。
+[Full-H κ2 P-1 run01・run02：ともにSTOP](docs/research/d_full_h_kappa2_p1_results_20261114/REPORT.md)：run01は実行treeのreferences/欠落で科学計算0。run02（caller 72d4f4ff2）は作用検査7件PASS・新ZZ有効・2 compile（RZ 92,448）だが、callerの`scalar_once`判定が偽陰性（order-2 event位相p(π)を想定外）でSTOP。価格は未資格・HANDOFFなし。判定修正と受理方法は未承認。
 
 [Full-H κ2 S-1結果（承認済み13 mean）](docs/research/d_full_h_kappa2_s1_results_20261114/REPORT.md)／[SIGNALS.csv](docs/research/d_full_h_kappa2_s1_results_20261114/run01/SIGNALS.csv)／[B packet](docs/research/d_full_h_kappa2_s1_results_20261114/run01/FULL_H_K2_QDYADIC_KAPPA2/B_SIGNAL_INPUT.json)：固定caller 04bead115、全gate・logB包絡PASS、N/MSE/G未評価、mandatory STOP。
 

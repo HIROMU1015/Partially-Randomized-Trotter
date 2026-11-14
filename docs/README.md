@@ -1,6 +1,6 @@
 # 文書索引
 
-[Full-H κ2 P-1 run01 STOP](research/d_full_h_kappa2_p1_results_20261114/REPORT.md)／[実行記録](research/d_full_h_kappa2_p1_results_20261114/EXECUTION.txt)：子processのimport時にtracked fileが欠落、科学計算前に停止。
+[Full-H κ2 P-1 run01・run02 STOP](research/d_full_h_kappa2_p1_results_20261114/REPORT.md)／[実行記録](research/d_full_h_kappa2_p1_results_20261114/EXECUTION.txt)：run01はtracked file欠落で科学計算前に停止。run02は作用検査PASS・2 compile済みだが、`scalar_once`判定の偽陰性で停止（[研究ノート](research/研究ノート/2026-11-14_d_full_h_kappa2_p1_run02_stop.md)）。
 
 [Full-H κ2 S-1結果](research/d_full_h_kappa2_s1_results_20261114/REPORT.md)／[実行記録](research/d_full_h_kappa2_s1_results_20261114/EXECUTION.txt)：13round raw/corrected/logB、R448との比較条件。
 
