@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[A共通Pauli入口・新旧SOURCEの受入](docs/research/pauli_entry_source_update_20261116/REPORT.md)／[B2向けHANDOFF](docs/research/pauli_entry_source_update_20261116/HANDOFF.md)：4e5b8bef6/93a5ef3b9両版を通常intakeで判別・保全。21技術test PASS。厳密ΔPF=1/5のA provider未対応とC価格UNKNOWNを分離、Pauli実signal/compile/Q3 0件。
+
 [A共通PR-Pauli packetの通常intake](docs/research/pauli_common_entry_intake_20261116/REPORT.md)／[B2向け固定入口](docs/research/pauli_common_entry_intake_20261116/HANDOFF.md)：A固定SOURCEの組立てcodeで受け入れ、κ/ΔPF/LDごとのSOURCE追加を不要化。保存4構成一致、変更構成は人工のみ、31技術test PASS。Cのexact-step価格guardは保全、実signal/compile/Q3各0。
 
 [PR-Pauli LD5のtotal view・固定2配分Q3](docs/research/pauli_ld5_two_vectors_q3_results_20261116/REPORT.md)／[A/C・統合担当HANDOFF](docs/research/pauli_ld5_two_vectors_q3_results_20261116/HANDOFF.md)：新2callとも条件付きモデル適合。LD3と共通のFULL_PF__B_PRICE/VPで4点比較、LD5モデル費用541,743,905.57/872,241,518.14 RZ。own辞書/SOURCE/raw保全、26モデル軸・原API・閾値余裕を結合。E[C]/正式G/十分N未認定・STOP。
