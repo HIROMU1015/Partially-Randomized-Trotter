@@ -1,0 +1,19 @@
+Runtime:
+/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python
+PYTHONDONTWRITEBYTECODE=1; -B; PYTHONPATH=src:tests:scripts
+
+tests/check_pauli_exact_step_binding.py
+  5 tests PASS, 1.765 s
+  Saved A metadata trace: 52 rows; both LD3/LD5 exact-1/5 cases match only m0/m1.
+  Exact vs binary64 width: different q from m1 onwards.
+  Representation-only exact values pass; a one-ULP change does not.
+  Same rounded S2 operands do not bypass the exact provider contract.
+  Normal C plan/replan retains canonical ID, structure and numerical SOURCE.
+
+tests/check_paper_g_price_routes.py
+  34 tests PASS, 8.831 s
+  Existing synthetic planner/provider/D request/price guard/accounting tests.
+  Existing saved LD1/LD2 physical context and per-round SOURCE checks.
+
+Total: 39 PASS. These are author technical checks, not independent science review.
+No new real H4 signal, sampling, compile, price fit, Q3 or cost evaluation.

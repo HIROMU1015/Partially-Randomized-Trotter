@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-Pauli厳密stepの価格binding診断](docs/research/pauli_exact_step_price_binding_20261116/REPORT.md)：厳密ΔPF=1/5とbinary64 0.2を分離。m1はq2/q1で別回路。保存LD3/LD5のm0/m1は同一recipe、m2〜m12はA providerの実step非binary64-exactでUNKNOWNを維持。C guardの条件を変えず、round/不一致fieldを診断可能にした。保存metadata52行一致、人工5＋回帰34＝39 PASS、新科学計算0。
+
 [p7粗幅Yoshida4の価格接続と最安更新](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。
 
 [Pauli LD5の2適合配分を比較へ追加](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：PR-Pauli LD5のFULL_PF__B_PRICEとVPをQ3適合点として追加し、Pauliの保存集合内最安をLD5 FULL_PF__B_PRICE・3792207339/7 RZ（541,743,905.57）へ更新。VPは6105690627/7 RZ（872,241,518.14）。LD3同名配分は別候補として維持。最安点のLD3との差−222210893/1155 RZ（−192,390.38）は採用モデル価格規則での数値差。全26軸MODEL・qualified_for_candidate=false。旧47点不変、固定19入力49点（適合34/不適合13/価格待ち2）、回帰11 PASS、新科学call0、公開後STOP。

@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[PR-Pauli厳密stepの価格binding診断](../../docs/research/pauli_exact_step_price_binding_20261116/REPORT.md)：厳密ΔPF=1/5とbinary64 0.2を分離。m1はq2/q1で別回路。保存LD3/LD5のm0/m1は同一recipe、m2〜m12はA providerの実step非binary64-exactでUNKNOWNを維持。C guardの条件を変えず、round/不一致fieldを診断可能にした。保存metadata52行一致、人工5＋回帰34＝39 PASS、新科学計算0。
+
 [`saved_rpe_cost_catalog.py`](saved_rpe_cost_catalog.py)：保存SUMMARY・Q3/価格索引をmetadata照合し、指定集合内の最安適合点を選ぶ。[仕様・再実行](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。
 
 [price_implementation_guard](price_implementation_guard.py)：既存C/B価格算術前のnative/lowering検査。[SOURCE・51人工/回帰結果](../../docs/research/full_pf_latest_price_guard_20261114/REPORT.md)。

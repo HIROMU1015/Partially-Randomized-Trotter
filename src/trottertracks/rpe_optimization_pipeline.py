@@ -139,6 +139,43 @@ def _pauli_dictionary(root, B, s, tail, dictionary, helpers):
     return item['dictionary_sha256']
 
 
+def pauli_round_binding(B, config, row, context):
+    """Explain the existing exact Pauli recipe check for ONE canonical round.
+
+    Metadata only. In particular, matching rounded lowering operands does not
+    satisfy the pinned signal provider's exact T/step identity requirement.
+    This is neither a price record nor a cross-configuration receipt bridge.
+    Callers still validate the configuration and its SOURCE/dictionary binding.
+    """
+    s=config['spec']; c=context['physical_candidate']; exact=B.a.exact_scalar
+    expected=dict(id=row['candidate']['id'],method='PR',system=s['binding']['system'],
+        formula=s['formula'],prefix=s['L_D'],K=s['finite_K'],q=row['q_PF'],R_outer=row['R_outer'])
+    differences=[k for k,v in expected.items() if c.get(k)!=v]
+    for key,canonical in (('T',row['T']),('delta',row['actual_delta_pf'])):
+        if exact(c[key])!=exact(canonical):differences.append(key)
+    if not C.p.same(context['structure'],row['structure']):differences.append('structure')
+    if row['q_RPE']!=1<<row['m']:differences.append('q_RPE')
+    if not 1<=c['prefix']<s['binding']['rank']:differences.append('prefix_domain')
+    if not C.p.same(context['dictionary_identity'],s['split']['tail_dictionary']):
+        differences.append('dictionary_identity')
+    T=exact(row['T']); step=exact(row['actual_delta_pf']); q=row['q_PF']
+    # D.round_request uses float(T)/q. A._macros uses T*w/q; for
+    # S2 w=1.0, these have the same binary64 operation order. Do not re-ceil q.
+    lowered_step=float(T)/q
+    lowered_same=(exact(c['T'])==T and c['q']==q and step==T/q
+                  and exact(c['delta'])==exact(lowered_step)) if s['formula']=='2nd' else None
+    return dict(m=row['m'],candidate_id=row['candidate']['id'],q=q,
+        requested_delta_pf=deepcopy(s['delta_pf']),T=deepcopy(row['T']),
+        canonical_actual_delta_pf=deepcopy(row['actual_delta_pf']),
+        physical_T_hex=float(exact(c['T'])).hex(),physical_delta_hex=float(exact(c['delta'])).hex(),
+        D_S2_step_hex=lowered_step.hex(),same_S2_lowering_operands=lowered_same,
+        differences=differences,matched=not differences,
+        status='ROUND_RECIPE_MATCHED_METADATA_ONLY' if not differences else 'ROUND_RECIPE_UNRESOLVED',
+        binary64_step_is_canonical=exact(lowered_step)==step,
+        price=None,qualified_for_candidate=False,
+        scope='CANONICAL_TO_PINNED_A_JOB_NOT_CROSS_CONFIGURATION_PRICE_ACCEPTANCE')
+
+
 def _pauli_plan(root, api, config, pr_physical, sources, dictionary=None):
     """B canonical candidate IS the Pauli physical ID; no legacy DF-ID checker.
 
@@ -163,14 +200,11 @@ def _pauli_plan(root, api, config, pr_physical, sources, dictionary=None):
     jobs=[]
     for row in config['rounds']:
         job=helpers.job(config,row['m'],deepcopy(sources[str(row['m'])]),bapi); c=job['physical_context']['physical_candidate']
-        if (c.get('id')!=row['candidate']['id'] or c.get('method')!='PR' or c.get('system')!=s['binding']['system']
-                or B.a.exact_scalar(c['T'])!=B.a.exact_scalar(row['T'])
-                or B.a.exact_scalar(c['delta'])!=B.a.exact_scalar(row['actual_delta_pf'])
-                or (c['formula'],c['prefix'],c['K'],c['q'],c['R_outer'])!=(s['formula'],s['L_D'],s['finite_K'],row['q_PF'],row['R_outer'])
-                or not C.p.same(job['physical_context']['structure'],row['structure'])
-                or row['q_RPE']!=1<<row['m'] or not 1<=c['prefix']<s['binding']['rank']
-                or not C.p.same(job['physical_context']['dictionary_identity'],tail)):
-            raise ValueError('Pauli physical recipe differs from B canonical round')
+        binding=pauli_round_binding(B,config,row,job['physical_context'])
+        if not binding['matched']:
+            raise ValueError('Pauli physical recipe differs from B canonical round: '
+                f"m={row['m']} q={row['q_PF']} fields={','.join(binding['differences'])}; "
+                'rounded operands alone do not satisfy the SOURCE-bound exact provider identity')
         if pr_physical is not None and not C.p.same(pr_physical.get(row['m']),c):
             raise ValueError('Supplied physical candidate is not the Pauli canonical candidate; no legacy-ID substitution')
         job.update(status='PAULI_CANONICAL_PHYSICAL_BRIDGE_METADATA_ONLY',N_X=None,N_Y=None,C=None,G=None,
