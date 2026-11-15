@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-DF LD1 F0→残差価格の条件付き上界](research/d_pr_df_ld1_f0_rz_range_20261115/REPORT.md)：C/Sを別々に抑えるSOURCE envelopeを26軸で導出。保存path TVとの積はm8まで1 RZ未満、m12約49,770.254 RZ。標準Qiskit1.3.0＋IID-grid仮定下の上界であり、実PCG64接続・正式E[C]/CI/N/Gは未認定。次案はPCG64 joint-law接続根拠1件。新path/build/compile/F0再実行0、公開後STOP。
+
 [PR-DF LD1 F0保存確率診断](research/d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)：324-component1表＋order13表の14診断完了。componentのCDF丸め25＋格子化7＝32 supportが正→0、P→G TV約4.5413e−15。条件付きpath TVは全13roundで1未満、m12約1.5248e−7。actual PCG64距離・残差range・E[C]資格は未確定。path/build/compile0、公開後STOP。
 
 [PR-DF LD1 全13round E[C]評価計画](research/d_pr_df_ld1_ec_plan_20261115/REPORT.md)：保存E_I[S]26軸、m0/m3/m6較正、m4独立holdoutのC最終受入を固定参照で接続。Bのtargetはideal finite-RTE law。次案は既存F0の保存324 component＋13 order表の最大14診断、新path/compile0。I/Q・有限標本/rare・長round移送・正式E[C]/Gは未資格、計画のみ公開STOP。
