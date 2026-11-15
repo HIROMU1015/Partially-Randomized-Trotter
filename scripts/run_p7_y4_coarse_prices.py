@@ -179,7 +179,7 @@ def execute(stage,frozen=None):
     for value in data['results']:
         if not value['ok']:continue
         origin=dict(commit=source,caller=MODULE,underlying_caller=M.T.CALLER,native=M.T.NATIVE,wrapper=M.T.WRAPPER,stage=stage)
-        a,b,c=P.records(plan,value['cell'],value['trial'],origin,job['cohort'])
+        a,b,c=P.records(plan,value['cell'],value['trial'],origin,job['cohort'],evidence_path=STUDY+'/'+stage.lower()+'/'+RUNS[stage]+'/IMPLEMENTATION_EVIDENCE.json')
         for p in a:p['diagnostic'].update(acquisition='NEW_COMPILE',compiled_wrapper=value['wrappers']['cosine' if p['axis']=='X' else 'sine'])
         prices+=a;sides+=b;proofs.update(c)
     for name,value in zip(RAW[1:],(prices,sides,proofs)):write(out/name,value)

@@ -63,6 +63,14 @@ class CoarsePrices(unittest.TestCase):
         code="import sys;sys.path.insert(0,'scripts');import h46_long_time_signal as S;S.install();import h46_m5_tol_native;print('IMPORT_ONLY_NO_CONTEXT')"
         self.assertIn('IMPORT_ONLY_NO_CONTEXT',subprocess.check_output([sys.executable,'-B','-c',code],cwd=ROOT,text=True))
 
+    def test_receipt_evidence_path_tracks_the_actual_stage_namespace(self):
+        trial=dict(scalar=1.25,prices={a:dict(rz_count=31,rz_depth=7,cx_count=5,cx_depth=4,total_depth=19,circuit_size=51) for a in ('cosine','sine')})
+        for stage,m in [('calibration',5),('holdout',9)]:
+            path=A.STUDY+'/'+stage+'/'+A.RUNS[stage.upper()]+'/IMPLEMENTATION_EVIDENCE.json'
+            prices,sides,proof=A.P.records(self.plan,self.cells[m],trial,dict(commit='TOY'),'ARTIFICIAL_ONLY',evidence_path=path)
+            self.assertEqual({s['implementation_evidence']['path'] for s in sides},{path})
+            self.assertTrue(all(s['implementation_evidence']['selector'][0] in proof for s in sides))
+
     def test_axis_separate_exact_two_point_fit_and_early_holdout_rejection(self):
         prices=[]
         for m in (5,6):

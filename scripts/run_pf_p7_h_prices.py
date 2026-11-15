@@ -118,8 +118,8 @@ def preflight():
     return audit
 
 
-def records(plan,cell,trial,source,cohort):
-    a,b,c=M.T.price_bindings(ROOT,plan,cell,trial,price_source=source,evidence_commit=M.S.PLACEHOLDER,evidence_path=STUDY+'/run01/IMPLEMENTATION_EVIDENCE.json')
+def records(plan,cell,trial,source,cohort,*,evidence_path=None):
+    a,b,c=M.T.price_bindings(ROOT,plan,cell,trial,price_source=source,evidence_commit=M.S.PLACEHOLDER,evidence_path=evidence_path or STUDY+'/run01/IMPLEMENTATION_EVIDENCE.json')
     for price,side in zip(a,b,strict=True):
         price['cohort']=side['cohort']=cohort
         key=side['implementation_evidence']['selector'][0]
@@ -195,14 +195,19 @@ def bind_records(plan,relative,publication,*,names=RAW,policy_id='P7_S2_H_DIRECT
     M.T._meta()
     from trottertracks import price_implementation_guard as G
     cfg=plan['configuration'];prices=json.loads((out/'PRICES.json').read_text());sides=json.loads((out/'SIDECARS_UNBOUND.json').read_text())
+    corrections=[]
     for s in sides:
         check(s['implementation_evidence']['commit']==M.S.PLACEHOLDER,'Already bound')
+        expected=relative+'/IMPLEMENTATION_EVIDENCE.json'
+        if s['implementation_evidence']['path']!=expected:
+            corrections.append(dict(axis=s['axis'],selector=s['implementation_evidence']['selector'],original=s['implementation_evidence']['path'],bound=expected))
         s['implementation_evidence']['commit']=publication
+        s['implementation_evidence']['path']=expected
     cohorts={(cfg['rounds'][p['m']]['candidate']['id'],p['axis']):p['cohort'] for p in prices}
     policy=dict(id=policy_id,source=M.S.GUARD_SOURCE,profile=cfg['spec']['profile'],by_method=dict(TRUNCATED_PF=dict(native_policy=M.T.NATIVE_POLICY,rte_rotation_lowering=M.T.NO_RTE,scalar_quantity=M.T.SCALAR_QUANTITY)))
     result=G.check(ROOT,cfg,prices,cohorts=cohorts,bindings=sides,policy=policy)
     check(len(result['checked'])==len(prices),'Unchecked axis receipt')
-    write(out/'SIDECARS.json',sides);write(out/'GUARD_CHECK.json',dict(raw_evidence=fixed,guard=result,model_qualified=False))
+    write(out/'SIDECARS.json',sides);write(out/'GUARD_CHECK.json',dict(raw_evidence=fixed,guard=result,model_qualified=False,binding_path_corrections=corrections))
     print(json.dumps(dict(guarded_axes=len(prices))))
 
 
