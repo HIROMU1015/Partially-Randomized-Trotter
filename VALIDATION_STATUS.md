@@ -1,5 +1,7 @@
 # Validation status
 
+[Full-H D7 holdout受入・次の固定shot評価案](docs/research/full_h_d7_holdout_admission_plan_20261115/REPORT.md)：D7保存holdoutの6 receipt/4比較を受入、保留0。Bのκ2・1.5倍Q3固定配分を26軸へ接続。DESCRIPTIVE_COMPLETE、許容差null・全26軸E[C]未資格を保持。人工6＋回帰10＝16 PASS。次は0-compile固定shotモデル診断F1を提案、今回予測/fit/新科学計算/N/G0、公開後mandatory STOP。
+
 [PF閉包価格60軸](docs/research/pf_closure_prices_20261115/REPORT.md)：元12モデルのexact予測60件を一回実行、全整数・保留0。直接96＋条件付き60、2%保証なし、元資格flag不変。人工/metadata6＋回帰3＝9 PASS、保存reader読取確認済み。
 
 [決定論PF閉包に基づくC採否案](docs/research/pf_closure_price_recommendation_20261115/REPORT.md)：保存A1〜A5と終端余裕を再利用、12モデル/60軸metadata照合。不一致0。Cは条件付き全60採用を推奨したが未採択、旧資格flag・直接96軸は不変。新科学計算/価格算出/QPY監査0。

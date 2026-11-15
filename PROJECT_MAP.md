@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full-H D7 holdout受入・次の固定shot評価案](docs/research/full_h_d7_holdout_admission_plan_20261115/REPORT.md)：D7保存holdoutの6 receipt/4比較を受入、保留0。Bのκ2・1.5倍Q3固定配分を26軸へ接続。DESCRIPTIVE_COMPLETE、許容差null・全26軸E[C]未資格を保持。人工6＋回帰10＝16 PASS。次は0-compile固定shotモデル診断F1を提案、今回予測/fit/新科学計算/N/G0、公開後mandatory STOP。
+
 [決定論PFの条件付き価格60軸確定](docs/research/pf_closure_prices_20261115/REPORT.md)／[HANDOFF_B](docs/research/pf_closure_prices_20261115/HANDOFF_B.md)：利用者採択の閉包条件でexact60価格をe4458cd75へ固定、保留0。既存直接96と非重複、全156軸対応。テスト9 PASS、fit/compile/QPY/N/G0、mandatory STOP。 入口 scripts/freeze_pf_closure_prices.py。
 
 [決定論PF未観測60軸のC採否案](docs/research/pf_closure_price_recommendation_20261115/REPORT.md)／[HANDOFF](docs/research/pf_closure_price_recommendation_20261115/HANDOFF.md)：固定compiler閉包の前提を明示し、全60軸の条件付き採用を推奨。未採択・価格未算出、直接96/156は不変。metadata60軸/12モデル照合、QPY再読取・新科学計算0、mandatory STOP。
