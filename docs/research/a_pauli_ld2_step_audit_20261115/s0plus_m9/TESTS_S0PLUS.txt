@@ -1,0 +1,46 @@
+# S0+ synthetic tests before opening m9 QPY (no transpile, no saved input, no H4 build)
+# date: 2026-11-15T22:38:33+09:00; Qiskit 1.3.0, Python 3.12.3
+## tests/check_pauli_ld2_s0plus_m9.py
+test_01_reference_matches_and_decomposition_restores_total (__main__.S0PlusTests.test_01_reference_matches_and_decomposition_restores_total) ... ok
+test_02_suffix_mismatch_is_located (__main__.S0PlusTests.test_02_suffix_mismatch_is_located) ... ok
+test_03_entry_mismatch_is_located (__main__.S0PlusTests.test_03_entry_mismatch_is_located) ... ok
+test_04_describe (__main__.S0PlusTests.test_04_describe) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.833s
+
+OK
+{"P1": "PASS", "P2": "PASS", "P3": "PASS", "P4": "PASS_EXACT", "P5": "PASS", "P6": "PASS", "paths_ok": 6, "stops": []}
+{"P1": "PASS", "P2": "PASS", "P3": "PASS", "P4": "PASS_EXACT", "P5": "PASS", "P6": "PASS", "paths_ok": 6, "stops": []}
+{"P1": "PASS", "P2": "PASS", "P3": "PASS", "P4": "PASS_EXACT", "P5": "PASS", "P6": "PASS", "paths_ok": 6, "stops": []}
+## tests/check_pauli_ld2_step_audit.py (S0-r1 rule functions, unchanged)
+test_13_frozen_rule_reproduces_run01_failure (__main__.RevisionS0R1Tests.test_13_frozen_rule_reproduces_run01_failure) ... ok
+test_14_revised_rule_passes_and_counts_identity_pairs (__main__.RevisionS0R1Tests.test_14_revised_rule_passes_and_counts_identity_pairs) ... ok
+test_01_clean_toy_all_pass (__main__.StepAuditTests.test_01_clean_toy_all_pass) ... ok
+test_02_stats_exclude_paired_and_y (__main__.StepAuditTests.test_02_stats_exclude_paired_and_y) ... ok
+test_03_missing_barrier_pair_fails_alignment (__main__.StepAuditTests.test_03_missing_barrier_pair_fails_alignment) ... ok
+test_04_barrier_angle_change_fails (__main__.StepAuditTests.test_04_barrier_angle_change_fails) ... ok
+test_05_cross_cut_two_qubit_token_fails (__main__.StepAuditTests.test_05_cross_cut_two_qubit_token_fails) ... ok
+test_06_rz_mismatch_is_stop (__main__.StepAuditTests.test_06_rz_mismatch_is_stop) ... ok
+test_07_product_token_flagged (__main__.StepAuditTests.test_07_product_token_flagged) ... ok
+test_08_p4_levels (__main__.StepAuditTests.test_08_p4_levels) ... ok
+test_09_xy_difference_detected (__main__.StepAuditTests.test_09_xy_difference_detected) ... ok
+test_10_tokens_equal_pf_original (__main__.StepAuditTests.test_10_tokens_equal_pf_original) ... ok
+test_11_lcp_lcs_and_levels (__main__.StepAuditTests.test_11_lcp_lcs_and_levels) ... ok
+test_12_structure_counts_events (__main__.StepAuditTests.test_12_structure_counts_events) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 2.884s
+
+OK
+{"P1": "PASS", "P2": "FAIL", "P3": "UNKNOWN_NO_SEGMENTED_PATH", "P4": "UNKNOWN", "P5": "PASS", "P6": "UNKNOWN_NO_SEGMENTED_PATH", "paths_ok": 0, "stops": []}
+{"P1": "PASS", "P2": "PASS", "P3": "PASS", "P4": "PASS_EXACT", "P5": "PASS", "P6": "PASS", "paths_ok": 6, "stops": []}
+{"P1": "PASS", "P2": "PASS", "P3": "PASS", "P4": "PASS_EXACT", "P5": "PASS", "P6": "PASS", "paths_ok": 6, "stops": []}
+{"P1": "FAIL_OR_STOP", "P2": "FAIL", "P3": "PASS", "P4": "PASS_EXACT", "P5": "PASS", "P6": "FAIL", "paths_ok": 5, "stops": []}
+{"P1": "PASS", "P2": "FAIL", "P3": "PASS", "P4": "UNKNOWN", "P5": "PASS", "P6": "FAIL", "paths_ok": 5, "stops": []}
+{"P1": "FAIL_OR_STOP", "P2": "FAIL", "P3": "PASS", "P4": "PASS_EXACT", "P5": "PASS", "P6": "FAIL", "paths_ok": 5, "stops": []}
+{"P1": "FAIL_OR_STOP", "P2": "FAIL", "P3": "PASS", "P4": "UNKNOWN", "P5": "PASS", "P6": "FAIL", "paths_ok": 5, "stops": ["S66/p0"]}
+{"P1": "PASS", "P2": "PASS", "P3": "PASS", "P4": "FAIL", "P5": "PASS", "P6": "PASS", "paths_ok": 6, "stops": []}
+{"P1": "PASS", "P2": "PASS", "P3": "PASS", "P4": "PASS_LEADING_1Q_RUN_ONLY", "P5": "PASS", "P6": "PASS", "paths_ok": 6, "stops": []}
+{"P1": "FAIL_OR_STOP", "P2": "PASS", "P3": "PASS", "P4": "FAIL", "P5": "PASS", "P6": "PASS", "paths_ok": 6, "stops": []}
+{"P1": "PASS", "P2": "PASS", "P3": "PASS", "P4": "PASS_EXACT", "P5": "FAIL_OR_UNKNOWN", "P6": "PASS", "paths_ok": 6, "stops": []}
