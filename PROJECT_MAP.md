@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-[Repository Skill: rpe-cost-compare](.agents/skills/rpe-cost-compare/SKILL.md)／[接続検証REPORT](docs/research/rpe_cost_compare_skill_20261116/REPORT.md)：B2公開programを使いHamiltonian・要求精度から方式別比較を起動する入口。保存H4の4方式はSkill手順と直接CLIでexact結果一致、新規科学計算0。初版の科学executor/完全再開/Full-H対応は未実装として保持。
+[Repository Skill: rpe-cost-compare](.agents/skills/rpe-cost-compare/SKILL.md)／[探索round接続REPORT](docs/research/rpe_cost_compare_round_skill_20261116/REPORT.md)／[A向けHANDOFF](docs/research/rpe_cost_compare_round_skill_20261116/HANDOFF.md)：B2公開programの `--round --run-dir` で方式別比較を起動し、同じroundを再開する。保存H4の予算0起動・再開でSkill手順と直接CLIの結果一致、p7保存最安372,035,410 RZを確認。正予算の実科学Q3とFull-H自動比較は今回未検証。[初版の接続履歴](docs/research/rpe_cost_compare_skill_20261116/REPORT.md)は保全。
 
 [PR-Pauli LD5のtotal view・固定2配分Q3](docs/research/pauli_ld5_two_vectors_q3_results_20261116/REPORT.md)／[A/C・統合担当HANDOFF](docs/research/pauli_ld5_two_vectors_q3_results_20261116/HANDOFF.md)：新2callとも条件付きモデル適合。LD3と共通のFULL_PF__B_PRICE/VPで4点比較、LD5モデル費用541,743,905.57/872,241,518.14 RZ。own辞書/SOURCE/raw保全、26モデル軸・原API・閾値余裕を結合。E[C]/正式G/十分N未認定・STOP。
 
