@@ -86,13 +86,13 @@ def interfaces(root):
                 return api
             pipeline.providers = live_api
             # Keep C's planner and hash checks. Only A's dictionary descriptor
-            # adapter differs for the source-pinned LD3 residual locator.
+            # adapter differs for the pinned LD3/LD5 residual locators.
             original_helpers = pipeline._pauli_helpers
             def pauli_helpers(value):
                 from . import rpe_pauli_signal_intake as intake
                 old = original_helpers(value)
                 def identity(item):
-                    if item['source'] == intake.LD3_DICTIONARY:
+                    if item['source'] in (intake.LD3_DICTIONARY, intake.LD5_DICTIONARY):
                         return intake._ld3_metadata_helpers(str(value)).dictionary_identity(item)
                     return old.dictionary_identity(item)
                 return types.SimpleNamespace(job=old.job, dictionary_identity=identity, recipe=old.recipe)

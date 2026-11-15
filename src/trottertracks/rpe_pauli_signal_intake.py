@@ -26,6 +26,10 @@ LD3_HANDOFF = dict(commit='cdbce383f9944b7f9da1cbbd7851406dbbaae88a',
 LD3_HELPER_SOURCE = '8c8ce542e9fc25ead709fe6b0eb71b87ba7434ca'
 LD3_DICTIONARY = dict(commit='50640b74c65c36d381d6058824745f6e38ab3c2d',
     path='docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_DICTIONARY.json')
+LD5_HANDOFF = dict(commit='ac46d100e74f3f56b4a3ff4d95c15fdc7fe8ca98',
+    path='docs/research/df_head_pauli_tail_ld5_signals_20261116/MEAN_HANDOFF.json')
+LD5_DICTIONARY = dict(commit='6255fbc422121fd777cad52763ef5a684abd46a3',
+    path='docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json')
 
 
 @lru_cache(maxsize=None)
@@ -54,7 +58,7 @@ def _same(actual, expected, label):
 
 @lru_cache(maxsize=None)
 def _ld3_metadata_helpers(root):
-    """A's fixed pure LD3 descriptor adapters; the P1 job is unchanged."""
+    """A's fixed pure descriptor adapters, also used by LD5; P1 job unchanged."""
     p1 = _metadata_helpers(root)
     def function(path, name, scope):
         raw = subprocess.check_output(['git', 'show', LD3_HELPER_SOURCE + ':' + path], cwd=root)
@@ -75,7 +79,7 @@ def bind_packet(config, packet, records, dictionary, *, target, target_source,
     """Source-bound copy only; records are selected from the named Git carriers.
 
     helpers is A's pinned metadata-only dictionary_identity/job interface.
-    LD3 uses A's pinned b_intake_dictionary_identity and the unchanged P1 job.
+    LD3/LD5 use A's pinned b_intake_dictionary_identity and unchanged P1 job.
     Artificial fixtures may provide their own pure metadata helpers.
     """
     B._validate(config)
@@ -165,26 +169,26 @@ def bind_packet(config, packet, records, dictionary, *, target, target_source,
 def accept_saved(root, *, integration, handoff_source=None):
     """Read immutable JSON only. C.signal_input is a passive input projection.
 
-    C.plan is intentionally not called: its legacy physical-ID checker does
-    not support this Pauli packet. No IDs are rewritten to bypass that check.
+    When available, C's source-bound Pauli metadata bridge is checked too.
+    No IDs are rewritten to bypass physical or dictionary checks.
     """
     assembly = HANDOFF if handoff_source is None else handoff_source
-    if assembly not in (HANDOFF, LD3_HANDOFF):
+    if assembly not in (HANDOFF, LD3_HANDOFF, LD5_HANDOFF):
         raise ValueError('Unsupported saved Pauli assembly SOURCE')
-    ld3 = assembly == LD3_HANDOFF
+    later = 3 if assembly == LD3_HANDOFF else 5 if assembly == LD5_HANDOFF else None
     store = p.SavedArtifacts(root); handoff = store.read(assembly)
-    _same(handoff['status'], ('ALL_13_PAULI_LD3_MEANS_AVAILABLE_NOT_RPE_QUALIFIED' if ld3 else
+    _same(handoff['status'], (f'ALL_13_PAULI_LD{later}_MEANS_AVAILABLE_NOT_RPE_QUALIFIED' if later else
                              'ALL_26_PAULI_MEANS_AVAILABLE_NOT_RPE_QUALIFIED'), 'A assembly status')
-    _same([v['prefix'] for v in handoff['packets']], [3] if ld3 else [1, 2], 'LD prefixes')
-    helpers = _ld3_metadata_helpers(str(root)) if ld3 else _metadata_helpers(str(root)); results = []
+    _same([v['prefix'] for v in handoff['packets']], [later] if later else [1, 2], 'LD prefixes')
+    helpers = _ld3_metadata_helpers(str(root)) if later else _metadata_helpers(str(root)); results = []
     for packet in handoff['packets']:
         prefix = packet['prefix']; config = packet['configuration']
-        if ld3:
-            _same(config, store.read(handoff['configuration_source']), 'LD3 configuration SOURCE')
-        # LD3 has the same full-H energy task, not a new LD-specific target.
+        if later:
+            _same(config, store.read(handoff['configuration_source']), 'LD configuration SOURCE')
+        # Later prefixes have the same full-H energy task, not a new target.
         # Reuse LD2's original saved target view without changing its adoption.
         target_source = dict(commit=DF,
-            path='docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD' + str(2 if ld3 else prefix) + '.json', selector=['target'])
+            path='docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD' + str(2 if later else prefix) + '.json', selector=['target'])
         target = store.read(target_source)['target']
         records = {}
         for row in packet['rounds']:
@@ -205,7 +209,7 @@ def accept_saved(root, *, integration, handoff_source=None):
                 integration.provider_binding_check(request, mean)
             result.update(request=request, C_plan_price_bridge='SOURCE_BOUND_PAULI_PHYSICAL_BRIDGE_METADATA_ONLY')
         results.append(result)
-    return dict(status=('SOURCE_BOUND_LD3_ALL_13_MEANS_NOT_RPE_QUALIFIED' if ld3 else
+    return dict(status=(f'SOURCE_BOUND_LD{later}_ALL_13_MEANS_NOT_RPE_QUALIFIED' if later else
                         'SOURCE_BOUND_ALL_26_MEANS_NOT_RPE_QUALIFIED'), results=results,
         source=deepcopy(assembly), source_blobs=deepcopy(store.sources), science_calls=0,
         sufficient_N=None, global_RMSE_bound=None, G=None, winner=None, mandatory_stop=True)
