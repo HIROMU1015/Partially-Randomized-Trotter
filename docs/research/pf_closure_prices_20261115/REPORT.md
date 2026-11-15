@@ -4,6 +4,8 @@
 
 正本は[run01/PRICES.json](run01/PRICES.json)の`rows[0:60]`、簡易表は[PRICES.csv](run01/PRICES.csv)。候補・軸から元モデル/監査へ戻れる。固定shot配分との積算やG/winnerは今回実行していない。
 
+結果固定commitは**`e4458cd7548977e6e11a5a7b0c8dca0d049535d4`**。[HANDOFF_B](HANDOFF_B.md)に結合キー・固定locator・利用条件を示す。公開固定JSONを既存保存readerから60行/整数値として読取確認した（再予測・会計なし）。
+
 ## 採択条件・SOURCE
 
 利用者はCの推奨 `c3f761f0af5b21207e64051c9c619858064450fe:docs/research/pf_closure_price_recommendation_20261115/` を採択し、同じ物理候補・固定shot配分の全13 round比較に限って60価格を使用することを指示した。本結果ではその有限domainを`PF_FIXED_COMPILER_CLOSURE_CONDITIONAL_60_AXES_V1`として表示する。旧推奨書の未採択時点の記述は履歴として保全した。

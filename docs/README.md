@@ -1,5 +1,7 @@
 # 文書索引
 
+[採択済みPF閉包価格60軸](research/pf_closure_prices_20261115/REPORT.md)／[B引渡し](research/pf_closure_prices_20261115/HANDOFF_B.md)：固定価格JSON/CSV、元SOURCE・条件付き区分・直接96との非重複。
+
 [決定論PF60軸の条件付き価格採用案](research/pf_closure_price_recommendation_20261115/REPORT.md)／[B/D HANDOFF](research/pf_closure_price_recommendation_20261115/HANDOFF.md)：観測事実・閉包の論証・残る実装前提を分離。ユーザー未採択、価格値未算出。
 
 [PR-DF LD1 F0の保存診断受入](research/pr_df_ld1_f0_admission_20261115/HANDOFF.md)：14表・13組・26軸の固定SOURCE付き参照。正式E[C]未資格を維持。
