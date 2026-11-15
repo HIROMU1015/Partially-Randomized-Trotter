@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[粗幅A_SHAPE Q3](../../docs/research/d_p7_y4_coarse_a_shape_q3_20261116/REPORT.md)：元library/decoder/kernel/guardは無変更。既存PF workerと互換runtimeを再利用し、保存整数列の1配分がQ3適合・価格待ち。新信号/compile/価格0、旧結果保全・STOP。
+
 [粗幅Q3復旧](../../docs/research/d_p7_y4_coarse_q3_recovery_20261116/REPORT.md)：library/kernel/AST guardは無変更。既存PF worker・Acceleratorを専用互換Pythonから利用し、保存signal/固定配分のQ3を1件完了。数値gate正常・この配分はモデル不適合、費用null・STOP。
 
 [粗幅p7/Yoshida4の信号補完完了・Q3 SOURCE guard STOP](../../docs/research/d_p7_y4_coarse_signal_q3_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/標準Y4・32h/5、h_RPE=.1。新6＋保存7の13round信号gate PASS。Q3 worker1回、科学API0件でPython3.12 AST schemaのSOURCE guard不一致によりUNKNOWN。MSE/粗幅費用null、retry/compile/価格0、mandatory STOP。

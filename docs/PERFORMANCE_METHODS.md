@@ -1,5 +1,10 @@
 # 並列化・高速化手法の再利用索引
 
+## 同じPF workerで保存A_SHAPEを評価（2026-11-16）
+
+[REPORT](research/d_p7_y4_coarse_a_shape_q3_20261116/REPORT.md)、SOURCE `1cf462e3ae1f0bb16cf2f488d830cc8595909c34`。[新caller](../scripts/run_p7_y4_coarse_a_shape_q3.py) は旧recovery callerの監督/保存部分を抽出した `run_case` を再利用し、worker/8-worker DP/guardは不変。新3＋既存5の人工回帰で入口・再入拒否・exact DP/保存を確認後、保存13roundと別整数列の実Q3を1件取得。supervisor wall89.808 s・観測tree最大2,773,708 KiB。新しい高速化ruleは導入しておらず、異なる配分との時間差を速度倍率にしない。元手法・制限は下記互換runtimeの項を参照。
+
+
 ## 粗幅Y4 Q3：互換runtimeで既存並列DPを再利用（2026-11-16）
 
 実行SOURCE `5e2246d1233fbeebc709cc9f20a3f48e2fb3a1ad`、[caller](../scripts/run_p7_y4_coarse_q3_recovery.py)／[REPORT](research/d_p7_y4_coarse_q3_recovery_20261116/REPORT.md)。専用Python3.11.0rc1で、本番PF workerから元Acceleratorコンストラクタ・AST guardを人工preflightし、exact DP同値性と保存まで5 test PASS後に科学1 call。元8-worker/batch8 DPを再利用し、実対象wall134.798 s・観測tree最大3,634,356 KiB。異なるruntimeとの速度倍率は未測定。旧Python3.12のSOURCE guard STOPは保全、guard正規化/期待hash変更なし。信号再取得・新規buildなし。periodic faulthandlerを使わず既存stage/round logと親monitor・child exitを観測した。互換性は単なるimportでなく実worker入口から確認する。

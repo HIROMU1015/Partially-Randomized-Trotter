@@ -1,5 +1,7 @@
 # Validation status
 
+[粗幅Yoshida4 A_SHAPEのQ3適合・価格待ち](docs/research/d_p7_y4_coarse_a_shape_q3_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/標準Y4・32h/5・h_RPE=.1。保存A_SHAPE整数列でQ3を1件完了、MSE上界2.074377e−6≤元exact τ、Q3適合・価格待ち。現幅/粗幅×B_PRICE/A_SHAPEの4点を固定出所付きで公開。粗幅費用null、新信号/reference/build/compile/価格/fit/他配分0、旧結果/UNKNOWN/STOP保全・mandatory STOP。
+
 [粗幅p7/Yoshida4のQ3復旧結果](docs/research/d_p7_y4_coarse_q3_recovery_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/標準Y4・32h/5、h_RPE=.1。専用Python3.11.0rc1で元AST guardを変更せず通し、保存13round＋固定X/Y配分のQ3を1件完了。MSE下界3.409058e−6>元exact τ、この配分でモデル不適合（取得・数値gateは正常）。現幅16h/3の同配分は保存適合。粗幅費用null、新信号/reference/build/compile/価格/fit/別配分0、mandatory STOP。
 
 [粗幅p7/Yoshida4の信号補完完了・Q3 SOURCE guard STOP](docs/research/d_p7_y4_coarse_signal_q3_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/標準Y4・32h/5、h_RPE=.1。新6＋保存7の13round信号gate PASS。Q3 worker1回、科学API0件でPython3.12 AST schemaのSOURCE guard不一致によりUNKNOWN。MSE/粗幅費用null、retry/compile/価格0、mandatory STOP。
