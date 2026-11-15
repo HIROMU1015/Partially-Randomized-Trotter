@@ -128,6 +128,15 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertIsNone(coarse['conditional_cost'])
         self.assertEqual(coarse['execution_history'][0]['status'],'UNKNOWN_STOP_NO_RETRY')
         self.assertNotIn(coarse['point_id'],best['point_ids'])
+        coarse_a=next(r for r in result['candidates']if r['label']=='B0I_P7_Y4_32h_over_5__A_SHAPE')
+        self.assertEqual(coarse_a['status'],'PRICE_WAITING')
+        self.assertEqual(coarse_a['q3_status'],PASS)
+        self.assertIsNone(coarse_a['conditional_cost'])
+        self.assertEqual(coarse_a['price_axes'],[])
+        self.assertEqual(coarse_a['configuration_id'],coarse['configuration_id'])
+        self.assertNotEqual(coarse_a['allocation']['allocation_id'],coarse['allocation']['allocation_id'])
+        self.assertNotEqual(coarse_a['N_X'],coarse['N_X'])
+        self.assertNotIn(coarse_a['point_id'],best['point_ids'])
         self.assertTrue(all(r['MSE_upper'] is not None for r in result['candidates']if r['method']=='FULL_H'))
         self.assertEqual(frac(result['method_minima']['FULL_PF']['conditional_cost']),559457386)
         full=[r for r in result['candidates']if r['point_id']in result['method_minima']['FULL_PF']['point_ids']][0]
@@ -163,8 +172,10 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertEqual(len(cat.result()['candidates']),9)
         for s in self.inputs['sources']:cat.add(s)
         result=cat.result()
-        self.assertEqual(len(result['candidates']),37)
-        self.assertFalse([r for r in result['candidates']if r['status']in ('MISMATCH','PRICE_WAITING')])
+        self.assertEqual(len(result['candidates']),38)
+        self.assertFalse([r for r in result['candidates']if r['status']=='MISMATCH'])
+        self.assertEqual([r['label']for r in result['candidates']if r['status']=='PRICE_WAITING'],
+                         ['B0I_P7_Y4_32h_over_5__A_SHAPE'])
         summary=ref(source['commit'],source['path'].replace('C_HANDOFF.json','SUMMARY.json'))
         modified=deepcopy(self.reader.read(summary));modified['menu'][0]['cost']=refnum(0,1)
         with self.assertRaisesRegex(ValueError,'republication'):
