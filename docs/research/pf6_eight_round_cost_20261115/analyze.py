@@ -264,7 +264,7 @@ def analyze():
     for name,rows,fields in [('AXIS_PRODUCTS.csv',terms,['label','physical_id','m','axis','N','C','N_times_C']),
         ('PARTIAL_SUMS.csv',partials,['label','K_i']),('PAIRWISE_CONDITIONS.csv',pairs,['i','j','K_i','K_j','K_j_minus_K_i'])]:
         with(STUDY/name).open('x',newline='')as f:
-            w=csv.DictWriter(f,fieldnames=fields,extrasaction='ignore');w.writeheader();w.writerows(rows)
+            w=csv.DictWriter(f,fieldnames=fields,extrasaction='ignore',lineterminator='\n');w.writeheader();w.writerows(rows)
     print(json.dumps(dict(partial_sums=[(r['label'],r['K_i'])for r in partials],axis_products=len(terms),pairs=len(pairs)),indent=2))
 
 

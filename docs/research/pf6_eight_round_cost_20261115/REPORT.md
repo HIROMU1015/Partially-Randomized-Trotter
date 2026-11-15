@@ -84,6 +84,8 @@ m3の原cohort null、M5/m4保存再利用のEXPLORATION、新直接価格のrou
 
 人工5test PASS：軸別積と和、逆転符号と同額、既知差の順序反転、欠測/重複/null/非整数拒否、巨大整数、元metadataの保全を確認した。[TESTS](TESTS.txt)。整数はPython任意精度intのまま処理し、binary64への変換はない。96軸の小さな算術であり、追加の科学workerや独立AI agentを起動していない。
 
+公開後、CSV改行だけをCRLFからLFへ統一し、writerにも同じ指定を追加した。各CSVの解析済みセルが結果commit `0a6f6e12fa8f847c3d2a758668848b7a62692ff2` と完全一致することを確認した。数値解析SOURCEは上記732c703bのままで、積算・Q3・価格取得の再実行はない。
+
 - [AXIS_PRODUCTS.json](AXIS_PRODUCTS.json)／[CSV](AXIS_PRODUCTS.csv)：元receiptまで追える96軸のN・C・積。
 - [PARTIAL_SUMS.json](PARTIAL_SUMS.json)／[CSV](PARTIAL_SUMS.csv)：6候補のround別X/Y・round小計・Ki・既知部分順位。
 - [PAIRWISE_CONDITIONS.json](PAIRWISE_CONDITIONS.json)／[CSV](PAIRWISE_CONDITIONS.csv)：15組の整数境界。JSONに不等号・同額・未知10項のweightを明記。
