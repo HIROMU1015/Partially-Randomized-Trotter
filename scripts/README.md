@@ -1,5 +1,7 @@
 # scripts 索引
 
+[Q3再開caller](run_pr_df_ld_split_q3_resume.py)／[保存結果join](summarize_pr_df_ld_split_q3_resume.py)／[HANDOFF](../docs/research/d_pr_df_ld_split_q3_resume_20261116/HANDOFF.md)：旧worker・kernel・acceleratorを固定読込、既存Python3.11環境で4固定caseのみ一回評価。new outputにAPI/結果/資源/outer exitcode保存。価格・配分生成機能なし、旧STOP保全。
+
 [PR-DF split有限caller](../docs/research/d_pr_df_ld_split_results_20261115/REPORT.md)：`run_pr_df_ld_split.py`（matching pinned prefix2 Adapter/fast）、`freeze_pr_df_ld_split.py`（exact full-C fit／B2 rational generator）、`run_pr_df_ld_split_q3.py`（固定27e70 route）、`summarize_pr_df_ld_split.py`（保存価格のexact積和／部分STOP）。実Q3はAST/runtime gateで0 call、現SOURCEはmetadata preflightで同constructor停止を検出。自動再開・retry入口なし。
 
 [`run_pr_df_ld1_f0.py`](run_pr_df_ld1_f0.py)：固定helperと保存確率の最小reader。14表と条件付きevent/path上界だけを一回実行し、sample/回路/価格を呼ばない。[結果とSTOP](../docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)。

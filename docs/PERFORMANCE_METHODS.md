@@ -24,3 +24,10 @@ F0実対象確認：SOURCE `fad0c1e4fe41c0e4c6d0690158056572295ed15a`、14表・
 有理数配分はe094b2d6 `generate`、solveはd83737b6 `_solve`を無変更再利用。saved Q3 rationalは16,000桁超の整数を含み得るため、読取時は既存B2同様integer digit limitに対応する。fit済み出力から配分だけ継続でき、fit/予測をやり直さない。
 
 失敗例：動的worker moduleはsys.modules登録前にProcessPoolへ渡すとPicklingErrorになる。fake compiler/worker本体mockだけではactual accelerator constructorのAST/runtime適合は分からない。Python3.12はFunctionDefに空type_params fieldを追加し、旧AST hash gateがSOURCE bytes一致でも停止する。今回、実Q3は0 callのまま停止し、constructorをpreflightで確認する最小回帰を追加した。guardを緩めて通す修正は未採用。科学同等性を保つbootstrapとruntimeの照合を次回の実SOURCEで先に行う。旧STOPと未開始callを保全し、同じ科学評価を自動retryしない。
+
+
+## 固定total-Q3 AST gate：元Python3.11環境で再利用（2026-11-16）
+
+[再開REPORT](research/d_pr_df_ld_split_q3_resume_20261116/REPORT.md)／[caller](../scripts/run_pr_df_ld_split_q3_resume.py)。成功B2 package738df226のTESTSにPython3.11.0rc1と `/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python` の参照がある。今回この既存runtimeで固定constructorを本番workerの実入口から人工検証し、元AST hash3d043e71…を変更せず4 Q3を実完了した。Python3.12のtype_paramsを除去する修正や期待hash置換は不要。元SOURCE/入力・decoder/target/loss/thresholdは維持する。
+
+4独立case並列、各8 DP worker/batch8を既存benchmarkから再利用、全体wall232.920秒。価格/配分は保存参照のまま、性能倍率の新benchmarkではない。人工fixtureのmetadata intakeだけを置換し、実constructor/evaluator/child/persistenceを通す2件PASS。outer worker exitcodeも保存した。Python3.11.0rc1のperiodic faulthandlerは使わない。旧3.12 STOPは保存し、新規科学callの再開は今回の明示指示に限定した。
