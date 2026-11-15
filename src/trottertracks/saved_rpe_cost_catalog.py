@@ -133,6 +133,10 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('classification')=='DIRECT_FINITE_COHORT_DESCRIPTIVE_PRICE_ONLY' and 'LD9_configuration'in d:
+            self.ld9_partial_price(locator,d);return
+        if d.get('schema')=='PR_DF_LD7_PF_BUDGET_MODEL_COST_Q3_JOIN_FOR_C_V1':
+            self.ld7_budget(locator,d);return
         if d.get('schema')=='PR_DF_LD9_CONFIGURATION_V0_Q3_JOIN_V1':
             self.pr_df_unpriced_v0(locator,d);return
         if d.get('kind')=='CONDITIONAL_MODEL_REFERENCE_COST_AND_Q3_NOT_QUALIFIED_G' and 'records'in d:
@@ -477,6 +481,84 @@ class Catalog:
             shared_V0_reference=dict(source=dict(loc,selector=['same_V0_LD7']),
                 meaning='Same shot vector; LD7 remains a different physical candidate and price domain'))
 
+    def ld7_budget(self,loc,d):
+        """Keep saved failed budget allocations beside the achieved LD7 points."""
+        self.add(d['index_source']);inp=self.r.read(d['source']['inputs'])
+        template=next(r for r in self.rows if r['configuration_id']==d['configuration_id'] and 'price_evidence'in r)
+        base={(p['m'],p['axis']):p['price_source']for p in template['price_axes']}
+        for i,r in enumerate(d['rows']):
+            case=next(c for c in inp['cases']if c['label']==r['label']);conf=self.r.read(case_ref(case))
+            q3_loc=ref(loc['commit'],r['result_source']['result_path']);q3=self.r.read(q3_loc)
+            require(conf['id']==d['configuration_id'] and case['total_configuration_id']==d['total_configuration_id']==q3['record']['configuration_id'] and
+                    case['binding_id']==d['binding_id']==q3['record']['canonical_binding'],'LD7 budget identity mismatch')
+            require(shots(r['allocation'])==shots(case['allocation'])==shots(q3['allocation']) and
+                    r['model_status']==q3['status'],'LD7 budget Q3/allocation mismatch')
+            require(frac(r['conditional_cost'])==frac(case['reference_cost']) and r['price_terms']==case['price_terms'],
+                    'LD7 budget fixed price terms/total mismatch')
+            for t in r['price_terms']:
+                p=self.r.read(t['price_source'])
+                require(t['price_source']==base[t['m'],t['axis']] and frac(t['C_ref'])==frac(p['C_ref']),
+                        'LD7 budget model price SOURCE mismatch')
+            self.make(dict(case,_source=d['source']['inputs'],rows=conf['rounds']),r['allocation'],r['model_status'],r['conditional_cost'],
+                r['MSE_lower'],r['MSE_upper'],inp['adopted_evaluation'],dict(loc,selector=['rows',i]),r['price_terms'])
+            row=self.rows[-1]
+            row.update(q3_source=q3_loc,qualified_for_candidate=False,price_scenario='MODEL_REFERENCES_NOT_FORMAL_E_C',
+                price_evidence=deepcopy(template['price_evidence']),historical_PF_benchmarks=deepcopy(d['PF_benchmarks']),
+                historical_comparisons=deepcopy(r['comparisons']),saved_cost_breakdown=dict(m0_m6=r['cost_m0_m6'],
+                    m7_m12=r['cost_m7_m12'],m7_m12_fraction=r['m7_m12_fraction']))
+            for p,t in zip(row['price_axes'],r['price_terms']):
+                p.update(price_kind='MODEL',qualified_for_candidate=False,model_application=t['application'],C_ref=deepcopy(t['C_ref']))
+
+    def ld9_partial_price(self,loc,d):
+        """Attach saved finite-cohort means without making a total-cost point."""
+        conf=self.r.read(d['LD9_configuration'])
+        if not any(r['configuration_id']==conf['id']for r in self.rows):
+            source=d['LD9_configuration']
+            self.add(ref(source['commit'],str(PurePosixPath(source['path']).parents[1]/'C_HANDOFF.json')))
+        row=next(r for r in self.rows if r['configuration_id']==conf['id'])
+        require(self.r.read(row['configuration_source'])==conf and row['conditional_cost'] is None,
+                'LD9 partial price configuration/total mismatch')
+        require(d['m']==6 and all(d[k] is None for k in ('fit','LD9_total_model_cost','formal_E_C','G')),
+                'Partial LD9 direct price must not create an all-round cost')
+        comparison_source=ref(loc['commit'],str(PurePosixPath(loc['path']).parent/'COMPARISON.json'))
+        comparison=self.r.read(comparison_source)
+        require(comparison['comparisons']==d['comparisons'] and comparison['cohorts']==d['cohorts'] and
+                comparison['quantity']==self.comparison['price_quantity'],
+                'LD9 partial price comparison/quantity mismatch')
+        require(len(d['comparisons'])==2 and {c['axis']for c in d['comparisons']}=={'X','Y'} and
+                all(c['n_paths_LD7']==c['n_paths_LD9']==4 for c in d['comparisons']),'Partial comparison axes/path counts mismatch')
+        require({c['L_D']for c in d['cohorts']}=={7,9} and len({c['cohort']for c in d['cohorts']})==2,
+                'LD7/LD9 direct cohorts must remain separate')
+        for co in d['cohorts']:
+            request=co['request'];m=d['m']
+            matched=next((r for r in self.rows if r['configuration_id']==co['configuration_id']),None)
+            co_conf=self.r.read(matched['configuration_source'])if matched else None
+            # The LD7 comparison remains a source reference if read before its catalog point.
+            if co_conf is not None:
+                require(request['identity']==co_conf['rounds'][m]['identity'] and request['law_binding']==co_conf['rounds'][m]['law_binding'],
+                        'Partial direct price identity/law mismatch')
+            profile=request['physical_context']['price_profile']
+            require(all(profile[k]==v for k,v in self.comparison['compiler_profile'].items()),'Partial direct price compiler profile mismatch')
+            require(len(co['rows'])==8 and {(r['index'],r['axis'])for r in co['rows']}=={(i,a)for i in range(4)for a in ('X','Y')},
+                    'Partial direct price requires four complete X/Y paths')
+            for r in co['rows']:
+                receipt=self.r.read(r['receipt'])
+                require(r['configuration_id']==co['configuration_id'] and r['cohort']==co['cohort'] and r['m']==m and
+                        r['physical_id']==request['physical_context']['physical_candidate']['id'] and r['status']=='VALID',
+                        'Partial direct price path binding mismatch')
+                require(receipt['metrics']['rz_count']==r['C'] and receipt['fingerprint']==r['fingerprint'] and
+                        receipt['compiler']==profile['compiler'],'Partial direct price receipt mismatch')
+        own_index=next(i for i,c in enumerate(d['cohorts'])if c['L_D']==9);own=d['cohorts'][own_index]
+        require(own['configuration_id']==conf['id'] and d['physical_id']==conf['rounds'][6]['physical_candidate']['id'],
+                'LD9 partial price physical candidate mismatch')
+        row.update(partial_price_axes=[dict(m=6,axis=c['axis'],physical_id=d['physical_id'],C_RZ=deepcopy(c['LD9_mean']),
+            price_kind='DIRECT_FINITE_COHORT_MEAN',n_paths=c['n_paths_LD9'],cohort=own['cohort'],qualified_for_candidate=False,
+            reference_C_RZ=deepcopy(c['LD7_mean']),difference_LD9_minus_LD7=deepcopy(c['difference_LD9_minus_LD7']),
+            comparison_source=dict(comparison_source,selector=['comparisons',i]),
+            path_sources=[dict(loc,selector=['cohorts',own_index,'rows',j])for j,r in enumerate(own['rows'])if r['axis']==c['axis']])
+            for i,c in enumerate(d['comparisons'])],partial_price_source=loc,
+            partial_price_scope=comparison['scope'],price_status='M6_DIRECT_FINITE_COHORT_ONLY_ALL_ROUND_COST_MISSING')
+
     def q3_without_prices(self,loc,join):
         """A published Q3/axis join with an explicitly missing price is not ranked."""
         parent=str(PurePosixPath(loc['path']).parent)
@@ -657,6 +739,11 @@ def report(result):
     if any(r.get('price_evidence',{}).get('round_model_prices')==26 for r in result['candidates']):
         lines+=['','PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。']
     for r in result['candidates']:
+        if r.get('partial_price_axes'):
+            lines+=['','LD9 V0の保存m6直接価格（別cohortの各軸4path平均、全13round費用はnull）：',
+                '','|軸|LD9 RZ/shot|LD7参照 RZ/shot|差 LD9−LD7 RZ/shot|','|---|---:|---:|---:|']
+            for p in r['partial_price_axes']:
+                lines.append('|'+p['axis']+'|'+display(p['C_RZ'])+'|'+display(p['reference_C_RZ'])+'|'+display(p['difference_LD9_minus_LD7'])+'|')
         if r['point_id']in result['method_minima']['PR_DF']['point_ids'] and 'saved_cost_breakdown'in r:
             lines+=['',r['label']+'の費用の'+r['saved_cost_breakdown']['m7_m12_percent_display']+
                 '%はq>64のm7〜m12へのモデル外挿（元SUMMARYの保存内訳）。qualified_for_candidate=false。価格モデル・配分・Q3・較正receiptの固定locatorはCATALOG.jsonに保持。']

@@ -87,7 +87,9 @@ class PublishedAcceptance(unittest.TestCase):
         points={r['N_X'][-1]:(r['status'],frac(r['conditional_cost']))for r in group}
         self.assertEqual(points,{1:('INFEASIBLE',376203472),2:('FEASIBLE',395962678),3:('FEASIBLE',415721884),4:('FEASIBLE',435481090)})
         self.assertEqual(len(next(r for r in group if r['N_X'][-1]==4)['result_sources']),2)
-        ld7=[r for r in result['candidates']if r['method']=='PR_DF' and r['L_D']==7]
+        all_ld7=[r for r in result['candidates']if r['method']=='PR_DF' and r['L_D']==7]
+        self.assertEqual(len(all_ld7),7)
+        ld7=[r for r in all_ld7 if r['label']in ('LD7_V0','LD7_A_SHAPE','LD7_B_PRICE')]
         self.assertEqual(len(ld7),3)
         self.assertTrue(all(r['status']=='FEASIBLE' and r['q3_status']==PASS for r in ld7))
         selected_df=next(r for r in ld7 if r['label']=='LD7_A_SHAPE')
@@ -109,6 +111,19 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertEqual(ld9[0]['q3_status'],PASS)
         self.assertIsNone(ld9[0]['conditional_cost'])
         self.assertEqual(ld9[0]['price_axes'],[])
+        self.assertEqual(len(ld9[0]['partial_price_axes']),2)
+        for p in ld9[0]['partial_price_axes']:
+            self.assertEqual(p['m'],6)
+            self.assertEqual(frac(p['C_RZ']),492573)
+            self.assertEqual(frac(p['reference_C_RZ']),frac('1575349/4'))
+            self.assertEqual(frac(p['difference_LD9_minus_LD7']),frac('394943/4'))
+            self.assertEqual(p['n_paths'],4)
+            self.assertEqual(len(p['path_sources']),4)
+            self.assertEqual(p['price_kind'],'DIRECT_FINITE_COHORT_MEAN')
+            self.assertFalse(p['qualified_for_candidate'])
+        budgets=[r for r in all_ld7 if r['label']not in ('LD7_V0','LD7_A_SHAPE','LD7_B_PRICE')]
+        self.assertEqual(len(budgets),4)
+        self.assertTrue(all(r['status']=='INFEASIBLE' and r['q3_status']==FAIL for r in budgets))
         self.assertNotIn(ld9[0]['point_id'],result['method_minima']['PR_DF']['point_ids'])
         self.assertEqual(len(result['signal_only_history']),1)
         pauli=[r for r in result['candidates']if r['method']=='PR_PAULI' and r['L_D']==3]
@@ -191,7 +206,7 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertEqual(len(cat.result()['candidates']),9)
         for s in self.inputs['sources']:cat.add(s)
         result=cat.result()
-        self.assertEqual(len(result['candidates']),43)
+        self.assertEqual(len(result['candidates']),47)
         self.assertFalse([r for r in result['candidates']if r['status']=='MISMATCH'])
         self.assertEqual([r['label']for r in result['candidates']if r['status']=='PRICE_WAITING'],
                          ['B0I_P7_Y4_32h_over_5__A_SHAPE','LD9_V0'])
@@ -205,7 +220,7 @@ class PublishedAcceptance(unittest.TestCase):
         cat=Catalog(self.reader,self.inputs['comparison']);cat.add(source)
         self.assertEqual(len(cat.result()['candidates']),5)  # Existing VP plus four distinct allocations.
         for s in self.inputs['sources']:cat.add(s)
-        self.assertEqual(len(cat.result()['candidates']),43)
+        self.assertEqual(len(cat.result()['candidates']),47)
         for key,value in [('total_configuration_id','other'),('price_qualified_for_candidate',True)]:
             changed=deepcopy(self.reader.read(source));changed['records'][0][key]=value
             with self.assertRaisesRegex(ValueError,'Pauli budget'):
@@ -218,11 +233,26 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertEqual(cat.result()['candidates'][0]['L_D'],9)
         for s in self.inputs['sources']:cat.add(s)
         ld7=[r for r in cat.result()['candidates']if r['method']=='PR_DF' and r['L_D']==7]
-        self.assertEqual(len(ld7),3)
+        self.assertEqual(len(ld7),7)
         self.assertEqual(len([r for r in ld7 if r['label']=='LD7_V0']),1)
         changed=deepcopy(self.reader.read(source));changed['total_model_cost']=refnum(1,1)
         with self.assertRaisesRegex(ValueError,'different split price'):
             Catalog(self.reader,self.inputs['comparison']).pr_df_unpriced_v0(source,changed)
+
+    def test_partial_price_reuses_allocation_and_budget_verdicts_are_preserved(self):
+        direct=next(s for s in self.inputs['sources']if 'd_pr_df_ld9_m6_price'in s['path'])
+        cat=Catalog(self.reader,self.inputs['comparison']);cat.add(direct)
+        rows=cat.result()['candidates']
+        self.assertEqual(len(rows),1)
+        self.assertEqual(rows[0]['status'],'PRICE_WAITING')
+        self.assertIsNone(rows[0]['conditional_cost'])
+        changed=deepcopy(self.reader.read(direct));changed['physical_id']='other'
+        with self.assertRaisesRegex(ValueError,'physical candidate'):
+            Catalog(self.reader,self.inputs['comparison']).ld9_partial_price(direct,changed)
+        budget=next(s for s in self.inputs['sources']if 'pr_df_ld7_pf_budget'in s['path'])
+        changed=deepcopy(self.reader.read(budget));changed['rows'][0]['model_status']=PASS
+        with self.assertRaisesRegex(ValueError,'Q3/allocation'):
+            Catalog(self.reader,self.inputs['comparison']).ld7_budget(budget,changed)
 
     def test_same_command_updates_only_by_adding_a_pinned_source(self):
         import os,sys
