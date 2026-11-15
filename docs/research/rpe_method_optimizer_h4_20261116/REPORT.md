@@ -1,4 +1,95 @@
-# H4：方式別RPEコスト最適化（第2段階：Q3実行器の接続とAの受入テストの反映）
+# H4：方式別RPEコスト最適化（第3段階：PR構成の生成と、構成・shot配分の同時探索）
+
+2026-11-16 JST、B2（Claude Code、主agentのみ。作成者自身の確認で、独立レビューではない）。実装SOURCEは `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`。**新規の実信号・価格・compile・Q3は0件。** 確認は保存資料と人工fixtureだけで行った。第2・第1段階の記録は後半に残した。
+
+## E. 結論
+
+- PR-Pauli・PR-DFの構成を、最適化器自身が生成できるようにした。
+  - 探索変数：L_D、PR合成公式、要求step幅Δ_PF（RPE基準時間hの何倍かで指定）、κ（共通κの何倍かで指定）、round別X/Y shot配分。
+  - hは現行値0.1のまま固定し、Δ_PFとは別の量として扱う。
+  - q_m・R_m・piece別event配分は、各構成の固定mapperから導く。
+- **保存scheduleの再現**：現行S2・Δ_PF=h・共通κで、保存されたPR構成7件の構成全体を完全に再現した。
+  - PR-DF：L_D=1・2・7・9
+  - PR-Pauli：L_D=2・3・5
+- **Δ_PFを変えたとき**（例：PR-DFのL_D=7でΔ_PF=h/2）：全roundでqが2倍になる。新しい候補となり、13 roundの信号・26軸の価格・構成の公開・Q3経路の雛形が不足として出る。
+- **κを変えたとき**
+  - PR-DFのL_D=7・9でκ×2：整数化後の全roundのscheduleが同じになる。保存構成の別名として扱い、保存評価を再利用する（二重評価しない）。
+  - PR-PauliのL_D=5でκ×2：m10〜m12だけが変わる。m0〜m9の信号と20軸の価格は再利用でき、不足は3 roundと6軸と出る。
+- **次の要求の変化**：生成した候補に（人工の）入力が揃うと、次の要求の候補集合にその構成が入る。
+- **停止**：次を区別して返す。
+  - 件数上限なし（`UNLIMITED`。科学実行の承認が必要）と、新規科学未承認（`NEW_SCIENCE_NOT_APPROVED`）。
+  - 改善候補を探索し尽くした場合（`NO_IMPROVING_PROPOSAL`）と、範囲内に入力不足の候補が残る場合（`NO_IMPROVING_PROPOSAL_INPUTS_MISSING`）。
+- 受入はすべて合格。
+  - 生成の受入 8/8 PASS（[generation_acceptance_2fa2dbfac/](generation_acceptance_2fa2dbfac/GENERATION_ACCEPTANCE.json)）
+  - 実行器の受入 10/10 PASS
+  - Aの固定受入 PASS 20（Skillは PENDING 1）
+
+## F. 実装
+
+| 部分 | 内容 |
+|---|---|
+| `scripts/run_rpe_optimizer_config_generator.py`（新規） | 構成生成（metadataのみ）。各方式の固定mapperを読取専用のroute viewから無変更で使う。PR-DFはD2のB 437ba4ac A-fixed-grid adapter（`run_pr_df_ld7_v0.signal_modules`、view D2 `23160cc87`）、PR-PauliはAのP1 B API（B ce0517de native `generate` と共通のpaper mapper、view A `39a1fc7df`）。変更なしの要求で保存構成を完全に再現できなければ止める。各roundで signed pieceの重みの和＝1、piece数＝allocationの長さ、Σallocation＝R、event数＝q×R を照合する |
+| `rpe_method_optimizer.generate_variants` | 問題入力またはround fileの `generation` 範囲（公式・`delta_over_h_values`・`kappa_multipliers`）で、保存構成ごとに変種を生成する。round物理key（κはRを通してだけ効く）で重複を除く。同一scheduleは保存構成の別名として保存評価を再利用し、新scheduleは不足（下表）を列挙した候補にする |
+| `parameter_assessment` | (L_D, 公式, Δ_PF) ごとにκの行を並べる。判定は次の3つ。各行には、scheduleの同一性・不足・最小適合費用を載せる。<br>・全κで物理scheduleが同じ（`SAME_PHYSICAL_SCHEDULE_FOR_ALL_KAPPA_IN_RANGE`）<br>・全κで最小適合費用が出ていれば判断可能（`DECIDABLE_FROM_MINIMUM_FEASIBLE_COST`）<br>・それ以外は保留（`UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING`） |
+| 停止・予算 | `max_new_q3_per_method` に `"UNLIMITED"` を指定すると、件数上限なしで有限の範囲を尽くすまで進む（round fileで `science_approved: true` が必須）。`science_approved: false` なら新規callは0で、`NEW_SCIENCE_NOT_APPROVED` で止まる |
+
+**対応する公式**：`2nd`（S2）と `4th(m5_best)`（11 piece、うち負の重み1）。どちらもmapperが対応している。保存構成のあるのは2ndだけで、4th(m5_best)は生成とstructure照合までを確認した（[generator_formula_check/](generator_formula_check/SUMMARY_PR_DF_LD7.json)）。
+
+**Δ_PFの制約**：PR-DF（A fixed grid）は、全roundでT_m/Δが整数になることを要求する。そのためΔ_PF=2hは `GENERATION_REJECTED`（理由付き）になる。PR-Pauli（native）は q_m=⌈T_m/Δ⌉ で、任意のΔを扱える。
+
+**新scheduleの不足の表し方**（機械可読、`run03/GENERATION.json`）
+
+| 項目 | 意味 |
+|---|---|
+| `CONFIGURATION_PUBLICATION` | 生成した構成を固定commitで公開する |
+| `SIGNAL_ROUNDS:<m,…>` | 物理keyが一致する保存信号の無いround |
+| `SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS` | 再利用できるroundと新規roundから13 round packetを組み立てる |
+| `PRICE_AXES:<n>_of_26` | 物理keyが一致する保存価格の無い軸の数 |
+| `Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION` | 実行経路の雛形（total view・binding・packet）を新しい構成に作る |
+| `GENERATOR_SUPPORT:<理由>` | mapperが生成を拒否した場合 |
+
+## G. 動作確認
+
+**生成の受入**（`scripts/check_rpe_optimizer_generation.py`）
+
+| check | 結果 |
+|---|---|
+| 保存PR構成7件で、現行のscheduleが完全に再現される | PASS |
+| PR-DF L_D=7の現行は q=2^m、R=1 | PASS |
+| Δ_PF=h/2で新schedule（q=2^(m+1)）となり、不足が13 round・26軸 | PASS |
+| κ×2でもscheduleが変わらない場合（L_D=7）は保存評価を再利用し、別候補を作らない | PASS |
+| κ×2でscheduleが変わる場合（Pauli L_D=5）は、m10〜m12だけが不足で、m0〜m9の信号と20軸を再利用できる | PASS |
+| 物理的に同一の候補を二重評価しない（新schedule19件はすべて別。生成の有無で評価済み件数・次の要求が同じ） | PASS |
+| 生成した候補に（人工の）入力が揃うと、次の候補集合に入る | PASS |
+| 停止理由の区別（人工）：UNLIMITEDでPR-DFが32 callで `…INPUTS_MISSING`、未承認で0 call、上限2で `Q3_BUDGET_EXHAUSTED` | PASS |
+
+**現在の範囲**（[run03](run03/)）
+- 4方式の最安点・次候補は、第2段階と同じ。
+- 生成の範囲は、2nd・Δ_PF∈{h, h/2}・κ×{1, 2}。
+  - PR-DF：16変種のうち同一scheduleが6、新scheduleが10。
+  - PR-Pauli：12変種のうち同一が3、新が9。
+- [run03/PARAMETER_ASSESSMENT.json](run03/PARAMETER_ASSESSMENT.json) では、PR-DFのL_D=7・9（Δ_PF=h）が「全κで物理scheduleが同じ」、それ以外は入力不足で判定保留。
+- 範囲を広げた例として、round雛形 `example_h4_pr_generation_round_unapproved.json`（未承認）を実行した。2nd・4th(m5_best)、Δ_PF∈{h, h/2}、κ×{1, 2, 4} の範囲で、PR-DF 48変種（同一8、新40）、PR-Pauli 18変種（同一3、新15）。起動は0件。
+
+テスト：新18件と、Cの集計テスト12件がPASS（[TESTS_GENERATION.txt](TESTS_GENERATION.txt)）。
+
+## H. 実行可能になった範囲と、残る人手
+
+- **すぐ実行できる**
+  - 保存構成（κ・Δ_PFの変種のうち保存と同一scheduleのものを含む）での、構成をまたいだshot配分探索。
+  - 採択されたroundでの既存Q3経路の実行と再開（第2段階）。
+- **生成はできるが、まだ実行できない**：新scheduleの構成。実行には、不足項目の取得が必要になる。
+  - 信号・価格の取得
+  - 構成の公開
+  - 13 round packetの組立て
+  - Q3経路の雛形作成
+
+  これらは既存のA・D・D2の取得runnerに対応するが、最適化器からの自動起動はまだ接続していない。不足は候補ごとに機械可読で出る。
+- **κを固定してよいかの判断**：同一scheduleのκは即時に判断できる（例：PR-DF L_D=7・9）。それ以外は、新scheduleの入力が揃い、各κでshot配分を探索して最小適合費用が出てから判断する。現行κの影響は小さいと仮定していない。
+
+---
+
+# 第2段階：H4 方式別RPEコスト最適化（Q3実行器の接続とAの受入テストの反映）
 
 2026-11-16 JST、B2（Claude Code、主agentのみ。作成者自身の確認で、独立レビューではない）。SOURCEは `a2e2ef50a108d6f34089a99bd00f11a7085dd9c9`。**新規の実Q3・科学計算・compileは0件。** 確認は人工workerと保存結果だけで行った。第1段階の記録は後半に残した。
 

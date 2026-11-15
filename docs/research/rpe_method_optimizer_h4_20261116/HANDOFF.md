@@ -1,4 +1,58 @@
-# 統合担当・A/B/C/D/D2へ：方式別RPEコスト最適化（Q3実行器の接続まで）
+# 統合担当・A/B/C/D/D2へ：方式別RPEコスト最適化（PR構成の生成まで）
+
+正本は[REPORT](REPORT.md)の§E〜H（第3段階）と§A〜D（第2段階）。branch `codex/b2-rpe-method-optimizer-20261116`、実装SOURCE `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`。新規の実信号・価格・compile・Q3は0件。
+
+## 第3段階で追加したこと
+
+- **PR構成の生成**
+  - PR-Pauli・PR-DFについて、L_D・公式・Δ_PF・κを変えた構成を、各方式の固定mapperで生成する。Δ_PFはhの何倍か、κは共通κの何倍かで指定する。
+  - roundごとの数値を手入力する必要はない。q_m・R_m・piece配分はmapperが決める。
+  - 保存PR構成7件は、現行のS2・Δ_PF=h・共通κで完全に再現した。
+- **対応する公式**：`2nd` と `4th(m5_best)`。高次公式では、signed piece・piece別event配分・event数を照合する。
+- **Δ_PFの制約**：PR-DFは全roundでT/Δが整数になること（Δ_PF=2hは理由付きで拒否される）。PR-Pauliは任意のΔを扱える。
+- **重複の除去**：物理schedule（κはRを通してだけ効く）が同じ変種は保存構成の別名とし、保存評価を再利用する（二重評価しない）。新scheduleの構成は候補になり、不足を機械可読で返す。
+  - 構成の公開
+  - 不足する信号round
+  - packetの組立て
+  - 不足する価格軸の数
+  - Q3経路の雛形
+- **κの判断材料**：`parameter_assessment` が、(L_D, 公式, Δ_PF) ごとに各κの物理同一性・不足・最小適合費用を並べる。PR-DFのL_D=7・9（Δ_PF=h）は「全κで同じschedule」。他は入力不足で判定保留。
+- **停止**
+  - `"UNLIMITED"`：件数上限なし。`science_approved: true` が必須。
+  - `NEW_SCIENCE_NOT_APPROVED`：未承認。
+  - `NO_IMPROVING_PROPOSAL`：範囲を尽くした。
+  - `NO_IMPROVING_PROPOSAL_INPUTS_MISSING`：範囲内に入力不足の候補が残る。
+- **受入**：生成8/8、実行器10/10、Aの固定受入20 PASS（Skillは PENDING 1）。
+
+## 生成範囲の指定（round file）
+
+```json
+"method_overrides": {
+  "PR_DF":    {"generation": {"formulas": ["2nd", "4th(m5_best)"], "delta_over_h_values": ["1", "1/2"], "kappa_multipliers": ["1", "2", "4"]}},
+  "PR_PAULI": {"generation": {"formulas": ["2nd"], "delta_over_h_values": ["1", "1/2", "2"], "kappa_multipliers": ["1", "2"]}}
+},
+"science_approved": false,
+"max_new_q3_per_method": {"PR_DF": 0, "PR_PAULI": 0}
+```
+
+雛形は [configs/rpe_method_optimizer/rounds/example_h4_pr_generation_round_unapproved.json](../../../configs/rpe_method_optimizer/rounds/example_h4_pr_generation_round_unapproved.json)。未承認のまま実行して、PR-DF 48変種（同一8、新40）、PR-Pauli 18変種（同一3、新15）を確認した。起動は0件。件数上限なしで範囲を尽くす場合は、`"science_approved": true` とし、予算を `"UNLIMITED"` にする。
+
+## 実行可能になった範囲
+
+- **実行できる**
+  - 保存構成（保存と同一scheduleのκ・Δ_PF変種を含む）での、構成とshot配分の探索。
+  - 採択roundでの、既存Q3経路の実行・取込・再開。
+- **生成・不足判定まで**：新scheduleの構成。次の取得が揃うまで探索には入らない（停止理由 `…INPUTS_MISSING`）。
+  - 信号（A／D2のrunner）
+  - 価格（A／D2）
+  - 構成の公開
+  - packetの組立て
+  - Q3経路の雛形
+- **再開コマンド**：第2段階と同じ。`--round <file> --run-dir <dir>` を再実行する。
+
+---
+
+# （第2段階）統合担当・A/B/C/D/D2へ：方式別RPEコスト最適化（Q3実行器の接続まで）
 
 正本は[REPORT](REPORT.md)の§A〜D。branch `codex/b2-rpe-method-optimizer-20261116`、SOURCE `a2e2ef50a108d6f34089a99bd00f11a7085dd9c9`。新規の実Q3・科学計算・compileは0件。
 

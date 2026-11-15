@@ -1,0 +1,76 @@
+{
+ "schema": "RPE_OPTIMIZER_EXECUTOR_ACCEPTANCE_V1",
+ "optimizer_commit": "2fa2dbfac3646b801a3d5b8ebb02676b989bcb78",
+ "counts": {
+  "PASS": 10
+ },
+ "checks": [
+  {
+   "check": "budget0_real_routes_launch_nothing",
+   "status": "PASS",
+   "stops": {
+    "FULL_PF": "NEW_SCIENCE_NOT_APPROVED",
+    "TRUNCATED_PF": "NEW_SCIENCE_NOT_APPROVED",
+    "PR_PAULI": "NEW_SCIENCE_NOT_APPROVED",
+    "PR_DF": "NEW_SCIENCE_NOT_APPROVED"
+   }
+  },
+  {
+   "check": "saved_results_reused_without_budget",
+   "status": "PASS",
+   "saved_steps": 2
+  },
+  {
+   "check": "request_execute_ingest_next",
+   "status": "PASS",
+   "job_steps": 2,
+   "statuses": [
+    "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+    "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD"
+   ]
+  },
+  {
+   "check": "budget_exhausted_stop",
+   "status": "PASS",
+   "stop": "Q3_BUDGET_EXHAUSTED"
+  },
+  {
+   "check": "scope_kept_to_final_request",
+   "status": "PASS",
+   "pending": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777"
+  },
+  {
+   "check": "resume_after_budget_end_without_relaunch",
+   "status": "PASS",
+   "launched": 4,
+   "reused": 2,
+   "new_calls": 2
+  },
+  {
+   "check": "idempotent_rerun_launches_nothing",
+   "status": "PASS",
+   "new_calls": 0
+  },
+  {
+   "check": "running_job_not_launched_twice",
+   "status": "PASS",
+   "during": "JOB_IN_PROGRESS",
+   "after": "Q3_BUDGET_EXHAUSTED"
+  },
+  {
+   "check": "dead_job_reported_then_collected",
+   "status": "PASS",
+   "first": "STALE_JOB_NEEDS_REVIEW",
+   "second": "UNKNOWN_RESULT"
+  },
+  {
+   "check": "unknown_distinct_from_model_failure",
+   "status": "PASS",
+   "stop": "UNKNOWN_RESULT"
+  }
+ ],
+ "science": {
+  "real_Q3_launched": 0,
+  "artificial": "LABELLED_ARTIFICIAL_WORKER"
+ }
+}

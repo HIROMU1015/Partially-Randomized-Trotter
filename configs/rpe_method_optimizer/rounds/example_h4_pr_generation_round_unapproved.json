@@ -1,0 +1,15 @@
+{
+  "schema": "RPE_OPTIMIZER_SEARCH_ROUND_V1",
+  "round_id": "H4_EXAMPLE_PR_GENERATION_UNAPPROVED",
+  "note": "Template for a PR round that also generates configurations. science_approved false: nothing is launched (stop NEW_SCIENCE_NOT_APPROVED). To run without a Q3 count limit inside the finite range, set science_approved true and a method budget \"UNLIMITED\".",
+  "methods": ["PR_DF", "PR_PAULI"],
+  "science_approved": false,
+  "max_new_q3_per_method": {"PR_DF": 0, "PR_PAULI": 0},
+  "initial": "all",
+  "method_overrides": {
+    "PR_DF": {"generation": {"formulas": ["2nd", "4th(m5_best)"], "delta_over_h_values": ["1", "1/2"], "kappa_multipliers": ["1", "2", "4"]}},
+    "PR_PAULI": {"generation": {"formulas": ["2nd"], "delta_over_h_values": ["1", "1/2", "2"], "kappa_multipliers": ["1", "2"]}}
+  },
+  "resume_from": [],
+  "approved_by": "NOT_APPROVED_TEMPLATE"
+}

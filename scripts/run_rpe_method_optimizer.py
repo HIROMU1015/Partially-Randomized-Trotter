@@ -92,6 +92,9 @@ def scoped(problem, overrides):
     """Apply an approved search scope (formulas, width range, L_D values, configuration allow-list) to methods."""
     p = json.loads(json.dumps(problem))
     for name, change in (overrides or {}).items():
+        change = dict(change)
+        if 'generation' in change:  # merge: e.g. only formulas / delta_over_h_values / kappa_multipliers
+            p['methods'][name]['generation'] = dict(p['methods'][name]['generation'], **change.pop('generation'))
         p['methods'][name].update(change)
     return p
 
