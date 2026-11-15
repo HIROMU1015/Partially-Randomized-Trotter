@@ -315,3 +315,5 @@ artifacts/<validation_name>/
 ## Full-H κ2 P-2：metadata専用の既定入口
 
 `run_full_h_kappa2_p2.py` はA固定設計のcell/request/seedを表示する。科学計画は未採択。実行用flagは別途許可された有限scope専用。[REPORT](../docs/research/d_full_h_p2_caller_preparation_20261114/REPORT.md)／[HANDOFF](../docs/research/d_full_h_p2_caller_preparation_20261114/HANDOFF.md)／[テスト](../docs/research/d_full_h_p2_caller_preparation_20261114/TEST_RESULTS.json)。
+
+D7独立holdout：`run_full_h_d7_holdout.py`（既存P2 caller/parallel経路）と `publish_full_h_d7_holdout.py`（保存receipt・exact比較の公開）。固定条件・実行範囲は `docs/research/d_full_h_d7_holdout_20261115/SOURCE_PREPARATION.md`。モデルPASS/FAILなし。

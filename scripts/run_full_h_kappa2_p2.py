@@ -187,13 +187,14 @@ def restore_parent_requests(row, prep, seeds, parents, scalar):
     return requests, list(seeds), laws
 
 
-def acquire_path(full, row, cohort, index, seeds, *, compile_cached=None, parents=None):
+def acquire_path(full, row, cohort, index, seeds, *, compile_cached=None, parents=None, progress=None):
     """Scientific API: existing normal sampler and P-1 trial; explicit seeds only replace trial_seed.
 
     Called only after validate(execution=True). Tests pass a toy context/compiler.
     Paired requests are restored and checked before compose; normal sampling is unchanged.
     """
-    native = full.setup(); ctx = full.context(row['system'])
+    mark = progress or (lambda stage: None)
+    mark('restore_context'); native = full.setup(); ctx = full.context(row['system'])
     facade = SimpleNamespace(setup=lambda: native, context=lambda system: ctx)
     captured, wrappers, fps, compile_receipts = {}, {}, {}, {}
     original = native.compose; compiler = compile_cached or native.compile_cached
@@ -202,7 +203,9 @@ def acquire_path(full, row, cohort, index, seeds, *, compile_cached=None, parent
             raise ValueError('Unexpected group seed request')
         return seeds[outer]
     def compose(r, prep, requests, scalar, fingerprint):
+        mark('compose_evolution')
         result = original(r, prep, requests, scalar, fingerprint)
+        mark('compose_evolution_complete')
         captured.setdefault('events', event_projection([r.rte_occurrence.events for r in requests]))
         captured.update(scalar=scalar, n=prep.num_system_qubits)
         return result
@@ -210,6 +213,7 @@ def acquire_path(full, row, cohort, index, seeds, *, compile_cached=None, parent
         axis = 'sine' if any(i.operation.name == 'sdg' and wrapper.find_bit(i.qubits[0]).index == ctx.ham.n_qubits
                             for i in wrapper.data[-4:]) else 'cosine'
         wrappers[axis] = wrapper; fps[axis] = fingerprint
+        mark('compile_'+axis)
         started = time.monotonic()
         result = compiler(wrapper, fingerprint, representative)
         record, _, reused = result
@@ -220,6 +224,7 @@ def acquire_path(full, row, cohort, index, seeds, *, compile_cached=None, parent
         compile_receipts[axis] = dict(record=deepcopy(record), fingerprint=fingerprint, reused=bool(reused),
             locator=dict(path=str(path), sha256=hashlib.sha256(raw).hexdigest() if raw is not None else None),
             wall_seconds=time.monotonic()-started, peak_RSS_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024)
+        mark('compile_'+axis+'_complete_and_numeric_gate_next')
         return result
     with ExitStack() as stack:
         stack.enter_context(patch.object(native, 'trial_seed', fixed_seed))
@@ -233,11 +238,14 @@ def acquire_path(full, row, cohort, index, seeds, *, compile_cached=None, parent
                     raise ValueError('Unexpected paired request replay')
                 return restored
             stack.enter_context(patch.object(native, 'sample_requests', replay))
+        mark('native_trial_and_implementation_checks')
         trial, facts, ok = P1.pilot(facade, row, compile_cached=compile_one, cohort=cohort, index=index)
+    mark('xy_phase_gate')
     provider = importlib.import_module('trotterlib.df_rte_qiskit')
     xy = P1.xy_phase_gate(wrappers, captured['n'], captured['events'], captured['scalar'], captured['scalar'], row['T'], provider=provider)
     if not ok or xy['status'] != 'PASS' or len(captured['events']) != row['q'] or any(len(b) != row['R_outer'] for b in captured['events']):
         raise ValueError('P-1 correctness/phase/XY/allocation gate failed')
+    mark('path_checks_complete')
     return dict(trial=trial, checks=facts, xy_phase_gate=xy, events=captured['events'], seeds=list(seeds),
                 fingerprints=fps, compile_receipts=compile_receipts, index=index, cohort=cohort, row=row,
                 sampling='SAVED_PARENT_EVENTS_NO_DRAW' if parents is not None else 'ORIGINAL_NORMAL_SAMPLER',

@@ -82,10 +82,11 @@ class ParallelAxesCompiler:
     The predicted Y wrapper must match the actual later Y fingerprint exactly.
     Child results are small; representative compiled circuits use native QPY.
     """
-    def __init__(self, native, fingerprint, *, compiler=None):
+    def __init__(self, native, fingerprint, *, compiler=None, progress=None):
         self.native = native; self.fingerprint = fingerprint
         self.compiler = compiler or native.compile_cached
         self.workers = {}; self.receipts = {}; self.expected = {}; self.timings = {}
+        self.progress = progress or (lambda stage: None)
 
     def _start(self, axis, wrapper, fp, representative):
         receive, send = mp.get_context('fork').Pipe(duplex=False)
@@ -103,6 +104,7 @@ class ParallelAxesCompiler:
         child.start(); send.close()
         self.workers[axis] = child, receive
         self.expected[axis] = fp
+        self.progress('compile_'+axis+'_worker_started_pid_'+str(child.pid))
 
     def _collect(self, axis, representative):
         child, pipe = self.workers[axis]
@@ -111,7 +113,10 @@ class ParallelAxesCompiler:
         except EOFError:
             result = dict(status='STOP',error='Compiler process exited without a record')
         child.join(); pipe.close()
+        result['worker_exit_code']=child.exitcode
+        result['worker_exit_signal']=-child.exitcode if child.exitcode<0 else None
         self.receipts[axis] = result
+        self.progress('compile_'+axis+'_worker_exit_'+str(child.exitcode))
         if child.exitcode != 0 or result['status'] != 'PASS':
             raise ValueError('Parallel '+axis+' compiler STOP: '+result.get('error','nonzero exit'))
         self.timings[axis] = result['seconds']
@@ -145,20 +150,21 @@ class ParallelAxesCompiler:
                     pass
 
 
-def accelerated_path(P, full, row, cohort, index, seeds, *, parents=None, compiler=None):
+def accelerated_path(P, full, row, cohort, index, seeds, *, parents=None, compiler=None, progress=None):
     """The existing P2/P1/native path, with local memoization and parallel axes."""
     native = full.setup()
     provider = __import__('trotterlib.df_rte_qiskit',fromlist=['x'])
     from h46_b3_fast_fingerprint import FingerprintSession
     fp = FingerprintSession()
     with memoized_controlled_rotations(provider) as cache, fast_legacy_builds(native) as builds:
-        parallel = ParallelAxesCompiler(native,fp.fingerprint,compiler=compiler)
+        parallel = ParallelAxesCompiler(native,fp.fingerprint,compiler=compiler,progress=progress)
         try:
-            result = P.acquire_path(full,row,cohort,index,seeds,compile_cached=parallel,parents=parents)
+            result = P.acquire_path(full,row,cohort,index,seeds,compile_cached=parallel,parents=parents,progress=progress)
         finally:
             parallel.close()
         result['acceleration'] = dict(gate_cache=dict(cache),parallel_axes=True,compile_wall_seconds=parallel.timings,
-                                      build_timings=builds)
+            compile_worker_exits={a:dict(returncode=r['worker_exit_code'],signal=r['worker_exit_signal'])
+                for a,r in parallel.receipts.items()},build_timings=builds)
         return result
 
 

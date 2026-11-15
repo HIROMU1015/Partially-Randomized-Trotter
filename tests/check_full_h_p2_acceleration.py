@@ -51,13 +51,19 @@ class Tests(unittest.TestCase):
 
     def test_XY_compile_in_distinct_processes_and_keep_existing_phase_gates(self):
         row=T.ORDER2_ROW;seeds=[P.P1.seed_function()(row,P.P1.COHORT,0,g,0) for g in range(row['q'])]
-        result=A.accelerated_path(P,self.full,row,P.P1.COHORT,0,seeds,compiler=self.parallel_fake())
+        native=self.full.setup();stages=[]
+        with patch.object(native,'sample_requests',wraps=native.sample_requests) as sampler:
+            result=A.accelerated_path(P,self.full,row,P.P1.COHORT,0,seeds,compiler=self.parallel_fake(),progress=stages.append)
+            self.assertEqual(sampler.call_count,1)
         pids={c['record']['worker_pid'] for c in result['compile_receipts'].values()}
         self.assertEqual(len(pids),2);self.assertNotIn(os.getpid(),pids)
         self.assertEqual(result['xy_phase_gate']['status'],'PASS')
         self.assertEqual(result['checks']['parity']['status'],'PASS')
         self.assertTrue(result['checks']['scalar_event_phases']['event_phases'])
         self.assertGreater(result['acceleration']['gate_cache']['reused'],0)
+        self.assertIn('path_checks_complete',stages)
+        self.assertTrue(any(s.startswith('compile_cosine_worker_started_pid_') for s in stages))
+        self.assertTrue(all(e['returncode']==0 and e['signal'] is None for e in result['acceleration']['compile_worker_exits'].values()))
 
     def test_control_synthesis_count_reduced_without_changing_canonical_bytes(self):
         from qiskit import QuantumCircuit

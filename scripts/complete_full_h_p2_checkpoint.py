@@ -139,6 +139,8 @@ def observe_child(command, *, cwd, private, interval=30):
                 observation['proc_stat']=Path('/proc',str(process.pid),'stat').read_text()
                 progress=private/'PROGRESS.jsonl'
                 observation['progress']=progress.read_text().splitlines()[-1] if progress.exists() and progress.stat().st_size else None
+                observation['path_progress']={p.name:p.read_text().splitlines()[-1]
+                    for p in private.glob('PATH_*_PROGRESS.jsonl') if p.stat().st_size}
             except OSError as exc:observation['observation_error']=str(exc)
             log.write(json.dumps(observation)+'\n');log.flush()
             try:code=process.wait(timeout=interval);break

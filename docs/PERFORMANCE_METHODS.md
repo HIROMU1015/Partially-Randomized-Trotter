@@ -36,6 +36,11 @@ SOURCE8cce54064で実G36223の残検査が正常終了し、wall21:39.15・peakR
 
 ## 以前からある関連例
 
+D7独立holdoutの入口は [run_full_h_d7_holdout.py](../scripts/run_full_h_d7_holdout.py)。既存path/X/Y並列・
+controlled cache・fast writerをそのまま使い、任意callbackで実経路のstageと子終了code/signalを記録する。
+親observerがpath別logを読み、計算workerに非同期dump/threadを追加しない。
+[SOURCE準備・検証](research/d_full_h_d7_holdout_20261115/SOURCE_PREPARATION.md)。実対象の所要時間は取得後に記録する。
+
 [PR-2 S2並列実行層](pr2_s2_parallel_execution.md)は、cell単位のspawn pool、phase barrier、
 完了順に依存しない集約、persistent compiled-cost cache、段階別logを既存コードへ接続している。
 toyでserial/parallel/cache再利用の一致を確認した記録がある。PR-2 V4/S2専用の科学条件・

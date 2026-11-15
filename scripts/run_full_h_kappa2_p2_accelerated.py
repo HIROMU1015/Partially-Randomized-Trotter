@@ -6,6 +6,8 @@ import multiprocessing as mp
 import subprocess
 import sys
 import traceback
+import time
+from datetime import datetime, timezone
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
@@ -18,7 +20,14 @@ HELPER='scripts/full_h_p2_acceleration.py'
 
 def path_worker(job,index):
     destination=Path(job['private'])/('path_result_'+str(index)+'.json')
+    log=None;started=time.monotonic()
+    def progress(stage):
+        if log:
+            log.write(json.dumps(dict(utc=datetime.now(timezone.utc).isoformat(),pid=__import__('os').getpid(),
+                stage=stage,elapsed_seconds=time.monotonic()-started))+'\n');log.flush()
     try:
+        if job.get('progress_stages'):log=(Path(job['private'])/('PATH_'+str(index)+'_PROGRESS.jsonl')).open('x')
+        progress('path_started')
         full=P.P1.full_h_module(job['output'],job['private'])
         cell=P.selected(job['plan'],job['stage'],job['cell_id'])
         args=(P,full,P.physical_row(cell),cell['cohort'],index,job['step_seeds'][index])
@@ -26,13 +35,17 @@ def path_worker(job,index):
         if checkpoint:
             result=A.resume_saved_path(*args,checkpoint)
         else:
-            result=A.accelerated_path(*args,parents=job.get('parents'))
+            result=A.accelerated_path(*args,parents=job.get('parents'),progress=progress)
         if cell.get('composed_of'):
             result['paired_check']=P.check_composition(result,job['parents'])
-        P.P1.write(destination,dict(status='PASS',path=result))
+        progress('serialize_path_receipt')
+        P.P1.write(destination,dict(status='PASS',path=result));progress('COMPLETE')
     except BaseException:
+        progress('STOP')
         P.P1.write(destination,dict(status='STOP',error=traceback.format_exc()))
         raise
+    finally:
+        if log:log.close()
 
 
 def child(path):
@@ -52,7 +65,8 @@ def child(path):
             value=json.loads(p.read_text()) if p.exists() else dict(status='STOP',error='Missing path worker record')
             if worker.exitcode!=0 or value['status']!='PASS':errors.append(dict(index=index,error=value.get('error'),exit=worker.exitcode))
             else:results.append(value['path'])
-        P.P1.write(Path(job['result']),dict(status='STOP' if errors else 'PASS',paths=results,errors=errors))
+        P.P1.write(Path(job['result']),dict(status='STOP' if errors else 'PASS',paths=results,errors=errors,
+            worker_exits=[dict(index=i,pid=w.pid,returncode=w.exitcode,signal=-w.exitcode if w.exitcode<0 else None) for i,w in workers]))
         return 2 if errors else 0
     except BaseException:
         for _,worker in workers:worker.join()
