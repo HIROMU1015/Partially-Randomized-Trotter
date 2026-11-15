@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full-H κ2 D7独立holdout取得中](docs/research/d_full_h_d7_holdout_20261115/REPORT.md)：m5独立2 path・m6独立1 path、最大6 compile。C固定予測b516と採択規則f076を観測前結合、SOURCE9cbabc617。4件のexact記述比較のみ、モデルPASS/FAILなし。
+
 [並列化・高速化の手法集](docs/PERFORMANCE_METHODS.md)：既存helper・runner・test・検証記録への再利用索引。適用条件・SOURCE・確認範囲・既知の失敗例を記録する。
 
 [Full-H κ2 D7較正・全5 cell引渡し完了](docs/research/d_full_h_p2_calibration_resume_20261115/REPORT.md)：18 unique compile・全18軸PASS/FAIL0/UNKNOWN0。旧STOP保全、修正検証SOURCE8cce54064・追加sampling/compile0。G36223結果f98cb9638と先行4 cellの固定公開証拠を全18軸/10較正recordへ結合。C科学受入・fit/凍結・HOLDOUT・E[C]/N/G未実施、mandatory STOP。

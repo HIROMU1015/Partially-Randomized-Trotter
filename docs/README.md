@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full-H κ2 D7独立holdout](research/d_full_h_d7_holdout_20261115/REPORT.md)：指定3 path/最大6 compileを実行中。観測前結合・重複照合済み、4件の記述比較は未完了。
+
 [並列化・高速化の手法集](PERFORMANCE_METHODS.md)：実装と検証記録を再利用するための入口。
 
 - [Full-H κ2 D7較正取得完了](research/d_full_h_p2_calibration_resume_20261115/REPORT.md)／[C向けHANDOFF](research/d_full_h_p2_calibration_resume_20261115/HANDOFF_C.md)：全5 cell・18軸PASS、追加compile0。結果f98cb9638、公開後対応照合18軸/較正record10件、C科学受入は未実施。全較正引渡しでmandatory STOP。
