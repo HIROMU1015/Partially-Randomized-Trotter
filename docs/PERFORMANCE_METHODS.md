@@ -1,5 +1,13 @@
 # 並列化・高速化手法の再利用索引
 
+## 決定論PF 保存compiled QPYの閉包監査（2026-11-15）
+
+[報告・規則](research/d_pf_qpy_closure_audit_20261115/REPORT.md)、[入口](../scripts/pf_qpy_closure_audit.py)（規則・code固定 `d3338c7ef`）。
+
+| 対象・手法 | 実装 | 条件・注意点 | 検証・実測範囲 |
+|---|---|---|---|
+| 長qの重いcompileの代わりに、保存compiled QPYで本体の周期構造を0-compileで照合する | wire token（51d324eaのwire比較を流用し、parameterをhexで符号化）を整数に置き換え、numpyで周期を抽出。group単位でprocess並列 | 固定幅・決定論PF・index0の保存QPYがあり、Qiskit 1.3.0である場合に限る。直接価格は得られない。監査qの外への延長は論証による | 実対象56件で、12 workerのwallは100.5 s、workerの最大RSSは1.47 GiB。最大5.75M命令で65.6 s。人工test 18件。m12を12 compileする場合の見積り（約12 h）の代わりに閉包の前提を確認した。速度倍率は比較対象がないため未定義 |
+
 ## 決定論PF m1/m2（2026-11-15）
 
 [実測・範囲](research/d_pf_m1_m2_direct_prices_20261115/REPORT.md)。m0の元trial / fast context / fork worker / 協調stage logをそのまま使い、同じcallerの有限selectorと出力namespaceをm1/m2へ拡張した。実行SOURCE `a3cbe70e4afb0948188403f48cf4086bb419d8bf`。12物理cellを2 route各6 workerで実行、X/Y別24 compile・元作用gate/C guard全PASS。取得wall102.512 s、最大worker RSS576.74 MiB、同条件baselineとの速度倍率は未測定。m0回帰4＋新3人工/mock testで、同じactual幅でもT/qが違うS2 cellを混同しないことを確認した。旧m0は元固定SOURCEで再現する。新namespace専用・科学retryなし、他round/モデル/N/Gへ転用しない。

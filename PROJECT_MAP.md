@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[決定論PF 保存compiled QPYの閉包監査](docs/research/d_pf_qpy_closure_audit_20261115/REPORT.md)（2026-11-15、Claude Code／D）。規則は読取前に`d3338c7ef`で固定、QPY 56件（m4/m5/m6/m9）を0-compileで監査。12 group×軸でA1〜A5全PASS：全wireで`H+B×(q−1)+E`がtoken完全一致、本体RZ＝凍結b、端＋最終run＝a+b、全wireに障壁。未観測60軸の最終run余裕は60/60≥1e−6（最小0.0225 rad）。監査q外への延長は実装上の論証（仮定3点）で、値は未算出・96/156へ非加算。mandatory STOP。
+
 [決定論PF未観測60軸のcompiled RZ閉包](docs/research/d_pf_unobserved_round_closure_20261115/REPORT.md)（2026-11-15、Claude Code／D）。m7・m8・m10〜m12の入力piece列は観測roundとbit同一（metadata 540 check PASS）で、q依存は最終ancilla runのscalar位相だけ。Qiskit 1.3.0 opt1経路は局所passのみで、固定幅は `A+B·q+δ`（δ∈{0,−1}/軸）と実装から説明。障壁角・最終run角の数値と実回路周期性は未確認。Fullはpiece価格が角度依存（Y4=3·S2+162、M5=11·S2−48）。次は0-compileの保存QPY閉包監査（最大56読取）、m12 12 compileは既定にしない。compile/予測/fit/N/G 0、mandatory STOP。
 
 [決定論PF m1/m2の24軸直接価格](docs/research/d_pf_m1_m2_direct_prices_20261115/REPORT.md)：Full10/B0I p7 × S2/標準Yoshida4/M5、保存H4/1Å/STO-3G/tol-only DF10、P0除外。m1/m2各12軸、再利用0・新規24・有効24・保留/欠測0、元作用gate/C guard完了。直接証拠72/156→96/156。12 cell並列・取得wall102.512 s、モデル判定/fit/MSE/N/G0、mandatory STOP。
