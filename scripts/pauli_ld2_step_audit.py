@@ -3,7 +3,8 @@
 
 Plan: docs/research/a_pauli_ld2_expected_price_plan_20261115/REPORT.md §5 (df5e5c452).
 Rules: docs/research/a_pauli_ld2_step_audit_20261115/AUDIT_RULES.md (fixed before any real QPY
-was opened). The saved private QPY and cache JSON are read read-only (at most 52 QPY: 13 paths
+was opened; run01 executed SOURCE 2f3bf20ce). This revision implements the S0-r1 proposal
+(AUDIT_RULES_R1_PROPOSAL.md) and has NOT been executed on saved QPY. The saved private QPY and cache JSON are read read-only (at most 52 QPY: 13 paths
 x X/Y x {wrapper, compiled}). The audit never builds, samples, transpiles or compiles a
 circuit, never writes private files, never fits or predicts prices and never computes
 E[C], CI or G. Wire tokens follow the PF closure audit (d3338c7ef `pf_qpy_closure_audit.py`:
@@ -55,6 +56,11 @@ QISKIT = '1.3.0'
 METRICS = ('rz_count', 'rz_depth', 'cx_count', 'cx_depth', 'total_depth', 'circuit_size')
 MAX_QPY_READS = 52
 ANGLE_MATCH = 1e-12          # compiled barrier rz vs uncompiled angle (wrapped)
+# S0-r1 (proposed after run01, NOT the rule run01 used): a D-region pair whose uncompiled rz angle
+# is below Qiskit 1.3.0's identity threshold is removed by the compiler together with its CX
+# pair, deterministically in every step. run01 (SOURCE 2f3bf20ce) had no such exclusion.
+IDENTITY_PAIR_EPS = 1e-12
+S0R1_IDENTITY_PAIRS = True
 RELATION_TOLERANCE = 1e-9    # final-run theta1 vs slope -scalar (as PF A4)
 MARGIN_THRESHOLD = 1e-6      # final-run RZ omission margin (as PF A4)
 SYNTH_TOLERANCE = 1e-9       # ZSX synthesis of the wrapper input run vs compiled run
@@ -315,17 +321,20 @@ def uncompiled_structure(circuit, q_req):
             mid = ops[k1 + 1]
             if not (k2 == k1 + 2 and mid[0] == 'rz' and mid[1] == (o,)):
                 raise StructureFail('D_PAIR_NOT_CX_RZ_CX')
-            pair = dict(target=o, angle=safe_hex(mid[2][0]), block=len(blocks))
+            identity = S0R1_IDENTITY_PAIRS and abs(float(mid[2][0])) < IDENTITY_PAIR_EPS
+            pair = dict(target=o, angle=safe_hex(mid[2][0]), block=len(blocks), identity=identity)
             block.append(pair)
             pairs.append(pair)
-            for half in (0, 1):
-                expected.append((o, D_OP, s, dict(pair=len(pairs) - 1, half=half)))
+            if not identity:
+                for half in (0, 1):
+                    expected.append((o, D_OP, s, dict(pair=len(pairs) - 1, half=half)))
             i += 2
         if block:
             blocks.append(block)
         st['blocks'] = blocks
         st['gps'] = gps
         st['pairs'] = pairs
+        st['identity_pairs'] = sum(1 for pr in pairs if pr['identity'])
         st['signature'] = hashlib.sha256(json.dumps(
             [[(p['target'], p['angle']) for p in b] for b in blocks] + [gps]).encode()).hexdigest()
     return dict(n=n, anc=anc, steps=steps, expected=expected, pre=pre, post=post,
@@ -608,6 +617,7 @@ def audit_path(path, scalar, progress_path):
                q=path['q'], R=path['R'], T_hex=path['T_hex'], composed_of=path['composed_of'], axes={})
     arrays = {}
     unc_sig = {}
+    streams = {}
     for axis in ('X', 'Y'):
         entry = path['axes'][axis]
         prog('load_start', axis=axis, file='wrapper')
@@ -632,6 +642,10 @@ def audit_path(path, scalar, progress_path):
         prog('load_done', axis=axis, file='compiled', seconds=time.monotonic() - t0, instructions=tok['counts']['size'])
         p1 = p1_bind(path, axis, entry, tok)
         res['P1_checks'] = p1
+        run_set_xy = set(final_ancilla_run(tok)[0])
+        streams[axis] = [np.array([tok['hashes'][j] for j in tok['wires'][w]
+                                   if not (w == tok['n'] - 1 and j in run_set_xy)], dtype=np.uint64)
+                         for w in range(tok['n'])]
         if not (p1['wrapper_sha256'] and p1['compiled_sha256']):
             raise AuditStop(f"QPY_SHA256_MISMATCH:{path['path_id']}:{axis}")
         if not p1['token_rz_equal_receipt']:
@@ -657,7 +671,7 @@ def audit_path(path, scalar, progress_path):
             continue
         res['steps'] = [dict(step=s, events=st['n_event'], products=st['n_product'], tail_1q=st['tail_1q'],
                              d_blocks=len(st['blocks']), d_pairs=len(st['pairs']), signature=st['signature'],
-                             tail_p_hex=st.get('p'))
+                             identity_pairs=st['identity_pairs'], tail_p_hex=st.get('p'))
                         for s, st in enumerate(struct['steps'], 1)]
         res['events_equal_R'] = all(st['n_event'] == path['R'] for st in struct['steps'])
         res['products_total'] = sum(st['n_product'] for st in struct['steps'])
@@ -691,12 +705,10 @@ def audit_path(path, scalar, progress_path):
     removed = [r for r in uy if r[0] == 'sdg' and r[1] == (anc_y,)]
     xy['uncompiled_only_sdg_differs'] = (anc_x == anc_y and len(removed) == 1
                                          and [r for r in uy if not (r[0] == 'sdg' and r[1] == (anc_y,))] == ux)
-    if 'X' in arrays and 'Y' in arrays:
-        same = True
-        for wx, wy in zip(arrays['X'], arrays['Y']):
-            for (hx, _, _), (hy, _, _) in zip(wx['segs'] + [wx['end']], wy['segs'] + [wy['end']]):
-                same = same and np.array_equal(hx, hy)
-        xy['compiled_equal_except_final_run'] = bool(same)
+    if 'X' in streams and 'Y' in streams:
+        xy['compiled_equal_except_final_run'] = bool(
+            len(streams['X']) == len(streams['Y'])
+            and all(np.array_equal(a, b) for a, b in zip(streams['X'], streams['Y'])))
     out['xy'] = xy
     # persist X arrays (regenerable work file) for cross-path analysis
     if 'X' in arrays:
@@ -833,8 +845,9 @@ def summarize():
     n = max((results[pid].get('n_wires', 0) for pid in ok_paths), default=0)
     arrays = {pid: load_x_arrays(pid, results[pid]['q'], n) for pid in ok_paths}
     # P3: deterministic boundary form ---------------------------------------------------------
-    sigs = {st['signature'] for pid in ok_paths for a in ('X', 'Y') for st in results[pid]['axes'][a]['steps']}
-    barriers = {json.dumps(results[pid]['axes'][a]['barrier']) for pid in ok_paths for a in ('X', 'Y')}
+    struct_paths = [pid for pid, r in results.items() if all(r['axes'][a].get('structure') == 'PASS' for a in ('X', 'Y'))]
+    sigs = {st['signature'] for pid in struct_paths for a in ('X', 'Y') for st in results[pid]['axes'][a]['steps']}
+    barriers = {json.dumps(results[pid]['axes'][a]['barrier']) for pid in struct_paths for a in ('X', 'Y')}
     anc_digests = {m['ancilla_D_region_digest'] for pid in ok_paths for m in results[pid]['axes']['X']['markers']}
     all_segs = {w: [arrays[pid][w]['segs'][s] for pid in ok_paths for s in range(results[pid]['q'])] for w in range(n)}
     S = {w: lcs_len([h for h, _, _ in all_segs[w]]) for w in range(n)}
@@ -883,7 +896,9 @@ def summarize():
               suffix_covers_last_two_D_blocks_all_wires=all(c['covers_second_last_block'] for c in cover.values()),
               system_end_edge_identical=all(ends_equal.values()),
               suffix_covers_all_D_blocks_all_wires_informational=all(c['covers_first_block'] for c in cover.values()))
-    P3['status'] = 'PASS' if all(v for k, v in P3.items() if not k.endswith('informational')) else 'FAIL'
+    P3['status'] = ('UNKNOWN_NO_SEGMENTED_PATH' if not ok_paths else
+                    'PASS' if all(v for k, v in P3.items() if not k.endswith('informational')) else 'FAIL')
+    P3['uncompiled_part_paths'] = len(struct_paths)
     # P6 tables: segments and bodies ----------------------------------------------------------
     seg_rows = []
     decomposition = {}
@@ -976,12 +991,13 @@ def summarize():
             else:
                 t1, margin, cls = None, None, 'UNKNOWN_RELATION'
             p5_rows.append(dict(m=int(m), axis=axis, T=str(Tm), theta1=t1, margin=margin, final_run=cls))
-    xy_ok = all(results[pid]['xy']['compiled_equal_except_final_run'] for pid in ok_paths)
+    xy_flags = [results[pid]['xy']['compiled_equal_except_final_run'] for pid in results]
+    xy_ok = (None if any(f is None for f in xy_flags) or not xy_flags else all(xy_flags))
     wrapper_ok = all(results[pid]['axes'][a]['wrapper_input']['p_equals_minus_scalar_T']
                      and results[pid]['axes'][a]['wrapper_input']['synthesized_matches_compiled']
                      for pid in results for a in ('X', 'Y'))
     sdg_ok = all(results[pid]['xy']['uncompiled_only_sdg_differs'] for pid in results)
-    P5 = dict(status='PASS' if xy_ok and sdg_ok and wrapper_ok and all(v['status'] == 'PASS' for v in relation.values())
+    P5 = dict(status='PASS' if xy_ok is True and sdg_ok and wrapper_ok and all(v['status'] == 'PASS' for v in relation.values())
               and all(r['final_run'] == 'MARGIN_OK' for r in p5_rows) else 'FAIL_OR_UNKNOWN',
               compiled_X_equals_Y_except_final_run=xy_ok,
               uncompiled_X_Y_differ_only_by_sdg=sdg_ok,
@@ -1033,11 +1049,13 @@ def summarize():
     (RUN / 'EDGES.json').write_text(json.dumps(edges, indent=1) + '\n')
     P1 = 'PASS' if all(r['axes'][a].get('P1') == 'PASS' for r in results.values() for a in ('X', 'Y')) and not stops else 'FAIL_OR_STOP'
     P2 = 'PASS' if len(ok_paths) == len(data['paths']) and all(t['events_equal_R'] for t in table) else 'FAIL'
-    P6 = 'PASS' if all(d['exact'] for d in decomposition.values()) and len(decomposition) == len(data['paths']) else 'FAIL'
+    P6 = ('UNKNOWN_NO_SEGMENTED_PATH' if not decomposition else
+          'PASS' if all(d['exact'] for d in decomposition.values()) and len(decomposition) == len(data['paths']) else 'FAIL')
     result = dict(schema='A_PAULI_LD2_STEP_AUDIT_RESULT_V1', P1=P1, P2=P2, P3=P3, P4=P4, P5=P5,
                   P6=dict(status=P6, decomposition=decomposition, segments=len(seg_rows)),
                   stops=stops, paths_passing_P2=len(ok_paths), paths=len(data['paths']),
                   products_total=sum(t['products'] for t in table),
+                  identity_pair_rule=S0R1_IDENTITY_PAIRS,
                   compiles=0, sampling=0, builds=0, fits=0, price_predictions=0, private_writes=0)
     (RUN / 'AUDIT_RESULT.json').write_text(json.dumps(result, indent=1, default=str) + '\n')
     print(json.dumps(dict(P1=P1, P2=P2, P3=P3['status'], P4=P4['status'], P5=P5['status'], P6=P6,

@@ -69,7 +69,7 @@ def d_block(qc, angles, gp, rzz=None, basis=0.5):
     qc.ry(-basis, 2)
 
 
-def step(qc, events, product=None):
+def step(qc, events, product=None, near_zero=False):
     for ang in (0.11, 0.22, 0.33):
         qc.ry(ang, 0)
         qc.cx(0, 1)
@@ -81,16 +81,16 @@ def step(qc, events, product=None):
     if product is not None:
         qc.cz(ANC, product)
     qc.p(0.0, ANC)
-    d_block(qc, (0.31, 0.32, 0.33), 0.07, rzz=(0, 1, 0.41), basis=0.6)
+    d_block(qc, (0.31, 8.673617379884035e-19 if near_zero else 0.32, 0.33), 0.07, rzz=(0, 1, 0.41), basis=0.6)
     d_block(qc, (0.21, 0.22, 0.23), 0.05, rzz=(1, 2, 0.42), basis=0.7)
     d_block(qc, (0.11, 0.12, 0.13), 0.03, basis=0.5)
 
 
-def wrapper(steps, T, axis, product_step=None):
+def wrapper(steps, T, axis, product_step=None, near_zero=False):
     qc = QuantumCircuit(N_SYS + 1, 1)
     qc.h(ANC)
     for s, events in enumerate(steps):
-        step(qc, events, product=1 if product_step == s else None)
+        step(qc, events, product=1 if product_step == s else None, near_zero=near_zero)
     qc.p(-SCALAR * T, ANC)
     if axis == 'Y':
         qc.sdg(ANC)
@@ -137,6 +137,24 @@ def toy_compile(wr):
             getattr(out, name)(*([float(p) for p in pa] + list(qb)))
         else:
             raise ValueError(name)
+    return qiskit_like_identity_removal(out)
+
+
+def qiskit_like_identity_removal(qc):
+    """Toy stand-in for Qiskit 1.3.0: drop rz with |angle| < 1e-12, then cancel adjacent identical cx."""
+    keep = [i for i in qc.data if not (i.operation.name == 'rz' and abs(float(i.operation.params[0])) < 1e-12)]
+    changed = True
+    while changed:
+        changed = False
+        for k in range(len(keep) - 1):
+            a, b = keep[k], keep[k + 1]
+            if a.operation.name == 'cx' and b.operation.name == 'cx' and a.qubits == b.qubits:
+                del keep[k:k + 2]
+                changed = True
+                break
+    out = QuantumCircuit(N_SYS + 1, 1)
+    for i in keep:
+        out.append(i.operation, i.qubits, i.clbits)
     return out
 
 
@@ -175,14 +193,15 @@ def metrics_of(qc):
 class Fixture:
     """Writes toy QPY + cache JSON into a temp tree and an INPUTS.json bound to them."""
 
-    def __init__(self, tmp, mutate=None, product=False):
+    def __init__(self, tmp, mutate=None, product=False, near_zero=False):
         self.tmp = Path(tmp)
         self.paths = []
         for pid, (kind, q, R, T, steps, composed) in PATHS.items():
             rec = dict(path_id=pid, kind=kind, cell=pid.split('/')[0], index=int(pid[-1]), m=None, q=q, R=R,
                        T_hex=float(T).hex(), physical_id='TOY:' + pid, cohort='TOY', composed_of=composed, axes={})
             for axis in ('X', 'Y'):
-                wr = wrapper([EV[s] for s in steps], T, axis, product_step=0 if (product and pid == 'S66/p0') else None)
+                wr = wrapper([EV[s] for s in steps], T, axis, product_step=0 if (product and pid == 'S66/p0') else None,
+                             near_zero=near_zero)
                 cp = toy_compile(wr)
                 if mutate:
                     cp = mutate(pid, axis, cp) or cp
@@ -413,6 +432,37 @@ class StepAuditTests(unittest.TestCase):
         self.assertEqual(len({s['signature'] for s in st['steps']}), 1)
         with self.assertRaises(A.StructureFail):
             A.uncompiled_structure(wr, 2)
+
+
+class RevisionS0R1Tests(unittest.TestCase):
+    """Regression for the run01 failure (near-zero D pair removed by the compiler) and the S0-r1 fix."""
+
+    def tearDown(self):
+        A.S0R1_IDENTITY_PAIRS = True
+
+    def test_13_frozen_rule_reproduces_run01_failure(self):
+        A.S0R1_IDENTITY_PAIRS = False
+        _, result, _, _, paths = run_fixture(near_zero=True)
+        self.assertEqual(result['P2'], 'FAIL')
+        msg = paths['PATH_Q8R66_p0.json']['axes']['X']['P2']
+        self.assertTrue(msg.startswith('FAIL:ANCILLA_CX_ALIGNMENT'), msg)
+        # deficit is exactly 2 CX per step (one identity pair per step in the toy)
+        got, exp = msg.split(':')[-1].split('vs')
+        self.assertEqual(int(exp) - int(got), 2 * 3)
+        # statuses are not vacuous when no path is segmented
+        self.assertEqual(result['P3']['status'], 'UNKNOWN_NO_SEGMENTED_PATH')
+        self.assertEqual(result['P6']['status'], 'UNKNOWN_NO_SEGMENTED_PATH')
+        self.assertTrue(result['P5']['compiled_X_equals_Y_except_final_run'])   # computed without P2
+
+    def test_14_revised_rule_passes_and_counts_identity_pairs(self):
+        A.S0R1_IDENTITY_PAIRS = True
+        _, result, _, _, paths = run_fixture(near_zero=True)
+        self.assertEqual(result['P2'], 'PASS')
+        self.assertEqual(result['P3']['status'], 'PASS', result['P3'])
+        self.assertEqual(result['P4']['status'], 'PASS_EXACT')
+        self.assertEqual(result['P6']['status'], 'PASS')
+        steps = paths['PATH_Q8R66_p0.json']['axes']['X']['steps']
+        self.assertEqual([st['identity_pairs'] for st in steps], [1, 1, 1])
 
 
 if __name__ == '__main__':
