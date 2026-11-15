@@ -2,6 +2,8 @@
 
 [H4方式別RPEコスト最適化の最初の実装](docs/research/rpe_method_optimizer_h4_20261116/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md)：`scripts/run_rpe_method_optimizer.py`＋`src/trottertracks/rpe_method_optimizer.py`、入力`configs/rpe_method_optimizer/h4_df10_problem.json`。Cの集計を再構築して方式別最安点を再現し、round別X/Y配分の有限探索で次のQ3要求と不足（信号・価格・configuration）を出力。p7/Full PF S2は4shot点から自力でm12=2へ。新規科学計算0・STOP。
 
+[p7粗幅Yoshida4の価格接続と最安更新](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。
+
 [Pauli LD5の2適合配分を比較へ追加](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：PR-Pauli LD5のFULL_PF__B_PRICEとVPをQ3適合点として追加し、Pauliの保存集合内最安をLD5 FULL_PF__B_PRICE・3792207339/7 RZ（541,743,905.57）へ更新。VPは6105690627/7 RZ（872,241,518.14）。LD3同名配分は別候補として維持。最安点のLD3との差−222210893/1155 RZ（−192,390.38）は採用モデル価格規則での数値差。全26軸MODEL・qualified_for_candidate=false。旧47点不変、固定19入力49点（適合34/不適合13/価格待ち2）、回帰11 PASS、新科学call0、公開後STOP。
 
 [LD9 m6直接価格とLD7 PF予算配分の追記](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：LD9 V0の同じ1配分にm6 X/Yの直接有限平均492573 RZ/shotを追記。LD7別cohortの4path平均393837.25との差+98735.75を保存転記、元16軸receiptを照合。LD9のQ3適合・全13round費用nullを維持。未反映LD7 PF予算4配分は全てモデル不適合として追加。PR-DF保存集合内最安はLD7 A_SHAPE・155652932221/126 RZ（約1,235,340,731.912698）のまま。固定18入力47点（適合32/不適合13/価格待ち2）、回帰10 PASS、新科学call0、公開後STOP。

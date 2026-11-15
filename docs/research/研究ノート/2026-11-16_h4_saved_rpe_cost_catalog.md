@@ -49,3 +49,9 @@ LD9 V0の同じ1配分にm6 X/Yの直接有限平均492573 RZ/shotを追記。LD
 PR-Pauli LD5のFULL_PF__B_PRICEとVPをQ3適合点として追加し、Pauliの保存集合内最安をLD5 FULL_PF__B_PRICE・3792207339/7 RZ（541,743,905.57）へ更新。VPは6105690627/7 RZ（872,241,518.14）。LD3同名配分は別候補として維持。最安点のLD3との差−222210893/1155 RZ（−192,390.38）は採用モデル価格規則での数値差。全26軸MODEL・qualified_for_candidate=false。旧47点不変、固定19入力49点（適合34/不適合13/価格待ち2）、回帰11 PASS、新科学call0、公開後STOP。
 
 exact MSE・価格・分割間の数値差のSOURCEは[現行HANDOFF](../h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)に記載。
+
+## p7粗幅Yoshida4 A_SHAPEへ26価格を接続
+
+p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。
+
+SOURCE、早期実幅、部分額・異なる2割合、当時のPR予算保全は[現行HANDOFF](../h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)へ記載。
