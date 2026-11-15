@@ -1,0 +1,463 @@
+{
+  "schema": "PR_DF_LD1_M9_X_LOWER_BOUND_SOURCE_ASSESSMENT_V1",
+  "status": "UNKNOWN_NONTRIVIAL_LOWER_BOUND_NOT_PROVED",
+  "base_commit": "85dab58d6d29d54502a7650c129bc38a9bb5ec99",
+  "branch": "codex/d2-pr-df-ld1-m3-acquisition-20261115",
+  "target": {
+    "system": "H4",
+    "geometry": "linear_1Angstrom",
+    "basis": "STO-3G",
+    "rank_policy": "tol_only_1e-8",
+    "saved_rank": 10,
+    "method": "PR_DF",
+    "LD": 1,
+    "formula": "S2",
+    "delta": 0.1,
+    "K": 2,
+    "m": 9,
+    "axis": "X",
+    "axis_provider": "cosine",
+    "physical_id": "06a78c7f9856f373336f",
+    "T": 51.2,
+    "q": 512,
+    "R_outer": 1020,
+    "N": 25,
+    "target_law": "SAVED_SOURCE_IDEAL_FINITE_RTE_LAW_I",
+    "P": 0
+  },
+  "profile": {
+    "wrapper": "MEASURED_FULL_CONTROLLED_HADAMARD",
+    "control": "symmetric_directional",
+    "scalar": "c+s_R once at total T",
+    "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+    "qiskit": "1.3.0",
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "backend": null,
+    "coupling_map": null,
+    "additional_layout": null
+  },
+  "inputs": {
+    "identity": {
+      "commit": "950577f416c17a20d309a8053a4bb016027b724d",
+      "path": "docs/research/d_pr_df_ld1_ec_plan_20261115/AXIS_EVIDENCE.json",
+      "selector": [
+        "rows",
+        18
+      ]
+    },
+    "Q3": {
+      "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+      "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+      "selector": [
+        "candidates",
+        0,
+        "rows",
+        18
+      ]
+    },
+    "saved_structural": {
+      "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+      "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+      "selector": [
+        "values",
+        18
+      ]
+    },
+    "existing_envelopes": {
+      "commit": "dcf905fc5c0abb05966019bcae8b0206af9aa952",
+      "path": "docs/research/d_pr_df_ld1_f0_rz_range_20261115/RANGE_EVIDENCE.json",
+      "selector": [
+        "rows",
+        18
+      ]
+    },
+    "prior_proposal": {
+      "commit": "8dc41b354860432eeb1f18a05fa9c3f21a505679",
+      "path": "docs/research/d_pr_df_ld2_saved_price_assessment_20261115/NEXT_ONE_TASK.json",
+      "selector": []
+    },
+    "local_P0": {
+      "commit": "442cafa14f75aeee9e04696df54aaaff1f53260e",
+      "path": "docs/research/d_controlled_zz_p0_20261113/REPORT.md",
+      "selector": []
+    },
+    "PF": {
+      "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+      "path": "docs/research/pf6_allround_cost_20261115/RESULT.json",
+      "selector": []
+    }
+  },
+  "saved_structural_value_not_recomputed": {
+    "mean_S": 108641024.20905557,
+    "numerical_enclosure": [
+      108641024.0948432,
+      108641024.3358428
+    ],
+    "status": "K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE",
+    "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+    "compiler_residual": null,
+    "note": "Central value is not a lower endpoint; any future E[S]+b lower enclosure must preserve the accepted numerical-enclosure contract."
+  },
+  "saved_loose_envelopes_not_recomputed": {
+    "C_lower": 0,
+    "C_upper": 4017208848,
+    "S_lower": 0,
+    "S_upper": 1088759301,
+    "direct_residual_lower": null,
+    "separate_envelope_residual_interval": {
+      "lower": -1088759301,
+      "upper": 4017208848
+    }
+  },
+  "priority_reference_only": {
+    "source": {
+      "commit": "85dab58d6d29d54502a7650c129bc38a9bb5ec99",
+      "path": "docs/research/d_pr_df_ld1_reference_budget_20261115/run01/RESULT.json",
+      "selector": [
+        "rows",
+        18
+      ]
+    },
+    "saved_weighted_display_RZ": "2828507555.268906326",
+    "used_as_bound": false,
+    "recomputed": false
+  },
+  "sources": {
+    "Accounting": {
+      "commit": "8457c443554af5fadaa3ba36f97f6316ca3c5050",
+      "path": "src/trottertracks/h4_df10_price_v1.py",
+      "selector": [],
+      "git_blob": "c361e1b62ae7b9fe32ef90709c70f71834e50647",
+      "ranges": [
+        [
+          26,
+          49
+        ],
+        [
+          51,
+          112
+        ],
+        [
+          114,
+          145
+        ],
+        [
+          167,
+          229
+        ]
+      ]
+    },
+    "Compose": {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "scripts/h46_long_time_native.py",
+      "selector": [],
+      "git_blob": "226b1d96fcebddb4e906261d6041243c407af56d",
+      "ranges": [
+        [
+          38,
+          67
+        ]
+      ]
+    },
+    "Schedule": {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "src/trotterlib/h46_m5_plan.py",
+      "selector": [],
+      "git_blob": "0f7bb7084f9cb1269acf32084fcfa814fb09b759",
+      "ranges": []
+    },
+    "EventLabels": {
+      "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+      "path": "src/trotterlib/rte.py",
+      "selector": [],
+      "git_blob": "53601b7c524653f5e1966b3955b9f51373e54002",
+      "ranges": [
+        [
+          1594,
+          1659
+        ]
+      ]
+    },
+    "LegacyBuilder": {
+      "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+      "path": "src/trotterlib/df_rte_qiskit.py",
+      "selector": [],
+      "git_blob": "da3c7c68e6ee66e28a599a28fe087b4c272e8504",
+      "ranges": [
+        [
+          193,
+          212
+        ],
+        [
+          244,
+          351
+        ],
+        [
+          470,
+          502
+        ]
+      ]
+    },
+    "NativeBuilder": {
+      "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py",
+      "selector": [],
+      "git_blob": "d0a36e3b5a67525ec534a514907ea4cc10f7c98a",
+      "ranges": [
+        [
+          94,
+          123
+        ],
+        [
+          169,
+          205
+        ],
+        [
+          259,
+          283
+        ]
+      ]
+    },
+    "CompilerCall": {
+      "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+      "path": "src/trotterlib/rte_compiled_cost.py",
+      "selector": [],
+      "git_blob": "f081f6f1053e7769e47d6deaa435980df67c62e0",
+      "ranges": [
+        [
+          843,
+          893
+        ]
+      ]
+    },
+    "Context": {
+      "commit": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+      "path": "src/trottertracks/r_price_phase1_science.py",
+      "selector": [],
+      "git_blob": "6a3f718ff3e228523f47ac7b3ee1d9d96c605a37",
+      "ranges": []
+    },
+    "FastPath": {
+      "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+      "path": "src/trottertracks/compiled_price_fast.py",
+      "selector": [],
+      "git_blob": "6c3d7be50092a62a5f9700d0f6fd5a7d14edc91a",
+      "ranges": [
+        [
+          43,
+          71
+        ],
+        [
+          111,
+          159
+        ]
+      ]
+    },
+    "NewZZ": {
+      "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+      "path": "src/trottertracks/efficient_controlled_zz.py",
+      "selector": [],
+      "git_blob": "b068e4e0688ad9fca89caed67e173bdbd9855708",
+      "ranges": [
+        [
+          21,
+          43
+        ]
+      ]
+    }
+  },
+  "qiskit_release_commit": "896d1c8b72888a52a46081a6d1f4de8c56db8aea",
+  "qiskit_rust_sources": [
+    {
+      "repository": "Qiskit/qiskit",
+      "commit": "896d1c8b72888a52a46081a6d1f4de8c56db8aea",
+      "path": "crates/accelerate/src/euler_one_qubit_decomposer.rs",
+      "ranges": [
+        [
+          45,
+          45
+        ],
+        [
+          277,
+          346
+        ],
+        [
+          543,
+          574
+        ],
+        [
+          1083,
+          1083
+        ],
+        [
+          1179,
+          1241
+        ]
+      ],
+      "sha256": "15d9f65eaf6de4f8e569c661db2df9c0e1115eea9e4788a863a9a86dc01d8ce6",
+      "url": "https://github.com/Qiskit/qiskit/blob/896d1c8b72888a52a46081a6d1f4de8c56db8aea/crates/accelerate/src/euler_one_qubit_decomposer.rs"
+    },
+    {
+      "repository": "Qiskit/qiskit",
+      "commit": "896d1c8b72888a52a46081a6d1f4de8c56db8aea",
+      "path": "crates/accelerate/src/inverse_cancellation.rs",
+      "ranges": [
+        [
+          42,
+          105
+        ],
+        [
+          106,
+          160
+        ]
+      ],
+      "sha256": "b1867ec8a53586c67e20a5ca087b8941277c2dfb8b5ef30fbaf01fa648bda31d",
+      "url": "https://github.com/Qiskit/qiskit/blob/896d1c8b72888a52a46081a6d1f4de8c56db8aea/crates/accelerate/src/inverse_cancellation.rs"
+    },
+    {
+      "repository": "Qiskit/qiskit",
+      "commit": "896d1c8b72888a52a46081a6d1f4de8c56db8aea",
+      "path": "crates/accelerate/src/basis/basis_translator/basis_search.rs",
+      "ranges": [
+        [
+          96,
+          153
+        ]
+      ],
+      "sha256": "98fd482df2cbd93b785bf0d050b4e4c9529fad17a4bd6a4956827c0eebaf1d0a",
+      "url": "https://github.com/Qiskit/qiskit/blob/896d1c8b72888a52a46081a6d1f4de8c56db8aea/crates/accelerate/src/basis/basis_translator/basis_search.rs"
+    }
+  ],
+  "qiskit_installed_python_checks": [
+    {
+      "path": "qiskit/transpiler/preset_passmanagers/level1.py",
+      "sha256": "d79386f1acfa25e70cfb70a3c8536022b4cbf075bfda1885466a19be9bbc73f9",
+      "installed_path": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/transpiler/preset_passmanagers/level1.py"
+    },
+    {
+      "path": "qiskit/transpiler/preset_passmanagers/builtin_plugins.py",
+      "sha256": "1fde1fb2188f380f1cf8cd167e4bd5dcb9a376045b41859b8bbc8ff0f813974f",
+      "installed_path": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/transpiler/preset_passmanagers/builtin_plugins.py"
+    },
+    {
+      "path": "qiskit/transpiler/preset_passmanagers/common.py",
+      "sha256": "ff2d000726bae3ba1311b97cb3c11c9d7afc6c89d8573b4dec10a70798858d19",
+      "installed_path": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/transpiler/preset_passmanagers/common.py"
+    },
+    {
+      "path": "qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py",
+      "sha256": "50cae371407971b1c2bae493a7a900f3aeb820157547b5b02c159a2a3fcf8c7b",
+      "installed_path": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/lib/python3.12/site-packages/qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py"
+    }
+  ],
+  "law_source_blob_alignment": {
+    "declared_source": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+    "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+    "path": "src/trotterlib/rte.py",
+    "same_blob": "53601b7c524653f5e1966b3955b9f51373e54002",
+    "target_changed_to_PCG64": false
+  },
+  "proof_attempt": {
+    "scope": "All positive-support legal words of the saved ideal law at m9-X; no observed-path or order0 restriction. Fixed successful compiler function is assumed, failures are not zero-priced.",
+    "sufficient_routes": [
+      "h(omega)<=C(omega) pointwise and evaluate E_I[h]",
+      "C(omega)-S(omega)>=b pointwise and use accepted E_I[S] enclosure lower endpoint plus b"
+    ],
+    "direct_h": null,
+    "uniform_residual_b": null,
+    "obstruction_codes": [
+      "S_IS_LITERAL_ZFOLD_NOT_COMPILER_OPTIMIZED",
+      "WIRE_LOCAL_PARTIAL_BASIS_CANCELLATION",
+      "ZSXX_RESYNTHESIS_MOD2PI_AND_ANGLE_THRESHOLD",
+      "INVERSE_CX_REMOVAL_OPENS_NEW_1Q_RUNS",
+      "OPTIMIZATION_FIXED_POINT_CROSSES_EVENT_OUTER_WRAPPER_BOUNDARIES",
+      "NO_SURVIVING_RZ_OR_POTENTIAL_INVARIANT"
+    ],
+    "nonexistence_proved": false,
+    "m9_counterexample_generated": false,
+    "observed_minimum_used": false,
+    "P0_local_minus140_promoted_to_uniform_b": false,
+    "model_used_as_bound": false,
+    "F0_difference_bound_used_as_residual_mean": false
+  },
+  "lower_bound_result": {
+    "new_informative_ell": null,
+    "new_weighted_25ell": null,
+    "reused_trivial_pointwise_C_lower": 0,
+    "reused_trivial_expectation_lower": 0,
+    "trivial_25ell": null,
+    "trivial_weighted_not_newly_evaluated": true,
+    "qualification": "No nontrivial lower observable/residual lemma established; numerical evaluation gate not reached."
+  },
+  "PF_comparisons": [
+    {
+      "label": "B0I p7 S2",
+      "T_PF_RZ": 593555352,
+      "decision": "UNDECIDED",
+      "rule_strict": "25ell > 593555352 => this PF strictly cheaper than fixed LD1 allocation",
+      "rule_equal": "25ell = 593555352 => LD1 does not undercut this PF; no equality of actual totals asserted",
+      "rule_below": "25ell below threshold or unknown => undecided"
+    },
+    {
+      "label": "Full PF S2",
+      "T_PF_RZ": 838693580,
+      "decision": "UNDECIDED",
+      "rule_strict": "25ell > 838693580 => both PF benchmarks strictly cheaper than fixed LD1 allocation",
+      "rule_equal": "25ell = 838693580 => LD1 does not undercut Full PF; no equality of actual totals asserted",
+      "rule_below": "25ell below threshold or unknown => undecided"
+    }
+  ],
+  "duplication_delta": {
+    "prior_check_commit": "8dc41b354860432eeb1f18a05fa9c3f21a505679",
+    "latest_prior_publication": "d8f04ce26e3b0584842cf56be7890fce20ec4acc",
+    "git_fetch_completed": true,
+    "checked_refs": {
+      "codex/d2-pr-df-ld1-m3-acquisition-20261115": "85dab58d6d29d54502a7650c129bc38a9bb5ec99",
+      "codex/d2-pr-df-ld2-saved-price-assessment-20261115": "d8f04ce26e3b0584842cf56be7890fce20ec4acc",
+      "codex/m5-m4-receipt-admission-20261114": "a1aa38df46c92e2489095891f6082a5be1a277f5",
+      "codex/d-full-h-p2-caller-prep-20261114": "06956c64380107392f1b24fe54b9273f0f5ae1c0",
+      "codex/d-compiled-residual-c-minus-s-20261113": "26d4f23e79e91385087669d4ee091632efa0c87c",
+      "codex/b2-pf6-allround-cost-20261115": "a7eceecba5f1d2172682a4e5cc6f1573568debd0",
+      "codex/research-roadmap-integration-20261114": "ad6ab45bbcc7139bf499760d28efad794e4eae9b",
+      "codex/rpe-total-dp-acceleration-20261114": "7f27e18f06dde12127c85be898777b685d29bacc",
+      "codex/a-pauli-ld2-expected-price-plan-20261115": "8fbda2ef0f51ea7c31fce5b59f8f0f8fff891f0b"
+    },
+    "same_scope_completed_proof_identified": false,
+    "same_named_local_jobs": [],
+    "new_output_absent_before_start": true,
+    "delta_notes": [
+      "LD2 receipt republication is an excluded legacy candidate, not an m9-X lower bound.",
+      "C Full-H F1, B2 Pauli reference total, B PF joint-width plan and A Pauli S0 preparation are different scopes."
+    ],
+    "absence_scope": "Accessible relevant refs/history and named local jobs only; no global absence claim."
+  },
+  "next_missing_evidence": "One cancellation-aware lower-observable or potential-invariant proof for this fixed word grammar and complete opt1 fixed-point route, including numerical threshold cases. No further numerical run adopted.",
+  "source_proof_attempts": 1,
+  "nontrivial_proofs_completed": 0,
+  "new_axis_lower_bound_evaluations": 0,
+  "new_weighted_partial_evaluations": 0,
+  "new_paths": 0,
+  "H4_builds": 0,
+  "compiles": 0,
+  "refit": 0,
+  "Q3": 0,
+  "F0_reruns": 0,
+  "S_recomputations": 0,
+  "CI": null,
+  "E_C": null,
+  "G": null,
+  "winner": null,
+  "Y_m12_LD2_expansion": false,
+  "full_wrapper_statevector_validation_performed": false,
+  "old_sources_raw_models_holdout_STOP_preserved": true,
+  "roadmap_body_changed": false,
+  "independent_review": false,
+  "mandatory_stop": true
+}
