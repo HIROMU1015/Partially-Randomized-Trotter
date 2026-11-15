@@ -87,13 +87,15 @@ def selection(rounds=(0,)):
     return chosen, selected
 
 
-def duplicate_check(rounds=(0,)):
+def duplicate_check(rounds=(0,), *, selected=None):
     """Scoped metadata delta, including aliases with different configuration names.
 
     A finding is held for source/axis review; it is never silently recompiled.
     No new science is called by this function.
     """
-    templates, selected = selection(rounds); scans = []; found = {r['physical_id']: [] for r in selected}
+    if selected is None: _, selected = selection(rounds)
+    else: selected = deepcopy(selected)  # Other fixed callers reuse this metadata audit only.
+    scans = []; found = {r['physical_id']: [] for r in selected}
     def physical(c): return tuple(c.get(k) for k in FIELDS)
     targets = {physical(r['physical_candidate']): r['physical_id'] for r in selected}
     for name in ('exploration_costs', 'extension_parallel_costs', 'confirmation_costs', 'fixed_delta_exploration_costs', 'reused_compiled_prices'):
@@ -253,7 +255,7 @@ def child(job_path):
             trial, facts, ok = original(native, ctx, row, cohort, **kw)
             required = {'low_control', 'high_control_leakage', 'independent_occupation_vector', 'Hadamard_cosine', 'Hadamard_sine', 'compiled_vector_cosine', 'compiled_vector_sine'}
             return trial, facts, ok and required <= {c['check'] for c in trial['checks']} and trial['cache_hits'] == 0
-        S._RUN.update(native=native, ctx=ctx, trial=checked, cohort=module.COHORT,
+        S._RUN.update(native=native, ctx=ctx, trial=checked, cohort=job.get('cohort',module.COHORT),
                       compile=native.compile_cached, kw=dict(expected_tail_scalar=job['tail_scalar']) if route == 'TRUNCATED_PF' else {})
         result['results'], result['resources'] = processes(job['cells'], Path(job['private']), job['workers'])
         result['context_gate'] = dict(scalar=scalar, scalar_hex=scalar.hex(), preparation_hash=prep.preparation_hash, fragment_order=list(prep.deterministic_fragment_indices))
