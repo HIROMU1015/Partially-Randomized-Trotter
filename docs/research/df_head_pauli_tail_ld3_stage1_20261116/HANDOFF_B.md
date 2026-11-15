@@ -85,4 +85,12 @@ event数の減少（0.157倍）は、このうちtail側の負荷だけを示す
 | 次の判断 | LD3の段階2（13 roundの信号、compile 0）を許可するか |
 | 依存関係 | A：段階2の信号 → B：total viewと同じVPでのQ3 → A：段階3の価格 → B：配分の探索 |
 
+## 追記（2026-11-16、段階2）：13 round信号packet
+
+- **MEAN_HANDOFF**：commit `cdbce383f9944b7f9da1cbbd7851406dbbaae88a`、`docs/research/df_head_pauli_tail_ld3_signals_20261116/MEAN_HANDOFF.json`
+  - 13/13 roundで局所gateがPASS。
+  - 各rowの生recordは `26bac4f32` の `run01/LD3_m{m}.json`。
+- 取り込み方とB intakeで変える1点（辞書identityのhelper）は、[段階2のHANDOFF_B](../df_head_pauli_tail_ld3_signals_20261116/HANDOFF_B.md) を参照。
+- 上の「次の段階へのつなぎ方」の1は完了した。2（同じVPでのQ3）はBの番である。
+
 **mandatory STOP。**
