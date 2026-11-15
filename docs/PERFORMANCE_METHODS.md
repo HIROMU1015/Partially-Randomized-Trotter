@@ -9,3 +9,9 @@ coreのfingerprint context全体（wrapper内部を含む）へ適用。独立pa
 [準備/検証](research/d_pauli_ld2_m9_longpoint_results_20261115/SOURCE_PREPARATION.md)、
 [4 test](research/d_pauli_ld2_m9_longpoint_results_20261115/TESTS.txt)。toy同等性とreceiptまで確認。
 実m9の所要時間・speedupは取得前未測定。Python3.11.0rc1の非同期定期frame dumpは使わない。
+
+m9の保存raw公開照合は [publish_pauli_ld2_m9.py](../scripts/publish_pauli_ld2_m9.py) で
+2 pathを2 processに分け、元receipt検査後のprices/scalarだけを親へ戻す。
+実行中SOURCEを変更せず、raw SHA・axis/SOURCE/seed/metrics・exact集約を保持する。
+[適用条件と残る逐次処理](research/d_pauli_ld2_m9_longpoint_results_20261115/PUBLICATION_ACCELERATION.md)、
+[人工2 test](research/d_pauli_ld2_m9_longpoint_results_20261115/PUBLICATION_TESTS.txt)。
