@@ -71,7 +71,7 @@ m12の2軸は所在不明だけではなく、同candidateの旧T2取得試行�
 | C1 2e6a0cdf、P1/P2 39ddd59e、LD1 E[S]/凍結/range | C1のH4はprefix1/R4,8/旧lowering、P2/ES/凍結/rangeもLD1。prefix2のS observable・head/tail・law・coefficientsとは一致しない。LD2の値・幅・補正として移さない |
 | df5e5c45の「LD2全round価格計画」 | **PR-Pauli LD2**の計画。configuration d7dd4f52…、Pauli辞書/ordered-product/phase/loweringが別。PR-DF LD2の1fa33556…とは別であり、そのCAL/holdout/m9等を採用しない |
 
-5 rawの固定commit/path/key・metadata候補・trial locatorと除外理由はRAW_CATALOG_CHECKへ保存した。公開rawに記載された元receipt locatorは追跡したが、非公開receipt本文を公開artifactへ複製する操作は自動承認レビューで拒否されたため、本文の複製は行っていない。採否の根拠は公開済み物理metadataで足り、非公開本文を新しい価格入力にしていない。
+5 rawの固定commit/path/key・metadata候補・trial locatorと除外理由はRAW_CATALOG_CHECKへ保存した。初回公開8dc41b35では自動承認レビューの拒否により非公開receipt本文を複製しなかった。その後、ユーザーの明示許可を受け、旧候補134088ad0d3333745e3aのtrial0本文1件を原本とbyte一致で公開した。[公開元receipt](excluded_receipts/134088ad0d3333745e3a/trial0/result.json)と[固定locator・出所・照合結果](RECEIPT_PUBLICATION.json)を参照。raw公開commitは `1d8c5110c83fc289460a077a99cf2dbef725a447`。実行codeのSHAはこのreceipt内に記録がなくnullとし、carrierや再公開SHAで代用しない。物理条件不一致による除外と26軸の欠測・PF順位未判定は変わらず、この本文を現LD2の価格入力にはしない。
 
 この結果は「現LD2と同じwrapperの価格が絶対に無い」ではなく、**同一候補への受入可能な価格を確認範囲で同定できない**という結論である。特定の旧価格は条件不一致で不採用、未列挙cache/archive/他serverは所在未確認として分ける。fingerprintだけから候補を逆算する新しい探索・H4 buildはしていない。
 

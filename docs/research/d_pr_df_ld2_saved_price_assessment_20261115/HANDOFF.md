@@ -16,7 +16,7 @@ original configurationは `1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9f
 - **有限作業を加えれば使える**：既存のLD2 prefix別Runtime・normal sampler・同path S/C取得部品、Cの4セル案（較正m0 q1/R1、m3 q8/R5、m6 q64/R40、別holdout m4 q16/R10）。LD2の構造平均又はfull Cモデルを独自に評価する必要があり、n・compile数は今回新採択していない。これだけで全law/長roundの資格は得ない。
 - **根拠不足**：全26軸の同候補直接価格、S/E[S]、期待残差、評価済みモデル、正当な片側bound。C1はprefix1・旧R/旧lowering、LD1 ES/モデル/rangeも別prefix。Pauli LD2は辞書・lowering・configuration d7dd4f52…が別で使わない。
 
-旧carrier155529e2の公開raw5台帳（481/1/39/203/22 record）をIDと物理tupleで照合し、一致は0。旧H4/PR/prefix2価格はあるが、例えばT.8/q4/R4と現m3のT.8/q8/R5、T1.6/q16/R4と現m4のT1.6/q16/R10は不一致だった。公開manifestと元trial locatorを保持する。非公開receipt本文の公開複製は自動承認レビューで拒否され、本文を複製せず公開metadataだけで除外理由を記録した。
+旧carrier155529e2の公開raw5台帳（481/1/39/203/22 record）をIDと物理tupleで照合し、一致は0。旧H4/PR/prefix2価格はあるが、例えばT.8/q4/R4と現m3のT.8/q8/R5、T1.6/q16/R4と現m4のT1.6/q16/R10は不一致だった。公開manifestと元trial locatorを保持する。初回8dc41b35では自動承認レビューの拒否により本文を複製しなかった。後続の明示許可で旧候補134088ad0d3333745e3a/trial0の原本1件をbyte一致で公開した。[receipt](excluded_receipts/134088ad0d3333745e3a/trial0/result.json)／[出所・照合](RECEIPT_PUBLICATION.json)、raw公開SHA `1d8c5110c83fc289460a077a99cf2dbef725a447`。元実行SOURCEはreceiptに記録がなくnull、公開SHAとは区別する。現m3とのq/R/Δ不一致により価格入力には不採用で、26軸・PF判断・次案に変更はない。新科学計算0。
 
 m12は752b9747のREQUEST/RESULT/WORKER_STOPで同physical f73c8ae1…を確認した。SOURCE8291f16c…はpreparation_contextのscalar照合でsampling前STOP、compile_logは空、価格はnull。e8273676の修正後runの取得実績はなく、旧T2を再実行しない。
 
