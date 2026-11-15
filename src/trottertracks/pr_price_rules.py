@@ -115,7 +115,8 @@ def point(row):
     normalized.pop('event_count')
     return dict(T=exact(t), q=q, R=r, step=exact(step), structure=st,
                 piece_pattern=normalized,
-                event_recipe=_event_recipe(row['law_binding']['definition']),
+                event_recipe=dict(binding=_event_recipe(row['law_binding']['definition']),
+                                  round_definition=_event_recipe(row.get('round_law_definition'))),
                 event_steps=[exact(step * frac(w) / n) for w, n in zip(weights, pieces)])
 
 

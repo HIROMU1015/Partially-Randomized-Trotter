@@ -141,6 +141,9 @@ class PriceRulesTests(unittest.TestCase):
         self.assertEqual(row['classification'],'NEEDS_PRICE_EVIDENCE')
         self.assertIn('event recipe',str(row['needs']))
         req=self.p.template('DF_LD2')
+        req['configuration']['rounds'][3]['round_law_definition']['source']['commit']='ARTIFICIAL_OTHER_SOURCE'
+        self.assertEqual(self.p.quote(req)['rows'][6]['classification'],'NEEDS_PRICE_EVIDENCE')
+        req=self.p.template('DF_LD2')
         req['configuration']['rounds'][3]['structure']['signed_weights']=[-1.0]
         self.assertEqual(self.p.quote(req)['rows'][6]['classification'],'NEEDS_PRICE_EVIDENCE')
 
