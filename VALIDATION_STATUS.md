@@ -1,5 +1,7 @@
 # Validation status
 
+[Full-H κ2 D7モデル固定](docs/research/full_h_d7_model_freeze_20261115/REPORT.md)：D7全5 cellの10較正record/18軸を受入、保留0。X/Y別rank3・等cell重みexact最小二乗の2モデルとm5/m6×X/Yの4予測をb5165f11bへ観測前固定。SOURCE f46fa120b。人工5＋既存回帰3＝8 PASS、公開JSONは元D1 frozen_model_gateで読取確認済み。CALIBRATED_UNVALIDATED/qualified=false、holdout開封/compile/E[C]/CI/N/G0、D1後続6compileは別指示、mandatory STOP。
+
 [PR-DF LD1 m4 holdoutのC受入](docs/research/pr_df_ld1_m4_holdout_admission_20261115/HANDOFF.md)：m4の保存軸別receipt8/8・記述的比較2/2をC候補/軸→凍結予測→D2比較→元receiptへ接続、保留0。比較DESCRIPTIVE_COMPLETE、モデルNOT_ASSESSED_NO_ADOPTED_TOLERANCE・許容差null、statevector未検証falseを維持。人工5＋回帰8＝13 PASS。新平均/誤差/予測/fit/compile/N/G0、公開照合後mandatory STOP。
 
 [LD1残差fitとm4予測固定](docs/research/pr_df_ld1_residual_freeze_20261115/REPORT.md)：保存P2 fresh m0/m6とD2 m3の24軸pairから6残差平均、X/Y別[1,q,qR] exact fitを2件実施。両軸rank3、保留0、m4予測2件を3cac53da1へ観測前固定。SOURCE d83737b6、人工5＋既存回帰3＝8 PASS。m4開封0、許容差/PASS・FAILなし、全law E[C]/CI/N/Gは未評価。D2独立m4取得・記述的比較待ち、mandatory STOP。

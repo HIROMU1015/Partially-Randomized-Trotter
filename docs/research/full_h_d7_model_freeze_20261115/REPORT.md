@@ -4,6 +4,8 @@
 
 正本：[run01/FROZEN_MODELS.json](run01/FROZEN_MODELS.json)の`models.X/Y`と`predictions`4行。[PREDICTIONS.csv](run01/PREDICTIONS.csv)は正本の転記。[INPUTS.json](INPUTS.json)は受入/元recordと18path-axisの固定locator、[PREOPEN_CHECK.json](PREOPEN_CHECK.json)は実行前、[PUBLICATION_PRECHECK.json](PUBLICATION_PRECHECK.json)は公開前metadata確認。
 
+固定結果commitは**`b5165f11bb63f9eb2a6bfe385ba75d8003b7e724`**。[HANDOFF_D1.md](HANDOFF_D1.md)にselectorと読取方法を示す。実際に公開済みJSONを元D1 metadata readerへ渡し、`FROZEN_METADATA_CHECKED_NOT_MODEL_QUALIFICATION`を確認した。[D1_READER_CHECK.json](D1_READER_CHECK.json)。この確認でfit/predict/holdout価格開封は行っていない。
+
 ## 固定SOURCE・重複確認
 
 科学実行SOURCEは**`f46fa120b4cddcaac3edcf21e3731a0d9020b2b8`**、`scripts/freeze_full_h_d7_models.py`。固定SOURCE/INPUTSをcommit後、fresh run01で2fit/4predictを一回だけ実行した。
