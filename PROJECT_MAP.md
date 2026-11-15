@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full PF/S2・16h/7・m12各1shot固定Q3と4/2/1比較](docs/research/full_pf_s2_m12_one_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/full_pf_s2_m12_one_results_20261116/HANDOFF.md)：新1callでモデル不適合（下界>τ、約1.85τ）、達成費用559,457,386 RZ（m12=2）を維持。他round固定・m12 X/Y同数≥1では2shotが最安の適合点。C向けjoinは7349f6f9b。最小N/物理保証/G_qualified未認定・STOP。
+
 [Full PF/S2・16h/7・m12各2shot固定Q3](docs/research/full_pf_s2_m12_two_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/full_pf_s2_m12_two_results_20261116/HANDOFF.md)：新1callでモデル適合（上界τの約94.6%）、Full PFの条件付き達成費用を615,304,502から559,457,386 RZへ更新（−55,847,116）。C向けjoinはa006b8e15。2点比較のみ、最小N/物理保証/G_qualified未認定・STOP。
 
 [p7/S2粗幅・m12各1shot固定Q3と4点比較](docs/research/p7_s2_m12_one_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/p7_s2_m12_one_results_20261116/HANDOFF.md)：新1callでモデル不適合（下界>τ）、達成費用395,962,678 RZを維持。他round固定・X/Y同数の4/3/2/1配分だけの結論、原API/資源保存・十分N/物理保証/G_qualified未認定・STOP。
