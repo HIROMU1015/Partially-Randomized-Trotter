@@ -1,0 +1,839 @@
+{
+ "schema": "A_PAULI_LD_SPLIT_CANDIDATES_V1",
+ "status": "METADATA_ONLY_NO_NEW_SCIENCE",
+ "definition": {
+  "L_D": "number of two-body DF fragments kept in the deterministic head, in saved fragment order; the one-body block is always in the head and is not counted",
+  "head": "one-body + fragments 0..L_D-1 (native S2: U(1b) U(f0).. [tail] ..D(f0) D(1b))",
+  "tail": "fragments L_D..9 with saved weighted-Hermitian completion, Jordan-Wigner, global-collected Pauli strings; identity extracted as s_R (scalar once at total T); RTE events from |c_j|/lambda_P, K=2",
+  "not_PR_DF": "PR-DF uses the same L_D count and head, but its tail events are DF-fragment components (DF basis + controlled ZZ/Z), lambda = lambda_R(DF); R schedules and prices differ"
+ },
+ "sources": {
+  "context_index": {
+   "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+   "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+  },
+  "p0_summary": {
+   "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+   "path": "docs/research/df_head_pauli_tail_p0_results_20261114/PREFIX_SUMMARY.csv"
+  },
+  "signals": {
+   "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+   "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json"
+  },
+  "q3_vp": {
+   "commit": "50be68b803a90fd893a1499ebce74e033225144d",
+   "path": "docs/research/pauli_q3_three_quarter_20261115/SUMMARY.json"
+  },
+  "q3_v0": {
+   "commit": "caf1417ef20d0a5ab2030a2d957ee4f09443be43",
+   "path": "docs/research/pauli_total_q3_accelerated_results_20261114/SUMMARY.json"
+  },
+  "realloc": {
+   "commit": "738df226232e539cc084dfad2aed2feae82f3073",
+   "path": "docs/research/pauli_ld2_reallocation_q3_results_20261115/SUMMARY.json"
+  },
+  "tref": {
+   "commit": "a7eceecba5f1d2172682a4e5cc6f1573568debd0",
+   "path": "docs/research/pauli_ld2_tref_20261115/RESULT.json"
+  },
+  "ld1_b0": {
+   "commit": "00f74f86d16cc6878e1d4c5977eb9abd9ce9c076",
+   "path": "docs/research/d_pauli_ld1_m0_pilot_results_20261114/run02/PRICES.json"
+  },
+  "ld2_w": {
+   "commit": "6c4709f85d0f28ce7c6957e9a70c85e378d8cad0",
+   "path": "docs/research/d_pauli_ld2_b1_w_results_20261115/run01/PRICES.json"
+  },
+  "s0_edges": {
+   "commit": "8fbda2ef0f51ea7c31fce5b59f8f0f8fff891f0b",
+   "path": "docs/research/a_pauli_ld2_step_audit_20261115/run02/EDGES.json"
+  },
+  "s0_stats": {
+   "commit": "8fbda2ef0f51ea7c31fce5b59f8f0f8fff891f0b",
+   "path": "docs/research/a_pauli_ld2_step_audit_20261115/run02/STEP_STATS.csv"
+  },
+  "s0p_stats": {
+   "commit": "2d3aa21f58864f186236bac677a232e61e31b26c",
+   "path": "docs/research/a_pauli_ld2_step_audit_20261115/s0plus_m9/run03/STEP_STATS_M9.csv"
+  },
+  "s0_blocks": {
+   "commit": "7be3bf24423295bb70422641247068c198e03c81",
+   "path": "docs/research/a_pauli_ld2_step_audit_20261115/run01/DIAGNOSTIC_P2.txt"
+  },
+  "prdf_plan": {
+   "commit": "f42f6e9b9",
+   "path": "docs/research/d_pr_df_ld_split_cost_plan_20261115/CANDIDATES.csv"
+  }
+ },
+ "rows": [
+  {
+   "L_D": 0,
+   "head": "one-body",
+   "tail": "fragments 0..9",
+   "head_fragment_blocks": 0,
+   "lambda_R_DF": null,
+   "scalar_s_R": null,
+   "lambda_R_source": null,
+   "lambda_P": null,
+   "dictionary_sha256": null,
+   "configuration_id": null,
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": null,
+   "R_m": null,
+   "signals": null,
+   "q3": [],
+   "direct_prices": [],
+   "model_reference_price": null,
+   "status": "ADAPTER_BOUNDARY_ONE_BODY_HEAD_ONLY",
+   "missing": [
+    "current signal context requires 1 <= prefix < rank",
+    "DF descriptor for L_D=0",
+    "then everything listed for L_D=3"
+   ]
+  },
+  {
+   "L_D": 1,
+   "head": "one-body + fragments 0..0",
+   "tail": "fragments 1..9",
+   "head_fragment_blocks": 1,
+   "lambda_R_DF": 2.8629570945298686,
+   "scalar_s_R": 0.4177175120626939,
+   "lambda_R_source": {
+    "index": {
+     "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+     "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+    },
+    "file": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json",
+    "sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+    "selector": [
+     "prefixes",
+     "1"
+    ]
+   },
+   "lambda_P": 3.3066052942233157,
+   "dictionary_sha256": "dbdde5a12791cd7b31b00d8ec6ae5074d56964b467389688163ece8bf186945c",
+   "configuration_id": "d905d2197d4b01df3074b3844c0f4a2b990c21b9c3e1a0e3b6ea13a488b1fd27",
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": {
+    "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+    "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+    "selector": [
+     "packets",
+     0,
+     "rounds"
+    ]
+   },
+   "R_m": [
+    3,
+    6,
+    11,
+    22,
+    43,
+    86,
+    171,
+    341,
+    681,
+    1361,
+    2722,
+    5443,
+    10885
+   ],
+   "signals": {
+    "rounds": 13,
+    "locator": {
+     "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+     "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+     "selector": [
+      "packets",
+      0
+     ]
+    },
+    "status": "S1_SAVED_13ROUND_PACKET_LOCAL_FINITE_MEANS"
+   },
+   "q3": [
+    {
+     "allocation": "V0 [64,60,56,52,47,43,38,34,30,25,21,17,12]",
+     "status": "CONDITIONAL_OPT_IN_TOTAL_MODEL_BOUND_SAVED",
+     "MSE_upper": "4.724621468973e-07",
+     "locator": {
+      "commit": "caf1417ef20d0a5ab2030a2d957ee4f09443be43",
+      "path": "docs/research/pauli_total_q3_accelerated_results_20261114/SUMMARY.json",
+      "selector": [
+       "cases",
+       0
+      ]
+     }
+    },
+    {
+     "allocation": "VP [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9]",
+     "allocation_id": "PAULI_LD1_USER_SCALE_3O4_01",
+     "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+     "MSE_upper": "6.207999522802494898227110E-7",
+     "locator": {
+      "commit": "50be68b803a90fd893a1499ebce74e033225144d",
+      "path": "docs/research/pauli_q3_three_quarter_20261115/SUMMARY.json",
+      "selector": [
+       "rows",
+       0
+      ]
+     }
+    }
+   ],
+   "direct_prices": [
+    {
+     "m": 0,
+     "axes": "X/Y",
+     "paths": 1,
+     "rz": [
+      1380,
+      1380
+     ],
+     "role": "WIRING_SINGLE_PATH",
+     "locator": {
+      "commit": "00f74f86d16cc6878e1d4c5977eb9abd9ce9c076",
+      "path": "docs/research/d_pauli_ld1_m0_pilot_results_20261114/run02/PRICES.json"
+     }
+    }
+   ],
+   "model_reference_price": null,
+   "status": "SAVED_CANDIDATE",
+   "missing": [
+    "LD1_OWN_26_AXIS_REFERENCE_PRICE_RULE (no LD1 calibration/model)",
+    "B allocation search + Q3 for LD1-own allocations (signals and VP Q3 are saved)"
+   ],
+   "nonidentity_terms": 184,
+   "events_m": [
+    3,
+    12,
+    44,
+    176,
+    688,
+    2752,
+    10944,
+    43648,
+    174336,
+    696832,
+    2787328,
+    11147264,
+    44584960
+   ],
+   "weighted_event_positions_VP": 1219206120
+  },
+  {
+   "L_D": 2,
+   "head": "one-body + fragments 0..1",
+   "tail": "fragments 2..9",
+   "head_fragment_blocks": 2,
+   "lambda_R_DF": 1.6030956277929231,
+   "scalar_s_R": 0.2223759094107018,
+   "lambda_R_source": {
+    "index": {
+     "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+     "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+    },
+    "file": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json",
+    "sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+    "selector": [
+     "prefixes",
+     "2"
+    ]
+   },
+   "lambda_P": 2.0550998769244275,
+   "dictionary_sha256": "dd986e52057aa01a330a83dd147316696dbae669dc8a51828ee2a54734016ea7",
+   "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": {
+    "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+    "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+    "selector": [
+     "packets",
+     1,
+     "rounds"
+    ]
+   },
+   "R_m": [
+    2,
+    3,
+    5,
+    9,
+    17,
+    33,
+    66,
+    132,
+    263,
+    526,
+    1052,
+    2103,
+    4205
+   ],
+   "signals": {
+    "rounds": 13,
+    "locator": {
+     "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+     "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+     "selector": [
+      "packets",
+      1
+     ]
+    },
+    "status": "S1_SAVED_13ROUND_PACKET_LOCAL_FINITE_MEANS"
+   },
+   "q3": [
+    {
+     "allocation": "V0 [64,60,56,52,47,43,38,34,30,25,21,17,12]",
+     "status": "CONDITIONAL_OPT_IN_TOTAL_MODEL_BOUND_SAVED",
+     "MSE_upper": "4.724153460851e-07",
+     "locator": {
+      "commit": "caf1417ef20d0a5ab2030a2d957ee4f09443be43",
+      "path": "docs/research/pauli_total_q3_accelerated_results_20261114/SUMMARY.json",
+      "selector": [
+       "cases",
+       1
+      ]
+     }
+    },
+    {
+     "allocation": "VP [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9]",
+     "allocation_id": "PAULI_LD2_USER_SCALE_3O4_01",
+     "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+     "MSE_upper": "6.207498269406694956690684E-7",
+     "locator": {
+      "commit": "50be68b803a90fd893a1499ebce74e033225144d",
+      "path": "docs/research/pauli_q3_three_quarter_20261115/SUMMARY.json",
+      "selector": [
+       "rows",
+       1
+      ]
+     }
+    },
+    {
+     "allocation": "FPN-B [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 7, 1, 1]",
+     "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+     "T_model": "600045823.850464",
+     "locator": {
+      "commit": "738df226232e539cc084dfad2aed2feae82f3073",
+      "path": "docs/research/pauli_ld2_reallocation_q3_results_20261115/SUMMARY.json"
+     }
+    },
+    {
+     "allocation": "OWN-B [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 5]",
+     "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+     "T_model": "2442845584.506423",
+     "locator": {
+      "commit": "738df226232e539cc084dfad2aed2feae82f3073",
+      "path": "docs/research/pauli_ld2_reallocation_q3_results_20261115/SUMMARY.json"
+     }
+    }
+   ],
+   "direct_prices": [
+    {
+     "m": 0,
+     "axes": "X/Y",
+     "paths": 1,
+     "rz": [
+      2236,
+      2236
+     ],
+     "role": "WIRING_SINGLE_PATH",
+     "locator": {
+      "commit": "6c4709f85d0f28ce7c6957e9a70c85e378d8cad0",
+      "path": "docs/research/d_pauli_ld2_b1_w_results_20261115/run01/PRICES.json"
+     }
+    },
+    {
+     "cells": "S66,S526,S4205,Q8R66,P2R66",
+     "compiles": 18,
+     "role": "CALIBRATION_NON_CONFIGURATION",
+     "locator": {
+      "commit": "5dac74959ed9ea49465d393fc792ef5b4727edba",
+      "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/C_HANDOFF.json"
+     }
+    },
+    {
+     "m": [
+      5,
+      6
+     ],
+     "paths": [
+      2,
+      1
+     ],
+     "compiles": 6,
+     "role": "INDEPENDENT_HOLDOUT_DESCRIPTIVE",
+     "locator": {
+      "commit": "705f59ea863e1b9fe90e023f1cb1057d00366b16",
+      "path": "docs/research/d_pauli_ld2_b1_holdout_results_20261115/COMPARISON.json"
+     }
+    },
+    {
+     "m": 9,
+     "paths": 2,
+     "compiles": 4,
+     "role": "INDEPENDENT_HOLDOUT_DESCRIPTIVE_C2",
+     "locator": {
+      "commit": "cb034e547c444ea67a4f4f90a8534c13f4db4451",
+      "path": "docs/research/d_pauli_ld2_m9_longpoint_results_20261115/HANDOFF.md"
+     }
+    }
+   ],
+   "model_reference_price": {
+    "T_ref_VP": "3378503016.524105",
+    "locator": {
+     "commit": "a7eceecba5f1d2172682a4e5cc6f1573568debd0",
+     "path": "docs/research/pauli_ld2_tref_20261115/RESULT.json"
+    },
+    "frozen_model": {
+     "commit": "b74e4e536392c2bbe94cd371436615fc56c0564f",
+     "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/run01/FROZEN_MODELS.json"
+    },
+    "structure": {
+     "decomposition": "RZ = 308 + 1900 q + sum(step bodies)",
+     "verified_q": "1,2,8,32,64 (13 paths), 512 (m9 path0)",
+     "locators": [
+      {
+       "commit": "8fbda2ef0f51ea7c31fce5b59f8f0f8fff891f0b",
+       "path": "docs/research/a_pauli_ld2_step_audit_20261115/run02/EDGES.json"
+      },
+      {
+       "commit": "2d3aa21f58864f186236bac677a232e61e31b26c",
+       "path": "docs/research/a_pauli_ld2_step_audit_20261115/s0plus_m9/REPORT_S0PLUS.md"
+      }
+     ]
+    },
+    "scope": "Diagnostic model reference; m10-m12 (q>=1024) are extrapolations; not E[C]"
+   },
+   "status": "SAVED_CANDIDATE",
+   "missing": [
+    "none for B allocation search (done: FPN-B fail, OWN-B pass at T=2.4428e9)",
+    "m10-m12 price basis beyond q=512 remains extrapolation"
+   ],
+   "nonidentity_terms": 184,
+   "events_m": [
+    2,
+    6,
+    20,
+    72,
+    272,
+    1056,
+    4224,
+    16896,
+    67328,
+    269312,
+    1077248,
+    4306944,
+    17223680
+   ],
+   "weighted_event_positions_VP": 471030556
+  },
+  {
+   "L_D": 3,
+   "head": "one-body + fragments 0..2",
+   "tail": "fragments 3..9",
+   "head_fragment_blocks": 3,
+   "lambda_R_DF": 0.5832704246339966,
+   "scalar_s_R": 0.09261516589219046,
+   "lambda_R_source": {
+    "index": {
+     "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+     "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+    },
+    "file": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json",
+    "sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+    "selector": [
+     "prefixes",
+     "3"
+    ]
+   },
+   "lambda_P": null,
+   "dictionary_sha256": null,
+   "configuration_id": null,
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": null,
+   "R_m": null,
+   "signals": null,
+   "q3": [],
+   "direct_prices": [],
+   "model_reference_price": null,
+   "status": "CONSTRUCTIBLE_FROM_CURRENT_SOURCE_WITH_SAVED_DF_DESCRIPTOR",
+   "missing": [
+    "P0 Pauli dictionary for this prefix (lambda_P, s_P check, operator/sector gates; code fixes prefixes (1,2))",
+    "configuration + common-kappa 13-round schedule (R_m depends on lambda_P)",
+    "13-round signals (provider/adapter fix prefixes (1,2)) and B total view",
+    "candidate-own 26-axis reference price rule",
+    "Q3 for VP and candidate-own allocations"
+   ]
+  },
+  {
+   "L_D": 4,
+   "head": "one-body + fragments 0..3",
+   "tail": "fragments 4..9",
+   "head_fragment_blocks": 4,
+   "lambda_R_DF": null,
+   "scalar_s_R": null,
+   "lambda_R_source": null,
+   "lambda_P": null,
+   "dictionary_sha256": null,
+   "configuration_id": null,
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": null,
+   "R_m": null,
+   "signals": null,
+   "q3": [],
+   "direct_prices": [],
+   "model_reference_price": null,
+   "status": "DF_DESCRIPTOR_NOT_IN_SAVED_CONTEXT",
+   "missing": [
+    "saved lambda_R/scalar descriptor with provenance for this prefix",
+    "then everything listed for L_D=3"
+   ]
+  },
+  {
+   "L_D": 5,
+   "head": "one-body + fragments 0..4",
+   "tail": "fragments 5..9",
+   "head_fragment_blocks": 5,
+   "lambda_R_DF": 0.05440471795776202,
+   "scalar_s_R": 0.008913337788299013,
+   "lambda_R_source": {
+    "index": {
+     "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+     "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+    },
+    "file": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json",
+    "sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+    "selector": [
+     "prefixes",
+     "5"
+    ]
+   },
+   "lambda_P": null,
+   "dictionary_sha256": null,
+   "configuration_id": null,
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": null,
+   "R_m": null,
+   "signals": null,
+   "q3": [],
+   "direct_prices": [],
+   "model_reference_price": null,
+   "status": "CONSTRUCTIBLE_FROM_CURRENT_SOURCE_WITH_SAVED_DF_DESCRIPTOR",
+   "missing": [
+    "P0 Pauli dictionary for this prefix (lambda_P, s_P check, operator/sector gates; code fixes prefixes (1,2))",
+    "configuration + common-kappa 13-round schedule (R_m depends on lambda_P)",
+    "13-round signals (provider/adapter fix prefixes (1,2)) and B total view",
+    "candidate-own 26-axis reference price rule",
+    "Q3 for VP and candidate-own allocations"
+   ]
+  },
+  {
+   "L_D": 6,
+   "head": "one-body + fragments 0..5",
+   "tail": "fragments 6..9",
+   "head_fragment_blocks": 6,
+   "lambda_R_DF": null,
+   "scalar_s_R": null,
+   "lambda_R_source": null,
+   "lambda_P": null,
+   "dictionary_sha256": null,
+   "configuration_id": null,
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": null,
+   "R_m": null,
+   "signals": null,
+   "q3": [],
+   "direct_prices": [],
+   "model_reference_price": null,
+   "status": "DF_DESCRIPTOR_NOT_IN_SAVED_CONTEXT",
+   "missing": [
+    "saved lambda_R/scalar descriptor with provenance for this prefix",
+    "then everything listed for L_D=3"
+   ]
+  },
+  {
+   "L_D": 7,
+   "head": "one-body + fragments 0..6",
+   "tail": "fragments 7..9",
+   "head_fragment_blocks": 7,
+   "lambda_R_DF": 0.0003129539143720037,
+   "scalar_s_R": 4.5302064712666724e-05,
+   "lambda_R_source": {
+    "index": {
+     "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+     "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+    },
+    "file": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json",
+    "sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+    "selector": [
+     "prefixes",
+     "7"
+    ]
+   },
+   "lambda_P": null,
+   "dictionary_sha256": null,
+   "configuration_id": null,
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": null,
+   "R_m": null,
+   "signals": null,
+   "q3": [],
+   "direct_prices": [],
+   "model_reference_price": null,
+   "status": "CONSTRUCTIBLE_FROM_CURRENT_SOURCE_WITH_SAVED_DF_DESCRIPTOR",
+   "missing": [
+    "P0 Pauli dictionary for this prefix (lambda_P, s_P check, operator/sector gates; code fixes prefixes (1,2))",
+    "configuration + common-kappa 13-round schedule (R_m depends on lambda_P)",
+    "13-round signals (provider/adapter fix prefixes (1,2)) and B total view",
+    "candidate-own 26-axis reference price rule",
+    "Q3 for VP and candidate-own allocations"
+   ]
+  },
+  {
+   "L_D": 8,
+   "head": "one-body + fragments 0..7",
+   "tail": "fragments 8..9",
+   "head_fragment_blocks": 8,
+   "lambda_R_DF": null,
+   "scalar_s_R": null,
+   "lambda_R_source": null,
+   "lambda_P": null,
+   "dictionary_sha256": null,
+   "configuration_id": null,
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": null,
+   "R_m": null,
+   "signals": null,
+   "q3": [],
+   "direct_prices": [],
+   "model_reference_price": null,
+   "status": "DF_DESCRIPTOR_NOT_IN_SAVED_CONTEXT",
+   "missing": [
+    "saved lambda_R/scalar descriptor with provenance for this prefix",
+    "then everything listed for L_D=3"
+   ]
+  },
+  {
+   "L_D": 9,
+   "head": "one-body + fragments 0..8",
+   "tail": "fragments 9..9",
+   "head_fragment_blocks": 9,
+   "lambda_R_DF": 1.5605698403540042e-07,
+   "scalar_s_R": 5.193351122457893e-08,
+   "lambda_R_source": {
+    "index": {
+     "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+     "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+    },
+    "file": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json",
+    "sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+    "selector": [
+     "prefixes",
+     "9"
+    ]
+   },
+   "lambda_P": null,
+   "dictionary_sha256": null,
+   "configuration_id": null,
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": null,
+   "R_m": null,
+   "signals": null,
+   "q3": [],
+   "direct_prices": [],
+   "model_reference_price": null,
+   "status": "CONSTRUCTIBLE_FROM_CURRENT_SOURCE_WITH_SAVED_DF_DESCRIPTOR",
+   "missing": [
+    "P0 Pauli dictionary for this prefix (lambda_P, s_P check, operator/sector gates; code fixes prefixes (1,2))",
+    "configuration + common-kappa 13-round schedule (R_m depends on lambda_P)",
+    "13-round signals (provider/adapter fix prefixes (1,2)) and B total view",
+    "candidate-own 26-axis reference price rule",
+    "Q3 for VP and candidate-own allocations"
+   ]
+  },
+  {
+   "L_D": 10,
+   "head": "one-body + fragments 0..9",
+   "tail": "empty",
+   "head_fragment_blocks": 10,
+   "lambda_R_DF": null,
+   "scalar_s_R": null,
+   "lambda_R_source": null,
+   "lambda_P": null,
+   "dictionary_sha256": null,
+   "configuration_id": null,
+   "formula": "S2",
+   "delta_pf": 0.1,
+   "K": 2,
+   "kappa": "original exact kappa (common)",
+   "schedule": null,
+   "R_m": null,
+   "signals": null,
+   "q3": [],
+   "direct_prices": [],
+   "model_reference_price": null,
+   "status": "EMPTY_TAIL_ENDPOINT_NOT_PR",
+   "missing": [
+    "PR runtime requires positive tail lambda; Full PF is the separate deterministic endpoint"
+   ]
+  }
+ ],
+ "structure": {
+  "LD1_vs_LD2": {
+   "lambda_P_ratio_squared": 2.588802069093156,
+   "event_ratio_per_round": [
+    1.5,
+    2.0,
+    2.2,
+    2.4444444444444446,
+    2.5294117647058822,
+    2.606060606060606,
+    2.590909090909091,
+    2.5833333333333335,
+    2.5893536121673004,
+    2.58745247148289,
+    2.58745247148289,
+    2.5882073228720874,
+    2.5885850178359098
+   ],
+   "weighted_event_positions_VP": {
+    "LD1": 1219206120,
+    "LD2": 471030556
+   },
+   "q3_VP_MSE_upper": {
+    "LD1": "6.207999522802494898227110E-7",
+    "LD2": "6.207498269406694956690684E-7"
+   },
+   "q3_V0_MSE_upper": {
+    "LD1": "4.724621468973e-07",
+    "LD2": "4.724153460851e-07"
+   },
+   "m0_single_path_rz": {
+    "LD1": 1380,
+    "LD2": 2236,
+    "note": "q=1; LD1 R=3 (head one-body+f0), LD2 R=2 (head one-body+f0+f1); single paths"
+   }
+  },
+  "lambda_P_over_lambda_R": {
+   "LD1": 1.1549615258087895,
+   "LD2": 1.2819571342439537
+  },
+  "lambda_R_ratio_to_LD2_squared": {
+   "1": 3.1894134387590385,
+   "2": 1.0,
+   "3": 0.1323795961749783,
+   "5": 0.001151739514500674,
+   "7": 3.811026044256252e-08,
+   "9": 9.476491112575887e-15
+  },
+  "LD2_step_parts": {
+   "deterministic_per_step": 1900,
+   "intercept": 308,
+   "later_body_mean": {
+    "R33": 223.61290322580646,
+    "R66": 430.2987012987013,
+    "R526": 3333.5518590998045
+   },
+   "first_body_mean_R4205": 26646.0,
+   "D_region_pairs_per_block": "blocks per step: [33, 36, 8] gps: ['-0x1.400c34df9b4acp-6', '-0x1.b46c6f0e1f15ep-2', '0x1.75fa34e00ac4ep-1']"
+  },
+  "PR_DF_split_plan": {
+   "locator": {
+    "commit": "f42f6e9b9",
+    "path": "docs/research/d_pr_df_ld_split_cost_plan_20261115/CANDIDATES.csv"
+   },
+   "LD3_status": "CONSTRUCTIBLE_WITH_SAVED_DESCRIPTOR_CURRENT_CONFIGURATION_NOT_MINTED"
+  }
+ },
+ "checks": [
+  {
+   "check": "context_sha256",
+   "status": "PASS",
+   "detail": {
+    "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json",
+    "sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f"
+   }
+  },
+  {
+   "check": "p0_lambda_R_equals_context_LD1",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "check": "p0_scalar_equals_context_LD1",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "check": "p0_lambda_R_equals_context_LD2",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "check": "p0_scalar_equals_context_LD2",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "check": "packet_lambda_P_equals_P0_LD1",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "check": "packet_13_rounds_LD1",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "check": "packet_lambda_P_equals_P0_LD2",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "check": "packet_13_rounds_LD2",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "check": "same_kappa_LD1_LD2",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "check": "D_region_blocks_33_36_8",
+   "status": "PASS",
+   "detail": "blocks per step: [33, 36, 8] gps: ['-0x1.400c34df9b4acp-6', '-0x1.b46c6f0e1f15ep-2', '0x1.75fa34e00ac4ep-1']"
+  }
+ ],
+ "new_science": 0,
+ "compiles": 0,
+ "price_predictions": 0
+}

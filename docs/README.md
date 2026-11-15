@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli：L_Dを変えた比較相手の提案](research/a_pauli_ld_split_plan_20261116/REPORT.md)／[HANDOFF_B](research/a_pauli_ld_split_plan_20261116/HANDOFF_B.md)／[L_D別表](research/a_pauli_ld_split_plan_20261116/CANDIDATES.csv)（2026-11-16、A）：L_Dは二体DF fragmentの本数。LD1/LD2は保存済み（同じ配分で適合、event数はLD1が約2.59倍）。次の比較相手はLD3（DF λ_R 0.583）、最初の追加はLD3のP0辞書と13 round schedule。計画のみ、mandatory STOP。
+
 [PR-Pauli LD2 S0+：保存m9回路のstep分解](research/a_pauli_ld2_step_audit_20261115/s0plus_m9/REPORT_S0PLUS.md)／[HANDOFF](research/a_pauli_ld2_step_audit_20261115/s0plus_m9/HANDOFF_S0PLUS.md)（2026-11-15、A）：C2の保存m9（q=512・R=526、QPY 8件、0-compile）。2 path×X/Yでstep境界のancilla CX列が順序まで一致、`308 + 1900·q + Σ本体` が保存総数を復元、X/Y本体一致。path1は最初のstepの入口の1q token 1個がrun02参照と異なりFAILとして記録。2番目以降のstepの標準偏差58 RZ（1,022区間）。mandatory STOP。
 
 [PR-Pauli LD2 S0：保存QPYのstep分解監査](research/a_pauli_ld2_step_audit_20261115/REPORT.md)／[S0-r1（run02）](research/a_pauli_ld2_step_audit_20261115/REPORT_R1.md)／[HANDOFF_R1](research/a_pauli_ld2_step_audit_20261115/HANDOFF_R1.md)（2026-11-15、A）：run01は固定規則でP2 26/26 FAIL（数値上0のD(f1)対のcompile除去、原因特定）。承認された修正規則のr1は同じ52 QPYでP1〜P6 PASS、q≤64で `308 + 1900·q + Σstep本体` が厳密、step標準偏差15〜20 RZ（R=33・66）。0-compile、mandatory STOP。
