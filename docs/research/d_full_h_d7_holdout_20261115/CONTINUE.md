@@ -1,5 +1,17 @@
 # D7独立holdout：固定job実行中（再投入禁止）
 
+## 最新：完了cellの先行公開準備も起動済み
+
+追加高速化の許可を受け、後処理SOURCE `03cc993eeff827e87fc120a1aedb14a34fefcdf2` をpush/remote照合した。
+科学実行SOURCE9cbabc617・runtime・入力と進行中workerは無変更。
+元D1公開worktreeで `publish_full_h_d7_holdout.py --stage-when-finished` が既存job終了を待機している。
+M5 session41045、M6 session44167。**これらの後処理も重複起動しない。**
+各cell完了後、自動で元bytes/monitoringをコピーし、個別軸記録/実装証拠を検査し、pigz並列でlossless圧縮する。
+logは元D1 worktreeのrun01/<cell>.publication.console.txt。下記手順2のcopy/prepareはこの既存後処理が担当する。
+RAW_RECEIPT/AXIS_STATUSがあればprepare済みであり手動再実行しない。後処理失敗時はlogと保存成果を確認する。
+公開SHAからのbindも2 cell process並列へ改良済み。4 exact比較の式・規則は変えていない。
+[適用条件と人工3検査](PUBLICATION_ACCELERATION.md)。実際の短縮幅は未測定。
+
 利用者の実行指示・続行指示に基づき、観測前結合/重複照合、人工32件、import-only23 moduleのPASS後に起動した。
 SOURCE/input `9cbabc617e95a81810924413c1b2b06ced329514` は指定branchへpushしremote一致確認済み。
 予測b5165f11bb63f9eb2a6bfe385ba75d8003b7e724、規則f0765067a5a8b39888e36f3a8b80f1bdbda69223を変更しない。

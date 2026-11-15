@@ -3,6 +3,10 @@
 利用者が採択したC2の規則に基づき、固定m5の2 pathとm6の1 path、最大6 compileの取得を開始した。
 最終receipt・4件の比較・C向け引渡し・結果公開は未完了。現時点でモデル精度やgate PASSを先取りしない。
 
+利用者の追加高速化指示後、完了cellの公開準備を他cellの取得に重ねる処理を起動した。
+導入済みpigzの並列圧縮と2 cellのprocess並列公開照合を採用し、人工3件でbytes/hash/比較行の保持を確認。
+後処理SOURCE03cc993ee、科学実行SOURCE9cbabc617と稼働workerは不変。[追加高速化](PUBLICATION_ACCELERATION.md)。
+
 実行SOURCE/input：`9cbabc617e95a81810924413c1b2b06ced329514`。指定branchへpushしremote SHA一致を確認した後、
 別のdetached checkoutで固定して実行する。元較正raw・旧STOP・C/C2の原本は保全。
 
