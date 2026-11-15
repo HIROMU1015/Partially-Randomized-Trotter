@@ -3,8 +3,8 @@
 
 Plan: docs/research/a_pauli_ld2_expected_price_plan_20261115/REPORT.md §5 (df5e5c452).
 Rules: docs/research/a_pauli_ld2_step_audit_20261115/AUDIT_RULES.md (fixed before any real QPY
-was opened; run01 executed SOURCE 2f3bf20ce). This revision implements the S0-r1 proposal
-(AUDIT_RULES_R1_PROPOSAL.md) and has NOT been executed on saved QPY. The saved private QPY and cache JSON are read read-only (at most 52 QPY: 13 paths
+was opened; run01 executed SOURCE 2f3bf20ce). This revision implements S0-r1
+(AUDIT_RULES_R1.md, approved re-analysis of the same 52 QPY) and writes to run02/. The saved private QPY and cache JSON are read read-only (at most 52 QPY: 13 paths
 x X/Y x {wrapper, compiled}). The audit never builds, samples, transpiles or compiles a
 circuit, never writes private files, never fits or predicts prices and never computes
 E[C], CI or G. Wire tokens follow the PF closure audit (d3338c7ef `pf_qpy_closure_audit.py`:
@@ -38,7 +38,7 @@ import traceback
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'docs/research/a_pauli_ld2_step_audit_20261115'
-RUN = OUT / 'run01'
+RUN = OUT / 'run02'           # S0-r1 (approved re-analysis of the same 52 QPY); run01 = SOURCE 2f3bf20ce
 WORK = RUN / 'work'           # regenerable token arrays, git-ignored
 
 PLAN = ('df5e5c452a3814f7e04ea9cacf05c8f4bdcc047c', 'docs/research/a_pauli_ld2_expected_price_plan_20261115')
@@ -73,7 +73,11 @@ class AuditStop(RuntimeError):
 
 
 class StructureFail(RuntimeError):
-    """A rule-level FAIL (no relaxation, no retry)."""
+    """A rule-level FAIL (no relaxation, no retry); `detail` records where it happened."""
+
+    def __init__(self, message, detail=None):
+        super().__init__(message)
+        self.detail = detail
 
 
 # ---------------------------------------------------------------- utilities
@@ -365,8 +369,25 @@ def segment_compiled(tok, struct):
         if name != 'cx' or qb[0] != anc:
             raise StructureFail('COMPILED_ANCILLA_2Q_NOT_CX_FROM_ANCILLA:' + name)
     exp = struct['expected']
-    if [instrs[j][1][1] for j in anc_2q] != [e[0] for e in exp]:
-        raise StructureFail(f'ANCILLA_CX_ALIGNMENT:{len(anc_2q)}vs{len(exp)}')
+    got = [instrs[j][1][1] for j in anc_2q]
+    want = [e[0] for e in exp]
+    if got != want:
+        m = min(len(got), len(want))
+        i = next((k for k in range(m) if got[k] != want[k]), m)
+        detail = dict(first_mismatch_index=i, compiled_count=len(got), expected_count=len(want),
+                      expected_entry=[exp[i][0], exp[i][1], exp[i][2], exp[i][3]] if i < len(want) else None,
+                      compiled_target=got[i] if i < len(got) else None,
+                      compiled_instruction_index=anc_2q[i] if i < len(anc_2q) else None,
+                      expected_window=[[e[0], e[1], e[2], e[3]] for e in exp[max(0, i - 3):i + 4]],
+                      compiled_window=got[max(0, i - 3):i + 4])
+        import difflib
+        ops = [op for op in difflib.SequenceMatcher(a=want, b=got, autojunk=False).get_opcodes() if op[0] != 'equal']
+        detail['difference_blocks'] = len(ops)
+        detail['differences'] = [dict(tag=tag, expected_range=[i1, i2], compiled_range=[j1, j2],
+                                      expected_entries=[[e[0], e[1], e[2], e[3]] for e in exp[i1:i2][:12]],
+                                      compiled_targets=got[j1:j2][:12])
+                                 for tag, i1, i2, j1, j2 in ops[:10]]
+        raise StructureFail(f'ANCILLA_CX_ALIGNMENT:{len(got)}vs{len(want)}:first_mismatch={i}', detail)
     q = len(struct['steps'])
     # pair verification (barrier structure of every D-region pair)
     pos_on = [{j: k for k, j in enumerate(w)} for w in wires]
@@ -632,6 +653,7 @@ def audit_path(path, scalar, progress_path):
         except StructureFail as exc:
             struct = None
             res['structure'] = 'FAIL:' + str(exc)
+            res['structure_detail'] = exc.detail
         input_tail = wrapper_input_tail(wrapper)
         del wrapper
         prog('load_start', axis=axis, file='compiled')
@@ -681,6 +703,7 @@ def audit_path(path, scalar, progress_path):
             res['P2'] = 'PASS'
         except StructureFail as exc:
             res['P2'] = 'FAIL:' + str(exc)
+            res['P2_detail'] = exc.detail
             out['axes'][axis] = res
             continue
         res['pair_checks'] = seg['pair_checks']

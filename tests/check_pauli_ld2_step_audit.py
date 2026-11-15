@@ -290,6 +290,13 @@ class StepAuditTests(unittest.TestCase):
         _, result, _, _, paths = run_fixture(mutate=mutate)
         self.assertEqual(result['P2'], 'FAIL')
         self.assertTrue(paths['PATH_Q8R66_p0.json']['axes']['X']['P2'].startswith('FAIL:ANCILLA_CX_ALIGNMENT'))
+        detail = paths['PATH_Q8R66_p0.json']['axes']['X']['P2_detail']
+        self.assertEqual(detail['expected_count'] - detail['compiled_count'], 2)
+        self.assertEqual(detail['difference_blocks'], 1)               # the dropped pair is located
+        diff = detail['differences'][0]
+        self.assertEqual(diff['tag'], 'delete')
+        self.assertTrue(all(e[0] == 2 for e in diff['expected_entries']))
+        self.assertIn('D', [e[1] for e in detail['expected_window']])
 
     def test_04_barrier_angle_change_fails(self):
         def mutate(pid, axis, cp):
@@ -446,9 +453,12 @@ class RevisionS0R1Tests(unittest.TestCase):
         self.assertEqual(result['P2'], 'FAIL')
         msg = paths['PATH_Q8R66_p0.json']['axes']['X']['P2']
         self.assertTrue(msg.startswith('FAIL:ANCILLA_CX_ALIGNMENT'), msg)
-        # deficit is exactly 2 CX per step (one identity pair per step in the toy)
-        got, exp = msg.split(':')[-1].split('vs')
-        self.assertEqual(int(exp) - int(got), 2 * 3)
+        # deficit is exactly 2 CX per step (one identity pair per step in the toy), located as 3 deletions
+        detail = paths['PATH_Q8R66_p0.json']['axes']['X']['P2_detail']
+        self.assertEqual(detail['expected_count'] - detail['compiled_count'], 2 * 3)
+        self.assertEqual(detail['difference_blocks'], 3)
+        self.assertTrue(all(d['tag'] == 'delete' and all(e[1] == 'D' for e in d['expected_entries'])
+                            for d in detail['differences']))
         # statuses are not vacuous when no path is segmented
         self.assertEqual(result['P3']['status'], 'UNKNOWN_NO_SEGMENTED_PATH')
         self.assertEqual(result['P6']['status'], 'UNKNOWN_NO_SEGMENTED_PATH')
