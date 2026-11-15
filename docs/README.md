@@ -1,8 +1,10 @@
 # 文書索引
 
-[PR-Pauli LD2 m5/m6独立holdout規則案](research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/HOLDOUT_RULE_PROPOSAL.md)／[HANDOFF](research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/HANDOFF_HOLDOUT_RULE.md)：4件の記述的誤差報告を推奨。数値許容差は未採択、モデルPASS/FAILなし。提案のみ・未実行、mandatory STOP。
+[PR-Pauli LD2の次の有限価格証拠](research/pauli_ld2_next_price_evidence_20261115/REPORT.md)／[有限実行案](research/pauli_ld2_next_price_evidence_20261115/FINITE_EXECUTION_PLAN.md)／[HANDOFF](research/pauli_ld2_next_price_evidence_20261115/HANDOFF.md)：同round追加と長roundを比較し、m9 fresh2 path×XY最大4 compileを第一案。未採択・未実行、CI/E[C]/N/Gなし、mandatory STOP。
 
-[C2 PR-Pauli LD2価格モデル凍結・D2 HANDOFF](research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/HANDOFF_D2.md)：固定10 recordで軸別2モデル・m5/m6の4 exact予測。独立holdout未評価、Pauli許容差未採択、mandatory STOP。
+[PR-Pauli LD2 m5/m6独立holdout規則案](research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/HOLDOUT_RULE_PROPOSAL.md)／[HANDOFF](research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/HANDOFF_HOLDOUT_RULE.md)：観測前に作成した規則。後に採択され、m5/m6記述比較は705f59ea8で完了（[現在地](research/pauli_ld2_next_price_evidence_20261115/REPORT.md)）。数値許容差は未採択・モデルPASS/FAILなし、元STOPは保全。
+
+[C2 PR-Pauli LD2価格モデル凍結・D2 HANDOFF](research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/HANDOFF_D2.md)：固定10 recordで軸別2モデル・m5/m6の4 exact予測。凍結時はholdout未評価、後続の有限記述比較は705f59ea8。モデル資格は未付与、Pauli数値許容差未採択、元STOPは保全。
 
 [H4 5方式の信号・精度・価格の物理候補対応](research/h4_five_method_candidate_alignment_20261115/REPORT.md)（2026-11-15）：A c212の信号原本調査、B 9c0のPR-DF新版total bridge、C保存receipt/52軸coverage、D CELL_PLANを14 schedule・364軸で照合。G/十分Nはnull、42技術・人工回帰PASS。新科学計算なし、mandatory STOP。
 
