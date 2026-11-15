@@ -377,11 +377,16 @@ class Catalog:
 def report(result):
     lines=['# H4 保存RPE評価結果の比較','', '結論の範囲：**指定した保存候補集合内の最安適合点**。',
         '保存Q3判定と条件付き価格の比較であり、全候補最適性・正式E[C]/G・方式winnerの認定は行わない。','',
-        '|方式|公式 / LD|要求幅|最安適合の条件付き費用 RZ|point ID|','|---|---|---:|---|']
+        '|方式|公式 / LD|要求幅|最安適合の条件付き費用 RZ|point ID|','|---|---|---|---:|---|']
     for method,item in result['method_minima'].items():
         points=[r for r in result['candidates']if r['point_id']in item['point_ids']]
-        attrs=', '.join(str(r['formula'])+' / '+str(r['L_D'])for r in points)or'—'
-        widths=', '.join(str(frac(r['delta_pf']))if r['delta_pf']is not None else'—'for r in points)or'—'
+        formula={'2nd':'S2','4th':'Yoshida4','4th(m5_best)':'M5',None:'pure RTE'}
+        attrs=', '.join(formula.get(r['formula'],str(r['formula']))+' / '+str(r['L_D'])for r in points)or'—'
+        def width(r):
+            if r['delta_pf']is None:return '—'
+            ratio=frac(r['delta_pf'])/frac(r['h'])
+            return str(ratio.numerator)+'h'+('/'+str(ratio.denominator)if ratio.denominator!=1 else'')
+        widths=', '.join(width(r)for r in points)or'—'
         lines.append('|'+method+'|'+attrs+'|'+widths+'|'+display(item['conditional_cost'])+'|'+', '.join(item['point_ids'])+'|')
     lines+=['','|候補|方式|LD|公式|判定|費用 RZ|X/Y配分|','|---|---|---:|---|---|---:|---|']
     for r in result['candidates']:

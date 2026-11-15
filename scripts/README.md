@@ -1,5 +1,7 @@
 # scripts 索引
 
+`collect_saved_rpe_costs.py`：[固定入力と同一commandによるH4保存比較](../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。INPUTS.sourcesに固定SHA/pathを追加して再実行。出力は候補CATALOG/方式別最安/REPORT。Q3/価格の計算、solverや探索は起動しない。
+
 `reassess_full_h_m0_zero_zz.py`：[採択規則による保存m0再判定・固定総額](../docs/research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)。run01完了、再実行しない。旧会計を無変更で再利用し、sampling/QPY parse/build/compile/予測/fit/Q3は呼ばない。旧保留run01は別pathで保全。
 
 `account_full_h_reference_scenario.py`：[保存m0 STOP受入・会計準備](../docs/research/full_h_m0_reference_total_20261115/REPORT.md)。固定Git readerとexact表現を再利用。run01は0受入/2保留で加算前にnullを返して完了、再実行しない。正の集計経路は人工価格のみで検証。

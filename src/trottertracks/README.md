@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[`saved_rpe_cost_catalog.py`](saved_rpe_cost_catalog.py)：保存SUMMARY・Q3/価格索引をmetadata照合し、指定集合内の最安適合点を選ぶ。[仕様・再実行](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。
+
 [price_implementation_guard](price_implementation_guard.py)：既存C/B価格算術前のnative/lowering検査。[SOURCE・51人工/回帰結果](../../docs/research/full_pf_latest_price_guard_20261114/REPORT.md)。
 
 [B0I・Full-Hの全13round Raw signal取得](../../docs/research/truncated_fullh_signal_results_20261114/REPORT.md)（2026-11-14）：固定H4 DF10のB0I p7/S2/Δ.1とFull-H finite-K2/q=2^m/R448を各13round、一回評価。SOURCE5a172629d、26件すべて元数値gate PASS、Raw/corrected/reference/normalizationとB packetを保存。人工caller3件PASS、数値module不変、context復元1、旧signal受入/retry0。数値誤差・law距離・state誤差は未資格、MC/N/価格/G0。旧c546/6306計画・STOPを保全し公開後mandatory STOP。
