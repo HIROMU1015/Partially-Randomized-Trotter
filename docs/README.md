@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-DF LD7 共通V0完了](research/d_pr_df_ld7_v0_results_20261116/REPORT.md)：PR-DF LD7段階0〜2完了：現行configuration1件、全13 roundでR=1・S2単一piece、13信号gate通過。共通V0のQ3一回はMSE上界4.28414160318294721365383E-7 Ha²で適合し、LD1/LD2保存V0と接続。次はLD7固有価格と候補別配分の比較。sampling/compile/fit/価格予測/独自配分0、公開後STOP。
+
 [PR-DF次分割：LD3対LD7の計画](research/d_pr_df_next_split_choice_20261116/REPORT.md)：LD3と遠いLD7を最終2案にし、PR-DF LD7を先行提案。保存prefix3/5/7/9のλ/scalar・旧signal/price条件を差分照合し、費用順位は未評価。LD2長round1点は候補選択を変えないため後回し。後続は新R列の全R1確認を条件に、signal13 round・own価格20 compile・共通V0→独自A/B最大3 Q3の有限案。候補/schedule/科学数値は新生成0、計画公開後STOP。
 
 [PR-DF LD1/LD2固定4配分のQ3完了](research/d_pr_df_ld_split_q3_resume_20261116/REPORT.md)：固定4 Q3をPython3.11.0rc1の元AST guardで各1回実行し全適合。保存V0を含む各LDの3配分内最小はB_PRICE、モデル費用はLD1約1892.33億／LD2約463.42億RZ。m7..12占比は99.895%／99.857%。価格・配分・signalは再生成せず、旧AST STOPを保全。長round価格・正式E[C]/G/winnerは未認定、公開後STOP。

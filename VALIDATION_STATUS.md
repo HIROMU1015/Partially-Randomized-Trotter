@@ -1,5 +1,7 @@
 # Validation status
 
+[PR-DF LD7 共通V0完了](docs/research/d_pr_df_ld7_v0_results_20261116/REPORT.md)：PR-DF LD7段階0〜2完了：現行configuration1件、全13 roundでR=1・S2単一piece、13信号gate通過。共通V0のQ3一回はMSE上界4.28414160318294721365383E-7 Ha²で適合し、LD1/LD2保存V0と接続。次はLD7固有価格と候補別配分の比較。sampling/compile/fit/価格予測/独自配分0、公開後STOP。
+
 [PR-DF LD1/LD2固定4配分のQ3完了](docs/research/d_pr_df_ld_split_q3_resume_20261116/REPORT.md)：固定4 Q3をPython3.11.0rc1の元AST guardで各1回実行し全適合。保存V0を含む各LDの3配分内最小はB_PRICE、モデル費用はLD1約1892.33億／LD2約463.42億RZ。m7..12占比は99.895%／99.857%。価格・配分・signalは再生成せず、旧AST STOPを保全。長round価格・正式E[C]/G/winnerは未認定、公開後STOP。
 
 [PR-DF LD1/LD2有限比較の部分STOP](docs/research/d_pr_df_ld_split_results_20261115/REPORT.md)：LD2 normal12 path・24 compile有効、2モデル・26価格・候補別4配分固定。新Q3はPython3.12 ASTと固定accelerator hashのgateで科学call0・4件未評価。保存V0だけの最小確認モデル費用はLD1約2613.15億／LD2約639.14億RZ。全menu最小/正式E[C]/G/winnerは未認定。旧raw/STOP保全、次の研究対象はLD2長round価格、運用上はQ3 runtime接続が未完了。
