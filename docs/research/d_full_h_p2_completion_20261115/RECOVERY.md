@@ -57,3 +57,7 @@ session21666で `--recover-approved-job FROZEN_RECOVERY.json` を実行中。追
 
 共通AGENTS.mdにも、親からの観測を優先し、このPython環境での非同期dumpを使わない指示を追記した。
 Claudeは既存CLAUDE.mdの共通AGENTS importから同じ指示を読む。別AIによる検査は行っていない。
+
+## 完了・公開後照合
+
+SOURCE 8cce540645b99e515d72888b817782a1b9f97334 のjobはwall21:39.15、peakRSS9,530,444 KiB、親/子exit0。保存path0残検査と完了path1再利用が完了し、全D7は18軸PASS/FAIL0/UNKNOWN0。追加sampling/compile0。結果 f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1 をpushし、公開commitからrawをlossless復号、4軸の元compile bytes・record・実装証拠を照合PASS。先行14軸の固定証拠を再利用して全5 cell・10較正recordをHANDOFFへ結合した。C科学的受入はNOT_PERFORMED。全較正引渡しでmandatory STOP、fit/HOLDOUT/外挿/E[C]/N/Gは未実施。

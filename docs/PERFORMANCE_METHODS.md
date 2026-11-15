@@ -15,8 +15,8 @@
 | 独立pathをprocess並列にする | [path_worker / child](../scripts/run_full_h_kappa2_p2_accelerated.py) | pathごとのseed・出力・provider状態を分離し、結果をindex順へ戻す。親receiptなどの依存関係を先に満たす | 人工barrierで別PIDの同時実行を確認。[検証記録](research/d_full_h_p2_acceleration_20261115/TRANSFER_TESTS.txt) |
 | X/Y wrapperを個別に並列compileする | [ParallelAxesCompiler](../scripts/full_h_p2_acceleration.py) | 同じcompiler/profileで各軸一回。先行生成したYと実際のYのfingerprintを照合する。representative circuitはQPYで戻し、元のcompiled-vector gateを維持する | 人工同時実行・4-qubit toy＋ancillaの実Qiskit/QPY/gate PASS。D7 path1は取得済みだが、全jobの速度倍率比較は未測定。[REPORT](research/d_full_h_p2_acceleration_20261115/REPORT.md) |
 | 同一controlled rotationの構築を再利用する | [memoized_controlled_rotations](../scripts/full_h_p2_acceleration.py) | support数とbinary64角度の完全なkeyでprototypeをcacheし、copyしてappendする。命令順・global/control phaseを保持する | toyのcanonical fingerprint・全unitary一致、構築回数削減を確認。toy primitiveの時間比をH4全体へ外挿しない。[TESTS](research/d_full_h_p2_acceleration_20261115/TESTS.txt) |
-| 同じcanonical bytesを速くfingerprintする | [use_fast_fingerprint](../scripts/h46_b3_fast_fingerprint.py)、[fast_legacy_builds / resume_saved_path](../scripts/full_h_p2_acceleration.py) | nested context・module alias・復元を確認する。wrapper内部のmutation検査など、呼出し先が行う再計算もcontext内に入れる | checkpoint wrapperがcontext外だと旧writerへ戻る不具合を人工再現。dfab06ee0で修正し、旧writer禁止を含む9 test PASS。修正の実H4適用・性能は未確認。[回帰修正](research/d_full_h_p2_acceleration_20261115/RELIABILITY_FIX.md) |
-| 保存済みnative結果から残検査を継続する | [resume_saved_path](../scripts/full_h_p2_acceleration.py)、[checkpoint controller](../scripts/continue_full_h_p2_checkpoint.py) | 元event/compile/QPY・SOURCE/physical/cohort/index/seed・gateを照合し、sampling/compileを再実行しない。固定契約・停止/継続条件を守る。controllerのPIDや入力を他jobへそのまま転用しない | 人工でsampling/compile 0と元event/fingerprint/phase一致を確認。実G36223 path0の最終検査は未完了。[固定入力・移管記録](research/d_full_h_p2_acceleration_20261115/REPORT.md) |
+| 同じcanonical bytesを速くfingerprintする | [use_fast_fingerprint](../scripts/h46_b3_fast_fingerprint.py)、[fast_legacy_builds / resume_saved_path](../scripts/full_h_p2_acceleration.py) | nested context・module alias・復元を確認する。wrapper内部のmutation検査など、呼出し先が行う再計算もcontext内に入れる | checkpoint wrapperがcontext外だと旧writerへ戻る不具合を人工再現。dfab06ee0で修正し、旧writer禁止を含む9 test PASS。SOURCE8cで実G36223の元fingerprint照合と最終検査完了を確認。全job速度倍率は未測定。[回帰修正](research/d_full_h_p2_acceleration_20261115/RELIABILITY_FIX.md) |
+| 保存済みnative結果から残検査を継続する | [resume_saved_path](../scripts/full_h_p2_acceleration.py)、[checkpoint controller](../scripts/continue_full_h_p2_checkpoint.py) | 元event/compile/QPY・SOURCE/physical/cohort/index/seed・gateを照合し、sampling/compileを再実行しない。固定契約・停止/継続条件を守る。controllerのPIDや入力を他jobへそのまま転用しない | 人工でsampling/compile 0と元event/fingerprint/phase一致を確認。実G36223 path0の最終検査はSOURCE8cでsampling/compile0で完了。[固定入力・移管記録](research/d_full_h_p2_acceleration_20261115/REPORT.md) |
 
 完了済みpathを再処理しない継続は [complete_full_h_p2_checkpoint.py](../scripts/complete_full_h_p2_checkpoint.py) を参照する。
 SOURCE `0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4` は保存native path0と完了path1を組み合わせ、
@@ -32,7 +32,7 @@ SIGSEGV、なしは完了。旧実workerのsignalは記録欠落で不明。修�
 親processで段階・資源・終了code/signalを記録する `observe_child`。計算workerへthreadを追加せず、
 fast fingerprintのsingle-thread条件を保持する。旧入力と18 compileを再利用し、科学条件は変えない。
 [再現証拠・修正・適用範囲](research/d_full_h_p2_completion_20261115/RECOVERY.md)。
-実対象での修正後完了は検査中であり、人工再現と区別する。
+SOURCE8cce54064で実G36223の残検査が正常終了し、wall21:39.15・peakRSS9,530,444 KiB。結果f98cb9638の公開後4軸bindingもPASS。旧0dcの不安定経路とは区別し、全18軸のC引渡し後mandatory STOP。全jobの速度倍率は未測定。
 
 ## 以前からある関連例
 

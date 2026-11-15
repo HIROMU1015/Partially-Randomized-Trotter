@@ -21,3 +21,7 @@ G566/G4528/Q8R566/P2R566の14軸は結果7d0c39066へ公開し、lossless receip
 ## 監視クラッシュの人工再現と利用者許可後の残検査再開
 
 Python3.11.0rc1＋人工3-qubit FastWriterで定期faulthandler dump有効時にSIGSEGV(-11)、無効時に完了を確認。旧実workerのsignalは欠落しており同一原因と断定しない。利用者の修正・再実行許可を受け、親process観測へ変更、13人工testと元input/hash照合PASS。SOURCE8cce540645b99e515d72888b817782a1b9f97334をpush/remote照合後、隔離checkoutでpath0残検査のみ再開。完了path1と18 compileを再利用、追加sampling/compile0。旧SOURCE/STOP保全、最終受入16PASS/2UNKNOWNのまま。全較正引渡し又は重大gate失敗でmandatory STOP、fit/HOLDOUT/E[C]/N/Gへ進まない。
+
+## 修正後の検証完了と全較正引渡し
+
+SOURCE8cce540645b99e515d72888b817782a1b9f97334の保存path0残検査はwall21:39.15、peakRSS9,530,444 KiB、親/子exit0。18 unique compileを維持し追加sampling/compile0。全5 cell/18軸PASS、FAIL/UNKNOWN/価格未取得0。結果f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1をpushし、公開commitからraw復号・4軸の原compile bytes/hash・価格/実装証拠/較正record対応を照合。先行14軸の7d0固定locatorを再利用し、全10較正recordをC向けHANDOFFへ結合。D1技術照合でありC科学受入は未実施。旧STOP保全。全較正引渡しでmandatory STOP、fit/凍結・HOLDOUT6・外挿・E[C]/N/Gへ進まずロードマップ本体は統合担当へ渡す。

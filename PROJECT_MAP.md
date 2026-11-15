@@ -2,7 +2,7 @@
 
 [並列化・高速化の手法集](docs/PERFORMANCE_METHODS.md)：既存helper・runner・test・検証記録への再利用索引。適用条件・SOURCE・確認範囲・既知の失敗例を記録する。
 
-[Full-H κ2 D7較正・残検査再開中](docs/research/d_full_h_p2_calibration_resume_20261115/REPORT.md)：18 compile保存済み、16軸PASS/2軸UNKNOWN。人工FastWriterで非同期stack dumpのSIGSEGVを再現、SOURCE8cce54064で親process観測へ修正。利用者許可により追加sampling/compile0でG36223 path0だけ再検査中。旧STOP保全、C受入・fit/凍結・HOLDOUT・E[C]/N/Gは未実施。
+[Full-H κ2 D7較正・全5 cell引渡し完了](docs/research/d_full_h_p2_calibration_resume_20261115/REPORT.md)：18 unique compile・全18軸PASS/FAIL0/UNKNOWN0。旧STOP保全、修正検証SOURCE8cce54064・追加sampling/compile0。G36223結果f98cb9638と先行4 cellの固定公開証拠を全18軸/10較正recordへ結合。C科学受入・fit/凍結・HOLDOUT・E[C]/N/G未実施、mandatory STOP。
 
 [Full-H P-2 process並列化・高速化](docs/research/d_full_h_p2_acceleration_20261115/REPORT.md)：path/X/Yのprocess並列化、controlled gate再利用、legacy fast fingerprint、保存checkpointのsampling/compile再実行なしの継続を実装。9 synthetic test PASS。ユーザーの明示許可後に保存checkpointから継続し、G36223の残2 compileを並列実行中。旧拒否・SOURCE・rawは保全。
 

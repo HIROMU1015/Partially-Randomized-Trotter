@@ -1,6 +1,6 @@
 {
-  "status": "AUTHORIZED_ZERO_COMPILE_RECOVERY_RUNNING",
-  "observed_utc": "2026-11-14T22:33:07.125563+00:00",
+  "status": "D7_CALIBRATION_COMPLETE_MANDATORY_STOP",
+  "observed_utc": "2026-11-15T09:23:24.862069+00:00",
   "plan": "D7",
   "stage": "CALIBRATION",
   "fixed_plan": {
@@ -12,16 +12,17 @@
   "execution_sources": [
     "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
     "887c3b9d04d15be96637b6634265424e7dd50339",
-    "0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4"
+    "0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4",
+    "8cce540645b99e515d72888b817782a1b9f97334"
   ],
-  "published_result_commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+  "published_result_commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
   "planned_real_compiles": 18,
   "preexisting_saved_price_reuse": 0,
-  "completed_cell_axis_receipts": 14,
-  "checkpoint_native_axis_receipts": 2,
+  "completed_cell_axis_receipts": 18,
+  "checkpoint_native_axis_receipts": 0,
   "remaining_initial_compiles": 0,
   "scientific_gate_failures": 0,
-  "pending_cell": "G36223",
+  "pending_cell": null,
   "cells": {
     "G566": {
       "status": "D1_PUBLICATION_LINKS_CHECKED_USING_C_EVIDENCE_READER_NOT_C_ADMISSION",
@@ -1826,6 +1827,504 @@
       "C_scientific_admission": "NOT_PERFORMED",
       "canonical_round_guard_invoked": false,
       "law_expectation": false
+    },
+    "G36223": {
+      "status": "D1_PUBLICATION_LINKS_CHECKED_USING_C_EVIDENCE_READER_NOT_C_ADMISSION",
+      "publication": {
+        "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+        "directory": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223"
+      },
+      "bound_sidecars": [
+        {
+          "record": "PRICE_CALIBRATION_IMPLEMENTATION_SIDECAR_V1",
+          "cell_id": "G36223",
+          "axis": "X",
+          "price_source": {
+            "commit": "8cce540645b99e515d72888b817782a1b9f97334",
+            "result_path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RESULT.json",
+            "caller": "scripts/complete_full_h_p2_checkpoint.py",
+            "plan": "D7",
+            "cell": "G36223",
+            "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+            "step_seeds": [
+              [
+                8992396265638595431
+              ],
+              [
+                3106051950957035744
+              ]
+            ]
+          },
+          "implementation_evidence": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/IMPLEMENTATION_EVIDENCE.json",
+            "selector": [
+              "X"
+            ]
+          },
+          "price_records": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/PRICES.json",
+            "selector": []
+          },
+          "C_input": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+            "selector": [
+              0
+            ]
+          },
+          "path_receipts": {
+            "manifest_source": {
+              "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+              "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RAW_RECEIPT.json"
+            },
+            "decoder": "docs/research/d_full_h_p2_calibration_resume_20261115/READ_RECEIPT.py:read_receipt",
+            "selector": [
+              "child",
+              "paths"
+            ]
+          },
+          "C_admission": "NOT_PERFORMED_NON_CONFIGURATION_RECORD"
+        },
+        {
+          "record": "PRICE_CALIBRATION_IMPLEMENTATION_SIDECAR_V1",
+          "cell_id": "G36223",
+          "axis": "Y",
+          "price_source": {
+            "commit": "8cce540645b99e515d72888b817782a1b9f97334",
+            "result_path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RESULT.json",
+            "caller": "scripts/complete_full_h_p2_checkpoint.py",
+            "plan": "D7",
+            "cell": "G36223",
+            "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+            "step_seeds": [
+              [
+                8992396265638595431
+              ],
+              [
+                3106051950957035744
+              ]
+            ]
+          },
+          "implementation_evidence": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/IMPLEMENTATION_EVIDENCE.json",
+            "selector": [
+              "Y"
+            ]
+          },
+          "price_records": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/PRICES.json",
+            "selector": []
+          },
+          "C_input": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+            "selector": [
+              1
+            ]
+          },
+          "path_receipts": {
+            "manifest_source": {
+              "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+              "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RAW_RECEIPT.json"
+            },
+            "decoder": "docs/research/d_full_h_p2_calibration_resume_20261115/READ_RECEIPT.py:read_receipt",
+            "selector": [
+              "child",
+              "paths"
+            ]
+          },
+          "C_admission": "NOT_PERFORMED_NON_CONFIGURATION_RECORD"
+        }
+      ],
+      "path_axis_bindings": [
+        {
+          "cell_id": "G36223",
+          "index": 0,
+          "axis": "X",
+          "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+          "seeds": [
+            8992396265638595431
+          ],
+          "physical": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 0,
+            "T": 0.1,
+            "q": 1,
+            "R_outer": 36223,
+            "K": 2,
+            "delta": 0.1,
+            "s": 36223,
+            "family": "FULL_H_PURE_RTE",
+            "L_D": 0,
+            "id": "FULL_H_66aa1ae447dd8fc11498"
+          },
+          "rz_count": 5552901,
+          "direct_price": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/PRICES.json",
+            "selector": [
+              0
+            ]
+          },
+          "compile_record": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/COMPILE_RECORDS/p0_X.json",
+            "selector": []
+          },
+          "compile_record_sha256": "38bbadd78cc7b71fac07c2c8ff8a62b2296c660c70a6d630480a32970a4752cc",
+          "implementation_evidence": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/IMPLEMENTATION_EVIDENCE.json",
+            "selector": [
+              "X",
+              "paths",
+              0
+            ]
+          },
+          "calibration_record": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+            "selector": [
+              0
+            ]
+          },
+          "raw_receipt": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RAW_RECEIPT.json",
+            "selector": []
+          },
+          "decoded_path_selector": [
+            "child",
+            "paths",
+            0
+          ],
+          "execution_source": {
+            "commit": "8cce540645b99e515d72888b817782a1b9f97334",
+            "result_path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RESULT.json",
+            "caller": "scripts/complete_full_h_p2_checkpoint.py",
+            "plan": "D7",
+            "cell": "G36223",
+            "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+            "step_seeds": [
+              [
+                8992396265638595431
+              ],
+              [
+                3106051950957035744
+              ]
+            ]
+          },
+          "compile_producer_source": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+          "compile_reused_at_continuation": true,
+          "checkpoint": {
+            "private": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223",
+            "trial": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/cost/D_FULL_H_P2_D7_G36223_PROPOSED_V1/FULL_H_66aa1ae447dd8fc11498/0/result.json",
+            "events": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/cost/D_FULL_H_P2_D7_G36223_PROPOSED_V1/FULL_H_66aa1ae447dd8fc11498/0/events_PRIVATE.json",
+            "source_commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "files": {
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/cost/D_FULL_H_P2_D7_G36223_PROPOSED_V1/FULL_H_66aa1ae447dd8fc11498/0/result.json": "a8ef63f33d322b2569dad3efaec646f7c94200f9cc40400d5c8f6eb43f7ca642",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/cost/D_FULL_H_P2_D7_G36223_PROPOSED_V1/FULL_H_66aa1ae447dd8fc11498/0/events_PRIVATE.json": "7b550231715dd0129e904bdcec82ab84dc6e27974bc543ced8c783596e82f64f",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/a18075b5b664a977ec63f5f796dba1bcd01fe3274bd807a4d490f3a484c580d5.json": "38bbadd78cc7b71fac07c2c8ff8a62b2296c660c70a6d630480a32970a4752cc",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/cae30ad52ecd0ec57dee539ebfad8a686f4c2594d5caf60133503adbc135367d.json": "2027885a0223e8d97b60e6cb915d71043011095f12a0364e71709f5b0c818f75",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/cae30ad52ecd0ec57dee539ebfad8a686f4c2594d5caf60133503adbc135367d_wrapper.qpy.gz": "d1e58e2b63da33ad27e7cf92b63d8053adf13c37c3f66455e8979d116a62cab2",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/a18075b5b664a977ec63f5f796dba1bcd01fe3274bd807a4d490f3a484c580d5_compiled.qpy.gz": "9be413556a056d4c49595660c668554762f6e0694abcdc100b65128025b5e36a",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/cae30ad52ecd0ec57dee539ebfad8a686f4c2594d5caf60133503adbc135367d_compiled.qpy.gz": "527f1966c094c787459633a5dc022bd6db51eba458f27c12d5e678b6ba56d399",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/a18075b5b664a977ec63f5f796dba1bcd01fe3274bd807a4d490f3a484c580d5_wrapper.qpy.gz": "14d70a54905d3d9c3adf3f6dce7101b8a73c5db37e3f04b3609689639ad717b3"
+            }
+          },
+          "completed_receipt": null,
+          "parents": []
+        },
+        {
+          "cell_id": "G36223",
+          "index": 1,
+          "axis": "X",
+          "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+          "seeds": [
+            3106051950957035744
+          ],
+          "physical": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 0,
+            "T": 0.1,
+            "q": 1,
+            "R_outer": 36223,
+            "K": 2,
+            "delta": 0.1,
+            "s": 36223,
+            "family": "FULL_H_PURE_RTE",
+            "L_D": 0,
+            "id": "FULL_H_66aa1ae447dd8fc11498"
+          },
+          "rz_count": 5572406,
+          "direct_price": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/PRICES.json",
+            "selector": [
+              1
+            ]
+          },
+          "compile_record": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/COMPILE_RECORDS/p1_X.json",
+            "selector": []
+          },
+          "compile_record_sha256": "8beb123f098e2578dc0ab819db52154448e0740a17598c6697185947fe3ca491",
+          "implementation_evidence": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/IMPLEMENTATION_EVIDENCE.json",
+            "selector": [
+              "X",
+              "paths",
+              1
+            ]
+          },
+          "calibration_record": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+            "selector": [
+              0
+            ]
+          },
+          "raw_receipt": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RAW_RECEIPT.json",
+            "selector": []
+          },
+          "decoded_path_selector": [
+            "child",
+            "paths",
+            1
+          ],
+          "execution_source": {
+            "commit": "8cce540645b99e515d72888b817782a1b9f97334",
+            "result_path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RESULT.json",
+            "caller": "scripts/complete_full_h_p2_checkpoint.py",
+            "plan": "D7",
+            "cell": "G36223",
+            "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+            "step_seeds": [
+              [
+                8992396265638595431
+              ],
+              [
+                3106051950957035744
+              ]
+            ]
+          },
+          "compile_producer_source": "887c3b9d04d15be96637b6634265424e7dd50339",
+          "compile_reused_at_continuation": true,
+          "checkpoint": null,
+          "completed_receipt": {
+            "path": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/acceleration01/G36223/path_result_1.json",
+            "sha256": "fe48071cba5193c74806e98401c8b8f13bdded70676fe106d0a6e9c9e70b470e",
+            "source_commit": "887c3b9d04d15be96637b6634265424e7dd50339"
+          },
+          "parents": []
+        },
+        {
+          "cell_id": "G36223",
+          "index": 0,
+          "axis": "Y",
+          "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+          "seeds": [
+            8992396265638595431
+          ],
+          "physical": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 0,
+            "T": 0.1,
+            "q": 1,
+            "R_outer": 36223,
+            "K": 2,
+            "delta": 0.1,
+            "s": 36223,
+            "family": "FULL_H_PURE_RTE",
+            "L_D": 0,
+            "id": "FULL_H_66aa1ae447dd8fc11498"
+          },
+          "rz_count": 5552901,
+          "direct_price": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/PRICES.json",
+            "selector": [
+              2
+            ]
+          },
+          "compile_record": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/COMPILE_RECORDS/p0_Y.json",
+            "selector": []
+          },
+          "compile_record_sha256": "2027885a0223e8d97b60e6cb915d71043011095f12a0364e71709f5b0c818f75",
+          "implementation_evidence": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/IMPLEMENTATION_EVIDENCE.json",
+            "selector": [
+              "Y",
+              "paths",
+              0
+            ]
+          },
+          "calibration_record": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+            "selector": [
+              1
+            ]
+          },
+          "raw_receipt": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RAW_RECEIPT.json",
+            "selector": []
+          },
+          "decoded_path_selector": [
+            "child",
+            "paths",
+            0
+          ],
+          "execution_source": {
+            "commit": "8cce540645b99e515d72888b817782a1b9f97334",
+            "result_path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RESULT.json",
+            "caller": "scripts/complete_full_h_p2_checkpoint.py",
+            "plan": "D7",
+            "cell": "G36223",
+            "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+            "step_seeds": [
+              [
+                8992396265638595431
+              ],
+              [
+                3106051950957035744
+              ]
+            ]
+          },
+          "compile_producer_source": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+          "compile_reused_at_continuation": true,
+          "checkpoint": {
+            "private": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223",
+            "trial": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/cost/D_FULL_H_P2_D7_G36223_PROPOSED_V1/FULL_H_66aa1ae447dd8fc11498/0/result.json",
+            "events": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/cost/D_FULL_H_P2_D7_G36223_PROPOSED_V1/FULL_H_66aa1ae447dd8fc11498/0/events_PRIVATE.json",
+            "source_commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "files": {
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/cost/D_FULL_H_P2_D7_G36223_PROPOSED_V1/FULL_H_66aa1ae447dd8fc11498/0/result.json": "a8ef63f33d322b2569dad3efaec646f7c94200f9cc40400d5c8f6eb43f7ca642",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/cost/D_FULL_H_P2_D7_G36223_PROPOSED_V1/FULL_H_66aa1ae447dd8fc11498/0/events_PRIVATE.json": "7b550231715dd0129e904bdcec82ab84dc6e27974bc543ced8c783596e82f64f",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/a18075b5b664a977ec63f5f796dba1bcd01fe3274bd807a4d490f3a484c580d5.json": "38bbadd78cc7b71fac07c2c8ff8a62b2296c660c70a6d630480a32970a4752cc",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/cae30ad52ecd0ec57dee539ebfad8a686f4c2594d5caf60133503adbc135367d.json": "2027885a0223e8d97b60e6cb915d71043011095f12a0364e71709f5b0c818f75",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/cae30ad52ecd0ec57dee539ebfad8a686f4c2594d5caf60133503adbc135367d_wrapper.qpy.gz": "d1e58e2b63da33ad27e7cf92b63d8053adf13c37c3f66455e8979d116a62cab2",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/a18075b5b664a977ec63f5f796dba1bcd01fe3274bd807a4d490f3a484c580d5_compiled.qpy.gz": "9be413556a056d4c49595660c668554762f6e0694abcdc100b65128025b5e36a",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/cae30ad52ecd0ec57dee539ebfad8a686f4c2594d5caf60133503adbc135367d_compiled.qpy.gz": "527f1966c094c787459633a5dc022bd6db51eba458f27c12d5e678b6ba56d399",
+              "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01/G36223/compiled_cache/a18075b5b664a977ec63f5f796dba1bcd01fe3274bd807a4d490f3a484c580d5_wrapper.qpy.gz": "14d70a54905d3d9c3adf3f6dce7101b8a73c5db37e3f04b3609689639ad717b3"
+            }
+          },
+          "completed_receipt": null,
+          "parents": []
+        },
+        {
+          "cell_id": "G36223",
+          "index": 1,
+          "axis": "Y",
+          "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+          "seeds": [
+            3106051950957035744
+          ],
+          "physical": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 0,
+            "T": 0.1,
+            "q": 1,
+            "R_outer": 36223,
+            "K": 2,
+            "delta": 0.1,
+            "s": 36223,
+            "family": "FULL_H_PURE_RTE",
+            "L_D": 0,
+            "id": "FULL_H_66aa1ae447dd8fc11498"
+          },
+          "rz_count": 5572406,
+          "direct_price": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/PRICES.json",
+            "selector": [
+              3
+            ]
+          },
+          "compile_record": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/COMPILE_RECORDS/p1_Y.json",
+            "selector": []
+          },
+          "compile_record_sha256": "ce047fbe04f0c659b72c25864dc693acaaa8e0d225b43212526070150360b81a",
+          "implementation_evidence": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/IMPLEMENTATION_EVIDENCE.json",
+            "selector": [
+              "Y",
+              "paths",
+              1
+            ]
+          },
+          "calibration_record": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+            "selector": [
+              1
+            ]
+          },
+          "raw_receipt": {
+            "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+            "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RAW_RECEIPT.json",
+            "selector": []
+          },
+          "decoded_path_selector": [
+            "child",
+            "paths",
+            1
+          ],
+          "execution_source": {
+            "commit": "8cce540645b99e515d72888b817782a1b9f97334",
+            "result_path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RESULT.json",
+            "caller": "scripts/complete_full_h_p2_checkpoint.py",
+            "plan": "D7",
+            "cell": "G36223",
+            "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+            "step_seeds": [
+              [
+                8992396265638595431
+              ],
+              [
+                3106051950957035744
+              ]
+            ]
+          },
+          "compile_producer_source": "887c3b9d04d15be96637b6634265424e7dd50339",
+          "compile_reused_at_continuation": true,
+          "checkpoint": null,
+          "completed_receipt": {
+            "path": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/acceleration01/G36223/path_result_1.json",
+            "sha256": "fe48071cba5193c74806e98401c8b8f13bdded70676fe106d0a6e9c9e70b470e",
+            "source_commit": "887c3b9d04d15be96637b6634265424e7dd50339"
+          },
+          "parents": []
+        }
+      ],
+      "checked_path_axes": 4,
+      "raw_receipt_sha256": "b7efd5c3bbf4a97ba5eac79f208c185d47186d4873f7f0d072b6bf379c8b5eff",
+      "C_scientific_admission": "NOT_PERFORMED",
+      "canonical_round_guard_invoked": false,
+      "law_expectation": false
     }
   },
   "paired": {
@@ -1875,7 +2374,11 @@
     "fixed caller records regenerated from saved receipt",
     "per path and axis original compiler bytes/hash/fingerprint/metrics",
     "PRICE_CALIBRATION_RECORD_V1 and implementation evidence linkage",
-    "C c628e9e8 evidence reader on published C_INPUTS/PRICES/IMPLEMENTATION_EVIDENCE"
+    "C c628e9e8 evidence reader on published C_INPUTS/PRICES/IMPLEMENTATION_EVIDENCE",
+    "recovery preserved source/inputs and prohibited sampling/compile",
+    "G36223 saved path0 final parity/scalar/event/XY/fingerprint checks PASS",
+    "G36223 four-axis fixed-publication binding and original compile bytes checked",
+    "parent observer actual returncode 0 and no signal"
   ],
   "C_scientific_admission": "NOT_PERFORMED",
   "canonical_round_guard_invoked": false,
@@ -1901,8 +2404,8 @@
     "method ranking"
   ],
   "mandatory_stop": "AFTER_COMPLETE_HANDOFF_OR_MAJOR_GATE_FAILURE",
-  "complete_calibration_set": false,
-  "mandatory_stop_reached": false,
+  "complete_calibration_set": true,
+  "mandatory_stop_reached": true,
   "counts": {
     "planned_real_compiles": 18,
     "preexisting_saved_price_reuse": 0,
@@ -1910,20 +2413,23 @@
     "produced_by_source": {
       "d323fee1ca8cd6893c4b705f990cdc931bdb5c87": 16,
       "887c3b9d04d15be96637b6634265424e7dd50339": 2,
-      "0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4": 0
+      "0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4": 0,
+      "8cce540645b99e515d72888b817782a1b9f97334": 0
     },
-    "complete_final_path_axes_PASS": 16,
+    "complete_final_path_axes_PASS": 18,
     "observed_physical_gate_FAIL": 0,
-    "final_path_axes_UNKNOWN": 2,
+    "final_path_axes_UNKNOWN": 0,
     "compile_prices_not_obtained": 0,
-    "final_required_path_receipts_missing": 1,
-    "completed_calibration_cells": 4,
-    "incomplete_calibration_cells": 1
+    "final_required_path_receipts_missing": 0,
+    "completed_calibration_cells": 5,
+    "incomplete_calibration_cells": 0,
+    "zero_compile_recovery_cached_axes": 4,
+    "new_recovery_compiles": 0,
+    "new_recovery_sampling": 0
   },
-  "saved_partial_cell_path_axes_PASS": 2,
-  "incomplete_cell": "G36223",
-  "C_input_record_count": 8,
-  "required_C_input_records_missing": 2,
+  "incomplete_cell": null,
+  "C_input_record_count": 10,
+  "required_C_input_records_missing": 0,
   "calibration_fit_permission": "NOT_GRANTED_IN_THIS_TASK",
   "G36223_partial": {
     "status": "INCOMPLETE_CELL_PATH0_UNKNOWN",
@@ -2099,7 +2605,12 @@
     "raw_events_sha256": "7b550231715dd0129e904bdcec82ab84dc6e27974bc543ced8c783596e82f64f",
     "raw_path1_sha256": "fe48071cba5193c74806e98401c8b8f13bdded70676fe106d0a6e9c9e70b470e",
     "C_scientific_admission": "NOT_PERFORMED",
-    "complete_calibration_record_produced": false
+    "complete_calibration_record_produced": false,
+    "historical_only": true,
+    "superseded_by_complete_cell": {
+      "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+      "directory": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223"
+    }
   },
   "stop_source": {
     "commit": "0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4",
@@ -2164,6 +2675,20 @@
       "selector": [
         1
       ]
+    },
+    {
+      "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+      "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+      "selector": [
+        0
+      ]
+    },
+    {
+      "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+      "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+      "selector": [
+        1
+      ]
     }
   ],
   "D1_checked_G36223_partial": [
@@ -2174,13 +2699,26 @@
     "C c628e9e8 generic evidence reader on partial metadata; no canonical round guard or C admission"
   ],
   "recovery_current": {
-    "status": "RUNNING",
+    "status": "COMPLETE_AND_PUBLICATION_CHECKED",
     "source": "8cce540645b99e515d72888b817782a1b9f97334",
     "input": "docs/research/d_full_h_p2_completion_20261115/FROZEN_RECOVERY.json",
     "report": "docs/research/d_full_h_p2_completion_20261115/RECOVERY.md",
     "new_compiles": 0,
     "new_sampling": 0,
     "remaining_scope": "G36223 path0 saved native checks only; finished path1 exact reuse",
-    "old_STOP_preserved": true
-  }
+    "old_STOP_preserved": true,
+    "published_result_commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+    "mandatory_stop_reached": true
+  },
+  "published_G36223_result_commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+  "base_four_cells_publication_commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+  "published_result_commits": {
+    "G566": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+    "G4528": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+    "Q8R566": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+    "P2R566": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+    "G36223": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1"
+  },
+  "D1_final_publication_status": "ALL_18_PATH_AXES_BOUND_TO_FIXED_PUBLICATION",
+  "historical_partial_cell_path_axes_PASS": 2
 }

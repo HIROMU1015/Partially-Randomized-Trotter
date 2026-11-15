@@ -2,7 +2,7 @@
 
 [並列化・高速化の手法集](PERFORMANCE_METHODS.md)：実装と検証記録を再利用するための入口。
 
-- [Full-H κ2 D7較正取得](research/d_full_h_p2_calibration_resume_20261115/REPORT.md)／[C向けHANDOFF](research/d_full_h_p2_calibration_resume_20261115/HANDOFF_C.md)：18 compile保存、16軸PASS/2軸UNKNOWN。人工負荷で監視dumpのSIGSEGVを再現し、修正SOURCE8cce54064で残検査を再開中（追加compile0）。
+- [Full-H κ2 D7較正取得完了](research/d_full_h_p2_calibration_resume_20261115/REPORT.md)／[C向けHANDOFF](research/d_full_h_p2_calibration_resume_20261115/HANDOFF_C.md)：全5 cell・18軸PASS、追加compile0。結果f98cb9638、公開後対応照合18軸/較正record10件、C科学受入は未実施。全較正引渡しでmandatory STOP。
 
 [Full-H P-2並列化・高速化](research/d_full_h_p2_acceleration_20261115/REPORT.md)／[8 test](research/d_full_h_p2_acceleration_20261115/TESTS.txt)：path/X/Y process並列、gate構築再利用、legacy fast writer、保存checkpointの継続。H4での適用は未実施、旧worker停止には明示許可が必要（自動承認レビュー拒否）。
 

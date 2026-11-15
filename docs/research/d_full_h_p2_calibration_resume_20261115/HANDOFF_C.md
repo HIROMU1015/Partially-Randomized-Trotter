@@ -1,42 +1,33 @@
-# C向け部分引渡し：D7 CALIBRATION
+# C向け引渡し：D7 CALIBRATION全5 cell
 
-最新：利用者許可によりSOURCE8cce54064でG36223 path0残検査を再開中。人工負荷で監視dumpのSIGSEGVを再現し、親process観測へ修正した。追加sampling/compile0。下記STOPは履歴、現受入は16軸PASS/2軸UNKNOWNのまま。[修正と実行](../d_full_h_p2_completion_20261115/RECOVERY.md)。
+全5 cell・9 path・18軸の最終検査PASS。X/Y別のPRICE_CALIBRATION_RECORD_V1は10件。全較正を引き渡しmandatory STOP。有限cohort観測でありlaw期待値・モデル資格ではない。
 
-**MANDATORY STOP・全較正未完了。C fit/凍結は実施しない。** 18 compileの価格は全て保存したが、最終path検査は16軸PASS/2軸UNKNOWN。4 cell・14軸の公開後対応検査はPASS。G36223 path1は保存済みPASS、path0残検査のworkerが異常終了した。完全な各cell/path/X/Y locatorは [HANDOFF_C.json](HANDOFF_C.json) の `cells.*.path_axis_bindings` にある。
+先行4 cellの固定結果SHAは7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f、完成G36223はf98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1。
+全axisの固定locatorは [HANDOFF_C.json](HANDOFF_C.json) の cells.*.path_axis_bindings、10較正recordは available_PRICE_CALIBRATION_RECORD_V1_locators。
 
-結果SHA：`7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f`。取得SOURCEはd323fee1c、G36223の許可済みcheckpoint継続SOURCEは887c3b9d0。D7のplan/cohort/seedはFROZEN_JOBSから変更していない。
+## Cが追跡できる証拠
 
-## Cが読める証拠とD1が確認したこと
+- C_INPUTS：各cell/X/Yの有限cohort平均・feature・physical/law/profile/SOURCE。
+- PRICES：各path/X/Yの直接RZ価格、cohort/seed、fingerprint、埋込み元compile record。
+- IMPLEMENTATION_EVIDENCE：対応する全pathの実checks・数値gate・scalar/one-body・compile記録・価格・資源。
+- COMPILE_RECORDS：元個別compiler JSONをbytes/hashで保存。producer SOURCEを検証SOURCEと区別する。
+- RAW_RECEIPT：hash付きlossless gzip（G36223は2 part）。READ_RECEIPT.py:read_receipt(commit,manifest_path)で復号し、child.paths[i]へ辿る。既存C metadata readerにgzipを直接渡さない。
+- SIDECARS_BOUND/PUBLICATION_CHECK：上記を公開SHAへ結合したD1の照合結果。
 
-- C_INPUTS.json：既存 `PRICE_CALIBRATION_RECORD_V1` のX/Y別有限cohort平均・feature・physical/law/profile/SOURCE。有限平均はlaw期待値ではない。
-- PRICES.json：各path/X/Yの直接compiled価格、fingerprint、cohort/seed、埋込み元compile record。
-- IMPLEMENTATION_EVIDENCE.json：軸ごとのcalibration recordと、全pathの価格・実際のphase/parity/XY/one-body/scalar checks、数値gate、資源。
-- COMPILE_RECORDS/p<i>_<axis>.json：元native compiler JSONのbyte保存。SHAとmetrics/fingerprint/compilerを価格receiptへ照合済み。
-- RAW_RECEIPT.json→RESULT.json.gz：rawはlossless gzip。公開READ_RECEIPT.pyの `read_receipt(commit,manifest_path)` を使ってhash検査し、JSONを復号する。既存C metadata readerにgzipを直接渡さない。JSON selectorは `child.paths[i]`。
-- PUBLICATION_CHECK.json／SIDECARS_BOUND.json：固定公開SHAへの結合結果。D1は元receiptから固定callerのrecordsを作って公開小JSONと完全比較し、C c628e9e8の `evidence` readerで各locatorを読み取った。
+D1は公開SHAからreceiptを復号し、固定callerのrecordsを再生成して公開JSONと完全比較。各path/軸の価格・元compiler bytes/hash/fingerprint/metrics/compiler・実装証拠・PRICE_CALIBRATION_RECORD_V1を追跡できることを確認した。C c628e9e8のgeneric evidence readerで公開JSONを読んだ。**C担当の科学的受入はNOT_PERFORMED**。このD1本人の技術照合を独立reviewやC科学受入と呼ばない。
 
-これはD1本人による技術照合であり、**C担当の科学的受入はNOT_PERFORMED**。非configuration cellへcanonical-round guardを呼ばず、架空round IDを作っていない。index0の各cellに既存7数値gate、全pathにphase/parity/XYの適用範囲を保持する。index1をindex0の数値検査済みと扱わない。
+非configuration較正のためcanonical-round専用guardは呼ばず、架空round IDを付けていない。Cはこのrecord/evidence対応を読み、必要な較正受入と後続fitを別途判断する。
 
-## pairedと継続の依存
+## correctnessと依存関係
 
-P2R566はG566 path0/group0（seed11290319720649780064）→path1/group0（seed9014355981526777692）の順に、実取得親event receiptを直接復元・連結した。親SOURCE/physical/cohort/index/seed・順序・phase・scalarをbuild前に照合し、子X/Yはそれぞれcompileした。sampler呼出し0、同seed再生成0、親価格copy0。親2標本と相関するpaired1観測であり、独立な第3標本として数えない。親の公開manifest locatorとdecoded selectorはHANDOFF_C.jsonのpairedに固定した。
+各cell index0の既存7数値gateはPASS。index1にindex0の数値検査を拡張した主張はしない。全pathのparity・scalar/event phase・one-body・X/Y・元compile fingerprint対応はPASS。
 
-G36223のpath0は旧SOURCEでnative7 gateと2 compileが保存済み。許可された計画的引継ぎにより旧workerを終了したため、旧parentのSTOP_CELL/exit2を科学FAILへ数えない。旧record/raw/QPYは保全した。新SOURCEではpath0をsampling/compileなしで復元し残検査を行い、未着手path1の2 compileを初回取得し、全path検査PASSで保存した。その後SOURCE0dcの0 compile継続へ切り替えたが、同workerは4:14.99でchild receiptを書かず異常終了した。全体上限18は維持した。新runは計画的STOPではない。
+P2R566はG566 path0/group0（seed11290319720649780064）→path1/group0（seed9014355981526777692）の実親eventを直接連結。親SOURCE/physical/cohort/index/seed・event順序・phase・scalarをbuild前に確認。sampling/同seed再生成/親価格copyは0、子X/Yは各々compileした。親2観測と相関するため独立な第3標本に数えない。親manifest/selectorはHANDOFF_C.jsonのpairedに固定した。
 
-未取得：G36223 path0の最終path receipt（2軸）。compile価格の未取得0。G36223の完全な較正平均recordは作らず、4 cellの8較正recordとG36223の部分証拠を区別する。SOURCEd323のpath0 X/Y各5552901、SOURCE887のpath1 X/Y各5572406は保存済み。新SOURCE0dcでの追加sampling/compile0。未確認：C受入、finite-cohort CI/confidence、sampler/ideal距離、rare寄与、境界一般化、長時間資格、E[C]/N/G。全較正引渡し後又は重大gate失敗でmandatory STOP。後続のfit/凍結・HOLDOUTは別指示の作業である。
+G36223 path0価格のproducerはd323fee1ca8cd6893c4b705f990cdc931bdb5c87、path1は887c3b9d04d15be96637b6634265424e7dd50339。今回の検証SOURCEは8cce540645b99e515d72888b817782a1b9f97334。元native7 gate・4 compileを再利用し追加sampling/compile0で残検査を完了した。旧SOURCE/STOP/raw/QPYは保持する。旧部分証拠G36223_partialはhistorical_onlyであり、cells.G36223の完成receiptに置き換わる現受入状態とは区別する。
 
-## 異常終了と部分証拠の扱い
+## 件数・未確認・終了境界
 
-[終了報告](../d_full_h_p2_completion_20261115/REPORT.md)／[STOP_DETAIL](../d_full_h_p2_completion_20261115/STOP_DETAIL.json)。source0dcの最後の段階はbuild_new_evolution。例外・child receipt・子終了signalがなく原因未特定。cgroup OOM記録0、単純人工timer診断では再現できなかった。数値gate不一致は観測していないが、必要な残検査のPASSを確認できないためmandatory STOPとして扱う。科学retryはしていない。
+予定18、事前同等価格再利用0、実取得18、最終PASS18/FAIL0/UNKNOWN0、価格/必要receipt未取得0。再開時再利用4は18件の内数。D1公開後対応照合18軸、較正record10件。
 
-G36223のCOMPILE_RECORDSは元JSON bytes/hashを保存し、OBSERVED_COMPILESで軸・producer SOURCE・測定RZ・受入状態を照合する。path0のX/Yは保存QPY末尾の測定軸と固定hashで確認した。元native7 gateは7d0のNATIVE_CHECKPOINT_PATH0.jsonに固定される。原eventはSAVED_PATH0_EVENTS、完了path1原receiptはSAVED_PATH1にlossless gzipで保存する。これらは部分証拠であり、G36223の完成PRICE_CALIBRATION_RECORD_V1や全D7の受入を意味しない。
-
-既存4 cellの固定locatorは7d0c39066のまま維持する。G36223部分証拠の公開SHAとD1の公開後読取検査は、HANDOFF_C.jsonのG36223_partialへ結合する。C担当の科学的受入は全て未実施。非configuration cellへcanonical round identityを割り当てない。
-
-## 最終公開locatorの結合
-
-G36223の部分結果SHA：`1fdb5dd42f65d6286848dc76e686f62c5b3accf8`。各path/軸の元compile JSON・観測価格・producer SOURCE・raw manifest・実装証拠の固定locatorはHANDOFF_C.jsonの `G36223_partial.path_axis_bindings`。完成4 cellの8個のPRICE_CALIBRATION_RECORD_V1は `available_PRICE_CALIBRATION_RECORD_V1_locators` に列挙し、元7d0のlocatorを維持する。
-
-D1は公開SHAから両raw archiveを復号し、path0の元event hash/cohort/seed、path1の完了receipt hashと全実装証拠、4つの元compiler JSON bytes/hash/metrics/fingerprint、元native7 gateの公開file hashを確認した。[公開後検査](../d_full_h_p2_completion_20261115/PUBLICATION_CHECK.json)。C c628e9e8のgeneric evidence readerで部分JSONが読めることも確認した。D1技術検査であり、C科学的受入はNOT_PERFORMEDのまま。
-
-G36223のC_INPUTSは存在せず、完成較正recordを作っていないことも照合した。path0最終検査2軸UNKNOWN・全D7未完了・mandatory STOPを維持する。
+未確認：C科学的受入、母law CI/confidence、sampler/ideal距離、rare寄与、境界一般化、長時間資格・モデル採用。fit/係数凍結はCの後続作業。D1はm5/m6 HOLDOUT6 compile・外挿・E[C]/N/Gへ進まずmandatory STOP。[全報告](REPORT.md)。
