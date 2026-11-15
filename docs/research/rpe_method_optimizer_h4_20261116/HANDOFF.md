@@ -1,6 +1,6 @@
 # 統合担当・A/B/C/D/D2へ：方式別RPEコスト最適化（PR構成の生成まで）
 
-正本は[REPORT](REPORT.md)の§E〜H（第3段階）と§A〜D（第2段階）。branch `codex/b2-rpe-method-optimizer-20261116`、実装SOURCE `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`。新規の実信号・価格・compile・Q3は0件。
+正本は[REPORT](REPORT.md)の§E〜H（第3段階）と§A〜D（第2段階）。branch `codex/b2-rpe-method-optimizer-20261116`、実装SOURCE：PR生成は `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`、D2価格適用判定の接続は `47f86eb20`（報告出力 `d993d5e5b`、公開 `3014ae142`）。新規の実信号・価格・compile・Q3は0件。
 
 ## 追加：D2の価格適用判定の接続（policy=MODEL）
 
@@ -32,7 +32,7 @@
   - `NEW_SCIENCE_NOT_APPROVED`：未承認。
   - `NO_IMPROVING_PROPOSAL`：範囲を尽くした。
   - `NO_IMPROVING_PROPOSAL_INPUTS_MISSING`：範囲内に入力不足の候補が残る。
-- **受入**：生成8/8、実行器10/10、Aの固定受入20 PASS（Skillは PENDING 1）。
+- **受入**：生成8/8、実行器10/10、Aの固定受入20 PASS（Skillは PENDING 1）。価格接続後（`47f86eb20`）は、生成11/11・実行器10/10・A 20 PASS。
 
 ## 生成範囲の指定（round file）
 
