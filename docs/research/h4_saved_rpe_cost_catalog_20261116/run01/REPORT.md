@@ -47,6 +47,7 @@
 |PAULI_LD3_VP|PR_PAULI|3|2nd|Q3適合・価格待ち|—|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9]|
 |LD7_V0|PR_DF|7|2nd|Q3適合・価格待ち|—|[64, 60, 56, 52, 47, 43, 38, 34, 30, 25, 21, 17, 12] / [64, 60, 56, 52, 47, 43, 38, 34, 30, 25, 21, 17, 12]|
 |FULL_PF_S2_M12_ONE_FIXED (m12=1)|FULL_PF|10|2nd|モデル不適合|531,533,828.00|[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 13, 1] / [59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 13, 1]|
+|B0I_P7_Y4_32h_over_5|TRUNCATED_PF|7|4th|モデル不適合|—|[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 7, 2] / [59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 7, 2]|
 
 重複除去：4件。詳細・固定SOURCE・26軸の価格対応はCATALOG.jsonを参照。
 Q3適合・価格待ちは費用nullで選択対象外。信号だけの旧状態はsignal_only_historyへ保持する。
@@ -126,5 +127,6 @@ PRの事前固定予算・旧PF基準はhistorical_*に元SOURCEとともに保�
 - `0defa286c53a1b9acf513be453907bcad83102b3:docs/research/d_pr_df_ld7_v0_results_20261116/SUMMARY.json`
 - `7349f6f9b1dad3e67a77ffe948bfbf347b5c23a7:docs/research/full_pf_s2_m12_one_results_20261116/C_RESULT_JOIN.json`
 - `7349f6f9b1dad3e67a77ffe948bfbf347b5c23a7:docs/research/full_pf_s2_m12_one_results_20261116/SUMMARY.json`
+- `8a2f5c46d201b26bdaf2aad7ca556e31083779aa:docs/research/d_p7_y4_coarse_q3_recovery_20261116/C_RESULT_JOIN.json`
 
 再実行コマンドと追加方法は親directoryのHANDOFF.mdを参照。

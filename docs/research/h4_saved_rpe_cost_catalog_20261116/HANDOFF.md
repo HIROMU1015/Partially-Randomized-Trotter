@@ -57,3 +57,9 @@ HANDOFF→SUMMARYの重複参照は同一documentとして読み、同一configu
 保存集合内の最安費用はFull PF=559457386、p7=395962678、PR-Pauli LD2 OWN-B≈2442845584.51、PR-DF LD2 B_PRICE≈46341978336.21 RZ。Full-Hの固定シナリオ≈1246382808920.55 RZも同配分Q3を照合済み。LD3 VPとLD7 V0は価格nullで選択対象外。5 test PASS、新規科学call0。固定commit/pathを追加した同じコマンドで更新可能な状態で公開し、remote照合後mandatory STOP。
 
 長いMSE exact分子・分母はCATALOG内では十進文字列として転記し、標準Python JSON readerでも読める。値を丸めた表現ではない。条件付き費用と比較にはexact有理数を使い、元SUMMARYの保存判定を再評価しない。
+
+## 粗幅Y4復旧Q3の追加（2026-11-16）
+
+p7標準Yoshida4・粗幅32h/5 B_PRICEの復旧Q3（8a2f5c46d）をモデル不適合・費用nullとして追加。旧UNKNOWNは34783cd09の実行履歴へ接続。固定11入力35点（適合27/モデル不適合6/価格待ち2）、従来34点と全方式最安値は不変、p7最安395962678 RZ。新科学call0、技術検収5 PASS、公開後STOP。
+
+新しい入力は `8a2f5c46d201b26bdaf2aad7ca556e31083779aa:docs/research/d_p7_y4_coarse_q3_recovery_20261116/C_RESULT_JOIN.json`。新しい固定配分Q3索引の読取を最小拡張し、従来と同じcommandで集計した。実行SOURCE `e121cd556a5ace0487e22ca1363f562e01da622d`。候補 `B0I_P7_Y4_32h_over_5` の `q3_source`/`saved_recovery_assessment_source` が確定判定、`execution_history` が旧UNKNOWNと元理由、`q3_axis_sources` が26軸のphysical/canonical/配分への索引。数値失敗をモデル不適合へ付け替えたものではなく、復旧runの保存判定を採用した。費用推定・Q3再実施なし。旧a03adda2fの34点・旧UNKNOWN/STOPはGit固定参照で保全。ロードマップ本体は更新しない。
