@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli LD2 S0：保存QPYのstep分解監査](research/a_pauli_ld2_step_audit_20261115/REPORT.md)／[HANDOFF](research/a_pauli_ld2_step_audit_20261115/HANDOFF.md)／[修正案S0-r1](research/a_pauli_ld2_step_audit_20261115/AUDIT_RULES_R1_PROPOSAL.md)（2026-11-15、A）：固定規則のrun01はP1 26/26 PASS、P2 26/26 FAIL（数値上0のD(f1)対がcompileで除かれ、stepあたりCX 10個が一定に不足）。H_locは未検査、終端runは全13 roundでRZ 2個。S0-r1は未実行・要許可。0-compile、mandatory STOP。
+
 [PR-Pauli LD2 全13 roundの期待価格評価計画](research/a_pauli_ld2_expected_price_plan_20261115/REPORT.md)／[HANDOFF](research/a_pauli_ld2_expected_price_plan_20261115/HANDOFF.md)／[26軸対応表](research/a_pauli_ld2_expected_price_plan_20261115/AXIS_MAP.csv)（2026-11-15、A）：Q3候補と価格証拠の26軸対応、step分解による総額 w·β の評価案、最初の有限作業S0（保存QPYの0-compile監査）。計画のみ・価格予測/E[C]/CI/Gなし、mandatory STOP。
 
 [PR-Pauli LD2の次の有限価格証拠](research/pauli_ld2_next_price_evidence_20261115/REPORT.md)／[有限実行案](research/pauli_ld2_next_price_evidence_20261115/FINITE_EXECUTION_PLAN.md)／[HANDOFF](research/pauli_ld2_next_price_evidence_20261115/HANDOFF.md)：同round追加と長roundを比較し、m9 fresh2 path×XY最大4 compileを第一案。未採択・未実行、CI/E[C]/N/Gなし、mandatory STOP。
