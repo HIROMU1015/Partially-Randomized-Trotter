@@ -74,20 +74,18 @@ def fake_record(job):
     return record
 
 
-class FixtureRuntime:
+class FixtureRuntime(FixedRuntime):
     def __init__(self,actual):
         self.metadata=actual.metadata;self.common=actual.common;self.calls=[]
-        self.provider=SimpleNamespace(saved_h4_reference=self.reference)
+        self.provider=SimpleNamespace(saved_h4_reference=self.reference,
+            numerical_recipe=lambda source:dict(source=source,deterministic_PF='DIRECT_EXPM',finite_RTE=RECIPE,sampling=False))
+        def validate(c):
+            assert c['id'].startswith('ARTIFICIAL') and c['spec']['binding']['hamiltonian']=='ARTIFICIAL_H'
+        self.b=SimpleNamespace(validate=validate)
     def reference(self,root,job):
         if job['physical_context']['physical_candidate']['T'] != .125*(1<<job['m']):
             raise ValueError('ARTIFICIAL reference time missing')
         return dict(source=dict(fixture='ARTIFICIAL_REFERENCE'),T=.125*(1<<job['m']))
-    def jobs(self,cfg):
-        def validate(c):
-            assert c['id'].startswith('ARTIFICIAL') and c['spec']['binding']['hamiltonian']=='ARTIFICIAL_H'
-        return self.metadata.plan(cfg,{r['m']:r['physical_candidate']for r in cfg['rounds']},
-            b_validate=validate,b_exact_scalar=lambda v:v['numerator']/v['denominator']if isinstance(v,dict)else v,
-            numerical_recipe=dict(source=IMPLEMENTATION,deterministic_PF='DIRECT_EXPM',finite_RTE=RECIPE,sampling=False))['jobs']
 
 
 class EntryTests(unittest.TestCase):
@@ -249,6 +247,20 @@ class EntryTests(unittest.TestCase):
         result=prices.quote(prices.template('DF_LD7'))
         self.assertTrue(result['complete'])
         self.assertEqual(len(result['rows']),26)
+
+    def test_per_round_projection_matches_original_saved_planner(self):
+        old=self.saved.reader.read(SAVED[2]);cfg=self.saved.reader.read(old['configuration_source'])
+        self.assertEqual(self.actual._per_round_jobs(cfg),self.actual.jobs(cfg))
+
+    def test_nonbinary_step_is_only_that_round_unsupported(self):
+        e,cfg,reader,rt=self.fixture()
+        row=cfg['rounds'][0];row['physical_candidate'].update(q=3,delta=.125/3)
+        refresh(cfg,rt.common)
+        row['actual_delta_pf']=dict(numerator=1,denominator=24)
+        row['candidate']['delta']=deepcopy(row['actual_delta_pf'])
+        plan=e.plan(cfg)
+        self.assertEqual(plan['counts'],dict(REUSE=12,REQUEST=0,UNSUPPORTED=1))
+        self.assertEqual(plan['rounds'][0]['reasons'],['ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT'])
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

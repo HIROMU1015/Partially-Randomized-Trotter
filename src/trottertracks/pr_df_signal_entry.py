@@ -73,10 +73,51 @@ class FixedRuntime:
         self.b = scope['b_metadata'](root)
 
     def jobs(self, configuration):
-        return self.metadata.plan(configuration,
-            {r['m']: r['physical_candidate'] for r in configuration['rounds']},
-            b_validate=self.b.validate, b_exact_scalar=frac,
-            numerical_recipe=self.provider.numerical_recipe(IMPLEMENTATION))['jobs']
+        try:
+            return self.metadata.plan(configuration,
+                {r['m']: r['physical_candidate'] for r in configuration['rounds']},
+                b_validate=self.b.validate, b_exact_scalar=frac,
+                numerical_recipe=self.provider.numerical_recipe(IMPLEMENTATION))['jobs']
+        except ValueError:
+            # The whole-schedule planner stops at its first binary64 mismatch.
+            # Retain B validation and project the same jobs per round so that
+            # unaffected rounds can still be reused. No mapper/guard is changed.
+            jobs = self._per_round_jobs(configuration)
+            if any('ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT' in j.get('unsupported_reasons',[]) for j in jobs):
+                return jobs
+            raise
+
+    def _per_round_jobs(self, config):
+        """Same metadata projection/checks as fixed plan(), with per-round errors."""
+        self.b.validate(config)
+        s=config['spec'];rows=config['rounds'];jobs=[]
+        if (config['schema']!='PR_RPE_RMSE_V2' or s['method']!='PR'
+                or [r['m']for r in rows]!=list(range(s['M']+1))):
+            raise ValueError('Canonical complete PR schedule required')
+        for row in rows:
+            c=deepcopy(row['physical_candidate']);st=self.common.structure(c);bad=[]
+            if (c['id']!=self.common.candidate_id(c) or c['method']!='PR'
+                    or c['system']!=s['binding']['system'] or row['q_RPE']!=1<<row['m']
+                    or not 1<=c['prefix']<s['binding']['rank']
+                    or (c['formula'],c['prefix'],c['K'],c['q'],c['R_outer'])!=(s['formula'],s['L_D'],s['finite_K'],row['q_PF'],row['R_outer'])
+                    or not self.common.same(st,row['structure'])):
+                bad.append('PHYSICAL_RECIPE_DIFFERS_FROM_CANONICAL_ROUND')
+            bc=row['candidate']
+            if (frac(c['T'])!=frac(row['T']) or frac(c['delta'])!=frac(row['actual_delta_pf'])
+                    or frac(c['T'])!=frac(bc['T']) or frac(c['delta'])!=frac(bc['delta'])):
+                bad.append('ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT')
+            context=dict(physical_candidate=c,structure=deepcopy(st),binding=deepcopy(s['binding']),
+                profile=deepcopy(s['profile']),split=deepcopy(s['split']),law=deepcopy(s['law']),
+                numerical_recipe=self.provider.numerical_recipe(IMPLEMENTATION))
+            job=dict(m=row['m'],q_RPE=row['q_RPE'],q_PF=row['q_PF'],T=deepcopy(row['T']),
+                B_configuration_id=config['id'],B_candidate_id=row['candidate']['id'],
+                B_identity=deepcopy(row['identity']),B_law_binding=deepcopy(row['law_binding']),
+                physical_context=context,status='MISSING_MEAN_REQUIRES_PERMISSION',saved_source=None,
+                missing_fields=sorted(('raw','corrected','exact_tail','reference','log_B','allowance_evidence')),
+                N_X=None,N_Y=None,C=None,G=None,scientific_PASS_FAIL=None,automatic_retry=False)
+            if bad:job['unsupported_reasons']=bad
+            jobs.append(job)
+        return jobs
 
 
 def _numbers(value):
@@ -230,7 +271,10 @@ class DFSignalEntry:
             m = row['m']
             if reasons:
                 rows.append(dict(m=m, decision='UNSUPPORTED', reasons=reasons)); continue
-            job = jobs[m]; key = self.physical_key(job)
+            job = jobs[m]
+            if job.get('unsupported_reasons'):
+                rows.append(dict(m=m,decision='UNSUPPORTED',reasons=job['unsupported_reasons']));continue
+            key = self.physical_key(job)
             definition = job['B_law_binding']['definition']
             rte_source = dict(commit='71ba49bb28b295aa28e51101bc3b1bf07d500767',path='src/trotterlib/rte.py')
             decl = definition.get('A_declaration', {})
