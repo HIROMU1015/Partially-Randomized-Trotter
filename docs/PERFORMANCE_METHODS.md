@@ -1,5 +1,7 @@
 # 並列化・高速化の再利用
 
+PR-DF信号入口の保存index：[REPORT](research/d_pr_df_signal_entry_20261116/REPORT.md)、SOURCE2a5e085e5。既存GitReaderのcommit/path cacheとentry単位の物理key indexを再利用し、同じJSON・保存52roundを繰り返し読まない。keyにhead/tail・λ/s_R/c SOURCE・law・実step/piece配分を含め、κ/IDだけでcacheを分けない。新inventoryではfresh entryを作る。固定providerのmacro cacheは変更なし。確認は保存再現・人工/metadata検査のみで、新しい実信号の速度benchmarkは0。
+
 LD9 m6への既存prefix context/fast/path worker適用：[REPORT](research/d_pr_df_ld9_m6_price_20261116/REPORT.md)、SOURCE8f0a82842。親でprefix9 contextを一回prepare、独立4 pathをforkしX/Y個別compile。実測wall248.674s/8compile、workerCPU合計968.346s、単一worker最大RSS1,082,800KiB。倍率benchmarkなし。seed/order/profile/cache条件を維持、協調stage/exit保存。
 
 LD9への同じsignal cache/元Q3 acceleratorの適用：[REPORT](research/d_pr_df_ld9_v0_results_20261116/REPORT.md)。SOURCE303ed2ef7のcallerはhelper1cbc24cfc/fefd providerを再利用、13roundのmacro初回計算後12cache hit、signal wall5.066s、Q3 worker232.882s。新性能アルゴリズム/倍率benchmarkは0。3.11元AST guard・協調進捗/exit保存を維持し、b>1 gateを緩めない。

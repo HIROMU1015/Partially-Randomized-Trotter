@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[PR-DF共通信号接続](../trottertracks/pr_df_signal_entry.py)／[HANDOFF](../../docs/research/d_pr_df_signal_entry_20261116/HANDOFF.md)：固定provider/metadataを受動利用。trotterlib・providerの数値kernel変更なし。
+
 [PR価格規則入口](../trottertracks/pr_price_rules.py)／[検査・HANDOFF](../../docs/research/d_pr_price_rule_applicability_20261116/HANDOFF.md)：stdlibのみの保存価格読取・exactモデル適用。trotterlibの科学SOURCE・sampler/loweringは変更しない。
 
 [LD9 m6直接価格](../../docs/research/d_pr_df_ld9_m6_price_20261116/REPORT.md)：既存prefix対応prepare/normal sampler/new-ZZ/compilerを再利用。libraryの科学SOURCE変更なし。

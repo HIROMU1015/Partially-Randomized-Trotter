@@ -1,5 +1,7 @@
 # scripts 索引
 
+[PR-DF信号のplan/stage/bundle](prepare_pr_df_signals.py)／[HANDOFF](../docs/research/d_pr_df_signal_entry_20261116/HANDOFF.md)：元DF providerへの要求と保存信号の再利用。実信号execute modeなし。
+
 [PR価格JSON入口](quote_pr_price_rules.py)／[HANDOFF](../docs/research/d_pr_price_rule_applicability_20261116/HANDOFF.md)：configurationと実装契約から直接／モデル／不足を返す。候補生成・科学producerは起動しない。
 
 [LD9 m6 caller](run_pr_df_ld9_m6_price.py)／[直接比較](compare_pr_df_ld9_m6_price.py)／[HANDOFF](../docs/research/d_pr_df_ld9_m6_price_20261116/HANDOFF.md)：固定prefix9 request・NativeRuntime/Adapter・既存path workerを再利用。4 path/8 compileのみ、LD7保存m6との軸別exact平均差/比。fit・signal/Q3・総費用入口なし。

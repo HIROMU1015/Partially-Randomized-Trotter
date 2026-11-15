@@ -1,0 +1,97 @@
+{
+  "schema": "PR_DF_COMMON_SIGNAL_ENTRY_HANDOFF_V1",
+  "entry_source": "2a5e085e56d917607debcc18cec4faf7fa5a3539",
+  "code": {
+    "commit": "2a5e085e56d917607debcc18cec4faf7fa5a3539",
+    "path": "src/trottertracks/pr_df_signal_entry.py"
+  },
+  "CLI": {
+    "commit": "2a5e085e56d917607debcc18cec4faf7fa5a3539",
+    "path": "scripts/prepare_pr_df_signals.py"
+  },
+  "tests": {
+    "commit": "2a5e085e56d917607debcc18cec4faf7fa5a3539",
+    "path": "tests/test_pr_df_signal_entry.py"
+  },
+  "provider": {
+    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+    "path": "src/trottertracks/pr_rpe_signal_provider.py"
+  },
+  "canonical_B_source": "437ba4acdb82708b6fc98e3cd119a2a734f7cf64",
+  "intake": {
+    "commit": "27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+    "path": "src/trottertracks/rpe_signal_statistics_caller.py"
+  },
+  "price_entry": {
+    "commit": "7cd8ea139d703573f0da25a9ee5951f6930f0a25",
+    "path": "src/trottertracks/pr_price_rules.py"
+  },
+  "input": "B canonical PR-DF configuration object, generated item, or fixed Git locator; no B spec generation",
+  "output": {
+    "decisions": [
+      "REUSE",
+      "REQUEST",
+      "UNSUPPORTED"
+    ],
+    "request": "original-provider job and saved reference; numerical gate pending",
+    "carrier": "fresh CONFIGURATION.json and per-round raw files, uniform publication commit",
+    "bundle_kind": "A_BUNDLE_REQUIRES_EXISTING_K_ACCEPT_SAVED"
+  },
+  "supported_formulas": [
+    "2nd",
+    "4th(m5_best)"
+  ],
+  "supported_K": [
+    2,
+    4,
+    6
+  ],
+  "scope": "Saved H4 PR-DF S2/K2 LD1/2/7/9 replay; other formulas/K metadata/fixture support only; no new H4 signal validation",
+  "bundles": [
+    {
+      "L_D": 7,
+      "source": {
+        "commit": "0bcd1df98c7896fb91896cc23e8d8c6105611408",
+        "path": "docs/research/d_pr_df_signal_entry_20261116/B_MEANS_LD7.json"
+      },
+      "original_intake": "13_MEANS_ACCEPTED_STATISTICS_NOT_EXECUTED"
+    },
+    {
+      "L_D": 9,
+      "source": {
+        "commit": "0bcd1df98c7896fb91896cc23e8d8c6105611408",
+        "path": "docs/research/d_pr_df_signal_entry_20261116/B_MEANS_LD9.json"
+      },
+      "original_intake": "13_MEANS_ACCEPTED_STATISTICS_NOT_EXECUTED"
+    }
+  ],
+  "evidence": {
+    "saved_replay": {
+      "commit": "0bcd1df98c7896fb91896cc23e8d8c6105611408",
+      "path": "docs/research/d_pr_df_signal_entry_20261116/SAVED_REPLAY.json"
+    },
+    "artificial_checks": {
+      "commit": "0bcd1df98c7896fb91896cc23e8d8c6105611408",
+      "path": "docs/research/d_pr_df_signal_entry_20261116/ARTIFICIAL_CHECKS.json"
+    }
+  },
+  "counts": {
+    "saved_configurations": 4,
+    "saved_rounds_reused": 52,
+    "entry_tests": 17,
+    "existing_price_tests": 17,
+    "new_scientific_configurations": 0,
+    "new_real_signal_calls": 0,
+    "new_paths": 0,
+    "builds": 0,
+    "compiles": 0,
+    "fits": 0,
+    "Q3": 0
+  },
+  "precision": {
+    "nonbinary_T_or_step": "UNSUPPORTED_PER_ROUND_WITH_B_VALIDATOR_PRESERVED",
+    "Pauli_normalizer_budget_patch": "NOT_PRESENT_ON_THIS_FIXED_DF_ROUTE"
+  },
+  "next_work": "B2 may connect this passive plan. New signal execution and numerical gates remain separate subsequent work; no scientific execution here.",
+  "roadmap": "round-level DF signal gap -> provider request -> old Q3 intake; roadmap main file unchanged"
+}

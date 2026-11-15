@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-DF信号共通入口](research/d_pr_df_signal_entry_20261116/REPORT.md)／[B2向けHANDOFF](research/d_pr_df_signal_entry_20261116/HANDOFF.md)：分割・law・scalar・実scheduleを照合し、既存intakeのbundleへ接続。
+
 [PR価格規則の適用判定](research/d_pr_price_rule_applicability_20261116/REPORT.md)／[B2向けHANDOFF](research/d_pr_price_rule_applicability_20261116/HANDOFF.md)：物理条件と固定方式別規則を照合し、価格または具体的較正不足を返す受動入口。
 
 [PR-DF LD9/LD7 m6直接価格比較](research/d_pr_df_ld9_m6_price_20261116/REPORT.md)：PR-DF LD9 m6（T6.4/q64/R1）をnormal4 path・X/Y8 compileで直接取得。X/Y平均492573 RZ、LD7保存平均393837.25に対して差+98735.75、比1.250701907958。別cohortの有限平均比較だけで、LD9価格fit/13round総費用はnull。signal/Q3/追加価格点0、公開後STOP。

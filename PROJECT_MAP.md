@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-DF信号共通入口](docs/research/d_pr_df_signal_entry_20261116/REPORT.md)：B2 configurationをround別REUSE/REQUEST/UNSUPPORTEDへ接続。保存52round・LD7/LD9 bundle完全再現と元intake受入。17＋価格17検査、新信号/compile/Q3 0。
+
 [PR-Pauli／PR-DF価格適用判定](docs/research/d_pr_price_rule_applicability_20261116/REPORT.md)：B2向け受動API。直接有限価格・候補固有モデル／外挿・較正不足を区分。保存156軸・12総額exact再現、17検査PASS、新compile/fit/Q3 0。
 
 [PR-DF LD9/LD7 m6直接価格比較](docs/research/d_pr_df_ld9_m6_price_20261116/REPORT.md)：PR-DF LD9 m6（T6.4/q64/R1）をnormal4 path・X/Y8 compileで直接取得。X/Y平均492573 RZ、LD7保存平均393837.25に対して差+98735.75、比1.250701907958。別cohortの有限平均比較だけで、LD9価格fit/13round総費用はnull。signal/Q3/追加価格点0、公開後STOP。
