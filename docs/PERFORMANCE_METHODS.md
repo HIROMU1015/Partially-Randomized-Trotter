@@ -60,3 +60,5 @@ toyでserial/parallel/cache再利用の一致を確認した記録がある。PR
 ## 小さいnormal pathへ既存gateを再利用する際の注意
 
 m0 q1/R9の固定normal pathでは、X/Y並列・既存cache/fast writerを再利用して7.84秒で2 compileしたが、中央rotationがすべて1-qubitでZZ置換実績が0だった。元7数値gateはPASSでも既存のcoverage条件 `replaced_controlled_zz > 0` が不成立となり、単価はnullで保留した。gateを満たすための再抽選・強制事象を行わず元SOURCE/証拠を保全する。性能策のreuseと取得受入を区別する。[m0結果・STOP](research/d_full_h_m0_reference_20261115/REPORT.md)。
+
+保存証拠だけで条件を切り分ける例は [m0 ZZ対象0の読取照合](research/d_full_h_m0_zz_evidence_20261115/REPORT.md)。D1証拠SOURCE64624ea07の `read_saved_evidence.py` は固定JSON/QPYと純粋なphase/XY読取関数を再利用し、再sampling/build/compile/simulation/価格再計数を行わない。m0の対象0・保存QPY phase/XYは確認済み、旧parity戻り値/legacy回路は未保存のまま。通常callerやcheckpoint再build経路の代用品ではなく、同じ固定SOURCE・head/basis/control範囲を閉じられる場合の技術照合例。速度倍率は未測定。
