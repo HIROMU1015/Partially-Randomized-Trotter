@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[PR価格規則入口](../trottertracks/pr_price_rules.py)／[検査・HANDOFF](../../docs/research/d_pr_price_rule_applicability_20261116/HANDOFF.md)：stdlibのみの保存価格読取・exactモデル適用。trotterlibの科学SOURCE・sampler/loweringは変更しない。
+
 [LD9 m6直接価格](../../docs/research/d_pr_df_ld9_m6_price_20261116/REPORT.md)：既存prefix対応prepare/normal sampler/new-ZZ/compilerを再利用。libraryの科学SOURCE変更なし。
 
 [PR-DF LD9 共通V0結果](../../docs/research/d_pr_df_ld9_v0_results_20261116/REPORT.md)：既存provider/mapper/kernelを固定再利用、library変更なし。

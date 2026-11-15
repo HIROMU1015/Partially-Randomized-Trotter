@@ -1,0 +1,243 @@
+{
+  "schema": "PR_PRICE_APPLICABILITY_HANDOFF_V1",
+  "execution_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+  "code": {
+    "commit": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+    "path": "src/trottertracks/pr_price_rules.py"
+  },
+  "registry": {
+    "commit": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+    "path": "configs/pr_price_rules/h4_saved_rules.json"
+  },
+  "CLI": {
+    "commit": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+    "path": "scripts/quote_pr_price_rules.py"
+  },
+  "tests": {
+    "commit": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+    "path": "tests/test_pr_price_rules.py"
+  },
+  "input": {
+    "configuration": "canonical PR_RPE_RMSE_V2 object, or CLI configuration_source {commit,path,selector}",
+    "implementation": "explicit registry contract or a different contract that returns needs",
+    "policy": [
+      "MODEL",
+      "AUTO",
+      "DIRECT"
+    ],
+    "shots": "optional X/Y nonnegative integer vectors"
+  },
+  "output": {
+    "rows": "m, axis, direct_alternatives, model_alternative, classification, unit_price_RZ, source, needs",
+    "total_RZ": "exact weighted sum only if every axis is priced; else null",
+    "qualified_E_C": false
+  },
+  "coverage": [
+    {
+      "rule": "DF_LD1",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "configuration_source": {
+        "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+        "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+        "selector": []
+      },
+      "mode": "SAVED_STRUCTURAL_PLUS_RESIDUAL",
+      "model_axes": 26,
+      "direct_axis_records": 8,
+      "model_source": {
+        "commit": "3cac53da1a4a8b2228245593c74c1ff9ec1f5212",
+        "path": "docs/research/pr_df_ld1_residual_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": []
+      },
+      "calibration_domain": {
+        "q": [
+          1,
+          64
+        ],
+        "R": [
+          2,
+          128
+        ]
+      }
+    },
+    {
+      "rule": "DF_LD2",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "configuration_source": {
+        "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+        "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+        "selector": []
+      },
+      "mode": "FULL_AFFINE_QR",
+      "model_axes": 26,
+      "direct_axis_records": 6,
+      "model_source": {
+        "commit": "e0b3cad2a024070389f757160f3a20d7da02c5ff",
+        "path": "docs/research/d_pr_df_ld_split_results_20261115/FROZEN_LD2_MODELS.json",
+        "selector": []
+      },
+      "calibration_domain": {
+        "q": [
+          1,
+          64
+        ],
+        "R": [
+          1,
+          40
+        ]
+      }
+    },
+    {
+      "rule": "DF_LD7",
+      "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+      "configuration_source": {
+        "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+        "path": "docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json",
+        "selector": []
+      },
+      "mode": "FULL_AFFINE_Q_R1",
+      "model_axes": 26,
+      "direct_axis_records": 6,
+      "model_source": {
+        "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+        "path": "docs/research/d_pr_df_ld7_price_results_20261116/FROZEN_MODELS.json",
+        "selector": []
+      },
+      "calibration_domain": {
+        "q": [
+          1,
+          64
+        ],
+        "R": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "rule": "DF_LD9",
+      "configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+      "configuration_source": {
+        "commit": "460d77d8f56ef0bde41dbddaa27852dd8b05513e",
+        "path": "docs/research/d_pr_df_ld9_v0_results_20261116/generation/CONFIGURATION.json",
+        "selector": []
+      },
+      "mode": null,
+      "model_axes": 0,
+      "direct_axis_records": 2,
+      "model_source": null,
+      "calibration_domain": {}
+    },
+    {
+      "rule": "PAULI_LD1",
+      "configuration_id": "d905d2197d4b01df3074b3844c0f4a2b990c21b9c3e1a0e3b6ea13a488b1fd27",
+      "configuration_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+        "selector": [
+          "packets",
+          0,
+          "configuration"
+        ]
+      },
+      "mode": null,
+      "model_axes": 0,
+      "direct_axis_records": 2,
+      "model_source": null,
+      "calibration_domain": {}
+    },
+    {
+      "rule": "PAULI_LD2",
+      "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+      "configuration_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+        "selector": [
+          "packets",
+          1,
+          "configuration"
+        ]
+      },
+      "mode": "PAULI_C2",
+      "model_axes": 26,
+      "direct_axis_records": 18,
+      "model_source": {
+        "commit": "b74e4e536392c2bbe94cd371436615fc56c0564f",
+        "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/run01/FROZEN_MODELS.json",
+        "selector": []
+      },
+      "calibration_domain": {
+        "q": [
+          1,
+          8
+        ],
+        "R": [
+          66,
+          4205
+        ]
+      }
+    },
+    {
+      "rule": "PAULI_LD3",
+      "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+      "configuration_source": {
+        "commit": "421258d400a86fffd7c4955d5cf1bd24ac5729cb",
+        "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/config_run01/CONFIGURATION_LD3.json"
+      },
+      "mode": "PAULI_AUDIT",
+      "model_axes": 26,
+      "direct_axis_records": 2,
+      "model_source": {
+        "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+        "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": []
+      },
+      "calibration_domain": {
+        "q": [
+          8,
+          8
+        ],
+        "R": [
+          660,
+          660
+        ]
+      }
+    },
+    {
+      "rule": "PAULI_LD5",
+      "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+      "configuration_source": {
+        "commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+        "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/config_run01/CONFIGURATION_LD5.json"
+      },
+      "mode": "PAULI_AUDIT",
+      "model_axes": 26,
+      "direct_axis_records": 2,
+      "model_source": {
+        "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+        "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": []
+      },
+      "calibration_domain": {
+        "q": [
+          8,
+          8
+        ],
+        "R": [
+          4,
+          4
+        ]
+      }
+    }
+  ],
+  "counts": {
+    "model_axes": 156,
+    "saved_totals": 12,
+    "new_paths": 0,
+    "compiles": 0,
+    "fits": 0,
+    "Q3": 0,
+    "focused_tests": 17
+  },
+  "roadmap": "B2 can call before allocation/search; candidate/signal/price execution, Q3 and rule extensions remain external; no roadmap main edit"
+}
