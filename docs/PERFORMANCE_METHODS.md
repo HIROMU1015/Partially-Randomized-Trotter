@@ -1,5 +1,7 @@
 # 並列化・高速化の再利用
 
+LD9への同じsignal cache/元Q3 acceleratorの適用：[REPORT](research/d_pr_df_ld9_v0_results_20261116/REPORT.md)。SOURCE303ed2ef7のcallerはhelper1cbc24cfc/fefd providerを再利用、13roundのmacro初回計算後12cache hit、signal wall5.066s、Q3 worker232.882s。新性能アルゴリズム/倍率benchmarkは0。3.11元AST guard・協調進捗/exit保存を維持し、b>1 gateを緩めない。
+
 ## PR-DF prefix7：既存context/fast/path workerの再利用
 
 [LD7 caller](../scripts/run_pr_df_ld7_prices.py)はe827のfrom_b/NativeRuntime/Adapterとmatching fastを使い、既存ea9e6609 path workerの出力とstateを専用scopeへ渡す。SOURCE8d4503e00。prefix1/2用request生成を流用せず、7本head・3本tail・corrected total scalarを人工fixtureと実preparationで確認。較正8独立pathをfork並列（X/Y個別compile）、holdout2 pathはモデル公開後。実測較正202.816s/16compile、holdout29.992s/4compile、倍率benchmarkなし。[REPORT](research/d_pr_df_ld7_price_results_20261116/REPORT.md)。Q3は既存3.11.0rc1 supervisor/accelerator、協調stage/round logを再利用し2 callとも完了。共有環境・sampler/seed/order・cache identity・compiler条件を変更しない。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-DF LD9 共通V0完了](research/d_pr_df_ld9_v0_results_20261116/REPORT.md)：PR-DF LD9現行configuration/13信号/共通V0 Q3完了。元mapperの全13 R=1・qRはLD7と同じ。b=1.0000000000000004で元b>1/norm/closure gate通過。MSE上界4.28410123342266259328471E-7 Ha²で適合、LD7より条件付きモデルMSEが約4.037E-12 Ha²低い。compile/価格/fit/探索0、価格と総費用は未評価、公開後STOP。
+
 [PR-DF LD7固有価格・候補別Q3完了](research/d_pr_df_ld7_price_results_20261116/REPORT.md)：PR-DF LD7段階3〜5：normal10 path/20 compile、軸別alpha+beta*q・26正価格を固定し独立m3を記述比較（約−0.307853%、再fitなし）。独自A/Bの2 Q3とも適合。3点内最小はA_SHAPE、モデル費用約12.3534億RZ、外挿m7..12が95.945359%。LD1/LD2保存6点とjoin、次候補LD9は提案のみ。厳密E[C]/CI/G/winner未認定、公開後STOP。
 
 [PR-DF LD7 共通V0完了](research/d_pr_df_ld7_v0_results_20261116/REPORT.md)：PR-DF LD7段階0〜2完了：現行configuration1件、全13 roundでR=1・S2単一piece、13信号gate通過。共通V0のQ3一回はMSE上界4.28414160318294721365383E-7 Ha²で適合し、LD1/LD2保存V0と接続。次はLD7固有価格と候補別配分の比較。sampling/compile/fit/価格予測/独自配分0、公開後STOP。
