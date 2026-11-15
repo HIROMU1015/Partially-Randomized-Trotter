@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-DF LD1参照総額・PF 2基準の符号付き境界](docs/research/d_pr_df_ld1_reference_budget_20261115/REPORT.md)：固定Q3配分で26軸のモデル参照総額T_ref≈261,314,830,475.559718 RZをexact集計。B0I p7 S2/Full PF S2へのD_PFは各約−260,721,275,123.559718／−260,476,136,895.559718 RZ。未知Δは未評価、対象lawの順位・正式E[C]/CI/Gは未認定。新path/compile0、公開後STOP。
+
 [PR-DF LD1期待価格の構成と次の有限作業](docs/research/d_pr_df_ld1_expectation_construction_20261115/REPORT.md)：固定Q3配分と既存価格証拠を26軸で照合。保存E_I[S]とI/IID格子間の残差差上界はあるが、基準lawの期待残差と有限標本/長round誤差は未評価。次案は凍結モデルの26軸参照値＋PF593,555,352 RZとの比較に必要な残差誤差予算の有限評価（新path/compile0）。正式E[C]/CI/G未算出、計画公開後STOP。
 
 [PR-DF LD1 F0→残差価格の条件付き上界](docs/research/d_pr_df_ld1_f0_rz_range_20261115/REPORT.md)：C/Sを別々に抑えるSOURCE envelopeを26軸で導出。保存path TVとの積はm8まで1 RZ未満、m12約49,770.254 RZ。標準Qiskit1.3.0＋IID-grid仮定下の上界であり、実PCG64接続・正式E[C]/CI/N/Gは未認定。次案はPCG64 joint-law接続根拠1件。新path/build/compile/F0再実行0、公開後STOP。
