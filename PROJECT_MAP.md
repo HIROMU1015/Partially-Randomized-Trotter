@@ -1,5 +1,6 @@
 # プロジェクト案内
 
+[PF6：固定shot配分の全13round総compiled RZ数](docs/research/pf6_allround_cost_20261115/REPORT.md)／[HANDOFF](docs/research/pf6_allround_cost_20261115/HANDOFF.md)：B既知8round小計K（540b54ab2）＋C採択済み閉包価格60軸（e4458cd75、HANDOFF_B c383105b1）を整数で結合（直接96＋条件付き60＝156軸）。順位はB0I p7 S2 593,555,352、B0I p7 Y4 765,902,758、Full S2 838,693,580、B0I p7 M5 951,282,896、Full Y4 1,089,674,842、Full M5 1,343,396,772。最小と次点の差172,347,406、既知8roundからの順位変化なし。Q3固定配分の条件付き比較で、十分N・G・winnerではない。STOP。
 [PF6の既知8round費用と逆転条件](docs/research/pf6_eight_round_cost_20261115/REPORT.md)／[D/C引渡し](docs/research/pf6_eight_round_cost_20261115/HANDOFF.md)：固定shot配分と96直接価格軸をSOURCE・physical IDで結合し、整数部分和6件と未知5roundの逆転境界15組を保存。全13roundG・winner・十分Nは未認定、Q3再実行・価格予測・compileなし。
 
 [PR-DF固定gridのtotal bridgeと5方式readiness](docs/research/rpe_pr_df_total_bridge_20261115/REPORT.md)／[A/C HANDOFF](docs/research/rpe_pr_df_total_bridge_20261115/HANDOFF.md)：旧A grid・物理ID・元raw/lawを保持した版付きcanonical view。新6＋回帰27＝33技術test PASS。5方式14構成を区別し、旧partial MSEは転用しない。新実MSE/DP/N/Gなし・STOP。

@@ -42,3 +42,9 @@
 ## 4. 残っている開始条件
 
 Cが、HANDOFF_Bと60軸の機械可読価格表を固定SHAで公開すること。公開後は、追加承認なしで`prepare`→commit→`analyze`へ進む。Cの表の形式が想定と違う場合は、読取部分だけを最小限直してから進む。
+
+## 5. 追補：Cの公開後（同日20:48 JST）
+
+- CがHANDOFF_B（`c383105b16db7004db39b1ae270b220627d0f3b4`）を公開し、価格表 `e4458cd7548977e6e11a5a7b0c8dca0d049535d4:docs/research/pf_closure_prices_20261115/run01/PRICES.json#rows`を指定した。開始条件が成立したので、追加承認なしで集計へ進んだ。
+- 表の価格fieldは`compiled_RZ`・`exact_RZ`・`mean.rz_count`だったので、読取部分をこれに合わせ、採択policy・非直接・canonical ID・model groupの検査を加えた（人工testを更新、6件PASS）。
+- 集計直前に全remote branchを再確認し、同じ全13round集計が無いことを確認した。
