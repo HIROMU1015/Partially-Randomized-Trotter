@@ -1,0 +1,1102 @@
+{
+  "schema": "FULL_H_D7_TWO_MODELS_FOUR_FORECASTS_V1",
+  "execution_source": "f46fa120b4cddcaac3edcf21e3731a0d9020b2b8",
+  "input_source": {
+    "commit": "f46fa120b4cddcaac3edcf21e3731a0d9020b2b8",
+    "path": "docs/research/full_h_d7_model_freeze_20261115/INPUTS.json"
+  },
+  "status": "CALIBRATED_UNVALIDATED",
+  "models": {
+    "X": {
+      "model": "PRICE_LINEAR_FEATURE_MODEL_V1",
+      "status": "CALIBRATED_UNVALIDATED",
+      "method": "EXACT_NORMAL_EQUATION_LEAST_SQUARES",
+      "features": [
+        "one",
+        "event_count",
+        "outer_boundary_count"
+      ],
+      "coefficients": {
+        "one": {
+          "numerator": -52444240256483,
+          "denominator": 20115111656
+        },
+        "event_count": {
+          "numerator": 3090493494163,
+          "denominator": 20115111656
+        },
+        "outer_boundary_count": {
+          "numerator": -653520358735,
+          "denominator": 10057555828
+        }
+      },
+      "domain": {
+        "route": "FULL_H_RTE",
+        "axis": "X",
+        "implementation": {
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "native": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY",
+          "scalar_application": "ONCE_AT_TOTAL_T"
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "qiskit": "1.3.0",
+          "basis": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "P": 0
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+        "law": {
+          "model": "ideal_finite_RTE_law",
+          "K": 2,
+          "price_law": "PCG64_numpy_float64_CDF_saved_cohort",
+          "preparation": "9b83b96b:prepare_full_h"
+        }
+      },
+      "calibration": [
+        {
+          "cell_id": "G566",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G566/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "G566",
+            "cohort": "D_FULL_H_P2_D7_G566_PROPOSED_V1",
+            "step_seeds": [
+              [
+                11290319720649780064
+              ],
+              [
+                9014355981526777692
+              ]
+            ]
+          }
+        },
+        {
+          "cell_id": "G4528",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "G4528",
+            "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+            "step_seeds": [
+              [
+                17246386368192181302
+              ],
+              [
+                826347982126353897
+              ]
+            ]
+          }
+        },
+        {
+          "cell_id": "Q8R566",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/Q8R566/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "Q8R566",
+            "cohort": "D_FULL_H_P2_D7_Q8R566_PROPOSED_V1",
+            "step_seeds": [
+              [
+                15783069155567205217,
+                13216770312495618094,
+                5782178229184530187,
+                16914739293896279980,
+                14062580163614711199,
+                6791987108519216955,
+                38369225623229220,
+                11208919159258740673
+              ],
+              [
+                15919299277582080666,
+                17126230441238303948,
+                4263867371680994352,
+                15192927316914616920,
+                18201440836375994889,
+                3319848029233602312,
+                10315874140414818617,
+                9292272941246582957
+              ]
+            ]
+          }
+        },
+        {
+          "cell_id": "P2R566",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/P2R566/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "P2R566",
+            "cohort": "D_FULL_H_P2_D7_P2R566_PROPOSED_V1",
+            "step_seeds": [
+              [
+                11290319720649780064,
+                9014355981526777692
+              ]
+            ]
+          }
+        },
+        {
+          "cell_id": "G36223",
+          "source": {
+            "commit": "8cce540645b99e515d72888b817782a1b9f97334",
+            "result_path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RESULT.json",
+            "caller": "scripts/complete_full_h_p2_checkpoint.py",
+            "plan": "D7",
+            "cell": "G36223",
+            "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+            "step_seeds": [
+              [
+                8992396265638595431
+              ],
+              [
+                3106051950957035744
+              ]
+            ]
+          }
+        }
+      ],
+      "calibration_residuals": [
+        {
+          "numerator": 14618622252705,
+          "denominator": 20115111656
+        },
+        {
+          "numerator": 9947805049995,
+          "denominator": 20115111656
+        },
+        {
+          "numerator": 3910180772005,
+          "denominator": 20115111656
+        },
+        {
+          "numerator": 27371265404035,
+          "denominator": 20115111656
+        },
+        {
+          "numerator": 552671335335,
+          "denominator": 10057555828
+        }
+      ],
+      "design_source": {
+        "commit": "7a0c9468b2499fac9fa1cd279ae2980c9dab048e",
+        "path": "docs/research/a_full_h_p2_pauli_b1_price_design_20261114/DESIGNS.json",
+        "selector": "D7_INDEPENDENT_Q8_PLUS_PAIRED_Q2",
+        "status": "PROPOSAL_NOT_ADOPTED"
+      },
+      "qualified_for_candidate": false,
+      "extrapolation_scope": null,
+      "source": {
+        "module": "src/trottertracks/price_model_validation.py"
+      },
+      "input_locators": [
+        {
+          "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+          "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G566/C_INPUTS.json",
+          "selector": [
+            0
+          ]
+        },
+        {
+          "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+          "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/C_INPUTS.json",
+          "selector": [
+            0
+          ]
+        },
+        {
+          "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+          "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/Q8R566/C_INPUTS.json",
+          "selector": [
+            0
+          ]
+        },
+        {
+          "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+          "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/P2R566/C_INPUTS.json",
+          "selector": [
+            0
+          ]
+        },
+        {
+          "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+          "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+          "selector": [
+            0
+          ]
+        }
+      ],
+      "rank": 3,
+      "feature_map": "FULL_H_GROUP_V1",
+      "objective": "UNWEIGHTED_SUM_OF_FIVE_CELL_MEAN_SQUARED_RESIDUALS",
+      "calibration_residual_definition": "ABS_OBSERVED_MINUS_FITTED_CELL_MEAN",
+      "paired_dependence": {
+        "child": "P2R566",
+        "parents_in_order": [
+          {
+            "cell_id": "G566",
+            "path": 0,
+            "group": 0,
+            "cohort": "D_FULL_H_P2_D7_G566_PROPOSED_V1",
+            "seed": 11290319720649780064,
+            "manifest": {
+              "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+              "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G566/RAW_RECEIPT.json",
+              "selector": []
+            },
+            "decoded_selector": [
+              "child",
+              "paths",
+              0
+            ]
+          },
+          {
+            "cell_id": "G566",
+            "path": 1,
+            "group": 0,
+            "cohort": "D_FULL_H_P2_D7_G566_PROPOSED_V1",
+            "seed": 9014355981526777692,
+            "manifest": {
+              "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+              "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G566/RAW_RECEIPT.json",
+              "selector": []
+            },
+            "decoded_selector": [
+              "child",
+              "paths",
+              1
+            ]
+          }
+        ],
+        "independent_third_sample": false,
+        "event_restore": "SAVED_PARENT_EVENTS_NO_DRAW",
+        "correspondence": "PAIRED_EVENTS_IDENTICAL"
+      },
+      "coefficient_uncertainty": null
+    },
+    "Y": {
+      "model": "PRICE_LINEAR_FEATURE_MODEL_V1",
+      "status": "CALIBRATED_UNVALIDATED",
+      "method": "EXACT_NORMAL_EQUATION_LEAST_SQUARES",
+      "features": [
+        "one",
+        "event_count",
+        "outer_boundary_count"
+      ],
+      "coefficients": {
+        "one": {
+          "numerator": -52444240256483,
+          "denominator": 20115111656
+        },
+        "event_count": {
+          "numerator": 3090493494163,
+          "denominator": 20115111656
+        },
+        "outer_boundary_count": {
+          "numerator": -653520358735,
+          "denominator": 10057555828
+        }
+      },
+      "domain": {
+        "route": "FULL_H_RTE",
+        "axis": "Y",
+        "implementation": {
+          "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+          "native": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY",
+          "scalar_application": "ONCE_AT_TOTAL_T"
+        },
+        "profile": {
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "qiskit": "1.3.0",
+          "basis": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "P": 0
+        },
+        "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+        "kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+        "law": {
+          "model": "ideal_finite_RTE_law",
+          "K": 2,
+          "price_law": "PCG64_numpy_float64_CDF_saved_cohort",
+          "preparation": "9b83b96b:prepare_full_h"
+        }
+      },
+      "calibration": [
+        {
+          "cell_id": "G566",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G566/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "G566",
+            "cohort": "D_FULL_H_P2_D7_G566_PROPOSED_V1",
+            "step_seeds": [
+              [
+                11290319720649780064
+              ],
+              [
+                9014355981526777692
+              ]
+            ]
+          }
+        },
+        {
+          "cell_id": "G4528",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "G4528",
+            "cohort": "D_FULL_H_P2_D7_G4528_PROPOSED_V1",
+            "step_seeds": [
+              [
+                17246386368192181302
+              ],
+              [
+                826347982126353897
+              ]
+            ]
+          }
+        },
+        {
+          "cell_id": "Q8R566",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/Q8R566/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "Q8R566",
+            "cohort": "D_FULL_H_P2_D7_Q8R566_PROPOSED_V1",
+            "step_seeds": [
+              [
+                15783069155567205217,
+                13216770312495618094,
+                5782178229184530187,
+                16914739293896279980,
+                14062580163614711199,
+                6791987108519216955,
+                38369225623229220,
+                11208919159258740673
+              ],
+              [
+                15919299277582080666,
+                17126230441238303948,
+                4263867371680994352,
+                15192927316914616920,
+                18201440836375994889,
+                3319848029233602312,
+                10315874140414818617,
+                9292272941246582957
+              ]
+            ]
+          }
+        },
+        {
+          "cell_id": "P2R566",
+          "source": {
+            "commit": "d323fee1ca8cd6893c4b705f990cdc931bdb5c87",
+            "result_path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/P2R566/RESULT.json",
+            "caller": "scripts/run_full_h_kappa2_p2.py",
+            "plan": "D7",
+            "cell": "P2R566",
+            "cohort": "D_FULL_H_P2_D7_P2R566_PROPOSED_V1",
+            "step_seeds": [
+              [
+                11290319720649780064,
+                9014355981526777692
+              ]
+            ]
+          }
+        },
+        {
+          "cell_id": "G36223",
+          "source": {
+            "commit": "8cce540645b99e515d72888b817782a1b9f97334",
+            "result_path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/RESULT.json",
+            "caller": "scripts/complete_full_h_p2_checkpoint.py",
+            "plan": "D7",
+            "cell": "G36223",
+            "cohort": "D_FULL_H_P2_D7_G36223_PROPOSED_V1",
+            "step_seeds": [
+              [
+                8992396265638595431
+              ],
+              [
+                3106051950957035744
+              ]
+            ]
+          }
+        }
+      ],
+      "calibration_residuals": [
+        {
+          "numerator": 14618622252705,
+          "denominator": 20115111656
+        },
+        {
+          "numerator": 9947805049995,
+          "denominator": 20115111656
+        },
+        {
+          "numerator": 3910180772005,
+          "denominator": 20115111656
+        },
+        {
+          "numerator": 27371265404035,
+          "denominator": 20115111656
+        },
+        {
+          "numerator": 552671335335,
+          "denominator": 10057555828
+        }
+      ],
+      "design_source": {
+        "commit": "7a0c9468b2499fac9fa1cd279ae2980c9dab048e",
+        "path": "docs/research/a_full_h_p2_pauli_b1_price_design_20261114/DESIGNS.json",
+        "selector": "D7_INDEPENDENT_Q8_PLUS_PAIRED_Q2",
+        "status": "PROPOSAL_NOT_ADOPTED"
+      },
+      "qualified_for_candidate": false,
+      "extrapolation_scope": null,
+      "source": {
+        "module": "src/trottertracks/price_model_validation.py"
+      },
+      "input_locators": [
+        {
+          "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+          "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G566/C_INPUTS.json",
+          "selector": [
+            1
+          ]
+        },
+        {
+          "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+          "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G4528/C_INPUTS.json",
+          "selector": [
+            1
+          ]
+        },
+        {
+          "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+          "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/Q8R566/C_INPUTS.json",
+          "selector": [
+            1
+          ]
+        },
+        {
+          "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+          "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/P2R566/C_INPUTS.json",
+          "selector": [
+            1
+          ]
+        },
+        {
+          "commit": "f98cb96384b775bec2c2b9e1e63fe01a6ccdf2b1",
+          "path": "docs/research/d_full_h_p2_completion_20261115/recovery01/G36223/C_INPUTS.json",
+          "selector": [
+            1
+          ]
+        }
+      ],
+      "rank": 3,
+      "feature_map": "FULL_H_GROUP_V1",
+      "objective": "UNWEIGHTED_SUM_OF_FIVE_CELL_MEAN_SQUARED_RESIDUALS",
+      "calibration_residual_definition": "ABS_OBSERVED_MINUS_FITTED_CELL_MEAN",
+      "paired_dependence": {
+        "child": "P2R566",
+        "parents_in_order": [
+          {
+            "cell_id": "G566",
+            "path": 0,
+            "group": 0,
+            "cohort": "D_FULL_H_P2_D7_G566_PROPOSED_V1",
+            "seed": 11290319720649780064,
+            "manifest": {
+              "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+              "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G566/RAW_RECEIPT.json",
+              "selector": []
+            },
+            "decoded_selector": [
+              "child",
+              "paths",
+              0
+            ]
+          },
+          {
+            "cell_id": "G566",
+            "path": 1,
+            "group": 0,
+            "cohort": "D_FULL_H_P2_D7_G566_PROPOSED_V1",
+            "seed": 9014355981526777692,
+            "manifest": {
+              "commit": "7d0c39066d4ed900cfe7f5de6f4c7c5a3b2ec41f",
+              "path": "docs/research/d_full_h_p2_calibration_resume_20261115/run01/G566/RAW_RECEIPT.json",
+              "selector": []
+            },
+            "decoded_selector": [
+              "child",
+              "paths",
+              1
+            ]
+          }
+        ],
+        "independent_third_sample": false,
+        "event_restore": "SAVED_PARENT_EVENTS_NO_DRAW",
+        "correspondence": "PAIRED_EVENTS_IDENTICAL"
+      },
+      "coefficient_uncertainty": null
+    }
+  },
+  "predictions": [
+    {
+      "cell_id": "M5_ROUND",
+      "axis": "X",
+      "m": 5,
+      "physical": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 3.2,
+        "q": 32,
+        "R_outer": 283,
+        "K": 2,
+        "delta": 0.1,
+        "s": 9056,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_bc8aab34256b73b68025"
+      },
+      "q": 32,
+      "R": 283,
+      "n_paths": 2,
+      "cohort": "D_FULL_H_P2_D7_M5_ROUND_PROPOSED_V1",
+      "step_seeds": [
+        [
+          13018590642250043340,
+          8984585566861716285,
+          7411461487145727819,
+          6662005227508552643,
+          1328303713538684562,
+          12462354017760960947,
+          10465144325730187954,
+          14137323197291553045,
+          11364249729271238694,
+          7232294741098669980,
+          7140670022386512666,
+          5316439578554683687,
+          295859952973487767,
+          17004005535866622836,
+          15284503623246833052,
+          4263792046100001957,
+          11072634269028675825,
+          10617502252372275428,
+          10409617906762551529,
+          13004355316825878439,
+          16166747380711566624,
+          14243375930054175432,
+          10785735974424290853,
+          5661167126810724049,
+          5373298919733964054,
+          8740999225696893688,
+          14485811310880461080,
+          16572272470263038557,
+          10057237953698294093,
+          4696603043513655044,
+          1747777784794734662,
+          13084820608428434125
+        ],
+        [
+          16561055872366208015,
+          18208457623440442030,
+          7862537311646358359,
+          1915642728517703157,
+          2010562253201571842,
+          5497554758477192670,
+          14423652461880176943,
+          8573799498439894576,
+          13000806646724258836,
+          4159415026661001578,
+          13282861784485729352,
+          8093671541101106451,
+          6323260895932692690,
+          11349532511647147835,
+          9698832323902598087,
+          12572545207111938724,
+          10501584741771771456,
+          2249564433370124773,
+          13247256563629911237,
+          3854153785664329713,
+          18329891317156086037,
+          8318374287783561331,
+          14491394998657776628,
+          17583356231211982976,
+          15177145128609298597,
+          1252122373996757461,
+          1884635256089579209,
+          12392349835948410079,
+          16591581973405750886,
+          5771062022039797366,
+          16256393948177783254,
+          14042381697507048114
+        ]
+      ],
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 9056,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 31,
+          "denominator": 1
+        }
+      },
+      "predicted_RZ": {
+        "numerator": 27894546580642075,
+        "denominator": 20115111656
+      },
+      "display_RZ": 1386745.798764761,
+      "observed_RZ": null,
+      "model_verdict": null,
+      "tolerance": null,
+      "qualified_for_candidate": false
+    },
+    {
+      "cell_id": "M6_ROUND",
+      "axis": "X",
+      "m": 6,
+      "physical": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 6.4,
+        "q": 64,
+        "R_outer": 566,
+        "K": 2,
+        "delta": 0.1,
+        "s": 36224,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_4ec8d73571760a6830b8"
+      },
+      "q": 64,
+      "R": 566,
+      "n_paths": 1,
+      "cohort": "D_FULL_H_P2_D7_M6_ROUND_PROPOSED_V1",
+      "step_seeds": [
+        [
+          7939868225123092679,
+          17295508915394686344,
+          14622423959916383851,
+          9844241931489459470,
+          6009583998768524730,
+          4808787622157135970,
+          15405338707158476925,
+          4919189844690539414,
+          1787746456205442344,
+          9534767518469811834,
+          18062394400736240977,
+          10724854041362362879,
+          10359858391179237959,
+          8572075163658891909,
+          2480024067124401835,
+          14506521139787518906,
+          43839144045425379,
+          2653507755420210697,
+          6269618518435190932,
+          2897954767066358996,
+          2252255458267986551,
+          2695783824142260796,
+          10257913241792582615,
+          15054882840818441532,
+          16657497328305968453,
+          5233983429260162999,
+          3109639389463729444,
+          14170773540012751979,
+          13173636367946374312,
+          9282649926957491402,
+          17924922758286679108,
+          14359079832538451236,
+          7758488855736344689,
+          2918329404250969396,
+          14514641892850118842,
+          8897228289012386479,
+          16821114640491828148,
+          9650155348897897484,
+          18396194049756664734,
+          15255804599147112051,
+          6577925532742293973,
+          1432514407310775208,
+          4585260462721834200,
+          11231823087905491475,
+          11424076601172255821,
+          16317439205259580685,
+          11597038540138387206,
+          5876401440957259919,
+          5972586557240238386,
+          8488748809042647811,
+          6319809619328931085,
+          9708007720162137312,
+          4266348357768582953,
+          8700932611670218686,
+          15283421540498541579,
+          682921106884925876,
+          9509603805467342803,
+          18190379229454429118,
+          13648502219780029078,
+          3501899134852820415,
+          15732126999654711327,
+          16653165547970066572,
+          1531912969419243603,
+          2278767376989915601
+        ]
+      ],
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 36224,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 63,
+          "denominator": 1
+        }
+      },
+      "predicted_RZ": {
+        "numerator": 111815248527103419,
+        "denominator": 20115111656
+      },
+      "display_RZ": 5558768.47413625,
+      "observed_RZ": null,
+      "model_verdict": null,
+      "tolerance": null,
+      "qualified_for_candidate": false
+    },
+    {
+      "cell_id": "M5_ROUND",
+      "axis": "Y",
+      "m": 5,
+      "physical": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 3.2,
+        "q": 32,
+        "R_outer": 283,
+        "K": 2,
+        "delta": 0.1,
+        "s": 9056,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_bc8aab34256b73b68025"
+      },
+      "q": 32,
+      "R": 283,
+      "n_paths": 2,
+      "cohort": "D_FULL_H_P2_D7_M5_ROUND_PROPOSED_V1",
+      "step_seeds": [
+        [
+          13018590642250043340,
+          8984585566861716285,
+          7411461487145727819,
+          6662005227508552643,
+          1328303713538684562,
+          12462354017760960947,
+          10465144325730187954,
+          14137323197291553045,
+          11364249729271238694,
+          7232294741098669980,
+          7140670022386512666,
+          5316439578554683687,
+          295859952973487767,
+          17004005535866622836,
+          15284503623246833052,
+          4263792046100001957,
+          11072634269028675825,
+          10617502252372275428,
+          10409617906762551529,
+          13004355316825878439,
+          16166747380711566624,
+          14243375930054175432,
+          10785735974424290853,
+          5661167126810724049,
+          5373298919733964054,
+          8740999225696893688,
+          14485811310880461080,
+          16572272470263038557,
+          10057237953698294093,
+          4696603043513655044,
+          1747777784794734662,
+          13084820608428434125
+        ],
+        [
+          16561055872366208015,
+          18208457623440442030,
+          7862537311646358359,
+          1915642728517703157,
+          2010562253201571842,
+          5497554758477192670,
+          14423652461880176943,
+          8573799498439894576,
+          13000806646724258836,
+          4159415026661001578,
+          13282861784485729352,
+          8093671541101106451,
+          6323260895932692690,
+          11349532511647147835,
+          9698832323902598087,
+          12572545207111938724,
+          10501584741771771456,
+          2249564433370124773,
+          13247256563629911237,
+          3854153785664329713,
+          18329891317156086037,
+          8318374287783561331,
+          14491394998657776628,
+          17583356231211982976,
+          15177145128609298597,
+          1252122373996757461,
+          1884635256089579209,
+          12392349835948410079,
+          16591581973405750886,
+          5771062022039797366,
+          16256393948177783254,
+          14042381697507048114
+        ]
+      ],
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 9056,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 31,
+          "denominator": 1
+        }
+      },
+      "predicted_RZ": {
+        "numerator": 27894546580642075,
+        "denominator": 20115111656
+      },
+      "display_RZ": 1386745.798764761,
+      "observed_RZ": null,
+      "model_verdict": null,
+      "tolerance": null,
+      "qualified_for_candidate": false
+    },
+    {
+      "cell_id": "M6_ROUND",
+      "axis": "Y",
+      "m": 6,
+      "physical": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 6.4,
+        "q": 64,
+        "R_outer": 566,
+        "K": 2,
+        "delta": 0.1,
+        "s": 36224,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_4ec8d73571760a6830b8"
+      },
+      "q": 64,
+      "R": 566,
+      "n_paths": 1,
+      "cohort": "D_FULL_H_P2_D7_M6_ROUND_PROPOSED_V1",
+      "step_seeds": [
+        [
+          7939868225123092679,
+          17295508915394686344,
+          14622423959916383851,
+          9844241931489459470,
+          6009583998768524730,
+          4808787622157135970,
+          15405338707158476925,
+          4919189844690539414,
+          1787746456205442344,
+          9534767518469811834,
+          18062394400736240977,
+          10724854041362362879,
+          10359858391179237959,
+          8572075163658891909,
+          2480024067124401835,
+          14506521139787518906,
+          43839144045425379,
+          2653507755420210697,
+          6269618518435190932,
+          2897954767066358996,
+          2252255458267986551,
+          2695783824142260796,
+          10257913241792582615,
+          15054882840818441532,
+          16657497328305968453,
+          5233983429260162999,
+          3109639389463729444,
+          14170773540012751979,
+          13173636367946374312,
+          9282649926957491402,
+          17924922758286679108,
+          14359079832538451236,
+          7758488855736344689,
+          2918329404250969396,
+          14514641892850118842,
+          8897228289012386479,
+          16821114640491828148,
+          9650155348897897484,
+          18396194049756664734,
+          15255804599147112051,
+          6577925532742293973,
+          1432514407310775208,
+          4585260462721834200,
+          11231823087905491475,
+          11424076601172255821,
+          16317439205259580685,
+          11597038540138387206,
+          5876401440957259919,
+          5972586557240238386,
+          8488748809042647811,
+          6319809619328931085,
+          9708007720162137312,
+          4266348357768582953,
+          8700932611670218686,
+          15283421540498541579,
+          682921106884925876,
+          9509603805467342803,
+          18190379229454429118,
+          13648502219780029078,
+          3501899134852820415,
+          15732126999654711327,
+          16653165547970066572,
+          1531912969419243603,
+          2278767376989915601
+        ]
+      ],
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 36224,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 63,
+          "denominator": 1
+        }
+      },
+      "predicted_RZ": {
+        "numerator": 111815248527103419,
+        "denominator": 20115111656
+      },
+      "display_RZ": 5558768.47413625,
+      "observed_RZ": null,
+      "model_verdict": null,
+      "tolerance": null,
+      "qualified_for_candidate": false
+    }
+  ],
+  "held_axes": [],
+  "fit_calls": 2,
+  "prediction_calls": 4,
+  "cell_weights": "ONE_PER_CELL_NO_PATH_COUNT_WEIGHTS_NO_XY_POOL",
+  "qualified_for_candidate": false,
+  "CI": null,
+  "all_law_E_C": null,
+  "sampler_ideal_distance": null,
+  "rare_contribution": null,
+  "shared_covariance": null,
+  "G": null,
+  "winner": null,
+  "mandatory_stop": true,
+  "preopening": {
+    "status": "CLEAR_IN_CHECKED_METADATA",
+    "UTC": "2026-11-15T09:50:07.781139+00:00",
+    "public_refs": [
+      "1adb7e65a9e7c3adc32491d853f31d124393ead7\trefs/heads/codex/a-full-h-p2-pauli-b1-price-design-20261114",
+      "a04470c0ad489eea1798856e648f863f9092cfb1\trefs/heads/codex/d-full-h-kappa2-p1-results-20261114",
+      "ce6aacfaca8249c510baa2d958849cffc7649cdc\trefs/heads/codex/d-full-h-kappa2-s1-results-20261114",
+      "887c3b9d04d15be96637b6634265424e7dd50339\trefs/heads/codex/d-full-h-p2-acceleration-20261115",
+      "e628c0d69c7da559369d99f323e3656a96c0728a\trefs/heads/codex/d-full-h-p2-caller-prep-20261114",
+      "0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4\trefs/heads/codex/d-full-h-p2-completion-20261115",
+      "e7dca5f7301c8633b17a59b6a7161331303aef2d\trefs/heads/codex/d-full-pf-full-h-rte-v2-paths-20261113",
+      "9b83b96b83f62142c9d87858dc24a94db7ac5d61\trefs/heads/codex/df-full-h-pure-rte-light-20261109",
+      "7a8bc7f132e166390c943e6b32c92cc6abe1baf4\trefs/heads/codex/df-full-h-pure-rte-t20-opt-20261109",
+      "9edfa5d3201f22c23dd77569d102801be80dacf3\trefs/heads/codex/m5-m4-receipt-admission-20261114",
+      "605d78e8501411592b678f53e2a12824fa40d2db\trefs/heads/codex/resource-eval-h8-full-h-pure-rte"
+    ],
+    "duplicate_candidates": [],
+    "relevant_jobs": [],
+    "known_directories": [
+      {
+        "path": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private",
+        "names": [
+          "acceleration01",
+          "completion01",
+          "recovery01",
+          "resume01"
+        ]
+      },
+      {
+        "path": "/home/AbeHiromu/projects/d-full-h-p2-calibration-20261115-private/resume01",
+        "names": [
+          "G36223",
+          "G4528",
+          "G566",
+          "P2R566",
+          "Q8R566"
+        ]
+      }
+    ],
+    "holdout_name_candidates": [],
+    "holdout_ref_candidates": [],
+    "own_output_exists": false,
+    "holdout_price_reads": 0,
+    "limitation": "Related fixed publications, focused ref/path/job names, two known private directory names only; not an exhaustive search of unknown archives/hosts"
+  },
+  "wall_seconds": 0.16502838185988367
+}
