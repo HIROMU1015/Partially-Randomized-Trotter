@@ -1,5 +1,7 @@
 # scripts 索引
 
+[LD9 m6 caller](run_pr_df_ld9_m6_price.py)／[直接比較](compare_pr_df_ld9_m6_price.py)／[HANDOFF](../docs/research/d_pr_df_ld9_m6_price_20261116/HANDOFF.md)：固定prefix9 request・NativeRuntime/Adapter・既存path workerを再利用。4 path/8 compileのみ、LD7保存m6との軸別exact平均差/比。fit・signal/Q3・総費用入口なし。
+
 [LD9 caller](run_pr_df_ld9_v0.py)／[保存V0比較](summarize_pr_df_ld9_v0.py)／[HANDOFF](../docs/research/d_pr_df_ld9_v0_results_20261116/HANDOFF.md)：元LD7 helper・fefd provider・3.11 Q3 workerを再利用。Rをコピーせず元mapperから生成、normalizer不成立時の部分保存/STOP。configuration1・13信号・V0一回まで、価格/compile入口なし。
 
 [LD7価格取得](run_pr_df_ld7_prices.py)／[exact fit・holdout・配分](freeze_pr_df_ld7_prices.py)／[固定Q3](run_pr_df_ld7_price_q3.py)／[保存join](summarize_pr_df_ld7_prices.py)：prefix7候補とe827 adapter/fast・元path workerを接続。10 path/20 compile、freeze前後を分け独立m3を保全。3.11元guardで2 Q3一回ずつ。

@@ -1,5 +1,7 @@
 # 並列化・高速化の再利用
 
+LD9 m6への既存prefix context/fast/path worker適用：[REPORT](research/d_pr_df_ld9_m6_price_20261116/REPORT.md)、SOURCE8f0a82842。親でprefix9 contextを一回prepare、独立4 pathをforkしX/Y個別compile。実測wall248.674s/8compile、workerCPU合計968.346s、単一worker最大RSS1,082,800KiB。倍率benchmarkなし。seed/order/profile/cache条件を維持、協調stage/exit保存。
+
 LD9への同じsignal cache/元Q3 acceleratorの適用：[REPORT](research/d_pr_df_ld9_v0_results_20261116/REPORT.md)。SOURCE303ed2ef7のcallerはhelper1cbc24cfc/fefd providerを再利用、13roundのmacro初回計算後12cache hit、signal wall5.066s、Q3 worker232.882s。新性能アルゴリズム/倍率benchmarkは0。3.11元AST guard・協調進捗/exit保存を維持し、b>1 gateを緩めない。
 
 ## PR-DF prefix7：既存context/fast/path workerの再利用
