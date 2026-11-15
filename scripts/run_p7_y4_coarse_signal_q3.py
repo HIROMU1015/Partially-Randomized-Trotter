@@ -170,6 +170,8 @@ def signal_execute():
 def q3_runtime():
     # A separate process imports only this pinned B code tree. Its Git readers
     # can resolve the new SOURCE in the parent worktree; no B worktree is used.
+    helper='src/trotterlib/h46_m5_plan.py'
+    require((RUNTIME/helper).read_bytes()==blob(B,helper),'Pinned schedule helper SOURCE differs')
     spec=importlib.util.spec_from_file_location('_coarse_reused_pf_budget',RUNTIME/'scripts/run_pf6_cost_budget_q3_fixed.py')
     F=importlib.util.module_from_spec(spec);sys.modules[spec.name]=F;spec.loader.exec_module(F)
     F.check_source()

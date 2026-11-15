@@ -1,6 +1,7 @@
 """Metadata and toy two-dimensional tests; no real H4 evaluations or Q3."""
 from copy import deepcopy
 import importlib.util
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -50,6 +51,19 @@ class CoarseWiring(unittest.TestCase):
         result=subprocess.run([sys.executable,'-B','-c',code],cwd=ROOT,capture_output=True,text=True)
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertIn('PINNED_Q3_RUNTIME_READY_NO_EVALUATION',result.stdout)
+
+    def test_bound_view_retains_values_gates_and_numerical_origins(self):
+        folder=ROOT/R.STUDY
+        original=json.loads((folder/'signal_run01/B_SIGNAL_INPUT.json').read_text())
+        view=json.loads((folder/'BOUND_SIGNAL_INPUT.json').read_text())
+        provenance=json.loads((folder/'BINDING_PROVENANCE.json').read_text())
+        self.assertEqual(provenance['new_signal_evaluations'],0)
+        for old,new,origin in zip(original['means'],view['means'],provenance['records'],strict=True):
+            for field in ('raw','corrected','reference','normalization','bias','uncertainty'):
+                self.assertEqual(old[field],new[field])
+            self.assertEqual(new['source'],view['source'])
+            self.assertEqual(new['provider_binding']['input_source']['original_numerical_source'],old['source'])
+            self.assertEqual(origin['original_numerical_source'],old['source'])
 
 
 if __name__=='__main__':unittest.main()
