@@ -637,7 +637,7 @@ def generate_variants(root, problem, reader, catalog, candidates, methods=None):
                                 configuration_id=gen['configuration_id'], index_signal=None, caps=base['caps'], generated=True,
                                 generated_from=base['configuration_id'], labels=[], signal_source=None, prices=prices,
                                 price_status='REUSED_FOR_ALL_AXES' if prices else 'MISSING_FOR_%d_AXES' % len(missing_price),
-                                saved_points=[], needs=needs, ready=False,
+                                saved_points=[], needs=needs, ready=False, generated_configuration=gen['configuration'],
                                 reusable=dict(signal_rounds=[m for m in range(13) if m not in missing_signal],
                                               price_axes=26 - len(missing_price)))
                     cand['name'] = name + ':' + ','.join('%s=%s' % kv for kv in cand['key'].items()) + ':' + gen['configuration_id'][:8]
@@ -664,6 +664,76 @@ def run_generator(root, g, items):
                         '--request', str(req), '--output', str(out)], cwd=str(root), check=True, stdout=subprocess.DEVNULL,
                        env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
         return json.loads(out.read_text())
+
+
+def quote_prices(root, problem, candidates, catalog, methods=None):
+    """D2's PriceRules (explicit policy, MODEL for the saved comparison) for every PR candidate.
+
+    Saved configurations: the quoted unit prices must reproduce the catalog's own unit prices (hence every saved
+    total).  Generated configurations: a complete 26-axis quote becomes the candidate's prices; otherwise the
+    missing axes, reasons and required calibrations are carried into NEEDS.  Price status is kept separate from
+    signal/Q3 readiness.
+    """
+    pr = problem['price_rules'];policy = pr['policy']
+    if policy != 'MODEL':
+        raise ValueError('The saved comparison is reproduced with policy MODEL; change it only by an explicit new round')
+    targets = [c for c in candidates if c['family'] == 'PR' and c['configuration_id'] and (methods is None or c['method'] in methods)]
+    if not targets:
+        return dict(policy=policy, quotes=[])
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        probe = Path(d) / 'PROBE.json';(Path(d) / 'P.json').write_text(json.dumps(dict(policy=policy, items=[])))
+        run_quotes(root, pr, Path(d) / 'P.json', probe)
+        registry = {v['configuration_id']: k for k, v in json.loads(probe.read_text())['registry'].items()}
+        items = []
+        for c in targets:
+            base = c.get('generated_from') or c['configuration_id']
+            if base not in registry:
+                c['price_quote'] = dict(policy=policy, status='NO_REGISTERED_PRICE_RULE_FOR_BASE');continue
+            items.append(dict(item_id=c['name'], registry=registry[base],
+                              configuration=c.get('generated_configuration') if c.get('generated') else None))
+        req, out = Path(d) / 'REQ.json', Path(d) / 'OUT.json'
+        req.write_text(json.dumps(dict(policy=policy, items=items)))
+        run_quotes(root, pr, req, out)
+        result = json.loads(out.read_text())
+    by_name = {c['name']: c for c in targets};report = []
+    for q in result['items']:
+        c = by_name[q['item_id']];rows = q.get('rows') or []
+        quoted = [frac(r['unit_price_RZ']) for r in rows] if q['complete'] else None
+        counts = {}
+        for r in rows:
+            counts[r['classification']] = counts.get(r['classification'], 0) + 1
+        missing = [dict(m=r['m'], axis=r['axis'], reasons=(r.get('needs') or {}).get('reasons'),
+                        calibration=(r.get('needs') or {}).get('calibration') or (r.get('needs') or {}).get('missing_quantity'))
+                   for r in rows if r['unit_price_RZ'] is None]
+        c['price_quote'] = dict(policy=q.get('policy', policy), status=q['status'], complete=q['complete'], registry=q['registry'],
+                                classifications=counts, extrapolated_axes=sum(1 for r in rows if r.get('extrapolation')),
+                                reason=q.get('reason'), implementation_source=pr['implementation_source'])
+        entry = dict(candidate=c['name'], configuration_id=c['configuration_id'], generated=bool(c.get('generated')),
+                     registry=q['registry'], status=q['status'], complete=q['complete'], classifications=counts)
+        if not c.get('generated'):
+            entry['reproduces_saved_unit_prices'] = None if c['prices'] is None else (quoted == list(c['prices']))
+            if c['prices'] is None and q['complete']:
+                entry['note'] = 'saved catalog has no price for this configuration; quote not adopted for saved points'
+        else:
+            c['needs'] = [n for n in c['needs'] if not n.startswith('PRICE_AXES')]
+            if q['complete']:
+                c['prices'] = quoted;c['price_status'] = 'PRICE_RULES_%s_COMPLETE' % policy
+            else:
+                c['prices'] = None;c['price_status'] = 'PRICE_RULES_%s_INCOMPLETE' % policy
+                c['needs'].append('PRICE_AXES:%d_of_26' % len(missing))
+                c['price_needs'] = missing
+            c['ready'] = not c['needs']
+            entry['missing_axes'] = len(missing)
+            entry['missing_reasons'] = sorted({r for m in missing for r in (m['reasons'] or [])})
+        report.append(entry)
+    return dict(policy=policy, implementation_source=pr['implementation_source'], handoff=pr.get('handoff'), quotes=report)
+
+
+def run_quotes(root, pr, request, output):
+    subprocess.run([pr['interpreter'], '-B', str(Path(root) / 'scripts/run_rpe_optimizer_price_quotes.py'), '--view', pr['view'],
+                    '--request', str(request), '--output', str(output)], cwd=str(root), check=True, stdout=subprocess.DEVNULL,
+                   env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
 
 
 def parameter_assessment(name, candidates, generation, summary):
@@ -734,7 +804,8 @@ def summarize_method(name, candidates, result, knowledge, threshold):
                       result_sources=r.get('result_sources'), point_id=r.get('point_id'), job=r.get('job'), label=r.get('label'))
                  for (cid, v), r in knowledge.items() if any(c['configuration_id'] == cid for c in candidates)]
     unevaluated = [dict(candidate=c['name'], configuration=c['key'], configuration_id=c['configuration_id'], needs=c['needs'],
-                        price_status=c['price_status'], signal_source=c['signal_source'],
+                        price_status=c['price_status'], price_quote=c.get('price_quote'), price_needs=c.get('price_needs'),
+                        signal_source=c['signal_source'], reusable=c.get('reusable'),
                         next='Q3 of a generated/decremented allocation after the listed items exist')
                    for c in candidates if not c['ready']]
     return dict(method=name, best=best, stop_reason=result['stop_reason'], pending_request=result['pending_request'],
@@ -769,7 +840,7 @@ def jsonable(value):
         to = str if portable else int  # very long exact bounds stay readable by default JSON parsers (as in C)
         return dict(numerator=to(value.numerator), denominator=to(value.denominator), display=display(enc(value)))
     if isinstance(value, dict):
-        return {str(k): jsonable(v) for k, v in value.items() if k not in ('prices', 'candidate') or not isinstance(v, (list, dict))}
+        return {str(k): jsonable(v) for k, v in value.items() if k != 'generated_configuration' and (k not in ('prices', 'candidate') or not isinstance(v, (list, dict)))}
     if isinstance(value, (list, tuple)):
         return [jsonable(v) for v in value]
     return value
@@ -820,6 +891,7 @@ def prepare(root, problem, generate_configurations=True, methods=None):
     check_comparison(problem, facts, inputs['comparison'])
     candidates = enumerate_candidates(reader, problem, facts, catalog)
     generation = generate_variants(root, problem, reader, catalog, candidates, methods) if generate_configurations else {}
+    price_rules = quote_prices(root, problem, candidates, catalog, methods) if problem.get('price_rules') else None
     prices = {c['configuration_id']: c['prices'] for c in candidates if c['prices'] is not None}
     saved = SavedBackend(catalog['candidates'], prices)
     expected = {}
@@ -827,4 +899,5 @@ def prepare(root, problem, generate_configurations=True, methods=None):
         expected.setdefault(point['configuration_id'], dict(total_configuration_id=point.get('total_configuration_id'),
                                                             binding_id=point.get('binding_id'), signal_source=point.get('signal_source')))
     return dict(facts=facts, reader=reader, catalog=catalog, candidates=candidates, saved=saved, tau=tau(problem),
-                expected=expected, generate=pinned_function(reader, problem['generator']), generation=generation)
+                expected=expected, generate=pinned_function(reader, problem['generator']), generation=generation,
+                price_rules=price_rules)

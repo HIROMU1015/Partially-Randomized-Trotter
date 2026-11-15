@@ -63,10 +63,38 @@ def main():
         k['disposition'] == 'IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS' and k['physically_identical_to'] == LD7
         and k['configuration_id'] not in by_id and any(a['configuration_id'] == k['configuration_id'] for a in ld7_base.get('physical_aliases', [])),
         alias=k['configuration_id'][:8]))
-    p5 = row(gen, 'PR_PAULI', LD5, kappa_multiplier='2')
-    checks.append(check('kappa_change_with_schedule_change_partial_reuse',
+    p5 = row(gen, 'PR_PAULI', LD5, kappa_multiplier='2');c5 = by_id[p5['configuration_id']]
+    checks.append(check('kappa_change_with_schedule_change_partial_signal_reuse_and_price_rule',
         p5['disposition'] == 'NEW_SCHEDULE_CANDIDATE' and p5['rounds_differing_from_base'] == [10, 11, 12]
-        and p5['reusable']['signal_rounds'] == list(range(10)) and p5['reusable']['price_axes'] == 20, needs=p5.get('needs')))
+        and p5['reusable']['signal_rounds'] == list(range(10)) and 'SIGNAL_ROUNDS:10,11,12' in c5['needs']
+        and c5['price_quote']['complete'] and c5['price_quote']['policy'] == 'MODEL' and not any(n.startswith('PRICE_AXES') for n in c5['needs'])
+        and not c5['ready'], needs=c5['needs'], price=c5['price_quote']))
+
+    # D2 PriceRules (policy MODEL): saved totals reproduced; changed candidates get prices or reasons, separately from signals.
+    pq = ctx['price_rules'];saved_q = [q for q in pq['quotes'] if not q['generated']]
+    totals = []
+    for point in ctx['catalog']['candidates']:
+        c = by_id.get(point['configuration_id'])
+        if c and c['family'] == 'PR' and point['conditional_cost'] is not None and c['prices'] is not None:
+            totals.append(O.cost(O.point_vector(point), c['prices']) == O.frac(point['conditional_cost']))
+    ld9 = next(q for q in saved_q if q['configuration_id'].startswith('ea087a7e'))
+    checks.append(check('saved_PR_totals_reproduced_by_price_rules_MODEL', pq['policy'] == 'MODEL'
+        and all(q['reproduces_saved_unit_prices'] for q in saved_q if q['complete']) and totals and all(totals)
+        and not ld9['complete'], saved_configurations=len(saved_q), saved_points=len(totals), LD9=ld9['classifications']))
+    dq = by_id[d['configuration_id']]['price_quote'];l1 = row(gen, 'PR_DF', next(c for c in by_id if c.startswith('a4dda8f7')), kappa_multiplier='2')
+    c1 = by_id[l1['configuration_id']]
+    checks.append(check('changed_candidates_price_applicability_and_needs',
+        not dq['complete'] and any('actual PF step' in r for m in by_id[d['configuration_id']]['price_needs'] for r in (m['reasons'] or []))
+        and all(m['calibration'] for m in by_id[d['configuration_id']]['price_needs'])
+        and not c1['price_quote']['complete'] and any('E_I[S]' in r for m in c1['price_needs'] for r in (m['reasons'] or [])),
+        delta_half=dq, LD1_kappa2=c1['price_quote']))
+    bad = dict(problem, price_rules=dict(problem['price_rules'], policy='AUTO'))
+    try:
+        O.quote_prices(ROOT, bad, [], ctx['catalog']);refused = False
+    except ValueError:
+        refused = True
+    checks.append(check('price_policy_not_switched_implicitly', refused and all(q['policy'] == 'MODEL' for q in [by_id[x]['price_quote']
+                        for x in by_id if by_id[x].get('price_quote', {}).get('policy')])))
 
     keys = {}
     for m in gen:
