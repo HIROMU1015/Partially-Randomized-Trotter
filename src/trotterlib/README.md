@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[Full-H κ2 m0再判定・固定総額](../../docs/research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)：保存証拠とscript会計だけを接続。物理library・compilerの変更なし。
+
 [Full-H κ2 m0受入と会計準備](../../docs/research/full_h_m0_reference_total_20261115/REPORT.md)：Git reader/保存exact値を再利用したscript接続。物理library・数値実装は変更なし。
 
 [S1価格比較guardの検証](../../docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：guard実装はtrottertracks、物理library変更なし。

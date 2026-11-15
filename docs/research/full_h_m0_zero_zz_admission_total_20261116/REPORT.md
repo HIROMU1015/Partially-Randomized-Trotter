@@ -1,8 +1,12 @@
 # Full-H κ2 m0：採択zero-ZZ規則による再判定と固定配分の総額
 
+**両軸受入PASS（2/2、保留0）。C_0X=C_0Y=1,062 RZ。固定1.5倍配分の全13roundモデル参照総額Tは 1,246,382,808,920.55 RZ（約1.246兆RZ）、m0部分額は203,904 RZ、割合は約0.000016359661%である。**
+
+Full PF S2との差T−T_PFは **+1,245,767,504,418.55 RZ**、B0I p7 S2との差は **+1,245,947,327,830.55 RZ**。したがって、採択された価格規則と今回の固定Q3適合配分の費用シナリオではFull-Hの方が高い。正式な母期待総費用や5方式winnerの認定ではない。
+
 採択された `FULL_H_KAPPA2_NORMAL_PATH_ZERO_ZZ_ADMISSION_PROPOSAL_V1` を、元normal pathの経験的1 shot参照単価の受入に適用する。**観測後に採択された規則による別の再判定**であり、元parity戻り値・runtime lowering markerをPASSへ書き換えない。
 
-m0のX/Yを受け入れられた場合に限り、保存24モデル軸と既存会計処理を使い、一つの固定1.5倍配分の総額を評価する。科学実行はSOURCE固定後のrun01一回だけとし、結果とexact値を追記する。
+m0のX/Yを受け入れられた場合に限り、保存24モデル軸と既存会計処理を使い、一つの固定1.5倍配分の総額を評価する。実行SOURCE `cbddabafc88bfa8d3ba04aed47a01868169cfdbe` を固定し、run01で一回だけ再判定・集計した。結果固定commitは `2f06a0a81b5edaecd9403e90d0a9f2f916e1b194`。
 
 ## 固定SOURCE・物理条件
 
@@ -48,8 +52,29 @@ new ZZ `CONTROLLED_ZZ_CX_CRZ_CX_V1`、symmetric-directional、測定付きfull c
 
 C既存branch、固定426bの接続結果、D1の74cd/64624と規則案481c、その後の関連公開ref・履歴・今回path・同名の自分のPython job名を差分確認。同じ採択後再判定/全額の公開結果・実行中jobは確認範囲で0。未知archive/他ホストを網羅せず、他担当private領域へはアクセスしない。
 
-新しい人工test4件は、受入readerから既存会計までを人工価格で通し、対象不明/正数/counterのみ、他条件欠測、片軸保留、代替証拠未成立を拒否することを確認する。旧18 testの証拠は426bを再利用し、無変更のfit/decoder/compilerを再監査しない。これは作者自身の技術確認であり独立科学レビューではない。
+新しい人工test4件は、受入readerから既存会計までを人工価格で通し、対象不明/正数/counterのみ、他条件欠測、片軸保留、代替証拠未成立を拒否することを確認した。旧18 testの証拠は426bを再利用し、無変更のfit/decoder/compilerを再監査しない。これは作者自身の技術確認であり独立科学レビューではない。
 
 小さいJSONと元QPYの圧縮bytesだけを読む。巨大event列の生成・展開はなく、24値は既接続記録から再利用する。プロセス並列化を追加しても効率上の必要がない短い保存値処理であり、CPU/RAM/workerへの制限を設けない。新しい高速化方式や未実測の速度倍率は主張しない。
 
 sampling/build/compile/re-simulation/価格再計数/再fit/Q3はすべて0。結果公開・remote照合後mandatory STOP。ロードマップ本体は統合担当に委ねる。
+
+## 実行結果・exact値
+
+[RESULT.json](run01/RESULT.json) の `m0_admissions` →原案・D1軸別record・元receipt、`rows` →physical ID/軸/N/価格出所、`comparisons` →PF正本へ戻れる。[AXES.csv](run01/AXES.csv) は同じ26軸のexact分子・分母・重み付き項を保持する。[CHECKS.json](run01/CHECKS.json) に24保存record不変・26軸一意性・元null不変の確認を保存した。
+
+| 量 | 表示値（RZ、割合以外） | 比較用exact値 |
+|---|---:|---|
+| m0-X、m0-Yの各1shot単価 | 1,062 | 1062/1（軸別の元receipt） |
+| m0部分額 96×C_0X＋96×C_0Y | 203,904 | 203904/1 |
+| 全13round T | 1,246,382,808,920.55 | 12535564683777889350373/10057555828 |
+| m0部分額/T | 約0.000016359661% | 2050775863552512/12535564683777889350373（無次元） |
+| T−615,304,502（Full PF S2） | +1,245,767,504,418.55 | 12529376224397804612717/10057555828 |
+| T−435,481,090（B0I p7 S2） | +1,245,947,327,830.55 | 12531184808403176057853/10057555828 |
+
+受入2/2、独立normal path1、保存model軸24/24、欠測/保留0。元parityは両軸NOT_PERSISTED、新しい根拠はINDEPENDENT_ZERO_TARGET_FIXED_SOURCE_ALTERNATIVE_AND_SAVED_QPY。両者を別fieldへ保存した。今回のm0受入には実装全体のZZ動作実績や母law期待価格の新資格を付与しない。
+
+[TESTS.txt](TESTS.txt)：新しい人工4 test PASS（実reader→既存会計の接続、対象不明/対象あり/誤ったcounter根拠の拒否、他必須条件欠測、代替根拠未成立）。旧18 testは426bの固定記録を引用し再実施していない。既存会計SOURCEは426bとbyte一致、24保存model recordも新しいweighted項以外すべて同一である。
+
+今回の新規科学処理は保存2軸の再判定と一つの総額集計のみ。sampling/build/compile/re-simulation/価格再計数/予測/fit/Q3=0。runtimeはRESULTのwall_secondsへ保存した。結果公開後mandatory STOP。
+
+ロードマップ差分：旧m0保留0/2から、採択済みzero-ZZ代替証拠に基づく経験的参照2/2へ別成果として進んだ。F1保存24軸との固定配分比較シナリオが完了し、両PF基準より高い参照総額を取得。旧F1/D7/元D1およびC426bの資格・負値・null・STOPは不変。本体の更新は統合担当へ委ねる。

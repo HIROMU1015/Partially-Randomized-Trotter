@@ -1,5 +1,7 @@
 # Validation status
 
+[Full-H κ2 m0再判定・固定総額（2026-11-16）](docs/research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)：採択zero-ZZ規則で保存m0-X/Yを再判定し受入2/2・保留0（各1062 RZ、同一normal path1）。F1保存24model軸と既存exact会計を用いた固定1.5倍配分のT=1,246,382,808,920.55 RZ、m0部分額203904、割合約0.000016359661%。両PF基準との差は正。経験的/model参照シナリオに限定、元parity未保存・旧0/2/null/STOP・D7資格は保全。人工新4 PASS、sampling/build/compile/再simulation/価格再計数/fit/予測/Q3=0、公開後STOP。
+
 [Full-H κ2 m0受入保留と会計準備](docs/research/full_h_m0_reference_total_20261115/REPORT.md)：Full-H κ2 m0はD1 b25d7da6dで1path/2compileを取得したがrequired coverage gateでSTOP。C受入0・保留2、保存F1の24model軸を再予測せず接続し、全額/部分額/割合/PF二基準との差はnullを保持。人工・回帰18 PASS、新sampling/build/compile/fit/Q3/予測/実総額0、公開後STOP。
 
 [Full-H κ2 m0の1shot価格規則案](docs/research/full_h_m0_price_rule_20261115/REPORT.md)：m0/T.1/q1/R9/K2の同条件保存価格は確認範囲で0軸。事前固定normal path1本のX/Y実測値を経験的1shot単価にする案を提示。現在単価null、最大2wrapper取得は未実行。Nだけの変更へ再利用可能、旧prep hash差の価格影響は未確認。新規sampling/build/compile/集計/予測/fit/Q3/全額0。m6下界探索は利用者指示で終了、公開後STOP。
