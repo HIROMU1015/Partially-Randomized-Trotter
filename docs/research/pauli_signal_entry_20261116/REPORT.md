@@ -3,6 +3,16 @@
 想定読者：B2（configurationを作る側）、B（packetを取り込む側）、統合担当。呼出し方と出力の欄は [HANDOFF.md](HANDOFF.md)。
 検証結果の正本は [VALIDATION.json](VALIDATION.json)、人工例の計画は [PLANS.json](PLANS.json)。
 
+> **訂正と修正（2026-11-16、SOURCE `4e5b8bef6`）**
+> 4th(m5_best)・K=2の人工確認（[../pr_pauli_m5_k2_composition_20261116/REPORT.md](../pr_pauli_m5_k2_composition_20261116/REPORT.md)）で、入口の不足が2つ見つかり、直した。
+> 1. **binary64で表せない実step幅**：実step幅T/qがbinary64で正確に表せないround（qが2の冪でない）は、providerが `Foreign B whole-schedule identity` で拒否する。入口はこれを未対応（`ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT`）として示すようになった。
+>    - 下の表の「Δ_PF=1/5」の例でm2–m12を「取得要求」としていたのは誤りである。正しくは未対応（q_PF=3, 5, …）。
+>    - binary64の0.2の例は、取得要求のままで正しい。
+>    - VALIDATION.json・PLANS.jsonは、この版で作り直した。人工stubの通しは、κ×3/2とbinary64の0.2で行った。
+> 2. **正規化子の上限**：上限を「piece数×round数」にした。S2では従来と同じ13である。旧上限（round数）のままでは、m5_bestで途中停止する。
+>
+> 以下の本文は、`93a5ef3b9` 時点の記録である。
+
 ## 冒頭の答え
 
 | 項目 | 内容 |

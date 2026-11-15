@@ -32,6 +32,7 @@
    11,
    12
   ],
+  "request_normalizer_budget": 9,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -822,6 +823,7 @@
    11,
    12
   ],
+  "request_normalizer_budget": 10,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -1606,7 +1608,7 @@
   "configuration_reasons": [],
   "counts": {
    "REUSE": 2,
-   "REQUEST": 11
+   "UNSUPPORTED": 11
   },
   "reuse_rounds": [
    0,
@@ -1616,7 +1618,9 @@
    0,
    1
   ],
-  "request_rounds": [
+  "request_rounds": [],
+  "request_normalizer_budget": 0,
+  "unsupported_rounds": [
    2,
    3,
    4,
@@ -1629,7 +1633,6 @@
    11,
    12
   ],
-  "unsupported_rounds": [],
   "rounds": [
    {
     "m": 0,
@@ -1719,8 +1722,10 @@
     "m": 2,
     "candidate_id": "RMSE:32a0d867dc7ef3df97990b61062f5a96c628b5e898278832779535481460afc8",
     "physical_key": "e99cf96610327946f3451cff4d217800660aca1c7fee2633b71533dfdfdb2fa3",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 4,
      "q_PF": 3,
@@ -1737,27 +1742,10 @@
       1
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[2] (T=0.4)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -1779,8 +1767,10 @@
     "m": 3,
     "candidate_id": "RMSE:b985de682a3f2408320302eeea8c15105fc1097fbd29a5002836dfac79991862",
     "physical_key": "61313ed9e4ef5f9aef2db4f3c416ef6b8d9301ad40e767dc71d509bef7976c81",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 8,
      "q_PF": 5,
@@ -1797,27 +1787,10 @@
       3
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[3] (T=0.8)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -1841,8 +1814,10 @@
     "m": 4,
     "candidate_id": "RMSE:d5b07122e303fbab86f07455a7944bac8096685a33c05367232ddf4ffe0941a7",
     "physical_key": "2c5963ba7e574e9c8329393d5a51129f0e256e2089a3ecbb8622bc3634cf0587",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 16,
      "q_PF": 9,
@@ -1859,27 +1834,10 @@
       5
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[4] (T=1.6)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -1903,8 +1861,10 @@
     "m": 5,
     "candidate_id": "RMSE:42a7b79874bd28edb24098058739b75b7cd7fef75f293cb0c176365f3ce10e8c",
     "physical_key": "06e3fdb32232b7f7d8c484d7621c76d0868be4743f4d3fcea3879959e6cade58",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 32,
      "q_PF": 17,
@@ -1921,27 +1881,10 @@
       10
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[5] (T=3.2)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -1965,8 +1908,10 @@
     "m": 6,
     "candidate_id": "RMSE:84c13e9f4e441a3bbfe99c9d9157991d44a38749176d3112a1d6b5dc42bf4b9d",
     "physical_key": "9b6ee55dd1bdc811115eaa80f87bb5425959788634e010d81bb9db0cbbe7d4e8",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 64,
      "q_PF": 33,
@@ -1983,27 +1928,10 @@
       20
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[6] (T=6.4)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -2027,8 +1955,10 @@
     "m": 7,
     "candidate_id": "RMSE:1654601c0982c51882c1e6ec3ce542c42e959d12fdf0fac5b640cafd7dcab54d",
     "physical_key": "d237670f08cffe875804121d154eff5e43aaca9982d8d69ec2c1c492f84ea992",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 128,
      "q_PF": 65,
@@ -2045,27 +1975,10 @@
       41
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[7] (T=12.8)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -2089,8 +2002,10 @@
     "m": 8,
     "candidate_id": "RMSE:de08cbe3b846bd4e89450eb01e31b4341404b6b7cf0585e6fb4f12589399caab",
     "physical_key": "76ed8915a24a91f3dadcdf5c27217c1a659010f2cde69812666d69721059f298",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 256,
      "q_PF": 129,
@@ -2107,27 +2022,10 @@
       82
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[8] (T=25.6)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -2151,8 +2049,10 @@
     "m": 9,
     "candidate_id": "RMSE:d53a011ca95d6c4c8ee170312876031bf01f7f8b633b2fbc38957d41bdb3d50f",
     "physical_key": "3cfdab5c17ecea50e0ee8fb51b9836c561d45d2afd706978acd66595e7137e79",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 512,
      "q_PF": 257,
@@ -2169,27 +2069,10 @@
       165
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[9] (T=51.2)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -2213,8 +2096,10 @@
     "m": 10,
     "candidate_id": "RMSE:d486f3a309bab4e3dd8b3f192c6631f790dc65ecbdbc532eda12c1e6be54cc99",
     "physical_key": "f5dca0d1ebee9cbc174e699ef033c9e1bc6074314804ad02837c5a8faedeeda0",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 1024,
      "q_PF": 513,
@@ -2231,27 +2116,10 @@
       330
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[10] (T=102.4)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -2275,8 +2143,10 @@
     "m": 11,
     "candidate_id": "RMSE:8d42a567545d88e69e3a754d5b17a90d82153904153e8f32d5d6968573290730",
     "physical_key": "74103e02c192b09547f977fc980a95067fff642b6b7a4836026e2cd7ec81878f",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 2048,
      "q_PF": 1025,
@@ -2293,27 +2163,10 @@
       659
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[11] (T=204.8)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -2337,8 +2190,10 @@
     "m": 12,
     "candidate_id": "RMSE:6965c06678857f6c57416c8b5822c85392a5cc4d2794feb1a04868a3095a378f",
     "physical_key": "7042a7a15e61403b12bf4485b973aa1077767a86eee5b3c9fc2c6fc41587f4e2",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 4096,
      "q_PF": 2049,
@@ -2355,27 +2210,10 @@
       1318
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "50640b74c65c36d381d6058824745f6e38ab3c2d",
-       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/p0_run01/LD3_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[12] (T=409.6)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "26bac4f320abb345b90ba5cb56a461ff22e1229d",
@@ -2473,6 +2311,7 @@
    11,
    12
   ],
+  "request_normalizer_budget": 12,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -3323,6 +3162,7 @@
    11,
    12
   ],
+  "request_normalizer_budget": 13,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -4140,6 +3980,7 @@
    11,
    12
   ],
+  "request_normalizer_budget": 143,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -5287,6 +5128,7 @@
    12
   ],
   "request_rounds": [],
+  "request_normalizer_budget": 0,
   "unsupported_rounds": [
    0
   ],
@@ -5297,6 +5139,7 @@
     "physical_key": "4838731c9484826c1c7163b730d5b803bf9e7e7dd10ff6fadcff53e960e57173",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5317,6 +5160,7 @@
     },
     "decision": "UNSUPPORTED",
     "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "changed_from_saved_round": {
@@ -5340,6 +5184,7 @@
     "physical_key": "fc5794a6e743b02596ae64330b9ed8d57b2bcbd46d3ba6b7c041f98896777ef8",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5384,6 +5229,7 @@
     "physical_key": "f746dc95f677e33525d40449be0f7cd5419b430cf72e1319ce1c9d803792e9fe",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5428,6 +5274,7 @@
     "physical_key": "aa04f6b3b0fbb1af5af1108098e1cfba2429246fe36879c2d0f38d9e777a6348",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5472,6 +5319,7 @@
     "physical_key": "92b0af04992e17ca96992e3ec99df170de3e334df9e484143f189b761f7b053f",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5516,6 +5364,7 @@
     "physical_key": "7f1ff5897d88f556a4cbb221422a1d6569b795c3c85890acb6badd387cc9effb",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5560,6 +5409,7 @@
     "physical_key": "1b076c94ba33f3354374ba5002c4d089bb66bbaf74b0bfcf1efbe58075b5417d",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5604,6 +5454,7 @@
     "physical_key": "24f58741b6787cba365b81e27ce46db7bffa7252a7b06a0ddfbe9a990421d3a6",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5648,6 +5499,7 @@
     "physical_key": "b1ebd7952f0eb84b239d6c6afec5c3abd34a9af7c2be32bf81a4b5d793ecff83",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5692,6 +5544,7 @@
     "physical_key": "2d5c7f02e070bfb4c6df64f9515a75702709876ce360fd66fa0bba13e5782a7f",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5736,6 +5589,7 @@
     "physical_key": "020735fc082a723365bf5e95fd110b027f7ced217b7546f2463d1bf88ae461d2",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5780,6 +5634,7 @@
     "physical_key": "dfa2f6f44ac151b232f45ce0b69405ffeec50872288de8ed20316417d30bc167",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5824,6 +5679,7 @@
     "physical_key": "2ef1bc831fd6f91da7fd30c45cc69d2f14c3bbe96fb1f07c731d8c15dea1a39e",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -5949,6 +5805,7 @@
    11,
    12
   ],
+  "request_normalizer_budget": 3,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -6640,6 +6497,7 @@
   "request_rounds": [
    12
   ],
+  "request_normalizer_budget": 1,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -7262,7 +7120,7 @@
   "configuration_reasons": [],
   "counts": {
    "REUSE": 2,
-   "REQUEST": 11
+   "UNSUPPORTED": 11
   },
   "reuse_rounds": [
    0,
@@ -7272,7 +7130,9 @@
    0,
    1
   ],
-  "request_rounds": [
+  "request_rounds": [],
+  "request_normalizer_budget": 0,
+  "unsupported_rounds": [
    2,
    3,
    4,
@@ -7285,7 +7145,6 @@
    11,
    12
   ],
-  "unsupported_rounds": [],
   "rounds": [
    {
     "m": 0,
@@ -7375,8 +7234,10 @@
     "m": 2,
     "candidate_id": "RMSE:d911aa4a68b1989be41a3d6f9b30c1f1fbb134aef2a723501df870b16fc83216",
     "physical_key": "a384097af6dcbcab765ae3dd9b1bcb952d945a293c4b29484b51b7ab5e38a5f2",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 4,
      "q_PF": 3,
@@ -7393,27 +7254,10 @@
       1
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[2] (T=0.4)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7435,8 +7279,10 @@
     "m": 3,
     "candidate_id": "RMSE:2a69ba6ac807825c12d80f99d3da63c0d2ac07b86196fc27a8bd588aff4e90bd",
     "physical_key": "9cd45a2ba10cdd7911aeb8e90c6c32eba4ff9002e5a54b7e0ad6d46748edd34f",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 8,
      "q_PF": 5,
@@ -7453,27 +7299,10 @@
       1
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[3] (T=0.8)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7495,8 +7324,10 @@
     "m": 4,
     "candidate_id": "RMSE:e7af4f1067e412f5a0f7eb810cb5335b6c1ebf31b3aea7109c97e0a03bae3f8f",
     "physical_key": "5bbddf5eaa533394588046a3cabb7bba0c30f46c6419ed03a85d5d57271c2b9a",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 16,
      "q_PF": 9,
@@ -7513,27 +7344,10 @@
       1
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[4] (T=1.6)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7555,8 +7369,10 @@
     "m": 5,
     "candidate_id": "RMSE:2cf695d24638aa8113c46de71c9da1a7401bf89d1880a26dc1c0c4cc36dd0dff",
     "physical_key": "3bc8019616d268874c30fd153d25e385da39b297d40042217a8fba7f17d8f787",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 32,
      "q_PF": 17,
@@ -7573,27 +7389,10 @@
       1
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[5] (T=3.2)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7615,8 +7414,10 @@
     "m": 6,
     "candidate_id": "RMSE:b2a1abaaa8b678b1f851eb44af050afecb60448461e09be217dddd6a5d017693",
     "physical_key": "5ef66f5855e16219ef08d5f482017ceb3cc6ff5eefda9805e27475a51abeb004",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 64,
      "q_PF": 33,
@@ -7633,27 +7434,10 @@
       1
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[6] (T=6.4)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7675,8 +7459,10 @@
     "m": 7,
     "candidate_id": "RMSE:bb9a74bbe0b6fab57bd09cb98919f82694f0ff08a8d2e9e8706c84be85438c3c",
     "physical_key": "f894e737ab7f5b042a5776967e331f97850bfbad3753ec3ed8e95e3f9e0dcc2b",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 128,
      "q_PF": 65,
@@ -7693,27 +7479,10 @@
       1
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[7] (T=12.8)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7735,8 +7504,10 @@
     "m": 8,
     "candidate_id": "RMSE:78cc0a189e43ff51af2735ea55f1eeac54961d022d938f1b697a89ebd4dd4a02",
     "physical_key": "c92bbaf0615a4c28efd29ae89934491f5ca9db390b2da92f77b3e1633ca109ce",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 256,
      "q_PF": 129,
@@ -7753,27 +7524,10 @@
       1
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[8] (T=25.6)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7795,8 +7549,10 @@
     "m": 9,
     "candidate_id": "RMSE:9d9a383d5480d65434d01b36bed1be1db7a74386d1b52ffa1843861b491bd3e1",
     "physical_key": "7fc7425b017ae5a9d91680feb70917f37df90b90b5b67f6e5b9112d613b1d8f1",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 512,
      "q_PF": 257,
@@ -7813,27 +7569,10 @@
       1
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[9] (T=51.2)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7855,8 +7594,10 @@
     "m": 10,
     "candidate_id": "RMSE:6f903ce847ffe5a74f3df4830d9ffaf0210ea1c251884e2ebe85af1ae1febf36",
     "physical_key": "611449e404531ea771f60eb0cf9c2498c9efa9c9c2fd4aea8af0967b83405282",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 1024,
      "q_PF": 513,
@@ -7873,27 +7614,10 @@
       2
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[10] (T=102.4)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7917,8 +7641,10 @@
     "m": 11,
     "candidate_id": "RMSE:59f5330334b3075af01312bd13c5a89f00644458754cd0cfb974b191aacb09ac",
     "physical_key": "36c8fc7e602205adf392cfed0fc5494fa190ed94a0594cc16c3f2c647456d448",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 2048,
      "q_PF": 1025,
@@ -7935,27 +7661,10 @@
       4
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[11] (T=204.8)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -7979,8 +7688,10 @@
     "m": 12,
     "candidate_id": "RMSE:da9276116af71ba0b860044debad9eebba098d928d73b58016241cfec16d7124",
     "physical_key": "efc4e8ec7590839d12da6fa567ddb9cb600ea925c6641218de60d3bb40fca5a5",
-    "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "provider_reasons": [],
+    "provider_support": "UNSUPPORTED",
+    "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "job": {
      "q_RPE": 4096,
      "q_PF": 2049,
@@ -7997,27 +7708,10 @@
       8
      ]
     },
-    "decision": "REQUEST",
-    "request": {
-     "provider": "src/trottertracks/pr_rpe_signal_provider.py",
-     "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
-     "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
-     "space": "sector36",
-     "context": {
-      "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
-      "common_operators": {
-       "commit": "4220f3006d0d8d413e195ed948e250578513b557",
-       "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
-      },
-      "tail_operators": {
-       "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
-       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_OPERATORS.npz",
-       "field": "Pauli_nonidentity"
-      }
-     },
-     "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[12] (T=409.6)",
-     "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
-    },
+    "decision": "UNSUPPORTED",
+    "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT"
+    ],
     "changed_from_saved_round": {
      "mean_source": {
       "commit": "1e3985e7eb29894934877a74e2a96c3088dd435a",
@@ -8115,6 +7809,7 @@
    11,
    12
   ],
+  "request_normalizer_budget": 12,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -8953,6 +8648,7 @@
    11,
    12
   ],
+  "request_normalizer_budget": 13,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -9770,6 +9466,7 @@
    11,
    12
   ],
+  "request_normalizer_budget": 143,
   "unsupported_rounds": [],
   "rounds": [
    {
@@ -10938,6 +10635,7 @@
    12
   ],
   "request_rounds": [],
+  "request_normalizer_budget": 0,
   "unsupported_rounds": [
    0
   ],
@@ -10948,6 +10646,7 @@
     "physical_key": "eef61fe51629dfda8106b1454c3f9d76293625b73706dfcad69401be2a7afcf2",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -10968,6 +10667,7 @@
     },
     "decision": "UNSUPPORTED",
     "reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "changed_from_saved_round": {
@@ -10991,6 +10691,7 @@
     "physical_key": "5c07a15a035e537f083959a3457b702c21644975b5d47b018447a6dd1763a3b6",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11035,6 +10736,7 @@
     "physical_key": "22dab5f8092b9cc6e44d86d0c2b11e33d70575f25bf1082b8ed4661da85bea54",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11079,6 +10781,7 @@
     "physical_key": "63f5b31bd5e9bcc596f6d229d58693ad42adefff8ec21a3a30d06240b0f88730",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11123,6 +10826,7 @@
     "physical_key": "c9e9639612d1a0cd4d5b5c5d562b3a547a893e3d5e903f4b89d8532c872b450e",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11167,6 +10871,7 @@
     "physical_key": "ae58d40e6d375efeb00b9ae38245ff1e27b8a2c2f420b9d0e6472ddeada57e08",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11211,6 +10916,7 @@
     "physical_key": "7c123a0f70d2f371f7d33f4a0045fb7181f60c3acdce20ba9e6080e934fa72f6",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11255,6 +10961,7 @@
     "physical_key": "7bb29b1f81b2b91f205d793f81e265bb7b90c1a120e2dd0f4dda6c27da31d416",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11299,6 +11006,7 @@
     "physical_key": "2f1703d4e3762334b72e9faed9e9eb304dbb14e2bbf297a70011d6a80ea39aa3",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11343,6 +11051,7 @@
     "physical_key": "f6ecfc3deddd66bef224b0ed8d15581678159a6c36a56eebf840615c2df6c677",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11387,6 +11096,7 @@
     "physical_key": "b10cf89456dd84cf450d5ba596e1e2dce48d38c5a45c94ff3eb5e04a1b36392c",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11431,6 +11141,7 @@
     "physical_key": "b683dd1a949732b4c625406050139023fcaff3aa66eb0e35a84c2fa79ee1fa79",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {
@@ -11475,6 +11186,7 @@
     "physical_key": "ba44ccd02874ae45dc0ec52eb551e28c74e89dafc6d2a87e59a724a7e35e6f33",
     "provider_support": "UNSUPPORTED",
     "provider_reasons": [
+     "ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT",
      "NO_SAVED_REFERENCE_AT_THIS_ROUND_T"
     ],
     "job": {

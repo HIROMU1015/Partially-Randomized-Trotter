@@ -1,0 +1,38 @@
+$ python tests/check_pr_pauli_m5_k2_composition.py   (SOURCE 4e5b8bef6)
+test_deliberate_errors_are_detected (__main__.M5K2Composition.test_deliberate_errors_are_detected) ... ok
+test_noncommuting_system (__main__.M5K2Composition.test_noncommuting_system) ... ok
+test_normalizer_budget_and_non_dyadic_step (__main__.M5K2Composition.test_normalizer_budget_and_non_dyadic_step) ... ok
+test_separate_question_approximation_order (__main__.M5K2Composition.test_separate_question_approximation_order) ... ok
+test_signals_and_normalizer_agree_including_negative_pieces (__main__.M5K2Composition.test_signals_and_normalizer_agree_including_negative_pieces) ... ok
+test_specified_weights_and_allocation (__main__.M5K2Composition.test_specified_weights_and_allocation) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.581s
+
+OK
+
+$ python tests/check_pauli_signal_entry.py   (SOURCE 4e5b8bef6)
+test_artificial_kappa_and_delta_request_only_changed_rounds (__main__.Entry.test_artificial_kappa_and_delta_request_only_changed_rounds) ... ok
+test_m5_normalizer_budget_and_non_binary64_step (__main__.Entry.test_m5_normalizer_budget_and_non_binary64_step)
+4th(m5_best) needs more than one normalizer per round; a non-dyadic actual step is refused by evaluate. ... ok
+test_physical_key_ignores_ids_locators_profile_only (__main__.Entry.test_physical_key_ignores_ids_locators_profile_only) ... ok
+test_provider_support_classes_and_b2_inputs (__main__.Entry.test_provider_support_classes_and_b2_inputs) ... ok
+test_rebound_and_new_rounds_through_execute_and_assemble (__main__.Entry.test_rebound_and_new_rounds_through_execute_and_assemble)
+LD5 kappa x3/2: rebound carriers for m0-m9, a synthetic stub only for m10-m12, B intake conditions PASS. ... [   1.40s] PLAN {'REUSE': 10, 'REQUEST': 3} request=[10, 11, 12] rebind=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] unsupported=[]
+ok
+test_saved_configurations_reach_published_packets (__main__.Entry.test_saved_configurations_reach_published_packets) ... ok
+test_without_own_signals_plan_is_the_split_runs_jobs (__main__.Entry.test_without_own_signals_plan_is_the_split_runs_jobs)
+LD3/LD5 with their own packet hidden: 13 requests whose jobs and inputs are the published runs'. ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 23.575s
+
+OK
+
+$ existing: tests/check_pr_rpe_signal_provider.py, tests/check_df_head_pauli_tail_contract.py
+Ran 10 tests in 5.262s
+
+OK
+Ran 4 tests in 1.808s
+
+OK

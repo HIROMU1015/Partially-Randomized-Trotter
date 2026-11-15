@@ -7,7 +7,7 @@
 | 項目 | 値 |
 |---|---|
 | branch | `codex/pr-r-dependent-n-model-20261111` |
-| SOURCE | `93a5ef3b9fed337cc4d26ee684defd304fa0eac0` |
+| SOURCE | `4e5b8bef634e3f071fe63df9683d7245df984d98`（最新。正規化子の上限と、binary64で表せないstepの判定を追加した）。初版は `93a5ef3b9fed337cc4d26ee684defd304fa0eac0` |
 | 本体 | `src/trottertracks/pauli_signal_entry.py`（`load_configuration`・`plan`・`physical_key`・`saved_index`・`packet`・`b_intake_check`） |
 | 実行器 | `scripts/run_pauli_signal_entry.py`（`--plan`／`--execute`／`--assemble`） |
 | Bの照合 | `scripts/check_pauli_signal_entry_b_bind.py`（Bの `bind_packet` をBのcodeで呼ぶ） |
