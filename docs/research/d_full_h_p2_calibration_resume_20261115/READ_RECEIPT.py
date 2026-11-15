@@ -8,7 +8,11 @@ from pathlib import Path
 import gzip
 import hashlib
 import json
+import os
+import shutil
+import subprocess
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'scripts'))
@@ -16,17 +20,29 @@ import run_full_h_kappa2_p2 as P
 import revalidate_full_h_kappa2_p1_run02 as R
 
 
-def archive_result(directory, part_bytes=64*2**20):
+def archive_result(directory, part_bytes=64*2**20, *, parallel_gzip=False):
     """Preserve raw bytes; verify lossless gzip and publish bounded byte parts."""
     directory=Path(directory).resolve();directory.relative_to(ROOT)
     raw_path=directory/'RESULT.json';zpath=directory/'RESULT.json.gz'
     manifest_path=directory/'RAW_RECEIPT.json'
     if manifest_path.exists() or zpath.exists():raise FileExistsError('Receipt already archived')
-    digest=hashlib.sha256();size=0
+    digest=hashlib.sha256();size=0;started=time.monotonic()
+    pigz=shutil.which('pigz') if parallel_gzip else None
+    workers=len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else os.cpu_count() or 1
     with raw_path.open('rb') as source,zpath.open('xb') as target:
-        with gzip.GzipFile(filename='',mode='wb',compresslevel=6,mtime=0,fileobj=target) as zipped:
-            for block in iter(lambda:source.read(2**20),b''):
-                digest.update(block);size+=len(block);zipped.write(block)
+        if pigz:
+            with subprocess.Popen([pigz,'-n','-6','-p',str(workers),'-c'],stdin=subprocess.PIPE,
+                    stdout=target,stderr=subprocess.PIPE) as process:
+                for block in iter(lambda:source.read(2**20),b''):
+                    digest.update(block);size+=len(block);process.stdin.write(block)
+                process.stdin.close();process.stdin=None
+                _,error=process.communicate()
+                if process.returncode:raise ValueError('Parallel gzip failed: '+error.decode(errors='replace'))
+        else:
+            with gzip.GzipFile(filename='',mode='wb',compresslevel=6,mtime=0,fileobj=target) as zipped:
+                for block in iter(lambda:source.read(2**20),b''):
+                    digest.update(block);size+=len(block);zipped.write(block)
+    compression_seconds=time.monotonic()-started
     checked=hashlib.sha256();decoded_size=0
     with gzip.open(zpath,'rb') as decoded:
         for block in iter(lambda:decoded.read(2**20),b''):
@@ -43,6 +59,9 @@ def archive_result(directory, part_bytes=64*2**20):
     manifest=dict(raw_path=raw_path.relative_to(ROOT).as_posix(),raw_bytes=size,raw_sha256=digest.hexdigest(),
         published_path=zpath.relative_to(ROOT).as_posix(),encoding='gzip',compressed_bytes=zpath.stat().st_size,
         compressed_sha256=compressed_hash.hexdigest(),roundtrip_bytes_identical=True,raw_preserved_locally=True)
+    if parallel_gzip:
+        manifest['compression']=dict(tool=pigz or 'python_gzip',workers=workers if pigz else 1,
+            compression_seconds=compression_seconds,archive_seconds=time.monotonic()-started)
     if parts:
         manifest['parts']=parts
         with (directory/'.gitignore').open('x') as ignored:ignored.write('RESULT.json.gz\n')
