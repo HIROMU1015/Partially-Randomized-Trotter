@@ -45,6 +45,9 @@ def bounds(case):
 def prepare(source,allocation_commit):
     if (ROOT/CALLER).read_bytes()!=blob(source,CALLER):raise ValueError('Unfixed Q3 caller')
     U.check_source()
+    # Constructor SOURCE/AST gate is metadata-only; exercise it before any
+    # process is submitted, rather than discovering a runtime mismatch there.
+    U.R.Observed(ROOT/PUBLIC,'preflight',workers=1,outcome_batch=8)
     if subprocess.check_output(['git','rev-parse','HEAD'],cwd=VIEW,text=True).strip()!=Q3_SOURCE:raise ValueError('Q3 SOURCE view changed')
     inputs=json.loads(blob(allocation_commit,PUBLIC+'/ALLOCATION_INPUTS.json'));cases=inputs['cases']
     if len(cases)>4 or len({(c['L_D'],tuple((r['N_X'],r['N_Y'])for r in c['allocation']['shots']))for c in cases})!=len(cases):raise ValueError('Nonunique/too many Q3')

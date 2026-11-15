@@ -42,3 +42,13 @@ def test_actual_supervisor_process_submission_and_persistence(tmp_path):
         r=U.supervise(cases,dict(concurrent_configurations=2),dict(fixture='ONLY'),tmp_path,monitor=lambda *a:None)
     assert not r['errors'] and not r['monitor_errors']
     assert len(r['receipts'])==2 and all(x['api_return_saved']for x in r['receipts'])
+
+
+def test_actual_accelerator_constructor_exposes_python312_ast_gate(tmp_path):
+    import sys
+    if sys.version_info[:2]==(3,12):
+        with pytest.raises(ValueError,match='Reference total DP SOURCE changed'):
+            Q.U.R.Observed(tmp_path,'ARTIFICIAL_CONSTRUCTOR_ONLY',workers=1,outcome_batch=8)
+    else:
+        Q.U.R.Observed(tmp_path,'ARTIFICIAL_CONSTRUCTOR_ONLY',workers=1,outcome_batch=8)
+    assert not list(tmp_path.iterdir())

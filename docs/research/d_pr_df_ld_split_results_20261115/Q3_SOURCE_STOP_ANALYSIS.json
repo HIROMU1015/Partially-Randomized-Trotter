@@ -1,0 +1,13 @@
+{
+  "runtime": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "python_AST_hash": "eb3150a5b99a661352e16c2c594a4c2edb9380d4e36ee56d303c005c854c9679",
+  "expected_reference_AST_hash": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+  "byte_source_matches_fixed_kernel": true,
+  "diagnostic_only_AST_hash_without_Python312_type_params": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+  "cause": "Python3.12 AST adds type_params=[] to FunctionDef. Fixed accelerator hash was created from older AST representation; scientific source bytes are identical. No runtime-compatible canonicalization or guard relaxation has been applied.",
+  "next_technical_fix": "In a separately resumed SOURCE, use a runtime matching the original AST contract or explicitly canonicalize only the version-added empty AST field, with original-body equality and actual Accelerator initialization + synthetic evaluator checks. Do not change scientific kernel or thresholds.",
+  "Q3_calls": 0,
+  "closure_evaluations": 0,
+  "total_DP_evaluations": 0,
+  "mandatory_stop": true
+}
