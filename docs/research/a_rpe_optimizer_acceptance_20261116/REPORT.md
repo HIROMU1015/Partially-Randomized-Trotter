@@ -6,7 +6,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 接続した入口 | B2が公開した `rpe_method_optimizer.prepare` と `optimize`（`5b7c07679`、`codex/b2-rpe-method-optimizer-20261116`）。本branchはそのcommitから分岐した |
+| 接続した入口 | B2が公開した `rpe_method_optimizer.prepare` と `optimize`（`5b7c07679`、`codex/b2-rpe-method-optimizer-20261116`）。本branchはそのcommitから分岐した。B2のその後のcommit `a03598a61` は、検証runの結果と文書だけである。src・scripts・configs・testsは `5b7c07679` と同じなので、この結果はそのまま当てはまる |
 | 結果 | **PASS 15、FAIL 4、Skillは未公開のためPENDING 1** |
 | 人の指示なしで探索が進むか | **ケース1では進む。** 4 shotの点から始めると、プログラム自身が配分を選び、保存Q3はその選択の後にだけ返った。改善の後も止まらず、最後は予算の規則で具体的な次の要求（configuration・26軸・費用・Q3経路）を返した。3 shotの状態から、予算0なら要求を返し、予算1なら尋ねずに使い切った |
 | 直すべき点 | 下の4件 |
