@@ -1,0 +1,125 @@
+{
+  "raw_evidence": {
+    "commit": "e59329ddb49f3a8a886601ca6e38eb4275b780d6",
+    "sha256": {
+      "RESULT.json": "7170acccbd53928d6ba329e30e3d988f07a2afc0c0fb0d86ce297339b7f2a45f",
+      "PRICES.json": "8bc8aacd688a4e28490cec96774a5155fdc5df6b43cf1f8ae71c243b9f92628d",
+      "SIDECARS_UNBOUND.json": "1e95ae3ce2666309bdf544e257a31b59c09a6685f95c4ae0327009b742113448",
+      "IMPLEMENTATION_EVIDENCE.json": "14df795a24e74b1d36134a411bc3c86aceb58e8d1feacfdae6f329bf70525864"
+    }
+  },
+  "guard": {
+    "status": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION",
+    "policy": {
+      "id": "P7_Y4_32O5_DIRECT_WRAPPER_IMPLEMENTATION_V1",
+      "source": {
+        "commit": "c628e9e8447c11c984064b922cbce6c52dc72d48",
+        "path": "src/trottertracks/price_implementation_guard.py"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "by_method": {
+        "TRUNCATED_PF": {
+          "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+          "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+        }
+      }
+    },
+    "checked": [
+      {
+        "m": 5,
+        "axis": "X",
+        "evidence": {
+          "commit": "e59329ddb49f3a8a886601ca6e38eb4275b780d6",
+          "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/calibration/run02/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "4th_m5X"
+          ]
+        }
+      },
+      {
+        "m": 5,
+        "axis": "Y",
+        "evidence": {
+          "commit": "e59329ddb49f3a8a886601ca6e38eb4275b780d6",
+          "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/calibration/run02/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "4th_m5Y"
+          ]
+        }
+      },
+      {
+        "m": 6,
+        "axis": "X",
+        "evidence": {
+          "commit": "e59329ddb49f3a8a886601ca6e38eb4275b780d6",
+          "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/calibration/run02/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "4th_m6X"
+          ]
+        }
+      },
+      {
+        "m": 6,
+        "axis": "Y",
+        "evidence": {
+          "commit": "e59329ddb49f3a8a886601ca6e38eb4275b780d6",
+          "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/calibration/run02/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "4th_m6Y"
+          ]
+        }
+      }
+    ]
+  },
+  "model_qualified": false,
+  "binding_path_corrections": [
+    {
+      "axis": "X",
+      "selector": [
+        "4th_m5X"
+      ],
+      "original": "docs/research/d_pf_p7_s2_h_direct_prices_20261115/run01/IMPLEMENTATION_EVIDENCE.json",
+      "bound": "docs/research/d_p7_y4_coarse_price_calibration_20261116/calibration/run02/IMPLEMENTATION_EVIDENCE.json"
+    },
+    {
+      "axis": "Y",
+      "selector": [
+        "4th_m5Y"
+      ],
+      "original": "docs/research/d_pf_p7_s2_h_direct_prices_20261115/run01/IMPLEMENTATION_EVIDENCE.json",
+      "bound": "docs/research/d_p7_y4_coarse_price_calibration_20261116/calibration/run02/IMPLEMENTATION_EVIDENCE.json"
+    },
+    {
+      "axis": "X",
+      "selector": [
+        "4th_m6X"
+      ],
+      "original": "docs/research/d_pf_p7_s2_h_direct_prices_20261115/run01/IMPLEMENTATION_EVIDENCE.json",
+      "bound": "docs/research/d_p7_y4_coarse_price_calibration_20261116/calibration/run02/IMPLEMENTATION_EVIDENCE.json"
+    },
+    {
+      "axis": "Y",
+      "selector": [
+        "4th_m6Y"
+      ],
+      "original": "docs/research/d_pf_p7_s2_h_direct_prices_20261115/run01/IMPLEMENTATION_EVIDENCE.json",
+      "bound": "docs/research/d_p7_y4_coarse_price_calibration_20261116/calibration/run02/IMPLEMENTATION_EVIDENCE.json"
+    }
+  ]
+}
