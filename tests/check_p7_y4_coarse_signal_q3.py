@@ -1,5 +1,7 @@
 """Metadata and toy two-dimensional tests; no real H4 evaluations or Q3."""
 from copy import deepcopy
+import ast
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -64,6 +66,23 @@ class CoarseWiring(unittest.TestCase):
             self.assertEqual(new['source'],view['source'])
             self.assertEqual(new['provider_binding']['input_source']['original_numerical_source'],old['source'])
             self.assertEqual(origin['original_numerical_source'],old['source'])
+
+    def test_stopped_python312_ast_schema_diagnostic_without_running_dp(self):
+        path=R.RUNTIME/'src/trottertracks/rpe_total_risk.py'
+        tree=ast.parse(path.read_text())
+        node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='total_state_dp')
+        expected='3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8'
+        actual=hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest()
+        self.assertNotEqual(actual,expected)
+        reference=next(n for n in ast.parse(R.blob('710aa69b663ef3313439762d25c80a652a03948f',
+            'src/trottertracks/rpe_total_risk.py')).body if isinstance(n,ast.FunctionDef) and n.name=='total_state_dp')
+        self.assertEqual(ast.dump(node,include_attributes=False),ast.dump(reference,include_attributes=False))
+        # Diagnostic copy only; never patch ast.dump, source guards or runtime.
+        for item in ast.walk(node):
+            if 'type_params' in item._fields:
+                self.assertEqual(item.type_params,[])
+                item._fields=tuple(k for k in item._fields if k!='type_params')
+        self.assertEqual(hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest(),expected)
 
 
 if __name__=='__main__':unittest.main()
