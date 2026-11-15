@@ -1,0 +1,26 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+______ test_actual_worker_pool_constructor_toy_evaluator_and_persistence _______
+
+tmp_path = PosixPath('/tmp/pytest-of-AbeHiromu/pytest-146/test_actual_worker_pool_constr0')
+
+    def test_actual_worker_pool_constructor_toy_evaluator_and_persistence(tmp_path):
+        args,_=pauli();bridge=T.create(R.Q.VIEW,args['config'],original_source=MOCK)
+        view=T.bind_signal(R.Q.VIEW,bridge,args['signal_packet'])
+        cases=[dict(label=label,allocation=args['allocations'][0],evaluation_target=args['evaluation_target'])for label in ('ARTIFICIAL_A','ARTIFICIAL_B')]
+        inputs=dict(statistical_contract=args['statistical_contract'],options=args['options'],
+            acceleration=dict(workers_per_configuration=2,outcome_batch=1,source=MOCK),
+            adopted_evaluation=dict(MSE_upper=999,epsilon_E_decimal='ARTIFICIAL_ONLY'))
+        for c in cases:(tmp_path/c['label']).mkdir()
+        # Only metadata intake is replaced by invented objects. Actual U.worker,
+        # P.worker, Accelerator constructor, T.evaluate and persistence all execute.
+        with patch.object(R.U,'metadata',return_value=(bridge,view)):
+            out=R.supervise(cases,inputs,MOCK,tmp_path,poll_seconds=.1)
+>       assert not out['errors']and not out['monitor_errors'],out
+E       AssertionError: {'errors': [{'label': 'ARTIFICIAL_B', 'reason': "'configuration'", 'type': 'KeyError'}, {'label': 'ARTIFICIAL_A', 'rea... [{'exitcode': 0, 'pid': 158276, 'signal': None}, {'exitcode': 0, 'pid': 158277, 'signal': None}], 'receipts': [], ...}
+E       assert (not [{'label': 'ARTIFICIAL_B', 'reason': "'configuration'", 'type': 'KeyError'}, {'label': 'ARTIFICIAL_A', 'reason': "'configuration'", 'type': 'KeyError'}])
+
+tests/test_pr_df_ld_split_q3_resume.py:34: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_pr_df_ld_split_q3_resume.py::test_actual_worker_pool_constructor_toy_evaluator_and_persistence
+1 failed, 1 passed in 8.14s
