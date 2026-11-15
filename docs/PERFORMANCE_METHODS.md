@@ -15,3 +15,12 @@ m3で実対象確認済み：[REPORT](research/d_pr_df_ld1_m3_results_20261115/R
 [F0 reader](../scripts/run_pr_df_ld1_f0.py) は固定 `d72dc4e6228bb380f4d1d000e5e030794fce7164:src/trottertracks/finite_k_sampler_law.py` と元CDF helperを再利用する。324-component表1個と2-order表13個だけを評価し、path位置数は条件付き上界の整数入力に使う。巨大なevent列生成、preparation再構築、sampling、compileは不要。Git blobはcommit/pathごとにcacheし、同じ保存JSONの再読を避ける。表ごとの処理が小さいためprocess poolを作らず、既存のsupport長に依存する計算を順次使う。人工reader試験14件・0.30秒で実経路、partial STOP、進捗logを確認した。[実行結果](research/d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)に実対象の時間・範囲を記録する。NumPy1.26.4のCDF、Fraction、元正規化・順序・hexを維持し、任意runtimeへのlaw移送はしない。Python3.11.0rc1の定期faulthandler dumpは使用せず、協調的START/END/所要時間と終了codeを保存する。
 
 F0実対象確認：SOURCE `fad0c1e4fe41c0e4c6d0690158056572295ed15a`、14表・13条件付きevent/path bound、内部0.075383830秒、GNU wall0.50秒・max RSS41552 KiB、全表完了・異常0。追加benchmarkなし。起動を含むGNU timeのCPU1407%はruntime既定動作を含む計測で、14個のscientific workerを作ったものではない。再利用元のhelperを修正せず、巨大event列なしで固定scopeを完了した。
+
+
+## PR-DF prefix2：matching adapter/fast、path並列、固定Q3のruntime検査
+
+[caller](../scripts/run_pr_df_ld_split.py)はe8273676のNativeRuntime/Adapterと同commitのaxes/observer対応fastを専用moduleで読み、prefix2 contextを親で準備して12独立pathをforkする。元normal sampler/seed/event順、new-ZZ、scalar once、X/Y別wrapper/compilerを維持。現LD1 fastの旧signatureやprefix1固定C1 contextは代用しない。[実測](research/d_pr_df_ld_split_results_20261115/REPORT.md)：12 path/24 compile、wall262.288秒・path CPU合計1053.660秒・単一worker最大RSS1,223,216 KiB。倍率benchmarkではない。巨大event rawは原bytesをprivate保全＋可逆gzipで公開する。
+
+有理数配分はe094b2d6 `generate`、solveはd83737b6 `_solve`を無変更再利用。saved Q3 rationalは16,000桁超の整数を含み得るため、読取時は既存B2同様integer digit limitに対応する。fit済み出力から配分だけ継続でき、fit/予測をやり直さない。
+
+失敗例：動的worker moduleはsys.modules登録前にProcessPoolへ渡すとPicklingErrorになる。fake compiler/worker本体mockだけではactual accelerator constructorのAST/runtime適合は分からない。Python3.12はFunctionDefに空type_params fieldを追加し、旧AST hash gateがSOURCE bytes一致でも停止する。今回、実Q3は0 callのまま停止し、constructorをpreflightで確認する最小回帰を追加した。guardを緩めて通す修正は未採用。科学同等性を保つbootstrapとruntimeの照合を次回の実SOURCEで先に行う。旧STOPと未開始callを保全し、同じ科学評価を自動retryしない。

@@ -1,5 +1,7 @@
 # Validation status
 
+[PR-DF LD1/LD2有限比較の部分STOP](docs/research/d_pr_df_ld_split_results_20261115/REPORT.md)：LD2 normal12 path・24 compile有効、2モデル・26価格・候補別4配分固定。新Q3はPython3.12 ASTと固定accelerator hashのgateで科学call0・4件未評価。保存V0だけの最小確認モデル費用はLD1約2613.15億／LD2約639.14億RZ。全menu最小/正式E[C]/G/winnerは未認定。旧raw/STOP保全、次の研究対象はLD2長round価格、運用上はQ3 runtime接続が未完了。
+
 [PR-DF LD1 F0保存確率診断](docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)：324-component1表＋order13表の14診断完了。componentのCDF丸め25＋格子化7＝32 supportが正→0、P→G TV約4.5413e−15。条件付きpath TVは全13roundで1未満、m12約1.5248e−7。actual PCG64距離・残差range・E[C]資格は未確定。path/build/compile0、公開後STOP。
 
 [PR-DF LD1 m4独立holdout](docs/research/d_pr_df_ld1_m4_holdout_results_20261115/REPORT.md)：2026-11-15：PR-DF LD1 m4独立holdout。H4 DF10/LD1/S2/Δ.1/K2、physical3df0cfd3356c358aeda8、q16/R32/T1.6、固定normal fresh4 path・X/Y8実compile、有効8・再利用/欠測0。両軸O=259385/2 RZ、P−O=−1188941146855657/1683627180032、相対約−0.544502%。DESCRIPTIVE_COMPLETE、許容差なし・モデルPASS/FAILなし。全law E[C]/CI・長round・N/G/winner未認定、m3/旧STOPを保全し公開後STOP。

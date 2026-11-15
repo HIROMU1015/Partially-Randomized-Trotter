@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[PR-DF LD2 prefix2取得](../../docs/research/d_pr_df_ld_split_results_20261115/HANDOFF.md)：e8273676のNativeRuntime/Adapterとmatching fastをSOURCE固定読込。旧library/providerは無変更、新ZZ・元normal sampler・full measured wrapperを再利用。24 compileを取得、追加作用保証なし。
+
 [PR-DF LD1 F0](../../docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)：固定finite_k_sampler_law helperを保存確率へ適用。rte.pyのSOURCE正規化/CDFを維持し、provider・samplerの変更なし。実PCG64 joint-law/価格資格は別。
 
 [PR-DF LD1 m4取得](../../docs/research/d_pr_df_ld1_m4_holdout_results_20261115/REPORT.md)：既存P2のnormal sampler・同一event S/C・新ZZ・wrapper/compilerを使用。新libraryや量子作用保証の追加なし、full-wrapper statevector未実施を維持。

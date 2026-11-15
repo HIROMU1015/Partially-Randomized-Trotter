@@ -1,5 +1,7 @@
 # scripts 索引
 
+[PR-DF split有限caller](../docs/research/d_pr_df_ld_split_results_20261115/REPORT.md)：`run_pr_df_ld_split.py`（matching pinned prefix2 Adapter/fast）、`freeze_pr_df_ld_split.py`（exact full-C fit／B2 rational generator）、`run_pr_df_ld_split_q3.py`（固定27e70 route）、`summarize_pr_df_ld_split.py`（保存価格のexact積和／部分STOP）。実Q3はAST/runtime gateで0 call、現SOURCEはmetadata preflightで同constructor停止を検出。自動再開・retry入口なし。
+
 [`run_pr_df_ld1_f0.py`](run_pr_df_ld1_f0.py)：固定helperと保存確率の最小reader。14表と条件付きevent/path上界だけを一回実行し、sample/回路/価格を呼ばない。[結果とSTOP](../docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)。
 
 [`run_pr_df_ld1_m4.py`](run_pr_df_ld1_m4.py)：固定INPUTSのliteral seedを元samplerへ渡し、P2/m3 S/C workerでm4だけ4 path取得。別入口で公開照合済みreceiptからexact二比較。[完了結果](../docs/research/d_pr_df_ld1_m4_holdout_results_20261115/REPORT.md)。再実行/追加path/fit不可、STOP。
