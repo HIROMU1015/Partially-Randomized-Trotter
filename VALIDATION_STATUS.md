@@ -1,5 +1,7 @@
 # Validation status
 
+[決定論PF閉包に基づくC採否案](docs/research/pf_closure_price_recommendation_20261115/REPORT.md)：保存A1〜A5と終端余裕を再利用、12モデル/60軸metadata照合。不一致0。Cは条件付き全60採用を推奨したが未採択、旧資格flag・直接96軸は不変。新科学計算/価格算出/QPY監査0。
+
 [PR-DF LD1 F0受入](docs/research/pr_df_ld1_f0_admission_20261115/HANDOFF.md)：14診断/13共有上界/26軸を受入、保留0。人工5＋既存回帰5＝10 PASS。条件付き格子lawの診断のみ、実PCG64・価格資格は未確定。
 
 [Full-H κ2 D7モデル固定](docs/research/full_h_d7_model_freeze_20261115/REPORT.md)：D7全5 cellの10較正record/18軸を受入、保留0。X/Y別rank3・等cell重みexact最小二乗の2モデルとm5/m6×X/Yの4予測をb5165f11bへ観測前固定。SOURCE f46fa120b。人工5＋既存回帰3＝8 PASS、公開JSONは元D1 frozen_model_gateで読取確認済み。CALIBRATED_UNVALIDATED/qualified=false、holdout開封/compile/E[C]/CI/N/G0、D1後続6compileは別指示、mandatory STOP。

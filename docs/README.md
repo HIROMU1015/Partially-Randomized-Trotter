@@ -1,5 +1,7 @@
 # 文書索引
 
+[決定論PF60軸の条件付き価格採用案](research/pf_closure_price_recommendation_20261115/REPORT.md)／[B/D HANDOFF](research/pf_closure_price_recommendation_20261115/HANDOFF.md)：観測事実・閉包の論証・残る実装前提を分離。ユーザー未採択、価格値未算出。
+
 [PR-DF LD1 F0の保存診断受入](research/pr_df_ld1_f0_admission_20261115/HANDOFF.md)：14表・13組・26軸の固定SOURCE付き参照。正式E[C]未資格を維持。
 
 [Full-H κ2 D7較正と予測固定](research/full_h_d7_model_freeze_20261115/REPORT.md)／[D1 HANDOFF](research/full_h_d7_model_freeze_20261115/HANDOFF_D1.md)：D7全5 cellの10較正record/18軸を受入、保留0。X/Y別rank3・等cell重みexact最小二乗の2モデルとm5/m6×X/Yの4予測をb5165f11bへ観測前固定。SOURCE f46fa120b。人工5＋既存回帰3＝8 PASS、公開JSONは元D1 frozen_model_gateで読取確認済み。CALIBRATED_UNVALIDATED/qualified=false、holdout開封/compile/E[C]/CI/N/G0、D1後続6compileは別指示、mandatory STOP。
