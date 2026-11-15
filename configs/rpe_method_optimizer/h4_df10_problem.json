@@ -1,0 +1,72 @@
+{
+  "schema": "RPE_METHOD_OPTIMIZER_PROBLEM_V1",
+  "note": "All H4-specific paths, dimensions, labels, caps and evidence locators are kept here; the optimizer code holds none of them.",
+  "problem": {
+    "system": "H4",
+    "geometry": "linear_1Angstrom",
+    "basis": "STO-3G",
+    "rank_policy": "tol_only_1e-8",
+    "hamiltonian_data": {
+      "snapshot": {"path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+                   "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"},
+      "receipt": {"path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+                  "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"},
+      "expected": {"fragment_count": 10, "n_qubits": 8, "sector_dimension": 36}
+    }
+  },
+  "target": {
+    "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+    "energy_ha": -2.1663874486347634,
+    "source": {"commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+               "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json", "selector": ["target"]}
+  },
+  "accuracy": {
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+    "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+    "epsilon_E_decimal": "0.00159360010199040",
+    "scope": "MODEL_MSE_FILTER_ONLY"
+  },
+  "rpe": {"M": 12},
+  "evidence": {
+    "saved_catalog_inputs": {"commit": "08c6a694bb05b4d09822bded996c9a1ca35e96a7",
+                             "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/INPUTS.json"},
+    "pf_candidate_index": {"commit": "7f27e18f06dde12127c85be898777b685d29bacc",
+                           "path": "docs/research/pf_joint_width_shot_plan_20261115/WIDTH_SIGNAL_COVERAGE.json"}
+  },
+  "generator": {"commit": "e094b2d60c5c4468711dea244fa2f91fb587ac12",
+                "path": "scripts/run_pauli_ld2_reallocation_q3_fixed.py", "function": "generate"},
+  "methods": {
+    "FULL_PF": {"family": "PF", "index_method": "FULL_PF", "formulas": ["2nd", "4th", "4th(m5_best)"],
+                "delta_over_h_range": ["1/2", "16"], "caps": [59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 15, 11]},
+    "TRUNCATED_PF": {"family": "PF", "index_method": "B0I_P7", "formulas": ["2nd", "4th", "4th(m5_best)"],
+                     "delta_over_h_range": ["1/2", "16"], "caps": [59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 15, 11]},
+    "PR_PAULI": {"family": "PR", "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body always in head; tail non-empty",
+                 "L_D_range": {"min": 1, "max_offset_from_fragment_count": -1},
+                 "caps": [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9]},
+    "PR_DF": {"family": "PR", "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body separate head; prefix and tail non-empty",
+              "L_D_range": {"min": 1, "max_offset_from_fragment_count": -1},
+              "caps": [64, 60, 56, 52, 47, 43, 38, 34, 30, 25, 21, 17, 12]}
+  },
+  "search": {
+    "rule": "FINITE_LOCAL_DESCENT_V1",
+    "decrement_steps": [1, 2],
+    "large_step_headroom": "9/10",
+    "seed_rules": ["B_PRICE", "A_SHAPE"],
+    "max_steps_per_method": 40,
+    "max_new_q3_per_method": 0
+  },
+  "q3_routes": {
+    "FULL_PF": {"commit": "06f4210e1bdfd5b07f42b941fa22d17e228533fc", "caller": "scripts/run_pf6_cost_budget_q3_fixed.py", "note": "single-case variants: B2 a006b8e15 scripts/run_full_pf_s2_m12_two_fixed.py"},
+    "TRUNCATED_PF": {"commit": "06f4210e1bdfd5b07f42b941fa22d17e228533fc", "caller": "scripts/run_pf6_cost_budget_q3_fixed.py", "note": "single-case variants: B 93ab9dbbe scripts/run_p7_s2_m12_two_fixed.py"},
+    "PR_PAULI": {"commit": "b6d4dea49c39f364048af422bc2928ee7c169261", "caller": "scripts/run_pauli_ld5_two_vectors_q3_fixed.py"},
+    "PR_DF": {"commit": "cf19fc36ff76167fc2fe86d2a671c40918ea2c5f", "caller": "scripts/run_pr_df_ld7_pf_budget_q3_fixed.py"}
+  },
+  "verification": {
+    "replay_seeds": {
+      "TRUNCATED_PF": ["B0I_P7_S2_16h_over_7__B_PRICE"],
+      "FULL_PF": ["FULL_PF_S2_16h_over_7__B_PRICE"]
+    },
+    "own_price_vectors_from_labels": ["FULL_PF__B_PRICE", "PAULI_LD3_VP"]
+  }
+}
