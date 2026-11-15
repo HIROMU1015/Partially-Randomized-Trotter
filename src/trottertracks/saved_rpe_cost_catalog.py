@@ -133,6 +133,8 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('status')=='CONDITIONAL_WIDTH_SPECIFIC_A_SHAPE_COST':
+            self.coarse_pf_prices(locator,d);return
         if d.get('kind')=='LD5_FIXED_ALLOCATION_MODEL_COST_AND_Q3_NOT_QUALIFIED_G':
             self.pauli_ld5(locator,d);return
         if d.get('classification')=='DIRECT_FINITE_COHORT_DESCRIPTIVE_PRICE_ONLY' and 'LD9_configuration'in d:
@@ -660,6 +662,51 @@ class Catalog:
             execution_history=[dict(status=old['status'],source=published['previous_STOP'],errors=deepcopy(old['errors']))],
             saved_recovery_assessment_source=dict(loc,selector=['assessment']))
 
+    def coarse_pf_prices(self,loc,d):
+        """Enrich the one saved coarse-width allocation with its own price table."""
+        self.add(d['Q3_acceptance']);join=self.r.read(d['Q3_acceptance'])
+        q3_loc=d['Q3_acceptance'];input_loc=ref(q3_loc['commit'],str(PurePosixPath(q3_loc['path']).parent/'INPUTS.json'),'inputs')
+        inp=self.r.read(input_loc);case=case_for(inp['cases'],d['allocation']);conf=self.r.read(case_ref(case))
+        prior=next(r for r in self.rows if r['configuration_id']==conf['id'] and r['allocation']['allocation_id']==d['allocation_id'])
+        require(d['configuration_id']==conf['id'] and d['allocation_id']==case['allocation']['allocation_id'] and
+                shots(d['allocation'])==shots(case['allocation']),'Coarse PF price configuration/allocation mismatch')
+        require(d['Q3_model_status']==prior['q3_status']==join['model_status'],'Coarse PF saved Q3 verdict mismatch')
+        require(d['compiler_profile']==conf['spec']['profile'] and d['scalar_quantity']=='HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY' and
+                d['scalar_application']=='ONCE_AT_TOTAL_T','Coarse PF compiler/scalar profile mismatch')
+        require(d['quantity']=='FULL_MEASURED_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT_P0_EXCLUDED',
+                'Coarse PF full-wrapper price quantity mismatch')
+        q3_axes={(t['m'],t['axis']):t for t in join['rows']};terms=[]
+        for i,p in enumerate(d['axes']):
+            m=p['m'];q=q3_axes[m,p['axis']];round_=conf['rounds'][m]
+            require(p['configuration_id']==conf['id'] and all(p[k]==q[k]for k in ('physical_id','original_candidate_id','total_candidate_id','N')),
+                    'Coarse PF physical/axis/N binding mismatch')
+            require(p['q']==round_['q_PF'] and float(frac(round_['T'])).hex()==p['T_hex']==p['T'].hex() and
+                    float(frac(round_['actual_delta_pf'])).hex()==p['actual_delta_hex']==p['actual_delta'].hex(),
+                    'Coarse PF actual time/width mismatch')
+            require(p['kind'] in ('DIRECT_COMPILED_DETERMINISTIC','CONDITIONAL_AFFINE_PRICE_REFERENCE'),
+                    'Unknown coarse PF price kind')
+            if p['kind']=='CONDITIONAL_AFFINE_PRICE_REFERENCE':
+                require(p['actual_delta_hex']==d['model_actual_delta_hex'] and p['model_error_bound_RZ'] is None,
+                        'Coarse PF model domain/error qualification mismatch')
+            terms.append(dict(m=m,axis=p['axis'],N=p['N'],price_source=dict(loc,selector=['axes',i])))
+        require(sum(p['kind']=='DIRECT_COMPILED_DETERMINISTIC'for p in d['axes'])==d['accepted_direct_axes'] and
+                sum(p['kind']=='CONDITIONAL_AFFINE_PRICE_REFERENCE'for p in d['axes'])==d['model_axes'],
+                'Coarse PF direct/model coverage mismatch')
+        self.make(dict(case,_source=input_loc),d['allocation'],prior['q3_status'],d['conditional_cost']['conditional_total_RZ'],
+            prior['MSE_lower'],prior['MSE_upper'],prior['adopted_evaluation'],loc,terms)
+        priced=self.rows.pop();merged=deepcopy(prior);merged.update(priced)
+        merged.update(result_sources=prior['result_sources']+[loc],labels=deepcopy(prior['labels']),
+            price_availability_history=[dict(status=prior['status'],sources=prior['result_sources'])],
+            price_scenario=d['status'],qualified_for_candidate=False,
+            price_evidence=dict(source=loc,quantity=d['quantity'],model_source=d['model_source'],
+                native_source=d['native_source'],wrapper_source=d['wrapper_source'],phase_sources=deepcopy(d['phase_sources']),
+                holdout_source=dict(loc,selector=['holdout']),direct_axes=d['accepted_direct_axes'],model_axes=d['model_axes']),
+            saved_cost_breakdown=deepcopy(d['conditional_cost']))
+        for p,saved in zip(merged['price_axes'],d['axes']):
+            p.update(price_kind=saved['kind'],region=saved['region'],unit_price_RZ=deepcopy(saved['unit_price_RZ']),
+                model_error_bound_RZ=deepcopy(saved['model_error_bound_RZ']),price_evidence=deepcopy(saved['price_evidence']))
+        self.rows[self.rows.index(prior)]=merged
+
     def pauli_model_prices(self,loc,d):
         """Attach a published model total to its already evaluated allocation.
 
@@ -796,6 +843,12 @@ def report(result):
     if any(r['L_D']==3 and r.get('price_evidence',{}).get('round_model_prices')==26 for r in result['candidates']):
         lines+=['','PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。']
     for r in result['candidates']:
+        if r.get('price_scenario')=='CONDITIONAL_WIDTH_SPECIFIC_A_SHAPE_COST':
+            c=r['saved_cost_breakdown']
+            lines+=['','p7 Yoshida4・要求幅32h/5 A_SHAPE：直接16軸の部分額 '+display(c['direct_part_RZ'])+
+                ' RZ、モデル10軸の部分額 '+display(c['model_part_RZ'])+' RZ。モデル価格全体の割合 '+c['model_percent_display']+
+                '%と、総額中のq>80未検証外挿の割合 '+c['unvalidated_q_above_80_percent_display']+
+                '%を区別する。価格誤差上界・CIは未取得。旧S2適合点とPR探索時の固定予算は変更しない。']
         if r.get('partial_price_axes'):
             lines+=['','LD9 V0の保存m6直接価格（別cohortの各軸4path平均、全13round費用はnull）：',
                 '','|軸|LD9 RZ/shot|LD7参照 RZ/shot|差 LD9−LD7 RZ/shot|','|---|---:|---:|---:|']
