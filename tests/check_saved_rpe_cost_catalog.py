@@ -105,11 +105,23 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertEqual(len([r for r in result['candidates']if r['method']=='PR_DF' and r['L_D']in (1,2)]),6)
         self.assertEqual(len(result['signal_only_history']),1)
         pauli=[r for r in result['candidates']if r['method']=='PR_PAULI' and r['L_D']==3]
-        self.assertEqual(len(pauli),1)
-        ld3=pauli[0]
+        self.assertEqual(len(pauli),5)
+        ld3=next(r for r in pauli if r['label']=='PAULI_LD3_VP')
         self.assertEqual(ld3['status'],'FEASIBLE')
         self.assertEqual(frac(ld3['conditional_cost']),frac('173557305044/165'))
-        self.assertEqual(result['method_minima']['PR_PAULI']['point_ids'],[ld3['point_id']])
+        budget=next(r for r in pauli if r['label']=='FULL_PF__B_PRICE')
+        self.assertEqual(result['method_minima']['PR_PAULI']['point_ids'],[budget['point_id']])
+        self.assertEqual(budget['status'],'FEASIBLE')
+        self.assertEqual(frac(budget['conditional_cost']),frac('625936421828/1155'))
+        self.assertEqual(budget['N_X'],[48,45,42,39,36,33,29,26,23,19,16,8,2])
+        self.assertEqual(budget['N_X'],budget['N_Y'])
+        self.assertEqual(frac(budget['saved_PF_comparisons']['difference_T_minus_Full_PF']),frac('-20236859002/1155'))
+        self.assertEqual(frac(budget['saved_PF_comparisons']['difference_T_minus_P7']),frac('168599528738/1155'))
+        self.assertEqual({r['label']:r['status']for r in pauli if r['label']!='PAULI_LD3_VP'},
+            {'P7__A_SHAPE':'INFEASIBLE','P7__B_PRICE':'INFEASIBLE','FULL_PF__A_SHAPE':'INFEASIBLE','FULL_PF__B_PRICE':'FEASIBLE'})
+        for r in pauli:
+            self.assertFalse(r['qualified_for_candidate'])
+            self.assertTrue(all(p['price_kind']=='MODEL' and not p['qualified_for_candidate']for p in r['price_axes']))
         self.assertFalse(ld3['qualified_for_candidate'])
         self.assertEqual(ld3['price_availability_history'][0]['status'],'PRICE_WAITING')
         self.assertEqual(ld3['price_evidence']['direct_calibration_paths'],2)
@@ -172,7 +184,7 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertEqual(len(cat.result()['candidates']),9)
         for s in self.inputs['sources']:cat.add(s)
         result=cat.result()
-        self.assertEqual(len(result['candidates']),38)
+        self.assertEqual(len(result['candidates']),42)
         self.assertFalse([r for r in result['candidates']if r['status']=='MISMATCH'])
         self.assertEqual([r['label']for r in result['candidates']if r['status']=='PRICE_WAITING'],
                          ['B0I_P7_Y4_32h_over_5__A_SHAPE'])
@@ -180,6 +192,17 @@ class PublishedAcceptance(unittest.TestCase):
         modified=deepcopy(self.reader.read(summary));modified['menu'][0]['cost']=refnum(0,1)
         with self.assertRaisesRegex(ValueError,'republication'):
             Catalog(self.reader,self.inputs['comparison']).pr_df_ld7(summary,modified)
+
+    def test_pauli_budget_source_first_and_identity_rejections(self):
+        source=next(s for s in self.inputs['sources']if s['path'].endswith('C_COMPARISON_JOIN.json'))
+        cat=Catalog(self.reader,self.inputs['comparison']);cat.add(source)
+        self.assertEqual(len(cat.result()['candidates']),5)  # Existing VP plus four distinct allocations.
+        for s in self.inputs['sources']:cat.add(s)
+        self.assertEqual(len(cat.result()['candidates']),42)
+        for key,value in [('total_configuration_id','other'),('price_qualified_for_candidate',True)]:
+            changed=deepcopy(self.reader.read(source));changed['records'][0][key]=value
+            with self.assertRaisesRegex(ValueError,'Pauli budget'):
+                Catalog(self.reader,self.inputs['comparison']).pauli_budget(source,changed)
 
     def test_same_command_updates_only_by_adding_a_pinned_source(self):
         import os,sys

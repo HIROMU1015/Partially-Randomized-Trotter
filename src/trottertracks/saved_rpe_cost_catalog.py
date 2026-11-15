@@ -133,6 +133,8 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('kind')=='CONDITIONAL_MODEL_REFERENCE_COST_AND_Q3_NOT_QUALIFIED_G' and 'records'in d:
+            self.pauli_budget(locator,d);return
         if d.get('schema')=='PR_DF_LD7_MODEL_COST_Q3_JOIN_FOR_C_V1':
             self.add(ref(commit,parent+'/SUMMARY.json'));return
         if d.get('schema')=='PR_DF_LD1_LD2_LD7_NINE_MODEL_MENU_V1':
@@ -318,6 +320,55 @@ class Catalog:
             self.make(dict(case,_source=ref(d['fixed_Q3_input_source'],directory+'/Q3_INPUTS.json')),
                 case['allocation'],r['status'],r['cost'],r['MSE_lower'],r['MSE_upper'],adopted,
                 ref(loc['commit'],loc['path'],'menu',i),terms)
+
+    def pauli_budget(self,loc,d):
+        """Read saved budget allocations; reuse the already bound LD3 model prices."""
+        inp=self.r.read(d['execution_source'])
+        summary_loc=ref(loc['commit'],str(PurePosixPath(loc['path']).parent/'SUMMARY.json'))
+        summary=self.r.read(summary_loc)
+        for i,r in enumerate(d['records']):
+            case=next(c for c in inp['cases']if c['label']==r['label'])
+            s=next(x for x in summary['rows']if x['label']==r['label'])
+            require(all(r[k]==case[k] for k in ('original_configuration_id','total_configuration_id','binding_id','allocation')),
+                    'Pauli budget configuration/allocation mismatch')
+            require(r['status']==s['status'] and frac(r['conditional_reference_total'])==frac(s['conditional_cost'])==frac(case['conditional_cost']),
+                    'Pauli budget saved verdict/total mismatch')
+            require(r['price_qualified_for_candidate'] is False and all(r[k] is None for k in ('E_C','CI','G','G_qualified','sufficient_N')),
+                    'Pauli budget reference must not acquire scientific qualification')
+            q3_loc=dict(r['result_source'],selector=r['result_record_selector']);q3=self.r.read(q3_loc)
+            require(q3['configuration_id']==case['total_configuration_id'] and q3['canonical_binding']==case['binding_id'] and
+                    shots(q3['allocation'])==shots(r['allocation']),'Pauli budget raw Q3 identity/allocation mismatch')
+            self.add(r['price_source'])
+            price_handoff=self.r.read(r['price_source'])
+            template=next(x for x in self.rows if x['configuration_id']==r['original_configuration_id'] and
+                          x['N_X']==x['N_Y']==price_handoff['VP']['N'])
+            conf=self.r.read(case_ref(case));terms=[]
+            for t in r['axes']:
+                p=self.r.read(t['original_price_source']);a=self.r.read(t['price_source']);context=self.r.read(t['physical_context_source'])
+                m=t['m'];canonical=conf['rounds'][m]['candidate']['id']
+                require(t['original_candidate_id']==a['original_candidate_id']==p['physical_id']==canonical and
+                        t['total_candidate_id']==a['total_candidate_id']==context['total_candidate_id'],
+                        'Pauli budget physical/total candidate mismatch')
+                require(t['original_law_binding']==context['original_law_binding'] and t['total_law_binding']==context['total_law_binding'] and
+                        t['original_law_binding']==conf['rounds'][m]['law_binding'],'Pauli budget law mismatch')
+                require(t['price_class']==a['value_source']=='MODEL_APPLICATION_FROM_Q8R660_DECOMPOSITION' and
+                        frac(t['C_ref'])==frac(a['C_ref_exact'])==frac(p['C_ref_exact']),
+                        'Pauli budget saved model price mismatch')
+                original=next(x for x in case['price_terms']if x['m']==m and x['axis']==t['axis'])
+                require(all(t[k]==original[k]for k in ('N','C_ref','N_times_C_ref','original_price_source')),
+                        'Pauli budget fixed weighted term mismatch')
+                terms.append(dict(m=m,axis=t['axis'],N=t['N'],price_source=t['original_price_source']))
+            self.make(dict(case,_source=d['execution_source']),r['allocation'],r['status'],r['conditional_reference_total'],
+                s['MSE_lower'],s['MSE_upper'],inp['adopted_evaluation'],dict(loc,selector=['records',i]),terms)
+            row=self.rows[-1]
+            row.update(q3_source=q3_loc,qualified_for_candidate=False,price_scenario='MODEL_REFERENCE_PRICE_NOT_E_C',CI=None,
+                price_evidence=deepcopy(template['price_evidence']),
+                saved_PF_comparisons=dict(source=dict(summary_loc,selector=['rows',summary['rows'].index(s)]),
+                    budgets=deepcopy(summary['budgets']),difference_T_minus_P7=deepcopy(s['difference_T_minus_P7']),
+                    difference_T_minus_Full_PF=deepcopy(s['difference_T_minus_Full_PF'])))
+            for p,t in zip(row['price_axes'],r['axes']):
+                p.update(price_kind='MODEL',qualified_for_candidate=False,model_application=t['price_class'],C_ref=deepcopy(t['C_ref']),
+                    physical_context_source=t['physical_context_source'],price_handoff_source=t['price_source'])
 
     def full_h(self, loc, d):
         axis=d['rows'][0];j=axis['B_join'];join=self.r.read(dict(j,selector=j['selector'][:2]))
@@ -584,5 +635,9 @@ def report(result):
         if r['point_id']in result['method_minima']['PR_DF']['point_ids'] and 'saved_cost_breakdown'in r:
             lines+=['',r['label']+'の費用の'+r['saved_cost_breakdown']['m7_m12_percent_display']+
                 '%はq>64のm7〜m12へのモデル外挿（元SUMMARYの保存内訳）。qualified_for_candidate=false。価格モデル・配分・Q3・較正receiptの固定locatorはCATALOG.jsonに保持。']
+        if r['point_id']in result['method_minima']['PR_PAULI']['point_ids'] and 'saved_PF_comparisons'in r:
+            comparison=r['saved_PF_comparisons']
+            lines+=['','PR-Pauli '+r['label']+'の保存費用差（T−PF基準）：Full PF S2 '+display(comparison['difference_T_minus_Full_PF'])+
+                ' RZ、p7 S2 '+display(comparison['difference_T_minus_P7'])+' RZ。全26価格はモデル参照、qualified_for_candidate=false。']
     lines+=['','再実行コマンドと追加方法は親directoryのHANDOFF.mdを参照。','']
     return '\n'.join(lines)
