@@ -1,0 +1,203 @@
+{
+  "schema": "B2_PAULI_LD2_SHOT_REALLOCATION_PLAN_V1",
+  "status": "PLAN_ONLY_NOT_ADOPTED_NOT_EXECUTED",
+  "candidate": {
+    "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+    "total_view": "285bf4812e07a519f266ed88b83293bc4675493c5a9cc03985a6312363c6b8f0",
+    "route": "PR_PAULI_TAIL",
+    "dictionary": "LD2"
+  },
+  "cap_vector_VP": [
+    48,
+    45,
+    42,
+    39,
+    36,
+    33,
+    29,
+    26,
+    23,
+    19,
+    16,
+    13,
+    9
+  ],
+  "cap_source": {
+    "commit": "50be68b803a90fd893a1499ebce74e033225144d",
+    "path": "docs/research/pauli_q3_three_quarter_20261115/run01/RESULT_LD2.json",
+    "selector": [
+      "record",
+      "allocation"
+    ]
+  },
+  "prices": {
+    "kind": "MODEL_REFERENCE_C_REF_NOT_E_C",
+    "source": {
+      "commit": "a7eceecba5f1d2172682a4e5cc6f1573568debd0",
+      "path": "docs/research/pauli_ld2_tref_20261115/AXIS_TABLE.json"
+    },
+    "extrapolated_rounds": [
+      10,
+      11,
+      12
+    ]
+  },
+  "T_ref": {
+    "numerator": 305225682539751998,
+    "denominator": 90343469
+  },
+  "generator": {
+    "source": {
+      "commit": "06f4210e1bdfd5b07f42b941fa22d17e228533fc",
+      "path": "scripts/run_pf6_cost_budget_q3_fixed.py",
+      "selector": [
+        "generate"
+      ]
+    },
+    "rules": {
+      "A_SHAPE": "w=VP[m]",
+      "B_PRICE": "w=VP[m]/C_ref[m,a]"
+    },
+    "bounds": "1<=N[m,a]<=VP[m]",
+    "selection": "largest finite breakpoint with sum N*C_ref <= budget",
+    "origin_plan": {
+      "commit": "7f27e18f06dde12127c85be898777b685d29bacc",
+      "path": "docs/research/pf_joint_width_shot_plan_20261115/REPORT.md"
+    },
+    "concrete_lists_generated": false
+  },
+  "proposals": [
+    {
+      "id": "P7-B",
+      "stage": 1,
+      "rule": "B_PRICE",
+      "budget": 593555352,
+      "budget_basis": "B0I p7 S2 achieved fixed-shot cost (B2 1002f1dfe); replace by the then-current minimum Q3-passing PF cost if the user so decides",
+      "question": "Can price-aware reallocation reach the current deterministic-PF minimum while meeting the adopted Q3 threshold?"
+    },
+    {
+      "id": "PF-B",
+      "stage": 1,
+      "rule": "B_PRICE",
+      "budget": 838693580,
+      "budget_basis": "Full PF S2 achieved fixed-shot cost (B2 1002f1dfe)",
+      "question": "Can it reach the Full PF S2 benchmark?"
+    },
+    {
+      "id": "OWN-A",
+      "stage": 2,
+      "rule": "A_SHAPE",
+      "budget": {
+        "numerator": 457838523809627997,
+        "denominator": 180686938
+      },
+      "budget_basis": "3/4 x T_ref (same beta as the adopted PF6 design)",
+      "question": "Can LD2 keep the threshold at 25% lower own cost with its original shape?"
+    },
+    {
+      "id": "OWN-B",
+      "stage": 2,
+      "rule": "B_PRICE",
+      "budget": {
+        "numerator": 457838523809627997,
+        "denominator": 180686938
+      },
+      "budget_basis": "3/4 x T_ref",
+      "question": "At the same budget, does price-aware reallocation keep the threshold better than shape preservation?"
+    },
+    {
+      "id": "P7-A",
+      "stage": "optional",
+      "rule": "A_SHAPE",
+      "budget": 593555352,
+      "question": "Uniform shrink without reallocation (early rounds become single-digit shots); low priority"
+    },
+    {
+      "id": "PF-A",
+      "stage": "optional",
+      "rule": "A_SHAPE",
+      "budget": 838693580,
+      "question": "Same at the Full PF S2 budget; low priority"
+    }
+  ],
+  "recommended_first_batch": [
+    "P7-B",
+    "PF-B"
+  ],
+  "new_Q3_calls": {
+    "stage1": 2,
+    "all_at_once_alternative": 4,
+    "maximum_all_stages": 6
+  },
+  "planning_arithmetic_from_published_C_ref": {
+    "note": "sums of published model-reference values only; not prices, not results",
+    "all_axes_N1_floor_display": "322379320.49",
+    "m0_m9_at_VP_display": "180706976.08",
+    "m10_m11_m12_N1_both_axes_display": [
+      "17572687.31",
+      "62415678.57",
+      "233914358.00"
+    ]
+  },
+  "interpretation": {
+    "q3_depends_only_on_N": true,
+    "report_cost_split": [
+      "m0-m9 (q<=512)",
+      "m10-m12 (q>=1024, extrapolated)"
+    ],
+    "flip_margin": "r=(B_PF - T(N)) / T_m10_12(N)"
+  },
+  "finite_scope": {
+    "rho": 1,
+    "maximum_round_outcomes": 4225,
+    "maximum_verification_pairs": 55043173,
+    "maximum_frontier_states": 8192,
+    "maximum_transition_pairs": 141559036
+  },
+  "reusable_inputs": {
+    "inputs_and_adopted_evaluation": {
+      "commit": "f54b41a2e311e44124c9e180e26b01fe11d4eabd",
+      "path": "docs/research/pauli_q3_three_quarter_20261115/INPUTS.json"
+    },
+    "caller": {
+      "commit": "f54b41a2e311e44124c9e180e26b01fe11d4eabd",
+      "path": "scripts/run_pauli_q3_three_quarter.py"
+    },
+    "persistence_and_namespace": {
+      "commit": "06f4210e1bdfd5b07f42b941fa22d17e228533fc",
+      "path": "scripts/run_pf6_cost_budget_q3_fixed.py"
+    },
+    "kernel": "710aa69b663ef3313439762d25c80a652a03948f",
+    "accelerator": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+    "pf_benchmarks": {
+      "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+      "path": "docs/research/pf6_allround_cost_20261115/RESULT.json"
+    }
+  },
+  "existing_LD2_Q3": [
+    {
+      "allocation": "VP",
+      "commit": "50be68b803a90fd893a1499ebce74e033225144d",
+      "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+    },
+    {
+      "allocation": "V0 [64,60,56,52,47,43,38,34,30,25,21,17,12]",
+      "commit": "caf1417ef20d0a5ab2030a2d957ee4f09443be43",
+      "status": "OPT_IN_DIAGNOSTIC_NO_ADOPTED_THRESHOLD_FIELD"
+    }
+  ],
+  "missing": [
+    "user adoption and execution permission (budgets, rules, call count, scope)",
+    "concrete integer lists and conditional costs, committed before Q3",
+    "caller wiring for Pauli route with multiple allocations and worker persistence, artificial fixture check",
+    "per-list count-only check; binary64 closure verified inside each call",
+    "m10-m12 price evidence (for cost claims only)"
+  ],
+  "Q3_calls_executed": 0,
+  "compiles": 0,
+  "fits": 0,
+  "sufficient_N": null,
+  "G": null,
+  "winner": null,
+  "mandatory_stop": true
+}
