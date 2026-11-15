@@ -1,5 +1,7 @@
 # 文書索引
 
+[RPE方式別最適化の受入ケース](research/a_rpe_optimizer_acceptance_20261116/REPORT.md)：利用者の立場から3ケース（p7 S2のshot探索、粗幅Y4の価格待ち、予算終了と再開）を定義し、B2の `5b7c07679` に接続。PASS 15・FAIL 4（範囲外候補、D価格の読込、予算超過の問い合わせ、出力からの再開）。[定義](research/a_rpe_optimizer_acceptance_20261116/ACCEPTANCE.md)／[CASES.json](research/a_rpe_optimizer_acceptance_20261116/CASES.json)。新規科学0、公開後STOP。
+
 [Pauli LD5の2適合配分を比較へ追加](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：PR-Pauli LD5のFULL_PF__B_PRICEとVPをQ3適合点として追加し、Pauliの保存集合内最安をLD5 FULL_PF__B_PRICE・3792207339/7 RZ（541,743,905.57）へ更新。VPは6105690627/7 RZ（872,241,518.14）。LD3同名配分は別候補として維持。最安点のLD3との差−222210893/1155 RZ（−192,390.38）は採用モデル価格規則での数値差。全26軸MODEL・qualified_for_candidate=false。旧47点不変、固定19入力49点（適合34/不適合13/価格待ち2）、回帰11 PASS、新科学call0、公開後STOP。
 
 [LD9 m6直接価格とLD7 PF予算配分の追記](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：LD9 V0の同じ1配分にm6 X/Yの直接有限平均492573 RZ/shotを追記。LD7別cohortの4path平均393837.25との差+98735.75を保存転記、元16軸receiptを照合。LD9のQ3適合・全13round費用nullを維持。未反映LD7 PF予算4配分は全てモデル不適合として追加。PR-DF保存集合内最安はLD7 A_SHAPE・155652932221/126 RZ（約1,235,340,731.912698）のまま。固定18入力47点（適合32/不適合13/価格待ち2）、回帰10 PASS、新科学call0、公開後STOP。

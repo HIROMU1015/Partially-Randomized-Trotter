@@ -1,0 +1,102 @@
+{
+ "schema": "A_RPE_OPTIMIZER_ACCEPTANCE_CASES_V1",
+ "entry": {
+  "program": "src/trottertracks/rpe_method_optimizer.py: prepare(root, problem) / optimize(root, problem, context, methods, initial, extra_results, backend, max_new)",
+  "skill": "B Skill (not published): must pass the same case input to the program and return the same output fields"
+ },
+ "science": {
+  "new_signal": 0,
+  "new_price": 0,
+  "compile": 0,
+  "new_Q3": 0,
+  "artificial_answers": "labelled ARTIFICIAL_FIXTURE only"
+ },
+ "cases": [
+  {
+   "id": "1",
+   "title": "p7 S2 shot search from the saved m12=4 feasible point",
+   "input": {
+    "problem": "B2 configs/rpe_method_optimizer/h4_df10_problem.json with TRUNCATED_PF restricted to formula 2nd, delta_over_h 16/7",
+    "known_at_start": {
+     "1a": [
+      "B0I_P7_S2_16h_over_7__B_PRICE"
+     ],
+     "1b": [
+      "B0I_P7_S2_16h_over_7__B_PRICE",
+      "P7_S2_LOCAL_R12_D1 (m12=3)"
+     ]
+    },
+    "q3_answers": "saved C catalog results, returned only for the allocation the program has selected",
+    "new_q3_budget": {
+     "1a": 0,
+     "1b": [
+      0,
+      1
+     ]
+    },
+    "budget_1_answer": "ARTIFICIAL_FIXTURE for an unsaved allocation"
+   },
+   "returned_during_run": [
+    "per step: selected allocation, its cost, the saved (or artificial) Q3 verdict, incumbent before/after",
+    "at the end: best feasible point, stop reason, concrete next request (configuration, 26 shots, cost, Q3 route)"
+   ],
+   "observe": [
+    "search_space_follows_requested_range",
+    "starts_from_given_saved_point_only",
+    "saved_Q3_revealed_only_after_selection",
+    "next_action_decided_without_asking",
+    "continues_after_improvement (1a)",
+    "next_action_from_m12_3_state_without_budget (1b, budget 0)",
+    "remaining_budget_used_then_rule_stop (1b, budget 1)"
+   ],
+   "not_a_pass_condition": "the saved order m12 4 -> 3 -> 2 -> 1"
+  },
+  {
+   "id": "2",
+   "title": "p7 Yoshida4 coarse 32h/5 A_SHAPE waiting for a price",
+   "input": {
+    "before": "C catalog INPUTS 08c6a694b (Q3 MODEL_BOUND_MEETS_ADOPTED_THRESHOLD, no 26-axis price)",
+    "after": "C catalog INPUTS 417a73e73, whose sources include D price c7c8c1edd0996ad9ef97629961f67ca508a182f0 docs/research/d_p7_y4_coarse_price_calibration_20261116/PRICE_AND_COST.json",
+    "new_q3_budget": 0
+   },
+   "returned_during_run": [
+    "before: the candidate is not ready and needs PRICE_26AXIS; its saved Q3 is kept",
+    "after: the candidate is ready; the saved Q3 is reused (0 new calls); 372,035,410 RZ appears in the comparison"
+   ],
+   "observe": [
+    "price_missing_identified",
+    "price_wait_reported_in_output",
+    "price_input_is_D_saved_file",
+    "saved_Q3_reused_without_new_call",
+    "D_price_total_in_comparison_table"
+   ]
+  },
+  {
+   "id": "3",
+   "title": "artificial budget end and resume",
+   "input": {
+    "fixture": "two artificial configurations: A ready (saved feasible seed), B waiting for a price; artificial Q3 for every other allocation",
+    "new_q3_budget": 2,
+    "resume": "the completed calls of run 1, then a new budget of 2"
+   },
+   "returned_during_run": [
+    "best confirmed point, unevaluated items (next request/queue, not-ready candidates with needs), stop reason, each separately"
+   ],
+   "observe": [
+    "budget_end_returns_best_unevaluated_and_reason_separately",
+    "no_science_call_beyond_budget",
+    "resume_input_recoverable_from_output",
+    "resume_does_not_repeat_completed_calls",
+    "resume_starts_from_previous_state"
+   ]
+  },
+  {
+   "id": "SKILL",
+   "title": "Skill entry (B)",
+   "status": "PENDING_NOT_PUBLISHED",
+   "observe": [
+    "the same cases run through the Skill with no question to the user; the same predicates hold on its output"
+   ]
+  }
+ ]
+}
