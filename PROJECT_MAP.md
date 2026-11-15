@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Pauli LD3 VP価格接続と比較更新](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：PR-Pauli LD3 VPにA f25a05f8aの26軸モデル参照価格を接続。configuration/total view/binding/配分/m/axis/Nを26/26照合、exact総額173557305044/165 RZ（約1,051,862,454.81）がPR-Pauliの保存集合内最安へ更新。LD2 OWN-Bは適合点として保全。直接は別較正cellの2pathのみ、全26価格MODEL・qualified_for_candidate=false。固定12入力35点（適合28/モデル不適合6/価格待ち1）、他34点・他方式最安は不変。技術検収6 PASS、新科学call0、公開後STOP。
+
 [粗幅Y4の復旧Q3受入](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7標準Yoshida4・粗幅32h/5 B_PRICEの復旧Q3（8a2f5c46d）をモデル不適合・費用nullとして追加。旧UNKNOWNは34783cd09の実行履歴へ接続。固定11入力35点（適合27/モデル不適合6/価格待ち2）、従来34点と全方式最安値は不変、p7最安395962678 RZ。新科学call0、技術検収5 PASS、公開後STOP。
 
 [H4保存RPE結果の自動比較](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)／[再実行と引渡し](docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)：固定10入力から34点（適合27・モデル不適合5・価格待ち2）を比較。重複4件を統合、LD3旧信号状態1件をhistoryへ保全。Full PF/S2 m12=2は559457386 RZ、B0I p7/S2 m12=2は395962678 RZが保存集合内最安。Pauli LD3 VPとDF LD7 V0はQ3適合・価格nullで除外。旧PR予算/基準は不変。人工・保存検収5 PASS、同一command＋入力追加で更新を確認。新signal/sampling/compile/fit/配分探索/Q3=0、公開後STOP。

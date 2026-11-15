@@ -1,5 +1,7 @@
 # 文書索引
 
+[Pauli LD3 VP価格接続と比較更新](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：PR-Pauli LD3 VPにA f25a05f8aの26軸モデル参照価格を接続。configuration/total view/binding/配分/m/axis/Nを26/26照合、exact総額173557305044/165 RZ（約1,051,862,454.81）がPR-Pauliの保存集合内最安へ更新。LD2 OWN-Bは適合点として保全。直接は別較正cellの2pathのみ、全26価格MODEL・qualified_for_candidate=false。固定12入力35点（適合28/モデル不適合6/価格待ち1）、他34点・他方式最安は不変。技術検収6 PASS、新科学call0、公開後STOP。
+
 [H4保存RPE結果の自動比較](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)／[再実行と引渡し](research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)：固定10入力から34点（適合27・モデル不適合5・価格待ち2）を比較。重複4件を統合、LD3旧信号状態1件をhistoryへ保全。Full PF/S2 m12=2は559457386 RZ、B0I p7/S2 m12=2は395962678 RZが保存集合内最安。Pauli LD3 VPとDF LD7 V0はQ3適合・価格nullで除外。旧PR予算/基準は不変。人工・保存検収5 PASS、同一command＋入力追加で更新を確認。新signal/sampling/compile/fit/配分探索/Q3=0、公開後STOP。
 
 [Full-H κ2 m0再判定・固定総額（2026-11-16）](research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)：採択zero-ZZ規則で保存m0-X/Yを再判定し受入2/2・保留0（各1062 RZ、同一normal path1）。F1保存24model軸と既存exact会計を用いた固定1.5倍配分のT=1,246,382,808,920.55 RZ、m0部分額203904、割合約0.000016359661%。両PF基準との差は正。経験的/model参照シナリオに限定、元parity未保存・旧0/2/null/STOP・D7資格は保全。人工新4 PASS、sampling/build/compile/再simulation/価格再計数/fit/予測/Q3=0、公開後STOP。
