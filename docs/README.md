@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full-H κ2 D7独立holdoutの観測前規則案](research/full_h_d7_holdout_rule_proposal_20261115/PROPOSAL.md)／[D1 HANDOFF](research/full_h_d7_holdout_rule_proposal_20261115/HANDOFF_D1.md)：m5/m6×X/Yの記述的比較を第一案。Full-H許容差未採択・後続6 compile維持。規則案公開・ユーザー採択待ち、科学実行0、mandatory STOP。
+
 [並列化・高速化の手法集](PERFORMANCE_METHODS.md)：実装と検証記録を再利用するための入口。
 
 - [Full-H κ2 D7較正取得完了](research/d_full_h_p2_calibration_resume_20261115/REPORT.md)／[C向けHANDOFF](research/d_full_h_p2_calibration_resume_20261115/HANDOFF_C.md)：全5 cell・18軸PASS、追加compile0。結果f98cb9638、公開後対応照合18軸/較正record10件、C科学受入は未実施。全較正引渡しでmandatory STOP。
