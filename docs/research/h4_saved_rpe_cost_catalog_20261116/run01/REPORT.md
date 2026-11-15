@@ -55,6 +55,7 @@
 |P7__B_PRICE|PR_PAULI|3|2nd|モデル不適合|395,206,798.24|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 15, 4, 1] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 15, 4, 1]|
 |FULL_PF__A_SHAPE|PR_PAULI|3|2nd|モデル不適合|510,918,151.05|[26, 24, 23, 21, 19, 18, 16, 14, 12, 10, 8, 7, 4] / [26, 24, 23, 21, 19, 18, 16, 14, 12, 10, 8, 7, 4]|
 |FULL_PF__B_PRICE|PR_PAULI|3|2nd|適合|541,936,295.95|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 8, 2] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 8, 2]|
+|LD9_V0|PR_DF|9|2nd|Q3適合・価格待ち|—|[64, 60, 56, 52, 47, 43, 38, 34, 30, 25, 21, 17, 12] / [64, 60, 56, 52, 47, 43, 38, 34, 30, 25, 21, 17, 12]|
 
 重複除去：4件。詳細・固定SOURCE・26軸の価格対応はCATALOG.jsonを参照。
 Q3適合・価格待ちは費用nullで選択対象外。信号だけの旧状態はsignal_only_historyへ保持する。
@@ -140,6 +141,7 @@ PRの事前固定予算・旧PF基準はhistorical_*に元SOURCEとともに保�
 - `fd010b111e95411702be51adc73e56b0bba6c093:docs/research/d_pr_df_ld7_price_results_20261116/SUMMARY.json`
 - `8855f420a9fe2577efc77f099c5a39ab0cb9b7e6:docs/research/d_p7_y4_coarse_a_shape_q3_20261116/C_RESULT_JOIN.json`
 - `fb4d78781e2a4c63c9d334af246807785e669d6c:docs/research/pauli_ld3_pf_budget_q3_results_20261116/C_COMPARISON_JOIN.json`
+- `778118926c85158f947928c1e744d565464aab17:docs/research/d_pr_df_ld9_v0_results_20261116/C_HANDOFF.json`
 
 PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。
 

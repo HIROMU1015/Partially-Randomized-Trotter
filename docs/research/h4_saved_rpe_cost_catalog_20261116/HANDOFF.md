@@ -2,7 +2,23 @@
 
 同じコマンドでINPUTS.jsonの固定commit/path一覧を読み、公開済みQ3判定と保存条件付き費用を照合して方式別最安点を返す。対象は **指定した保存候補集合内の最安適合点**。新しい信号・価格・N・Q3や全配分の探索は実行しない。
 
-## PR-Pauli LD3のPF予算4配分（2026-11-16、現行入力）
+## PR-DF LD9共通V0の追加（2026-11-16、現行入力）
+
+公開版 `ede7d80707249222b3ff676394c4a7abf65fb979` を基点に、`778118926c85158f947928c1e744d565464aab17:docs/research/d_pr_df_ld9_v0_results_20261116/C_HANDOFF.json` を16番目の固定入力として追加し、従来と同じコマンドを再実行した。実行SOURCE `f7b9e70850296147ca0e5ef9cc544f3f315b0831`。
+
+追加したのは `LD9_V0` の1点、point ID `8b2586c294661c9da0db082d`。状態は **Q3適合・価格待ち**、conditional_cost=null、price_axes=[]。保存MSE上界の表示は4.28410123342266259328471×10⁻⁷ Ha²で、正本はC_HANDOFFと元Q3_RESULTの同一exact有理数。値・判定の再評価はしていない。
+
+原configuration `ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833`、total view `4fe264b899b1ecf51f6047c31bf3a4fd422d3c795a36defcf249cdfe502adbab`、binding `1d868513437a4efac8fe26b3be8061716318de290342f846ac22627249dfe078`。X/Y各 `[64,60,56,52,47,43,38,34,30,25,21,17,12]`。固定Q3 INPUTSと元RESULTについてconfiguration・total view・binding・allocation・law・保存判定・MSE上界を照合し、既存makeのsnapshot/精度/target/P0/profile検査を再利用した。
+
+`run01/CATALOG.json` の `configuration_source` / `case_source` / `signal_source` / `q3_source` が、元configuration、固定入力、LD9信号、`560ef11e734644ea9d0df00fc49bd90a75dda2a8:docs/research/d_pr_df_ld9_v0_results_20261116/q3/LD9_V0/RESULT.json` へのlocator。`shared_V0_reference` はC_HANDOFFのsame_V0_LD7への参照だけで、同じ整数shot vectorの比較根拠を保持する。LD7とは別の物理候補・価格domainであり、再登録や価格移送は行っていない。
+
+**PR-DFの指定保存候補集合内最安はLD7 A_SHAPE・155652932221/126 RZ（約1,235,340,731.912698）のまま**。LD7 V0は1件、LD7全体は既存3点のまま。LD9は価格未取得なので最安値の選択対象外。全42既存点と全方式最安はede7d8070版と完全一致。Pauliの不適合3点とFULL_PF__B_PRICE、粗幅Y4 A_SHAPEの価格待ち/nullも保全。
+
+現行は固定16入力（参照SUMMARY等を含む読取文書19）・候補43点、適合32／モデル不適合9／価格待ち2。重複除去4件、旧信号のみ履歴1件。人工/保存metadata回帰9 PASS。新schemaを既存reader・makeへ接続する最小差分のみ追加し、LD9を先に読んでもLD7や他split価格を取り込まないことを確認した。§10.5の関連履歴と基点catalogではLD9接続はなく、今回不足していた1点だけを追加。他担当worktree・原結果・SOURCE・STOPは変更していない。
+
+ロードマップ差分：PR-DF LD9共通V0はQ3適合・価格待ちとして追跡可能、固有費用はnull。最安適合点・既存価格資格に変更なし。本体更新は統合担当へ委ねる。新signal/sampling/compile/fit/配分探索/Q3は各0。公開・remote照合後mandatory STOP。
+
+## PR-Pauli LD3のPF予算4配分（2026-11-16）
 
 固定 `fb4d78781e2a4c63c9d334af246807785e669d6c:docs/research/pauli_ld3_pf_budget_q3_results_20261116/C_COMPARISON_JOIN.json` を15番目の入力に追加し、従来と同じコマンドで比較表を更新した。現行実行SOURCE `fe462c24d5c046efcef7afcdc43038319707114d`。recordsの4件は次のとおり。
 
