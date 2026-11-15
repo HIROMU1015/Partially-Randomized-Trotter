@@ -2,7 +2,35 @@
 
 同じコマンドでINPUTS.jsonの固定commit/path一覧を読み、公開済みQ3判定と保存条件付き費用を照合して方式別最安点を返す。対象は **指定した保存候補集合内の最安適合点**。新しい信号・価格・N・Q3や全配分の探索は実行しない。
 
-## PR-Pauli LD5のQ3適合2配分（2026-11-16、現行入力）
+## p7粗幅Yoshida4 A_SHAPEへの価格接続（2026-11-16、現行入力）
+
+固定価格 `c7c8c1edd0996ad9ef97629961f67ca508a182f0:docs/research/d_p7_y4_coarse_price_calibration_20261116/PRICE_AND_COST.json` を20番目の入力として追加し、従来と同じコマンドを再実行した。実行SOURCE `be5326bdc7feb535155b7537db448e9f62eb9419`。Q3の正本は `8855f420a9fe2577efc77f099c5a39ab0cb9b7e6:docs/research/d_p7_y4_coarse_a_shape_q3_20261116/C_RESULT_JOIN.json`。
+
+**B0I p7の指定保存候補集合内最安は、標準Yoshida4・要求幅32h/5・A_SHAPEの372,035,410 RZへ更新**。既存の同configuration/配分1点を価格待ちから価格付き適合へ更新したもので、候補数は増えていない。新point IDは `bfc0c1081b78c5adcb12b43b`（price locatorを含むキーのため、旧価格待ちIDとは異なる）。旧SOURCE・状態はprice_availability_historyへ保持。
+
+configuration `dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0`、allocation `B0I_P7_Y4_32H_OVER5_A_SHAPE_SAVED_INTEGERS_01`、X/Y各 `[37,34,32,29,27,24,22,19,17,14,11,9,6]`。全26行のoriginal/total physical candidate、m/axis/N、q、Tと実幅のbinary64 hexをQ3側configuration・軸索引と照合した。要求幅だけで早期roundを同一視せず、早期の実幅0.1/0.2/0.4/約0.533333等を元の直接観測として保持する。モデル適用行は実幅0.64の固定domainへ照合。元のscalar=H定数+B0I tail identity、総Tへ一回、P0の測定付きfull controlled wrapper、compiler/profileを固定価格表から保持した。
+
+### 直接・モデル・長q外挿は別の項目
+
+|対象|軸数|保存部分額 RZ|総額に占める保存割合|
+|---|---:|---:|---:|
+|直接価格：m0〜m6とm9、各X/Y|16|56,433,222|直接部分額を保持|
+|モデル価格：m7/m8/m10〜m12、各X/Y|10|315,602,188|84.831223%|
+|上記モデル中、q>80：m10〜m12、各X/Y|6|280,517,404|75.400727%|
+
+モデル全体の84.831223%と、q>80の未検証外挿75.400727%は、どちらも分母が総額372035410 RZで、同じ割合ではない。m7/m8のq20/40は観測q範囲内のモデル参照で、直接観測には昇格しない。q160/320/640は未検証外挿。保存m9/q80のX/Y独立holdoutがexact一致した結果を参照するが、他qの誤差保証へ拡張しない。価格誤差上界・CI・q640誤差上界はnull、2%等の新保証も付けていない。混合総額は条件付き比較シナリオに限る。
+
+全値・割合はPRICE_AND_COSTのexact整数/有理数・保存表示文字列から転記し、今回N×C・割合・モデル予測・fit・holdout判定は再計算していない。モデル係数は凍結SOURCE `d4ae4c408fb2218c041e2a24aa04c1c2d42df629:FROZEN_MODEL.json` を参照する。
+
+追跡方法：`run01/CATALOG.json` の上記point IDから `q3_source`/`q3_axis_sources` で旧Q3正本へ、`price_axes[*].price_source` で固定PRICE_AND_COSTの26行へ戻れる。各軸の `price_kind` はDIRECT_COMPILED_DETERMINISTICまたはCONDITIONAL_AFFINE_PRICE_REFERENCE、`region` は直接/観測範囲内参照/q80超外挿、`price_evidence` は元trial/receipt・元SOURCEまたは凍結モデルへのlocator。rootのprice_evidenceにはnative/wrapper/model/校正/holdoutのSOURCEを保持し、saved_cost_breakdownには保存exact部分額・別々の割合・比較基準・未知誤差を保持する。
+
+同じ粗幅のB_PRICEは別配分のモデル不適合・費用nullのまま。従来S2・395,962,678 RZの適合点もそのまま残す。この金額を予算に用いたPR探索の配分・判定・予算・SOURCEは一切付け替えていない。今回更新したA_SHAPE以外の旧48点は08c6a694b版と完全一致し、他方式の最安値は不変。
+
+現行は固定20入力・展開済み集計入口23件・候補49点（適合35／モデル不適合13／価格待ち1）。重複除去4件、旧信号のみ履歴1件。価格を先に読んでも旧Q3を参照して同じ1点を更新し、別配分の追加や旧幅価格の転記をしない。技術/保存metadata回帰12 PASS。追加テスト配置の修正後に全検査を確認済みで、科学入力や比較条件は変更していない。§10.5の現在catalog/関連履歴ではこの接続は未反映で、既存reader/cache・make・選択器を再利用した。他担当worktree・原価格・raw・旧STOPは不変。
+
+ロードマップ差分：p7の保存集合内最安をS2から今回の粗幅Yoshida4 A_SHAPEへ更新できる。総費用とともに直接16/モデル10、モデル割合84.831223%、q>80外挿75.400727%、未知誤差を併記する。旧S2金額を使ったPR探索は当時の結果として保持し、再評価やwinner認定は行わない。本体更新は統合担当へ委ねる。新signal/sampling/compile/fit/配分探索/Q3は各0、公開・remote照合後mandatory STOP。
+
+## PR-Pauli LD5のQ3適合2配分（2026-11-16）
 
 基点4afda9e48に、固定 `1c4a83d1b841bfc23ba87c45f850fb4233f22c30:docs/research/pauli_ld5_two_vectors_q3_results_20261116/C_COMPARISON_JOIN.json` を19番目の入力として追加し、従来と同じコマンドを再実行した。実行SOURCE `73e4275e9379c546d453ec745619ad1f575e7420`。costとMSE上下界は固定SUMMARYのprefix=5の行からexact値を転記し、SUMMARY内のprefix=3比較行は新規候補として読み込んでいない。
 
