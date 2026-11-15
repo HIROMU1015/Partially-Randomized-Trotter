@@ -2,7 +2,46 @@
 
 同じコマンドでINPUTS.jsonの固定commit/path一覧を読み、公開済みQ3判定と保存条件付き費用を照合して方式別最安点を返す。対象は **指定した保存候補集合内の最安適合点**。新しい信号・価格・N・Q3や全配分の探索は実行しない。
 
-## PR-DF LD9共通V0の追加（2026-11-16、現行入力）
+## LD9 m6直接価格とLD7 PF予算4配分（2026-11-16、現行入力）
+
+基点bc6409309で未反映だった次の2成果を追加し、従来と同じ集計コマンドを再実行した。実行SOURCE `71c77b07b2a72022df3bc1d855da42438c21928b`。
+
+- `23160cc876807c0300be3de811f767b5810640a7:docs/research/d_pr_df_ld9_m6_price_20261116/HANDOFF.md` を入口として、同commitの `C_HANDOFF.json` / `COMPARISON.json` を使用。元機械可読公開d85150cd1b51f87da4e767b32cf52f532765d358、実行/比較SOURCE 8f0a82842481270e0581658b5294ecd59e79104f、原LD9 raw 6392aefdad0438e619cba0c0e9e55d170eb99a49を保持。
+- `7ccb3e63b687bd13426f3e53d96b93d918707641:docs/research/pr_df_ld7_pf_budget_q3_results_20261116/C_RESULT_JOIN.json` の4配分。既存3配分のprice model/indexを再利用し、新規に数値探索やQ3を実施しない。
+
+### LD9は同じV0配分のままm6価格を追記
+
+既存LD9 V0のpoint ID `8b2586c294661c9da0db082d`、allocation、Q3適合を保持し、候補数は増やしていない。`conditional_cost=null`、全round用の `price_axes=[]` を維持。m6の2軸は `partial_price_axes` にDIRECT_FINITE_COHORT_MEANとして別記し、全13round価格と区別する。
+
+|軸|LD9保存平均 RZ/shot|LD7保存平均 RZ/shot|保存差 LD9−LD7 RZ/shot|
+|---|---:|---:|---:|
+|X|492573|1575349/4 = 393837.25|394943/4 = +98735.75|
+|Y|492573|1575349/4 = 393837.25|394943/4 = +98735.75|
+
+各軸4 path。LD9 cohort=`D_PR_DF_LD9_M6_DIRECT_PRICE_20261116_V1`、LD7 cohort=`D_PR_DF_LD7_PRICE_CAL_20261116_V1`。分割内X/Yは同じ4 pathを共有し、分割間は別cohortであり、indexによるpaired解析・pool・再平均はしていない。平均・差・比の再計算も行わず、D2のexact保存結果を転記した。
+
+同じLD9 configuration `ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833`、m6 physical `09fa97187d6eee510d0c` を現行V0へ照合。LD7 physicalは `e7194af048772d7160c6`。T6.4/q64/R1のrequest identity/lawと元configuration、compiler/control/full measured wrapper/P0、cohort別4path×X/Yの完全性を確認し、16軸それぞれの元receiptのRZ整数・fingerprint・compilerを公表表と照合した。原SOURCEのnew-ZZ lowering、scalar期待値、path seed/event digest、元gate statusはrequest/pathのlocatorを保持。元full-wrapper statevector/numerical-action検証は未実施のままで、新しい科学的資格は付けていない。
+
+追跡方法：同じLD9点の `partial_price_source` → C_HANDOFF、`partial_price_axes[*].comparison_source` → COMPARISONの軸別保存平均/差、`path_sources` → LD9の元4行 → receipt/path_receipt/execution_source。比較側LD7の8行も同C_HANDOFFのcohortsから原 `5c5d87ab32d03bb107a9a6bfed3cba253aef2aa0` のreceiptへ戻れる。通常の26軸MODEL providerとは混ぜず、qualified_for_candidate=false。m6の一部分だけから全law E[C]・CI・全round総額を作っていない。
+
+### LD7 PF予算4配分を不適合点として追加
+
+|配分|保存exact費用 RZ|Q3判定|point ID|
+|---|---:|---|---|
+|LD7_P7_S2__A_SHAPE|704871771/2|モデル不適合|c737e2d277b64fc4633559fb|
+|LD7_P7_S2__B_PRICE|24616794490/63|モデル不適合|bb8ce66de85bb3c9d34ab9b4|
+|LD7_FULL_PF_S2__A_SHAPE|22577997965/42|モデル不適合|d5099640f810c274c2d423b7|
+|LD7_FULL_PF_S2__B_PRICE|34533437597/63|モデル不適合|50d124c114f7171f6d66e454|
+
+固定INPUTSのcase/price_terms、元Q3 RESULTのallocation・configuration/total view/binding・保存判定を照合。各26軸の価格SOURCEは既存LD7モデルと同じことを確認した。費用・予算・保存比較・m7〜m12割合は元recordへの参照/転記で、新規集計・予測はない。price_evidenceに既存モデル/較正/holdoutのlocatorを再利用し、26価格のMODEL・qualified_for_candidate=falseを維持。4件とも数値失敗ではなく保存Q3のモデル不適合として選択から除く。既存V0/A_SHAPE/B_PRICEの3配分と重複しない。
+
+**PR-DFの保存集合内最安はLD7 A_SHAPE・155652932221/126 RZ（約1,235,340,731.912698）のまま**。LD9 V0はm6価格あり・全round費用未取得の価格待ち。その他の旧42点と全方式の最安値はbc6409309版から不変、LD9自身の配分・Q3・null総額も維持。
+
+現行は固定入力18件、SUMMARY展開を含む集計入口21件、候補47点（適合32／モデル不適合13／価格待ち2）。重複除去4件、旧信号のみ履歴1件。技術/保存metadata回帰10 PASS（部分価格を先に読んでも配分は1件、誤physical ID・Q3判定改変を拒否）。既存Git reader/cache、make、元価格/Q3索引、最安比較器を再利用し、この2schemaのconsumer差分だけ追加した。§10.5の現在catalogと関連履歴に同等反映はなく、今回未反映分のみ追加。他担当worktreeや原科学データに変更なし。
+
+ロードマップ差分：LD9はm6のnormal4path・X/Y有限直接平均とLD7比較を追跡可能になったが、13round費用はnull。LD7のPF予算4列は全てモデル不適合として一覧へ追加、既知最安は不変。本体更新は統合担当へ委ねる。新signal/sampling/build/compile/fit/配分探索/Q3は各0、公開・remote照合後mandatory STOP。
+
+## PR-DF LD9共通V0の追加（2026-11-16）
 
 公開版 `ede7d80707249222b3ff676394c4a7abf65fb979` を基点に、`778118926c85158f947928c1e744d565464aab17:docs/research/d_pr_df_ld9_v0_results_20261116/C_HANDOFF.json` を16番目の固定入力として追加し、従来と同じコマンドを再実行した。実行SOURCE `f7b9e70850296147ca0e5ef9cc544f3f315b0831`。
 
