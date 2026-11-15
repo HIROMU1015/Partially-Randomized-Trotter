@@ -99,7 +99,7 @@ def scoped(problem, overrides):
 def round_mode(a, problem, extra):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir;run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
-    problem = scoped(problem, spec.get('method_overrides'));context = O.prepare(ROOT, problem)
+    problem = scoped(problem, spec.get('method_overrides'));context = O.prepare(ROOT, problem, methods=spec['methods'])
     extra = extra + resume_input([Path(x) for x in spec.get('resume_from', [])])
     stored = run / 'ROUND.json'
     if stored.exists():
@@ -110,11 +110,17 @@ def round_mode(a, problem, extra):
     else:
         write(stored, spec)
     routes = dict(problem['execution_routes']);routes.update(spec.get('routes_override', {}))
-    search = dict(problem['search'], max_steps_per_method=spec.get('max_steps_per_method', problem['search']['max_steps_per_method']))
+    unlimited = any(v == 'UNLIMITED' for v in spec['max_new_q3_per_method'].values())
+    steps = spec.get('max_steps_per_method', 100000 if unlimited else problem['search']['max_steps_per_method'])
+    search = dict(problem['search'], max_steps_per_method=steps)  # the finite range ends an UNLIMITED round
     executor = O.Executor(ROOT, run, routes, context['expected'], problem, optimizer_source=head())
+    budgets = spec['max_new_q3_per_method']
+    approved = spec.get('science_approved', any(v not in (0, None) for v in budgets.values()))
+    if any(v == 'UNLIMITED' for v in budgets.values()) and spec.get('science_approved') is not True:
+        raise SystemExit('UNLIMITED (no Q3 count limit) requires science_approved: true in the round file')
     result = O.optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
-                        initial=spec.get('initial', 'all'), max_new=spec['max_new_q3_per_method'], executor=executor,
-                        extra_results=extra)
+                        initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
+                        extra_results=extra, science_approved=approved)
     write(run / 'ROUND_RESULT.json', dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
                                           optimizer_source=head(), wall_seconds=time.perf_counter() - start))
     table(result, run / 'PER_METHOD.csv')
@@ -200,6 +206,8 @@ def main():
                                      saved_catalog=problem['evidence']['saved_catalog_inputs'],
                                      scope='MINIMUM_WITHIN_EVALUATED_SET_AND_FINITE_SEARCH_RULE; no new science'))
     table(full, out / 'PER_METHOD.csv')
+    write(out / 'GENERATION.json', context.get('generation', {}))
+    write(out / 'PARAMETER_ASSESSMENT.json', {m: r.get('parameter_assessment') for m, r in full.items()})
     write(out / 'NEEDS.json', dict(candidates=candidate_rows(context),
                                    pending_Q3={m: r['pending_request'] for m, r in full.items()}))
 

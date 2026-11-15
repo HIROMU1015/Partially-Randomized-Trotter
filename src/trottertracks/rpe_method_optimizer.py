@@ -373,7 +373,8 @@ def proposals(candidates, knowledge, threshold, search, generate):
 HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW'}
 
 
-def run_method(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None, spent=0, free=None):
+def run_method(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None, spent=0, free=None,
+               science_approved=True):
     """Finite loop: select, ask backend, update knowledge, repeat until a stop rule fires.
 
     The budget is checked BEFORE the backend is called: a proposal is sent to the backend only if it can be
@@ -383,12 +384,14 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
     UNKNOWN (gate/persistence) stops the method; a model failure (lower bound > tau) does not.
     """
     trace, held, new_calls, pending, stop = [], [], spent, None, None
-    ready = [c for c in candidates if c['ready']]
+    ready = [c for c in candidates if c['ready']];missing = [c['name'] for c in candidates if not c['ready']]
+    limit = 0 if not science_approved else (float('inf') if max_new is None else max_new)
     for step in range(search['max_steps_per_method']):
         props, incumbent = proposals(ready, knowledge, threshold, search, generate)
         if not props:
-            stop = 'NO_IMPROVING_PROPOSAL';break
-        choice = props[0];allow = new_calls < max_new
+            # Exhausted within the approved finite range; distinguish candidates that still lack inputs.
+            stop = 'NO_IMPROVING_PROPOSAL_INPUTS_MISSING' if missing else 'NO_IMPROVING_PROPOSAL';break
+        choice = props[0];allow = new_calls < limit
         is_free = free is not None and free(choice)
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
         hold = None if answer is None else HOLD.get(answer['status'])
@@ -397,7 +400,9 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
                 vector=list(p['vector']), origin=p['origin']) for p in props[:5]], job=None if answer is None else answer.get('job'))
             if hold:
                 stop = hold
-            elif max_new == 0 and not is_free:
+            elif not science_approved and not is_free:
+                stop = 'NEW_SCIENCE_NOT_APPROVED'
+            elif limit == 0 and not is_free:
                 stop = 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'
             elif not allow and not is_free:
                 stop = 'Q3_BUDGET_EXHAUSTED'
@@ -428,7 +433,7 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
         stop = 'STEP_LIMIT'
     _, incumbent = method_state(ready, knowledge, threshold)
     return dict(method=name, stop_reason=stop, trace=trace, held=held, new_calls=new_calls - spent, spent_before=spent,
-                pending_request=pending, incumbent=incumbent)
+                pending_request=pending, incumbent=incumbent, not_ready_in_range=missing)
 
 
 # ---------------------------------------------------------------- executor (approved rounds only)
@@ -546,6 +551,148 @@ class Executor:
                     job=str(job.relative_to(self.root)) if job.is_relative_to(self.root) else str(job), label=None)
 
 
+# ---------------------------------------------------------------- PR configuration generation (metadata only)
+def round_key(config, row):
+    """Physical identity of one round: what the signal and the compiled circuit depend on (kappa only via R)."""
+    s = config['spec'];st = row['structure'];split = s.get('split') or {}
+    return json.dumps(dict(method=s.get('method'), L_D=s.get('L_D'), formula=s.get('formula'), K=s.get('finite_K'),
+                           law=(s.get('law') or {}).get('model'), lambda_R=split.get('lambda_R'),
+                           tail=split.get('lambda_source') or split.get('dictionary_identity'), T=row.get('T'), q=row.get('q_PF'),
+                           R=row.get('R_outer'), formula_id=st.get('formula_id'), weights=st.get('signed_weights'),
+                           allocation=st.get('allocation'), events=st.get('event_count')), sort_keys=True)
+
+
+def schedule_keys(config):
+    return [round_key(config, r) for r in sorted(config['rounds'], key=lambda r: r['m'])]
+
+
+def variant_grid(spec):
+    g = spec['generation']
+    for formula in g['formulas']:
+        for delta in g['delta_over_h_values']:
+            for kappa in g['kappa_multipliers']:
+                yield dict(formula=formula, delta_over_h=delta, kappa_multiplier=kappa)
+
+
+def generate_variants(root, problem, reader, catalog, candidates, methods=None):
+    """For each PR method with a ``generation`` range: regenerate every saved configuration over formula x
+    step width x kappa with the method's fixed mapper (subprocess, route view, metadata only), then
+    deduplicate by physical schedule.  Identical schedules alias the saved configuration (its evaluations are
+    reused, never re-evaluated); new schedules become candidates listing exactly which inputs are missing."""
+    out = {}
+    for name, spec in problem['methods'].items():
+        if spec['family'] != 'PR' or not spec.get('generation') or (methods is not None and name not in methods):
+            continue
+        g = spec['generation'];saved = [c for c in candidates if c['method'] == name and c['configuration_id']]
+        points = {}
+        for point in catalog['candidates']:
+            points.setdefault(point['configuration_id'], point)
+        configs = {c['configuration_id']: reader.read(points[c['configuration_id']]['configuration_source']) for c in saved}
+        base_keys = {cid: schedule_keys(cfg) for cid, cfg in configs.items()}
+        signal_keys = {k for c in saved if c['signal_source'] for k in base_keys[c['configuration_id']]}
+        price_keys = {}
+        for c in saved:
+            if c['prices'] is not None:
+                for m, k in enumerate(base_keys[c['configuration_id']]):
+                    for a, axis in enumerate(AXES):
+                        price_keys[(k, axis)] = c['prices'][2 * m + a]
+        items = []
+        for c in saved:
+            loc = points[c['configuration_id']]['configuration_source']
+            for v in variant_grid(spec):
+                items.append(dict(item_id='%s|%s|%s|%s' % (c['configuration_id'][:12], v['formula'], v['delta_over_h'], v['kappa_multiplier']),
+                                  base=loc, changes={k: val for k, val in v.items()
+                                                     if str(val) != str(g['baseline'][k])}, variant=v, base_configuration_id=c['configuration_id']))
+        result = run_generator(root, g, items)
+        rows = []
+        for item, gen in zip(items, result['items']):
+            base = next(c for c in saved if c['configuration_id'] == item['base_configuration_id'])
+            row = dict(variant=item['variant'], L_D=base['key']['L_D'], base_configuration_id=base['configuration_id'],
+                       status=gen['status'], reason=gen.get('reason'), base_reproduced=gen.get('base_reproduced'),
+                       supported_formulas=gen.get('supported_formulas'), generator=dict(kind=g['kind'], view_commit=g['view_commit']))
+            if gen['status'] == 'GENERATED':
+                keys = schedule_keys(gen['configuration'])
+                same = next((cid for cid, bk in base_keys.items() if bk == keys), None)
+                differ = [m for m, (a, b) in enumerate(zip(keys, base_keys[base['configuration_id']])) if a != b]
+                row.update(configuration_id=gen['configuration_id'], rounds=gen['structure'], rounds_differing_from_base=differ,
+                           physically_identical_to=same)
+                if same is not None:
+                    alias = next(c for c in candidates if c['configuration_id'] == same)
+                    alias.setdefault('physical_aliases', []).append(dict(variant=item['variant'], configuration_id=gen['configuration_id']))
+                    row['disposition'] = 'IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS'
+                else:
+                    missing_signal = [m for m, k in enumerate(keys) if k not in signal_keys]
+                    missing_price = [dict(m=m, axis=a) for m, k in enumerate(keys) for a in AXES if (k, a) not in price_keys]
+                    needs = ['CONFIGURATION_PUBLICATION']
+                    if missing_signal:
+                        needs.append('SIGNAL_ROUNDS:' + ','.join(map(str, missing_signal)))
+                    if len(missing_signal) < 13:
+                        needs.append('SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS')
+                    if missing_price:
+                        needs.append('PRICE_AXES:%d_of_26' % len(missing_price))
+                    needs.append('Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION')
+                    prices = None if missing_price else [price_keys[(k, a)] for k in keys for a in AXES]
+                    cand = dict(method=name, family='PR', key=dict(L_D=base['key']['L_D'], formula=item['variant']['formula'],
+                                delta_over_h=item['variant']['delta_over_h'], kappa_multiplier=item['variant']['kappa_multiplier']),
+                                configuration_id=gen['configuration_id'], index_signal=None, caps=base['caps'], generated=True,
+                                generated_from=base['configuration_id'], labels=[], signal_source=None, prices=prices,
+                                price_status='REUSED_FOR_ALL_AXES' if prices else 'MISSING_FOR_%d_AXES' % len(missing_price),
+                                saved_points=[], needs=needs, ready=False,
+                                reusable=dict(signal_rounds=[m for m in range(13) if m not in missing_signal],
+                                              price_axes=26 - len(missing_price)))
+                    cand['name'] = name + ':' + ','.join('%s=%s' % kv for kv in cand['key'].items()) + ':' + gen['configuration_id'][:8]
+                    if not any(c['configuration_id'] == cand['configuration_id'] for c in candidates):
+                        candidates.append(cand)
+                    row.update(disposition='NEW_SCHEDULE_CANDIDATE', needs=needs, reusable=cand['reusable'], candidate=cand['name'])
+            else:
+                row['disposition'] = 'NOT_GENERATED'
+                row['needs'] = ['GENERATOR_SUPPORT:' + (gen.get('reason') or gen['status'])]
+            rows.append(row)
+        out[name] = dict(kind=g['kind'], view_commit=g['view_commit'], supported_formulas=result['items'][0].get('supported_formulas') if result['items'] else None,
+                         baseline=g['baseline'], range=dict(formulas=g['formulas'], delta_over_h=g['delta_over_h_values'],
+                         kappa_multipliers=g['kappa_multipliers']), h='fixed RPE base time (not a search variable)', variants=rows)
+    return out
+
+
+def run_generator(root, g, items):
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        req, out = Path(d) / 'REQUEST.json', Path(d) / 'OUT.json'
+        req.write_text(json.dumps(dict(kind=g['kind'], view=g['view'], view_commit=g['view_commit'],
+                                       items=[{k: v for k, v in i.items() if k in ('item_id', 'base', 'changes')} for i in items])))
+        subprocess.run([g['interpreter'], '-B', str(Path(root) / 'scripts/run_rpe_optimizer_config_generator.py'),
+                        '--request', str(req), '--output', str(out)], cwd=str(root), check=True, stdout=subprocess.DEVNULL,
+                       env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+        return json.loads(out.read_text())
+
+
+def parameter_assessment(name, candidates, generation, summary):
+    """Per (L_D, formula, delta): the kappa rows with their schedule identity, readiness and best feasible cost."""
+    if not generation:
+        return None
+    best = {}
+    for e in summary['evaluated']:
+        if e['status'] == PASS and e['cost'] is not None:
+            best[e['configuration_id']] = min(best.get(e['configuration_id'], e['cost']), e['cost'])
+    groups = {}
+    for row in generation['variants']:
+        v = row['variant'];cid = row.get('physically_identical_to') or row.get('configuration_id')
+        groups.setdefault((row['L_D'], row['base_configuration_id'], v['formula'], v['delta_over_h']), []).append(dict(
+            kappa_multiplier=v['kappa_multiplier'], disposition=row['disposition'], configuration_id=cid,
+            rounds_differing_from_base=row.get('rounds_differing_from_base'), needs=row.get('needs'),
+            best_feasible_cost=best.get(cid)))
+    out = []
+    for (ld, base, formula, delta), rows in groups.items():
+        if all(r['disposition'] == 'IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS' for r in rows):
+            decision = 'SAME_PHYSICAL_SCHEDULE_FOR_ALL_KAPPA_IN_RANGE'
+        elif all(r['best_feasible_cost'] is not None for r in rows):
+            decision = 'DECIDABLE_FROM_MINIMUM_FEASIBLE_COST'
+        else:
+            decision = 'UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING'
+        out.append(dict(L_D=ld, base_configuration_id=base, formula=formula, delta_over_h=delta, kappa_rows=rows, kappa_decision=decision))
+    return out
+
+
 # ---------------------------------------------------------------- orchestration
 def initial_knowledge(saved, candidates, initial='all'):
     """Known results at start: all saved, only the listed saved labels (replay), or none."""
@@ -629,7 +776,7 @@ def jsonable(value):
 
 
 def optimize(root, problem, *, context=None, methods=None, initial='all', extra_results=(), backend=None, max_new=None,
-             executor=None, saved_is_free=True):
+             executor=None, saved_is_free=True, science_approved=True):
     """Run the per-method search.
 
     initial: 'all' saved results, 'none', or {method: [saved labels]} (replay from seeds).
@@ -648,6 +795,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         start = initial if isinstance(initial, str) else initial.get(name, [])
         knowledge = ingest(initial_knowledge(context['saved'], cands, start), cands, extra_results)
         budget = max_new.get(name, 0) if isinstance(max_new, dict) else max_new
+        budget = None if budget in (None, 'UNLIMITED') else budget
         table = context['saved'].table if saved_is_free else {}
         if executor is not None:
             ex = executor.for_method(name)
@@ -657,17 +805,21 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             answer, spent = (context['saved'] if backend is None else backend), 0
             free = lambda p: (p['configuration_id'], p['vector']) in table
         result = run_method(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
-                            problem.get('q3_routes'), spent, free)
+                            problem.get('q3_routes'), spent, free, science_approved)
         out[name] = summarize_method(name, cands, result, knowledge, threshold)
-        out[name]['budget'] = dict(max_new_q3=budget, spent_before=spent, new_calls=result['new_calls'])
+        out[name]['budget'] = dict(max_new_q3='UNLIMITED_WITHIN_RANGE' if budget is None else budget, science_approved=science_approved,
+                                   spent_before=spent, new_calls=result['new_calls'])
+        out[name]['generation'] = context.get('generation', {}).get(name)
+        out[name]['parameter_assessment'] = parameter_assessment(name, cands, context.get('generation', {}).get(name), out[name])
     return out
 
 
-def prepare(root, problem):
+def prepare(root, problem, generate_configurations=True, methods=None):
     facts = hamiltonian_facts(problem)
     reader, inputs, catalog = load_catalog(root, problem)
     check_comparison(problem, facts, inputs['comparison'])
     candidates = enumerate_candidates(reader, problem, facts, catalog)
+    generation = generate_variants(root, problem, reader, catalog, candidates, methods) if generate_configurations else {}
     prices = {c['configuration_id']: c['prices'] for c in candidates if c['prices'] is not None}
     saved = SavedBackend(catalog['candidates'], prices)
     expected = {}
@@ -675,4 +827,4 @@ def prepare(root, problem):
         expected.setdefault(point['configuration_id'], dict(total_configuration_id=point.get('total_configuration_id'),
                                                             binding_id=point.get('binding_id'), signal_source=point.get('signal_source')))
     return dict(facts=facts, reader=reader, catalog=catalog, candidates=candidates, saved=saved, tau=tau(problem),
-                expected=expected, generate=pinned_function(reader, problem['generator']))
+                expected=expected, generate=pinned_function(reader, problem['generator']), generation=generation)

@@ -128,6 +128,26 @@ class Search(unittest.TestCase):
         self.assertNotIn(tuple(again['trace'][0]['vector']), set(resumed))
         self.assertEqual(again['trace'][0]['vector'], list(r['pending_request']['vector']))
 
+    def test_stop_semantics_unlimited_unapproved_and_inputs_missing(self):
+        c = candidate('A', self.prices, caps=[8] * 13);waiting = candidate('W', None, ready=False)
+        fx = O.FixtureBackend(lambda cid, v: (sum(Fraction(1, n) for n in v) / 400,) * 2, TAU)
+        full = O.run_method('M', [c], {}, fx, SEARCH | dict(max_steps_per_method=100000), TAU, stub_generate, max_new=None)
+        self.assertEqual(full['stop_reason'], 'NO_IMPROVING_PROPOSAL');self.assertGreater(full['new_calls'], 2)
+        part = O.run_method('M', [c, waiting], {}, fx, SEARCH | dict(max_steps_per_method=100000), TAU, stub_generate, max_new=None)
+        self.assertEqual(part['stop_reason'], 'NO_IMPROVING_PROPOSAL_INPUTS_MISSING');self.assertEqual(part['not_ready_in_range'], ['M:W'])
+        no = O.run_method('M', [c], {}, fx, SEARCH, TAU, stub_generate, max_new=None, science_approved=False)
+        self.assertEqual((no['stop_reason'], no['new_calls']), ('NEW_SCIENCE_NOT_APPROVED', 0))
+        capped = O.run_method('M', [c], {}, fx, SEARCH, TAU, stub_generate, max_new=1)
+        self.assertEqual((capped['stop_reason'], capped['new_calls']), ('Q3_BUDGET_EXHAUSTED', 1))
+
+    def test_round_key_ignores_kappa_but_not_schedule(self):
+        def config(kappa, R):
+            return dict(spec=dict(method='PR', L_D=7, formula='2nd', finite_K=2, law=dict(model='ideal_finite_RTE_law'),
+                                  split=dict(lambda_R=1, lambda_source='S'), kappa=dict(value=kappa)),
+                        rounds=[dict(m=0, T=1, q_PF=1, R_outer=R, structure=dict(formula_id='S2', signed_weights=[1.0], allocation=[R], event_count=R))])
+        self.assertEqual(O.schedule_keys(config(1, 1)), O.schedule_keys(config(2, 1)))
+        self.assertNotEqual(O.schedule_keys(config(1, 1)), O.schedule_keys(config(2, 2)))
+
     def test_unknown_stops_and_inconclusive_is_held(self):
         c = candidate('A', self.prices);base = tuple([4] * 26)
         class Unknown:
@@ -151,7 +171,7 @@ class Search(unittest.TestCase):
     def test_not_ready_candidates_are_never_searched(self):
         c = candidate('A', None, ready=False)
         r = O.run_method('M', [c], {}, None, SEARCH, TAU, stub_generate, 0)
-        self.assertEqual(r['stop_reason'], 'NO_IMPROVING_PROPOSAL');self.assertIsNone(r['incumbent'])
+        self.assertEqual(r['stop_reason'], 'NO_IMPROVING_PROPOSAL_INPUTS_MISSING');self.assertIsNone(r['incumbent'])
 
 
 ART = dict(kind='artificial', interpreter=sys.executable, configuration_ids='*', view_commit=None,

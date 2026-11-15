@@ -74,7 +74,7 @@ def main():
                                                methods=('FULL_PF', 'TRUNCATED_PF', 'PR_PAULI', 'PR_DF'), scope=False, initial=False)
     res = cli(r0, rf)
     checks.append(check('budget0_real_routes_launch_nothing', not launches(r0) and all(
-        r['stop_reason'] == 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET' and r['pending_request'] for r in res.values()),
+        r['stop_reason'] == 'NEW_SCIENCE_NOT_APPROVED' and r['pending_request'] for r in res.values()),
         stops={m: r['stop_reason'] for m, r in res.items()}))
 
     # Budget 2 with the artificial worker: saved answers first, then request -> execute -> ingest -> next.
