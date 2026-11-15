@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[粗幅p7/Yoshida4の信号補完完了・Q3 SOURCE guard STOP](docs/research/d_p7_y4_coarse_signal_q3_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/標準Y4・32h/5、h_RPE=.1。新6＋保存7の13round信号gate PASS。Q3 worker1回、科学API0件でPython3.12 AST schemaのSOURCE guard不一致によりUNKNOWN。MSE/粗幅費用null、retry/compile/価格0、mandatory STOP。
+
 [最初の粗幅候補と有限案：p7/Yoshida4・32h/5](docs/research/d_pf_first_coarser_width_plan_20261116/REPORT.md)：既存4候補の差分比較から元dd8bfc24を推奨。保存7round＋不足m6〜m11の6 mean、現幅Y4保存配分のQ3最大1、compile0の未実行案。価格証拠10軸はearly同物理点、粗幅固有価格は未取得。同公式基準435,641,568とp7最安435,481,090 RZを分離。新科学値/価格/配分/費用算術0、mandatory STOP。
 
 [p7/S2・幅hの採用価格規則と固定配分費用](docs/research/d_pf_p7_s2_h_comparison_prices_20261115/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/S2・実幅.1、P0除外。5513q+307を比較用に採用し、直接10＋外挿16の26軸表を公開。保存Q3適合配分のモデル費用993,110,014 RZ、粗幅16h/7との差＋557,628,924 RZ、外挿部分98.388806%。直接coverage増分0、新compile/QPY監査/fit/Q3/配分生成0、mandatory STOP。

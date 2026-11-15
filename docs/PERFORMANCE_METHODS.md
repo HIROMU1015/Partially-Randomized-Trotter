@@ -1,5 +1,10 @@
 # 並列化・高速化手法の再利用索引
 
+## 粗幅Y4：保存stepの信号補完とQ3初期化の注意（2026-11-16）
+
+[REPORT](research/d_p7_y4_coarse_signal_q3_20261116/REPORT.md)、[caller](../scripts/run_p7_y4_coarse_signal_q3.py)。Aの保存36次元stepと元C.executeを再利用し、6 mean＋保存7のsignal完了（SOURCE3179680ed、wall3.726 s、peak505316 KiB）。軽いpowerは元ループ・共有contextで扱い、新step/固有系/reference/回路buildなし。Q3の既存8-worker DPは設定したが、実際はDP初期化前に停止し速度は未測定。passive import/SOURCE検査だけで準備済みとせず、実workerのAcceleratorコンストラクタまで人工preflightで通す必要がある。Python3.12の空type_paramsで既存AST hashが変わり科学API0件のUNKNOWNとなった。原因診断のみでguard修正・retryなし。異なる世代のA/B runtimeは分離し、混在SOURCEの保存recordは元数値SOURCEを残したC.b_mean binding viewを作る（値・gateの再評価ではない）。
+
+
 ## p7/S2・要求幅hの有限取得（2026-11-15）
 
 [REPORT](research/d_pf_p7_s2_h_direct_prices_20261115/REPORT.md)、[thin caller](../scripts/run_pf_p7_h_prices.py)、実行SOURCE `be0f81ebd893415de031ee30ee0755f039adb823`。元m0 native child / fast context / fork worker / 協調logを再利用し、別configurationを元descriptor→既存plannerへ接続した。保存6軸は再build/compileせずsource付きbinding、新規m1/m2の4軸だけ2 workerで取得、元作用gate/C guardの受入10軸。取得wall25.706 s、最大worker RSS401.97 MiB。新しい回路pipeline・同条件速度倍率はない。metadataとprovider-first科学childを別processにし、旧cohort・producerと新binding SOURCEを分ける。固定4軸のscope、SOURCEと新namespaceを維持し、長qのfit/予測や他候補への自動適用は不可。

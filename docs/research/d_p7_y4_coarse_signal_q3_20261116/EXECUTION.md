@@ -26,3 +26,7 @@ Dの計画・旧coverageとBの後続 `0b33b4afdd285a99f610e59d8f5b77960a59a0d0`
 関連branchの公表namespaceと同ユーザーの対象caller/physical IDを開始直前に差分照合する。新しい同等保存結果があれば再利用へ減らし、出所不明・進行中の同等jobは保留する。未参照branch/host全体の不存在は主張しない。今回使用しないbranchの通常更新を停止条件にしない。
 
 成果はREPORT / HANDOFF_B / 原signal / source-bound packet / Q3 API・partials・数値gate・資源記録。公開・remote SHA/tree/成果物照合後mandatory STOP。適合でもcompile・別配分・費用算出へ進まない。
+
+## 実際の完了・停止追補
+
+信号6件はSOURCE3179680edで完了。Q3 intakeに単一SOURCEが必要なため、C.b_meanによるbinding-only view（元record/SOURCE保持）を別に固定した。Q3 code snapshotには元src/trotterlib/h46_m5_plan.pyも追加しbyte照合。Q3 SOURCE278fb5214はAcceleratorのPython3.12 AST schema guardでAPI開始前に停止した。retryなし。詳細と新しい結果資格はREPORT/HANDOFF_Bを参照し、前節の実行手順を再実行許可とは扱わない。

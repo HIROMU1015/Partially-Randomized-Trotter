@@ -15,3 +15,5 @@ Post-signal regression: 4 tests PASS (original 3 plus source-bound view values/g
 Q3 original metadata intake and finite-count preflight PASS; zero Q3 calls before SOURCE freeze.
 The initial Q3 metadata check exposed mixed record SOURCEs. Added a common C.b_mean binding-only view with every original record/SOURCE preserved; quantities and guards unchanged. The raw packet and six scientific means were not rerun.
 The frozen code snapshot additionally needed src/trotterlib/h46_m5_plan.py; reused its exact B bytes and added a SOURCE check.
+
+停止後の静的AST schema診断1 test PASS (0.032s)。元710aa69bのDPと同一ASTで、空type_paramsを診断コピーから除く場合だけ期待hashへ一致。runtime/source guardを変更せず、追加Q3なし。初期passive testがAcceleratorコンストラクタを確認していなかった点をREPORT/NEXT_STEPSへ反映。
