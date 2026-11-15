@@ -1,0 +1,159 @@
+{
+  "prepared_UTC": "2026-11-15T20:38:43.614969+00:00",
+  "optimizer_source": "53bb0a1d7b1da70644da1c22552224291205af78",
+  "program_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b-h4-pf-method-search-source-53bb0a1d7",
+  "problem": {
+    "commit": "53bb0a1d7b1da70644da1c22552224291205af78",
+    "path": "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "sha256": "192017561b48168e2ca267b8c056c32946610e64f6cccdb95e2819fce8484d98"
+  },
+  "scope": {
+    "methods": [
+      "FULL_PF",
+      "TRUNCATED_PF"
+    ],
+    "new_Q3": "UNLIMITED_WITHIN_FIXED_FINITE_RULE",
+    "max_steps_per_method": 100000,
+    "signal": 0,
+    "compile": 0,
+    "price_fit": 0,
+    "MC": 0
+  },
+  "contract": {
+    "target": {
+      "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+      "energy_ha": -2.1663874486347634,
+      "source": {
+        "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+        "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+        "selector": [
+          "target"
+        ]
+      }
+    },
+    "accuracy": {
+      "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+      "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+      "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+      "epsilon_E_decimal": "0.00159360010199040",
+      "scope": "MODEL_MSE_FILTER_ONLY"
+    },
+    "rpe": {
+      "M": 12
+    },
+    "search": {
+      "rule": "FINITE_LOCAL_DESCENT_V1",
+      "decrement_steps": [
+        1,
+        2
+      ],
+      "large_step_headroom": "9/10",
+      "seed_rules": [
+        "B_PRICE",
+        "A_SHAPE"
+      ],
+      "max_steps_per_method": 40,
+      "max_new_q3_per_method": 0
+    }
+  },
+  "routes": {
+    "FULL_PF": [
+      {
+        "kind": "pf_b_pf6",
+        "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "templates": [
+          {
+            "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+            "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json"
+          },
+          {
+            "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+            "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+            "inputs_selector": [
+              "inputs"
+            ]
+          }
+        ],
+        "configuration_ids": "*",
+        "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+    ],
+    "TRUNCATED_PF": [
+      {
+        "kind": "pf_b_pf6",
+        "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "templates": [
+          {
+            "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+            "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json"
+          },
+          {
+            "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+            "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+            "inputs_selector": [
+              "inputs"
+            ]
+          }
+        ],
+        "configuration_ids": "*",
+        "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+    ]
+  },
+  "saved_inputs": {
+    "saved_catalog_inputs": {
+      "commit": "417a73e7329fd520381dc88cc0de00a11dd0b641",
+      "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/INPUTS.json"
+    },
+    "pf_candidate_index": {
+      "commit": "7f27e18f06dde12127c85be898777b685d29bacc",
+      "path": "docs/research/pf_joint_width_shot_plan_20261115/WIDTH_SIGNAL_COVERAGE.json"
+    }
+  },
+  "price_comparison_reference": {
+    "catalog_inputs": {
+      "commit": "417a73e7329fd520381dc88cc0de00a11dd0b641",
+      "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/INPUTS.json"
+    },
+    "PR_PAULI": {
+      "conditional_cost": {
+        "numerator": 3792207339,
+        "denominator": 7
+      },
+      "point_ids": [
+        "ab0a231b9cd06286a79c1155"
+      ],
+      "scope": "指定した保存候補集合内の最安適合点"
+    },
+    "price_rules": {
+      "kind": "d2_pr_price_rules",
+      "interpreter": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+      "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-c1f95e080",
+      "view_commit": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+      "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+      "handoff": {
+        "commit": "7cd8ea139d703573f0da25a9ee5951f6930f0a25",
+        "path": "docs/research/d_pr_price_rule_applicability_20261116/HANDOFF.md"
+      },
+      "policy": "MODEL",
+      "applies_to": [
+        "PR_DF",
+        "PR_PAULI"
+      ],
+      "note": "policy MODEL reproduces the saved comparison; AUTO may switch holdout axes to direct means and is never used implicitly"
+    }
+  },
+  "duplicates": {
+    "initial_saved_count": {
+      "FULL_PF": 11,
+      "TRUNCATED_PF": 14
+    },
+    "active_science_jobs_observed": [],
+    "observation": "Current-user optimizer/Q3 process scan and relevant Git histories; no new same-condition PF outcome after C417 catalog found; no scientific worker active at preparation."
+  },
+  "parallelism": "Two independent methods in parallel; adaptive candidate evaluations are sequential within each method; existing pinned accelerated worker route reused."
+}
