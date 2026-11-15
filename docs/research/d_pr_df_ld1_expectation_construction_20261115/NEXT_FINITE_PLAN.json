@@ -1,0 +1,146 @@
+{
+  "schema": "LD1_NEXT_FINITE_REFERENCE_AND_ERROR_BUDGET_PLAN_V1",
+  "status": "PROPOSED_NOT_ADOPTED_NOT_EXECUTED",
+  "objective": "Evaluate frozen-model references and the unresolved residual-error budget needed for a fixed-shot comparison, without treating references as certified means.",
+  "target_law": "SAVED_SOURCE_IDEAL_FINITE_RTE_LAW_I",
+  "target_axes": {
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "axes": [
+      "X",
+      "Y"
+    ],
+    "n_axis_units": 26
+  },
+  "law_grid": "CONDITIONAL_INDEPENDENT_53_BIT_GRID_J",
+  "execution_dependencies": [
+    "Separate user execution instruction for this finite saved-result reanalysis; SOURCE/input fixed before numerical calls",
+    "Resolve only post-plan duplicates/source/input/output changes under section 10.5"
+  ],
+  "sources": {
+    "Q3_join": {
+      "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+      "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+      "selector": []
+    },
+    "prior_axes": {
+      "commit": "950577f416c17a20d309a8053a4bb016027b724d",
+      "path": "docs/research/d_pr_df_ld1_ec_plan_20261115/AXIS_EVIDENCE.json",
+      "selector": []
+    },
+    "C_price_index": {
+      "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+      "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+      "selector": []
+    },
+    "E_I_S": {
+      "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+      "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+      "selector": []
+    },
+    "frozen_model": {
+      "commit": "3cac53da1a4a8b2228245593c74c1ff9ec1f5212",
+      "path": "docs/research/pr_df_ld1_residual_freeze_20261115/run01/FROZEN_MODELS.json",
+      "selector": []
+    },
+    "frozen_predict_helper": {
+      "commit": "d83737b6d5241962ce39c81d39c56af3506c0cdd",
+      "path": "src/trottertracks/price_model_validation.py",
+      "selector": []
+    },
+    "m4_admission": {
+      "commit": "9edfa5d3201f22c23dd77569d102801be80dacf3",
+      "path": "docs/research/pr_df_ld1_m4_holdout_admission_20261115/ADMISSION.json",
+      "selector": []
+    },
+    "F0_admission": {
+      "commit": "259a0b2d7357d740502d6837db2cf3c2a8b75c5e",
+      "path": "docs/research/pr_df_ld1_f0_admission_20261115/ADMISSION.json",
+      "selector": []
+    },
+    "range": {
+      "commit": "dcf905fc5c0abb05966019bcae8b0206af9aa952",
+      "path": "docs/research/d_pr_df_ld1_f0_rz_range_20261115/RANGE_EVIDENCE.json",
+      "selector": []
+    },
+    "PF_total_handoff": {
+      "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+      "path": "docs/research/pf6_allround_cost_20261115/HANDOFF.md",
+      "selector": []
+    }
+  },
+  "limits": {
+    "new_paths": 0,
+    "H4_builds": 0,
+    "compiles": 0,
+    "fit": 0,
+    "F0_reruns": 0,
+    "rare_event_search": 0,
+    "Q3_calls": 0,
+    "CI": 0,
+    "formal_E_C": 0,
+    "formal_G": 0
+  },
+  "evaluation_counts": {
+    "saved_residual_references_reused": 8,
+    "new_residual_feature_evaluations_max": 18,
+    "saved_m4_full_price_references_reused": 2,
+    "new_full_price_references_max": 24,
+    "total_axis_reference_prices": 26,
+    "existing_law_bound_records_reused": 26
+  },
+  "quantities": {
+    "residual_reference": "dhat[m,a]=theta0[a]+thetaq[a]*q[m]+thetaL[a]*q[m]*R[m]",
+    "model_reference_price": "p_ref[m,a]=saved_s_I[m,a]+dhat[m,a] (reuse frozen m4 JSON values)",
+    "total_reference": "T_ref=sum N[m,a]*p_ref[m,a]",
+    "law_difference_budget": "K_IJ=sum N[m,a]*saved_B_IJ[m,a]",
+    "structural_numerical_deviations": "v_lo=sum N*(s_I_lo-s_I_saved); v_hi=sum N*(s_I_hi-s_I_saved)",
+    "unknown_residual_mean_error": "E_res=sum N*(E_J[C-S]-dhat); UNKNOWN, never imputed zero",
+    "comparison_reference_gap": "M=593555352-T_ref",
+    "PR_cheaper_sufficient_boundary": "upper(E_res) < M-v_hi-K_IJ",
+    "PR_dearer_sufficient_boundary": "lower(E_res) > M-v_lo+K_IJ"
+  },
+  "output_dir": "docs/research/d_pr_df_ld1_reference_budget_20261115/run01",
+  "output_semantics": "MODEL_REFERENCE_AND_SENSITIVITY_BUDGET_NOT_QUALIFIED_EXPECTATIONS_OR_RANKING",
+  "outputs": [
+    "26 axis references and all original locators",
+    "one weighted reference and saved structural numerical band",
+    "one weighted conditional law radius",
+    "two signed boundaries on the still-unmeasured weighted residual-mean error",
+    "null E_res estimate/CI/formal E[C]/G/winner"
+  ],
+  "reuse_rule": "Preserve m0/m3/m6 calibration and m4 independent holdout; do not refit or pool P1/replay; do not relabel actual PCG64 cohort as J samples.",
+  "adopted_law_decision_needed": false,
+  "additional_model_assumption_adopted": false,
+  "optional_later_assumption": "Only if the user later adopts E_J[C-S]=dhat for all 26 axes may E_res=0 be used as a conditional model scenario. This plan does not adopt or verify it.",
+  "operational_seed_ensemble": {
+    "status": "UNSPECIFIED",
+    "definition": null,
+    "PCG64_to_IID_grid_joint_bound": null,
+    "price_correction": null
+  },
+  "stop_conditions": [
+    "unresolved duplicate result/job/output conflict",
+    "identity/law/scalar/lowering/compiler/axis/source/input mismatch",
+    "missing source/structural enclosure/record",
+    "frozen m4 reference mismatch",
+    "nonfinite or negative model price; do not clamp/repair",
+    "helper requires tolerance or scientific guard relaxation; use pure predict only, otherwise stop",
+    "output write/resource failure; preserve partial result, no retry"
+  ],
+  "completion_STOP": "Publish metadata-bound reference/budget only and remote-check; no acquisition, refit, model qualification, formal E[C]/G or winner.",
+  "mandatory_stop": true
+}
