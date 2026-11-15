@@ -210,6 +210,7 @@ def main():
                                      scope='MINIMUM_WITHIN_EVALUATED_SET_AND_FINITE_SEARCH_RULE; no new science'))
     table(full, out / 'PER_METHOD.csv')
     write(out / 'GENERATION.json', context.get('generation', {}))
+    write(out / 'PRICE_RULES.json', context.get('price_rules'))
     write(out / 'PARAMETER_ASSESSMENT.json', {m: r.get('parameter_assessment') for m, r in full.items()})
     write(out / 'NEEDS.json', dict(candidates=candidate_rows(context),
                                    pending_Q3={m: r['pending_request'] for m, r in full.items()}))
