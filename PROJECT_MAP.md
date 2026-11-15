@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[p7/S2粗幅の局所shot有限探索案](docs/research/p7_s2_local_shot_search_plan_20261116/REPORT.md)／[統合担当HANDOFF](docs/research/p7_s2_local_shot_search_plan_20261116/HANDOFF.md)：保存435,481,090 RZ適合点から1〜2roundを編集、単round減算4＋振替4の最大8 Q3案。価格・既評価Q3で次案を選び、厳密に安い適合点で早期終了。非単調性と全round依存を保持、今回は計画のみ・新算術/Q3なし。
+
 [p7/S2幅h・粗幅達成費用予算の2配分Q3](docs/research/p7_s2_h_budget_q3_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/p7_s2_h_budget_q3_results_20261116/HANDOFF.md)：元N0 capでA_SHAPE/B_PRICEを生成・各1call。T=421,323,290/434,203,864 RZはいずれも予算以下だが両モデル不適合。直接10/外挿16軸、各列の外挿割合と原API/資源保存、幅全体の棄却・十分N/G認定なし・STOP。
 
 [p7/S2要求幅hの同一shot Q3精度比較](docs/research/p7_s2_d01_same_shots_q3_results_20261115/REPORT.md)／[統合担当HANDOFF](docs/research/p7_s2_d01_same_shots_q3_results_20261115/HANDOFF.md)：幅hを新1call、幅16h/7は保存再利用。両適合、MSE差h−16h/7は約−3.93473E−7 Ha²で精度余裕が増加。hの価格はnull、435,481,090 RZは粗幅のみ。原API/資源保存、十分N/物理保証/G未認定・STOP。
