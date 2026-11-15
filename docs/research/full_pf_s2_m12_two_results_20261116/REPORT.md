@@ -20,7 +20,7 @@ p7で費用削減につながった変更（m12を各軸4→2）は、Full PF自
 - 2点の比較であり、MSEの単調性・m12=1や他配分の適否・最小Nは推定しない。
 - 今回の列は `N_X = N_Y = [59,55,51,47,43,39,35,31,27,23,19,13,2]`、allocation ID `FULL_PF_S2_16H_OVER7_M12_TWO_01`。
 
-正本は[原API](run01/FULL_PF_S2_M12_TWO_FIXED/API_RETURN.json)、exact値の[EXACT_COMPARISON](EXACT_COMPARISON.json)、表示用の[SUMMARY](SUMMARY.json)、C向けの[C_RESULT_JOIN](C_RESULT_JOIN.json)。4shotの原APIは `b4296b110b129d226dbef2743c14f725a27c3bf6` の `docs/research/pf6_cost_budget_q3_results_20261115/run01/FULL_PF_S2_16h_over_7__B_PRICE/API_RETURN.json`。
+正本は[原API](run01/FULL_PF_S2_M12_TWO_FIXED/API_RETURN.json)、exact値の[EXACT_COMPARISON](EXACT_COMPARISON.json)、表示用の[SUMMARY](SUMMARY.json)、C向けの[C_RESULT_JOIN](C_RESULT_JOIN.json)（固定commitとパスは[HANDOFF](HANDOFF.md)）。4shotの原APIは `b4296b110b129d226dbef2743c14f725a27c3bf6` の `docs/research/pf6_cost_budget_q3_results_20261115/run01/FULL_PF_S2_16h_over_7__B_PRICE/API_RETURN.json`。
 
 ### 参考：p7の同じ変更との並び
 
