@@ -1,0 +1,150 @@
+{
+  "status": "PASS",
+  "index": 1,
+  "result": {
+    "status": "PASS",
+    "prices": {
+      "cosine": {
+        "rz_count": 34314,
+        "rz_depth": 9311,
+        "cx_count": 16288,
+        "cx_depth": 8955,
+        "total_depth": 22914,
+        "circuit_size": 71484
+      },
+      "sine": {
+        "rz_count": 34314,
+        "rz_depth": 9311,
+        "cx_count": 16288,
+        "cx_depth": 8955,
+        "total_depth": 22914,
+        "circuit_size": 71484
+      }
+    },
+    "scalar": 2.302014585108299,
+    "z": [
+      -0.1612968434806973,
+      0.9868707780400936
+    ],
+    "seeds": [
+      11682243307524521778,
+      12760543152582566560,
+      414756005546471548,
+      2837217945834982706,
+      68137286591112959,
+      10124319686565325426,
+      14770007803129199437,
+      8425203995514064220
+    ],
+    "checks": [
+      {
+        "check": "low_control",
+        "error": 3.371270768124183e-14,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "high_control_leakage",
+        "error": 0.0,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "independent_full_space_vector",
+        "error": 5.506825708107058e-14,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "Hadamard_cosine",
+        "error": 9.686695889854491e-15,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "Hadamard_sine",
+        "error": 4.907185768843192e-14,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "compiled_vector_cosine",
+        "error": 8.870887719832609e-13,
+        "tolerance": 1e-07
+      },
+      {
+        "check": "compiled_vector_sine",
+        "error": 8.143309608894716e-13,
+        "tolerance": 1e-07
+      }
+    ],
+    "bit_order": {
+      "labels_reversed": true,
+      "saved_vs_saved_labels": 2.841694287710099e-17,
+      "qiskit_vs_qiskit_labels": 2.841694287710099e-17,
+      "unconverted_mismatch": 0.055632117098166754,
+      "head_vs_blocks": 0.0,
+      "tail_vs_blocks": 0.0,
+      "tail_vs_pauli_plus_pauli_identity": 6.748461441150305e-16,
+      "tail_vs_pauli_plus_saved_sR": 6.766897295603617e-16,
+      "pass": true
+    },
+    "distribution": {
+      "orders": [
+        0,
+        2
+      ],
+      "probabilities": [
+        0.9999988153430361,
+        1.1846569638031288e-06
+      ]
+    },
+    "n": 8,
+    "terms": 184,
+    "fingerprints": {
+      "cosine": {
+        "fingerprint": "4eaa5acaa73b06e414424372d6cdee736459434c728dd81fe9ae483afc35e19f",
+        "cache_reused": false,
+        "wrapper_qubits": 9,
+        "measurement": true
+      },
+      "sine": {
+        "fingerprint": "5ac340ca2d2e15971848c4c3234fe6aa1df2bb6a511d2f39704da2b3d5bea6d9",
+        "cache_reused": false,
+        "wrapper_qubits": 9,
+        "measurement": true
+      }
+    },
+    "compile_receipts": {
+      "cosine": {
+        "metrics": {
+          "rz_count": 34314,
+          "rz_depth": 9311,
+          "cx_count": 16288,
+          "cx_depth": 8955,
+          "total_depth": 22914,
+          "circuit_size": 71484
+        },
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprint": "4eaa5acaa73b06e414424372d6cdee736459434c728dd81fe9ae483afc35e19f"
+      },
+      "sine": {
+        "metrics": {
+          "rz_count": 34314,
+          "rz_depth": 9311,
+          "cx_count": 16288,
+          "cx_depth": 8955,
+          "total_depth": 22914,
+          "circuit_size": 71484
+        },
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprint": "5ac340ca2d2e15971848c4c3234fe6aa1df2bb6a511d2f39704da2b3d5bea6d9"
+      }
+    },
+    "sampling": "ORIGINAL_NORMAL_SAMPLER",
+    "acceleration": {
+      "event_cache_hits": 5,
+      "event_cache_misses": 27
+    },
+    "compile_calls": [
+      "X",
+      "Y"
+    ]
+  },
+  "peak_RSS_KiB": 655652
+}
