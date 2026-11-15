@@ -11,7 +11,14 @@ Modes:
   collect    validate existing worker artifacts only (resume after a crash), no science
   dry-check  build the case and run route metadata/count/runtime checks only, no science
 
-Route kinds: pf_b_pf6, pauli_b_ld3, pauli_b_ld5, prdf_d2_split, artificial.
+Route kinds: pf_b_pf6, pauli_b_ld3, pauli_b_ld5, pauli_b_common_entry, prdf_d2_split, artificial.
+
+pauli_b_common_entry: any PR-Pauli configuration whose 13-round MEAN_HANDOFF was assembled by A's common
+signal entry (93a5ef3b9) and is accepted by B's normal intake (``accept_saved(handoff_source=...)``, B
+bd42dd1e9).  The case comes from the route's ``configurations`` table (configuration + packet locators, total
+binding ids) instead of a saved case; the evaluation contract (statistical contract, options, adopted
+evaluation, acceleration, kernel and C sources, evaluation target) is copied from ``contract_template``
+(the saved LD5 fixed-Q3 INPUTS).  The worker is B's saved LD5/LD3 worker with only its metadata generalized.
 """
 import argparse
 import ast
@@ -76,7 +83,23 @@ def template(view, request):
     raise ValueError('No saved template case for this configuration on this route')
 
 
+def common_case(view, request):
+    rule = request['route'];entry = rule['configurations'][request['configuration_id']]
+    saved = git_json(view, rule['contract_template']);base = saved['cases'][0]
+    case = dict(label=request['request_id'], configuration=deepcopy(entry['configuration']), signal_packet=deepcopy(entry['signal_packet']),
+                original_configuration_id=request['configuration_id'], evaluation_target=deepcopy(base['evaluation_target']),
+                binding_id=entry['binding_id'], total_configuration_id=entry['total_configuration_id'])
+    case['allocation'] = dict(allocation_id='RPE_OPT_' + request['request_id'], shot_policy='USER_SUPPLIED',
+                              shots=[dict(m=m, N_X=x, N_Y=y) for m, (x, y) in enumerate(zip(request['N_X'], request['N_Y']))])
+    inputs = {k: deepcopy(saved[k]) for k in ('kernel_source', 'C_source', 'acceleration') + CONTRACT if k in saved}
+    inputs.update(cases=[case], concurrent_configurations=1, maximum_scientific_calls=1,
+                  template_source=dict(rule['contract_template'], role='EVALUATION_CONTRACT_ONLY'), signal_source=entry['signal_packet'])
+    return case, inputs
+
+
 def build(view, request):
+    if request['route']['kind'] == 'pauli_b_common_entry':
+        return common_case(view, request)
     loc, saved, base = template(view, request)
     case = {k: deepcopy(v) for k, v in base.items() if k not in DROP}
     case['label'] = request['request_id']
@@ -120,6 +143,39 @@ def pinned_validator(view, H, exact):
     return scope[VALIDATOR['function']]
 
 
+COMMON = {}  # pauli_b_common_entry: loaded route modules (module level so the supervisor can pickle the worker)
+
+
+def common_metadata(case):
+    """B's LD5 metadata with the handoff generalized to any common-entry MEAN_HANDOFF accepted by B's intake."""
+    view, X = COMMON['view'], COMMON['X'];A, T = X.A, X.T
+    accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case['signal_packet'])
+    if accepted.get('assembly_implementation_source', {}).get('commit') != A.ENTRY_SOURCE:
+        raise ValueError('Not a common-entry Pauli assembly')
+    accepted = accepted['results'][0];original = T._selected(view, case['configuration'])
+    if original != accepted['configuration'] or original['id'] != case['original_configuration_id']:
+        raise ValueError('Common-entry configuration SOURCE/ID differs')
+    binding = T.create(view, original, original_source=case['configuration'])
+    if binding['id'] != case['binding_id'] or binding['total_configuration']['id'] != case['total_configuration_id']:
+        raise ValueError('Common-entry total canonical binding differs')
+    return binding, T.bind_signal(view, binding, accepted['signal_packet'])
+
+
+def common_worker(case, inputs, source, output):
+    from unittest.mock import patch
+    X = COMMON['X']
+    with patch.object(X.M, 'metadata', common_metadata), patch.object(X.M, 'check_source', X.check_source):
+        return X.L.SAVED_WORKER(case, inputs, source, output)
+
+
+@contextmanager
+def common_installed(output):
+    from unittest.mock import patch
+    X = COMMON['X']
+    with patch.object(X.L, 'worker', common_worker), X.L.installed(output):
+        yield
+
+
 def route(view, kind):
     """(metadata, installed-context, supervise, validate, bounds) of an existing route, loaded unchanged."""
     if kind == 'pf_b_pf6':
@@ -136,6 +192,12 @@ def route(view, kind):
         return NS(metadata=meta, installed=inst, supervise=L.M.supervise,
                   validate=pinned_validator(view, L.H, L.T.Q.a.exact_scalar), bounds=lambda s: L.H.finite_bounds([r['N_X'] for r in s]),
                   runtime=None)
+    if kind == 'pauli_b_common_entry':
+        X = load(view, '_rpe_opt_common', 'scripts/run_pauli_ld5_two_vectors_q3_fixed.py');X.check_source()
+        COMMON.update(view=view, X=X)
+        return NS(metadata=common_metadata, installed=common_installed, supervise=X.L.M.supervise,
+                  validate=pinned_validator(view, X.L.H, X.L.T.Q.a.exact_scalar),
+                  bounds=lambda s: X.L.H.finite_bounds([r['N_X'] for r in s]), runtime=None)
     if kind == 'prdf_d2_split':
         W = load(view, 'run_pr_df_ld_split_q3_resume', 'scripts/run_pr_df_ld_split_q3_resume.py')
         return NS(metadata=W.U.metadata, installed=lambda out: nullcontext(), supervise=W.supervise,
@@ -223,7 +285,7 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--mode', choices=('execute', 'collect', 'dry-check'), default='execute')
     a = p.parse_args()
-    request = json.loads(a.request.read_text());out = a.output;out.mkdir(parents=True, exist_ok=True)
+    request = json.loads(a.request.read_text());out = a.output.resolve();out.mkdir(parents=True, exist_ok=True)
     kind = request['route']['kind'];stage(out, 'JOB_START', mode=a.mode, kind=kind, pid=os.getpid())
     name = 'OUTCOME.json' if a.mode != 'dry-check' else 'DRY_CHECK.json'
     if kind == 'artificial':

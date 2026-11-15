@@ -24,6 +24,9 @@ Pipeline (one call of ``optimize``):
    existing Q3 route (``scripts/run_rpe_optimizer_q3_job.py``) within the
    approved budget.  Otherwise the proposal is emitted as a request and the
    method stops.
+   ``search.incumbent_scope = "CONFIGURATION"`` applies the same rule to every
+   configuration separately (its own incumbent; nothing is dropped because another
+   configuration is cheaper), e.g. to compare kappa or L_D on equal terms.
 
 No signal, price, compile or Q3 is computed here.  Costs are each candidate's own
 saved unit prices times the integer shots, validated against C's saved totals.
@@ -36,7 +39,9 @@ import math
 import os
 from pathlib import Path
 import subprocess
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 from .baseline_signal_pipeline import blob
 from .saved_rpe_cost_catalog import Catalog, Reader, display, frac
@@ -272,7 +277,7 @@ def enumerate_candidates(reader, problem, facts, catalog):
                 if values is not None and ld not in values:
                     continue
                 configs = sorted({cid for cid, ps in by_config.items() if ps[0]['method'] == name and ps[0]['L_D'] == ld})
-                if not configs:
+                if not configs and not spec.get('saved_configurations_only'):
                     out.append(dict(method=name, family='PR', key=dict(L_D=ld), configuration_id=None, index_signal=None, caps=caps))
                 for cid in configs:
                     out.append(dict(method=name, family='PR', key=dict(L_D=ld), configuration_id=cid, index_signal=None, caps=caps))
@@ -355,6 +360,9 @@ def proposals(candidates, knowledge, threshold, search, generate):
                     raw.append((tuple(g['shots']), dict(kind='GENERATOR_SEED', rule=rule, budget=str(budget))))
             if limit is None:
                 raw.append((caps, dict(kind='CAP_VECTOR_SEED')))
+            for seed in c.get('sibling_seeds', []):  # saved feasible incumbents of same-method, same-L_D configurations
+                raw.append((tuple(seed['vector']), dict(kind='SAVED_SAME_L_D_INCUMBENT_SEED', from_configuration=seed['configuration_id'],
+                                                        from_label=seed.get('label'))))
         for v, origin in raw:
             if (cid, v) in knowledge:
                 continue
@@ -374,7 +382,7 @@ HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE
 
 
 def run_method(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None, spent=0, free=None,
-               science_approved=True):
+               science_approved=True, prefetch=None):
     """Finite loop: select, ask backend, update knowledge, repeat until a stop rule fires.
 
     The budget is checked BEFORE the backend is called: a proposal is sent to the backend only if it can be
@@ -382,16 +390,28 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
     round) or if new-call budget remains.  Otherwise it is returned as the unexecuted next request.
     ``spent`` counts new calls already launched for this method in the same approved round (resume).
     UNKNOWN (gate/persistence) stops the method; a model failure (lower bound > tau) does not.
+    ``prefetch`` (unlimited approved rounds only): called with the next proposals in the rule's own order so their
+    jobs run concurrently; the rule still consumes answers one at a time in that order (same trajectory).
     """
     trace, held, new_calls, pending, stop = [], [], spent, None, None
     ready = [c for c in candidates if c['ready']];missing = [c['name'] for c in candidates if not c['ready']]
     limit = 0 if not science_approved else (float('inf') if max_new is None else max_new)
+    large_headroom = Fraction(search['large_step_headroom'])
     for step in range(search['max_steps_per_method']):
         props, incumbent = proposals(ready, knowledge, threshold, search, generate)
         if not props:
             # Exhausted within the approved finite range; distinguish candidates that still lack inputs.
-            stop = 'NO_IMPROVING_PROPOSAL_INPUTS_MISSING' if missing else 'NO_IMPROVING_PROPOSAL';break
+            stop = 'NO_IMPROVING_PROPOSAL_INPUTS_MISSING' if missing else 'NO_IMPROVING_PROPOSAL'
+            if ready and incumbent is None:
+                stop = 'NO_FEASIBLE_POINT_IN_RANGE'
+            break
         choice = props[0];allow = new_calls < limit
+        if prefetch is not None and limit == float('inf') and science_approved:
+            # Look ahead only where failures are likely (seeds, or an incumbent within the large-step headroom); far from
+            # the threshold the first proposal usually succeeds and lookahead jobs would be discarded.
+            h = choice['origin'].get('base_headroom')
+            near = choice['origin'].get('kind') != 'DECREMENT_FROM_CONFIGURATION_INCUMBENT' or h is None or Fraction(h) >= large_headroom
+            prefetch(props[:search.get('lookahead', 1) if near else 1])
         is_free = free is not None and free(choice)
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
         hold = None if answer is None else HOLD.get(answer['status'])
@@ -448,16 +468,32 @@ class Executor:
     adapter's OUTCOME.json plus all worker artifacts.  A job is launched only when it has no OUTCOME, no live
     process and no previous launch; a dead launch without OUTCOME is first re-validated in collect mode (no
     science) and otherwise reported for review (never retried automatically).
+
+    ``max_concurrent`` > 1 lets several jobs run at once (lookahead / per-configuration searches); each launch
+    takes a slot until its process exits.  ``wait_for_running``: a live job of an earlier invocation is waited
+    for (polled) instead of being reported as IN_PROGRESS.
     """
 
-    def __init__(self, root, run_dir, routes, expected, problem, adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=None):
+    def __init__(self, root, run_dir, routes, expected, problem, adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=None,
+                 max_concurrent=1, wait_for_running=False, poll_seconds=10):
         self.root, self.run_dir, self.routes, self.expected = Path(root), Path(run_dir), routes, expected
         self.adapter, self.optimizer_source, self.contract = Path(root) / adapter, optimizer_source, contract_digest(problem)
         self.method = None
+        self.lock, self.slots = threading.Lock(), threading.BoundedSemaphore(max(1, max_concurrent))
+        self.events, self.waiters, self.uncounted = {}, [], set()
+        self.wait_for_running, self.poll_seconds = wait_for_running, poll_seconds
+
+    def log(self, **event):
+        with self.lock:
+            with (self.run_dir / 'PROGRESS.jsonl').open('a') as f:
+                f.write(json.dumps(dict(UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), method=self.method, **event),
+                                   default=str) + '\n')
 
     def for_method(self, method):
-        self.method = method
-        return self
+        view = Executor.__new__(Executor)
+        view.__dict__.update(self.__dict__)  # shares lock, slots, events and counters; only the method differs
+        view.method = method
+        return view
 
     def route(self, cid):
         for rule in self.routes.get(self.method, []):
@@ -483,12 +519,16 @@ class Executor:
             return False
         return str(job) in cmd
 
+    def expected_for(self, cid, rule):
+        entry = ((rule or {}).get('configurations') or {}).get(cid) or {}
+        base = dict(self.expected.get(cid) or {k: entry.get(k) for k in ('total_configuration_id', 'binding_id')})
+        return dict(base, configuration_id=cid)
+
     def request(self, proposal, job, rule):
         nx, ny = split(proposal['vector'])
-        expected = dict(self.expected.get(proposal['configuration_id'], {}), configuration_id=proposal['configuration_id'])
         return dict(request_id=job.name, method=self.method, configuration_id=proposal['configuration_id'], N_X=nx, N_Y=ny,
-                    cost=enc(proposal['cost']), origin=proposal['origin'], route=rule, expected=expected,
-                    optimizer_source=self.optimizer_source)
+                    cost=enc(proposal['cost']), origin=proposal['origin'], route=rule,
+                    expected=self.expected_for(proposal['configuration_id'], rule), optimizer_source=self.optimizer_source)
 
     def run_adapter(self, job, rule, mode):
         cmd = [rule['interpreter'], '-B', str(self.adapter), '--request', str(job / 'REQUEST.json'), '--output', str(job), '--mode', mode]
@@ -501,14 +541,73 @@ class Executor:
         job = self.job_dir(proposal)
         return (job / 'OUTCOME.json').exists() or (job / 'LAUNCH.json').exists()
 
+    def launch(self, proposal, rule):
+        """Start one job without waiting; a waiter thread records the return and frees the slot."""
+        job = self.job_dir(proposal);done = threading.Event()
+        with self.lock:
+            if (job / 'LAUNCH.json').exists() or (job / 'OUTCOME.json').exists() or job in self.events:
+                return job
+            job.mkdir(parents=True)
+            self.events[job] = done
+        (job / 'REQUEST.json').write_text(json.dumps(self.request(proposal, job, rule), ensure_ascii=False, indent=2, default=str) + '\n')
+        self.slots.acquire()
+        start = time.time();proc = self.run_adapter(job, rule, 'execute')
+        (job / 'LAUNCH.json').write_text(json.dumps(dict(pid=proc.pid, started=start, kind=rule['kind'])) + '\n')
+        with self.lock:
+            self.uncounted.add(job)
+        self.log(event='LAUNCH', job=job.name, configuration=proposal['configuration_id'][:8], N=split(proposal['vector'])[0],
+                 cost=show(proposal['cost']), origin=proposal['origin'].get('kind'))
+
+        def wait():
+            try:
+                code = proc.wait()
+                (job / 'PROCESS_RETURN.json').write_text(json.dumps(dict(returncode=code if code >= 0 else None,
+                    signal=-code if code < 0 else None, wall_seconds=time.time() - start, automatic_retry=False)) + '\n')
+                status = json.loads((job / 'OUTCOME.json').read_text())['status'] if (job / 'OUTCOME.json').exists() else None
+                self.log(event='EXIT', job=job.name, returncode=code, wall_seconds=round(time.time() - start, 1), status=status)
+            finally:
+                self.slots.release();done.set()
+        t = threading.Thread(target=wait, daemon=False);t.start()
+        with self.lock:
+            self.waiters.append(t)
+        return job
+
+    def prefetch(self, proposals):
+        """Launch jobs for proposals that have no saved answer and no job yet (unlimited approved rounds only)."""
+        for proposal in proposals:
+            rule = self.route(proposal['configuration_id'])
+            if rule is not None and not self.has_job(proposal):
+                self.launch(proposal, rule)
+
+    def finish(self):
+        """Wait for every job launched by this process (lookahead jobs the rule did not need included)."""
+        for t in list(self.waiters):
+            t.join()
+
+    def take_count(self, job):
+        with self.lock:
+            if job in self.uncounted:
+                self.uncounted.discard(job)
+                return 1
+        return 0
+
     def answer(self, proposal, allow_new=True):
         rule = self.route(proposal['configuration_id']);job = self.job_dir(proposal)
+        if job in self.events:  # launched by this process (directly or as lookahead)
+            self.events[job].wait()
         if (job / 'OUTCOME.json').exists():
-            return self.ingest(job, proposal, calls=0)
+            return self.ingest(job, proposal, calls=self.take_count(job))
         if (job / 'LAUNCH.json').exists():
             launch = json.loads((job / 'LAUNCH.json').read_text())
-            if not (job / 'PROCESS_RETURN.json').exists() and self.alive(launch, job):
-                return dict(status='IN_PROGRESS', job=str(job))
+            if job in self.events:
+                return dict(status='UNKNOWN', reason='ADAPTER_EXIT_WITHOUT_OUTCOME', MSE_lower=None, MSE_upper=None,
+                            source='NEW_Q3_JOB', calls=self.take_count(job), job=str(job))
+            while not (job / 'PROCESS_RETURN.json').exists() and self.alive(launch, job):
+                if not self.wait_for_running:
+                    return dict(status='IN_PROGRESS', job=str(job))
+                time.sleep(self.poll_seconds)
+            if (job / 'OUTCOME.json').exists():
+                return self.ingest(job, proposal, calls=0)
             if rule is not None:
                 self.run_adapter(job, rule, 'collect').wait()
             if (job / 'OUTCOME.json').exists():
@@ -518,22 +617,13 @@ class Executor:
             return None
         if rule is None:
             return dict(status='NO_ROUTE', job=None)
-        job.mkdir(parents=True)
-        (job / 'REQUEST.json').write_text(json.dumps(self.request(proposal, job, rule), ensure_ascii=False, indent=2, default=str) + '\n')
-        start = time.time();proc = self.run_adapter(job, rule, 'execute')
-        (job / 'LAUNCH.json').write_text(json.dumps(dict(pid=proc.pid, started=start, kind=rule['kind'])) + '\n')
-        code = proc.wait()
-        (job / 'PROCESS_RETURN.json').write_text(json.dumps(dict(returncode=code if code >= 0 else None, signal=-code if code < 0 else None,
-                                                                 wall_seconds=time.time() - start, automatic_retry=False)) + '\n')
-        if not (job / 'OUTCOME.json').exists():
-            return dict(status='UNKNOWN', reason='ADAPTER_EXIT_WITHOUT_OUTCOME', MSE_lower=None, MSE_upper=None,
-                        source='NEW_Q3_JOB', calls=1, job=str(job))
-        return self.ingest(job, proposal, calls=1)
+        job = self.launch(proposal, rule)
+        return self.answer(proposal, allow_new=False)
 
     def ingest(self, job, proposal, calls):
         """Accept a job outcome only for the same configuration, allocation, total view/binding/signal and contract."""
         out = json.loads((job / 'OUTCOME.json').read_text());ident = out.get('identity') or {}
-        nx, ny = split(proposal['vector']);want = self.expected.get(proposal['configuration_id'], {})
+        nx, ny = split(proposal['vector']);want = self.expected_for(proposal['configuration_id'], self.route(proposal['configuration_id']))
         status, reason = out['status'], out.get('reason')
         if status in (PASS, FAIL, 'INCONCLUSIVE'):
             checks = dict(configuration=ident.get('configuration_id') == proposal['configuration_id'],
@@ -549,6 +639,45 @@ class Executor:
         upper = None if out.get('MSE_upper') is None else frac(out['MSE_upper'])
         return dict(status=status, reason=reason, MSE_lower=lower, MSE_upper=upper, source=source, calls=calls,
                     job=str(job.relative_to(self.root)) if job.is_relative_to(self.root) else str(job), label=None)
+
+
+def apply_published(candidates, routes):
+    """A generated configuration whose configuration, 13-round packet and Q3 route are published becomes searchable.
+
+    The route rule's ``configurations`` table (configuration + MEAN_HANDOFF locators, total binding ids) is the
+    single record of what was published; prices stay those of the price step (PriceRules), never filled here.
+    """
+    published = {}
+    for name, rules in routes.items():
+        for rule in rules:
+            for cid, entry in (rule.get('configurations') or {}).items():
+                published[(name, cid)] = entry
+    cleared = ('CONFIGURATION_PUBLICATION', 'SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS', 'Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION')
+    for c in candidates:
+        entry = published.get((c['method'], c['configuration_id']))
+        if entry is None or not c.get('generated'):
+            continue
+        c['needs'] = [n for n in c['needs'] if n not in cleared and not n.startswith('SIGNAL_ROUNDS:')]
+        c['signal_source'] = entry['signal_packet'];c['published_inputs'] = entry
+        c['ready'] = not c['needs'] and c['prices'] is not None
+    return candidates
+
+
+def sibling_seeds(candidates, knowledge):
+    """For configurations without a feasible point: the saved feasible incumbent of each other configuration of the
+    same method and L_D (cheapest by that configuration's own prices), as an extra seed of the same rule."""
+    best = {}
+    for c in candidates:
+        rows = [(cost(v, c['prices']), v, r) for (cid, v), r in knowledge.items()
+                if c['ready'] and cid == c['configuration_id'] and r['status'] == PASS and r.get('source') == 'SAVED']
+        if rows:
+            t, v, r = min(rows, key=lambda x: (x[0], x[1]))
+            best[c['configuration_id']] = dict(vector=list(v), configuration_id=c['configuration_id'], label=r.get('label'))
+    for c in candidates:
+        if c['ready'] and c['configuration_id'] not in best and c['family'] == 'PR':
+            c['sibling_seeds'] = [b for cid, b in best.items() for o in candidates
+                                  if o['configuration_id'] == cid and o['key'].get('L_D') == c['key'].get('L_D')]
+    return candidates
 
 
 # ---------------------------------------------------------------- PR configuration generation (metadata only)
@@ -813,7 +942,8 @@ def summarize_method(name, candidates, result, knowledge, threshold):
                 evaluated_count=len(evaluated), evaluated=evaluated, not_ready_candidates=unevaluated,
                 ready_candidates=[c['name'] for c in candidates if c['ready']],
                 search_range=dict(candidates=[c['name'] for c in candidates], rule=RULE),
-                resume_records=resume_records(evaluated))
+                resume_records=resume_records(evaluated), by_configuration=result.get('by_configuration'),
+                incumbent_scope=result.get('incumbent_scope', 'METHOD'))
 
 
 def resume_records(evaluated):
@@ -868,21 +998,80 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         budget = max_new.get(name, 0) if isinstance(max_new, dict) else max_new
         budget = None if budget in (None, 'UNLIMITED') else budget
         table = context['saved'].table if saved_is_free else {}
+        prefetch = None
         if executor is not None:
             ex = executor.for_method(name)
             answer, spent = ChainBackend(context['saved'], ex), ex.launched(name)
             free = lambda p, ex=ex: (p['configuration_id'], p['vector']) in table or ex.has_job(p)
+            prefetch = lambda ps, ex=ex: ex.prefetch([p for p in ps if (p['configuration_id'], p['vector']) not in table])
         else:
             answer, spent = (context['saved'] if backend is None else backend), 0
             free = lambda p: (p['configuration_id'], p['vector']) in table
-        result = run_method(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
-                            problem.get('q3_routes'), spent, free, science_approved)
+        if search.get('incumbent_scope') == 'CONFIGURATION':
+            result = run_by_configuration(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
+                                          problem.get('q3_routes'), spent, free, science_approved, prefetch)
+        else:
+            result = run_method(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
+                                problem.get('q3_routes'), spent, free, science_approved)
         out[name] = summarize_method(name, cands, result, knowledge, threshold)
         out[name]['budget'] = dict(max_new_q3='UNLIMITED_WITHIN_RANGE' if budget is None else budget, science_approved=science_approved,
                                    spent_before=spent, new_calls=result['new_calls'])
         out[name]['generation'] = context.get('generation', {}).get(name)
         out[name]['parameter_assessment'] = parameter_assessment(name, cands, context.get('generation', {}).get(name), out[name])
+    if executor is not None:
+        executor.finish()
     return out
+
+
+EXHAUSTED = ('NO_IMPROVING_PROPOSAL', 'NO_FEASIBLE_POINT_IN_RANGE')
+STOP_PRIORITY = ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'JOB_IN_PROGRESS', 'Q3_BUDGET_EXHAUSTED',
+                 'NEW_SCIENCE_NOT_APPROVED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET', 'NEW_Q3_REQUIRED_NO_EXECUTOR', 'STEP_LIMIT')
+
+
+def run_by_configuration(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None, spent=0,
+                         free=None, science_approved=True, prefetch=None):
+    """The same rule on every ready configuration separately (incumbent scope CONFIGURATION).
+
+    Each configuration descends from its own feasible point; a configuration is never cut because another one is
+    cheaper.  With an unlimited approved budget the configurations run concurrently (independent searches, each with
+    the rule's own lookahead); with a finite budget they run one after another sharing that budget.
+    """
+    if search.get('seed_saved_same_L_D'):
+        sibling_seeds(candidates, knowledge)
+    ready = [c for c in candidates if c['ready']];missing = [c['name'] for c in candidates if not c['ready']]
+    unlimited = science_approved and max_new is None
+
+    def one(c, used):
+        kn = {k: v for k, v in knowledge.items() if k[0] == c['configuration_id']}
+        return c, kn, run_method(name, [c], kn, backend, search, threshold, generate, max_new, routes, used, free, science_approved,
+                                 prefetch if unlimited else None)
+    if unlimited and len(ready) > 1:
+        with ThreadPoolExecutor(len(ready)) as pool:
+            parts = list(pool.map(lambda c: one(c, spent), ready))
+    else:
+        parts, used = [], spent
+        for c in ready:
+            parts.append(one(c, used));used += parts[-1][2]['new_calls']
+    trace, held, by, new_calls, pending = [], [], [], 0, None
+    for c, kn, r in parts:
+        knowledge.update(kn)
+        trace += [dict(t, configuration_step=t['step']) for t in r['trace']];held += r['held'];new_calls += r['new_calls']
+        pending = pending or r['pending_request']
+        inc = r['incumbent']
+        by.append(dict(candidate=c['name'], configuration_id=c['configuration_id'], key=c['key'], stop_reason=r['stop_reason'],
+                       steps=len(r['trace']), new_calls=r['new_calls'], pending_request=r['pending_request'],
+                       best=None if inc is None else dict(vector=list(inc['vector']), cost=inc['cost'], cost_display=show(inc['cost']),
+                                                          status=inc['record']['status'], MSE_lower=inc['record'].get('MSE_lower'),
+                                                          MSE_upper=inc['record'].get('MSE_upper'), source=inc['record'].get('source'),
+                                                          job=inc['record'].get('job'), label=inc['record'].get('label'))))
+    stops = [b['stop_reason'] for b in by]
+    if all(x in EXHAUSTED for x in stops):
+        stop = 'NO_IMPROVING_PROPOSAL_INPUTS_MISSING' if missing else 'NO_IMPROVING_PROPOSAL'
+    else:
+        stop = next(x for x in STOP_PRIORITY + tuple(stops) if x in stops)
+    _, incumbent = method_state(ready, knowledge, threshold)
+    return dict(method=name, stop_reason=stop, trace=trace, held=held, new_calls=new_calls, spent_before=spent, pending_request=pending,
+                incumbent=incumbent, not_ready_in_range=missing, by_configuration=by, incumbent_scope='CONFIGURATION')
 
 
 def prepare(root, problem, generate_configurations=True, methods=None):

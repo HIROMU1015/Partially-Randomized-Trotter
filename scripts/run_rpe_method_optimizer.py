@@ -101,13 +101,13 @@ def scoped(problem, overrides):
 
 def round_mode(a, problem, extra):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
-    spec = O.load_json(a.round);run = a.run_dir;run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
+    spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
     problem = scoped(problem, spec.get('method_overrides'));context = O.prepare(ROOT, problem, methods=spec['methods'])
     extra = extra + resume_input([Path(x) for x in spec.get('resume_from', [])])
     stored = run / 'ROUND.json'
     if stored.exists():
         old = O.load_json(stored)
-        for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides'):
+        for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides'):
             if old.get(key) != spec.get(key):
                 raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
     else:
@@ -116,7 +116,11 @@ def round_mode(a, problem, extra):
     unlimited = any(v == 'UNLIMITED' for v in spec['max_new_q3_per_method'].values())
     steps = spec.get('max_steps_per_method', 100000 if unlimited else problem['search']['max_steps_per_method'])
     search = dict(problem['search'], max_steps_per_method=steps)  # the finite range ends an UNLIMITED round
-    executor = O.Executor(ROOT, run, routes, context['expected'], problem, optimizer_source=head())
+    search.update(spec.get('search_overrides', {}))  # e.g. incumbent_scope CONFIGURATION, lookahead, seed_saved_same_L_D
+    O.apply_published(context['candidates'], routes)
+    ex_opts = spec.get('executor', {})
+    executor = O.Executor(ROOT, run, routes, context['expected'], problem, optimizer_source=head(),
+                          max_concurrent=ex_opts.get('max_concurrent_jobs', 1), wait_for_running=ex_opts.get('wait_for_running_jobs', False))
     budgets = spec['max_new_q3_per_method']
     approved = spec.get('science_approved', any(v not in (0, None) for v in budgets.values()))
     if any(v == 'UNLIMITED' for v in budgets.values()) and spec.get('science_approved') is not True:

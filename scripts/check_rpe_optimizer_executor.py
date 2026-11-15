@@ -5,6 +5,9 @@ in a budget-0 round, where no job may be launched.  Checks:
   request -> execute -> ingest -> next      saved reuse                budget 0 launches nothing
   budget exhausted -> resume (no relaunch)  idempotent rerun           running job not launched twice
   dead job: reported, then collected        UNKNOWN distinct from model failure
+  incumbent scope CONFIGURATION (PR-Pauli saved configurations, artificial worker, UNLIMITED approved round):
+  a more expensive configuration still descends to its own end; lookahead/concurrency gives the same
+  per-configuration trajectories as one-at-a-time; a rerun waits for nothing and launches nothing.
 Writes EXECUTOR_ACCEPTANCE.json into --output.
 """
 import argparse
@@ -56,6 +59,17 @@ def write_round(path, round_id, budget, route=None, methods=('TRUNCATED_PF',), s
         spec['method_overrides'] = {'TRUNCATED_PF': P7_S2}
     if route is not None:
         spec['routes_override'] = {m: [route] for m in methods}
+    path.write_text(json.dumps(spec, indent=1) + '\n')
+    return path
+
+
+def pauli_round(path, round_id, route, lookahead, concurrent, scope='CONFIGURATION'):
+    spec = dict(schema='RPE_OPTIMIZER_SEARCH_ROUND_V1', round_id=round_id, methods=['PR_PAULI'], science_approved=True,
+                max_new_q3_per_method={'PR_PAULI': 'UNLIMITED'}, approved_by='ACCEPTANCE_TEST_ARTIFICIAL',
+                method_overrides={'PR_PAULI': dict(saved_configurations_only=True,
+                                                   generation=dict(formulas=['2nd'], delta_over_h_values=['1'], kappa_multipliers=['1']))},
+                search_overrides=dict(incumbent_scope=scope, seed_saved_same_L_D=True, lookahead=lookahead),
+                executor=dict(max_concurrent_jobs=concurrent, wait_for_running_jobs=True), routes_override={'PR_PAULI': [route]})
     path.write_text(json.dumps(spec, indent=1) + '\n')
     return path
 
@@ -136,6 +150,30 @@ def main():
     u = cli(r4, f4)['TRUNCATED_PF']
     checks.append(check('unknown_distinct_from_model_failure', u['stop_reason'] == 'UNKNOWN_RESULT' and len(launches(r4)) == 1
                         and u['held'] and u['held'][0]['status'] == 'UNKNOWN', stop=u['stop_reason']))
+
+    # Incumbent scope CONFIGURATION: artificial MSE scaled so that LD5's saved incumbent sits at tau/2.
+    tau = O.tau(problem);w = [(m + 1) ** 2 for m in range(13)];ld5 = [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 8, 2]
+    pr = artificial_route(problem);pr['artificial']['scale'] = str(tau * Fraction(1, 2) / sum(Fraction(a, n) for a, n in zip(w, ld5)))
+    seq = cli(out / 'scope_seq', pauli_round(out / 'scope_seq.json', 'ART_SCOPE', pr, 1, 1))['PR_PAULI']
+    par_round = pauli_round(out / 'scope_par.json', 'ART_SCOPE', pr, 3, 8)
+    par = cli(out / 'scope_par', par_round)['PR_PAULI']
+    def path(r):
+        return {b['configuration_id']: [(t['vector'], t['status']) for t in r['trace'] if t['configuration_id'] == b['configuration_id']]
+                for b in r['by_configuration']}
+    by = {b['configuration_id']: b for b in par['by_configuration']}
+    cheapest = min(O.frac(b['best']['cost']) for b in by.values() if b['best'])
+    dearer = [b for b in by.values() if b['best'] and O.frac(b['best']['cost']) > cheapest]
+    checks.append(check('configuration_scope_dearer_configuration_descends_to_its_own_end', len(by) == 3
+                        and all(b['stop_reason'] in ('NO_IMPROVING_PROPOSAL', 'NO_FEASIBLE_POINT_IN_RANGE') for b in by.values())
+                        and dearer and all(b['steps'] > 0 for b in dearer) and par['stop_reason'] == 'NO_IMPROVING_PROPOSAL',
+                        stops={k[:8]: (b['stop_reason'], b['steps'], b['best'] and b['best']['cost_display']) for k, b in by.items()}))
+    checks.append(check('lookahead_concurrency_same_trajectory_as_one_at_a_time', path(seq) == path(par)
+                        and {k: b['best']['vector'] for k, b in by.items()} == {b['configuration_id']: b['best']['vector'] for b in seq['by_configuration']}
+                        and len(launches(out / 'scope_par')) >= len(launches(out / 'scope_seq')),
+                        jobs=dict(one_at_a_time=len(launches(out / 'scope_seq')), lookahead=len(launches(out / 'scope_par')))))
+    before = launches(out / 'scope_par');again = cli(out / 'scope_par', par_round)['PR_PAULI']
+    checks.append(check('configuration_scope_rerun_reuses_all_jobs', launches(out / 'scope_par') == before and again['new_calls'] == 0
+                        and path(again) == path(par), new_calls=again['new_calls']))
 
     counts = {}
     for k in checks:
