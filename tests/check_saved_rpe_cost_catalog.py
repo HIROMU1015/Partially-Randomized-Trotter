@@ -94,6 +94,12 @@ class PublishedAcceptance(unittest.TestCase):
             self.assertIsNone(waiting['conditional_cost'])
             self.assertNotIn(waiting['point_id'],result['method_minima'][method]['point_ids'])
         self.assertEqual(len(result['signal_only_history']),1)
+        coarse=next(r for r in result['candidates']if r['label']=='B0I_P7_Y4_32h_over_5')
+        self.assertEqual(coarse['status'],'INFEASIBLE')
+        self.assertEqual(coarse['q3_status'],FAIL)
+        self.assertIsNone(coarse['conditional_cost'])
+        self.assertEqual(coarse['execution_history'][0]['status'],'UNKNOWN_STOP_NO_RETRY')
+        self.assertNotIn(coarse['point_id'],best['point_ids'])
         self.assertTrue(all(r['MSE_upper'] is not None for r in result['candidates']if r['method']=='FULL_H'))
         self.assertEqual(frac(result['method_minima']['FULL_PF']['conditional_cost']),559457386)
         full=[r for r in result['candidates']if r['point_id']in result['method_minima']['FULL_PF']['point_ids']][0]

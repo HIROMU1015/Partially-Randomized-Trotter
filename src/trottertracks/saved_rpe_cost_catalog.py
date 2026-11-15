@@ -133,6 +133,8 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('kind')=='FIXED_ALLOCATION_Q3_RESULT_JOIN_NOT_COST_OR_N_QUALIFICATION':
+            self.recovered_q3(locator,d);return
         if path.endswith('C_RESULT_JOIN.json') and d.get('price_evaluations')==0 and 'rows' in d:
             self.q3_without_prices(locator,d);return
         if isinstance(d.get('summary'), str):
@@ -346,6 +348,30 @@ class Catalog:
             observed['MSE_lower'],observed['MSE_upper'],inp['adopted_evaluation'],loc,[])
         self.rows[-1]['q3_source']=ref(loc['commit'],parent+'/SUMMARY.json','comparison',summary['comparison'].index(observed))
         self.rows[-1]['q3_axis_sources']=[ref(loc['commit'],loc['path'],'rows',i)for i in range(26)]
+
+    def recovered_q3(self,loc,join):
+        """A resolved model verdict supersedes an execution UNKNOWN, not its history."""
+        parent=str(PurePosixPath(loc['path']).parent)
+        published=self.r.document(loc['commit'],parent+'/INPUTS.json');inp=published['inputs']
+        case=case_for(inp['cases'],join['allocation']);conf=self.r.read(case_ref(case))
+        require(join['configuration_id']==conf['id'] and join['total_view_id']==case['total_view_id'],
+                'Recovered Q3 configuration/decoder mismatch')
+        require(shots(self.r.read(join['fixed_allocation_source']))==shots(case['allocation']),
+                'Recovered Q3 fixed allocation mismatch')
+        require(frac(join['exact_tau'])==frac(inp['adopted_evaluation']['MSE_upper']),'Recovered Q3 threshold mismatch')
+        require(join['model_status']==join['assessment']['status'],'Recovered saved classification mismatch')
+        require(join['coarse_cost_RZ'] is None,'Do not invent an unacquired coarse price')
+        require(len(join['rows'])==26 and {(r['m'],r['axis'])for r in join['rows']}=={(m,a)for m in range(13)for a in ('X','Y')},
+                'Recovered Q3 requires 26 unique axis bindings')
+        for r in join['rows']:
+            require(r['original_candidate_id']==conf['rounds'][r['m']]['candidate']['id'],'Recovered physical binding mismatch')
+            require(r['N']==shots(case['allocation'])[r['axis']][r['m']],'Recovered axis allocation mismatch')
+        self.make(dict(case,_source=ref(loc['commit'],parent+'/INPUTS.json','inputs')),case['allocation'],
+            join['model_status'],None,join['MSE_lower'],join['MSE_upper'],inp['adopted_evaluation'],loc,[])
+        old=self.r.read(published['previous_STOP'])
+        self.rows[-1].update(q3_source=join['result_source'],q3_axis_sources=[ref(loc['commit'],loc['path'],'rows',i)for i in range(26)],
+            execution_history=[dict(status=old['status'],source=published['previous_STOP'],errors=deepcopy(old['errors']))],
+            saved_recovery_assessment_source=dict(loc,selector=['assessment']))
 
     def result(self):
         # Signal-only evidence is retained as history once an evaluated allocation
