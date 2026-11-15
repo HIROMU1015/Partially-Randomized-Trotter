@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[粗幅Y4の幅固有価格較正とA_SHAPE条件付き費用](docs/research/d_p7_y4_coarse_price_calibration_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10・B0I p7/標準Y4・32h/5/h_RPE=.1/P0除外。新6 compile・元作用gate/C guard受入。m5/q5・m6/q10から軸別307+16539qを凍結し、m9/q80はX/Yとも完全一致。A_SHAPE条件付き費用372,035,410 RZ、直接16/26＋モデル10/26。モデル84.831223%、q>80未検証外挿75.400727%、価格誤差/CI/G/winnerはUNKNOWN/null。信号/Q3/他配分追加0、旧STOP保全・mandatory STOP。
+
 [粗幅Yoshida4 A_SHAPEのQ3適合・価格待ち](docs/research/d_p7_y4_coarse_a_shape_q3_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/標準Y4・32h/5・h_RPE=.1。保存A_SHAPE整数列でQ3を1件完了、MSE上界2.074377e−6≤元exact τ、Q3適合・価格待ち。現幅/粗幅×B_PRICE/A_SHAPEの4点を固定出所付きで公開。粗幅費用null、新信号/reference/build/compile/価格/fit/他配分0、旧結果/UNKNOWN/STOP保全・mandatory STOP。
 
 [粗幅p7/Yoshida4のQ3復旧結果](docs/research/d_p7_y4_coarse_q3_recovery_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/標準Y4・32h/5、h_RPE=.1。専用Python3.11.0rc1で元AST guardを変更せず通し、保存13round＋固定X/Y配分のQ3を1件完了。MSE下界3.409058e−6>元exact τ、この配分でモデル不適合（取得・数値gateは正常）。現幅16h/3の同配分は保存適合。粗幅費用null、新信号/reference/build/compile/価格/fit/別配分0、mandatory STOP。

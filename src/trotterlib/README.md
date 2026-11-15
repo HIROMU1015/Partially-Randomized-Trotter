@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[粗幅Y4価格較正](../../docs/research/d_p7_y4_coarse_price_calibration_20261116/REPORT.md)：library/native/wrapper/compiler/guardは無変更。scripts側の薄いselectorとstage scope/証拠結合を拡張し、既存exact fit/predictを再利用。新6直接価格と条件付き費用を公開、q640誤差は未検証・STOP。
+
 [粗幅A_SHAPE Q3](../../docs/research/d_p7_y4_coarse_a_shape_q3_20261116/REPORT.md)：元library/decoder/kernel/guardは無変更。既存PF workerと互換runtimeを再利用し、保存整数列の1配分がQ3適合・価格待ち。新信号/compile/価格0、旧結果保全・STOP。
 
 [粗幅Q3復旧](../../docs/research/d_p7_y4_coarse_q3_recovery_20261116/REPORT.md)：library/kernel/AST guardは無変更。既存PF worker・Acceleratorを専用互換Pythonから利用し、保存signal/固定配分のQ3を1件完了。数値gate正常・この配分はモデル不適合、費用null・STOP。

@@ -1,5 +1,7 @@
 # scripts 索引
 
+[粗幅Y4価格caller](run_p7_y4_coarse_prices.py)／[人工・metadata検査](../tests/check_p7_y4_coarse_prices.py)／[結果](../docs/research/d_p7_y4_coarse_price_calibration_20261116/REPORT.md)。元PF native child/fast worker/C guardとexact model APIを再利用し、cal4→係数凍結→q80 holdout2。原値と旧STOPを保持したmetadata復旧・stage別evidence pathの回帰を追加。11 test PASS、新6価格有効、条件付き費用372,035,410 RZ、長q誤差UNKNOWN・STOP。
+
 [粗幅A_SHAPE caller](run_p7_y4_coarse_a_shape_q3.py)／[人工検査](../tests/check_p7_y4_coarse_a_shape_q3.py)／[結果](../docs/research/d_p7_y4_coarse_a_shape_q3_20261116/REPORT.md)。保存13round/整数列を新IDへ固定し、成功済みPF worker・監督helperを再利用。人工8 test PASS、実Q3最大1件の結果は適合・価格待ち。旧entry/科学kernel/AST guard不変、費用null・STOP。
 
 [粗幅Q3復旧caller](run_p7_y4_coarse_q3_recovery.py)／[人工検査](../tests/check_p7_y4_coarse_q3_recovery.py)／[結果](../docs/research/d_p7_y4_coarse_q3_recovery_20261116/REPORT.md)。既存PF worker・8-worker DP・保存処理を再利用し、互換runtimeで固定1配分のみを評価。元kernel/AST guard不変、5人工test PASS、実Q3は有効なモデル不適合、旧UNKNOWNを保全してSTOP。

@@ -1,5 +1,10 @@
 # 並列化・高速化手法の再利用索引
 
+## 別PF幅のcalibration→holdoutで既存native workerを再利用（2026-11-16）
+
+[REPORT](research/d_p7_y4_coarse_price_calibration_20261116/REPORT.md)、[caller](../scripts/run_p7_y4_coarse_prices.py)。科学SOURCE7f7622a94（cal）/d4ae4c408（q80）。既存fast compose/fingerprint・共有context・fork cellを再利用し、cal2 cellを並列、holdoutは係数凍結後だけ投入した。cal172.276 s、q80 1,222.373 s、最大worker RSS704,888,832/3,419,529,216 bytes。新しい回路最適化ruleや同条件速度倍率はない。初回はsparse worktreeの固定reference未展開によりimportで0-compile STOP。元Git blobのみ復元し、実native依存importを事前検査した。共通helperのevidence pathを新namespaceへ実際に結合することも検査し、calの参照修正だけでC guardへ渡した（再compileなし）。最終11人工/回帰・実6軸の元作用gate/C guard PASS。旧STOP/source/値を保持し、source/入力・cohort・stage範囲を混ぜない。
+
+
 ## 同じPF workerで保存A_SHAPEを評価（2026-11-16）
 
 [REPORT](research/d_p7_y4_coarse_a_shape_q3_20261116/REPORT.md)、SOURCE `1cf462e3ae1f0bb16cf2f488d830cc8595909c34`。[新caller](../scripts/run_p7_y4_coarse_a_shape_q3.py) は旧recovery callerの監督/保存部分を抽出した `run_case` を再利用し、worker/8-worker DP/guardは不変。新3＋既存5の人工回帰で入口・再入拒否・exact DP/保存を確認後、保存13roundと別整数列の実Q3を1件取得。supervisor wall89.808 s・観測tree最大2,773,708 KiB。新しい高速化ruleは導入しておらず、異なる配分との時間差を速度倍率にしない。元手法・制限は下記互換runtimeの項を参照。
