@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[粗幅Q3復旧](../../docs/research/d_p7_y4_coarse_q3_recovery_20261116/REPORT.md)：library/kernel/AST guardは無変更。既存PF worker・Acceleratorを専用互換Pythonから利用し、保存signal/固定配分のQ3を1件完了。数値gate正常・この配分はモデル不適合、費用null・STOP。
+
 [粗幅p7/Yoshida4の信号補完完了・Q3 SOURCE guard STOP](../../docs/research/d_p7_y4_coarse_signal_q3_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/標準Y4・32h/5、h_RPE=.1。新6＋保存7の13round信号gate PASS。Q3 worker1回、科学API0件でPython3.12 AST schemaのSOURCE guard不一致によりUNKNOWN。MSE/粗幅費用null、retry/compile/価格0、mandatory STOP。
 
 [p7/S2・幅hの採用価格規則と固定配分費用](../../docs/research/d_pf_p7_s2_h_comparison_prices_20261115/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/S2・実幅.1、P0除外。5513q+307を比較用に採用し、直接10＋外挿16の26軸表を公開。保存Q3適合配分のモデル費用993,110,014 RZ、粗幅16h/7との差＋557,628,924 RZ、外挿部分98.388806%。直接coverage増分0、新compile/QPY監査/fit/Q3/配分生成0、mandatory STOP。

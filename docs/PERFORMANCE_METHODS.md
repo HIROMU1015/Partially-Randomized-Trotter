@@ -1,5 +1,10 @@
 # 並列化・高速化手法の再利用索引
 
+## 粗幅Y4 Q3：互換runtimeで既存並列DPを再利用（2026-11-16）
+
+実行SOURCE `5e2246d1233fbeebc709cc9f20a3f48e2fb3a1ad`、[caller](../scripts/run_p7_y4_coarse_q3_recovery.py)／[REPORT](research/d_p7_y4_coarse_q3_recovery_20261116/REPORT.md)。専用Python3.11.0rc1で、本番PF workerから元Acceleratorコンストラクタ・AST guardを人工preflightし、exact DP同値性と保存まで5 test PASS後に科学1 call。元8-worker/batch8 DPを再利用し、実対象wall134.798 s・観測tree最大3,634,356 KiB。異なるruntimeとの速度倍率は未測定。旧Python3.12のSOURCE guard STOPは保全、guard正規化/期待hash変更なし。信号再取得・新規buildなし。periodic faulthandlerを使わず既存stage/round logと親monitor・child exitを観測した。互換性は単なるimportでなく実worker入口から確認する。
+
+
 ## 粗幅Y4：保存stepの信号補完とQ3初期化の注意（2026-11-16）
 
 [REPORT](research/d_p7_y4_coarse_signal_q3_20261116/REPORT.md)、[caller](../scripts/run_p7_y4_coarse_signal_q3.py)。Aの保存36次元stepと元C.executeを再利用し、6 mean＋保存7のsignal完了（SOURCE3179680ed、wall3.726 s、peak505316 KiB）。軽いpowerは元ループ・共有contextで扱い、新step/固有系/reference/回路buildなし。Q3の既存8-worker DPは設定したが、実際はDP初期化前に停止し速度は未測定。passive import/SOURCE検査だけで準備済みとせず、実workerのAcceleratorコンストラクタまで人工preflightで通す必要がある。Python3.12の空type_paramsで既存AST hashが変わり科学API0件のUNKNOWNとなった。原因診断のみでguard修正・retryなし。異なる世代のA/B runtimeは分離し、混在SOURCEの保存recordは元数値SOURCEを残したC.b_mean binding viewを作る（値・gateの再評価ではない）。
