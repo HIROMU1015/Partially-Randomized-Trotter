@@ -225,9 +225,9 @@ def processes(cells, directory, workers):
     return results, dict(workers=workers, cells=len(cells), started=len(results), not_started_after_failure=len(pending))
 
 
-def child(job_path):
+def child(job_path, *, validate_rounds=scope):
     job = json.loads(Path(job_path).read_text()); route = job['route']; module = ROUTES[route]
-    scope(job.get('rounds', (0,)))
+    validate_rounds(job.get('rounds', (0,)))
     # Install before source_gate's metadata imports can resolve the local package.
     import h46_long_time_signal as signal
     signal.install()

@@ -185,15 +185,21 @@ def execute():
 
 
 def bind(publication):
-    out=ROOT/STUDY/'run01';fixed=M.S.committed(ROOT,STUDY+'/run01',RAW,commit=publication)
-    plan,_,_=template();M.T._meta()
+    plan,_,_=template()
+    return bind_records(plan,STUDY+'/run01',publication)
+
+
+def bind_records(plan,relative,publication,*,names=RAW,policy_id='P7_S2_H_DIRECT_IMPLEMENTATION_ONLY_V1'):
+    """Bind an already published native stage using the existing C guard."""
+    out=ROOT/relative;fixed=M.S.committed(ROOT,relative,names,commit=publication)
+    M.T._meta()
     from trottertracks import price_implementation_guard as G
     cfg=plan['configuration'];prices=json.loads((out/'PRICES.json').read_text());sides=json.loads((out/'SIDECARS_UNBOUND.json').read_text())
     for s in sides:
         check(s['implementation_evidence']['commit']==M.S.PLACEHOLDER,'Already bound')
         s['implementation_evidence']['commit']=publication
     cohorts={(cfg['rounds'][p['m']]['candidate']['id'],p['axis']):p['cohort'] for p in prices}
-    policy=dict(id='P7_S2_H_DIRECT_IMPLEMENTATION_ONLY_V1',source=M.S.GUARD_SOURCE,profile=cfg['spec']['profile'],by_method=dict(TRUNCATED_PF=dict(native_policy=M.T.NATIVE_POLICY,rte_rotation_lowering=M.T.NO_RTE,scalar_quantity=M.T.SCALAR_QUANTITY)))
+    policy=dict(id=policy_id,source=M.S.GUARD_SOURCE,profile=cfg['spec']['profile'],by_method=dict(TRUNCATED_PF=dict(native_policy=M.T.NATIVE_POLICY,rte_rotation_lowering=M.T.NO_RTE,scalar_quantity=M.T.SCALAR_QUANTITY)))
     result=G.check(ROOT,cfg,prices,cohorts=cohorts,bindings=sides,policy=policy)
     check(len(result['checked'])==len(prices),'Unchecked axis receipt')
     write(out/'SIDECARS.json',sides);write(out/'GUARD_CHECK.json',dict(raw_evidence=fixed,guard=result,model_qualified=False))
