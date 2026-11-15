@@ -93,5 +93,19 @@ class LD3Tests(unittest.TestCase):
             self.assertTrue(receipt['resource_saved']); self.assertIsNone(result['sufficient_N'])
             self.assertIsNone(result['G_qualified'])
 
+    def test_observer_hooks_reach_the_actual_loaded_entry(self):
+        case, inputs, binding, view = artificial(); inputs['concurrent_configurations'] = 1
+        with tempfile.TemporaryDirectory() as folder, C.installed(Path(folder)),\
+                patch.object(C, 'metadata', return_value=(binding, view)), patch.object(C, 'check_source'):
+            self.assertIs(C.M.ProcessPoolExecutor, C.O.ObservedExecutor)
+            self.assertIs(C.R.Observed, C.O.ObservedStages)
+            root = Path(folder); (root/case['label']).mkdir()
+            saved = C.M.supervise([case], inputs, MOCK, root)
+            self.assertFalse(saved['errors']); self.assertFalse(saved['monitor_errors'])
+            self.assertTrue((root/case['label']/'SEGMENTS.jsonl').exists())
+            exits = [c for p in root.glob('PROCESS_EXITS_*.jsonl') for line in p.read_text().splitlines()
+                     for c in json.loads(line)['children']]
+            self.assertTrue(exits); self.assertTrue(all(c['exitcode'] == 0 for c in exits))
+
 
 if __name__ == '__main__': unittest.main(verbosity=2)

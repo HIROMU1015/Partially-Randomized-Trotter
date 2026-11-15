@@ -118,7 +118,10 @@ def worker(case, inputs, source, output):
 
 @contextmanager
 def installed(output):
-    with patch.object(M, 'worker', worker), O.observation(output):
+    # Observation's module was independently loaded. Bind its patch targets to
+    # this actual entry, rather than another instance of the saved caller.
+    # Corrected after run01; the scientific result remains at SOURCE 7733089b8.
+    with patch.object(M, 'worker', worker), patch.object(O, 'M', M), patch.object(O, 'R', R), O.observation(output):
         yield
 
 

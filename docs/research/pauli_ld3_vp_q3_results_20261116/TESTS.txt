@@ -12,3 +12,17 @@ tests/check_pr_df_fullh_q3_fixed.py: 5 PASS (5.333 s)
   includes artificial parent-monitor failure while started worker saves API,
   partials and resource records; science-not-started failure flag path.
 Total: 24 PASS. Synthetic results do not certify the real LD3 model.
+
+Post-run observation-only correction:
+- The actual entry used different dynamically loaded M/R module instances
+  from the observer helper. Detailed SEGMENTS and the top executor exit
+  wrapper were not active; DP exits and round progress were recorded.
+- New test_observer_hooks_reach_the_actual_loaded_entry failed before the fix
+  (actual M.ProcessPoolExecutor was the ordinary executor).
+- Bind the observer's M/R targets to the actual modules within installed().
+- Final tests/check_pauli_ld3_vp_q3_fixed.py: 6 PASS (7.360 s), including
+  artificial execution through the actual installed supervisor, SEGMENTS
+  and process exit records. Numerical kernels unchanged; no H4 rerun.
+Final distinct technical cases: 6 + 8 + 6 + 5 = 25 PASS.
+Post-run correction is NOT the scientific execution SOURCE. run01 remains
+fixed at 7733089b85d013bad314e108d539b3afe0271635.

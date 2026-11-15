@@ -48,6 +48,12 @@
 
 ## 今後の追記
 
+### 2026-11-16：動的ロードしたrunnerへの観測hookの接続
+
+- LD3の既存高速DP再利用時、別名でロードした同じrunnerのmodule instanceにhookを付け、実際の入口へ詳細区間log・最上位executor観測が届かなかった。DP本体、round進捗、子process終了code、原APIと資源保存は動作していた。
+- [`installed()`](../scripts/run_pauli_ld3_vp_q3_fixed.py)でobserverのM/R参照を実際の入口へ束縛する最小修正。実際のsupervisorを通る人工testで元失敗を検出し、SEGMENTSとprocess終了code保存まで確認。性能倍率の改善は未測定。科学run01には事後適用せず、再計算もしていない。
+- [REPORT・観測範囲](research/pauli_ld3_vp_q3_results_20261116/REPORT.md)／[人工test](../tests/check_pauli_ld3_vp_q3_fixed.py)。関数の存在だけでなく、通常/再利用経路のmodule instanceとcontextの有効範囲まで確認する事例。
+
 高速化・並列化の実装を終えたら、一覧に1行と、必要なら短い再利用メモを追記する。既存REPORTやテスト・benchmarkへのリンクを使い、同じ説明を別の長い報告書へ作り直す必要はない。
 
 ```text

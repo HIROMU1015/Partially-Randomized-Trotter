@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-Pauli LD3のtotal view・LD2共通VPでのQ3](docs/research/pauli_ld3_vp_q3_results_20261116/REPORT.md)／[A/C・統合担当HANDOFF](docs/research/pauli_ld3_vp_q3_results_20261116/HANDOFF.md)：LD3新1callで条件付きモデル適合、MSE上界約6.20621e−7 Ha²。LD2保存VP引用、辞書・残余SOURCEをA指定helperで保全。原API/資源保存、観測hookの接続差分を人工修正、十分N/global/G未認定・STOP。
+
 [p7/S2粗幅・m12各1shot固定Q3と4点比較](docs/research/p7_s2_m12_one_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/p7_s2_m12_one_results_20261116/HANDOFF.md)：新1callでモデル不適合（下界>τ）、達成費用395,962,678 RZを維持。他round固定・X/Y同数の4/3/2/1配分だけの結論、原API/資源保存・十分N/物理保証/G_qualified未認定・STOP。
 
 [p7/S2粗幅・m12各2shot固定Q3](docs/research/p7_s2_m12_two_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/p7_s2_m12_two_results_20261116/HANDOFF.md)：新1callでモデル適合、条件付き達成費用395,962,678 RZへ更新。4/3/2shot比較、旧早期終了は保全。原API/資源保存、最小N/物理保証/G_qualified未認定・STOP。
