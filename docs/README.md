@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli LD5 固有価格](research/a_pauli_ld5_cal_price_20261116/REPORT.md)：較正cell Q8R4（4 compile）をS0-r1で監査し、`C_ref = 311 + 4215q + (255/28)qR` が成立（H5−H3＝1,530）。VPではLD3の0.829倍、FULL_PF__B_PRICEではほぼ同額（0.9996倍）。[HANDOFF_BC](research/a_pauli_ld5_cal_price_20261116/HANDOFF_BC.md)／[26軸JSON](research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json)。LD5のQ3は未評価、公開後STOP。
+
 [PR-Pauli LD3 段階3 価格](research/a_pauli_ld3_cal_price_20261116/REPORT.md)：較正cell Q8R660（4 compile）をS0-r1で監査し、`C_ref = 313 + 2685q + (7793/1155)qR` が成立。同じVPの参照総額は1,051,862,454.81 RZで、LD2（3,378,503,016.52）の0.311倍。[HANDOFF_BC](research/a_pauli_ld3_cal_price_20261116/HANDOFF_BC.md)／[26軸JSON](research/a_pauli_ld3_cal_price_20261116/HANDOFF_BC.json)。E[C]・G・Q3・配分探索なし、公開後STOP。
 
 [PR-Pauli：L_Dを変えた比較相手の提案](research/a_pauli_ld_split_plan_20261116/REPORT.md)／[HANDOFF_B](research/a_pauli_ld_split_plan_20261116/HANDOFF_B.md)／[L_D別表](research/a_pauli_ld_split_plan_20261116/CANDIDATES.csv)（2026-11-16、A）：L_Dは二体DF fragmentの本数。LD1/LD2は保存済み（同じ配分で適合、event数はLD1が約2.59倍）。次の比較相手はLD3（DF λ_R 0.583）、最初の追加はLD3のP0辞書と13 round schedule。計画のみ、mandatory STOP。
