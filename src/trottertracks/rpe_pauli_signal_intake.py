@@ -30,6 +30,11 @@ LD5_HANDOFF = dict(commit='ac46d100e74f3f56b4a3ff4d95c15fdc7fe8ca98',
     path='docs/research/df_head_pauli_tail_ld5_signals_20261116/MEAN_HANDOFF.json')
 LD5_DICTIONARY = dict(commit='6255fbc422121fd777cad52763ef5a684abd46a3',
     path='docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json')
+ENTRY_SOURCE = '93a5ef3b9fed337cc4d26ee684defd304fa0eac0'
+ENTRY_MODULE = 'src/trottertracks/pauli_signal_entry.py'
+ENTRY_FILES = (ENTRY_MODULE, 'scripts/run_pauli_signal_entry.py')
+ENTRY_DICTIONARY_HELPER = dict(commit=LD3_HELPER_SOURCE,
+    path='src/trottertracks/df_head_pauli_tail_ld3_signals.py', function='b_intake_dictionary_identity')
 
 
 @lru_cache(maxsize=None)
@@ -166,36 +171,71 @@ def bind_packet(config, packet, records, dictionary, *, target, target_source,
         probability_mapping='X=Re(raw), Y=Im(raw); EXACT_AFFINE_OF_BINARY64_RAW only on explicit scientific execution')
 
 
+def _entry_assembly_source(root, assembly):
+    """Pin the assembler implementation, not every new output/configuration commit."""
+    try:
+        for path in ENTRY_FILES:
+            fixed = subprocess.check_output(['git', 'show', ENTRY_SOURCE + ':' + path], cwd=root,
+                                            stderr=subprocess.PIPE)
+            actual = subprocess.check_output(['git', 'show', assembly['commit'] + ':' + path], cwd=root,
+                                             stderr=subprocess.PIPE)
+            if actual != fixed:
+                raise ValueError('Unsupported saved Pauli assembly SOURCE: entry code differs: ' + path)
+    except (KeyError, subprocess.CalledProcessError) as error:
+        raise ValueError('Unsupported saved Pauli assembly SOURCE: fixed entry unavailable') from error
+
+
+def _selected(store, source):
+    value = store.read(source)
+    for key in source.get('selector', []):
+        value = value[key]
+    return value
+
+
 def accept_saved(root, *, integration, handoff_source=None):
     """Read immutable JSON only. C.signal_input is a passive input projection.
 
     When available, C's source-bound Pauli metadata bridge is checked too.
-    No IDs are rewritten to bypass physical or dictionary checks.
+    No IDs are rewritten to bypass physical or dictionary checks. Besides the
+    historical assemblies, new immutable handoffs may use A's fixed common entry
+    (ENTRY_SOURCE). Its two entry files must match at the output commit; the
+    configuration, dictionary and per-round Git carriers are still checked.
     """
     assembly = HANDOFF if handoff_source is None else handoff_source
-    if assembly not in (HANDOFF, LD3_HANDOFF, LD5_HANDOFF):
-        raise ValueError('Unsupported saved Pauli assembly SOURCE')
+    common_entry = assembly not in (HANDOFF, LD3_HANDOFF, LD5_HANDOFF)
+    if common_entry:
+        _entry_assembly_source(root, assembly)
     later = 3 if assembly == LD3_HANDOFF else 5 if assembly == LD5_HANDOFF else None
     store = p.SavedArtifacts(root); handoff = store.read(assembly)
-    _same(handoff['status'], (f'ALL_13_PAULI_LD{later}_MEANS_AVAILABLE_NOT_RPE_QUALIFIED' if later else
-                             'ALL_26_PAULI_MEANS_AVAILABLE_NOT_RPE_QUALIFIED'), 'A assembly status')
-    _same([v['prefix'] for v in handoff['packets']], [later] if later else [1, 2], 'LD prefixes')
-    helpers = _ld3_metadata_helpers(str(root)) if later else _metadata_helpers(str(root)); results = []
+    if common_entry:
+        _same(handoff['assembly'], ENTRY_MODULE, 'common entry assembly')
+        _same(handoff['B_intake_dictionary_identity'], ENTRY_DICTIONARY_HELPER, 'common entry dictionary helper')
+        if len(handoff['packets']) != 1:
+            raise ValueError('One common entry configuration required')
+        config = handoff['packets'][0]['configuration']; later = config['spec']['L_D']
+        _same(config, _selected(store, handoff['configuration_source']), 'common entry configuration SOURCE')
+        _same(handoff['dictionary_source'], config['spec']['split']['tail_dictionary']['source'],
+              'common entry dictionary SOURCE')
+    rounds = len(handoff['packets'][0]['configuration']['rounds'])
+    single = later is not None
+    expected_status = (f'ALL_{rounds}_PAULI_LD{later}_MEANS_AVAILABLE_NOT_RPE_QUALIFIED' if single else
+                       'ALL_26_PAULI_MEANS_AVAILABLE_NOT_RPE_QUALIFIED')
+    _same(handoff['status'], expected_status, 'A assembly status')
+    _same([v['prefix'] for v in handoff['packets']], [later] if single else [1, 2], 'LD prefixes')
+    helpers = _ld3_metadata_helpers(str(root)) if single else _metadata_helpers(str(root)); results = []
     for packet in handoff['packets']:
         prefix = packet['prefix']; config = packet['configuration']
-        if later:
-            _same(config, store.read(handoff['configuration_source']), 'LD configuration SOURCE')
+        if single and not common_entry:
+            _same(config, _selected(store, handoff['configuration_source']), 'LD configuration SOURCE')
         # Later prefixes have the same full-H energy task, not a new target.
         # Reuse LD2's original saved target view without changing its adoption.
+        target_prefix = prefix if prefix in (1, 2) else 2
         target_source = dict(commit=DF,
-            path='docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD' + str(2 if later else prefix) + '.json', selector=['target'])
+            path='docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD' + str(target_prefix) + '.json', selector=['target'])
         target = store.read(target_source)['target']
         records = {}
         for row in packet['rounds']:
-            rec = store.read(row['mean_source'])
-            for key in row['mean_source']['selector']:
-                rec = rec[key]
-            records[row['m']] = rec
+            records[row['m']] = _selected(store, row['mean_source'])
         result = bind_packet(config, packet, records, store.read(packet['dictionary_identity']['source']),
             target=target, target_source=target_source, assembly_source=assembly, helpers=helpers)
         result['signal_input'] = integration.signal_input(result['signal_packet'])
@@ -209,7 +249,10 @@ def accept_saved(root, *, integration, handoff_source=None):
                 integration.provider_binding_check(request, mean)
             result.update(request=request, C_plan_price_bridge='SOURCE_BOUND_PAULI_PHYSICAL_BRIDGE_METADATA_ONLY')
         results.append(result)
-    return dict(status=(f'SOURCE_BOUND_LD{later}_ALL_13_MEANS_NOT_RPE_QUALIFIED' if later else
+    out = dict(status=(f'SOURCE_BOUND_LD{later}_ALL_{rounds}_MEANS_NOT_RPE_QUALIFIED' if single else
                         'SOURCE_BOUND_ALL_26_MEANS_NOT_RPE_QUALIFIED'), results=results,
         source=deepcopy(assembly), source_blobs=deepcopy(store.sources), science_calls=0,
         sufficient_N=None, global_RMSE_bound=None, G=None, winner=None, mandatory_stop=True)
+    if common_entry:
+        out['assembly_implementation_source'] = dict(commit=ENTRY_SOURCE, path=ENTRY_MODULE)
+    return out

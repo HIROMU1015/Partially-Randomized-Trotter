@@ -7,7 +7,8 @@ is never needed to call these metadata and supplied-value interfaces.
 import ast
 from copy import deepcopy
 from functools import lru_cache
-from pathlib import Path
+import json
+from pathlib import Path, PurePosixPath
 import sys
 import types
 
@@ -86,15 +87,21 @@ def interfaces(root):
                 return api
             pipeline.providers = live_api
             # Keep C's planner and hash checks. Only A's dictionary descriptor
-            # adapter differs for the pinned LD3/LD5 residual locators.
+            # adapter handles each Pauli dictionary's own residual locator.
             original_helpers = pipeline._pauli_helpers
             def pauli_helpers(value):
                 from . import rpe_pauli_signal_intake as intake
                 old = original_helpers(value)
                 def identity(item):
-                    if item['source'] in (intake.LD3_DICTIONARY, intake.LD5_DICTIONARY):
-                        return intake._ld3_metadata_helpers(str(value)).dictionary_identity(item)
-                    return old.dictionary_identity(item)
+                    src = item['source']
+                    residual = str(PurePosixPath(src['path']).parent/'result.json')
+                    try:
+                        json.loads(R.blob(value, src['commit'], residual))
+                    except ValueError:
+                        # Preserve the original global-P0 descriptor convention
+                        # (also used by supplied artificial dictionaries).
+                        return old.dictionary_identity(item)
+                    return intake._ld3_metadata_helpers(str(value)).dictionary_identity(item)
                 return types.SimpleNamespace(job=old.job, dictionary_identity=identity, recipe=old.recipe)
             pipeline._pauli_helpers = pauli_helpers
     return types.SimpleNamespace(pipeline=pipeline, paper=package.paper_nominal_cost,
