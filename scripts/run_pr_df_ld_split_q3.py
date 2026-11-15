@@ -17,7 +17,7 @@ CALLER='scripts/run_pr_df_ld_split_q3.py'
 if hasattr(sys,'set_int_max_str_digits'):sys.set_int_max_str_digits(0)
 sys.path[:0]=[str(VIEW/'src'),str(VIEW/'scripts')]
 spec=importlib.util.spec_from_file_location('_split_fixed_q3_route',VIEW/'scripts/run_pr_df_fullh_total_q3_fixed.py')
-U=importlib.util.module_from_spec(spec);spec.loader.exec_module(U)
+U=importlib.util.module_from_spec(spec);sys.modules[spec.name]=U;spec.loader.exec_module(U)
 
 def blob(commit,path):return subprocess.check_output(['git','show',commit+':'+path],cwd=ROOT)
 def write(path,value):
@@ -63,17 +63,17 @@ def prepare(source,allocation_commit):
         reused_route=dict(commit=Q3_SOURCE,path='scripts/run_pr_df_fullh_total_q3_fixed.py'),preflight=checks,
         scientific_scope='AT_MOST_FOUR_PR_DF_CANDIDATE_OWN_ALLOCATIONS_NO_SIGNAL_MC_OR_PRICE_CALLS',
         duplicate_delta='No equivalent candidate/vector in saved V0 or finite menu; rechecked remote related branch publication metadata before run. See DELTA_CHECK_Q3.json.')
-    write(ROOT/PUBLIC/'Q3_INPUTS.json',inputs)
+    write(ROOT/PUBLIC/'Q3_CALL_INPUTS.json',inputs)
     print('PREFLIGHT',[(r['label'],r['held_reason'],r['bounds']['transition_pairs_upper'])for r in checks],flush=True)
 
 def execute():
-    inputs=json.loads((ROOT/PUBLIC/'Q3_INPUTS.json').read_text());source=inputs['source']
+    inputs=json.loads((ROOT/PUBLIC/'Q3_CALL_INPUTS.json').read_text());source=inputs['source']
     if blob(source,CALLER)!=(ROOT/CALLER).read_bytes():raise ValueError('Q3 SOURCE mutation')
     U.check_source()
-    out=ROOT/PUBLIC/'q3';out.mkdir()
+    out=ROOT/PUBLIC/'q3_calls';out.mkdir()
     for c in inputs['cases']:(out/c['label']).mkdir()
     input_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
-    source_ref=dict(commit=source,path=CALLER,inputs=dict(commit=input_commit,path=PUBLIC+'/Q3_INPUTS.json'),reused_route=inputs['reused_route'])
+    source_ref=dict(commit=source,path=CALLER,inputs=dict(commit=input_commit,path=PUBLIC+'/Q3_CALL_INPUTS.json'),reused_route=inputs['reused_route'])
     U.R.write_new(out/'EXECUTION.json',dict(source=source_ref,started_UTC=U.R.utc(),maximum_scientific_calls=4,held=inputs['held']))
     result=U.supervise(inputs['cases'],inputs,source_ref,out)
     status='FINITE_Q3_SAVED'if not result['errors']and not result['monitor_errors']and all(r['status']!='UNKNOWN'for r in result['receipts'])else'UNKNOWN_STOP_NO_RETRY'

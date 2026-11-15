@@ -1,0 +1,24 @@
+{
+  "affected": "ProcessPool serialization before worker entry",
+  "cause": "Dynamic route module absent from sys.modules",
+  "prior_scientific_calls": 0,
+  "prior_worker_entries": 0,
+  "prior_API_returns": 0,
+  "old_stop_preserved": "q3/COMPLETION.json",
+  "fix": "Register fixed route under its actual module name before ProcessPool submits its worker; test actual supervisor path using fake science",
+  "next_scientific_calls": "First call for each of four fixed candidate/vector pairs; no completed/started science is retried",
+  "unchanged": [
+    "signal",
+    "candidate",
+    "allocation",
+    "price",
+    "budget",
+    "decoder",
+    "target",
+    "threshold",
+    "kernel",
+    "compiler"
+  ],
+  "new_output": "q3_calls",
+  "source_change": "Loader registration only"
+}

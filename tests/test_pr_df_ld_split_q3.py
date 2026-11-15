@@ -29,3 +29,16 @@ def test_worker_owned_api_and_result_save_before_supervisor(tmp_path):
         r=U.worker(dict(label='ARTIFICIAL'),{},dict(fixture='ONLY'),str(tmp_path))
     assert r['api_return_saved']and r['result_saved']and r['scientific_evaluation_calls']==1
     assert all((tmp_path/f).exists()for f in ('API_RETURN.json','RESULT.json','RESOURCE_FINAL.json','PERSISTED.json'))
+
+
+def test_actual_supervisor_process_submission_and_persistence(tmp_path):
+    U=Q.U
+    def fake_worker(case,inputs,source,output):
+        U.T.evaluate('FAKE')
+        return dict(status='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD',scientific_evaluation_calls=1)
+    cases=[dict(label='FAKE_A'),dict(label='FAKE_B')]
+    for c in cases:(tmp_path/c['label']).mkdir()
+    with patch.object(U.P,'worker',fake_worker),patch.object(U.T,'evaluate',return_value=[{'synthetic':True}]):
+        r=U.supervise(cases,dict(concurrent_configurations=2),dict(fixture='ONLY'),tmp_path,monitor=lambda *a:None)
+    assert not r['errors'] and not r['monitor_errors']
+    assert len(r['receipts'])==2 and all(x['api_return_saved']for x in r['receipts'])
