@@ -1,0 +1,70 @@
+{
+  "raw_evidence": {
+    "commit": "0fb16570382cf36e0e1472c93e7806c378df8ea1",
+    "sha256": {
+      "RESULT.json": "c9b04ae19a30f231f87c7d866454424b39ec0e1645781373d915624205e9d480",
+      "PRICES.json": "311e8b0da6dc43212e044302d9ac08166a07d2f27e0864ebe7b1f092ac654fa1",
+      "SIDECARS_UNBOUND.json": "03b0dd59d972d94146df7d3ba4bd3bcb113fca7abe41961e54509bbbccef44bd",
+      "IMPLEMENTATION_EVIDENCE.json": "4fa04cb21a7d12324db6c4cde51d882093fb10fac0dc5d870abf4699ba9cb8c7"
+    }
+  },
+  "guard": {
+    "status": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION",
+    "policy": {
+      "id": "P7_Y4_32O5_DIRECT_WRAPPER_IMPLEMENTATION_V1",
+      "source": {
+        "commit": "c628e9e8447c11c984064b922cbce6c52dc72d48",
+        "path": "src/trottertracks/price_implementation_guard.py"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "by_method": {
+        "TRUNCATED_PF": {
+          "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+          "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_B0I_TAIL_IDENTITY"
+        }
+      }
+    },
+    "checked": [
+      {
+        "m": 9,
+        "axis": "X",
+        "evidence": {
+          "commit": "0fb16570382cf36e0e1472c93e7806c378df8ea1",
+          "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/holdout/run01/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "4th_m9X"
+          ]
+        }
+      },
+      {
+        "m": 9,
+        "axis": "Y",
+        "evidence": {
+          "commit": "0fb16570382cf36e0e1472c93e7806c378df8ea1",
+          "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/holdout/run01/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "4th_m9Y"
+          ]
+        }
+      }
+    ]
+  },
+  "model_qualified": false,
+  "binding_path_corrections": []
+}
