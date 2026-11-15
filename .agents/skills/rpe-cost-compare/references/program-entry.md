@@ -1,87 +1,93 @@
-# B2共通プログラム：公開入口と現在の機能
+# B2探索round：公開入口・SOURCE・再開
 
-固定SOURCE：`08b75526b561cbcf97ae58c7a75fefeb226911dd`、
-branch `codex/b2-rpe-method-optimizer-20261116`。
-**保存H4の4方式比較は、Skill手順経由と直接CLIの一致を確認済み。**
-`--help`と公開codeも確認した。検証記録は
-[REPORT](../../../../docs/research/rpe_cost_compare_skill_20261116/REPORT.md)を正本とする。
+- B2公開成果・HANDOFF：`a4b4d0e1f2110e63ae9a1dc6a89e1699f95dc0eb`、
+  `docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md`。
+- 実行SOURCE：`a2e2ef50a108d6f34089a99bd00f11a7085dd9c9`。
+  公開成果との差分は文書/予算0テンプレートで、runnerとoptimizerのcodeは同じ。
+- 旧Skill：`eb14ca70e4de61e0fe1a8556f75571ee5e56fa18`。08b75526b用の記述は旧版の検証履歴である。
+- 現在の接続検証：[REPORT](../../../../docs/research/rpe_cost_compare_round_skill_20261116/REPORT.md)。
 
-## 起動する実物
+## 実物の起動
 
-- CLI：`scripts/run_rpe_method_optimizer.py`
-- 実装：`src/trottertracks/rpe_method_optimizer.py`（`prepare` / `optimize`）
-- 公開H4問題入力：`configs/rpe_method_optimizer/h4_df10_problem.json`
-- CLIの引数は`--problem`、`--output`、任意の`--ingest`だけ。
+CLIは`scripts/run_rpe_method_optimizer.py`、共通実装は`src/trottertracks/rpe_method_optimizer.py`。
+実行SOURCEをcheckoutした自分の独立worktreeを使い、他担当の作業worktreeを変更しない。
+Skillのbranchとprogramのbranchが別でも、それぞれのSOURCEと実行rootを記録して使う。
+Sparse checkoutでは同じSOURCEの`configs/rpe_method_optimizer`も展開する。
 
-リポジトリrootで、対応するproject Python環境を使う。SOURCEがcheckoutに無ければ、
-公開commitの**自分の独立worktree**を用意する。B2の作業worktreeや他担当branchを書き換えない。
-このSkillの所在と実行programの所在が異なっても、それぞれのSOURCEを記録して使う。
-新worktreeがsparse checkoutなら、同じ公開SOURCEの`configs/rpe_method_optimizer`も展開して
-問題入力が存在することを確認する。別の問題設定を代用品にしない。
-本サーバーの確認runtimeは`/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python`。
+確認runtime：
+`/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python`。
 
-保存H4の起動例（project環境をactivate済み）：
+H4の問題入力は`configs/rpe_method_optimizer/h4_df10_problem.json`。
+[予算0のround例](h4-round-budget0.json)はB2公開テンプレート由来で、全4方式・各予算0。
+利用者が指定した条件はproblem、方式/範囲/有限予算はroundに渡す。新たなLDやshot列を利用者に選ばせない。
+
+program rootでの実行例（project環境activate済み）：
 
 ```bash
-RPE_COMPARE_OUT=$(mktemp -d /tmp/rpe-cost-compare-h4.XXXXXX)
-PYTHONPATH=src python -B scripts/run_rpe_method_optimizer.py \
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B scripts/run_rpe_method_optimizer.py \
   --problem configs/rpe_method_optimizer/h4_df10_problem.json \
-  --output "$RPE_COMPARE_OUT"
+  --round /absolute/path/to/round.json --run-dir /absolute/path/to/run
 ```
 
-出力先は毎回新しいdirectoryを使う。CLIは既存出力を上書きできるため、過去のrunを再利用先にしない。
-`--saved-only`、`--resume`、`--epsilon`、`--budget`等の未実装引数を作って渡さない。
-要求精度や予算は、programの既存problem schemaの入力として渡す。
+新しいroundでは未使用のrun directoryとround_idを使う。round fileはB2 schema
+`RPE_OPTIMIZER_SEARCH_ROUND_V1`に従う。
 
-## 入力の対応
+| field | 渡すもの |
+|---|---|
+| `round_id` | 探索1回分の識別子。同じroundの再開では保持 |
+| `methods` | FULL_PF / TRUNCATED_PF / PR_PAULI / PR_DFから採択済み対象 |
+| `max_new_q3_per_method` | 方式ごとの新規Q3**総上限**。予算0なら新規Q3を起動しない |
+| `initial` | 既定all、または利用者が指定した保存結果の開始集合 |
+| `method_overrides` | 採択済みの公式・幅・LD等の探索範囲。未指定なら既存problem設定を使う |
+| `resume_from` | 必要な場合のみ既存ROUND_RESULT/RESULTのresume_recordsを取り込む |
 
-この版のJSON schemaは`RPE_METHOD_OPTIMIZER_PROBLEM_V1`。
+`approved_by`はB2テンプレートの任意文字列であり、承認の証明/必須入力ではない。
+利用者の明示指示が許可であり、Skillで証明書・承認ID・追加grantを要求しない。
 
-- Hamiltonian：`problem`。`hamiltonian_data`にsnapshot/receiptのlocatorとSOURCE検査情報が必要。
-  データreceiptからfragment数や次元を取得するのはprogramの仕事。
-- target：`target`。精度：`accuracy.epsilon_E_decimal`（Ha）、decoder/loss/claim scopeも`accuracy`。
-  元H/state/snapshot、保存target proxy等の採択事項と照合し、勝手に物理ground資格へ変更しない。
-- RPE設定：`rpe`。候補範囲・shot上限：`methods`。これらは採択済み問題設定から引き継ぎ、
-  Skillが個別LD・shotを利用者に選ばせたり、新しい範囲を正式採択したりしない。
-- 保存証拠：`evidence`。探索則・予算：`search`。公開H4設定は`max_new_q3_per_method=0`。
-  実行範囲と許可に一致することを確認し、既存problemを上書きせず必要な入力copyを作る。
+## 同じroundの再開・予算追加
 
-H4のsampleはprivate snapshot/receiptの絶対pathを含む。利用可能性を確認し、無い場合は
-正しい同一SOURCEのlocatorが必要と報告する。別データやdummyへ差し替えてPASSにしない。
+元のproblem/SOURCE、round file、round_id、run directoryを保持し、上の**同一コマンド**を再実行する。
+`--resume`は存在しない。同じrun directoryの完了済み結果/実行中job/起動済み件数はprogramが管理する。
+完了jobの再利用、実行中jobの二重投入防止、死んだjobのcollect/報告をSkillで再実装しない。
 
-## この公開版で出来ること・未対応
+明示許可された予算追加がある場合のみ、同じround fileの方式別総上限を変更して同じコマンドで再開する。
+既存の起動済み件数を差し引いた別枠を新roundとして作ったり、round_idを変えて予算をリセットしたりしない。
+保存`ROUND.json`は初回の宣言を残すため、現在の上限/消費は最新ROUND_RESULTとINVOCATIONSも読む。
+対象方式・initial・範囲・routeを変えて同じrun directoryへ押し込まず、実行契約の変更を利用者へ明示する。
 
-- 保存catalogの再利用、候補列挙、各候補自身の保存単価によるexact費用、有限shot探索、
-  保存Q3による応答、方式別の確認済み最小値、次に不足するQ3要求の出力。
-- 方式menuは`FULL_PF`、`TRUNCATED_PF`、`PR_PAULI`、`PR_DF`の4方式。
-  Full-H pure RTEを含む5方式比較の完了とは表示しない。
-- 新しいsignal・価格取得・compile・科学Q3を起動するexecutorは未実装。
-  予算を正にしても未対応は解消しない。`pending_request`を返し、Skillから旧個別runnerへ迂回しない。
-- `--ingest`はprogram形式の外部結果を取り込んで次要求を更新する入口。
-  正しいSOURCE/同一物理候補/配分/評価契約の既存結果に限る。
-  完全なjob checkpoint再開や科学workerの再起動機能ではない。未実装の再開手順を補わない。
+`--resume-from <previous ROUND_RESULT.json>`は別の保存結果入力を読み込む追加機能であり、
+同じroundのjob・予算を再開するために毎回必要な引数ではない。
 
-CLIは診断用`INGEST_DEMO.json`と`FIXTURE.json`も作り、明示された人工MSEを使う。
-これらは科学Q3ではなく、主比較の`RESULT.json.methods`へ混ぜない。
-保存H4の接続テストではこの既存の人工診断を認め、新しい科学計算は起動しない。
+## 出力・停止理由
 
-## 出力を読む
+round modeは`ROUND_RESULT.json.methods`が主結果。`best`（構成ID、X/Y、MSE区間、exact費用）、
+`pending_request`（次候補/配分/費用/経路）、`stop_reason`、`held`、`resume_records`、`budget`を読む。
+`PER_METHOD.csv`、`NEEDS.json`、`INVOCATIONS.jsonl`、`jobs/<method>/<job_id>`も同じrun directoryにある。
 
-`RESULT.json.methods`が主結果、`PER_METHOD.csv`がその表示表。
-方式ごとの`best`に構成、`N_X/N_Y`、MSE区間、`cost/cost_display`、証拠locatorがあり、
-`stop_reason`、`held`、`pending_request`、`search_range`、`not_ready_candidates`を併記する。
-`NEEDS.json`は不足証拠/次要求、`CHECKS.json`は実行SOURCEと診断。
-`REPLAY.json`、`OWN_PRICE.json`は別の補助結果。`FIXTURE/INGEST_DEMO`は人工結果である。
+| 停止理由 | Skillでの扱い |
+|---|---|
+| NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET | 次候補あり・予算0。既評価集合の確認済み最安と未実行要求を返す |
+| Q3_BUDGET_EXHAUSTED | 消費済みを含め予算到達。無断で上限を広げない |
+| NO_IMPROVING_PROPOSAL | 探索則内に改善案なし。大域最適とは呼ばない |
+| JOB_IN_PROGRESS | 実行中jobあり。重複投入/勝手な停止をしない |
+| STALE_JOB_NEEDS_REVIEW | 死んだjob。自動retryや新runでの再投入をしない |
+| NO_ROUTE_ADAPTER | 次候補の経路なし。旧runnerへの手動迂回をSkillで実装しない |
+| UNKNOWN_RESULT | gate/保存等の不成立。MSE下界によるモデル不適合と区別する |
 
-`methods.*.new_calls`とtraceのanswer SOURCEから、主結果は保存のみであることを確認する。
-人工fixtureのcallback回数を新規科学Q3件数として合算しない。
-この版の費用は保存価格条件に束縛された値であり、MODEL参照値/条件付き閉包を正式E[C]やGへ昇格しない。
-保存費用・MSEのJSONには大きな有理数整数がある。精度を捨てるfloat化をせず、
-確認済みruntimeか任意精度整数を保持するreaderを使う。
+`INVOCATIONS`のlaunched、新規call、jobsのLAUNCH/OUTCOMEを合わせて実績を確認する。
+予算0でも既存jobのcollect/保存結果取り込みはあり得る。新規Q3と同一視しない。
 
-## 公開版が更新されたとき
+## 確認した機能と境界
 
-新しい固定SOURCEのhelp/schemaと科学executorの有無を読み、この文書を実物に合わせる。
-H4保存入力の直接実行とSkill手順の実行を同じSOURCE・入力で照合し、構成ID、X/Y整数配分、
-exact費用、MSE区間、停止理由、保留/未対応を比較する。時刻や出力directoryだけの差と科学結果の差を区別する。
-接続確認で新しい科学Q3・signal・sampling・compile・fitを起動しない。
+この公開版は、既存routeによるQ3実行→検証/取込→次候補選択を有限予算内で行い、
+同じroundの再開に対応する。旧版の「executor未実装」「checkpoint再開未実装」は現在の説明には使わない。
+今回のSkill側検証は保存H4・新規Q3予算0の起動/再開であり、正予算の実科学Q3を実行した証拠ではない。
+B2の人工executor受入は公開HANDOFFに記録されている。
+
+新しいconfiguration/signal/価格の取得や、route viewの作成、未対応configurationの実行は別の不足である。
+この版の方式menuは4方式で、Full-H pure RTEの自動比較までは確認していない。
+価格SOURCEのMODEL参照・直接価格・条件付き閉包等の資格、条件付きQ3と物理的RMSE/十分Nを区別する。
+
+報告専用modeも残る：`--problem ... --output <new directory>`、任意の`--ingest`、
+`--resume-from`、`--dry-check-routes`。こちらのRESULT.json/人工FIXTUREをround結果と混ぜない。
+探索の起動/同じround再開には`--round`と`--run-dir`を使う。

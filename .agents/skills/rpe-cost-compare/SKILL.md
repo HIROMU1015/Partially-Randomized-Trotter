@@ -44,14 +44,19 @@ H4の設定・精度・探索範囲を、別Hamiltonianの既定値として採�
    コマンド・引数はその公開版のものを使い、未対応引数を補わない。
 2. programの既存機能で保存結果・進行中jobとの重複を照合し、使える証拠を再利用する。
    SOURCE・physical identity・law・compiler/lowering・測定付きfull wrapper・P=0を保つ。
-3. 今回のモードと予算をその入口へ明示する。保存結果モードでは、新規Q3・signal・sampling・
+3. 探索の起動は`--problem <problem.json> --round <round.json> --run-dir <run directory>`を使う。
+   採択済み方式・範囲・方式別の新規Q3総予算をB2のround schemaにまとめ、候補や配分はprogramに選ばせる。
+   保存比較だけなら各方式の新規Q3予算を0にする。新規Q3・signal・sampling・
    compile・fitが起動しないことを、programの契約と実績counterで確認する。
    「新規Q3=0」だけで他の科学処理も0になるとは推測しない。
 4. 新規科学処理は、採択済み条件と利用者が許可した有限予算内に限る。
    未採択条件はprogramへ適当に埋めず、未評価/不足として返す。
    programの停止理由・予算上限・失敗後のretry/resume条件を尊重する。
-5. 再開はprogramの正式な再開入口と状態を使い、別runとして勝手に再投入しない。
-   保留や予算到達を理由に、Skillで候補・配分・精度・上限を変更しない。
+5. 同じroundの再開は、元のproblem/SOURCE、同じround_idとround file、同じ`--run-dir`を用い、
+   **同じコマンドを再実行する**。完了済み/実行中jobと累積予算はprogramに照合させる。
+   予算を無断でリセットせず、新規directoryを再開先と称して作らない。
+   明示許可された追加予算だけを同じroundの上限に反映し、残枠を人手で別枠として再発行しない。
+   `JOB_IN_PROGRESS`や`STALE_JOB_NEEDS_REVIEW`を理由にworkerの停止/自動retryをしない。
 
 実行中はprogramのstage/進捗を観測し、SOURCEと入力・出力先を識別できるようにする。
 CPU稼働だけを前進や数値gate成立の証拠にせず、programの原結果を保全する。
@@ -66,7 +71,8 @@ programの方式別summaryから次を1方式1行で提示する。
 |---|---|---|---|---|---|---|
 
 構成はprogramが返すIDとformula/幅/LD/R等、配分は全roundの整数列またはその固定artifactへのリンク。
-費用のexact値と表示値、結果SOURCE・run ID・再利用件数/新規call数・探索範囲・保留候補も示す。
+費用のexact値と表示値、結果SOURCE・round_id/run directory、再利用件数/新規call数・
+方式別の消費済み/今回使用/総予算、探索範囲、次候補と保留候補も示す。
 該当点が無い方式はUNKNOWN/未評価/非適合を区別し、欠測費用を0にしない。
 programが出力しない保証や全方式winnerをSkill側で計算・補完しない。
 
