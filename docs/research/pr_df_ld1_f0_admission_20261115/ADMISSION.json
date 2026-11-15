@@ -1,0 +1,5239 @@
+{
+  "schema": "PR_DF_LD1_F0_C_CONSUMER_ADMISSION_V1",
+  "sources": {
+    "handoff": {
+      "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+      "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json"
+    },
+    "inputs": {
+      "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+      "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+      "selector": []
+    },
+    "raw_result": {
+      "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+      "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/RESULT.json"
+    },
+    "adopted_plan": {
+      "commit": "950577f416c17a20d309a8053a4bb016027b724d",
+      "path": "docs/research/d_pr_df_ld1_ec_plan_20261115/NEXT_F0_PLAN.json"
+    },
+    "prior_admission": {
+      "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+      "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json"
+    },
+    "m4_preserved": {
+      "commit": "9edfa5d3201f22c23dd77569d102801be80dacf3",
+      "path": "docs/research/pr_df_ld1_m4_holdout_admission_20261115/ADMISSION.json"
+    }
+  },
+  "status": "SAVED_DIAGNOSTICS_CONNECTED",
+  "counts": {
+    "diagnostic_tables": {
+      "requested": 14,
+      "accepted": 14,
+      "held": 0
+    },
+    "round_bound_pairs": {
+      "requested": 13,
+      "accepted": 13,
+      "held": 0
+    },
+    "candidate_axes": {
+      "requested": 26,
+      "accepted": 26,
+      "held": 0
+    }
+  },
+  "tables": [
+    {
+      "id": "components",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          0
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/components.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          0
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+        "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+        "selector": [
+          "preparation"
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "cdf_rounding": {
+            "numerator": 60286342759087960920692218513810023360440119432008831,
+            "denominator": 15405683809800365206842106809484536674856511762333167340094807343104
+          },
+          "grid": {
+            "numerator": 543908593877990561,
+            "denominator": 649037107316853453566312041152512
+          },
+          "total": {
+            "numerator": 970914357467326316099709876016486561,
+            "denominator": 213796810946692078620497240580352281064897997963264
+          }
+        },
+        "triangle_bound": {
+          "numerator": 18299168413569459598311244385616907994910013420810517,
+          "denominator": 3851420952450091301710526702371134168714127940583291835023701835776
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/components.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m0",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          1
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m0.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          1
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+        "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+        "selector": [
+          "laws",
+          0
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 17595116191434400,
+            "denominator": 56517168764851013960694334311834393
+          },
+          "cdf_rounding": {
+            "numerator": 44583306015789055,
+            "denominator": 2596148429267413859301244438315008
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 89340617131925245,
+            "denominator": 5298484571704782466901038105362432
+          }
+        },
+        "triangle_bound": {
+          "numerator": 8900525328746763595769009469917435,
+          "denominator": 509061400378836924285314075872344164171537612537856
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m0.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m1",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          2
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m1.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          2
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          0
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 297098888648192,
+            "denominator": 21376544328128398783205283959201145
+          },
+          "cdf_rounding": {
+            "numerator": 1081215127727308039,
+            "denominator": 20769187434139307118407866279526400
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 543520695892704259,
+            "denominator": 10437765785218946424912524764774400
+          }
+        },
+        "triangle_bound": {
+          "numerator": 543520695892704259,
+          "denominator": 10437765785218946424912524764774400
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m1.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m2",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          3
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m2.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          3
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          1
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 1728644355892525568,
+            "denominator": 42589764329103252936030389781889568705
+          },
+          "cdf_rounding": {
+            "numerator": 3951631471144580701,
+            "denominator": 41538374868278624982404443465056256
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 7916759703879863437,
+            "denominator": 83183133455279782972236429283819520
+          }
+        },
+        "triangle_bound": {
+          "numerator": 7916759703879863437,
+          "denominator": 83183133455279782972236429283819520
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m2.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m3",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          4
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m3.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          4
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          2
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 797818659146641408,
+            "denominator": 75642514225089792347491292127597450225
+          },
+          "cdf_rounding": {
+            "numerator": 907908276551643389,
+            "denominator": 18461499941457163759529059208396800
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 16344075215297943269,
+            "denominator": 332413392590726647088070885856247808
+          }
+        },
+        "triangle_bound": {
+          "numerator": 33513813625270888200795284945489060447,
+          "denominator": 681327197754963663616016210634344094015134821987123200
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m3.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m4",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          5
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m4.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          5
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          3
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 689149722026838016,
+            "denominator": 272247683463730976708400107333722926339
+          },
+          "cdf_rounding": {
+            "numerator": 13191416099277514611,
+            "denominator": 265845599156983161388817383562412032
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 4122437184149718937,
+            "denominator": 83083399494546810979624043233148928
+          }
+        },
+        "triangle_bound": {
+          "numerator": 121685284531251235055179589289870592121,
+          "denominator": 2452189131599479144929749766202939883496767769739788288
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m4.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m5",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          6
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m5.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          6
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          4
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 45627751433828958208,
+            "denominator": 87114029136092336488952495408908117724227
+          },
+          "cdf_rounding": {
+            "numerator": 52215688180425829421,
+            "denominator": 1329227995784915777544588550337462272
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 208869717172093206303,
+            "denominator": 5317018379888448653475298930824577024
+          }
+        },
+        "triangle_bound": {
+          "numerator": 208869717172093206303,
+          "denominator": 5317018379888448653475298930824577024
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m5.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m6",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          7
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m6.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          7
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+        "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+        "selector": [
+          "laws",
+          1
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 117217110862216298496,
+            "denominator": 1393803547735666601517036427447612728359659
+          },
+          "cdf_rounding": {
+            "numerator": 234848622324052388921,
+            "denominator": 5316911983139663726464438009610633216
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 234849350067174707483,
+            "denominator": 5316938582365671310243290674295209984
+          }
+        },
+        "triangle_bound": {
+          "numerator": 277262230618110088363923231093365866585825,
+          "denominator": 6277133138210023440410356421994137173704643319653533220864
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m6.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m7",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          8
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m7.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          8
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          5
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 2544977411974014959616,
+            "denominator": 44601546618070334406348323713835861858585125
+          },
+          "cdf_rounding": {
+            "numerator": 100343232680329608911,
+            "denominator": 1329227995784915973247102982838812672
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 200686870022159991683,
+            "denominator": 2658459342603107156716691249954816000
+          }
+        },
+        "triangle_bound": {
+          "numerator": 200686870022159991683,
+          "denominator": 2658459342603107156716691249954816000
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m7.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m8",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          9
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m8.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          9
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          6
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 437386390723255861248,
+            "denominator": 47574938082469132133979512816221938462289625
+          },
+          "cdf_rounding": {
+            "numerator": 429848100385262559483,
+            "denominator": 11342745564031282545293988361928704000
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 12895443946863500447715,
+            "denominator": 340282474154013135416973021629785309184
+          }
+        },
+        "triangle_bound": {
+          "numerator": 16239211152957397634892548796801021285914157,
+          "denominator": 428516946840764805954812663047779430376686944056988663808000
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m8.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m9",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          10
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m9.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          10
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          7
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 13699342875377008640000,
+            "denominator": 11417982441183928497717462641836893500834735579
+          },
+          "cdf_rounding": {
+            "numerator": 2542322421902134177867,
+            "denominator": 680564733841876929469071736910827749376
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 1271160902823994188513,
+            "denominator": 340282393729207767697106754406411403264
+          }
+        },
+        "triangle_bound": {
+          "numerator": 192092527931282083732290943753957881325334653,
+          "denominator": 51422021467438806643243915877853397204148041036713295226077184
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m9.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m10",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          11
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m10.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          11
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          8
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 798602857833474031616,
+            "denominator": 730750833058031422602399234780218433340698375
+          },
+          "cdf_rounding": {
+            "numerator": 27703016129011507528469,
+            "denominator": 544451787073501508798124197721564774400
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 138515086348223439895859,
+            "denominator": 2722258988984046379289329468855812096000
+          }
+        },
+        "triangle_bound": {
+          "numerator": 138515086348223439895859,
+          "denominator": 2722258988984046379289329468855812096000
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m10.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m11",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          12
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m11.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          12
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          9
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 885913228913293194690560,
+            "denominator": 5846006578108771788796243515143754444034937658839
+          },
+          "cdf_rounding": {
+            "numerator": 101843768403924465807375,
+            "denominator": 1361129467683753955697267084385870413824
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 101843768699125382019265,
+            "denominator": 1361129474385821109493399431976199389184
+          }
+        },
+        "triangle_bound": {
+          "numerator": 246243124091915377420446201670448293404689397595,
+          "denominator": 3291009130847016630826734073308054300365254757726592739487776768
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m11.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    },
+    {
+      "id": "order_m12",
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "tables",
+          13
+        ]
+      },
+      "diagnostic": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m12.json",
+        "selector": []
+      },
+      "input": {
+        "commit": "fad0c1e4fe41c0e4c6d0690158056572295ed15a",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/INPUTS.json",
+        "selector": [
+          "tables",
+          13
+        ]
+      },
+      "status": "ACCEPTED_SAVED_DIAGNOSTIC",
+      "reason": null,
+      "original_source": {
+        "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+        "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+        "selector": [
+          "laws",
+          10
+        ]
+      },
+      "saved_summary": {
+        "TV": {
+          "normalization": {
+            "numerator": 29949021259855317434368,
+            "denominator": 730750819564987714202676591125889126975363713091
+          },
+          "cdf_rounding": {
+            "numerator": 454125568472973277208645,
+            "denominator": 21778071482940062115781543628115126779904
+          },
+          "grid": {
+            "numerator": 0,
+            "denominator": 1
+          },
+          "total": {
+            "numerator": 3547856015035476813023,
+            "denominator": 170141183669908833448949981527844847616
+          }
+        },
+        "triangle_bound": {
+          "numerator": 3547856015035476813023,
+          "denominator": 170141183669908833448949981527844847616
+        },
+        "map": "NUMPY_FLOAT64_CUMSUM_NORMALIZED_SEARCHSORTED_RIGHT_53BIT_UNIFORM",
+        "PRNG_independence_proved": false,
+        "physical_law_distance": null,
+        "qualified_for_compiled_price": false
+      },
+      "support_changes": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/order_m12.json",
+        "selector": [
+          "support_changes"
+        ]
+      }
+    }
+  ],
+  "round_bounds": [
+    {
+      "m": 0,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          0
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 0,
+        "physical_id": "53e00d8b07d1547d19a7",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 2,
+        "source": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            0
+          ]
+        },
+        "order_table": "order_m0.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 240744921681826308301495134430304234285207336999497264528006004975952722490001761601036274126469077093997171155134138873347779260375485073271661904307626503218992779993763,
+          "denominator": 51779200770540730466144283198315155028712668795886214328904347309264691173489937017267096160651218497016959808289633874074123974640515821070514860873889972851592972159467675558145425408
+        },
+        "path_TV_upper": {
+          "numerator": 240744921681826308301495134430304234285207336999497264528006004975952722490001761601036274126469077093997171155134138873347779260375485073271661904307626503218992779993763,
+          "denominator": 25889600385270365233072141599157577514356334397943107164452173654632345586744968508633548080325609248508479904144816937037061987320257910535257430436944986425796486079733837779072712704
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 1,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          1
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 1,
+        "physical_id": "c00e00dc1e9c414fb7d9",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 8,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            0
+          ]
+        },
+        "order_table": "order_m1.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 52280067527644185475548897214023875384595494435898765562243371288650039804836787074485954248830193426382587876068233584442553009736026514035663129469426979,
+          "denominator": 11324562834770654401791958944305032735589321445428705864592142374393512487893840738264162772935510929413470367676741946955052480663997555701092549151573338236985855180800
+        },
+        "path_TV_upper": {
+          "numerator": 52280067527644185475548897214023875384595494435898765562243371288650039804836787074485954248830193426382587876068233584442553009736026514035663129469426979,
+          "denominator": 1415570354346331800223994868038129091948665180678588233074017796799189060986730092283020346616938866176683795959592743369381560082999694462636568643946667279623231897600
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 2,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          2
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 2,
+        "physical_id": "f2fcd66b1ef9ae2da5df",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 32,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            1
+          ]
+        },
+        "order_table": "order_m2.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 3773722432155480379225960863573238821523513361129624977493040986191034475850079232555886553955389816681229165190915813576842329185089879305493683266479735943132771792570131,
+          "denominator": 812903408439630857616727363798270169690906087749661264610074513549746721604232991855271529298445293759410661690785058311855605301214585618858853259531364964123401372220609145483433082880
+        },
+        "path_TV_upper": {
+          "numerator": 3773722432155480379225960863573238821523513361129624977493040986191034475850079232555886553955389816681229165190915813576842329185089879305493683266479735943132771792570131,
+          "denominator": 25403231513738464300522730118695942802840815242176914519064828548429585050132280995477235290576415429981583177837033072245487665662955800589339164360355155128856292881894035796357283840
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 3,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          3
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 3,
+        "physical_id": "045843b2429bece6f29b",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 128,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            2
+          ]
+        },
+        "order_table": "order_m3.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 14916816578032318010055545558891668256331593938650711400550848566617449521967367145665769307399248561357758669090420842679130492645343024956584362095007076710977143575918523,
+          "denominator": 3248494840522642967807842245252696884267846060389338887740602143858039377849634276670391409239701151290035766396316964498338657235743447198194067509925908712691847241401216681204516913152
+        },
+        "path_TV_upper": {
+          "numerator": 14916816578032318010055545558891668256331593938650711400550848566617449521967367145665769307399248561357758669090420842679130492645343024956584362095007076710977143575918523,
+          "denominator": 25378865941583148185998767541036694408342547346791710060473454248890932639450267786487432884685165244453404424971226285143270759654245681235891152421296161817905056573447005321910288384
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 4,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          4
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 4,
+        "physical_id": "3df0cfd3356c358aeda8",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 512,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            3
+          ]
+        },
+        "order_table": "order_m4.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 413867757944743193197845914986500376439686311320872935807358192717883505279960338946387953106839316012626116990906391809022406388812450156705557678554487555,
+          "denominator": 90142200683861338076183619123710941799971108480181727008190926361424243855610380185930674407694881519748805933188958751062757803469014417118875109464101703958460362653696
+        },
+        "path_TV_upper": {
+          "numerator": 413867757944743193197845914986500376439686311320872935807358192717883505279960338946387953106839316012626116990906391809022406388812450156705557678554487555,
+          "denominator": 176058985710666675930046131100997933203068571250354935562872903049656726280489023800645848452529065468259386588259685060669448834900418783435302948172073640543867895808
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 5,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          5
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 5,
+        "physical_id": "57d641a831d76360b570",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 2048,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            4
+          ]
+        },
+        "order_table": "order_m5.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 238013032718236502526381130911839626484020370872953331913967496556882796195137871054391950615896242669738043119761078389821527297764843316265209757669419614308377932104161985,
+          "denominator": 51960321572535624401712649418275457618020706921882512613980345375346097690549375073102562706428172813223424327596799333954224749344319240255229745415951097118870434121111695103594495737856
+        },
+        "path_TV_upper": {
+          "numerator": 238013032718236502526381130911839626484020370872953331913967496556882796195137871054391950615896242669738043119761078389821527297764843316265209757669419614308377932104161985,
+          "denominator": 25371250767839660352398754598767313290049173301700445612295090515305711762963562047413360696498131256456750159959374674782336303390780879030873899128882371640073454160699069874801999872
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 6,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          6
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 6,
+        "physical_id": "2a8c6718220eec59d419",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 8192,
+        "source": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            1
+          ]
+        },
+        "order_table": "order_m6.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 238259834727790140569398118237335070798899457360735510180170594325165916274419302371843149452869408294669833745980976536191504606433089394971130394792704018111841193635127365,
+          "denominator": 51959541754854367960371600207010164940731925749172827809463883414569667680971341982384827436004020442755017622057903825205233895319530327443890939358461429038047955266292446756304999940096
+        },
+        "path_TV_upper": {
+          "numerator": 238259834727790140569398118237335070798899457360735510180170594325165916274419302371843149452869408294669833745980976536191504606433089394971130394792704018111841193635127365,
+          "denominator": 6342717499371871088912548853394795524991690154928323707209946705880086386837322019334085380371584526703493362067615213037748278237247354424303093183405936161871088289342339691931762688
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 7,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          7
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 7,
+        "physical_id": "b42287268e5249dfb4d1",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 32640,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            5
+          ]
+        },
+        "order_table": "order_m7.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 119942710369221235942135920576487578245667193384033840931150264873390217205394217779861821867559142759774809788914983845528983518080719140286351943258173928008906867059460829,
+          "denominator": 25979673655381866613514173993056334533182426934462354804576206937564016838743468792213481094542633072325688221106520275812022568340403286050998017666489836465820716655444360958369071104000
+        },
+        "path_TV_upper": {
+          "numerator": 6117078228830283033048931949400866490529026862585725887488663508542901077475105106772952915245516280748515299234664176121978159422116676154603949106166870328454250220032502279,
+          "denominator": 40593240086534166583615896864150522708097542085097429382150323339943776310536669987833564210222864175508887845478937930956285263031880134454684402603890369477844869774131813997451673600
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 8,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          8
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 8,
+        "physical_id": "224aef0a626068b43184",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 130560,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            6
+          ]
+        },
+        "order_table": "order_m8.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 15227624486231814711306455277983579363661477913166799171921749510668899303269085920430508910074496972155038769023280225321386418217790717939434941625866256283067012945474718333,
+          "denominator": 3325395084098151465590328509179737811682761223461883558513131963663690264223688341028524413391203286707271162541366787790609924287187239845393500243524706391802599005504424467021390619344896
+        },
+        "path_TV_upper": {
+          "numerator": 3883044243989112751383146095885812737733676867857533788840046125220569322333616909709779772068996727899534886100936457456953536645536633074555910114595895352182088301096053174915,
+          "denominator": 6494912273629202081231110369491675413442893014573991325220960866530645047311891291071336744904693919350138989338607007403535008373412577823034180163134192171489451182625829037151153553408
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 9,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          9
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 9,
+        "physical_id": "06a78c7f9856f373336f",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 522240,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            7
+          ]
+        },
+        "order_table": "order_m9.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 15114019567631730300748728278011435728531084533272150976633331086115746307063546959267836526546305776104572709596211595072512342993111000242287976412047985992238739579869119295,
+          "denominator": 3325394298150379473313149249263341245884672931661563112014469058885138605626172069665788484215784290353233704478300362487533081804016701742108698344672426512614094856022698764351636206780416
+        },
+        "path_TV_upper": {
+          "numerator": 3854074989746091226690925710892916110775426555984398499041499426959515308301204474613298314269307972906666040947033956743490647463243305061783433985072236428020878592866625420225,
+          "denominator": 1623727684643739977203686156866865842717125454912872613288314970158759084778404330891498283308488423024039894764795098870865762599617530147514012863609583258112351003917333381031072366592
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 10,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          10
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 10,
+        "physical_id": "b872ad1347a35c8f4315",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 2088960,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            8
+          ]
+        },
+        "order_table": "order_m10.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 122166395779689554517332318506058800830183951538647616573809532733908723182438260469214664490695499960364576877029658312895439718898786485944072503737654150153777290366063945517,
+          "denominator": 26603152813307442677308205284483667356497439066972853936996835887959867120339007459035802071746364877144023471437969635047960795326512139819034383713663336266702699175244913372211837927424000
+        },
+        "path_TV_upper": {
+          "numerator": 122166395779689554517332318506058800830183951538647616573809532733908723182438260469214664490695499960364576877029658312895439718898786485944072503737654150153777290366063945517,
+          "denominator": 12735118342767426220371957952514010491583103107274841996494349287664611634659834299860122774847945808988215892806932461630649124601003437030404786934007035207329340521237799370122854400
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 11,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          11
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 11,
+        "physical_id": "d48210cc27c599e268c2",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 8355840,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            9
+          ]
+        },
+        "order_table": "order_m11.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 61401643519958307349031117370880469337736430906598885955764023547734614198179185111374934556581280743935682224959391948943272118064848165876509782464305454352782569108768401759,
+          "denominator": 13301576210166771126350563483009977668631311655314915027243589529262720021077192509398245209935268342466265294998900847851253664763729328383024827906670417931704779596382690876040656134864896
+        },
+        "path_TV_upper": {
+          "numerator": 15657419097589368374002934929574519681122789881182715918719826004672326620535692203400608311928226589703598967364644946980534390106536282298509994528397890859959555122735942448545,
+          "denominator": 405931891179405857127397567230529103656961415262295990821642746864707031893224869061225744932106577834053506317105128413429372093619669445282740109456494687857201525768514736207295414272
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    },
+    {
+      "m": 12,
+      "source": {
+        "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+        "selector": [
+          "rows",
+          12
+        ]
+      },
+      "status": "ACCEPTED_SAVED_CONDITIONAL_BOUND",
+      "reason": null,
+      "saved_bound": {
+        "m": 12,
+        "physical_id": "b55c521fdce6a448dbcb",
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "event_positions": 33423360,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            10
+          ]
+        },
+        "order_table": "order_m12.json",
+        "component_table": "components.json",
+        "event_TV_upper": {
+          "numerator": 7585468693857834298862650004586636479339912218027439051817262220313446296357948314948969912846263434365335850404733327247353811180408018241270604801849592865113462788479823105,
+          "denominator": 1662697020130629292106920928055344477809742829566646681712710834690510793823287779686048065356320403188477755121650988870577084520660102911818719147096758306933078492252906712360505839714304
+        },
+        "path_TV_upper": {
+          "numerator": 1934294516933747746209975751169592302231677615596996958213401866179928805571276820311987327775797175763160641853206998448075221851004044651524004224471646180603933011062354891775,
+          "denominator": 12685371552510294281821601318781619856336538921864675000859915425800405836664488065231689951754153466708967247937400732960335422673493216795491936852239672141518238008521321963199660032
+        },
+        "informativeness": "NONVACUOUS_TV_BOUND_ONLY_NO_PRICE_THRESHOLD",
+        "assumptions": [
+          "same event label denotes the same saved word/angle/phase",
+          "conditional order/component draws independent within each ideal/grid model",
+          "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+        ],
+        "actual_PCG64_joint_distance": null,
+        "price_oscillation": null,
+        "price_shift": null,
+        "qualified_E_C": null
+      },
+      "shared_axes": [
+        "X",
+        "Y"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "m": 0,
+      "axis": "X",
+      "physical_id": "53e00d8b07d1547d19a7",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.1,
+        "q": 1,
+        "delta": 0.1,
+        "R_outer": 2,
+        "K": 2,
+        "id": "53e00d8b07d1547d19a7"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:2f58bda2872e3881f83f4fb0e2b70db9b7e6c516aed30c9419665bfe22e0fb69",
+      "total_candidate_id": "RMSE:4773baf1a18d5c0f42a680d67c260bc794223b9549be225f76897db266503bf7",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          312
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          0
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          0,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          0,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            0
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            0,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          0,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          0,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "19b95d8b3c88063d2dbae4e5bb47455b52b00903",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          0
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          0
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          1
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        0
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 0,
+      "axis": "Y",
+      "physical_id": "53e00d8b07d1547d19a7",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.1,
+        "q": 1,
+        "delta": 0.1,
+        "R_outer": 2,
+        "K": 2,
+        "id": "53e00d8b07d1547d19a7"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:2f58bda2872e3881f83f4fb0e2b70db9b7e6c516aed30c9419665bfe22e0fb69",
+      "total_candidate_id": "RMSE:4773baf1a18d5c0f42a680d67c260bc794223b9549be225f76897db266503bf7",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          313
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          1
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          0,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          0,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            1
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            1,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          1,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          1,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "19b95d8b3c88063d2dbae4e5bb47455b52b00903",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          1
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          1
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          1
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        0
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 1,
+      "axis": "X",
+      "physical_id": "c00e00dc1e9c414fb7d9",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.2,
+        "q": 2,
+        "delta": 0.1,
+        "R_outer": 4,
+        "K": 2,
+        "id": "c00e00dc1e9c414fb7d9"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:36529fea1b1db624a84ed1018bad484d0c33bcc55c12353bf672cc65f52937ea",
+      "total_candidate_id": "RMSE:0eae36e6d910137e12e720494f9f838cfb2af0e41f17f967bd21cf74ebfd779e",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          314
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          2
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          1,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          1,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            4
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            4,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          4,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          4,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          2
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          2
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          2
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        1
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 1,
+      "axis": "Y",
+      "physical_id": "c00e00dc1e9c414fb7d9",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.2,
+        "q": 2,
+        "delta": 0.1,
+        "R_outer": 4,
+        "K": 2,
+        "id": "c00e00dc1e9c414fb7d9"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:36529fea1b1db624a84ed1018bad484d0c33bcc55c12353bf672cc65f52937ea",
+      "total_candidate_id": "RMSE:0eae36e6d910137e12e720494f9f838cfb2af0e41f17f967bd21cf74ebfd779e",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          315
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          3
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          1,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          1,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            5
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            5,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          5,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          5,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          3
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          3
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          2
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        1
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 2,
+      "axis": "X",
+      "physical_id": "f2fcd66b1ef9ae2da5df",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.4,
+        "q": 4,
+        "delta": 0.1,
+        "R_outer": 8,
+        "K": 2,
+        "id": "f2fcd66b1ef9ae2da5df"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:62635d1af6b739e3d65444c438a6a89e2aa6f02017193c0b05ca9ef81df0eb3c",
+      "total_candidate_id": "RMSE:68858a46791c8b44f0c2892bd81287d09021738f89eae79dfe9adaa166031535",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          316
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          4
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          2,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          2,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            6
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            6,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          6,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          6,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          4
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          4
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          3
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        2
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 2,
+      "axis": "Y",
+      "physical_id": "f2fcd66b1ef9ae2da5df",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.4,
+        "q": 4,
+        "delta": 0.1,
+        "R_outer": 8,
+        "K": 2,
+        "id": "f2fcd66b1ef9ae2da5df"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:62635d1af6b739e3d65444c438a6a89e2aa6f02017193c0b05ca9ef81df0eb3c",
+      "total_candidate_id": "RMSE:68858a46791c8b44f0c2892bd81287d09021738f89eae79dfe9adaa166031535",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          317
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          5
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          2,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          2,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            7
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            7,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          7,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          7,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          5
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          5
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          3
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        2
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 3,
+      "axis": "X",
+      "physical_id": "045843b2429bece6f29b",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.8,
+        "q": 8,
+        "delta": 0.1,
+        "R_outer": 16,
+        "K": 2,
+        "id": "045843b2429bece6f29b"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:ea40d9bbfacd7a72f2c204dee6920cd52c4be4f859c08c7a184ff98f3ba78833",
+      "total_candidate_id": "RMSE:885db7f46884aa3163c587fc5214ad58361c6e52fdffc7cb343affcfae802438",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          318
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          6
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          3,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          3,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            8
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            8,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          8,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          8,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          6
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          6
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          4
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        3
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 3,
+      "axis": "Y",
+      "physical_id": "045843b2429bece6f29b",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.8,
+        "q": 8,
+        "delta": 0.1,
+        "R_outer": 16,
+        "K": 2,
+        "id": "045843b2429bece6f29b"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:ea40d9bbfacd7a72f2c204dee6920cd52c4be4f859c08c7a184ff98f3ba78833",
+      "total_candidate_id": "RMSE:885db7f46884aa3163c587fc5214ad58361c6e52fdffc7cb343affcfae802438",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          319
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          7
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          3,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          3,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            9
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            9,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          9,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          9,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          7
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          7
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          4
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        3
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 4,
+      "axis": "X",
+      "physical_id": "3df0cfd3356c358aeda8",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 1.6,
+        "q": 16,
+        "delta": 0.1,
+        "R_outer": 32,
+        "K": 2,
+        "id": "3df0cfd3356c358aeda8"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:8bbdb84e72567c9fdcdbd8db9edb956393a663a02da2f8e1b3569ad97254ce24",
+      "total_candidate_id": "RMSE:be0d92505bd97c33b58cd5b07776dcab4d98eb29f454fca4a244011672275261",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          320
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          8
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          4,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          4,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            10
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            10,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          10,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          10,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          8
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          8
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          5
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        4
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 4,
+      "axis": "Y",
+      "physical_id": "3df0cfd3356c358aeda8",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 1.6,
+        "q": 16,
+        "delta": 0.1,
+        "R_outer": 32,
+        "K": 2,
+        "id": "3df0cfd3356c358aeda8"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:8bbdb84e72567c9fdcdbd8db9edb956393a663a02da2f8e1b3569ad97254ce24",
+      "total_candidate_id": "RMSE:be0d92505bd97c33b58cd5b07776dcab4d98eb29f454fca4a244011672275261",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          321
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          9
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          4,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          4,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            11
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            11,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          11,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          11,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          9
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          9
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          5
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        4
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 5,
+      "axis": "X",
+      "physical_id": "57d641a831d76360b570",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 3.2,
+        "q": 32,
+        "delta": 0.1,
+        "R_outer": 64,
+        "K": 2,
+        "id": "57d641a831d76360b570"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:b2e78d9132c2e525ce692584923d418072a252eea3dc8a85ca36467e35d9e6a2",
+      "total_candidate_id": "RMSE:ac9dd1dcbeec29d38af046a25d176beb30e303268293660c4f18e56a0a775f24",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          322
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          10
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          5,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          5,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            12
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            12,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          12,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          12,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          10
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          10
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          6
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        5
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 5,
+      "axis": "Y",
+      "physical_id": "57d641a831d76360b570",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 3.2,
+        "q": 32,
+        "delta": 0.1,
+        "R_outer": 64,
+        "K": 2,
+        "id": "57d641a831d76360b570"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:b2e78d9132c2e525ce692584923d418072a252eea3dc8a85ca36467e35d9e6a2",
+      "total_candidate_id": "RMSE:ac9dd1dcbeec29d38af046a25d176beb30e303268293660c4f18e56a0a775f24",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          323
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          11
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          5,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          5,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            13
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            13,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          13,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          13,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          11
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          11
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          6
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        5
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 6,
+      "axis": "X",
+      "physical_id": "2a8c6718220eec59d419",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 6.4,
+        "q": 64,
+        "delta": 0.1,
+        "R_outer": 128,
+        "K": 2,
+        "id": "2a8c6718220eec59d419"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:03ba1ef070b5bdcb468f8ff171f58f1e62c63d293e1cae330f8f4a651988cd54",
+      "total_candidate_id": "RMSE:7fcf954b3f15f3ea6b8bc0e9bfb936146b1c68df3c814630b9a99594be1dda8a",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          324
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          12
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          6,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          6,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            2
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            2,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          2,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          2,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "19b95d8b3c88063d2dbae4e5bb47455b52b00903",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          12
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          12
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          7
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        6
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 6,
+      "axis": "Y",
+      "physical_id": "2a8c6718220eec59d419",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 6.4,
+        "q": 64,
+        "delta": 0.1,
+        "R_outer": 128,
+        "K": 2,
+        "id": "2a8c6718220eec59d419"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:03ba1ef070b5bdcb468f8ff171f58f1e62c63d293e1cae330f8f4a651988cd54",
+      "total_candidate_id": "RMSE:7fcf954b3f15f3ea6b8bc0e9bfb936146b1c68df3c814630b9a99594be1dda8a",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          325
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          13
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          6,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          6,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            3
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            3,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          3,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          3,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "19b95d8b3c88063d2dbae4e5bb47455b52b00903",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          13
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          13
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          7
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        6
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 7,
+      "axis": "X",
+      "physical_id": "b42287268e5249dfb4d1",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 12.8,
+        "q": 128,
+        "delta": 0.1,
+        "R_outer": 255,
+        "K": 2,
+        "id": "b42287268e5249dfb4d1"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:0233bb66c825d2ccfedb5b159090c68380814abebd2130afb4f4958e2571eb19",
+      "total_candidate_id": "RMSE:ae71ee17bd6bc71f955f0febb74efb4b36ab104eeb673a5dbdf36b992075d3e8",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          326
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          14
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          7,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          7,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            14
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            14,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          14,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          14,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          14
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          14
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          8
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        7
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 7,
+      "axis": "Y",
+      "physical_id": "b42287268e5249dfb4d1",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 12.8,
+        "q": 128,
+        "delta": 0.1,
+        "R_outer": 255,
+        "K": 2,
+        "id": "b42287268e5249dfb4d1"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:0233bb66c825d2ccfedb5b159090c68380814abebd2130afb4f4958e2571eb19",
+      "total_candidate_id": "RMSE:ae71ee17bd6bc71f955f0febb74efb4b36ab104eeb673a5dbdf36b992075d3e8",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          327
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          15
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          7,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          7,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            15
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            15,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          15,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          15,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          15
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          15
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          8
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        7
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 8,
+      "axis": "X",
+      "physical_id": "224aef0a626068b43184",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 25.6,
+        "q": 256,
+        "delta": 0.1,
+        "R_outer": 510,
+        "K": 2,
+        "id": "224aef0a626068b43184"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:06dca30b81b4858f7fa9c2357fd3c757d1d5afdac93a7363203c8196af46c203",
+      "total_candidate_id": "RMSE:8c0b4f74506b5fc39c45cdec17a205668673fdc4cb9942fb3ac9e8a5f8d32a7d",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          328
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          16
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          8,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          8,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            16
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            16,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          16,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          16,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          16
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          16
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          9
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        8
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 8,
+      "axis": "Y",
+      "physical_id": "224aef0a626068b43184",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 25.6,
+        "q": 256,
+        "delta": 0.1,
+        "R_outer": 510,
+        "K": 2,
+        "id": "224aef0a626068b43184"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:06dca30b81b4858f7fa9c2357fd3c757d1d5afdac93a7363203c8196af46c203",
+      "total_candidate_id": "RMSE:8c0b4f74506b5fc39c45cdec17a205668673fdc4cb9942fb3ac9e8a5f8d32a7d",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          329
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          17
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          8,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          8,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            17
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            17,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          17,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          17,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          17
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          17
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          9
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        8
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 9,
+      "axis": "X",
+      "physical_id": "06a78c7f9856f373336f",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 51.2,
+        "q": 512,
+        "delta": 0.1,
+        "R_outer": 1020,
+        "K": 2,
+        "id": "06a78c7f9856f373336f"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:a3a40ba1fd60f7e2c7eab247ca27887a41ee7c3dd0c66b6a5bdff7885992dd7f",
+      "total_candidate_id": "RMSE:21501943a82f1983b2190d0a8515c10cf4cf487a697114a399ac769e302e2417",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          330
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          18
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          9,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          9,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            18
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            18,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          18,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          18,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          18
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          18
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          10
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        9
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 9,
+      "axis": "Y",
+      "physical_id": "06a78c7f9856f373336f",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 51.2,
+        "q": 512,
+        "delta": 0.1,
+        "R_outer": 1020,
+        "K": 2,
+        "id": "06a78c7f9856f373336f"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:a3a40ba1fd60f7e2c7eab247ca27887a41ee7c3dd0c66b6a5bdff7885992dd7f",
+      "total_candidate_id": "RMSE:21501943a82f1983b2190d0a8515c10cf4cf487a697114a399ac769e302e2417",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          331
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          19
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          9,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          9,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            19
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            19,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          19,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          19,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          19
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          19
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          10
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        9
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 10,
+      "axis": "X",
+      "physical_id": "b872ad1347a35c8f4315",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 102.4,
+        "q": 1024,
+        "delta": 0.1,
+        "R_outer": 2040,
+        "K": 2,
+        "id": "b872ad1347a35c8f4315"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:c421a4111771d4640061ba9062f6106e8626cb6addd2bd6519e143f5efedf053",
+      "total_candidate_id": "RMSE:eda8217b73372af64dd4ea6c312a46548ccb102689f0799810b87b1fbbf822f5",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          332
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          20
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          10,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          10,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            20
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            20,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          20,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          20,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          20
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          20
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          11
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        10
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 10,
+      "axis": "Y",
+      "physical_id": "b872ad1347a35c8f4315",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 102.4,
+        "q": 1024,
+        "delta": 0.1,
+        "R_outer": 2040,
+        "K": 2,
+        "id": "b872ad1347a35c8f4315"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:c421a4111771d4640061ba9062f6106e8626cb6addd2bd6519e143f5efedf053",
+      "total_candidate_id": "RMSE:eda8217b73372af64dd4ea6c312a46548ccb102689f0799810b87b1fbbf822f5",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          333
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          21
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          10,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          10,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            21
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            21,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          21,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          21,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          21
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          21
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          11
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        10
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 11,
+      "axis": "X",
+      "physical_id": "d48210cc27c599e268c2",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 204.8,
+        "q": 2048,
+        "delta": 0.1,
+        "R_outer": 4080,
+        "K": 2,
+        "id": "d48210cc27c599e268c2"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:b8ffd71db34862c8ea62c84eb08c915a01baa62e6afa30d1017b9cb999a27a33",
+      "total_candidate_id": "RMSE:7a5b73aa3632a7ee88d5673a61fc035e0820c1a3c51fee31b472268287f458d8",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          334
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          22
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          11,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          11,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            22
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            22,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          22,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          22,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          22
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          22
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          12
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        11
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 11,
+      "axis": "Y",
+      "physical_id": "d48210cc27c599e268c2",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 204.8,
+        "q": 2048,
+        "delta": 0.1,
+        "R_outer": 4080,
+        "K": 2,
+        "id": "d48210cc27c599e268c2"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:b8ffd71db34862c8ea62c84eb08c915a01baa62e6afa30d1017b9cb999a27a33",
+      "total_candidate_id": "RMSE:7a5b73aa3632a7ee88d5673a61fc035e0820c1a3c51fee31b472268287f458d8",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          335
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          23
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          11,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          11,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            23
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            23,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          23,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          23,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          23
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          23
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          12
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        11
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 12,
+      "axis": "X",
+      "physical_id": "b55c521fdce6a448dbcb",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 409.6,
+        "q": 4096,
+        "delta": 0.1,
+        "R_outer": 8160,
+        "K": 2,
+        "id": "b55c521fdce6a448dbcb"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:015b3d0db4ee69602dae794510be740d7a00f61625cc5211db648120bdf5b0c6",
+      "total_candidate_id": "RMSE:3e77e62c897eb0898ccb73512fb639bf20bba32c4a821d2d357a01ab60e8e20c",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          336
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          24
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          12,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          12,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            24
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            24,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          24,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          24,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          24
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          24
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          13
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        12
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    },
+    {
+      "m": 12,
+      "axis": "Y",
+      "physical_id": "b55c521fdce6a448dbcb",
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 409.6,
+        "q": 4096,
+        "delta": 0.1,
+        "R_outer": 8160,
+        "K": 2,
+        "id": "b55c521fdce6a448dbcb"
+      },
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "total_configuration_id": "9c3d392ec5c5ad373aaa1d96a8ba0828ddd268e6fef35da229029beec0229e8b",
+      "original_canonical_id": "RMSE:015b3d0db4ee69602dae794510be740d7a00f61625cc5211db648120bdf5b0c6",
+      "total_candidate_id": "RMSE:3e77e62c897eb0898ccb73512fb639bf20bba32c4a821d2d357a01ab60e8e20c",
+      "alignment": {
+        "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+        "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+        "selector": [
+          "rows",
+          337
+        ]
+      },
+      "Q3": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          25
+        ]
+      },
+      "original_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          12,
+          "original_law_binding"
+        ]
+      },
+      "total_law": {
+        "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+        "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+        "selector": [
+          "record",
+          "deterministic_input",
+          "canonical_binding",
+          "mapping",
+          12,
+          "total_law_binding"
+        ]
+      },
+      "structural": {
+        "status": "CONNECTED_SAVED_STRUCTURAL_EXPECTATION",
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            25
+          ]
+        },
+        "quantity": "FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT",
+        "expectation": "IDEAL_FINITE_K_SOURCE_LAW",
+        "law_source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+          "selector": [
+            "values",
+            25,
+            "law_binding"
+          ]
+        },
+        "mean_selector": [
+          "values",
+          25,
+          "mean_S"
+        ],
+        "enclosure_selector": [
+          "values",
+          25,
+          "numerical_enclosure"
+        ],
+        "kernel_source": "de2427d4a31d6b4b39d2c8eb8b63e3c972ffb89e",
+        "original_configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "compiled_price": false
+      },
+      "source": {
+        "commit": "d749ef92e8ac3087747481a46aeb28ec4ca04c4b",
+        "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/C_HANDOFF.json",
+        "selector": [
+          "rows",
+          25
+        ]
+      },
+      "prior_admission": {
+        "commit": "c99d511e2422b8f250490b11054f754a81e536c5",
+        "path": "docs/research/pr_df_ld1_q3_price_admission_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          25
+        ]
+      },
+      "status": "CONNECTED_SAVED_CONDITIONAL_LAW_DIAGNOSTIC",
+      "reason": null,
+      "diagnostics": [
+        [
+          "tables",
+          0
+        ],
+        [
+          "tables",
+          13
+        ]
+      ],
+      "conditional_bound": [
+        "round_bounds",
+        12
+      ],
+      "qualified_E_C": null,
+      "price_provider_record": false
+    }
+  ],
+  "saved_stage_summary": {
+    "component_TV": {
+      "normalization": {
+        "numerator": 0,
+        "denominator": 1
+      },
+      "cdf_rounding": {
+        "numerator": 60286342759087960920692218513810023360440119432008831,
+        "denominator": 15405683809800365206842106809484536674856511762333167340094807343104
+      },
+      "grid": {
+        "numerator": 543908593877990561,
+        "denominator": 649037107316853453566312041152512
+      },
+      "total": {
+        "numerator": 970914357467326316099709876016486561,
+        "denominator": 213796810946692078620497240580352281064897997963264
+      }
+    },
+    "component_positive_to_zero": {
+      "P->Q": 0,
+      "Q->F": 25,
+      "F->G": 7,
+      "P->G": 32
+    },
+    "zero_to_positive": 0,
+    "order_support_changes": 0,
+    "order_grid_TV_exactly_zero_for_all_13": true,
+    "distinct_components_P_positive_G_zero": 32
+  },
+  "conditional_path_scope": {
+    "nonvacuous_rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "vacuous_rounds": [],
+    "largest_saved_bound": {
+      "commit": "ec78fde57e117e9bbf79a26bfaa2e1575c1f5784",
+      "path": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01/ROUND_BOUNDS.json",
+      "selector": [
+        "rows",
+        12,
+        "path_TV_upper"
+      ]
+    },
+    "admissible_for": "Conditional ideal-source to IID-uniform-grid event-label/path comparison only; no adopted price tolerance"
+  },
+  "assumptions": [
+    "same event label denotes the same saved word/angle/phase",
+    "conditional order/component draws independent within each ideal/grid model",
+    "independent uniform 53-bit draws across event positions and restarted outer streams, or a justified bound uniform over matched histories"
+  ],
+  "remaining_evidence": [
+    "Adopt the operational sampling probability model/qualification or justify a seed-ensemble/joint-stream connection to the conditional grid model.",
+    "For transfer to ideal E[C-S], obtain a justified full-support residual range or observable-specific transfer method, including missing-support mass contributions.",
+    "Qualify finite residual estimates/rare contributions and long-round model transfer under an adopted price-precision/confidence objective; preserve m4 as holdout."
+  ],
+  "distribution_scope": "P is the saved reference-weight law; G is the uniform 53-bit grid map. This is not a bound on actual PCG64 joint streams.",
+  "actual_PCG64_joint_distance": null,
+  "full_support_residual_oscillation": null,
+  "price_correction": null,
+  "qualified_E_C": null,
+  "CI": null,
+  "price_provider_records_created": 0,
+  "price_guard_changed": false,
+  "scientific_reanalysis": false,
+  "F0_rerun": false,
+  "saved_E_I_S_modified": false,
+  "frozen_price_model_modified": false,
+  "m4_independent_holdout_modified": false,
+  "Q3_ideal_contract_modified": false,
+  "N": null,
+  "G": null,
+  "winner": null,
+  "mandatory_stop": true
+}

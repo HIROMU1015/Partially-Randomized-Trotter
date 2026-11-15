@@ -1,0 +1,39 @@
+Artificial tests: 5 PASS. Existing m4-admission regression: 5 PASS.
+10 test methods, no final errors/failures/skips.
+No scientific numerical computation, probability diagnostic, fit, sampling or compile was called.
+
+Commands (PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:scripts, existing project Python):
+python -B tests/check_pr_df_ld1_f0_admission.py -v
+python -B tests/check_pr_df_ld1_m4_holdout_admission.py -v
+
+New artificial tests:
+test_entry_flow_counts_shared_bounds_and_copies_saved_values ... ok
+test_no_scientific_engine_or_probability_arithmetic ... ok
+test_table_source_mismatch_holds_shared_dependents ... ok
+test_unproved_prng_and_price_unknowns_cannot_be_promoted ... ok
+test_wrong_axis_physical_or_law_is_held_not_repaired ... ok
+Ran 5 tests in 0.030s; OK.
+
+Existing regression:
+test_copies_saved_exact_metrics_without_recomputing ... ok
+test_entrypoint_never_calls_numerical_science ... ok
+test_four_paths_and_accepted_receipts_required ... ok
+test_prediction_and_axis_mismatch_rejected ... ok
+test_receipt_binding_and_source_comparison_must_match ... ok
+Ran 5 tests in 0.005s; OK.
+
+Initial synthetic AST check falsely treated Path / 'ADMISSION.json' as numerical division.
+Restricted that check to the diagnostic/round/axis admission functions and build,
+then reran the new artificial suite. No scientific execution or change to F0 rules.
+
+Actual read-only entry:
+python -B scripts/admit_pr_df_ld1_f0.py --out docs/research/pr_df_ld1_f0_admission_20261115
+status=SAVED_DIAGNOSTICS_CONNECTED
+diagnostic_tables: requested=14 accepted=14 held=0
+round_bound_pairs: requested=13 accepted=13 held=0
+candidate_axes: requested=26 accepted=26 held=0
+new_scientific_calculations=0; process exit=0
+
+Output check: X/Y share exactly 13 bound references; no new probability/price arithmetic.
+Prior C ADMISSION, m4 independent holdout ADMISSION, LD1 frozen price models,
+and the prior Full-H D7 frozen models remain byte-identical to their fixed commits.

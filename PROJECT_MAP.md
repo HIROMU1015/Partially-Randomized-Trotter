@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-DF LD1 F0のC受入](docs/research/pr_df_ld1_f0_admission_20261115/HANDOFF.md)：保存診断14件・round別上界13組を既存26軸へ接続、保留0。新科学計算0、正式E[C]は26軸すべて未資格、mandatory STOP。
+
 [Full-H κ2 D7の2モデル/4予測固定](docs/research/full_h_d7_model_freeze_20261115/REPORT.md)／[D1 HANDOFF](docs/research/full_h_d7_model_freeze_20261115/HANDOFF_D1.md)：D7全5 cellの10較正record/18軸を受入、保留0。X/Y別rank3・等cell重みexact最小二乗の2モデルとm5/m6×X/Yの4予測をb5165f11bへ観測前固定。SOURCE f46fa120b。人工5＋既存回帰3＝8 PASS、公開JSONは元D1 frozen_model_gateで読取確認済み。CALIBRATED_UNVALIDATED/qualified=false、holdout開封/compile/E[C]/CI/N/G0、D1後続6compileは別指示、mandatory STOP。 入口 scripts/freeze_full_h_d7_models.py。
 
 [PR-DF LD1 m4 holdoutのC受入](docs/research/pr_df_ld1_m4_holdout_admission_20261115/HANDOFF.md)：m4の保存軸別receipt8/8・記述的比較2/2をC候補/軸→凍結予測→D2比較→元receiptへ接続、保留0。比較DESCRIPTIVE_COMPLETE、モデルNOT_ASSESSED_NO_ADOPTED_TOLERANCE・許容差null、statevector未検証falseを維持。人工5＋回帰8＝13 PASS。新平均/誤差/予測/fit/compile/N/G0、公開照合後mandatory STOP。 入口 scripts/admit_pr_df_ld1_m4_holdout.py。

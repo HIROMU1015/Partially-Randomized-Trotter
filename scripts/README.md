@@ -1,5 +1,7 @@
 # scripts 索引
 
+`admit_pr_df_ld1_f0.py`：[F0のC受入](../docs/research/pr_df_ld1_f0_admission_20261115/HANDOFF.md)。既存固定JSON readerを再利用し、保存診断・上界をcandidate/axisへmetadata接続。確率/価格の再計算なし。
+
 `freeze_full_h_d7_models.py`：[D7の受入/2fit/4予測固定](../docs/research/full_h_d7_model_freeze_20261115/REPORT.md)。固定Aのfit_identified→C exact fit/predictを再利用し、公開JSONを元D1 metadata gateへ接続。準備はmetadataのみ、固定run01は完了済み・再実行禁止。holdout科学処理なし。
 
 `admit_pr_df_ld1_m4_holdout.py`：[LD1 m4の保存receipt/比較受入](../docs/research/pr_df_ld1_m4_holdout_admission_20261115/HANDOFF.md)。既存reader/path_bindingを再利用し、8元receiptと2保存exact比較を照合・copyする。平均/誤差/予測/fitは計算せず、元凍結値とD2結果を保持する。
