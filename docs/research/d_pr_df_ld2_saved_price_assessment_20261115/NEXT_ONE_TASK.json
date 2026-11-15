@@ -1,0 +1,93 @@
+{
+  "schema": "NEXT_LD1_ONE_AXIS_LOWER_BOUND_FEASIBILITY_PLAN_V1",
+  "status": "PROPOSED_NOT_ADOPTED_NOT_EXECUTED",
+  "choice": "LD1_ONE_SIDED_BOUND_BEFORE_NEW_LD2_PRICE_ACQUISITION",
+  "scope": "LD1 m9-X only; not LD2 numerical input",
+  "target": {
+    "method": "PR_DF",
+    "LD": 1,
+    "m": 9,
+    "axis": "X",
+    "physical_id": "06a78c7f9856f373336f",
+    "q": 512,
+    "R_outer": 1020,
+    "N": 25,
+    "target_law": "SAVED_SOURCE_IDEAL_FINITE_RTE_LAW_I"
+  },
+  "inputs": {
+    "structural": {
+      "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+      "path": "docs/research/h4_structural_schedule_results_20261113/run01/COVERAGE.json",
+      "selector": [
+        "values",
+        18
+      ]
+    },
+    "identity": {
+      "commit": "950577f416c17a20d309a8053a4bb016027b724d",
+      "path": "docs/research/d_pr_df_ld1_ec_plan_20261115/AXIS_EVIDENCE.json",
+      "selector": [
+        "rows",
+        18
+      ]
+    },
+    "new_ZZ": {
+      "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+      "path": "src/trottertracks/efficient_controlled_zz.py",
+      "selector": []
+    },
+    "compiler_source": {
+      "repository": "Qiskit/qiskit",
+      "commit": "896d1c8b72888a52a46081a6d1f4de8c56db8aea"
+    },
+    "grammar_inventory": {
+      "commit": "dcf905fc5c0abb05966019bcae8b0206af9aa952",
+      "path": "docs/research/d_pr_df_ld1_f0_rz_range_20261115/RANGE_EVIDENCE.json",
+      "selector": [
+        "sources"
+      ]
+    },
+    "priority_reference_only": {
+      "commit": "85dab58d6d29d54502a7650c129bc38a9bb5ec99",
+      "path": "docs/research/d_pr_df_ld1_reference_budget_20261115/run01/RESULT.json",
+      "selector": [
+        "rows",
+        18
+      ]
+    },
+    "PF": {
+      "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+      "path": "docs/research/pf6_allround_cost_20261115/RESULT.json",
+      "selector": []
+    }
+  },
+  "proposed_new_outputs": {
+    "source_proof_attempts": 1,
+    "axis_lower_enclosures_max": 1,
+    "weighted_partial_lower_bounds_max": 1,
+    "PF_comparisons_max": 2
+  },
+  "proposed_new_paths": 0,
+  "proposed_compiles": 0,
+  "H4_builds": 0,
+  "fit": 0,
+  "Q3": 0,
+  "proof_requirement": "Prove lower h<=C on the entire relevant support and evaluate E_I[h], or prove f=C-S>=l on all support and use saved E_I[S]. No observed minimum or model reference as bound.",
+  "proposed_arithmetic": "Only after proof: ell_9X<=E_I[C_9X], L_partial=25*ell_9X<=T_LD1 by nonnegative other-axis costs.",
+  "decisions": [
+    "L_partial>838693580 excludes fixed LD1 against both PF benchmarks",
+    "593555352<L_partial<=838693580 excludes LD1 against B0I; Full/equality separately",
+    "Insufficient/trivial/unknown bound gives UNKNOWN, not LD1 cheaper"
+  ],
+  "scientific_effect": "Only fixed LD1 versus fixed PF; LD2 and PR-DF family remain unranked.",
+  "stop": [
+    "Prove applicability before numerical evaluation",
+    "No justified nontrivial lower observable/range: UNKNOWN and STOP; no automatic m12/Y/path/compile fallback",
+    "Identity/compiler/law/source mismatch or inability to save: preserve partial and STOP",
+    "Publish one-axis result and comparisons, mandatory STOP"
+  ],
+  "success_not_assumed": true,
+  "prior_reference_is_not_bound": true,
+  "current_work_lower_bound_calculations": 0,
+  "mandatory_stop": true
+}
