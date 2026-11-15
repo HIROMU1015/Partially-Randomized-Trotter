@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli LD2 S0+：保存m9回路のstep分解](research/a_pauli_ld2_step_audit_20261115/s0plus_m9/REPORT_S0PLUS.md)／[HANDOFF](research/a_pauli_ld2_step_audit_20261115/s0plus_m9/HANDOFF_S0PLUS.md)（2026-11-15、A）：C2の保存m9（q=512・R=526、QPY 8件、0-compile）。2 path×X/Yでstep境界のancilla CX列が順序まで一致、`308 + 1900·q + Σ本体` が保存総数を復元、X/Y本体一致。path1は最初のstepの入口の1q token 1個がrun02参照と異なりFAILとして記録。2番目以降のstepの標準偏差58 RZ（1,022区間）。mandatory STOP。
+
 [PR-Pauli LD2 S0：保存QPYのstep分解監査](research/a_pauli_ld2_step_audit_20261115/REPORT.md)／[S0-r1（run02）](research/a_pauli_ld2_step_audit_20261115/REPORT_R1.md)／[HANDOFF_R1](research/a_pauli_ld2_step_audit_20261115/HANDOFF_R1.md)（2026-11-15、A）：run01は固定規則でP2 26/26 FAIL（数値上0のD(f1)対のcompile除去、原因特定）。承認された修正規則のr1は同じ52 QPYでP1〜P6 PASS、q≤64で `308 + 1900·q + Σstep本体` が厳密、step標準偏差15〜20 RZ（R=33・66）。0-compile、mandatory STOP。
 
 [PR-Pauli LD2 全13 roundの期待価格評価計画](research/a_pauli_ld2_expected_price_plan_20261115/REPORT.md)／[HANDOFF](research/a_pauli_ld2_expected_price_plan_20261115/HANDOFF.md)／[26軸対応表](research/a_pauli_ld2_expected_price_plan_20261115/AXIS_MAP.csv)（2026-11-15、A）：Q3候補と価格証拠の26軸対応、step分解による総額 w·β の評価案、最初の有限作業S0（保存QPYの0-compile監査）。計画のみ・価格予測/E[C]/CI/Gなし、mandatory STOP。
