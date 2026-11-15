@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli LD2 全13 roundの期待価格評価計画](research/a_pauli_ld2_expected_price_plan_20261115/REPORT.md)／[HANDOFF](research/a_pauli_ld2_expected_price_plan_20261115/HANDOFF.md)／[26軸対応表](research/a_pauli_ld2_expected_price_plan_20261115/AXIS_MAP.csv)（2026-11-15、A）：Q3候補と価格証拠の26軸対応、step分解による総額 w·β の評価案、最初の有限作業S0（保存QPYの0-compile監査）。計画のみ・価格予測/E[C]/CI/Gなし、mandatory STOP。
+
 [PR-Pauli LD2の次の有限価格証拠](research/pauli_ld2_next_price_evidence_20261115/REPORT.md)／[有限実行案](research/pauli_ld2_next_price_evidence_20261115/FINITE_EXECUTION_PLAN.md)／[HANDOFF](research/pauli_ld2_next_price_evidence_20261115/HANDOFF.md)：同round追加と長roundを比較し、m9 fresh2 path×XY最大4 compileを第一案。未採択・未実行、CI/E[C]/N/Gなし、mandatory STOP。
 
 [PR-Pauli LD2 m5/m6独立holdout規則案](research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/HOLDOUT_RULE_PROPOSAL.md)／[HANDOFF](research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/HANDOFF_HOLDOUT_RULE.md)：観測前に作成した規則。後に採択され、m5/m6記述比較は705f59ea8で完了（[現在地](research/pauli_ld2_next_price_evidence_20261115/REPORT.md)）。数値許容差は未採択・モデルPASS/FAILなし、元STOPは保全。
