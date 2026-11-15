@@ -133,6 +133,8 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('schema')=='PR_DF_LD9_CONFIGURATION_V0_Q3_JOIN_V1':
+            self.pr_df_unpriced_v0(locator,d);return
         if d.get('kind')=='CONDITIONAL_MODEL_REFERENCE_COST_AND_Q3_NOT_QUALIFIED_G' and 'records'in d:
             self.pauli_budget(locator,d);return
         if d.get('schema')=='PR_DF_LD7_MODEL_COST_Q3_JOIN_FOR_C_V1':
@@ -451,6 +453,29 @@ class Catalog:
                 row['labels']=sorted(set(prior['labels']+row['labels']))
                 row['price_availability_history']=[dict(status=prior['status'],sources=prior['result_sources'])]
                 self.rows.remove(prior)
+
+    def pr_df_unpriced_v0(self,loc,d):
+        """Attach one saved Q3 allocation; a referenced split is not a new point."""
+        published=self.r.read(d['fixed_Q3_inputs']);inp=published.get('inputs',published)
+        case=case_for(inp['cases'],d['allocation']);conf=self.r.read(case_ref(case));q3=self.r.read(d['Q3_source'])
+        require(self.r.read(d['configuration'])==conf and d['configuration_id']==conf['id'],
+                'Unpriced V0 configuration mismatch')
+        require(d['total_configuration_id']==case['total_configuration_id']==q3['record']['configuration_id'] and
+                d['binding_id']==case['binding_id']==q3['record']['canonical_binding'],'Unpriced V0 total view/binding mismatch')
+        require(shots(d['allocation'])==shots(case['allocation'])==shots(q3['allocation']),
+                'Unpriced V0 allocation mismatch')
+        require(d['law']==conf['spec']['law']['model'] and d['Q3_status']==q3['status'],
+                'Unpriced V0 law/verdict mismatch')
+        require(frac(d['MSE_upper'])==frac(q3['adopted_q3_assessment']['q3']['model_MSE_upper']),
+                'Unpriced V0 saved MSE bound mismatch')
+        require(d['price_status']=='NOT_EVALUATED' and all(d[k] is None for k in ('axis_prices','total_model_cost','formal_E_C','G')),
+                'Do not import a different split price into unpriced V0')
+        require(shots(d['same_V0_LD7']['shots'])==shots(d['allocation']),'Shared V0 shot vector mismatch')
+        self.make(dict(case,_source=d['fixed_Q3_inputs']),d['allocation'],d['Q3_status'],None,
+            d['MSE_lower'],d['MSE_upper'],inp['adopted_evaluation'],loc,[])
+        self.rows[-1].update(q3_source=d['Q3_source'],price_status=d['price_status'],
+            shared_V0_reference=dict(source=dict(loc,selector=['same_V0_LD7']),
+                meaning='Same shot vector; LD7 remains a different physical candidate and price domain'))
 
     def q3_without_prices(self,loc,join):
         """A published Q3/axis join with an explicitly missing price is not ranked."""

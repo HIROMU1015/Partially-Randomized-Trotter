@@ -103,6 +103,13 @@ class PublishedAcceptance(unittest.TestCase):
             self.assertTrue(all(p['price_kind']=='MODEL' and not p['qualified_for_candidate']for p in r['price_axes']))
         self.assertEqual(next(r for r in ld7 if r['label']=='LD7_V0')['price_availability_history'][0]['status'],'PRICE_WAITING')
         self.assertEqual(len([r for r in result['candidates']if r['method']=='PR_DF' and r['L_D']in (1,2)]),6)
+        ld9=[r for r in result['candidates']if r['method']=='PR_DF' and r['L_D']==9]
+        self.assertEqual(len(ld9),1)
+        self.assertEqual(ld9[0]['status'],'PRICE_WAITING')
+        self.assertEqual(ld9[0]['q3_status'],PASS)
+        self.assertIsNone(ld9[0]['conditional_cost'])
+        self.assertEqual(ld9[0]['price_axes'],[])
+        self.assertNotIn(ld9[0]['point_id'],result['method_minima']['PR_DF']['point_ids'])
         self.assertEqual(len(result['signal_only_history']),1)
         pauli=[r for r in result['candidates']if r['method']=='PR_PAULI' and r['L_D']==3]
         self.assertEqual(len(pauli),5)
@@ -184,10 +191,10 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertEqual(len(cat.result()['candidates']),9)
         for s in self.inputs['sources']:cat.add(s)
         result=cat.result()
-        self.assertEqual(len(result['candidates']),42)
+        self.assertEqual(len(result['candidates']),43)
         self.assertFalse([r for r in result['candidates']if r['status']=='MISMATCH'])
         self.assertEqual([r['label']for r in result['candidates']if r['status']=='PRICE_WAITING'],
-                         ['B0I_P7_Y4_32h_over_5__A_SHAPE'])
+                         ['B0I_P7_Y4_32h_over_5__A_SHAPE','LD9_V0'])
         summary=ref(source['commit'],source['path'].replace('C_HANDOFF.json','SUMMARY.json'))
         modified=deepcopy(self.reader.read(summary));modified['menu'][0]['cost']=refnum(0,1)
         with self.assertRaisesRegex(ValueError,'republication'):
@@ -198,11 +205,24 @@ class PublishedAcceptance(unittest.TestCase):
         cat=Catalog(self.reader,self.inputs['comparison']);cat.add(source)
         self.assertEqual(len(cat.result()['candidates']),5)  # Existing VP plus four distinct allocations.
         for s in self.inputs['sources']:cat.add(s)
-        self.assertEqual(len(cat.result()['candidates']),42)
+        self.assertEqual(len(cat.result()['candidates']),43)
         for key,value in [('total_configuration_id','other'),('price_qualified_for_candidate',True)]:
             changed=deepcopy(self.reader.read(source));changed['records'][0][key]=value
             with self.assertRaisesRegex(ValueError,'Pauli budget'):
                 Catalog(self.reader,self.inputs['comparison']).pauli_budget(source,changed)
+
+    def test_ld9_unpriced_input_does_not_import_ld7_or_prices(self):
+        source=next(s for s in self.inputs['sources']if 'd_pr_df_ld9_v0_results'in s['path'])
+        cat=Catalog(self.reader,self.inputs['comparison']);cat.add(source)
+        self.assertEqual(len(cat.result()['candidates']),1)
+        self.assertEqual(cat.result()['candidates'][0]['L_D'],9)
+        for s in self.inputs['sources']:cat.add(s)
+        ld7=[r for r in cat.result()['candidates']if r['method']=='PR_DF' and r['L_D']==7]
+        self.assertEqual(len(ld7),3)
+        self.assertEqual(len([r for r in ld7 if r['label']=='LD7_V0']),1)
+        changed=deepcopy(self.reader.read(source));changed['total_model_cost']=refnum(1,1)
+        with self.assertRaisesRegex(ValueError,'different split price'):
+            Catalog(self.reader,self.inputs['comparison']).pr_df_unpriced_v0(source,changed)
 
     def test_same_command_updates_only_by_adding_a_pinned_source(self):
         import os,sys
