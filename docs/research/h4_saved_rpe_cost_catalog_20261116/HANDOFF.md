@@ -49,3 +49,11 @@ HANDOFF→SUMMARYの重複参照は同一documentとして読み、同一configu
 `Reader.document` は固定commit/pathをcacheし、複数HANDOFFから同じ大きなJSONを反復読取しない。既存B2と同じprocess-local整数桁上限の解除で長いexact MSE分子・分母を読む。OSや他環境の設定は変更しない。性能方法の短い索引はdocs/PERFORMANCE_METHODS.md。今回追加のworkerや資源上限は不要。
 
 ロードマップ本体は変更せず、保存集合の最安点と未解決点を今回の成果へまとめる。正式E[C]/G/十分N/全空間最適性・方式winnerは認定しない。commit/push・remote一致確認後mandatory STOP。
+
+## 初回公開結果
+
+実行SOURCE `f889ac16e04f6f7bb2786c18c181c7eb025693de`。固定10入力の34点を収録し、適合27・モデル不適合5・Q3適合/価格待ち2、metadata不一致0。重複4件を統合し、LD3の旧信号のみ状態1件はhistoryへ保全。比較表は [run01/REPORT.md](run01/REPORT.md)、機械可読正本は [run01/CATALOG.json](run01/CATALOG.json)、確認は [run01/CHECKS.json](run01/CHECKS.json)。
+
+保存集合内の最安費用はFull PF=559457386、p7=395962678、PR-Pauli LD2 OWN-B≈2442845584.51、PR-DF LD2 B_PRICE≈46341978336.21 RZ。Full-Hの固定シナリオ≈1246382808920.55 RZも同配分Q3を照合済み。LD3 VPとLD7 V0は価格nullで選択対象外。5 test PASS、新規科学call0。固定commit/pathを追加した同じコマンドで更新可能な状態で公開し、remote照合後mandatory STOP。
+
+長いMSE exact分子・分母はCATALOG内では十進文字列として転記し、標準Python JSON readerでも読める。値を丸めた表現ではない。条件付き費用と比較にはexact有理数を使い、元SUMMARYの保存判定を再評価しない。
