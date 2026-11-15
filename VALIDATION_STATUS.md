@@ -1,5 +1,7 @@
 # Validation status
 
+[Full-H κ2 m0の1shot価格規則案](docs/research/full_h_m0_price_rule_20261115/REPORT.md)：m0/T.1/q1/R9/K2の同条件保存価格は確認範囲で0軸。事前固定normal path1本のX/Y実測値を経験的1shot単価にする案を提示。現在単価null、最大2wrapper取得は未実行。Nだけの変更へ再利用可能、旧prep hash差の価格影響は未確認。新規sampling/build/compile/集計/予測/fit/Q3/全額0。m6下界探索は利用者指示で終了、公開後STOP。
+
 [Full-H κ2 m6の保存証拠下界調査](docs/research/full_h_m6_lower_bound_20261115/REPORT.md)：固定m6の保存SOURCE・receiptから正当化できたL6_lowerは非負性の0 RZ。p7 S2基準593,555,352との差は同額で順位未判定。旧Full-HとD7のprep hash差を保持し、compiled RZ生存不等式が不足。0-compile証拠回収を優先、条件付き61path/122wrapperの未採択検定案を提示。既存F1/D7再計算・sampling/build/compile/fit/Q3・新CIなし、公開後STOP。
 
 [Full-H κ2 F1モデル総額診断](docs/research/full_h_f1_model_diagnostic_20261115/REPORT.md)：承認済みF1を一回実行。元exact係数で22軸評価・保存4予測再利用。24軸は非負、m0-X/Yは負値（約−1224.44 RZ）のため全13round T_ref・両PF基準の反転境界はnull。m6モデル部分額約633,699,606.052 RZは母下界ではない。人工/回帰12 PASS、path/build/compile/fit/Q3=0、正式E[C]/CI/G/winner未評価、公開後STOP。

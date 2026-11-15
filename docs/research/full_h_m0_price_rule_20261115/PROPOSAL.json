@@ -1,0 +1,268 @@
+{
+  "schema": "FULL_H_KAPPA2_M0_PRICE_RULE_PROPOSAL_V1",
+  "status": "PROPOSED_PENDING_PRICE_ACQUISITION_AND_ADOPTION",
+  "sources": {
+    "admission": {
+      "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+      "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json"
+    },
+    "F1": {
+      "commit": "a1aa38df46c92e2489095891f6082a5be1a277f5",
+      "path": "docs/research/full_h_f1_model_diagnostic_20261115/run01/RESULT.json"
+    },
+    "frozen": {
+      "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+      "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json"
+    },
+    "old_hash_difference": {
+      "commit": "5b2f67ee44d9cc27fd36c05617707a5846aacf42",
+      "path": "docs/research/full_h_m6_lower_bound_20261115/HANDOFF.md"
+    }
+  },
+  "physical_candidate": {
+    "system": "H4",
+    "method": "PR",
+    "formula": "2nd",
+    "prefix": 0,
+    "T": 0.1,
+    "q": 1,
+    "R_outer": 9,
+    "K": 2,
+    "delta": 0.1,
+    "s": 9,
+    "family": "FULL_H_PURE_RTE",
+    "L_D": 0,
+    "id": "FULL_H_2a9a68a11d08af234a8c"
+  },
+  "scalar": {
+    "constant": 2.29310124732,
+    "extracted_identity": -2.6245790607368162,
+    "total": -0.33147781341681615,
+    "application": "ONCE_AT_TOTAL_T",
+    "identity_components_randomized": 0
+  },
+  "H_state_snapshot": {
+    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+  },
+  "law": {
+    "model": "ideal_finite_RTE_law",
+    "sampling": "PAIRED_FINITE_TAYLOR_COMPONENT_ORDER_LAW",
+    "source": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/rte.py",
+      "functions": [
+        "finite_rte_distribution"
+      ]
+    },
+    "preparation_source": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "scripts/h46_full_h_pure_rte.py",
+      "functions": [
+        "prepare_full_h",
+        "context",
+        "validate"
+      ],
+      "function": "prepare_full_h"
+    }
+  },
+  "price_sampling_law": "PCG64_numpy_float64_CDF_saved_cohort",
+  "profile": {
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "qiskit": "1.3.0",
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "control": "symmetric_directional",
+    "wrapper": "full_Hadamard_with_measurement",
+    "P": 0
+  },
+  "implementation": {
+    "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+    "native": "H46_LONG_TIME_NATIVE_COMPOSE",
+    "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY",
+    "scalar_application": "ONCE_AT_TOTAL_T"
+  },
+  "target_preparation_hash": "92325333cfe8c5e6c5f9bf69cdfc0ea6538f8eaa66327a3820d390dc2e8aa100",
+  "price_unit": "COMPILED_RZ_PER_ONE_MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_NO_STATE_PREPARATION",
+  "units": [
+    {
+      "axis": "X",
+      "physical_id": "FULL_H_2a9a68a11d08af234a8c",
+      "m": 0,
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "q_grouping": 1,
+      "R_outer": 9,
+      "K": 2,
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:c128cca68dd5a5464c31e5d9c5333fae0238c3dd3593a66d31957814bccd6738",
+      "total_candidate_id": "RMSE:c892384786b259c8e27bfadad18beda839305ce8281d1129dced65002a7bbe20",
+      "admission": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          0
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          0
+        ]
+      },
+      "status": "PRICE_EVIDENCE_MISSING",
+      "per_shot_RZ": null,
+      "eligible_saved_receipts": 0,
+      "proposed_rule": "C0_X = compiled_RZ(full_measured_wrapper(omega0, X))",
+      "proposed_evidence_kind": "SINGLE_PATH_EMPIRICAL_REFERENCE",
+      "proposed_B_kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+      "proposed_expectation": "FINITE_COHORT_ONLY",
+      "law_expectation_qualified": false,
+      "CI": null
+    },
+    {
+      "axis": "Y",
+      "physical_id": "FULL_H_2a9a68a11d08af234a8c",
+      "m": 0,
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "q_grouping": 1,
+      "R_outer": 9,
+      "K": 2,
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:c128cca68dd5a5464c31e5d9c5333fae0238c3dd3593a66d31957814bccd6738",
+      "total_candidate_id": "RMSE:c892384786b259c8e27bfadad18beda839305ce8281d1129dced65002a7bbe20",
+      "admission": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          1
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          1
+        ]
+      },
+      "status": "PRICE_EVIDENCE_MISSING",
+      "per_shot_RZ": null,
+      "eligible_saved_receipts": 0,
+      "proposed_rule": "C0_Y = compiled_RZ(full_measured_wrapper(omega0, Y))",
+      "proposed_evidence_kind": "SINGLE_PATH_EMPIRICAL_REFERENCE",
+      "proposed_B_kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+      "proposed_expectation": "FINITE_COHORT_ONLY",
+      "law_expectation_qualified": false,
+      "CI": null
+    }
+  ],
+  "same_condition_saved_paths": 0,
+  "same_condition_saved_axis_receipts": 0,
+  "recommended_rule": "One pre-fixed normal path; keep original X/Y direct receipt values separately as empirical per-shot references",
+  "reuse_for_shot_only_changes": true,
+  "allocation_independent_unit_price": true,
+  "current_N_X": 96,
+  "current_N_Y": 96,
+  "arbitrary_allocation_formula": "N0X*C0X + N0Y*C0Y",
+  "actual_cost_sum_computed": false,
+  "new_allocation_Q3_qualified": false,
+  "scope_of_rule": "Only the exact m0 physical/law/scalar/compiler/lowering/wrapper/preparation binding; changing only shot counts is permitted if adopted",
+  "proposed_acquisition": {
+    "status": "NOT_EXECUTED_NOT_APPROVED_BY_THIS_TASK",
+    "saved_reused_prices": 0,
+    "reused_assets": [
+      "Saved H/state/snapshot and reference/context restore",
+      "Original normal K2 sampler and trial_seed",
+      "D1 acquire_path/compile_cached and phase/axis/identity gates"
+    ],
+    "normal_fresh_paths": 1,
+    "path_indices": [
+      0
+    ],
+    "shared_path_for_X_Y": true,
+    "axis_receipts": 2,
+    "maximum_new_full_wrapper_compiles": 2,
+    "cohort": "D_FULL_H_KAPPA2_M0_REFERENCE_N1_20261115_V1",
+    "outer": 0,
+    "piece": 0,
+    "seed_u64": 15612141344395026302,
+    "seed_decimal": "15612141344395026302",
+    "seed_source": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "scripts/h46_full_h_pure_rte.py"
+    },
+    "seed_function": "trial_seed(physical_row, cohort, index=0, outer=0, piece=0)",
+    "seed_computed_as_metadata_only": true,
+    "acquisition_API": {
+      "commit": "9cbabc617e95a81810924413c1b2b06ced329514",
+      "path": "scripts/run_full_h_kappa2_p2.py"
+    },
+    "API_function": "acquire_path",
+    "separate_from_closed_D7_plan": true,
+    "aggregation": "n=1 for each axis: copy its own rz_count directly; never copy one axis to the other",
+    "numerical_gate_scope": "Original index0 action/wrapper/compiled-vector checks; all-path scalar/event/new-ZZ/XY/fingerprint checks",
+    "failure_policy": "Any missing axis, SOURCE/preparation mismatch or required gate failure => held/null and STOP; no substitution, resampling, retry or threshold relaxation",
+    "full_law_coverage_or_CI_required": false,
+    "forced_rare_or_order0_only": false,
+    "independent_path_count_for_reporting": 1,
+    "independent_IID_law_qualification": false,
+    "uncompiled_legacy_parity_reference": "Reuse original gate requirement; no extra legacy compile"
+  },
+  "new_comparison_scenario_if_adopted": {
+    "status": "NOT_CREATED",
+    "m0": "proposed X/Y empirical references",
+    "m1_to_m12": "unchanged 24 F1 MODEL_SCENARIO_ONLY rows",
+    "original_F1_modified": false,
+    "original_F1_total_remains_null": true,
+    "rule_not_qualified_law_E_C": true
+  },
+  "new_sampling": 0,
+  "new_builds": 0,
+  "new_compiles": 0,
+  "new_fit": 0,
+  "new_Q3": 0,
+  "new_price_averages_or_predictions": 0,
+  "new_whole_RPE_cost": 0,
+  "m6_lower_bound_search_resumed": false,
+  "E_C": null,
+  "CI": null,
+  "G": null,
+  "winner": null,
+  "model_qualification_changed": false,
+  "mandatory_stop": true,
+  "rule_id": "FULL_H_KAPPA2_M0_NORMAL_PATH_REFERENCE_V1",
+  "route": "FULL_H_RTE",
+  "price_provider_record": false,
+  "technical_checks": {
+    "axis_identity_and_null_price_status": "PASS",
+    "single_shared_path_two_axis_compile_scope": "PASS",
+    "integer_seed_decimal_preserved": "PASS",
+    "price_independent_of_shot_count": "PASS",
+    "old_F1_D7_m6_documents_unchanged": "PASS",
+    "technical_metadata_checks_only": true,
+    "new_unit_test_framework": false
+  }
+}
