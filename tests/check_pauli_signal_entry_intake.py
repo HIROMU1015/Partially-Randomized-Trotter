@@ -29,14 +29,14 @@ def blob(commit, path):
     return subprocess.check_output(['git', 'show', commit+':'+path], cwd=ROOT)
 
 
-def packet_function():
-    nodes = [n for n in ast.parse(blob(A.ENTRY_SOURCE, A.ENTRY_MODULE)).body
+def packet_function(source=A.ENTRY_SOURCE):
+    nodes = [n for n in ast.parse(blob(source, A.ENTRY_MODULE)).body
              if isinstance(n, ast.FunctionDef) and n.name == 'packet']
     assert len(nodes) == 1
     scope = dict(deepcopy=deepcopy, MODULE=A.ENTRY_MODULE, HELPER=A.ENTRY_DICTIONARY_HELPER,
                  p1=NS(B=A.p.SavedArtifacts(ROOT).read(A.HANDOFF)['packets'][0]['B_source']),
                  LOCAL=A.p.SavedArtifacts(ROOT).read(A.LD3_HANDOFF)['packets'][0]['rounds'][0]['status'])
-    exec(compile(ast.Module(body=nodes, type_ignores=[]), A.ENTRY_SOURCE+':'+A.ENTRY_MODULE, 'exec'), scope)
+    exec(compile(ast.Module(body=nodes, type_ignores=[]), source+':'+A.ENTRY_MODULE, 'exec'), scope)
     return scope['packet']
 
 
@@ -48,7 +48,7 @@ def metadata_only():
 
 
 class Repository:
-    def __init__(self):
+    def __init__(self, source=A.ENTRY_SOURCE):
         self.temp = tempfile.TemporaryDirectory(prefix='pauli-intake-fixture-')
         self.root = Path(self.temp.name)
         self.git('init', '-q')
@@ -57,7 +57,7 @@ class Repository:
         (self.root/'.git/objects/info/alternates').write_text(str(objects)+'\n')
         for name in A.ENTRY_FILES:
             path=self.root/name; path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(blob(A.ENTRY_SOURCE,name))
+            path.write_bytes(blob(source,name))
         self.commit()
 
     def git(self, *args):
@@ -126,7 +126,7 @@ class EntryIntake(unittest.TestCase):
                 self.assertEqual(accepted['results'][0]['signal_packet']['means'],a['means'])
         finally:repo.close()
 
-    def fixture(self, repo, edit):
+    def fixture(self, repo, edit, make_packet=None):
         _,_,pk=self.saved[3];spec=deepcopy(pk['configuration']['spec'])
         helpers=A._ld3_metadata_helpers(str(repo.root))
         if edit=='kappa':
@@ -164,8 +164,9 @@ class EntryIntake(unittest.TestCase):
         rows={m:(json.loads((repo.root/('fixtures/%s/round%d.json'%(edit,m))).read_text())['record'],
                  dict(commit=raw_commit,path='fixtures/%s/round%d.json'%(edit,m),selector=['record'],
                       scientific_source=pk['rounds'][m]['mean_record']['source']['commit']),False) for m in range(13)}
-        handoff=self.packet(config,rows,configuration_source=dict(commit=raw_commit,path='fixtures/%s/CONFIGURATION.json'%edit),
-                            raw_result_source=dict(commit=raw_commit,path='fixtures/%s/round0.json'%edit))
+        handoff=(make_packet or self.packet)(config,rows,
+            configuration_source=dict(commit=raw_commit,path='fixtures/%s/CONFIGURATION.json'%edit),
+            raw_result_source=dict(commit=raw_commit,path='fixtures/%s/round0.json'%edit))
         handoff['artificial_fixture']='SYNTHETIC_NOT_A_MEAN_NOT_FOR_SAVED_CATALOG'
         return handoff,repo.save(handoff,edit+'.json')
 
@@ -213,6 +214,64 @@ class EntryIntake(unittest.TestCase):
             self.assertEqual(out['results'][0]['C_plan_price_bridge'],'UNKNOWN_PAULI_PHYSICAL_ID_ADAPTER_REQUIRED')
             with self.assertRaisesRegex(ValueError,'Pauli physical recipe differs'):
                 self.accept(repo,ref)
+        finally:repo.close()
+
+    def test_new_assembly_source_saved_packets_and_artificial_variants(self):
+        source=A.CURRENT_ENTRY_SOURCE;repo=Repository(source);make_packet=packet_function(source)
+        try:
+            for prefix,(ref,i,pk) in self.saved.items():
+                rows={r['m']:(deepcopy(r['mean_record']),deepcopy(r['mean_source']),True) for r in pk['rounds']}
+                handoff=make_packet(pk['configuration'],rows,
+                    configuration_source=dict(ref,selector=['packets',i,'configuration']))
+                out=self.accept(repo,repo.save(handoff,'new_LD%d.json'%prefix));view=out['results'][0]['signal_packet']
+                with metadata_only():
+                    old=A.accept_saved(ROOT,integration=C.interfaces(str(ROOT)).pipeline,handoff_source=ref)['results'][i]
+                for key in ('means','target','dictionary_identity','implementation_sources','target_view_source'):
+                    self.assertEqual(view[key],old['signal_packet'][key],(prefix,key))
+                self.assertEqual(out['assembly_implementation_source']['commit'],source)
+                self.assertEqual(view['assembly_implementation_source']['commit'],source)
+            for edit in ('kappa','delta','prefix'):
+                handoff,ref=self.fixture(repo,edit,make_packet=make_packet)
+                out=self.accept(repo,ref);view=out['results'][0]['signal_packet']
+                self.assertEqual(view['assembly_implementation_source']['commit'],source)
+                self.assertEqual([m['raw'] for m in view['means']],[dict(real=.25,imag=-.5)]*13)
+                self.assertEqual(out['science_calls'],0)
+        finally:repo.close()
+
+    def test_new_A_support_reason_and_normalizer_budget_are_distinct_from_C(self):
+        # Load ONLY the two pure metadata functions; never import/evaluate A's
+        # signal provider or its saved numerical reference lookup.
+        names={'round_support','normalizer_budget'}
+        nodes=[n for n in ast.parse(blob(A.CURRENT_ENTRY_SOURCE,A.ENTRY_MODULE)).body
+               if isinstance(n,ast.FunctionDef) and n.name in names]
+        ctx={}
+        scope=dict(PROVIDER_FORMULAS=('2nd','4th(m5_best)'),PROVIDER_K=(2,4,6),
+            VALIDATED=dict(formula='2nd',K=2),common=NS(same=A.p.same,structure=lambda c:ctx['structure']),
+            provider=NS(_scalar=A.B.a.exact_scalar,_reference=lambda *a:None,
+                        saved_h4_reference=lambda *a,**k:dict(artificial_fixture=True)))
+        exec(compile(ast.Module(body=nodes,type_ignores=[]),A.CURRENT_ENTRY_SOURCE+':'+A.ENTRY_MODULE,'exec'),scope)
+        repo=Repository(A.CURRENT_ENTRY_SOURCE)
+        try:
+            bad,ref=self.fixture(repo,'exact_delta',make_packet=packet_function(A.CURRENT_ENTRY_SOURCE))
+            unsupported=[]
+            for row in bad['packets'][0]['rounds']:
+                rec=row['mean_record'];ctx['structure']=rec['physical_context']['structure']
+                # Use A's unchanged P1 job, including B_identity.
+                api=NS(validate=A.B._validate,exact_scalar=A.B.a.exact_scalar)
+                job=A._ld3_metadata_helpers(str(repo.root)).job(bad['packets'][0]['configuration'],row['m'],rec['source'],api)
+                reasons,status=scope['round_support'](str(repo.root),job)
+                if reasons:
+                    self.assertIn('ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT',reasons)
+                    self.assertEqual(status,'UNSUPPORTED');unsupported.append(row['m'])
+            self.assertEqual(unsupported,list(range(2,13)))
+            # The old C exact-step guard is STILL an independent price join.
+            with self.assertRaisesRegex(ValueError,'Pauli physical recipe differs'):self.accept(repo,ref)
+            cfg=deepcopy(self.saved[3][2]['configuration']['spec']);cfg['formula']='4th(m5_best)'
+            c=A.B.generate(cfg);api=NS(validate=A.B._validate,exact_scalar=A.B.a.exact_scalar)
+            helper=A._ld3_metadata_helpers(str(repo.root))
+            jobs={m:helper.job(c,m,self.saved[3][2]['rounds'][m]['mean_record']['source'],api) for m in range(13)}
+            self.assertEqual(scope['normalizer_budget'](jobs),13*11)
+            # No normalization calculation occurred: this is a count-only cap.
         finally:repo.close()
 
     def test_configuration_carrier_law_and_dictionary_mismatches_rejected(self):

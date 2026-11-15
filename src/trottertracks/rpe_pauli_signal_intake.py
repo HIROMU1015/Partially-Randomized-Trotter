@@ -31,6 +31,8 @@ LD5_HANDOFF = dict(commit='ac46d100e74f3f56b4a3ff4d95c15fdc7fe8ca98',
 LD5_DICTIONARY = dict(commit='6255fbc422121fd777cad52763ef5a684abd46a3',
     path='docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json')
 ENTRY_SOURCE = '93a5ef3b9fed337cc4d26ee684defd304fa0eac0'
+CURRENT_ENTRY_SOURCE = '4e5b8bef634e3f071fe63df9683d7245df984d98'
+ENTRY_SOURCES = (ENTRY_SOURCE, CURRENT_ENTRY_SOURCE)
 ENTRY_MODULE = 'src/trottertracks/pauli_signal_entry.py'
 ENTRY_FILES = (ENTRY_MODULE, 'scripts/run_pauli_signal_entry.py')
 ENTRY_DICTIONARY_HELPER = dict(commit=LD3_HELPER_SOURCE,
@@ -174,13 +176,14 @@ def bind_packet(config, packet, records, dictionary, *, target, target_source,
 def _entry_assembly_source(root, assembly):
     """Pin the assembler implementation, not every new output/configuration commit."""
     try:
-        for path in ENTRY_FILES:
-            fixed = subprocess.check_output(['git', 'show', ENTRY_SOURCE + ':' + path], cwd=root,
-                                            stderr=subprocess.PIPE)
-            actual = subprocess.check_output(['git', 'show', assembly['commit'] + ':' + path], cwd=root,
-                                             stderr=subprocess.PIPE)
-            if actual != fixed:
-                raise ValueError('Unsupported saved Pauli assembly SOURCE: entry code differs: ' + path)
+        actual = [subprocess.check_output(['git', 'show', assembly['commit'] + ':' + path], cwd=root,
+                                          stderr=subprocess.PIPE) for path in ENTRY_FILES]
+        for source in ENTRY_SOURCES:
+            fixed = [subprocess.check_output(['git', 'show', source + ':' + path], cwd=root,
+                                             stderr=subprocess.PIPE) for path in ENTRY_FILES]
+            if actual == fixed:
+                return source
+        raise ValueError('Unsupported saved Pauli assembly SOURCE: entry code differs from fixed versions')
     except (KeyError, subprocess.CalledProcessError) as error:
         raise ValueError('Unsupported saved Pauli assembly SOURCE: fixed entry unavailable') from error
 
@@ -198,13 +201,13 @@ def accept_saved(root, *, integration, handoff_source=None):
     When available, C's source-bound Pauli metadata bridge is checked too.
     No IDs are rewritten to bypass physical or dictionary checks. Besides the
     historical assemblies, new immutable handoffs may use A's fixed common entry
-    (ENTRY_SOURCE). Its two entry files must match at the output commit; the
+    (ENTRY_SOURCES). Its two entry files must match at the output commit; the
     configuration, dictionary and per-round Git carriers are still checked.
     """
     assembly = HANDOFF if handoff_source is None else handoff_source
     common_entry = assembly not in (HANDOFF, LD3_HANDOFF, LD5_HANDOFF)
     if common_entry:
-        _entry_assembly_source(root, assembly)
+        assembly_implementation = dict(commit=_entry_assembly_source(root, assembly), path=ENTRY_MODULE)
     later = 3 if assembly == LD3_HANDOFF else 5 if assembly == LD5_HANDOFF else None
     store = p.SavedArtifacts(root); handoff = store.read(assembly)
     if common_entry:
@@ -242,6 +245,8 @@ def accept_saved(root, *, integration, handoff_source=None):
             records[row['m']] = _selected(store, row['mean_source'])
         result = bind_packet(config, packet, records, store.read(packet['dictionary_identity']['source']),
             target=target, target_source=target_source, assembly_source=assembly, helpers=helpers)
+        if common_entry:
+            result['signal_packet']['assembly_implementation_source'] = deepcopy(assembly_implementation)
         result['signal_input'] = integration.signal_input(result['signal_packet'])
         _same(result['signal_input'], {k: result['signal_packet'][k] for k in ('configuration_id', 'target', 'source', 'means')},
               'C consumed signal input')
@@ -258,5 +263,5 @@ def accept_saved(root, *, integration, handoff_source=None):
         source=deepcopy(assembly), source_blobs=deepcopy(store.sources), science_calls=0,
         sufficient_N=None, global_RMSE_bound=None, G=None, winner=None, mandatory_stop=True)
     if common_entry:
-        out['assembly_implementation_source'] = dict(commit=ENTRY_SOURCE, path=ENTRY_MODULE)
+        out['assembly_implementation_source'] = deepcopy(assembly_implementation)
     return out
