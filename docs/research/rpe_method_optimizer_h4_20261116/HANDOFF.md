@@ -2,6 +2,16 @@
 
 正本は[REPORT](REPORT.md)の§E〜H（第3段階）と§A〜D（第2段階）。branch `codex/b2-rpe-method-optimizer-20261116`、実装SOURCE `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`。新規の実信号・価格・compile・Q3は0件。
 
+## 追加：D2の価格適用判定の接続（policy=MODEL）
+
+- PR候補ごとにD2の `PriceRules.quote` を呼ぶ（SOURCE `c1f95e08`、HANDOFF `7cd8ea139`）。渡すのは、configuration本体・登録された候補固有の実装契約・`policy: "MODEL"`（明示）。問題入力の `price_rules` で固定し、MODEL以外は拒否する。
+- **保存構成**：単価・総額をexactに再現した。L_D=9は従来どおり価格待ち。
+- **生成した構成**
+  - 26軸が揃えば、その単価で費用を計算する。例：Pauli L_D=2・3・5のκ×2、PR-DF L_D=2のκ×2。
+  - 欠ける場合は、不足軸・理由・必要な較正を `price_needs`／`PRICE_AXES:n_of_26` に出す。例：Δ_PF=h/2は「実stepが変わった」、PR-DF L_D=1のκ×2は「E_I[S]」。
+  - 価格の状態とQ3の状態（信号・経路）は別に保持する。価格が揃っても信号が不足なら探索に入らない。
+- 出力：`run04/PRICE_RULES.json`、候補ごとの `price_quote`・`price_needs`。
+
 ## 第3段階で追加したこと
 
 - **PR構成の生成**

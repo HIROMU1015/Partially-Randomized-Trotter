@@ -2,6 +2,26 @@
 
 2026-11-16 JST、B2（Claude Code、主agentのみ。作成者自身の確認で、独立レビューではない）。実装SOURCEは `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`。**新規の実信号・価格・compile・Q3は0件。** 確認は保存資料と人工fixtureだけで行った。第2・第1段階の記録は後半に残した。
 
+## E0. 追加指示：D2の価格適用判定（PriceRules）の接続
+
+- 実装SOURCEは `47f86eb20`（PRICE_RULES.jsonの出力追加は `d993d5e5b`）。D2の実装SOURCE `c1f95e08`・公開HANDOFF `7cd8ea139` の `PriceRules.quote` を、読取専用view（`b2-route-view-d2-c1f95e080`）から呼ぶ（`scripts/run_rpe_optimizer_price_quotes.py`）。
+- **渡すもの**
+  - 各候補のconfiguration（生成したものは本体をそのまま渡す）。
+  - 登録表の候補固有実装契約（基になった保存構成のentry：DF_LD1/2/7/9、PAULI_LD2/3/5）。
+  - policy。**常に `MODEL` を明示する**。問題入力の `price_rules.policy` がMODEL以外なら止める。探索の途中でAUTOに切り替わることはない。
+- **保存構成**：MODELの26軸単価が、Cの集計の単価とexactに一致した（PR-DF L_D=1・2・7、PR-Pauli L_D=2・3・5）。したがって保存総額もすべて再現される。L_D=9はMODELでは26軸とも `NEEDS_PRICE_EVIDENCE` で、従来の価格待ちと一致する。
+- **生成した構成**（[run04/PRICE_RULES.json](run04/PRICE_RULES.json)）
+  - κ×2でRが変わるもの：PR-Pauli L_D=2・3・5、PR-DF L_D=2。既存規則の適用で26軸が揃い、その単価を費用計算に使う。ただし信号が足りないため探索には入らない。価格とQ3の状態は別々に持つ。
+  - PR-DF L_D=1のκ×2：「新しい物理軸のE_I[S]」が不足と返る。
+  - Δ_PF=h/2の全候補：「実PF step／回転角が変わった。同じstepの較正、または監査の拡張が必要」として26軸が不足と返る。
+  - 不足軸・理由・必要な較正は、候補の `price_needs` とNEEDSの `PRICE_AXES:n_of_26` に引き継ぐ。
+- **受入**：生成の受入は11/11 PASS（[generation_acceptance_47f86eb20/](generation_acceptance_47f86eb20/GENERATION_ACCEPTANCE.json)）。追加した価格のcheckは次の3件。
+  - 保存PRの総額をMODELで再現
+  - 変更候補の価格の適用可否と不足
+  - policyを暗黙に切り替えない
+
+  ほかに、実行器の受入 10/10、Aの固定受入 PASS 20（Skillは PENDING 1）。D2のprice-rule test 17件もviewでPASSした（[TESTS_PRICE_RULES.txt](TESTS_PRICE_RULES.txt)）。新規compile・fit・Q3は0件。
+
 ## E. 結論
 
 - PR-Pauli・PR-DFの構成を、最適化器自身が生成できるようにした。

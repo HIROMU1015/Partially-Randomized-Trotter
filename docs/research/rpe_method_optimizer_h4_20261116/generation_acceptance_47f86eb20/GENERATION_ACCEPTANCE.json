@@ -1,0 +1,6544 @@
+{
+ "schema": "RPE_OPTIMIZER_GENERATION_ACCEPTANCE_V1",
+ "optimizer_commit": "47f86eb20b30780ac18c59597b9853b3e984c4ed",
+ "counts": {
+  "PASS": 11
+ },
+ "checks": [
+  {
+   "check": "baseline_schedule_reproduced_for_every_saved_PR_configuration",
+   "status": "PASS",
+   "configurations": [
+    [
+     2,
+     "d7dd4f52"
+    ],
+    [
+     3,
+     "dd5b881d"
+    ],
+    [
+     5,
+     "4d6e2c9c"
+    ],
+    [
+     1,
+     "a4dda8f7"
+    ],
+    [
+     2,
+     "1fa33556"
+    ],
+    [
+     7,
+     "ce9c7f08"
+    ],
+    [
+     9,
+     "ea087a7e"
+    ]
+   ]
+  },
+  {
+   "check": "LD7_baseline_rounds_q_2pow_m_R_1",
+   "status": "PASS"
+  },
+  {
+   "check": "delta_change_new_schedule_and_needs",
+   "status": "PASS",
+   "q": [
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192
+   ],
+   "needs": [
+    "CONFIGURATION_PUBLICATION",
+    "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+    "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION",
+    "PRICE_AXES:26_of_26"
+   ]
+  },
+  {
+   "check": "kappa_change_without_schedule_change_reuses_saved_evaluation",
+   "status": "PASS",
+   "alias": "7b6fa4db"
+  },
+  {
+   "check": "kappa_change_with_schedule_change_partial_signal_reuse_and_price_rule",
+   "status": "PASS",
+   "needs": [
+    "CONFIGURATION_PUBLICATION",
+    "SIGNAL_ROUNDS:10,11,12",
+    "SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS",
+    "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+   ],
+   "price": {
+    "policy": "MODEL",
+    "status": "QUOTED",
+    "complete": true,
+    "registry": "PAULI_LD5",
+    "classifications": {
+     "MODEL_REFERENCE": 26
+    },
+    "extrapolated_axes": 26,
+    "reason": null,
+    "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+   }
+  },
+  {
+   "check": "saved_PR_totals_reproduced_by_price_rules_MODEL",
+   "status": "PASS",
+   "saved_configurations": 7,
+   "saved_points": 22,
+   "LD9": {
+    "NEEDS_PRICE_EVIDENCE": 26
+   }
+  },
+  {
+   "check": "changed_candidates_price_applicability_and_needs",
+   "status": "PASS",
+   "delta_half": {
+    "policy": "MODEL",
+    "status": "QUOTED",
+    "complete": false,
+    "registry": "DF_LD7",
+    "classifications": {
+     "NEEDS_PRICE_EVIDENCE": 26
+    },
+    "extrapolated_axes": 0,
+    "reason": null,
+    "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+   },
+   "LD1_kappa2": {
+    "policy": "MODEL",
+    "status": "QUOTED",
+    "complete": false,
+    "registry": "DF_LD1",
+    "classifications": {
+     "NEEDS_PRICE_EVIDENCE": 26
+    },
+    "extrapolated_axes": 0,
+    "reason": null,
+    "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+   }
+  },
+  {
+   "check": "price_policy_not_switched_implicitly",
+   "status": "PASS"
+  },
+  {
+   "check": "physically_identical_candidates_not_evaluated_twice",
+   "status": "PASS",
+   "new_schedules": 19,
+   "evaluated": {
+    "PR_DF": 14,
+    "PR_PAULI": 9
+   }
+  },
+  {
+   "check": "next_requests_change_when_generated_candidate_becomes_ready",
+   "status": "PASS",
+   "before": 20,
+   "after": 21
+  },
+  {
+   "check": "stop_reasons_distinguished",
+   "status": "PASS",
+   "unlimited": {
+    "stop": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING",
+    "new_calls": 32,
+    "best": "805,645,623.82"
+   },
+   "not_approved": "NEW_SCIENCE_NOT_APPROVED",
+   "capped": "Q3_BUDGET_EXHAUSTED",
+   "artificial": "LABELLED_ARTIFICIAL_FIXTURE"
+  }
+ ],
+ "generation": {
+  "PR_PAULI": {
+   "kind": "pauli_native",
+   "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+   "supported_formulas": [
+    "2nd",
+    "4th(m5_best)"
+   ],
+   "baseline": {
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa_multiplier": "1"
+   },
+   "range": {
+    "formulas": [
+     "2nd"
+    ],
+    "delta_over_h": [
+     "1",
+     "1/2"
+    ],
+    "kappa_multipliers": [
+     "1",
+     "2"
+    ]
+   },
+   "h": "fixed RPE base time (not a search variable)",
+   "variants": [
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 2,
+     "base_configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 6,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 5,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        5
+       ],
+       "event_count": 20,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 9,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        9
+       ],
+       "event_count": 72,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 17,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        17
+       ],
+       "event_count": 272,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 33,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        33
+       ],
+       "event_count": 1056,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 66,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        66
+       ],
+       "event_count": 4224,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 132,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        132
+       ],
+       "event_count": 16896,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 263,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        263
+       ],
+       "event_count": 67328,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 526,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        526
+       ],
+       "event_count": 269312,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 1052,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1052
+       ],
+       "event_count": 1077248,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 2103,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2103
+       ],
+       "event_count": 4306944,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 4205,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4205
+       ],
+       "event_count": 17223680,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [],
+     "physically_identical_to": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+     "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 2,
+     "base_configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "300085cf7225ed0a0a1ed40bb7d7d6cd499cc219c2b0309a94ae622351d378af",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 3,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 5,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        5
+       ],
+       "event_count": 10,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 9,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        9
+       ],
+       "event_count": 36,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 17,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        17
+       ],
+       "event_count": 136,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 33,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        33
+       ],
+       "event_count": 528,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 66,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        66
+       ],
+       "event_count": 2112,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 132,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        132
+       ],
+       "event_count": 8448,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 263,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        263
+       ],
+       "event_count": 33664,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 526,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        526
+       ],
+       "event_count": 134656,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 1052,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1052
+       ],
+       "event_count": 538624,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 2103,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2103
+       ],
+       "event_count": 2153472,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 4205,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4205
+       ],
+       "event_count": 8611840,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 8410,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        8410
+       ],
+       "event_count": 34447360,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa_multiplier=2:300085cf"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 2,
+     "base_configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "e053b513e244d70fb585d6b9dcdbfc8e76beef48effdf125db516ad98c4cd4d1",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 24,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 5,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        5
+       ],
+       "event_count": 80,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 9,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        9
+       ],
+       "event_count": 288,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 17,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        17
+       ],
+       "event_count": 1088,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 33,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        33
+       ],
+       "event_count": 4224,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 66,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        66
+       ],
+       "event_count": 16896,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 132,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        132
+       ],
+       "event_count": 67584,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 263,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        263
+       ],
+       "event_count": 269312,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 526,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        526
+       ],
+       "event_count": 1077248,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 1052,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1052
+       ],
+       "event_count": 4308992,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 2103,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2103
+       ],
+       "event_count": 17227776,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1/2,kappa_multiplier=1:e053b513"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 2,
+     "base_configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "24dbeefb484ae09fddbf8b4fc766d7445f96d7c1cb4b85b23af0d5c59b8335df",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 12,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 5,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        5
+       ],
+       "event_count": 40,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 9,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        9
+       ],
+       "event_count": 144,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 17,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        17
+       ],
+       "event_count": 544,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 33,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        33
+       ],
+       "event_count": 2112,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 66,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        66
+       ],
+       "event_count": 8448,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 132,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        132
+       ],
+       "event_count": 33792,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 263,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        263
+       ],
+       "event_count": 134656,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 526,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        526
+       ],
+       "event_count": 538624,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 1052,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1052
+       ],
+       "event_count": 2154496,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 2103,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2103
+       ],
+       "event_count": 8613888,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 4205,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4205
+       ],
+       "event_count": 34447360,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1/2,kappa_multiplier=2:24dbeefb"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 3,
+     "base_configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 48,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 6,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        6
+       ],
+       "event_count": 192,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 11,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        11
+       ],
+       "event_count": 704,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 21,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        21
+       ],
+       "event_count": 2688,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 42,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        42
+       ],
+       "event_count": 10752,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 83,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        83
+       ],
+       "event_count": 42496,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 165,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        165
+       ],
+       "event_count": 168960,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 330,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        330
+       ],
+       "event_count": 675840,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 660,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        660
+       ],
+       "event_count": 2703360,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [],
+     "physically_identical_to": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+     "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 3,
+     "base_configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "23ec179150682e0af256fc7c7bfcdf6f39af772f62418d6b45326afd5da1b2a8",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 24,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 6,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        6
+       ],
+       "event_count": 96,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 11,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        11
+       ],
+       "event_count": 352,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 21,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        21
+       ],
+       "event_count": 1344,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 42,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        42
+       ],
+       "event_count": 5376,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 83,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        83
+       ],
+       "event_count": 21248,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 165,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        165
+       ],
+       "event_count": 84480,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 330,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        330
+       ],
+       "event_count": 337920,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 660,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        660
+       ],
+       "event_count": 1351680,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 1319,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1319
+       ],
+       "event_count": 5402624,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:2,3,4,5,6,7,8,9,10,11,12",
+      "SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS",
+      "PRICE_AXES:22_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [
+       0,
+       1
+      ],
+      "price_axes": 4
+     },
+     "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa_multiplier=2:23ec1791"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 3,
+     "base_configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "3061f91c15a232dd90642ce76053042790671ea3c6d59b042b52bb79ad2a2305",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 192,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 6,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        6
+       ],
+       "event_count": 768,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 11,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        11
+       ],
+       "event_count": 2816,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 21,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        21
+       ],
+       "event_count": 10752,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 42,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        42
+       ],
+       "event_count": 43008,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 83,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        83
+       ],
+       "event_count": 169984,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 165,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        165
+       ],
+       "event_count": 675840,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 330,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        330
+       ],
+       "event_count": 2703360,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1/2,kappa_multiplier=1:3061f91c"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 3,
+     "base_configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "cc2e728d93919c2afe5e6ac4db5a537605fb3e21b58ba5920ce46c80b4f26293",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 96,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 6,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        6
+       ],
+       "event_count": 384,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 11,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        11
+       ],
+       "event_count": 1408,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 21,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        21
+       ],
+       "event_count": 5376,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 42,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        42
+       ],
+       "event_count": 21504,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 83,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        83
+       ],
+       "event_count": 84992,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 165,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        165
+       ],
+       "event_count": 337920,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 330,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        330
+       ],
+       "event_count": 1351680,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 660,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        660
+       ],
+       "event_count": 5406720,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1/2,kappa_multiplier=2:cc2e728d"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 5,
+     "base_configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 4096,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 4,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4
+       ],
+       "event_count": 16384,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [],
+     "physically_identical_to": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+     "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 5,
+     "base_configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 4,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4
+       ],
+       "event_count": 8192,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 8,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        8
+       ],
+       "event_count": 32768,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:10,11,12",
+      "SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS",
+      "PRICE_AXES:6_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9
+      ],
+      "price_axes": 20
+     },
+     "candidate": "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1,kappa_multiplier=2:cb1aa748"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 5,
+     "base_configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "2980582c661df108d2f421c07001ee50a8f8ec66a55eb5e911e0dd10976bd9ce",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4096,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 16384,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1/2,kappa_multiplier=1:2980582c"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 5,
+     "base_configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "pauli_native",
+      "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+     },
+     "configuration_id": "84b8f501e27018d3836aea335e43d62de3d7d54fbc901e1ffc9fd15dd28d7599",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 8192,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 4,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4
+       ],
+       "event_count": 32768,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1/2,kappa_multiplier=2:84b8f501"
+    }
+   ]
+  },
+  "PR_DF": {
+   "kind": "prdf_a_fixed_grid",
+   "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+   "supported_formulas": [
+    "2nd",
+    "4th(m5_best)"
+   ],
+   "baseline": {
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa_multiplier": "1"
+   },
+   "range": {
+    "formulas": [
+     "2nd"
+    ],
+    "delta_over_h": [
+     "1",
+     "1/2"
+    ],
+    "kappa_multipliers": [
+     "1",
+     "2"
+    ]
+   },
+   "h": "fixed RPE base time (not a search variable)",
+   "variants": [
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 1,
+     "base_configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 4,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 8,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        8
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 16,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        16
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 32,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        32
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 64,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        64
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 128,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        128
+       ],
+       "event_count": 8192,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 255,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        255
+       ],
+       "event_count": 32640,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 510,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        510
+       ],
+       "event_count": 130560,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 1020,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1020
+       ],
+       "event_count": 522240,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 2040,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2040
+       ],
+       "event_count": 2088960,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 4080,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4080
+       ],
+       "event_count": 8355840,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 8160,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        8160
+       ],
+       "event_count": 33423360,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [],
+     "physically_identical_to": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+     "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 1,
+     "base_configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "c5b1e9446e95de17e0503dd7b0f60fcb20d563dbe8bf8a10e3fc394f08c34d1f",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 4,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 8,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        8
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 16,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        16
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 32,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        32
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 64,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        64
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 128,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        128
+       ],
+       "event_count": 4096,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 255,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        255
+       ],
+       "event_count": 16320,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 510,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        510
+       ],
+       "event_count": 65280,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 1020,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1020
+       ],
+       "event_count": 261120,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 2040,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2040
+       ],
+       "event_count": 1044480,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 4080,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4080
+       ],
+       "event_count": 4177920,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 8160,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        8160
+       ],
+       "event_count": 16711680,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 16320,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        16320
+       ],
+       "event_count": 66846720,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=1,formula=2nd,delta_over_h=1,kappa_multiplier=2:c5b1e944"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 1,
+     "base_configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "b25bfd229ad989e2b438915bdd0732a92d5a43ba0b0c5d76478f8ad1bdddd393",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 4,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 8,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        8
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 16,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        16
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 32,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        32
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 64,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        64
+       ],
+       "event_count": 8192,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 128,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        128
+       ],
+       "event_count": 32768,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 255,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        255
+       ],
+       "event_count": 130560,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 510,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        510
+       ],
+       "event_count": 522240,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 1020,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1020
+       ],
+       "event_count": 2088960,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 2040,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2040
+       ],
+       "event_count": 8355840,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 4080,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4080
+       ],
+       "event_count": 33423360,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=1,formula=2nd,delta_over_h=1/2,kappa_multiplier=1:b25bfd22"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 1,
+     "base_configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "d8285b4532b7cb01d25a39197e48ec352d808a7b2db18fbb7c2d7de7b01b2bc6",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 4,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 8,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        8
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 16,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        16
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 32,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        32
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 64,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        64
+       ],
+       "event_count": 4096,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 128,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        128
+       ],
+       "event_count": 16384,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 255,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        255
+       ],
+       "event_count": 65280,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 510,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        510
+       ],
+       "event_count": 261120,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 1020,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1020
+       ],
+       "event_count": 1044480,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 2040,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2040
+       ],
+       "event_count": 4177920,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 4080,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        4080
+       ],
+       "event_count": 16711680,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 8160,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        8160
+       ],
+       "event_count": 66846720,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=1,formula=2nd,delta_over_h=1/2,kappa_multiplier=2:d8285b45"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 2,
+     "base_configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 12,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 5,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        5
+       ],
+       "event_count": 40,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 10,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        10
+       ],
+       "event_count": 160,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 20,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        20
+       ],
+       "event_count": 640,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 40,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        40
+       ],
+       "event_count": 2560,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 80,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        80
+       ],
+       "event_count": 10240,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 160,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        160
+       ],
+       "event_count": 40960,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 320,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        320
+       ],
+       "event_count": 163840,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 640,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        640
+       ],
+       "event_count": 655360,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 1280,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1280
+       ],
+       "event_count": 2621440,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 2559,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2559
+       ],
+       "event_count": 10481664,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [],
+     "physically_identical_to": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+     "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 2,
+     "base_configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "791d404d2c63b4bc80e1c285aaa2ced6cd46deb5cd0e37a59e45fa9870df6898",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 6,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 5,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        5
+       ],
+       "event_count": 20,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 10,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        10
+       ],
+       "event_count": 80,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 20,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        20
+       ],
+       "event_count": 320,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 40,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        40
+       ],
+       "event_count": 1280,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 80,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        80
+       ],
+       "event_count": 5120,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 160,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        160
+       ],
+       "event_count": 20480,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 320,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        320
+       ],
+       "event_count": 81920,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 640,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        640
+       ],
+       "event_count": 327680,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 1280,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1280
+       ],
+       "event_count": 1310720,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 2559,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2559
+       ],
+       "event_count": 5240832,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 5117,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        5117
+       ],
+       "event_count": 20959232,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=2,formula=2nd,delta_over_h=1,kappa_multiplier=2:791d404d"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 2,
+     "base_configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "e9155f9639500465568f120325cf06c7bac6b522a94aa5fb8cdbfc77f6ca8aff",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 48,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 5,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        5
+       ],
+       "event_count": 160,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 10,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        10
+       ],
+       "event_count": 640,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 20,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        20
+       ],
+       "event_count": 2560,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 40,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        40
+       ],
+       "event_count": 10240,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 80,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        80
+       ],
+       "event_count": 40960,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 160,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        160
+       ],
+       "event_count": 163840,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 320,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        320
+       ],
+       "event_count": 655360,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 640,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        640
+       ],
+       "event_count": 2621440,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 1280,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1280
+       ],
+       "event_count": 10485760,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=2,formula=2nd,delta_over_h=1/2,kappa_multiplier=1:e9155f96"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 2,
+     "base_configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "26b5b5c65ffdb051ef88968425ba4bdca305ac07dbed00cb1493e2803edb37be",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 2,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 3,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        3
+       ],
+       "event_count": 24,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 5,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        5
+       ],
+       "event_count": 80,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 10,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        10
+       ],
+       "event_count": 320,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 20,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        20
+       ],
+       "event_count": 1280,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 40,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        40
+       ],
+       "event_count": 5120,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 80,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        80
+       ],
+       "event_count": 20480,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 160,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        160
+       ],
+       "event_count": 81920,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 320,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        320
+       ],
+       "event_count": 327680,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 640,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        640
+       ],
+       "event_count": 1310720,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 1280,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1280
+       ],
+       "event_count": 5242880,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 2559,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        2559
+       ],
+       "event_count": 20963328,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=2,formula=2nd,delta_over_h=1/2,kappa_multiplier=2:26b5b5c6"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 7,
+     "base_configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4096,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [],
+     "physically_identical_to": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+     "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 7,
+     "base_configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "7b6fa4dbcf75ed61252bc400d26514150739b6561a8d7513ee26f2bcf06369cc",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4096,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [],
+     "physically_identical_to": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+     "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 7,
+     "base_configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "0032de6df7927b8ef9ae271b4169febf08b5fcd6114c2e4c1fdd2f61d651be94",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4096,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8192,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=7,formula=2nd,delta_over_h=1/2,kappa_multiplier=1:0032de6d"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 7,
+     "base_configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "e5a1c8f507955b62039ce952e79aa5407354bf288afcb7b6c237a0609f2cc23d",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4096,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8192,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=7,formula=2nd,delta_over_h=1/2,kappa_multiplier=2:e5a1c8f5"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 9,
+     "base_configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4096,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [],
+     "physically_identical_to": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+     "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 9,
+     "base_configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "35ee6651c354ec2f7f5240a5cb32b9918d4d42cef83e7baac6048bd77c8694f2",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 1,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 4096,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4096,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [],
+     "physically_identical_to": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+     "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "1"
+     },
+     "L_D": 9,
+     "base_configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "9e8aef70e4153c14403b1d071ea72d8aef153f8c6b8a28115d3efc536bb2a65e",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4096,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8192,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=9,formula=2nd,delta_over_h=1/2,kappa_multiplier=1:9e8aef70"
+    },
+    {
+     "variant": {
+      "formula": "2nd",
+      "delta_over_h": "1/2",
+      "kappa_multiplier": "2"
+     },
+     "L_D": 9,
+     "base_configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+     "status": "GENERATED",
+     "reason": null,
+     "base_reproduced": true,
+     "supported_formulas": [
+      "2nd",
+      "4th(m5_best)"
+     ],
+     "generator": {
+      "kind": "prdf_a_fixed_grid",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7"
+     },
+     "configuration_id": "65fae072f9c9477ccf5c8163132dcc5701b1b7327f174ae5003b76e983654dd3",
+     "rounds": [
+      {
+       "m": 0,
+       "q": 2,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2,
+       "ok": true
+      },
+      {
+       "m": 1,
+       "q": 4,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4,
+       "ok": true
+      },
+      {
+       "m": 2,
+       "q": 8,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8,
+       "ok": true
+      },
+      {
+       "m": 3,
+       "q": 16,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 16,
+       "ok": true
+      },
+      {
+       "m": 4,
+       "q": 32,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 32,
+       "ok": true
+      },
+      {
+       "m": 5,
+       "q": 64,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 64,
+       "ok": true
+      },
+      {
+       "m": 6,
+       "q": 128,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 128,
+       "ok": true
+      },
+      {
+       "m": 7,
+       "q": 256,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 256,
+       "ok": true
+      },
+      {
+       "m": 8,
+       "q": 512,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 512,
+       "ok": true
+      },
+      {
+       "m": 9,
+       "q": 1024,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 1024,
+       "ok": true
+      },
+      {
+       "m": 10,
+       "q": 2048,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 2048,
+       "ok": true
+      },
+      {
+       "m": 11,
+       "q": 4096,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 4096,
+       "ok": true
+      },
+      {
+       "m": 12,
+       "q": 8192,
+       "R": 1,
+       "pieces": 1,
+       "negative_pieces": 0,
+       "allocation": [
+        1
+       ],
+       "event_count": 8192,
+       "ok": true
+      }
+     ],
+     "rounds_differing_from_base": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+     ],
+     "physically_identical_to": null,
+     "disposition": "NEW_SCHEDULE_CANDIDATE",
+     "needs": [
+      "CONFIGURATION_PUBLICATION",
+      "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+      "PRICE_AXES:26_of_26",
+      "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+     ],
+     "reusable": {
+      "signal_rounds": [],
+      "price_axes": 0
+     },
+     "candidate": "PR_DF:L_D=9,formula=2nd,delta_over_h=1/2,kappa_multiplier=2:65fae072"
+    }
+   ]
+  }
+ },
+ "parameter_assessment": {
+  "PR_DF": [
+   {
+    "L_D": 1,
+    "base_configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "rounds_differing_from_base": [],
+      "needs": null,
+      "best_feasible_cost": {
+       "numerator": 34135453817125413895385,
+       "denominator": 180388626432,
+       "display": "189,232,849,610.91"
+      }
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "c5b1e9446e95de17e0503dd7b0f60fcb20d563dbe8bf8a10e3fc394f08c34d1f",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 1,
+    "base_configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+    "formula": "2nd",
+    "delta_over_h": "1/2",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "b25bfd229ad989e2b438915bdd0732a92d5a43ba0b0c5d76478f8ad1bdddd393",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "d8285b4532b7cb01d25a39197e48ec352d808a7b2db18fbb7c2d7de7b01b2bc6",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 2,
+    "base_configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "rounds_differing_from_base": [],
+      "needs": null,
+      "best_feasible_cost": {
+       "numerator": 29844234048521,
+       "denominator": 644,
+       "display": "46,341,978,336.21"
+      }
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "791d404d2c63b4bc80e1c285aaa2ced6cd46deb5cd0e37a59e45fa9870df6898",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 2,
+    "base_configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+    "formula": "2nd",
+    "delta_over_h": "1/2",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "e9155f9639500465568f120325cf06c7bac6b522a94aa5fb8cdbfc77f6ca8aff",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "26b5b5c65ffdb051ef88968425ba4bdca305ac07dbed00cb1493e2803edb37be",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 7,
+    "base_configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+      "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+      "rounds_differing_from_base": [],
+      "needs": null,
+      "best_feasible_cost": {
+       "numerator": 155652932221,
+       "denominator": 126,
+       "display": "1,235,340,731.91"
+      }
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+      "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+      "rounds_differing_from_base": [],
+      "needs": null,
+      "best_feasible_cost": {
+       "numerator": 155652932221,
+       "denominator": 126,
+       "display": "1,235,340,731.91"
+      }
+     }
+    ],
+    "kappa_decision": "SAME_PHYSICAL_SCHEDULE_FOR_ALL_KAPPA_IN_RANGE"
+   },
+   {
+    "L_D": 7,
+    "base_configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+    "formula": "2nd",
+    "delta_over_h": "1/2",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "0032de6df7927b8ef9ae271b4169febf08b5fcd6114c2e4c1fdd2f61d651be94",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "e5a1c8f507955b62039ce952e79aa5407354bf288afcb7b6c237a0609f2cc23d",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 9,
+    "base_configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+      "configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+      "rounds_differing_from_base": [],
+      "needs": null,
+      "best_feasible_cost": null
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+      "configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+      "rounds_differing_from_base": [],
+      "needs": null,
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "SAME_PHYSICAL_SCHEDULE_FOR_ALL_KAPPA_IN_RANGE"
+   },
+   {
+    "L_D": 9,
+    "base_configuration_id": "ea087a7e3b311be7efae27558347e9eb471f616b8b55f59cbef8e506dda7a833",
+    "formula": "2nd",
+    "delta_over_h": "1/2",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "9e8aef70e4153c14403b1d071ea72d8aef153f8c6b8a28115d3efc536bb2a65e",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "65fae072f9c9477ccf5c8163132dcc5701b1b7327f174ae5003b76e983654dd3",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   }
+  ],
+  "PR_PAULI": [
+   {
+    "L_D": 2,
+    "base_configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+      "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+      "rounds_differing_from_base": [],
+      "needs": null,
+      "best_feasible_cost": {
+       "numerator": 220695144335642870,
+       "denominator": 90343469,
+       "display": "2,442,845,584.51"
+      }
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "300085cf7225ed0a0a1ed40bb7d7d6cd499cc219c2b0309a94ae622351d378af",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 2,
+    "base_configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+    "formula": "2nd",
+    "delta_over_h": "1/2",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "e053b513e244d70fb585d6b9dcdbfc8e76beef48effdf125db516ad98c4cd4d1",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "24dbeefb484ae09fddbf8b4fc766d7445f96d7c1cb4b85b23af0d5c59b8335df",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 3,
+    "base_configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+      "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+      "rounds_differing_from_base": [],
+      "needs": null,
+      "best_feasible_cost": {
+       "numerator": 625936421828,
+       "denominator": 1155,
+       "display": "541,936,295.95"
+      }
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "23ec179150682e0af256fc7c7bfcdf6f39af772f62418d6b45326afd5da1b2a8",
+      "rounds_differing_from_base": [
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:2,3,4,5,6,7,8,9,10,11,12",
+       "SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS",
+       "PRICE_AXES:22_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 3,
+    "base_configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+    "formula": "2nd",
+    "delta_over_h": "1/2",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "3061f91c15a232dd90642ce76053042790671ea3c6d59b042b52bb79ad2a2305",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "cc2e728d93919c2afe5e6ac4db5a537605fb3e21b58ba5920ce46c80b4f26293",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 5,
+    "base_configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+      "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+      "rounds_differing_from_base": [],
+      "needs": null,
+      "best_feasible_cost": {
+       "numerator": 3792207339,
+       "denominator": 7,
+       "display": "541,743,905.57"
+      }
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+      "rounds_differing_from_base": [
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:10,11,12",
+       "SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS",
+       "PRICE_AXES:6_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   },
+   {
+    "L_D": 5,
+    "base_configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+    "formula": "2nd",
+    "delta_over_h": "1/2",
+    "kappa_rows": [
+     {
+      "kappa_multiplier": "1",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "2980582c661df108d2f421c07001ee50a8f8ec66a55eb5e911e0dd10976bd9ce",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     },
+     {
+      "kappa_multiplier": "2",
+      "disposition": "NEW_SCHEDULE_CANDIDATE",
+      "configuration_id": "84b8f501e27018d3836aea335e43d62de3d7d54fbc901e1ffc9fd15dd28d7599",
+      "rounds_differing_from_base": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12
+      ],
+      "needs": [
+       "CONFIGURATION_PUBLICATION",
+       "SIGNAL_ROUNDS:0,1,2,3,4,5,6,7,8,9,10,11,12",
+       "PRICE_AXES:26_of_26",
+       "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "best_feasible_cost": null
+     }
+    ],
+    "kappa_decision": "UNDECIDED_INPUTS_OR_EVALUATIONS_MISSING"
+   }
+  ]
+ },
+ "science": {
+  "new_signal": 0,
+  "new_price": 0,
+  "compile": 0,
+  "new_Q3": 0,
+  "artificial": "LABELLED"
+ }
+}

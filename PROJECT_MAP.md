@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4方式別最適化：D2価格適用判定の接続](docs/research/rpe_method_optimizer_h4_20261116/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md)：PR候補（保存・生成）にD2 PriceRules（c1f95e08）をpolicy=MODEL明示で接続。保存PR単価・総額をexactに再現。生成構成は26軸が揃えば費用に使用し、不足は理由・較正をNEEDSへ（Δ_PF=h/2は実step変化、DF L_D=1のκ×2はE_I[S]）。価格とQ3の状態は分離。受入：生成11、実行器10、A 20 PASS。compile・fit・Q3 0件。
+
 [H4方式別最適化：PR構成の生成と構成・shotの同時探索](docs/research/rpe_method_optimizer_h4_20261116/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md)：PR-DF（D2 B 437ba4ac A-fixed-grid）・PR-Pauli（A P1 B ce0517de）の固定mapperで、L_D・公式（2nd、4th(m5_best)）・Δ_PF（hの倍数）・κ（共通κの倍数）を変えた構成を生成。保存7構成を完全に再現し、物理scheduleが同一なら保存評価を再利用、新scheduleは不足を機械可読で出力。UNLIMITED／未承認／入力不足の停止を区別。受入：生成8、実行器10、A 20 PASS。実信号・Q3 0件・STOP。
 
 [H4方式別最適化：Q3実行器の接続とAの受入反映](docs/research/rpe_method_optimizer_h4_20261116/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md)：探索round（`--round` `--run-dir`）で要求→既存Q3経路の実行→照合・取込→次候補、同じコマンドで再開。単調性の枝刈りを削除、予算確認を呼出し前へ、範囲を全候補へ。C 417a73e73でp7最安372,035,410。Aの受入20 PASS、実行器受入10 PASS。実Q3 0件・STOP。
