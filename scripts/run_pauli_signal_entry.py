@@ -120,7 +120,7 @@ def execute(out, source, config_ref, *, configuration_id=None, packets=E.SAVED_P
             if result['context_control']['equal'] is not True:
                 raise ValueError('CONTEXT_BUILDER_DIFFERS_FROM_P1_LOAD_CONTEXTS')
             R3.log('START LD%d context' % config['spec']['L_D'], start)
-            ctx = S3.load_context(ROOT, saved, item, normalizers, budget=len(requested))
+            ctx = S3.load_context(ROOT, saved, item, normalizers, budget=E.normalizer_budget(jobs))
             if ctx.tails[config['spec']['L_D']]['dictionary_identity'] != config['spec']['split']['tail_dictionary']:
                 raise ValueError('CONTEXT_DICTIONARY_IDENTITY_DIFFERS')
             refs = {m: p1.provider.saved_h4_reference(ROOT, job) for m, job in jobs.items()}

@@ -118,7 +118,7 @@ class Entry(unittest.TestCase):
     def test_artificial_kappa_and_delta_request_only_changed_rounds(self):
         for prefix in (3, 5):
             config = self.saved[prefix]['config']
-            for edit in (dict(kappa=Fraction(3, 2)), dict(kappa=Fraction(2, 3)), dict(delta_pf=Fraction(1, 5))):
+            for edit in (dict(kappa=Fraction(3, 2)), dict(kappa=Fraction(2, 3)), dict(delta_pf=Fraction(0.2))):
                 v, locator = E.load_configuration(ROOT, variant(config, **edit))
                 self.assertIsNone(locator); self.assertNotEqual(v['id'], config['id'])
                 changed = [m for m in range(13) if physical(v, m) != physical(config, m)]
@@ -135,6 +135,12 @@ class Entry(unittest.TestCase):
                         self.assertNotEqual(row['candidate_id'], row['saved']['candidate_id'])
                     else:
                         self.assertTrue(row['changed_from_saved_round']['fields'])
+            # Exact 1/5: m2+ get q_PF = 3, 5, ... (binary64 T slightly above 2/5); evaluate would refuse those rounds.
+            v = E.load_configuration(ROOT, variant(config, delta_pf=Fraction(1, 5)))[0]
+            pl = E.plan(ROOT, v, index=self.index)
+            changed = [m for m in range(13) if physical(v, m) != physical(config, m)]
+            self.assertEqual((pl['request_rounds'], pl['unsupported_rounds']), ([], changed))
+            self.assertTrue(all(pl['rounds'][m]['reasons'] == ['ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT'] for m in changed))
 
     def test_rebound_and_new_rounds_through_execute_and_assemble(self):
         """LD5 kappa x3/2: rebound carriers for m0-m9, a synthetic stub only for m10-m12, B intake conditions PASS."""
@@ -191,7 +197,7 @@ class Entry(unittest.TestCase):
             self.assertEqual({r['provider_support'] for r in pl['rounds']}, {support}, edit)
         pl = E.plan(ROOT, E.load_configuration(ROOT, variant(config, h=Fraction(1, 20)))[0], index=self.index)
         self.assertEqual(pl['unsupported_rounds'], [0])
-        self.assertEqual(pl['rounds'][0]['reasons'], ['NO_SAVED_REFERENCE_AT_THIS_ROUND_T'])
+        self.assertIn('NO_SAVED_REFERENCE_AT_THIS_ROUND_T', pl['rounds'][0]['reasons'])
         df = E.L.read(ROOT, E.p0.MENU, E.p0.DIRECTORY+'CONFIGURATION_LD2.json')['spec']
         for key in ('schedule_adapter', 'A_input', 'A_release'):   # as P1 generate_configuration does
             df.pop(key, None)
@@ -204,6 +210,33 @@ class Entry(unittest.TestCase):
             self.assertEqual(E.load_configuration(ROOT, needs[name])[0], self.saved[prefix]['config'])
         with self.assertRaisesRegex(ValueError, 'CONFIGURATION_AND_SCHEDULE_REQUIRED_FIRST'):
             E.load_configuration(ROOT, needs['PR_PAULI:L_D=4:NONE'])
+
+    def test_m5_normalizer_budget_and_non_binary64_step(self):
+        """4th(m5_best) needs more than one normalizer per round; a non-dyadic actual step is refused by evaluate."""
+        config = self.saved[3]['config']; lam = float(Fraction(config['spec']['split']['lambda_R']['numerator'],
+                                                                config['spec']['split']['lambda_R']['denominator']))
+        for edit in (dict(), dict(formula='4th(m5_best)')):
+            v = E.load_configuration(ROOT, variant(config, **edit))[0] if edit else config
+            jobs = {m: E.p1.job(v, m, E.numerical('X'), self.b) for m in range(13)}
+            keys = set()                                   # the provider's cache keys: (tau.hex(), K)
+            for job in jobs.values():
+                c = job['physical_context']['physical_candidate']; st = job['physical_context']['structure']
+                for w, count in zip(st['signed_weights'], st['allocation']):
+                    keys.add(((lam * ((c['T'] * w / c['q']) / count)).hex(), c['K']))
+            budget = E.normalizer_budget(jobs)
+            self.assertGreaterEqual(budget, len(keys), edit)
+            if not edit:
+                self.assertEqual(budget, 13)                               # S2: unchanged one per round
+            else:
+                self.assertGreater(len(keys), 13)                          # the old budget would stop the run
+                pl = E.plan(ROOT, v, index={})
+                self.assertEqual(pl['request_normalizer_budget'], budget)
+        v = E.load_configuration(ROOT, variant(config, delta_pf=Fraction(3, 10)))[0]
+        pl = E.plan(ROOT, v, index=self.index)
+        odd = [r['m'] for r in v['rounds'] if r['q_PF'] & (r['q_PF'] - 1)]
+        self.assertTrue(odd)
+        self.assertEqual(pl['unsupported_rounds'], odd)
+        self.assertTrue(all('ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT' in pl['rounds'][m]['reasons'] for m in odd))
 
 
 if __name__ == '__main__':

@@ -230,6 +230,9 @@ def round_support(root, job, *, store=None):
         reasons.append('K_NOT_IN_PROVIDER')
     if not reasons and not common.same(st, common.structure(c)):
         reasons.append('STRUCTURE_NOT_PROVIDER_STRUCTURE')
+    bc = job['B_identity']['candidate']
+    if provider._scalar(bc['T']) != provider._scalar(c['T']) or provider._scalar(bc['delta']) != provider._scalar(c['delta']):
+        reasons.append('ACTUAL_STEP_OR_T_NOT_BINARY64_EXACT')   # P1 job floats T/q; evaluate compares exactly
     if (c['prefix'] != ctx['split']['L_D'] or ctx['law']['model'] != 'ideal_finite_RTE_law'
             or ctx['split'].get('one_body_policy') not in (None, 'DETERMINISTIC')
             or ctx['split']['randomized_scope'] != 'TAIL_AFTER_PREFIX' or ctx['split']['deterministic_scope'] != 'PREFIX'):
@@ -242,6 +245,15 @@ def round_support(root, job, *, store=None):
         return reasons, 'UNSUPPORTED'
     validated = c['formula'] == VALIDATED['formula'] and c['K'] == VALIDATED['K']
     return [], 'SUPPORTED_VALIDATED_FOR_PAULI' if validated else 'SUPPORTED_NOT_VALIDATED_FOR_PAULI'
+
+
+def normalizer_budget(jobs):
+    """Finite-normalizer scope of one run: one per signed piece per requested round (S2: one per round).
+
+    The provider caches b(tau, K) by (tau.hex(), K); 4th(m5_best) has up to 6 distinct |w|/count values
+    per round (palindromic pairs share one), so the S2 runners' one-per-round budget is too small.
+    """
+    return sum(len(job['physical_context']['structure']['signed_weights']) for job in jobs.values())
 
 
 def numerical(source):
@@ -318,6 +330,7 @@ def plan(root, config, *, packets=SAVED_PACKETS, index=None, configuration_sourc
                 reuse_rounds=[r['m'] for r in rows if r['decision'] == 'REUSE'],
                 rebind_rounds=[r['m'] for r in rows if r.get('reuse') == 'REBOUND_SAME_PHYSICAL_KEY'],
                 request_rounds=[r['m'] for r in rows if r['decision'] == 'REQUEST'],
+                request_normalizer_budget=sum(len(r['job']['signed_weights']) for r in rows if r['decision'] == 'REQUEST'),
                 unsupported_rounds=[r['m'] for r in rows if r['decision'] == 'UNSUPPORTED'],
                 rounds=rows,
                 dictionary=None if item is None else dict(source=item['source'], sha256=item['dictionary_sha256'],

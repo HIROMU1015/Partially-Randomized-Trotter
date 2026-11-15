@@ -5,7 +5,7 @@
 2. Artificial variants of LD3/LD5 (B generate of an edited spec): kappa x3/2, kappa x2/3,
    Delta_PF=1/5, Delta_PF=binary64 0.2, K=4, formula 4th(m5_best), h=1/20. The plan's REQUEST rounds
    are compared with the rounds whose canonical physical row changed.
-3. kappa x3/2 and Delta_PF=1/5: execute with a synthetic stub for the REQUEST rounds (records marked
+3. kappa x3/2 and Delta_PF=binary64 0.2: execute with a synthetic stub for the REQUEST rounds (records marked
    SYNTHETIC_STUB_NOT_A_MEAN; no provider call), assemble, B intake conditions, optional B bind_packet
    with records taken from the rows.
 Writes VALIDATION.json and PLANS.json in --out (no carrier, no packet is published from step 3).
@@ -96,13 +96,14 @@ def main():
                     case=case, configuration_id=v['id'], changed_rounds=changed, request_rounds=pl['request_rounds'],
                     rebind_rounds=pl['rebind_rounds'], unsupported_rounds=pl['unsupported_rounds'],
                     requests_equal_changed=pl['request_rounds'] == changed,
+                    changed_equal_requests_plus_unsupported=sorted(pl['request_rounds'] + [m for m in pl['unsupported_rounds'] if m in changed]) == changed,
                     unsupported_reasons={r['m']: r['reasons'] for r in pl['rounds'] if r['decision'] == 'UNSUPPORTED'},
                     provider_support=sorted({r['provider_support'] for r in pl['rounds']}),
                     R_outer_saved=[r['R_outer'] for r in config['rounds']], R_outer_variant=[r['R_outer'] for r in v['rounds']],
                     q_PF_variant=[r['q_PF'] for r in v['rounds']],
                     first_request_changed_fields=next((r['changed_from_saved_round']['fields'] for r in pl['rounds']
                                                       if r['decision'] != 'REUSE' and 'changed_from_saved_round' in r), None)))
-            for name, edit in EDITS[:1] + EDITS[2:3]:
+            for name, edit in EDITS[:1] + EDITS[3:4]:
                 calls = []; d = work/('stub_LD%d_%s' % (prefix, name.replace('/', '_')))
                 d.mkdir(); spec = d/'spec.json'; spec.write_text(json.dumps(T.variant(config, **edit)))
                 run = RUN.execute(d/'run', 'SYNTHETIC', str(spec), approve=True, check_source=False,
@@ -123,6 +124,7 @@ def main():
     (out/'PLANS.json').write_text(json.dumps(plans, ensure_ascii=False, indent=1) + '\n')
     ok = (all(x['rows_equal_published_except_reuse_flag'] and x['b_intake_conditions'] == 'PASS' for x in report['saved'])
           and all(x['requests_equal_changed'] for x in report['variants'] if x['unsupported_rounds'] == [])
+          and all(x['changed_equal_requests_plus_unsupported'] for x in report['variants'] if not x['case'].endswith('h_1/20'))
           and all(x['b_intake_conditions'] == 'PASS' for x in report['stub_runs']))
     print(json.dumps(dict(ok=ok, saved=[(x['prefix'], x['status'], x['b_bind_packet'] if isinstance(x['b_bind_packet'], str)
                                          else x['b_bind_packet']['status']) for x in report['saved']],
