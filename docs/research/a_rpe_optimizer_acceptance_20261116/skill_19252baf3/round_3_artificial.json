@@ -1,0 +1,57 @@
+{
+ "schema": "RPE_OPTIMIZER_SEARCH_ROUND_V1",
+ "round_id": "A_SKILL_ACCEPT_3_ARTIFICIAL",
+ "methods": [
+  "TRUNCATED_PF"
+ ],
+ "max_new_q3_per_method": {
+  "TRUNCATED_PF": 4
+ },
+ "initial": {
+  "TRUNCATED_PF": [
+   "B0I_P7_S2_16h_over_7__B_PRICE"
+  ]
+ },
+ "method_overrides": {
+  "TRUNCATED_PF": {
+   "formulas": [
+    "2nd"
+   ],
+   "delta_over_h_range": [
+    "1",
+    "16/7"
+   ]
+  }
+ },
+ "resume_from": [],
+ "routes_override": {
+  "TRUNCATED_PF": [
+   {
+    "kind": "artificial",
+    "interpreter": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "configuration_ids": "*",
+    "view_commit": null,
+    "artificial": {
+     "weights": [
+      1,
+      4,
+      9,
+      16,
+      25,
+      36,
+      49,
+      64,
+      81,
+      100,
+      121,
+      144,
+      169
+     ],
+     "scale": "13717125719597395476268286997213/653735135813562572002410888671875000000",
+     "tau": "15136964828156312001/5960464477539062500000000"
+    },
+    "existing_caller": "ARTIFICIAL"
+   }
+  ]
+ }
+}

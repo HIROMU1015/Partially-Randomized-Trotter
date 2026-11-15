@@ -93,4 +93,4 @@ python scripts/acceptance_rpe_method_optimizer.py --optimizer-root <最適化プ
 
 - Skillは、上のケースの入力を最適化プログラムへ渡し、同じ欄を持つ出力を返すこと。
 - 途中で利用者に質問しないこと。
-- Skillが公開されたら、同じ判定をSkillの出力にも当てる。現状は `PENDING_NOT_PUBLISHED`。
+- Skillが公開されたら、同じ判定をSkillの出力にも当てる。2026-11-16に `19252baf3` で実施した（[skill_19252baf3/REPORT.md](skill_19252baf3/REPORT.md)、PASS 38）。

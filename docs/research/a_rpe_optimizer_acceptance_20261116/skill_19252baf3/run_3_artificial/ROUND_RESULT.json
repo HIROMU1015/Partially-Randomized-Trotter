@@ -1,0 +1,2267 @@
+{
+  "schema": "RPE_OPTIMIZER_ROUND_RESULT_V1",
+  "round": {
+    "schema": "RPE_OPTIMIZER_SEARCH_ROUND_V1",
+    "round_id": "A_SKILL_ACCEPT_3_ARTIFICIAL",
+    "methods": [
+      "TRUNCATED_PF"
+    ],
+    "max_new_q3_per_method": {
+      "TRUNCATED_PF": 4
+    },
+    "initial": {
+      "TRUNCATED_PF": [
+        "B0I_P7_S2_16h_over_7__B_PRICE"
+      ]
+    },
+    "method_overrides": {
+      "TRUNCATED_PF": {
+        "formulas": [
+          "2nd"
+        ],
+        "delta_over_h_range": [
+          "1",
+          "16/7"
+        ]
+      }
+    },
+    "resume_from": [],
+    "routes_override": {
+      "TRUNCATED_PF": [
+        {
+          "kind": "artificial",
+          "interpreter": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+          "configuration_ids": "*",
+          "view_commit": null,
+          "artificial": {
+            "weights": [
+              1,
+              4,
+              9,
+              16,
+              25,
+              36,
+              49,
+              64,
+              81,
+              100,
+              121,
+              144,
+              169
+            ],
+            "scale": "13717125719597395476268286997213/653735135813562572002410888671875000000",
+            "tau": "15136964828156312001/5960464477539062500000000"
+          },
+          "existing_caller": "ARTIFICIAL"
+        }
+      ]
+    }
+  },
+  "methods": {
+    "TRUNCATED_PF": {
+      "method": "TRUNCATED_PF",
+      "best": {
+        "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+        "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+        "configuration": {
+          "formula": "2nd",
+          "delta_over_h": "16/7"
+        },
+        "labels": [
+          "B0I_P7_S2_16h_over_7__A_SHAPE",
+          "B0I_P7_S2_16h_over_7__BASELINE_N0",
+          "B0I_P7_S2_16h_over_7__B_PRICE",
+          "P7_S2_LOCAL_R12_D1 (m12=3)",
+          "P7_S2_LOCAL_R12_D2 (m12=2)",
+          "P7_S2_M12_ONE_FIXED (m12=1)"
+        ],
+        "N_X": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          11,
+          2
+        ],
+        "N_Y": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          11,
+          2
+        ],
+        "MSE_lower": {
+          "numerator": 208428340375213586340823964563871553,
+          "denominator": 84985567655763134360313415527343750000000,
+          "display": "0.00"
+        },
+        "MSE_upper": {
+          "numerator": 208428340375213586340823964563871553,
+          "denominator": 84985567655763134360313415527343750000000,
+          "display": "0.00"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 376202858,
+          "denominator": 1,
+          "display": "376,202,858.00"
+        },
+        "cost_display": "376,202,858.00",
+        "evidence": "ARTIFICIAL_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "stop_reason": "Q3_BUDGET_EXHAUSTED",
+      "pending_request": {
+        "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+        "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+        "vector": [
+          59,
+          59,
+          55,
+          55,
+          51,
+          51,
+          47,
+          47,
+          43,
+          43,
+          39,
+          39,
+          35,
+          35,
+          31,
+          31,
+          27,
+          27,
+          23,
+          23,
+          19,
+          19,
+          10,
+          10,
+          2,
+          2
+        ],
+        "cost": {
+          "numerator": 366322948,
+          "denominator": 1,
+          "display": "366,322,948.00"
+        },
+        "origin": {
+          "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+          "m": 11,
+          "axes": [
+            "X",
+            "Y"
+          ],
+          "d": 1,
+          "base_vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            11,
+            11,
+            2,
+            2
+          ],
+          "base_headroom": "0.965724"
+        },
+        "method": "TRUNCATED_PF",
+        "shot_change": 2,
+        "route": {
+          "kind": "pf_b_pf6",
+          "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+        },
+        "queue": [
+          {
+            "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+            "cost": {
+              "numerator": 366322948,
+              "denominator": 1,
+              "display": "366,322,948.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              10,
+              10,
+              2,
+              2
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 11,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                11,
+                11,
+                2,
+                2
+              ],
+              "base_headroom": "0.965724"
+            }
+          },
+          {
+            "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+            "cost": {
+              "numerator": 371262596,
+              "denominator": 1,
+              "display": "371,262,596.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              18,
+              18,
+              11,
+              11,
+              2,
+              2
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 10,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                11,
+                11,
+                2,
+                2
+              ],
+              "base_headroom": "0.965724"
+            }
+          },
+          {
+            "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+            "cost": {
+              "numerator": 373732420,
+              "denominator": 1,
+              "display": "373,732,420.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              22,
+              22,
+              19,
+              19,
+              11,
+              11,
+              2,
+              2
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 9,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                11,
+                11,
+                2,
+                2
+              ],
+              "base_headroom": "0.965724"
+            }
+          },
+          {
+            "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+            "cost": {
+              "numerator": 374967332,
+              "denominator": 1,
+              "display": "374,967,332.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              11,
+              11,
+              2,
+              2
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 8,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                11,
+                11,
+                2,
+                2
+              ],
+              "base_headroom": "0.965724"
+            }
+          },
+          {
+            "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+            "cost": {
+              "numerator": 375584788,
+              "denominator": 1,
+              "display": "375,584,788.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              30,
+              30,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              11,
+              11,
+              2,
+              2
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 7,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                11,
+                11,
+                2,
+                2
+              ],
+              "base_headroom": "0.965724"
+            }
+          }
+        ],
+        "job": null
+      },
+      "trace": [
+        {
+          "step": 1,
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            13,
+            13,
+            2,
+            2
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            2
+          ],
+          "cost": {
+            "numerator": 395962678,
+            "denominator": 1,
+            "display": "395,962,678.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 2,
+            "base_vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              13,
+              13,
+              4,
+              4
+            ],
+            "base_headroom": "0.593276"
+          },
+          "answer_source": "SAVED",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 2415680996446553638790769,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 2415680996446553638790773,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "calls": 0,
+          "job": null,
+          "result_sources": [
+            {
+              "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "path": "docs/research/p7_s2_m12_one_results_20261116/SUMMARY.json",
+              "selector": [
+                "rows",
+                2
+              ]
+            }
+          ],
+          "point_id": "f5b43c8076101f52353bb98f",
+          "reason": null,
+          "incumbent_before": {
+            "numerator": 435481090,
+            "denominator": 1,
+            "display": "435,481,090.00"
+          },
+          "incumbent_after": {
+            "numerator": 395962678,
+            "denominator": 1,
+            "display": "395,962,678.00"
+          },
+          "improved": true,
+          "proposals_considered": 26
+        },
+        {
+          "step": 2,
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            13,
+            13,
+            1,
+            1
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            1
+          ],
+          "cost": {
+            "numerator": 376203472,
+            "denominator": 1,
+            "display": "376,203,472.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              13,
+              13,
+              2,
+              2
+            ],
+            "base_headroom": "0.951220"
+          },
+          "answer_source": "SAVED",
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 4725530991854865818396863,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 4725530991854865818396867,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "calls": 0,
+          "job": null,
+          "result_sources": [
+            {
+              "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "path": "docs/research/p7_s2_m12_one_results_20261116/SUMMARY.json",
+              "selector": [
+                "rows",
+                3
+              ]
+            }
+          ],
+          "point_id": "446aa71b4d19549db393beac",
+          "reason": null,
+          "incumbent_before": {
+            "numerator": 395962678,
+            "denominator": 1,
+            "display": "395,962,678.00"
+          },
+          "incumbent_after": {
+            "numerator": 395962678,
+            "denominator": 1,
+            "display": "395,962,678.00"
+          },
+          "improved": false,
+          "proposals_considered": 13
+        },
+        {
+          "step": 3,
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            12,
+            12,
+            2,
+            2
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            2
+          ],
+          "cost": {
+            "numerator": 386082768,
+            "denominator": 1,
+            "display": "386,082,768.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              13,
+              13,
+              2,
+              2
+            ],
+            "base_headroom": "0.951220"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 206483002545888864800553189316994073,
+            "denominator": 84985567655763134360313415527343750000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 206483002545888864800553189316994073,
+            "denominator": 84985567655763134360313415527343750000000,
+            "display": "0.00"
+          },
+          "calls": 0,
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/961e70ce20147e855cb3",
+          "result_sources": null,
+          "point_id": null,
+          "reason": null,
+          "incumbent_before": {
+            "numerator": 395962678,
+            "denominator": 1,
+            "display": "395,962,678.00"
+          },
+          "incumbent_after": {
+            "numerator": 386082768,
+            "denominator": 1,
+            "display": "386,082,768.00"
+          },
+          "improved": true,
+          "proposals_considered": 12
+        },
+        {
+          "step": 4,
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            12,
+            12,
+            1,
+            1
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            1
+          ],
+          "cost": {
+            "numerator": 366323562,
+            "denominator": 1,
+            "display": "366,323,562.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              12,
+              12,
+              2,
+              2
+            ],
+            "base_headroom": "0.956710"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 178582814287833127053680160990689439,
+            "denominator": 42492783827881567180156707763671875000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 178582814287833127053680160990689439,
+            "denominator": 42492783827881567180156707763671875000000,
+            "display": "0.00"
+          },
+          "calls": 0,
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/63f5822123b389b0015d",
+          "result_sources": null,
+          "point_id": null,
+          "reason": null,
+          "incumbent_before": {
+            "numerator": 386082768,
+            "denominator": 1,
+            "display": "386,082,768.00"
+          },
+          "incumbent_after": {
+            "numerator": 386082768,
+            "denominator": 1,
+            "display": "386,082,768.00"
+          },
+          "improved": false,
+          "proposals_considered": 13
+        },
+        {
+          "step": 5,
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            11,
+            11,
+            2,
+            2
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            2
+          ],
+          "cost": {
+            "numerator": 376202858,
+            "denominator": 1,
+            "display": "376,202,858.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              12,
+              12,
+              2,
+              2
+            ],
+            "base_headroom": "0.956710"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 208428340375213586340823964563871553,
+            "denominator": 84985567655763134360313415527343750000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 208428340375213586340823964563871553,
+            "denominator": 84985567655763134360313415527343750000000,
+            "display": "0.00"
+          },
+          "calls": 0,
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/f01eabbf2bf25e1b8cbd",
+          "result_sources": null,
+          "point_id": null,
+          "reason": null,
+          "incumbent_before": {
+            "numerator": 386082768,
+            "denominator": 1,
+            "display": "386,082,768.00"
+          },
+          "incumbent_after": {
+            "numerator": 376202858,
+            "denominator": 1,
+            "display": "376,202,858.00"
+          },
+          "improved": true,
+          "proposals_considered": 12
+        },
+        {
+          "step": 6,
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            11,
+            11,
+            1,
+            1
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            1
+          ],
+          "cost": {
+            "numerator": 356443652,
+            "denominator": 1,
+            "display": "356,443,652.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              11,
+              11,
+              2,
+              2
+            ],
+            "base_headroom": "0.965724"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 179555483202495487823815548614128179,
+            "denominator": 42492783827881567180156707763671875000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 179555483202495487823815548614128179,
+            "denominator": 42492783827881567180156707763671875000000,
+            "display": "0.00"
+          },
+          "calls": 0,
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/baf4d495eb922624b104",
+          "result_sources": null,
+          "point_id": null,
+          "reason": null,
+          "incumbent_before": {
+            "numerator": 376202858,
+            "denominator": 1,
+            "display": "376,202,858.00"
+          },
+          "incumbent_after": {
+            "numerator": 376202858,
+            "denominator": 1,
+            "display": "376,202,858.00"
+          },
+          "improved": false,
+          "proposals_considered": 13
+        }
+      ],
+      "held": [],
+      "new_calls": 0,
+      "evaluated_count": 7,
+      "evaluated": [
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            13,
+            13,
+            4,
+            4
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            4
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            4
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 753330308125882041792679,
+            "denominator": 500000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 753330308125882041792681,
+            "denominator": 500000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 435481090,
+            "denominator": 1,
+            "display": "435,481,090.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                13
+              ]
+            },
+            {
+              "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "path": "docs/research/p7_s2_m12_one_results_20261116/SUMMARY.json",
+              "selector": [
+                "rows",
+                0
+              ]
+            }
+          ],
+          "point_id": "fa8b39f1299d70413db6ec0f",
+          "job": null,
+          "label": "B0I_P7_S2_16h_over_7__B_PRICE"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            13,
+            13,
+            2,
+            2
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 2415680996446553638790769,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 2415680996446553638790773,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 395962678,
+            "denominator": 1,
+            "display": "395,962,678.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "path": "docs/research/p7_s2_m12_one_results_20261116/SUMMARY.json",
+              "selector": [
+                "rows",
+                2
+              ]
+            }
+          ],
+          "point_id": "f5b43c8076101f52353bb98f",
+          "job": null,
+          "label": "P7_S2_LOCAL_R12_D2 (m12=2)"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            13,
+            13,
+            1,
+            1
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 4725530991854865818396863,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 4725530991854865818396867,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 376203472,
+            "denominator": 1,
+            "display": "376,203,472.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "path": "docs/research/p7_s2_m12_one_results_20261116/SUMMARY.json",
+              "selector": [
+                "rows",
+                3
+              ]
+            }
+          ],
+          "point_id": "446aa71b4d19549db393beac",
+          "job": null,
+          "label": "P7_S2_M12_ONE_FIXED (m12=1)"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            12,
+            12,
+            2,
+            2
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 206483002545888864800553189316994073,
+            "denominator": 84985567655763134360313415527343750000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 206483002545888864800553189316994073,
+            "denominator": 84985567655763134360313415527343750000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 386082768,
+            "denominator": 1,
+            "display": "386,082,768.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/961e70ce20147e855cb3",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            12,
+            12,
+            1,
+            1
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 178582814287833127053680160990689439,
+            "denominator": 42492783827881567180156707763671875000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 178582814287833127053680160990689439,
+            "denominator": 42492783827881567180156707763671875000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 366323562,
+            "denominator": 1,
+            "display": "366,323,562.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/63f5822123b389b0015d",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            11,
+            11,
+            2,
+            2
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 208428340375213586340823964563871553,
+            "denominator": 84985567655763134360313415527343750000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 208428340375213586340823964563871553,
+            "denominator": 84985567655763134360313415527343750000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 376202858,
+            "denominator": 1,
+            "display": "376,202,858.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/f01eabbf2bf25e1b8cbd",
+          "label": null
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            11,
+            11,
+            1,
+            1
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 179555483202495487823815548614128179,
+            "denominator": 42492783827881567180156707763671875000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 179555483202495487823815548614128179,
+            "denominator": 42492783827881567180156707763671875000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 356443652,
+            "denominator": 1,
+            "display": "356,443,652.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/baf4d495eb922624b104",
+          "label": null
+        }
+      ],
+      "not_ready_candidates": [
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=1:e6754564",
+          "configuration": {
+            "formula": "2nd",
+            "delta_over_h": "1"
+          },
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "needs": [
+            "PRICE_26AXIS"
+          ],
+          "price_status": "NO_SAVED_26_AXIS_PRICE",
+          "signal_source": {
+            "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+            "path": "docs/research/truncated_fullh_signal_results_20261114/run01/B0I_P7_S2_D01/B_SIGNAL_INPUT.json"
+          },
+          "next": "Q3 of a generated/decremented allocation after the listed items exist"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=2:155a3a2e",
+          "configuration": {
+            "formula": "2nd",
+            "delta_over_h": "2"
+          },
+          "configuration_id": "155a3a2e86ff9cde5ab580379050c915bbfee40edb2cd70ab33c1773363a4d14",
+          "needs": [
+            "SIGNAL_13ROUND_PACKET",
+            "PRICE_26AXIS"
+          ],
+          "price_status": "NO_SAVED_26_AXIS_PRICE",
+          "signal_source": null,
+          "next": "Q3 of a generated/decremented allocation after the listed items exist"
+        }
+      ],
+      "ready_candidates": [
+        "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777"
+      ],
+      "search_range": {
+        "candidates": [
+          "TRUNCATED_PF:formula=2nd,delta_over_h=1:e6754564",
+          "TRUNCATED_PF:formula=2nd,delta_over_h=2:155a3a2e",
+          "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777"
+        ],
+        "rule": "FINITE_LOCAL_DESCENT_V1"
+      },
+      "resume_records": [
+        {
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 206483002545888864800553189316994073,
+            "denominator": 84985567655763134360313415527343750000000
+          },
+          "MSE_upper": {
+            "numerator": 206483002545888864800553189316994073,
+            "denominator": 84985567655763134360313415527343750000000
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/961e70ce20147e855cb3"
+        },
+        {
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            12,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 178582814287833127053680160990689439,
+            "denominator": 42492783827881567180156707763671875000000
+          },
+          "MSE_upper": {
+            "numerator": 178582814287833127053680160990689439,
+            "denominator": 42492783827881567180156707763671875000000
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/63f5822123b389b0015d"
+        },
+        {
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 208428340375213586340823964563871553,
+            "denominator": 84985567655763134360313415527343750000000
+          },
+          "MSE_upper": {
+            "numerator": 208428340375213586340823964563871553,
+            "denominator": 84985567655763134360313415527343750000000
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/f01eabbf2bf25e1b8cbd"
+        },
+        {
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            11,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 179555483202495487823815548614128179,
+            "denominator": 42492783827881567180156707763671875000000
+          },
+          "MSE_upper": {
+            "numerator": 179555483202495487823815548614128179,
+            "denominator": 42492783827881567180156707763671875000000
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/baf4d495eb922624b104"
+        }
+      ],
+      "budget": {
+        "max_new_q3": 4,
+        "spent_before": 4,
+        "new_calls": 0
+      }
+    }
+  },
+  "optimizer_source": "a2e2ef50a108d6f34089a99bd00f11a7085dd9c9",
+  "wall_seconds": 6.037798561155796
+}

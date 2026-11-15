@@ -1,0 +1,951 @@
+{
+ "schema": "A_SKILL_ACCEPTANCE_RESULT_V1",
+ "skill": {
+  "commit": "19252baf39698570bd80a98bf10142cc8f215517",
+  "files": {
+   "SKILL.md": "49f39feda35b85a9c8b9f599a6f801453223bf658a08cb5f54179ad688ab12f8",
+   "references/program-entry.md": "6ca61f0b4616780a479f958e56b441de53ad7630b160c1bcf93865d1d11093d2",
+   "references/h4-round-budget0.json": "86572438f566ede79bf545dc8df5c31f22fd3494d7b9c93a4ebc8e846578a076"
+  },
+  "program_source": "a2e2ef50a108d6f34089a99bd00f11a7085dd9c9"
+ },
+ "program_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+ "program_head": "a2e2ef50a108d6f34089a99bd00f11a7085dd9c9",
+ "python": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+ "entry_checks": [
+  {
+   "check": "program_checkout_is_skill_program_source",
+   "status": "PASS",
+   "program_head": "a2e2ef50a108d6f34089a99bd00f11a7085dd9c9",
+   "skill_program_source": "a2e2ef50a108d6f34089a99bd00f11a7085dd9c9",
+   "tracked_changes": ""
+  },
+  {
+   "check": "documented_cli_present",
+   "status": "PASS",
+   "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B scripts/run_rpe_method_optimizer.py \\\n  --problem configs/rpe_method_optimizer/h4_df10_problem.json \\\n  --round /absolute/path/to/round.json --run-dir /absolute/path/to/run\n"
+  }
+ ],
+ "cases": [
+  {
+   "case": "1_P7_S2_RANGE",
+   "runs": {
+    "1a_from_m12_4_budget0": {
+     "round": "round_1a_from_m12_4_budget0.json",
+     "run_dir": "run_1a_from_m12_4_budget0",
+     "table": "| 1a_from_m12_4_budget0 | TRUNCATED_PF | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777<br>X=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 13, 2]<br>Y=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 13, 2] | [2.415681e-06, 2.415681e-06] MODEL_BOUND_MEETS_ADOPTED_THRESHOLD | 395,962,678.00（exact 395962678） | SAVED | NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777：386082768 RZ | 再利用 3件・新規call 0・予算 0（消費済み 0） |",
+     "steps": [
+      {
+       "step": 1,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "cost": "395962678",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "improved": true
+      },
+      {
+       "step": 2,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "cost": "376203472",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "improved": false
+      }
+     ],
+     "invocation_launched": 0,
+     "job_dirs": 0,
+     "launch_files": 0,
+     "worker_artifacts": 0,
+     "launch_kinds": [],
+     "new_calls": 0,
+     "spent_before": 0
+    },
+    "1b_after_m12_3_budget0": {
+     "round": "round_1b_after_m12_3_budget0.json",
+     "run_dir": "run_1b_after_m12_3_budget0",
+     "table": "| 1b_after_m12_3_budget0 | TRUNCATED_PF | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777<br>X=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 13, 3]<br>Y=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 13, 3] | [1.951735e-06, 1.951735e-06] MODEL_BOUND_MEETS_ADOPTED_THRESHOLD | 415,721,884.00（exact 415721884） | SAVED | NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777：395962064 RZ | 再利用 3件・新規call 0・予算 0（消費済み 0） |",
+     "steps": [
+      {
+       "step": 1,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "cost": "376203472",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "improved": false
+      }
+     ],
+     "invocation_launched": 0,
+     "job_dirs": 0,
+     "launch_files": 0,
+     "worker_artifacts": 0,
+     "launch_kinds": [],
+     "new_calls": 0,
+     "spent_before": 0
+    },
+    "1b_after_m12_3_budget1_artificial": {
+     "round": "round_1b_after_m12_3_budget1_artificial.json",
+     "run_dir": "run_1b_after_m12_3_budget1_artificial",
+     "table": "| 1b_after_m12_3_budget1_artificial | TRUNCATED_PF | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777<br>X=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 11, 3]<br>Y=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 11, 3] | [1.861502e-06, 1.861502e-06] MODEL_BOUND_MEETS_ADOPTED_THRESHOLD | 395,962,064.00（exact 395962064） | ARTIFICIAL_JOB | Q3_BUDGET_EXHAUSTED | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777：356443652 RZ | 再利用 3件・新規call 1・予算 1（消費済み 0） |",
+     "steps": [
+      {
+       "step": 1,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "cost": "376203472",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "improved": false
+      },
+      {
+       "step": 2,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "cost": "395962064",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_JOB",
+       "improved": true
+      }
+     ],
+     "invocation_launched": 1,
+     "job_dirs": 1,
+     "launch_files": 1,
+     "worker_artifacts": 1,
+     "launch_kinds": [
+      "artificial"
+     ],
+     "new_calls": 1,
+     "spent_before": 0
+    }
+   },
+   "checks": [
+    {
+     "check": "search_space_follows_requested_range",
+     "status": "PASS",
+     "searched": [
+      "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777"
+     ],
+     "outside": [],
+     "run": "1a_from_m12_4_budget0"
+    },
+    {
+     "check": "starts_from_given_saved_point_only",
+     "status": "PASS",
+     "given_labels": [
+      "B0I_P7_S2_16h_over_7__B_PRICE"
+     ],
+     "first_incumbent": "435481090",
+     "run": "1a_from_m12_4_budget0"
+    },
+    {
+     "check": "saved_Q3_revealed_only_after_selection",
+     "status": "PASS",
+     "unselected_saved_known": [],
+     "saved_answer_steps": [
+      1,
+      2
+     ],
+     "observability": "CLI output only (the call-level responder log is not exposed by the Skill entry)",
+     "run": "1a_from_m12_4_budget0"
+    },
+    {
+     "check": "next_action_decided_without_asking",
+     "status": "PASS",
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "next": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "cost": "386082768",
+      "route": {
+       "kind": "pf_b_pf6",
+       "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+     },
+     "run": "1a_from_m12_4_budget0"
+    },
+    {
+     "check": "continues_after_improvement",
+     "status": "PASS",
+     "improvements": 1,
+     "steps_after_last_improvement": 1,
+     "pending_cheaper": true,
+     "run": "1a_from_m12_4_budget0"
+    },
+    {
+     "check": "budget0_launches_nothing",
+     "status": "PASS",
+     "invocation_launched": 0,
+     "job_dirs": 0,
+     "launch_files": 0,
+     "worker_artifacts": 0,
+     "launch_kinds": [],
+     "new_calls": 0,
+     "spent_before": 0,
+     "run": "1a_from_m12_4_budget0"
+    },
+    {
+     "check": "search_space_follows_requested_range",
+     "status": "PASS",
+     "searched": [
+      "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777"
+     ],
+     "outside": [],
+     "run": "1b_after_m12_3_budget0"
+    },
+    {
+     "check": "starts_from_given_saved_point_only",
+     "status": "PASS",
+     "given_labels": [
+      "B0I_P7_S2_16h_over_7__B_PRICE",
+      "P7_S2_LOCAL_R12_D1 (m12=3)"
+     ],
+     "first_incumbent": "415721884",
+     "run": "1b_after_m12_3_budget0"
+    },
+    {
+     "check": "saved_Q3_revealed_only_after_selection",
+     "status": "PASS",
+     "unselected_saved_known": [],
+     "saved_answer_steps": [
+      1
+     ],
+     "observability": "CLI output only (the call-level responder log is not exposed by the Skill entry)",
+     "run": "1b_after_m12_3_budget0"
+    },
+    {
+     "check": "next_action_decided_without_asking",
+     "status": "PASS",
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "next": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "cost": "395962064",
+      "route": {
+       "kind": "pf_b_pf6",
+       "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+     },
+     "run": "1b_after_m12_3_budget0"
+    },
+    {
+     "check": "next_action_from_m12_3_state_without_budget",
+     "status": "PASS",
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "run": "1b_after_m12_3_budget0"
+    },
+    {
+     "check": "budget0_launches_nothing",
+     "status": "PASS",
+     "invocation_launched": 0,
+     "job_dirs": 0,
+     "launch_files": 0,
+     "worker_artifacts": 0,
+     "launch_kinds": [],
+     "new_calls": 0,
+     "spent_before": 0,
+     "run": "1b_after_m12_3_budget0"
+    },
+    {
+     "check": "search_space_follows_requested_range",
+     "status": "PASS",
+     "searched": [
+      "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777"
+     ],
+     "outside": [],
+     "run": "1b_after_m12_3_budget1_artificial"
+    },
+    {
+     "check": "starts_from_given_saved_point_only",
+     "status": "PASS",
+     "given_labels": [
+      "B0I_P7_S2_16h_over_7__B_PRICE",
+      "P7_S2_LOCAL_R12_D1 (m12=3)"
+     ],
+     "first_incumbent": "415721884",
+     "run": "1b_after_m12_3_budget1_artificial"
+    },
+    {
+     "check": "saved_Q3_revealed_only_after_selection",
+     "status": "PASS",
+     "unselected_saved_known": [],
+     "saved_answer_steps": [
+      1
+     ],
+     "observability": "CLI output only (the call-level responder log is not exposed by the Skill entry)",
+     "run": "1b_after_m12_3_budget1_artificial"
+    },
+    {
+     "check": "next_action_decided_without_asking",
+     "status": "PASS",
+     "stop_reason": "Q3_BUDGET_EXHAUSTED",
+     "next": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "cost": "356443652",
+      "route": {
+       "kind": "pf_b_pf6",
+       "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+     },
+     "run": "1b_after_m12_3_budget1_artificial"
+    },
+    {
+     "check": "remaining_budget_used_then_rule_stop",
+     "status": "PASS",
+     "stop_reason": "Q3_BUDGET_EXHAUSTED",
+     "invocation_launched": 1,
+     "job_dirs": 1,
+     "launch_files": 1,
+     "worker_artifacts": 1,
+     "launch_kinds": [
+      "artificial"
+     ],
+     "new_calls": 1,
+     "spent_before": 0,
+     "run": "1b_after_m12_3_budget1_artificial"
+    }
+   ]
+  },
+  {
+   "case": "2_Y4_COARSE_PRICE_REFLECTED",
+   "runs": {
+    "2_p7_all_budget0": {
+     "round": "round_2_p7_all_budget0.json",
+     "run_dir": "run_2_p7_all_budget0",
+     "table": "| 2_p7_all_budget0 | TRUNCATED_PF | TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24<br>X=[37, 34, 32, 29, 27, 24, 22, 19, 17, 14, 11, 9, 6]<br>Y=[37, 34, 32, 29, 27, 24, 22, 19, 17, 14, 11, 9, 6] | [2.074377e-06, 2.074377e-06] MODEL_BOUND_MEETS_ADOPTED_THRESHOLD | 372,035,410.00（exact 372035410） | SAVED | NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET | TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24：329694342 RZ | 再利用 14件・新規call 0・予算 0（消費済み 0） |",
+     "coarse_rows": [
+      {
+       "cost": "365218506",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "label": "B0I_P7_Y4_32h_over_5"
+      },
+      {
+       "cost": "372035410",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "label": "B0I_P7_Y4_32h_over_5__A_SHAPE"
+      }
+     ],
+     "invocation_launched": 0,
+     "job_dirs": 0,
+     "launch_files": 0,
+     "worker_artifacts": 0,
+     "launch_kinds": [],
+     "new_calls": 0,
+     "spent_before": 0
+    },
+    "2_y4_32h5_only_budget0": {
+     "round": "round_2_y4_32h5_only_budget0.json",
+     "run_dir": "run_2_y4_32h5_only_budget0",
+     "table": "| 2_y4_32h5_only_budget0 | TRUNCATED_PF | TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24<br>X=[37, 34, 32, 29, 27, 24, 22, 19, 17, 14, 11, 9, 6]<br>Y=[37, 34, 32, 29, 27, 24, 22, 19, 17, 14, 11, 9, 6] | [2.074377e-06, 2.074377e-06] MODEL_BOUND_MEETS_ADOPTED_THRESHOLD | 372,035,410.00（exact 372035410） | SAVED | NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET | TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24：329694342 RZ | 再利用 2件・新規call 0・予算 0（消費済み 0） |",
+     "coarse_rows": [
+      {
+       "cost": "365218506",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "label": "B0I_P7_Y4_32h_over_5"
+      },
+      {
+       "cost": "372035410",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "label": "B0I_P7_Y4_32h_over_5__A_SHAPE"
+      }
+     ],
+     "invocation_launched": 0,
+     "job_dirs": 0,
+     "launch_files": 0,
+     "worker_artifacts": 0,
+     "launch_kinds": [],
+     "new_calls": 0,
+     "spent_before": 0
+    }
+   },
+   "checks": [
+    {
+     "check": "price_input_is_D_saved_file",
+     "status": "PASS",
+     "catalog_inputs": {
+      "commit": "417a73e7329fd520381dc88cc0de00a11dd0b641",
+      "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/INPUTS.json"
+     },
+     "price_input": {
+      "commit": "c7c8c1edd0996ad9ef97629961f67ca508a182f0",
+      "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/PRICE_AND_COST.json"
+     }
+    },
+    {
+     "check": "coarse_Y4_ready_with_own_26_axis_price",
+     "status": "PASS",
+     "coarse": [
+      {
+       "name": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+       "method": "TRUNCATED_PF",
+       "configuration": {
+        "formula": "4th",
+        "delta_over_h": "32/5"
+       },
+       "configuration_id": "dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0",
+       "ready": true,
+       "needs": [],
+       "price_status": "SAVED_UNIT_PRICES_REPRODUCE_ALL_SAVED_TOTALS",
+       "signal_source": {
+        "commit": "f23c3f10ed56d0c218e49efbdbfb31d12ffa8a53",
+        "path": "docs/research/d_p7_y4_coarse_signal_q3_20261116/BOUND_SIGNAL_INPUT.json",
+        "selector": []
+       },
+       "labels": [
+        "B0I_P7_Y4_32h_over_5",
+        "B0I_P7_Y4_32h_over_5__A_SHAPE"
+       ],
+       "saved_points": [
+        "f8b9eacc15593e4d0a29dcb7",
+        "bfc0c1081b78c5adcb12b43b"
+       ],
+       "outside_index": false
+      }
+     ],
+     "run": "2_p7_all_budget0"
+    },
+    {
+     "check": "saved_Q3_reused_without_new_call",
+     "status": "PASS",
+     "new_calls": 0,
+     "run": "2_p7_all_budget0"
+    },
+    {
+     "check": "budget0_launches_nothing",
+     "status": "PASS",
+     "invocation_launched": 0,
+     "job_dirs": 0,
+     "launch_files": 0,
+     "worker_artifacts": 0,
+     "launch_kinds": [],
+     "new_calls": 0,
+     "spent_before": 0,
+     "run": "2_p7_all_budget0"
+    },
+    {
+     "check": "D_price_total_in_comparison_table",
+     "status": "PASS",
+     "best": {
+      "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+      "cost": "372035410",
+      "evidence": "SAVED"
+     },
+     "run": "2_p7_all_budget0"
+    },
+    {
+     "check": "next_action_decided_without_asking",
+     "status": "PASS",
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "next": {
+      "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+      "cost": "329694342",
+      "route": {
+       "kind": "pf_b_pf6",
+       "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+     },
+     "run": "2_p7_all_budget0"
+    },
+    {
+     "check": "coarse_Y4_ready_with_own_26_axis_price",
+     "status": "PASS",
+     "coarse": [
+      {
+       "name": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+       "method": "TRUNCATED_PF",
+       "configuration": {
+        "formula": "4th",
+        "delta_over_h": "32/5"
+       },
+       "configuration_id": "dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0",
+       "ready": true,
+       "needs": [],
+       "price_status": "SAVED_UNIT_PRICES_REPRODUCE_ALL_SAVED_TOTALS",
+       "signal_source": {
+        "commit": "f23c3f10ed56d0c218e49efbdbfb31d12ffa8a53",
+        "path": "docs/research/d_p7_y4_coarse_signal_q3_20261116/BOUND_SIGNAL_INPUT.json",
+        "selector": []
+       },
+       "labels": [
+        "B0I_P7_Y4_32h_over_5",
+        "B0I_P7_Y4_32h_over_5__A_SHAPE"
+       ],
+       "saved_points": [
+        "f8b9eacc15593e4d0a29dcb7",
+        "bfc0c1081b78c5adcb12b43b"
+       ],
+       "outside_index": false
+      }
+     ],
+     "run": "2_y4_32h5_only_budget0"
+    },
+    {
+     "check": "saved_Q3_reused_without_new_call",
+     "status": "PASS",
+     "new_calls": 0,
+     "run": "2_y4_32h5_only_budget0"
+    },
+    {
+     "check": "budget0_launches_nothing",
+     "status": "PASS",
+     "invocation_launched": 0,
+     "job_dirs": 0,
+     "launch_files": 0,
+     "worker_artifacts": 0,
+     "launch_kinds": [],
+     "new_calls": 0,
+     "spent_before": 0,
+     "run": "2_y4_32h5_only_budget0"
+    },
+    {
+     "check": "D_price_total_in_comparison_table",
+     "status": "PASS",
+     "best": {
+      "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+      "cost": "372035410",
+      "evidence": "SAVED"
+     },
+     "run": "2_y4_32h5_only_budget0"
+    },
+    {
+     "check": "next_action_decided_without_asking",
+     "status": "PASS",
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "next": {
+      "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+      "cost": "329694342",
+      "route": {
+       "kind": "pf_b_pf6",
+       "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+     },
+     "run": "2_y4_32h5_only_budget0"
+    }
+   ]
+  },
+  {
+   "case": "3_ARTIFICIAL_BUDGET_END_AND_RESUME",
+   "runs": {
+    "3_first_budget2": {
+     "table": "| 3 first (budget 2) | TRUNCATED_PF | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777<br>X=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 12, 2]<br>Y=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 12, 2] | [2.429624e-06, 2.429624e-06] MODEL_BOUND_MEETS_ADOPTED_THRESHOLD | 386,082,768.00（exact 386082768） | ARTIFICIAL_JOB | Q3_BUDGET_EXHAUSTED | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777：376202858 RZ | 再利用 3件・新規call 2・予算 2（消費済み 0） |",
+     "invocation_launched": 2,
+     "job_dirs": 2,
+     "launch_files": 2,
+     "worker_artifacts": 2,
+     "launch_kinds": [
+      "artificial"
+     ],
+     "new_calls": 2,
+     "spent_before": 0,
+     "steps": [
+      {
+       "step": 1,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "cost": "395962678",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "calls": 0
+      },
+      {
+       "step": 2,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "cost": "376203472",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "calls": 0
+      },
+      {
+       "step": 3,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "cost": "386082768",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_JOB",
+       "calls": 1
+      },
+      {
+       "step": 4,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "cost": "366323562",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_JOB",
+       "calls": 1
+      }
+     ]
+    },
+    "3_resume_total_cap4": {
+     "table": "| 3 resume (total cap 4) | TRUNCATED_PF | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777<br>X=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 11, 2]<br>Y=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 11, 2] | [2.452515e-06, 2.452515e-06] MODEL_BOUND_MEETS_ADOPTED_THRESHOLD | 376,202,858.00（exact 376202858） | ARTIFICIAL_JOB | Q3_BUDGET_EXHAUSTED | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777：366322948 RZ | 再利用 5件・新規call 2・予算 4（消費済み 2） |",
+     "invocation_launched": 4,
+     "job_dirs": 4,
+     "launch_files": 4,
+     "worker_artifacts": 4,
+     "launch_kinds": [
+      "artificial"
+     ],
+     "new_calls": 2,
+     "spent_before": 2,
+     "new_job_dirs": [
+      "f01eabbf2bf25e1b8cbd",
+      "baf4d495eb922624b104"
+     ]
+    },
+    "3_same_command_again": {
+     "table": "| 3 same command again | TRUNCATED_PF | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777<br>X=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 11, 2]<br>Y=[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 11, 2] | [2.452515e-06, 2.452515e-06] MODEL_BOUND_MEETS_ADOPTED_THRESHOLD | 376,202,858.00（exact 376202858） | ARTIFICIAL_JOB | Q3_BUDGET_EXHAUSTED | TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777：366322948 RZ | 再利用 7件・新規call 0・予算 4（消費済み 4） |",
+     "invocation_launched": 4,
+     "job_dirs": 4,
+     "launch_files": 4,
+     "worker_artifacts": 4,
+     "launch_kinds": [
+      "artificial"
+     ],
+     "new_calls": 0,
+     "spent_before": 4
+    }
+   },
+   "checks": [
+    {
+     "check": "search_space_follows_requested_range",
+     "status": "PASS",
+     "searched": [
+      "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "TRUNCATED_PF:formula=2nd,delta_over_h=1:e6754564",
+      "TRUNCATED_PF:formula=2nd,delta_over_h=2:155a3a2e"
+     ],
+     "outside": [],
+     "run": "3_first_budget2"
+    },
+    {
+     "check": "budget_end_returns_best_unevaluated_and_reason_separately",
+     "status": "PASS",
+     "stop_reason": "Q3_BUDGET_EXHAUSTED",
+     "best": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "cost": "386082768",
+      "evidence": "ARTIFICIAL_JOB"
+     },
+     "next": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "cost": "376202858"
+     },
+     "price_wait": [
+      {
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=1:e6754564",
+       "configuration": {
+        "formula": "2nd",
+        "delta_over_h": "1"
+       },
+       "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+       "needs": [
+        "PRICE_26AXIS"
+       ],
+       "price_status": "NO_SAVED_26_AXIS_PRICE",
+       "signal_source": {
+        "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+        "path": "docs/research/truncated_fullh_signal_results_20261114/run01/B0I_P7_S2_D01/B_SIGNAL_INPUT.json"
+       },
+       "next": "Q3 of a generated/decremented allocation after the listed items exist"
+      }
+     ],
+     "run": "3_first_budget2"
+    },
+    {
+     "check": "no_science_call_beyond_budget",
+     "status": "PASS",
+     "invocation_launched": 2,
+     "job_dirs": 2,
+     "launch_files": 2,
+     "worker_artifacts": 2,
+     "launch_kinds": [
+      "artificial"
+     ],
+     "new_calls": 2,
+     "spent_before": 0,
+     "run": "3_first_budget2"
+    },
+    {
+     "check": "resume_input_recoverable_from_output",
+     "status": "PASS",
+     "resume_records": [
+      {
+       "configuration_id": "a6e55777",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_JOB",
+       "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/961e70ce20147e855cb3"
+      },
+      {
+       "configuration_id": "a6e55777",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_JOB",
+       "job": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial/jobs/TRUNCATED_PF/63f5822123b389b0015d"
+      }
+     ],
+     "run": "3_first_budget2"
+    },
+    {
+     "check": "resume_does_not_repeat_completed_calls",
+     "status": "PASS",
+     "old_jobs_unchanged": true,
+     "round_json_unchanged": true,
+     "invocation_budgets": [
+      2,
+      4
+     ],
+     "invocation_launched": 4,
+     "job_dirs": 4,
+     "launch_files": 4,
+     "worker_artifacts": 4,
+     "launch_kinds": [
+      "artificial"
+     ],
+     "new_calls": 2,
+     "spent_before": 2,
+     "run": "3_resume_total_cap4"
+    },
+    {
+     "check": "resume_starts_from_previous_state",
+     "status": "PASS",
+     "previous_request": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "cost": "376202858"
+     },
+     "first_new_job": {
+      "configuration_id": "a6e55777",
+      "job": "f01eabbf2bf25e1b8cbd"
+     },
+     "incumbent_before_first_new": "386082768",
+     "run": "3_resume_total_cap4"
+    },
+    {
+     "check": "idempotent_rerun_launches_nothing",
+     "status": "PASS",
+     "invocation_launched": 4,
+     "job_dirs": 4,
+     "launch_files": 4,
+     "worker_artifacts": 4,
+     "launch_kinds": [
+      "artificial"
+     ],
+     "new_calls": 0,
+     "spent_before": 4,
+     "run": "3_same_command_again"
+    },
+    {
+     "check": "changed_round_contract_refused_in_same_run_dir",
+     "status": "PASS",
+     "returncode": 1,
+     "stderr_tail": "Run directory belongs to a different approved round (method_overrides)\n",
+     "run": "3_changed_scope_same_dir"
+    }
+   ]
+  }
+ ],
+ "counts": {
+  "PASS": 38,
+  "FAIL": 0
+ },
+ "error": null,
+ "invocations": [
+  {
+   "cmd": [
+    "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "-B",
+    "scripts/run_rpe_method_optimizer.py",
+    "--problem",
+    "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "--round",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/round_1a_from_m12_4_budget0.json",
+    "--run-dir",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_1a_from_m12_4_budget0"
+   ],
+   "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+   "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+   },
+   "returncode": 0,
+   "wall_seconds": 6.6,
+   "stdout": "{\n \"TRUNCATED_PF\": {\n  \"stop\": \"NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET\",\n  \"best\": \"395,962,678.00\",\n  \"new_calls\": 0,\n  \"spent_before\": 0,\n  \"next\": [\n   \"TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777\",\n   \"386,082,768.00\"\n  ]\n }\n}\n",
+   "stderr": ""
+  },
+  {
+   "cmd": [
+    "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "-B",
+    "scripts/run_rpe_method_optimizer.py",
+    "--problem",
+    "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "--round",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/round_1b_after_m12_3_budget0.json",
+    "--run-dir",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_1b_after_m12_3_budget0"
+   ],
+   "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+   "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+   },
+   "returncode": 0,
+   "wall_seconds": 6.92,
+   "stdout": "{\n \"TRUNCATED_PF\": {\n  \"stop\": \"NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET\",\n  \"best\": \"415,721,884.00\",\n  \"new_calls\": 0,\n  \"spent_before\": 0,\n  \"next\": [\n   \"TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777\",\n   \"395,962,064.00\"\n  ]\n }\n}\n",
+   "stderr": ""
+  },
+  {
+   "cmd": [
+    "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "-B",
+    "scripts/run_rpe_method_optimizer.py",
+    "--problem",
+    "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "--round",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/round_1b_after_m12_3_budget1_artificial.json",
+    "--run-dir",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_1b_after_m12_3_budget1_artificial"
+   ],
+   "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+   "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+   },
+   "returncode": 0,
+   "wall_seconds": 6.55,
+   "stdout": "{\n \"TRUNCATED_PF\": {\n  \"stop\": \"Q3_BUDGET_EXHAUSTED\",\n  \"best\": \"395,962,064.00\",\n  \"new_calls\": 1,\n  \"spent_before\": 0,\n  \"next\": [\n   \"TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777\",\n   \"356,443,652.00\"\n  ]\n }\n}\n",
+   "stderr": ""
+  },
+  {
+   "cmd": [
+    "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "-B",
+    "scripts/run_rpe_method_optimizer.py",
+    "--problem",
+    "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "--round",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/round_2_p7_all_budget0.json",
+    "--run-dir",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_2_p7_all_budget0"
+   ],
+   "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+   "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+   },
+   "returncode": 0,
+   "wall_seconds": 6.59,
+   "stdout": "{\n \"TRUNCATED_PF\": {\n  \"stop\": \"NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET\",\n  \"best\": \"372,035,410.00\",\n  \"new_calls\": 0,\n  \"spent_before\": 0,\n  \"next\": [\n   \"TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24\",\n   \"329,694,342.00\"\n  ]\n }\n}\n",
+   "stderr": ""
+  },
+  {
+   "cmd": [
+    "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "-B",
+    "scripts/run_rpe_method_optimizer.py",
+    "--problem",
+    "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "--round",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/round_2_y4_32h5_only_budget0.json",
+    "--run-dir",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_2_y4_32h5_only_budget0"
+   ],
+   "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+   "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+   },
+   "returncode": 0,
+   "wall_seconds": 6.51,
+   "stdout": "{\n \"TRUNCATED_PF\": {\n  \"stop\": \"NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET\",\n  \"best\": \"372,035,410.00\",\n  \"new_calls\": 0,\n  \"spent_before\": 0,\n  \"next\": [\n   \"TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24\",\n   \"329,694,342.00\"\n  ]\n }\n}\n",
+   "stderr": ""
+  },
+  {
+   "cmd": [
+    "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "-B",
+    "scripts/run_rpe_method_optimizer.py",
+    "--problem",
+    "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "--round",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/round_3_artificial.json",
+    "--run-dir",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial"
+   ],
+   "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+   "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+   },
+   "returncode": 0,
+   "wall_seconds": 6.57,
+   "stdout": "{\n \"TRUNCATED_PF\": {\n  \"stop\": \"Q3_BUDGET_EXHAUSTED\",\n  \"best\": \"386,082,768.00\",\n  \"new_calls\": 2,\n  \"spent_before\": 0,\n  \"next\": [\n   \"TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777\",\n   \"376,202,858.00\"\n  ]\n }\n}\n",
+   "stderr": ""
+  },
+  {
+   "cmd": [
+    "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "-B",
+    "scripts/run_rpe_method_optimizer.py",
+    "--problem",
+    "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "--round",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/round_3_artificial.json",
+    "--run-dir",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial"
+   ],
+   "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+   "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+   },
+   "returncode": 0,
+   "wall_seconds": 6.53,
+   "stdout": "{\n \"TRUNCATED_PF\": {\n  \"stop\": \"Q3_BUDGET_EXHAUSTED\",\n  \"best\": \"376,202,858.00\",\n  \"new_calls\": 2,\n  \"spent_before\": 2,\n  \"next\": [\n   \"TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777\",\n   \"366,322,948.00\"\n  ]\n }\n}\n",
+   "stderr": ""
+  },
+  {
+   "cmd": [
+    "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "-B",
+    "scripts/run_rpe_method_optimizer.py",
+    "--problem",
+    "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "--round",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/round_3_artificial.json",
+    "--run-dir",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial"
+   ],
+   "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+   "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+   },
+   "returncode": 0,
+   "wall_seconds": 6.49,
+   "stdout": "{\n \"TRUNCATED_PF\": {\n  \"stop\": \"Q3_BUDGET_EXHAUSTED\",\n  \"best\": \"376,202,858.00\",\n  \"new_calls\": 0,\n  \"spent_before\": 4,\n  \"next\": [\n   \"TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777\",\n   \"366,322,948.00\"\n  ]\n }\n}\n",
+   "stderr": ""
+  },
+  {
+   "cmd": [
+    "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "-B",
+    "scripts/run_rpe_method_optimizer.py",
+    "--problem",
+    "configs/rpe_method_optimizer/h4_df10_problem.json",
+    "--round",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/round_3_artificial_changed_scope.json",
+    "--run-dir",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-rpe-optimizer-acceptance-b2-5b7c076/docs/research/a_rpe_optimizer_acceptance_20261116/skill_19252baf3/run_3_artificial"
+   ],
+   "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-skill-acceptance-b2-a2e2ef5",
+   "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+   },
+   "returncode": 1,
+   "wall_seconds": 6.41,
+   "stdout": "",
+   "stderr": "Run directory belongs to a different approved round (method_overrides)\n"
+  }
+ ],
+ "science": {
+  "real_Q3": 0,
+  "signal": 0,
+  "price": 0,
+  "compile": 0,
+  "artificial_worker_jobs": "labelled ARTIFICIAL route only"
+ }
+}

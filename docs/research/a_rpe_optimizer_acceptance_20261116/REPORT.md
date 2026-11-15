@@ -68,6 +68,8 @@
 
 ## Skill（B）について
 
+**2026-11-16追記：Skill経由の受入を実施した。** Bの `$rpe-cost-compare`（`19252baf3`）の手順で、B2の固定版 `a2e2ef50a` を実際のCLI入口から動かし、3ケースとも合格した（PASS 38、FAIL 0）。詳細は [skill_19252baf3/REPORT.md](skill_19252baf3/REPORT.md)。以下は、Skill公開前の記録である。
+
 - Bのskillは、確認した範囲（B・B2のbranchと、localの `codex/rpe-cost-compare-skill-20261116`）には、まだ公開されていない。
 - 同じケースの入力をSkillから与え、同じ判定を出力に当てることを期待動作として定めた（`PENDING_NOT_PUBLISHED`）。
 - 現在のCLI（`run_rpe_method_optimizer.py`）は、固定のdemo（FULL・INGEST・REPLAY・FIXTURE・OWN_PRICE）を実行するだけで、ケースの入力（開始時に既知の点、予算、応答器、再開用の結果）を受け取れない。Skillから受入ケースを流すには、少なくとも次をCLIまたはproblem fileで指定できる必要がある。
