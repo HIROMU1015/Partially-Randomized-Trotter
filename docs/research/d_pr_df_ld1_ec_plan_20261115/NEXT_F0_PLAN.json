@@ -1,0 +1,990 @@
+{
+  "schema": "PR_DF_LD1_EC_NEXT_F0_PLAN_V1",
+  "status": "PROPOSED_NOT_ADOPTED_NOT_EXECUTED",
+  "recommendation": "Reuse the existing F0 saved-probability categorical-law diagnostic before any new price compile.",
+  "target_cost_law": "Keep the current B ideal_finite_RTE_law conditional comparison; do not silently replace by actual PCG64 Q.",
+  "formal_target_source": {
+    "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+    "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/run01/PR_DF_LD1/RESULT.json",
+    "selector": [
+      "record",
+      "deterministic_input",
+      "statistical_contract",
+      "simulation_policy"
+    ]
+  },
+  "scope": {
+    "preparations": 1,
+    "component_vector_length": 324,
+    "order_distributions": 13,
+    "categorical_audits": 14,
+    "conditional_event_bounds": 13,
+    "conditional_path_bounds": 13,
+    "axes_covered": 26,
+    "new_paths": 0,
+    "new_compiles": 0,
+    "new_H4_builds": 0,
+    "ES_recomputations": 0,
+    "EC_evaluations": 0,
+    "fit_calls": 0,
+    "prediction_calls": 0,
+    "CI_calls": 0,
+    "N_G_calls": 0
+  },
+  "existing_plan": {
+    "commit": "d72dc4e6228bb380f4d1d000e5e030794fce7164",
+    "path": "docs/research/finite_k_sampler_law_alignment_20261113/SCIENCE_PLAN.json",
+    "selector": []
+  },
+  "existing_report": {
+    "commit": "d72dc4e6228bb380f4d1d000e5e030794fce7164",
+    "path": "docs/research/finite_k_sampler_law_alignment_20261113/REPORT.md",
+    "selector": []
+  },
+  "existing_math": {
+    "commit": "d72dc4e6228bb380f4d1d000e5e030794fce7164",
+    "path": "docs/research/finite_k_sampler_law_alignment_20261113/MATH.md",
+    "selector": []
+  },
+  "helper": {
+    "commit": "d72dc4e6228bb380f4d1d000e5e030794fce7164",
+    "path": "src/trottertracks/finite_k_sampler_law.py",
+    "selector": []
+  },
+  "saved_inputs": {
+    "component_array": {
+      "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+      "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+      "selector": [
+        "preparation",
+        "components"
+      ]
+    },
+    "component_reference_field": "probability",
+    "component_hex_field": "probability_hex",
+    "choice_component_input": "Use the original SOURCE normalization operation on the 324 saved probabilities only; no preparation reconstruction.",
+    "identity_and_order": {
+      "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+      "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+      "selector": [
+        "preparation"
+      ]
+    },
+    "law_rows": [
+      {
+        "m": 0,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "53e00d8b07d1547d19a7",
+        "q": 1,
+        "R_outer": 2,
+        "saved_event_positions": 2,
+        "source": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            0
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            0,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            0,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            0,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            0,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            0,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 1,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "c00e00dc1e9c414fb7d9",
+        "q": 2,
+        "R_outer": 4,
+        "saved_event_positions": 8,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            0
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            0,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            0,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            0,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            0,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            0,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 2,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "f2fcd66b1ef9ae2da5df",
+        "q": 4,
+        "R_outer": 8,
+        "saved_event_positions": 32,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            1
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            1,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            1,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            1,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            1,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            1,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 3,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "045843b2429bece6f29b",
+        "q": 8,
+        "R_outer": 16,
+        "saved_event_positions": 128,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            2
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            2,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            2,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            2,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            2,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            2,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 4,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "3df0cfd3356c358aeda8",
+        "q": 16,
+        "R_outer": 32,
+        "saved_event_positions": 512,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            3
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            3,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            3,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            3,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            3,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            3,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 5,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "57d641a831d76360b570",
+        "q": 32,
+        "R_outer": 64,
+        "saved_event_positions": 2048,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            4
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            4,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            4,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            4,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            4,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            4,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 6,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "2a8c6718220eec59d419",
+        "q": 64,
+        "R_outer": 128,
+        "saved_event_positions": 8192,
+        "source": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            1
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            1,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            1,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            1,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            1,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "a637ed1b813dc3952339cb05f36beb79168ace23",
+          "path": "docs/research/h4_pr_physical_closure_20261113/run02/RESULT.json",
+          "selector": [
+            "laws",
+            1,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 7,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "b42287268e5249dfb4d1",
+        "q": 128,
+        "R_outer": 255,
+        "saved_event_positions": 32640,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            5
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            5,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            5,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            5,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            5,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            5,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 8,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "224aef0a626068b43184",
+        "q": 256,
+        "R_outer": 510,
+        "saved_event_positions": 130560,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            6
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            6,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            6,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            6,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            6,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            6,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 9,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "06a78c7f9856f373336f",
+        "q": 512,
+        "R_outer": 1020,
+        "saved_event_positions": 522240,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            7
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            7,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            7,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            7,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            7,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            7,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 10,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "b872ad1347a35c8f4315",
+        "q": 1024,
+        "R_outer": 2040,
+        "saved_event_positions": 2088960,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            8
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            8,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            8,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            8,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            8,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            8,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 11,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "d48210cc27c599e268c2",
+        "q": 2048,
+        "R_outer": 4080,
+        "saved_event_positions": 8355840,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            9
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            9,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            9,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            9,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            9,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            9,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      },
+      {
+        "m": 12,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "physical_id": "b55c521fdce6a448dbcb",
+        "q": 4096,
+        "R_outer": 8160,
+        "saved_event_positions": 33423360,
+        "source": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            10
+          ]
+        },
+        "raw_order_weights": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            10,
+            "order_weights"
+          ]
+        },
+        "choice_order_probabilities": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            10,
+            "order_probabilities"
+          ]
+        },
+        "tau": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            10,
+            "tau"
+          ]
+        },
+        "tau_hex": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            10,
+            "tau_hex"
+          ]
+        },
+        "normalization": {
+          "commit": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+          "path": "docs/research/h4_structural_schedule_results_20261113/run01/LAWS.json",
+          "selector": [
+            "laws",
+            10,
+            "event_normalization"
+          ]
+        },
+        "prices_evaluated": false
+      }
+    ]
+  },
+  "reader_execution_source": "Not yet implemented/frozen; next authorized task must reuse the helper, bind these exact fields, perform narrow artificial route checks and commit caller/inputs before numerical evaluation.",
+  "proposed_output": "docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/run01",
+  "outputs": [
+    "P/Q/F/G exact categorical distributions and stage TVs for one component vector plus 13 order vectors",
+    "positive/zero support differences and order2 masses",
+    "13 K2 conditional event TVs and 13 path TVs using saved event_count",
+    "scope/assumption/usefulness report; actual PCG64 joint-law and price shift remain null without separate evidence"
+  ],
+  "notation": {
+    "helper_Q": "Single categorical choice-input distribution; not the actual operational path law Q",
+    "helper_G": "Uniform 53-bit grid categorical law; not total resources G"
+  },
+  "assumptions": {
+    "conditional_IID_grid": "Report as an explicit conditional calculation only, not adopted as physical-PCG64 truth",
+    "fixed_seeds": "Deterministic cohort; seed non-overlap is not an IID proof",
+    "analytic_real_weight_error": "Not bounded by this F0",
+    "unknown_price_oscillation": null
+  },
+  "user_decisions": {
+    "execution_permission": "A separate explicit instruction is required for these saved-number diagnostics.",
+    "formal_probability_model": "For later formal E[C]/G: adopt an operational IID approximation with declared qualification or require a justified seed-ensemble/joint-law bridge. F0 cannot make this decision.",
+    "price_precision_confidence": "Unadopted; needed for later MC sample-size and model-qualification design, not for reporting F0 exact TVs.",
+    "switch_to_Q_target": "Only if desired; it changes the comparison contract and requires a signal/Q3 law bridge. Not required to keep the present I-target plan."
+  },
+  "no_borrowed_rules": [
+    "PF 2%",
+    "other method tolerance",
+    "95% confidence default",
+    "n=4 or old P2 n/floor as an expectation-estimation rule"
+  ],
+  "reuse_and_delta": {
+    "current_refs": [
+      "26d4f23e79e91385087669d4ee091632efa0c87c\trefs/heads/codex/d-compiled-residual-c-minus-s-20261113",
+      "6e110c083ec2db2530cdda3f7b5c84d2a7d3f31c\trefs/heads/codex/d-price-records-c-bridge-20261114",
+      "063f2b3b6ea271a179a469be91252fa4e5a7d096\trefs/heads/codex/d2-pr-df-ld1-m3-acquisition-20261115",
+      "81596ce7c561d7b75890cfe2758a0d4a12fb6b47\trefs/heads/codex/m5-m4-receipt-admission-20261114",
+      "3a8b37f1a282c0c06ac1a363b070f4376e9ff41a\trefs/heads/codex/r-variable-compiled-price-design-20261111"
+    ],
+    "current_matching_jobs": [],
+    "existing_F0": "Plan/helper/artificial checks only; no physical F0 result found in the scoped refs.",
+    "C_delta": "9edfa5d3 to observed 81596ce7: Full-H D7 freeze/handoff docs and discovery metadata; no new PR-DF receipt or F0 evaluation found.",
+    "D_delta": "5e3abcf3 to observed 6e110c08: PF direct/holdout prices and runner/docs; different methods and conditions; not PR-DF E[C] or F0.",
+    "existing_prices": "Reuse C26 P1/P2 references, M3 calibration and M4 independent holdout. No recompilation or re-pooling.",
+    "new_candidate": "14 categorical numerical audits only, subject to execution-time delta check; reuse any equivalent accepted diagnostics and reduce count.",
+    "scope_limit": "Known relevant repository refs/indexes/output namespace and matching local Python process names. Inaccessible external jobs not declared absent.",
+    "execution_time_delta_only": [
+      "new same-condition published diagnostic",
+      "same live job",
+      "caller/SOURCE/input change",
+      "output namespace conflict"
+    ],
+    "unresolved_provenance_rule": "Hold the affected item; neither assume not acquired nor resubmit."
+  },
+  "stopping": [
+    "Missing saved probabilities or physical/source/order/hex identity mismatch: preserve partial outputs and stop.",
+    "CDF mass/monotonicity/nonfinite or unexpected numeric failure: stop, no renormalization repair or retry.",
+    "A same-scope running job or output/equivalent-receipt ambiguity: hold the item.",
+    "Vacuous/large bound or unknown price range: publish as unhelpful/unknown, do not add paths, a grid kernel, fit or prices.",
+    "After this finite diagnostic publication, mandatory STOP; any price acquisition or law/model change needs a new scope."
+  ],
+  "subsequent_decision": "Use conditional law diagnostics to decide which law/model bridge or cost-range evidence is needed before allocating new price samples; no automatic long-round holdout.",
+  "mandatory_stop": true,
+  "runtime": {
+    "numpy": "1.26.4",
+    "arithmetic": "binary64 source CDF and exact Fraction ratios/ceilings",
+    "execution": "Reuse support-sized categorical helper; do not generate trajectories or giant event arrays.",
+    "progress": "Cooperative per-audit start/end/duration and process exit code; no periodic faulthandler dumps on Python 3.11.0rc1.",
+    "additional_performance_benchmark": false
+  }
+}
