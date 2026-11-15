@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[p7/S2・要求幅hの4軸取得と保存6軸受入](docs/research/d_pf_p7_s2_h_direct_prices_20261115/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/S2・実幅.1、P0除外。新規m1/m2 X/Yの4 compileと保存6軸が作用gate/C guardを通過し、q1/2/4/8/16の10/26軸受入、残るm5〜m12の16軸は欠測。取得wall25.706 s、fit/長q予測/Q3/N/G0、mandatory STOP。
+
 [幅×shot探索の保存PF価格coverage](docs/research/d_pf_width_price_coverage_20261115/REPORT.md)：別幅12候補・312軸のmetadata照合。100候補軸に同物理点の直接証拠、212軸不足、別幅の採択モデル適用0・全価格完成0。現行156軸はB2固定表参照。p7 S2 1hのみ完成signal packetあり、BのQ3候補選別後に最大4 compile案。新価格予測/QPY監査/再計数/compile/fit/Q3/N/G0、mandatory STOP。
 
 [決定論PF 保存compiled QPYの閉包監査](docs/research/d_pf_qpy_closure_audit_20261115/REPORT.md)（2026-11-15、Claude Code／D）。規則は読取前に`d3338c7ef`で固定、QPY 56件（m4/m5/m6/m9）を0-compileで監査。12 group×軸でA1〜A5全PASS：全wireで`H+B×(q−1)+E`がtoken完全一致、本体RZ＝凍結b、端＋最終run＝a+b、全wireに障壁。未観測60軸の最終run余裕は60/60≥1e−6（最小0.0225 rad）。監査q外への延長は実装上の論証（仮定3点）で、値は未算出・96/156へ非加算。mandatory STOP。

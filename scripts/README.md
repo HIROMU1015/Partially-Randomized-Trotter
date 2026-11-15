@@ -1,5 +1,7 @@
 # scripts 索引
 
+[p7/S2・要求幅hの4軸取得と保存6軸受入](../docs/research/d_pf_p7_s2_h_direct_prices_20261115/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/S2・実幅.1、P0除外。新規m1/m2 X/Yの4 compileと保存6軸が作用gate/C guardを通過し、q1/2/4/8/16の10/26軸受入、残るm5〜m12の16軸は欠測。取得wall25.706 s、fit/長q予測/Q3/N/G0、mandatory STOP。
+
 [決定論PF m1/m2の24軸直接価格](../docs/research/d_pf_m1_m2_direct_prices_20261115/REPORT.md)：Full10/B0I p7 × S2/標準Yoshida4/M5、保存H4/1Å/STO-3G/tol-only DF10、P0除外。m1/m2各12軸、再利用0・新規24・有効24・保留/欠測0、元作用gate/C guard完了。直接証拠72/156→96/156。12 cell並列・取得wall102.512 s、モデル判定/fit/MSE/N/G0、mandatory STOP。
 
 [決定論PF m0の12軸直接価格](../docs/research/d_pf_m0_direct_prices_20261115/REPORT.md)：Full10/B0I p7 × S2/標準Yoshida4/M5、m0/T=.1/q1/actual幅.1、P0除外。再利用0・新規12・有効12・保留/欠測0、元作用gate/C guard完了。X/Y別compile、取得wall100.876 s、最大worker RSS575.16 MiB。モデル予測/2%判定/fit/他round資格拡張/N/G0、mandatory STOP。

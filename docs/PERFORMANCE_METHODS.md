@@ -1,5 +1,9 @@
 # 並列化・高速化手法の再利用索引
 
+## p7/S2・要求幅hの有限取得（2026-11-15）
+
+[REPORT](research/d_pf_p7_s2_h_direct_prices_20261115/REPORT.md)、[thin caller](../scripts/run_pf_p7_h_prices.py)、実行SOURCE `be0f81ebd893415de031ee30ee0755f039adb823`。元m0 native child / fast context / fork worker / 協調logを再利用し、別configurationを元descriptor→既存plannerへ接続した。保存6軸は再build/compileせずsource付きbinding、新規m1/m2の4軸だけ2 workerで取得、元作用gate/C guardの受入10軸。取得wall25.706 s、最大worker RSS401.97 MiB。新しい回路pipeline・同条件速度倍率はない。metadataとprovider-first科学childを別processにし、旧cohort・producerと新binding SOURCEを分ける。固定4軸のscope、SOURCEと新namespaceを維持し、長qのfit/予測や他候補への自動適用は不可。
+
 ## 決定論PF 保存compiled QPYの閉包監査（2026-11-15）
 
 [報告・規則](research/d_pf_qpy_closure_audit_20261115/REPORT.md)、[入口](../scripts/pf_qpy_closure_audit.py)（規則・code固定 `d3338c7ef`）。
