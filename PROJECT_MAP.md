@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PF6の費用予算3/4・固定12配分Q3結果](docs/research/pf6_cost_budget_q3_results_20261115/REPORT.md)／[C・統合担当HANDOFF](docs/research/pf6_cost_budget_q3_results_20261115/HANDOFF.md)：現6幅に形保持/価格振替を各1本、12 call完了・適合10/モデル不適合2。元N0含む有限menu内の最小適合TはFull PF S2 615,304,502 RZ、p7 S2 435,481,090 RZ。全API/資源保存、条件付き閉包価格・Q3モデルの範囲、十分N/大域最適/G_qualified未認定、STOP。
+
 [Full-H κ2固定1.5倍shotのQ3結果](docs/research/full_h_kappa2_scale3o2_q3_results_20261115/REPORT.md)／[C引渡し](docs/research/full_h_kappa2_scale3o2_q3_results_20261115/HANDOFF.md)：保存13raw・同decoder/target/lawで1call完了、直接モデルMSE上界約2.10580e−6 Ha²で採択閾値適合。元control/2倍は保存比較、最小N・物理保証・G未認定。原API・資源・105子終了code0を保存、STOP。
 
 [PF6の既知8round費用と逆転条件](docs/research/pf6_eight_round_cost_20261115/REPORT.md)／[D/C引渡し](docs/research/pf6_eight_round_cost_20261115/HANDOFF.md)：固定shot配分と96直接価格軸をSOURCE・physical IDで結合し、整数部分和6件と未知5roundの逆転境界15組を保存。全13roundG・winner・十分Nは未認定、Q3再実行・価格予測・compileなし。
