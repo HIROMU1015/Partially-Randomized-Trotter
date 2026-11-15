@@ -1,5 +1,6 @@
 # プロジェクト案内
 
+[PR-Pauli LD2：固定shotモデル参照総額T_refとPF 2基準の境界](docs/research/pauli_ld2_tref_20261115/REPORT.md)／[HANDOFF](docs/research/pauli_ld2_tref_20261115/HANDOFF.md)：A AXIS_MAP（df5e5c452）×C2凍結モデル（b74e4e536）を26軸に診断適用（保存予測6・新規20）、Q3配分[48,…,9]でexact加重。T_ref=305225682539751998/90343469≈3,378,503,016.52 RZ。D_PF＝B0I p7 S2基準−2,784,947,664.52、Full PF S2基準−2,539,809,436.52（どちらも負）。モデル参照値でE[C]・CI・G・winnerではない。m9の+0.274418%は記録のみ。STOP。
 [PF6：固定shot配分の全13round総compiled RZ数](docs/research/pf6_allround_cost_20261115/REPORT.md)／[HANDOFF](docs/research/pf6_allround_cost_20261115/HANDOFF.md)：B既知8round小計K（540b54ab2）＋C採択済み閉包価格60軸（e4458cd75、HANDOFF_B c383105b1）を整数で結合（直接96＋条件付き60＝156軸）。順位はB0I p7 S2 593,555,352、B0I p7 Y4 765,902,758、Full S2 838,693,580、B0I p7 M5 951,282,896、Full Y4 1,089,674,842、Full M5 1,343,396,772。最小と次点の差172,347,406、既知8roundからの順位変化なし。Q3固定配分の条件付き比較で、十分N・G・winnerではない。STOP。
 [PF6の既知8round費用と逆転条件](docs/research/pf6_eight_round_cost_20261115/REPORT.md)／[D/C引渡し](docs/research/pf6_eight_round_cost_20261115/HANDOFF.md)：固定shot配分と96直接価格軸をSOURCE・physical IDで結合し、整数部分和6件と未知5roundの逆転境界15組を保存。全13roundG・winner・十分Nは未認定、Q3再実行・価格予測・compileなし。
 

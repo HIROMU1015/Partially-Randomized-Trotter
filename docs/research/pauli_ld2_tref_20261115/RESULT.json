@@ -1,0 +1,95 @@
+{
+  "source": {
+    "commit": "310c08d50d0408febfe576f24c5e76b27879ac4c",
+    "path": "docs/research/pauli_ld2_tref_20261115/tref.py"
+  },
+  "inputs": {
+    "commit": "310c08d50d0408febfe576f24c5e76b27879ac4c",
+    "path": "docs/research/pauli_ld2_tref_20261115/INPUTS.json"
+  },
+  "kind": "MODEL_REFERENCE_TOTAL_NOT_E_C",
+  "units": "TOTAL_COMPILED_RZ_AT_FIXED_SHOTS",
+  "T_ref": {
+    "numerator": 305225682539751998,
+    "denominator": 90343469
+  },
+  "T_ref_display": "3378503016.524105",
+  "boundaries": [
+    {
+      "baseline": "B0I_P7_S2_16h_over_7",
+      "T_PF": 593555352,
+      "D_PF": {
+        "numerator": -251601832996555910,
+        "denominator": 90343469
+      },
+      "D_PF_display": "-2784947664.524105",
+      "condition": "Delta = T_LD2 - T_ref < D_PF  => LD2 lower cost; = => equal; > => LD2 higher cost"
+    },
+    {
+      "baseline": "FULL_PF_S2_16h_over_7",
+      "T_PF": 838693580,
+      "D_PF": {
+        "numerator": -229455195094522978,
+        "denominator": 90343469
+      },
+      "D_PF_display": "-2539809436.524105",
+      "condition": "Delta = T_LD2 - T_ref < D_PF  => LD2 lower cost; = => equal; > => LD2 higher cost"
+    }
+  ],
+  "cross_check_A_both_axes_weights": {
+    "weights": {
+      "shots": 756,
+      "steps": 205844,
+      "events": 471030556
+    },
+    "equal": true
+  },
+  "counts": {
+    "saved": 6,
+    "new": 20
+  },
+  "m9_independent_comparison_record": {
+    "rows": [
+      {
+        "m": 9,
+        "axis": "X",
+        "P": {
+          "numerator": 242777084125865,
+          "denominator": 90343469
+        },
+        "O": {
+          "numerator": 5359827,
+          "denominator": 2
+        },
+        "signed_relative_error": {
+          "numerator": 1328803831867,
+          "denominator": 484225364419863
+        }
+      },
+      {
+        "m": 9,
+        "axis": "Y",
+        "P": {
+          "numerator": 242777084125865,
+          "denominator": 90343469
+        },
+        "O": {
+          "numerator": 5359827,
+          "denominator": 2
+        },
+        "signed_relative_error": {
+          "numerator": 1328803831867,
+          "denominator": 484225364419863
+        }
+      }
+    ],
+    "display_signed_relative_percent": "+0.274418",
+    "use": "RECORD_ONLY_NOT_USED_FOR_CORRECTION_TOLERANCE_OR_CI"
+  },
+  "application_scope_unchanged": "LD2_FINITE_COHORT_CALIBRATION_AND_DECLARED_M5_M6_PREDICTIONS_ONLY",
+  "qualified_for_candidate": false,
+  "E_C": null,
+  "CI": null,
+  "G": null,
+  "winner": null
+}
