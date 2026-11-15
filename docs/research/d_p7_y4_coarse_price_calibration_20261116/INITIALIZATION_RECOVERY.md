@@ -1,0 +1,9 @@
+# 科学入口より前の固定metadata欠落と復元
+
+SOURCE2a8f861ecのCALIBRATION run01は、h46_m5_tol_native→h46_m5_tol_contract import時の固定references/h46_m5_tol_pilot_inputs_v1.json欠落で停止した。results=[]、context_gate=null、worker_resources=null、private compiler cacheなし。restore/prepare/compose/compileへ到達しておらず、H/state復元・preparation・回路build・compile・fitは各0。出力とUNKNOWN_STOP_NO_RETRYはそのまま保全した。
+
+ファイルは既にHEAD/固定SOURCE2a8f861ecのGit treeにblob59f21d1a853fcf10331c2dd2093c48f5d4e65a04として存在し、sparse checkoutで未展開だった。元blobを同じworktreeの同pathへ復元した。内容・H/state/snapshot・scalar/fragment・wrapper/compiler/lowering・数値gateは変更しない。import依存を実際に通すmetadata-only検査と、科学入口前の原blob完全一致検査を追加する。
+
+今回のユーザー許可は不足分の最大6 compileで、初期化attempt数を制限していない。失敗時点では6軸とも未着手なので、同じ許可範囲内の技術復旧として継続する。旧科学runの未使用枠やgrantの再発行ではない。CALIBRATIONは別namespace calibration/run02、HOLDOUTは当初どおりholdout/run01。旧run01の空結果をnew-sourceへ付け替えず、初期化2 attempt/初回0 compileと明記する。実科学回路・compileのretryや値を見ての再実行は行わない。
+
+新SOURCEと追加metadata検査を科学開始前に固定する。run02も一回限りで、既存6 compile上限・係数凍結後m9・追加信号/Q3/他配分0を維持。source/scalar不一致・作用gate失敗・実compile失敗・OOM・保存不能は新規投入STOPとし、代替/条件緩和なし。最終公開後mandatory STOP。

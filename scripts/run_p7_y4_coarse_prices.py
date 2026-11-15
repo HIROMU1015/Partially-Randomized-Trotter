@@ -26,8 +26,11 @@ Q3_SOURCE=dict(commit='8855f420a9fe2577efc77f099c5a39ab0cb9b7e6',path='docs/rese
 STAGES=dict(CALIBRATION=(5,6),HOLDOUT=(9,))
 TARGETS={5:('4eccd52bab8d4d790ab9',3.2,5),6:('77d24715893869133820',6.4,10),9:('f0a99e91997c44c59ad4',51.2,80)}
 VECTOR=[37,34,32,29,27,24,22,19,17,14,11,9,6]
-SOURCES=P.SOURCES+(MODULE,)
+SOURCES=P.SOURCES+(MODULE,'references/h46_m5_tol_pilot_inputs_v1.json')
 RAW=M.RAW
+RUNS=dict(CALIBRATION='run02',HOLDOUT='run01')
+NATIVE_METADATA='references/h46_m5_tol_pilot_inputs_v1.json'
+METADATA_SOURCE='2a8f861ecbf89fec75f762a0cb27389c3317183d'
 POLICY='P7_Y4_32O5_DIRECT_WRAPPER_IMPLEMENTATION_V1'
 
 
@@ -137,8 +140,18 @@ def child(path):
     return M.child(path,validate_rounds=lambda r:check(tuple(r)==STAGES[job['stage']],'Foreign child round scope'))
 
 
+def native_metadata_check():
+    raw=(ROOT/NATIVE_METADATA).read_bytes()
+    check(raw==subprocess.check_output(['git','show',METADATA_SOURCE+':'+NATIVE_METADATA],cwd=ROOT),'Fixed native metadata bytes differ')
+    return dict(path=NATIVE_METADATA,commit=METADATA_SOURCE,git_blob=subprocess.check_output(['git','rev-parse',METADATA_SOURCE+':'+NATIVE_METADATA],cwd=ROOT,text=True).strip())
+
+
 def execute(stage,frozen=None):
-    source=M.S.source_gate(ROOT,SOURCES+(STUDY+'/INPUTS.json',STUDY+'/PLAN.md'))
+    source=M.S.source_gate(ROOT,SOURCES+(STUDY+'/INPUTS.json',STUDY+'/PLAN.md',STUDY+'/INITIALIZATION_RECOVERY.md'))
+    native_metadata_check()
+    if stage=='CALIBRATION':
+        initial=json.loads((OUT/'calibration/run01/RESULT.json').read_text())
+        check(not initial['results'] and initial['context_gate'] is None and initial['worker_resources'] is None and NATIVE_METADATA in initial['error'],'Only the preserved pre-import, zero-science failure may enter run02')
     check(not live_jobs(),'Equivalent price caller already running')
     plan,cells,_=template();fixed=json.loads((OUT/'INPUTS.json').read_text())
     check(fixed['cells']=={str(k):v for k,v in cells.items()},'Fixed physical inputs changed')
@@ -147,7 +160,7 @@ def execute(stage,frozen=None):
         frozen_value=read(dict(commit=frozen,path=STUDY+'/FROZEN_MODEL.json'))
         check((OUT/'FROZEN_MODEL.json').read_bytes()==subprocess.check_output(['git','show',frozen+':'+STUDY+'/FROZEN_MODEL.json'],cwd=ROOT),'Changed frozen model')
         check(frozen_value['configuration_id']==CONFIG and frozen_value['calibration_rounds']==[5,6] and frozen_value['holdout_round']==9 and set(frozen_value['models'])=={'X','Y'},'Wrong calibration/holdout design')
-    out=OUT/stage.lower()/'run01';private=PRIVATE/stage.lower()/'run01'
+    out=OUT/stage.lower()/RUNS[stage];private=PRIVATE/stage.lower()/RUNS[stage]
     out.mkdir(parents=True,exist_ok=False);private.mkdir(parents=True,exist_ok=False)
     from pf_common_run_contract import resources,workers
     obs=resources();n=workers(obs,len(STAGES[stage]),2*2**30,100*2**20);check(n>0,'No available native resource slot')
@@ -181,7 +194,7 @@ def execute(stage,frozen=None):
 
 def bind(stage,publication):
     plan,_,_=template()
-    P.bind_records(plan,STUDY+'/'+stage.lower()+'/run01',publication,names=RAW,policy_id=POLICY)
+    P.bind_records(plan,STUDY+'/'+stage.lower()+'/'+RUNS[stage],publication,names=RAW,policy_id=POLICY)
 
 
 def calibrate(prices,design):
@@ -196,7 +209,7 @@ def calibrate(prices,design):
 
 
 def freeze(calibration_commit):
-    plan,_,_=template();rel=STUDY+'/calibration/run01'
+    plan,_,_=template();rel=STUDY+'/calibration/'+RUNS['CALIBRATION']
     M.S.committed(ROOT,rel,RAW+('SIDECARS.json','GUARD_CHECK.json'),commit=calibration_commit)
     prices=read(dict(commit=calibration_commit,path=rel+'/PRICES.json'))
     design=dict(commit=prices[0]['source']['commit'],path=STUDY+'/PLAN.md')

@@ -55,6 +55,14 @@ class CoarsePrices(unittest.TestCase):
                 verify=native.call_args.kwargs['validate_rounds'];verify([9])
                 with self.assertRaises(ValueError):verify([5,6])
 
+    def test_fixed_metadata_bytes_and_provider_first_native_import(self):
+        import subprocess
+        self.assertEqual(A.native_metadata_check()['git_blob'],'59f21d1a853fcf10331c2dd2093c48f5d4e65a04')
+        with patch.object(A.subprocess,'check_output',return_value=b'wrong'):
+            with self.assertRaises(ValueError):A.native_metadata_check()
+        code="import sys;sys.path.insert(0,'scripts');import h46_long_time_signal as S;S.install();import h46_m5_tol_native;print('IMPORT_ONLY_NO_CONTEXT')"
+        self.assertIn('IMPORT_ONLY_NO_CONTEXT',subprocess.check_output([sys.executable,'-B','-c',code],cwd=ROOT,text=True))
+
     def test_axis_separate_exact_two_point_fit_and_early_holdout_rejection(self):
         prices=[]
         for m in (5,6):
