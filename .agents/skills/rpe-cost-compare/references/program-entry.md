@@ -2,7 +2,9 @@
 
 固定SOURCE：`08b75526b561cbcf97ae58c7a75fefeb226911dd`、
 branch `codex/b2-rpe-method-optimizer-20261116`。
-入口は`--help`と公開codeを確認済み。保存H4の実行照合は、このSkillのREPORTを正本とする。
+**保存H4の4方式比較は、Skill手順経由と直接CLIの一致を確認済み。**
+`--help`と公開codeも確認した。検証記録は
+[REPORT](../../../../docs/research/rpe_cost_compare_skill_20261116/REPORT.md)を正本とする。
 
 ## 起動する実物
 
@@ -16,6 +18,7 @@ branch `codex/b2-rpe-method-optimizer-20261116`。
 このSkillの所在と実行programの所在が異なっても、それぞれのSOURCEを記録して使う。
 新worktreeがsparse checkoutなら、同じ公開SOURCEの`configs/rpe_method_optimizer`も展開して
 問題入力が存在することを確認する。別の問題設定を代用品にしない。
+本サーバーの確認runtimeは`/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python`。
 
 保存H4の起動例（project環境をactivate済み）：
 
@@ -73,6 +76,8 @@ CLIは診断用`INGEST_DEMO.json`と`FIXTURE.json`も作り、明示された人
 `methods.*.new_calls`とtraceのanswer SOURCEから、主結果は保存のみであることを確認する。
 人工fixtureのcallback回数を新規科学Q3件数として合算しない。
 この版の費用は保存価格条件に束縛された値であり、MODEL参照値/条件付き閉包を正式E[C]やGへ昇格しない。
+保存費用・MSEのJSONには大きな有理数整数がある。精度を捨てるfloat化をせず、
+確認済みruntimeか任意精度整数を保持するreaderを使う。
 
 ## 公開版が更新されたとき
 
