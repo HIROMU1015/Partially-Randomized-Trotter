@@ -118,6 +118,12 @@ class EntryIntake(unittest.TestCase):
                 self.assertTrue(all(m['qualification']=='UNQUALIFIED' for m in a['means']))
                 for key in ('sufficient_N','global_RMSE_bound','G','winner'):
                     self.assertIsNone(entry[key]);self.assertIsNone(a[key])
+                # A's local-JSON, identical-reuse assemble mode has no separate
+                # configuration locator. The packet still pins the whole config.
+                inline=deepcopy(handoff);inline['configuration_source']=None
+                accepted=self.accept(repo,repo.save(inline,'inline_LD%d.json'%prefix))
+                self.assertEqual(accepted['results'][0]['configuration'],config)
+                self.assertEqual(accepted['results'][0]['signal_packet']['means'],a['means'])
         finally:repo.close()
 
     def fixture(self, repo, edit):

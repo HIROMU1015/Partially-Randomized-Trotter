@@ -213,7 +213,11 @@ def accept_saved(root, *, integration, handoff_source=None):
         if len(handoff['packets']) != 1:
             raise ValueError('One common entry configuration required')
         config = handoff['packets'][0]['configuration']; later = config['spec']['L_D']
-        _same(config, _selected(store, handoff['configuration_source']), 'common entry configuration SOURCE')
+        # A permits an inline local configuration for identical saved reuse.
+        # Its canonical copy is source-bound by this handoff and bind_packet;
+        # when A supplies a separate locator it must agree, including selector.
+        if handoff.get('configuration_source') is not None:
+            _same(config, _selected(store, handoff['configuration_source']), 'common entry configuration SOURCE')
         _same(handoff['dictionary_source'], config['spec']['split']['tail_dictionary']['source'],
               'common entry dictionary SOURCE')
     rounds = len(handoff['packets'][0]['configuration']['rounds'])
