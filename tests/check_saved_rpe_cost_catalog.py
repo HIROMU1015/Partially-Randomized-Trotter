@@ -87,13 +87,31 @@ class PublishedAcceptance(unittest.TestCase):
         points={r['N_X'][-1]:(r['status'],frac(r['conditional_cost']))for r in group}
         self.assertEqual(points,{1:('INFEASIBLE',376203472),2:('FEASIBLE',395962678),3:('FEASIBLE',415721884),4:('FEASIBLE',435481090)})
         self.assertEqual(len(next(r for r in group if r['N_X'][-1]==4)['result_sources']),2)
-        for method,ld in [('PR_PAULI',3),('PR_DF',7)]:
+        for method,ld in [('PR_DF',7)]:
             waiting=next(r for r in result['candidates']if r['method']==method and r['L_D']==ld)
             self.assertEqual(waiting['status'],'PRICE_WAITING')
             self.assertEqual(waiting['q3_status'],PASS)
             self.assertIsNone(waiting['conditional_cost'])
             self.assertNotIn(waiting['point_id'],result['method_minima'][method]['point_ids'])
         self.assertEqual(len(result['signal_only_history']),1)
+        pauli=[r for r in result['candidates']if r['method']=='PR_PAULI' and r['L_D']==3]
+        self.assertEqual(len(pauli),1)
+        ld3=pauli[0]
+        self.assertEqual(ld3['status'],'FEASIBLE')
+        self.assertEqual(frac(ld3['conditional_cost']),frac('173557305044/165'))
+        self.assertEqual(result['method_minima']['PR_PAULI']['point_ids'],[ld3['point_id']])
+        self.assertFalse(ld3['qualified_for_candidate'])
+        self.assertEqual(ld3['price_availability_history'][0]['status'],'PRICE_WAITING')
+        self.assertEqual(ld3['price_evidence']['direct_calibration_paths'],2)
+        self.assertEqual(ld3['price_evidence']['round_direct_prices'],0)
+        self.assertEqual(len(ld3['price_axes']),26)
+        for p in ld3['price_axes']:
+            self.assertEqual(p['price_kind'],'MODEL')
+            self.assertFalse(p['qualified_for_candidate'])
+            self.assertIsNotNone(p['q3_axis_source'])
+        own_b=next(r for r in result['candidates']if r['method']=='PR_PAULI' and r['L_D']==2 and r['label']=='OWN_B_LD2')
+        self.assertEqual(own_b['status'],'FEASIBLE')
+        self.assertEqual(frac(own_b['conditional_cost']),frac('220695144335642870/90343469'))
         coarse=next(r for r in result['candidates']if r['label']=='B0I_P7_Y4_32h_over_5')
         self.assertEqual(coarse['status'],'INFEASIBLE')
         self.assertEqual(coarse['q3_status'],FAIL)
@@ -116,6 +134,18 @@ class PublishedAcceptance(unittest.TestCase):
         # Additional aliases resolve to the same saved SUMMARY, never new points.
         cat.add(ref(self.inputs['sources'][4]['commit'],'docs/research/d_pr_df_ld_split_q3_resume_20261116/C_HANDOFF.json'))
         self.assertEqual(len(cat.result()['candidates']),len(result['candidates']))
+
+    def test_pauli_price_input_order_and_binding_rejections(self):
+        source=next(s for s in self.inputs['sources']if s['path'].endswith('HANDOFF_BC.json'))
+        cat=Catalog(self.reader,self.inputs['comparison'])
+        cat.add(source)  # The price locator loads its fixed Q3 dependency first.
+        self.assertEqual(len(cat.result()['candidates']),1)
+        self.assertEqual(cat.result()['candidates'][0]['status'],'FEASIBLE')
+        for key,value in [('binding_id','other'),('allocation_id','other'),('total_candidate_id','other'),
+                          ('original_candidate_id','other'),('N',49),('R',2)]:
+            changed=deepcopy(self.reader.read(source));changed['rows'][0][key]=value
+            with self.assertRaisesRegex(ValueError,'Pauli'):
+                Catalog(self.reader,self.inputs['comparison']).pauli_model_prices(source,changed)
 
     def test_same_command_updates_only_by_adding_a_pinned_source(self):
         import os,sys

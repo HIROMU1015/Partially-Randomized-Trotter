@@ -133,6 +133,8 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('schema')=='A_PAULI_LD3_PRICE_HANDOFF_BC_V1':
+            self.pauli_model_prices(locator,d);return
         if d.get('kind')=='FIXED_ALLOCATION_Q3_RESULT_JOIN_NOT_COST_OR_N_QUALIFICATION':
             self.recovered_q3(locator,d);return
         if path.endswith('C_RESULT_JOIN.json') and d.get('price_evaluations')==0 and 'rows' in d:
@@ -373,6 +375,78 @@ class Catalog:
             execution_history=[dict(status=old['status'],source=published['previous_STOP'],errors=deepcopy(old['errors']))],
             saved_recovery_assessment_source=dict(loc,selector=['assessment']))
 
+    def pauli_model_prices(self,loc,d):
+        """Attach a published model total to its already evaluated allocation.
+
+        The 26 saved prices and total are copied, never predicted or multiplied.
+        Calibration receipts remain evidence for a separate non-round cell.
+        """
+        require(d['kind']=='MODEL_REFERENCE_PRICE_NOT_E_C' and d['qualified_for_candidate'] is False,
+                'Pauli model reference must retain its unqualified status')
+        require(all(d[k] is None for k in ('E_C','CI','G')),'Do not promote a Pauli model reference to E[C]/G')
+        require(len(d['rows'])==26 and {(r['m'],r['axis'])for r in d['rows']}==
+                {(m,a)for m in range(13)for a in ('X','Y')},'Pauli model needs 26 unique axes')
+        q3_loc={k:v for k,v in d['rows'][0]['b_index_source'].items()if k!='selector'}
+        self.add(q3_loc)  # Also works when the price input precedes the Q3 input.
+        join=self.r.read(q3_loc);inp=self.r.read(join['source']);case=inp['cases'][0]
+        conf=self.r.read(case_ref(case));vector=shots(case['allocation'])
+        require(self.r.read(d['configuration_source'])==conf,'Pauli price configuration SOURCE mismatch')
+        require(d['total_view']['id']==case['total_configuration_id'],'Pauli price total view mismatch')
+        require(d['VP']['N']==vector['X']==vector['Y'],'Pauli model total belongs to a different allocation')
+        prior=next(r for r in self.rows if r['configuration_id']==conf['id'] and
+                   r['total_configuration_id']==case['total_configuration_id'] and r['N_X']==vector['X'] and r['N_Y']==vector['Y'])
+        if prior['conditional_cost'] is not None:
+            require(frac(prior['conditional_cost'])==frac(d['T_LD3']),'Conflicting Pauli saved model total')
+        binding_source=ref(loc['commit'],str(PurePosixPath(loc['path']).parent/'BINDING.json'))
+        binding=self.r.read(binding_source);physical=binding['request']['physical_cell']
+        require(physical['profile']==conf['spec']['profile'] and physical['split']==conf['spec']['split'],
+                'Pauli model calibration compiler/split binding mismatch')
+        require(binding['configuration']['id']==conf['id'] and binding['total_view']['id']==case['total_configuration_id'],
+                'Pauli calibration identity mismatch')
+        terms=[]
+        for r in d['rows']:
+            q3=self.r.read(r['b_index_source']);p=self.r.read(r['price_source']);m=r['m']
+            require(self.r.commit(r['b_index_source']['commit'])==self.r.commit(q3_loc['commit']) and
+                    r['b_index_source']['path']==q3_loc['path'],'Pauli Q3 index SOURCE mismatch')
+            require(all(r[k]==q3[k]for k in ('m','axis','N','original_configuration_id','total_configuration_id',
+                    'original_candidate_id','total_candidate_id','binding_id','allocation_id')),'Pauli price/Q3 axis binding mismatch')
+            require(r['binding_id']==case['binding_id'] and r['allocation_id']==case['allocation']['allocation_id'],
+                    'Pauli price binding/allocation mismatch')
+            require(r['q']==p['q']==conf['rounds'][m]['q_PF'] and r['R']==p['R']==conf['rounds'][m]['R_outer'],
+                    'Pauli model q/R mismatch')
+            require(r['original_candidate_id']==p['physical_id']==conf['rounds'][m]['candidate']['id'],
+                    'Pauli model physical candidate mismatch')
+            require(r['value_source']==p['value_source']=='MODEL_APPLICATION_FROM_Q8R660_DECOMPOSITION',
+                    'Round model application is not a direct calibration receipt')
+            require(all(frac(r[k])==frac(p[k])for k in ('C_ref_exact','N_times_C_ref_exact')),
+                    'Pauli saved price/weighted-term mismatch')
+            price_doc=self.r.document(r['price_source']['commit'],r['price_source']['path'])
+            require(price_doc['configuration_id']==conf['id'] and frac(price_doc['T_LD3'])==frac(d['T_LD3']),
+                    'Pauli saved total SOURCE mismatch')
+            terms.append(dict(m=m,axis=r['axis'],N=r['N'],price_source=r['price_source']))
+        self.make(dict(case,_source=join['source']),case['allocation'],prior['q3_status'],d['T_LD3'],
+            prior['MSE_lower'],prior['MSE_upper'],prior['adopted_evaluation'],loc,terms)
+        priced=self.rows.pop()
+        for key in ('q3_source','q3_axis_sources','labels'):
+            priced[key]=deepcopy(prior[key])
+        priced['result_sources']=prior['result_sources']+[loc]
+        priced['price_availability_history']=prior.get('price_availability_history',[])+(
+            [dict(status='PRICE_WAITING',sources=prior['result_sources'])]if prior['conditional_cost'] is None else [])
+        priced.update(price_scenario=d['kind'],qualified_for_candidate=False,CI=None,
+            price_evidence=dict(source=loc,coefficient_source=d['coefficient_source'],rule=d['rule'],
+                binding_source=binding_source,lowering=physical['lowering'],scalar=deepcopy(binding['scalar']),
+                calibration_cell=deepcopy(d['calibration_cell']),
+                direct_calibration_paths=len({r['path_id']for r in d['calibration_cell']['rows']}),
+                round_direct_prices=0,round_model_prices=26,qualified_for_candidate=False))
+        by_axis={(r['m'],r['axis']):(i,r)for i,r in enumerate(d['rows'])}
+        for p in priced['price_axes']:
+            i,r=by_axis[p['m'],p['axis']]
+            p.update(price_kind='MODEL',qualified_for_candidate=False,model_application=r['value_source'],
+                C_ref_exact=r['C_ref_exact'],q=r['q'],R=r['R'],total_candidate_id=r['total_candidate_id'],
+                binding_id=r['binding_id'],allocation_id=r['allocation_id'],
+                q3_axis_source=r['b_index_source'],price_handoff_source=dict(loc,selector=['rows',i]))
+        self.rows[self.rows.index(prior)]=priced
+
     def result(self):
         # Signal-only evidence is retained as history once an evaluated allocation
         # for the same configuration is supplied. It must no longer say Q3待ち.
@@ -434,5 +508,7 @@ def report(result):
             '## 固定入力一覧','']
     for source in result['adopted_inputs']:
         lines.append('- `'+source['commit']+':'+source['path']+'`')
+    if any(r.get('price_evidence',{}).get('round_model_prices')==26 for r in result['candidates']):
+        lines+=['','PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。']
     lines+=['','再実行コマンドと追加方法は親directoryのHANDOFF.mdを参照。','']
     return '\n'.join(lines)
