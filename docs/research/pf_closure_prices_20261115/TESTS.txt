@@ -1,0 +1,31 @@
+New synthetic/metadata tests: 6 PASS.
+Existing exact price-model regressions: 3 PASS.
+Total: 9 test methods, no final failures/errors/skips.
+
+Existing project interpreter, PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:scripts[:tests].
+python -B tests/check_pf_closure_prices.py
+python -B -m unittest check_paper_g_price_routes.ModelValidation -v
+
+test_96_direct_metadata_includes_four_original_saved_m5_axes ... ok
+test_fixed_60_axes_12_groups_and_original_locators ... ok
+test_fractional_or_negative_rz_is_rejected_without_rounding ... ok
+test_frozen_axis_or_actual_width_mismatch_rejected ... ok
+test_missing_duplicate_and_scope_change_do_not_predict ... ok
+test_synthetic_exact_integer_prices_keep_xy_and_conditional_semantics ... ok
+Ran 6 tests in 0.417s; OK.
+
+test_exact_affine_fit_holdout_pass_and_fail_without_refit ... ok
+test_overdetermined_singular_overlap_and_mixed_route ... ok
+test_terms_feed_existing_quote_model_unqualified ... ok
+Ran 3 tests in 0.496s; OK.
+
+Tests call the predictor only with artificial coefficients. Pinned real rows,
+model bindings, compiler profile, and original direct-inventory metadata are read
+with no real price predictions. The actual approved 60 predictions are a separate
+single execution after SOURCE fixation.
+
+The initial metadata preflight found 92 axes because the four C-admitted saved
+M5/m4 EXPLORATION receipts are outside D's new PRICES documents. Added their fixed
+input locators (without altering any receipt/source) and a regression covering
+all four axes. Metadata-only preparation then passed: 60 targets, known direct
+inventory 96, overlap 0, prediction calls 0. No scientific retry occurred.
