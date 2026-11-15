@@ -1,0 +1,413 @@
+{
+  "kind": "PR_PAULI_LD3_LD5_COMMON_KAPPA_SCHEDULE",
+  "LD3_configuration": {
+    "id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+    "source": {
+      "commit": "421258d400a86fffd7c4955d5cf1bd24ac5729cb",
+      "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/config_run01/CONFIGURATION_LD3.json"
+    }
+  },
+  "new_configuration": {
+    "id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+    "source": {
+      "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/config_run01/CONFIGURATION_LD5.json"
+    }
+  },
+  "definitions": {
+    "R": "B R_outer: integer tail RTE events per S2 step (step time T/q = 0.1)",
+    "events": "q_PF*R_outer: tail RTE events of the whole round = B candidate event_count",
+    "R_floor_1": "R = 1: the minimum of one tail event per step (paper target <= q)",
+    "events_minus_target": "integerized whole-round events minus the paper target (rounding-up excess)",
+    "shot_weighted_events": "sum over m of (N_X + N_Y) * events; an event count, not a price"
+  },
+  "rows": [
+    {
+      "m": 0,
+      "T_exact": "3602879701896397/36028797018963968",
+      "T": 0.1,
+      "q": 1,
+      "R_LD3": 1,
+      "events_LD3": 1,
+      "paper_total_target_LD3": 1,
+      "R_floor_1_LD3": true,
+      "events_minus_target_LD3": 0,
+      "physical_ID_LD3": "RMSE:40cabfa674ff533123d315334f69e4088b2834d1e9a649915627c0471482e86b",
+      "R_LD5": 1,
+      "events_LD5": 1,
+      "paper_total_target_LD5": 1,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 0,
+      "physical_ID_LD5": "RMSE:a5351598308c1e1dac90c56bff4b772c7af14446fefa98badaf106550d9883ec",
+      "events_ratio_LD5_over_LD3": 1.0,
+      "events_reduction_LD3_minus_LD5": 0
+    },
+    {
+      "m": 1,
+      "T_exact": "3602879701896397/18014398509481984",
+      "T": 0.2,
+      "q": 2,
+      "R_LD3": 1,
+      "events_LD3": 2,
+      "paper_total_target_LD3": 1,
+      "R_floor_1_LD3": true,
+      "events_minus_target_LD3": 1,
+      "physical_ID_LD3": "RMSE:cec7d69ebcc5e36064d6dcd59e3ecf208bceb697d61eec4a0c6c8bd605bab8bc",
+      "R_LD5": 1,
+      "events_LD5": 2,
+      "paper_total_target_LD5": 1,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 1,
+      "physical_ID_LD5": "RMSE:4038c439cc0544c35e541b99a1fafce746d610220a7215fb072a60805cb68294",
+      "events_ratio_LD5_over_LD3": 1.0,
+      "events_reduction_LD3_minus_LD5": 0
+    },
+    {
+      "m": 2,
+      "T_exact": "3602879701896397/9007199254740992",
+      "T": 0.4,
+      "q": 4,
+      "R_LD3": 1,
+      "events_LD3": 4,
+      "paper_total_target_LD3": 3,
+      "R_floor_1_LD3": true,
+      "events_minus_target_LD3": 1,
+      "physical_ID_LD3": "RMSE:549d1869e0cec2d2e269723b0454671fa440af039684e873e893229f9bd87606",
+      "R_LD5": 1,
+      "events_LD5": 4,
+      "paper_total_target_LD5": 1,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 3,
+      "physical_ID_LD5": "RMSE:5bf6695b6177cba6eb18c5793db0663ec29cc6edac0d6e3793080946f7105f72",
+      "events_ratio_LD5_over_LD3": 1.0,
+      "events_reduction_LD3_minus_LD5": 0
+    },
+    {
+      "m": 3,
+      "T_exact": "3602879701896397/4503599627370496",
+      "T": 0.8,
+      "q": 8,
+      "R_LD3": 2,
+      "events_LD3": 16,
+      "paper_total_target_LD3": 11,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 5,
+      "physical_ID_LD3": "RMSE:919e2c86defb2ef05f101aaa7e0b37bf11f2b2560755eaaaf86d82370256eebf",
+      "R_LD5": 1,
+      "events_LD5": 8,
+      "paper_total_target_LD5": 1,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 7,
+      "physical_ID_LD5": "RMSE:c943efea89f5909a224ddd5ec2199743e70b2efd4afc2f7a8ae98f5185a0404b",
+      "events_ratio_LD5_over_LD3": 0.5,
+      "events_reduction_LD3_minus_LD5": 8
+    },
+    {
+      "m": 4,
+      "T_exact": "3602879701896397/2251799813685248",
+      "T": 1.6,
+      "q": 16,
+      "R_LD3": 3,
+      "events_LD3": 48,
+      "paper_total_target_LD3": 42,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 6,
+      "physical_ID_LD3": "RMSE:6290c7ac4b32ece22e8e40258311820445c0c4e7423ba25060123819a9d063c9",
+      "R_LD5": 1,
+      "events_LD5": 16,
+      "paper_total_target_LD5": 1,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 15,
+      "physical_ID_LD5": "RMSE:5c7ee2b9b248f15bc938dd25cbaa2da354b01940bbbb7eec69029f9166cc6a2a",
+      "events_ratio_LD5_over_LD3": 0.3333333333333333,
+      "events_reduction_LD3_minus_LD5": 32
+    },
+    {
+      "m": 5,
+      "T_exact": "3602879701896397/1125899906842624",
+      "T": 3.2,
+      "q": 32,
+      "R_LD3": 6,
+      "events_LD3": 192,
+      "paper_total_target_LD3": 165,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 27,
+      "physical_ID_LD3": "RMSE:3a1b37dd5311e034fffc409682551f7d66c833894ae87943788ef8aefb803225",
+      "R_LD5": 1,
+      "events_LD5": 32,
+      "paper_total_target_LD5": 1,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 31,
+      "physical_ID_LD5": "RMSE:98572f0f16ed0e403aaae132547be9c3d18f9d5a81bb468a38a0fbb80f586afd",
+      "events_ratio_LD5_over_LD3": 0.16666666666666666,
+      "events_reduction_LD3_minus_LD5": 160
+    },
+    {
+      "m": 6,
+      "T_exact": "3602879701896397/562949953421312",
+      "T": 6.4,
+      "q": 64,
+      "R_LD3": 11,
+      "events_LD3": 704,
+      "paper_total_target_LD3": 660,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 44,
+      "physical_ID_LD3": "RMSE:d3d7d92e24fec588be5d8febc49c001ce67df335ae0416e113225bc0fb0bc9c1",
+      "R_LD5": 1,
+      "events_LD5": 64,
+      "paper_total_target_LD5": 4,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 60,
+      "physical_ID_LD5": "RMSE:5d165e00f731ee50029e0d92c503ea2580801413be28161d5198187e9d182f6e",
+      "events_ratio_LD5_over_LD3": 0.09090909090909091,
+      "events_reduction_LD3_minus_LD5": 640
+    },
+    {
+      "m": 7,
+      "T_exact": "3602879701896397/281474976710656",
+      "T": 12.8,
+      "q": 128,
+      "R_LD3": 21,
+      "events_LD3": 2688,
+      "paper_total_target_LD3": 2638,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 50,
+      "physical_ID_LD3": "RMSE:7912ac19dafcb219164c4760b3fd63c7c3f85d9e8f9f48aef6a4fc1928409dfd",
+      "R_LD5": 1,
+      "events_LD5": 128,
+      "paper_total_target_LD5": 16,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 112,
+      "physical_ID_LD5": "RMSE:a6a4dcc93eb26259b227031623f0de5aca6200456242268f54f5f252fa7d594d",
+      "events_ratio_LD5_over_LD3": 0.047619047619047616,
+      "events_reduction_LD3_minus_LD5": 2560
+    },
+    {
+      "m": 8,
+      "T_exact": "3602879701896397/140737488355328",
+      "T": 25.6,
+      "q": 256,
+      "R_LD3": 42,
+      "events_LD3": 10752,
+      "paper_total_target_LD3": 10549,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 203,
+      "physical_ID_LD3": "RMSE:2382d4cf9a87f0eeb485bf60b07f019038b60dc6c9a0b3931b6b0ae96ca03244",
+      "R_LD5": 1,
+      "events_LD5": 256,
+      "paper_total_target_LD5": 61,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 195,
+      "physical_ID_LD5": "RMSE:da51a62286735b5ee4392148a2ae2ff291fadbd2f4d1de8f59f9eddcae0d8c8c",
+      "events_ratio_LD5_over_LD3": 0.023809523809523808,
+      "events_reduction_LD3_minus_LD5": 10496
+    },
+    {
+      "m": 9,
+      "T_exact": "3602879701896397/70368744177664",
+      "T": 51.2,
+      "q": 512,
+      "R_LD3": 83,
+      "events_LD3": 42496,
+      "paper_total_target_LD3": 42195,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 301,
+      "physical_ID_LD3": "RMSE:e1e08825d02ab6cb6fb0725ca3c4641a6ac24f6d25a2c9082fd07b0e74c5765c",
+      "R_LD5": 1,
+      "events_LD5": 512,
+      "paper_total_target_LD5": 242,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 270,
+      "physical_ID_LD5": "RMSE:f9ce88668a2edf3470b26a6aa0cdada4027328cf9e92266193b800a22b40cb1f",
+      "events_ratio_LD5_over_LD3": 0.012048192771084338,
+      "events_reduction_LD3_minus_LD5": 41984
+    },
+    {
+      "m": 10,
+      "T_exact": "3602879701896397/35184372088832",
+      "T": 102.4,
+      "q": 1024,
+      "R_LD3": 165,
+      "events_LD3": 168960,
+      "paper_total_target_LD3": 168778,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 182,
+      "physical_ID_LD3": "RMSE:11ee2297ac9b3d3415275c7c61b895933d04ee44d2d1facb9f5a2f78e7627e74",
+      "R_LD5": 1,
+      "events_LD5": 1024,
+      "paper_total_target_LD5": 967,
+      "R_floor_1_LD5": true,
+      "events_minus_target_LD5": 57,
+      "physical_ID_LD5": "RMSE:2b3478a03fca0840b1dff9e60f9636500d700111d45358a9354f0a5f70f5970f",
+      "events_ratio_LD5_over_LD3": 0.006060606060606061,
+      "events_reduction_LD3_minus_LD5": 167936
+    },
+    {
+      "m": 11,
+      "T_exact": "3602879701896397/17592186044416",
+      "T": 204.8,
+      "q": 2048,
+      "R_LD3": 330,
+      "events_LD3": 675840,
+      "paper_total_target_LD3": 675109,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 731,
+      "physical_ID_LD3": "RMSE:43d46a2c24aac5f5d54619aeacb89d0083ee42c4a135bad1155793eeb7453c26",
+      "R_LD5": 2,
+      "events_LD5": 4096,
+      "paper_total_target_LD5": 3865,
+      "R_floor_1_LD5": false,
+      "events_minus_target_LD5": 231,
+      "physical_ID_LD5": "RMSE:3023dfdd6865bca0bd01243d85113693300b5aaab8be35ac6ed9664a1e3ac3fa",
+      "events_ratio_LD5_over_LD3": 0.006060606060606061,
+      "events_reduction_LD3_minus_LD5": 671744
+    },
+    {
+      "m": 12,
+      "T_exact": "3602879701896397/8796093022208",
+      "T": 409.6,
+      "q": 4096,
+      "R_LD3": 660,
+      "events_LD3": 2703360,
+      "paper_total_target_LD3": 2700434,
+      "R_floor_1_LD3": false,
+      "events_minus_target_LD3": 2926,
+      "physical_ID_LD3": "RMSE:95014c1c1c105ae09155753b7dfa3edd40ba8900bfc2efe72152e670b1337a28",
+      "R_LD5": 4,
+      "events_LD5": 16384,
+      "paper_total_target_LD5": 15459,
+      "R_floor_1_LD5": false,
+      "events_minus_target_LD5": 925,
+      "physical_ID_LD5": "RMSE:795c55355aec18b321e90769af58f2b4a8d7a3dcd793b488cbc87fa3d2a1a267",
+      "events_ratio_LD5_over_LD3": 0.006060606060606061,
+      "events_reduction_LD3_minus_LD5": 2686976
+    }
+  ],
+  "shot_weighted_events": {
+    "LD3": {
+      "VP": {
+        "N_per_axis": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          29,
+          26,
+          23,
+          19,
+          16,
+          13,
+          9
+        ],
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "shots": 756,
+        "source": {
+          "commit": "2de33a4f4",
+          "path": "docs/research/pauli_ld3_vp_q3_results_20261116/C_RESULT_JOIN.json",
+          "allocation_id": "PAULI_LD3_USER_VP_MATCH_LD2_01"
+        },
+        "events": 73947076
+      },
+      "FULL_PF__B_PRICE": {
+        "N_per_axis": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          29,
+          26,
+          23,
+          19,
+          16,
+          8,
+          2
+        ],
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "shots": 732,
+        "source": {
+          "commit": "fb4d78781",
+          "path": "docs/research/pauli_ld3_pf_budget_q3_results_20261116/INPUTS.json",
+          "selector": [
+            "cases",
+            3,
+            "allocation"
+          ],
+          "allocation_id": "PAULI_LD3_FULL_PF__B_PRICE_VP_CAP_01"
+        },
+        "events": 29341636
+      }
+    },
+    "LD5": {
+      "VP": {
+        "N_per_axis": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          29,
+          26,
+          23,
+          19,
+          16,
+          13,
+          9
+        ],
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "shots": 756,
+        "source": {
+          "commit": "2de33a4f4",
+          "path": "docs/research/pauli_ld3_vp_q3_results_20261116/C_RESULT_JOIN.json",
+          "allocation_id": "PAULI_LD3_USER_VP_MATCH_LD2_01"
+        },
+        "events": 480276
+      },
+      "FULL_PF__B_PRICE": {
+        "N_per_axis": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          29,
+          26,
+          23,
+          19,
+          16,
+          8,
+          2
+        ],
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "shots": 732,
+        "source": {
+          "commit": "fb4d78781",
+          "path": "docs/research/pauli_ld3_pf_budget_q3_results_20261116/INPUTS.json",
+          "selector": [
+            "cases",
+            3,
+            "allocation"
+          ],
+          "allocation_id": "PAULI_LD3_FULL_PF__B_PRICE_VP_CAP_01"
+        },
+        "events": 209940
+      }
+    }
+  }
+}
