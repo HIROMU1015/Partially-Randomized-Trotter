@@ -460,7 +460,9 @@ def own_price_comparison(candidates, vectors):
 
 def jsonable(value):
     if isinstance(value, Fraction):
-        return dict(numerator=value.numerator, denominator=value.denominator, display=display(enc(value)))
+        portable = max(len(str(abs(value.numerator))), len(str(value.denominator))) > 1000
+        to = str if portable else int  # very long exact bounds stay readable by default JSON parsers (as in C)
+        return dict(numerator=to(value.numerator), denominator=to(value.denominator), display=display(enc(value)))
     if isinstance(value, dict):
         return {str(k): jsonable(v) for k, v in value.items() if k not in ('prices', 'candidate') or not isinstance(v, (list, dict))}
     if isinstance(value, (list, tuple)):
