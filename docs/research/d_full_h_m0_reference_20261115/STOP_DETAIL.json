@@ -1,0 +1,41 @@
+{
+  "status": "MANDATORY_STOP_REQUIRED_COVERAGE_GATE_NOT_SATISFIED",
+  "normal_sampler_calls": 1,
+  "event_order_sequence": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "diagonal_support_lengths": {
+    "1": 9
+  },
+  "one_body_applications": 6,
+  "two_qubit_ZZ_applications": 0,
+  "failed_requirement": "P1.pilot ok requires parity.replaced_controlled_zz > 0; saved path contains only one-qubit central rotations",
+  "basis_of_identification": "Saved event application metadata plus unchanged P1 gate SOURCE; no circuit replay",
+  "gate_source": {
+    "commit": "7f85f20e38af4df1a649ac239e57bfe76d0899ee",
+    "path": "scripts/run_full_h_kappa2_p1.py",
+    "function": "pilot"
+  },
+  "combined_gate_exception": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-m0-reference-20261115/scripts/run_full_h_m0_reference.py\", line 121, in child\n    result['path']=A.accelerated_path(P,full,job['row'],job['cohort'],0,job['seeds'],progress=progress)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-m0-reference-20261115/scripts/full_h_p2_acceleration.py\", line 162, in accelerated_path\n    result = P.acquire_path(full,row,cohort,index,seeds,compile_cached=parallel,parents=parents,progress=progress)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-m0-reference-20261115/scripts/run_full_h_kappa2_p2.py\", line 247, in acquire_path\n    raise ValueError('P-1 correctness/phase/XY/allocation gate failed')\nValueError: P-1 correctness/phase/XY/allocation gate failed\n",
+  "individual_implementation_gate_returns": "NOT_PERSISTED_ON_ACQUIRE_PATH_EXCEPTION",
+  "numerical_action_wrapper_compiled_checks": "ALL_7_PASS",
+  "C_0X": null,
+  "C_0Y": null,
+  "retries": 0,
+  "seed_substitutions": 0,
+  "independent_paths": 1,
+  "actual_compiles": 2,
+  "accepted_axis_prices": 0,
+  "held_axis_prices": 2,
+  "shot_multiplier_applied": false
+}
