@@ -25,12 +25,13 @@ def write(path,value):
     with Path(path).open('x')as f:json.dump(value,f,indent=2,ensure_ascii=False,allow_nan=False);f.write('\n')
 
 def summarize(source,raw):
+    source=subprocess.check_output(['git','rev-parse',source],cwd=ROOT,text=True).strip()
     if (ROOT/CALLER).read_bytes()!=subprocess.check_output(['git','show',source+':'+CALLER],cwd=ROOT):raise ValueError('Unfixed summary SOURCE')
     old=read(OLD,PRIOR+'/SUMMARY.json');alloc=read(ALLOC,PRIOR+'/ALLOCATION_INPUTS.json');completion=read(raw,PUBLIC+'/run01/COMPLETION.json')
     if completion['status']!='FOUR_FIXED_Q3_SAVED':raise ValueError('Partial outcome needs explicit missing-data report')
     rows=[];checks=[]
     for i,item in enumerate(alloc['menu']):
-        r=deepcopy(item);prior=next(x for x in old['menu']if (x['L_D'],x['rule'])==(r['L_D'],r['rule']))
+        r=deepcopy(item);r['allocation_disposition_at_freeze']=r.pop('disposition');prior=next(x for x in old['menu']if (x['L_D'],x['rule'])==(r['L_D'],r['rule']))
         if r['cost']!=prior['cost']or r['shots']!=prior['shots']:raise ValueError('Frozen costs/vectors changed')
         r.update(cost_source=dict(commit=ALLOC,path=PRIOR+'/ALLOCATION_INPUTS.json',selector=['menu',i]),
             cost_display=display(dec(r['cost'])),m0_m6=prior['m0_m6'],m7_m12=prior['m7_m12'],
