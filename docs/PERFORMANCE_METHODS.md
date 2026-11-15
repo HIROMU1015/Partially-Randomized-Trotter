@@ -1,5 +1,9 @@
 # 並列化・高速化手法の再利用索引
 
+## 決定論PF m1/m2（2026-11-15）
+
+[実測・範囲](research/d_pf_m1_m2_direct_prices_20261115/REPORT.md)。m0の元trial / fast context / fork worker / 協調stage logをそのまま使い、同じcallerの有限selectorと出力namespaceをm1/m2へ拡張した。実行SOURCE `a3cbe70e4afb0948188403f48cf4086bb419d8bf`。12物理cellを2 route各6 workerで実行、X/Y別24 compile・元作用gate/C guard全PASS。取得wall102.512 s、最大worker RSS576.74 MiB、同条件baselineとの速度倍率は未測定。m0回帰4＋新3人工/mock testで、同じactual幅でもT/qが違うS2 cellを混同しないことを確認した。旧m0は元固定SOURCEで再現する。新namespace専用・科学retryなし、他round/モデル/N/Gへ転用しない。
+
 ## 決定論PF m0（2026-11-15）
 
 [実測・適用条件](research/d_pf_m0_direct_prices_20261115/REPORT.md)、[入口](../scripts/run_pf_m0_prices.py)。既存PF fast contextをFull/p7の元trialへ最初から適用し、別contextの2 route・6物理cellをprocess並列化した。各cellのevolutionはX/Yで共有し、両軸を個別compileする。新規12価格と元作用gate/C guard12軸が有効。取得wall100.876 s、最大worker RSS575.16 MiB。同条件baseline再実行をせず、速度倍率は未測定。
