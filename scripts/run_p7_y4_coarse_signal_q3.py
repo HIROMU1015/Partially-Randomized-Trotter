@@ -176,12 +176,46 @@ def q3_runtime():
     return F
 
 
+def bind_packet():
+    """C.b_mean binding view only; retain all original numerical records."""
+    sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+    require((ROOT/CALLER).read_bytes()==blob(sha,CALLER),'Commit binding adapter before use')
+    raw_source=ref(sha,STUDY+'/signal_run01/B_SIGNAL_INPUT.json')
+    original=read(raw_source)
+    provenance=dict(commit=sha,caller=CALLER,binding_only=True,original_packet=raw_source)
+    prepared,_,_=signal_plan(provenance);F,_=signal_modules()
+    means=[];origins=[]
+    for req,old in zip(prepared['pending']['requests'],original['means'],strict=True):
+        m=req['m'];origin=ref(sha,STUDY+'/signal_run01/'+LABEL+'/round_'+str(m)+'.json')
+        record=read(origin)
+        require(F.C.p.same(record['domain'],req['domain']),'Original mean domain differs during binding')
+        rebound=deepcopy(record);rebound['source']=deepcopy(provenance)
+        rebound['input_source']=dict(original_record=origin,original_numerical_source=record['source'],
+            original_input_source=deepcopy(record.get('input_source',record.get('input_provenance'))),
+            binding_only_no_new_evaluation=True)
+        mean=F.C.b_mean(req,rebound)
+        mean['provider_binding']=dict(physical_context=F.I.price_context(prepared,m),
+            numerical_source=deepcopy(provenance),input_source=deepcopy(rebound['input_source']),
+            reference_source=deepcopy(req['domain']['reference']))
+        for key in ('raw','corrected','reference','normalization','bias','uncertainty'):
+            require(mean[key]==old[key],'Binding changed original quantity/gate: '+key)
+        F.I.provider_binding_check(prepared,mean)
+        means.append(mean);origins.append(dict(m=m,original_record=origin,original_numerical_source=record['source'],
+            acquisition='REUSED_SAVED_MEAN' if m in (0,1,2,3,4,5,12) else 'APPROVED_NEW_MEAN'))
+    packet=dict(configuration_id=CID,target=deepcopy(original['target']),source=provenance,means=means)
+    F.S.require_complete(packet)
+    write(OUT/'BOUND_SIGNAL_INPUT.json',packet)
+    write(OUT/'BINDING_PROVENANCE.json',dict(source=provenance,records=origins,new_signal_evaluations=0,
+        quantities_and_gates_unchanged=True,original_packet_preserved=True))
+    print('SOURCE-BOUND VIEW PASS; 13 unchanged means, original numerical SOURCEs retained; no new evaluation',flush=True)
+
+
 def q3_prepare():
     F=q3_runtime();signal_sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     signal_state=read(ref(signal_sha,STUDY+'/signal_run01/SIGNAL_STATUS.json'))
     require(signal_state['status']=='THIRTEEN_ROUND_SIGNAL_PACKET_COMPLETE','No complete fixed packet')
     cfg_source=ref(signal_state['source']['commit'],STUDY+'/SIGNAL_INPUTS.json','configuration')
-    packet_source=ref(signal_sha,STUDY+'/signal_run01/B_SIGNAL_INPUT.json')
+    packet_source=ref(signal_sha,STUDY+'/BOUND_SIGNAL_INPUT.json')
     cfg=read(cfg_source);packet=read(packet_source)
     binding=F.T.create(F.ROOT,cfg,original_source=cfg_source)
     prior=json.loads(blob(B,B_DIR+'INPUTS.json'))
@@ -222,6 +256,6 @@ def q3_execute():
 
 
 if __name__=='__main__':
-    modes={'signal-prepare':signal_prepare,'signal-execute':signal_execute,'q3-prepare':q3_prepare,'q3-execute':q3_execute}
+    modes={'signal-prepare':signal_prepare,'signal-execute':signal_execute,'bind-packet':bind_packet,'q3-prepare':q3_prepare,'q3-execute':q3_execute}
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('mode',choices=modes)
     modes[parser.parse_args().mode]()
