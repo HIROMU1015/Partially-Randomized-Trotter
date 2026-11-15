@@ -1,0 +1,313 @@
+{
+  "schema": "PR_DF_LD_SPLIT_FIRST_FINITE_COMPARISON_PLAN_V1",
+  "status": "PROPOSED_NOT_EXECUTED",
+  "objective": "Compare model-reference feasible costs of at least LD1 and LD2 after candidate-owned shot selection; not certify ideal E[C] or a globally best split.",
+  "first_one_work": "LD2_PREFIX_SPECIFIC_PRICE_REFERENCE_THEN_TWO_SPLIT_FINITE_MODEL_COMPARISON",
+  "target_LD": [
+    1,
+    2
+  ],
+  "fixed_physical_schedule": true,
+  "price_rule": {
+    "name": "PREFIX_OWN_OFFSET_PLUS_AFFINE_FULL_WRAPPER_REFERENCE",
+    "formula": "C_ref(L,m,a)=B_L(m,a)+theta0[L,a]+thetaq[L,a]*q+thetaE[L,a]*q*R",
+    "features": [
+      "one",
+      "q",
+      "qR"
+    ],
+    "LD1": {
+      "offset": "SAVED_E_I_S",
+      "C_ref": "REUSE_ALL_26_EXACT_REFERENCES_FROM_85DAB58D",
+      "new_single_shot_prices": 0,
+      "new_fit": 0,
+      "model_source": {
+        "commit": "3cac53da1a4a8b2228245593c74c1ff9ec1f5212",
+        "path": "docs/research/pr_df_ld1_residual_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": []
+      }
+    },
+    "LD2": {
+      "offset": "ZERO_MODEL_OFFSET_NOT_ZERO_HEAD_COST_OR_E_S",
+      "fit_target": "FULL_WRAPPER_C_CELL_MEAN",
+      "new_axis_models_max": 2,
+      "new_price_references_max": 26,
+      "calibration_rounds": [
+        0,
+        3,
+        6
+      ]
+    },
+    "cross_prefix_coefficient_transfer": false,
+    "head": "Included in LD1 structural offset; LD2 prefix-specific thetaq absorbs head sweep and per-outer interfaces.",
+    "tail": "qR and prefix-specific coefficients reflect that prefix own normal-law event mix/basis/angle/phase via whole-wrapper calibration; not an exact additive event formula.",
+    "quality": "EXPLORATORY_COMPILED_MODEL_REFERENCE_NOT_CERTIFIED_EXPECTATION",
+    "CI_or_all_support_proof_required": false
+  },
+  "stages": [
+    {
+      "stage": "A",
+      "purpose": "Acquire LD2 full-wrapper paired S/C calibration",
+      "cells": [
+        {
+          "L_D": 2,
+          "m": 0,
+          "physical_id": "ce7ef02e7926c1a6c924",
+          "T": 0.1,
+          "q": 1,
+          "R_outer": 1,
+          "axes": [
+            "X",
+            "Y"
+          ],
+          "role": "CALIBRATION",
+          "fresh_path_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "path_count": 4,
+          "maximum_new_compiles": 8,
+          "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+          "reuse": "SAVED_H_STATE_SNAPSHOT_AND_QR_METADATA_NOT_LD1_OR_PAULI_PRICES",
+          "S_and_C_same_path": true
+        },
+        {
+          "L_D": 2,
+          "m": 3,
+          "physical_id": "334b1fd35cb2f1ad32b0",
+          "T": 0.8,
+          "q": 8,
+          "R_outer": 5,
+          "axes": [
+            "X",
+            "Y"
+          ],
+          "role": "CALIBRATION",
+          "fresh_path_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "path_count": 4,
+          "maximum_new_compiles": 8,
+          "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+          "reuse": "SAVED_H_STATE_SNAPSHOT_AND_QR_METADATA_NOT_LD1_OR_PAULI_PRICES",
+          "S_and_C_same_path": true
+        },
+        {
+          "L_D": 2,
+          "m": 6,
+          "physical_id": "fe234d98b289ae91869c",
+          "T": 6.4,
+          "q": 64,
+          "R_outer": 40,
+          "axes": [
+            "X",
+            "Y"
+          ],
+          "role": "CALIBRATION",
+          "fresh_path_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "path_count": 4,
+          "maximum_new_compiles": 8,
+          "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+          "reuse": "SAVED_H_STATE_SNAPSHOT_AND_QR_METADATA_NOT_LD1_OR_PAULI_PRICES",
+          "S_and_C_same_path": true
+        }
+      ],
+      "new_paths_max": 12,
+      "new_compiles_max": 24,
+      "reused_LD1_paths_used_for_fit": 0,
+      "reused_LD2_target_paths_identified": 0,
+      "cohort_proposal": "D_PR_DF_LD2_SPLIT_CAL_20261115_V1",
+      "seed_rule": "Fixed carrier155529e2 trial_seed(physical_candidate,cohort,index,outer,0); freeze actual seed lists and SOURCE before physical preparation; not generated in this planning turn.",
+      "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY1P26P4; no forced order or extra seed",
+      "receipt": "Physical/configuration, LD, m, q/R/T, cohort/index/outer seeds, axis, event digest/order observations, same-path S/C, fingerprint/metrics, compiler/lowering/scalar/preparation identity, execution SOURCE and publication commit separately.",
+      "gates": "Same input/preparation/request/lowering/compiler/fingerprint checks as P2 fresh/m3; do not claim numerical action/full-wrapper statevector gates that original path did not run."
+    },
+    {
+      "stage": "B",
+      "purpose": "Freeze LD2 model references and reuse LD1 table",
+      "axis_cell_means_max": 6,
+      "axis_fits_max": 2,
+      "new_reference_prices_max": 26,
+      "LD1_reference_prices_reused": 26,
+      "exact_arithmetic": true,
+      "fit_algorithm": {
+        "commit": "d83737b6d5241962ce39c81d39c56af3506c0cdd",
+        "path": "src/trottertracks/price_model_validation.py",
+        "selector": []
+      },
+      "fit_target": "C cell means; do not add measured S again because LD2 offset is zero",
+      "independent_price_holdout_paths": 0,
+      "independent_price_holdout_compiles": 0,
+      "model_verdict": "NOT_ASSESSED_NO_ADOPTED_TOLERANCE",
+      "long_round_assumption": "Fixed prefix and S2/.1/K2/common-kappa schedule: average whole-wrapper price approximated by (1,q,qR) across m0..12. m7..12 extrapolate beyond q64/R40; order mix/angle, basis transitions and optimizer effects may break it.",
+      "exclude": "Do not refit LD1; keep LD1 m4 holdout independent, never pool P1/replay or Pauli LD2.",
+      "model_gate": "Fit rank/domain and finite positive 26 references required for the proposed inverse-price allocation rule; negative/zero/nonfinite prediction is not clipped or repaired automatically.",
+      "fit_algorithm_use": "Reuse _exact/_solve/predict arithmetic only as needed. A narrow wrapper declares the prefix2 schedule-family domain and retains cell-specific input-law references; do not blindly call generic fit with unequal point-law dicts or weaken its existing guard."
+    },
+    {
+      "stage": "C",
+      "purpose": "Candidate-specific finite allocation/Q3 comparison",
+      "saved_V0_Q3_reused": 2,
+      "new_vectors_max": 4,
+      "new_Q3_calls_max": 4,
+      "model_menu_entries_max": 6,
+      "reported_new_model_totals_max": 5,
+      "LD1_old_V0_total_reused": 1,
+      "budget_policy": {
+        "per_LD": "beta times this LD own T_ref(LD,V0)",
+        "beta": {
+          "numerator": 3,
+          "denominator": 4
+        },
+        "PF_amount_not_budget": true
+      },
+      "allocation_families": [
+        "A_SHAPE",
+        "B_PRICE"
+      ],
+      "algorithm_source": {
+        "commit": "06f4210e1bdfd5b07f42b941fa22d17e228533fc",
+        "path": "scripts/run_pf6_cost_budget_q3_fixed.py",
+        "selector": []
+      },
+      "algorithm": "For each LD and rule choose the largest finite breakpoint lambda with sum_i N_i*C_ref_i <= beta*T0_L; N_i=max(1,min(V0_i,floor(lambda*w_i))); w_i=V0_i for A_SHAPE, V0_i/C_ref_i for B_PRICE.",
+      "price_numeric_delta": "Existing generator requires integer prices: adapt only price parsing/weights/sums to positive exact Fraction, with synthetic tests. No rounding of LD1 rational prices.",
+      "deduplication": "If a whole vector equals saved V0 or another accepted same-candidate vector, reuse it; ambiguous provenance/independence is held.",
+      "Q3_contract": {
+        "adopted_evaluation": {
+          "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+          "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+          "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+          "epsilon_E_decimal": "0.00159360010199040",
+          "MSE_upper": {
+            "numerator": 15136964828156312001,
+            "denominator": 5960464477539062500000000
+          },
+          "scope": "MODEL_MSE_FILTER_ONLY",
+          "measurement_law": "SAVED_IDEAL_FINITE_K_RAW_IID_EXACT_AFFINE",
+          "minkowski": "SEPARATE_REFERENCE_NOT_COMBINED",
+          "physical_total_error_guarantee": false
+        },
+        "statistical_contract": {
+          "id": "PR_DF_FULL_H_THREE_FIXED_TOTAL_Q3",
+          "claim_level": "TOTAL_RAW_MODEL_DIAGNOSTIC_ONLY",
+          "allow_conditional_unqualified": true,
+          "simulation_policy": {
+            "kind": "IID_SHOTS_INDEPENDENT_AXES_ROUNDS_AND_REPETITIONS",
+            "target_law": "ideal_finite_RTE_law",
+            "interpretation": "CONDITIONAL_IID_SHOTS_AXES_ROUNDS_NO_MC_REPETITIONS"
+          },
+          "summary_options": {
+            "unresolved_loss": {
+              "kind": "BOUNDED_INTERVAL",
+              "lower": 0,
+              "upper": {
+                "numerator": 357405153776690641596902400718249,
+                "denominator": 316912650057057350374175801344
+              }
+            }
+          }
+        },
+        "source": {
+          "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+          "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/INPUTS.json",
+          "selector": []
+        }
+      },
+      "evaluation": "Each LD uses its own saved signal packet, law and total decoder binding. A new N has its own count/closure preflight; old closure PASS is not transferred.",
+      "selection": "For each LD select minimum reference cost among saved V0 and the at most two newly Q3-admitted vectors. Then compare the two LD minima within this finite menu; retain all ties, UNKNOWN and INCONCLUSIVE.",
+      "not_claimed": "Global optimal N, optimal LD, monotone MSE in N, physical sufficient N, certified E[C]/G/winner."
+    }
+  ],
+  "reuse_inputs": {
+    "LD1_reference": "CANDIDATES.json axis_rows LD1 -> fixed85dab58d rows and original receipts",
+    "LD2_configuration": {
+      "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+      "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+      "selector": [
+        "rounds"
+      ]
+    },
+    "LD1_signal": {
+      "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+      "path": "docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD1.json"
+    },
+    "LD2_signal": {
+      "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+      "path": "docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD2.json"
+    },
+    "Q3": {
+      "commit": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503",
+      "path": "docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json",
+      "selector": []
+    },
+    "runtime": {
+      "commit": "e827367629ca6c2920d9d908fc1631314399db86",
+      "path": "src/trottertracks/candidate_price_adapter.py",
+      "selector": []
+    },
+    "corrected_request": {
+      "commit": "e827367629ca6c2920d9d908fc1631314399db86",
+      "path": "src/trottertracks/ld12_price_requests.py",
+      "selector": []
+    }
+  },
+  "maximum_additional_signals": 0,
+  "maximum_new_hamiltonian_or_state_generation": 0,
+  "maximum_new_paths": 12,
+  "maximum_new_compiles": 24,
+  "maximum_new_fits": 2,
+  "maximum_new_reference_prices": 26,
+  "maximum_new_vectors": 4,
+  "maximum_new_Q3": 4,
+  "no_long_round_or_all_LD_compile_sweep": true,
+  "technical_preparation_before_execution": [
+    "Use NativeRuntime/Adapter request-specific prefix2 and corrected c+s_R; historical C1 Backend.context is H4-prefix1 and must not be called as LD2 context.",
+    "The e8273676 adapter calls fast.make_backend_class(..., axes=..., observer=...). Pin the matching 26d4f23e/e8273676 fast SOURCE (blob44b0f8cc); current LD1 fast blob6c3d7be5 has only (base,science), so it is not a drop-in native adapter runtime.",
+    "For LD2 model arithmetic reuse price_model_validation._solve/predict. Its generic fit requires exact equality of the law dictionaries across records; preserve each cell own tau/order/law receipt and use an explicit fixed-prefix schedule-family model wrapper rather than relabelling different point laws as equal.",
+    "New finite caller must select only m0/m3/m6 and preserve old T2/m12 STOP. Freeze implementation, identity, inputs, seeds, output/cache and exact model/whole-vector rules before each corresponding scientific stage.",
+    "Reuse the existing source/input loader and Gaussian/lowering pipeline; synthetic tests cover the actual prefix2 entry and exact-rational allocation path. No saved-H4-operator regression suite.",
+    "Keep independent path concurrency and cooperative stage timing; do not reuse historical resource caps as new permanent limits or periodic faulthandler on Python3.11.0rc1."
+  ],
+  "next_execution_delta_check": [
+    "After planning commit: same configuration/physical/axis/law/lowering/profile/cohort seed receipts or model publications, existing plan execution status and named jobs.",
+    "Check output/cache collisions and actual execution SOURCE/input/compiler changes; source-bound equivalents reduce new acquisitions.",
+    "Recheck whether any same-candidate Q3 with exactly the generated vector exists before launching it; preserve fixed raw and prior STOP."
+  ],
+  "STOP": [
+    "Planning turn stops after publication/remote verification; all finite stages remain unexecuted.",
+    "During later authorized package: input/source/scalar/phase/axis/receipt mismatch, acquisition/save failure => stop new submissions and preserve partials; no automatic retry/seed/path changes.",
+    "Incomplete fixed calibration, rank failure, model profile mismatch, or nonpositive/nonfinite reference for inverse-price rule => stop; no clipping/new feature/extra cell/refit fallback.",
+    "A new vector that cannot pass metadata/count/closure feasibility is held; Q3 budget at most4 and one attempt per unique candidate/vector.",
+    "Q3 model failure/inconclusive is a finite outcome, not permission for another vector; no post-result budget change.",
+    "After finite two-split report and remote check stop. LD3/other split, LD2 m4/m9 holdout, new signal, new width/kappa/K and all-law/CI work need a later decision."
+  ],
+  "decision_after_comparison": [
+    "Compare minimum admitted reference cost per LD with that LD own selected vector and source-specific model qualification. A cheaper fixed-shot price is not sufficient.",
+    "Inspect Q3 outcomes and weighted per-round costs to determine whether ordering relies on untested m7..m12 extrapolation. If so prefer a separately planned LD2 long-round measurement before expanding LD.",
+    "If the LD2 head/tail tradeoff remains informative under the model assumptions, propose the adjacent descriptor-ready LD3 next; even LD2 losing cannot globally prune LD3/5/7/9.",
+    "Do not select LD0 or zero-tail LD10 by relabelling Full-H RTE or PF; those need boundary definitions."
+  ],
+  "current_execution": {
+    "new_paths": 0,
+    "H4_builds": 0,
+    "compiles": 0,
+    "fit": 0,
+    "price_prediction": 0,
+    "shot_vector_generation": 0,
+    "Q3": 0,
+    "model_totals": 0,
+    "ranking": 0
+  },
+  "mandatory_stop": true
+}

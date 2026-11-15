@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-DFのL_D別費用比較計画](research/d_pr_df_ld_split_cost_plan_20261115/REPORT.md)：保存H4 DF10のL_D=0..10を、現行候補/descriptor-ready/定義入力不足/境界に区分。LD1の26参照価格を再利用し、LD2 m0/m3/m6・fresh各4 path/X,Y最大24 compile→軸別モデル→二分割の独自A/B配分・最大4 Q3という未実行pilotを提案。厳密E[C]/CI/全support証明を初回のモデル参照比較の条件にせず、長round外挿を明記。今回科学計算0、計画公開後STOP。
+
 [LD1 m9-X片側下界のSOURCE調査](research/d_pr_df_ld1_m9_lower_bound_20261115/REPORT.md)：PR-DF LD1 m9-X（06a78c7f…/q512/R1020/N25）の全support下界を固定word・new-ZZ・opt1 SOURCEで調査。Sのliteral foldと1q再合成・CX削除・境界越えfixed-pointの差により非自明h/bは未証明。ℓ/25ℓは未評価null、既存C≥0のみ、PF2基準の順位未判定。新path/build/compile/fit/Q3・数値評価0、公開後STOP。
 
 [PR-DF LD1参照総額・PF 2基準の符号付き境界](research/d_pr_df_ld1_reference_budget_20261115/REPORT.md)：固定Q3配分で26軸のモデル参照総額T_ref≈261,314,830,475.559718 RZをexact集計。B0I p7 S2/Full PF S2へのD_PFは各約−260,721,275,123.559718／−260,476,136,895.559718 RZ。未知Δは未評価、対象lawの順位・正式E[C]/CI/Gは未認定。新path/compile0、公開後STOP。
