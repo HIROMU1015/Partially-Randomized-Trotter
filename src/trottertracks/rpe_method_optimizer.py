@@ -16,11 +16,14 @@ Pipeline (one call of ``optimize``):
    From each configuration's cheapest feasible allocation, propose single-round
    decrements (step size gated by the incumbent's Q3 headroom); configurations
    without a feasible point get generator seeds at the method's best cost.
-   Proposals strictly cheaper than the method incumbent are ordered by cost;
-   those dominated by a known failure are skipped (heuristic, recorded).  Each
-   proposal is answered by a Q3 backend (saved results, or an artificial
-   fixture in tests); without an answer and without remaining budget, the
-   proposal is emitted as a machine-readable request and the method stops.
+   Proposals strictly cheaper than the method incumbent are ordered by cost.
+   No proposal is excluded because of another allocation's failure (no
+   monotonicity assumption); only the identical configuration+allocation is
+   reused.  Each proposal is answered by a Q3 backend: saved results, completed
+   jobs of the approved round, or the executor that launches the method's
+   existing Q3 route (``scripts/run_rpe_optimizer_q3_job.py``) within the
+   approved budget.  Otherwise the proposal is emitted as a request and the
+   method stops.
 
 No signal, price, compile or Q3 is computed here.  Costs are each candidate's own
 saved unit prices times the integer shots, validated against C's saved totals.
@@ -30,7 +33,10 @@ from fractions import Fraction
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
+import subprocess
+import time
 
 from .baseline_signal_pipeline import blob
 from .saved_rpe_cost_catalog import Catalog, Reader, display, frac
@@ -39,7 +45,7 @@ PASS = 'MODEL_BOUND_MEETS_ADOPTED_THRESHOLD'
 FAIL = 'MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD'
 AXES = ('X', 'Y')
 RULE = 'FINITE_LOCAL_DESCENT_V1'
-UNIT_KEYS = ('C_ref_exact', 'C_ref', 'C')
+UNIT_KEYS = ('C_ref_exact', 'C_ref', 'C', 'unit_price_RZ')
 
 
 def enc(value):
@@ -196,7 +202,7 @@ class SavedBackend:
                 continue
             self.table[(p['configuration_id'], point_vector(p))] = record_from_point(p, prices_by_config.get(p['configuration_id']))
 
-    def answer(self, proposal):
+    def answer(self, proposal, allow_new=False):
         hit = self.table.get((proposal['configuration_id'], proposal['vector']))
         return None if hit is None else dict(hit, calls=0)
 
@@ -207,7 +213,9 @@ class FixtureBackend:
     def __init__(self, function, threshold):
         self.function, self.threshold = function, threshold
 
-    def answer(self, proposal):
+    def answer(self, proposal, allow_new=True):
+        if not allow_new:
+            return None
         lower, upper = self.function(proposal['configuration_id'], proposal['vector'])
         status = PASS if upper <= self.threshold else FAIL if lower > self.threshold else 'INCONCLUSIVE'
         return dict(status=status, MSE_lower=Fraction(lower), MSE_upper=Fraction(upper), source='ARTIFICIAL_FIXTURE', calls=1)
@@ -240,26 +248,36 @@ def enumerate_candidates(reader, problem, facts, catalog):
     out = []
     for name, spec in problem['methods'].items():
         caps = spec['caps']
+        allowed = spec.get('configuration_ids')  # optional allow-list, applied to every candidate source
         if spec['family'] == 'PF':
-            rows = [r for r in index['candidates'] if r['method'] == spec['index_method'] and r['formula'] in spec['formulas']
-                    and delta_ok(r['requested_delta_over_h'], spec['delta_over_h_range'])]
-            seen = set()
-            for r in rows:
-                seen.add(r['configuration_id'])
-                out.append(dict(method=name, family='PF', key=dict(formula=r['formula'], delta_over_h=r['requested_delta_over_h']),
-                                configuration_id=r['configuration_id'], index_signal=r['source_bound_13round_packet'], caps=caps))
+            def inside(formula, delta):
+                return (formula in spec['formulas'] and delta is not None and delta_ok(delta, spec['delta_over_h_range']))
+            indexed = [r for r in index['candidates'] if r['method'] == spec['index_method']]
+            seen = {r['configuration_id'] for r in indexed}
+            for r in indexed:
+                if inside(r['formula'], r['requested_delta_over_h']):
+                    out.append(dict(method=name, family='PF', key=dict(formula=r['formula'], delta_over_h=r['requested_delta_over_h']),
+                                    configuration_id=r['configuration_id'], index_signal=r['source_bound_13round_packet'], caps=caps))
             for cid, ps in by_config.items():
                 if ps[0]['method'] == name and cid not in seen:
-                    out.append(dict(method=name, family='PF', key=dict(formula=ps[0]['formula'], delta_over_h=None),
-                                    configuration_id=cid, index_signal=None, caps=caps, outside_index=True))
+                    # Catalog-only configurations get the same formula/width range test (width = delta_pf / h).
+                    delta = None if ps[0].get('delta_pf') is None else str(frac(ps[0]['delta_pf']) / frac(ps[0]['h']))
+                    if inside(ps[0]['formula'], delta):
+                        out.append(dict(method=name, family='PF', key=dict(formula=ps[0]['formula'], delta_over_h=delta),
+                                        configuration_id=cid, index_signal=None, caps=caps, outside_index=True))
         else:
             lo = spec['L_D_range']['min'];hi = facts['fragment_count'] + spec['L_D_range']['max_offset_from_fragment_count']
+            values = spec.get('L_D_values')
             for ld in range(lo, hi + 1):
+                if values is not None and ld not in values:
+                    continue
                 configs = sorted({cid for cid, ps in by_config.items() if ps[0]['method'] == name and ps[0]['L_D'] == ld})
                 if not configs:
                     out.append(dict(method=name, family='PR', key=dict(L_D=ld), configuration_id=None, index_signal=None, caps=caps))
                 for cid in configs:
                     out.append(dict(method=name, family='PR', key=dict(L_D=ld), configuration_id=cid, index_signal=None, caps=caps))
+    out = [c for c in out if problem['methods'][c['method']].get('configuration_ids') is None
+           or c['configuration_id'] in problem['methods'][c['method']]['configuration_ids']]
     for c in out:
         ps = by_config.get(c['configuration_id'], [])
         signals = [p['signal_source'] for p in ps if p.get('signal_source')] or ([c['index_signal']] if c['index_signal'] else [])
@@ -309,14 +327,13 @@ def axis_groups(prices, m):
 def proposals(candidates, knowledge, threshold, search, generate):
     best, incumbent = method_state(candidates, knowledge, threshold)
     limit = None if incumbent is None else incumbent['cost']
-    out, skipped = [], []
+    out = []
     large = Fraction(search['large_step_headroom'])
     for c in candidates:
         if not c['ready']:
             continue
         cid, prices = c['configuration_id'], c['prices']
         caps = tuple(n for n in c['caps'] for _ in AXES)
-        fails = [v for (k, v), r in knowledge.items() if k == cid and r['status'] == FAIL]
         raw = []
         if cid in best:
             base = best[cid];h = headroom(base['record'], threshold)
@@ -344,59 +361,189 @@ def proposals(candidates, knowledge, threshold, search, generate):
             t = cost(v, prices)
             if limit is not None and t >= limit:
                 continue
-            item = dict(configuration_id=cid, candidate=c['name'], vector=v, cost=t, origin=origin,
-                        shot_change=sum(abs(a - b) for a, b in zip(v, origin.get('base_vector', v))))
-            dominated = next((f for f in fails if all(a >= b for a, b in zip(f, v))), None)
-            if dominated is not None:
-                skipped.append(dict(item, skip='DOMINATED_BY_KNOWN_FAILURE', failure_vector=list(dominated)))
-                continue
-            out.append(item)
+            out.append(dict(configuration_id=cid, candidate=c['name'], vector=v, cost=t, origin=origin, method=c['method'],
+                            shot_change=sum(abs(a - b) for a, b in zip(v, origin.get('base_vector', v)))))
     unique = {}
     for item in out:
         unique.setdefault((item['configuration_id'], item['vector']), item)
     ordered = sorted(unique.values(), key=lambda x: (x['cost'], x['shot_change'], x['candidate'], x['vector']))
-    return ordered, skipped, incumbent
+    return ordered, incumbent
 
 
-def run_method(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None):
-    """Finite loop: select, ask backend, update knowledge, repeat until a stop rule fires."""
-    trace, held, new_calls, pending, stop = [], [], 0, None, None
+HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW'}
+
+
+def run_method(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None, spent=0, free=None):
+    """Finite loop: select, ask backend, update knowledge, repeat until a stop rule fires.
+
+    The budget is checked BEFORE the backend is called: a proposal is sent to the backend only if it can be
+    answered without a new Q3 (``free``: same configuration+allocation already saved or already a job of this
+    round) or if new-call budget remains.  Otherwise it is returned as the unexecuted next request.
+    ``spent`` counts new calls already launched for this method in the same approved round (resume).
+    UNKNOWN (gate/persistence) stops the method; a model failure (lower bound > tau) does not.
+    """
+    trace, held, new_calls, pending, stop = [], [], spent, None, None
     ready = [c for c in candidates if c['ready']]
     for step in range(search['max_steps_per_method']):
-        props, skipped, incumbent = proposals(ready, knowledge, threshold, search, generate)
+        props, incumbent = proposals(ready, knowledge, threshold, search, generate)
         if not props:
             stop = 'NO_IMPROVING_PROPOSAL';break
-        choice = props[0];answer = backend.answer(choice) if backend is not None else None
-        if answer is None or (answer['calls'] and new_calls >= max_new):
+        choice = props[0];allow = new_calls < max_new
+        is_free = free is not None and free(choice)
+        answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
+        hold = None if answer is None else HOLD.get(answer['status'])
+        if answer is None or hold:
             pending = dict(choice, route=(routes or {}).get(name), queue=[dict(candidate=p['candidate'], cost=p['cost'],
-                vector=list(p['vector']), origin=p['origin']) for p in props[:5]])
-            if answer is not None:
-                stop = 'Q3_BUDGET_EXHAUSTED'
-            elif new_calls >= max_new:
+                vector=list(p['vector']), origin=p['origin']) for p in props[:5]], job=None if answer is None else answer.get('job'))
+            if hold:
+                stop = hold
+            elif max_new == 0 and not is_free:
                 stop = 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'
+            elif not allow and not is_free:
+                stop = 'Q3_BUDGET_EXHAUSTED'
             else:
-                stop = 'NEW_Q3_REQUIRED_NO_EXECUTOR_IN_THIS_VERSION'
+                stop = 'NEW_Q3_REQUIRED_NO_EXECUTOR'
             break
         new_calls += answer['calls']
         key = (choice['configuration_id'], choice['vector'])
         knowledge[key] = dict(answer, cost=choice['cost'])
         _, after = method_state(ready, knowledge, threshold)
-        trace.append(dict(step=step + 1, candidate=choice['candidate'], vector=list(choice['vector']), cost=choice['cost'],
+        nx, ny = split(choice['vector'])
+        trace.append(dict(step=step + 1, candidate=choice['candidate'], configuration_id=choice['configuration_id'],
+                          vector=list(choice['vector']), N_X=nx, N_Y=ny, cost=choice['cost'],
                           origin=choice['origin'], answer_source=answer['source'], status=answer['status'],
-                          MSE_upper=answer['MSE_upper'], calls=answer['calls'],
+                          MSE_lower=answer.get('MSE_lower'), MSE_upper=answer['MSE_upper'], calls=answer['calls'], job=answer.get('job'),
+                          result_sources=answer.get('result_sources'), point_id=answer.get('point_id'),
+                          reason=answer.get('reason'),
                           incumbent_before=None if incumbent is None else incumbent['cost'],
                           incumbent_after=None if after is None else after['cost'],
                           improved=after is not None and (incumbent is None or after['cost'] < incumbent['cost']),
-                          proposals_considered=len(props), proposals_skipped=len(skipped)))
+                          proposals_considered=len(props)))
         if answer['status'] not in (PASS, FAIL):
-            held.append(dict(candidate=choice['candidate'], vector=list(choice['vector']), status=answer['status']))
+            held.append(dict(candidate=choice['candidate'], vector=list(choice['vector']), status=answer['status'],
+                             reason=answer.get('reason')))
         if answer['status'] == 'UNKNOWN':
             stop = 'UNKNOWN_RESULT';break
     else:
         stop = 'STEP_LIMIT'
     _, incumbent = method_state(ready, knowledge, threshold)
-    return dict(method=name, stop_reason=stop, trace=trace, held=held, new_calls=new_calls, pending_request=pending,
-                incumbent=incumbent)
+    return dict(method=name, stop_reason=stop, trace=trace, held=held, new_calls=new_calls - spent, spent_before=spent,
+                pending_request=pending, incumbent=incumbent)
+
+
+# ---------------------------------------------------------------- executor (approved rounds only)
+def contract_digest(problem):
+    return hashlib.sha256(json.dumps([problem['accuracy'], problem['target']['energy_ha'], problem['rpe']], sort_keys=True).encode()).hexdigest()[:16]
+
+
+class Executor:
+    """Launch the method's existing Q3 route for one request at a time; resume from the round directory.
+
+    Job directory jobs/<method>/<job_id>/ holds REQUEST.json, LAUNCH.json (pid), PROCESS_RETURN.json and the
+    adapter's OUTCOME.json plus all worker artifacts.  A job is launched only when it has no OUTCOME, no live
+    process and no previous launch; a dead launch without OUTCOME is first re-validated in collect mode (no
+    science) and otherwise reported for review (never retried automatically).
+    """
+
+    def __init__(self, root, run_dir, routes, expected, problem, adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=None):
+        self.root, self.run_dir, self.routes, self.expected = Path(root), Path(run_dir), routes, expected
+        self.adapter, self.optimizer_source, self.contract = Path(root) / adapter, optimizer_source, contract_digest(problem)
+        self.method = None
+
+    def for_method(self, method):
+        self.method = method
+        return self
+
+    def route(self, cid):
+        for rule in self.routes.get(self.method, []):
+            if rule.get('configuration_ids') in (None, '*') or cid in rule['configuration_ids']:
+                return rule
+        return None
+
+    def job_dir(self, proposal):
+        rule = self.route(proposal['configuration_id']) or {}
+        key = json.dumps([self.method, proposal['configuration_id'], list(proposal['vector']), rule.get('kind'), self.contract])
+        return self.run_dir / 'jobs' / self.method / hashlib.sha256(key.encode()).hexdigest()[:20]
+
+    def launched(self, method):
+        base = self.run_dir / 'jobs' / method
+        return sum(1 for d in base.iterdir() if (d / 'LAUNCH.json').exists()) if base.exists() else 0
+
+    def alive(self, launch, job):
+        pid = launch['pid']
+        try:
+            os.kill(pid, 0)
+            cmd = Path('/proc/%d/cmdline' % pid).read_bytes().decode(errors='replace')
+        except (OSError, ProcessLookupError):
+            return False
+        return str(job) in cmd
+
+    def request(self, proposal, job, rule):
+        nx, ny = split(proposal['vector'])
+        expected = dict(self.expected.get(proposal['configuration_id'], {}), configuration_id=proposal['configuration_id'])
+        return dict(request_id=job.name, method=self.method, configuration_id=proposal['configuration_id'], N_X=nx, N_Y=ny,
+                    cost=enc(proposal['cost']), origin=proposal['origin'], route=rule, expected=expected,
+                    optimizer_source=self.optimizer_source)
+
+    def run_adapter(self, job, rule, mode):
+        cmd = [rule['interpreter'], '-B', str(self.adapter), '--request', str(job / 'REQUEST.json'), '--output', str(job), '--mode', mode]
+        env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1')
+        with (job / (mode.upper() + '.log')).open('a') as log:  # the child keeps its own descriptor
+            proc = subprocess.Popen(cmd, cwd=str(self.root), env=env, stdout=log, stderr=subprocess.STDOUT)
+        return proc
+
+    def has_job(self, proposal):
+        job = self.job_dir(proposal)
+        return (job / 'OUTCOME.json').exists() or (job / 'LAUNCH.json').exists()
+
+    def answer(self, proposal, allow_new=True):
+        rule = self.route(proposal['configuration_id']);job = self.job_dir(proposal)
+        if (job / 'OUTCOME.json').exists():
+            return self.ingest(job, proposal, calls=0)
+        if (job / 'LAUNCH.json').exists():
+            launch = json.loads((job / 'LAUNCH.json').read_text())
+            if not (job / 'PROCESS_RETURN.json').exists() and self.alive(launch, job):
+                return dict(status='IN_PROGRESS', job=str(job))
+            if rule is not None:
+                self.run_adapter(job, rule, 'collect').wait()
+            if (job / 'OUTCOME.json').exists():
+                return self.ingest(job, proposal, calls=0)
+            return dict(status='STALE_JOB', job=str(job))
+        if not allow_new:
+            return None
+        if rule is None:
+            return dict(status='NO_ROUTE', job=None)
+        job.mkdir(parents=True)
+        (job / 'REQUEST.json').write_text(json.dumps(self.request(proposal, job, rule), ensure_ascii=False, indent=2, default=str) + '\n')
+        start = time.time();proc = self.run_adapter(job, rule, 'execute')
+        (job / 'LAUNCH.json').write_text(json.dumps(dict(pid=proc.pid, started=start, kind=rule['kind'])) + '\n')
+        code = proc.wait()
+        (job / 'PROCESS_RETURN.json').write_text(json.dumps(dict(returncode=code if code >= 0 else None, signal=-code if code < 0 else None,
+                                                                 wall_seconds=time.time() - start, automatic_retry=False)) + '\n')
+        if not (job / 'OUTCOME.json').exists():
+            return dict(status='UNKNOWN', reason='ADAPTER_EXIT_WITHOUT_OUTCOME', MSE_lower=None, MSE_upper=None,
+                        source='NEW_Q3_JOB', calls=1, job=str(job))
+        return self.ingest(job, proposal, calls=1)
+
+    def ingest(self, job, proposal, calls):
+        """Accept a job outcome only for the same configuration, allocation, total view/binding/signal and contract."""
+        out = json.loads((job / 'OUTCOME.json').read_text());ident = out.get('identity') or {}
+        nx, ny = split(proposal['vector']);want = self.expected.get(proposal['configuration_id'], {})
+        status, reason = out['status'], out.get('reason')
+        if status in (PASS, FAIL, 'INCONCLUSIVE'):
+            checks = dict(configuration=ident.get('configuration_id') == proposal['configuration_id'],
+                          allocation=ident.get('allocation') == [dict(m=m, N_X=x, N_Y=y) for m, (x, y) in enumerate(zip(nx, ny))],
+                          contract=ident.get('contract_matches') is True)
+            for key in ('total_configuration_id', 'binding_id'):
+                if want.get(key) is not None:
+                    checks[key] = ident.get(key) == want[key]
+            if not all(checks.values()):
+                status, reason = 'UNKNOWN', 'IDENTITY_MISMATCH:' + ','.join(k for k, v in checks.items() if not v)
+        source = 'ARTIFICIAL_JOB' if out.get('artificial') else 'NEW_Q3_JOB'
+        lower = None if out.get('MSE_lower') is None else frac(out['MSE_lower'])
+        upper = None if out.get('MSE_upper') is None else frac(out['MSE_upper'])
+        return dict(status=status, reason=reason, MSE_lower=lower, MSE_upper=upper, source=source, calls=calls,
+                    job=str(job.relative_to(self.root)) if job.is_relative_to(self.root) else str(job), label=None)
 
 
 # ---------------------------------------------------------------- orchestration
@@ -416,7 +563,7 @@ def ingest(knowledge, candidates, results):
     """Add externally obtained Q3 results (e.g. a newly approved call) to the knowledge."""
     ids = {c['configuration_id']: c for c in candidates if c['configuration_id']}
     for r in results:
-        if r['configuration_id'] not in ids:
+        if r['configuration_id'] not in ids or r.get('status') not in (PASS, FAIL, 'INCONCLUSIVE'):
             continue
         v = interleave(r['N_X'], r['N_Y']);c = ids[r['configuration_id']]
         knowledge[(r['configuration_id'], v)] = dict(status=r['status'], MSE_lower=frac(r['MSE_lower']), MSE_upper=frac(r['MSE_upper']),
@@ -434,8 +581,10 @@ def summarize_method(name, candidates, result, knowledge, threshold):
                     N_X=nx, N_Y=ny, MSE_lower=r['MSE_lower'], MSE_upper=r['MSE_upper'], status=r['status'],
                     cost=inc['cost'], cost_display=show(inc['cost']), evidence=r['source'], point_id=r.get('point_id'),
                     result_sources=r.get('result_sources'))
-    evaluated = [dict(candidate=next(c['name'] for c in candidates if c['configuration_id'] == cid), vector=list(v),
-                      status=r['status'], cost=None if r.get('cost') is None else r['cost'], source=r['source'])
+    evaluated = [dict(candidate=next(c['name'] for c in candidates if c['configuration_id'] == cid), configuration_id=cid,
+                      vector=list(v), N_X=split(v)[0], N_Y=split(v)[1], status=r['status'], MSE_lower=r.get('MSE_lower'),
+                      MSE_upper=r.get('MSE_upper'), cost=None if r.get('cost') is None else r['cost'], source=r['source'],
+                      result_sources=r.get('result_sources'), point_id=r.get('point_id'), job=r.get('job'), label=r.get('label'))
                  for (cid, v), r in knowledge.items() if any(c['configuration_id'] == cid for c in candidates)]
     unevaluated = [dict(candidate=c['name'], configuration=c['key'], configuration_id=c['configuration_id'], needs=c['needs'],
                         price_status=c['price_status'], signal_source=c['signal_source'],
@@ -445,7 +594,16 @@ def summarize_method(name, candidates, result, knowledge, threshold):
                 trace=result['trace'], held=result['held'], new_calls=result['new_calls'],
                 evaluated_count=len(evaluated), evaluated=evaluated, not_ready_candidates=unevaluated,
                 ready_candidates=[c['name'] for c in candidates if c['ready']],
-                search_range=dict(candidates=[c['name'] for c in candidates], rule=RULE))
+                search_range=dict(candidates=[c['name'] for c in candidates], rule=RULE),
+                resume_records=resume_records(evaluated))
+
+
+def resume_records(evaluated):
+    """Evaluations obtained in this run (not C's saved points), in the ``ingest`` format: resume input as written."""
+    return [dict(configuration_id=e['configuration_id'], N_X=e['N_X'], N_Y=e['N_Y'], status=e['status'],
+                 MSE_lower=None if e['MSE_lower'] is None else enc(e['MSE_lower']),
+                 MSE_upper=None if e['MSE_upper'] is None else enc(e['MSE_upper']), source=e['source'], job=e.get('job'))
+            for e in evaluated if e['source'] != 'SAVED' and e['status'] in (PASS, FAIL, 'INCONCLUSIVE')]
 
 
 def own_price_comparison(candidates, vectors):
@@ -470,25 +628,38 @@ def jsonable(value):
     return value
 
 
-def optimize(root, problem, *, context=None, methods=None, initial='all', extra_results=(), backend=None, max_new=None):
+def optimize(root, problem, *, context=None, methods=None, initial='all', extra_results=(), backend=None, max_new=None,
+             executor=None, saved_is_free=True):
     """Run the per-method search.
 
     initial: 'all' saved results, 'none', or {method: [saved labels]} (replay from seeds).
-    backend: Q3 answer source; default = saved results (C's catalog).  Any answer the
-    backend cannot give, beyond ``max_new`` new calls, becomes the pending request.
+    backend: Q3 answer source; default = saved results (C's catalog).  With ``executor`` (an approved round),
+    saved results are tried first, then completed/new jobs of that round.  ``max_new`` is an int or a
+    {method: int} budget of new Q3 calls; calls already launched in the round count against it.
+    saved_is_free: the backend answers C's saved configuration+allocation without a new call (set False for a
+    backend that does not consult the saved results, e.g. a stand-alone artificial fixture).
     """
     context = context or prepare(root, problem)
     search = problem['search'];threshold = context['tau']
     max_new = search['max_new_q3_per_method'] if max_new is None else max_new
-    backend = context['saved'] if backend is None else backend
     out = {}
     for name in methods or problem['methods']:
         cands = [c for c in context['candidates'] if c['method'] == name]
         start = initial if isinstance(initial, str) else initial.get(name, [])
         knowledge = ingest(initial_knowledge(context['saved'], cands, start), cands, extra_results)
-        result = run_method(name, cands, knowledge, backend, search, threshold, context['generate'], max_new,
-                            problem.get('q3_routes'))
+        budget = max_new.get(name, 0) if isinstance(max_new, dict) else max_new
+        table = context['saved'].table if saved_is_free else {}
+        if executor is not None:
+            ex = executor.for_method(name)
+            answer, spent = ChainBackend(context['saved'], ex), ex.launched(name)
+            free = lambda p, ex=ex: (p['configuration_id'], p['vector']) in table or ex.has_job(p)
+        else:
+            answer, spent = (context['saved'] if backend is None else backend), 0
+            free = lambda p: (p['configuration_id'], p['vector']) in table
+        result = run_method(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
+                            problem.get('q3_routes'), spent, free)
         out[name] = summarize_method(name, cands, result, knowledge, threshold)
+        out[name]['budget'] = dict(max_new_q3=budget, spent_before=spent, new_calls=result['new_calls'])
     return out
 
 
@@ -499,5 +670,9 @@ def prepare(root, problem):
     candidates = enumerate_candidates(reader, problem, facts, catalog)
     prices = {c['configuration_id']: c['prices'] for c in candidates if c['prices'] is not None}
     saved = SavedBackend(catalog['candidates'], prices)
+    expected = {}
+    for point in catalog['candidates']:
+        expected.setdefault(point['configuration_id'], dict(total_configuration_id=point.get('total_configuration_id'),
+                                                            binding_id=point.get('binding_id'), signal_source=point.get('signal_source')))
     return dict(facts=facts, reader=reader, catalog=catalog, candidates=candidates, saved=saved, tau=tau(problem),
-                generate=pinned_function(reader, problem['generator']))
+                expected=expected, generate=pinned_function(reader, problem['generator']))
