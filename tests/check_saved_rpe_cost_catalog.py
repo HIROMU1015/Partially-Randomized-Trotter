@@ -132,7 +132,22 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertEqual(ld3['status'],'FEASIBLE')
         self.assertEqual(frac(ld3['conditional_cost']),frac('173557305044/165'))
         budget=next(r for r in pauli if r['label']=='FULL_PF__B_PRICE')
-        self.assertEqual(result['method_minima']['PR_PAULI']['point_ids'],[budget['point_id']])
+        ld5=[r for r in result['candidates']if r['method']=='PR_PAULI' and r['L_D']==5]
+        self.assertEqual(len(ld5),2)
+        best5=next(r for r in ld5 if r['label']=='LD5__FULL_PF__B_PRICE')
+        vp5=next(r for r in ld5 if r['label']=='LD5__VP')
+        self.assertEqual(result['method_minima']['PR_PAULI']['point_ids'],[best5['point_id']])
+        self.assertEqual(frac(best5['conditional_cost']),frac('3792207339/7'))
+        self.assertEqual(frac(vp5['conditional_cost']),frac('6105690627/7'))
+        self.assertEqual(frac(best5['saved_split_comparison']['difference_LD5_minus_LD3']),frac('-222210893/1155'))
+        self.assertNotEqual(best5['configuration_id'],budget['configuration_id'])
+        for r in ld5:
+            self.assertEqual(r['status'],'FEASIBLE')
+            self.assertIsNotNone(r['MSE_lower'])
+            self.assertIsNotNone(r['MSE_upper'])
+            self.assertFalse(r['qualified_for_candidate'])
+            self.assertEqual(len(r['price_axes']),26)
+            self.assertTrue(all(p['price_kind']=='MODEL' and not p['qualified_for_candidate']for p in r['price_axes']))
         self.assertEqual(budget['status'],'FEASIBLE')
         self.assertEqual(frac(budget['conditional_cost']),frac('625936421828/1155'))
         self.assertEqual(budget['N_X'],[48,45,42,39,36,33,29,26,23,19,16,8,2])
@@ -206,7 +221,7 @@ class PublishedAcceptance(unittest.TestCase):
         self.assertEqual(len(cat.result()['candidates']),9)
         for s in self.inputs['sources']:cat.add(s)
         result=cat.result()
-        self.assertEqual(len(result['candidates']),47)
+        self.assertEqual(len(result['candidates']),49)
         self.assertFalse([r for r in result['candidates']if r['status']=='MISMATCH'])
         self.assertEqual([r['label']for r in result['candidates']if r['status']=='PRICE_WAITING'],
                          ['B0I_P7_Y4_32h_over_5__A_SHAPE','LD9_V0'])
@@ -220,7 +235,7 @@ class PublishedAcceptance(unittest.TestCase):
         cat=Catalog(self.reader,self.inputs['comparison']);cat.add(source)
         self.assertEqual(len(cat.result()['candidates']),5)  # Existing VP plus four distinct allocations.
         for s in self.inputs['sources']:cat.add(s)
-        self.assertEqual(len(cat.result()['candidates']),47)
+        self.assertEqual(len(cat.result()['candidates']),49)
         for key,value in [('total_configuration_id','other'),('price_qualified_for_candidate',True)]:
             changed=deepcopy(self.reader.read(source));changed['records'][0][key]=value
             with self.assertRaisesRegex(ValueError,'Pauli budget'):
@@ -253,6 +268,18 @@ class PublishedAcceptance(unittest.TestCase):
         changed=deepcopy(self.reader.read(budget));changed['rows'][0]['model_status']=PASS
         with self.assertRaisesRegex(ValueError,'Q3/allocation'):
             Catalog(self.reader,self.inputs['comparison']).ld7_budget(budget,changed)
+
+    def test_ld5_input_first_does_not_import_ld3_comparison_rows(self):
+        source=next(s for s in self.inputs['sources']if 'pauli_ld5_two_vectors'in s['path'])
+        cat=Catalog(self.reader,self.inputs['comparison']);cat.add(source)
+        self.assertEqual(len(cat.result()['candidates']),2)
+        self.assertTrue(all(r['L_D']==5 for r in cat.result()['candidates']))
+        changed=deepcopy(self.reader.read(source));changed['records'][0]['dictionary_identity']['dictionary_sha256']='other'
+        with self.assertRaisesRegex(ValueError,'dictionary'):
+            Catalog(self.reader,self.inputs['comparison']).pauli_ld5(source,changed)
+        changed=deepcopy(self.reader.read(source));changed['records'][0]['axes'][0]['total_candidate_id']='other'
+        with self.assertRaisesRegex(ValueError,'total-view axis'):
+            Catalog(self.reader,self.inputs['comparison']).pauli_ld5(source,changed)
 
     def test_same_command_updates_only_by_adding_a_pinned_source(self):
         import os,sys

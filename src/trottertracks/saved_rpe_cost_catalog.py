@@ -133,6 +133,8 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('kind')=='LD5_FIXED_ALLOCATION_MODEL_COST_AND_Q3_NOT_QUALIFIED_G':
+            self.pauli_ld5(locator,d);return
         if d.get('classification')=='DIRECT_FINITE_COHORT_DESCRIPTIVE_PRICE_ONLY' and 'LD9_configuration'in d:
             self.ld9_partial_price(locator,d);return
         if d.get('schema')=='PR_DF_LD7_PF_BUDGET_MODEL_COST_Q3_JOIN_FOR_C_V1':
@@ -375,6 +377,61 @@ class Catalog:
             for p,t in zip(row['price_axes'],r['axes']):
                 p.update(price_kind='MODEL',qualified_for_candidate=False,model_application=t['price_class'],C_ref=deepcopy(t['C_ref']),
                     physical_context_source=t['physical_context_source'],price_handoff_source=t['price_source'])
+
+    def pauli_ld5(self,loc,d):
+        """Read LD5's two saved model-price/Q3 joins, without importing LD3 rows."""
+        inp=self.r.read(d['execution_source'])
+        summary_loc=ref(loc['commit'],str(PurePosixPath(loc['path']).parent/'SUMMARY.json'));summary=self.r.read(summary_loc)
+        for i,r in enumerate(d['records']):
+            case=case_for(inp['cases'],r['allocation']);conf=self.r.read(case_ref(case))
+            s=next(x for x in summary['rows']if x['prefix']==5 and x['allocation_name']==case['comparison_name'])
+            require(all(r[k]==case[k]for k in ('original_configuration_id','total_configuration_id','binding_id','allocation')) and
+                    self.r.read(r['configuration_source'])==conf,'LD5 saved configuration/allocation mismatch')
+            require(r['status']==s['status'] and frac(r['conditional_total'])==frac(s['conditional_cost'])==frac(case['conditional_cost']),
+                    'LD5 saved verdict/total mismatch')
+            require(r['qualified_for_candidate'] is False and r['model_axes']==26 and r['price_kind']=='MODEL_REFERENCE_PRICE_NOT_E_C',
+                    'LD5 model reference qualification mismatch')
+            require(r['dictionary_identity']==conf['spec']['split']['tail_dictionary'],'LD5 Pauli dictionary mismatch')
+            q3_loc=dict(r['result_source'],selector=r['result_record_selector']);q3=self.r.read(q3_loc)
+            require(q3['configuration_id']==case['total_configuration_id'] and q3['canonical_binding']==case['binding_id'] and
+                    shots(q3['allocation'])==shots(r['allocation']),'LD5 raw Q3 binding mismatch')
+            price=self.r.read(r['price_source']);binding_source=ref(r['price_source']['commit'],str(PurePosixPath(r['price_source']['path']).parent/'BINDING.json'))
+            binding=self.r.read(binding_source)
+            require(price['configuration_id']==conf['id'] and binding['request']['physical_cell']['profile']==conf['spec']['profile'] and
+                    binding['request']['physical_cell']['split']==conf['spec']['split'],'LD5 model compiler/split SOURCE mismatch')
+            terms=[]
+            for t in r['axes']:
+                p=self.r.read(t['price_source']);m=t['m'];context=self.r.read(t['physical_context_source'])
+                view=self.r.document(t['physical_context_source']['commit'],t['physical_context_source']['path'])
+                require(view['configuration_id']==case['total_configuration_id'] and view['means'][m]['identity']['candidate']['id']==t['total_candidate_id'],
+                        'LD5 total-view axis candidate mismatch')
+                require(p['physical_id']==t['original_candidate_id']==conf['rounds'][m]['candidate']['id'] and
+                        context['physical_candidate']['id']==t['original_candidate_id'],'LD5 model physical candidate mismatch')
+                require(p['q']==conf['rounds'][m]['q_PF'] and p['R']==conf['rounds'][m]['R_outer'] and
+                        p['value_source']==t['value_source']=='MODEL_APPLICATION_FROM_Q8R4_DECOMPOSITION',
+                        'LD5 model q/R/application mismatch')
+                require(t['price_qualified_for_candidate'] is False and frac(t['C_ref'])==frac(p['C_ref_exact']),
+                        'LD5 saved axis model price mismatch')
+                original=next(x for x in case['price_terms']if x['m']==m and x['axis']==t['axis'])
+                require(all(t[k]==original[k]for k in ('N','C_ref','N_times_C_ref','price_source')),'LD5 fixed weighted term mismatch')
+                terms.append(dict(m=m,axis=t['axis'],N=t['N'],price_source=t['price_source']))
+            comparison=self.r.read(r['A_comparison_source'])
+            require(frac(comparison['T_LD5'])==frac(r['conditional_total']) and comparison['N_per_axis']==shots(r['allocation'])['X']==shots(r['allocation'])['Y'] and
+                    frac(self.r.read(comparison['T_LD3_source']))==frac(comparison['T_LD3']),'LD5/LD3 saved comparison mismatch')
+            self.make(dict(case,_source=d['execution_source']),r['allocation'],r['status'],r['conditional_total'],s['MSE_lower'],s['MSE_upper'],
+                inp['adopted_evaluation'],dict(loc,selector=['records',i]),terms)
+            row=self.rows[-1]
+            row.update(q3_source=q3_loc,qualified_for_candidate=False,price_scenario=r['price_kind'],CI=None,
+                price_evidence=dict(source=r['price_source'],binding_source=binding_source,rule=price['rule'],
+                    coefficient_source=dict(r['price_source'],selector=['coefficients']),calibration_source=dict(r['price_source'],selector=['calibration_cell']),
+                    scalar=deepcopy(binding['scalar']),direct_calibration_paths=binding['n_paths'],
+                    round_model_prices=26,round_direct_prices=0,qualified_for_candidate=False),
+                saved_split_comparison=dict(source=r['A_comparison_source'],T_LD3=deepcopy(comparison['T_LD3']),
+                    T_LD3_source=comparison['T_LD3_source'],difference_LD5_minus_LD3=deepcopy(comparison['difference_LD5_minus_LD3']),
+                    scope='NUMERICAL_DIFFERENCE_UNDER_THE_ADOPTED_REFERENCE_PRICE_RULES'))
+            for p,t in zip(row['price_axes'],r['axes']):
+                p.update(price_kind='MODEL',qualified_for_candidate=False,model_application=t['value_source'],
+                    C_ref=deepcopy(t['C_ref']),total_candidate_id=t['total_candidate_id'],physical_context_source=t['physical_context_source'])
 
     def full_h(self, loc, d):
         axis=d['rows'][0];j=axis['B_join'];join=self.r.read(dict(j,selector=j['selector'][:2]))
@@ -736,7 +793,7 @@ def report(result):
             '## 固定入力一覧','']
     for source in result['adopted_inputs']:
         lines.append('- `'+source['commit']+':'+source['path']+'`')
-    if any(r.get('price_evidence',{}).get('round_model_prices')==26 for r in result['candidates']):
+    if any(r['L_D']==3 and r.get('price_evidence',{}).get('round_model_prices')==26 for r in result['candidates']):
         lines+=['','PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。']
     for r in result['candidates']:
         if r.get('partial_price_axes'):
@@ -751,5 +808,9 @@ def report(result):
             comparison=r['saved_PF_comparisons']
             lines+=['','PR-Pauli '+r['label']+'の保存費用差（T−PF基準）：Full PF S2 '+display(comparison['difference_T_minus_Full_PF'])+
                 ' RZ、p7 S2 '+display(comparison['difference_T_minus_P7'])+' RZ。全26価格はモデル参照、qualified_for_candidate=false。']
+        if r['point_id']in result['method_minima']['PR_PAULI']['point_ids'] and 'saved_split_comparison'in r:
+            lines+=['','PR-Pauli LD5 '+r['label']+'のLD3同名配分に対する保存差（LD5−LD3）は '+
+                display(r['saved_split_comparison']['difference_LD5_minus_LD3'])+
+                ' RZ。採用したモデル参照価格規則での数値差であり、価格精度を保証する差ではない。全26軸MODEL・qualified_for_candidate=falseを保持する。']
     lines+=['','再実行コマンドと追加方法は親directoryのHANDOFF.mdを参照。','']
     return '\n'.join(lines)
