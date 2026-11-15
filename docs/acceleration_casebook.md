@@ -24,6 +24,7 @@
 - **実適用の記録**：[Pauli固定2診断](research/pauli_total_q3_accelerated_results_20261114/REPORT.md)は各8 worker・2構成並列で約235秒。ただし旧版は途中停止したので、実H4の完走同士の速度比ではない。停止済みSOURCEの履歴と、許可された切替を保全した。
 - **6構成へ再利用した際の注意**：[PF shortlist Q3](research/pf_shortlist_q3_fixed_results_20261115/REPORT.md)では各8 worker・6構成並列で数値stageが各約145〜149秒で完了。直列版との倍率は未測定。親の`Future→label`辞書を監視で参照する際にkey/valueを取り違え、最終return・CPU/RAM記録が欠測した。保存kernel componentを再計算せず保全し、監視は`pending.values()`へ修正。進捗ログ・数値原結果の保存を親の資源監視から独立させる既存構成が役立った。[caller回帰](../tests/check_pf_shortlist_q3_caller.py)にFuture-keyの人工再現を追加し、修正版での科学retryは行っていない。
 - **worker保存を親monitorから独立**：[PR-DF/Full-H固定3評価](research/pr_df_fullh_q3_fixed_results_20261115/REPORT.md)では原API return・partials・CPU/peak RSSをworkerが保存してから、親へ小さいreceiptだけを返す構成を追加。人工の親monitor例外でも開始済みworkerの保存を確認し、実3件でも完全保存・monitor異常0。各8worker・3構成並列の全体wall約349秒。旧数値worker/kernelは再利用し、直列比較やこの保存変更単独の速度効果は未測定。[caller](../scripts/run_pr_df_fullh_total_q3_fixed.py)／[人工故障test](../tests/check_pr_df_fullh_q3_fixed.py)。旧PF6の欠測を埋める再計算はしていない。
+- **伝播以外の待ち時間と子終了を観測**：Full-H固定1.5倍の[caller](../scripts/run_full_h_kappa2_scale3o2_q3_fixed.py)は、同じbackendを継承する協調stage logで伝播間・終端の時間を記録し、同じProcessPoolExecutorのshutdown後に子終了code/signalを保存する。非同期frame dump/threadを追加せず、実supervisor→worker経路の人工原API一致・log・終了codeを[4test](../tests/check_full_h_kappa2_scale3o2_q3_caller.py)で確認。実装SOURCE47ccd1f3759b1dfe45f464421f89a669d1e3eb27、実対象の観測範囲は[当該REPORT](research/full_h_kappa2_scale3o2_q3_results_20261115/REPORT.md)。backend自体の新高速化ではなく、速度倍率は測定していない。
 
 ### candidate-ID parser：結果ではなく変わらない定義をcacheする
 

@@ -1,0 +1,13 @@
+{
+  "source": "47ccd1f3759b1dfe45f464421f89a669d1e3eb27",
+  "command": [
+    "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+    "-u",
+    "-B",
+    "scripts/run_full_h_kappa2_scale3o2_q3_fixed.py",
+    "execute"
+  ],
+  "started_UTC": "2026-11-15T11:30:06.415714+00:00",
+  "scope": "ONE_FULL_H_KAPPA2_SCALE3O2_MAXIMUM_ONE_Q3",
+  "watcher_code": "import json,pathlib,subprocess,time,datetime\nroot=pathlib.Path.cwd();d=root/'docs/research/full_h_kappa2_scale3o2_q3_results_20261115'\ncmd=json.loads((d/'LAUNCH.json').read_text())['command']\nstart=time.perf_counter()\nwith(d/'EXECUTION_LOG.txt').open('xb')as log:\n p=subprocess.Popen(cmd,cwd=root,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)\n with(d/'CALLER_PID.json').open('x')as f:json.dump({'pid':p.pid},f)\n rc=p.wait()\nwith(d/'PROCESS_RETURN.json').open('x')as f:json.dump(dict(pid=p.pid,exitcode=rc,signal=-rc if rc<0 else None,wall_seconds=time.perf_counter()-start,finished_UTC=datetime.datetime.now(datetime.timezone.utc).isoformat()),f,indent=2)\n"
+}
