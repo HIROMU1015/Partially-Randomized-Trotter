@@ -1,5 +1,9 @@
 # 並列化・高速化の再利用
 
+## PR-DF prefix7：既存context/fast/path workerの再利用
+
+[LD7 caller](../scripts/run_pr_df_ld7_prices.py)はe827のfrom_b/NativeRuntime/Adapterとmatching fastを使い、既存ea9e6609 path workerの出力とstateを専用scopeへ渡す。SOURCE8d4503e00。prefix1/2用request生成を流用せず、7本head・3本tail・corrected total scalarを人工fixtureと実preparationで確認。較正8独立pathをfork並列（X/Y個別compile）、holdout2 pathはモデル公開後。実測較正202.816s/16compile、holdout29.992s/4compile、倍率benchmarkなし。[REPORT](research/d_pr_df_ld7_price_results_20261116/REPORT.md)。Q3は既存3.11.0rc1 supervisor/accelerator、協調stage/round logを再利用し2 callとも完了。共有環境・sampler/seed/order・cache identity・compiler条件を変更しない。
+
 ## PR-DF P2/m3/m4：context共有、path並列、同一eventからS/C
 
 保存H4 DF10・PR-DFの新ZZ経路では、[compiled_price_fast](../src/trottertracks/compiled_price_fast.py) の構造数え上げ、composeの回転再利用、fingerprintを使う。元実装SOURCEは `39ddd59edf54a3a901e5302207b2765ddbd03fbb`。contextは親で一回準備し、[m3 worker](../scripts/run_pr_df_ld1_m3.py) を4 pathにforkする。独立した4 pathが今回の並列単位であり、各compiler内部は元P2同様1 processとして重複poolを避ける。X/Yはそれぞれのwrapperをcompileする。

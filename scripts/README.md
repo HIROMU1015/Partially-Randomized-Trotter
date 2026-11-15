@@ -1,5 +1,7 @@
 # scripts 索引
 
+[LD7価格取得](run_pr_df_ld7_prices.py)／[exact fit・holdout・配分](freeze_pr_df_ld7_prices.py)／[固定Q3](run_pr_df_ld7_price_q3.py)／[保存join](summarize_pr_df_ld7_prices.py)：prefix7候補とe827 adapter/fast・元path workerを接続。10 path/20 compile、freeze前後を分け独立m3を保全。3.11元guardで2 Q3一回ずつ。
+
 [LD7固定caller](run_pr_df_ld7_v0.py)／[保存結果join](summarize_pr_df_ld7_v0.py)／[HANDOFF](../docs/research/d_pr_df_ld7_v0_results_20261116/HANDOFF.md)：元fefd provider・B mapper・Python3.11元Q3 workerを再利用。configuration1・13信号・共通V0一回まで。価格/compile/独自配分の入口は含まない。
 
 [Q3再開caller](run_pr_df_ld_split_q3_resume.py)／[保存結果join](summarize_pr_df_ld_split_q3_resume.py)／[HANDOFF](../docs/research/d_pr_df_ld_split_q3_resume_20261116/HANDOFF.md)：旧worker・kernel・acceleratorを固定読込、既存Python3.11環境で4固定caseのみ一回評価。new outputにAPI/結果/資源/outer exitcode保存。価格・配分生成機能なし、旧STOP保全。

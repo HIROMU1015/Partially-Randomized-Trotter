@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[LD7固有価格・Q3結果](../../docs/research/d_pr_df_ld7_price_results_20261116/REPORT.md)：元provider・normal sampler・new-ZZを再利用。libraryの科学SOURCE変更なし。
+
 [PR-DF LD7 共通V0結果](../../docs/research/d_pr_df_ld7_v0_results_20261116/REPORT.md)：既存providerとcanonical mapperの固定再利用。libraryの数値実装変更なし。
 
 [PR-DF固定4 Q3再開](../../docs/research/d_pr_df_ld_split_q3_resume_20261116/REPORT.md)：Q3 library/sourceの変更なし。Python3.11.0rc1で元Accelerator constructor AST hashを通過し、既存total decoder/riskを4 caseへ使用。新回路・sampler・価格モデル変更なし。
