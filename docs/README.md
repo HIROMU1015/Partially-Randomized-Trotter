@@ -327,3 +327,5 @@
 [O5保存H4 q4入力STOP](research/track_d_cut_h4_q4_20261108/REPORT.md)：q4_sample00の非公開event/QPY未取得。SOURCE互換確認のみ、新科学call0・資源差UNKNOWN。
 
 [O5実H4 q4最終結果](research/track_d_cut_h4_q4_completion_20261108/REPORT.md)：原本回収後に中央cut2を選択し追加差0。旧4 P0適格再利用、重複compile0。
+
+- [PR-Pauli LD2 m9独立2 path価格比較](research/d_pauli_ld2_m9_longpoint_results_20261115/REPORT.md)：観測前2予測、4 compile/receipt、2軸exact記述差、資源実績、mandatory STOP。
