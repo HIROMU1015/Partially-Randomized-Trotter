@@ -1,0 +1,64 @@
+{
+  "schema": "LD1_REFERENCE_TOTAL_FIXED_INPUTS_V1",
+  "plan": {
+    "commit": "44f4e40f24a027346e686d7044d102e707292374",
+    "path": "docs/research/d_pr_df_ld1_expectation_construction_20261115/REPORT.md"
+  },
+  "axes": {
+    "commit": "44f4e40f24a027346e686d7044d102e707292374",
+    "path": "docs/research/d_pr_df_ld1_expectation_construction_20261115/AXIS_JOIN.json"
+  },
+  "predictor": {
+    "commit": "d83737b6d5241962ce39c81d39c56af3506c0cdd",
+    "path": "src/trottertracks/price_model_validation.py"
+  },
+  "PF": {
+    "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+    "path": "docs/research/pf6_allround_cost_20261115/RESULT.json"
+  },
+  "shots_per_axis": [
+    64,
+    60,
+    56,
+    52,
+    47,
+    43,
+    38,
+    34,
+    30,
+    25,
+    21,
+    17,
+    12
+  ],
+  "comparators": [
+    [
+      "B0I_P7_S2_16h_over_7",
+      593555352
+    ],
+    [
+      "FULL_PF_S2_16h_over_7",
+      838693580
+    ]
+  ],
+  "output": "docs/research/d_pr_df_ld1_reference_budget_20261115/run01",
+  "scope": "26 reference prices, exact weighted total, two signed PF boundaries ONLY",
+  "source_plan_difference": "Second PF comparator added; K_IJ and numerical-band propagation not executed under current narrower instruction.",
+  "law_target": "SAVED_SOURCE_IDEAL_FINITE_RTE_LAW_I",
+  "formula": "C_ref = saved_E_I_S + frozen_residual_reference; reuse m4 full prediction",
+  "signed_boundary": "D_PF=T_PF-T_ref; Delta=T_LD1-T_ref remains UNKNOWN",
+  "m4_role": "INDEPENDENT_HOLDOUT_NOT_REFIT_OR_REPLACED_BY_OBSERVATION",
+  "frozen_inputs": {
+    "model": "3cac53da1a4a8b2228245593c74c1ff9ec1f5212",
+    "structural": "9d95d3ea544e1fa1d0e4710c1ca24d8c5776469f",
+    "Q3": "a82b0f0ec7f0f11d9981ddb2343fcd5378a87503"
+  },
+  "new_paths": 0,
+  "H4_builds": 0,
+  "compiles": 0,
+  "fit": 0,
+  "CI": null,
+  "formal_E_C": null,
+  "G": null,
+  "winner": null
+}
