@@ -9,3 +9,7 @@ m3で実対象確認済み：[REPORT](research/d_pr_df_ld1_m3_results_20261115/R
 調査時には共通catalog `0dc1eeaee3d9d6465f18edc33d4e17ed312bd6f4:docs/PERFORMANCE_METHODS.md`（`codex/d-full-h-p2-caller-prep-20261114`）を参照した。Full-H固有のaxis workerやresume方式をPR-DFへ持ち込まず、既存P2の適合する経路を再利用した。未使用helperの存在を高速化の実行証拠としない。元SOURCE、cache identity、seed/order、lowering、wrapper/compilerを確認し、cache出所不明時のfallback compileは行わない。
 
 2026-11-15 m4実対象確認：SOURCE `7bdfc6f629aa74a5c1347abf84ad6486c669c9d8`、固定4 path/8 compile、GNU wall61.27秒・CPU397%・max RSS593212 KiB、内部wall60.382917秒。全stage完了・receipt8/8一致。単回の資源計測であり速度倍率の比較試験ではない。科学再実行なし。詳細とpath別時間は上記m4 REPORT。
+
+## PR-DF F0：保存support表でlaw診断
+
+[F0 reader](../scripts/run_pr_df_ld1_f0.py) は固定 `d72dc4e6228bb380f4d1d000e5e030794fce7164:src/trottertracks/finite_k_sampler_law.py` と元CDF helperを再利用する。324-component表1個と2-order表13個だけを評価し、path位置数は条件付き上界の整数入力に使う。巨大なevent列生成、preparation再構築、sampling、compileは不要。Git blobはcommit/pathごとにcacheし、同じ保存JSONの再読を避ける。表ごとの処理が小さいためprocess poolを作らず、既存のsupport長に依存する計算を順次使う。人工reader試験14件・0.30秒で実経路、partial STOP、進捗logを確認した。[実行結果](research/d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)に実対象の時間・範囲を記録する。NumPy1.26.4のCDF、Fraction、元正規化・順序・hexを維持し、任意runtimeへのlaw移送はしない。Python3.11.0rc1の定期faulthandler dumpは使用せず、協調的START/END/所要時間と終了codeを保存する。
