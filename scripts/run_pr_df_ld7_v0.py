@@ -155,6 +155,8 @@ def signals():
 
 def bundle(raw_commit,config_commit):
     """Copy original raw fields; authoritative existing A intake validates all."""
+    raw_commit=subprocess.check_output(['git','rev-parse',raw_commit+'^{commit}'],cwd=ROOT,text=True).strip()
+    config_commit=subprocess.check_output(['git','rev-parse',config_commit+'^{commit}'],cwd=ROOT,text=True).strip()
     config=read(config_commit,PUBLIC+'/generation/CONFIGURATION.json')
     old=read(BUNDLE_TEMPLATE,'docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD2.json')
     packet={k:deepcopy(v)for k,v in old.items()if k!='means'}
