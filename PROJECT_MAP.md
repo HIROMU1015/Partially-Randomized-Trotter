@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[p7/S2粗幅・m12各1shot固定Q3と4点比較](docs/research/p7_s2_m12_one_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/p7_s2_m12_one_results_20261116/HANDOFF.md)：新1callでモデル不適合（下界>τ）、達成費用395,962,678 RZを維持。他round固定・X/Y同数の4/3/2/1配分だけの結論、原API/資源保存・十分N/物理保証/G_qualified未認定・STOP。
+
 [p7/S2粗幅・m12各2shot固定Q3](docs/research/p7_s2_m12_two_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/p7_s2_m12_two_results_20261116/HANDOFF.md)：新1callでモデル適合、条件付き達成費用395,962,678 RZへ更新。4/3/2shot比較、旧早期終了は保全。原API/資源保存、最小N/物理保証/G_qualified未認定・STOP。
 
 [p7/S2粗幅・局所shot探索結果](docs/research/p7_s2_local_shot_search_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/p7_s2_local_shot_search_results_20261116/HANDOFF.md)：m12各軸4→3の最初の1 Q3が適合。条件付き費用415,721,884 RZ、削減19,759,206 RZで早期終了。後続・振替未評価、原API/資源保存、最小N/物理保証/G_qualified未認定・STOP。
