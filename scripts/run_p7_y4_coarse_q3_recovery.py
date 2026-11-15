@@ -24,14 +24,14 @@ PACKET=O.ref('f23c3f10ed56d0c218e49efbdbfb31d12ffa8a53',O.STUDY+'/BOUND_SIGNAL_I
 OLD='34783cd09098f86464ca4bbf2ede917994b9269e'
 
 
-def runtime_check(F):
+def runtime_check(F, out=None):
     O.require(Path(sys.executable).resolve()==Path(PYTHON).resolve(),'Use the fixed compatible dedicated Python')
     O.require((ROOT/O.CALLER).read_bytes()==O.blob(OLD,O.CALLER),'Original stopped caller changed')
     F.check_source()
     for path in ('src/trottertracks/rpe_total_risk.py','src/trottertracks/rpe_total_dp_parallel.py'):
         O.require((O.RUNTIME/path).read_bytes()==O.blob(O.B,path),'Pinned kernel/guard bytes differ')
     # Same constructor used by the PF worker; original hash check is executed.
-    F.R.Observed(OUT,'preflight_constructor',workers=1,outcome_batch=8)
+    F.R.Observed(OUT if out is None else out,'preflight_constructor',workers=1,outcome_batch=8)
     node=ast.parse(textwrap.dedent(inspect.getsource(F.R.P.R.total_state_dp))).body[0]
     actual=hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest()
     O.require(actual==F.R.P.REFERENCE_DP_AST_SHA256,'Original AST guard mismatch')
@@ -71,10 +71,16 @@ def execute():
     O.require(package['inputs']==fixed_inputs(F) and package['runtime']==runtime_check(F),'Fixed runtime/input changed')
     delta=json.loads((OUT/'DELTA_CHECK.json').read_text())
     O.require(not delta['equivalent_results'] and not delta['matching_jobs'] and not delta['unresolved'],'Resolve duplicate work first')
-    inputs=package['inputs'];case=inputs['cases'][0];out=OUT/'run01';out.mkdir();(out/case['label']).mkdir()
     src.update(runtime=package['runtime'],original_fixed_inputs=FIXED,signal_packet=PACKET)
+    return run_case(F,package['inputs'],src,OUT/'run01',package['previous_STOP'])
+
+
+def run_case(F,inputs,src,out,previous_stop):
+    """Shared one-case supervisor/persistence; caller fixes its own input scope."""
+    O.require(len(inputs['cases'])==inputs['maximum_scientific_calls']==1,'Exactly one fixed Q3 case')
+    case=inputs['cases'][0];out.mkdir();(out/case['label']).mkdir()
     O.write(out/'EXECUTION.json',dict(source=src,started_UTC=O.utc(),maximum_scientific_calls=1,
-        previous_STOP=package['previous_STOP'],price_calls=0,new_signal=0,retries=0))
+        previous_STOP=previous_stop,price_calls=0,new_signal=0,retries=0))
     with F.installed_workers(out):result=F.M.supervise([case],inputs,src,out)
     exits=[c for p in out.glob('PROCESS_EXITS_*.jsonl') for line in p.read_text().splitlines()
            for c in json.loads(line)['children']]
