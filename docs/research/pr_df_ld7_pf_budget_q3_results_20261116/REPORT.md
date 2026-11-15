@@ -58,7 +58,7 @@
 
 ## SOURCE・条件付き会計
 
-- 科学実行SOURCE：**`cf19fc36ff76167fc2fe86d2a671c40918ea2c5f`**（caller `scripts/run_pr_df_ld7_pf_budget_q3_fixed.py`、[INPUTS](INPUTS.json)、人工テスト）。4列・exact費用・残額・費用順をQ3の前にcommit・pushした（[SCOPE_AND_PREFLIGHT](SCOPE_AND_PREFLIGHT.md)）。
+- 科学実行SOURCE：**`cf19fc36ff76167fc2fe86d2a671c40918ea2c5f`**（caller `scripts/run_pr_df_ld7_pf_budget_q3_fixed.py`、[INPUTS](INPUTS.json)、人工テスト）。4列・exact費用・残額・費用順をQ3の前にcommit・pushした（[SCOPE_AND_PREFLIGHT](SCOPE_AND_PREFLIGHT.md)）。C向けの固定commitとパスは[HANDOFF](HANDOFF.md)。
 - 信号・評価契約：D2 `0defa286c` の LD7 V0 Q3_INPUTS（保存13round信号・binding・target、Z1＋T1 total decoder、保存DF10 solver proxy −2.1663874486347634 Ha、全事象平方loss、保存ideal finite-K raw・IID二項・EXACT_AFFINE、exact τ）。caseはV0 caseの複製で、allocationだけを差し替えた。
 - 価格：D2 `4326422a4` のLD7自身の26軸 `C_ref=α+βq`（m0/m6 full-wrapper Cの2点モデル、X/Y同値）。m7〜m12はq64より先の未検証外挿で、今回の4列では費用の83〜96%を占める。誤差上界・CIは無く、法則上のE[C]でもない。
 - 生成：`e094b2d60` の有理数breakpoint `generate`。D2の保存LD7 menuを同じ関数・価格で再現できることを確認した。
