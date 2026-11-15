@@ -1,0 +1,31 @@
+# 実行前の人工・metadata検査（実H4 Q3は0件）
+# 2026-11-16 JST、h6 venv（Python 3.11.0rc1）、PYTHONPATH=src。新4件＋再利用経路の既存12件＝16件。
+# "STOP: ..." 行は人工supervisorを通したtoy入口の出力で、科学callではない（その行の ok は次行に出るためgrepで省略）。
+tests/check_full_pf_s2_m12_one_fixed.py
+test_actual_execute_uses_only_one_case_and_new_output (__main__.FixedFullPFOneShot.test_actual_execute_uses_only_one_case_and_new_output) ... STOP: MODEL_BOUND_MEETS_ADOPTED_THRESHOLD new calls: 1
+test_fixed_case_prices_scope_and_unmodified_basis (__main__.FixedFullPFOneShot.test_fixed_case_prices_scope_and_unmodified_basis) ... ok
+test_foreign_configuration_and_law_rejected (__main__.FixedFullPFOneShot.test_foreign_configuration_and_law_rejected) ... ok
+test_summary_decision_for_meets_exceeds_and_held (__main__.FixedFullPFOneShot.test_summary_decision_for_meets_exceeds_and_held) ... ok
+Ran 4 tests in 8.467s
+OK
+tests/check_full_pf_s2_m12_two_fixed.py
+test_actual_execute_uses_only_one_case_and_new_output (__main__.FixedFullPFTwoShot.test_actual_execute_uses_only_one_case_and_new_output) ... STOP: MODEL_BOUND_MEETS_ADOPTED_THRESHOLD new calls: 1
+test_fixed_case_prices_scope_and_unmodified_seed (__main__.FixedFullPFTwoShot.test_fixed_case_prices_scope_and_unmodified_seed) ... ok
+test_foreign_configuration_law_and_price_rejected (__main__.FixedFullPFTwoShot.test_foreign_configuration_law_and_price_rejected) ... ok
+test_summary_updates_cost_only_on_pass (__main__.FixedFullPFTwoShot.test_summary_updates_cost_only_on_pass) ... ok
+Ran 4 tests in 7.824s
+OK
+tests/check_pf6_cost_budget_q3_caller.py
+test_actual_installed_worker_saves_API_and_restores_hooks (__main__.BudgetCallerTests.test_actual_installed_worker_saves_API_and_restores_hooks) ... ok
+test_actual_supervisor_monitor_failure_preserves_started_worker (__main__.BudgetCallerTests.test_actual_supervisor_monitor_failure_preserves_started_worker) ... ARTIFICIAL_ONLY: MODEL_BOUND_MEETS_ADOPTED_THRESHOLD
+test_exact_breakpoint_maximum_and_shape (__main__.BudgetCallerTests.test_exact_breakpoint_maximum_and_shape) ... ok
+test_huge_prices_and_XY_count_only_bounds (__main__.BudgetCallerTests.test_huge_prices_and_XY_count_only_bounds) ... ok
+test_missing_noninteger_nonpositive_or_infeasible_prices (__main__.BudgetCallerTests.test_missing_noninteger_nonpositive_or_infeasible_prices) ... ok
+test_price_rule_and_equal_vector_can_be_deduplicated (__main__.BudgetCallerTests.test_price_rule_and_equal_vector_can_be_deduplicated) ... ok
+Ran 6 tests in 0.668s
+OK
+tests/check_p7_s2_m12_one_fixed.py
+test_actual_execute_uses_only_one_case_and_new_output (__main__.OneShotTests.test_actual_execute_uses_only_one_case_and_new_output) ... STOP: MODEL_BOUND_MEETS_ADOPTED_THRESHOLD new calls: 1
+test_fixed_one_scope_and_unmodified_old_rows (__main__.OneShotTests.test_fixed_one_scope_and_unmodified_old_rows) ... ok
+Ran 2 tests in 1.165s
+OK

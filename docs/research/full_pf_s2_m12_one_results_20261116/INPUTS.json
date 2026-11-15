@@ -1,0 +1,2988 @@
+{
+  "kernel_source": "710aa69b663ef3313439762d25c80a652a03948f",
+  "C_source": "c628e9e8447c11c984064b922cbce6c52dc72d48",
+  "acceleration": {
+    "source": {
+      "commit": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+      "path": "src/trottertracks/rpe_total_dp_parallel.py"
+    },
+    "workers_per_configuration": 8,
+    "outcome_batch": 8,
+    "selection": "Artificial benchmark: 8 and 16 workers have similar wall time; use 8 per independent configuration."
+  },
+  "statistical_contract": {
+    "id": "PF6_CURRENT_WIDTH_COST_BUDGET_3O4_TWO_SHAPES_TOTAL_Q3",
+    "claim_level": "TOTAL_RAW_MODEL_DIAGNOSTIC_ONLY",
+    "allow_conditional_unqualified": true,
+    "simulation_policy": {
+      "kind": "IID_SHOTS_INDEPENDENT_AXES_ROUNDS_AND_REPETITIONS",
+      "target_law": "deterministic",
+      "interpretation": "IID_BINOMIAL_MEASUREMENTS_OF_SAVED_DETERMINISTIC_PF_RAW_NO_RTE_OR_MC"
+    },
+    "summary_options": {
+      "unresolved_loss": {
+        "kind": "BOUNDED_INTERVAL",
+        "lower": 0,
+        "upper": {
+          "numerator": 357405153776690641596902400718249,
+          "denominator": 316912650057057350374175801344
+        }
+      }
+    }
+  },
+  "options": {
+    "probability_rule": "EXACT_AFFINE_OF_BINARY64_RAW",
+    "phase_radii": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "maximum_round_outcomes": 4225,
+    "maximum_verification_pairs": 55043173,
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "model_loss_contract": {
+      "adopted": true,
+      "scope": "PF6_CURRENT_WIDTH_TWO_SHAPES_COST_BUDGET_3O4"
+    },
+    "total_state_refinement": {
+      "maximum_frontier_states": 8192,
+      "maximum_transition_pairs": 141559036
+    },
+    "total_dp_acceleration_source": {
+      "source": {
+        "commit": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+        "path": "src/trottertracks/rpe_total_dp_parallel.py"
+      },
+      "workers_per_configuration": 8,
+      "outcome_batch": 8,
+      "selection": "Artificial benchmark: 8 and 16 workers have similar wall time; use 8 per independent configuration."
+    }
+  },
+  "adopted_evaluation": {
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+    "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+    "epsilon_E_decimal": "0.00159360010199040",
+    "MSE_upper": {
+      "numerator": 15136964828156312001,
+      "denominator": 5960464477539062500000000
+    },
+    "scope": "MODEL_MSE_FILTER_ONLY",
+    "measurement_law": "SAVED_DETERMINISTIC_PF_RAW_IID_EXACT_AFFINE",
+    "minkowski": "SEPARATE_REFERENCE_NOT_COMBINED",
+    "physical_total_error_guarantee": false
+  },
+  "price_policy": "PF_FIXED_COMPILER_CLOSURE_CONDITIONAL_60_AXES_V1",
+  "cases": [
+    {
+      "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+      "total_view_id": "af18d37da2ffa763739fe6f01631c85516c210b8ce8e30fd949fbfaabf4755f5",
+      "binding_id": "69cc82b4dfc0d3f35020e5678f8202da2e5fcbb628a52646a0271c4fbe00dca0",
+      "configuration": {
+        "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+        "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/PLAN.json",
+        "selector": [
+          "configuration"
+        ]
+      },
+      "signal_packet": {
+        "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+        "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/B_SIGNAL_INPUT.json"
+      },
+      "evaluation_target": {
+        "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+        "energy_ha": -2.1663874486347634,
+        "source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        },
+        "truth_proxy_source": {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "selector": [
+            "records",
+            5,
+            "diagnostics"
+          ]
+        },
+        "original_target_source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        },
+        "binding": {
+          "T": 0.8,
+          "basis": "STO-3G",
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "geometry": "linear_1Angstrom",
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+          "profile_is_reference_only": true,
+          "rank": 10,
+          "rank_is_saved_observation_not_generation_argument": true,
+          "rank_policy": "tol_only_1e-8",
+          "series": "H4_TOL_ONLY_DF10",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "system": "H4",
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          },
+          "decomposition": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "contract": {
+              "completion": "saved_weighted_Hermitian_completion",
+              "fragment_order": "saved_snapshot_order",
+              "preparation_binding": {
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+              },
+              "state_preparation_cost": 0,
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              }
+            },
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            }
+          }
+        },
+        "qualification_scope": "RAW_MODEL_DIAGNOSTIC_ONLY_NOT_CERTIFIED_GROUND_ENERGY"
+      },
+      "label": "FULL_PF_S2_M12_ONE_FIXED",
+      "edit": {
+        "m": 12,
+        "old_N_X": 2,
+        "old_N_Y": 2,
+        "new_N_X": 1,
+        "new_N_Y": 1
+      },
+      "allocation": {
+        "allocation_id": "FULL_PF_S2_16H_OVER7_M12_ONE_01",
+        "shot_policy": "USER_SUPPLIED",
+        "shots": [
+          {
+            "m": 0,
+            "N_X": 59,
+            "N_Y": 59
+          },
+          {
+            "m": 1,
+            "N_X": 55,
+            "N_Y": 55
+          },
+          {
+            "m": 2,
+            "N_X": 51,
+            "N_Y": 51
+          },
+          {
+            "m": 3,
+            "N_X": 47,
+            "N_Y": 47
+          },
+          {
+            "m": 4,
+            "N_X": 43,
+            "N_Y": 43
+          },
+          {
+            "m": 5,
+            "N_X": 39,
+            "N_Y": 39
+          },
+          {
+            "m": 6,
+            "N_X": 35,
+            "N_Y": 35
+          },
+          {
+            "m": 7,
+            "N_X": 31,
+            "N_Y": 31
+          },
+          {
+            "m": 8,
+            "N_X": 27,
+            "N_Y": 27
+          },
+          {
+            "m": 9,
+            "N_X": 23,
+            "N_Y": 23
+          },
+          {
+            "m": 10,
+            "N_X": 19,
+            "N_Y": 19
+          },
+          {
+            "m": 11,
+            "N_X": 13,
+            "N_Y": 13
+          },
+          {
+            "m": 12,
+            "N_X": 1,
+            "N_Y": 1
+          }
+        ]
+      },
+      "parent_allocation": {
+        "allocation_id": "FULL_PF_S2_16H_OVER7_M12_TWO_01",
+        "shot_policy": "USER_SUPPLIED",
+        "shots": [
+          {
+            "m": 0,
+            "N_X": 59,
+            "N_Y": 59
+          },
+          {
+            "m": 1,
+            "N_X": 55,
+            "N_Y": 55
+          },
+          {
+            "m": 2,
+            "N_X": 51,
+            "N_Y": 51
+          },
+          {
+            "m": 3,
+            "N_X": 47,
+            "N_Y": 47
+          },
+          {
+            "m": 4,
+            "N_X": 43,
+            "N_Y": 43
+          },
+          {
+            "m": 5,
+            "N_X": 39,
+            "N_Y": 39
+          },
+          {
+            "m": 6,
+            "N_X": 35,
+            "N_Y": 35
+          },
+          {
+            "m": 7,
+            "N_X": 31,
+            "N_Y": 31
+          },
+          {
+            "m": 8,
+            "N_X": 27,
+            "N_Y": 27
+          },
+          {
+            "m": 9,
+            "N_X": 23,
+            "N_Y": 23
+          },
+          {
+            "m": 10,
+            "N_X": 19,
+            "N_Y": 19
+          },
+          {
+            "m": 11,
+            "N_X": 13,
+            "N_Y": 13
+          },
+          {
+            "m": 12,
+            "N_X": 2,
+            "N_Y": 2
+          }
+        ]
+      },
+      "price_terms": [
+        {
+          "m": 0,
+          "axis": "X",
+          "N": 59,
+          "C": 8090,
+          "N_times_C": 477310,
+          "physical_id": "5669f142d693eee92583",
+          "original_candidate_id": "RMSE:3c4c498c24321838d73c1b7cf75ab1d85e98fe5cef11ae93f84b885038b4c0b3",
+          "total_candidate_id": "RMSE:9ce626f5257f5044cf63ba00de6d0a901bdd64900df34f27bee4dc22d78a2765",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              0
+            ]
+          }
+        },
+        {
+          "m": 0,
+          "axis": "Y",
+          "N": 59,
+          "C": 8090,
+          "N_times_C": 477310,
+          "physical_id": "5669f142d693eee92583",
+          "original_candidate_id": "RMSE:3c4c498c24321838d73c1b7cf75ab1d85e98fe5cef11ae93f84b885038b4c0b3",
+          "total_candidate_id": "RMSE:9ce626f5257f5044cf63ba00de6d0a901bdd64900df34f27bee4dc22d78a2765",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              1
+            ]
+          }
+        },
+        {
+          "m": 1,
+          "axis": "X",
+          "N": 55,
+          "C": 8090,
+          "N_times_C": 444950,
+          "physical_id": "eb745e6e4759d15f75bc",
+          "original_candidate_id": "RMSE:33458860c606f690274223c61cd41f5c4545d003d6223e24d3c0a639c3ab3c44",
+          "total_candidate_id": "RMSE:24d61011d2747a153746b05ccafbf36c91b5cb9adb5c58a31d9458a988220fbe",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              2
+            ]
+          }
+        },
+        {
+          "m": 1,
+          "axis": "Y",
+          "N": 55,
+          "C": 8090,
+          "N_times_C": 444950,
+          "physical_id": "eb745e6e4759d15f75bc",
+          "original_candidate_id": "RMSE:33458860c606f690274223c61cd41f5c4545d003d6223e24d3c0a639c3ab3c44",
+          "total_candidate_id": "RMSE:24d61011d2747a153746b05ccafbf36c91b5cb9adb5c58a31d9458a988220fbe",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              3
+            ]
+          }
+        },
+        {
+          "m": 2,
+          "axis": "X",
+          "N": 51,
+          "C": 15873,
+          "N_times_C": 809523,
+          "physical_id": "4433563c3a4ef7a61702",
+          "original_candidate_id": "RMSE:eb2b5293563561fc2d1e0b2862be2020f8d6100455f864933729e62e5a66c8e6",
+          "total_candidate_id": "RMSE:c5d6868694b0a85f067ab3ecc36b9b6cb41eaf0d89d934dec078e220e6afdc5e",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              4
+            ]
+          }
+        },
+        {
+          "m": 2,
+          "axis": "Y",
+          "N": 51,
+          "C": 15873,
+          "N_times_C": 809523,
+          "physical_id": "4433563c3a4ef7a61702",
+          "original_candidate_id": "RMSE:eb2b5293563561fc2d1e0b2862be2020f8d6100455f864933729e62e5a66c8e6",
+          "total_candidate_id": "RMSE:c5d6868694b0a85f067ab3ecc36b9b6cb41eaf0d89d934dec078e220e6afdc5e",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              5
+            ]
+          }
+        },
+        {
+          "m": 3,
+          "axis": "X",
+          "N": 47,
+          "C": 31439,
+          "N_times_C": 1477633,
+          "physical_id": "e2b139ad6211e2c63ae6",
+          "original_candidate_id": "RMSE:c1d579af36d4b35c70edaea7f0a84c1af178a4a967a3318a0bdf7c4ee197253b",
+          "total_candidate_id": "RMSE:264e51ee7e90f90d6efebf4fe0fcb1d4e5825fdcd0e790a3d95870e2d06d472c",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              6
+            ]
+          }
+        },
+        {
+          "m": 3,
+          "axis": "Y",
+          "N": 47,
+          "C": 31439,
+          "N_times_C": 1477633,
+          "physical_id": "e2b139ad6211e2c63ae6",
+          "original_candidate_id": "RMSE:c1d579af36d4b35c70edaea7f0a84c1af178a4a967a3318a0bdf7c4ee197253b",
+          "total_candidate_id": "RMSE:264e51ee7e90f90d6efebf4fe0fcb1d4e5825fdcd0e790a3d95870e2d06d472c",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              7
+            ]
+          }
+        },
+        {
+          "m": 4,
+          "axis": "X",
+          "N": 43,
+          "C": 54844,
+          "N_times_C": 2358292,
+          "physical_id": "b7c4e73538ec19070cde",
+          "original_candidate_id": "RMSE:71308acbb97113010c8b2a08c7c4e88998f91e71184c494e117dff271b1bb47c",
+          "total_candidate_id": "RMSE:5d609087cdb7241195abd9b0097c2928882ff01aaf23b2e55300294cd224bcf2",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              8
+            ]
+          }
+        },
+        {
+          "m": 4,
+          "axis": "Y",
+          "N": 43,
+          "C": 54844,
+          "N_times_C": 2358292,
+          "physical_id": "b7c4e73538ec19070cde",
+          "original_candidate_id": "RMSE:71308acbb97113010c8b2a08c7c4e88998f91e71184c494e117dff271b1bb47c",
+          "total_candidate_id": "RMSE:5d609087cdb7241195abd9b0097c2928882ff01aaf23b2e55300294cd224bcf2",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              9
+            ]
+          }
+        },
+        {
+          "m": 5,
+          "axis": "X",
+          "N": 39,
+          "C": 109381,
+          "N_times_C": 4265859,
+          "physical_id": "8df73ab164fac57bfd6c",
+          "original_candidate_id": "RMSE:8c2315761a0202d09d381c6feeca9ae775650b46cf0beed40491d190414f945a",
+          "total_candidate_id": "RMSE:98a64404e828f3693dd22e4f426ef1b504016b66c2a9909bcbdd344cdfe7fefe",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              10
+            ]
+          }
+        },
+        {
+          "m": 5,
+          "axis": "Y",
+          "N": 39,
+          "C": 109381,
+          "N_times_C": 4265859,
+          "physical_id": "8df73ab164fac57bfd6c",
+          "original_candidate_id": "RMSE:8c2315761a0202d09d381c6feeca9ae775650b46cf0beed40491d190414f945a",
+          "total_candidate_id": "RMSE:98a64404e828f3693dd22e4f426ef1b504016b66c2a9909bcbdd344cdfe7fefe",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              11
+            ]
+          }
+        },
+        {
+          "m": 6,
+          "axis": "X",
+          "N": 35,
+          "C": 218455,
+          "N_times_C": 7645925,
+          "physical_id": "4f3984c6d381fa0ca848",
+          "original_candidate_id": "RMSE:a2ea9428a626a7df97001159f50327197b20045ae5d6b27d0901f07c5678b523",
+          "total_candidate_id": "RMSE:392a832d721a49c727975e54d85bb7ca0fd655927c3c374a7246b7cdecf4771e",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              12
+            ]
+          }
+        },
+        {
+          "m": 6,
+          "axis": "Y",
+          "N": 35,
+          "C": 218455,
+          "N_times_C": 7645925,
+          "physical_id": "4f3984c6d381fa0ca848",
+          "original_candidate_id": "RMSE:a2ea9428a626a7df97001159f50327197b20045ae5d6b27d0901f07c5678b523",
+          "total_candidate_id": "RMSE:392a832d721a49c727975e54d85bb7ca0fd655927c3c374a7246b7cdecf4771e",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              13
+            ]
+          }
+        },
+        {
+          "m": 7,
+          "axis": "X",
+          "N": 31,
+          "C": 436603,
+          "N_times_C": 13534693,
+          "physical_id": "a80a87e65d70d3ad37cd",
+          "original_candidate_id": "RMSE:853d9e0079ce0adf7a5a74d5499489cf752fa2c71f5d72bcaca94c1a3dc49542",
+          "total_candidate_id": "RMSE:5a751d8bc1d4a4a67887083eb47d8f7b3d73d8d16c5b71a3282a944eae0b5d55",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              14
+            ]
+          }
+        },
+        {
+          "m": 7,
+          "axis": "Y",
+          "N": 31,
+          "C": 436603,
+          "N_times_C": 13534693,
+          "physical_id": "a80a87e65d70d3ad37cd",
+          "original_candidate_id": "RMSE:853d9e0079ce0adf7a5a74d5499489cf752fa2c71f5d72bcaca94c1a3dc49542",
+          "total_candidate_id": "RMSE:5a751d8bc1d4a4a67887083eb47d8f7b3d73d8d16c5b71a3282a944eae0b5d55",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              15
+            ]
+          }
+        },
+        {
+          "m": 8,
+          "axis": "X",
+          "N": 27,
+          "C": 872899,
+          "N_times_C": 23568273,
+          "physical_id": "c11e4c72179cc662ceb0",
+          "original_candidate_id": "RMSE:2e6140dc307646386f20857021b817ae64907b1c41fbf7deeacc90d21816545c",
+          "total_candidate_id": "RMSE:62dfea6881f311b8f4a8912a8daee236ae0876bdcae7df551b9ff433cb747ff8",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              16
+            ]
+          }
+        },
+        {
+          "m": 8,
+          "axis": "Y",
+          "N": 27,
+          "C": 872899,
+          "N_times_C": 23568273,
+          "physical_id": "c11e4c72179cc662ceb0",
+          "original_candidate_id": "RMSE:2e6140dc307646386f20857021b817ae64907b1c41fbf7deeacc90d21816545c",
+          "total_candidate_id": "RMSE:62dfea6881f311b8f4a8912a8daee236ae0876bdcae7df551b9ff433cb747ff8",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              17
+            ]
+          }
+        },
+        {
+          "m": 9,
+          "axis": "X",
+          "N": 23,
+          "C": 1745491,
+          "N_times_C": 40146293,
+          "physical_id": "a4ec53ff4e60d60a2930",
+          "original_candidate_id": "RMSE:6c45d3029062e7ed7eab64a4b6a4faf4181768c96653fb29af291f32b33d8e4e",
+          "total_candidate_id": "RMSE:0e055f225ccac51da2d416e2b102e94de1aa5eb93b594ddb6fb48e0a5e7c3b7c",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              18
+            ]
+          }
+        },
+        {
+          "m": 9,
+          "axis": "Y",
+          "N": 23,
+          "C": 1745491,
+          "N_times_C": 40146293,
+          "physical_id": "a4ec53ff4e60d60a2930",
+          "original_candidate_id": "RMSE:6c45d3029062e7ed7eab64a4b6a4faf4181768c96653fb29af291f32b33d8e4e",
+          "total_candidate_id": "RMSE:0e055f225ccac51da2d416e2b102e94de1aa5eb93b594ddb6fb48e0a5e7c3b7c",
+          "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              19
+            ]
+          }
+        },
+        {
+          "m": 10,
+          "axis": "X",
+          "N": 19,
+          "C": 3490675,
+          "N_times_C": 66322825,
+          "physical_id": "d86b55e4b1f65ea9cd14",
+          "original_candidate_id": "RMSE:dda03811a36e42a9824a8909d67f4137f34f1b518bb3635f9b0b288976ba1e43",
+          "total_candidate_id": "RMSE:825796be519c67c7c250ed4dd711a50451d4e71983d7070edd543aa330de4ce4",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              20
+            ]
+          }
+        },
+        {
+          "m": 10,
+          "axis": "Y",
+          "N": 19,
+          "C": 3490675,
+          "N_times_C": 66322825,
+          "physical_id": "d86b55e4b1f65ea9cd14",
+          "original_candidate_id": "RMSE:dda03811a36e42a9824a8909d67f4137f34f1b518bb3635f9b0b288976ba1e43",
+          "total_candidate_id": "RMSE:825796be519c67c7c250ed4dd711a50451d4e71983d7070edd543aa330de4ce4",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              21
+            ]
+          }
+        },
+        {
+          "m": 11,
+          "axis": "X",
+          "N": 13,
+          "C": 6981043,
+          "N_times_C": 90753559,
+          "physical_id": "ee6d77a5b25f2a37992f",
+          "original_candidate_id": "RMSE:21d49ecd3c1df70bc173055c6cc99d09bd09aac3073b60ae9a398aac6f0a683c",
+          "total_candidate_id": "RMSE:18aabfa342abfe652c1252306b56b75e9661f8beb6a4824943d6b9aea4772b19",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              22
+            ]
+          }
+        },
+        {
+          "m": 11,
+          "axis": "Y",
+          "N": 13,
+          "C": 6981043,
+          "N_times_C": 90753559,
+          "physical_id": "ee6d77a5b25f2a37992f",
+          "original_candidate_id": "RMSE:21d49ecd3c1df70bc173055c6cc99d09bd09aac3073b60ae9a398aac6f0a683c",
+          "total_candidate_id": "RMSE:18aabfa342abfe652c1252306b56b75e9661f8beb6a4824943d6b9aea4772b19",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              23
+            ]
+          }
+        },
+        {
+          "m": 12,
+          "axis": "X",
+          "N": 1,
+          "C": 13961779,
+          "N_times_C": 13961779,
+          "physical_id": "923d811dd2e493ca3f37",
+          "original_candidate_id": "RMSE:36272c751f6b952b00e2ecc227e904b8cbaa8f10a303347f0383a746b60d48da",
+          "total_candidate_id": "RMSE:e4b963a72d8bfa83081c1c1e1810e558196bfddb7a6d280e6857e88e66c83d44",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              24
+            ]
+          }
+        },
+        {
+          "m": 12,
+          "axis": "Y",
+          "N": 1,
+          "C": 13961779,
+          "N_times_C": 13961779,
+          "physical_id": "923d811dd2e493ca3f37",
+          "original_candidate_id": "RMSE:36272c751f6b952b00e2ecc227e904b8cbaa8f10a303347f0383a746b60d48da",
+          "total_candidate_id": "RMSE:e4b963a72d8bfa83081c1c1e1810e558196bfddb7a6d280e6857e88e66c83d44",
+          "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+          "price_source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+            "selector": [
+              "rows",
+              25
+            ]
+          }
+        }
+      ],
+      "conditional_cost": 531533828,
+      "conditional_cost_m0_m11": 503610270,
+      "conditional_cost_m12": 27923558,
+      "reference_cost_RZ": 559457386,
+      "reduction_RZ": 27923558,
+      "finite_scope_preflight": {
+        "maximum_round_outcomes": 3600,
+        "verification_pairs_upper": 38522192,
+        "transition_pairs_upper": 116347408,
+        "rule": "FULL_COUNT_SUPPORT_AND_FRONTIER_UPPER_BOUND_NO_PROBABILITY_EVALUATION"
+      }
+    }
+  ],
+  "saved_cache": [
+    {
+      "case": {
+        "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+        "total_view_id": "af18d37da2ffa763739fe6f01631c85516c210b8ce8e30fd949fbfaabf4755f5",
+        "configuration": {
+          "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+          "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/PLAN.json",
+          "selector": [
+            "configuration"
+          ]
+        },
+        "signal_packet": {
+          "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+          "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/B_SIGNAL_INPUT.json"
+        },
+        "unified_numerical_SOURCE": {
+          "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+          "caller": "scripts/run_pf_shortlist_mean_completion.py",
+          "module": "src/trottertracks/pf_shortlist_mean_completion.py",
+          "numerical_kernel": "baseline_signal_numerics.evaluate PF branch; unchanged",
+          "recipe": "SAVED_DIRECT_EXPM_PF_OPERATOR_MATRIX_POWER_V1",
+          "P": 0
+        },
+        "B_intake": "PASS",
+        "all_rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "FULL_PF_S2_16h_over_7__A_SHAPE",
+        "binding_id": "69cc82b4dfc0d3f35020e5678f8202da2e5fcbb628a52646a0271c4fbe00dca0",
+        "allocation": {
+          "allocation_id": "FULL_PF_S2_16h_over_7_A_SHAPE_COST_BUDGET_3O4_01",
+          "shot_policy": "USER_SUPPLIED",
+          "shots": [
+            {
+              "m": 0,
+              "N_X": 46,
+              "N_Y": 46
+            },
+            {
+              "m": 1,
+              "N_X": 43,
+              "N_Y": 43
+            },
+            {
+              "m": 2,
+              "N_X": 40,
+              "N_Y": 40
+            },
+            {
+              "m": 3,
+              "N_X": 37,
+              "N_Y": 37
+            },
+            {
+              "m": 4,
+              "N_X": 33,
+              "N_Y": 33
+            },
+            {
+              "m": 5,
+              "N_X": 30,
+              "N_Y": 30
+            },
+            {
+              "m": 6,
+              "N_X": 27,
+              "N_Y": 27
+            },
+            {
+              "m": 7,
+              "N_X": 24,
+              "N_Y": 24
+            },
+            {
+              "m": 8,
+              "N_X": 21,
+              "N_Y": 21
+            },
+            {
+              "m": 9,
+              "N_X": 18,
+              "N_Y": 18
+            },
+            {
+              "m": 10,
+              "N_X": 14,
+              "N_Y": 14
+            },
+            {
+              "m": 11,
+              "N_X": 11,
+              "N_Y": 11
+            },
+            {
+              "m": 12,
+              "N_X": 8,
+              "N_Y": 8
+            }
+          ]
+        },
+        "evaluation_target": {
+          "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+          "energy_ha": -2.1663874486347634,
+          "source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          },
+          "truth_proxy_source": {
+            "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+            "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+            "selector": [
+              "records",
+              5,
+              "diagnostics"
+            ]
+          },
+          "original_target_source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4",
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "decomposition": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "preparation_binding": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                },
+                "state_preparation_cost": 0,
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                }
+              },
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "qualification_scope": "RAW_MODEL_DIAGNOSTIC_ONLY_NOT_CERTIFIED_GROUND_ENERGY"
+        },
+        "base_label": "FULL_PF_S2_16h_over_7",
+        "method": "FULL_PF",
+        "rule": "A_SHAPE",
+        "generation": {
+          "rule": "A_SHAPE",
+          "lambda_value": {
+            "numerator": 37,
+            "denominator": 47
+          },
+          "conditional_cost": 622182168,
+          "unused_budget": {
+            "numerator": 6838017,
+            "denominator": 1
+          },
+          "budget": {
+            "numerator": 629020185,
+            "denominator": 1
+          },
+          "next_breakpoint_cost": 629163518,
+          "finite_breakpoints": 419
+        },
+        "benchmark_cost": 838693580,
+        "conditional_cost": 622182168,
+        "unused_budget": {
+          "numerator": 6838017,
+          "denominator": 1
+        },
+        "price_terms": [
+          {
+            "m": 0,
+            "axis": "X",
+            "N": 46,
+            "C": 8090,
+            "N_times_C": 372140,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                0
+              ]
+            }
+          },
+          {
+            "m": 0,
+            "axis": "Y",
+            "N": 46,
+            "C": 8090,
+            "N_times_C": 372140,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                1
+              ]
+            }
+          },
+          {
+            "m": 1,
+            "axis": "X",
+            "N": 43,
+            "C": 8090,
+            "N_times_C": 347870,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                2
+              ]
+            }
+          },
+          {
+            "m": 1,
+            "axis": "Y",
+            "N": 43,
+            "C": 8090,
+            "N_times_C": 347870,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                3
+              ]
+            }
+          },
+          {
+            "m": 2,
+            "axis": "X",
+            "N": 40,
+            "C": 15873,
+            "N_times_C": 634920,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                4
+              ]
+            }
+          },
+          {
+            "m": 2,
+            "axis": "Y",
+            "N": 40,
+            "C": 15873,
+            "N_times_C": 634920,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                5
+              ]
+            }
+          },
+          {
+            "m": 3,
+            "axis": "X",
+            "N": 37,
+            "C": 31439,
+            "N_times_C": 1163243,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                6
+              ]
+            }
+          },
+          {
+            "m": 3,
+            "axis": "Y",
+            "N": 37,
+            "C": 31439,
+            "N_times_C": 1163243,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                7
+              ]
+            }
+          },
+          {
+            "m": 4,
+            "axis": "X",
+            "N": 33,
+            "C": 54844,
+            "N_times_C": 1809852,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                8
+              ]
+            }
+          },
+          {
+            "m": 4,
+            "axis": "Y",
+            "N": 33,
+            "C": 54844,
+            "N_times_C": 1809852,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                9
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "X",
+            "N": 30,
+            "C": 109381,
+            "N_times_C": 3281430,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                10
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "Y",
+            "N": 30,
+            "C": 109381,
+            "N_times_C": 3281430,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                11
+              ]
+            }
+          },
+          {
+            "m": 6,
+            "axis": "X",
+            "N": 27,
+            "C": 218455,
+            "N_times_C": 5898285,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                12
+              ]
+            }
+          },
+          {
+            "m": 6,
+            "axis": "Y",
+            "N": 27,
+            "C": 218455,
+            "N_times_C": 5898285,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                13
+              ]
+            }
+          },
+          {
+            "m": 7,
+            "axis": "X",
+            "N": 24,
+            "C": 436603,
+            "N_times_C": 10478472,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                14
+              ]
+            }
+          },
+          {
+            "m": 7,
+            "axis": "Y",
+            "N": 24,
+            "C": 436603,
+            "N_times_C": 10478472,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                15
+              ]
+            }
+          },
+          {
+            "m": 8,
+            "axis": "X",
+            "N": 21,
+            "C": 872899,
+            "N_times_C": 18330879,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                16
+              ]
+            }
+          },
+          {
+            "m": 8,
+            "axis": "Y",
+            "N": 21,
+            "C": 872899,
+            "N_times_C": 18330879,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                17
+              ]
+            }
+          },
+          {
+            "m": 9,
+            "axis": "X",
+            "N": 18,
+            "C": 1745491,
+            "N_times_C": 31418838,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                18
+              ]
+            }
+          },
+          {
+            "m": 9,
+            "axis": "Y",
+            "N": 18,
+            "C": 1745491,
+            "N_times_C": 31418838,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                19
+              ]
+            }
+          },
+          {
+            "m": 10,
+            "axis": "X",
+            "N": 14,
+            "C": 3490675,
+            "N_times_C": 48869450,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                20
+              ]
+            }
+          },
+          {
+            "m": 10,
+            "axis": "Y",
+            "N": 14,
+            "C": 3490675,
+            "N_times_C": 48869450,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                21
+              ]
+            }
+          },
+          {
+            "m": 11,
+            "axis": "X",
+            "N": 11,
+            "C": 6981043,
+            "N_times_C": 76791473,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                22
+              ]
+            }
+          },
+          {
+            "m": 11,
+            "axis": "Y",
+            "N": 11,
+            "C": 6981043,
+            "N_times_C": 76791473,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                23
+              ]
+            }
+          },
+          {
+            "m": 12,
+            "axis": "X",
+            "N": 8,
+            "C": 13961779,
+            "N_times_C": 111694232,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                24
+              ]
+            }
+          },
+          {
+            "m": 12,
+            "axis": "Y",
+            "N": 8,
+            "C": 13961779,
+            "N_times_C": 111694232,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                25
+              ]
+            }
+          }
+        ],
+        "finite_scope_preflight": {
+          "maximum_round_outcomes": 2209,
+          "verification_pairs_upper": 14584521,
+          "transition_pairs_upper": 69372465,
+          "rule": "FULL_COUNT_SUPPORT_AND_FRONTIER_UPPER_BOUND_NO_PROBABILITY_EVALUATION"
+        }
+      },
+      "API_source": {
+        "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+        "path": "docs/research/pf6_cost_budget_q3_results_20261115/run01/FULL_PF_S2_16h_over_7__A_SHAPE/API_RETURN.json"
+      }
+    },
+    {
+      "case": {
+        "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+        "total_view_id": "af18d37da2ffa763739fe6f01631c85516c210b8ce8e30fd949fbfaabf4755f5",
+        "configuration": {
+          "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+          "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/PLAN.json",
+          "selector": [
+            "configuration"
+          ]
+        },
+        "signal_packet": {
+          "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+          "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/B_SIGNAL_INPUT.json"
+        },
+        "unified_numerical_SOURCE": {
+          "commit": "fb9a1878b677b7ee116b52e804e5a01cdaa96004",
+          "caller": "scripts/run_pf_shortlist_mean_completion.py",
+          "module": "src/trottertracks/pf_shortlist_mean_completion.py",
+          "numerical_kernel": "baseline_signal_numerics.evaluate PF branch; unchanged",
+          "recipe": "SAVED_DIRECT_EXPM_PF_OPERATOR_MATRIX_POWER_V1",
+          "P": 0
+        },
+        "B_intake": "PASS",
+        "all_rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "label": "FULL_PF_S2_16h_over_7__B_PRICE",
+        "binding_id": "69cc82b4dfc0d3f35020e5678f8202da2e5fcbb628a52646a0271c4fbe00dca0",
+        "allocation": {
+          "allocation_id": "FULL_PF_S2_16h_over_7_B_PRICE_COST_BUDGET_3O4_01",
+          "shot_policy": "USER_SUPPLIED",
+          "shots": [
+            {
+              "m": 0,
+              "N_X": 59,
+              "N_Y": 59
+            },
+            {
+              "m": 1,
+              "N_X": 55,
+              "N_Y": 55
+            },
+            {
+              "m": 2,
+              "N_X": 51,
+              "N_Y": 51
+            },
+            {
+              "m": 3,
+              "N_X": 47,
+              "N_Y": 47
+            },
+            {
+              "m": 4,
+              "N_X": 43,
+              "N_Y": 43
+            },
+            {
+              "m": 5,
+              "N_X": 39,
+              "N_Y": 39
+            },
+            {
+              "m": 6,
+              "N_X": 35,
+              "N_Y": 35
+            },
+            {
+              "m": 7,
+              "N_X": 31,
+              "N_Y": 31
+            },
+            {
+              "m": 8,
+              "N_X": 27,
+              "N_Y": 27
+            },
+            {
+              "m": 9,
+              "N_X": 23,
+              "N_Y": 23
+            },
+            {
+              "m": 10,
+              "N_X": 19,
+              "N_Y": 19
+            },
+            {
+              "m": 11,
+              "N_X": 13,
+              "N_Y": 13
+            },
+            {
+              "m": 12,
+              "N_X": 4,
+              "N_Y": 4
+            }
+          ]
+        },
+        "evaluation_target": {
+          "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+          "energy_ha": -2.1663874486347634,
+          "source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          },
+          "truth_proxy_source": {
+            "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+            "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+            "selector": [
+              "records",
+              5,
+              "diagnostics"
+            ]
+          },
+          "original_target_source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4",
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "decomposition": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "preparation_binding": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                },
+                "state_preparation_cost": 0,
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                }
+              },
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "qualification_scope": "RAW_MODEL_DIAGNOSTIC_ONLY_NOT_CERTIFIED_GROUND_ENERGY"
+        },
+        "base_label": "FULL_PF_S2_16h_over_7",
+        "method": "FULL_PF",
+        "rule": "B_PRICE",
+        "generation": {
+          "rule": "B_PRICE",
+          "lambda_value": {
+            "numerator": 90753559,
+            "denominator": 15
+          },
+          "conditional_cost": 615304502,
+          "unused_budget": {
+            "numerator": 13715683,
+            "denominator": 1
+          },
+          "budget": {
+            "numerator": 629020185,
+            "denominator": 1
+          },
+          "next_breakpoint_cost": 643228060,
+          "finite_breakpoints": 454
+        },
+        "benchmark_cost": 838693580,
+        "conditional_cost": 615304502,
+        "unused_budget": {
+          "numerator": 13715683,
+          "denominator": 1
+        },
+        "price_terms": [
+          {
+            "m": 0,
+            "axis": "X",
+            "N": 59,
+            "C": 8090,
+            "N_times_C": 477310,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                0
+              ]
+            }
+          },
+          {
+            "m": 0,
+            "axis": "Y",
+            "N": 59,
+            "C": 8090,
+            "N_times_C": 477310,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                1
+              ]
+            }
+          },
+          {
+            "m": 1,
+            "axis": "X",
+            "N": 55,
+            "C": 8090,
+            "N_times_C": 444950,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                2
+              ]
+            }
+          },
+          {
+            "m": 1,
+            "axis": "Y",
+            "N": 55,
+            "C": 8090,
+            "N_times_C": 444950,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                3
+              ]
+            }
+          },
+          {
+            "m": 2,
+            "axis": "X",
+            "N": 51,
+            "C": 15873,
+            "N_times_C": 809523,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                4
+              ]
+            }
+          },
+          {
+            "m": 2,
+            "axis": "Y",
+            "N": 51,
+            "C": 15873,
+            "N_times_C": 809523,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                5
+              ]
+            }
+          },
+          {
+            "m": 3,
+            "axis": "X",
+            "N": 47,
+            "C": 31439,
+            "N_times_C": 1477633,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                6
+              ]
+            }
+          },
+          {
+            "m": 3,
+            "axis": "Y",
+            "N": 47,
+            "C": 31439,
+            "N_times_C": 1477633,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                7
+              ]
+            }
+          },
+          {
+            "m": 4,
+            "axis": "X",
+            "N": 43,
+            "C": 54844,
+            "N_times_C": 2358292,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                8
+              ]
+            }
+          },
+          {
+            "m": 4,
+            "axis": "Y",
+            "N": 43,
+            "C": 54844,
+            "N_times_C": 2358292,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                9
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "X",
+            "N": 39,
+            "C": 109381,
+            "N_times_C": 4265859,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                10
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "Y",
+            "N": 39,
+            "C": 109381,
+            "N_times_C": 4265859,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                11
+              ]
+            }
+          },
+          {
+            "m": 6,
+            "axis": "X",
+            "N": 35,
+            "C": 218455,
+            "N_times_C": 7645925,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                12
+              ]
+            }
+          },
+          {
+            "m": 6,
+            "axis": "Y",
+            "N": 35,
+            "C": 218455,
+            "N_times_C": 7645925,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                13
+              ]
+            }
+          },
+          {
+            "m": 7,
+            "axis": "X",
+            "N": 31,
+            "C": 436603,
+            "N_times_C": 13534693,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                14
+              ]
+            }
+          },
+          {
+            "m": 7,
+            "axis": "Y",
+            "N": 31,
+            "C": 436603,
+            "N_times_C": 13534693,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                15
+              ]
+            }
+          },
+          {
+            "m": 8,
+            "axis": "X",
+            "N": 27,
+            "C": 872899,
+            "N_times_C": 23568273,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                16
+              ]
+            }
+          },
+          {
+            "m": 8,
+            "axis": "Y",
+            "N": 27,
+            "C": 872899,
+            "N_times_C": 23568273,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                17
+              ]
+            }
+          },
+          {
+            "m": 9,
+            "axis": "X",
+            "N": 23,
+            "C": 1745491,
+            "N_times_C": 40146293,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                18
+              ]
+            }
+          },
+          {
+            "m": 9,
+            "axis": "Y",
+            "N": 23,
+            "C": 1745491,
+            "N_times_C": 40146293,
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                19
+              ]
+            }
+          },
+          {
+            "m": 10,
+            "axis": "X",
+            "N": 19,
+            "C": 3490675,
+            "N_times_C": 66322825,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                20
+              ]
+            }
+          },
+          {
+            "m": 10,
+            "axis": "Y",
+            "N": 19,
+            "C": 3490675,
+            "N_times_C": 66322825,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                21
+              ]
+            }
+          },
+          {
+            "m": 11,
+            "axis": "X",
+            "N": 13,
+            "C": 6981043,
+            "N_times_C": 90753559,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                22
+              ]
+            }
+          },
+          {
+            "m": 11,
+            "axis": "Y",
+            "N": 13,
+            "C": 6981043,
+            "N_times_C": 90753559,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                23
+              ]
+            }
+          },
+          {
+            "m": 12,
+            "axis": "X",
+            "N": 4,
+            "C": 13961779,
+            "N_times_C": 55847116,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                24
+              ]
+            }
+          },
+          {
+            "m": 12,
+            "axis": "Y",
+            "N": 4,
+            "C": 13961779,
+            "N_times_C": 55847116,
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                25
+              ]
+            }
+          }
+        ],
+        "finite_scope_preflight": {
+          "maximum_round_outcomes": 3600,
+          "verification_pairs_upper": 38526308,
+          "transition_pairs_upper": 116519440,
+          "rule": "FULL_COUNT_SUPPORT_AND_FRONTIER_UPPER_BOUND_NO_PROBABILITY_EVALUATION"
+        }
+      },
+      "API_source": {
+        "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+        "path": "docs/research/pf6_cost_budget_q3_results_20261115/run01/FULL_PF_S2_16h_over_7__B_PRICE/API_RETURN.json"
+      }
+    },
+    {
+      "case": {
+        "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+        "total_view_id": "af18d37da2ffa763739fe6f01631c85516c210b8ce8e30fd949fbfaabf4755f5",
+        "binding_id": "69cc82b4dfc0d3f35020e5678f8202da2e5fcbb628a52646a0271c4fbe00dca0",
+        "configuration": {
+          "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+          "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/PLAN.json",
+          "selector": [
+            "configuration"
+          ]
+        },
+        "signal_packet": {
+          "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+          "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/B_SIGNAL_INPUT.json"
+        },
+        "evaluation_target": {
+          "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+          "energy_ha": -2.1663874486347634,
+          "source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          },
+          "truth_proxy_source": {
+            "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+            "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+            "selector": [
+              "records",
+              5,
+              "diagnostics"
+            ]
+          },
+          "original_target_source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4",
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "decomposition": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "preparation_binding": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                },
+                "state_preparation_cost": 0,
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                }
+              },
+              "source": {
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            }
+          },
+          "qualification_scope": "RAW_MODEL_DIAGNOSTIC_ONLY_NOT_CERTIFIED_GROUND_ENERGY"
+        },
+        "label": "FULL_PF_S2_M12_TWO_FIXED",
+        "edit": {
+          "m": 12,
+          "old_N_X": 4,
+          "old_N_Y": 4,
+          "new_N_X": 2,
+          "new_N_Y": 2
+        },
+        "allocation": {
+          "allocation_id": "FULL_PF_S2_16H_OVER7_M12_TWO_01",
+          "shot_policy": "USER_SUPPLIED",
+          "shots": [
+            {
+              "m": 0,
+              "N_X": 59,
+              "N_Y": 59
+            },
+            {
+              "m": 1,
+              "N_X": 55,
+              "N_Y": 55
+            },
+            {
+              "m": 2,
+              "N_X": 51,
+              "N_Y": 51
+            },
+            {
+              "m": 3,
+              "N_X": 47,
+              "N_Y": 47
+            },
+            {
+              "m": 4,
+              "N_X": 43,
+              "N_Y": 43
+            },
+            {
+              "m": 5,
+              "N_X": 39,
+              "N_Y": 39
+            },
+            {
+              "m": 6,
+              "N_X": 35,
+              "N_Y": 35
+            },
+            {
+              "m": 7,
+              "N_X": 31,
+              "N_Y": 31
+            },
+            {
+              "m": 8,
+              "N_X": 27,
+              "N_Y": 27
+            },
+            {
+              "m": 9,
+              "N_X": 23,
+              "N_Y": 23
+            },
+            {
+              "m": 10,
+              "N_X": 19,
+              "N_Y": 19
+            },
+            {
+              "m": 11,
+              "N_X": 13,
+              "N_Y": 13
+            },
+            {
+              "m": 12,
+              "N_X": 2,
+              "N_Y": 2
+            }
+          ]
+        },
+        "parent_allocation": {
+          "allocation_id": "FULL_PF_S2_16h_over_7_B_PRICE_COST_BUDGET_3O4_01",
+          "shot_policy": "USER_SUPPLIED",
+          "shots": [
+            {
+              "m": 0,
+              "N_X": 59,
+              "N_Y": 59
+            },
+            {
+              "m": 1,
+              "N_X": 55,
+              "N_Y": 55
+            },
+            {
+              "m": 2,
+              "N_X": 51,
+              "N_Y": 51
+            },
+            {
+              "m": 3,
+              "N_X": 47,
+              "N_Y": 47
+            },
+            {
+              "m": 4,
+              "N_X": 43,
+              "N_Y": 43
+            },
+            {
+              "m": 5,
+              "N_X": 39,
+              "N_Y": 39
+            },
+            {
+              "m": 6,
+              "N_X": 35,
+              "N_Y": 35
+            },
+            {
+              "m": 7,
+              "N_X": 31,
+              "N_Y": 31
+            },
+            {
+              "m": 8,
+              "N_X": 27,
+              "N_Y": 27
+            },
+            {
+              "m": 9,
+              "N_X": 23,
+              "N_Y": 23
+            },
+            {
+              "m": 10,
+              "N_X": 19,
+              "N_Y": 19
+            },
+            {
+              "m": 11,
+              "N_X": 13,
+              "N_Y": 13
+            },
+            {
+              "m": 12,
+              "N_X": 4,
+              "N_Y": 4
+            }
+          ]
+        },
+        "price_terms": [
+          {
+            "m": 0,
+            "axis": "X",
+            "N": 59,
+            "C": 8090,
+            "N_times_C": 477310,
+            "physical_id": "5669f142d693eee92583",
+            "original_candidate_id": "RMSE:3c4c498c24321838d73c1b7cf75ab1d85e98fe5cef11ae93f84b885038b4c0b3",
+            "total_candidate_id": "RMSE:9ce626f5257f5044cf63ba00de6d0a901bdd64900df34f27bee4dc22d78a2765",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                0
+              ]
+            }
+          },
+          {
+            "m": 0,
+            "axis": "Y",
+            "N": 59,
+            "C": 8090,
+            "N_times_C": 477310,
+            "physical_id": "5669f142d693eee92583",
+            "original_candidate_id": "RMSE:3c4c498c24321838d73c1b7cf75ab1d85e98fe5cef11ae93f84b885038b4c0b3",
+            "total_candidate_id": "RMSE:9ce626f5257f5044cf63ba00de6d0a901bdd64900df34f27bee4dc22d78a2765",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                1
+              ]
+            }
+          },
+          {
+            "m": 1,
+            "axis": "X",
+            "N": 55,
+            "C": 8090,
+            "N_times_C": 444950,
+            "physical_id": "eb745e6e4759d15f75bc",
+            "original_candidate_id": "RMSE:33458860c606f690274223c61cd41f5c4545d003d6223e24d3c0a639c3ab3c44",
+            "total_candidate_id": "RMSE:24d61011d2747a153746b05ccafbf36c91b5cb9adb5c58a31d9458a988220fbe",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                2
+              ]
+            }
+          },
+          {
+            "m": 1,
+            "axis": "Y",
+            "N": 55,
+            "C": 8090,
+            "N_times_C": 444950,
+            "physical_id": "eb745e6e4759d15f75bc",
+            "original_candidate_id": "RMSE:33458860c606f690274223c61cd41f5c4545d003d6223e24d3c0a639c3ab3c44",
+            "total_candidate_id": "RMSE:24d61011d2747a153746b05ccafbf36c91b5cb9adb5c58a31d9458a988220fbe",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                3
+              ]
+            }
+          },
+          {
+            "m": 2,
+            "axis": "X",
+            "N": 51,
+            "C": 15873,
+            "N_times_C": 809523,
+            "physical_id": "4433563c3a4ef7a61702",
+            "original_candidate_id": "RMSE:eb2b5293563561fc2d1e0b2862be2020f8d6100455f864933729e62e5a66c8e6",
+            "total_candidate_id": "RMSE:c5d6868694b0a85f067ab3ecc36b9b6cb41eaf0d89d934dec078e220e6afdc5e",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                4
+              ]
+            }
+          },
+          {
+            "m": 2,
+            "axis": "Y",
+            "N": 51,
+            "C": 15873,
+            "N_times_C": 809523,
+            "physical_id": "4433563c3a4ef7a61702",
+            "original_candidate_id": "RMSE:eb2b5293563561fc2d1e0b2862be2020f8d6100455f864933729e62e5a66c8e6",
+            "total_candidate_id": "RMSE:c5d6868694b0a85f067ab3ecc36b9b6cb41eaf0d89d934dec078e220e6afdc5e",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                5
+              ]
+            }
+          },
+          {
+            "m": 3,
+            "axis": "X",
+            "N": 47,
+            "C": 31439,
+            "N_times_C": 1477633,
+            "physical_id": "e2b139ad6211e2c63ae6",
+            "original_candidate_id": "RMSE:c1d579af36d4b35c70edaea7f0a84c1af178a4a967a3318a0bdf7c4ee197253b",
+            "total_candidate_id": "RMSE:264e51ee7e90f90d6efebf4fe0fcb1d4e5825fdcd0e790a3d95870e2d06d472c",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                6
+              ]
+            }
+          },
+          {
+            "m": 3,
+            "axis": "Y",
+            "N": 47,
+            "C": 31439,
+            "N_times_C": 1477633,
+            "physical_id": "e2b139ad6211e2c63ae6",
+            "original_candidate_id": "RMSE:c1d579af36d4b35c70edaea7f0a84c1af178a4a967a3318a0bdf7c4ee197253b",
+            "total_candidate_id": "RMSE:264e51ee7e90f90d6efebf4fe0fcb1d4e5825fdcd0e790a3d95870e2d06d472c",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                7
+              ]
+            }
+          },
+          {
+            "m": 4,
+            "axis": "X",
+            "N": 43,
+            "C": 54844,
+            "N_times_C": 2358292,
+            "physical_id": "b7c4e73538ec19070cde",
+            "original_candidate_id": "RMSE:71308acbb97113010c8b2a08c7c4e88998f91e71184c494e117dff271b1bb47c",
+            "total_candidate_id": "RMSE:5d609087cdb7241195abd9b0097c2928882ff01aaf23b2e55300294cd224bcf2",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                8
+              ]
+            }
+          },
+          {
+            "m": 4,
+            "axis": "Y",
+            "N": 43,
+            "C": 54844,
+            "N_times_C": 2358292,
+            "physical_id": "b7c4e73538ec19070cde",
+            "original_candidate_id": "RMSE:71308acbb97113010c8b2a08c7c4e88998f91e71184c494e117dff271b1bb47c",
+            "total_candidate_id": "RMSE:5d609087cdb7241195abd9b0097c2928882ff01aaf23b2e55300294cd224bcf2",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                9
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "X",
+            "N": 39,
+            "C": 109381,
+            "N_times_C": 4265859,
+            "physical_id": "8df73ab164fac57bfd6c",
+            "original_candidate_id": "RMSE:8c2315761a0202d09d381c6feeca9ae775650b46cf0beed40491d190414f945a",
+            "total_candidate_id": "RMSE:98a64404e828f3693dd22e4f426ef1b504016b66c2a9909bcbdd344cdfe7fefe",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                10
+              ]
+            }
+          },
+          {
+            "m": 5,
+            "axis": "Y",
+            "N": 39,
+            "C": 109381,
+            "N_times_C": 4265859,
+            "physical_id": "8df73ab164fac57bfd6c",
+            "original_candidate_id": "RMSE:8c2315761a0202d09d381c6feeca9ae775650b46cf0beed40491d190414f945a",
+            "total_candidate_id": "RMSE:98a64404e828f3693dd22e4f426ef1b504016b66c2a9909bcbdd344cdfe7fefe",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                11
+              ]
+            }
+          },
+          {
+            "m": 6,
+            "axis": "X",
+            "N": 35,
+            "C": 218455,
+            "N_times_C": 7645925,
+            "physical_id": "4f3984c6d381fa0ca848",
+            "original_candidate_id": "RMSE:a2ea9428a626a7df97001159f50327197b20045ae5d6b27d0901f07c5678b523",
+            "total_candidate_id": "RMSE:392a832d721a49c727975e54d85bb7ca0fd655927c3c374a7246b7cdecf4771e",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                12
+              ]
+            }
+          },
+          {
+            "m": 6,
+            "axis": "Y",
+            "N": 35,
+            "C": 218455,
+            "N_times_C": 7645925,
+            "physical_id": "4f3984c6d381fa0ca848",
+            "original_candidate_id": "RMSE:a2ea9428a626a7df97001159f50327197b20045ae5d6b27d0901f07c5678b523",
+            "total_candidate_id": "RMSE:392a832d721a49c727975e54d85bb7ca0fd655927c3c374a7246b7cdecf4771e",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                13
+              ]
+            }
+          },
+          {
+            "m": 7,
+            "axis": "X",
+            "N": 31,
+            "C": 436603,
+            "N_times_C": 13534693,
+            "physical_id": "a80a87e65d70d3ad37cd",
+            "original_candidate_id": "RMSE:853d9e0079ce0adf7a5a74d5499489cf752fa2c71f5d72bcaca94c1a3dc49542",
+            "total_candidate_id": "RMSE:5a751d8bc1d4a4a67887083eb47d8f7b3d73d8d16c5b71a3282a944eae0b5d55",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                14
+              ]
+            }
+          },
+          {
+            "m": 7,
+            "axis": "Y",
+            "N": 31,
+            "C": 436603,
+            "N_times_C": 13534693,
+            "physical_id": "a80a87e65d70d3ad37cd",
+            "original_candidate_id": "RMSE:853d9e0079ce0adf7a5a74d5499489cf752fa2c71f5d72bcaca94c1a3dc49542",
+            "total_candidate_id": "RMSE:5a751d8bc1d4a4a67887083eb47d8f7b3d73d8d16c5b71a3282a944eae0b5d55",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                15
+              ]
+            }
+          },
+          {
+            "m": 8,
+            "axis": "X",
+            "N": 27,
+            "C": 872899,
+            "N_times_C": 23568273,
+            "physical_id": "c11e4c72179cc662ceb0",
+            "original_candidate_id": "RMSE:2e6140dc307646386f20857021b817ae64907b1c41fbf7deeacc90d21816545c",
+            "total_candidate_id": "RMSE:62dfea6881f311b8f4a8912a8daee236ae0876bdcae7df551b9ff433cb747ff8",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                16
+              ]
+            }
+          },
+          {
+            "m": 8,
+            "axis": "Y",
+            "N": 27,
+            "C": 872899,
+            "N_times_C": 23568273,
+            "physical_id": "c11e4c72179cc662ceb0",
+            "original_candidate_id": "RMSE:2e6140dc307646386f20857021b817ae64907b1c41fbf7deeacc90d21816545c",
+            "total_candidate_id": "RMSE:62dfea6881f311b8f4a8912a8daee236ae0876bdcae7df551b9ff433cb747ff8",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                17
+              ]
+            }
+          },
+          {
+            "m": 9,
+            "axis": "X",
+            "N": 23,
+            "C": 1745491,
+            "N_times_C": 40146293,
+            "physical_id": "a4ec53ff4e60d60a2930",
+            "original_candidate_id": "RMSE:6c45d3029062e7ed7eab64a4b6a4faf4181768c96653fb29af291f32b33d8e4e",
+            "total_candidate_id": "RMSE:0e055f225ccac51da2d416e2b102e94de1aa5eb93b594ddb6fb48e0a5e7c3b7c",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                18
+              ]
+            }
+          },
+          {
+            "m": 9,
+            "axis": "Y",
+            "N": 23,
+            "C": 1745491,
+            "N_times_C": 40146293,
+            "physical_id": "a4ec53ff4e60d60a2930",
+            "original_candidate_id": "RMSE:6c45d3029062e7ed7eab64a4b6a4faf4181768c96653fb29af291f32b33d8e4e",
+            "total_candidate_id": "RMSE:0e055f225ccac51da2d416e2b102e94de1aa5eb93b594ddb6fb48e0a5e7c3b7c",
+            "price_class": "DIRECT_COMPILED_DETERMINISTIC",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                19
+              ]
+            }
+          },
+          {
+            "m": 10,
+            "axis": "X",
+            "N": 19,
+            "C": 3490675,
+            "N_times_C": 66322825,
+            "physical_id": "d86b55e4b1f65ea9cd14",
+            "original_candidate_id": "RMSE:dda03811a36e42a9824a8909d67f4137f34f1b518bb3635f9b0b288976ba1e43",
+            "total_candidate_id": "RMSE:825796be519c67c7c250ed4dd711a50451d4e71983d7070edd543aa330de4ce4",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                20
+              ]
+            }
+          },
+          {
+            "m": 10,
+            "axis": "Y",
+            "N": 19,
+            "C": 3490675,
+            "N_times_C": 66322825,
+            "physical_id": "d86b55e4b1f65ea9cd14",
+            "original_candidate_id": "RMSE:dda03811a36e42a9824a8909d67f4137f34f1b518bb3635f9b0b288976ba1e43",
+            "total_candidate_id": "RMSE:825796be519c67c7c250ed4dd711a50451d4e71983d7070edd543aa330de4ce4",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                21
+              ]
+            }
+          },
+          {
+            "m": 11,
+            "axis": "X",
+            "N": 13,
+            "C": 6981043,
+            "N_times_C": 90753559,
+            "physical_id": "ee6d77a5b25f2a37992f",
+            "original_candidate_id": "RMSE:21d49ecd3c1df70bc173055c6cc99d09bd09aac3073b60ae9a398aac6f0a683c",
+            "total_candidate_id": "RMSE:18aabfa342abfe652c1252306b56b75e9661f8beb6a4824943d6b9aea4772b19",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                22
+              ]
+            }
+          },
+          {
+            "m": 11,
+            "axis": "Y",
+            "N": 13,
+            "C": 6981043,
+            "N_times_C": 90753559,
+            "physical_id": "ee6d77a5b25f2a37992f",
+            "original_candidate_id": "RMSE:21d49ecd3c1df70bc173055c6cc99d09bd09aac3073b60ae9a398aac6f0a683c",
+            "total_candidate_id": "RMSE:18aabfa342abfe652c1252306b56b75e9661f8beb6a4824943d6b9aea4772b19",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                23
+              ]
+            }
+          },
+          {
+            "m": 12,
+            "axis": "X",
+            "N": 2,
+            "C": 13961779,
+            "N_times_C": 27923558,
+            "physical_id": "923d811dd2e493ca3f37",
+            "original_candidate_id": "RMSE:36272c751f6b952b00e2ecc227e904b8cbaa8f10a303347f0383a746b60d48da",
+            "total_candidate_id": "RMSE:e4b963a72d8bfa83081c1c1e1810e558196bfddb7a6d280e6857e88e66c83d44",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                24
+              ]
+            }
+          },
+          {
+            "m": 12,
+            "axis": "Y",
+            "N": 2,
+            "C": 13961779,
+            "N_times_C": 27923558,
+            "physical_id": "923d811dd2e493ca3f37",
+            "original_candidate_id": "RMSE:36272c751f6b952b00e2ecc227e904b8cbaa8f10a303347f0383a746b60d48da",
+            "total_candidate_id": "RMSE:e4b963a72d8bfa83081c1c1e1810e558196bfddb7a6d280e6857e88e66c83d44",
+            "price_class": "CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION",
+            "price_source": {
+              "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+              "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json",
+              "selector": [
+                "rows",
+                25
+              ]
+            }
+          }
+        ],
+        "conditional_cost": 559457386,
+        "conditional_cost_m0_m11": 503610270,
+        "conditional_cost_m12": 55847116,
+        "reference_cost_RZ": 615304502,
+        "reduction_RZ": 55847116,
+        "finite_scope_preflight": {
+          "maximum_round_outcomes": 3600,
+          "verification_pairs_upper": 38523172,
+          "transition_pairs_upper": 116388368,
+          "rule": "FULL_COUNT_SUPPORT_AND_FRONTIER_UPPER_BOUND_NO_PROBABILITY_EVALUATION"
+        }
+      },
+      "API_source": {
+        "commit": "a006b8e15f86ee42ed66f89fbd1def721d027e87",
+        "path": "docs/research/full_pf_s2_m12_two_results_20261116/run01/FULL_PF_S2_M12_TWO_FIXED/API_RETURN.json"
+      }
+    }
+  ],
+  "concurrent_configurations": 1,
+  "maximum_scientific_calls": 1,
+  "seed_case_source": {
+    "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+    "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+    "selector": [
+      "cases",
+      1
+    ]
+  },
+  "price_rows_source": {
+    "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+    "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json"
+  },
+  "previous_achieved_cost_RZ": 559457386,
+  "comparisons": [
+    {
+      "m12": 4,
+      "cost_RZ": 615304502,
+      "API_source": {
+        "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+        "path": "docs/research/pf6_cost_budget_q3_results_20261115/run01/FULL_PF_S2_16h_over_7__B_PRICE/API_RETURN.json"
+      }
+    },
+    {
+      "m12": 2,
+      "cost_RZ": 559457386,
+      "API_source": {
+        "commit": "a006b8e15f86ee42ed66f89fbd1def721d027e87",
+        "path": "docs/research/full_pf_s2_m12_two_results_20261116/run01/FULL_PF_S2_M12_TWO_FIXED/API_RETURN.json"
+      }
+    }
+  ],
+  "p7_context": {
+    "m12_two_result": {
+      "commit": "93ab9dbbe610d66eba39ea9299b070a13a867a3e",
+      "path": "docs/research/p7_s2_m12_two_results_20261116/EXACT_COMPARISON.json"
+    },
+    "m12_one_result": {
+      "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+      "path": "docs/research/p7_s2_m12_one_results_20261116/EXACT_COMPARISON.json"
+    },
+    "use": "CONTEXT_ONLY_DIFFERENT_PHYSICAL_CANDIDATE_NOT_REUSED"
+  },
+  "duplicate_check": "SEE_SCOPE_AND_PREFLIGHT.md",
+  "signal_recomputed": false,
+  "sufficient_N": null,
+  "global_RMSE_bound": null,
+  "G": null,
+  "G_qualified": null,
+  "winner": null,
+  "basis_case_source": {
+    "commit": "a006b8e15f86ee42ed66f89fbd1def721d027e87",
+    "path": "docs/research/full_pf_s2_m12_two_results_20261116/INPUTS.json",
+    "selector": [
+      "cases",
+      0
+    ]
+  },
+  "decision_rule": {
+    "meets": "UPDATE_ACHIEVED_COST_TO_ONE_SHOT",
+    "exceeds": "KEEP_TWO_SHOT_AND_RECORD_TWO_SHOT_CHEAPEST_FOR_OTHER_ROUNDS_FIXED_M12_X_EQ_Y_AT_LEAST_ONE",
+    "inconclusive_or_unknown": "HOLD_ONE_SHOT_AND_KEEP_CONFIRMED_ACHIEVED_COST"
+  }
+}
