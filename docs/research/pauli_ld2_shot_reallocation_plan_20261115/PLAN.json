@@ -68,20 +68,29 @@
   },
   "proposals": [
     {
-      "id": "P7-B",
+      "id": "FPN-B",
       "stage": 1,
       "rule": "B_PRICE",
-      "budget": 593555352,
-      "budget_basis": "B0I p7 S2 achieved fixed-shot cost (B2 1002f1dfe); replace by the then-current minimum Q3-passing PF cost if the user so decides",
-      "question": "Can price-aware reallocation reach the current deterministic-PF minimum while meeting the adopted Q3 threshold?"
+      "budget": 615304502,
+      "question": "With m12 forced to one shot per axis, can LD2 meet the threshold at or below the Full PF minimum? Largest current PF-minimum budget."
     },
     {
-      "id": "PF-B",
+      "id": "OWN-B",
       "stage": 1,
       "rule": "B_PRICE",
-      "budget": 838693580,
-      "budget_basis": "Full PF S2 achieved fixed-shot cost (B2 1002f1dfe)",
-      "question": "Can it reach the Full PF S2 benchmark?"
+      "budget": {
+        "numerator": 457838523809627997,
+        "denominator": 180686938
+      },
+      "question": "Can LD2 keep the threshold at 25% lower own cost when the cut falls mainly on m12 (9 to a few shots)?"
+    },
+    {
+      "id": "P7N-B",
+      "stage": 2,
+      "rule": "B_PRICE",
+      "budget": 435481090,
+      "condition": "if FPN-B meets",
+      "question": "Can LD2 reach the current PF minimum?"
     },
     {
       "id": "OWN-A",
@@ -91,38 +100,29 @@
         "numerator": 457838523809627997,
         "denominator": 180686938
       },
-      "budget_basis": "3/4 x T_ref (same beta as the adopted PF6 design)",
-      "question": "Can LD2 keep the threshold at 25% lower own cost with its original shape?"
+      "condition": "if OWN-B (and FPN-B) fail",
+      "question": "Does uniform shape-preserving shrink keep the threshold at the same budget?"
     },
     {
-      "id": "OWN-B",
+      "id": "MID",
       "stage": 2,
-      "rule": "B_PRICE",
-      "budget": {
-        "numerator": 457838523809627997,
-        "denominator": 180686938
-      },
-      "budget_basis": "3/4 x T_ref",
-      "question": "At the same budget, does price-aware reallocation keep the threshold better than shape preservation?"
+      "rule": "A_SHAPE or B_PRICE",
+      "budget": "one intermediate value, e.g. 838693580 (A_SHAPE keeps m12 at 2)",
+      "condition": "if FPN-B fails and OWN-B meets"
     },
     {
-      "id": "P7-A",
+      "id": "OLD-BASELINES",
       "stage": "optional",
-      "rule": "A_SHAPE",
-      "budget": 593555352,
-      "question": "Uniform shrink without reallocation (early rounds become single-digit shots); low priority"
-    },
-    {
-      "id": "PF-A",
-      "stage": "optional",
-      "rule": "A_SHAPE",
-      "budget": 838693580,
-      "question": "Same at the Full PF S2 budget; low priority"
+      "budgets": [
+        593555352,
+        838693580
+      ],
+      "note": "PF original-allocation costs; weaker for the comparison because PF already went lower"
     }
   ],
   "recommended_first_batch": [
-    "P7-B",
-    "PF-B"
+    "FPN-B",
+    "OWN-B"
   ],
   "new_Q3_calls": {
     "stage1": 2,
@@ -137,7 +137,9 @@
       "17572687.31",
       "62415678.57",
       "233914358.00"
-    ]
+    ],
+    "m0_m9_VP_plus_m10_m12_N1_display": "494609700",
+    "m12_N1_forced_at_all_PF_budgets": true
   },
   "interpretation": {
     "q3_depends_only_on_N": true,
@@ -170,8 +172,8 @@
     "kernel": "710aa69b663ef3313439762d25c80a652a03948f",
     "accelerator": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
     "pf_benchmarks": {
-      "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
-      "path": "docs/research/pf6_allround_cost_20261115/RESULT.json"
+      "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+      "path": "docs/research/pf6_cost_budget_q3_results_20261115/"
     }
   },
   "existing_LD2_Q3": [
@@ -199,5 +201,83 @@
   "sufficient_N": null,
   "G": null,
   "winner": null,
-  "mandatory_stop": true
+  "mandatory_stop": true,
+  "revision": {
+    "previous_commit": "c5a417784c695811909f61417f71f76c6ce27f5a",
+    "reason": "B published PF6 cost-budget Q3 results (b4296b110) just before the first version; PF achieved minima and the first-batch recommendation are updated"
+  },
+  "pf_benchmarks": [
+    {
+      "label": "B0I_P7_S2_B_PRICE",
+      "cost": 435481090,
+      "role": "current PF minimum",
+      "source": {
+        "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+        "path": "docs/research/pf6_cost_budget_q3_results_20261115/REPORT.md"
+      }
+    },
+    {
+      "label": "FULL_PF_S2_B_PRICE",
+      "cost": 615304502,
+      "role": "Full PF minimum",
+      "source": {
+        "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+        "path": "docs/research/pf6_cost_budget_q3_results_20261115/REPORT.md"
+      }
+    },
+    {
+      "label": "B0I_P7_S2_VD",
+      "cost": 593555352,
+      "role": "original allocation",
+      "source": {
+        "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+        "path": "docs/research/pf6_allround_cost_20261115/RESULT.json"
+      }
+    },
+    {
+      "label": "FULL_PF_S2_VD",
+      "cost": 838693580,
+      "role": "original allocation",
+      "source": {
+        "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+        "path": "docs/research/pf6_allround_cost_20261115/RESULT.json"
+      }
+    }
+  ],
+  "pf_evidence_on_late_round_cuts": {
+    "source": {
+      "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+      "path": "docs/research/pf6_cost_budget_q3_results_20261115/REPORT.md"
+    },
+    "rows": [
+      {
+        "case": "S2 B_PRICE",
+        "m10_m11_m12": [
+          19,
+          13,
+          4
+        ],
+        "verdict": "MEETS"
+      },
+      {
+        "case": "Y4 B_PRICE",
+        "m10_m11_m12": [
+          19,
+          7,
+          2
+        ],
+        "verdict": "MEETS_NEAR_TAU"
+      },
+      {
+        "case": "M5 B_PRICE",
+        "m10_m11_m12": [
+          13,
+          5,
+          1
+        ],
+        "verdict": "EXCEEDS_LOWER_BOUND_ABOVE_TAU"
+      }
+    ],
+    "transfer_to_Pauli": "not transferable; indicates the final-round shot count can decide the verdict"
+  }
 }
