@@ -6,6 +6,8 @@ from fractions import Fraction
 import json
 from pathlib import Path
 import subprocess
+import sys
+if hasattr(sys,'set_int_max_str_digits'):sys.set_int_max_str_digits(0)
 ROOT=Path(__file__).resolve().parents[1]
 PUBLIC='docs/research/d_pr_df_ld_split_results_20261115'
 CALLER='scripts/freeze_pr_df_ld_split.py'
@@ -82,6 +84,13 @@ def freeze(source,raw):
     write(ROOT/PUBLIC/'FROZEN_LD2_MODELS.json',dict(source=source,raw_commit=raw,formula='C_ref=theta0+thetaq*q+thetaE*qR; full wrapper; model offset zero',models=models,means=means,
         finite_cohort_is_law_expectation=False,model_verdict='NOT_ASSESSED_NO_ADOPTED_TOLERANCE',long_round_warning='m7..12 extrapolate beyond q64/R40; three-point interpolation is not a validation'))
     write(ROOT/PUBLIC/'AXIS_PRICES.json',dict(source=source,rows=rows,LD1_refit=False,LD1_prices_reused=26,new_LD2_references=26))
+    return allocate(source)
+
+def allocate(source):
+    if blob(source,CALLER)!=(ROOT/CALLER).read_bytes():raise ValueError('Unfixed allocation SOURCE')
+    fixed=json.loads((ROOT/PUBLIC/'FROZEN_LD2_MODELS.json').read_text())
+    raw=fixed['raw_commit']
+    rows=json.loads((ROOT/PUBLIC/'AXIS_PRICES.json').read_text())['rows']
     old=read(Q3,QDIR+'INPUTS.json');menu=[];cases=[]
     for L in (1,2):
         prices=[dec(r['C_ref'])for r in rows if r['L_D']==L]
@@ -115,4 +124,4 @@ def freeze(source,raw):
         selection='Minimum actual model cost among Q3 admitted V0/A_SHAPE/B_PRICE; retain ties',price_quality='MODEL_REFERENCE_NOT_QUALIFIED_EXPECTATION',new_signal=0))
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--raw',required=True);a=p.parse_args();freeze(a.source,a.raw)
+    p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--raw');p.add_argument('--allocations-only',action='store_true');a=p.parse_args();allocate(a.source) if a.allocations_only else freeze(a.source,a.raw)
