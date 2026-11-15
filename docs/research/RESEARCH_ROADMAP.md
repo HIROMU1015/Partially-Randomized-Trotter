@@ -1,29 +1,22 @@
 # 統合研究ロードマップ
 
-Repository：`HIROMU1015/Partially-Randomized-Trotter`。最新確認：**2026-11-15 JST**（統合branchのremote HEAD `e123b917a` を基点に、決定論PF・PR-DF LD1・Full-H κ2 D7の既反映固定成果と後続公開状況、ユーザー確認の採択・指示送付・稼働状況を照合。その他の系列は既存記載を保全）。
+Repository：`HIROMU1015/Partially-Randomized-Trotter`。最新確認：**2026-11-15 JST**（統合branchのremote HEAD `518377f1771f7950289127f086bde04a0bc3796d` を基点に、5方式・14 scheduleの固定成果と依存関係を棚卸し。確認中に公開されたCのPF60価格、B2の全13round集計、BのFull-H κ2・1.5倍配分完了も反映。確認範囲は§11）。
 
 この文書は、研究の目的・現在地・不足している証拠・次の進行順序を一か所で把握するための入口である。科学的な結果・SOURCE・検証内容の正本は、リンク先の個別REPORTである。本書は新しい科学計算・数値再解析・採択を含まない。
 
 ## 0. 現在地サマリー
 
-**研究全体**
-- 研究は「リソース評価」と「アルゴリズム改善」の二系列からなる（§2）。
-- リソース評価は、固定された有限taskでの資源地図（H4/H6/H8、DF/Pauli、有限時間）までは多くの証拠がある。一方、**RPE全roundの総資源を共通条件で方式比較した結果は、まだ一つも確定していない**。
-- 現在の作業の中心は、H4（DF10）でのRPE全13roundの総資源 G の比較である（§3）。5方式（PR-DF、PR-Pauli、Full PF、Truncated PF、Full-H pure RTE）を対象に、精度側（信号→推定器→MSE→N）と価格側（実回路→直接価格→価格モデル→E[C]）を別々に積み上げている。
+研究はリソース評価とアルゴリズム改善の二系列からなる（§2）。現在の中心はH4 DF10・5方式の全13round資源比較である。**直近の到達点は、各方式のQ3適合済み候補と実際に評価した固定shot配分を使う条件付き比較**（§3.4）。十分N・物理的global RMSE・正式Gの比較とは分ける。
 
-**確認済みの進捗と採択**
-- 主精度評価は、**Z1＋T1 total decoderによる保存DF10 solver energy proxyへのQ3直接モデルMSE**を採択済み。保存ideal finite-K raw・IID二項モデルを前提とし、閾値は $\tau=(0.00159360010199040\,\mathrm{Ha})^2$（§3）。旧REPORTの「未採択」は当時の履歴である。
-- **5方式に固定配分での条件付きQ3モデル閾値適合がある。** Full PF・B0I p7各3候補は全13round・B intake6/6完成、共通固定shotで6/6適合（[A][A_PF_COMPLETE]、[B][B_PF_FIXED]）。Pauli LD1/LD2は3/4配分2件（[B][B_PAULI_3Q]）、PR-DF LD1/LD2は固定control各1件（[B][B_PRDF_FULLH]）、Full-H κ2は2倍配分1件で適合（[B][B_FULLH_2X]）。Full-Hの元controlは閾値超過であり、2倍配分とは別結果である。PF6件は**保存componentから科学的再計算なしで判定を復元、実行記録は部分保存**。その最終API return・CPU・peak RAM欠測は保持する。
-- 決定論PF：m6に続き、**m9独立holdoutも新規12 compile・モデルPASS/FAIL/UNKNOWN＝12/0/0、全軸で固定予測と観測RZが完全一致**（[D m9 HANDOFF][D_PF_M9_RESULT]）。m0も新規12 compile・有効12軸、モデル判定なし（[D][D_PF_M0]）。m0完了時の72/156軸に、その後公開されたm1/m2の新規24 compile・有効24軸を加え、**直接価格は96/156軸**（m0〜m6・m9が各12軸）。m1/m2にもモデル判定はない（[D][D_PF_M12]）。m3保存12軸はC受入済みで、較正・holdoutへ付け替えていない（[C][C_PF_M3]）。各取得完了後mandatory STOP。
-- PR-DF LD1：E[S]26/26・m0/m6有限価格接続に続き、**m3取得 → Cの軸別2モデル・m4予測2件の事前凍結 → D2の独立m4取得・比較 → C受入まで完了**。m4 fresh4 path・X/Y計8 compile、Cはreceipt8/8・比較2/2受入、保留0。X/Yとも観測平均129,692.5 RZ、(P−O)/O≈−0.544502%、**DESCRIPTIVE_COMPLETE、数値許容差・モデルPASS/FAILなし**（[C最終HANDOFF][C_PRDF_M4_ADMISSION]）。PR-Pauli LD2：m5/m6独立holdoutは3 fresh path・6 compile、4/4比較単位が有効、**DESCRIPTIVE_COMPLETE**。符号付き相対誤差はm5 X/Y各+0.044612%、m6 X/Y各+0.157666%。モデルの数値許容差・PASS/FAILはない（[D2][D2_HOLDOUT]）。
+- **精度側**：主評価は採択済みZ1＋T1 total decoderの保存DF10 solver energy proxyに対するQ3直接モデルMSE、保存ideal finite-K raw・IID二項モデル、閾値 $\tau=(0.00159360010199040\,\mathrm{Ha})^2$。PF6候補、PR-DF LD1/LD2、Pauli LD1/LD2に評価済み固定配分での適合がある。**Full-H κ2は固定1.5倍配分も1回評価完了・適合・mandatory STOP**（[B][B_FULLH_3O2]）。初回比較の第一候補はこの1.5倍配分とする。元control不適合・保存2倍適合は別成果として保全する。配分一覧は§4.4。
+- **決定論PFの初回総額は完成**：6候補の直接価格96軸（m0〜m6・m9）と、ユーザー採択済み閉包条件による導出60軸（m7/m8/m10〜m12）を区別。**Cの60価格公開・B2の156軸結合と固定配分全13round集計まで完了**（[C HANDOFF][C_PF60]、[B2 HANDOFF][B2_PF_TOTAL]）。初回比較に使う方式内最小はFull PF S2・幅16h/7＝**838,693,580 RZ**、B0I p7 S2・幅16h/7＝**593,555,352 RZ**。いずれも閉包条件付き総額の転記であり、未観測60軸の誤差上界・CI・2%保証はない。C/B2は完了後STOP、価格表待ち・集計待ちは解消。
+- **PR-DF LD1**：保存構造期待値 E_I[S] は26/26軸接続済み。m0/m3/m6の有限較正と独立m4記述的比較・C受入に加え、全13round計画、F0のC受入、**26軸の条件付き期待残差差上界を公開済み**（[D2計画][D2_PRDF_EC_PLAN]、[C F0][C_PRDF_F0]、[D2上界HANDOFF][D2_PRDF_RANGE]）。ただし実PCG64のseed ensemble/joint lawとIID格子lawの接続、有限残差推定・長round移送は未確定。E_I[S]・有限観測・条件付き上界をE[C]と同一視しない。LD2の同条件価格は確認範囲で未同定。
+- **PR-Pauli LD2**：5 cell較正・2モデル凍結・m5/m6の4件の記述的比較は完了。後続m9案Bは採択され、**X/Y2予測の観測前凍結と技術準備を公開済み**（[C2][PAULI_M9_PREP]）。fresh2 path・最大4 compileの取得開始・結果公開は固定成果で未確認。全13roundの対象law期待価格・CIは未資格。LD1はm0のB0 1 pathに限る。
+- **Full-H κ2価格**：D7全5 cell・9 path・18実compileの較正、C受入10 record・2モデル・m5/m6の4予測凍結は完了。D1 holdoutは指示送付済み・作業中というユーザー確認に加え、**m5 fresh2 path・4 compileの取得/必要gate PASSを固定公開**（[D1 m5][D1_M5_STATUS]）。m6 fresh1 path・2 compileも取得/必要gate PASSを固定公開済み（[D1 m6][D1_M6_STATUS]）。最終4比較の完了報告は未確認。較正/取得gateのPASS、記述的比較、26軸E[C]資格は別である。
 
-**最も重要な未解決事項と現在の依存関係**
-1. **物理的に十分なN、global RMSE保証は未確定。** 上記の固定配分での条件付きモデル閾値適合を、十分N・最適Nや物理保証に昇格させない。BのPF評価の最終API return・CPU・peak RAMは欠測であり、それを埋める再実行を残作業にはしない。
-2. **全13roundで資格のあるE[C]は、どの方式にも揃っていない。** 決定論PFの直接価格は96/156軸まで完成、未取得はm7/m8/m10〜m12の60軸。m6・m9のモデルPASSは当該点のみで、m0/m1/m2の直接価格にモデル判定を付けず、他roundの外挿資格へ移さない。残60軸の技術調査指示はユーザー確認で作成済み、送付・着手・完了は未確認。追加compileは決定済みとしない。
-3. PR-DF LD1のm3取得・fit・m4比較・C受入待ちは解消し、各取得の完了後STOPを保全する。**D2は全13roundのE[C]評価計画を作業中（ユーザー確認）**。保存ideal lawのE[S]と実装samplerの有限path残差をどこまで接続できるかを調査する段階で、新規価格取得・正式E[C]算出の開始ではない。m4の `DESCRIPTIVE_COMPLETE / NOT_ASSESSED_NO_ADOPTED_TOLERANCE`・許容差nullを維持し、全law E[C]・CI・長round移送を認定しない。
-4. Full-H κ2 D7は**全5 cell・9 path・18実compile・D1最終検査PASS18、FAIL/未取得0、10較正record引渡し完了**（[D1][D1_FINAL]）。G36223最終検証で再利用した4 compileは18件の内数、追加0。後続[C固定HANDOFF][C_FULLH_HANDOFF]で**10 record受入・保留0、軸別3係数の2モデルfit、m5/m6×X/Yの4予測凍結も完了**を確認した。当該作業の完了後STOPは保全する。**C2の4件の記述的比較規則はユーザー採択済み、独立holdout実行指示はD1へ送付済み、D1作業中（ユーザー確認）**。範囲はm5 fresh2 path・m6 fresh1 path、X/Y計6 compile・比較4件。固定完了報告は未受領で、途中の取得数・有効数を推定しない。[規則案][C2_FULLH_RULE]の「採択待ち」は公開当時の履歴として保全し、数値許容差・モデルPASS/FAILを付けない。モデルのCALIBRATED_UNVALIDATED・qualified_for_candidate=false、旧SOURCE・STOPも維持する。
+**不足と並行作業**：第一比較に向けた価格側の不足はランダム化3方式の同一候補・対象law・26軸E[C]。PR-DF自身のlaw/残差評価計画、Pauli/Full-Hの全26軸価格根拠の設計は、PF総額や取得中holdoutを待たずに進められる（§8.2）。最終結合だけが各価格表を待つ。新しい価格精度・確率モデル・条件付き利用範囲の採択と科学実行は別途必要であり、本書は採択・指示送付を行わない。
 
-**G・winner はすべての方式で未確定（null）である。**
+**十分N・物理的global RMSE保証・5方式の正式G・winnerは未確定（null）。** PF6件のQ3は保存componentから再計算なしで判定を復元した部分保存のまま（最終API return・CPU・peak RAM欠測）。欠測補完の再実行は残作業に加えない。
 
 ## 1. 文書の役割
 
@@ -130,6 +123,14 @@ $$
 
 **nominal N を十分 N として扱わない。** 両水準の出力は別fieldで管理されている。
 
+### 3.4 直近の到達点：評価済み固定配分での全13round比較
+
+各方式から少なくとも1つのQ3適合済み物理候補を使い、その候補で**実際に評価した** $N_X,N_Y$ とm0〜m12・X/Y計26軸の測定付きfull controlled Hadamard wrapperのcompiled RZ価格を結合する。これは第1水準のnominal Nでも、十分Nを認定する第2水準でもない。既存の二水準の定義は変更しない。
+
+決定論PFでは直接価格と採択済み条件付き閉包価格を区別して総額が公開済み（[B2][B2_PF_TOTAL]）。ランダム化方式では対象lawの期待価格、その評価誤差・適用条件が不足する。有限path平均・凍結予測・期待残差差の上界はそのまま別種の証拠として示し、互いを置換して同じ期待総額や順位を確定しない。別の条件付きモデルシナリオや上界による比較を採用するなら、law・26軸の根拠・不確かさと主張範囲を先に明示し、別判断を受ける。
+
+状態準備P=0、候補/round/axis/law/compiler/lowering/scalarの束縛を維持する。十分Nの認定や物理的global RMSE保証を、この最初の比較の前提として追加しない。一方、固定配分でのモデル適合を物理保証・正式G・5方式のwinnerへ昇格しない。
+
 ## 4. 研究課題と実装・検証の対応
 
 実装pathは、併記した固定commitに存在することを確認した。`main` には無いものが多い。
@@ -168,13 +169,21 @@ $$
 |---|---|
 | 研究上の問い | 与えたshot配分の下で、エネルギー推定の誤差（MSE）はどこまで抑えられるか |
 | 実装 | B `999304918`：`src/trottertracks/rpe_total_decoder.py`、`rpe_total_risk.py`、`rpe_deterministic_risk.py`、`rpe_total_binding.py`、`rpe_c_interfaces.py`、`pr_rpe_rmse_controller.py`。test：`tests/check_rpe_total_decoder_risk.py` |
-| 検証 | [精度契約W0][B_W0]、[Z1＋T1/Q3][B_Z1]、[PR-DF旧部分decoder DP][B_DP]、[Pauli元control2評価][B_Q3]、[Pauli3/4配分2評価][B_PAULI_3Q]、[決定論PF固定shot6評価][B_PF_FIXED]、[PR-DF/Full-H固定評価][B_PRDF_FULLH]、[Full-H κ2・2倍配分][B_FULLH_2X] |
-| 到達点 | Full PF/B0I p7各3候補は共通 `[59,55,51,47,43,39,35,31,27,23,19,15,11]` で6/6適合。保存componentから科学的再計算なしで判定を復元、実行記録は部分保存、最終API return・CPU・peak RAM欠測。Pauli LD1/LD2の3/4配分2件、PR-DF LD1/LD2の固定control2件、Full-H κ2の2倍配分1件も適合し、5方式に条件付きモデル閾値適合がある。Full-H元controlはMSE下界も閾値超過で、2倍配分とは別成果 |
+| 検証 | [精度契約W0][B_W0]、[Z1＋T1/Q3][B_Z1]、[PR-DF旧部分decoder DP][B_DP]、[Pauli元control][B_Q3]・[3/4配分][B_PAULI_3Q]、[PF固定6評価][B_PF_FIXED]、[PR-DF/Full-H元control][B_PRDF_FULLH]、[Full-H κ2・2倍][B_FULLH_2X]・[1.5倍][B_FULLH_3O2] |
+| 到達点 | PF共通固定shot6/6、Pauli3/4配分2件、PR-DF固定control2件が適合。Full-H κ2は元control不適合・固定1.5倍適合・保存2倍適合の3成果がある（[B][B_FULLH_3O2]）。1.5倍は1 call完了・mandatory STOP、原API/資源記録保存済み。PF6件は保存componentから判定復元、実行記録部分保存・最終API return/CPU/peak RAM欠測のまま |
 | 科学的資格 | 採択済みQ3直接モデルMSEでの条件付き適合。保存solver proxy・ideal raw・IID・未認証allowanceの範囲に限る。物理的な精度保証・十分Nではない。PFの科学worker完了とdriver記録UNKNOWNを区別する |
 | 不足 | 物理的な資格・必要N最適化は未完了。Full-H R448・補助候補・未評価vectorへ結果を移さない。PR-DF/Full-H新評価のAPI・資源記録は保存済みだが、PF6件の欠測を補うものではない |
-| 次の作業 | [PF HANDOFF][B_PF_HANDOFF]、[PR-DF/Full-H HANDOFF][B_PRDF_FULLH_HANDOFF]、[κ2・2倍配分HANDOFF][B_FULLH_2X_HANDOFF]の保存結果を再利用する。PFの記録欠測を埋める再実行は要求しない。追加vectorの評価は別判断・別実行指示 |
+| 次の作業 | 各固定REPORT/HANDOFFを再利用。Full-H初回比較は1.5倍配分を使い、追加shot探索・Q3再評価を必要作業に加えない。PFの記録欠測を埋める再実行も要求しない。未評価vectorや物理的資格は別判断 |
 | 担当・依存 | B。信号（§4.2）に依存 |
 | 完了条件 | 採択した契約の下で、比較する全候補のMSE評価が同じclaim水準で揃う |
+
+Full-H κ2の3配分の保存結果（[B REPORT][B_FULLH_3O2]からの表示値の転記、Ha²）。採否は元REPORTのexact端点で判定済みであり、本書で再計算していない。
+
+| 配分 | 保存MSE区間（概数） | 採択済みQ3閾値への適合 |
+|---|---|---|
+| 元control | [1.6244310×10⁻⁴, 1.6336187×10⁻⁴] | 不適合 |
+| 固定1.5倍 | [2.0984341×10⁻⁶, 2.1058026×10⁻⁶] | 適合・初回比較の第一候補 |
+| 保存2倍 | [7.6023913×10⁻⁷, 7.6038351×10⁻⁷] | 適合・保存参照 |
 
 ### 4.4 必要shot数 N
 
@@ -182,11 +191,11 @@ $$
 |---|---|
 | 研究上の問い | 目標精度を満たすために、各round・各軸で何shot必要か |
 | 実装 | B `999304918`：`src/trottertracks/rpe_shot_allocation.py`、`pr_rpe_rmse.py`（nominal）、`rpe_total_binding.py`の`evaluate`入口。C `855573064`：`paper_nominal_cost.py`の`nominal_packet` |
-| 検証 | 旧[有限計画][B_NPLAN]・[準備報告][B_N]を履歴として保持。完了成果は[Pauli3/4配分][B_PAULI_3Q]、[PF6候補][B_PF_FIXED]、[PR-DF固定control][B_PRDF_FULLH]、[Full-H κ2・2倍配分][B_FULLH_2X] |
-| 到達点 | 各vectorは両軸共通。PFは§4.3の6件、Pauli3/4は `[48,45,42,39,36,33,29,26,23,19,16,13,9]` で2件、PR-DF LD1/LD2は `[64,60,56,52,47,43,38,34,30,25,21,17,12]` で2件、Full-H κ2は `[128,120,112,104,94,86,76,68,60,50,42,34,24]` で1件が条件付き適合。Full-H元control（PR-DFと同じvector）は閾値超過。十分N・最適Nではなく、`sufficient_N`は全方式でnull |
+| 検証 | 旧[有限計画][B_NPLAN]・[準備報告][B_N]を履歴として保持。完了成果は[Pauli3/4配分][B_PAULI_3Q]、[PF6候補][B_PF_FIXED]、[PR-DF固定control][B_PRDF_FULLH]、[Full-H κ2・2倍配分][B_FULLH_2X]・[1.5倍配分][B_FULLH_3O2] |
+| 到達点 | X/Y各軸共通、m0〜m12順。PF6候補＝`[59,55,51,47,43,39,35,31,27,23,19,15,11]`（[B][B_PF_FIXED]）。Pauli LD1/LD2＝`[48,45,42,39,36,33,29,26,23,19,16,13,9]`（[B][B_PAULI_3Q]）。PR-DF LD1/LD2＝`[64,60,56,52,47,43,38,34,30,25,21,17,12]`（[B][B_PRDF_FULLH]）。**Full-H κ2の初回比較＝1.5倍 `[96,90,84,78,71,65,57,51,45,38,32,26,18]`、allocation `FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01`**（[B HANDOFF][B_FULLH_3O2_HANDOFF]）。保存2倍 `[128,120,112,104,94,86,76,68,60,50,42,34,24]` も適合。元control（PR-DFと同じvector）は不適合。十分N・最適Nではなく`sufficient_N=null` |
 | 科学的資格 | 評価済み配分の条件付きモデル閾値適合のみ。物理的に十分なN・global RMSE保証は未資格 |
 | 不足 | 未評価vectorへの補間、最小N、cost-aware配分、物理的誤差・law移送の資格。旧有限計画全体が実行済みになったわけではない |
-| 次の作業 | Bはmandatory STOP。追加の有限配分検証が必要か、どの範囲かは別判断。完了した各固定配分評価を再実行しない |
+| 次の作業 | Bは各固定評価の完了後mandatory STOP。Full-H初回比較に追加倍率・round別探索は不要。1.5倍は全round/両軸で2倍よりshot数が少なく両者適合だが、未評価vectorのMSE単調性・最小Nは推論しない。後続は同じκ2の価格26軸との結合 |
 | 担当・依存 | B。§4.3に依存。価格とは独立に進められる |
 | 完了条件 | 各候補について、採択した契約で閾値を満たすwhole-vectorが、根拠とともに保存される |
 
@@ -194,69 +203,66 @@ $$
 
 | 項目 | 内容 |
 |---|---|
-| 研究上の問い | 各round・各軸の回路を実際にcompileしたときのRZ数はいくつか |
-| 実装 | D `acea1118a`（実装SOURCEは`22ccf3972`）：§4.1のcaller。C `855573064`：`src/trottertracks/price_implementation_guard.py`、`rpe_d_price_connection.py`、`rpe_optimization_pipeline.py`（`price_context`） |
-| 検証 | [決定論PF m3受入][C_PF_M3]・[較正][D_STAGE1]・[m6][D_PF_M6]・[m9][D_PF_M9_RESULT]・[m0][D_PF_M0]・[m1/m2][D_PF_M12]、[PR-DF LD1 m3][D2_PRDF_M3]・[m4 C受入][C_PRDF_M4_ADMISSION]、[Pauli CAL][D2_CAL]・[holdout][D2_HOLDOUT]、[Full-H最終引渡し][D1_FINAL]・[C受入][C_FULLH_FREEZE]。旧[P-1][A_P1]・[Pauli B0][A_B0]も保全 |
-| 到達点 | 決定論PFは96/156直接価格（m0〜m6・m9各12軸）。m0完了時72にm1/m2の24軸を追加。PR-DF LD1はm0/m6受入に続きm3 fresh4 path・8 compile、m4独立fresh4 path・8 compileとC受入を完了。Pauli LD2はCAL18 compile・10 recordと、独立m5/m6の3 fresh path・6 compileを公開。Full-H D7は5 cell・9 path・18 compile・D1最終検査PASS18、10較正recordを引渡し済み |
-| 科学的資格 | 決定論PFのm3は保存直接観測、m4/m5は較正、m6/m9は独立holdout、m0/m1/m2はモデル判定なしの直接価格。RTE系の有限path・cohort価格は全law期待値ではない。Full-Hの18軸PASSは取得・検査の結果。G36223最終検証で再利用した4 compileは18件の内数、追加compile0。paired P2R566は親G566と相関する |
-| 不足 | 決定論PFの未取得60軸とモデルdomain資格。Full-HのC受入・fit・凍結は完了、採択済み記述的規則でのD1独立holdout6 compile・比較4件は作業中（ユーザー確認）、完了実績未受領。PR-DF m4取得・比較・C受入待ちは解消、D2の後続作業は全13round E[C]評価計画。Pauliの記述的holdoutは完了したが全round E[C]・未観測eventの資格は未取得 |
-| 次の作業 | D1独立holdoutの固定完了報告と、D2の全13round E[C]評価計画を待つ。PF残60軸の技術調査指示は作成済み、送付・着手・完了未確認。D2計画作業を新規価格取得・正式E[C]算出と数えず、PF追加compileを決定済みとしない |
-| 担当・依存 | 決定論PFはD/C、PR-DF LD1はD2（取得）/C（fit・凍結・受入）。D1のFull-H、D2/C2のPauliとは別branch・SOURCE・契約。各完了後STOPと後続の限定実行指示を区別する |
-| 完了条件 | 価格モデルの較正とholdoutに必要なcellが、受入検査を通って揃う |
+| 実装・受入 | Dの既存caller、C `price_implementation_guard` / `rpe_d_price_connection` / `price_context`を再利用。固定compiler/loweringとfull measured wrapper/P=0の束縛を保つ |
+| 決定論PF | [m3受入][C_PF_M3]、[較正][D_STAGE1]、[m6][D_PF_M6]、[m9][D_PF_M9_RESULT]、[m0][D_PF_M0]、[m1/m2][D_PF_M12]で**直接96/156軸**。残60軸は新compileしておらず、[Cの条件付き導出表][C_PF60_TABLE]で埋めた。m0/m1/m2はモデル判定なし、m6/m9の各12/12 PASSは指定点だけ |
+| PR-DF | LD1 m0/m6 P1各2・P2 fresh各4 pathと、m3較正/独立m4各fresh4 pathの有限価格。m4はC receipt8/8・比較2/2受入、保留0（[C][C_PRDF_M4_ADMISSION]）。LD2の同条件compiled価格は確認範囲で未同定 |
+| PR-Pauli | LD1 B0のm0 X/Y各1 pathはwiring専用。LD2 W m0 X/Y各1 path、CAL5非configuration cell・18 compile、独立m5/m6の3 fresh path・6 compileは公開済み（[W][D2_W]、[CAL][D2_CAL]、[holdout][D2_HOLDOUT]）。m9は予測固定済み、取得開始/結果公開未確認（[準備][PAULI_M9_PREP]） |
+| Full-H κ2 | D7較正5 cell・9 path・18 compile、D1検査PASS18・C受入10 record完了（[D1][D1_FINAL]、[C][C_FULLH_HANDOFF]）。新holdoutはm5のfresh2 path・4 compile・取得/必要gate PASSを公開済み（[D1][D1_M5_STATUS]）。m6 fresh1 path・2 compileも取得/必要gate PASSを公開済み（[D1][D1_M6_STATUS]）。最終4比較の完了は未確認。旧P-1 m3はwiring専用 |
+| 科学的資格 | RTEの各有限cohortは観測価格。X/Yは同pathの2応答で標本数を二倍にしない。Pauli/Full-H較正の非configuration cellを通常13roundの軸価格へ付け替えない。Full-H G36223の保存4 compile再利用は18の内数・追加0、paired P2R566は親G566と非独立 |
+| 次・完了条件 | 既取得の再compileは不要。取得中の限定holdoutの固定成果だけを後続受入へ渡す。全26軸期待価格の資格・計画は§4.6/§8で別管理する |
 
 ### 4.6 期待価格モデル（E[C]）
 
-| 項目 | 内容 |
+| 項目 | 到達点・不足・次の依存 |
 |---|---|
-| 研究上の問い | 直接compileできない長いroundを含めて、全roundの期待価格をどの根拠で与えるか |
-| 実装 | C `855573064`：`src/trottertracks/price_model_validation.py`（fit・holdout・refitなし）、`rpe_mean_price_model.py`（構造＋残差）。A `7a0c9468b`：`finite_price_design.py`（取得前の識別可能性検査） |
-| 検証 | [決定論PF係数凍結][C_FREEZE]・[m6 holdout][D_PF_M6]・[m9判定][D_PF_M9_RESULT]、[PR-DF軸別モデル凍結][C_PRDF_FREEZE]・[m4 C受入][C_PRDF_M4_ADMISSION]、[Pauli CAL][D2_CAL]・[C2凍結モデル][D2_FROZEN_MODELS]・[独立holdout][D2_HOLDOUT_HANDOFF]、[Full-H C受入・fit・予測凍結][C_FULLH_FREEZE] |
-| 到達点 | 決定論PFの12個別モデルはm6・m9で各12/12 PASS、両roundとも固定予測と観測RZが全軸完全一致。m0/m1/m2はモデル未判定。Pauli LD2はC2のX/Y2モデル・m5/m6予測固定後に記述的比較を完了。PR-DF LD1は軸別2モデル・m4予測2件を事前凍結し、独立4 pathのm4比較・C受入までDESCRIPTIVE_COMPLETE。Full-Hは10 record受入・保留0、X/Y各3係数の2モデルfitとm5/m6×X/Yの4予測凍結完了（結果b5165f11b）。C側で元D1 metadata readerの固定JSON読取も確認済み |
-| 科学的資格 | 全roundの適格E[C]は全方式で未完備。決定論PFのm6/m9 PASSは当該点のみで、元凍結結果の `qualified_for_candidate=false` を書き換えない。PR-DF LD1・Pauli LD2は `DESCRIPTIVE_COMPLETE / NOT_ASSESSED_NO_ADOPTED_TOLERANCE`、許容差null。E[S]と有限cohort平均はいずれも全law E[C]ではない |
-| 不足 | 決定論PFは未観測round・モデルdomainの資格。m9限定2%規則を短roundやRTEへ移送しない。RTE系はlaw差・rare寄与・境界加法性・統計区間・長q外挿が未確定。PR-DFのC比較2/2受入、Pauliの4/4有効比較はモデルPASSではない。Full-HはCALIBRATED_UNVALIDATED・qualified_for_candidate=false、独立holdout完了報告待ち。C2記述的規則はユーザー採択済み、数値許容差・モデルPASS/FAILなし |
-| 次の作業 | Full-H：採択済み規則・送付済み実行指示の範囲でD1作業中、固定完了報告を待つ。PR-DF：D2が全13roundのE[C]評価計画を作業中で、ideal E[S]と実装samplerの有限path残差の接続条件を調べる。計画と新規価格取得・正式E[C]算出を区別する。Pauliの完了後STOPは保全。PF残60軸の調査指示作成を追加compileの採択としない |
-| 担当・依存 | C（モデル・判定）、D/D1/D2（各独立系列の取得）、A（RTE系の設計）。§4.5に依存 |
-| 完了条件 | 採択した系列別規則で独立比較を完了し、使用するround・lawの範囲で適格性が別途判断されている。記述的比較の完了だけをE[C]の資格付与としない |
+| 決定論PF | [C推奨][C_PF60_REC]の閉包条件はユーザー採択済み、[60価格公開][C_PF60]、[B2全13round集計][B2_PF_TOTAL]まで完了。60軸のclassificationはMODEL_PREDICTION、evidence_kindはFIXED_COMPILER_CLOSURE_DERIVATION_CONDITIONAL。障壁/反復/終端構造の持続、installed Rustと参照sourceの対応、未調査規模分岐の前提に限る。無条件QUALIFIED_MODEL・直接観測にはしない。2%保証・誤差上界・CIはnull、元モデルqualified_for_candidate=falseを保全 |
+| PR-DF LD1 | E_I[S]26/26、m0/m3/m6による軸別残差2モデルとm4予測2件の凍結・記述的比較/C受入は完了。全13roundの[計画][D2_PRDF_EC_PLAN]・[F0受入][C_PRDF_F0]・[26軸条件付き残差差上界][D2_PRDF_RANGE]を追加。上界は保存binary64 ideal weightのlaw Iと**独立一様53-bit格子law**の間のTV×SOURCE envelopeによる差の絶対上界であり、符号付き補正・有限標本誤差・モデル誤差ではない。実PCG64のseed ensemble/joint streamへの接続は未確定、actual PCG64 price shiftはnull。新26上界のC受入は未確認 |
+| PR-DF LD2 | 同条件の構造期待値・compiled価格・凍結モデルは確認範囲で未同定。LD1の数値を移送せず、LD2の保存候補/辞書/入口に合うkernel・価格設計の技術照合はLD1/PFを待たずに可能 |
+| Pauli LD2 | 2モデル凍結後のm5/m6は4/4有効・DESCRIPTIVE_COMPLETE。m9案B採択・同係数のX/Y2予測凍結公開済み、取得開始/結果未確認。長qの有限cohort比較を増やしても、母law平均・有限標本/共有係数誤差・未観測round移送は別に残る。Pauli LD1へ係数/辞書を移植しない |
+| Full-H κ2 | D7の軸別3係数2モデル・m5/m6の4予測は凍結済み、CALIBRATED_UNVALIDATED・qualified_for_candidate=falseを維持（[C][C_FULLH_HANDOFF]）。m5・m6は取得公開、最終比較は未確認（[m6][D1_M6_STATUS]）。対象law・全26軸の期待価格根拠、有限cohort/paired依存・共有不確かさ・長round移送は未資格。1.5倍shot適合は価格資格を付与しない |
+| 共通の境界 | PR-DF m4・Pauli m5/m6・Full-H採択規則は数値許容差null・モデルPASS/FAILなし。決定論PFの2%を移さない。希少イベント単独の追加調査は今回の優先作業から外し、後続の期待価格設計では全supportを含める必要を保持する |
+| 担当・完了条件 | C/C2（モデル・受入）、D/D1/D2（別契約の取得）、A等の理論/設計担当。独立比較完了と全round/lawの価格資格は別判断。今できる静的準備と新しい科学実行の境界は§8.2 |
 
 ### 4.7 総資源会計（G）
 
 | 項目 | 内容 |
 |---|---|
-| 研究上の問い | 同じ物理候補のNとE[C]を掛け合わせた全roundの総資源はいくつか。方式間の関係はどうか |
-| 実装 | C `855573064`：`src/trottertracks/paper_nominal_cost.py`（第1水準）、`rpe_optimization_pipeline.py`（`plan`／`compare`／`select`）。B `999304918`：`pr_rpe_rmse_controller.py`（`assess`／`cost`／`select`） |
-| 検証 | [C 価格経路][C_ROUTES]、[Pauli physical-ID bridge][C_BRIDGE]（人工値のテスト）、[B total/Q3 canonical統合][B_TOTAL] |
-| 到達点 | 会計・guard・欠測の扱いは人工のN・価格でPASS。実データのG計算は0件 |
-| 科学的資格 | なし。人工テストのPASSは科学的な比較結果ではない |
-| 不足 | §4.4のNと§4.6のE[C]。同一候補の照合。比較policy |
-| 次の作業 | §8の統合段階。上流が揃うまで着手しない |
-| 担当・依存 | B・C。全項目に依存 |
-| 完了条件 | 全方式について、同じclaim水準のNとE[C]から、欠測なしでGが計算される |
+| 既存実装 | C `paper_nominal_cost` / `rpe_optimization_pipeline`、Bのbinding/会計に加え、[B2固定配分集計][B2_PF_TOTAL]の`allround.py`・入力`43f87397a`。新しい管理システムは不要 |
+| 到達点 | PF6候補は同一固定Q3配分で直接96＋条件付き60軸を結合し、全13round総compiled RZ数・条件付き順位を公開済み。既知8round小計[540b54ab2][B_PF_PARTIAL]を入力として再利用。C価格公開待ち・B2集計待ちは解消、各担当STOP |
+| 不足 | 他3方式は同一物理候補・対象lawの26軸期待価格と不確かさ/適用範囲。初回比較の評価済み配分は既にある。十分N・物理的global RMSE・正式G/5方式winnerは別の未解決事項 |
+| 次・依存 | ランダム化各方式の期待価格計画・候補/軸/配分metadata照合は先行できる。各方式の価格表公開を待つのは数値の最終結合であり、全準備を一括待機させない。PR-DFとPFの差額比較には双方の同じclaim水準の総額が必要だが、PF側総額は今回受領済み |
+| 資格 | PFの条件付き固定配分総額を第2水準Gへ昇格しない。他方式の有限path平均・点予測・条件付き上界を同じE[C]として混在させず、欠測0補完・新許容差の事後採択をしない |
 
 ## 5. 物理候補ごとの進捗
 
-**方式が同じでも、物理候補（prefix、公式、時間幅、K、κ、round、law、SOURCE）が違えば別の行である。** 別の行の N と E[C] を掛け合わせて G を作ってはならない。
+### 5.1 初回固定配分総額の入力棚卸し
 
-状態の語は§6の区分を使う。IDは先頭8桁の略記で、全桁はリンク先にある。
+起点は[Cの14 schedule・364軸対応表][C_ALIGNMENT]。IDは先頭8桁、全桁・元/total ID・各roundのphysical IDは同表と各固定HANDOFFにある。表のQ3/配分は各候補で評価済みのものを指す（全vectorは§4.4）。価格quantityは§3.1のwrapper/P=0のcompiled RZ。**同方式でも異なる候補・辞書・law・SOURCEのN/価格を流用しない。**
 
-| 物理候補 | 信号 | 推定器・MSE | 必要N | 実compiled価格 | E[C] | G |
-|---|---|---|---|---|---|---|
-| **PR-DF** LD1（`a4dda8f7`）／LD2（`1fa33556`）。S2、幅0.1、K2、元κ | 数値保存：各13round（[報告][A_PRDF]） | 旧部分decoder DPは保全。新total Q3はLD1/LD2各1回、固定control2/2がモデル閾値適合（[B][B_PRDF_FULLH]） | 条件付き適合vectorあり（§4.4）。十分N・最適N・物理保証は未資格 | LD1 m0/m6 P1各2・P2 fresh各4 pathの受入を保全。新m3・独立m4は各fresh4 path・X/Y8 compile。m4はC receipt8/8・比較2/2受入、保留0（[C最終HANDOFF][C_PRDF_M4_ADMISSION]）。他round・LD2へ移送しない | 未資格。LD1 E[S]26/26接続、軸別2モデル・m4予測2件凍結後に記述的比較・C受入完了。X/YともO=129,692.5 RZ、(P−O)/O≈−0.544502%。DESCRIPTIVE_COMPLETE、モデル判定NOT_ASSESSED_NO_ADOPTED_TOLERANCE・許容差null。後続D2は全13round E[C]評価計画を作業中（ユーザー確認）。新規価格取得・正式E[C]算出の開始ではなく、全law E[C]・CI・長round移送は未認定 | 未確定 |
-| **PR-Pauli** LD1（`d905d219`）／LD2（`d7dd4f52`）。DF head＋Pauli tail、S2、幅0.1、K2、元κ | 数値保存：各13round（[報告][A_PAULI]） | 元control2評価を保全。別成果の3/4配分でLD1/LD2各1回、2/2が採択Q3モデル閾値適合（[B][B_PAULI_3Q]） | 条件付き適合vectorあり。十分N・最適N・物理保証は未資格 | LD1 B0、LD2 B1-Wを保全。LD2は[CAL18 compile][D2_CAL]と、独立m5/m6の3 fresh path・6 compile・4/4有効比較を取得（[D2][D2_HOLDOUT]） | 全law E[C]・統計区間は未資格。LD2 holdoutはDESCRIPTIVE_COMPLETE、数値許容差・モデルPASS/FAILなし。符号付き相対誤差はm5 X/Y各+0.044612%、m6 X/Y各+0.157666%。order2 product・非自明位相は未観測UNKNOWN。LD1へ移送しない | 未確定 |
-| **Full PF** S2・幅0.1（prefix10） | H_effのm0・m12のみ。全13round packetは未同定（[適用一覧][B_SIGAPP]） | 人工13roundで経路のみ確認 | 未資格 | 旧catalogに直接価格があるが、13roundのscheduleの大半は保存gridの外（[4方式menu][MENU4]） | 未資格 | 未確定 |
-| **Full PF** shortlist：S2・幅16h/7、Y4・幅16h/3、M5・幅16h | 3候補各13round完成、B intake PASS（[A][A_PF_COMPLETE]） | 共通固定shotで各1回。3/3の保存DP上界が採択閾値以下（[B][B_PF_FIXED]）。最終API return・CPU・peak RAM欠測、保存componentから再計算なしで判定復元 | 条件付き適合のみ。十分N・最適Nは未資格 | m0〜m6・m9が完成、p7と合わせ96/156軸。m0完了時72からm1/m2の24軸を追加（[m0][D_PF_M0]、[m1/m2][D_PF_M12]、[m9][D_PF_M9_RESULT]）。m3保存価格はC受入済み、実幅・役割を保全 | p7と合わせ12モデルのm6・m9は各12/12 PASS、固定予測と観測RZが完全一致。m0/m1/m2はモデル未判定。未取得60軸・全round E[C]・モデルdomainは未資格。完了後STOP。残60軸の技術調査指示は作成済み、送付・着手・完了未確認、追加compile未決定 | 未確定 |
-| **Truncated PF** B0I p7、S2・幅0.1（`e6754564`） | 数値保存：13round（[報告][A_TRSIG]）。[T2][T2]の照合も通過 | metadata接続PASS（[適用一覧][B_SIGAPP]） | 未資格 | m3/m4の旧価格locatorは存在するが、現行wrapper receiptとして未受入（[C対応表][C_ALIGNMENT]）。shortlistとは別候補 | 未資格 | 未確定 |
-| **Truncated PF** B0I p7 shortlist：S2・幅16h/7、Y4・幅16h/3、M5・幅16h | 3候補各13round完成、B intake PASS（[A][A_PF_COMPLETE]） | Fullと同じ固定shotで各1回。3/3の保存DP上界が閾値以下（[B][B_PF_FIXED]）。実行記録の部分保存はFullと同じ | 条件付き適合のみ。十分N・最適Nは未資格 | m0〜m6・m9が完成、Fullと合わせ96/156軸（[m0][D_PF_M0]、[m1/m2][D_PF_M12]、[m9][D_PF_M9_RESULT]）。m3保存価格のC受入・保存cohortを保全 | Fullと合わせ12モデルのm6・m9は各12/12 PASS。m0/m1/m2は有効直接価格のみ・モデル未判定。未取得60軸・全round E[C]は未資格。完了後STOP。残60軸の技術調査指示は作成済み、送付・着手・完了未確認、追加compile未決定 | 未確定 |
-| **Full-H pure RTE** κ2、K2、q=2^m（`54ac3eb3`） | 数値保存：13round（[S-1][A_S1]） | 元controlはMSE下界も閾値超過。2倍配分1回は採択Q3モデル閾値適合（[B][B_FULLH_2X]） | 条件付き適合vectorあり（§4.4）。十分N・最適Nは未資格 | D7全5 cell・9 path・18実compile、D1最終検査PASS18、FAIL/未取得0。Cは10較正record・元18軸の保存証拠を受入、保留0（[D1][D1_FINAL]、[C][C_FULLH_FREEZE]）。G36223保存4 compileの再利用は内数・追加0。pairedは親と非独立 | 未資格。軸別3係数の2モデルfit・m5/m6の4予測凍結完了（[C HANDOFF][C_FULLH_HANDOFF]）。CALIBRATED_UNVALIDATED、qualified_for_candidate=false。C2記述的規則はユーザー採択済み（[公開原案][C2_FULLH_RULE]）。実行指示送付済み、D1作業中（ユーザー確認）、計画6 compile・比較4件の完了実績は未受領。旧完了後STOPを保全、モデルPASSなし | 未確定 |
-| **Full-H pure RTE** R448、K2、q=2^m（`cfa6aee3`） | 数値保存：13round（[報告][A_TRSIG]） | [C対応表][C_ALIGNMENT]で独立total metadata受入を確認。新MSE/Nは未評価 | 未資格 | 確認した範囲で無し | 未資格 | 未確定 |
+| 方式・物理候補/schedule | 採択Q3・実際に評価した配分 | m0〜m12・X/Yの価格証拠と種類 | 固定配分全13round総額への不足／次の担当・実際の依存 |
+|---|---|---|---|
+| **Full PF** S2 16h/7 `11cf8ca6`、標準Y4 16h/3 `a799697f`、M5 16h `70f7b317` | 全13round信号・intake完了。PF共通配分で各適合（[A][A_PF_COMPLETE]、[B][B_PF_FIXED]）。PFの実行記録部分保存を維持 | 各候補でm0〜m6・m9のX/Yは直接compiled価格、m7/m8/m10〜m12のX/Yは採択済み条件付き閉包価格（[C表][C_PF60_TABLE]）。Full/p7全体で96直接＋60条件付き＝156軸 | **初回の条件付き総額は[B2][B2_PF_TOTAL]で完成**。S2 838,693,580、Y4 1,089,674,842、M5 1,343,396,772 RZ（転記）。価格公開/集計待ちなし、C/B2 STOP。無条件価格資格・十分Nは後続 |
+| **B0I p7** S2 16h/7 `a6e55777`、標準Y4 16h/3 `defc5e88`、M5 16h `424eecbf` | PF共通配分で各適合、13round信号/intake完成（[A][A_PF_COMPLETE]、[B][B_PF_FIXED]） | 上行と同じround区分で直接/条件付き価格を保持、候補ごとに全26軸対応 | **初回の条件付き総額完成**。S2 593,555,352、Y4 765,902,758、M5 951,282,896 RZ（[B2][B2_PF_TOTAL]）。待ちなし。Full/p7とも元実幅・m3保存cohort・m4の保存4価格の役割を保持 |
+| **PR-DF LD1** `a4dda8f7`、S2幅0.1/K2/元κ | PR-DF固定配分で適合（[B][B_PRDF_FULLH]） | E_I[S]26/26。m0/m6 X/Y P2 fresh各4 path（P1各2・replay各1は参照）、m3 X/Y fresh4較正、m4 X/Y fresh4独立holdout/C受入。m4 X/YともO=129,692.5 RZ、差約−0.544502%、記述的比較のみ（[C][C_PRDF_M4_ADMISSION]）。通常round有限価格は{0,3,4,6}、他{1,2,5,7,8,9,10,11,12}は同候補の観測/保存新点予測なし（[D2計画][D2_PRDF_EC_PLAN]）。26軸残差差上界は**条件付き上界**、価格表ではない | 対象ideal law Iでの26軸E[C]・有限残差誤差・共有モデル/長q移送根拠が不足。Cの新上界受入とA/D2の実PCG64 joint-law接続・価格計画は**PF総額を待たず**先行可能（§8.2）。PFとの差額比較だけが両価格の整備後 |
+| **PR-DF LD2** `1fa33556`、S2幅0.1/K2/元κ | PR-DF固定配分で適合（[B][B_PRDF_FULLH]） | 全13round信号/metadataあり。同条件E[S]・compiled価格・凍結予測は確認範囲で未同定（[対応表][C_ALIGNMENT]、[coverage][C_PRDFCSV]）。LD1表は代用不可 | 26軸の構造/価格入力と独立検証設計が不足。A/C/D2のLD2保存入力・既存kernel適合性の静的調査はLD1/PFを待たず可能。新26軸E[S]計算や較正compileには別scope/許可が必要。最初の比較を早めるかは§8.2の代替候補調査で判断 |
+| **PR-Pauli LD2** `d7dd4f52`、DF head＋Pauli tail/S2幅0.1/K2 | 3/4配分で適合（[B][B_PAULI_3Q]） | W m0 X/Y各1 pathはwiring。CAL5 cell/18 compileはm=Noneの設計cellで26軸の通常価格ではない。m5 X/Y fresh2 path・m6 X/Y fresh1 pathで4/4記述的比較、差はm5各+0.044612%、m6各+0.157666%（[D2][D2_HOLDOUT]）。m9はX/Y2予測凍結済み、取得開始/結果未確認（[C2][PAULI_M9_PREP]）。他roundの対象law価格表は未公開 | m9は既存の採択/実行scopeで結果待ち、重複割当しない。全26軸の対象law平均・有限標本/係数誤差・未観測round移送の設計はC/Aが先行可能。m9比較が完了してもこれらは自動解消しない |
+| **PR-Pauli LD1** `d905d219`、DF head＋Pauli tail/S2幅0.1/K2 | 3/4配分で適合（[B][B_PAULI_3Q]） | [B0][A_B0] m0 X/Y各1 pathの直接観測・wiringのみ。その他通常round・較正/凍結モデル・対象law期待価格は確認範囲で未同定 | LD1固有の辞書/頭部・較正/期待価格設計が不足。静的な最小設計比較はLD2 m9を待たずに可能。LD2係数/価格の移送不可、追加compile件数は未採択。現時点でLD2より早く揃う証拠はない |
+| **Full-H pure RTE κ2** `54ac3eb3`、K2/q=2^m | **1.5倍配分適合・初回比較の第一候補**（[B HANDOFF][B_FULLH_3O2_HANDOFF]）。元control不適合、保存2倍適合を別記。Q3再評価不要 | P-1 m3 X/Y各1 pathはwiring。D7較正5 cell/9 path/18軸・C受入10 recordは非configuration cell。2モデルの通常m5/m6 X/Y4予測は観測前凍結済み（[C][C_FULLH_HANDOFF]）。m5 fresh2 path/X/Y4 compileとm6 fresh1 path/X/Y2 compileは取得/必要gate PASS公開、最終4比較は未確認（[m5][D1_M5_STATUS]、[m6][D1_M6_STATUS]）。その他通常roundの価格表は未公開 | 同じκ2・対象lawの全26軸E[C]・不確かさ/長round移送根拠が不足。D1最終比較の固定報告を待つ一方、C/Aの26軸価格計画・B/Cの1.5倍allocationへのmetadata結合準備は先行可能。追加shot探索は初回比較の必要作業から外す |
+| **Full PF補助** S2幅0.1 `f2d58f32` | 13round packet/intake未完備、新Q3適合配分なし（[B][B_SIGAPP]） | 旧m3/m4 locatorはあるが現行guard未受入（[C][C_ALIGNMENT]）。shortlistの96/60軸を移さない | 信号・評価配分・現行価格受入が必要。shortlistで初回総額完成のため初回比較の優先対象外 |
+| **B0I p7補助** S2幅0.1 `e6754564` | 13round信号あり、total metadata接続済み。新Q3適合配分未評価 | m3/m4の旧価格locatorあり、現行wrapper receipt未受入（[C][C_ALIGNMENT]） | 新Q3・26軸価格が必要。別幅shortlistへ全scheduleを流用せず、今回優先しない |
+| **Full-H R448補助** `cfa6aee3` | 13round信号・独立total metadataあり、新Q3適合配分なし | 同条件価格は確認範囲で未同定（[C][C_ALIGNMENT]） | κ2とはR/event law/normalizer/rawが別。κ2に適合済み1.5倍があるため初回比較では後続候補 |
 
-**候補対応で解消した点と残る不足**
-- **決定論PF shortlist6候補**：直接価格は96/156軸（m0〜m6・m9各12軸）。m3保存12軸は `SAVED_M3_DIRECT_OBSERVATION_NOT_CALIBRATION_OR_HOLDOUT`、m4/m5は較正24軸、m6/m9は各12軸の独立holdout。m0/m1/m2は計36軸の直接価格でモデル判定なし。m9は固定予測と別に取得した12観測がモデルPASSした成果である（[D][D_PF_M9_RESULT]）。全round E[C]・十分N・Gの資格は別である。
-- **S2・幅0.1の補助候補**：shortlistへ全scheduleを流用しない。C対応表の旧locator・受入不足はその候補の状態として保持する。
-- **Full-H**：κ2とR448は、R・event数・normalizer・rawが別物である。κ2の価格をR448へ、またはその逆へ使わない。
-- **PR-DFとPR-Pauli**：tailの表現とlawが違う。DF tailのE[S]や旧C1価格をPauliへ使わない。
-- 推定器の版が変わると、canonical IDが変わる。価格の再束縛には版付きのbridgeが必要である（[bridge仕様][C_BRIDGE]）。
+### 5.2 最初の比較に使う候補
 
-round×X/Y×cohortの候補対応は[Cの14 schedule・364軸][C_ALIGNMENT]、完成信号は[Aのpacket索引][A_PF_PACKETS]、PFの固定配分結果は[B HANDOFF][B_PF_HANDOFF]にある。決定論PFの旧[CELL_PLAN_V2][C_CELLPLAN]の36価格（較正24＋holdout12）は完了し、m3保存直接12軸は別の役割でC受入済み。後続m9・m0・m1/m2も固定HANDOFFの実績だけを追加した。PR-DFは旧[52軸coverage][C_PRDFCSV]に対し、LD1の[m0/m6接続][C_PRDF_ADMISSION]・[m3取得][D2_PRDF_M3]・[m4最終受入][C_PRDF_M4_ADMISSION]を参照し、LD2へ移送しない。計画・予測行を取得済みと数えない。
+| 方式 | 既存証拠から最も近い候補 | 選択を左右する不足・範囲 |
+|---|---|---|
+| Full PF | S2 16h/7 `11cf8ca6` | B2公開の3候補内で条件付き総額最小。初回入力完成、十分Nでの最適性ではない |
+| B0I p7 | S2 16h/7 `a6e55777` | 同じ条件で方式内最小。全6候補内でも最小という[B2の保存結果][B2_PF_TOTAL]を転記。5方式winnerではない |
+| PR-DF | LD1 `a4dda8f7` が証拠整備では近い | LD2には同条件価格が未同定で**価格優位は選べない**。選択を左右する不足はLD2の同law・26軸価格根拠。LD1のE_I[S]/m4/F0/上界はその優位を証明しない |
+| PR-Pauli | LD2 `d7dd4f52` が証拠整備では近い | LD1はwiringのみ。価格での選択を左右する不足はLD1の同law価格モデル/26軸評価の根拠。LD2 m9結果をLD1へ移さない |
+| Full-H pure RTE | κ2 `54ac3eb3`・評価済み1.5倍配分 | ユーザー指定の第一候補。2倍より各軸shot数が少なく両者Q3適合。価格26軸が不足、R448や未評価倍率の最適性は判断しない |
+
+価格cohort n、量子shot N、normalization Bは別量。X/Yが同pathであること、PR-DFとPauliの辞書/lowering差、元canonical IDとtotal-view IDの版付きbridgeを保つ。旧STOPと[D2の範囲逸脱記録][D2_SCOPE]を保存し、後者を科学証拠には採用しない。
 
 ## 6. 証拠の状態の区分
 
@@ -271,11 +277,11 @@ round×X/Y×cohortの候補対応は[Cの14 schedule・364軸][C_ALIGNMENT]、�
 | 調査済み範囲では欠測 | 確認した範囲に記録が無い | PR-DF LD2の価格 |
 | 原本・同等性が未確認 | あるかどうか、同じ条件かどうかを判断できていない | 補助候補の旧価格locatorと現行wrapper receiptの対応 |
 | 科学結果保存・実行記録部分保存 | 保存componentで科学的判定を確認できるが、完全な実行記録はない | PF固定shot6件。最終API return・CPU・peak RAM欠測を併記し、再実行しない |
-| 指示作成／送付／実行／成果受領 | 各段階を確認できた記録に従い区別する | PF残60軸の調査指示は作成済み・送付等未確認。Full-H規則は採択・D1実行指示送付済み、D1作業中（ユーザー確認）、固定完了報告未受領。D2はE[C]評価計画中 |
-| モデル凍結／独立比較完了 | 観測前の係数・予測固定と、後続の独立比較を分ける | PF m6/m9、PR-DF m4は比較完了。Full-Hは凍結完了・独立比較の完了報告待ち。元凍結JSONのstatusを遡及変更しない |
+| 指示作成／送付／実行／成果受領 | 各段階を確認できた記録に従い区別する | PF60価格・B2集計は公開完了。Full-H m5/m6取得公開と最終比較待ちを区別。Pauli m9は案採択・予測固定公開、取得開始/結果未確認 |
+| モデル凍結／独立比較完了 | 観測前の係数・予測固定と後続の独立比較を分ける | PF m6/m9・PR-DF m4・Pauli m5/m6は比較完了。Full-Hは4予測固定・m5/m6取得公開、最終比較未確認。Pauli m9は予測固定のみ。元凍結JSONは遡及変更しない |
 | 記述的比較完了・モデル判定なし | 有効な独立観測と予測差を報告し、数値許容差によるモデル判定は行わない | PR-DF LD1 m4のC比較2/2受入とPauli LD2の4/4有効比較はいずれもDESCRIPTIVE_COMPLETE。モデルPASSではない |
-| STOP記録の保全 | 個別契約の完了後STOPと後続作業を区別する | A/B/Cの完了成果、D m9・m0・m1/m2、D1 D7較正、D2各取得の旧STOPを保全。後続D1 holdout・D2計画作業中というユーザー確認とは別のscope |
-| 次段階の別判断・実行指示待ち | 現在の指示の範囲に含まれない | PF残60軸の追加compile、D2の計画を超える新規価格取得・正式E[C]算出。D1の限定holdoutは別途指示済みで作業中 |
+| STOP記録の保全 | 個別契約の完了後STOPと後続作業を区別する | A/B/Cの完了成果、D m9・m0・m1/m2、D1 D7較正、D2各取得の旧STOPを保全。後続の限定holdout・計画/F0/上界公開はそれぞれ別scopeとして記録する |
+| 次段階の別判断・実行指示待ち | 現在の指示の範囲に含まれない | RTEの全26軸期待価格評価・追加取得/fit、正式G。Full-H holdout・Pauli m9の限定scopeは既に別指示あり。PF60価格公開/集計待ちは解消 |
 
 **区別を保つ点**
 - 人工テストのPASSは、科学的な検証の完了ではない。
@@ -290,12 +296,12 @@ round×X/Y×cohortの候補対応は[Cの14 schedule・364軸][C_ALIGNMENT]、�
 | 課題 | 種別 | 解決すると判断できること | 重複照合（§10.5）の状況 |
 |---|---|---|---|
 | 最終5方式比較のclaim水準・未採択policy | 方針・契約の採択 | 条件付きモデル結果と正式Gの主張範囲が決まる | Q3主精度と決定論PF H-bは採択済み。RTE系へ条件を自動移送しない |
-| 決定論PFの残る直接価格とモデルdomain | m6/m9の各12/12 PASS、m0〜m6・m9の直接96/156軸は完了。未取得60軸の技術調査指示作成済み、送付・着手・完了未確認 | 全roundの価格をどの範囲で適格に使えるか | [m9完了][D_PF_M9_RESULT]、[m0][D_PF_M0]、[m1/m2][D_PF_M12]の実績を再利用。短roundにモデル判定なし。調査指示の作成を追加compile決定と数えない |
+| 決定論PFの条件付き閉包と無条件domain資格 | 直接96＋条件付き60軸の価格公開・B2集計完了 | 初回固定配分の条件付き総額は比較可能。無条件E[C]資格・十分Nは別 | [C][C_PF60]・[B2][B2_PF_TOTAL]を再利用、追加60compileは必要作業としない。条件破綻時は影響domain保留 |
 | 同一候補の条件付きモデル結果・適格価格の接続 | 既存成果の照合、必要な科学資格の確認 | 将来どの候補で正式Gを構成できるか | [C対応表][C_ALIGNMENT]とA/Bの完成成果で候補対応は解消。十分N・全round E[C]は未資格 |
-| PR-DF LD1の全law E[C]・CI・長round移送 | m3取得・2モデル/2予測凍結・m4独立比較・C受入は完了。D2は全13round E[C]評価計画を作業中（ユーザー確認） | ideal lawのE[S]と実装samplerの有限path残差をどこまで接続できるか | [C最終受入][C_PRDF_M4_ADMISSION]は比較2/2・receipt8/8、保留0。I/Q差・rare・小標本/係数・共有不確かさは未評価。計画作業を新規取得・正式E[C]算出開始とせず、LD2へ移送しない |
-| Full-H D1独立m5/m6 holdoutの完了報告 | 較正・C受入・2モデル/4予測凍結は完了。記述的比較規則は採択済み、D1実行指示送付済み・作業中（ユーザー確認） | 固定4予測と指定有限cohortの観測との差を記述できるか | [C固定HANDOFF][C_FULLH_HANDOFF]・[公開規則原案][C2_FULLH_RULE]を維持。予定fresh3 path・6 compile・比較4件、途中の取得数・有効数は推定しない。paired依存・元gate範囲・全law未資格を保つ |
-| PR-Pauli LD2の全law E[C]・未観測event | CAL・予測凍結・記述的holdoutは完了、D2 mandatory STOP。追加資格は別判断 | order2/非自明位相、rare寄与、統計区間・長qモデルの資格 | [独立holdout][D2_HOLDOUT]は4/4有効・DESCRIPTIVE_COMPLETE。数値許容差なし、モデルPASS/FAILなし。有限cohortを期待値・CIへ昇格しない |
-| 物理的に十分なN・追加有限配分の要否 | 科学的資格・範囲の別判断 | 条件付き適合を超えて何を主張できるか | 5方式の評価済み固定配分を再利用。Full-H元controlの閾値超過も保全。PFの記録欠測を埋める再実行は不要 |
+| PR-DF LD1の全law E[C]・CI・長round移送 | m4比較/C受入、全13round計画、F0受入・26軸条件付き残差差上界は公開済み | Iと実PCG64の接続・残差推定/モデル誤差を区別し26軸価格へ進めるか | [F0受入][C_PRDF_F0]・[上界][D2_PRDF_RANGE]を再利用。上界はIID格子lawを前提、actual seed ensemble/joint law未確定。PF総額を待つ必要なし |
+| Full-H D1独立m5/m6 holdoutと26軸価格 | 較正・凍結完了、m5 fresh2 path/4 compile・m6 fresh1 path/2 compile取得公開、最終4比較完了未確認 | 指定有限cohortの記述的差、後続の全law価格設計 | [C凍結][C_FULLH_HANDOFF]・[m5公開][D1_M5_STATUS]・[m6公開][D1_M6_STATUS]。取得gate PASSをモデルPASSとせず、全26軸E[C]は別資格。1.5倍Q3完了は[B][B_FULLH_3O2] |
+| PR-Pauli LD2の長round比較・全law E[C] | m5/m6記述的比較完了、m9計画採択/2予測固定公開、取得開始/結果未確認 | m9で長qの有限観測と予測差を記述できる。全law平均/CIは別 | [既存比較][D2_HOLDOUT]・[m9準備][PAULI_M9_PREP]を再利用、数値許容差/モデルPASSなし。未観測eventの追加単独調査は初回比較の優先外 |
+| 物理的に十分なN・global RMSE | 科学的資格・範囲の別判断 | 条件付きモデル適合を超える精度主張 | 全方式の評価済み配分とFull-H1.5倍完了を再利用。初回比較に追加shot探索不要。最小N/物理保証は未認定、PF記録欠測の再実行不要 |
 | 基底状態の認証、sampler lawの移送、数値certificate | 独立検証。claim水準による | 条件付き観測を超える主張ができるか | 必要性はclaim水準の採択で決まる |
 | H6/H8への移送 | 将来の一般性検証 | H4の結論が他の系でも成り立つか | 今回のH4比較には不要。保存成果は§9.2 |
 
@@ -303,47 +309,55 @@ round×X/Y×cohortの候補対応は[Cの14 schedule・364軸][C_ALIGNMENT]、�
 
 ## 8. 依存関係と進行順序
 
+### 8.1 最初の全13round比較まで
+
 ```mermaid
 flowchart TD
-  subgraph 精度側
-    S1[物理信号の保存・受入] --> S2[採択済みZ1-T1 Q3によるMSE評価]
-    S2 --> S3[評価済みvectorの条件付きモデル判定]
-    S3 --> S4[十分N・物理的資格の確認は未完了]
-  end
-  subgraph 価格側
-    P1[実回路・loweringのcorrectness] --> P2[保存価格の受入]
-    P2 --> P3[直接価格・有限cohortの取得]
-    P3 --> P4A[fit・係数凍結・予測固定]
-    P4A --> P4[別の実行指示で独立holdout]
-    P4 --> P5[対象roundの期待価格の適格性判断]
-  end
-  K[各系列の採択policy・実行指示] --> P4A
-  K --> P4
-  M[精度側と価格側の物理候補の対応付け] --> I1
-  S4 --> I1[同一物理候補のNとE-Cを照合]
-  P5 --> I1
-  I1 --> I2[全roundのG評価]
-  I2 --> I3[共通条件下の方式比較]
-  I3 --> I4[研究上の結論と追加検証要否の判断]
+  Q[5方式の候補別Q3適合と評価済み配分] --> J[同一候補・law・26軸価格との最終結合]
+  P[PF直接96軸] --> C[条件付き閉包60価格公開済み]
+  C --> T[PF6候補の全13round集計完了]
+  T --> J
+  F[PR-DF LD1のE-I-S・m4・F0・26軸差上界] --> L[law接続・残差誤差・26軸期待価格の設計と別許可]
+  L --> J
+  V[Pauli LD2のm5-m6記述的比較] --> W[m9計画採択・予測固定済み・取得結果待ち]
+  V --> E[Pauli全26軸期待価格の設計と別許可]
+  W --> E
+  E --> J
+  H[Full-H D7較正・4予測固定] --> D[m5-m6取得公開・最終比較待ち]
+  H --> A[Full-H全26軸期待価格の設計と別許可]
+  D --> A
+  A --> J
+  J --> R[固定配分・明示した価格条件での5方式比較]
+  R --> G[十分N・物理的global RMSE・正式Gは別の資格と実行範囲]
 ```
 
-**現在の位置**
-- 精度側：5方式の特定候補に固定配分Q3モデル閾値適合がある（§4.3・§4.4）。Bは各完了成果でmandatory STOP。Full-H元controlの閾値超過とκ2の2倍配分適合は別結果、R448へ移送しない。十分N・global RMSEは未確定。PF6件の最終API return・CPU・peak RAM欠測を埋める再実行はしない。
-- 決定論PF価格：**24較正価格 → C係数・予測凍結 → m6独立holdout12/12 PASS → 元係数のm9予測・規則固定 → D m9新規12 compile・モデル12/12 PASS**まで完了（[m9 HANDOFF][D_PF_M9_RESULT]）。m3保存12軸のC受入を保持し、m0新規12軸で72/156、その後m1/m2新規24軸の固定完了報告により**96/156軸**（[D][D_PF_M12]）。m0/m1/m2はモデル判定なし。Dは各完了後STOP。未取得m7/m8/m10〜m12の60軸について、技術調査指示は作成済み（ユーザー確認）、送付・着手・完了は未確認。追加compileを決定済みとせず、次の実行を本書から割り当てない。
-- PR-DF LD1価格：**E[S]26/26・m0/m6接続 → D2 m3 fresh4 path/8 compile → C軸別2モデル・m4予測2件の事前凍結 → D2 m4独立fresh4 path/8 compile・記述的比較 → C receipt8/8・比較2/2受入、保留0**まで完了（[m3][D2_PRDF_M3]、[凍結][C_PRDF_FREEZE]、[D2 m4][D2_PRDF_M4]、[C最終受入][C_PRDF_M4_ADMISSION]）。各取得の完了後STOPは保全する。X/YのO=129,692.5 RZ、(P−O)/O≈−0.544502%は保存比較の転記。DESCRIPTIVE_COMPLETE、モデル判定NOT_ASSESSED_NO_ADOPTED_TOLERANCE・許容差null。**後続D2はLD1全13roundのE[C]評価計画を作業中（ユーザー確認）**。ideal lawの保存E[S]と実装samplerの有限path残差をどこまで接続できるかを調べる段階で、新規価格取得・正式E[C]算出の開始とは扱わない。全law E[C]・CI・長round移送は未認定。
-- Full-H価格（D1/C/C2）：**D7全5 cell・9 path・18 compileの最終検査・10較正record引渡し → C受入10/10・保留0、軸別3係数の2モデルfit・m5/m6の4予測凍結まで完了**（[D1][D1_FINAL]、[C HANDOFF][C_FULLH_HANDOFF]）。当該完了後STOP、結果 `b5165f11b`、科学SOURCE `f46fa120b`を維持。G36223最終検証の保存4 compile再利用は内数・追加0、paired親子依存と旧報告・STOPも保全する。**C2の4件の記述的比較規則はユーザー採択済み、D1へ独立holdout実行指示送付済み、D1作業中（ユーザー確認）**。[公開原案][C2_FULLH_RULE]の採択待ちは当時の履歴。範囲はm5 fresh2 path・m6 fresh1 path、X/Y計6 compile・比較4件で、固定4予測を使用する。固定完了報告未受領のため途中の取得数・有効数・比較完了数は記載しない。C側metadata reader確認とD1の実作業を分け、モデルのCALIBRATED_UNVALIDATED・qualified_for_candidate=false、許容差null・モデルPASS/FAILなし、全law E[C]・CI・長時間未資格を維持する。
-- PR-Pauli LD2価格（D2/C2）：**CAL5 cell・18 compile → C2 X/Y2モデル・m5/m6予測凍結 → D2独立holdout3 fresh path・6 compile → 4/4有効比較・DESCRIPTIVE_COMPLETE、mandatory STOP**。数値許容差・モデルPASS/FAILなし。期待価格・統計区間、order2/非自明位相の実観測は未確定。LD1や追加取得へ自動移送しない（[D2 HANDOFF][D2_HOLDOUT_HANDOFF]）。
-- 統合：Cの5方式・14 schedule・364軸の候補対応を維持し、各後続成果をSOURCE付きで参照する。固定配分の条件付きMSE適合、有限cohortの価格、全law E[C]を分離し、正式G・winnerは未確定である。
+図のholdout→期待価格は**最終的な根拠の結合順序**であり、全26軸のlaw/誤差設計の着手条件ではない。PF6候補の総額は完成したが、ランダム化3方式の有限cohort/点予測/条件付き上界を期待価格に置き換える条件は未確定である。
 
-**並列に進められる部分**
-- 精度側と価格側は、互いの結果を待たずに進められる。
-- 価格側の中では、決定論PF、PR-DF、PR-Pauli、Full-Hが互いに独立である。
-- 精度側の中では、方式ごとのMSE評価が互いに独立である。
-- Cの固定対応表とA/B/Dの後続成果のSOURCEを照合し、候補の取り違えと完了済み項目の重複取得を避ける。
+### 8.2 今すぐ並行して割り当てられる作業案（未割当・未送付）
 
-**直列になる部分**
-- 較正 → fit・係数凍結・予測固定 → 固定成果の受領 → 別指示で独立比較。観測後にモデルを変えない。決定論PFの2%判定とPR-DF/Pauli・Full-Hの記述的比較は、各系列の採択規則・実行範囲を区別する。
-- 主精度契約の採択・評価済みvectorのモデル判定と、物理的に十分なN・最小N・未評価vectorの資格を分離する。
+以下は推奨であり新しい実行指示ではない。確認した公開範囲で同等の担当作業は未同定。次の着手時には§10.5の**差分だけ**を照合し、既に同等作業が指示/進行/公開済みなら重複割当しない。優先度は5方式の最初の比較に必要な不足を減らす順で、希少イベントの追加調査を優先しない。
+
+| 優先・作業 | 推奨担当／対象 | 使う固定入力 | 取り除く不足・完了成果 | 実際の待ち・判断/想定許可範囲 |
+|---|---|---|---|---|
+| 1：PR-DF LD1のlaw接続と期待残差評価の具体化 | A等の理論担当＋D2/C／LD1 | [全13round計画][D2_PRDF_EC_PLAN]、[F0受入][C_PRDF_F0]、[26軸上界][D2_PRDF_RANGE]、[m4受入][C_PRDF_M4_ADMISSION] | 実PCG64でどのseed ensembleを主張するか、IID格子とのjoint-law接続が既存根拠でどこまで可能かを静的に確認。保存ideal law Iのまま26軸E[C]を評価する残差/共有係数誤差の手順と不足を1案に絞る。新上界のC受入・束縛確認も併行可能。成果はlaw/価格資格の境界と有限scopeの後続計画 | **PF総額待ちなし**。現在のB targetはIであり再採択不要。actual seed確率モデル・価格誤差/信頼性・条件付き利用範囲の新採択が必要なら判断点を具体化。今回と同様の静的照合を先行し、新しい26軸科学上界/価格算出・samplingは別許可。上界を精密化するだけで有限標本誤差が消えるとはしない |
+| 1：RTE価格の26軸評価計画を先行整備 | C/Aの価格設計担当／Pauli LD2、Full-H κ2を別契約で扱う | [Pauli固定モデル][D2_FROZEN_MODELS]・[既存holdout][D2_HOLDOUT]・[m9準備][PAULI_M9_PREP]、[Full-H固定モデル/4予測][C_FULLH_HANDOFF]・[m5公開][D1_M5_STATUS]、各Q3のlaw/候補 | 26軸の通常roundの特徴量・law・wrapperと非configuration較正を対応付け、有限path残差/共有モデル誤差/長round移送の不足を明示。対象law E[C]又は別判断する条件付きモデル価格表を作るための最小手順・必要精度と実行scopeを提示。m9又はm6の少数観測だけでE[C]/CIを認定しない | **設計はPauli m9/Full-H最終比較を待たない**。holdout結果が必要なのは検証根拠の最終受入。静的な適用範囲整理を先行し、新26軸予測/期待価格算出・再fit・追加compileは別許可。元の数値許容差null/モデル判定なしを維持 |
+| 2：初回比較の結合準備 | B2/B＋C／§5.2の5候補と評価済み配分 | [PF全13round結果][B2_PF_TOTAL]、[候補対応表][C_ALIGNMENT]、各固定Q3、Full-H[1.5倍26軸join][B_FULLH_3O2_JOIN] | 既存reader/版付きbridgeでcandidate/m/axis/law・価格種別のmetadata照合と、足りない価格表の入口を特定。成果は各26軸表を受け取って最終結合できる状態。別の台帳や管理frameworkを作らない | **準備は価格取得待ちなし**。RTE3方式の最終積和はその価格表と許されたclaimを待つ。新しいN/G/総額の数値集計は別実行範囲。PFの完成集計をやり直さない |
+| 3：別候補で短縮できるかの限定技術調査 | A/C/D2／PR-DF LD2とPauli LD1を個別に照合 | [14候補表][C_ALIGNMENT]、[LD2 coverage][C_PRDFCSV]、[Pauli LD1 B0][A_B0]、各固定Q3と既存kernel/runner | 保存同条件価格・構造kernel/小さい較正設計を再利用できるかを確認し、LD1/LD2本線より早まる具体的根拠がある時だけ後続案を示す。成果は最小追加scope又は本線優先という判断材料 | **PR-DF LD1/Pauli LD2を待つ必要なし**。別候補でも実sampler-law課題は自動解消しない。新26軸E[S]・較正/holdoutの件数は未採択、科学実行には対象候補/入力/件数の別許可。既存Q3は再評価不要 |
+
+最初の比較に対し、十分N探索・物理的ground RMSE認証・H6/H8移送・希少イベント単独追加検査は後続に置く。ただし正式Gへ進む際は、保存state/targetとgroundの関係、実samplerとideal signalのlaw移送、数値保証、採択精度を満たすN、26軸期待価格と共有不確かさを接続する必要がある。新しい許容差・95%等の水準や研究条件はここで採択しない。
+
+### 8.3 指示済み・進行/公開済みと、実際に待つ成果
+
+| 系列 | 確認済み状態 | 待つ固定成果／先行できる部分 |
+|---|---|---|
+| PF60価格のC公開 → B2全13round集計 | 作成指示に加え、C公開`e4458cd75`/HANDOFF`c383105b1`、B2集計`1002f1dfe`まで受領・各完了後STOP | **待ち解消**。PF差額比較の相手側だけが未整備。追加60compileは決定/要求しない |
+| Full-H1.5倍Q3 | B結果`6c5569c34`で1 call完了・適合・mandatory STOP | **待ち解消**。1.5倍を初回に使う。追加倍率評価・Q3再評価を要求しない |
+| PR-DF LD1の既指示の調査系列 | D2計画→F0公開/C受入→26軸差上界公開まで受領、各scopeのSTOPを保全 | 新上界のC受入完了報告は未確認。次のlaw/期待価格計画は§8.2、PF総額に依存しない |
+| Pauli LD2 m9 | 案B採択・固定係数からX/Y2予測公開、SOURCE準備済み。fresh2 path・最大4 compileのscope。取得開始/結果公開は未確認 | m9の取得receipt・記述的比較の固定REPORT。既指示scopeを未割当として重複させない。全26軸期待価格計画は並行可 |
+| Full-H D1独立holdout | 採択済み記述的規則、指示送付済み・ユーザー確認で作業中。固定成果ではm5 fresh2 path/4 compileとm6 fresh1 path/2 compileの取得・必要gate PASSを受領 | m5/m6×X/Y最終4比較の固定REPORT/HANDOFF。取得済みm5/m6を再compileしない。途中の件数を推定しない。全26軸期待価格計画とallocation照合は並行可 |
+| 初回5方式の最終結合 | PF2方式の条件付き総額と5方式の評価済み配分あり | PR-DF LD1（代替LD2ならその候補）、Pauli LD2（代替LD1ならその候補）、Full-H κ2の**同law・各26軸価格表と適用条件**を待つ。全準備ではなく最後の数値結合が依存 |
+
+元の係数/予測を観測後に変えず、較正→予測固定→独立取得/比較の順を維持する。個別SOURCE・raw・STOPと、別指示による後続scopeは分離する。本書から担当への実行指示を送付していない。
 
 ## 9. アルゴリズム改善系列とその他の資源評価
 
@@ -375,14 +389,14 @@ flowchart TD
 
 ## 10. 実験・研究計画の管理欄
 
-**状態の読み方**：成果受領済みの範囲は固定REPORT/HANDOFFによる（2026-11-15）。既反映の完了成果は保全。今回のユーザー確認では、Full-H記述的比較規則は採択済み、独立holdout実行指示はD1へ送付済みでD1作業中、D2はPR-DF LD1全13round E[C]評価計画を作業中。PF残60軸の技術調査指示は作成済みだが送付・着手・完了は未確認。稼働確認から途中の取得数・有効数を推定せず、固定完了報告と分ける。規則原案の「採択待ち」と旧STOPは当時の記録として保全する。
+**状態の読み方**：2026-11-15の固定REPORT/HANDOFFとユーザー確認を区別する。最新の候補別入力は§5、並行する未割当案と正確な待ち先は§8。今回、PF60価格公開・B2集計とFull-H1.5倍Q3の完了を受領し、旧待機記載を解消した。Pauli m9は採択/予測固定まで、Full-H holdoutはm5/m6の取得公開までを固定成果に基づき記録する。原案の当時の採択待ち・旧STOP・元モデルstatusは保全する。
 
 | 課題 | 担当 | 現在の状態 | 実施条件 | 完了時に得られる判断 |
 |---|---|---|---|---|
 | 決定論PF shortlist信号 | A、B intake | **成果受領済み、A mandatory STOP**。Full/p7各3候補、保存30再利用・新48 PASS、6×13round完成、B intake6/6 PASS（[A][A_PF_COMPLETE]） | 科学SOURCE `fb9a1878b`、carrier `06a15ee45`。旧S2L原本も保全 | shortlist6候補の信号不足・B受入待ちは解消。再取得不要 |
 | 決定論PFの固定shot Q3評価 | B | **科学worker6/6各1回完了、保存DP6/6閾値適合、mandatory STOP**。保存componentから科学的再計算なしで判定を復元、実行記録は部分保存（[B][B_PF_FIXED]） | 共通vectorは§4.3。最終API return・CPU・peak RAMは欠測/UNKNOWN。完全なAPI実行PASSへ昇格しない | 固定配分の条件付きモデル適合。記録欠測を埋める科学再実行は残作業にしない |
 | Pauli LD1/LD2の3/4配分 | B | **2件完了・閾値適合、mandatory STOP**（[B][B_PAULI_3Q]）。PF6件・元Pauli control2件とは別成果 | 採択Q3、全13round、§4.4の固定vector。十分N・最適Nではない | 当該2vectorの条件付き適合。追加探索は別判断 |
-| PR-DF LD1/LD2・Full-H κ2のQ3固定配分 | B | **PR-DF2件適合、Full-H元controlは閾値超過、その後κ2の2倍配分1件適合、mandatory STOP**（[固定評価][B_PRDF_FULLH]、[2倍配分][B_FULLH_2X]） | §4.4の固定vector、各1回。API・資源記録は保存済み。PF6件の記録欠測とは独立 | 5方式に固定配分での条件付きモデル適合がある。R448・未評価vector・十分Nへ拡張しない |
+| PR-DF LD1/LD2・Full-H κ2のQ3固定配分 | B | PR-DF2件適合、Full-H元control不適合・保存2倍適合に加え、**固定1.5倍1 call完了・適合・mandatory STOP**（[B][B_FULLH_3O2_HANDOFF]） | 初回Full-Hは§4.4の1.5倍、原API/資源記録保存済み。PF6件の欠測とは独立 | 追加shot探索/Q3再評価不要。十分N・最小N・物理保証は未認定 |
 | 5方式の物理候補対応 | C | **成果受領済み**：14 schedule・364軸（[C][C_ALIGNMENT]）。A/B/Dの後続成果はその候補へ対応付けて参照する | 物理ID、元/total ID、round/軸、law、SOURCE、cohortを区別 | 対応表完成と適格N・E[C]・G完成を分離する |
 | 決定論PFの新規較正20価格 | D | **Stage 1成果受領済み、mandatory STOP**。新20/20 compile PASS・C guard受理。保存4と合わせ24較正価格（[D][D_STAGE1]） | Full PF10＋B0I p7 10を新規取得。12 model_group各m4/m5。保存cohortの付け替えなし | 較正入力は完成しC fit・m6独立holdoutへ接続済み。Stage 1を再実行しない |
 | 12モデルのfit・係数凍結・m6予測固定 | C | **12/12完了・mandatory STOP**（[REPORT][C_FREEZE]）、結果 `12372fa6b`、保留group0 | [Dの24価格][D_STAGE1]のみで個別fit。係数・m6予測と[HANDOFF][C_FREEZE_HANDOFF]を公開。元凍結結果のCALIBRATED_UNVALIDATED・qualified_for_candidate=falseは不変 | 後続D m6判定は別REPORTとして参照。元artifactを遡及変更しない |
@@ -391,20 +405,21 @@ flowchart TD
 | m9予測固定・独立取得 | C → D | **成果受領済み、新規12 compile・有効直接価格12、モデルPASS/FAIL/UNKNOWN＝12/0/0、mandatory STOP**。全軸で観測前固定予測と観測RZが完全一致（[最終HANDOFF][D_PF_M9_RESULT]） | 元係数・予測不変、観測価格分母の相対誤差2%以内・全12個別PASS。Full/p7の実行SOURCEを区別、refit0 | 指定m9点のみのモデル判定。直接価格12軸追加とモデルPASSを別成果として扱い、他roundを資格しない |
 | 決定論PF m0直接価格 | D → C | **新規12 compile・有効12軸、再利用0・保留/欠測0、mandatory STOP**（[HANDOFF][D_PF_M0]）。完了時coverage72/156 | 同じ6候補×X/Y、m0/T.1/q1/実幅.1。元作用gate・C implementation guardを通過。モデル判定なし | 当該m0の直接価格。m6/m9モデル規則を短roundへ流用しない |
 | 決定論PF m1/m2直接価格 | D → C | **新しい固定完了成果を受領、新規24 compile・有効24軸、再利用0・保留/欠測0、mandatory STOP**（[HANDOFF][D_PF_M12]）。m1/m2各12軸、72/156→96/156 | 指示作成/送付/開始と完了を区別し、今回は公開された実績だけを加算。元作用gate・C implementation guard通過、モデル判定なし | m0〜m6・m9の96軸は直接価格完成。未取得m7/m8/m10〜m12の60軸と全domain資格は別 |
-| 決定論PF残60軸の技術調査 | D向け指示 | **指示作成済み（ユーザー確認）、送付・着手・完了は未確認** | 未取得m7/m8/m10〜m12の技術調査。追加compileの採択・実行開始と数えず、既存96軸・モデル判定・STOPを保全 | 残60軸の価格評価方法と追加実行の要否。新しい実行範囲は別判断 |
+| 決定論PF残60軸の閉包・価格公開・全13round集計 | D → C → B2 | 監査/推奨、ユーザーの条件付き採択、**C60価格公開・保留0、B2固定配分集計まで完了・各STOP**（[C][C_PF60]、[B2][B2_PF_TOTAL]） | 直接96軸とMODEL_PREDICTION60軸を分離。条件破綻時は影響domain保留、2%保証なし・誤差上界/CI=nullを維持 | 6候補の条件付き総額と順位。C公開/B2集計待ちは解消。5方式正式G/winnerではない |
 | PR-DF LD1のE[S]・有限価格接続 | C | **E[S]26/26、m0/m6各X/YでP1各2 path・P2 fresh各4 pathを受入、保留0、mandatory STOP**（[REPORT/HANDOFF][C_PRDF_ADMISSION]） | E[S]とcompiled価格を区別。replayは参照専用、P1/P2のcohort・SOURCEを保全。LD2へ移送しない | 接続待ちは解消。全law適格E[C]はLD1 0/26軸、期待値・統計区間は未資格 |
 | PR-DF LD1 m3較正入力・m4予測凍結 | D2 → C | **m3 fresh4 path・8 compile取得完了、C軸別2モデル・m4予測2件の観測前凍結完了、各担当STOP**（[m3 HANDOFF][D2_PRDF_M3]、[凍結REPORT][C_PRDF_FREEZE]） | m0/m6保存P2 fresh＋新m3で軸別fit。SOURCE `d83737b6d`、凍結結果 `3cac53da1`。P1/replayをpoolせず、元入力/receipt/科学SOURCEを保全 | m3取得待ち・fit待ちは解消。較正残差0をモデル資格とせず、後続の独立比較を別記する |
 | PR-DF LD1 m4独立比較・C最終受入 | D2 → C | **fresh4 path・X/Y8 compileと比較完了。C receipt8/8・軸別比較2/2受入、保留0、各担当STOP**（[D2結果][D2_PRDF_M4]、[C最終HANDOFF][C_PRDF_M4_ADMISSION]） | X/YともO=129,692.5 RZ、(P−O)/O≈−0.544502%。DESCRIPTIVE_COMPLETE、モデル判定NOT_ASSESSED_NO_ADOPTED_TOLERANCE、許容差null。full-wrapper statevector=falseを保持 | m4比較・C受入待ちは解消。有限cohortの保存比較であり、全law E[C]・CI・長round移送・Gを認定しない |
-| PR-DF LD1全13round E[C]評価計画 | D2 | **ユーザー確認で作業中、固定計画成果は未受領** | 保存ideal lawのE[S]と実装samplerの有限path残差をどこまで接続できるかを調査。新規価格取得・再fit・正式E[C]算出の開始と扱わない。m4の記述的完了と旧STOPを保全 | 全13round評価に必要な仮定・未解決事項・実行範囲を明らかにする計画。全law E[C]の認定ではない |
+| PR-DF LD1全13round E[C]評価計画・F0・残差差上界 | D2 → C | [計画][D2_PRDF_EC_PLAN]・[F0 C受入][C_PRDF_F0]・[26軸上界公開][D2_PRDF_RANGE]を受領、各STOP。新上界C受入は未確認 | IID格子lawとの条件付き差上界。actual PCG64 seed ensemble/joint law・有限残差/係数誤差・長round移送は未確定 | 既存調査待ちは解消。期待価格への次の計画は§8.2、PF総額を待たない |
 | PR-Pauli LD2 B1-W | D2、C guard | **成果受領済み、mandatory STOP**。m0 1 path、X/Y各RZ2,236・CX960・depth1,416。観測path gateと公開SOURCE束縛guard PASS（[D2][D2_W]、[HANDOFF][D2_HANDOFF]） | order0 component34/40のみ観測。order2 product・非自明位相はUNKNOWN。過去の[範囲逸脱記録][D2_SCOPE]を保全し科学証拠に採用しない | Wの限定した配線・観測価格の完了。期待価格・統計区間ではない |
 | PR-Pauli LD2 CAL・C2予測凍結 | D2 → C2 | **CAL5 cell・18 compile・10 record公開、X/Y2モデルとm5/m6の4予測凍結済み**（[CAL REPORT][D2_CAL]、[固定モデル][D2_FROZEN_MODELS]） | CALとWは別cohort。保存親event直接連結を維持し、予測は独立観測前に固定 | 較正・凍結待ちは解消。数値許容差なし、全law E[C]は未資格 |
 | PR-Pauli LD2 m5/m6独立holdout | D2、C2引渡し | **成果受領済み、DESCRIPTIVE_COMPLETE・mandatory STOP**。3 fresh path・6 compile、4/4比較単位有効（[REPORT][D2_HOLDOUT]、[HANDOFF][D2_HOLDOUT_HANDOFF]） | m5 X/Y各+0.044612%、m6 X/Y各+0.157666%（予測−観測、観測分母）。モデル数値許容差・PASS/FAILなし。scope逸脱記録は科学証拠に不採用 | 有限cohortの記述的差のみ。期待価格・統計区間・長q・order2/非自明位相の資格を与えない |
+| PR-Pauli LD2 m9長round比較 | C2/取得担当 | 案B採択・X/Y2予測固定と技術準備公開（[SOURCE準備][PAULI_M9_PREP]）。取得開始/結果公開は未確認 | fresh2 path・最大4 compile、元係数維持、数値許容差/モデルPASSなし | m9有限cohortの記述的比較。全law期待価格/CIは別課題、重複割当しない |
 | Full-H D7初回 | D1 | **科学実行前STOPの成果受領済み**。18予定・実行0・未取得18（[初回REPORT][D1_STOP]、[HANDOFF][D1_STOP_HANDOFF]） | rank3・seed・SOURCE・保存入力照合はPASS。停止原因は親event再samplingと非configuration較正5 cellの空implementation evidence | 科学的FAILではなく固定callerの適合性不足。旧STOPを保全 |
 | Full-H D7 CALIBRATION最終引渡し | D1 → C | **5 cell・9 path・18実compile、D1最終検査PASS18/FAIL0/未取得0、10較正record引渡し済み、mandatory STOP**（[最終HANDOFF][D1_FINAL]） | G36223最終検証は保存4 compile再利用・追加0、4件は18件の内数。P2R566はG566保存親event2本の連結で親と非独立。旧部分公開・検査中・STOP記録を保全 | D7取得・最終検査待ちは解消。18軸PASSは取得/検査の状態で、価格モデルPASSではない |
-| Full-H軸別3係数モデル・m5/m6予測固定 | C → D1 | **10 record受入・保留0、X/Y別2fit・4予測凍結完了、C mandatory STOP**（[HANDOFF][C_FULLH_HANDOFF]）。科学SOURCE `f46fa120b`、結果 `b5165f11b` | 各軸5 cell等重み・rank3・3係数のexact最小二乗。paired依存と元index0/1 gate範囲を保持。C側で元D1 metadata readerから公開JSON読取確認済み。後続D1作業中はユーザー確認、固定完了結果は未受領 | CALIBRATED_UNVALIDATED、qualified_for_candidate=false。fit/予測固定待ちは解消、独立holdoutの完了報告待ち |
-| Full-H採択済み記述的比較・独立holdout | D1 | **比較規則はユーザー採択済み、実行指示送付済み、ユーザー確認でD1作業中**。固定完了報告未受領、途中の取得数・有効数は未記載（[固定規則原案][C2_FULLH_RULE]） | m5 fresh2 path＋m6 fresh1 path、X/Y計6 compile・比較4件、固定4予測を使用。数値許容差null・モデルPASS/FAILなし。原案の採択待ちと較正完了後STOPは履歴として保全 | 指定有限cohortでの4件の記述的比較。作業中という確認を完了・モデルPASS・全law E[C]/CI・長q資格としない |
+| Full-H軸別3係数モデル・m5/m6予測固定 | C → D1 | **10 record受入・保留0、X/Y別2fit・4予測凍結完了、C STOP**（[C][C_FULLH_HANDOFF]）。後続m5/m6取得は別固定成果 | 科学SOURCE f46fa120b、凍結結果b5165f11b。paired依存・gate範囲・元モデルstatusを保持 | 凍結待ちは解消。CALIBRATED_UNVALIDATED / qualified_for_candidate=falseを保全し、26軸E[C]資格と分ける |
+| Full-H採択済み記述的比較・独立holdout | D1 | 指示送付済み・ユーザー確認で作業中。**m5 fresh2 path・4 compileの取得/必要gate PASSを公開**（[固定状態][D1_M5_STATUS]）。m6のfresh1 path・2 compileも取得/必要gate PASS公開（[m6][D1_M6_STATUS]）。最終4比較は未確認 | 計画はm5 fresh2＋m6 fresh1、計6 compile/比較4件、固定4予測。数値許容差null・モデルPASSなし | m5の取得PASSをモデルPASSとしない。最終比較REPORTを待ち、26軸期待価格計画は並行可能 |
 | 主精度評価契約 | ユーザー採択、B | **Z1＋T1 total decoderのQ3直接モデルMSEを採択済み**。旧REPORTの未採択表記は履歴 | 保存DF10 solver proxy、ideal finite-K raw・IID二項、$\tau=(0.00159360010199040\,\mathrm{Ha})^2$ | モデル閾値適合の意味を固定。十分N・物理的global RMSEを自動認定しない |
-| 追加のN検証・正式G接続 | B、C | 固定配分の条件付き成果は完了。十分N、全round適格E[C]、正式Gは未確定 | 完了済み結果を再利用し、新しい配分・科学評価・比較範囲は別判断・別指示 | 同一候補・同一claim水準でGを構成できるか |
+| 追加のN検証・正式G接続 | B、C | 5方式の評価済み配分とFull-H1.5倍完了あり、PF条件付き総額も完成。十分N・全round適格E[C]・正式Gは未確定 | 初回固定配分比較と正式Gを分離。新しい精度契約・追加科学実行は別判断 | 初回比較に追加shot探索を課さず、物理的global RMSE等の課題を後続として保持 |
 | 最終G比較 | B、C → ユーザー | G・winnerは全方式でnull | 全方式について、同じclaim水準のNとE[C]。比較policy | 共通条件下の方式比較と、追加検証の要否 |
 
 **既存引渡しの利用**（新しい担当指示ではない）
@@ -413,15 +428,13 @@ flowchart TD
 
 ## 11. 出典不足・確認できなかった事項
 
-- **今回の確認範囲**：統合branchのremote HEAD `e123b917a` と現行本文を確認。D `6e110c083`、C `81596ce7c`、PR-DF取得D2 `063f2b3b6`、D1 `e628c0d69`、C2 `f0765067a` の関連公開refは前回反映時と一致し、既読の固定REPORT/HANDOFF・原結果参照を保全した。今回の採択・指示送付・稼働状況はユーザー確認を反映。後続の固定完了報告・固定計画成果は確認範囲で未受領。A/B・Pauli LD2・§9は再調査・更新しておらず、非公開作業の不存在も主張しない。
-- **信号不足の解消範囲**：価格shortlistのFull PF/B0I p7各3候補は完成packetとB intakeを確認済み。補助Full PF S2・幅0.1は別候補であり、この完成を流用しない。
-- **指示作成・送付・成果の区別**：ユーザー確認では、PF残60軸調査指示は作成済み（送付・着手・完了未確認）、D2はLD1全13round E[C]評価計画を作業中、Full-H記述的規則は採択済み・D1実行指示送付済みでD1作業中。これらを新しい価格取得実績・正式E[C]算出・比較完了と数えず、途中の件数も推定しない。C2原案の採択待ち・各完了後STOPは当時の履歴として保全。各processの監視・再投入は行っていない。
-- **Bの実行記録**：PF6候補の科学worker完了と条件付きモデル判定は保存componentで確認できる。最終API return・CPU・peak RAMは欠測であり、完全なAPI returnや性能値を復元したとは主張しない。再実行は残作業に加えない。
-- **正式採択の範囲**：Q3主精度、決定論PFの個別holdout規則、PR-DF LD1のm3較正入力から独立m4記述的比較への方針、Pauli LD2とFull-Hの各記述的比較を区別する。Full-Hの4件・数値許容差/モデルPASS/FAILなしという規則の採択と、D1への限定実行指示を今回のユーザー確認で反映した。旧REPORTは改変せず、5方式全体の最終候補選定・比較policy・物理保証まで採択済みと広げない。
-- **アルゴリズム改善系列**：§9.1は、11/01と11/10の横断調査と、各branchの最新報告の冒頭に基づく。各系列の全artifactを読み直してはいない。
-- **`main`との差**：11月5日以降の成果は`main`に無い。本書から固定commitで参照できるが、`main`のcheckoutだけでは実装pathを開けない。
-- `VALIDATION_STATUS.md`と`validation_manifest.json`は変更していない。本書の追加は、科学的なstatusを変えない。
-- 今回の更新は固定文書とユーザー確認状況の統合のみ。新しい科学レビュー・数値再解析・fit・compile、holdoutの開封/実行、担当への新規指示、`main`への統合は行っていない。
+- **今回の確認範囲**：統合remote `518377f1771f7950289127f086bde04a0bc3796d` と現行本文、[14候補表][C_ALIGNMENT]、各固定Q3/価格/モデル/計画/HANDOFFを静的照合した。対象公開先端としてD PF `606881b04`、D2 PR-DF `dcf905fc5`、D1 `b5fac0ee4`（m5 `c511f6b4f`、m6 `b5fac0ee4`の取得公開）、Pauli C2 `3f6e6604a`、D2既存holdout `705f59ea8`を確認。確認中の新公開C `c383105b1`、B2 `1002f1dfe`、B `6c5569c34`も取り込み、固定リンクで参照する。全サーバー/非公開作業の不存在は主張しない。§9の別系列は再調査していない。
+- **作成/送付/実行/成果受領**：PF60価格・B2全13round集計は固定完了成果を受領した。Full-H1.5倍はBの1 call完了・適合・STOPを受領。D1 holdoutは送付済み/作業中というユーザー確認と、m5/m6取得公開と未確認の最終比較を区別。Pauli m9は公開準備文書で採択/実行scopeを確認し予測固定を受領、取得開始/結果公開は未確認。PR-DF26軸上界の新C受入完了は未確認。各process監視・停止/再投入・担当への指示送付は行っていない。
+- **確認範囲で価格未同定**：PR-DF LD2、Pauli LD1のm0以外、補助候補の同条件価格/受入不足は、未実施の断定ではない。旧locator/別loweringを0価格・新候補価格・現行受入済みに置き換えない。
+- **Bの記録と資格**：PF6件は保存componentで判定復元、最終API return/CPU/peak RAMは欠測のまま。Full-H1.5倍の完全保存はPF欠測を補うものではない。既評価配分から最小N・MSEの単調性・未評価vectorの適否を推論せず、追加Q3を本書から要求しない。
+- **科学的採択の範囲**：Q3主精度、PFの個別holdout2%規則、PF閉包の条件付き価格利用、PR-DF m4・Pauli m5/m6・m9・Full-Hの各記述的比較を区別。初回Full-H1.5倍の選択はユーザー追送指示による。全law E[C]、新しい数値許容差/信頼水準、正式候補集合・物理保証・5方式winnerを採択していない。
+- **law/価格の境界**：保存ideal lawの構造量、独立53-bit格子仮定での差上界、実PCG64 seed ensemble、有限cohort平均、期待compiled価格は別。表の件数・価格・MSEは固定資料からの転記で、新しい科学計算/価格再集計ではない。
+- **保全**：`main`・個別branch・固定SOURCE/raw・凍結モデル・REPORT・旧STOP、`VALIDATION_STATUS.md`・manifestは無変更。別のレビューMDや管理台帳は作成しない。新規科学レビュー、数値再解析、Q3 call、fit、sampling、回路build/compile、価格算出、N/G集計、holdout開封/実行は行っていない。
 
 ## 12. 更新規則
 
@@ -584,3 +597,19 @@ flowchart TD
 [T1]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7a0c9468b2499fac9fa1cd279ae2980c9dab048e/docs/research/truncated_pf_t1_results_20261114/REPORT.md
 [T2]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7a0c9468b2499fac9fa1cd279ae2980c9dab048e/docs/research/truncated_pf_t2_results_20261114/REPORT.md
 [THRESH]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ecafc5deaba250ad170a4324cf1be48b14e56a9d/docs/research/track_a_threshold_centering_square_avoidance_20261110/REPORT.md
+[B_FULLH_3O2]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6c5569c3479013b080b2ba53842585f1d670d3c9/docs/research/full_h_kappa2_scale3o2_q3_results_20261115/REPORT.md
+[B_FULLH_3O2_HANDOFF]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6c5569c3479013b080b2ba53842585f1d670d3c9/docs/research/full_h_kappa2_scale3o2_q3_results_20261115/HANDOFF.md
+[B_FULLH_3O2_JOIN]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6c5569c3479013b080b2ba53842585f1d670d3c9/docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json
+[C_PF60_REC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c3f761f0af5b21207e64051c9c619858064450fe/docs/research/pf_closure_price_recommendation_20261115/HANDOFF.md
+[C_PF60]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c383105b16db7004db39b1ae270b220627d0f3b4/docs/research/pf_closure_prices_20261115/HANDOFF_B.md
+[C_PF60_TABLE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/e4458cd7548977e6e11a5a7b0c8dca0d049535d4/docs/research/pf_closure_prices_20261115/run01/PRICES.json
+[B2_PF_TOTAL]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/1002f1dfea34de439ca1b704a0192bca473c5387/docs/research/pf6_allround_cost_20261115/HANDOFF.md
+[B_PF_PARTIAL]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/540b54ab2aa01a164f913d5b18497e711ae4a29c/docs/research/pf6_eight_round_cost_20261115/REPORT.md
+[D2_PRDF_EC_PLAN]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/950577f416c17a20d309a8053a4bb016027b724d/docs/research/d_pr_df_ld1_ec_plan_20261115/REPORT.md
+[C_PRDF_F0]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/259a0b2d7357d740502d6837db2cf3c2a8b75c5e/docs/research/pr_df_ld1_f0_admission_20261115/HANDOFF.md
+[D2_PRDF_RANGE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/dcf905fc5c0abb05966019bcae8b0206af9aa952/docs/research/d_pr_df_ld1_f0_rz_range_20261115/HANDOFF_C.md
+[PAULI_M9_PLAN]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/2d513c2755cfd88cfcf30cba4352a6075d9a9c4b/docs/research/pauli_ld2_next_price_evidence_20261115/HANDOFF.md
+[PAULI_M9_PREP]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3f6e6604a4877dc882fd1ee7538a854464160a5b/docs/research/d_pauli_ld2_m9_longpoint_results_20261115/SOURCE_PREPARATION.md
+[D1_M5_STATUS]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c511f6b4f521f0e1dd7853bea02e0b0058272640/docs/research/d_full_h_d7_holdout_20261115/run01/M5_ROUND/AXIS_STATUS.json
+[D1_M5_INPUTS]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c511f6b4f521f0e1dd7853bea02e0b0058272640/docs/research/d_full_h_d7_holdout_20261115/run01/M5_ROUND/C_INPUTS.json
+[D1_M6_STATUS]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/b5fac0ee4eac83f027f883e5ea5630623a98bf29/docs/research/d_full_h_d7_holdout_20261115/run01/M6_ROUND/AXIS_STATUS.json
