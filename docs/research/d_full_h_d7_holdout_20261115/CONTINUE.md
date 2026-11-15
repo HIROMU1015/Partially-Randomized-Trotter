@@ -1,51 +1,17 @@
-# D7独立holdout：固定job実行中（再投入禁止）
+# D7独立holdout：取得・比較・C引渡し完了、mandatory STOP
 
-## 最新：完了cellの先行公開準備も起動済み
+全3 fresh path・6軸取得/必要gate PASS、6 new compile/再利用0/欠測0。4 exact比較はDESCRIPTIVE_COMPLETE。
+科学SOURCE 9cbabc617e95a81810924413c1b2b06ced329514、公開後処理SOURCE03cc993eeff827e87fc120a1aedb14a34fefcdf2。
+全6軸結果b5fac0ee4eac83f027f883e5ea5630623a98bf29。m5先行公開c511f6b4f521f0e1dd7853bea02e0b0058272640を含む。
 
-追加高速化の許可を受け、後処理SOURCE `03cc993eeff827e87fc120a1aedb14a34fefcdf2` をpush/remote照合した。
-科学実行SOURCE9cbabc617・runtime・入力と進行中workerは無変更。
-元D1公開worktreeで `publish_full_h_d7_holdout.py --stage-when-finished` が既存job終了を待機している。
-M5 session41045、M6 session44167。**これらの後処理も重複起動しない。**
-各cell完了後、自動で元bytes/monitoringをコピーし、個別軸記録/実装証拠を検査し、pigz並列でlossless圧縮する。
-logは元D1 worktreeのrun01/<cell>.publication.console.txt。下記手順2のcopy/prepareはこの既存後処理が担当する。
-RAW_RECEIPT/AXIS_STATUSがあればprepare済みであり手動再実行しない。後処理失敗時はlogと保存成果を確認する。
-公開SHAからのbindも2 cell process並列へ改良済み。4 exact比較の式・規則は変えていない。
-[適用条件と人工3検査](PUBLICATION_ACCELERATION.md)。実際の短縮幅は未測定。
+m5科学session31027・後処理41045は終了、m6科学70309・後処理44167も終了した。
+元固定checkoutとprivateにraw/QPY/元compiler記録を保全、元D1 branchへ結果gzipと個別証拠を公開。
+archive/prepare/bind/科学jobを再投入・再実行しない。
 
-利用者の実行指示・続行指示に基づき、観測前結合/重複照合、人工32件、import-only23 moduleのPASS後に起動した。
-SOURCE/input `9cbabc617e95a81810924413c1b2b06ced329514` は指定branchへpushしremote一致確認済み。
-予測b5165f11bb63f9eb2a6bfe385ba75d8003b7e724、規則f0765067a5a8b39888e36f3a8b80f1bdbda69223を変更しない。
+4件のexact P/O/差/相対差と固定C予測・D1観測locatorはCOMPARISON.json/csvおよびHANDOFF_C.json。
+m5-X/Y -0.445257%、m6-X/Y +0.134608%は表示用。モデルPASS/FAILなし・tolerance null。
+元callerの7数値gate（各cell index0）と全pathの実装gate、公開6軸対応を確認した。
+C担当の科学的受入はNOT_PERFORMED。ロードマップ本体は統合担当が更新する。
 
-## 既存jobを観測する
-
-- 実行checkout：`/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-d7-holdout-20261115`、detached HEAD固定。
-- 元D1公開worktree：`/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-full-h-p2-caller-prep-20261114`。
-- M5_ROUND session31027：fresh path0/1、各X/Yの4 compile。
-- M6_ROUND session70309：fresh path0、各X/Yの2 compile。
-- private：`/home/AbeHiromu/projects/d-full-h-d7-holdout-20261115-private/run01/<cell>`。
-- public：実行checkoutの `docs/research/d_full_h_d7_holdout_20261115/run01/<cell>`。
-- console/time/JOB：run01直下。PROGRESS/OBSERVATIONS/CHILD_EXIT、PATH_<index>_PROGRESSはprivate。
-
-**同じjobを再投入しない。正常workerのSOURCEを書き換えず、停止・再起動しない。**
-実行済み/途中のnative record、個別compile、作用・実装gate、子process終了codeを保持する。
-異常時は新規投入を止め、部分receiptと理由を保全してSTOP。無断retry・seed変更なし。
-
-## 完了後の残作業（追加科学条件なし）
-
-1. 既存RESULT・CHILD_EXIT・PATH log・timeを確認する。新しいpath/compileを起動しない。
-2. 実行checkoutのrun01を元D1 worktreeへcopyし、`RESULT.json`をlocal保全、ignoreする。
-   元D1側で `publish_full_h_d7_holdout.py --prepare <cell> --execution-source 9cbabc617e95a81810924413c1b2b06ced329514`。
-   これは保存元receiptと6個別軸の価格/元compiler bytes/実装gateを検査し、既存READ_RECEIPTでlossless圧縮する。
-   prepare済みのcellを繰り返さない。大きいgzipは64MiB以下のbyte partsを公開する。
-3. 結果fileを指定branchへcommit/pushして結果SHAを固定する。
-4. 同scriptの `--bind <結果SHA> --execution-source 9cbabc617e95a81810924413c1b2b06ced329514`。
-   公開SHAからraw/元caller record/6軸compiler bytesを再照合し、COMPARISON.json/csvとPUBLICATION_CHECKを生成。
-   固定予測は分子/分母を直接読み、m5同軸2 path平均とm6同軸1 path値の4比較だけをexactに計算する。
-5. REPORT/HANDOFF_Cを作り、全比較行からC予測とD1個別receiptへ固定SHA/path/selectorを記す。
-   予定/再利用/新規compile/有効/欠測・資源・ロードマップへの差分を報告する。ロードマップ本体は編集しない。
-6. 関連索引/現状/manifest/dated noteを適切に更新し、commit/push・remote/公開成果物を照合してmandatory STOP。
-
-4件有効/全O>0はDESCRIPTIVE_COMPLETE、O=0を含むならDESCRIPTIVE_COMPLETE_RELATIVE_UNDEFINED。
-欠測/不一致/gate不成立はINCOMPLETE_OR_INVALID。m5片方だけを平均の代用にしない。
-tolerance=null、model_verdict=NOT_ASSESSED_NO_ADOPTED_TOLERANCE。モデルPASS/FAILなし。
-m6 n2、追加round、再fit、事後閾値、全law E[C]/CI/N/G/winnerは範囲外。
+最終REPORT/HANDOFF/比較・公開後照合のcommit/push・remote成果物照合でmandatory STOP。
+m6 n2・追加round・再fit・事後閾値・全law E[C]/CI/N/G/winnerへ進まない。

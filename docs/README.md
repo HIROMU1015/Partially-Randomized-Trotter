@@ -1,6 +1,6 @@
 # 文書索引
 
-[Full-H κ2 D7独立holdout](research/d_full_h_d7_holdout_20261115/REPORT.md)：指定3 path/最大6 compileを実行中。観測前結合・重複照合済み、4件の記述比較は未完了。
+[Full-H κ2 D7独立holdout完了](research/d_full_h_d7_holdout_20261115/REPORT.md)／[C向けHANDOFF](research/d_full_h_d7_holdout_20261115/HANDOFF_C.md)：3 fresh path/6 new compile・全必要gate PASS、4 exact比較DESCRIPTIVE_COMPLETE。モデルPASS/FAILなし。結果b5fac0ee4、公開照合後mandatory STOP。
 
 [並列化・高速化の手法集](PERFORMANCE_METHODS.md)：実装と検証記録を再利用するための入口。
 

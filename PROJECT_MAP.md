@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-[Full-H κ2 D7独立holdout取得中](docs/research/d_full_h_d7_holdout_20261115/REPORT.md)：m5独立2 path・m6独立1 path、最大6 compile。C固定予測b516と採択規則f076を観測前結合、SOURCE9cbabc617。4件のexact記述比較のみ、モデルPASS/FAILなし。
+[Full-H κ2 D7独立holdout・記述的比較完了](docs/research/d_full_h_d7_holdout_20261115/REPORT.md)：m5独立2 path/m6独立1 path・新規6 compile、必要gate6軸PASS。固定予測との差はm5-X/Y各−0.445257%、m6-X/Y各＋0.134608%。DESCRIPTIVE_COMPLETE、モデルPASS/FAILなし・tolerance null。全6軸結果b5fac0ee4、4 exact比較とC向けHANDOFF、公開照合後mandatory STOP。
 
 [並列化・高速化の手法集](docs/PERFORMANCE_METHODS.md)：既存helper・runner・test・検証記録への再利用索引。適用条件・SOURCE・確認範囲・既知の失敗例を記録する。
 

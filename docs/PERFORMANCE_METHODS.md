@@ -39,12 +39,12 @@ SOURCE8cce54064で実G36223の残検査が正常終了し、wall21:39.15・peakR
 D7独立holdoutの入口は [run_full_h_d7_holdout.py](../scripts/run_full_h_d7_holdout.py)。既存path/X/Y並列・
 controlled cache・fast writerをそのまま使い、任意callbackで実経路のstageと子終了code/signalを記録する。
 親observerがpath別logを読み、計算workerに非同期dump/threadを追加しない。
-[SOURCE準備・検証](research/d_full_h_d7_holdout_20261115/SOURCE_PREPARATION.md)。実対象の所要時間は取得後に記録する。
+[SOURCE準備・検証](research/d_full_h_d7_holdout_20261115/SOURCE_PREPARATION.md)。実対象はm5 wall22:05.61・m6 wall1:26:15で完了。native状態vector検査に逐次処理が残る。
 
 追加の公開高速化は [publish_full_h_d7_holdout.py](../scripts/publish_full_h_d7_holdout.py) の完了cell先行処理、
 導入済みpigzによる並列gzip、2 cellのprocess並列公開照合。元bytes/hashと復号/part順を保持し、4 exact比較の式は変更しない。
 稼働中科学SOURCEの変更・再起動なしで後処理を重ねる。[適用条件・人工3件](research/d_full_h_d7_holdout_20261115/PUBLICATION_ACCELERATION.md)。
-全体速度倍率は未測定であり、人工bytesの時間を科学処理へ外挿しない。
+実測はm5 raw約586MBの圧縮2.096秒/復号・hash等を含むarchive2.970秒、m6 raw約1.17GBは4.024秒/5.738秒。公開cell照合は別PIDで7.761/13.239秒。全体速度倍率は未測定であり、人工bytesの時間を科学処理へ外挿しない。
 
 [PR-2 S2並列実行層](pr2_s2_parallel_execution.md)は、cell単位のspawn pool、phase barrier、
 完了順に依存しない集約、persistent compiled-cost cache、段階別logを既存コードへ接続している。

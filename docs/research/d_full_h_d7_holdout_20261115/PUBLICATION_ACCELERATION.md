@@ -25,3 +25,7 @@ hash/分割/復号確認込み約0.07秒。実H4の速度倍率・全体所要�
 
 変更は元D1公開worktreeだけにcommitし、実行checkoutのSOURCE9cbabc617・runtime・科学入力は保持する。
 実行SOURCEと公開後処理SOURCEを区別して最終REPORTへ残す。引渡しの科学的範囲・最大6 compile・STOPは変更しない。
+
+## 実対象での確認
+
+全3 path/6軸の科学取得・gateが正常終了。科学SOURCE9cbabc617は変更せず、m5完了後の圧縮・公開準備をm6取得と重ねた。m5 raw585753898 bytesのpigz圧縮2.096秒、復号/hash等込みarchive2.970秒。m6 raw1170083541 bytesは4.024秒/5.738秒。公開結果b5fac0ee4のcell別検査は別PIDでm5 7.761秒/m6 13.239秒、全6軸と4 exact行の対応照合が完了。全jobのserial対比速度倍率は測定していない。
