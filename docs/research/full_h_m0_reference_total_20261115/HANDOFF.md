@@ -9,3 +9,8 @@ F1の保存m1〜m12・24軸を再予測せず接続する会計経路と人工�
 統合ロードマップ差分：m0取得はD1で1path/2compile完了したが、参照価格受入は0/2で保留。24保存モデル軸との技術接続は用意済み、全13round比較シナリオは未成立。必要なのは同じ保存pathのcoverage条件と保存されなかった実装gateをD1でどう扱うかの明確化。Cはgateの採択変更・retry・代替pathを実施しない。本体更新は統合担当へ。
 
 集計の承認は1構成・1配分について既存指示どおり維持され、両軸受入時の再承認は不要。ただし今回のD1 STOPを越える取得・固定契約変更の許可は追加しない。成果公開・remote照合後mandatory STOP。
+
+
+固定C実行SOURCE：`5e619de429ddfc69a3a64da24a766b97db2b546a`。結果入口は [run01/RESULT.json](run01/RESULT.json)、軸別一覧は [run01/AXES.csv](run01/AXES.csv)。`m0_admissions`→元price/観測/compile locator、`rows`→physical ID/axis/N/保存F1 exact引用、`comparisons[*].benchmark`→新PF二基準のCSV labelへ戻れる。結合キーはconfiguration・physical ID・m・axis。X/Yの観測fingerprintは別、共有path数1。
+
+受入0/2・保留2/2、保存F1引用24/24、全額/部分額/割合/比較差はnull。実加算の前で停止した。人工・回帰18 test PASS、Cの新sampling/build/compile/fit/Q3/予測/総額算出0。固定SOURCE・公開commitはGit履歴で区別し、旧STOPの上書きはない。

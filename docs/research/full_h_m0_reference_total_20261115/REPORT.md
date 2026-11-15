@@ -2,7 +2,7 @@
 
 **D1の公開m0結果は所定gateでSTOPしており、CはX/Yとも参照単価を保留する。全13 round総額T、m0部分額、T内割合、PF二基準との差はnullのまま。** 保存24軸の再予測や実総額の計算は行わない。
 
-技術SOURCEを固定後、[D1_MAPPING.json](D1_MAPPING.json) から保存記録の受入経路を一回実行し、結果をrun01へ保存する。これは失敗したD1取得の再実行ではなく、公開されたSTOPとaxis別receiptのmetadata照合である。
+技術SOURCE `5e619de429ddfc69a3a64da24a766b97db2b546a` を固定後、[D1_MAPPING.json](D1_MAPPING.json) から保存記録の受入経路を一回実行し、[run01/RESULT.json](run01/RESULT.json) と [AXES.csv](run01/AXES.csv) へ保存した。これは失敗したD1取得の再実行ではなく、公開されたSTOPとaxis別receiptのmetadata照合である。
 
 ## 固定条件と根拠
 
@@ -38,3 +38,21 @@ C既存branchと固定4a1提案の重複調査を再利用し、その後の関�
 新規処理は小さい保存JSON/CSV/compile receiptの読取と人工テストだけ。24モデルquoteは再予測せず、event列/QPYを展開しない。共有環境・他担当branch/worktreeは変更しない。新しい並列化framework、性能向上の未実測主張はない。
 
 旧F1/D7、原receipt、旧STOP、資格、Q3を保全する。正式E[C]/CI/G/winnerは未評価。ロードマップ本体は更新せず、HANDOFFの差分を統合担当へ渡す。結果公開後mandatory STOP。
+
+## 実施結果・検査
+
+| 区分 | 結果 |
+|---|---|
+| m0経験的参照単価の受入 | 0/2、保留2/2 |
+| 保存compile観測への接続 | X/Y各1、同一normal path1本（価格資格は保留） |
+| F1 m1〜m12保存model引用 | 24/24軸、再予測0 |
+| T / m0部分額 / m0割合 / 2基準との差 | すべてnull |
+| Cのsampling / build / compile / fit / Q3 / 新予測 | すべて0 |
+
+結果statusは`HELD_NO_TOTAL`。24有効保存model軸があってもm0のnullを0や1062で補完せず、実データ加算は起動していない。集計元を固定したSOURCE・D1各locator・PF比較正本はRESULT.jsonに保持する。
+
+[TESTS.txt](TESTS.txt)：新規6＋D7受入回帰6＋F1人工回帰6＝18 test PASS。正の会計・exact割合・差の符号、片軸欠測、両軸producer STOP、scalar/SOURCE/axis不一致、成功packetをSTOP用readerへ誤投入しないことを確認した。人工価格のテストであり、実Full-Hの価格資格や独立科学レビューではない。
+
+再開上の不足は、D1の固定coverage条件と元pathの合法性・保存されなかった個別実装gateの対応を明確にすること。現在のSTOPを上書きせず、保存pathでの限定再検査等が必要ならD1側で対象・SOURCE・許可範囲を具体化する。新pathやcompileをC側から自動要求・投入しない。
+
+本公開はユーザー指定の「両軸受入できた場合だけ集計」の不成立分岐を完了したもの。全13roundの数値総額・PF順位は未判定、mandatory STOP。

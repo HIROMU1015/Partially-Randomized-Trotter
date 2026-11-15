@@ -1,5 +1,7 @@
 # scripts 索引
 
+`account_full_h_reference_scenario.py`：[保存m0 STOP受入・会計準備](../docs/research/full_h_m0_reference_total_20261115/REPORT.md)。固定Git readerとexact表現を再利用。run01は0受入/2保留で加算前にnullを返して完了、再実行しない。正の集計経路は人工価格のみで検証。
+
 `run_full_h_f1_diagnostic.py`：[F1結果](../docs/research/full_h_f1_model_diagnostic_20261115/REPORT.md)。固定D7特徴量・exact predictを再利用し、26軸gateとm6部分額のみ。run01完了済み、再実行しない。
 
 `admit_full_h_d7_holdout.py`：[D7の保存受入・26軸接続](../docs/research/full_h_d7_holdout_admission_plan_20261115/REPORT.md)。既存Git evidence readerを再利用。保存比較を転記し、予測/平均/誤差/Gを再計算しない。

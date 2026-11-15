@@ -1,5 +1,7 @@
 # Validation status
 
+[Full-H κ2 m0受入保留と会計準備](docs/research/full_h_m0_reference_total_20261115/REPORT.md)：Full-H κ2 m0はD1 b25d7da6dで1path/2compileを取得したがrequired coverage gateでSTOP。C受入0・保留2、保存F1の24model軸を再予測せず接続し、全額/部分額/割合/PF二基準との差はnullを保持。人工・回帰18 PASS、新sampling/build/compile/fit/Q3/予測/実総額0、公開後STOP。
+
 [Full-H κ2 m0の1shot価格規則案](docs/research/full_h_m0_price_rule_20261115/REPORT.md)：m0/T.1/q1/R9/K2の同条件保存価格は確認範囲で0軸。事前固定normal path1本のX/Y実測値を経験的1shot単価にする案を提示。現在単価null、最大2wrapper取得は未実行。Nだけの変更へ再利用可能、旧prep hash差の価格影響は未確認。新規sampling/build/compile/集計/予測/fit/Q3/全額0。m6下界探索は利用者指示で終了、公開後STOP。
 
 [Full-H κ2 m6の保存証拠下界調査](docs/research/full_h_m6_lower_bound_20261115/REPORT.md)：固定m6の保存SOURCE・receiptから正当化できたL6_lowerは非負性の0 RZ。p7 S2基準593,555,352との差は同額で順位未判定。旧Full-HとD7のprep hash差を保持し、compiled RZ生存不等式が不足。0-compile証拠回収を優先、条件付き61path/122wrapperの未採択検定案を提示。既存F1/D7再計算・sampling/build/compile/fit/Q3・新CIなし、公開後STOP。
