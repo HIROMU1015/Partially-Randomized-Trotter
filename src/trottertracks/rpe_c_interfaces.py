@@ -85,5 +85,17 @@ def interfaces(root):
                     raise ValueError('C interfaces bound to another root')
                 return api
             pipeline.providers = live_api
+            # Keep C's planner and hash checks. Only A's dictionary descriptor
+            # adapter differs for the source-pinned LD3 residual locator.
+            original_helpers = pipeline._pauli_helpers
+            def pauli_helpers(value):
+                from . import rpe_pauli_signal_intake as intake
+                old = original_helpers(value)
+                def identity(item):
+                    if item['source'] == intake.LD3_DICTIONARY:
+                        return intake._ld3_metadata_helpers(str(value)).dictionary_identity(item)
+                    return old.dictionary_identity(item)
+                return types.SimpleNamespace(job=old.job, dictionary_identity=identity, recipe=old.recipe)
+            pipeline._pauli_helpers = pauli_helpers
     return types.SimpleNamespace(pipeline=pipeline, paper=package.paper_nominal_cost,
                                  guard=guard, source=SOURCE)

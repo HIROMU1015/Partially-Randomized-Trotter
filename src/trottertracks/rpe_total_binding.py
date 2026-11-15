@@ -154,7 +154,8 @@ def bind_signal(root, binding, original_packet, *, original_packet_source=None):
             expected = saved['signal_packet']
         else:
             from . import rpe_pauli_signal_intake as A
-            saved = A.accept_saved(root, integration=pipeline)['results']
+            saved = A.accept_saved(root, integration=pipeline,
+                handoff_source=original_packet.get('source'))['results']
             matches = [r['signal_packet'] for r in saved if r['configuration']['id'] == old['id']]
             if len(matches) != 1:
                 raise ValueError('Published Pauli intake for this original canonical SOURCE required')
