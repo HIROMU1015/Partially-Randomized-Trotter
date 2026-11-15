@@ -1,4 +1,129 @@
-# H4：方式別RPEコスト最適化の最初の実装（保存結果と人工fixtureで確認）
+# H4：方式別RPEコスト最適化（第2段階：Q3実行器の接続とAの受入テストの反映）
+
+2026-11-16 JST、B2（Claude Code、主agentのみ。作成者自身の確認で、独立レビューではない）。SOURCEは `a2e2ef50a108d6f34089a99bd00f11a7085dd9c9`。**新規の実Q3・科学計算・compileは0件。** 確認は人工workerと保存結果だけで行った。第1段階の記録は後半に残した。
+
+## A. 結論
+
+- 次の流れを同じ実行入口につないだ。
+  - 探索器が要求を出す。
+  - その方式の既存Q3経路を起動する。
+  - 結果を照合して取り込む。
+  - 次候補を選ぶ。
+- 開始時に採択された方式・予算（探索round）の範囲では、候補ごとの人手による起動・取込は要らない。
+- 同じコマンドを再実行すると再開になる。保存結果・完了jobを先に照合して再利用し、実行中のjobは二重起動しない。
+- 固定入力をCの `417a73e73` に更新した（Cのreader `be5326bdc` を取り込み、価格欄 `unit_price_RZ` に対応）。
+  - p7の最安適合点372,035,410 RZ（粗幅Yoshida4・32h/5・A_SHAPE）を、保存Q3だけで再現した（新規Q3は0件）。
+  - 4方式の次候補は、旧要求を使い回さず探索規則から作り直した。
+- Aの固定受入テスト（`3115712244`）を新しいcheckoutで再実行した。
+  - 結果は **PASS 20、Skillは未公開のためPENDING 1**。旧実装 `5b7c07679` では PASS 15、FAIL 4 だった。
+  - 出力は別の場所 [a_acceptance_a2e2ef50a/](a_acceptance_a2e2ef50a/ACCEPTANCE_RESULT.json) に保存した。
+- 実行器の受入（実際の入口、人工worker・保存結果）は10件すべてPASS（[executor_acceptance_a2e2ef50a/](executor_acceptance_a2e2ef50a/EXECUTOR_ACCEPTANCE.json)）。
+- 予算0の探索roundでは、実経路で科学callが1件も起動しないことも確かめた。
+
+### 更新後の方式別最安点と次候補（[run02](run02/RESULT.json)、新規Q3予算0）
+
+| 方式 | 最安適合構成 | X/Y各軸（m0〜m12） | MSE上界 Ha² | 費用 RZ | 次候補（探索規則が選択） | 経路 |
+|---|---|---|---:|---:|---|---|
+| Full PF | S2・16h/7 | [59,55,51,47,43,39,35,31,27,23,19,13,2] | 2.40247×10⁻⁶ | 559,457,386 | M5・16hの適合点からm12を−2：[30,28,26,24,22,20,17,15,13,11,9,7,3]、541,075,202 | `pf_b_pf6` |
+| B0I p7 | **Yoshida4・32h/5**（A_SHAPE） | [37,34,32,29,27,24,22,19,17,14,11,9,6] | 2.07438×10⁻⁶ | **372,035,410** | 同じ構成でm12を6→4：[37,34,32,29,27,24,22,19,17,14,11,9,4]、329,694,342 | `pf_b_pf6` |
+| PR-Pauli | L_D=5 | [48,45,42,39,36,33,29,26,23,19,16,8,2] | 2.50026×10⁻⁶ | 541,743,905.57 | L_D=3の適合点からm12を2→1：[48,…,16,8,1]、483,460,003.67 | `pauli_b_ld3` |
+| PR-DF | L_D=7 | [48,45,42,39,35,32,29,25,22,19,16,12,9] | 5.56518×10⁻⁷ | 1,235,340,731.91 | 同じ構成でm12を9→7：[48,…,16,12,7]、1,134,606,918.91 | `prdf_d2_split` |
+
+- 4方式とも停止理由は `NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET`（予算0）。
+- 費用は各候補自身の保存26軸単価による条件付き総compiled RZ。MSEは保存Q3のモデル判定。
+
+## B. 指示ごとの対応
+
+### B1. 固定入力の更新（Cの価格反映）
+
+- Cの集計branchを取り込み、問題入力の集計INPUTSを `417a73e7329fd520381dc88cc0de00a11dd0b641` にした。
+- 粗幅Y4（`dd8bfc24`）の26軸単価は、Dの価格原本 `c7c8c1edd` の `unit_price_RZ` から取った。保存Q3（`8855f420a`）の配分の総額372,035,410 RZとexactに一致する。
+- 旧入力（`08c6a694b`）も引き続き読める。Aのケース2「価格前」がPASSしている。
+
+### B2.「既知の不適合に支配される」の枝刈りを外した
+
+- 旧実装の条件は次のとおりだった。同じconfigurationの既知のモデル不適合配分fが、候補vに対して26軸すべてで f≥v なら、vを飛ばす。これは、各軸のshot数についてMSEが単調だと仮定していることになる。
+- この枝刈りを削除した。除外するのは、同じconfiguration・同じ配分の保存結果・完了結果（再利用）だけである。
+- テスト `test_no_monotonicity_pruning…` で、不適合配分の下にある候補が残ることを確認した。
+
+### B3. Q3の自動実行と再開
+
+- **実行器**（`rpe_method_optimizer.Executor`）
+  - 要求ごとにjob directory（`<run-dir>/jobs/<method>/<job_id>/`）を作る。
+  - その方式の経路で、adapter `scripts/run_rpe_optimizer_q3_job.py` を経路自身のinterpreterで1回だけ起動する。
+  - adapterは、既存callerのworker・supervisor・結果検査を、各callerが実際に動いたcommitの読取専用view（detached worktree）から無変更で読み込む。新しく作るのは1件のcaseだけで、同じconfigurationの保存Q3 caseに要求の配分を入れる。
+  - 経路とview：
+    - PF：B `cbc471c91`（PF6 worker）
+    - Pauli LD3：B `a844ac25f`
+    - Pauli LD5：B `b6d4dea49`
+    - PR-DF：D2 `23160cc87`（`run_pr_df_ld_split_q3_resume`、固定view `27e70efe5`）
+- **取込前の照合**：次のいずれかが一致しなければ `UNKNOWN`（`IDENTITY_MISMATCH`）として止める。
+  - configuration、配分（26軸）
+  - total configuration・binding（Cの保存点と照合）
+  - 評価契約（statistical contract・options）
+- **予算**：新規Q3を起動し得る応答器を呼ぶ前に予算を確かめる。保存結果・完了jobは予算を使わない。
+- **再開**
+  - OUTCOMEのあるjobは再利用する。
+  - 実行中（pidが生きていて、cmdlineにjob pathを含む）のjobは `JOB_IN_PROGRESS` で止め、起動しない。
+  - 死んだjobでOUTCOMEが無いものは、collect modeで保存artifactだけを検査する（科学callなし）。artifactも無ければ `STALE_JOB_NEEDS_REVIEW` とし、自動retryしない。
+- **UNKNOWNとモデル不適合の区別**
+  - 数値gate・保存・process・照合の失敗は `UNKNOWN` で、その方式を止める。
+  - 下界がτを超える場合は `MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD` で、探索を続ける。
+- **実経路の技術検査**：4方式の次候補、および次点に出たconfiguration（M5、S2、LD5）で、計6件のdry-checkを行った。内容は、実経路でのcase組立て・metadata・count範囲・runtime確認で、科学callは0件。すべて `DRY_CHECK_PASS`（[run02/ROUTE_DRY_CHECK.json](run02/ROUTE_DRY_CHECK.json)）。
+
+### B4. Aの受入テストの反映（旧FAIL 4件）
+
+| 旧FAIL | 対応 | 今回 |
+|---|---|---|
+| 探索範囲の遵守 | 公式・幅の範囲を、索引に無いcatalogのconfigurationにも適用した（幅は `delta_pf/h`）。任意の `configuration_ids`・`L_D_values` の許可リストも、全ての候補源に適用する | PASS（p7 S2限定で最終要求まで範囲内） |
+| Dの価格を与えた後の比較 | Cのreaderを取り込み、`unit_price_RZ` に対応した | PASS（保存Q3を再利用し、372,035,410、新規0件） |
+| 予算を超える呼出し | 予算確認を応答器の呼出しより前に移した | PASS（予算2で応答器の新規回答は2件だけ） |
+| 出力からの再開 | traceとevaluatedに次を出すようにした：configuration_id、N_X/N_Y、MSE_lower/upper、判定、出所（point ID・job・result sources）。`resume_records` をそのまま再開入力（`--resume-from`）として使える | PASS |
+
+### 実行器の受入（実際の入口 `run_rpe_method_optimizer.py --round … --run-dir …`）
+
+| check | 内容 |
+|---|---|
+| budget0_real_routes_launch_nothing | 実経路・4方式・予算0：jobは0件、全方式が予算外の要求を返す |
+| saved_results_reused_without_budget | p7 S2の4 shot seedから、保存Q3（m12=2適合、m12=1不適合）をcall 0件で使う |
+| request_execute_ingest_next | 予算2：人工workerのjobを2件起動し、結果を照合・取込して、次の候補を更新後の状態から選ぶ |
+| budget_exhausted_stop | `Q3_BUDGET_EXHAUSTED` と次の要求を返す |
+| scope_kept_to_final_request | p7 S2限定の範囲を、最終要求まで守る |
+| resume_after_budget_end_without_relaunch | 予算を4に上げて同じコマンドを再実行：完了2件は再利用（再起動なし、LAUNCHの時刻不変）、新規2件 |
+| idempotent_rerun_launches_nothing | もう一度実行しても新規起動0件 |
+| running_job_not_launched_twice | 実行中に同じroundを起動すると `JOB_IN_PROGRESS`。終了後の再実行で結果を取り込む |
+| dead_job_reported_then_collected | 死んだjob（artifactなし）は `STALE_JOB_NEEDS_REVIEW`。artifactが現れた後はcollectで取り込む（再計算なし） |
+| unknown_distinct_from_model_failure | 人工のgate失敗は `UNKNOWN_RESULT` で止まる。不適合の結果では探索が続く |
+
+テスト：新16件と、再利用したCの集計テスト12件がPASS（[TESTS_EXECUTOR.txt](TESTS_EXECUTOR.txt)）。
+
+## C. 実行・再開のコマンド
+
+```bash
+cd /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116
+PY=/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python
+# 報告モード（新規Q3 0件）：方式別最安点・次候補・不足、必要なら実経路のdry-check
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src $PY -B scripts/run_rpe_method_optimizer.py \
+  --problem configs/rpe_method_optimizer/h4_df10_problem.json --output <出力dir> [--dry-check-routes] [--resume-from <前回のROUND_RESULT.json>]
+# 採択された探索round：実行と再開（同じコマンドを再実行すると再開）
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src $PY -B scripts/run_rpe_method_optimizer.py \
+  --problem configs/rpe_method_optimizer/h4_df10_problem.json --round <round.json> --run-dir <round dir>
+```
+
+round fileの書き方は [configs/rpe_method_optimizer/rounds/example_h4_round_budget0.json](../../../configs/rpe_method_optimizer/rounds/example_h4_round_budget0.json) と HANDOFFにある。
+
+## D. 実行後もなお人手が必要な箇所
+
+1. **探索1回分の採択**：対象方式・新規Q3予算・範囲をround fileに書く。予算を広げるときは、同じround_idで予算を書き換えて再実行する。
+2. **経路が無いconfiguration**：例えばPR-PauliのL_D=2には経路の規則が無い。要求は `NO_ROUTE_ADAPTER` として出るので、手動のcallerが必要。PR-DFのL_D=1・2は経路の規則に含まれるが、dry-checkはしていない。
+3. **信号・価格・configurationの取得**：新しい幅・分割の取得と、Cへの登録は自動化していない。
+4. **route viewの用意**：route viewは問題入力のpathに置いた読取専用worktreeで、別の環境では作り直す必要がある。
+5. **B Skill**：Bの手順書としては未公開。実行するコマンドはHANDOFFで渡した。
+6. **死んだjobの扱い**：artifactの無い死んだjobは自動retryせず、研究者の判断を待つ。
+
+---
+
+# 第1段階：H4 方式別RPEコスト最適化の最初の実装（保存結果と人工fixtureで確認）
 
 2026-11-16 JST、B2（Claude Code、主agentのみ。作成者自身の確認で、独立レビューではない）。棚卸し `c5e03cd6c` を受けた最初の実装。**新規の科学計算・compile・Q3は0件。**
 

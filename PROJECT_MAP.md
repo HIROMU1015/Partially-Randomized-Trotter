@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4方式別最適化：Q3実行器の接続とAの受入反映](docs/research/rpe_method_optimizer_h4_20261116/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md)：探索round（`--round` `--run-dir`）で要求→既存Q3経路の実行→照合・取込→次候補、同じコマンドで再開。単調性の枝刈りを削除、予算確認を呼出し前へ、範囲を全候補へ。C 417a73e73でp7最安372,035,410。Aの受入20 PASS、実行器受入10 PASS。実Q3 0件・STOP。
+
 [H4方式別RPEコスト最適化の最初の実装](docs/research/rpe_method_optimizer_h4_20261116/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md)：`scripts/run_rpe_method_optimizer.py`＋`src/trottertracks/rpe_method_optimizer.py`、入力`configs/rpe_method_optimizer/h4_df10_problem.json`。Cの集計を再構築して方式別最安点を再現し、round別X/Y配分の有限探索で次のQ3要求と不足（信号・価格・configuration）を出力。p7/Full PF S2は4shot点から自力でm12=2へ。新規科学計算0・STOP。
 
 [p7粗幅Yoshida4の価格接続と最安更新](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。

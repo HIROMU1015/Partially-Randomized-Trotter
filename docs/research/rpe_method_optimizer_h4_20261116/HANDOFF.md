@@ -1,66 +1,91 @@
-# 統合担当・A/B/C/D/D2へ：方式別RPEコスト最適化の最初の実装
+# 統合担当・A/B/C/D/D2へ：方式別RPEコスト最適化（Q3実行器の接続まで）
 
-正本は[REPORT](REPORT.md)。branch `codex/b2-rpe-method-optimizer-20261116`（Cの集計branch `08c6a694b` から作成）。新規の科学計算・compile・Q3は0件。
+正本は[REPORT](REPORT.md)の§A〜D。branch `codex/b2-rpe-method-optimizer-20261116`、SOURCE `a2e2ef50a108d6f34089a99bd00f11a7085dd9c9`。新規の実Q3・科学計算・compileは0件。
 
-## 何ができるようになったか
+## 更新後の方式別最安点と次候補（Cの `417a73e73`、新規Q3予算0）
 
-一つのコマンドで、H4の問題入力から次のものを出せる。
-- 方式別（Full PF・B0I p7・PR-Pauli・PR-DF）の評価済み集合内の最安適合構成：構成、round別X/Y配分、MSE上下界、条件付き費用。
-- 停止理由と探索範囲。
-- 探索規則が選んだ次の新規Q3要求。
-- 信号・価格・configurationが足りない候補と、その不足内容（機械可読）。
+| 方式 | 最安適合構成・X/Y各軸・費用 RZ | 次候補（探索規則が選択）・費用 RZ | 経路 |
+|---|---|---|---|
+| Full PF | S2・16h/7、[59,55,51,47,43,39,35,31,27,23,19,13,2]、559,457,386 | M5・16h：[30,28,26,24,22,20,17,15,13,11,9,7,3]、541,075,202 | `pf_b_pf6` |
+| B0I p7 | Yoshida4・32h/5（A_SHAPE）、[37,34,32,29,27,24,22,19,17,14,11,9,6]、**372,035,410** | 同じ構成でm12を6→4：[37,…,11,9,4]、329,694,342 | `pf_b_pf6` |
+| PR-Pauli | L_D=5、[48,45,42,39,36,33,29,26,23,19,16,8,2]、541,743,905.57 | L_D=3でm12を2→1：[48,…,16,8,1]、483,460,003.67 | `pauli_b_ld3` |
+| PR-DF | L_D=7、[48,45,42,39,35,32,29,25,22,19,16,12,9]、1,235,340,731.91 | 同じ構成でm12を9→7：[48,…,16,12,7]、1,134,606,918.91 | `prdf_d2_split` |
+
+- 4件の次候補と次点のconfiguration（計6件）は、実経路でdry-checkした。case組立て・metadata・count範囲・runtimeの確認で、科学callは0件。すべてPASS。
+- p7の372,035,410は、保存Q3（`8855f420a`）とDの価格（`c7c8c1edd`）から集計した。新規Q3は0件。
+
+## 次段階で研究者が探索1回分の対象・予算を指定する方法
+
+round file（例：[configs/rpe_method_optimizer/rounds/example_h4_round_budget0.json](../../../configs/rpe_method_optimizer/rounds/example_h4_round_budget0.json)）をcopyし、次の欄を書く。
+
+| 欄 | 意味 |
+|---|---|
+| `round_id` | この探索1回分の名前。run directoryと結びつく |
+| `methods` | 対象方式（`FULL_PF`・`TRUNCATED_PF`・`PR_PAULI`・`PR_DF` から選ぶ） |
+| `max_new_q3_per_method` | 方式ごとの新規実Q3の上限。0なら何も起動しない |
+| `method_overrides` | 探索範囲（任意）。例：`{"TRUNCATED_PF": {"formulas": ["4th"], "delta_over_h_range": ["32/5","32/5"]}}`、`{"PR_DF": {"L_D_values": [7]}}`、`configuration_ids` の許可リスト |
+| `initial` | 開始時に既知とする保存結果。`"all"`（既定）・`"none"`・`{方式: [保存ラベル]}` |
+| `resume_from` | 前回の `ROUND_RESULT.json` / `RESULT.json`（`resume_records` をそのまま再利用） |
+| `approved_by` | 採択の記録（任意の文字列） |
+
+- 範囲の中では、プログラムが次を決める：候補、配分、起動、取込、次候補、停止。
+- 予算を広げるときは、同じ `round_id` のまま予算だけを書き換えて、同じコマンドを再実行する。完了済みのjobは再利用され、起動済みの件数は予算に数えられる。
+
+## 実行・再開コマンド（Bのskillからもこのまま呼べる）
 
 ```bash
 cd /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src \
-  /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python -B \
-  scripts/run_rpe_method_optimizer.py \
+PY=/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python
+# 探索roundの実行。中断後や予算追加後も、同じコマンドで再開する
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src $PY -B scripts/run_rpe_method_optimizer.py \
   --problem configs/rpe_method_optimizer/h4_df10_problem.json \
-  --output docs/research/rpe_method_optimizer_h4_20261116/run01
+  --round <round.json> --run-dir <round directory>
+# 報告モード（新規Q3 0件）。前回の出力から続ける場合は --resume-from、実経路の事前検査は --dry-check-routes
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src $PY -B scripts/run_rpe_method_optimizer.py \
+  --problem configs/rpe_method_optimizer/h4_df10_problem.json --output <出力dir> \
+  [--resume-from <前回のROUND_RESULT.json>] [--dry-check-routes]
 ```
 
-新しいQ3結果は `--ingest results.json` で取り込み、次の要求を計算し直せる。
+- round directoryの中身
+  - `ROUND.json`：採択内容
+  - `ROUND_RESULT.json`：方式別最安・trace・次の要求・resume_records
+  - `PER_METHOD.csv`
+  - `NEEDS.json`
+  - `INVOCATIONS.jsonl`：起動ごとの予算・起動数・停止理由
+  - `jobs/<方式>/<job_id>/`：REQUEST・LAUNCH・PROCESS_RETURN・OUTCOMEと、workerの原API・partials・資源
+- 停止理由
+  - `NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET`：予算0
+  - `Q3_BUDGET_EXHAUSTED`：予算切れ
+  - `NO_IMPROVING_PROPOSAL`：改善候補なし
+  - `JOB_IN_PROGRESS`：実行中jobあり
+  - `STALE_JOB_NEEDS_REVIEW`：死んだjob。自動retryしない
+  - `NO_ROUTE_ADAPTER`：経路なし
+  - `UNKNOWN_RESULT`：gate失敗。モデル不適合とは別扱い
 
-## 現在の出力（保存結果のみ、新規Q3予算0）
+## 受入結果
 
-| 方式 | 最安適合構成・費用 RZ | 次の要求（構成・X/Y各軸・費用 RZ） |
-|---|---|---|
-| Full PF | S2・16h/7、559,457,386 | M5・16h：[30,28,26,24,22,20,17,15,13,11,9,7,3]、541,075,202 |
-| B0I p7 | S2・16h/7、395,962,678 | M5・16h：[30,28,26,24,22,19,17,15,13,11,9,7,3]、382,916,152 |
-| PR-Pauli | L_D=5、541,743,905.57 | L_D=3：[48,45,42,39,36,33,29,26,23,19,16,8,1]、483,460,003.67 |
-| PR-DF | L_D=7、1,235,340,731.91 | L_D=7：[48,45,42,39,35,32,29,25,22,19,16,12,7]、1,134,606,918.91 |
+- Aの固定受入runner（`3115712244`）をこのcheckoutで実行した。結果は PASS 20、Skillは PENDING 1（旧実装はFAIL 4）。出力：`a_acceptance_a2e2ef50a/ACCEPTANCE_RESULT.json`。
+- 実行器の受入（実際の入口、人工worker・保存結果）は10/10 PASS（`executor_acceptance_a2e2ef50a/`）。
+  - 要求→実行→取込→次候補
+  - 予算切れ→再開（再起動なし）
+  - 保存結果の再利用
+  - 予算0では起動しない
+  - 実行中jobの二重起動なし
+  - 死んだjobの報告とcollect
+  - UNKNOWNとモデル不適合の区別
 
-最安点は、Cの保存集合内の方式別最安点と一致する。次の要求は、探索規則（`FINITE_LOCAL_DESCENT_V1`）が選んだものである。要求の詳細は `run01/RESULT.json` の各方式の `pending_request` と `NEEDS.json` の `pending_Q3` にあり、次の項目を含む。
-- 配分の全26軸
-- どの適合点からどう変えたか
-- 既存Q3経路の案内
-- 次点の4候補
+## 人手が残る箇所
 
-## 動作確認
-
-- Cの最安点を4方式とも再現した。12 configurationの自分の単価が、保存総額をすべてexactに再現した。
-- REPLAY：p7 S2・Full PF S2とも、m12各4 shotの適合点だけを初期知識にして、より安い適合点（m12=2）へ自分で進んだ。続いてm12=1の不適合を受け、次の要求を決めた。正解の列や経路はcodeに埋め込んでいない。
-- INGESTで、Q3結果1件を受け取った後に次候補が変わることを確認した。FIXTURE（人工MSE）で、最初の改善の後も停止規則まで続くことを確認した。
-- OWN_PRICEで、PRの6 configurationについて、同じ配分を各configuration自身の単価で比較した。保存点の費用はすべて一致した。
-
-## 人手が残る箇所（REPORT §5）
-
-1. 新規Q3の実行：このversionには実行器が無い。探索1回分の対象と予算の採択、既存callerでの実行、`--ingest` での取り込みが必要。
-2. 不足のある候補の信号・価格の取得と、Cの集計INPUTSへの登録。
-3. Cの集計に無い証拠は見えない（例：PR-PauliのL_D=1の保存信号）。
-4. 問題入力（H4）の作成と、探索パラメータの決定。
-5. PFの新しい幅のconfiguration生成。
-6. 別のHの保存結果の集計。
-
-## 次段階の案（採択は別判断）
-
-- 探索1回分の採択：方式ごとの新規Q3上限（例：各4件）、対象方式、停止規則。
-- その範囲で、要求を既存のQ3 callerへ渡す実行器を最適化器につなぐ。B・D2の既存callerのpatternを再利用する。
-- 新規Q3の結果を、Cの集計とこの最適化器に自動で戻す。
+1. 探索roundの採択（round fileの作成）。
+2. 経路の無いconfiguration（例：PR-PauliのL_D=2）の手動実行。
+3. 新しい幅・分割の信号・価格・configurationの取得と、Cへの登録。
+4. route view（読取専用worktree）の用意。pathは問題入力の `execution_routes` にある。
+5. Bのskill化。
+6. 死んだjobの判断。
 
 ## ロードマップへの差分（本体は統合担当が更新）
 
-- 「方式別の自動最適化」に最初の実装ができた。保存結果の範囲では、最安点の再現と次の要求の自動決定まで動く。
-- 新規Q3・信号・価格の実行と取り込みは、まだ人手である。
+- 方式別最適化の実行器がつながった。採択された探索roundの範囲では、要求から次候補まで自動で進み、再開もできる。
+- p7の保存集合内最安は372,035,410 RZ（粗幅Y4 A_SHAPE）。実Q3はまだ0件。
 
-Cの集計の入力・code、原結果、旧STOPは変更していない。公開・remote照合後に **mandatory STOP**。
+Cの集計・各原結果・旧STOPは変更していない。公開・remote照合後に **mandatory STOP**。
