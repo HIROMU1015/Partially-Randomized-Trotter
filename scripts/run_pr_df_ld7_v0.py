@@ -23,8 +23,9 @@ PUBLIC='docs/research/d_pr_df_ld7_v0_results_20261116'
 OUT=ROOT/PUBLIC
 CALLER='scripts/run_pr_df_ld7_v0.py'
 SIGNAL='fefd548ecd56f60d72031b3d385f6f5e6ee95d06'
-VIEW=ROOT.parent/'d2-pr-df-ld7-signal-source-20261116'
-VIEW_COMMIT='714247619afb4714fd663eb15c0470ef32bdc7af'
+VIEW=ROOT.parent/'d2-pr-df-ld7-signal-source-fefd-20261116'
+VIEW_COMMIT=SIGNAL
+BUNDLE_TEMPLATE='714247619afb4714fd663eb15c0470ef32bdc7af'
 B='437ba4acdb82708b6fc98e3cd119a2a734f7cf64'
 IMPLEMENTATION=dict(commit=SIGNAL,path='src/trottertracks/pr_rpe_signal_provider.py',recipe='DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1')
 INDEX=dict(commit='7a8bc7f132e166390c943e6b32c92cc6abe1baf4',path='artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json')
@@ -85,7 +86,7 @@ def inspect_schedule(config):
     return dict(status='PASS'if passed else'STOP_MAPPER_CONDITION',rows=rows,gate_before_signals=True)
 
 def generate():
-    start=stage_start('configuration');p=local('GENERATION_INPUTS.json');fixed_caller(p['source'])
+    start=stage_start('configuration');p=local('GENERATION_INPUTS_V2.json');fixed_caller(p['source'])
     d=local('DELTA_CHECK.json')
     if d['equivalent_results']or d['matching_jobs']or d['unresolved']:raise ValueError('Unreconciled equivalent work')
     out=OUT/'generation';out.mkdir()
@@ -155,7 +156,7 @@ def signals():
 def bundle(raw_commit,config_commit):
     """Copy original raw fields; authoritative existing A intake validates all."""
     config=read(config_commit,PUBLIC+'/generation/CONFIGURATION.json')
-    old=read(VIEW_COMMIT,'docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD2.json')
+    old=read(BUNDLE_TEMPLATE,'docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD2.json')
     packet={k:deepcopy(v)for k,v in old.items()if k!='means'}
     packet.update(configuration_source=dict(commit=config_commit,path=PUBLIC+'/generation/CONFIGURATION.json'),configuration_id=config['id'],raw_result_carrier=raw_commit,means=[])
     packet['target']['binding']=deepcopy(config['spec']['binding'])

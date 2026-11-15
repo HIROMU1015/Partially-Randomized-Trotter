@@ -1,0 +1,12 @@
+START configuration
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld1-m3-acquisition-20261115/scripts/run_pr_df_ld7_v0.py", line 209, in <module>
+    if a.mode=='generate':raise SystemExit(generate())
+                                           ^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld1-m3-acquisition-20261115/scripts/run_pr_df_ld7_v0.py", line 93, in generate
+    fixed,metadata,provider,b=signal_modules()
+                              ^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld1-m3-acquisition-20261115/scripts/run_pr_df_ld7_v0.py", line 54, in signal_modules
+    if (VIEW/path).read_bytes()!=blob(SIGNAL,path):raise ValueError('Pinned signal/metadata bytes differ: '+path)
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Pinned signal/metadata bytes differ: src/trottertracks/pr_rpe_signal_provider.py
