@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli LD3 段階3 価格](research/a_pauli_ld3_cal_price_20261116/REPORT.md)：較正cell Q8R660（4 compile）をS0-r1で監査し、`C_ref = 313 + 2685q + (7793/1155)qR` が成立。同じVPの参照総額は1,051,862,454.81 RZで、LD2（3,378,503,016.52）の0.311倍。[HANDOFF_BC](research/a_pauli_ld3_cal_price_20261116/HANDOFF_BC.md)／[26軸JSON](research/a_pauli_ld3_cal_price_20261116/HANDOFF_BC.json)。E[C]・G・Q3・配分探索なし、公開後STOP。
+
 [PR-Pauli：L_Dを変えた比較相手の提案](research/a_pauli_ld_split_plan_20261116/REPORT.md)／[HANDOFF_B](research/a_pauli_ld_split_plan_20261116/HANDOFF_B.md)／[L_D別表](research/a_pauli_ld_split_plan_20261116/CANDIDATES.csv)（2026-11-16、A）：L_Dは二体DF fragmentの本数。LD1/LD2は保存済み（同じ配分で適合、event数はLD1が約2.59倍）。次の比較相手はLD3（DF λ_R 0.583）、最初の追加はLD3のP0辞書と13 round schedule。計画のみ、mandatory STOP。
 
 [PR-Pauli LD2 S0+：保存m9回路のstep分解](research/a_pauli_ld2_step_audit_20261115/s0plus_m9/REPORT_S0PLUS.md)／[HANDOFF](research/a_pauli_ld2_step_audit_20261115/s0plus_m9/HANDOFF_S0PLUS.md)（2026-11-15、A）：C2の保存m9（q=512・R=526、QPY 8件、0-compile）。2 path×X/Yでstep境界のancilla CX列が順序まで一致、`308 + 1900·q + Σ本体` が保存総数を復元、X/Y本体一致。path1は最初のstepの入口の1q token 1個がrun02参照と異なりFAILとして記録。2番目以降のstepの標準偏差58 RZ（1,022区間）。mandatory STOP。
