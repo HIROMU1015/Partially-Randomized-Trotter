@@ -25,3 +25,9 @@ SOURCE・26軸の照合・既存6点の再利用は[現行HANDOFF](../h4_saved_r
 LD7 V0へ価格接続、A_SHAPE/B_PRICEを追加し、PR-DFの保存集合内最安をLD7 A_SHAPE・155652932221/126 RZ（約1,235,340,731.912698）へ更新。後半m7〜m12へのモデル外挿が費用の95.945359%。再掲LD1/LD2の6点は再利用。粗幅p7 Yoshida4・32h/5のA_SHAPEはQ3適合・価格待ち/null、同configurationのB_PRICEはモデル不適合/nullを維持。現幅価格の転記なし。固定14入力38点（適合31/不適合6/価格待ち1）、回帰7 PASS、新科学call0、公開後STOP。
 
 既存readerの無変更再利用、配分別の判定とSOURCEは[現行HANDOFF](../h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)に記載。
+
+## Pauli LD3のPF予算4配分
+
+PR-Pauli LD3のPF予算4配分を接続。安い3点はモデル不適合、FULL_PF__B_PRICEは適合で、Pauli保存集合内最安を625936421828/1155 RZ（約541,936,295.95）へ更新。Full PF S2より17,521,090.05低く、p7 S2より145,973,617.95高い。旧LD3 VP/LD2 OWN-Bと既存38点を保全。26価格は既存MODEL・qualified_for_candidate=false。固定15入力42点（適合32/モデル不適合9/価格待ち1）、回帰8 PASS、新科学call0、公開後STOP。
+
+保存APIとモデル単価の参照・判定は[現行HANDOFF](../h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)へ記載。

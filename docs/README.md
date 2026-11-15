@@ -1,5 +1,7 @@
 # 文書索引
 
+[Pauli LD3 PF予算配分の比較更新](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：PR-Pauli LD3のPF予算4配分を接続。安い3点はモデル不適合、FULL_PF__B_PRICEは適合で、Pauli保存集合内最安を625936421828/1155 RZ（約541,936,295.95）へ更新。Full PF S2より17,521,090.05低く、p7 S2より145,973,617.95高い。旧LD3 VP/LD2 OWN-Bと既存38点を保全。26価格は既存MODEL・qualified_for_candidate=false。固定15入力42点（適合32/モデル不適合9/価格待ち1）、回帰8 PASS、新科学call0、公開後STOP。
+
 [LD7価格と粗幅Y4 A_SHAPEの比較更新](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：LD7 V0へ価格接続、A_SHAPE/B_PRICEを追加し、PR-DFの保存集合内最安をLD7 A_SHAPE・155652932221/126 RZ（約1,235,340,731.912698）へ更新。後半m7〜m12へのモデル外挿が費用の95.945359%。再掲LD1/LD2の6点は再利用。粗幅p7 Yoshida4・32h/5のA_SHAPEはQ3適合・価格待ち/null、同configurationのB_PRICEはモデル不適合/nullを維持。現幅価格の転記なし。固定14入力38点（適合31/不適合6/価格待ち1）、回帰7 PASS、新科学call0、公開後STOP。
 
 [PR-DF LD7価格接続と比較更新](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：PR-DF LD7 V0に価格を接続し、A_SHAPE/B_PRICEを追加。LD7の3配分は保存Q3適合。保存候補集合内のPR-DF最安はLD7 A_SHAPE、155652932221/126 RZ（約1,235,340,731.912698）、X/Y各[48,45,42,39,35,32,29,25,22,19,16,12,9]。費用の95.945359%はq>64のm7〜m12へのモデル外挿。価格は未資格モデル参照、E[C]/CI/正式Gは未認定。LD1/LD2の再掲6点は既存結果を再利用。固定13入力37点（適合31/モデル不適合6/価格待ち0）、他34点・他方式最安は不変。テスト7 PASS、新科学call0、公開後STOP。

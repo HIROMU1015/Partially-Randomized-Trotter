@@ -2,7 +2,32 @@
 
 同じコマンドでINPUTS.jsonの固定commit/path一覧を読み、公開済みQ3判定と保存条件付き費用を照合して方式別最安点を返す。対象は **指定した保存候補集合内の最安適合点**。新しい信号・価格・N・Q3や全配分の探索は実行しない。
 
-## 粗幅p7 Yoshida4 A_SHAPEの追加（2026-11-16、現行入力）
+## PR-Pauli LD3のPF予算4配分（2026-11-16、現行入力）
+
+固定 `fb4d78781e2a4c63c9d334af246807785e669d6c:docs/research/pauli_ld3_pf_budget_q3_results_20261116/C_COMPARISON_JOIN.json` を15番目の入力に追加し、従来と同じコマンドで比較表を更新した。現行実行SOURCE `fe462c24d5c046efcef7afcdc43038319707114d`。recordsの4件は次のとおり。
+
+|配分|保存Q3判定|保存exact費用 RZ|point ID|
+|---|---|---:|---|
+|P7__A_SHAPE|モデル不適合|30009021696/77|07dbc27e672c3da723a64ae9|
+|P7__B_PRICE|モデル不適合|456463851968/1155|7b90bfc7c2de659a43961666|
+|FULL_PF__A_SHAPE|モデル不適合|10729281172/21|9fe5181d82bc7c5472aba4ad|
+|FULL_PF__B_PRICE|適合|625936421828/1155|06f67f6f4ae4a7390d403c96|
+
+**PR-Pauliの指定保存候補集合内最安はLD3 FULL_PF__B_PRICE**。条件付きモデル参照費用は約541,936,295.95 RZ、X/Y各 `[48,45,42,39,36,33,29,26,23,19,16,8,2]`。保存SUMMARYの符号付き差T−PFを転記し、Full PF S2より17,521,090.05 RZ低く、p7 S2より145,973,617.95 RZ高い。exact差はそれぞれ `-20236859002/1155`、`168599528738/1155`。比較基準はこの結果で固定された559457386、395962678 RZを保持し、過去のLD2の予算や判定SOURCEは更新しない。
+
+各recordのoriginal configuration・total view・binding・allocationを固定INPUTSのcaseと照合し、元API_RETURNのtotal configuration/binding/配分も一致することを確認した。4件×26軸について、original/total candidate・law・N・モデル参照単価・固定weighted termの元保存表との対応を照合。Q3判定・MSE区間・exact総額・PFとの差は同directoryのSUMMARYから転記したもので、新しいQ3・価格予測・N×C・差額計算は行っていない。
+
+価格は既存A `f25a05f8a` の26軸を再利用したMODEL参照。古いVPで記録されたNは1shot価格の属性ではないため、新配分のNは今回のINPUTS/APIと照合する。全26軸のMODELとqualified_for_candidate=false、E[C]/CI/正式G未資格を保持。直接取得したのは元の別較正cell Q8R660の独立2path×X/Yのみで、新4配分を新しい価格観測や独立cohortとして数えていない。
+
+候補IDからの追跡は `run01/CATALOG.json` のpoint IDを起点にする。`result_sources` はC_COMPARISON_JOIN.records、`case_source` は固定INPUTS、`q3_source` は元API_RETURNのrecord selector、`price_axes[*].price_source` は元PRICE_26AXISのモデル単価、`physical_context_source` は旧B索引の物理対応、`price_handoff_source` はA結合表。`price_evidence`には既存の係数・scalar/lowering・別較正cell/元receiptのSOURCEを再利用した。`saved_PF_comparisons` に今回の保存exact差とPF基準を保持する。
+
+LD3 VPとLD2 OWN-Bは独立した適合点としてそのまま残す。安い3点はモデル不適合として費用付きで一覧へ残し、最安適合点の選択から除く。既存38点は旧3eed9dff5版と完全一致し、他方式最安・粗幅Y4 A_SHAPE価格待ち/null・B_PRICE不適合と旧UNKNOWN履歴も不変。
+
+固定15入力（参照SUMMARY等を含む読取文書18）・候補42点、適合32／モデル不適合9／価格待ち1、重複除去4件、旧信号のみ履歴1件。人工/保存結果の接続・回帰8 PASS。入力順序を入れ替えても旧VPを保持し、新規4配分が1点ずつ追加される。configurationや価格資格の改変を拒否する。既存Git reader/cache、価格受入、make/選択器を再利用し、今回の公開joinだけを最小拡張した。§10.5の関連履歴に同じ4点のcatalog接続はなく、旧Pauli最安はLD3 VPだった。他担当のworktree・原結果・STOPは変更していない。
+
+ロードマップ差分：PR-Pauliの保存集合内最安をLD3 VPから同じLD3のFULL_PF__B_PRICEへ更新できる。Full PF S2より条件付き参照費用は低く、p7 S2より高いが、MODELの科学的資格は引き続きfalse。全空間最適性や方式winnerは認定しない。ロードマップ本体は統合担当へ委ねる。新signal/sampling/compile/fit/配分探索/Q3は各0、公開・remote照合後mandatory STOP。
+
+## 粗幅p7 Yoshida4 A_SHAPEの追加（2026-11-16）
 
 固定 `8855f420a9fe2577efc77f099c5a39ab0cb9b7e6:docs/research/d_p7_y4_coarse_a_shape_q3_20261116/C_RESULT_JOIN.json` を14番目の入力として追加し、LD7接続を含む同じコマンドを再実行した。現行実行SOURCEは `4a0c5370fba0f2541ab4f17c737cdbf5da50af64`。既存の固定配分Q3 readerをそのまま利用でき、今回のA_SHAPE追加によるlibrary変更は0行。
 

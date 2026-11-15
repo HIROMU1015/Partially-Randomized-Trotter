@@ -7,7 +7,7 @@
 |---|---|---|---:|---|
 |FULL_PF|S2 / 10|16h/7|559,457,386.00|54f360874da5113ae6efd9c0|
 |TRUNCATED_PF|S2 / 7|16h/7|395,962,678.00|f5b43c8076101f52353bb98f|
-|PR_PAULI|S2 / 3|1h|1,051,862,454.81|9c28225e02fab223cd269594|
+|PR_PAULI|S2 / 3|1h|541,936,295.95|06f67f6f4ae4a7390d403c96|
 |PR_DF|S2 / 7|1h|1,235,340,731.91|ab1d8980b9d136b73e43b0f3|
 |FULL_H|pure RTE / 0|—|1,246,382,808,920.55|62aee6d389d5ebd3045509b0|
 
@@ -51,6 +51,10 @@
 |LD7_A_SHAPE|PR_DF|7|2nd|適合|1,235,340,731.91|[48, 45, 42, 39, 35, 32, 29, 25, 22, 19, 16, 12, 9] / [48, 45, 42, 39, 35, 32, 29, 25, 22, 19, 16, 12, 9]|
 |LD7_B_PRICE|PR_DF|7|2nd|適合|1,240,709,696.98|[64, 60, 56, 52, 47, 43, 38, 34, 30, 25, 21, 14, 5] / [64, 60, 56, 52, 47, 43, 38, 34, 30, 25, 21, 14, 5]|
 |B0I_P7_Y4_32h_over_5__A_SHAPE|TRUNCATED_PF|7|4th|Q3適合・価格待ち|—|[37, 34, 32, 29, 27, 24, 22, 19, 17, 14, 11, 9, 6] / [37, 34, 32, 29, 27, 24, 22, 19, 17, 14, 11, 9, 6]|
+|P7__A_SHAPE|PR_PAULI|3|2nd|モデル不適合|389,727,554.49|[21, 19, 18, 17, 15, 14, 12, 11, 10, 8, 7, 5, 3] / [21, 19, 18, 17, 15, 14, 12, 11, 10, 8, 7, 5, 3]|
+|P7__B_PRICE|PR_PAULI|3|2nd|モデル不適合|395,206,798.24|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 15, 4, 1] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 15, 4, 1]|
+|FULL_PF__A_SHAPE|PR_PAULI|3|2nd|モデル不適合|510,918,151.05|[26, 24, 23, 21, 19, 18, 16, 14, 12, 10, 8, 7, 4] / [26, 24, 23, 21, 19, 18, 16, 14, 12, 10, 8, 7, 4]|
+|FULL_PF__B_PRICE|PR_PAULI|3|2nd|適合|541,936,295.95|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 8, 2] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 8, 2]|
 
 重複除去：4件。詳細・固定SOURCE・26軸の価格対応はCATALOG.jsonを参照。
 Q3適合・価格待ちは費用nullで選択対象外。信号だけの旧状態はsignal_only_historyへ保持する。
@@ -135,9 +139,12 @@ PRの事前固定予算・旧PF基準はhistorical_*に元SOURCEとともに保�
 - `fd010b111e95411702be51adc73e56b0bba6c093:docs/research/d_pr_df_ld7_price_results_20261116/C_HANDOFF.json`
 - `fd010b111e95411702be51adc73e56b0bba6c093:docs/research/d_pr_df_ld7_price_results_20261116/SUMMARY.json`
 - `8855f420a9fe2577efc77f099c5a39ab0cb9b7e6:docs/research/d_p7_y4_coarse_a_shape_q3_20261116/C_RESULT_JOIN.json`
+- `fb4d78781e2a4c63c9d334af246807785e669d6c:docs/research/pauli_ld3_pf_budget_q3_results_20261116/C_COMPARISON_JOIN.json`
 
 PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。
 
 LD7_A_SHAPEの費用の95.9453590253993779917152%はq>64のm7〜m12へのモデル外挿（元SUMMARYの保存内訳）。qualified_for_candidate=false。価格モデル・配分・Q3・較正receiptの固定locatorはCATALOG.jsonに保持。
+
+PR-Pauli FULL_PF__B_PRICEの保存費用差（T−PF基準）：Full PF S2 -17,521,090.05 RZ、p7 S2 145,973,617.95 RZ。全26価格はモデル参照、qualified_for_candidate=false。
 
 再実行コマンドと追加方法は親directoryのHANDOFF.mdを参照。
