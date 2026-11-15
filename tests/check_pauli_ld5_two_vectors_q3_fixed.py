@@ -2,6 +2,7 @@
 from copy import deepcopy
 import importlib.util
 import json
+from fractions import Fraction
 from pathlib import Path
 import sys
 import tempfile
@@ -35,6 +36,13 @@ class LD5Tests(unittest.TestCase):
         for k in ('options','statistical_contract','adopted_evaluation','acceleration'):
             self.assertEqual(x[k],old[k])
         self.assertNotEqual(x['cases'][0]['total_configuration_id'],old['cases'][0]['total_configuration_id'])
+
+    def test_report_internal_fraction_and_threshold_headroom_display(self):
+        spec=importlib.util.spec_from_file_location('_ld5_display_test',ROOT/'scripts/summarize_pauli_ld5_two_vectors_q3_fixed.py')
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        self.assertEqual(module.display(Fraction(1,8)),module.display(dict(numerator=1,denominator=8)))
+        self.assertEqual(module.display(Fraction(-1,8)),'-0.125')
+        with self.assertRaises(ValueError):module.display(0.125)
 
     def test_A_helper_and_raw_normalization_SOURCE_target_preserved(self):
         h=C.C.document(C.A.LD5_HANDOFF);packet=self.view['signal_packet'];origin=packet['origin_signal_packet']

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-Pauli LD5のtotal view・固定2配分Q3](docs/research/pauli_ld5_two_vectors_q3_results_20261116/REPORT.md)／[A/C・統合担当HANDOFF](docs/research/pauli_ld5_two_vectors_q3_results_20261116/HANDOFF.md)：新2callとも条件付きモデル適合。LD3と共通のFULL_PF__B_PRICE/VPで4点比較、LD5モデル費用541,743,905.57/872,241,518.14 RZ。own辞書/SOURCE/raw保全、26モデル軸・原API・閾値余裕を結合。E[C]/正式G/十分N未認定・STOP。
+
 [PR-Pauli LD3・PF予算の固定4列Q3](docs/research/pauli_ld3_pf_budget_q3_results_20261116/REPORT.md)／[C・統合担当HANDOFF](docs/research/pauli_ld3_pf_budget_q3_results_20261116/HANDOFF.md)：新4call、安い3列はモデル不適合、Full PF予算B_PRICEが適合。有限4列内最安の条件付き参照費用541,936,295.95 RZ、Full PF基準より17,521,090.05低く、p7基準より145,973,617.95高い。全26軸MODEL、正式E[C]/G/十分N未認定・STOP。
 
 [PR-Pauli LD3のtotal view・LD2共通VPでのQ3](docs/research/pauli_ld3_vp_q3_results_20261116/REPORT.md)／[A/C・統合担当HANDOFF](docs/research/pauli_ld3_vp_q3_results_20261116/HANDOFF.md)：LD3新1callで条件付きモデル適合、MSE上界約6.20621e−7 Ha²。LD2保存VP引用、辞書・残余SOURCEをA指定helperで保全。原API/資源保存、観測hookの接続差分を人工修正、十分N/global/G未認定・STOP。
