@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli LD3 段階1](research/df_head_pauli_tail_ld3_stage1_20261116/REPORT.md)：LD3辞書184項・λ_P＝0.8138、configuration `dd5b881d`、共通κの13 round schedule。tail event数はLD2の0.157倍（m12でR 4205→660）。[HANDOFF_B](research/df_head_pauli_tail_ld3_stage1_20261116/HANDOFF_B.md)／[表](research/df_head_pauli_tail_ld3_stage1_20261116/config_run01/SCHEDULE_LD2_LD3.csv)。LD2はbit単位で再現、人工9 PASS。信号・compile・価格・Q3なし、公開後STOP。
+
 [DF head＋Pauli tail全13round結果](research/df_head_pauli_tail_all_round_results_20261114/REPORT.md)：新22mean＋P1再利用4mean、LD1/LD2各13round packet完成。[B/C/D HANDOFF](research/df_head_pauli_tail_all_round_results_20261114/HANDOFF.md)／[全26row](research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json)。数値gate全通過、技術12 PASS、canonical/旧SOURCE保全、新reference/N/MSE/C/G0、公開後STOP。
 
 [DF head＋Pauli tail P1科学結果](research/df_head_pauli_tail_p1_results_20261114/REPORT.md)：LD1/2二時点・固定R/full対照の6mean、全局所数値gate通過。[B/C/D HANDOFF](research/df_head_pauli_tail_p1_results_20261114/HANDOFF.md)／[B partial mean packet](research/df_head_pauli_tail_p1_results_20261114/MEAN_HANDOFF.json)。B辞書付き新ID、全13round metadata・取得2点/prefixだけを分離。技術23 PASS、新reference/N/C/G0、公開後STOP。
