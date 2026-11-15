@@ -87,12 +87,22 @@ class PublishedAcceptance(unittest.TestCase):
         points={r['N_X'][-1]:(r['status'],frac(r['conditional_cost']))for r in group}
         self.assertEqual(points,{1:('INFEASIBLE',376203472),2:('FEASIBLE',395962678),3:('FEASIBLE',415721884),4:('FEASIBLE',435481090)})
         self.assertEqual(len(next(r for r in group if r['N_X'][-1]==4)['result_sources']),2)
-        for method,ld in [('PR_DF',7)]:
-            waiting=next(r for r in result['candidates']if r['method']==method and r['L_D']==ld)
-            self.assertEqual(waiting['status'],'PRICE_WAITING')
-            self.assertEqual(waiting['q3_status'],PASS)
-            self.assertIsNone(waiting['conditional_cost'])
-            self.assertNotIn(waiting['point_id'],result['method_minima'][method]['point_ids'])
+        ld7=[r for r in result['candidates']if r['method']=='PR_DF' and r['L_D']==7]
+        self.assertEqual(len(ld7),3)
+        self.assertTrue(all(r['status']=='FEASIBLE' and r['q3_status']==PASS for r in ld7))
+        selected_df=next(r for r in ld7 if r['label']=='LD7_A_SHAPE')
+        self.assertEqual(result['method_minima']['PR_DF']['point_ids'],[selected_df['point_id']])
+        self.assertEqual(frac(selected_df['conditional_cost']),frac('155652932221/126'))
+        self.assertEqual(selected_df['N_X'],[48,45,42,39,35,32,29,25,22,19,16,12,9])
+        self.assertEqual(selected_df['N_X'],selected_df['N_Y'])
+        self.assertEqual(selected_df['saved_cost_breakdown']['m7_m12_percent_display'],'95.9453590253993779917152')
+        self.assertEqual(frac(selected_df['saved_cost_breakdown']['m7_m12_fraction']),frac('149341764653/155652932221'))
+        for r in ld7:
+            self.assertFalse(r['qualified_for_candidate'])
+            self.assertEqual(len(r['price_axes']),26)
+            self.assertTrue(all(p['price_kind']=='MODEL' and not p['qualified_for_candidate']for p in r['price_axes']))
+        self.assertEqual(next(r for r in ld7 if r['label']=='LD7_V0')['price_availability_history'][0]['status'],'PRICE_WAITING')
+        self.assertEqual(len([r for r in result['candidates']if r['method']=='PR_DF' and r['L_D']in (1,2)]),6)
         self.assertEqual(len(result['signal_only_history']),1)
         pauli=[r for r in result['candidates']if r['method']=='PR_PAULI' and r['L_D']==3]
         self.assertEqual(len(pauli),1)
@@ -146,6 +156,19 @@ class PublishedAcceptance(unittest.TestCase):
             changed=deepcopy(self.reader.read(source));changed['rows'][0][key]=value
             with self.assertRaisesRegex(ValueError,'Pauli'):
                 Catalog(self.reader,self.inputs['comparison']).pauli_model_prices(source,changed)
+
+    def test_ld7_source_first_and_republished_six_points_are_reused(self):
+        source=next(s for s in self.inputs['sources']if 'd_pr_df_ld7_price_results'in s['path'])
+        cat=Catalog(self.reader,self.inputs['comparison']);cat.add(source)
+        self.assertEqual(len(cat.result()['candidates']),9)
+        for s in self.inputs['sources']:cat.add(s)
+        result=cat.result()
+        self.assertEqual(len(result['candidates']),37)
+        self.assertFalse([r for r in result['candidates']if r['status']in ('MISMATCH','PRICE_WAITING')])
+        summary=ref(source['commit'],source['path'].replace('C_HANDOFF.json','SUMMARY.json'))
+        modified=deepcopy(self.reader.read(summary));modified['menu'][0]['cost']=refnum(0,1)
+        with self.assertRaisesRegex(ValueError,'republication'):
+            Catalog(self.reader,self.inputs['comparison']).pr_df_ld7(summary,modified)
 
     def test_same_command_updates_only_by_adding_a_pinned_source(self):
         import os,sys

@@ -133,6 +133,10 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('schema')=='PR_DF_LD7_MODEL_COST_Q3_JOIN_FOR_C_V1':
+            self.add(ref(commit,parent+'/SUMMARY.json'));return
+        if d.get('schema')=='PR_DF_LD1_LD2_LD7_NINE_MODEL_MENU_V1':
+            self.pr_df_ld7(locator,d);return
         if d.get('schema')=='A_PAULI_LD3_PRICE_HANDOFF_BC_V1':
             self.pauli_model_prices(locator,d);return
         if d.get('kind')=='FIXED_ALLOCATION_Q3_RESULT_JOIN_NOT_COST_OR_N_QUALIFICATION':
@@ -331,6 +335,72 @@ class Catalog:
         self.rows[-1]['price_scenario']='EMPIRICAL_M0_PLUS_24_F1_MODEL_REFERENCES'
         self.rows[-1]['q3_source']=dict(j,selector=j['selector'][:2])
 
+    def pr_df_ld7(self,loc,d):
+        """Reuse the six old points and join three saved LD7 price/Q3 points."""
+        old=self.r.read(d['LD1_LD2_saved_source'])
+        require([r for r in d['menu']if r['L_D'] in (1,2)]==old['menu'],
+                'LD1/LD2 republication differs from the original six results')
+        self.add(d['LD1_LD2_saved_source'])
+        handoff_loc=ref(loc['commit'],str(PurePosixPath(loc['path']).parent/'C_HANDOFF.json'))
+        h=self.r.read(handoff_loc);conf=self.r.read(h['configuration'])
+        require(conf['id']==h['configuration_id'] and conf['spec']['L_D']==7,'LD7 configuration mismatch')
+        require(h['compiled_price_quantity']==self.comparison['price_quantity'],'LD7 price quantity mismatch')
+        require(h['original_law']==conf['spec']['law']['model'],'LD7 price law mismatch')
+        require(d['model_commit']==h['models']['commit']==h['axis_prices']['commit'],'LD7 frozen model SOURCE mismatch')
+        models=self.r.read(h['models'])
+        require(models['finite_cohort_is_law_expectation'] is False,'LD7 model is not a law expectation')
+        prices=self.r.read(h['axis_prices'])['rows']
+        require(len(prices)==26 and {(p['m'],p['axis'])for p in prices}==
+                {(m,a)for m in range(13)for a in ('X','Y')},'LD7 needs 26 unique model price axes')
+        # Load the existing V0 publication, including when this input comes first.
+        config_source=prices[0]['configuration_source']
+        self.add(ref(config_source['commit'],str(PurePosixPath(config_source['path']).parents[1]/'SUMMARY.json')))
+        for i,r in enumerate(d['menu']):
+            if r['L_D']!=7:continue
+            hr=next(x for x in h['rows']if x['rule']==r['rule'])
+            require(hr==r,'LD7 handoff/summary mismatch')
+            q3=self.r.read(r['Q3_source']);input_loc=q3['source']['inputs'];inp=self.r.read(input_loc)
+            inp=inp.get('inputs',inp);case=case_for(inp['cases'],r['shots'],r['label'])
+            require(self.r.read(case_ref(case))==conf,'LD7 Q3/price configuration mismatch')
+            require(shots(q3['allocation'])==shots(case['allocation'])==shots(r['shots']),'LD7 Q3/price allocation mismatch')
+            require(q3['status']==r['status'] and q3['record']['configuration_id']==case['total_configuration_id'],
+                    'LD7 Q3 verdict/total view mismatch')
+            require(frac(q3['adopted_q3_assessment']['q3']['model_MSE_upper'])==frac(r['MSE_upper']),
+                    'LD7 saved MSE bound mismatch')
+            terms=[]
+            for t in r['weighted_terms']:
+                require(t['price_source']['commit']==h['axis_prices']['commit'] and t['price_source']['path']==h['axis_prices']['path'],
+                        'LD7 axis price SOURCE mismatch')
+                p=self.r.read(t['price_source']);m=t['m'];round_=conf['rounds'][m]
+                require(t['configuration_id']==p['configuration_id']==conf['id'] and
+                        t['physical_id']==p['physical_id']==round_['physical_candidate']['id'],'LD7 physical price binding mismatch')
+                require(p['law']==round_['law_binding'] and p['q']==round_['q_PF'] and p['R']==round_['R_outer'],
+                        'LD7 model law/q/R mismatch')
+                require(t['axis']==p['axis']==p['model_axis'] and t['m']==p['m'] and frac(t['C_ref'])==frac(p['C_ref']),
+                        'LD7 saved price axis/value mismatch')
+                require(t['application']==p['application'],'LD7 model application mismatch')
+                terms.append(dict(m=m,axis=t['axis'],N=t['shots'],price_source=t['price_source']))
+            self.make(dict(case,_source=input_loc,rows=conf['rounds'],label=r['label']),case['allocation'],r['status'],
+                r['cost'],r['MSE_lower'],r['MSE_upper'],inp['adopted_evaluation'],dict(loc,selector=['menu',i]),terms)
+            row=self.rows[-1]
+            row.update(q3_source=r['Q3_source'],price_scenario='MODEL_REFERENCES_NOT_FORMAL_E_C',qualified_for_candidate=False,
+                price_evidence=dict(model_source=h['models'],axis_prices_source=h['axis_prices'],holdout_source=h['holdout'],
+                    model_holdout_verdict=h['model_holdout_verdict'],producer_price_acceptance=h['price_acceptance'],
+                    calibration_sources={a:[dict(h['models'],selector=['models',a,'calibration',j])
+                        for j in range(len(models['models'][a]['calibration']))]for a in ('X','Y')},
+                    qualifications=deepcopy(d['qualifications'])),
+                saved_cost_breakdown={k:deepcopy(r[k])for k in ('m0_m6','m7_m12','m7_m12_fraction','m7_m12_percent_display')})
+            for p,t in zip(row['price_axes'],r['weighted_terms']):
+                p.update(price_kind='MODEL',qualified_for_candidate=False,model_application=t['application'],C_ref=deepcopy(t['C_ref']))
+            if r['rule']=='V0':
+                prior=next(x for x in self.rows[:-1]if x['configuration_id']==row['configuration_id'] and x['N_X']==row['N_X'] and x['N_Y']==row['N_Y'])
+                require(prior['q3_status']==row['q3_status'] and prior['total_configuration_id']==row['total_configuration_id'] and
+                        prior['binding_id']==row['binding_id'],'LD7 existing V0 Q3 bridge mismatch')
+                row['result_sources']=prior['result_sources']+row['result_sources']
+                row['labels']=sorted(set(prior['labels']+row['labels']))
+                row['price_availability_history']=[dict(status=prior['status'],sources=prior['result_sources'])]
+                self.rows.remove(prior)
+
     def q3_without_prices(self,loc,join):
         """A published Q3/axis join with an explicitly missing price is not ranked."""
         parent=str(PurePosixPath(loc['path']).parent)
@@ -510,5 +580,9 @@ def report(result):
         lines.append('- `'+source['commit']+':'+source['path']+'`')
     if any(r.get('price_evidence',{}).get('round_model_prices')==26 for r in result['candidates']):
         lines+=['','PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。']
+    for r in result['candidates']:
+        if r['point_id']in result['method_minima']['PR_DF']['point_ids'] and 'saved_cost_breakdown'in r:
+            lines+=['',r['label']+'の費用の'+r['saved_cost_breakdown']['m7_m12_percent_display']+
+                '%はq>64のm7〜m12へのモデル外挿（元SUMMARYの保存内訳）。qualified_for_candidate=false。価格モデル・配分・Q3・較正receiptの固定locatorはCATALOG.jsonに保持。']
     lines+=['','再実行コマンドと追加方法は親directoryのHANDOFF.mdを参照。','']
     return '\n'.join(lines)
