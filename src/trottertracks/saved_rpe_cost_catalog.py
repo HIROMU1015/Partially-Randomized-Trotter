@@ -36,6 +36,13 @@ def enc(v):
     return dict(numerator=v.numerator, denominator=v.denominator)
 
 
+def saved_bound(value):
+    """Preserve exact bounds while keeping JSON readable by default Python parsers."""
+    if isinstance(value,dict) and 'numerator'in value:
+        return dict(numerator=str(value['numerator']),denominator=str(value['denominator']))
+    return value
+
+
 def display(v):
     if v is None:
         return '—'
@@ -179,7 +186,7 @@ class Catalog:
             split=deepcopy(spec.get('split')),h=deepcopy(spec['h']),M=spec['M'],
             profile=deepcopy(spec['profile']), law=deepcopy(spec.get('law')), allocation=deepcopy(allocation),
             N_X=vector['X'] if vector else None,N_Y=vector['Y'] if vector else None,
-            q3_status=status,MSE_lower=lower,MSE_upper=upper,conditional_cost=enc(cost) if cost is not None else None,
+            q3_status=status,MSE_lower=saved_bound(lower),MSE_upper=saved_bound(upper),conditional_cost=enc(cost) if cost is not None else None,
             assessment_basis='SAVED_CLASSIFICATION_NOT_REEVALUATED',
             q3_failure_kind='MODEL_THRESHOLD_EXCEEDED_NOT_NUMERICAL_FAILURE' if status==FAIL else None,
             status='Q3_WAITING' if status is None else 'PRICE_WAITING' if status==PASS and cost is None else
