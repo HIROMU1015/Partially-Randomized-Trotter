@@ -13,3 +13,5 @@ m3で実対象確認済み：[REPORT](research/d_pr_df_ld1_m3_results_20261115/R
 ## PR-DF F0：保存support表でlaw診断
 
 [F0 reader](../scripts/run_pr_df_ld1_f0.py) は固定 `d72dc4e6228bb380f4d1d000e5e030794fce7164:src/trottertracks/finite_k_sampler_law.py` と元CDF helperを再利用する。324-component表1個と2-order表13個だけを評価し、path位置数は条件付き上界の整数入力に使う。巨大なevent列生成、preparation再構築、sampling、compileは不要。Git blobはcommit/pathごとにcacheし、同じ保存JSONの再読を避ける。表ごとの処理が小さいためprocess poolを作らず、既存のsupport長に依存する計算を順次使う。人工reader試験14件・0.30秒で実経路、partial STOP、進捗logを確認した。[実行結果](research/d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)に実対象の時間・範囲を記録する。NumPy1.26.4のCDF、Fraction、元正規化・順序・hexを維持し、任意runtimeへのlaw移送はしない。Python3.11.0rc1の定期faulthandler dumpは使用せず、協調的START/END/所要時間と終了codeを保存する。
+
+F0実対象確認：SOURCE `fad0c1e4fe41c0e4c6d0690158056572295ed15a`、14表・13条件付きevent/path bound、内部0.075383830秒、GNU wall0.50秒・max RSS41552 KiB、全表完了・異常0。追加benchmarkなし。起動を含むGNU timeのCPU1407%はruntime既定動作を含む計測で、14個のscientific workerを作ったものではない。再利用元のhelperを修正せず、巨大event列なしで固定scopeを完了した。

@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`run_pr_df_ld1_f0.py`](run_pr_df_ld1_f0.py)：固定helperと保存確率の最小reader。14表と条件付きevent/path上界だけを一回実行し、sample/回路/価格を呼ばない。[結果とSTOP](../docs/research/d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)。
+
 [`run_pr_df_ld1_m4.py`](run_pr_df_ld1_m4.py)：固定INPUTSのliteral seedを元samplerへ渡し、P2/m3 S/C workerでm4だけ4 path取得。別入口で公開照合済みreceiptからexact二比較。[完了結果](../docs/research/d_pr_df_ld1_m4_holdout_results_20261115/REPORT.md)。再実行/追加path/fit不可、STOP。
 
 [PR-DF LD1 m3 S/C取得](../docs/research/d_pr_df_ld1_m3_results_20261115/REPORT.md)：physical045843b2429bece6f29b、q8/R16/T.8、normal fresh4 path・X/Y新規8 compile、有効8・再利用/欠測0。同event/axisのS/Cと元receipt固定locatorをCへ引渡し。元P1/P2新ZZ・S/C backendを再利用、full-wrapper statevector未実施を維持。残差集計/fit・m4は未実行、m4規則/cohort/seedは取得前固定、公開後STOP。

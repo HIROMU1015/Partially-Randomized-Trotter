@@ -1,5 +1,7 @@
 # 研究結果への統一索引
 
+[PR-DF LD1 F0保存確率診断](d_pr_df_ld1_f0_law_diagnostic_20261115/REPORT.md)：324-component1表＋order13表の14診断完了。componentのCDF丸め25＋格子化7＝32 supportが正→0、P→G TV約4.5413e−15。条件付きpath TVは全13roundで1未満、m12約1.5248e−7。actual PCG64距離・残差range・E[C]資格は未確定。path/build/compile0、公開後STOP。
+
 [PR-DF LD1 m4独立holdout](d_pr_df_ld1_m4_holdout_results_20261115/REPORT.md)：2026-11-15：PR-DF LD1 m4独立holdout。H4 DF10/LD1/S2/Δ.1/K2、physical3df0cfd3356c358aeda8、q16/R32/T1.6、固定normal fresh4 path・X/Y8実compile、有効8・再利用/欠測0。両軸O=259385/2 RZ、P−O=−1188941146855657/1683627180032、相対約−0.544502%。DESCRIPTIVE_COMPLETE、許容差なし・モデルPASS/FAILなし。全law E[C]/CI・長round・N/G/winner未認定、m3/旧STOPを保全し公開後STOP。
 
 [Track D×元PR/RPE共通interface](track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。
