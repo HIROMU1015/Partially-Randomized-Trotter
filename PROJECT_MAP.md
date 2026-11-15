@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full-H κ2 m0参照取得・単価nullでSTOP](docs/research/d_full_h_m0_reference_20261115/REPORT.md)：固定normal1 path・X/Y各1 compileを取得。観測各1062、準備/7数値gate PASSだがZZ実績0で必須coverage条件不成立。C_0X/C_0Y=null、retry0。結果b25d7da6d・C向けHANDOFF、公開照合後mandatory STOP。
+
 [Full-H κ2 D7独立holdout・記述的比較完了](docs/research/d_full_h_d7_holdout_20261115/REPORT.md)：m5独立2 path/m6独立1 path・新規6 compile、必要gate6軸PASS。固定予測との差はm5-X/Y各−0.445257%、m6-X/Y各＋0.134608%。DESCRIPTIVE_COMPLETE、モデルPASS/FAILなし・tolerance null。全6軸結果b5fac0ee4、4 exact比較とC向けHANDOFF、公開照合後mandatory STOP。
 
 [並列化・高速化の手法集](docs/PERFORMANCE_METHODS.md)：既存helper・runner・test・検証記録への再利用索引。適用条件・SOURCE・確認範囲・既知の失敗例を記録する。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full-H κ2 m0固定normal path](research/d_full_h_m0_reference_20261115/REPORT.md)／[C向けHANDOFF](research/d_full_h_m0_reference_20261115/HANDOFF_C.md)：2 compile保存、観測RZ各1062、ZZ coverage条件不成立で参照単価2軸null。追加sampling/retry0、mandatory STOP。
+
 [Full-H κ2 D7独立holdout完了](research/d_full_h_d7_holdout_20261115/REPORT.md)／[C向けHANDOFF](research/d_full_h_d7_holdout_20261115/HANDOFF_C.md)：3 fresh path/6 new compile・全必要gate PASS、4 exact比較DESCRIPTIVE_COMPLETE。モデルPASS/FAILなし。結果b5fac0ee4、公開照合後mandatory STOP。
 
 [並列化・高速化の手法集](PERFORMANCE_METHODS.md)：実装と検証記録を再利用するための入口。

@@ -56,3 +56,7 @@ toyでserial/parallel/cache再利用の一致を確認した記録がある。PR
 対象と削減した処理、code/commit、流用できる条件、検証記録、実測した入力規模・時間/資源、
 未確認範囲や失敗例を数行で残す。既存entryの改善ならそのentryを更新する。
 計測していない速度倍率を埋めたり、記録のためだけに新しい科学計算を行ったりしない。
+
+## 小さいnormal pathへ既存gateを再利用する際の注意
+
+m0 q1/R9の固定normal pathでは、X/Y並列・既存cache/fast writerを再利用して7.84秒で2 compileしたが、中央rotationがすべて1-qubitでZZ置換実績が0だった。元7数値gateはPASSでも既存のcoverage条件 `replaced_controlled_zz > 0` が不成立となり、単価はnullで保留した。gateを満たすための再抽選・強制事象を行わず元SOURCE/証拠を保全する。性能策のreuseと取得受入を区別する。[m0結果・STOP](research/d_full_h_m0_reference_20261115/REPORT.md)。
