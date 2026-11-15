@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[最初の粗幅候補と有限案：p7/Yoshida4・32h/5](docs/research/d_pf_first_coarser_width_plan_20261116/REPORT.md)：既存4候補の差分比較から元dd8bfc24を推奨。保存7round＋不足m6〜m11の6 mean、現幅Y4保存配分のQ3最大1、compile0の未実行案。価格証拠10軸はearly同物理点、粗幅固有価格は未取得。同公式基準435,641,568とp7最安435,481,090 RZを分離。新科学値/価格/配分/費用算術0、mandatory STOP。
+
 [p7/S2・幅hの採用価格規則と固定配分費用](docs/research/d_pf_p7_s2_h_comparison_prices_20261115/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/S2・実幅.1、P0除外。5513q+307を比較用に採用し、直接10＋外挿16の26軸表を公開。保存Q3適合配分のモデル費用993,110,014 RZ、粗幅16h/7との差＋557,628,924 RZ、外挿部分98.388806%。直接coverage増分0、新compile/QPY監査/fit/Q3/配分生成0、mandatory STOP。
 
 [p7/S2・要求幅hの4軸取得と保存6軸受入](docs/research/d_pf_p7_s2_h_direct_prices_20261115/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/S2・実幅.1、P0除外。新規m1/m2 X/Yの4 compileと保存6軸が作用gate/C guardを通過し、q1/2/4/8/16の10/26軸受入、残るm5〜m12の16軸は欠測。取得wall25.706 s、fit/長q予測/Q3/N/G0、mandatory STOP。
