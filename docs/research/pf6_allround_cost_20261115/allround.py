@@ -30,7 +30,7 @@ LABEL_KIND={'FULL_PF':'FULL_PF','B0I_P7':'TRUNCATED_PF'}
 LABEL_FORMULA={'S2':('2nd','16/7'),'Y4':('4th','16/3'),'M5':('4th(m5_best)','16')}
 DIRECT='DIRECT_COMPILED_DETERMINISTIC'
 CLOSURE='CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION'
-PRICE_FIELDS=('price','rz_count','derived_price','derived_rz_count','C')
+PRICE_FIELDS=('compiled_RZ','exact_RZ','mean','price','rz_count')  # C PF_CONDITIONAL_CLOSURE_PRICES_V1 uses the first three
 
 
 def ref(commit,path,selector=None):
@@ -134,10 +134,13 @@ def join(b_inputs,b_sums,c_table_source,c_doc,rec_doc):
             for name,want in (('route',route),('formula',formula),('width_over_h',width)):
                 if recrow[name]!=want:raise ValueError('Recommendation %s differs'%name)
                 if r.get(name,want)!=want:raise ValueError('C table %s differs'%name)
-            for name in ('q','T','model_group'):
+            for name in ('q','T'):
                 if name in r and r[name]!=recrow[name]:raise ValueError('C table %s differs from recommendation'%name)
-            if r.get('direct_observation')is True:raise ValueError('Closure row marked as direct observation')
+            if r.get('model_group_id',recrow['model_group'])!=recrow['model_group']:raise ValueError('C table model group differs')
+            if r.get('canonical_id',a['original_candidate_id'])!=a['original_candidate_id']:raise ValueError('C canonical ID differs from B')
+            if r.get('direct_observation')is not False:raise ValueError('Closure row not marked as non-direct')
             if r.get('classification')==DIRECT:raise ValueError('Closure row registered as direct deterministic price')
+            if r.get('conditional_use_adopted')is not True:raise ValueError('Closure row lacks the adopted conditional-use policy')
             price=c_price(r)
         except Exception as error:
             issues.append(dict(base,reason=str(error)));continue
@@ -146,7 +149,8 @@ def join(b_inputs,b_sums,c_table_source,c_doc,rec_doc):
                         C_recommendation=ref(REC_FULL,RECP,['rows',rec.index(recrow)]),
                         model_group=recrow['model_group'],q=recrow['q'],
                         C_classification=r.get('classification'),C_evidence_kind=r.get('evidence_kind'),
-                        C_policy=r.get('policy',r.get('adoption_policy')))))
+                        C_policy=r.get('adoption_policy'),direct_observation=r.get('direct_observation'),
+                        unobserved_circuit=r.get('unobserved_circuit'))))
     extra=[i for i in range(len(crow))if i not in used]
     for i in extra:issues.append(dict(reason='C price row not matched to a B unobserved axis',C_row_index=i))
     return rows,issues
@@ -187,19 +191,22 @@ def totals(rows,labels,b_sums):
     return out,order,flips,dict(minimum=best['label'],next=second['label'],gap=second['total']-best['total'])
 
 
-def prepare(c_table):
+def prepare(c_table,c_handoff):
+    hc,hp=c_handoff.split(':');hc=full_sha(hc);handoff=blob(hc,hp).decode()
     commit,path,*sel=c_table.split(':')
     commit=full_sha(commit);source=ref(commit,path,[json.loads(s)if s.lstrip('-').isdigit()else s for s in sel]or None)
+    if commit not in handoff or path.split('/')[-1]not in handoff:raise ValueError('HANDOFF_B does not name this price table')
     b_inputs=document(B8,B8P+'INPUTS.json');b_sums=document(B8,B8P+'PARTIAL_SUMS.json');q3=document(Q3,Q3P+'INPUTS.json')
     for case in q3['cases']:
         if [r['N_X']for r in case['allocation']['shots']]!=N or [r['N_Y']for r in case['allocation']['shots']]!=N:
             raise ValueError('Q3 allocation differs')
-    c_doc=selected(source);rec=document(REC_FULL,RECP)
+    c_doc=selected(source);c_header=document(commit,path);rec=document(REC_FULL,RECP)
     rows,issues=join(b_inputs,b_sums,source,c_doc,rec)
     value=dict(scope='PF6_FIXED_SHOT_ALL_13_ROUND_TOTAL_COMPILED_RZ_CONDITIONAL_CLOSURE',
         B_eight_round=dict(inputs=ref(B8,B8P+'INPUTS.json'),partial_sums=ref(B8,B8P+'PARTIAL_SUMS.json'),
                            analysis_source=b_sums['source']),
-        Q3_allocation=ref(Q3,Q3P+'INPUTS.json'),C_recommendation=ref(REC_FULL,RECP),C_price_table=source,
+        Q3_allocation=ref(Q3,Q3P+'INPUTS.json'),C_recommendation=ref(REC_FULL,RECP),C_price_table=source,C_handoff_B=ref(hc,hp),
+        C_table_header={k:c_header.get(k)for k in ('schema','status','execution_source','adoption_policy','use_scope','counts','coverage','two_percent_guarantee','unconditional_error_bound')},
         N_X=N,N_Y=N,known_rounds=K_ROUNDS,closure_rounds=U_ROUNDS,candidates=[c['label']for c in b_inputs['candidates']],
         axes=rows,issues=issues,direct_axes=sum(r['price_class']==DIRECT for r in rows),
         closure_axes=sum(r['price_class']==CLOSURE for r in rows),
@@ -243,8 +250,9 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('mode',choices=('prepare','analyze'))
     p.add_argument('--c-table',help='COMMIT:PATH[:selector...] of C\'s machine-readable 60-price table')
+    p.add_argument('--c-handoff',help='COMMIT:PATH of C\'s HANDOFF_B naming that table')
     args=p.parse_args()
     if args.mode=='prepare':
-        if not args.c_table:raise SystemExit('--c-table is required for prepare')
-        prepare(args.c_table)
+        if not args.c_table or not args.c_handoff:raise SystemExit('--c-table and --c-handoff are required')
+        prepare(args.c_table,args.c_handoff)
     else:analyze()

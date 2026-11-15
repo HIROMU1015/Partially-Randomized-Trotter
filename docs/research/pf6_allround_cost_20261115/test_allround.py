@@ -19,7 +19,11 @@ def table(price=lambda r:1000):
     rows=[]
     for r in R['rows']:
         x={k:r[k]for k in ('configuration_id','physical_id','route','formula','width_over_h','m','axis','q','T','model_group')}
-        x.update(price=price(r),classification='MODEL_PREDICTION',evidence_kind='FIXED_COMPILER_CLOSURE_DERIVATION_CONDITIONAL')
+        v=price(r)
+        x.update(compiled_RZ=v,exact_RZ=dict(numerator=v,denominator=1)if isinstance(v,int)else v,
+                 mean=dict(rz_count=v),classification='MODEL_PREDICTION',direct_observation=False,
+                 conditional_use_adopted=True,evidence_kind='FIXED_COMPILER_CLOSURE_DERIVATION_CONDITIONAL',
+                 model_group_id=x.pop('model_group'))
         rows.append(x)
     return dict(rows=rows)
 
@@ -77,10 +81,16 @@ class AllRound(unittest.TestCase):
         self.assertTrue(any('formula'in i['reason']for i in issues))
         d=table();d['rows'][2]['classification']=M.DIRECT;_,issues=run(d)
         self.assertTrue(any('direct'in i['reason']for i in issues))
-        d=table();d['rows'][3]['price']=1.5;_,issues=run(d)
+        d=table();d['rows'][3]['compiled_RZ']=1.5;_,issues=run(d)
         self.assertTrue(any('integer'in i['reason']for i in issues))
-        d=table();d['rows'][4]['price']=None;_,issues=run(d)
-        self.assertTrue(issues)
+        d=table();d['rows'][4]['compiled_RZ']+=1;_,issues=run(d)  # disagreeing price fields
+        self.assertTrue(any('price field'in i['reason']for i in issues))
+        d=table();d['rows'][5]['conditional_use_adopted']=False;_,issues=run(d)
+        self.assertTrue(any('adopted'in i['reason']for i in issues))
+        d=table();d['rows'][6]['direct_observation']=True;_,issues=run(d)
+        self.assertTrue(any('non-direct'in i['reason']for i in issues))
+        d=table();d['rows'][7]['canonical_id']='RMSE:0';_,issues=run(d)
+        self.assertTrue(any('canonical'in i['reason']for i in issues))
 
     def test_known_subtotal_guard(self):
         s=deepcopy(S);s['rows'][0]['K_i']+=1
