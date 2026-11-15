@@ -1,0 +1,2691 @@
+{
+  "status": "TOTAL_UNAVAILABLE_INVALID_AXIS",
+  "valid_axes": 24,
+  "invalid_axes": [
+    {
+      "m": 0,
+      "axis": "X",
+      "physical_id": "FULL_H_2a9a68a11d08af234a8c",
+      "status": "OUT_OF_DOMAIN_NEGATIVE_MODEL_REFERENCE",
+      "reason": "Unchanged frozen model gives a negative compiled-RZ reference; no clamp or replacement"
+    },
+    {
+      "m": 0,
+      "axis": "Y",
+      "physical_id": "FULL_H_2a9a68a11d08af234a8c",
+      "status": "OUT_OF_DOMAIN_NEGATIVE_MODEL_REFERENCE",
+      "reason": "Unchanged frozen model gives a negative compiled-RZ reference; no clamp or replacement"
+    }
+  ],
+  "T_ref": null,
+  "full_total_comparisons": [
+    {
+      "benchmark": {
+        "label": "B0I_P7_S2_16h_over_7",
+        "RZ": 593555352,
+        "source": {
+          "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+          "path": "docs/research/pf6_allround_cost_20261115/RESULT.json",
+          "selector": [
+            "rows",
+            0
+          ]
+        },
+        "qualification": "FIXED_Q3_ALLOCATION_AND_ADOPTED_COMPILER_CLOSURE_CONDITIONAL_REFERENCE"
+      },
+      "T_ref": null,
+      "D_PF": null,
+      "Delta_lower_cost_condition": null,
+      "Delta_equal_cost_condition": null,
+      "Delta_higher_cost_condition": null,
+      "status": "NOT_EVALUATED_INVALID_AXIS"
+    },
+    {
+      "benchmark": {
+        "label": "FULL_PF_S2_16h_over_7",
+        "RZ": 838693580,
+        "source": {
+          "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+          "path": "docs/research/pf6_allround_cost_20261115/RESULT.json",
+          "selector": [
+            "rows",
+            2
+          ]
+        },
+        "qualification": "FIXED_Q3_ALLOCATION_AND_ADOPTED_COMPILER_CLOSURE_CONDITIONAL_REFERENCE"
+      },
+      "T_ref": null,
+      "D_PF": null,
+      "Delta_lower_cost_condition": null,
+      "Delta_equal_cost_condition": null,
+      "Delta_higher_cost_condition": null,
+      "status": "NOT_EVALUATED_INVALID_AXIS"
+    }
+  ],
+  "m6": {
+    "status": "MODEL_SCENARIO_ONLY",
+    "model_partial_RZ": {
+      "numerator": 6373469166044894883,
+      "denominator": 10057555828
+    },
+    "N_X": 57,
+    "N_Y": 57,
+    "prediction_sources": [
+      {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "predictions",
+          1,
+          "predicted_RZ"
+        ]
+      },
+      {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "predictions",
+          3,
+          "predicted_RZ"
+        ]
+      }
+    ],
+    "comparisons": [
+      {
+        "benchmark": {
+          "label": "B0I_P7_S2_16h_over_7",
+          "RZ": 593555352,
+          "source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/RESULT.json",
+            "selector": [
+              "rows",
+              0
+            ]
+          },
+          "qualification": "FIXED_Q3_ALLOCATION_AND_ADOPTED_COMPILER_CLOSURE_CONDITIONAL_REFERENCE"
+        },
+        "PF_minus_m6_reference": {
+          "numerator": -403753076296703427,
+          "denominator": 10057555828
+        },
+        "m6_reference_relation_to_PF": "ABOVE",
+        "mother_mean_lower_bound_condition": "57*(L_6X+L_6Y) > T_PF implies T_I > T_PF",
+        "required_axis_mean_sum_strictly_greater_than": {
+          "numerator": 197851784,
+          "denominator": 19
+        },
+        "current_m6_is_mother_mean_lower_bound": false,
+        "rank_assessed": false
+      },
+      {
+        "benchmark": {
+          "label": "FULL_PF_S2_16h_over_7",
+          "RZ": 838693580,
+          "source": {
+            "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+            "path": "docs/research/pf6_allround_cost_20261115/RESULT.json",
+            "selector": [
+              "rows",
+              2
+            ]
+          },
+          "qualification": "FIXED_Q3_ALLOCATION_AND_ADOPTED_COMPILER_CLOSURE_CONDITIONAL_REFERENCE"
+        },
+        "PF_minus_m6_reference": {
+          "numerator": 2061738337390289357,
+          "denominator": 10057555828
+        },
+        "m6_reference_relation_to_PF": "BELOW",
+        "mother_mean_lower_bound_condition": "57*(L_6X+L_6Y) > T_PF implies T_I > T_PF",
+        "required_axis_mean_sum_strictly_greater_than": {
+          "numerator": 838693580,
+          "denominator": 57
+        },
+        "current_m6_is_mother_mean_lower_bound": false,
+        "rank_assessed": false
+      }
+    ],
+    "all_other_rounds_used": false,
+    "is_mother_mean_lower_bound": false
+  },
+  "ideal_mean_compiled_price": null,
+  "CI": null,
+  "G": null,
+  "winner": null,
+  "schema": "FULL_H_F1_FIXED_SHOT_MODEL_DIAGNOSTIC_V1",
+  "execution_source": "417526460f22f9f49dfcf166442740c17a00105b",
+  "sources": {
+    "admission": {
+      "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+      "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json"
+    },
+    "plan": {
+      "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+      "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/NEXT_SCIENCE_PLAN.md"
+    },
+    "frozen": {
+      "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+      "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json"
+    },
+    "B_join": {
+      "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+      "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json"
+    },
+    "PF": {
+      "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+      "path": "docs/research/pf6_allround_cost_20261115/RESULT.json"
+    }
+  },
+  "rows": [
+    {
+      "m": 0,
+      "axis": "X",
+      "physical_id": "FULL_H_2a9a68a11d08af234a8c",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:c128cca68dd5a5464c31e5d9c5333fae0238c3dd3593a66d31957814bccd6738",
+      "total_candidate_id": "RMSE:c892384786b259c8e27bfadad18beda839305ce8281d1129dced65002a7bbe20",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 96,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 0.1,
+        "q": 1,
+        "R_outer": 9,
+        "K": 2,
+        "delta": 0.1,
+        "s": 9,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_2a9a68a11d08af234a8c"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "q_grouping": 1,
+      "q_PF": null,
+      "R_outer": 9,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 9,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 0,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          0
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          0
+        ]
+      },
+      "C_ref": {
+        "numerator": -3078724851127,
+        "denominator": 2514388957
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "FAIL_NEGATIVE_REFERENCE"
+      },
+      "status": "OUT_OF_DOMAIN_NEGATIVE_MODEL_REFERENCE",
+      "reason": "Unchanged frozen model gives a negative compiled-RZ reference; no clamp or replacement",
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 0,
+      "axis": "Y",
+      "physical_id": "FULL_H_2a9a68a11d08af234a8c",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:c128cca68dd5a5464c31e5d9c5333fae0238c3dd3593a66d31957814bccd6738",
+      "total_candidate_id": "RMSE:c892384786b259c8e27bfadad18beda839305ce8281d1129dced65002a7bbe20",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 96,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 0.1,
+        "q": 1,
+        "R_outer": 9,
+        "K": 2,
+        "delta": 0.1,
+        "s": 9,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_2a9a68a11d08af234a8c"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "q_grouping": 1,
+      "q_PF": null,
+      "R_outer": 9,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 9,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 0,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          1
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          1
+        ]
+      },
+      "C_ref": {
+        "numerator": -3078724851127,
+        "denominator": 2514388957
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "FAIL_NEGATIVE_REFERENCE"
+      },
+      "status": "OUT_OF_DOMAIN_NEGATIVE_MODEL_REFERENCE",
+      "reason": "Unchanged frozen model gives a negative compiled-RZ reference; no clamp or replacement",
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 1,
+      "axis": "X",
+      "physical_id": "FULL_H_d867d20943e97de79a8e",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:d87fde38c4c7d4bf9f648f7ee61fee037d821d2d9d33e8e5ff739420d2170f99",
+      "total_candidate_id": "RMSE:b75fb03e33169ef3c300b3a8d7e882877b1d8a9469b8af623a8fe533ffaa6419",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 90,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 0.2,
+        "q": 2,
+        "R_outer": 18,
+        "K": 2,
+        "delta": 0.1,
+        "s": 36,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_d867d20943e97de79a8e"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 18014398509481984
+      },
+      "q_grouping": 2,
+      "q_PF": null,
+      "R_outer": 18,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 36,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          2
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          2
+        ]
+      },
+      "C_ref": {
+        "numerator": 57506484815915,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 1,
+      "axis": "Y",
+      "physical_id": "FULL_H_d867d20943e97de79a8e",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:d87fde38c4c7d4bf9f648f7ee61fee037d821d2d9d33e8e5ff739420d2170f99",
+      "total_candidate_id": "RMSE:b75fb03e33169ef3c300b3a8d7e882877b1d8a9469b8af623a8fe533ffaa6419",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 90,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 0.2,
+        "q": 2,
+        "R_outer": 18,
+        "K": 2,
+        "delta": 0.1,
+        "s": 36,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_d867d20943e97de79a8e"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 18014398509481984
+      },
+      "q_grouping": 2,
+      "q_PF": null,
+      "R_outer": 18,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 36,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 1,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          3
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          3
+        ]
+      },
+      "C_ref": {
+        "numerator": 57506484815915,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 2,
+      "axis": "X",
+      "physical_id": "FULL_H_077373cd897903ae6e04",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:5a3fce76962376a7d989750bf31afca147eb7a0eef1de93f88d60de006e93b3a",
+      "total_candidate_id": "RMSE:ef1fdc94fcf142d174822bc634f81e322e1dd40c45f17d025240e47cc21c8298",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 84,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 0.4,
+        "q": 4,
+        "R_outer": 36,
+        "K": 2,
+        "delta": 0.1,
+        "s": 144,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_077373cd897903ae6e04"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 9007199254740992
+      },
+      "q_grouping": 4,
+      "q_PF": null,
+      "R_outer": 36,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 144,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 3,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          4
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          4
+        ]
+      },
+      "C_ref": {
+        "numerator": 388665700750579,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 2,
+      "axis": "Y",
+      "physical_id": "FULL_H_077373cd897903ae6e04",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:5a3fce76962376a7d989750bf31afca147eb7a0eef1de93f88d60de006e93b3a",
+      "total_candidate_id": "RMSE:ef1fdc94fcf142d174822bc634f81e322e1dd40c45f17d025240e47cc21c8298",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 84,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 0.4,
+        "q": 4,
+        "R_outer": 36,
+        "K": 2,
+        "delta": 0.1,
+        "s": 144,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_077373cd897903ae6e04"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 9007199254740992
+      },
+      "q_grouping": 4,
+      "q_PF": null,
+      "R_outer": 36,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 144,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 3,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          5
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          5
+        ]
+      },
+      "C_ref": {
+        "numerator": 388665700750579,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 3,
+      "axis": "X",
+      "physical_id": "FULL_H_4de6130f0d3a66e5d695",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:080ec1aae3da1adb6f977653707c75ae4225839c878d1c5a8ded958d66303ead",
+      "total_candidate_id": "RMSE:f210a4f6e519ea9b163374f0a56cc1e0c69e8784e54391d1c8c8e88b0018da17",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 78,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 0.8,
+        "q": 8,
+        "R_outer": 71,
+        "K": 2,
+        "delta": 0.1,
+        "s": 568,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_4de6130f0d3a66e5d695"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 4503599627370496
+      },
+      "q_grouping": 8,
+      "q_PF": null,
+      "R_outer": 71,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 568,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 7,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          6
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          6
+        ]
+      },
+      "C_ref": {
+        "numerator": 1693806779405811,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 3,
+      "axis": "Y",
+      "physical_id": "FULL_H_4de6130f0d3a66e5d695",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:080ec1aae3da1adb6f977653707c75ae4225839c878d1c5a8ded958d66303ead",
+      "total_candidate_id": "RMSE:f210a4f6e519ea9b163374f0a56cc1e0c69e8784e54391d1c8c8e88b0018da17",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 78,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 0.8,
+        "q": 8,
+        "R_outer": 71,
+        "K": 2,
+        "delta": 0.1,
+        "s": 568,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_4de6130f0d3a66e5d695"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 4503599627370496
+      },
+      "q_grouping": 8,
+      "q_PF": null,
+      "R_outer": 71,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 568,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 7,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          7
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          7
+        ]
+      },
+      "C_ref": {
+        "numerator": 1693806779405811,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 4,
+      "axis": "X",
+      "physical_id": "FULL_H_dc11b5386c819a813c67",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:929c4faf776fe13241cf91bb918d5087329b20e3eb4a5f654fac399e55dcf759",
+      "total_candidate_id": "RMSE:776890bd39a87fe8bf1d479a79d9546b7922fc7444b1977578eba14b89efafb3",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 71,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 1.6,
+        "q": 16,
+        "R_outer": 142,
+        "K": 2,
+        "delta": 0.1,
+        "s": 2272,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_dc11b5386c819a813c67"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 2251799813685248
+      },
+      "q_grouping": 16,
+      "q_PF": null,
+      "R_outer": 142,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 2272,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 15,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          8
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          8
+        ]
+      },
+      "C_ref": {
+        "numerator": 6949551367719803,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 4,
+      "axis": "Y",
+      "physical_id": "FULL_H_dc11b5386c819a813c67",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:929c4faf776fe13241cf91bb918d5087329b20e3eb4a5f654fac399e55dcf759",
+      "total_candidate_id": "RMSE:776890bd39a87fe8bf1d479a79d9546b7922fc7444b1977578eba14b89efafb3",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 71,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 1.6,
+        "q": 16,
+        "R_outer": 142,
+        "K": 2,
+        "delta": 0.1,
+        "s": 2272,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_dc11b5386c819a813c67"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 2251799813685248
+      },
+      "q_grouping": 16,
+      "q_PF": null,
+      "R_outer": 142,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 2272,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 15,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          9
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          9
+        ]
+      },
+      "C_ref": {
+        "numerator": 6949551367719803,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 5,
+      "axis": "X",
+      "physical_id": "FULL_H_bc8aab34256b73b68025",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:666e479fe3eebcd7372522c3b54c6d32d40275631025eef866efe314c3506aff",
+      "total_candidate_id": "RMSE:dbd05754b775b626a03140d28088de63c63ca75714884482cb8ea967d5bee3e3",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 65,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 3.2,
+        "q": 32,
+        "R_outer": 283,
+        "K": 2,
+        "delta": 0.1,
+        "s": 9056,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_bc8aab34256b73b68025"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 1125899906842624
+      },
+      "q_grouping": 32,
+      "q_PF": null,
+      "R_outer": 283,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 9056,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 31,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          10
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          10
+        ]
+      },
+      "C_ref": {
+        "numerator": 27894546580642075,
+        "denominator": 20115111656
+      },
+      "origin": "REUSED_PREOBSERVATION_FROZEN_PREDICTION",
+      "reused_prediction": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "predictions",
+          0,
+          "predicted_RZ"
+        ]
+      },
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 5,
+      "axis": "Y",
+      "physical_id": "FULL_H_bc8aab34256b73b68025",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:666e479fe3eebcd7372522c3b54c6d32d40275631025eef866efe314c3506aff",
+      "total_candidate_id": "RMSE:dbd05754b775b626a03140d28088de63c63ca75714884482cb8ea967d5bee3e3",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 65,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 3.2,
+        "q": 32,
+        "R_outer": 283,
+        "K": 2,
+        "delta": 0.1,
+        "s": 9056,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_bc8aab34256b73b68025"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 1125899906842624
+      },
+      "q_grouping": 32,
+      "q_PF": null,
+      "R_outer": 283,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 9056,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 31,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          11
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          11
+        ]
+      },
+      "C_ref": {
+        "numerator": 27894546580642075,
+        "denominator": 20115111656
+      },
+      "origin": "REUSED_PREOBSERVATION_FROZEN_PREDICTION",
+      "reused_prediction": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "predictions",
+          2,
+          "predicted_RZ"
+        ]
+      },
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 6,
+      "axis": "X",
+      "physical_id": "FULL_H_4ec8d73571760a6830b8",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:178aac8eaf960980b1db3c79f80cba52ffbdf7402b2f145a4c6446e03183b425",
+      "total_candidate_id": "RMSE:fb879fc218390919b89240b2ee332d6663d128d9b7c10817efe6eb1e1bff8e12",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 57,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 6.4,
+        "q": 64,
+        "R_outer": 566,
+        "K": 2,
+        "delta": 0.1,
+        "s": 36224,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_4ec8d73571760a6830b8"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 562949953421312
+      },
+      "q_grouping": 64,
+      "q_PF": null,
+      "R_outer": 566,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 36224,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 63,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          12
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          12
+        ]
+      },
+      "C_ref": {
+        "numerator": 111815248527103419,
+        "denominator": 20115111656
+      },
+      "origin": "REUSED_PREOBSERVATION_FROZEN_PREDICTION",
+      "reused_prediction": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "predictions",
+          1,
+          "predicted_RZ"
+        ]
+      },
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 6,
+      "axis": "Y",
+      "physical_id": "FULL_H_4ec8d73571760a6830b8",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:178aac8eaf960980b1db3c79f80cba52ffbdf7402b2f145a4c6446e03183b425",
+      "total_candidate_id": "RMSE:fb879fc218390919b89240b2ee332d6663d128d9b7c10817efe6eb1e1bff8e12",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 57,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 6.4,
+        "q": 64,
+        "R_outer": 566,
+        "K": 2,
+        "delta": 0.1,
+        "s": 36224,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_4ec8d73571760a6830b8"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 562949953421312
+      },
+      "q_grouping": 64,
+      "q_PF": null,
+      "R_outer": 566,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 36224,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 63,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          13
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          13
+        ]
+      },
+      "C_ref": {
+        "numerator": 111815248527103419,
+        "denominator": 20115111656
+      },
+      "origin": "REUSED_PREOBSERVATION_FROZEN_PREDICTION",
+      "reused_prediction": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "predictions",
+          3,
+          "predicted_RZ"
+        ]
+      },
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 7,
+      "axis": "X",
+      "physical_id": "FULL_H_be8dfd9ffb1f60c5e852",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:c1050a72935df46f348615ee846776aa1904bf483bff9d54fb49a25f608a3bb4",
+      "total_candidate_id": "RMSE:16707ce9afb2adef2903e0ba2769e78050aeb98523091e8e2a26c6cd24f8afc3",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 51,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 12.8,
+        "q": 128,
+        "R_outer": 1132,
+        "K": 2,
+        "delta": 0.1,
+        "s": 144896,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_be8dfd9ffb1f60c5e852"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 281474976710656
+      },
+      "q_grouping": 128,
+      "q_PF": null,
+      "R_outer": 1132,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 144896,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 127,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          14
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          14
+        ]
+      },
+      "C_ref": {
+        "numerator": 447581706918866875,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 7,
+      "axis": "Y",
+      "physical_id": "FULL_H_be8dfd9ffb1f60c5e852",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:c1050a72935df46f348615ee846776aa1904bf483bff9d54fb49a25f608a3bb4",
+      "total_candidate_id": "RMSE:16707ce9afb2adef2903e0ba2769e78050aeb98523091e8e2a26c6cd24f8afc3",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 51,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 12.8,
+        "q": 128,
+        "R_outer": 1132,
+        "K": 2,
+        "delta": 0.1,
+        "s": 144896,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_be8dfd9ffb1f60c5e852"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 281474976710656
+      },
+      "q_grouping": 128,
+      "q_PF": null,
+      "R_outer": 1132,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 144896,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 127,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          15
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          15
+        ]
+      },
+      "C_ref": {
+        "numerator": 447581706918866875,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 8,
+      "axis": "X",
+      "physical_id": "FULL_H_029b44216187432fce8b",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:d36a890bca258f8036c3b2866327d9868f7bb46ba6607055e9fd582122241184",
+      "total_candidate_id": "RMSE:63839e51a126368ba4c2bfbe1622145db9efafc33ddcacf6fe274bb402ece522",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 45,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 25.6,
+        "q": 256,
+        "R_outer": 2264,
+        "K": 2,
+        "delta": 0.1,
+        "s": 579584,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_029b44216187432fce8b"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 140737488355328
+      },
+      "q_grouping": 256,
+      "q_PF": null,
+      "R_outer": 2264,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 579584,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 255,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          16
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          16
+        ]
+      },
+      "C_ref": {
+        "numerator": 1790814841697756859,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 8,
+      "axis": "Y",
+      "physical_id": "FULL_H_029b44216187432fce8b",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:d36a890bca258f8036c3b2866327d9868f7bb46ba6607055e9fd582122241184",
+      "total_candidate_id": "RMSE:63839e51a126368ba4c2bfbe1622145db9efafc33ddcacf6fe274bb402ece522",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 45,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 25.6,
+        "q": 256,
+        "R_outer": 2264,
+        "K": 2,
+        "delta": 0.1,
+        "s": 579584,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_029b44216187432fce8b"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 140737488355328
+      },
+      "q_grouping": 256,
+      "q_PF": null,
+      "R_outer": 2264,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 579584,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 255,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          17
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          17
+        ]
+      },
+      "C_ref": {
+        "numerator": 1790814841697756859,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 9,
+      "axis": "X",
+      "physical_id": "FULL_H_a9f91ca150e199d4e792",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:afa67eed761d728cf7edc71a69943c30951ee0ace5b798cb80e56abfebf0c61d",
+      "total_candidate_id": "RMSE:8e05c050e3b859140ecd61e4ec0dfc1ec30ce36e0016f4c2b614a4baf3bdc353",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 38,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 51.2,
+        "q": 512,
+        "R_outer": 4528,
+        "K": 2,
+        "delta": 0.1,
+        "s": 2318336,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_a9f91ca150e199d4e792"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 70368744177664
+      },
+      "q_grouping": 512,
+      "q_PF": null,
+      "R_outer": 4528,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 2318336,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 511,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          18
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          18
+        ]
+      },
+      "C_ref": {
+        "numerator": 7164081983236989115,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 9,
+      "axis": "Y",
+      "physical_id": "FULL_H_a9f91ca150e199d4e792",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:afa67eed761d728cf7edc71a69943c30951ee0ace5b798cb80e56abfebf0c61d",
+      "total_candidate_id": "RMSE:8e05c050e3b859140ecd61e4ec0dfc1ec30ce36e0016f4c2b614a4baf3bdc353",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 38,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 51.2,
+        "q": 512,
+        "R_outer": 4528,
+        "K": 2,
+        "delta": 0.1,
+        "s": 2318336,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_a9f91ca150e199d4e792"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 70368744177664
+      },
+      "q_grouping": 512,
+      "q_PF": null,
+      "R_outer": 4528,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 2318336,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 511,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          19
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          19
+        ]
+      },
+      "C_ref": {
+        "numerator": 7164081983236989115,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 10,
+      "axis": "X",
+      "physical_id": "FULL_H_7325dfd13ab58f356c4e",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:5394eae87037a5025b65bd0f49ec7d15d25183573b06ed9d332a4a3898b5bdde",
+      "total_candidate_id": "RMSE:9b245757559976660f65b29d69299788c713768b8d7a7d4a4e8fc86786248b71",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 32,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 102.4,
+        "q": 1024,
+        "R_outer": 9056,
+        "K": 2,
+        "delta": 0.1,
+        "s": 9273344,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_7325dfd13ab58f356c4e"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 35184372088832
+      },
+      "q_grouping": 1024,
+      "q_PF": null,
+      "R_outer": 9056,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 9273344,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 1023,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          20
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          20
+        ]
+      },
+      "C_ref": {
+        "numerator": 28657819754241262779,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 10,
+      "axis": "Y",
+      "physical_id": "FULL_H_7325dfd13ab58f356c4e",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:5394eae87037a5025b65bd0f49ec7d15d25183573b06ed9d332a4a3898b5bdde",
+      "total_candidate_id": "RMSE:9b245757559976660f65b29d69299788c713768b8d7a7d4a4e8fc86786248b71",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 32,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 102.4,
+        "q": 1024,
+        "R_outer": 9056,
+        "K": 2,
+        "delta": 0.1,
+        "s": 9273344,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_7325dfd13ab58f356c4e"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 35184372088832
+      },
+      "q_grouping": 1024,
+      "q_PF": null,
+      "R_outer": 9056,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 9273344,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 1023,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          21
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          21
+        ]
+      },
+      "C_ref": {
+        "numerator": 28657819754241262779,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 11,
+      "axis": "X",
+      "physical_id": "FULL_H_d2f2b8f35947356dd9fc",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:77b26ea26881a3dfd9cad914eaf3789a6b5ed7d947edb6d37fcee8b825476a2d",
+      "total_candidate_id": "RMSE:67d214cee451289b70e80e2dc060917c5fab7e0ea1810a135cc6a0818692943e",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 26,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 204.8,
+        "q": 2048,
+        "R_outer": 18112,
+        "K": 2,
+        "delta": 0.1,
+        "s": 37093376,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_d2f2b8f35947356dd9fc"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 17592186044416
+      },
+      "q_grouping": 2048,
+      "q_PF": null,
+      "R_outer": 18112,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 37093376,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 2047,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          22
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          22
+        ]
+      },
+      "C_ref": {
+        "numerator": 114634109247953046715,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 11,
+      "axis": "Y",
+      "physical_id": "FULL_H_d2f2b8f35947356dd9fc",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:77b26ea26881a3dfd9cad914eaf3789a6b5ed7d947edb6d37fcee8b825476a2d",
+      "total_candidate_id": "RMSE:67d214cee451289b70e80e2dc060917c5fab7e0ea1810a135cc6a0818692943e",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 26,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 204.8,
+        "q": 2048,
+        "R_outer": 18112,
+        "K": 2,
+        "delta": 0.1,
+        "s": 37093376,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_d2f2b8f35947356dd9fc"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 17592186044416
+      },
+      "q_grouping": 2048,
+      "q_PF": null,
+      "R_outer": 18112,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 37093376,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 2047,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          23
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          23
+        ]
+      },
+      "C_ref": {
+        "numerator": 114634109247953046715,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 12,
+      "axis": "X",
+      "physical_id": "FULL_H_4bcadbdccdb7e96aefb5",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:34b8144262ff61a84c842dd29c8d587e89ffabd51e06861e49d8ecb917f31835",
+      "total_candidate_id": "RMSE:f2d5e03d4ea6fe285764cf99227d2584569b869956743463a9971414f94c7a3d",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 18,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 409.6,
+        "q": 4096,
+        "R_outer": 36223,
+        "K": 2,
+        "delta": 0.1,
+        "s": 148369408,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_4bcadbdccdb7e96aefb5"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 8796093022208
+      },
+      "q_grouping": 4096,
+      "q_PF": null,
+      "R_outer": 36223,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 148369408,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 4095,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          24
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          24
+        ]
+      },
+      "C_ref": {
+        "numerator": 458529285380837469371,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    },
+    {
+      "m": 12,
+      "axis": "Y",
+      "physical_id": "FULL_H_4bcadbdccdb7e96aefb5",
+      "original_configuration_id": "54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e",
+      "total_configuration_id": "265b90dc4a9b81011736664205e23833c420d569e57c923ef45c39eb59489612",
+      "original_candidate_id": "RMSE:34b8144262ff61a84c842dd29c8d587e89ffabd51e06861e49d8ecb917f31835",
+      "total_candidate_id": "RMSE:f2d5e03d4ea6fe285764cf99227d2584569b869956743463a9971414f94c7a3d",
+      "allocation_id": "FULL_H_KAPPA2_TOTAL_Q3_USER_SCALE_3O2_01",
+      "N": 18,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 0,
+        "T": 409.6,
+        "q": 4096,
+        "R_outer": 36223,
+        "K": 2,
+        "delta": 0.1,
+        "s": 148369408,
+        "family": "FULL_H_PURE_RTE",
+        "L_D": 0,
+        "id": "FULL_H_4bcadbdccdb7e96aefb5"
+      },
+      "T_exact": {
+        "numerator": 3602879701896397,
+        "denominator": 8796093022208
+      },
+      "q_grouping": 4096,
+      "q_PF": null,
+      "R_outer": 36223,
+      "features": {
+        "one": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "event_count": {
+          "numerator": 148369408,
+          "denominator": 1
+        },
+        "outer_boundary_count": {
+          "numerator": 4095,
+          "denominator": 1
+        }
+      },
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "admission_source": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          25
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          25
+        ]
+      },
+      "C_ref": {
+        "numerator": 458529285380837469371,
+        "denominator": 20115111656
+      },
+      "origin": "NEW_EXACT_FIXED_COEFFICIENT_EVALUATION",
+      "reused_prediction": null,
+      "gates": {
+        "SOURCE": "PASS",
+        "physical_domain": "PASS",
+        "feature_units": "PASS",
+        "nonnegative": "PASS"
+      },
+      "status": "MODEL_SCENARIO_ONLY",
+      "reason": null,
+      "scientific_model_qualification": false,
+      "qualified_for_candidate": false,
+      "E_C": null,
+      "CI": null
+    }
+  ],
+  "formula": "a + b*qR + c*(q-1)",
+  "target_law": {
+    "model": "ideal_finite_RTE_law",
+    "sampling": "PAIRED_FINITE_TAYLOR_COMPONENT_ORDER_LAW",
+    "source": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/rte.py",
+      "functions": [
+        "finite_rte_distribution"
+      ]
+    },
+    "preparation_source": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "scripts/h46_full_h_pure_rte.py",
+      "functions": [
+        "prepare_full_h",
+        "context",
+        "validate"
+      ],
+      "function": "prepare_full_h"
+    }
+  },
+  "calibration_law": "PCG64_numpy_float64_CDF_saved_cohort",
+  "model_domains": {
+    "X": {
+      "route": "FULL_H_RTE",
+      "axis": "X",
+      "implementation": {
+        "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "native": "H46_LONG_TIME_NATIVE_COMPOSE",
+        "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY",
+        "scalar_application": "ONCE_AT_TOTAL_T"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "qiskit": "1.3.0",
+        "basis": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "P": 0
+      },
+      "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+      "kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "K": 2,
+        "price_law": "PCG64_numpy_float64_CDF_saved_cohort",
+        "preparation": "9b83b96b:prepare_full_h"
+      }
+    },
+    "Y": {
+      "route": "FULL_H_RTE",
+      "axis": "Y",
+      "implementation": {
+        "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "native": "H46_LONG_TIME_NATIVE_COMPOSE",
+        "scalar_quantity": "HAMILTONIAN_CONSTANT_PLUS_EXTRACTED_FULL_H_IDENTITY",
+        "scalar_application": "ONCE_AT_TOTAL_T"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "qiskit": "1.3.0",
+        "basis": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "P": 0
+      },
+      "quantity": "FULL_WRAPPER_MEAN_COMPILED_PRICE",
+      "kind": "DIRECT_COMPILED_FINITE_SAMPLE",
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "K": 2,
+        "price_law": "PCG64_numpy_float64_CDF_saved_cohort",
+        "preparation": "9b83b96b:prepare_full_h"
+      }
+    }
+  },
+  "model_original_status": {
+    "X": "CALIBRATED_UNVALIDATED",
+    "Y": "CALIBRATED_UNVALIDATED"
+  },
+  "new_exact_predictions": 22,
+  "reused_frozen_predictions": 4,
+  "numerical_encoding": "exact_rational",
+  "model_qualified_for_candidate": false,
+  "old_holdout_tolerance": null,
+  "old_holdout_verdict": "NOT_ASSESSED_NO_ADOPTED_TOLERANCE",
+  "new_paths": 0,
+  "builds": 0,
+  "compiles": 0,
+  "fits": 0,
+  "Q3_calls": 0,
+  "law_distance": null,
+  "finite_cohort_uncertainty": null,
+  "shared_covariance": null,
+  "mandatory_stop": true,
+  "wall_seconds": 0.16464245901443064
+}

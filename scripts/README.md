@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_full_h_f1_diagnostic.py`：[F1結果](../docs/research/full_h_f1_model_diagnostic_20261115/REPORT.md)。固定D7特徴量・exact predictを再利用し、26軸gateとm6部分額のみ。run01完了済み、再実行しない。
+
 `admit_full_h_d7_holdout.py`：[D7の保存受入・26軸接続](../docs/research/full_h_d7_holdout_admission_plan_20261115/REPORT.md)。既存Git evidence readerを再利用。保存比較を転記し、予測/平均/誤差/Gを再計算しない。
 
 `freeze_pf_closure_prices.py`：[PF条件付き価格60軸](../docs/research/pf_closure_prices_20261115/REPORT.md)。既存exact predictを再利用。metadata準備/実行を分け、run01は完了済み・再実行不可。fit/compile/N/Gなし。

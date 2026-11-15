@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full-H κ2 F1モデル総額診断](docs/research/full_h_f1_model_diagnostic_20261115/REPORT.md)：承認済みF1を一回実行。元exact係数で22軸評価・保存4予測再利用。24軸は非負、m0-X/Yは負値（約−1224.44 RZ）のため全13round T_ref・両PF基準の反転境界はnull。m6モデル部分額約633,699,606.052 RZは母下界ではない。人工/回帰12 PASS、path/build/compile/fit/Q3=0、正式E[C]/CI/G/winner未評価、公開後STOP。
+
 [Full-H D7 holdout受入・次の固定shot評価案](docs/research/full_h_d7_holdout_admission_plan_20261115/REPORT.md)：D7保存holdoutの6 receipt/4比較を受入、保留0。Bのκ2・1.5倍Q3固定配分を26軸へ接続。DESCRIPTIVE_COMPLETE、許容差null・全26軸E[C]未資格を保持。人工6＋回帰10＝16 PASS。次は0-compile固定shotモデル診断F1を提案、今回予測/fit/新科学計算/N/G0、公開後mandatory STOP。
 
 [決定論PFの条件付き価格60軸確定](docs/research/pf_closure_prices_20261115/REPORT.md)／[HANDOFF_B](docs/research/pf_closure_prices_20261115/HANDOFF_B.md)：利用者採択の閉包条件でexact60価格をe4458cd75へ固定、保留0。既存直接96と非重複、全156軸対応。テスト9 PASS、fit/compile/QPY/N/G0、mandatory STOP。 入口 scripts/freeze_pf_closure_prices.py。
