@@ -1,0 +1,173 @@
+{
+  "schema": "FULL_H_M6_SAVED_EVIDENCE_LOWER_BOUND_V1",
+  "analysis_basis_commit": "a1aa38df46c92e2489095891f6082a5be1a277f5",
+  "status": "RANK_UNDETERMINED",
+  "scope": {
+    "physical_id": "FULL_H_4ec8d73571760a6830b8",
+    "m": 6,
+    "T": 6.4,
+    "q_grouping": 64,
+    "R_outer": 566,
+    "event_positions": 36224,
+    "K": 2,
+    "kappa": {
+      "numerator": 2,
+      "denominator": 1
+    },
+    "N_X": 57,
+    "N_Y": 57,
+    "preparation_hash": "92325333cfe8c5e6c5f9bf69cdfc0ea6538f8eaa66327a3820d390dc2e8aa100",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "law": "B_Q3_IDEAL_FINITE_K2_FULL_H_LAW",
+    "H_state_snapshot": {
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+    },
+    "wrapper": "FULL_CONTROLLED_HADAMARD_WITH_MEASUREMENT",
+    "P": 0,
+    "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1"
+  },
+  "L6_lower": {
+    "numerator": 0,
+    "denominator": 1
+  },
+  "lower_bound_type": "UNIVERSAL_NONNEGATIVITY_ONLY",
+  "proof": "For every legal path and each axis, compiled rz_count is a nonnegative integer. Hence 57*(E_I[C6X]+E_I[C6Y]) >= 0 for any probability law I.",
+  "applicability": "ALL_LEGAL_IDEAL_PATHS; no PCG64 frequency or IID assumption needed for this zero lower bound",
+  "benchmark": {
+    "label": "B0I_P7_S2_16h_over_7",
+    "RZ": 593555352,
+    "source": {
+      "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+      "path": "docs/research/pf6_allround_cost_20261115/RESULT.json",
+      "selector": [
+        "rows",
+        0
+      ]
+    },
+    "conditional": true
+  },
+  "relation": "LOWER_BOUND_BELOW_BENCHMARK",
+  "gap_to_benchmark": {
+    "numerator": 593555352,
+    "denominator": 1
+  },
+  "required_ideal_axis_mean_sum_strictly_greater_than": {
+    "numerator": 197851784,
+    "denominator": 19
+  },
+  "nontrivial_postcompiler_lower_bound": null,
+  "reason": "No all-support postcompiler survivor inequality or applicable one-sided error result found in the checked publications; single saved m6 path/model/holdout is not a mean lower bound.",
+  "old_Full_H_context": {
+    "source": {
+      "commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+      "path": "artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/input_and_validation_summary.json",
+      "selector": [
+        "H4"
+      ]
+    },
+    "preparation_hash": "0e3989e739d0e17a5d7af0fe809bd7c10ee765f09c934fe6ebb1f0e8b5c1046d",
+    "saved_component_count": 368,
+    "H_state_snapshot_match": true,
+    "preparation_hash_matches_target": false,
+    "probability_transfer_admitted": false
+  },
+  "rows": [
+    {
+      "axis": "X",
+      "admission": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          12
+        ]
+      },
+      "receipt_admissions": [
+        [
+          "receipt_admissions",
+          4
+        ]
+      ],
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "X"
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          12
+        ]
+      }
+    },
+    {
+      "axis": "Y",
+      "admission": {
+        "commit": "61f249e6e18d5afab9ba8797bef5e8f9f14e29de",
+        "path": "docs/research/full_h_d7_holdout_admission_plan_20261115/ADMISSION.json",
+        "selector": [
+          "rows",
+          13
+        ]
+      },
+      "receipt_admissions": [
+        [
+          "receipt_admissions",
+          5
+        ]
+      ],
+      "model_source": {
+        "commit": "b5165f11bb63f9eb2a6bfe385ba75d8003b7e724",
+        "path": "docs/research/full_h_d7_model_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": [
+          "models",
+          "Y"
+        ]
+      },
+      "B_join": {
+        "commit": "6c5569c3479013b080b2ba53842585f1d670d3c9",
+        "path": "docs/research/full_h_kappa2_scale3o2_q3_results_20261115/C_RESULT_JOIN.json",
+        "selector": [
+          "candidates",
+          0,
+          "rows",
+          13
+        ]
+      }
+    }
+  ],
+  "F1_reference": {
+    "source": {
+      "commit": "a1aa38df46c92e2489095891f6082a5be1a277f5",
+      "path": "docs/research/full_h_f1_model_diagnostic_20261115/run01/RESULT.json",
+      "selector": [
+        "m6"
+      ]
+    },
+    "recalculated": false,
+    "is_lower_bound": false
+  },
+  "price_provider_record": false,
+  "E_C": null,
+  "CI": null,
+  "formal_G": null,
+  "winner": null,
+  "new_paths": 0,
+  "new_builds": 0,
+  "new_compiles": 0,
+  "new_fits": 0,
+  "Q3_calls": 0,
+  "model_or_holdout_recomputations": 0,
+  "F1_total_remains_null": true,
+  "model_qualification_changed": false,
+  "mandatory_stop": true
+}

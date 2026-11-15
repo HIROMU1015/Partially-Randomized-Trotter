@@ -1,0 +1,62 @@
+{
+  "schema": "PROPOSED_FULL_H_M6_ONE_SIDED_ACQUISITION_V1",
+  "status": "NOT_ADOPTED_NOT_EXECUTED",
+  "preferred_first_task": "Bind exact saved target preparation descriptor and prove a local postcompiler survivor inequality; no new compile yet",
+  "target": {
+    "physical_id": "FULL_H_4ec8d73571760a6830b8",
+    "m": 6,
+    "T": 6.4,
+    "q_grouping": 64,
+    "R_outer": 566,
+    "event_positions": 36224,
+    "K": 2,
+    "kappa": {
+      "numerator": 2,
+      "denominator": 1
+    },
+    "N_X": 57,
+    "N_Y": 57,
+    "preparation_hash": "92325333cfe8c5e6c5f9bf69cdfc0ea6538f8eaa66327a3820d390dc2e8aa100",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "law": "B_Q3_IDEAL_FINITE_K2_FULL_H_LAW",
+    "H_state_snapshot": {
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+    },
+    "wrapper": "FULL_CONTROLLED_HADAMARD_WITH_MEASUREMENT",
+    "P": 0,
+    "lowering": "CONTROLLED_ZZ_CX_CRZ_CX_V1"
+  },
+  "sampling_alternative": {
+    "status": "CONDITIONAL_STATISTICAL_PROPOSAL_NOT_UNCONDITIONAL_CERTIFICATE",
+    "price_confidence_policy_adopted": false,
+    "threshold_H_RZ": 11000000,
+    "alpha_price": {
+      "numerator": 1,
+      "denominator": 20
+    },
+    "required_one_sided_event_law_difference_upper_bound": {
+      "numerator": 1,
+      "denominator": 200
+    },
+    "actual_event_law_difference": null,
+    "event": "A = { C6X + C6Y >= H } on one shared path",
+    "null": "57*E_I[C6X+C6Y] <= benchmark",
+    "null_upper_success_probability": {
+      "numerator": 12431049,
+      "denominator": 13062500
+    },
+    "maximum_new_fresh_paths": 61,
+    "maximum_new_axis_compiles": 122,
+    "all_success_rule": "Conclude above benchmark only after all 61 prospective independent path indicators equal 1, and only after all law/compiler/identity preconditions pass",
+    "exact_size_check": "(12431049/13062500)^61 < 1/20; at n=60 the inequality fails",
+    "minimum_n_for_these_proposed_parameters": 61,
+    "independence_or_conditional_probability_contract": null,
+    "current_PCG64_joint_law_qualified": false,
+    "existing_D7_paths_used_as_new_samples": false,
+    "early_futility": "Any failed path indicator precludes this all-success certificate: save INCONCLUSIVE and STOP; no replacement/retry",
+    "pre_acquisition_gate": "Do not sample or compile until the price-confidence policy, I/Q event law bound and independence/conditional probability assumptions are explicitly resolved and adopted",
+    "new_sampling_or_compile_executed": false
+  }
+}
