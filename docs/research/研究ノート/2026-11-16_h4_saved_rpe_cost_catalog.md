@@ -43,3 +43,9 @@ PR-DF LD9共通V0をQ3適合・価格待ちとして1点追加。保存MSE上界
 LD9 V0の同じ1配分にm6 X/Yの直接有限平均492573 RZ/shotを追記。LD7別cohortの4path平均393837.25との差+98735.75を保存転記、元16軸receiptを照合。LD9のQ3適合・全13round費用nullを維持。未反映LD7 PF予算4配分は全てモデル不適合として追加。PR-DF保存集合内最安はLD7 A_SHAPE・155652932221/126 RZ（約1,235,340,731.912698）のまま。固定18入力47点（適合32/不適合13/価格待ち2）、回帰10 PASS、新科学call0、公開後STOP。
 
 有限cohortと全roundモデルを分け、元SOURCE/receipt・判定への接続を[現行HANDOFF](../h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)へ記載。
+
+## Pauli LD5のQ3適合2配分
+
+PR-Pauli LD5のFULL_PF__B_PRICEとVPをQ3適合点として追加し、Pauliの保存集合内最安をLD5 FULL_PF__B_PRICE・3792207339/7 RZ（541,743,905.57）へ更新。VPは6105690627/7 RZ（872,241,518.14）。LD3同名配分は別候補として維持。最安点のLD3との差−222210893/1155 RZ（−192,390.38）は採用モデル価格規則での数値差。全26軸MODEL・qualified_for_candidate=false。旧47点不変、固定19入力49点（適合34/不適合13/価格待ち2）、回帰11 PASS、新科学call0、公開後STOP。
+
+exact MSE・価格・分割間の数値差のSOURCEは[現行HANDOFF](../h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)に記載。
