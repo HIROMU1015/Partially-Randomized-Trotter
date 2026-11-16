@@ -15,3 +15,13 @@ local metadata構成と公開fixed locatorを区別する。
 独立splitを並列化する場合は別processと個別出力/cacheを使う。
 P0 commit後のHEAD進行でcache再利用を妨げる不具合は、新科学SOURCE確認をleaf内へ移して修正し、
 実materializer factoryとfresh-entry cacheの人工回帰で確認した。
+
+## PR-Pauli較正要求の接続
+
+[候補固有request](../src/trottertracks/pauli_calibration_request.py)は固定driver moduleをprocess内で再利用し、
+既存価格・較正cellをSOURCE付きで探して重複取得を避ける。取得coreは既存C2の段階log・2 path並列・
+event-matrix memo/同値fingerprintを使用する[split driver](../scripts/run_pauli_split_cal.py)へ接続する。
+新requestではspecをJOB/workerへ運び、SPECS限定経路へ戻らないことを人工確認。
+[検収](research/pauli_calibration_request_20261116/REPORT.md)は保存metadata・人工fixtureのみ。
+新H4 pathの速度倍率・新runtimeでの取得性能は未測定。旧sourceのBLAS設定は旧経路だけ保持し、
+新requestはjob環境を継承する。SOURCE/input/gate/STOPは保持する。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+PR-Pauli較正request adapter：[pauli_calibration_request.py](../trottertracks/pauli_calibration_request.py)／[仕様・検証](../../docs/research/pauli_calibration_request_20261116/REPORT.md)。
+
 PR-PauliのB2準備adapterは[trottertracks/pauli_candidate_preparation.py](../trottertracks/pauli_candidate_preparation.py)。[仕様・検証](../../docs/research/pauli_candidate_preparation_20261116/REPORT.md)、[性能手法](../../docs/PERFORMANCE_METHODS.md)。
 
 [Pauli全round completion adapter](../trottertracks/df_head_pauli_tail_completion.py)：P1 providerを変更せず未評価22件のみbatch呼出し、旧4件を元SOURCEのまま統合。[結果](../../docs/research/df_head_pauli_tail_all_round_results_20261114/REPORT.md)／[人工6test](../../tests/check_df_head_pauli_tail_completion.py)。全26row canonical/law保持、新22局所gate・P1回帰6 PASS、sector36 ideal meanとfull256 operator証拠を分離、N/MSE/compile/C/G0・公開後STOP。

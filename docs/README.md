@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli較正要求・検収](research/pauli_calibration_request_20261116/REPORT.md)／[B2・D2 HANDOFF](research/pauli_calibration_request_20261116/HANDOFF.md)。
+
 [PR-Pauli必要時準備](research/pauli_candidate_preparation_20261116/REPORT.md)／[B2 HANDOFF](research/pauli_candidate_preparation_20261116/HANDOFF.md)／[性能手法](PERFORMANCE_METHODS.md)。
 
 [PR-Pauli LD5 信号](research/df_head_pauli_tail_ld5_signals_20261116/REPORT.md)：configuration `4d6e2c9c` の13 round信号を取得（13/13 gate PASS）。偏りはLD3の1.0020倍。[B向けMEAN_HANDOFF](research/df_head_pauli_tail_ld5_signals_20261116/MEAN_HANDOFF.json)／[HANDOFF_B](research/df_head_pauli_tail_ld5_signals_20261116/HANDOFF_B.md)。Q3・compileなし、公開後STOP。

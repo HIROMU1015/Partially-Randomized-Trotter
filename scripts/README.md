@@ -1,5 +1,7 @@
 # scripts 索引
 
+[prepare_pauli_calibration.py](prepare_pauli_calibration.py)：候補固有の価格不足→[split driver](run_pauli_split_cal.py) request。[API/HANDOFF](../docs/research/pauli_calibration_request_20261116/HANDOFF.md)。
+
 [prepare_pauli_candidate.py](prepare_pauli_candidate.py)：B2のPR-Pauli requestを必要時に準備する入口。[HANDOFF](../docs/research/pauli_candidate_preparation_20261116/HANDOFF.md)／[性能手法](../docs/PERFORMANCE_METHODS.md)。
 
 [run_df_head_pauli_tail_completion.py](run_df_head_pauli_tail_completion.py)：P1未評価22件だけをSOURCE7084fbc9aで一回実行済み。[全13round結果](../docs/research/df_head_pauli_tail_all_round_results_20261114/REPORT.md)。既存Pauli provider不変、旧m0/m6非呼出し・first-FAIL STOP、全26rowをSOURCE別統合。人工6＋P1回帰6 PASS、66complex/normalizer22、新reference/full mean/N/価格/G0、公開後STOP。
