@@ -1,5 +1,7 @@
 # B2/C向け：選択された決定論PF入力の補完
 
+技術APIと受入成果の固定SOURCE：`c94f290d5fb1f14e244fb4f87903b58df6d27690`（tree `253420a760d5898f4d3d2aeb64406813fa549f0f`）。本書以降の公開commitが付いても、このSOURCEのcaller/modules/registryを再現点として使える。実科学SOURCEは後述の各stageを用いる。
+
 B2は同じ通常入口 `scripts/run_rpe_method_optimizer.py` を使用する。Dは `scripts/prepare_pf_candidate.py`、`pf_evidence_preparation.py`、`pf_candidate_space.py`、`pf_optimizer_connection.py` を提供する。探索/shot生成/Q3の数値実装は既存B2/Bのものを再利用し、Dで複製しない。
 
 正本は[C_RESULT_JOIN.json](C_RESULT_JOIN.json)、[元17構成の差分](COVERAGE_DELTA.csv)、[round/axis別の固定locator](ORIGINAL17_ASSETS.json)。新Full/S2/2hは13信号、直接10＋条件付き16価格で準備完了、Q3は未取得。既存p7/Y4/32h/5は完成済み保存入力だけを再登録した。
