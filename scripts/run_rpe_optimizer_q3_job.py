@@ -26,6 +26,7 @@ from contextlib import contextmanager, nullcontext
 from copy import deepcopy
 from fractions import Fraction
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -251,7 +252,10 @@ def outcome_from(view, request, case, inputs, r, out, source, supervision=None):
         if supervision is not None:
             gate = process_exit_evidence(request, supervision, out)
             destination='COLLECT_SUPERVISION.json' if request.get('_collect') else 'SUPERVISION.json'
-            write(out / destination, dict(supervision, process_exit_gate=gate))
+            evidence=dict(supervision, process_exit_gate=gate)
+            if (out/destination).exists() and destination=='COLLECT_SUPERVISION.json':
+                if json.loads((out/destination).read_text())!=evidence:raise ValueError('Collection process evidence changed')
+            else:write(out / destination,evidence)
             bad = not gate['all_exit_codes_zero'] or supervision.get('errors') or supervision.get('monitor_errors')
         else:
             bad = True  # An artifact alone cannot prove that its worker exited cleanly.
@@ -336,6 +340,9 @@ def main():
                     saved_supervision=json.loads((out/'SUPERVISION.json').read_text()) if (out/'SUPERVISION.json').exists() else None
                     outcome = outcome_from(view, dict(request,_collect=True), case, inputs, r, out,
                         json.loads((out / 'SOURCE.json').read_text()), saved_supervision)
+                    if (out/'OUTCOME.json').exists():
+                        outcome['original_outcome_sha256']=hashlib.sha256((out/'OUTCOME.json').read_bytes()).hexdigest()
+                        name='COLLECTED_OUTCOME.json'
                     outcome['collection_source']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=Path(__file__).resolve().parents[1],text=True).strip()
             else:
                 write(out / 'SOURCE.json', source);write(out / 'CASE_INPUTS.json', inputs);(out / case['label']).mkdir()
