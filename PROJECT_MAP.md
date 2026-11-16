@@ -509,3 +509,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 [最終報告](docs/research/track_d_cut_h4_q4_completion_20261108/REPORT.md)。提供されたC6a q4_sample00 archive全20 memberのhash一致後、固定ruleを一回適用しcut2を選択。旧raw1/compiled4 PASS・全7価格を適格再利用、新build/compile/post0、選択−中央は全7差0。前回入力STOPは履歴保全、他cut/path・q64は対象外、公開後mandatory STOP。
 
 - PR-Pauli/PR-DFの複数要求PF幅を通常探索へ接続する入口・保存/人工検収: [HANDOFF](docs/research/pr_requested_step_search_20261117/HANDOFF.md)。科学実行は未実施。
+
+## サーバー1：分散Q3の環境と受信準備（2026-11-17）
+
+[REPORT](docs/research/rpe_distributed_q3/server1/REPORT.md) / [実path・中継操作](docs/research/rpe_distributed_q3/server1/READY.md)。共通89f51a4fefを固定して公式mailboxを確認。人工DP10件と両PRのdry-check PASS、人工workerのRPC終了後完了・再照会を部品検査。実2台の同時取得・中央採用・次候補配送・回線切断回収は未検収。新H4科学計算0。

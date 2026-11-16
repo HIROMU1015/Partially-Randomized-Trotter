@@ -373,3 +373,7 @@
 [O5実H4 q4最終結果](research/track_d_cut_h4_q4_completion_20261108/REPORT.md)：原本回収後に中央cut2を選択し追加差0。旧4 P0適格再利用、重複compile0。
 
 - [PR要求PF幅の探索接続（保存metadata・人工検収）](research/pr_requested_step_search_20261117/REPORT.md) / [通常入口と再開](research/pr_requested_step_search_20261117/HANDOFF.md)。
+
+## 分散Q3：サーバー1の環境・人工検査
+
+[REPORT](research/rpe_distributed_q3/server1/REPORT.md) / [READY](research/rpe_distributed_q3/server1/READY.md) / [再現と移植条件](research/rpe_distributed_q3/server1/REPRO.md)。実2台検収の完了とは区別する。

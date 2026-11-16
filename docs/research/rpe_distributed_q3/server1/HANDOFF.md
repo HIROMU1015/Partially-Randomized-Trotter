@@ -40,8 +40,8 @@ git ls-remote origin refs/heads/codex/rpe-distributed-q3-coordinator
 
 |項目|状態|
 |---|---|
-|共通worker固定SHA|公開待ち|
-|worker起動/状態/停止/再開コマンド|共通CLI待ち|
+|共通worker設置SHA|89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce。中央runの最終指定SHAと照合が必要|
+|worker起動/状態/停止/再開コマンド|[READY](READY.md)。公式mailbox方式、同時Q3=1|
 |同一run ID|未発行|
 |サーバー1取得job ID|未取得|
 |サーバー2取得job ID|未確認|
@@ -50,6 +50,12 @@ git ls-remote origin refs/heads/codex/rpe-distributed-q3-coordinator
 |再接続時の再計算0の記録|未検収|
 
 ここまでの成果は環境整備の先行公開。2台実機検収完了ではない。
+
+サーバー1内の専用部品job `SERVER1_MAILBOX_COMPONENT_ONLY_20261117` は完了し、
+再照会時に再計算0・同一結果を確認済み。[証拠](checks/mailbox_component/SUMMARY.json)。
+中央runには属さず、実2台検収の受信jobや中央採用として数えない。
+指定runtimeによる既存人工DP10件とPR-Pauli LD3/LD5・PR-DF dry-checkもPASS。
+[再現手順と移植上の注意](REPRO.md) を参照。
 
 ## 先行検査の更新
 

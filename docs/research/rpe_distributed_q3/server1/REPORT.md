@@ -4,6 +4,46 @@
 固定基点 `5829a7288d28395d2b3e89bfb676c23c690b9ddb`。
 公開branch `codex/rpe-distributed-q3-server1`。
 
+## 最新の到達点
+
+**サーバー1環境・受信口の準備と部品検査は完了。実2台検収はローカル0中継・中央run待ち。**
+新規H4科学計算は0件。以下の先行公開節は当時の観測履歴として残す。
+
+|項目|最新の実測|
+|---|---|
+|共通worker設置SHA|`89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce`、tracked SOURCE未変更|
+|mailbox|公式CLIでserver1・空きslot=1・中央job未受信を確認|
+|PR-Pauli LD3/LD5|Python3.11.0rc1でも既存dry-check PASS。metadata/countのみ|
+|PR-DF|Python3.11.0rc1＋既存互換view pathでdry-check PASS。元のruntime/AST guard不変|
+|人工DP/prefix|既存10 tests全PASS。逐次exact一致、DP workers=2、別processとdisk再利用を含む|
+|worker部品検査|固定人工入力1件がRPC終了後に完了、再照会bundle一致、LAUNCH=1、人工評価開始=1|
+|実2台run/中央採用/次候補配送|未検収。ローカル0・サーバー2の実記録が必要|
+
+実path・起動/状態/停止/再開は [READY](READY.md)、再現方法と移植上の注意は [REPRO](REPRO.md)。
+固定基点からの報告worktreeとは別に、共通workerを専用のsparse detached checkoutへ配置した。
+追加の成果編集worktreeは `.server-preparation/worktrees/rpe-distributed-q3-server1-relay`。
+中央REQUESTのSOURCE manifestはworker HEADと完全一致が必要。
+後続共通commit `71667549e16c77c53c8b5c02cdfcf98b468aacf1` も公開されたが、
+中央HANDOFFはまだ最終実検収SHA・run IDを指定していない。自動で移動branchを採用してjobを開始しない。
+
+人工DP検査は [実行条件](checks/PREFIX_REGRESSION_PY311RC1_COMMAND.json) と
+[rawログ](checks/PREFIX_REGRESSION_PY311RC1.log) に固定。`time -v`の最大RSSは35,264 KiB、
+wallは30.55秒（unittest本体14.670秒）。このRSSは全process treeの同時合計peakではなく、
+CPU高負荷下の小さい人工fixture値である。本番H4の容量・速度・台数効果へ外挿しない。
+同時Q3は1、DP workers/Q3は中央REQUESTで別管理。今回のworker人工入力は1、prefix検査は1/2を使用した。
+H4 metadata dry-checkは入力の存在・count・runtimeを確認するだけで、実H4のQ3実行成功の証拠ではない。
+
+worker部品jobは `SERVER1_MAILBOX_COMPONENT_ONLY_20261117`、attemptは`server1-component-attempt1`。
+専用spool `.../rpe-distributed-q3/spool/server1-mailbox-component-v1` を使い、実2台検収spoolと分離した。
+公式`submit`終了後、mailbox/controller RPCを行わずローカルの状態ファイルだけを観測し、
+`COMPLETED_PENDING_TRANSFER`への遷移を確認。新しいCLI processでstatusを2回取得し、
+同一job ID・同一bundle・JOB_STAGES不変・終了code=0を照合した。
+[SUMMARY](checks/mailbox_component/SUMMARY.json) に固定したとおり、SSH経路・サーバー2中央採用は含まず、ACKも送っていない。
+実回線の転送中断・再接続後の中央回収は引き続き未検収。
+
+通常git pushはHTTPS認証情報がなく失敗。先行公開は接続済みGitHubのtree/commit/ref APIで行い、
+branchの既存headをexpected_shaで照合してfast-forward更新した。認証設定・秘密鍵は変更していない。
+
 ## 先行確認後の追補
 
 先行文書はGitHubアプリ経由で `4b1225e59997780d1c5261e44e8b168d623394a9` に公開した。

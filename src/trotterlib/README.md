@@ -287,3 +287,7 @@ DF部分ランダム化研究と混同しない。
 C7-4の[保存モデル再解析](../trottertracks/track_d_c7_4_models.py)と[人工native比較](../trottertracks/track_d_c7_4_stability.py)は明示runnerだけから利用する。q≥64分子計算を含まず、[技術報告](../../docs/research/track_d_c7_4_model_stability_20261107/REPORT.md)を参照する。
 
 - PR要求PF幅の技術経路は `trottertracks.rpe_schedule_search` / `pr_candidate_completion` / `pr_step_price_registry` を利用する。[両方式のAPI・検収範囲](../../docs/research/pr_requested_step_search_20261117/HANDOFF.md)。
+
+## 分散Q3 workerのホスト準備
+
+共通実装は固定SHA [89f51a4fefのtrottertracks](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce/src/trottertracks) の `rpe_q3_worker` / `rpe_q3_store` / `rpe_q3_coordinator`。検査は同SHAの `tests/test_rpe_q3_worker.py`、`test_rpe_q3_relay.py`。サーバー1は共通コードを別実装せず、[ホスト検査証拠](../../docs/research/rpe_distributed_q3/server1/REPORT.md)と既存 `rpe_dp_prefix_reuse` の人工10件を使用する。

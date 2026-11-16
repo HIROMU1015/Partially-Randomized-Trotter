@@ -840,3 +840,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-09 Track D branch削除完了（認証復旧後）
 
 [完了追補](docs/research/track_d_branch_consolidation_20261109/deletion_completion_20261109/REPORT.md)。固定38本を実削除し全件の不在/履歴保全を確認、元対象7＋統合1を保持。全remoteは今回354→316。元45 tipの履歴と元31 worktreeのHEADは保全、初回STOPは変更なし。新科学計算0、回帰64 PASSの再実行0、公開照合後mandatory STOP。
+
+## 2026-11-17 分散Q3サーバー1（運用基盤）
+
+[REPORT](docs/research/rpe_distributed_q3/server1/REPORT.md)。固定基点5829a7288d、共通worker89f51a4fef。指定Python3.11.0rc1で既存人工DP10件・PR-Pauli LD3/LD5とPR-DF metadata/count/runtime dry-check PASS。公式mailboxの人工1jobはRPC終了後完了・同一ID再照会・LAUNCH1回を確認。ローカル0の実SSH経路、同一runの2台並行取得、サーバー2中央採用、次候補配送、実回線中断後中央回収は未検収。新H4科学計算0、科学結果の資格変更なし。

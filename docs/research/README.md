@@ -93,3 +93,5 @@
 [O5 cut実H4移送preflight](track_d_cut_h4_q4_20261108/REPORT.md)／[入力・再利用状況](track_d_cut_h4_q4_20261108/INPUT_AND_REUSE.md)：C6a q4_sample00原本未取得でcut前STOP。selector変更/実科学実行なし。
 
 [O5 q4移送完了](track_d_cut_h4_q4_completion_20261108/REPORT.md)／[実装・再利用](track_d_cut_h4_q4_completion_20261108/IMPLEMENTATION_AND_REUSE.md)：q4_sample00で中央2、追加depth減0。前回入力STOPを消さず、原本回収後の結果を別runへ保存。
+
+- [分散Q3サーバー1：環境・人工部品検査](rpe_distributed_q3/server1/REPORT.md) / [受信準備と運用](rpe_distributed_q3/server1/READY.md)。実2台中央採用は未検収。

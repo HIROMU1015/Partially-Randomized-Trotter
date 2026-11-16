@@ -343,3 +343,7 @@ artifacts/<validation_name>/
 [C7-4保存再解析runner](run_track_d_c7_4.py)／[結果projection](summarize_track_d_c7_4.py)：保存88 pathのみの探索fit/CV/bootstrapと固定人工6系列/短P0 2本。新H4 sampling/build/compileなし。既存runのmain/guardを変更しない。
 
 - `run_rpe_schedule_search.py` の `search_overrides.requested_widths` は両PR方式の要求幅を通常の準備・価格・V2 shot/Q3へ渡す。保存照合は `check_pr_requested_width_saved.py`。[SOURCEと起動方法](../docs/research/pr_requested_step_search_20261117/HANDOFF.md)。
+
+## 分散Q3のサーバー1受信口
+
+共通SHA [89f51a4fefのworker/relay CLI](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce/scripts) を固定checkoutで使用する。サーバー1独自selector/queueなし。[実path・公式mailbox/relay操作](../docs/research/rpe_distributed_q3/server1/READY.md)、[既存dry-check/人工DPの再現](../docs/research/rpe_distributed_q3/server1/REPRO.md)。
