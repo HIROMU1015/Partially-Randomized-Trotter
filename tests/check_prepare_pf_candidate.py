@@ -45,6 +45,18 @@ class Entry(unittest.TestCase):
         with TemporaryDirectory() as tmp,patch.object(D,'ROOT',ROOT),patch.object(D,'head',return_value='HEAD'),patch.object(M,'duplicate_check',side_effect=duplicate):
             D.preflight(value,Path(tmp))
         self.assertEqual([(x['m'],x['axis']) for x in observed],[(5,'X'),(5,'Y')])
+    def test_explicit_remaining_path_reuses_signal_freeze_and_only_zero_compile_failure(self):
+        from trottertracks import pf_evidence_preparation as E
+        with TemporaryDirectory(dir=ROOT,prefix='.pf_remaining_fixture_') as tmp:
+            out=Path(tmp);frozen={'holdout_round':5};fr={'commit':'ARTIFICIAL','path':'frozen'}
+            for path,value in [('STOP.json',{}),('holdout/run01/RESULT.json',{'context_gate':{'ok':True},'results':[{'cell':{'m':5},'error':'ValueError: Full PF keeps every block and has no tail identity correction'}],'source':{'frozen_model':fr}}),('holdout/run01/PRICES.json',[]),('signal_run01/STATUS.json',{'status':'COMPLETE_THIRTEEN_ROUNDS'}),('FROZEN_MODEL.json',frozen)]:D.write(out/path,value)
+            value={'configuration':{'id':'ARTIFICIAL'},'new_signal_means':8,'direct_prices':[],'prepared':{'pending':{'requests':[{'m':5,'physical_candidate':{'id':'TOY'}}]}}}
+            with patch.object(D,'source_gate',return_value={'commit':'ARTIFICIAL'}),patch.object(D,'head',return_value='ARTIFICIAL'),patch.object(D,'publish'),patch.object(E,'read',return_value=frozen),patch.object(M,'duplicate_check',return_value={'rows':[{'action':'NEW_COMPILE_MISSING_CONFIRMED'}]}),patch.object(D,'signals',side_effect=AssertionError('No duplicate mean calls')),patch.object(D,'acquire',return_value=[]) as acquire,patch.object(D,'finish',return_value={'saved':'prices'}),patch.object(D,'register',return_value={'saved':'registry'}):
+                self.assertEqual(D.finish_saved_inputs(value,out,out/'registry')['status'],'READY_FOR_SAME_OPTIMIZER')
+            self.assertEqual(acquire.call_args.args[2:4],('holdout_remaining',[5]))
+            self.assertEqual(D.load(out/'FROZEN_MODEL.json'),frozen)
+            self.assertTrue((out/'STOP.json').exists())
+
     def test_registry_reuse_does_not_reenter_science(self):
         with TemporaryDirectory(dir=ROOT,prefix='.pf_fixture_') as tmp:
             root=Path(tmp);cid='ARTIFICIAL';registry=root/'registry.json'
