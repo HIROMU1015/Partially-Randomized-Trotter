@@ -17,7 +17,8 @@ from trottertracks.saved_rpe_cost_catalog import Catalog, Reader, report, ref
 
 ROOT=Path(__file__).resolve().parents[1]
 NAMES={'C_RESULT_JOIN.json','C_COMPARISON_JOIN.json','HANDOFF_BC.json','C_HANDOFF.json',
-       'HANDOFF_C.json','SUMMARY.json','PRICE_AND_COST.json','ROUND_RESULT.json','ROUND_RESULT_INTERRUPTED.json'}
+       'HANDOFF_C.json','SUMMARY.json','PRICE_AND_COST.json','ROUND_RESULT.json','ROUND_RESULT_INTERRUPTED.json',
+       'KAPPA_ABS_RESULTS.json','REQUEST.json'}
 
 
 def git(root,*args):
@@ -75,7 +76,7 @@ def update_roadmap(path,stage):
 
 def schema_supported(d,path=''):
     return isinstance(d,dict) and (d.get('schema')in {
-        'RPE_OPTIMIZER_FIXED_RESULTS_FOR_C_V1','B2_INTERRUPTED_SAVED_TOTAL_ADMISSION_V1',
+        'RPE_OPTIMIZER_FIXED_RESULTS_FOR_C_V1','B2_INTERRUPTED_SAVED_TOTAL_ADMISSION_V1','RPE_KAPPA_ABS_RESULTS_V1',
         'PR_DF_LD7_PF_BUDGET_MODEL_COST_Q3_JOIN_FOR_C_V1','PR_DF_LD9_CONFIGURATION_V0_Q3_JOIN_V1',
         'PR_DF_LD7_MODEL_COST_Q3_JOIN_FOR_C_V1','PR_DF_LD1_LD2_LD7_NINE_MODEL_MENU_V1',
         'A_PAULI_LD3_PRICE_HANDOFF_BC_V1','PR_DF_LD_SPLIT_SIX_ENTRY_Q3_COMPARISON_V1',
@@ -86,6 +87,7 @@ def schema_supported(d,path=''):
         'CONDITIONAL_FIXED_ALLOCATION_COST_WITH_MODEL_REFERENCE_PRICES'} or
         d.get('status')=='CONDITIONAL_WIDTH_SPECIFIC_A_SHAPE_COST' or
         d.get('classification')=='DIRECT_FINITE_COHORT_DESCRIPTIVE_PRICE_ONLY' or
+        ('/best_points/'in path and path.endswith('/REQUEST.json')and 'request_id'in d and 'route'in d) or
         ('conditional_minima'in d and 'adopted_evaluation'in d) or
         ('achieved_conditional_cost_RZ'in d and 'rows'in d) or isinstance(d.get('summary'),str) or
         (path.endswith('C_RESULT_JOIN.json')and ('candidates'in d or 'price_terms'in d or
@@ -100,6 +102,7 @@ def discover(reader,heads):
         for line in listing.splitlines():
             meta,path=line.split('\t',1);sha=meta.split()[2]
             parts=PurePosixPath(path).parts
+            if PurePosixPath(path).name=='REQUEST.json' and 'best_points'not in parts:continue
             if PurePosixPath(path).name not in NAMES or any(s in parts for s in ('jobs','load_check')) or any(
                     s.startswith(('artificial','executor_acceptance_','preparation_connection_','generation_acceptance_',
                                   'priority_acceptance_','a_acceptance_','pf_power_stability_artificial'))for s in parts):continue
@@ -129,13 +132,17 @@ def reconcile(reader,inputs,candidates,previous):
             elif PurePosixPath(source['path']).name=='SUMMARY.json' and str(PurePosixPath(source['path']).parent)in joined_parents:
                 record.update(status='REFERENCE_ONLY',reason='Sibling fixed consumer join already loaded; no additional point inferred')
             elif PurePosixPath(source['path']).name.startswith('ROUND_RESULT'):
-                # Current B2 raw is not public; its one hash-matched snapshot
-                # has a normal seed input. Future missing raw remains pending.
-                rr=d.get('methods',{});seed=any(r.get('search_status')in
-                    ('INTERRUPTED_SEARCH_POLICY_CHANGE','COMPLETED_METHOD_FINITE_SEARCH') and
-                    any(v.get('best',{}).get('configuration_id')==r['configuration_id']for v in rr.values())for r in catalog.rows)
-                record.update(status='INTEGRATED'if seed else'PENDING',reason=None if seed else
-                    'ROUND_RESULT requires a fixed C join or exact public OUTCOME/price binding; no job started')
+                # A moving optimizer snapshot can lag the final public selected
+                # points. Configuration identity alone says nothing about N/cost.
+                bests=[m['best']for m in d.get('methods',{}).values()if m.get('best')]
+                matched=bool(bests)and all(any(r['configuration_id']==b['configuration_id']and
+                    r['N_X']==b['N_X']and r['N_Y']==b['N_Y']and r['q3_status']==b['status']and
+                    r['conditional_cost'] is not None and r['conditional_cost']=={
+                        k:b['cost'][k]for k in ('numerator','denominator')}for r in catalog.rows)for b in bests)
+                record.update(status='REFERENCE_ONLY'if matched else'PENDING',reason=
+                    'Exact saved allocation/status/cost already admitted; snapshot is not another point'if matched else
+                    'ROUND_RESULT selected allocation lacks matching public OUTCOME/hash/price binding; configuration-only match rejected. '
+                    'A later KAPPA_ABS_RESULTS/best_points selection is admitted separately; no job started')
             elif d.get('schema')in {'PR_DF_LD1_F0_DIAGNOSTIC_HANDOFF_V1','LD1_F0_RZ_RANGE_HANDOFF_V1',
                     'PR_DF_LD1_M3_SC_PATHS_V1','PR_DF_LD1_M4_DESCRIPTIVE_HANDOFF_V1'} or d.get('status')in {
                     'PHYSICAL_HEFF_INPUT_NOT_COMPILED_PRICE_OR_GLOBAL_RISK','FINITE_SPECTRAL_SCREEN_SHORTLIST_NOT_RPE_QUALIFIED',

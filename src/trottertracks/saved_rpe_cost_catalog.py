@@ -133,6 +133,10 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('schema')=='RPE_KAPPA_ABS_RESULTS_V1':
+            self.kappa_search_results(locator,d);return
+        if '/best_points/'in path and path.endswith('/REQUEST.json'):
+            self.public_optimizer_point(locator,d);return
         if d.get('schema')=='RPE_OPTIMIZER_FIXED_RESULTS_FOR_C_V1':
             self.pf_optimizer_results(locator,d);return
         if d.get('schema')=='B2_INTERRUPTED_SAVED_TOTAL_ADMISSION_V1':
@@ -334,6 +338,115 @@ class Catalog:
             for p in out['price_axes']:
                 observed=next(x for x in r['price_axes']if (x['m'],x['axis'])==(p['m'],p['axis']))
                 p.update(C_ref=deepcopy(observed['unit_price_RZ_exact']),saved_weighted_term=deepcopy(observed['N_times_C_exact']))
+
+    def public_optimizer_point(self,loc,request):
+        """Join a producer's published selected point, never its private jobs.
+
+        REQUEST -> EVALUATIONS hash -> exact OUTCOME/CASE_INPUTS -> saved
+        price coverage. A configuration-only match cannot admit a new vector.
+        """
+        require(request['method']=='PR_PAULI','Unsupported public selected-point method')
+        path=PurePosixPath(loc['path']);base=path.parent.parent.parent
+        require(path.parent.parent.name=='best_points','Public selected point must be in best_points')
+        listing=subprocess.check_output(['git','ls-tree','-r','--name-only',loc['commit'],'--',str(base)],cwd=self.r.root,text=True)
+        evaluations=[]
+        for name in listing.splitlines():
+            p=PurePosixPath(name)
+            if p.name!='EVALUATIONS.json' or p.parent.parent!=base:continue
+            for i,e in enumerate(self.r.document(loc['commit'],name)['rows']):
+                if PurePosixPath(e['job']).name==request['request_id']:
+                    evaluations.append((ref(loc['commit'],name,'rows',i),e))
+        require(len(evaluations)==1,'Missing/ambiguous public EVALUATIONS hash for '+request['request_id'])
+        ev_ref,ev=evaluations[0];run=PurePosixPath(ev_ref['path']).parent
+        raw_ref=ref(loc['commit'],str(path.parent/'OUTCOME.json'))
+        raw=blob(self.r.root,loc['commit'],raw_ref['path']);outcome=self.r.read(raw_ref)
+        require(hashlib.sha256(raw).hexdigest()==ev['outcome_sha256'],'Public selected OUTCOME sha256 mismatch')
+        identity=outcome['identity'];config_id=request['configuration_id']
+        require(config_id==ev['configuration_id']==identity['configuration_id']==request['expected']['configuration_id'] and
+                request['request_id']==outcome['request_id'] and request['route']['kind']==outcome['route'] and
+                request['N_X']==ev['N_X'] and request['N_Y']==ev['N_Y'] and frac(request['cost'])==frac(ev['cost']) and
+                outcome['status']==ev['status'],'Public selected request/evaluation/outcome mismatch')
+        inputs_ref=ref(loc['commit'],str(path.parent/'CASE_INPUTS.json'));inputs=self.r.read(inputs_ref)
+        case=case_for(inputs['cases'],identity['allocation']);conf=self.r.read(case_ref(case))
+        route=request['route'];item=route['configurations'][config_id];packet=self.r.read(item['signal_packet'])['packets'][0]
+        require(conf['id']==config_id==packet['configuration']['id'] and conf==packet['configuration'] and
+                self.r.read(item['configuration'])==conf and case['signal_packet']==item['signal_packet']==identity['signal_packet'] and
+                case['binding_id']==item['binding_id']==identity['binding_id']==request['expected']['binding_id'] and
+                case['total_configuration_id']==item['total_configuration_id']==identity['total_configuration_id']==request['expected']['total_configuration_id'] and
+                identity['contract_matches'] is True and shots(case['allocation'])==shots(identity['allocation'])==dict(X=ev['N_X'],Y=ev['N_Y']),
+                'Public selected configuration/total/binding/signal/allocation mismatch')
+        template=self.r.read(route['contract_template'])
+        require(inputs['adopted_evaluation']==template['adopted_evaluation'] and
+                case['evaluation_target']==identity['evaluation_target'],'Public selected evaluation contract mismatch')
+        rr_ref=ref(loc['commit'],str(run/'ROUND_RESULT.json'));rr=self.r.read(rr_ref)
+        coverage_ref=ref(loc['commit'],str(run/'NEEDS.json'));needs=self.r.read(coverage_ref)
+        found=[(i,c)for i,c in enumerate(needs['candidates'])if c['configuration_id']==config_id]
+        require(len(found)==1,'Missing/ambiguous public price coverage for configuration '+config_id)
+        i,coverage=found[0];coverage_ref['selector']=['candidates',i];quote=coverage['price_quote']
+        require(coverage['ready'] is True and coverage['needs']==[] and coverage['price_status']=='PRICE_RULES_MODEL_COMPLETE' and
+                coverage['signal_source']==item['signal_packet'] and quote['complete'] is True and quote['policy']=='MODEL' and
+                quote['status']=='QUOTED' and quote['registry']=='PAULI_LD%d'%conf['spec']['L_D'] and
+                quote['classifications']=={'MODEL_REFERENCE':26},'Public selected saved price coverage mismatch')
+        override=rr['round'].get('price_rules_overrides',{}).get('registry_file')
+        rules_ref=ref(loc['commit'],override)if override else ref(quote['implementation_source'],'configs/pr_price_rules/h4_saved_rules.json')
+        rules=[r for r in self.r.read(rules_ref)['entries']if r['name']==quote['registry']]
+        require(len(rules)==1,'Public selected registry entry missing/ambiguous')
+        rule=rules[0];base_ref=rule['configuration_source'];original=self.r.read(base_ref)
+        require(all(original['spec'][k]==conf['spec'][k]for k in
+                ('binding','profile','method','L_D','split','formula','delta_pf','h','M','finite_K','law')),
+                'Public selected price model SOURCE/domain mismatch')
+        # Read the published model, without predicting any new unit prices.
+        self.r.read(rule['model_source'])
+        absolute=frac(conf['spec']['kappa']['value']);base_absolute=frac(original['spec']['kappa']['value'])
+        require(frac(coverage['kappa_value'])==absolute,'Public selected price coverage kappa mismatch')
+        require(len(packet['rounds'])==13 and [r['m']for r in packet['rounds']]==list(range(13)),
+                'Public selected signal round coverage mismatch')
+        for r,saved in zip(conf['rounds'],packet['rounds']):
+            physical=saved['mean_record']['physical_context']['physical_candidate']
+            require(saved['candidate_id']==physical['id']==r['candidate']['id'] and saved['identity']==r['identity'] and
+                    saved['law_binding']==r['law_binding'] and physical['q']==r['q_PF'] and physical['R_outer']==r['R_outer'] and
+                    Fraction(physical['T'])==frac(r['T']) and Fraction(physical['delta'])==frac(r['actual_delta_pf']),
+                    'Public selected signal physical round/law mismatch')
+        self.make(dict(case,_source=inputs_ref,label=item['label']+'__'+request['request_id']),identity['allocation'],
+            outcome['status'],request['cost'],outcome['MSE_lower'],outcome['MSE_upper'],inputs['adopted_evaluation'],loc,[])
+        row=self.rows[-1]
+        if row['status']=='PRICE_WAITING':row.update(status='FEASIBLE',status_display=LABELS['FEASIBLE'])
+        vector=shots(identity['allocation'])
+        row.update(q3_source=raw_ref,outcome_sha256=ev['outcome_sha256'],public_evaluation_source=ev_ref,
+            conditional_cost_source=dict(loc,selector=['cost']),search_result_source=rr_ref,
+            search_status=rr['methods']['PR_PAULI']['stop_reason'],search_converged=False,
+            kappa_absolute=enc(absolute),kappa_multiplier=enc(absolute/base_absolute),kappa_base_source=base_ref,
+            kappa_base_absolute=enc(base_absolute),price_binding_level='SAVED_TOTAL_AND_26_MODEL_COVERAGE_SUMMARY',
+            price_axis_unit_values_persisted=False,price_scenario='MODEL_REFERENCE_PRICE_NOT_E_C',qualified_for_candidate=False,CI=None,
+            price_evidence=dict(coverage_source=coverage_ref,summary=quote,rule_source=rules_ref,rule=rule,
+                implementation_source=quote['implementation_source'],original_model=rule['model_source'],per_axis_unit_values=None),
+            model_coverage_axes=[dict(m=r['m'],axis=a,N=vector[a][r['m']],canonical_id=r['candidate']['id'],
+                q=r['q_PF'],R=r['R_outer'],law_binding=deepcopy(r['law_binding']),C_ref=None,
+                classification='MODEL_REFERENCE',extrapolated=True if quote.get('extrapolated_axes')==26 else None,
+                coverage_source=coverage_ref)for r in conf['rounds']for a in ('X','Y')])
+
+    def kappa_search_results(self,loc,d):
+        """Resolve final reported selections to public evidence, not ROUND best."""
+        base=PurePosixPath(loc['path']).parent
+        listing=subprocess.check_output(['git','ls-tree','-r','--name-only',loc['commit'],'--',str(base/'best_points')],cwd=self.r.root,text=True)
+        requests=[ref(loc['commit'],p)for p in listing.splitlines()if p.endswith('/REQUEST.json')]
+        for selector in ('pr_pauli_overall_best','kappa2_best'):
+            selected=d[selector];job=(selected.get('best_job')or selected['job']).split(':')[-1]
+            matches=[r for r in requests if self.r.read(r)['request_id']==job]
+            require(len(matches)==1,'Missing/ambiguous public selected REQUEST for '+selector+':'+job)
+            request_ref=matches[0];request=self.r.read(request_ref)
+            require(frac(request['cost'])==frac(selected.get('best_cost',selected.get('cost'))) and
+                    request['N_X']==selected.get('best_N_X',selected.get('N_X')) and
+                    request['configuration_id']==selected.get('configuration_id',request['configuration_id']),
+                    'Reported selection/request mismatch: '+selector)
+            self.add(request_ref)
+            rows=[r for r in self.rows if r.get('q3_source',{}).get('path')==str(PurePosixPath(request_ref['path']).parent/'OUTCOME.json') and
+                  r.get('q3_source',{}).get('commit')==loc['commit']]
+            require(len(rows)==1,'Selected public point not admitted: '+selector)
+            row=rows[0]
+            if selector=='kappa2_best':require(frac(row['kappa_absolute'])==2,'kappa2 selection is not absolute kappa=2')
+            row.setdefault('reported_selection_sources',[]).append(dict(loc,selector=[selector]))
+            if loc not in row['result_sources']:row['result_sources'].append(loc)
 
     def interrupted_pauli_best(self,loc,d):
         """Saved-total-only admission with explicit missing per-axis unit prices.
@@ -946,8 +1059,16 @@ class Catalog:
         differences={method:{benchmark:enc(frac(item['conditional_cost'])-frac(best[benchmark]['conditional_cost']))
             for benchmark in ('FULL_PF','TRUNCATED_PF') if best[benchmark]['conditional_cost'] is not None}
             for method,item in best.items() if item['conditional_cost'] is not None}
+        kappa2=[r for r in rows if r['method']=='PR_PAULI'and r['status']=='FEASIBLE'and
+                frac(r.get('kappa_absolute',r['kappa']['value']))==2]
+        kappa2_cost=min((frac(r['conditional_cost'])for r in kappa2),default=None)
+        restricted=dict(PR_PAULI_KAPPA_ABSOLUTE_2=dict(method='PR_PAULI',kappa_absolute=enc(2),
+            conditional_cost=enc(kappa2_cost)if kappa2_cost is not None else None,
+            point_ids=[r['point_id']for r in kappa2 if frac(r['conditional_cost'])==kappa2_cost],
+            scope='指定した保存候補集合内・絶対κ=2限定の最安適合点'))
         return dict(schema='SAVED_H4_RPE_CONDITIONAL_COST_CATALOG_V1',comparison=self.comparison,
             adopted_inputs=self.inputs,candidates=rows,method_minima=best,
+            restricted_minima=restricted,
             current_minimum_differences=differences,
             signal_only_history=history,duplicates_removed=len(self.rows)-len(history)-len(rows),new_signal=0,new_sampling=0,new_compile=0,
             new_price_fit=0,new_allocation_search=0,new_Q3=0,formal_G=None,winner=None,mandatory_stop=True)
@@ -971,6 +1092,9 @@ def report(result):
         '|方式|−Full PF RZ|−B0I p7 RZ|','|---|---:|---:|']
     for method,diff in result.get('current_minimum_differences',{}).items():
         lines.append('|'+method+'|'+display(diff.get('FULL_PF'))+'|'+display(diff.get('TRUNCATED_PF'))+'|')
+    for name,item in result.get('restricted_minima',{}).items():
+        lines+=['',name+'：'+display(item['conditional_cost'])+' RZ（絶対κ=2限定。元κの倍率×2や方式全体の最安とは別）。',
+            'point ID：'+', '.join(item['point_ids'])+'。']
     for r in result['candidates']:
         if r.get('search_status')=='INTERRUPTED_SEARCH_POLICY_CHANGE':
             lines+=['',r['label']+'：探索方針変更による途中終了（INTERRUPTED_SEARCH_POLICY_CHANGE）。収束値ではない。',
