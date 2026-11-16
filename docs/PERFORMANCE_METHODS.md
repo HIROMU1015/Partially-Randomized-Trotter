@@ -2,9 +2,11 @@
 
 ## 複数ホストQ3・SSH mailbox中継（2026-11-17）
 
-固定`4ae47cf48`の`rpe_optimizer_concurrent.DistributedExecutor`と`rpe_q3_store/worker/coordinator`は通常schedule入口の同じ候補順/予算/後着READYを保ち、独立Q3をhostの空きslotへ割り当てる。local0 relayはWindows PowerShellから既存qg1/qg2を使い、科学選択は中央だけが行う。SOURCE/route/input/評価契約を照合し、DP並列化とcacheは既存adapter/helperをhost内で使用する。選択routeの固定blob hashをprocess内で再利用し、無関係configurationの入力を要求しない。
+次回固定版`28d976b99`の`rpe_optimizer_concurrent.DistributedExecutor`と`rpe_q3_store/worker/coordinator`は通常schedule入口の同じ候補順/予算/後着READYを保ち、独立Q3をhostの空きslotへ割り当てる。local0 relayはWindows PowerShellから既存qg1/qg2/RomuTailを使い、科学選択は中央だけが行う。SOURCE/route/input/評価契約を照合し、DP並列化とcacheは既存adapter/helperをhost内で使用する。選択routeの固定blob hashをprocess内で再利用し、無関係configurationの入力を要求しない。DP worker数はhostごとに解決し、元の科学REQUEST/job IDを変えない。
 
-模擬1/2/3hostの18人工jobは単一host参照とMSE/判定exact一致、切断・controller再開・完了通知重複でも同attemptは実行1回。人工負荷は分散1host比2.09/2.53倍だがlegacy参照比0.70/0.85倍で、実H4性能は未測定。分散worker経由の人工DPでも逐次exact一致、4 HIT各12round、同host donorと別host cacheを確認。失敗例のlost-poll枠超過、ACCEPT後公開中断での待機解除漏れ、保存結果読取時のhost再利用件数漏れを修正・回帰検証。実機間接続は未検収。[適用条件・証拠・運用](research/rpe_distributed_q3/HANDOFF.md)／[REPORT](research/rpe_distributed_q3/REPORT.md)。
+実2台と実3台の各18人工jobは単一host参照とMSE上下界/判定/方式別最安がexact一致し、完了run再開は追加起動0件。別の実2台fault検収で、relay停止中の完了、controller中断後の同attempt回収、重複完了での予算・採用不変を確認した。最終計算SOURCE`1ffdf610a`の模擬2/3host人工速度は分散1host比2.10/2.89倍だがlegacy参照比0.68/0.94倍で、実H4性能は未測定。人工DPでは逐次exact一致、4 HIT各12round、同host donorと別host cacheを確認。28dの計算8ファイルは1ffとbyte一致。
+
+失敗例のlost-poll枠超過、ACCEPT後公開中断での待機解除漏れ、保存結果読取時の再利用件数漏れ、別processでの長いexact整数JSONの読取を修正・回帰検証した。Windows SSH子processのウィンドウ発生を抑止し、切断時のSSH再試行は最大30秒へbackoffする。結果受領記録は任意の転送計測失敗に隠れないようにした。[適用条件・証拠・運用](research/rpe_distributed_q3/HANDOFF.md)／[REPORT](research/rpe_distributed_q3/REPORT.md)。
 
 ## PR複数幅と共通queue/DP・B0Iの通常入口統合（2026-11-17）
 

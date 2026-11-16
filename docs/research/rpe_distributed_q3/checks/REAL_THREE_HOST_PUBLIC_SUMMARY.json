@@ -1,0 +1,92 @@
+{
+  "all_18_MSE_bounds_status_exact_match": true,
+  "artificial_only": true,
+  "by_host": {
+    "local": {
+      "adopted": 5,
+      "completed": 5,
+      "distinct_reused_jobs": 5,
+      "launched": 5,
+      "requested_dp_workers": [
+        1
+      ],
+      "resolved_dp_workers": [
+        2
+      ],
+      "reuse_events": 8
+    },
+    "server1": {
+      "adopted": 2,
+      "completed": 2,
+      "distinct_reused_jobs": 2,
+      "launched": 2,
+      "requested_dp_workers": [
+        1
+      ],
+      "resolved_dp_workers": [
+        1
+      ],
+      "reuse_events": 2
+    },
+    "server2": {
+      "adopted": 11,
+      "completed": 11,
+      "distinct_reused_jobs": 11,
+      "launched": 11,
+      "requested_dp_workers": [
+        1
+      ],
+      "resolved_dp_workers": [
+        1
+      ],
+      "reuse_events": 16
+    }
+  },
+  "completed_resume_new_launches": 0,
+  "controller_return": {
+    "returncode": 0,
+    "signal": null,
+    "wall_seconds": 258.17995510296896
+  },
+  "controller_start_to_last_exit_seconds": 257.31129932403564,
+  "controller_transfer_seconds": {
+    "count": 18,
+    "scope": "CONTROLLER_RECEIVE_VALIDATION_AND_PERSISTENCE; excludes network round trip",
+    "total": 0.3401128991972655
+  },
+  "evidence": [
+    "REAL_THREE_HOST_ACCEPTANCE.json",
+    "REAL_THREE_HOST_TIMELINE.jsonl"
+  ],
+  "first_launch_to_last_exit_seconds": 22.38433575630188,
+  "method_minima_exact_match": true,
+  "performance_speed_ratio": null,
+  "performance_speed_ratio_reason": "No physical-host speed ratio calculated.",
+  "queue_wait_seconds": {
+    "count": 18,
+    "maximum": 236.32868671417236,
+    "mean": 52.972851925426056,
+    "total": 953.5113346576691
+  },
+  "real_compute_host_count": 3,
+  "relay_disconnect_recovery": "SEPARATE_REAL_FAULT_CASE_PENDING",
+  "relay_host": "Separate Windows local0 via qg2 forwarding, qg1 mailbox and RomuTail mailbox",
+  "resume_returncode": 0,
+  "scientific_H4_calls": 0,
+  "scope": "REAL_THREE_HOSTS_VIA_WINDOWS_LOCAL0_QG1_QG2_ROMUTAIL",
+  "source_sha": "1ffdf610a682a23e2a0a388b570d33d0f353fedc",
+  "status": "PASS",
+  "timing_definition": {
+    "active": "first LAUNCH through last EXIT",
+    "controller_return": "supervisor wall_seconds until controller return, including final shutdown",
+    "controller_to_last_exit": "first EXECUTOR_START through last EXIT including setup/required-host waiting",
+    "queue": "sum of the 18 queue residence intervals; concurrent waits accumulate"
+  },
+  "worker_upload_ACK_seconds": {
+    "count": 17,
+    "missing_count": 1,
+    "missing_reason": "Only 17 of 18 completed upload/ACK timing notifications were collected; final notification missing.",
+    "scope": "WORKER_MEASURED_COMPLETE_UPLOAD_AND_ACK_ROUND_TRIP",
+    "total": 1.165448616271533
+  }
+}

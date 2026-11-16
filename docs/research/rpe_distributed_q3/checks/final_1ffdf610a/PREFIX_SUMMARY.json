@@ -1,0 +1,126 @@
+{
+  "actual_OS_hosts": 1,
+  "all_MSE_lower_upper_status_exact_equal": true,
+  "artificial_DP_Q3_calls_distributed": 8,
+  "artificial_DP_Q3_calls_reference": 8,
+  "artificial_wall_ratio_reference_over_distributed": 0.8260057779591196,
+  "by_host": {
+    "simulated-server1": {
+      "adopted": 4,
+      "assigned": 4,
+      "completed": 4,
+      "launched": 4,
+      "prefix_reuse_HITs": 2
+    },
+    "simulated-server2": {
+      "adopted": 4,
+      "assigned": 4,
+      "completed": 4,
+      "launched": 4,
+      "prefix_reuse_HITs": 2
+    }
+  },
+  "cache_HITs": 4,
+  "distinct_host_cache_directories": [
+    "/tmp/rpe-distributed-1ffdf610a-distributed-prefix/caches/simulated-server2",
+    "/tmp/rpe-distributed-1ffdf610a-distributed-prefix/caches/simulated-server1"
+  ],
+  "distinct_worker_spools": [
+    "/tmp/rpe-distributed-1ffdf610a-distributed-prefix/workers/simulated-server2",
+    "/tmp/rpe-distributed-1ffdf610a-distributed-prefix/workers/simulated-server1"
+  ],
+  "distributed_wall_seconds": 4.027705760207027,
+  "generated_shim_sha256": "1668155fe4a824d9cca14ae28fc15ac114def6b45a57052b26316b998dd05c41",
+  "kernel_view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+  "method_minima_exact_equal": true,
+  "normal_schedule_entry": true,
+  "numerical_scope": "EXISTING_GUARDED_DP_ON_ARTIFICIAL_TABLES_ONLY",
+  "production_source": "1ffdf610a682a23e2a0a388b570d33d0f353fedc",
+  "queue_wait_seconds": {
+    "count": 8,
+    "maximum": 0.06537175178527832,
+    "mean": 0.037612974643707275,
+    "total": 0.3009037971496582
+  },
+  "reference_wall_seconds": 3.3269082298502326,
+  "resume_completed_stage_restarts": 0,
+  "resume_new_launches": 0,
+  "runtime": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+  "same_host_donor_successor_checks": [
+    {
+      "donor_job": "610093c57ae0337aa931",
+      "host_id": "simulated-server2",
+      "reused_rounds": 12,
+      "successor_job": "0cb6d061689f9dfd8e90"
+    },
+    {
+      "donor_job": "0ab3395aae956130280c",
+      "host_id": "simulated-server1",
+      "reused_rounds": 12,
+      "successor_job": "b4aa6fd9fbe1c311c3b3"
+    },
+    {
+      "donor_job": "4f2935eea9e2d5861daa",
+      "host_id": "simulated-server2",
+      "reused_rounds": 12,
+      "successor_job": "d6d074f60a46836a3e00"
+    },
+    {
+      "donor_job": "89eadd079aaf8d4822ba",
+      "host_id": "simulated-server1",
+      "reused_rounds": 12,
+      "successor_job": "8536a8738cd2688ea009"
+    }
+  ],
+  "scientific_H4_calls": 0,
+  "shared_filesystem_required": false,
+  "simulated_worker_host_ids": [
+    "simulated-server2",
+    "simulated-server1"
+  ],
+  "source_fixture": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-1ffdf610a/tests/test_pr_width_prefix_execution.py",
+  "source_fixture_sha256": "c560076db0848bc42acc959d3327fc555a0d10c0667f7e1ddd5edfae80185355",
+  "source_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-1ffdf610a",
+  "status": "PASS",
+  "transfer_seconds": {
+    "count": 8,
+    "scope": "WORKER_MEASURED_COMPLETE_UPLOAD_AND_ACK_ROUND_TRIP",
+    "total": 0.24182918155565858
+  },
+  "worker_commands": [
+    [
+      "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+      "-B",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-1ffdf610a/scripts/run_rpe_q3_worker.py",
+      "--profile",
+      "/tmp/rpe-distributed-1ffdf610a-distributed-prefix/PROFILE_simulated-server2.json",
+      "--controller",
+      "http://127.0.0.1:38659",
+      "--poll-seconds",
+      ".05"
+    ],
+    [
+      "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+      "-B",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-1ffdf610a/scripts/run_rpe_q3_worker.py",
+      "--profile",
+      "/tmp/rpe-distributed-1ffdf610a-distributed-prefix/PROFILE_simulated-server1.json",
+      "--controller",
+      "http://127.0.0.1:38659",
+      "--poll-seconds",
+      ".05"
+    ]
+  ],
+  "worker_process_exits": [
+    {
+      "host_id": "simulated-server2",
+      "returncode": 0,
+      "signal": null
+    },
+    {
+      "host_id": "simulated-server1",
+      "returncode": 0,
+      "signal": null
+    }
+  ]
+}
