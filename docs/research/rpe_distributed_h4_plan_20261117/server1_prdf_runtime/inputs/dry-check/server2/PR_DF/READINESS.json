@@ -1,0 +1,104 @@
+{
+  "status": "REAL_HOST_DRY_CHECK_PASS",
+  "scientific_evaluation_calls": 0,
+  "queue_operations": 0,
+  "output": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/PR_DF",
+  "host": "GPUA100-gleap02",
+  "python": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+  "python_version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+  "host_id": "server2",
+  "job_id": "48494ae31276a64c46ce",
+  "source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "request_sha256": "2906eeafee0f39909ef2db9c169924bcb74d48354995ab443e9231f94c0d2e2a",
+  "input_hashes": [
+    {
+      "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+      "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+      "sha256": "bad7f828ab46757c9ec724e189b038c47edec751b2ac6878041cbacfd742c063"
+    },
+    {
+      "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+      "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json",
+      "sha256": "671d7f0d2e3286111355cdc0d33f7fae7e46da32107be0337a53b0991e5c8fc1"
+    }
+  ],
+  "route": {
+    "kind": "prdf_d2_split",
+    "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+    "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+    "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+    "configuration_ids": "*",
+    "templates": [
+      {
+        "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+        "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+        "inputs_selector": [
+          "inputs"
+        ]
+      },
+      {
+        "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+        "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json"
+      }
+    ],
+    "existing_caller": "D2 005dc8c01 scripts/run_pr_df_ld_split_q3_resume.py (W.supervise) as used by B2 cf19fc36f"
+  },
+  "execution_profile": {
+    "dp_workers": 3,
+    "prefix_checkpoint_rounds": [
+      5,
+      11
+    ],
+    "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache"
+  },
+  "resolved_request_sha256": "ebc230de4f7a134fbc3639dac673ff485fe560b826a214e152b8c61db48dc3fb",
+  "command": [
+    "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+    "-B",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py",
+    "--request",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/PR_DF/RESOLVED_REQUEST.json",
+    "--output",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/PR_DF/adapter",
+    "--mode",
+    "dry-check"
+  ],
+  "adapter_returncode": 0,
+  "adapter_result": {
+    "status": "DRY_CHECK_PASS",
+    "bounds": {
+      "maximum_round_outcomes": 2401,
+      "verification_pairs_upper": 17746553,
+      "transition_pairs_upper": 76885797
+    },
+    "case_label": "48494ae31276a64c46ce",
+    "template": {
+      "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+      "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+      "inputs_selector": [
+        "inputs"
+      ]
+    },
+    "metadata": "PASS",
+    "runtime": {
+      "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+      "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+      "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39",
+      "precedent": {
+        "commit": "738df226232e539cc084dfad2aed2feae82f3073",
+        "path": "docs/research/pauli_ld2_reallocation_q3_results_20261115/TESTS.txt"
+      },
+      "expected_AST_hash": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+      "constructor": "PASS_UNCHANGED_GUARD",
+      "kernel_source": "710aa69b663ef3313439762d25c80a652a03948f",
+      "accelerator_source": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+      "guard_modified": false
+    },
+    "request_id": "48494ae31276a64c46ce",
+    "route": "prdf_d2_split",
+    "mode": "dry-check",
+    "finished_UTC": "2026-11-16T20:02:38.673597+00:00"
+  },
+  "stage": "EXISTING_ADAPTER_DRY_CHECK",
+  "wall_seconds": 2.4536762149073184
+}

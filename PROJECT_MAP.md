@@ -513,3 +513,5 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 [最終報告](docs/research/track_d_cut_h4_q4_completion_20261108/REPORT.md)。提供されたC6a q4_sample00 archive全20 memberのhash一致後、固定ruleを一回適用しcut2を選択。旧raw1/compiled4 PASS・全7価格を適格再利用、新build/compile/post0、選択−中央は全7差0。前回入力STOPは履歴保全、他cut/path・q64は対象外、公開後mandatory STOP。
 
 - PR-Pauli/PR-DFの複数要求PF幅を通常探索へ接続する入口・保存/人工検収: [HANDOFF](docs/research/pr_requested_step_search_20261117/HANDOFF.md)。科学実行は未実施。
+
+- [サーバー1：固定PR-DF実入力runtime readiness（2026-11-17）](docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/REPORT.md) / [引渡し](docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/HANDOFF.md)。計画33928bf80c・REQUEST48494ae31276a64c46ce・SOURCE28d976b99cを既存3.11.0rc1環境でdry-check PASS。共有環境/既存Full PF・B0I profile不変、実Q3/compile/queue0。

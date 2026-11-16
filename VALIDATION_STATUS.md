@@ -840,3 +840,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-09 Track D branch削除完了（認証復旧後）
 
 [完了追補](docs/research/track_d_branch_consolidation_20261109/deletion_completion_20261109/REPORT.md)。固定38本を実削除し全件の不在/履歴保全を確認、元対象7＋統合1を保持。全remoteは今回354→316。元45 tipの履歴と元31 worktreeのHEADは保全、初回STOPは変更なし。新科学計算0、回帰64 PASSの再実行0、公開照合後mandatory STOP。
+
+## 2026-11-17：サーバー1固定PR-DF runtime
+
+[REPORT](docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/REPORT.md)。計画33928bf80c、実REQUEST48494ae31276a64c46ce、SOURCE28d976b99c、route23160cc87、inner27e70efe5を既存Python3.11.0rc1で照合しREAL_HOST_DRY_CHECK_PASS。固定runtime/AST guard不変、共有venvと既存Full PF/B0I profile/receiptの前後snapshot一致。実Q3・compile・本番queue操作0、科学結果の資格変更なし。
