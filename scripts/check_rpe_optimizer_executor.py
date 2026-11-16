@@ -257,6 +257,22 @@ def main():
                         and launches(rv) == l1 and v2b['new_calls'] == 0 and v2b['best']['cost'] == v2['best']['cost'],
                         stop=v2['stop_reason'], jobs=len(l1), best=v2['best'] and v2['best']['cost_display']))
 
+    # V2 with a finite budget and concurrent lookahead (rounds driven in batches): same adopted trajectory as one at a time,
+    # unconsumed lookahead jobs become knowledge of the next batch, and a rerun launches nothing.
+    def v2_round(path, budget, lookahead, concurrent):
+        spec = json.loads(pauli_budget_round(path, 'ART_V2_BATCH', pr, budget, rule='METHOD_MINIMUM_PRIORITY_V2').read_text())
+        spec['search_overrides'].update(lookahead=lookahead);spec['executor'].update(max_concurrent_jobs=concurrent)
+        path.write_text(json.dumps(spec, indent=1) + '\n');return path
+    one = cli(out / 'v2_batch_seq', v2_round(out / 'v2_batch_seq.json', 20, 1, 1))['PR_PAULI']
+    par_file = v2_round(out / 'v2_batch_par.json', 20, 8, 8);par = cli(out / 'v2_batch_par', par_file)['PR_PAULI']
+    seq_path = [(t['configuration_id'], tuple(t['vector']), t['status']) for t in one['trace']]
+    par_path = [(t['configuration_id'], tuple(t['vector']), t['status']) for t in par['trace']]
+    l1 = launches(out / 'v2_batch_par');again = cli(out / 'v2_batch_par', par_file)['PR_PAULI']
+    checks.append(check('v2_finite_budget_lookahead_same_trajectory_and_resume', seq_path == par_path and len(seq_path) == 20
+                        and len(l1) >= len(launches(out / 'v2_batch_seq')) and launches(out / 'v2_batch_par') == l1 and again['new_calls'] == 0,
+                        steps=len(seq_path), jobs=dict(one_at_a_time=len(launches(out / 'v2_batch_seq')), lookahead=len(l1)),
+                        stops=[one['stop_reason'], par['stop_reason']]))
+
     counts = {}
     for k in checks:
         counts[k['status']] = counts.get(k['status'], 0) + 1
