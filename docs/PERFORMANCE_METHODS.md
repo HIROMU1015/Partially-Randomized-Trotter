@@ -55,3 +55,11 @@
   - 採択82件で、V2は72分（逐次なら約198分）。
   - **失敗例**：適合と不適合が交互に出る下降では、先読みの71%（202件）が採択されなかった。
 - 根拠：[kappa_abs_round04/REPORT](research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/REPORT.md) §2・§5、検査 `kappa_abs_round04/checks/KAPPA_SCHEDULE_CHECKS.json`（7/7）。
+
+## PR候補準備の再利用と方式間並行（D2、2026-11-16）
+
+- `pr_candidate_completion.py` は既存V2が選んだ不足候補を方式別に並行準備し、元の同一Executor・累積予算へ戻す。候補順/shot規則は再実装しない。
+- 信号は既存の物理key、価格は既存PriceRules、κ宣言aliasは元B2登録を再利用する。DFの同一分割descriptor・保存cohort/個別axis receiptを共有し、欠測軸だけ取得する。完了Q3は元job keyで再利用する。
+- 実対象でPauli LD4/DF LD6の準備→Q3→C同期と完了runの新規Q3 0件を確認。部分axis再開・後続候補継続は人工検査。速度倍率は測定していない。
+- 失敗例：最初のdescriptor envelope不足は科学call前に停止。DF supervisorの終了receipt形式をPauli形式として読んだ誤りは、保存exitcode/identityをcollectして解決し、再Q3していない。
+- SOURCE・適用条件・検収：[API](research/d_pr_candidates_auto_20261116/API.md)、[REPORT](research/d_pr_candidates_auto_20261116/REPORT.md)。曖昧な稼働jobや失敗leafをretryせず、既存科学STOPを保持する。

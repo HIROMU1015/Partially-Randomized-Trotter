@@ -137,7 +137,8 @@ def round_mode(a, problem, extra):
         g = problem['methods'][m].get('generation') or {}
         if g.get('kappa_points_file') and not Path(g['kappa_points_file']).is_absolute():
             g['kappa_points_file'] = str(ROOT / g['kappa_points_file'])
-    context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation')
+    context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation',
+                        generate_configurations=not (spec.get('candidate_completion')or{}).get('bootstrap_saved_only',False))
     extra = extra + resume_input([Path(x) for x in spec.get('resume_from', [])])
     stored = run / 'ROUND.json'
     if stored.exists():
@@ -148,6 +149,9 @@ def round_mode(a, problem, extra):
     else:
         write(stored, spec)
     routes = merged_routes(problem, spec)
+    if spec.get('candidate_completion'):
+        from trottertracks.pr_candidate_completion import prepare_for_search
+        context,routes,completion = prepare_for_search(ROOT,dict(problem,execution_routes=routes),context,spec,run)
     unlimited = any(v == 'UNLIMITED' for v in spec['max_new_q3_per_method'].values())
     steps = spec.get('max_steps_per_method', 100000 if unlimited else problem['search']['max_steps_per_method'])
     search = dict(problem['search'], max_steps_per_method=steps)  # the finite range ends an UNLIMITED round
@@ -164,6 +168,10 @@ def round_mode(a, problem, extra):
     result = O.optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
                         initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
                         extra_results=extra, science_approved=approved)
+    if spec.get('candidate_completion'):
+        from trottertracks.pr_candidate_completion import continue_selected_preparation,publish_comparison_exports
+        result=continue_selected_preparation(ROOT,dict(problem,search=search),context,spec,run,completion,executor,result,extra)
+        publish_comparison_exports(completion,run,context)
     write(run / 'ROUND_RESULT.json', slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
                                           optimizer_source=head(), wall_seconds=time.perf_counter() - start,
                                           exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)))

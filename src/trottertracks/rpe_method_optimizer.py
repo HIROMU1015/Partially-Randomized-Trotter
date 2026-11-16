@@ -466,6 +466,20 @@ def contract_digest(problem):
     return hashlib.sha256(json.dumps([problem['accuracy'], problem['target']['energy_ha'], problem['rpe']], sort_keys=True).encode()).hexdigest()[:16]
 
 
+def job_outcome(job):
+    """Accept separately collected evidence without overwriting the old STOP."""
+    original=Path(job)/'OUTCOME.json';path=Path(job)/'COLLECTED_OUTCOME.json'
+    old=json.loads(original.read_text())
+    if path.exists() and old.get('status')=='UNKNOWN':
+        new=json.loads(path.read_text())
+        gatefile=Path(job)/'COLLECT_SUPERVISION.json'
+        gate=json.loads(gatefile.read_text()).get('process_exit_gate',{}) if gatefile.exists()else{}
+        if (new.get('mode')=='collect' and new.get('collection_source') and
+            new.get('original_outcome_sha256')==hashlib.sha256(original.read_bytes()).hexdigest() and
+            gate.get('all_exit_codes_zero') is True):return new,path
+    return old,original
+
+
 class Executor:
     """Launch the method's existing Q3 route for one request at a time; resume from the round directory.
 
@@ -680,7 +694,7 @@ class Executor:
 
     def ingest(self, job, proposal, calls):
         """Accept a job outcome only for the same configuration, allocation, total view/binding/signal and contract."""
-        out = json.loads((job / 'OUTCOME.json').read_text());ident = out.get('identity') or {}
+        out, outcome_path = job_outcome(job);ident = out.get('identity') or {}
         nx, ny = split(proposal['vector']);want = self.expected_for(proposal['configuration_id'], self.route(proposal['configuration_id']))
         status, reason = out['status'], out.get('reason')
         if status in (PASS, FAIL, 'INCONCLUSIVE'):

@@ -26,6 +26,7 @@ from contextlib import contextmanager, nullcontext
 from copy import deepcopy
 from fractions import Fraction
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -89,6 +90,8 @@ def common_case(view, request):
     case = dict(label=request['request_id'], configuration=deepcopy(entry['configuration']), signal_packet=deepcopy(entry['signal_packet']),
                 original_configuration_id=request['configuration_id'], evaluation_target=deepcopy(base['evaluation_target']),
                 binding_id=entry['binding_id'], total_configuration_id=entry['total_configuration_id'])
+    if request['route']['kind']=='prdf_d2_common_entry':
+        case['signal_packet_kind']='A_BUNDLE_REQUIRES_EXISTING_K_ACCEPT_SAVED'
     case['allocation'] = dict(allocation_id='RPE_OPT_' + request['request_id'], shot_policy='USER_SUPPLIED',
                               shots=[dict(m=m, N_X=x, N_Y=y) for m, (x, y) in enumerate(zip(request['N_X'], request['N_Y']))])
     inputs = {k: deepcopy(saved[k]) for k in ('kernel_source', 'C_source', 'acceleration') + CONTRACT if k in saved}
@@ -98,7 +101,7 @@ def common_case(view, request):
 
 
 def build(view, request):
-    if request['route']['kind'] == 'pauli_b_common_entry':
+    if request['route']['kind'] in ('pauli_b_common_entry','prdf_d2_common_entry'):
         return common_case(view, request)
     loc, saved, base = template(view, request)
     case = {k: deepcopy(v) for k, v in base.items() if k not in DROP}
@@ -150,7 +153,8 @@ def common_metadata(case):
     """B's LD5 metadata with the handoff generalized to any common-entry MEAN_HANDOFF accepted by B's intake."""
     view, X = COMMON['view'], COMMON['X'];A, T = X.A, X.T
     accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case['signal_packet'])
-    if accepted.get('assembly_implementation_source', {}).get('commit') != A.ENTRY_SOURCE:
+    # B 33e324b declares ENTRY_SOURCES (several accepted A entries); the earlier view bd42dd1e9 declares one ENTRY_SOURCE
+    if accepted.get('assembly_implementation_source', {}).get('commit') not in getattr(A, 'ENTRY_SOURCES', (A.ENTRY_SOURCE,)):
         raise ValueError('Not a common-entry Pauli assembly')
     accepted = accepted['results'][0];original = T._selected(view, case['configuration'])
     if original != accepted['configuration'] or original['id'] != case['original_configuration_id']:
@@ -198,7 +202,7 @@ def route(view, kind):
         return NS(metadata=common_metadata, installed=common_installed, supervise=X.L.M.supervise,
                   validate=pinned_validator(view, X.L.H, X.L.T.Q.a.exact_scalar),
                   bounds=lambda s: X.L.H.finite_bounds([r['N_X'] for r in s]), runtime=None)
-    if kind == 'prdf_d2_split':
+    if kind in ('prdf_d2_split','prdf_d2_common_entry'):
         W = load(view, 'run_pr_df_ld_split_q3_resume', 'scripts/run_pr_df_ld_split_q3_resume.py')
         return NS(metadata=W.U.metadata, installed=lambda out: nullcontext(), supervise=W.supervise,
                   validate=pinned_validator(view, W.U.H, W.U.T.Q.a.exact_scalar), bounds=lambda s: W.Q.bounds(dict(allocation=dict(shots=s))),
@@ -223,16 +227,39 @@ def identity(result, case, inputs):
                 and strip(record.get('deterministic_input', {}).get('options'), src) == inputs.get('options'))
 
 
+def process_exit_evidence(request, supervision, out):
+    """Read the existing route's real exit receipt, without changing its gate.
+
+    DF's fixed supervisor returns joined pool processes directly. Other routes
+    emit PROCESS_EXITS files from their installed context. Neither is inferred
+    from a result status or from process disappearance.
+    """
+    if request['route']['kind'] in ('prdf_d2_split','prdf_d2_common_entry'):
+        exits=supervision.get('process_exitcodes') or []
+        expected=len(supervision.get('receipts') or [])+len(supervision.get('errors') or [])
+        gate=bool(exits) and len(exits)==expected and all(
+            type(c.get('exitcode')) is int and c['exitcode']==0 and c.get('signal') is None for c in exits)
+        return dict(schema='DF_FIXED_SUPERVISOR_JOINED_PROCESSES',recorded_children=len(exits),
+                    expected_cases=expected,all_exit_codes_zero=gate)
+    exits=[c for p in out.glob('PROCESS_EXITS_*.jsonl') for line in p.read_text().splitlines()
+           for c in json.loads(line)['children']]
+    return dict(schema='INSTALLED_ROUTE_PROCESS_EXITS',recorded_children=len(exits),
+                all_exit_codes_zero=bool(exits) and all(c['exitcode']==0 for c in exits))
+
+
 def outcome_from(view, request, case, inputs, r, out, source, supervision=None):
     folder = out / case['label']
     try:
         if supervision is not None:
-            exits = [c for p in out.glob('PROCESS_EXITS_*.jsonl') for line in p.read_text().splitlines() for c in json.loads(line)['children']]
-            gate = bool(exits) and all(c['exitcode'] == 0 for c in exits)
-            write(out / 'SUPERVISION.json', dict(supervision, process_exit_gate=dict(recorded_children=len(exits), all_exit_codes_zero=gate)))
-            bad = not gate or supervision.get('errors') or supervision.get('monitor_errors')
+            gate = process_exit_evidence(request, supervision, out)
+            destination='COLLECT_SUPERVISION.json' if request.get('_collect') else 'SUPERVISION.json'
+            evidence=dict(supervision, process_exit_gate=gate)
+            if (out/destination).exists() and destination=='COLLECT_SUPERVISION.json':
+                if json.loads((out/destination).read_text())!=evidence:raise ValueError('Collection process evidence changed')
+            else:write(out / destination,evidence)
+            bad = not gate['all_exit_codes_zero'] or supervision.get('errors') or supervision.get('monitor_errors')
         else:
-            bad = False
+            bad = True  # An artifact alone cannot prove that its worker exited cleanly.
         result = json.loads((folder / 'RESULT.json').read_text())
         if result.get('status') == 'UNKNOWN':
             raise ValueError('Worker reported UNKNOWN: ' + str(result.get('reason')))
@@ -311,7 +338,13 @@ def main():
                     outcome = dict(status='UNKNOWN', reason='NO_WORKER_ARTIFACT_TO_COLLECT', MSE_lower=None, MSE_upper=None,
                                    scientific_evaluation_calls=0, identity=None)
                 else:
-                    outcome = outcome_from(view, request, case, inputs, r, out, json.loads((out / 'SOURCE.json').read_text()))
+                    saved_supervision=json.loads((out/'SUPERVISION.json').read_text()) if (out/'SUPERVISION.json').exists() else None
+                    outcome = outcome_from(view, dict(request,_collect=True), case, inputs, r, out,
+                        json.loads((out / 'SOURCE.json').read_text()), saved_supervision)
+                    if (out/'OUTCOME.json').exists():
+                        outcome['original_outcome_sha256']=hashlib.sha256((out/'OUTCOME.json').read_bytes()).hexdigest()
+                        name='COLLECTED_OUTCOME.json'
+                    outcome['collection_source']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=Path(__file__).resolve().parents[1],text=True).strip()
             else:
                 write(out / 'SOURCE.json', source);write(out / 'CASE_INPUTS.json', inputs);(out / case['label']).mkdir()
                 stage(out, 'SCIENTIFIC_ROUTE_START')
