@@ -1,45 +1,13 @@
-{
-  "configuration_id": "6bd4be94dfd04318bde1d5f6a9d79cf3093b2975c218e3162dc3283119126bf4",
-  "prefix": 2,
-  "counts": {
-    "REUSE": 1,
-    "REQUEST": 12
-  },
-  "reuse_rounds": [
-    0
-  ],
-  "rebind_rounds": [
-    0
-  ],
-  "request_rounds": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12
-  ],
-  "unsupported_rounds": [],
-  "configuration_reasons": [],
-  "support": {
-    "0": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "1": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "2": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "3": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "4": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "5": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "6": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "7": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "8": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "9": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "10": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "11": "SUPPORTED_VALIDATED_FOR_PAULI",
-    "12": "SUPPORTED_VALIDATED_FOR_PAULI"
-  }
-}
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116/scripts/run_pauli_signal_entry.py", line 255, in <module>
+    main()
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116/scripts/run_pauli_signal_entry.py", line 231, in main
+    Path(args.out).mkdir(parents=True, exist_ok=True); dump(Path(args.out)/'PLAN.json', value)
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116/scripts/run_pauli_signal_entry.py", line 68, in dump
+    with Path(path).open(mode) as f:
+         ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileExistsError: [Errno 17] File exists: 'docs/research/b2_pauli_kappa_signals_20261116/kappa_abs_round02/plans/LD2_S2_delta_h_kappa_abs_2/PLAN.json'
