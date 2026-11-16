@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full PF/S2/2h：通常入口からの実Q3一件・再開](docs/research/d_full_pf_s2_2h_q3_e2e_20261116/REPORT.md)：保存13信号/26価格、自動B_PRICE配分、実Q3一件モデル適合・条件付き956,592,146RZ。同予算再開追加0。新signal/compile/fit0、長q価格保証/正式Gは未認定。
+
 [選択されたPF候補の入力補完とp探索接続](docs/research/d_pf_on_demand_evidence_20261116/REPORT.md)：Full/B0Iの不足信号・価格を通常B2入口へ戻す。p0〜9、p10Full alias、保存T1/T2再利用。FullS2/2hで新8mean＋2compile、Q3新規0。価格は直接と条件付きモデルを区別。
 
 [粗幅Y4の幅固有価格較正とA_SHAPE条件付き費用](docs/research/d_p7_y4_coarse_price_calibration_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10・B0I p7/標準Y4・32h/5/h_RPE=.1/P0除外。新6 compile・元作用gate/C guard受入。m5/q5・m6/q10から軸別307+16539qを凍結し、m9/q80はX/Yとも完全一致。A_SHAPE条件付き費用372,035,410 RZ、直接16/26＋モデル10/26。モデル84.831223%、q>80未検証外挿75.400727%、価格誤差/CI/G/winnerはUNKNOWN/null。信号/Q3/他配分追加0、旧STOP保全・mandatory STOP。

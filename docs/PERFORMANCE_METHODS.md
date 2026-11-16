@@ -1,5 +1,9 @@
 # 並列化・高速化手法の再利用索引
 
+## 通常PF optimizer→元並列Q3 worker（2026-11-16）
+
+[実測・範囲](research/d_full_pf_s2_2h_q3_e2e_20261116/REPORT.md)。D352539の登録済み13mean/26価格を通常CLIから選択し、元PFview cbc471c91の8-worker/batch8 DPを再利用。実Q3一件のworker150.047s、process tree peak3,970,072KiB、87,623,455transition。SCI_SOURCE90a52a211。実worker/pinnedvalidator入口を人工2件で先に通し、旧AST guard不変。再開時は原jobhash不変・追加call0。C generic PF publicationはsource-bound metadata viewだけで、科学再計算を行わない。同条件速度倍率や長q価格保証は未測定。
+
 ## 選択PF候補の保存step・receipt再利用（2026-11-16）
 
 [REPORT](research/d_pf_on_demand_evidence_20261116/REPORT.md)、[入口](../scripts/prepare_pf_candidate.py)。保存36次元stepをprefix/formula/元T*w/qのbinary64列でcacheし、保存13referenceから不足meanだけ取得。FullS2/2hは新8meanで3.210s・新step0、価格は保存較正後に元fast native childのm5 X/Yだけ取得（124.236s、worker peak600,690,688bytes）。同条件速度倍率は未測定。B0I別pには自身のscalar/stepを使う。通常入口→登録→自動seed、保存再開、元p7完成入力の0-science再利用を人工/metadataと有限実対象で確認。Full行のB0I emitter誤選択はcompile前guardで検出し、既存分岐と回帰を修正。旧STOP/信号/凍結を保持し未実行2wrapperだけ別namespaceで完了した。別runのLAUNCHも読取専用で引き継ぎ、template追加で重複Q3を投入しない。
