@@ -1,0 +1,2041 @@
+{
+  "schema": "RPE_OPTIMIZER_ROUND_RESULT_V1",
+  "round": {
+    "round_id": "B0I_PREFIX_BASELINE_BEFORE_CONNECTION",
+    "methods": [
+      "TRUNCATED_PF"
+    ],
+    "initial": "all",
+    "science_approved": false,
+    "max_new_q3_per_method": {
+      "TRUNCATED_PF": 0
+    },
+    "method_overrides": {
+      "TRUNCATED_PF": {
+        "p_values": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_range": [
+          "1/2",
+          "16"
+        ]
+      }
+    },
+    "executor": {
+      "scheduler": "concurrent",
+      "max_concurrent_jobs": 1,
+      "wait_for_running_jobs": false
+    },
+    "pf_completion": {
+      "mode": "plan",
+      "max_candidates": 1
+    }
+  },
+  "methods": {
+    "TRUNCATED_PF": {
+      "method": "TRUNCATED_PF",
+      "best": {
+        "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+        "configuration_id": "dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0",
+        "configuration": {
+          "formula": "4th",
+          "delta_over_h": "32/5"
+        },
+        "labels": [
+          "B0I_P7_Y4_32h_over_5",
+          "B0I_P7_Y4_32h_over_5__A_SHAPE"
+        ],
+        "N_X": [
+          37,
+          34,
+          32,
+          29,
+          27,
+          24,
+          22,
+          19,
+          17,
+          14,
+          11,
+          9,
+          6
+        ],
+        "N_Y": [
+          37,
+          34,
+          32,
+          29,
+          27,
+          24,
+          22,
+          19,
+          17,
+          14,
+          11,
+          9,
+          6
+        ],
+        "MSE_lower": {
+          "lower_30": "207437716579260239052446667910e-35",
+          "upper_30": "207437716579260239052446667911e-35",
+          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+        },
+        "MSE_upper": {
+          "lower_30": "207437716579268595335623784015e-35",
+          "upper_30": "207437716579268595335623784016e-35",
+          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 372035410,
+          "denominator": 1,
+          "display": "372,035,410.00"
+        },
+        "cost_display": "372,035,410.00",
+        "evidence": "SAVED",
+        "point_id": "bfc0c1081b78c5adcb12b43b",
+        "result_sources": [
+          {
+            "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+            "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/C_RESULT_JOIN.json",
+            "selector": []
+          },
+          {
+            "commit": "c7c8c1edd0996ad9ef97629961f67ca508a182f0",
+            "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/PRICE_AND_COST.json",
+            "selector": []
+          }
+        ]
+      },
+      "stop_reason": "NEW_SCIENCE_NOT_APPROVED",
+      "pending_request": {
+        "configuration_id": "dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0",
+        "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+        "vector": [
+          37,
+          37,
+          34,
+          34,
+          32,
+          32,
+          29,
+          29,
+          27,
+          27,
+          24,
+          24,
+          22,
+          22,
+          19,
+          19,
+          17,
+          17,
+          14,
+          14,
+          11,
+          11,
+          9,
+          9,
+          4,
+          4
+        ],
+        "cost": {
+          "numerator": 329694342,
+          "denominator": 1,
+          "display": "329,694,342.00"
+        },
+        "origin": {
+          "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+          "m": 12,
+          "axes": [
+            "X",
+            "Y"
+          ],
+          "d": 2,
+          "base_vector": [
+            37,
+            37,
+            34,
+            34,
+            32,
+            32,
+            29,
+            29,
+            27,
+            27,
+            24,
+            24,
+            22,
+            22,
+            19,
+            19,
+            17,
+            17,
+            14,
+            14,
+            11,
+            11,
+            9,
+            9,
+            6,
+            6
+          ],
+          "base_headroom": "0.816825"
+        },
+        "method": "TRUNCATED_PF",
+        "shot_change": 4,
+        "route": {
+          "kind": "pf_b_pf6",
+          "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+        },
+        "queue": [
+          {
+            "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+            "cost": {
+              "numerator": 329694342,
+              "denominator": 1,
+              "display": "329,694,342.00"
+            },
+            "vector": [
+              37,
+              37,
+              34,
+              34,
+              32,
+              32,
+              29,
+              29,
+              27,
+              27,
+              24,
+              24,
+              22,
+              22,
+              19,
+              19,
+              17,
+              17,
+              14,
+              14,
+              11,
+              11,
+              9,
+              9,
+              4,
+              4
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 12,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 2,
+              "base_vector": [
+                37,
+                37,
+                34,
+                34,
+                32,
+                32,
+                29,
+                29,
+                27,
+                27,
+                24,
+                24,
+                22,
+                22,
+                19,
+                19,
+                17,
+                17,
+                14,
+                14,
+                11,
+                11,
+                9,
+                9,
+                6,
+                6
+              ],
+              "base_headroom": "0.816825"
+            }
+          },
+          {
+            "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+            "cost": {
+              "numerator": 350864262,
+              "denominator": 1,
+              "display": "350,864,262.00"
+            },
+            "vector": [
+              37,
+              37,
+              34,
+              34,
+              32,
+              32,
+              29,
+              29,
+              27,
+              27,
+              24,
+              24,
+              22,
+              22,
+              19,
+              19,
+              17,
+              17,
+              14,
+              14,
+              11,
+              11,
+              7,
+              7,
+              6,
+              6
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 11,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 2,
+              "base_vector": [
+                37,
+                37,
+                34,
+                34,
+                32,
+                32,
+                29,
+                29,
+                27,
+                27,
+                24,
+                24,
+                22,
+                22,
+                19,
+                19,
+                17,
+                17,
+                14,
+                14,
+                11,
+                11,
+                9,
+                9,
+                6,
+                6
+              ],
+              "base_headroom": "0.816825"
+            }
+          },
+          {
+            "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+            "cost": {
+              "numerator": 350864876,
+              "denominator": 1,
+              "display": "350,864,876.00"
+            },
+            "vector": [
+              37,
+              37,
+              34,
+              34,
+              32,
+              32,
+              29,
+              29,
+              27,
+              27,
+              24,
+              24,
+              22,
+              22,
+              19,
+              19,
+              17,
+              17,
+              14,
+              14,
+              11,
+              11,
+              9,
+              9,
+              5,
+              5
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 12,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                37,
+                37,
+                34,
+                34,
+                32,
+                32,
+                29,
+                29,
+                27,
+                27,
+                24,
+                24,
+                22,
+                22,
+                19,
+                19,
+                17,
+                17,
+                14,
+                14,
+                11,
+                11,
+                9,
+                9,
+                6,
+                6
+              ],
+              "base_headroom": "0.816825"
+            }
+          },
+          {
+            "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+            "cost": {
+              "numerator": 361449222,
+              "denominator": 1,
+              "display": "361,449,222.00"
+            },
+            "vector": [
+              37,
+              37,
+              34,
+              34,
+              32,
+              32,
+              29,
+              29,
+              27,
+              27,
+              24,
+              24,
+              22,
+              22,
+              19,
+              19,
+              17,
+              17,
+              14,
+              14,
+              9,
+              9,
+              9,
+              9,
+              6,
+              6
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 10,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 2,
+              "base_vector": [
+                37,
+                37,
+                34,
+                34,
+                32,
+                32,
+                29,
+                29,
+                27,
+                27,
+                24,
+                24,
+                22,
+                22,
+                19,
+                19,
+                17,
+                17,
+                14,
+                14,
+                11,
+                11,
+                9,
+                9,
+                6,
+                6
+              ],
+              "base_headroom": "0.816825"
+            }
+          },
+          {
+            "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+            "cost": {
+              "numerator": 361449836,
+              "denominator": 1,
+              "display": "361,449,836.00"
+            },
+            "vector": [
+              37,
+              37,
+              34,
+              34,
+              32,
+              32,
+              29,
+              29,
+              27,
+              27,
+              24,
+              24,
+              22,
+              22,
+              19,
+              19,
+              17,
+              17,
+              14,
+              14,
+              11,
+              11,
+              8,
+              8,
+              6,
+              6
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 11,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                37,
+                37,
+                34,
+                34,
+                32,
+                32,
+                29,
+                29,
+                27,
+                27,
+                24,
+                24,
+                22,
+                22,
+                19,
+                19,
+                17,
+                17,
+                14,
+                14,
+                11,
+                11,
+                9,
+                9,
+                6,
+                6
+              ],
+              "base_headroom": "0.816825"
+            }
+          }
+        ],
+        "job": null
+      },
+      "trace": [],
+      "held": [],
+      "new_calls": 0,
+      "evaluated_count": 14,
+      "evaluated": [
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            15,
+            15,
+            11,
+            11
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 4178016956897101076031473,
+            "denominator": 5000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 4178016956897101076031659,
+            "denominator": 5000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 593555352,
+            "denominator": 1,
+            "display": "593,555,352.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                3
+              ]
+            }
+          ],
+          "point_id": "c582b8454dcda5e273c0010f",
+          "job": null,
+          "label": "B0I_P7_S2_16h_over_7__BASELINE_N0"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=16/3:defc5e88",
+          "configuration_id": "defc5e88ff4da2e43c99ecdf7157aa41cc47cd32f905f5aa3a1266aa3ecf5416",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            15,
+            15,
+            11,
+            11
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 3941314408611543370051223,
+            "denominator": 5000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 985328602152885842512967,
+            "denominator": 1250000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 765902758,
+            "denominator": 1,
+            "display": "765,902,758.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                4
+              ]
+            }
+          ],
+          "point_id": "d39552496548fddfffac4283",
+          "job": null,
+          "label": "B0I_P7_Y4_16h_over_3__BASELINE_N0"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th(m5_best),delta_over_h=16:424eecbf",
+          "configuration_id": "424eecbfdad0fceeb966884e82521ed1df18a360641695c120f090490ddc62ab",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            15,
+            15,
+            11,
+            11
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 4616158368748513116040767,
+            "denominator": 10000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 4616158368748513116041819,
+            "denominator": 10000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 951282896,
+            "denominator": 1,
+            "display": "951,282,896.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                5
+              ]
+            }
+          ],
+          "point_id": "94f2e0aab76ae63089ef5c39",
+          "job": null,
+          "label": "B0I_P7_M5_16h__BASELINE_N0"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            46,
+            46,
+            43,
+            43,
+            40,
+            40,
+            37,
+            37,
+            33,
+            33,
+            30,
+            30,
+            27,
+            27,
+            24,
+            24,
+            21,
+            21,
+            18,
+            18,
+            14,
+            14,
+            11,
+            11,
+            8,
+            8
+          ],
+          "N_X": [
+            46,
+            43,
+            40,
+            37,
+            33,
+            30,
+            27,
+            24,
+            21,
+            18,
+            14,
+            11,
+            8
+          ],
+          "N_Y": [
+            46,
+            43,
+            40,
+            37,
+            33,
+            30,
+            27,
+            24,
+            21,
+            18,
+            14,
+            11,
+            8
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 9797745654510525900321019,
+            "denominator": 10000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 4898872827255263381094301,
+            "denominator": 5000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 440329944,
+            "denominator": 1,
+            "display": "440,329,944.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                12
+              ]
+            }
+          ],
+          "point_id": "2b65f05bb5870e061459e0ad",
+          "job": null,
+          "label": "B0I_P7_S2_16h_over_7__A_SHAPE"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            13,
+            13,
+            4,
+            4
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            4
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            4
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 753330308125882041792679,
+            "denominator": 500000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 753330308125882041792681,
+            "denominator": 500000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 435481090,
+            "denominator": 1,
+            "display": "435,481,090.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                13
+              ]
+            },
+            {
+              "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "path": "docs/research/p7_s2_m12_one_results_20261116/SUMMARY.json",
+              "selector": [
+                "rows",
+                0
+              ]
+            }
+          ],
+          "point_id": "fa8b39f1299d70413db6ec0f",
+          "job": null,
+          "label": "B0I_P7_S2_16h_over_7__B_PRICE"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=16/3:defc5e88",
+          "configuration_id": "defc5e88ff4da2e43c99ecdf7157aa41cc47cd32f905f5aa3a1266aa3ecf5416",
+          "vector": [
+            37,
+            37,
+            34,
+            34,
+            32,
+            32,
+            29,
+            29,
+            27,
+            27,
+            24,
+            24,
+            22,
+            22,
+            19,
+            19,
+            17,
+            17,
+            14,
+            14,
+            11,
+            11,
+            9,
+            9,
+            6,
+            6
+          ],
+          "N_X": [
+            37,
+            34,
+            32,
+            29,
+            27,
+            24,
+            22,
+            19,
+            17,
+            14,
+            11,
+            9,
+            6
+          ],
+          "N_Y": [
+            37,
+            34,
+            32,
+            29,
+            27,
+            24,
+            22,
+            19,
+            17,
+            14,
+            11,
+            9,
+            6
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1174900865076655516197599,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 73431304067297014746201,
+            "denominator": 62500000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 444807010,
+            "denominator": 1,
+            "display": "444,807,010.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                14
+              ]
+            }
+          ],
+          "point_id": "95f6f41621fb0ac748e91d17",
+          "job": null,
+          "label": "B0I_P7_Y4_16h_over_3__A_SHAPE"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=16/3:defc5e88",
+          "configuration_id": "defc5e88ff4da2e43c99ecdf7157aa41cc47cd32f905f5aa3a1266aa3ecf5416",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            7,
+            7,
+            2,
+            2
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            7,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 24183719819542781792297,
+            "denominator": 10000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 1209185990977139089614853,
+            "denominator": 500000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 435641568,
+            "denominator": 1,
+            "display": "435,641,568.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                15
+              ]
+            }
+          ],
+          "point_id": "c6614091ee9539b0828b9e11",
+          "job": null,
+          "label": "B0I_P7_Y4_16h_over_3__B_PRICE"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th(m5_best),delta_over_h=16:424eecbf",
+          "configuration_id": "424eecbfdad0fceeb966884e82521ed1df18a360641695c120f090490ddc62ab",
+          "vector": [
+            30,
+            30,
+            28,
+            28,
+            26,
+            26,
+            24,
+            24,
+            22,
+            22,
+            19,
+            19,
+            17,
+            17,
+            15,
+            15,
+            13,
+            13,
+            11,
+            11,
+            9,
+            9,
+            7,
+            7,
+            5,
+            5
+          ],
+          "N_X": [
+            30,
+            28,
+            26,
+            24,
+            22,
+            19,
+            17,
+            15,
+            13,
+            11,
+            9,
+            7,
+            5
+          ],
+          "N_Y": [
+            30,
+            28,
+            26,
+            24,
+            22,
+            19,
+            17,
+            15,
+            13,
+            11,
+            9,
+            7,
+            5
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1528257151522752342191913,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 23879017992572353890011,
+            "denominator": 15625000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 445015812,
+            "denominator": 1,
+            "display": "445,015,812.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                16
+              ]
+            }
+          ],
+          "point_id": "1920e71351218bf9857bfa9a",
+          "job": null,
+          "label": "B0I_P7_M5_16h__A_SHAPE"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th(m5_best),delta_over_h=16:424eecbf",
+          "configuration_id": "424eecbfdad0fceeb966884e82521ed1df18a360641695c120f090490ddc62ab",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            13,
+            13,
+            5,
+            5,
+            1,
+            1
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            13,
+            5,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            13,
+            5,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 2449502253027156299746659,
+            "denominator": 500000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 4899004506054312599493319,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 438954868,
+            "denominator": 1,
+            "display": "438,954,868.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                17
+              ]
+            }
+          ],
+          "point_id": "bb26cafe96e54a44f6678323",
+          "job": null,
+          "label": "B0I_P7_M5_16h__B_PRICE"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            13,
+            13,
+            3,
+            3
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            3
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            3
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1951734976728839865403189,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 975867488364419932701597,
+            "denominator": 500000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 415721884,
+            "denominator": 1,
+            "display": "415,721,884.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "path": "docs/research/p7_s2_m12_one_results_20261116/SUMMARY.json",
+              "selector": [
+                "rows",
+                1
+              ]
+            }
+          ],
+          "point_id": "c288407aa7ed95825953d7f8",
+          "job": null,
+          "label": "P7_S2_LOCAL_R12_D1 (m12=3)"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            13,
+            13,
+            2,
+            2
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 2415680996446553638790769,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 2415680996446553638790773,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 395962678,
+            "denominator": 1,
+            "display": "395,962,678.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "path": "docs/research/p7_s2_m12_one_results_20261116/SUMMARY.json",
+              "selector": [
+                "rows",
+                2
+              ]
+            }
+          ],
+          "point_id": "f5b43c8076101f52353bb98f",
+          "job": null,
+          "label": "P7_S2_LOCAL_R12_D2 (m12=2)"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            13,
+            13,
+            1,
+            1
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            1
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            13,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 4725530991854865818396863,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "MSE_upper": {
+            "numerator": 4725530991854865818396867,
+            "denominator": 1000000000000000000000000000000,
+            "display": "0.00"
+          },
+          "cost": {
+            "numerator": 376203472,
+            "denominator": 1,
+            "display": "376,203,472.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "path": "docs/research/p7_s2_m12_one_results_20261116/SUMMARY.json",
+              "selector": [
+                "rows",
+                3
+              ]
+            }
+          ],
+          "point_id": "446aa71b4d19549db393beac",
+          "job": null,
+          "label": "P7_S2_M12_ONE_FIXED (m12=1)"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+          "configuration_id": "dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            7,
+            7,
+            2,
+            2
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            7,
+            2
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "340905813155048130110352636926e-35",
+            "upper_30": "340905813155048130110352636927e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "340905813155048130110353933187e-35",
+            "upper_30": "340905813155048130110353933188e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 365218506,
+            "denominator": 1,
+            "display": "365,218,506.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "8a2f5c46d201b26bdaf2aad7ca556e31083779aa",
+              "path": "docs/research/d_p7_y4_coarse_q3_recovery_20261116/C_RESULT_JOIN.json",
+              "selector": []
+            }
+          ],
+          "point_id": "f8b9eacc15593e4d0a29dcb7",
+          "job": null,
+          "label": "B0I_P7_Y4_32h_over_5"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+          "configuration_id": "dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0",
+          "vector": [
+            37,
+            37,
+            34,
+            34,
+            32,
+            32,
+            29,
+            29,
+            27,
+            27,
+            24,
+            24,
+            22,
+            22,
+            19,
+            19,
+            17,
+            17,
+            14,
+            14,
+            11,
+            11,
+            9,
+            9,
+            6,
+            6
+          ],
+          "N_X": [
+            37,
+            34,
+            32,
+            29,
+            27,
+            24,
+            22,
+            19,
+            17,
+            14,
+            11,
+            9,
+            6
+          ],
+          "N_Y": [
+            37,
+            34,
+            32,
+            29,
+            27,
+            24,
+            22,
+            19,
+            17,
+            14,
+            11,
+            9,
+            6
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "207437716579260239052446667910e-35",
+            "upper_30": "207437716579260239052446667911e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "207437716579268595335623784015e-35",
+            "upper_30": "207437716579268595335623784016e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 372035410,
+            "denominator": 1,
+            "display": "372,035,410.00"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+              "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/C_RESULT_JOIN.json",
+              "selector": []
+            },
+            {
+              "commit": "c7c8c1edd0996ad9ef97629961f67ca508a182f0",
+              "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/PRICE_AND_COST.json",
+              "selector": []
+            }
+          ],
+          "point_id": "bfc0c1081b78c5adcb12b43b",
+          "job": null,
+          "label": "B0I_P7_Y4_32h_over_5__A_SHAPE"
+        }
+      ],
+      "not_ready_candidates": [
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=1:e6754564",
+          "configuration": {
+            "formula": "2nd",
+            "delta_over_h": "1"
+          },
+          "configuration_id": "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "needs": [
+            "PRICE_26AXIS"
+          ],
+          "price_status": "NO_SAVED_26_AXIS_PRICE",
+          "price_quote": null,
+          "price_needs": null,
+          "signal_source": {
+            "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+            "path": "docs/research/truncated_fullh_signal_results_20261114/run01/B0I_P7_S2_D01/B_SIGNAL_INPUT.json"
+          },
+          "reusable": null,
+          "next": "Q3 of a generated/decremented allocation after the listed items exist"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=2:155a3a2e",
+          "configuration": {
+            "formula": "2nd",
+            "delta_over_h": "2"
+          },
+          "configuration_id": "155a3a2e86ff9cde5ab580379050c915bbfee40edb2cd70ab33c1773363a4d14",
+          "needs": [
+            "SIGNAL_13ROUND_PACKET",
+            "PRICE_26AXIS"
+          ],
+          "price_status": "NO_SAVED_26_AXIS_PRICE",
+          "price_quote": null,
+          "price_needs": null,
+          "signal_source": null,
+          "reusable": null,
+          "next": "Q3 of a generated/decremented allocation after the listed items exist"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=8/3:5576418d",
+          "configuration": {
+            "formula": "2nd",
+            "delta_over_h": "8/3"
+          },
+          "configuration_id": "5576418d409122669b849d1a6900cd912ad5d39d9911563ae4db834967098cf9",
+          "needs": [
+            "SIGNAL_13ROUND_PACKET",
+            "PRICE_26AXIS"
+          ],
+          "price_status": "NO_SAVED_26_AXIS_PRICE",
+          "price_quote": null,
+          "price_needs": null,
+          "signal_source": null,
+          "reusable": null,
+          "next": "Q3 of a generated/decremented allocation after the listed items exist"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=4:05d246cb",
+          "configuration": {
+            "formula": "4th",
+            "delta_over_h": "4"
+          },
+          "configuration_id": "05d246cb4c6a75fb634a4821484f41e61fefc514b5acae9d89eaf01b7c6b96d5",
+          "needs": [
+            "SIGNAL_13ROUND_PACKET",
+            "PRICE_26AXIS"
+          ],
+          "price_status": "NO_SAVED_26_AXIS_PRICE",
+          "price_quote": null,
+          "price_needs": null,
+          "signal_source": null,
+          "reusable": null,
+          "next": "Q3 of a generated/decremented allocation after the listed items exist"
+        },
+        {
+          "candidate": "TRUNCATED_PF:formula=4th(m5_best),delta_over_h=8:a62d4ab0",
+          "configuration": {
+            "formula": "4th(m5_best)",
+            "delta_over_h": "8"
+          },
+          "configuration_id": "a62d4ab0ead5c5891774f9c07d82a7f1a01bbf9f824ba14626e0bd0e0e7003c0",
+          "needs": [
+            "SIGNAL_13ROUND_PACKET",
+            "PRICE_26AXIS"
+          ],
+          "price_status": "NO_SAVED_26_AXIS_PRICE",
+          "price_quote": null,
+          "price_needs": null,
+          "signal_source": null,
+          "reusable": null,
+          "next": "Q3 of a generated/decremented allocation after the listed items exist"
+        }
+      ],
+      "ready_candidates": [
+        "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+        "TRUNCATED_PF:formula=4th,delta_over_h=16/3:defc5e88",
+        "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+        "TRUNCATED_PF:formula=4th(m5_best),delta_over_h=16:424eecbf"
+      ],
+      "search_range": {
+        "candidates": [
+          "TRUNCATED_PF:formula=2nd,delta_over_h=1:e6754564",
+          "TRUNCATED_PF:formula=2nd,delta_over_h=2:155a3a2e",
+          "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+          "TRUNCATED_PF:formula=2nd,delta_over_h=8/3:5576418d",
+          "TRUNCATED_PF:formula=4th,delta_over_h=4:05d246cb",
+          "TRUNCATED_PF:formula=4th,delta_over_h=16/3:defc5e88",
+          "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+          "TRUNCATED_PF:formula=4th(m5_best),delta_over_h=8:a62d4ab0",
+          "TRUNCATED_PF:formula=4th(m5_best),delta_over_h=16:424eecbf"
+        ],
+        "rule": "FINITE_LOCAL_DESCENT_V1"
+      },
+      "resume_records": [],
+      "by_configuration": null,
+      "incumbent_scope": "METHOD",
+      "prior_rounds": null,
+      "budget": {
+        "max_new_q3": 0,
+        "science_approved": false,
+        "spent_before": 0,
+        "new_calls": 0
+      },
+      "generation": null,
+      "parameter_assessment": null,
+      "adopted_new_calls": 0,
+      "executor_metrics": {
+        "submitted": 0,
+        "queued_cancelled": 0,
+        "launched": 0,
+        "finished": 0,
+        "adopted": 0,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 0,
+        "sampled_owned_tree_peak_RSS_KiB": 0,
+        "completed_not_adopted": 0,
+        "by_method": {},
+        "max_concurrent_jobs": 1,
+        "dp_workers": null,
+        "new_real_route_launches": 0,
+        "executor_failure": null,
+        "elapsed_seconds": 0.0,
+        "busy_job_seconds": 0.0,
+        "idle_slot_seconds_no_queued_candidate": 0.0,
+        "idle_slot_seconds_waiting_selected_result": 0.0,
+        "idle_slot_seconds_no_queued_or_selected_result": 0.0,
+        "idle_slot_seconds_with_queued_candidate": 0.0,
+        "slot_utilization": 0,
+        "speculative_adoption_fraction": null,
+        "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+        "method_launched": 0,
+        "method_adopted": 0
+      }
+    }
+  },
+  "optimizer_source": "e839b0d3f5469c21f5944aec5d978f91d193efc8",
+  "wall_seconds": 6.3371551488526165,
+  "exact_bounds": "MSE bounds with more than 60 digits: outward 30-digit intervals; exact in job OUTCOME.json / C"
+}

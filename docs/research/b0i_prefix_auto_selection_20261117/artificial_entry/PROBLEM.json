@@ -1,0 +1,165 @@
+{
+  "schema": "ARTIFICIAL_PF_AUTO_ENTRY_PROBLEM",
+  "artificial_only": true,
+  "methods": {
+    "TRUNCATED_PF": {
+      "family": "PF",
+      "index_method": "B0I_P7",
+      "formulas": [
+        "2nd",
+        "4th"
+      ],
+      "delta_over_h_range": [
+        "1",
+        "2"
+      ],
+      "caps": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "p_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    "FULL_PF": {
+      "family": "PF",
+      "index_method": "FULL_PF",
+      "formulas": [
+        "2nd",
+        "4th"
+      ],
+      "delta_over_h_range": [
+        "1",
+        "2"
+      ],
+      "caps": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "p_values": [
+        10
+      ]
+    }
+  },
+  "accuracy": {
+    "epsilon_E_decimal": ".1",
+    "scope": "ARTIFICIAL_ONLY"
+  },
+  "target": {
+    "energy_ha": 0
+  },
+  "rpe": {
+    "M": 12
+  },
+  "evidence": {
+    "pf_candidate_index": {
+      "commit": "ARTIFICIAL",
+      "path": "INDEX.json"
+    }
+  },
+  "generator": {
+    "commit": "e094b2d60c5c4468711dea244fa2f91fb587ac12",
+    "path": "scripts/run_pauli_ld2_reallocation_q3_fixed.py",
+    "function": "generate"
+  },
+  "execution_routes": {
+    "TRUNCATED_PF": [
+      {
+        "kind": "artificial",
+        "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+        "configuration_ids": "*",
+        "view_commit": null,
+        "artificial": {
+          "weights": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "scale": "1/10000",
+          "tau": "1/100"
+        }
+      }
+    ],
+    "FULL_PF": [
+      {
+        "kind": "artificial",
+        "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+        "configuration_ids": "*",
+        "view_commit": null,
+        "artificial": {
+          "weights": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "scale": "1/10000",
+          "tau": "1/100"
+        }
+      }
+    ]
+  },
+  "search": {
+    "decrement_steps": [
+      1
+    ],
+    "large_step_headroom": "9/10",
+    "seed_rules": [
+      "B_PRICE",
+      "A_SHAPE"
+    ],
+    "max_steps_per_method": 1,
+    "max_new_q3_per_method": 0
+  }
+}

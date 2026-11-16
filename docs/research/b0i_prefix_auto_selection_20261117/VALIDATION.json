@@ -1,0 +1,81 @@
+{
+  "scope": "SAVED_METADATA_AND_ARTIFICIAL_ONLY",
+  "checks": [
+    {
+      "name": "PF bridge, concurrent/entry/throughput, selector",
+      "count": 50,
+      "status": "PASS",
+      "seconds": 15.008,
+      "log": "REGRESSION_PASS.log"
+    },
+    {
+      "name": "PF canonical prefix/target/scope",
+      "count": 8,
+      "status": "PASS",
+      "seconds": 14.769,
+      "performed_by": "pf_prefix_assets (author checks)",
+      "command": "PYTHONPATH=src python -B tests/test_pf_candidate_space.py"
+    },
+    {
+      "name": "Existing shot/catalog technical and saved-metadata checks",
+      "count": 21,
+      "status": "PASS",
+      "log": "EXISTING_OPTIMIZER.log",
+      "note": "21 pass; combined 22nd prefix import failed due namespace/view, separately fixed by original isolated command below"
+    },
+    {
+      "name": "Fixed DP prefix/cache artificial regression",
+      "count": 10,
+      "status": "PASS",
+      "seconds": 2.691,
+      "log": "PREFIX_CACHE.log",
+      "command": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python -B tests/test_rpe_dp_prefix_reuse.py"
+    },
+    {
+      "name": "Normal CLI automatic PF artificial method comparison",
+      "count": 1,
+      "scheduler_subcases": [
+        "legacy",
+        "concurrent"
+      ],
+      "status": "PASS",
+      "seconds": 33.039,
+      "log": "artificial_comparison/TESTS_FINAL.log",
+      "performed_by": "b2_connection_audit (author checks)",
+      "command": "PYTHONPATH=src python -B tests/test_pf_auto_entry.py"
+    }
+  ],
+  "passed_test_methods": 90,
+  "saved_plan": {
+    "external_normal_cli": true,
+    "method": "TRUNCATED_PF",
+    "candidate_count": 90,
+    "unseen_p_selected": true,
+    "provider_mode": "plan",
+    "resume_preserves_selection_request_response_plan": true,
+    "source": "SAVED_PLAN_SUMMARY.json"
+  },
+  "artificial_proof": {
+    "path": "artificial_comparison/CHECKS.json",
+    "normal_cli_main_with_fixture_initial_facts_and_catalog": true,
+    "provider_subprocess": true,
+    "ordinary_fixed_shot_generator": true,
+    "artificial_Q3_per_fixture_run": 1,
+    "new_real_Q3": 0
+  },
+  "new_H4_scientific_calls": {
+    "signal": 0,
+    "sampling": 0,
+    "circuit_build": 0,
+    "compile": 0,
+    "price_fit": 0,
+    "Q3": 0
+  },
+  "initial_failures_preserved": [
+    "BASELINE.log",
+    "REGRESSION.log",
+    "REGRESSION_FINAL.log",
+    "EXISTING_OPTIMIZER.log"
+  ],
+  "mandatory_stop": true
+}

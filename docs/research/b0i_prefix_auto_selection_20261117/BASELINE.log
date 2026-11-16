@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b0i-p-baseline-e839-20261117/scripts/run_rpe_method_optimizer.py", line 515, in <module>
+    main()
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b0i-p-baseline-e839-20261117/scripts/run_rpe_method_optimizer.py", line 423, in main
+    return round_mode(a, problem, extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b0i-p-baseline-e839-20261117/scripts/run_rpe_method_optimizer.py", line 157, in round_mode
+    context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation',
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b0i-p-baseline-e839-20261117/src/trottertracks/rpe_method_optimizer.py", line 1280, in prepare
+    reader, inputs, catalog = load_catalog(root, problem)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b0i-p-baseline-e839-20261117/src/trottertracks/rpe_method_optimizer.py", line 144, in load_catalog
+    catalog.add(dict(item, commit=reader.commit(item['commit'])))
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b0i-p-baseline-e839-20261117/src/trottertracks/saved_rpe_cost_catalog.py", line 190, in add
+    raise ValueError('Unsupported saved index schema: '+commit+':'+path)
+ValueError: Unsupported saved index schema: 438d6c9a43351d45c31921a5676359dbc2c80b32:docs/research/h4_pf_optimizer_search_20261116/C_RESULT_JOIN.json

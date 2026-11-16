@@ -1,0 +1,40 @@
+test_budget_launch_reuse_and_identity (tests.check_rpe_method_optimizer.ExecutorJobs.test_budget_launch_reuse_and_identity) ... ok
+test_running_job_is_not_launched_twice_and_dead_job_is_reported (tests.check_rpe_method_optimizer.ExecutorJobs.test_running_job_is_not_launched_twice_and_dead_job_is_reported) ... ok
+test_unknown_is_distinct_from_model_failure (tests.check_rpe_method_optimizer.ExecutorJobs.test_unknown_is_distinct_from_model_failure) ... ok
+test_hamiltonian_facts_from_receipt_and_mismatch (tests.check_rpe_method_optimizer.Inputs.test_hamiltonian_facts_from_receipt_and_mismatch) ... ok
+test_prices_must_reproduce_saved_totals (tests.check_rpe_method_optimizer.Inputs.test_prices_must_reproduce_saved_totals) ... ok
+test_minima_ld_enumeration_and_replay (tests.check_rpe_method_optimizer.SavedEvidence.test_minima_ld_enumeration_and_replay) ... ok
+test_budget_checked_before_backend_call (tests.check_rpe_method_optimizer.Search.test_budget_checked_before_backend_call) ... ok
+test_decrements_headroom_gate_strict_cheaper_and_order (tests.check_rpe_method_optimizer.Search.test_decrements_headroom_gate_strict_cheaper_and_order) ... ok
+test_ingest_changes_next_request (tests.check_rpe_method_optimizer.Search.test_ingest_changes_next_request) ... ok
+test_loop_continues_after_improvement_and_stops_by_rule (tests.check_rpe_method_optimizer.Search.test_loop_continues_after_improvement_and_stops_by_rule) ... ok
+test_no_monotonicity_pruning_and_axis_split_when_prices_differ (tests.check_rpe_method_optimizer.Search.test_no_monotonicity_pruning_and_axis_split_when_prices_differ) ... ok
+test_not_ready_candidates_are_never_searched (tests.check_rpe_method_optimizer.Search.test_not_ready_candidates_are_never_searched) ... ok
+test_resume_records_written_by_a_run_are_valid_ingest_input (tests.check_rpe_method_optimizer.Search.test_resume_records_written_by_a_run_are_valid_ingest_input) ... ok
+test_round_key_ignores_kappa_but_not_schedule (tests.check_rpe_method_optimizer.Search.test_round_key_ignores_kappa_but_not_schedule) ... ok
+test_saved_answers_cost_no_calls_and_missing_answer_becomes_request (tests.check_rpe_method_optimizer.Search.test_saved_answers_cost_no_calls_and_missing_answer_becomes_request) ... ok
+test_seed_for_configuration_without_feasible_point (tests.check_rpe_method_optimizer.Search.test_seed_for_configuration_without_feasible_point) ... ok
+test_stop_semantics_unlimited_unapproved_and_inputs_missing (tests.check_rpe_method_optimizer.Search.test_stop_semantics_unlimited_unapproved_and_inputs_missing) ... ok
+test_unknown_stops_and_inconclusive_is_held (tests.check_rpe_method_optimizer.Search.test_unknown_stops_and_inconclusive_is_held) ... ok
+test_exact_cost_order_ties_and_duplicate_conflicts (tests.check_saved_rpe_cost_catalog.Technical.test_exact_cost_order_ties_and_duplicate_conflicts) ... ok
+test_missing_q3_and_missing_price_and_saved_failure_are_distinct (tests.check_saved_rpe_cost_catalog.Technical.test_missing_q3_and_missing_price_and_saved_failure_are_distinct) ... ok
+test_snapshot_precision_axis_allocation_physical_and_config_mismatch (tests.check_saved_rpe_cost_catalog.Technical.test_snapshot_precision_axis_allocation_physical_and_config_mismatch) ... ok
+test_rpe_dp_prefix_reuse (unittest.loader._FailedTest.test_rpe_dp_prefix_reuse) ... ERROR
+
+======================================================================
+ERROR: test_rpe_dp_prefix_reuse (unittest.loader._FailedTest.test_rpe_dp_prefix_reuse)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_rpe_dp_prefix_reuse
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b0i-prefix-auto-selection-20261117/tests/test_rpe_dp_prefix_reuse.py", line 18, in <module>
+    from trottertracks import rpe_total_dp_parallel as P
+ImportError: cannot import name 'rpe_total_dp_parallel' from 'trottertracks' (/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b0i-prefix-auto-selection-20261117/src/trottertracks/__init__.py)
+
+
+----------------------------------------------------------------------
+Ran 22 tests in 53.591s
+
+FAILED (errors=1)
