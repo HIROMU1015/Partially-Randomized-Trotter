@@ -722,7 +722,12 @@ def main(argv=None, *, driver_factory=None):
     ap.add_argument('--problem', type=Path, required=True);ap.add_argument('--round', type=Path, required=True)
     ap.add_argument('--run-dir', type=Path, required=True);ap.add_argument('--batch', type=int, default=64)
     ap.add_argument('--max-cycles', type=int, default=200);ap.add_argument('--plan-only', action='store_true')
+    ap.add_argument('--prepare-readiness', action='store_true', help='plan-only: delta saved history, chosen requests, server2 dry-check and immutable remote delivery')
+    ap.add_argument('--preparation-cache', type=Path, help='local disposable cache for --prepare-readiness')
     a = ap.parse_args(argv);a.problem = a.problem.resolve()
+    if a.prepare_readiness:
+        from trottertracks.rpe_plan_prepare import prepare
+        return prepare(a, code_root=ROOT, cli=K.CLI)
     problem=O.load_json(a.problem);spec=O.load_json(a.round)
     declared=W.requested_widths(problem,spec)
     if driver_factory is None and declared is None and any(m in('FULL_PF','TRUNCATED_PF')for m in spec.get('methods',[])):

@@ -618,6 +618,9 @@ class Executor:
     def prior_records(self, candidates):
         """Every completed prior-round job of this method for a ready candidate, validated like a new job (same key,
         same route, identity checks).  Returns ({(cid, vector): record}, refused rows)."""
+        cache = getattr(self, 'preparation_history_cache', None)
+        if cache is not None:
+            return cache.prior_records(self, candidates)[:2]
         ready = {c['configuration_id']: c for c in candidates if c['ready'] and c['configuration_id']}
         known, refused = {}, []
         for base in self.prior_run_dirs:
