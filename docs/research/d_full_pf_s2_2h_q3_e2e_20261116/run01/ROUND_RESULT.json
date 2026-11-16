@@ -1,0 +1,826 @@
+{
+  "schema": "RPE_OPTIMIZER_ROUND_RESULT_V1",
+  "round": {
+    "round_id": "D_FULL_PF_S2_2H_Q3_ONE_V1",
+    "methods": [
+      "FULL_PF"
+    ],
+    "initial": "all",
+    "science_approved": true,
+    "max_new_q3_per_method": {
+      "FULL_PF": 1
+    },
+    "max_steps_per_method": 40,
+    "method_overrides": {
+      "FULL_PF": {
+        "configuration_ids": [
+          "9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981"
+        ]
+      }
+    },
+    "executor": {
+      "max_concurrent_jobs": 1,
+      "wait_for_running_jobs": false,
+      "prior_run_dirs": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b-h4-pf-method-search-source-53bb0a1d7/docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF"
+      ]
+    },
+    "pf_evidence_registry": {
+      "commit": "352539e2749989b4ddc3ab74c31f486982bfe265",
+      "path": "docs/research/d_pf_on_demand_evidence_20261116/C_RESULT_JOIN.json"
+    }
+  },
+  "methods": {
+    "FULL_PF": {
+      "method": "FULL_PF",
+      "best": {
+        "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+        "configuration_id": "9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981",
+        "configuration": {
+          "p": 10,
+          "formula": "2nd",
+          "delta_over_h": "2"
+        },
+        "labels": [],
+        "N_X": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          15,
+          11
+        ],
+        "N_Y": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          15,
+          11
+        ],
+        "MSE_lower": {
+          "lower_30": "656377086128520703760783044910e-36",
+          "upper_30": "656377086128520703760783044911e-36",
+          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+        },
+        "MSE_upper": {
+          "lower_30": "656377086128520703760834703543e-36",
+          "upper_30": "656377086128520703760834703544e-36",
+          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 956592146,
+          "denominator": 1,
+          "display": "956,592,146.00"
+        },
+        "cost_display": "956,592,146.00",
+        "evidence": "NEW_Q3_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "stop_reason": "Q3_BUDGET_EXHAUSTED",
+      "pending_request": {
+        "configuration_id": "9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981",
+        "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+        "vector": [
+          59,
+          59,
+          55,
+          55,
+          51,
+          51,
+          47,
+          47,
+          43,
+          43,
+          39,
+          39,
+          35,
+          35,
+          31,
+          31,
+          27,
+          27,
+          23,
+          23,
+          19,
+          19,
+          15,
+          15,
+          9,
+          9
+        ],
+        "cost": {
+          "numerator": 892832582,
+          "denominator": 1,
+          "display": "892,832,582.00"
+        },
+        "origin": {
+          "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+          "m": 12,
+          "axes": [
+            "X",
+            "Y"
+          ],
+          "d": 2,
+          "base_vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            15,
+            15,
+            11,
+            11
+          ],
+          "base_headroom": "0.258461"
+        },
+        "method": "FULL_PF",
+        "shot_change": 4,
+        "route": {
+          "kind": "pf_b_pf6",
+          "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+        },
+        "queue": [
+          {
+            "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+            "cost": {
+              "numerator": 892832582,
+              "denominator": 1,
+              "display": "892,832,582.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              15,
+              15,
+              9,
+              9
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 12,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 2,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                15,
+                15,
+                11,
+                11
+              ],
+              "base_headroom": "0.258461"
+            }
+          },
+          {
+            "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+            "cost": {
+              "numerator": 924711750,
+              "denominator": 1,
+              "display": "924,711,750.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              13,
+              13,
+              11,
+              11
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 11,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 2,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                15,
+                15,
+                11,
+                11
+              ],
+              "base_headroom": "0.258461"
+            }
+          },
+          {
+            "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+            "cost": {
+              "numerator": 924712364,
+              "denominator": 1,
+              "display": "924,712,364.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              15,
+              15,
+              10,
+              10
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 12,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                15,
+                15,
+                11,
+                11
+              ],
+              "base_headroom": "0.258461"
+            }
+          },
+          {
+            "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+            "cost": {
+              "numerator": 940651334,
+              "denominator": 1,
+              "display": "940,651,334.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              17,
+              17,
+              15,
+              15,
+              11,
+              11
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 10,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 2,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                15,
+                15,
+                11,
+                11
+              ],
+              "base_headroom": "0.258461"
+            }
+          },
+          {
+            "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+            "cost": {
+              "numerator": 940651948,
+              "denominator": 1,
+              "display": "940,651,948.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              14,
+              14,
+              11,
+              11
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 11,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                59,
+                59,
+                55,
+                55,
+                51,
+                51,
+                47,
+                47,
+                43,
+                43,
+                39,
+                39,
+                35,
+                35,
+                31,
+                31,
+                27,
+                27,
+                23,
+                23,
+                19,
+                19,
+                15,
+                15,
+                11,
+                11
+              ],
+              "base_headroom": "0.258461"
+            }
+          }
+        ],
+        "job": null
+      },
+      "trace": [
+        {
+          "step": 1,
+          "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+          "configuration_id": "9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            15,
+            15,
+            11,
+            11
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "cost": {
+            "numerator": 956592146,
+            "denominator": 1,
+            "display": "956,592,146.00"
+          },
+          "origin": {
+            "kind": "GENERATOR_SEED",
+            "rule": "B_PRICE",
+            "budget": "956592146"
+          },
+          "answer_source": "NEW_Q3_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "656377086128520703760783044910e-36",
+            "upper_30": "656377086128520703760783044911e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "656377086128520703760834703543e-36",
+            "upper_30": "656377086128520703760834703544e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "calls": 1,
+          "job": "docs/research/d_full_pf_s2_2h_q3_e2e_20261116/run01/jobs/FULL_PF/22bbe4a8d5aee8bfa9b8",
+          "result_sources": null,
+          "point_id": null,
+          "reason": null,
+          "incumbent_before": null,
+          "incumbent_after": {
+            "numerator": 956592146,
+            "denominator": 1,
+            "display": "956,592,146.00"
+          },
+          "improved": true,
+          "proposals_considered": 1
+        }
+      ],
+      "held": [],
+      "new_calls": 1,
+      "evaluated_count": 1,
+      "evaluated": [
+        {
+          "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+          "configuration_id": "9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981",
+          "vector": [
+            59,
+            59,
+            55,
+            55,
+            51,
+            51,
+            47,
+            47,
+            43,
+            43,
+            39,
+            39,
+            35,
+            35,
+            31,
+            31,
+            27,
+            27,
+            23,
+            23,
+            19,
+            19,
+            15,
+            15,
+            11,
+            11
+          ],
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "656377086128520703760783044910e-36",
+            "upper_30": "656377086128520703760783044911e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "656377086128520703760834703543e-36",
+            "upper_30": "656377086128520703760834703544e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 956592146,
+            "denominator": 1,
+            "display": "956,592,146.00"
+          },
+          "source": "NEW_Q3_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "docs/research/d_full_pf_s2_2h_q3_e2e_20261116/run01/jobs/FULL_PF/22bbe4a8d5aee8bfa9b8",
+          "label": null
+        }
+      ],
+      "not_ready_candidates": [],
+      "ready_candidates": [
+        "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75"
+      ],
+      "search_range": {
+        "candidates": [
+          "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75"
+        ],
+        "rule": "FINITE_LOCAL_DESCENT_V1"
+      },
+      "resume_records": [
+        {
+          "configuration_id": "9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981",
+          "N_X": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "N_Y": [
+            59,
+            55,
+            51,
+            47,
+            43,
+            39,
+            35,
+            31,
+            27,
+            23,
+            19,
+            15,
+            11
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "656377086128520703760783044910e-36",
+            "upper_30": "656377086128520703760783044911e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "656377086128520703760834703543e-36",
+            "upper_30": "656377086128520703760834703544e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "source": "NEW_Q3_JOB",
+          "job": "docs/research/d_full_pf_s2_2h_q3_e2e_20261116/run01/jobs/FULL_PF/22bbe4a8d5aee8bfa9b8"
+        }
+      ],
+      "by_configuration": null,
+      "incumbent_scope": "METHOD",
+      "prior_rounds": {
+        "run_dirs": [
+          "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF",
+          "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b-h4-pf-method-search-source-53bb0a1d7/docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF"
+        ],
+        "loaded": 0,
+        "already_known": 0,
+        "refused": 244,
+        "refused_reasons": [
+          "CONFIGURATION_NOT_IN_THIS_ROUND"
+        ]
+      },
+      "budget": {
+        "max_new_q3": 1,
+        "science_approved": true,
+        "spent_before": 0,
+        "new_calls": 1
+      },
+      "generation": null,
+      "parameter_assessment": null
+    }
+  },
+  "pf_completion": null,
+  "optimizer_source": "90a52a211f6acc4d7b01e1017572c15224ac25de",
+  "wall_seconds": 164.40199520695023,
+  "exact_bounds": "MSE bounds with more than 60 digits: outward 30-digit intervals; exact in job OUTCOME.json / C"
+}
