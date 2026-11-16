@@ -248,6 +248,17 @@ class Connection(unittest.TestCase):
         self.assertEqual(result['new_compile'],0)
         self.assertEqual(sync.stage_summary(result,list(records.values()))['science_execution'],'NOT_STARTED_BY_SYNC')
 
+    def test_c_sync_metadata_only_optimizer_return_is_reference_only(self):
+        spec=importlib.util.spec_from_file_location('pf_c_metadata_sync',ROOT/'scripts/sync_saved_rpe_publications.py')
+        sync=importlib.util.module_from_spec(spec);spec.loader.exec_module(sync)
+        source=loc('ROUND_RESULT.json');docs={'ROUND_RESULT.json':dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1',methods={'FULL_PF':dict(best=None,new_calls=0)})}
+        item=dict(source=source,blob='ARTIFICIAL_BLOB',branches=['ARTIFICIAL'])
+        fake=type('EmptyCatalog',(),{'__init__':lambda self,*args:None,'inputs':[],'visited':set(),'result':lambda self:{}})
+        with patch.object(sync,'Catalog',fake):
+            _,records,accepted=sync.reconcile(Reader(docs),dict(comparison={},sources=[]),{'META':item},{})
+        self.assertEqual(records['META']['status'],'REFERENCE_ONLY')
+        self.assertFalse(accepted)
+
     def test_real_canonical_pf_method_dispatches_using_split_metadata(self):
         from trottertracks import pf_evidence_preparation as E
         module_spec=importlib.util.spec_from_file_location('pf_provider_dispatch_fixture',ROOT/'scripts/prepare_pf_candidate.py')

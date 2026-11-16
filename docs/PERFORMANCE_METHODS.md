@@ -1,5 +1,9 @@
 # 並列化・高速化手法の再利用索引
 
+## 選択PF候補の保存step・receipt再利用（2026-11-16）
+
+[REPORT](research/d_pf_on_demand_evidence_20261116/REPORT.md)、[入口](../scripts/prepare_pf_candidate.py)。保存36次元stepをprefix/formula/元T*w/qのbinary64列でcacheし、保存13referenceから不足meanだけ取得。FullS2/2hは新8meanで3.210s・新step0、価格は保存較正後に元fast native childのm5 X/Yだけ取得（124.236s、worker peak600,690,688bytes）。同条件速度倍率は未測定。B0I別pには自身のscalar/stepを使う。通常入口→登録→自動seed、保存再開、元p7完成入力の0-science再利用を人工/metadataと有限実対象で確認。Full行のB0I emitter誤選択はcompile前guardで検出し、既存分岐と回帰を修正。旧STOP/信号/凍結を保持し未実行2wrapperだけ別namespaceで完了した。別runのLAUNCHも読取専用で引き継ぎ、template追加で重複Q3を投入しない。
+
 ## 別PF幅のcalibration→holdoutで既存native workerを再利用（2026-11-16）
 
 [REPORT](research/d_p7_y4_coarse_price_calibration_20261116/REPORT.md)、[caller](../scripts/run_p7_y4_coarse_prices.py)。科学SOURCE7f7622a94（cal）/d4ae4c408（q80）。既存fast compose/fingerprint・共有context・fork cellを再利用し、cal2 cellを並列、holdoutは係数凍結後だけ投入した。cal172.276 s、q80 1,222.373 s、最大worker RSS704,888,832/3,419,529,216 bytes。新しい回路最適化ruleや同条件速度倍率はない。初回はsparse worktreeの固定reference未展開によりimportで0-compile STOP。元Git blobのみ復元し、実native依存importを事前検査した。共通helperのevidence pathを新namespaceへ実際に結合することも検査し、calの参照修正だけでC guardへ渡した（再compileなし）。最終11人工/回帰・実6軸の元作用gate/C guard PASS。旧STOP/source/値を保持し、source/入力・cohort・stage範囲を混ぜない。

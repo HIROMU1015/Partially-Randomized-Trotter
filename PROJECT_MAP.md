@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[選択されたPF候補の入力補完とp探索接続](docs/research/d_pf_on_demand_evidence_20261116/REPORT.md)：Full/B0Iの不足信号・価格を通常B2入口へ戻す。p0〜9、p10Full alias、保存T1/T2再利用。FullS2/2hで新8mean＋2compile、Q3新規0。価格は直接と条件付きモデルを区別。
+
 [粗幅Y4の幅固有価格較正とA_SHAPE条件付き費用](docs/research/d_p7_y4_coarse_price_calibration_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10・B0I p7/標準Y4・32h/5/h_RPE=.1/P0除外。新6 compile・元作用gate/C guard受入。m5/q5・m6/q10から軸別307+16539qを凍結し、m9/q80はX/Yとも完全一致。A_SHAPE条件付き費用372,035,410 RZ、直接16/26＋モデル10/26。モデル84.831223%、q>80未検証外挿75.400727%、価格誤差/CI/G/winnerはUNKNOWN/null。信号/Q3/他配分追加0、旧STOP保全・mandatory STOP。
 
 [粗幅Yoshida4 A_SHAPEのQ3適合・価格待ち](docs/research/d_p7_y4_coarse_a_shape_q3_20261116/REPORT.md)：保存H4/1Å/STO-3G/tol-only DF10、B0I p7/標準Y4・32h/5・h_RPE=.1。保存A_SHAPE整数列でQ3を1件完了、MSE上界2.074377e−6≤元exact τ、Q3適合・価格待ち。現幅/粗幅×B_PRICE/A_SHAPEの4点を固定出所付きで公開。粗幅費用null、新信号/reference/build/compile/価格/fit/他配分0、旧結果/UNKNOWN/STOP保全・mandatory STOP。

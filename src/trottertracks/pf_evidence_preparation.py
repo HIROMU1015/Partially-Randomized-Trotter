@@ -86,6 +86,15 @@ def mean_pool(root):
             origins.append(cand['source_bound_13round_packet'])
         for hits in cand.get('round_source_locators',{}).values():origins+=hits.get('current',[])
     origins += [ref('f23c3f10ed56d0c218e49efbdbfb31d12ffa8a53','docs/research/d_p7_y4_coarse_signal_q3_20261116/BOUND_SIGNAL_INPUT.json')]
+    # Prefix8/9 are absent from the older Full/p7 width index. Their T2
+    # first/m12 means are already saved and use the same unchanged gates.
+    for cell in PS._t2_cells(str(root)):
+        if int(cell['prefix']) not in (8,9):continue
+        directory=(PS.T2_DIR+'run01/cell_p'+cell['prefix']+'_'
+            +cell['formula'].replace('(','_').replace(')','')+'_'
+            +str(frac(cell['actual_delta_over_h'])).replace('/','o'))
+        origins += [ref(PS.T2_SOURCE,directory+'/'+name)
+                    for name in ('round_first_check.json','round_m12_check.json')]
     by_key={};seen=set()
     def add(value,origin):
         c=value.get('physical_candidate') or (value.get('provider_binding') or {}).get('physical_context',{}).get('physical_candidate')

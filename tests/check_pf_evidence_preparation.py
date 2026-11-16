@@ -62,6 +62,19 @@ class Evidence(unittest.TestCase):
         saved=E.read(ROOT,E.scalar_source(8))
         self.assertTrue(all(d['tail_scalar']==saved for d in descriptors))
 
+    def test_prefix_eight_t2_means_are_reused_by_physical_schedule(self):
+        cfg=P.configure(ROOT,'B0I',8,'2nd','16/7')
+        plan=E.make_plan(ROOT,cfg,dict(module='METADATA_ONLY'))
+        means={r['m']:r for r in plan['signal_rounds']}
+        for m in (4,12):
+            self.assertEqual(means[m]['acquisition'],'REUSE_SAVED_MEAN')
+            self.assertEqual(means[m]['saved_source']['commit'],P.T2_SOURCE)
+            self.assertIn('/cell_p8_2nd_16o7/',means[m]['saved_source']['path'])
+            old=E.read(ROOT,means[m]['saved_source'])
+            self.assertEqual(old['physical_candidate'],plan['prepared']['pending']['requests'][m]['physical_candidate'])
+        self.assertEqual({m for m,r in means.items() if r['acquisition']=='REUSE_SAVED_MEAN'},{0,1,4,12})
+        self.assertEqual(plan['new_signal_means'],9)
+
     def test_binary_piece_times_discriminate_same_q_different_width(self):
         a=dict(prefix=8,formula='4th',T=.2,q=2,delta=.1)
         b=dict(a,T=.4,delta=.2)
