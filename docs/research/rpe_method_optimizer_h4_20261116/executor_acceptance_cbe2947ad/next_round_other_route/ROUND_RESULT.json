@@ -1,0 +1,2270 @@
+{
+  "schema": "RPE_OPTIMIZER_ROUND_RESULT_V1",
+  "round": {
+    "schema": "RPE_OPTIMIZER_SEARCH_ROUND_V1",
+    "round_id": "ART_NEXT_OTHER",
+    "methods": [
+      "PR_PAULI"
+    ],
+    "science_approved": false,
+    "max_new_q3_per_method": {
+      "PR_PAULI": 0
+    },
+    "approved_by": "ACCEPTANCE_TEST_ARTIFICIAL",
+    "method_overrides": {
+      "PR_PAULI": {
+        "saved_configurations_only": true,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1"
+          ],
+          "kappa_multipliers": [
+            "1"
+          ]
+        }
+      }
+    },
+    "search_overrides": {
+      "rule": "METHOD_MINIMUM_PRIORITY_V2",
+      "seed_saved_same_L_D": true
+    },
+    "executor": {
+      "max_concurrent_jobs": 1,
+      "wait_for_running_jobs": true,
+      "prior_run_dirs": [
+        "docs/research/rpe_method_optimizer_h4_20261116/executor_acceptance_cbe2947ad/interrupted"
+      ]
+    },
+    "routes_override": {
+      "PR_PAULI": [
+        {
+          "kind": "artificial",
+          "interpreter": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+          "configuration_ids": "*",
+          "view_commit": null,
+          "artificial": {
+            "weights": [
+              1,
+              4,
+              9,
+              16,
+              25,
+              36,
+              49,
+              64,
+              81,
+              100,
+              121,
+              144,
+              169
+            ],
+            "scale": "192022586022492166930661673/9490745956301689147949218750000000",
+            "tau": "15136964828156312001/5960464477539062500000000"
+          },
+          "existing_caller": "ARTIFICIAL"
+        }
+      ]
+    }
+  },
+  "methods": {
+    "PR_PAULI": {
+      "method": "PR_PAULI",
+      "best": {
+        "candidate": "PR_PAULI:L_D=5:4d6e2c9c",
+        "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+        "configuration": {
+          "L_D": 5
+        },
+        "labels": [
+          "LD5__FULL_PF__B_PRICE",
+          "LD5__VP"
+        ],
+        "N_X": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          29,
+          26,
+          23,
+          19,
+          16,
+          8,
+          2
+        ],
+        "N_Y": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          29,
+          26,
+          23,
+          19,
+          16,
+          8,
+          2
+        ],
+        "MSE_lower": {
+          "lower_30": "250025936735575162405072824669e-35",
+          "upper_30": "250025936735575162405072824670e-35",
+          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+        },
+        "MSE_upper": {
+          "lower_30": "250025936735575162806818654753e-35",
+          "upper_30": "250025936735575162806818654754e-35",
+          "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 3792207339,
+          "denominator": 7,
+          "display": "541,743,905.57"
+        },
+        "cost_display": "541,743,905.57",
+        "evidence": "SAVED",
+        "point_id": "ab0a231b9cd06286a79c1155",
+        "result_sources": [
+          {
+            "commit": "1c4a83d1b841bfc23ba87c45f850fb4233f22c30",
+            "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/C_COMPARISON_JOIN.json",
+            "selector": [
+              "records",
+              0
+            ]
+          }
+        ]
+      },
+      "stop_reason": "NEW_SCIENCE_NOT_APPROVED",
+      "pending_request": {
+        "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+        "candidate": "PR_PAULI:L_D=3:dd5b881d",
+        "vector": [
+          48,
+          48,
+          45,
+          45,
+          42,
+          42,
+          39,
+          39,
+          36,
+          36,
+          33,
+          33,
+          29,
+          29,
+          26,
+          26,
+          23,
+          23,
+          19,
+          19,
+          16,
+          16,
+          8,
+          8,
+          1,
+          1
+        ],
+        "cost": {
+          "numerator": 558396304238,
+          "denominator": 1155,
+          "display": "483,460,003.67"
+        },
+        "origin": {
+          "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+          "m": 12,
+          "axes": [
+            "X",
+            "Y"
+          ],
+          "d": 1,
+          "base_vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            16,
+            16,
+            8,
+            8,
+            2,
+            2
+          ],
+          "base_headroom": "0.995934"
+        },
+        "method": "PR_PAULI",
+        "deferred": false,
+        "shot_change": 2,
+        "cls": "UPDATE",
+        "route": {
+          "kind": "pauli_b_ld3",
+          "existing_caller": "B a844ac25f scripts/run_pauli_ld3_pf_budget_q3_fixed.py (L.installed + M.supervise)"
+        },
+        "queue": [
+          {
+            "candidate": "PR_PAULI:L_D=3:dd5b881d",
+            "cost": {
+              "numerator": 558396304238,
+              "denominator": 1155,
+              "display": "483,460,003.67"
+            },
+            "cls": "UPDATE",
+            "vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              1,
+              1
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 12,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                48,
+                48,
+                45,
+                45,
+                42,
+                42,
+                39,
+                39,
+                36,
+                36,
+                33,
+                33,
+                29,
+                29,
+                26,
+                26,
+                23,
+                23,
+                19,
+                19,
+                16,
+                16,
+                8,
+                8,
+                2,
+                2
+              ],
+              "base_headroom": "0.995934"
+            }
+          },
+          {
+            "candidate": "PR_PAULI:L_D=5:4d6e2c9c",
+            "cost": {
+              "numerator": 3548409065,
+              "denominator": 7,
+              "display": "506,915,580.71"
+            },
+            "cls": "UPDATE",
+            "vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              1,
+              1
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 12,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                48,
+                48,
+                45,
+                45,
+                42,
+                42,
+                39,
+                39,
+                36,
+                36,
+                33,
+                33,
+                29,
+                29,
+                26,
+                26,
+                23,
+                23,
+                19,
+                19,
+                16,
+                16,
+                8,
+                8,
+                2,
+                2
+              ],
+              "base_headroom": "0.984524"
+            }
+          },
+          {
+            "candidate": "PR_PAULI:L_D=3:dd5b881d",
+            "cost": {
+              "numerator": 602699643758,
+              "denominator": 1155,
+              "display": "521,817,873.38"
+            },
+            "cls": "UPDATE",
+            "vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              7,
+              7,
+              2,
+              2
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 11,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                48,
+                48,
+                45,
+                45,
+                42,
+                42,
+                39,
+                39,
+                36,
+                36,
+                33,
+                33,
+                29,
+                29,
+                26,
+                26,
+                23,
+                23,
+                19,
+                19,
+                16,
+                16,
+                8,
+                8,
+                2,
+                2
+              ],
+              "base_headroom": "0.995934"
+            }
+          },
+          {
+            "candidate": "PR_PAULI:L_D=5:4d6e2c9c",
+            "cost": {
+              "numerator": 3670828265,
+              "denominator": 7,
+              "display": "524,404,037.86"
+            },
+            "cls": "UPDATE",
+            "vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              7,
+              7,
+              2,
+              2
+            ],
+            "origin": {
+              "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+              "m": 11,
+              "axes": [
+                "X",
+                "Y"
+              ],
+              "d": 1,
+              "base_vector": [
+                48,
+                48,
+                45,
+                45,
+                42,
+                42,
+                39,
+                39,
+                36,
+                36,
+                33,
+                33,
+                29,
+                29,
+                26,
+                26,
+                23,
+                23,
+                19,
+                19,
+                16,
+                16,
+                8,
+                8,
+                2,
+                2
+              ],
+              "base_headroom": "0.984524"
+            }
+          }
+        ],
+        "job": null
+      },
+      "trace": [],
+      "held": [],
+      "new_calls": 0,
+      "evaluated_count": 9,
+      "evaluated": [
+        {
+          "candidate": "PR_PAULI:L_D=2:d7dd4f52",
+          "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            7,
+            7,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            7,
+            1,
+            1
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            7,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "351094734538852942244244476425e-34",
+            "upper_30": "351094734538852942244244476426e-34",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "351094734538852944375665006556e-34",
+            "upper_30": "351094734538852944375665006557e-34",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 54210221285613812,
+            "denominator": 90343469,
+            "display": "600,045,823.85"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "738df226232e539cc084dfad2aed2feae82f3073",
+              "path": "docs/research/pauli_ld2_reallocation_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                0
+              ]
+            }
+          ],
+          "point_id": "e96a88252d013acf15f192cf",
+          "job": null,
+          "label": "FPN_B_LD2"
+        },
+        {
+          "candidate": "PR_PAULI:L_D=2:d7dd4f52",
+          "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            16,
+            16,
+            13,
+            13,
+            5,
+            5
+          ],
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "105424676606571350530814976227e-35",
+            "upper_30": "105424676606571350530814976228e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "105424676606578509902176836526e-35",
+            "upper_30": "105424676606578509902176836527e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 220695144335642870,
+            "denominator": 90343469,
+            "display": "2,442,845,584.51"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "738df226232e539cc084dfad2aed2feae82f3073",
+              "path": "docs/research/pauli_ld2_reallocation_q3_results_20261115/SUMMARY.json",
+              "selector": [
+                "rows",
+                1
+              ]
+            }
+          ],
+          "point_id": "d15f6fb8f73fafdefe5354fa",
+          "job": null,
+          "label": "OWN_B_LD2"
+        },
+        {
+          "candidate": "PR_PAULI:L_D=3:dd5b881d",
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            16,
+            16,
+            13,
+            13,
+            9,
+            9
+          ],
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "620621045530736012995862668184e-36",
+            "upper_30": "620621045530736012995862668185e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "620621045530782012022641155096e-36",
+            "upper_30": "620621045530782012022641155097e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 173557305044,
+            "denominator": 165,
+            "display": "1,051,862,454.81"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "2de33a4f4daeef7ca899dc98689974bb0eaadaf4",
+              "path": "docs/research/pauli_ld3_vp_q3_results_20261116/C_RESULT_JOIN.json",
+              "selector": []
+            },
+            {
+              "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+              "path": "docs/research/a_pauli_ld3_cal_price_20261116/HANDOFF_BC.json",
+              "selector": []
+            }
+          ],
+          "point_id": "9c28225e02fab223cd269594",
+          "job": null,
+          "label": "PAULI_LD3_VP"
+        },
+        {
+          "candidate": "PR_PAULI:L_D=3:dd5b881d",
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "vector": [
+            21,
+            21,
+            19,
+            19,
+            18,
+            18,
+            17,
+            17,
+            15,
+            15,
+            14,
+            14,
+            12,
+            12,
+            11,
+            11,
+            10,
+            10,
+            8,
+            8,
+            7,
+            7,
+            5,
+            5,
+            3,
+            3
+          ],
+          "N_X": [
+            21,
+            19,
+            18,
+            17,
+            15,
+            14,
+            12,
+            11,
+            10,
+            8,
+            7,
+            5,
+            3
+          ],
+          "N_Y": [
+            21,
+            19,
+            18,
+            17,
+            15,
+            14,
+            12,
+            11,
+            10,
+            8,
+            7,
+            5,
+            3
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "661188549308497664561856418020e-34",
+            "upper_30": "661188549308497664561856418021e-34",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "661188560748852658092241138452e-34",
+            "upper_30": "661188560748852658092241138453e-34",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 30009021696,
+            "denominator": 77,
+            "display": "389,727,554.49"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "fb4d78781e2a4c63c9d334af246807785e669d6c",
+              "path": "docs/research/pauli_ld3_pf_budget_q3_results_20261116/C_COMPARISON_JOIN.json",
+              "selector": [
+                "records",
+                0
+              ]
+            }
+          ],
+          "point_id": "07dbc27e672c3da723a64ae9",
+          "job": null,
+          "label": "P7__A_SHAPE"
+        },
+        {
+          "candidate": "PR_PAULI:L_D=3:dd5b881d",
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            15,
+            15,
+            4,
+            4,
+            1,
+            1
+          ],
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            15,
+            4,
+            1
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            15,
+            4,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "759800194817895636037690164032e-35",
+            "upper_30": "759800194817895636037690164033e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "759800194817895647727876711038e-35",
+            "upper_30": "759800194817895647727876711039e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 456463851968,
+            "denominator": 1155,
+            "display": "395,206,798.24"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "fb4d78781e2a4c63c9d334af246807785e669d6c",
+              "path": "docs/research/pauli_ld3_pf_budget_q3_results_20261116/C_COMPARISON_JOIN.json",
+              "selector": [
+                "records",
+                1
+              ]
+            }
+          ],
+          "point_id": "7b90bfc7c2de659a43961666",
+          "job": null,
+          "label": "P7__B_PRICE"
+        },
+        {
+          "candidate": "PR_PAULI:L_D=3:dd5b881d",
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "vector": [
+            26,
+            26,
+            24,
+            24,
+            23,
+            23,
+            21,
+            21,
+            19,
+            19,
+            18,
+            18,
+            16,
+            16,
+            14,
+            14,
+            12,
+            12,
+            10,
+            10,
+            8,
+            8,
+            7,
+            7,
+            4,
+            4
+          ],
+          "N_X": [
+            26,
+            24,
+            23,
+            21,
+            19,
+            18,
+            16,
+            14,
+            12,
+            10,
+            8,
+            7,
+            4
+          ],
+          "N_Y": [
+            26,
+            24,
+            23,
+            21,
+            19,
+            18,
+            16,
+            14,
+            12,
+            10,
+            8,
+            7,
+            4
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "544347451547294052053341675450e-35",
+            "upper_30": "544347451547294052053341675451e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "544347458178015823473341529955e-35",
+            "upper_30": "544347458178015823473341529956e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 10729281172,
+            "denominator": 21,
+            "display": "510,918,151.05"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "fb4d78781e2a4c63c9d334af246807785e669d6c",
+              "path": "docs/research/pauli_ld3_pf_budget_q3_results_20261116/C_COMPARISON_JOIN.json",
+              "selector": [
+                "records",
+                2
+              ]
+            }
+          ],
+          "point_id": "9fe5181d82bc7c5472aba4ad",
+          "job": null,
+          "label": "FULL_PF__A_SHAPE"
+        },
+        {
+          "candidate": "PR_PAULI:L_D=3:dd5b881d",
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            16,
+            16,
+            8,
+            8,
+            2,
+            2
+          ],
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "252923567564983853015870403885e-35",
+            "upper_30": "252923567564983853015870403886e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "252923567564983898749963057893e-35",
+            "upper_30": "252923567564983898749963057894e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 625936421828,
+            "denominator": 1155,
+            "display": "541,936,295.95"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "fb4d78781e2a4c63c9d334af246807785e669d6c",
+              "path": "docs/research/pauli_ld3_pf_budget_q3_results_20261116/C_COMPARISON_JOIN.json",
+              "selector": [
+                "records",
+                3
+              ]
+            }
+          ],
+          "point_id": "06f67f6f4ae4a7390d403c96",
+          "job": null,
+          "label": "FULL_PF__B_PRICE"
+        },
+        {
+          "candidate": "PR_PAULI:L_D=5:4d6e2c9c",
+          "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            16,
+            16,
+            8,
+            8,
+            2,
+            2
+          ],
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "250025936735575162405072824669e-35",
+            "upper_30": "250025936735575162405072824670e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "250025936735575162806818654753e-35",
+            "upper_30": "250025936735575162806818654754e-35",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "1c4a83d1b841bfc23ba87c45f850fb4233f22c30",
+              "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/C_COMPARISON_JOIN.json",
+              "selector": [
+                "records",
+                0
+              ]
+            }
+          ],
+          "point_id": "ab0a231b9cd06286a79c1155",
+          "job": null,
+          "label": "LD5__FULL_PF__B_PRICE"
+        },
+        {
+          "candidate": "PR_PAULI:L_D=5:4d6e2c9c",
+          "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            16,
+            16,
+            13,
+            13,
+            9,
+            9
+          ],
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "lower_30": "615782484843437213184600411236e-36",
+            "upper_30": "615782484843437213184600411237e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "MSE_upper": {
+            "lower_30": "615782484843438106745737647587e-36",
+            "upper_30": "615782484843438106745737647588e-36",
+            "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+          },
+          "cost": {
+            "numerator": 6105690627,
+            "denominator": 7,
+            "display": "872,241,518.14"
+          },
+          "source": "SAVED",
+          "result_sources": [
+            {
+              "commit": "1c4a83d1b841bfc23ba87c45f850fb4233f22c30",
+              "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/C_COMPARISON_JOIN.json",
+              "selector": [
+                "records",
+                1
+              ]
+            }
+          ],
+          "point_id": "64ca8d12b20ac47e1c87d860",
+          "job": null,
+          "label": "LD5__VP"
+        }
+      ],
+      "not_ready_candidates": [],
+      "ready_candidates": [
+        "PR_PAULI:L_D=2:d7dd4f52",
+        "PR_PAULI:L_D=3:dd5b881d",
+        "PR_PAULI:L_D=5:4d6e2c9c"
+      ],
+      "search_range": {
+        "candidates": [
+          "PR_PAULI:L_D=2:d7dd4f52",
+          "PR_PAULI:L_D=3:dd5b881d",
+          "PR_PAULI:L_D=5:4d6e2c9c"
+        ],
+        "rule": "METHOD_MINIMUM_PRIORITY_V2"
+      },
+      "resume_records": [],
+      "by_configuration": [
+        {
+          "candidate": "PR_PAULI:L_D=2:d7dd4f52",
+          "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+          "key": {
+            "L_D": 2
+          },
+          "picks": 0,
+          "explore_picks": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 1,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              13,
+              13,
+              5,
+              5
+            ],
+            "cost": {
+              "numerator": 220695144335642870,
+              "denominator": 90343469,
+              "display": "2,442,845,584.51"
+            },
+            "cost_display": "2,442,845,584.51",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "lower_30": "105424676606571350530814976227e-35",
+              "upper_30": "105424676606571350530814976228e-35",
+              "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+            },
+            "MSE_upper": {
+              "lower_30": "105424676606578509902176836526e-35",
+              "upper_30": "105424676606578509902176836527e-35",
+              "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+            },
+            "source": "SAVED",
+            "job": null,
+            "label": "OWN_B_LD2"
+          }
+        },
+        {
+          "candidate": "PR_PAULI:L_D=3:dd5b881d",
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "key": {
+            "L_D": 3
+          },
+          "picks": 0,
+          "explore_picks": 0,
+          "left": {
+            "UPDATE": 7,
+            "EXPLORE": 1,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "cost": {
+              "numerator": 625936421828,
+              "denominator": 1155,
+              "display": "541,936,295.95"
+            },
+            "cost_display": "541,936,295.95",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "lower_30": "252923567564983853015870403885e-35",
+              "upper_30": "252923567564983853015870403886e-35",
+              "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+            },
+            "MSE_upper": {
+              "lower_30": "252923567564983898749963057893e-35",
+              "upper_30": "252923567564983898749963057894e-35",
+              "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+            },
+            "source": "SAVED",
+            "job": null,
+            "label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "candidate": "PR_PAULI:L_D=5:4d6e2c9c",
+          "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+          "key": {
+            "L_D": 5
+          },
+          "picks": 0,
+          "explore_picks": 0,
+          "left": {
+            "UPDATE": 10,
+            "EXPLORE": 0,
+            "SMALL": 3,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "cost": {
+              "numerator": 3792207339,
+              "denominator": 7,
+              "display": "541,743,905.57"
+            },
+            "cost_display": "541,743,905.57",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "lower_30": "250025936735575162405072824669e-35",
+              "upper_30": "250025936735575162405072824670e-35",
+              "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+            },
+            "MSE_upper": {
+              "lower_30": "250025936735575162806818654753e-35",
+              "upper_30": "250025936735575162806818654754e-35",
+              "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+            },
+            "source": "SAVED",
+            "job": null,
+            "label": "LD5__FULL_PF__B_PRICE"
+          }
+        }
+      ],
+      "incumbent_scope": "METHOD_PRIORITY",
+      "prior_rounds": {
+        "run_dirs": [
+          "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/executor_acceptance_cbe2947ad/interrupted"
+        ],
+        "loaded": 0,
+        "already_known": 0,
+        "refused": 8,
+        "refused_reasons": [
+          "DIFFERENT_JOB_KEY_OR_ROUTE"
+        ]
+      },
+      "unevaluated": [],
+      "input_requests": [],
+      "left": {
+        "UPDATE": 17,
+        "EXPLORE": 2,
+        "SMALL": 3,
+        "DEFERRED": 0
+      },
+      "settings": {
+        "explore_every": 4,
+        "explore_window": "3/2",
+        "small_gain_fraction": "1/10000",
+        "deferral_fail_margin": "1/10000",
+        "transfer_count": 2,
+        "kappa_bounds": [
+          {
+            "numerator": 1,
+            "denominator": 4,
+            "display": "0.25"
+          },
+          {
+            "numerator": 8,
+            "denominator": 1,
+            "display": "8.00"
+          }
+        ],
+        "kappa_min_ratio": "9/8",
+        "lookahead": 1
+      },
+      "budget": {
+        "max_new_q3": 0,
+        "science_approved": false,
+        "spent_before": 0,
+        "new_calls": 0
+      },
+      "generation": {
+        "kind": "pauli_native",
+        "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+        "supported_formulas": [
+          "2nd",
+          "4th(m5_best)"
+        ],
+        "baseline": {
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1"
+        },
+        "range": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h": [
+            "1"
+          ],
+          "kappa_multipliers": [
+            "1"
+          ]
+        },
+        "h": "fixed RPE base time (not a search variable)",
+        "variants": [
+          {
+            "variant": {
+              "formula": "2nd",
+              "delta_over_h": "1",
+              "kappa_multiplier": "1"
+            },
+            "L_D": 2,
+            "base_configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "status": "GENERATED",
+            "reason": null,
+            "base_reproduced": true,
+            "supported_formulas": [
+              "2nd",
+              "4th(m5_best)"
+            ],
+            "generator": {
+              "kind": "pauli_native",
+              "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+            },
+            "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "rounds": [
+              {
+                "m": 0,
+                "q": 1,
+                "R": 2,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  2
+                ],
+                "event_count": 2,
+                "ok": true
+              },
+              {
+                "m": 1,
+                "q": 2,
+                "R": 3,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  3
+                ],
+                "event_count": 6,
+                "ok": true
+              },
+              {
+                "m": 2,
+                "q": 4,
+                "R": 5,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  5
+                ],
+                "event_count": 20,
+                "ok": true
+              },
+              {
+                "m": 3,
+                "q": 8,
+                "R": 9,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  9
+                ],
+                "event_count": 72,
+                "ok": true
+              },
+              {
+                "m": 4,
+                "q": 16,
+                "R": 17,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  17
+                ],
+                "event_count": 272,
+                "ok": true
+              },
+              {
+                "m": 5,
+                "q": 32,
+                "R": 33,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  33
+                ],
+                "event_count": 1056,
+                "ok": true
+              },
+              {
+                "m": 6,
+                "q": 64,
+                "R": 66,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  66
+                ],
+                "event_count": 4224,
+                "ok": true
+              },
+              {
+                "m": 7,
+                "q": 128,
+                "R": 132,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  132
+                ],
+                "event_count": 16896,
+                "ok": true
+              },
+              {
+                "m": 8,
+                "q": 256,
+                "R": 263,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  263
+                ],
+                "event_count": 67328,
+                "ok": true
+              },
+              {
+                "m": 9,
+                "q": 512,
+                "R": 526,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  526
+                ],
+                "event_count": 269312,
+                "ok": true
+              },
+              {
+                "m": 10,
+                "q": 1024,
+                "R": 1052,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1052
+                ],
+                "event_count": 1077248,
+                "ok": true
+              },
+              {
+                "m": 11,
+                "q": 2048,
+                "R": 2103,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  2103
+                ],
+                "event_count": 4306944,
+                "ok": true
+              },
+              {
+                "m": 12,
+                "q": 4096,
+                "R": 4205,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  4205
+                ],
+                "event_count": 17223680,
+                "ok": true
+              }
+            ],
+            "rounds_differing_from_base": [],
+            "physically_identical_to": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+          },
+          {
+            "variant": {
+              "formula": "2nd",
+              "delta_over_h": "1",
+              "kappa_multiplier": "1"
+            },
+            "L_D": 3,
+            "base_configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "status": "GENERATED",
+            "reason": null,
+            "base_reproduced": true,
+            "supported_formulas": [
+              "2nd",
+              "4th(m5_best)"
+            ],
+            "generator": {
+              "kind": "pauli_native",
+              "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+            },
+            "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "rounds": [
+              {
+                "m": 0,
+                "q": 1,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 1,
+                "ok": true
+              },
+              {
+                "m": 1,
+                "q": 2,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 2,
+                "ok": true
+              },
+              {
+                "m": 2,
+                "q": 4,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 4,
+                "ok": true
+              },
+              {
+                "m": 3,
+                "q": 8,
+                "R": 2,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  2
+                ],
+                "event_count": 16,
+                "ok": true
+              },
+              {
+                "m": 4,
+                "q": 16,
+                "R": 3,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  3
+                ],
+                "event_count": 48,
+                "ok": true
+              },
+              {
+                "m": 5,
+                "q": 32,
+                "R": 6,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  6
+                ],
+                "event_count": 192,
+                "ok": true
+              },
+              {
+                "m": 6,
+                "q": 64,
+                "R": 11,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  11
+                ],
+                "event_count": 704,
+                "ok": true
+              },
+              {
+                "m": 7,
+                "q": 128,
+                "R": 21,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  21
+                ],
+                "event_count": 2688,
+                "ok": true
+              },
+              {
+                "m": 8,
+                "q": 256,
+                "R": 42,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  42
+                ],
+                "event_count": 10752,
+                "ok": true
+              },
+              {
+                "m": 9,
+                "q": 512,
+                "R": 83,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  83
+                ],
+                "event_count": 42496,
+                "ok": true
+              },
+              {
+                "m": 10,
+                "q": 1024,
+                "R": 165,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  165
+                ],
+                "event_count": 168960,
+                "ok": true
+              },
+              {
+                "m": 11,
+                "q": 2048,
+                "R": 330,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  330
+                ],
+                "event_count": 675840,
+                "ok": true
+              },
+              {
+                "m": 12,
+                "q": 4096,
+                "R": 660,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  660
+                ],
+                "event_count": 2703360,
+                "ok": true
+              }
+            ],
+            "rounds_differing_from_base": [],
+            "physically_identical_to": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+          },
+          {
+            "variant": {
+              "formula": "2nd",
+              "delta_over_h": "1",
+              "kappa_multiplier": "1"
+            },
+            "L_D": 5,
+            "base_configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+            "status": "GENERATED",
+            "reason": null,
+            "base_reproduced": true,
+            "supported_formulas": [
+              "2nd",
+              "4th(m5_best)"
+            ],
+            "generator": {
+              "kind": "pauli_native",
+              "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b"
+            },
+            "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+            "rounds": [
+              {
+                "m": 0,
+                "q": 1,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 1,
+                "ok": true
+              },
+              {
+                "m": 1,
+                "q": 2,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 2,
+                "ok": true
+              },
+              {
+                "m": 2,
+                "q": 4,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 4,
+                "ok": true
+              },
+              {
+                "m": 3,
+                "q": 8,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 8,
+                "ok": true
+              },
+              {
+                "m": 4,
+                "q": 16,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 16,
+                "ok": true
+              },
+              {
+                "m": 5,
+                "q": 32,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 32,
+                "ok": true
+              },
+              {
+                "m": 6,
+                "q": 64,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 64,
+                "ok": true
+              },
+              {
+                "m": 7,
+                "q": 128,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 128,
+                "ok": true
+              },
+              {
+                "m": 8,
+                "q": 256,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 256,
+                "ok": true
+              },
+              {
+                "m": 9,
+                "q": 512,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 512,
+                "ok": true
+              },
+              {
+                "m": 10,
+                "q": 1024,
+                "R": 1,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  1
+                ],
+                "event_count": 1024,
+                "ok": true
+              },
+              {
+                "m": 11,
+                "q": 2048,
+                "R": 2,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  2
+                ],
+                "event_count": 4096,
+                "ok": true
+              },
+              {
+                "m": 12,
+                "q": 4096,
+                "R": 4,
+                "pieces": 1,
+                "negative_pieces": 0,
+                "allocation": [
+                  4
+                ],
+                "event_count": 16384,
+                "ok": true
+              }
+            ],
+            "rounds_differing_from_base": [],
+            "physically_identical_to": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+            "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS"
+          }
+        ]
+      },
+      "parameter_assessment": [
+        {
+          "L_D": 2,
+          "base_configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_rows": [
+            {
+              "kappa_multiplier": "1",
+              "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+              "configuration_id": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+              "rounds_differing_from_base": [],
+              "needs": null,
+              "best_feasible_cost": {
+                "numerator": 220695144335642870,
+                "denominator": 90343469,
+                "display": "2,442,845,584.51"
+              }
+            }
+          ],
+          "kappa_decision": "SAME_PHYSICAL_SCHEDULE_FOR_ALL_KAPPA_IN_RANGE"
+        },
+        {
+          "L_D": 3,
+          "base_configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_rows": [
+            {
+              "kappa_multiplier": "1",
+              "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+              "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+              "rounds_differing_from_base": [],
+              "needs": null,
+              "best_feasible_cost": {
+                "numerator": 625936421828,
+                "denominator": 1155,
+                "display": "541,936,295.95"
+              }
+            }
+          ],
+          "kappa_decision": "SAME_PHYSICAL_SCHEDULE_FOR_ALL_KAPPA_IN_RANGE"
+        },
+        {
+          "L_D": 5,
+          "base_configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_rows": [
+            {
+              "kappa_multiplier": "1",
+              "disposition": "IDENTICAL_SCHEDULE_REUSES_SAVED_EVALUATIONS",
+              "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+              "rounds_differing_from_base": [],
+              "needs": null,
+              "best_feasible_cost": {
+                "numerator": 3792207339,
+                "denominator": 7,
+                "display": "541,743,905.57"
+              }
+            }
+          ],
+          "kappa_decision": "SAME_PHYSICAL_SCHEDULE_FOR_ALL_KAPPA_IN_RANGE"
+        }
+      ]
+    }
+  },
+  "optimizer_source": "cbe2947ad65a13e7ded8721d7aa2c085dbe54ee1",
+  "wall_seconds": 7.904087168863043,
+  "exact_bounds": "MSE bounds with more than 60 digits: outward 30-digit intervals; exact in job OUTCOME.json / C"
+}

@@ -1,0 +1,66 @@
+{
+ "schema": "RPE_OPTIMIZER_SEARCH_ROUND_V1",
+ "round_id": "ART_V2",
+ "methods": [
+  "PR_PAULI"
+ ],
+ "science_approved": true,
+ "max_new_q3_per_method": {
+  "PR_PAULI": "UNLIMITED"
+ },
+ "approved_by": "ACCEPTANCE_TEST_ARTIFICIAL",
+ "method_overrides": {
+  "PR_PAULI": {
+   "saved_configurations_only": true,
+   "generation": {
+    "formulas": [
+     "2nd"
+    ],
+    "delta_over_h_values": [
+     "1"
+    ],
+    "kappa_multipliers": [
+     "1"
+    ]
+   }
+  }
+ },
+ "search_overrides": {
+  "rule": "METHOD_MINIMUM_PRIORITY_V2",
+  "seed_saved_same_L_D": true
+ },
+ "executor": {
+  "max_concurrent_jobs": 1,
+  "wait_for_running_jobs": true
+ },
+ "routes_override": {
+  "PR_PAULI": [
+   {
+    "kind": "artificial",
+    "interpreter": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "configuration_ids": "*",
+    "view_commit": null,
+    "artificial": {
+     "weights": [
+      1,
+      4,
+      9,
+      16,
+      25,
+      36,
+      49,
+      64,
+      81,
+      100,
+      121,
+      144,
+      169
+     ],
+     "scale": "192022586022492166930661673/18981491912603378295898437500000000",
+     "tau": "15136964828156312001/5960464477539062500000000"
+    },
+    "existing_caller": "ARTIFICIAL"
+   }
+  ]
+ }
+}

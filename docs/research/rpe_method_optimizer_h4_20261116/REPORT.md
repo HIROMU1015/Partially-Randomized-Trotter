@@ -2,6 +2,22 @@
 
 2026-11-16 JST、B2（Claude Code、主agentのみ。作成者自身の確認で、独立レビューではない）。実装SOURCEは `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`。**新規の実信号・価格・compile・Q3は0件。** 確認は保存資料と人工fixtureだけで行った。第2・第1段階の記録は後半に残した。
 
+## K. κ round01の途中終了と、次版の候補選択（`cbe2947ad`）
+
+[kappa_round01/REPORT](kappa_round01/REPORT.md)／[HANDOFF](kappa_round01/HANDOFF.md) が正本。
+
+- **途中終了**：κ round01を、方針変更のため停止した（`INTERRUPTED_SEARCH_POLICY_CHANGE`。候補枯渇ではない）。
+  - 完了Q3は4,229件。そのうち規則が採用したのは3,334件、未採用の先読みは895件。
+  - 停止前に起動していた18件は、完了して保存した。未起動は9件。
+- **PR-Pauliの保存最安**：541.74Mから410.47Mへ更新した（LD5 κ×2）。各構成の停止時点の値は、表で示した。
+- **次版の候補選択**（`METHOD_MINIMUM_PRIORITY_V2`）
+  - 方式の最安を下げる候補を優先する。
+  - 4回に1回は、他の構成や新しいκ・L_Dを探索する。
+  - 明確な不適合以下の配分は、後回しにする（落とさない）。
+  - κは、端か内側かに応じて適応的に案を出す。
+- **保存ログでの検証**：停止時最安に届くまでのQ3は、旧の実際が4,148件、新が218件。旧規則が作ったログに条件付けられた比較で、未評価は6件出た。
+- **次roundの読込み**：`prior_run_dirs` で4,229件を読み込み、起動は0件。
+
 ## E0. 追加指示：D2の価格適用判定（PriceRules）の接続
 
 - 実装SOURCEは `47f86eb20`（PRICE_RULES.jsonの出力追加は `d993d5e5b`）。D2の実装SOURCE `c1f95e08`・公開HANDOFF `7cd8ea139` の `PriceRules.quote` を、読取専用view（`b2-route-view-d2-c1f95e080`）から呼ぶ（`scripts/run_rpe_optimizer_price_quotes.py`）。

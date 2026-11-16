@@ -2,6 +2,16 @@
 
 正本は[REPORT](REPORT.md)の§E〜H（第3段階）と§A〜D（第2段階）。branch `codex/b2-rpe-method-optimizer-20261116`、実装SOURCE：PR生成は `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`、D2価格適用判定の接続は `47f86eb20`（報告出力 `d993d5e5b`、公開 `3014ae142`）。新規の実信号・価格・compile・Q3は0件。
 
+## 追加：κ round01の途中終了とV2候補選択（`cbe2947ad`）
+
+[kappa_round01/HANDOFF](kappa_round01/HANDOFF.md) を参照。
+
+- 停止理由：`INTERRUPTED_SEARCH_POLICY_CHANGE`。
+- 完了Q3：4,229件。
+- PR-Pauliの最安：410,470,823.86（LD5 κ×2）。
+- 次roundの読込み：`executor.prior_run_dirs` で行う。
+- 雛形：`rounds/h4_pr_pauli_priority_round02_template.json`（rule V2、budget 0）。
+
 ## 追加：D2の価格適用判定の接続（policy=MODEL）
 
 - PR候補ごとにD2の `PriceRules.quote` を呼ぶ（SOURCE `c1f95e08`、HANDOFF `7cd8ea139`）。渡すのは、configuration本体・登録された候補固有の実装契約・`policy: "MODEL"`（明示）。問題入力の `price_rules` で固定し、MODEL以外は拒否する。

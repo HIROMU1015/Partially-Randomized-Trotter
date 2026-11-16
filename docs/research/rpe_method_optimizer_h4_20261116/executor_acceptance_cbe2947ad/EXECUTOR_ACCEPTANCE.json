@@ -1,0 +1,146 @@
+{
+ "schema": "RPE_OPTIMIZER_EXECUTOR_ACCEPTANCE_V1",
+ "optimizer_commit": "cbe2947ad65a13e7ded8721d7aa2c085dbe54ee1",
+ "counts": {
+  "PASS": 18
+ },
+ "checks": [
+  {
+   "check": "budget0_real_routes_launch_nothing",
+   "status": "PASS",
+   "stops": {
+    "FULL_PF": "NEW_SCIENCE_NOT_APPROVED",
+    "TRUNCATED_PF": "NEW_SCIENCE_NOT_APPROVED",
+    "PR_PAULI": "NEW_SCIENCE_NOT_APPROVED",
+    "PR_DF": "NEW_SCIENCE_NOT_APPROVED"
+   }
+  },
+  {
+   "check": "saved_results_reused_without_budget",
+   "status": "PASS",
+   "saved_steps": 2
+  },
+  {
+   "check": "request_execute_ingest_next",
+   "status": "PASS",
+   "job_steps": 2,
+   "statuses": [
+    "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+    "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD"
+   ]
+  },
+  {
+   "check": "budget_exhausted_stop",
+   "status": "PASS",
+   "stop": "Q3_BUDGET_EXHAUSTED"
+  },
+  {
+   "check": "scope_kept_to_final_request",
+   "status": "PASS",
+   "pending": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777"
+  },
+  {
+   "check": "resume_after_budget_end_without_relaunch",
+   "status": "PASS",
+   "launched": 4,
+   "reused": 2,
+   "new_calls": 2
+  },
+  {
+   "check": "idempotent_rerun_launches_nothing",
+   "status": "PASS",
+   "new_calls": 0
+  },
+  {
+   "check": "running_job_not_launched_twice",
+   "status": "PASS",
+   "during": "JOB_IN_PROGRESS",
+   "after": "Q3_BUDGET_EXHAUSTED"
+  },
+  {
+   "check": "dead_job_reported_then_collected",
+   "status": "PASS",
+   "first": "STALE_JOB_NEEDS_REVIEW",
+   "second": "UNKNOWN_RESULT"
+  },
+  {
+   "check": "unknown_distinct_from_model_failure",
+   "status": "PASS",
+   "stop": "UNKNOWN_RESULT"
+  },
+  {
+   "check": "configuration_scope_dearer_configuration_descends_to_its_own_end",
+   "status": "PASS",
+   "stops": {
+    "d7dd4f52": [
+     "NO_IMPROVING_PROPOSAL",
+     105,
+     "706,024,044.20"
+    ],
+    "dd5b881d": [
+     "NO_IMPROVING_PROPOSAL",
+     102,
+     "300,389,335.33"
+    ],
+    "4d6e2c9c": [
+     "NO_IMPROVING_PROPOSAL",
+     102,
+     "325,744,940.21"
+    ]
+   }
+  },
+  {
+   "check": "lookahead_concurrency_same_trajectory_as_one_at_a_time",
+   "status": "PASS",
+   "jobs": {
+    "one_at_a_time": 309,
+    "lookahead": 419
+   }
+  },
+  {
+   "check": "configuration_scope_rerun_reuses_all_jobs",
+   "status": "PASS",
+   "new_calls": 0
+  },
+  {
+   "check": "interrupted_record_labels_lists_and_launches_nothing",
+   "status": "PASS",
+   "stop": "INTERRUPTED_SEARCH_POLICY_CHANGE",
+   "not_adopted": 1,
+   "requested": [
+    "REQUESTED_NOT_LAUNCHED"
+   ]
+  },
+  {
+   "check": "resume_reuses_request_only_directory",
+   "status": "PASS",
+   "stop": "Q3_BUDGET_EXHAUSTED",
+   "new_calls": 1
+  },
+  {
+   "check": "next_round_loads_prior_jobs_and_launches_nothing",
+   "status": "PASS",
+   "loaded": 8,
+   "completed_prior_jobs": 8,
+   "stop": "NEW_SCIENCE_NOT_APPROVED"
+  },
+  {
+   "check": "prior_job_of_a_different_route_is_refused",
+   "status": "PASS",
+   "refused": [
+    "DIFFERENT_JOB_KEY_OR_ROUTE"
+   ]
+  },
+  {
+   "check": "v2_round_runs_to_end_and_rerun_launches_nothing",
+   "status": "PASS",
+   "stop": "NO_CANDIDATE_LEFT_IN_RANGE",
+   "jobs": 171,
+   "best": "325,744,940.21"
+  }
+ ],
+ "science": {
+  "real_Q3_launched": 0,
+  "artificial": "LABELLED_ARTIFICIAL_WORKER"
+ }
+}

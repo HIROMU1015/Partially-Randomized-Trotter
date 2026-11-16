@@ -1,5 +1,13 @@
 # プロジェクト案内
 
+[H4 PR-Pauli κ round01の途中終了とV2候補選択](docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/HANDOFF.md)：
+- κ探索（LD2/3/5×κ{2/3,1,2}）を、方針変更のため停止した（`INTERRUPTED_SEARCH_POLICY_CHANGE`）。
+- 完了Q3は4,229件（採用3,334、先読み895）。PR-Pauliの最安は541.74Mから410.47Mへ更新した（LD5 κ×2）。
+- `METHOD_MINIMUM_PRIORITY_V2`：方式の最安を優先しつつ、他の構成と新κ・新L_Dも探索する。不適合点以下の配分は後回しにし、κは適応的に案を出す。
+- 保存ログでの検証：停止時最安までのQ3は4,148件から218件になった（ログに条件付けられた比較）。
+- `prior_run_dirs` で4,229件を読み込み、起動は0件。
+- 受入：新規則6、実行器18、生成11、A 20 PASS。
+
 [H4方式別最適化：D2価格適用判定の接続](docs/research/rpe_method_optimizer_h4_20261116/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md)：PR候補（保存・生成）にD2 PriceRules（c1f95e08）をpolicy=MODEL明示で接続。保存PR単価・総額をexactに再現。生成構成は26軸が揃えば費用に使用し、不足は理由・較正をNEEDSへ（Δ_PF=h/2は実step変化、DF L_D=1のκ×2はE_I[S]）。価格とQ3の状態は分離。受入：生成11、実行器10、A 20 PASS。compile・fit・Q3 0件。
 
 [H4方式別最適化：PR構成の生成と構成・shotの同時探索](docs/research/rpe_method_optimizer_h4_20261116/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md)：PR-DF（D2 B 437ba4ac A-fixed-grid）・PR-Pauli（A P1 B ce0517de）の固定mapperで、L_D・公式（2nd、4th(m5_best)）・Δ_PF（hの倍数）・κ（共通κの倍数）を変えた構成を生成。保存7構成を完全に再現し、物理scheduleが同一なら保存評価を再利用、新scheduleは不足を機械可読で出力。UNLIMITED／未承認／入力不足の停止を区別。受入：生成8、実行器10、A 20 PASS。実信号・Q3 0件・STOP。

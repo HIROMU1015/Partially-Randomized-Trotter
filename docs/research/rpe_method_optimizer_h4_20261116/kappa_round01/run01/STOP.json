@@ -1,0 +1,111 @@
+{
+ "schema": "RPE_ROUND_STOP_V1",
+ "stop_reason": "INTERRUPTED_SEARCH_POLICY_CHANGE",
+ "reason_ja": "探索方針の変更による途中終了（候補枯渇ではない）",
+ "instruction": "comment(B1114) 2026-11-16: stop launching new Q3, keep and collect launched Q3, do not wait for the 9 local searches to finish",
+ "round_started_UTC": "2026-11-15T20:52Z",
+ "stopped_UTC": "2026-11-16T05:03:08Z",
+ "round_process_pid": 634111,
+ "stop_means": {
+  "checked": [
+   "round SOURCE 1e88cd85c has no stop file or signal handler for a graceful stop",
+   "/proc/634111/status SigCgt=0x100000002 (only SIGINT and a runtime signal caught): SIGTERM ends the process immediately",
+   "Q3 jobs are child processes writing their own OUTCOME.json (worker artifacts) to the job directory"
+  ],
+  "used": "SIGTERM to PID 634111 only (not its process group): no further launch; launched Q3 processes kept running"
+ },
+ "in_flight_at_stop": [
+  {
+   "job": "1439c89f98762321b5fe",
+   "adapter_pid": 2843415
+  },
+  {
+   "job": "15e1ab95230e8dc539fb",
+   "adapter_pid": 2840147
+  },
+  {
+   "job": "27c58cf15e1a1863e462",
+   "adapter_pid": 2843668
+  },
+  {
+   "job": "3492d99e4697852fa23b",
+   "adapter_pid": 2846194
+  },
+  {
+   "job": "40c475e605885ba482db",
+   "adapter_pid": 2846791
+  },
+  {
+   "job": "4fa61451eaf7cd6680ca",
+   "adapter_pid": 2849489
+  },
+  {
+   "job": "5468eb65f118f8971ffd",
+   "adapter_pid": 2843891
+  },
+  {
+   "job": "6d703e7475aaeb7b8a08",
+   "adapter_pid": 2849682
+  },
+  {
+   "job": "73ae02929863c04694c8",
+   "adapter_pid": 2843001
+  },
+  {
+   "job": "73bf9866891561546e95",
+   "adapter_pid": 2842448
+  },
+  {
+   "job": "778e6f87a844d7b2aafd",
+   "adapter_pid": 2845316
+  },
+  {
+   "job": "8324bb5286867fb4aac8",
+   "adapter_pid": 2848118
+  },
+  {
+   "job": "8a536590b9af66b91d5a",
+   "adapter_pid": 2848441
+  },
+  {
+   "job": "940db4fd8fe8cb7784ef",
+   "adapter_pid": 2847736
+  },
+  {
+   "job": "b083717b8b89610643fc",
+   "adapter_pid": 2846637
+  },
+  {
+   "job": "bdaccec178dccdf4d825",
+   "adapter_pid": 2841771
+  },
+  {
+   "job": "ce0d68f3140f0ce8aef5",
+   "adapter_pid": 2845525
+  },
+  {
+   "job": "eae0b77d1f4e624a7d69",
+   "adapter_pid": 2848062
+  }
+ ],
+ "in_flight_result": "all 18 completed and wrote OUTCOME.json by 2026-11-16T05:05:04Z (worker exit code 0 in PROCESS_EXITS_*.jsonl): 14 EXCEEDS, 4 MEETS; PROCESS_RETURN.json and PROGRESS.jsonl EXIT lines are absent for them because the parent waiter ended",
+ "requested_not_launched": [
+  "2aa67e70d6d8ac2aceb9",
+  "2b35f84431898ad34f26",
+  "455ad04127755972c103",
+  "47bcf4fd86537c13d242",
+  "861629bd65aeca512146",
+  "b0bd4f22985becd1e2b7",
+  "ca3ef40c99e737e859f7",
+  "d7a226c8f678e6270ceb",
+  "ef4650fe962b7bf9a84a"
+ ],
+ "requested_not_launched_note": "REQUEST.json only: requests waiting for a free slot when the parent stopped; no Q3 ran for them",
+ "job_directories": {
+  "total": 4238,
+  "with_OUTCOME": 4229,
+  "OUTCOME_EXCEEDS": 2884,
+  "OUTCOME_MEETS": 1345,
+  "REQUEST_ONLY": 9
+ }
+}
