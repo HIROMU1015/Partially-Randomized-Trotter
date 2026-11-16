@@ -7,12 +7,15 @@ branch `codex/rpe-distributed-q3-server1`。[REPORT](REPORT.md)。
 `docs/research/rpe_distributed_q3/HANDOFF.md` から固定SHAと起動手順を取得する。
 サーバー1側で候補選択器・分散queueを独立実装しない。
 
-## 接続に必要な情報
+## 訂正後の接続方式
 
 サーバー1は `AbeHiromu@GPUA100-gleap-01` / `192.168.5.23`。
 SSH認証設定・転送agent・共有mountは現環境で見つからない。
-サーバー2の既存Host/user/port/踏み台が必要。サーバー2→1のみ可能な場合は、
-その経路と共通workerのpush/pull方式をHANDOFFに明記してほしい。
+利用者の訂正：ローカル0から `ssh qg1`・`ssh qg2` が利用可能。サーバー1→2直接接続は使わない。
+ローカル0の中継プログラムが空き枠照会、割当済みREQUESTの配送、保存結果回収を行う。
+サーバー1は受領済みjobを中継から独立して実行し、同一job IDのspoolを保持する。
+中央候補選択・予算・採用はサーバー2のみが所有する。
+このsessionはサーバー1内にあり、ローカル0のalias・認証はここにはない。
 新しい認証情報を公開branchへ記載しない。
 
 ## サーバー1の作業場所
@@ -42,3 +45,11 @@ git ls-remote origin refs/heads/codex/rpe-distributed-q3-coordinator
 |再接続時の再計算0の記録|未検収|
 
 ここまでの成果は環境整備の先行公開。2台実機検収完了ではない。
+
+## 先行検査の更新
+
+共通branch `b9a39567a51bd27ca89e751d4f42e170af7e6c71` は仕様公開のみ。
+起動可能なworker、中継、人工runを指す固定SHAの追記待ち。
+PR-Pauli LD3/LD5の既存dry-checkはPASS、PR-DFは固定caller内部のホスト絶対パスでSTOP。
+人工prefix回帰はPython3.12で固定AST guardが拒否。詳細・rawログは [REPORT](REPORT.md) と [checks](checks/)。
+ローカル0での操作はこの端末から実行できたと扱わず、実job IDと中央採用receiptが揃ってから検収済みへ変更する。

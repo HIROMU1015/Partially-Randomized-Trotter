@@ -4,9 +4,42 @@
 固定基点 `5829a7288d28395d2b3e89bfb676c23c690b9ddb`。
 公開branch `codex/rpe-distributed-q3-server1`。
 
+## 先行確認後の追補
+
+先行文書はGitHubアプリ経由で `4b1225e59997780d1c5261e44e8b168d623394a9` に公開した。
+通常HTTPS pushは `could not read Username` で失敗したが、アプリで同一treeを公開し、
+fetch後にローカルbranchも同じcommitへ同期した。
+
+共通branchの初版HANDOFF `b9a39567a51bd27ca89e751d4f42e170af7e6c71` を取得した。
+これは実装前の仕様で、実装固定SHAは未発行。
+ローカル0には `qg1` / `qg2` がある。サーバー1で実際に `ssh ... qg2 hostname` を試すと
+`Could not resolve hostname qg2`。`127.0.0.1:18763` のTCP実接続もConnection refused。
+したがって現時点はローカル0のSSHリレー起動待ちで、両機間接続は未成立。
+
+既存adapterの `--mode dry-check` を13round・各軸2shotという**metadata専用入力**で実行した。
+PR-Pauli LD3 / LD5は `DRY_CHECK_PASS`。分子信号再計算・実Q3は0。
+ただしPauli dry-checkはAST constructorを検査しないため、Python 3.12で数値実行可能とは認定しない。
+
+既存 `tests/test_rpe_dp_prefix_reuse.py` を固定DP viewで実行すると、Python 3.12では
+10検査中1 PASS・8 ERROR・1 FAILとなった。原因は元guardの
+`Reference total DP SOURCE changed; do not silently adapt`。元ソースを変更していなくても
+Python版によるAST形式差で拒否される。失敗ログを保存し、guardや期待hashを変更しない。
+既存PR-DF routeは明示的にPython **3.11.0rc1** を要求する。
+公式archiveを今回専用領域へ取得し、同runtimeを構築中。
+
+PR-DFはさらに、固定caller内部の絶対pathに別の固定kernel viewを要求した。
+`27e70efe533862f38f4080aabb9cdd3ad1749fe9` を今回専用の疎worktreeへ展開し、
+未存在だった既定path `.../partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115`
+から同viewへ互換symlinkを作成した。元SOURCEや既存directoryを上書きしていない。
+この依存はtop-levelの `route_views` mappingだけでは解決しない。[再現・不足](NEEDS_COORDINATOR.md)。
+
+実測・固定入力所在は [ENVIRONMENT.json](checks/ENVIRONMENT.json)、
+[ROUTE_INPUTS.json](checks/ROUTE_INPUTS.json)、失敗を含むrawログは [checks/](checks/) に保存した。
+以下の「先行公開」は着手時点の履歴であり、追補を優先する。
+
 ## 先行公開：接続と環境の確認
 
-状態：`PREPARING / COORDINATOR_HANDOFF_PENDING / CONNECTION_DETAILS_PENDING`。
+状態：`PREPARING / LOCAL0_RELAY_IMPLEMENTATION_PENDING / TWO_HOST_ACCEPTANCE_PENDING`。
 この時点では2台検収は未実施。新規H4科学計算は0件。
 
 - サーバー1の実測hostname：`GPUA100-gleap-01`。実IP `192.168.5.23`。
@@ -59,3 +92,30 @@ openfermion 1.6.1 / pyscf 2.7.0 / pytest 9.0.3 が既存。gmpy2は未導入。
 
 ジョブID・中央採用記録・共通workerの起動/状態/停止/再開コマンドは未発行。
 未確認値を補って検収済みとはしない。[HANDOFF](HANDOFF.md)を参照。
+
+## 接続訂正を受けた追記（2026-11-17 JST）
+
+上記は初回公開時の観測履歴。利用者の訂正を採用し、**ローカル0が既存alias `qg1`・`qg2`で両サーバーを中継する**。
+サーバー1→2直接接続は使用しない。ここをローカル0と誤認しない。
+この端末の `ssh -G qg2` は `hostname qg2` のままで、BatchMode接続も名前解決失敗。
+ローカル0→両機の実接続・転送はローカル0側で検収する必要がある。
+サーバー1のmount一覧にはネットワーク共有mountがない。両機で同一内容を読み書きできる共有領域は未検収。
+
+共通branchで現時点に取得した固定SHAは `b9a39567a51bd27ca89e751d4f42e170af7e6c71`。
+このcommitは仕様・人工REQUEST・profile例のみで、worker実行コードとローカル0中継コードは含まない。
+HANDOFFのSSHトンネル案は訂正後の要求を実測した記録ではなく、正式中継プログラムの公開を待つ。
+
+先行検査ログを [checks/](checks/) に保存した。
+
+|検査|実測結果|範囲・不足|
+|---|---|---|
+|PR-Pauli LD3 dry-check|PASS|Python 3.12.3、固定view a844ac25f、metadata/countのみ|
+|PR-Pauli LD5 dry-check|PASS|Python 3.12.3、固定view b6d4dea49、metadata/countのみ|
+|PR-DF dry-check|STOP|固定caller内にサーバー2専用の絶対viewパス。FileNotFoundErrorでruntime gateより前に停止|
+|既存人工prefix回帰|FAIL (1 failure / 8 errors / 1 pass)|Python 3.12.3で原DP AST hash guardが拒否。guard変更なし。指定3.11.0rc1で再確認中|
+
+[ENVIRONMENT.json](checks/ENVIRONMENT.json) が更新時の資源snapshot。
+CPU affinity 128・RAM約1 TiBは専有予約ではない。共有hostのload averageがCPU数を大幅に超えていたため、
+初回の小さい人工検収だけ **同時Q3=1、DP workers/Q3=2、BLAS/OMP=1、nice=10** とする。
+先行案の2 Q3×4 workersは承認済み容量ではなく、現負荷では採用しない。
+本番Q3の最大RSS・所要時間は未計測で、人工DPのRSSから外挿しない。
