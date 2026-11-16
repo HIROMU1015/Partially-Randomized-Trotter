@@ -222,9 +222,31 @@ def main():
         modes.add_argument(mode, action='store_true')
     parser.add_argument('--config', required=True); parser.add_argument('--configuration-id')
     parser.add_argument('--saved-packets', help='JSON list of MEAN_HANDOFF locators (default: LD1/LD2, LD3, LD5)')
+    parser.add_argument('--tail-descriptor', help='A-prepared descriptor envelope for a split absent from the old saved context')
     parser.add_argument('--source'); parser.add_argument('--raw-commit'); parser.add_argument('--run-dir'); parser.add_argument('--out')
     parser.add_argument('--approve-new-means', action='store_true'); parser.add_argument('--dry-context', action='store_true')
     args = parser.parse_args(); packets = saved_packets(args.saved_packets)
+    if args.execute and (not args.source or not args.out):
+        parser.error('--execute requires --source and --out')
+    if args.assemble and not args.out:
+        parser.error('--assemble requires --out')
+    if args.tail_descriptor:
+        from trottertracks.pauli_split_descriptor import stage1_metadata
+        with open(args.tail_descriptor) as f:
+            descriptor = json.load(f)
+        config, _ = E.load_configuration(ROOT, args.config, configuration_id=args.configuration_id)
+        if descriptor['prefix'] != config['spec']['L_D'] or descriptor['binding'] != config['spec']['binding']:
+            raise ValueError('PREPARED_DESCRIPTOR_H_OR_SPLIT_DIFFERS')
+        # A descriptor envelope locates the committed P0 value, not an arbitrary replacement.
+        if E.read_ref(ROOT, descriptor['source']) != descriptor['descriptor']:
+            raise ValueError('PREPARED_DESCRIPTOR_SOURCE_DIFFERS')
+        with stage1_metadata(ROOT, descriptor['prefix'], descriptor['descriptor'], descriptor['source']):
+            return dispatch(args, packets)
+    return dispatch(args, packets)
+
+
+def dispatch(args, packets):
+    """Keep the metadata context active through the actual plan/execute/assemble caller."""
     if args.plan:
         _, _, value = plan_only(args.config, args.configuration_id, packets)
         if args.out:
@@ -233,16 +255,12 @@ def main():
                                                      'request_rounds', 'unsupported_rounds', 'configuration_reasons')},
                               support={r['m']: r['provider_support'] for r in value['rounds']}), indent=2))
     elif args.execute:
-        if not args.source or not args.out:
-            parser.error('--execute requires --source and --out')
         value = execute(args.out, args.source, args.config, configuration_id=args.configuration_id, packets=packets,
                         approve=args.approve_new_means, dry_context=args.dry_context)
         print(json.dumps(dict(status=value['status'], rebound=value['rebound'], scope=value['scope'],
                               pending=value.get('pending_requests'), error=value.get('error')), indent=2), flush=True)
         sys.exit(0 if value['status'] in (SUCCESS, 'DRY_CONTEXT_READY_NO_MEAN') else 2)
     else:
-        if not args.out:
-            parser.error('--assemble requires --out')
         value, problems = assemble(args.out, args.config, configuration_id=args.configuration_id, packets=packets,
                                    source=args.source, raw_commit=args.raw_commit, run_dir=args.run_dir)
         pkt = value['packets'][0]
