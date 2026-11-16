@@ -100,6 +100,14 @@ class CompletionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'PR_CANDIDATE_COMPLETION_ONLY'):
             c.complete(dict(method='FULL_PF'))
 
+    def test_caller_published_registry_is_used_without_manual_registration(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            registry=dict(entries=[dict(name='B2_PUBLISHED_NEW_STEP',model_source={'commit':'fixed','path':'model'})])
+            with patch.object(C,'value',return_value=registry)as reader:
+                c=C.Completion(Path(tmp),dict(source='fixed-code',price_registry_source={'commit':'b2','path':'registry'}))
+            self.assertEqual(C.read(c.registry),registry)
+            self.assertEqual(reader.call_args.args[0],{'commit':'b2','path':'registry'})
+
     def test_normal_cli_contains_callback_and_df_route_is_generic(self):
         spec=importlib.util.spec_from_file_location('_completion_cli',ROOT/'scripts/run_rpe_method_optimizer.py');cli=importlib.util.module_from_spec(spec);spec.loader.exec_module(cli)
         import inspect

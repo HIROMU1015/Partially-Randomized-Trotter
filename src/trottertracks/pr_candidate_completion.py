@@ -75,13 +75,20 @@ class Completion:
         self.lock=threading.RLock()
         self.registry=self.directory/'PRICE_RULES_REGISTRY.json'
         if not self.registry.exists():
-            initial=value(dict(commit='c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa',path='configs/pr_price_rules/h4_saved_rules.json'))
-            extra=value(dict(commit='54b4353b9',path='docs/research/b2_pauli_calibration_20261116/PRICE_RULES_REGISTRY_EXTENDED.json'))
+            provided=settings.get('price_registry_source')or settings.get('price_registry_file')
+            if provided:
+                initial=value(provided)if isinstance(provided,dict)else read(Path(provided))
+                extra=dict(entries=[])
+            else:
+                initial=value(dict(commit='c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa',path='configs/pr_price_rules/h4_saved_rules.json'))
+                extra=value(dict(commit='54b4353b9',path='docs/research/b2_pauli_calibration_20261116/PRICE_RULES_REGISTRY_EXTENDED.json'))
             by={e['name']:e for e in initial['entries']};by.update({e['name']:e for e in extra['entries']})
             if imported:
                 previous=Path(imported['path']).with_name('PRICE_RULES_REGISTRY.json')
                 saved_registry=value(dict(commit=imported['commit'],path=str(previous)))
-                by.update({e['name']:e for e in saved_registry['entries']})
+                if provided:
+                    for entry in saved_registry['entries']:by.setdefault(entry['name'],entry)
+                else:by.update({e['name']:e for e in saved_registry['entries']})
             put(self.registry,dict(initial,entries=list(by.values())))
 
     def save(self):
@@ -374,6 +381,9 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
     """
     from . import rpe_method_optimizer as O
     settings=deepcopy(spec['candidate_completion'])
+    if not(settings.get('price_registry_source')or settings.get('price_registry_file')):
+        supplied=(problem.get('price_rules')or{}).get('registry_file')
+        if supplied:settings['price_registry_file']=str((Path(root)/supplied).resolve())
     if spec.get('science_approved')is not True:raise ValueError('Candidate acquisition requires the adopted science scope')
     old_state=Path(run)/'completion/STATE.json'
     settings.setdefault('source',read(old_state)['source']if old_state.exists()else git('rev-parse','HEAD'))
