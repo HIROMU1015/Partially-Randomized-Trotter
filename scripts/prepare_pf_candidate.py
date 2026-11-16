@@ -46,6 +46,14 @@ def event(out,stage,**kw):
     print(stage,kw,flush=True)
 
 
+def comparison_method(cfg):
+    s=cfg['spec']
+    if s['method'] in ('FULL_PF','TRUNCATED_PF'):return s['method']
+    if s['method']=='PF' and s.get('split',{}).get('original_PF_method') in ('FULL','B0I'):
+        return 'TRUNCATED_PF' if s['split']['original_PF_method']=='B0I' else 'FULL_PF'
+    raise ValueError('D handles canonical deterministic PF only')
+
+
 def selected_configuration(item):
     from trottertracks import pf_candidate_space as K,pf_evidence_preparation as E
     if item.get('configuration_body') is not None:cfg=deepcopy(item['configuration_body'])
@@ -54,7 +62,7 @@ def selected_configuration(item):
         matches=[v for v in K.candidates(ROOT) if v['configuration_id']==item['configuration_id']]
         E.check(len(matches)==1,'Unknown/ambiguous selected PF configuration');cfg=matches[0]['configuration']
     else:cfg=K.configure(ROOT,**{k:item[k] for k in ('method','p','formula','delta_over_h')})
-    E.check(cfg['spec']['method'] in ('FULL_PF','TRUNCATED_PF'),'D handles deterministic PF only')
+    E.check(comparison_method(cfg) in ('FULL_PF','TRUNCATED_PF'),'D handles deterministic PF only')
     return cfg
 
 
@@ -70,7 +78,7 @@ def native_child(path):
     # Do not import C's package before the original install() resolves native.
     import run_pf_m0_prices as M
     job=load(path);allowed=load(job['fixed_plan'])
-    cfg=allowed['configuration'];prefix=cfg['spec']['L_D'];route=cfg['spec']['method']
+    cfg=allowed['configuration'];prefix=cfg['spec']['L_D'];route=comparison_method(cfg)
     if route!=job['route'] or prefix!=job['prefix']:raise ValueError('Native prefix/route binding differs')
     requests={r['m']:r['physical_candidate'] for r in allowed['prepared']['pending']['requests']}
     if any(c['row']!=M.T.native_row(requests[c['m']]) for c in job['cells']):raise ValueError('Native schedule differs')
@@ -123,7 +131,7 @@ def acquire(value,out,phase,ms,source):
     import run_pf_p7_h_prices as P
     folder=out/phase/'run01';private=ROOT/'.pf_evidence_private'/value['configuration']['id']/phase/'run01'
     folder.mkdir(parents=True);private.mkdir(parents=True,exist_ok=False)
-    cfg=value['configuration'];p=cfg['spec']['L_D'];route=cfg['spec']['method']
+    cfg=value['configuration'];p=cfg['spec']['L_D'];route=comparison_method(cfg)
     cells=[dict(m=r['m'],formula=r['physical_candidate']['formula'],row=M.T.native_row(r['physical_candidate']),role=phase.upper()) for r in value['prepared']['pending']['requests'] if r['m'] in ms]
     saved=M.read(dict(commit=M.BASELINE,path=(M.F if route=='FULL_PF' else M.T).OUTPUT_ROOT+'/holdout/run01/RESULT.json'))['results'][0]
     constant=saved['facts']['scalar'] if route=='FULL_PF' else saved['facts']['scalar']-saved['facts']['tail_identity']
@@ -170,7 +178,7 @@ def freeze(value,prices,out,source):
         records=[]
         for m in value['calibration_rounds']:
             row=next(x for x in prices if (x['m'],x['axis'])==(m,axis))
-            records.append(V.record(cell_id=value['configuration']['id']+':m%d'%m,role='CALIBRATION',route=value['configuration']['spec']['method'],axis=axis,features=dict(one=1,q=qs[m]),rz_count=row['unit_price_RZ'],kind='DIRECT_COMPILED_DETERMINISTIC',source=row['price_evidence'],implementation=dict(lowering_id='H46_LONG_TIME_NATIVE_COMPOSE',physical_recipe='C_ADMITTED_DETERMINISTIC_PREFIX_AND_SIGNED_PF'),profile=value['configuration']['spec']['profile']))
+            records.append(V.record(cell_id=value['configuration']['id']+':m%d'%m,role='CALIBRATION',route=comparison_method(value['configuration']),axis=axis,features=dict(one=1,q=qs[m]),rz_count=row['unit_price_RZ'],kind='DIRECT_COMPILED_DETERMINISTIC',source=row['price_evidence'],implementation=dict(lowering_id='H46_LONG_TIME_NATIVE_COMPOSE',physical_recipe='C_ADMITTED_DETERMINISTIC_PREFIX_AND_SIGNED_PF'),profile=value['configuration']['spec']['profile']))
         model[axis]=V.fit(records,features=['one','q'],design_source=source)
         prediction[axis]=E.enc(V.predict(model[axis],dict(one=1,q=qs[value['holdout_round']])))
     path=out/'FROZEN_MODEL.json';write(path,dict(configuration_id=value['configuration']['id'],models=model,calibration_rounds=value['calibration_rounds'],holdout_round=value['holdout_round'],predictions=prediction,holdout_refit=False,long_q_error_bound=None))
@@ -225,7 +233,7 @@ def register(value,out,prices,registry):
     inputs.update(cases=[case],concurrent_configurations=1,maximum_scientific_calls=1)
     write(out/'Q3_INPUTS.json',inputs);publish([out],'Publish selected PF configuration signal and reusable Q3 route template')
     width=str(E.frac(cfg['spec']['delta_pf'])/SAVED_H())
-    entry=dict(method=cfg['spec']['method'],p=cfg['spec']['L_D'],formula=cfg['spec']['formula'],delta_over_h=width,configuration=cfgref,signal_packet=sigref,prices=prices,q3_inputs=gitref(out/'Q3_INPUTS.json'),total_configuration_id=binding['total_configuration']['id'],binding_id=binding['id'],price_scope=value['price_scope'])
+    entry=dict(method=comparison_method(cfg),p=cfg['spec']['L_D'],formula=cfg['spec']['formula'],delta_over_h=width,configuration=cfgref,signal_packet=sigref,prices=prices,q3_inputs=gitref(out/'Q3_INPUTS.json'),total_configuration_id=binding['total_configuration']['id'],binding_id=binding['id'],price_scope=value['price_scope'])
     registry=Path(registry);data=load(registry) if registry.exists() else dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={})
     if cfg['id'] in data['configurations'] and data['configurations'][cfg['id']]!=entry:raise ValueError('Registry collision; preserve original entry')
     data['configurations'][cfg['id']]=entry

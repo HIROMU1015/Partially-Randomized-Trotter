@@ -12,6 +12,12 @@ import prepare_pf_candidate as D
 import run_pf_m0_prices as M
 
 class Entry(unittest.TestCase):
+    def test_real_canonical_method_is_pf_with_route_in_split(self):
+        for original,route in [('FULL','FULL_PF'),('B0I','TRUNCATED_PF')]:
+            cfg={'spec':{'method':'PF','split':{'original_PF_method':original}}}
+            self.assertEqual(D.comparison_method(cfg),route)
+        with self.assertRaises(ValueError):D.comparison_method({'spec':{'method':'PR'}})
+
     def test_new_prefix_order_and_historical_hash_gate(self):
         for p in (0,1,8,9):
             prep=SimpleNamespace(preparation_hash='OWN_'+str(p),deterministic_fragment_indices=tuple(range(p)))
