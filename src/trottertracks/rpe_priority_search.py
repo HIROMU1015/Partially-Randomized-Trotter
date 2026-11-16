@@ -161,9 +161,17 @@ class ConfigState:
         return any(leq(v, f) for f in self.fails)
 
 
-def run_priority(name, candidates, knowledge, backend, search, threshold, generate, max_new, *, baseline=None, routes=None,
+def priority_session(name, candidates, knowledge, backend, search, threshold, generate, max_new, *, baseline=None, routes=None,
                  spent=0, free=None, science_approved=True, prefetch=None, on_missing='STOP', facts=None, log=None,
-                 prefetch_state=None):
+                 prefetch_state=None, active_configurations=None):
+    """Yield a causal candidate frame before each answer, retaining batch state.
+
+    Send an exposed eligible proposal, or ``None`` for the original V2 choice.
+    ``{'refresh': True}`` reclassifies without consuming a step or requesting an
+    answer.  A mutable set, or zero-argument callable returning a set, may expose
+    additional configurations from the static ready metadata on refresh.  The
+    final existing result is returned as ``StopIteration.value``.
+    """
     s = settings(search);baseline = baseline or {}
     ready = [c for c in candidates if c['ready'] and c['configuration_id']]
     states = {c['configuration_id']: ConfigState(c) for c in ready}
@@ -175,6 +183,10 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
     selection_timing = dict(candidate_classification_seconds=0.0, candidate_classification_calls=0,
                             preview_order_seconds=0.0, preview_order_calls=0,
                             backend_answer_seconds=0.0, backend_answer_calls=0)
+
+    def active_ids():
+        ids = active_configurations() if callable(active_configurations) else active_configurations
+        return set(states) if ids is None else set(ids) & states.keys()
     if search.get('seed_saved_same_L_D'):
         O.sibling_seeds(candidates, knowledge)
 
@@ -192,9 +204,11 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
     for (cid, v), r in list(knowledge.items()):
         if cid in states:
             absorb(cid, v, r)
+    seen_knowledge = set(knowledge)
 
     def method_min():
-        rows = [(st.best[0], cid) for cid, st in states.items() if st.best is not None]
+        active = active_ids()
+        rows = [(st.best[0], cid) for cid, st in states.items() if cid in active and st.best is not None]
         return min(rows) if rows else None
 
     def transfers(st):
@@ -202,8 +216,9 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         absolute = kappa_value(st.c) is not None
         kv = (lambda c: kappa_value(c)) if absolute else (lambda c: kappa_of(c, baseline))
         k0 = kv(st.c)
+        active = active_ids()
         for o in states.values():
-            if o is st or family(o.c, baseline) != fam or kv(o.c) is None:
+            if o.cid not in active or o is st or family(o.c, baseline) != fam or kv(o.c) is None:
                 continue
             feas = sorted((O.cost(v, st.c['prices']), v) for (cid, v), r in knowledge.items() if cid == o.cid and r['status'] == O.PASS)
             if feas:
@@ -266,7 +281,10 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         selection_started = time.perf_counter()
         mm = method_min();M = None if mm is None else mm[0];lead = None if mm is None else mm[1]
         groups = {k: [] for k in CLASS_ORDER};explore, queues = [], {}
+        active = active_ids()
         for cid, st in states.items():
+            if cid not in active:
+                continue
             items = local(st);open_ = []
             for p in items:
                 if p['deferred']:
@@ -418,7 +436,20 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             frontiers = pending_frontiers
         return extra
 
+    previous_active = active_ids()
     while step < search['max_steps_per_method']:
+        current_active = active_ids()
+        if current_active != previous_active:
+            # Transfer seeds of a still-unsolved configuration may now come
+            # from an activated neighbour, even if its own incumbent is fixed.
+            for state in states.values():
+                state.dirty = True
+            previous_active = current_active
+        for key in knowledge.keys() - seen_knowledge:
+            cid, vector = key
+            if cid in states:
+                absorb(cid, vector, knowledge[key])
+        seen_knowledge.update(knowledge)
         groups, M = classify()
         if groups['UPDATE'] and not (groups['EXPLORE'] and since_explore >= s['explore_every'] - 1):
             choice = groups['UPDATE'][0]
@@ -435,6 +466,28 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         else:
             stop = 'NO_CANDIDATE_LEFT_IN_RANGE' if M is not None else 'NO_FEASIBLE_POINT_IN_RANGE'
             break
+        eligible = []
+        seen = set()
+        for cls in CLASS_ORDER:
+            if cls in ('SMALL', 'DEFERRED') and search.get('small_and_deferred') == 'STOP':
+                continue
+            items = [p for queue in groups['_queues'] for p in queue] if cls == 'EXPLORE' else groups[cls]
+            for proposal in items:
+                key = proposal['configuration_id'], tuple(proposal['vector'])
+                if key not in seen:
+                    seen.add(key);eligible.append(proposal)
+        selected = yield dict(groups=groups, eligible=eligible, default_choice=choice,
+                              step=step, since_explore=since_explore, new_calls=new_calls, limit=limit,
+                              method_min=M, active_configurations=sorted(active_ids()),
+                              fail_streak={cid: st.fail_streak for cid, st in states.items() if cid in active_ids()},
+                              explore_picks={cid: st.explore_picks for cid, st in states.items() if cid in active_ids()})
+        if isinstance(selected, dict) and selected.get('refresh') is True:
+            continue
+        if selected is not None:
+            key = selected['configuration_id'], tuple(selected['vector'])
+            choice = next((p for p in eligible if (p['configuration_id'], tuple(p['vector'])) == key), None)
+            if choice is None:
+                raise ValueError('Priority session selection is not in its exposed eligible pool')
         allow = new_calls < limit;is_free = free is not None and free(choice)
         if prefetch is not None and science_approved and s['lookahead'] > 1 and new_calls < limit:
             # finite budgets prefetch too (rounds driven in batches); unconsumed jobs stay reusable knowledge
@@ -472,6 +525,7 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         elif choice['cls'] == 'UPDATE':
             since_explore += 1
         key = (choice['configuration_id'], choice['vector']);knowledge[key] = dict(answer, cost=choice['cost'])
+        seen_knowledge.add(key)
         st = states[choice['configuration_id']];before_cfg = None if st.best is None else st.best[0]
         st.picks += 1;absorb(choice['configuration_id'], choice['vector'], knowledge[key])
         st.fail_streak = 0 if answer['status'] == O.PASS else st.fail_streak + 1
@@ -494,9 +548,12 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
     else:
         stop = 'STEP_LIMIT'
     groups, M = classify()
-    _, incumbent = O.method_state(ready, knowledge, threshold)
+    active = active_ids()
+    _, incumbent = O.method_state([c for c in ready if c['configuration_id'] in active], knowledge, threshold)
     by = []
     for cid, st in states.items():
+        if cid not in active:
+            continue
         b = st.best
         by.append(dict(candidate=st.c['name'], configuration_id=cid, key=st.c['key'], picks=st.picks, explore_picks=st.explore_picks,
                        kappa_value=None if kappa_value(st.c) is None else str(kappa_value(st.c)), promising=st.promising,
@@ -504,8 +561,10 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                        best=None if b is None else dict(vector=list(b[1]), cost=b[0], cost_display=O.show(b[0]), status=b[2]['status'],
                                                         MSE_lower=b[2].get('MSE_lower'), MSE_upper=b[2].get('MSE_upper'),
                                                         source=b[2].get('source'), job=b[2].get('job'), label=b[2].get('label'))))
-    plan = [] if search.get('kappa_neighbourhood') else kappa_plan(candidates, states, s, baseline, knowledge)
-    requests = plan + new_ld_requests(candidates, states, M, facts, baseline)
+    active_candidates = candidates if active_configurations is None else [c for c in candidates if c['configuration_id'] in active]
+    active_states = states if active_configurations is None else {cid: st for cid, st in states.items() if cid in active}
+    plan = [] if search.get('kappa_neighbourhood') else kappa_plan(active_candidates, active_states, s, baseline, knowledge)
+    requests = plan + new_ld_requests(active_candidates, active_states, M, facts, baseline)
     return dict(method=name, rule=RULE_V2, stop_reason=stop, trace=trace, held=held, new_calls=new_calls - spent, spent_before=spent,
                 pending_request=pending, incumbent=incumbent, not_ready_in_range=[c['name'] for c in candidates if not c['ready']],
                 by_configuration=by, incumbent_scope='METHOD_PRIORITY', unevaluated=unevaluated,
@@ -513,6 +572,23 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                 selection_timing=selection_timing,
                 left={k: len(v) for k, v in groups.items() if not k.startswith('_')}, input_requests=requests, settings={k: str(v) if isinstance(v, Fraction) else v
                                                                                                 for k, v in s.items()})
+
+
+def run_priority(name, candidates, knowledge, backend, search, threshold, generate, max_new, *, baseline=None, routes=None,
+                 spent=0, free=None, science_approved=True, prefetch=None, on_missing='STOP', facts=None, log=None,
+                 prefetch_state=None, active_configurations=None):
+    """Drive the session with the unchanged V2 choice at every decision."""
+    session = priority_session(name, candidates, knowledge, backend, search, threshold, generate, max_new,
+                               baseline=baseline, routes=routes, spent=spent, free=free,
+                               science_approved=science_approved, prefetch=prefetch, on_missing=on_missing,
+                               facts=facts, log=log, prefetch_state=prefetch_state,
+                               active_configurations=active_configurations)
+    try:
+        frame = next(session)
+        while True:
+            frame = session.send(frame['default_choice'])
+    except StopIteration as finished:
+        return finished.value
 
 
 def kappa_plan(candidates, states, s, baseline, knowledge):
