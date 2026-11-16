@@ -36,8 +36,9 @@ def changed_tail(tt,shots=3):
     return deepcopy(tt[:-1])+[t]
 
 
-def artificial_child(tt,scope,out):
-    value=P.Accelerator(workers=1)(tt,h=10.,target=0.,scope=scope)
+def artificial_child(tt,scope,out,observed=None):
+    engine=P.Accelerator(workers=1)if observed is None else observed(out,'ARTIFICIAL_PREFIX',workers=1,outcome_batch=4)
+    value=engine(tt,h=10.,target=0.,scope=scope)
     (out/'RESULT.json').write_text(json.dumps(value))
 
 
@@ -132,6 +133,8 @@ class PrefixTests(unittest.TestCase):
         import multiprocessing as mp
         adapter_spec=importlib.util.spec_from_file_location('_prefix_adapter',ROOT/'scripts/run_rpe_optimizer_q3_job.py')
         A=importlib.util.module_from_spec(adapter_spec);adapter_spec.loader.exec_module(A)
+        A.route(VIEW,'pauli_b_common_entry')  # unchanged saved worker constructor path
+        observed=A.COMMON['X'].L.R.Observed
         _,tt,scope=example(n=4)
         with tempfile.TemporaryDirectory()as d:
             request=dict(method='PR_DF',configuration_id='ARTIFICIAL',expected={'configuration_id':'ARTIFICIAL'},
@@ -141,7 +144,7 @@ class PrefixTests(unittest.TestCase):
             for i,trial in enumerate((tt,changed_tail(tt))):
                 out=Path(d)/str(i);out.mkdir()
                 with A.prefix_cache_context(request,case,inputs,out):
-                    child=mp.get_context('fork').Process(target=artificial_child,args=(trial,scope,out))
+                    child=mp.get_context('fork').Process(target=artificial_child,args=(trial,scope,out,observed))
                     child.start();child.join(20);self.assertEqual(child.exitcode,0)
                 result=json.loads((out/'RESULT.json').read_text())
                 self.assertEqual(result,P.Accelerator(workers=1)(trial,h=10.,target=0.,scope=scope))
