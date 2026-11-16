@@ -457,6 +457,7 @@ class WidthDriver:
                     raise ValueError('FAMILY_PREPARATION_MAPPER_MISMATCH')
                 f.update(status='READY_METADATA',configuration=config,rows=KS.encode_rows(rows),
                          source=result.get('configuration_source'),metadata_kappa_not_a_scientific_candidate=True)
+                f.pop('reason',None)  # the fulfilled preparation need is no longer a blocking reason
             except(ValueError,KeyError,TypeError)as exc:
                 f.update(status='HELD_FAMILY_MISMATCH',reason=str(exc))
 

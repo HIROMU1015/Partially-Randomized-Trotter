@@ -225,6 +225,7 @@ class WidthSearchTests(unittest.TestCase):
             for method in ('PR_PAULI','PR_DF'):
                 f=[f for f in d.state['families'].values()if f['method']==method and f['L_D']==2][0]
                 self.assertEqual(f['status'],'READY_METADATA')
+                self.assertNotIn('reason',f)
                 self.assertTrue(f['metadata_kappa_not_a_scientific_candidate'])
                 self.assertEqual(KS._frac(f['configuration']['spec']['split']['lambda_R']),Fraction(1,20000))
                 p=[p for p in d.state['points']if p['method']==method and p['L_D']==2][0]
