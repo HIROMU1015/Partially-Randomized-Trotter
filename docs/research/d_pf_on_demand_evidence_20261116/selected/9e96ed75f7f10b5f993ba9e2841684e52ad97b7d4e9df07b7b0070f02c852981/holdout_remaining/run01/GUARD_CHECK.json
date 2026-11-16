@@ -1,0 +1,70 @@
+{
+  "raw_evidence": {
+    "commit": "2ab10ef1e552185d2a6c7b53a11a5a756247e0bc",
+    "sha256": {
+      "RESULT.json": "577e5dcba80d6473ec3469497366b4a230c8e4a62dc58aa707324eff6ceb79b6",
+      "PRICES.json": "948ecf743a1d1d325b21f56cf95fa98b8587012ec784bfac9c8540fc4a31d847",
+      "SIDECARS_UNBOUND.json": "b07e7e11c9977b0f9d13baa8943a90edf94eceedc50c709cfcf1d9aadda911c6",
+      "IMPLEMENTATION_EVIDENCE.json": "3c163bccc6df56d73394c55aa9b21ebf0a0ee1736849715c3ce17242f427ba61"
+    }
+  },
+  "guard": {
+    "status": "IMPLEMENTATION_POLICY_CHECKED_NOT_SCIENTIFIC_QUALIFICATION",
+    "policy": {
+      "id": "PF_SELECTED_SAME_PHYSICAL_WRAPPER_V1",
+      "source": {
+        "commit": "c628e9e8447c11c984064b922cbce6c52dc72d48",
+        "path": "src/trottertracks/price_implementation_guard.py"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "by_method": {
+        "FULL_PF": {
+          "native_policy": "H46_LONG_TIME_NATIVE_COMPOSE",
+          "rte_rotation_lowering": "NOT_APPLICABLE_NO_RTE",
+          "scalar_quantity": "HAMILTONIAN_CONSTANT"
+        }
+      }
+    },
+    "checked": [
+      {
+        "m": 5,
+        "axis": "X",
+        "evidence": {
+          "commit": "2ab10ef1e552185d2a6c7b53a11a5a756247e0bc",
+          "path": "docs/research/d_pf_on_demand_evidence_20261116/selected/9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981/holdout_remaining/run01/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "FULL_2nd_m5X"
+          ]
+        }
+      },
+      {
+        "m": 5,
+        "axis": "Y",
+        "evidence": {
+          "commit": "2ab10ef1e552185d2a6c7b53a11a5a756247e0bc",
+          "path": "docs/research/d_pf_on_demand_evidence_20261116/selected/9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981/holdout_remaining/run01/IMPLEMENTATION_EVIDENCE.json",
+          "selector": [
+            "FULL_2nd_m5Y"
+          ]
+        }
+      }
+    ]
+  },
+  "model_qualified": false,
+  "binding_path_corrections": []
+}
