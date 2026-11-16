@@ -110,6 +110,120 @@ os.execv(command[0], command)
 
 
 class RelayTests(unittest.TestCase):
+    def test_worker_connection_failures_back_off_without_slowing_other_workers(self):
+        with tempfile.TemporaryDirectory(prefix='relay-backoff-clock-') as temporary:
+            configuration = Path(temporary)/'relay.json'
+            workers = [dict(host_id=name, ssh_alias=name, root='/ARTIFICIAL/root', profile='/ARTIFICIAL/profile')
+                       for name in ('failing', 'healthy')]
+            write(configuration, dict(state_directory=str(Path(temporary)/'relay-state'), external_tunnel=True,
+                controller=dict(ssh_alias='qg2'), workers=workers, poll_seconds=1))
+            now, recover = [1000.], [False]
+            clock = SimpleNamespace(time=lambda:now[0], monotonic=lambda:now[0])
+            calls = {name:[] for name in ('failing', 'healthy')}
+            def ssh(command, **options):
+                host = command[-2]; calls[host].append(now[0])
+                if host == 'failing' and not recover[0]:
+                    return SimpleNamespace(returncode=255, stdout='', stderr='ARTIFICIAL connection unavailable')
+                return SimpleNamespace(returncode=0, stderr='', stdout=json.dumps(dict(host_id=host,
+                    attempts=[], slots=1, source_sha='ARTIFICIAL_SOURCE', cached_prefixes=[])))
+            with patch.object(R, 'time', clock), patch.object(R.subprocess, 'run', side_effect=ssh):
+                relay = R.Relay(configuration)
+                with patch.object(relay, 'post', return_value=dict(assignments=[])):
+                    for second in range(92):
+                        now[0] = 1000.+second
+                        relay.cycle()
+                    self.assertEqual(calls['failing'], [1000.+x for x in (0, 1, 3, 7, 15, 31, 61, 91)])
+                    self.assertEqual(len(calls['healthy']), 92)
+                    status = json.loads((relay.directory/'STATUS.json').read_text())
+                    self.assertEqual(status['heartbeat_epoch'], now[0])
+                    self.assertEqual(status['workers']['failing']['failure_count'], 8)
+                    self.assertEqual(status['workers']['failing']['next_retry_epoch'], 1121.)
+                    events = [json.loads(line) for line in (relay.directory/'EVENTS.jsonl').read_text().splitlines()]
+                    pending = [e for e in events if e['event'] == 'TRANSPORT_PENDING']
+                    self.assertEqual(len(pending), 8)
+                    self.assertEqual([e['retry_seconds'] for e in pending], [1, 2, 4, 8, 16, 30, 30, 30])
+                    now[0] = 1121.; recover[0] = True
+                    relay.cycle()
+                    self.assertEqual(relay.state['workers']['failing']['failure_count'], 0)
+                    self.assertEqual(relay.state['workers']['failing']['next_retry_epoch'], 0)
+                    now[0] = 1122.; recover[0] = False
+                    relay.cycle()
+                    self.assertEqual(relay.state['workers']['failing']['failure_count'], 1)
+                    self.assertEqual(relay.state['workers']['failing']['next_retry_epoch'], 1123.)
+
+    def test_immediately_exiting_or_unstartable_tunnel_does_not_respawn_each_poll(self):
+        with tempfile.TemporaryDirectory(prefix='relay-tunnel-backoff-') as temporary:
+            configuration = Path(temporary)/'relay.json'
+            write(configuration, dict(state_directory=str(Path(temporary)/'relay-state'),
+                controller=dict(ssh_alias='qg2'), workers=[], poll_seconds=1))
+            now, alive = [1000.], [False]
+            clock = SimpleNamespace(time=lambda:now[0], monotonic=lambda:now[0])
+            starts = []
+            def launch(*args, **options):
+                starts.append(now[0])
+                return SimpleNamespace(pid=40000+len(starts), poll=lambda:None if alive[0] else 255)
+            with patch.object(R, 'time', clock), patch.object(R.subprocess, 'Popen', side_effect=launch):
+                relay = R.Relay(configuration)
+                for second in range(40):
+                    now[0] = 1000.+second
+                    relay.cycle()
+                self.assertEqual(starts, [1000.+x for x in (0, 2, 5, 10, 19, 36)])
+                self.assertEqual(relay.state['tunnel']['failure_count'], 6)
+                self.assertEqual(relay.state['tunnel']['next_retry_epoch'], 1067.)
+                alive[0] = True; now[0] = 1067.
+                relay.cycle()
+                now[0] = 1072.
+                relay.cycle()
+                self.assertEqual(relay.state['tunnel']['failure_count'], 0)
+                self.assertEqual(len(starts), 7)
+            now[0] = 2000.
+            with patch.object(R, 'time', clock), \
+                    patch.object(R.subprocess, 'Popen', side_effect=OSError('ARTIFICIAL SSH executable unavailable')) as failed:
+                relay = R.Relay(configuration)
+                for second in range(8):
+                    now[0] = 2000.+second
+                    relay.cycle()
+                self.assertEqual(failed.call_count, 4)
+                self.assertEqual(relay.state['tunnel']['next_retry_epoch'], 2015.)
+
+    def test_recovery_log_survives_optional_metric_failure_and_later_poll_failure(self):
+        with tempfile.TemporaryDirectory(prefix='relay-complete-metric-') as temporary:
+            configuration = Path(temporary)/'relay.json'
+            worker = dict(host_id='ARTIFICIAL_SERVER1')
+            write(configuration, dict(state_directory=str(Path(temporary)/'relay-state'), external_tunnel=True,
+                controller=dict(ssh_alias='qg2'), workers=[worker]))
+            relay = R.Relay(configuration)
+            transferred, poll_failure = [False], [False]
+            def remote(_, action, value=None):
+                if action == 'ack':
+                    transferred[0] = True
+                    return dict(ok=True), .01
+                self.assertEqual(action, 'status')
+                attempt = dict(job_id='ARTIFICIAL_JOB', attempt_id='ARTIFICIAL_ATTEMPT',
+                    state='TRANSFERRED' if transferred[0] else 'COMPLETED_PENDING_TRANSFER',
+                    request_sha256='ARTIFICIAL_HASH', files={})
+                return dict(host_id=worker['host_id'], attempts=[attempt], slots=1,
+                    source_sha='ARTIFICIAL_SOURCE', cached_prefixes=[]), .02
+            def post(path, value):
+                if path == '/v1/transfer-metric': raise OSError('ARTIFICIAL optional metric unavailable')
+                if path == '/v1/poll':
+                    if poll_failure[0]: raise OSError('ARTIFICIAL controller closed after completion')
+                    return dict(assignments=[])
+                return dict(ok=True, duplicate=False)
+            with patch.object(relay, 'remote', side_effect=remote), patch.object(relay, 'post', side_effect=post):
+                relay.cycle()
+                self.assertEqual(relay.state['workers'][worker['host_id']]['failure_count'], 0)
+                events = [json.loads(line) for line in (relay.directory/'EVENTS.jsonl').read_text().splitlines()]
+                self.assertEqual([e['event'] for e in events], ['RESULT_RECOVERED', 'TELEMETRY_PENDING'])
+                self.assertTrue(transferred[0])
+                poll_failure[0] = True
+                relay.cycle()
+                events = [json.loads(line) for line in (relay.directory/'EVENTS.jsonl').read_text().splitlines()]
+                self.assertEqual([e['event'] for e in events], ['RESULT_RECOVERED', 'TELEMETRY_PENDING', 'TRANSPORT_PENDING'])
+                self.assertEqual(events[-1]['phase'], 'CONTROLLER_POLL')
+                self.assertEqual(events[0]['job_id'], 'ARTIFICIAL_JOB')
+                self.assertEqual(relay.state['workers'][worker['host_id']]['failure_count'], 1)
+
     def test_startup_status_replaces_old_stopped_state_before_first_blocked_tick(self):
         with tempfile.TemporaryDirectory(prefix='relay-startup-status-') as temporary:
             directory = Path(temporary)/'relay-state'; directory.mkdir()

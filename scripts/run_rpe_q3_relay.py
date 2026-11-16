@@ -59,6 +59,11 @@ class Relay:
         self.directory.mkdir(parents=True, exist_ok=True)
         self.ssh = self.config.get('ssh_command', ['ssh'])
         self.controller = self.config['controller']
+        self.poll_seconds = float(self.config.get('poll_seconds', 1))
+        maximum = float(self.config.get('retry_backoff_max_seconds', 30))
+        if self.poll_seconds <= 0 or maximum <= 0:
+            raise ValueError('Positive relay poll and retry intervals required')
+        self.retry_max_seconds = max(self.poll_seconds, maximum)
         self.url = 'http://127.0.0.1:'+str(self.controller.get('local_port', 18763))
         self.tunnel = None
         started = time.time()
@@ -76,6 +81,21 @@ class Relay:
         with urllib.request.urlopen(request, timeout=self.config.get('request_timeout_seconds', 60)) as response:
             return json.load(response)
 
+    def failed(self, state, error, event, **detail):
+        failures = state.get('failure_count', 0)+1
+        delay = self.poll_seconds
+        for _ in range(failures-1):
+            delay = min(self.retry_max_seconds, delay*2)
+            if delay >= self.retry_max_seconds: break
+        state.update(error=str(error), failure_count=failures, last_error_epoch=time.time(),
+                     next_retry_epoch=time.time()+delay, retry_seconds=delay)
+        self.log(event, error=str(error), failure_count=failures, next_retry_epoch=state['next_retry_epoch'],
+                 retry_seconds=delay, **detail)
+
+    def succeeded(self, state):
+        state.update(failure_count=0, next_retry_epoch=0, retry_seconds=0)
+        state.pop('error', None)
+
     def remote(self, worker, action, value=None):
         alias = worker['ssh_alias']
         if not alias or alias.startswith('-'): raise ValueError('Invalid existing SSH alias')
@@ -92,20 +112,39 @@ class Relay:
         return result, time.monotonic()-started
 
     def ensure_tunnel(self):
-        if self.config.get('external_tunnel'): return
-        if self.tunnel is not None and self.tunnel.poll() is None: return
+        if self.config.get('external_tunnel'): return True
+        state = self.state.setdefault('tunnel', dict(failure_count=0, next_retry_epoch=0))
+        if self.tunnel is not None:
+            code = self.tunnel.poll()
+            if code is None:
+                # A process that survives several normal polls is healthy;
+                # an immediate exit must not reset its retry delay each time.
+                if time.time()-state['started_epoch'] >= max(5, 2*self.poll_seconds):
+                    self.succeeded(state)
+                return True
+            self.tunnel = None
+            self.failed(state, 'SSH tunnel exited ('+str(code)+')', 'TUNNEL_PENDING', returncode=code)
+        if time.time() < state.get('next_retry_epoch', 0): return False
         alias = self.controller.get('ssh_alias', 'qg2')
         if not alias or alias.startswith('-'): raise ValueError('Invalid controller SSH alias')
         local_port = int(self.controller.get('local_port', 18763))
         remote_port = int(self.controller.get('remote_port', 8763))
-        with (self.directory/'TUNNEL.log').open('a') as log:
-            self.tunnel = subprocess.Popen(self.ssh+['-N', '-o', 'BatchMode=yes', '-o', 'ExitOnForwardFailure=yes',
-                '-o', 'ServerAliveInterval=15', '-o', 'ServerAliveCountMax=3',
-                '-L', '127.0.0.1:%d:127.0.0.1:%d' % (local_port, remote_port), alias],
-                stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, **child_options())
+        try:
+            with (self.directory/'TUNNEL.log').open('a') as log:
+                self.tunnel = subprocess.Popen(self.ssh+['-N', '-o', 'BatchMode=yes', '-o', 'ExitOnForwardFailure=yes',
+                    '-o', 'ServerAliveInterval=15', '-o', 'ServerAliveCountMax=3',
+                    '-L', '127.0.0.1:%d:127.0.0.1:%d' % (local_port, remote_port), alias],
+                    stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, **child_options())
+        except OSError as error:
+            self.failed(state, error, 'TUNNEL_PENDING')
+            return False
+        state.update(pid=self.tunnel.pid, started_epoch=time.time())
         self.log('TUNNEL_START', pid=self.tunnel.pid, ssh_alias=alias)
+        return True
 
     def tick(self, worker):
+        info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
+        info['phase'] = 'MAILBOX_STATUS'
         status, download_seconds = self.remote(worker, 'status')
         host = status['host_id']
         if host != worker['host_id']: raise ValueError('Mailbox host differs from relay profile')
@@ -113,17 +152,23 @@ class Relay:
             state = attempt['state']
             if state == 'TRANSFERRED': continue
             owner = dict(host_id=host, job_id=attempt['job_id'], attempt_id=attempt['attempt_id'])
+            info['phase'] = 'CONTROLLER_STATE'
             self.post('/v1/state', dict(owner, state=state, detail=attempt.get('detail', {})))
             if state == 'COMPLETED_PENDING_TRANSFER':
                 started = time.monotonic()
+                info['phase'] = 'CONTROLLER_COMPLETE'
                 response = self.post('/v1/complete', dict(owner, request_sha256=attempt['request_sha256'], files=attempt['files']))
                 if response.get('ok') is not True: raise ValueError('Controller refused completion')
                 upload_seconds = time.monotonic()-started
-                self.remote(worker, 'ack', owner)
+                info['phase'] = 'MAILBOX_ACK'
+                acknowledgement, _ = self.remote(worker, 'ack', owner)
+                if acknowledgement.get('ok') is not True: raise ValueError('Worker refused completion acknowledgement')
                 timing = dict(upload_roundtrip_seconds=upload_seconds, ssh_status_download_seconds=download_seconds,
                               artificial_transport_scope='SSH status includes all pending attempts for this host')
-                self.post('/v1/transfer-metric', dict(owner, timing=timing))
                 self.log('RESULT_RECOVERED', **owner, duplicate=response.get('duplicate', False), **timing)
+                try: self.post('/v1/transfer-metric', dict(owner, timing=timing))
+                except Exception as error: self.log('TELEMETRY_PENDING', **owner, error=str(error))
+        info['phase'] = 'CONTROLLER_POLL'
         assignments = self.post('/v1/poll', dict(host_id=host, slots=status['slots'],
             source_sha=status['source_sha'], cached_prefixes=status['cached_prefixes']))['assignments']
         for assignment in assignments:
@@ -132,12 +177,27 @@ class Relay:
             pending = self.directory/'deliveries'/assignment['job_id']
             pending.mkdir(parents=True, exist_ok=True)
             atomic_json(pending/'ASSIGNMENT.json', assignment)
+            info['phase'] = 'MAILBOX_SUBMIT'
             response, seconds = self.remote(worker, 'submit', assignment)
             if response.get('ok') is not True: raise ValueError('Worker refused assignment')
             self.log('REQUEST_DELIVERED', host_id=host, job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                      seconds=seconds, duplicate=response.get('duplicate', False))
-        self.state['workers'][host] = dict(last_success_epoch=time.time(), slots=status['slots'],
+        info.update(last_success_epoch=time.time(), slots=status['slots'], phase='READY',
             states={name:sum(a['state']==name for a in status['attempts']) for name in sorted({a['state'] for a in status['attempts']})})
+
+    def cycle(self):
+        """Observe progress every poll; contact failing endpoints only when due."""
+        if self.ensure_tunnel():
+            for worker in self.config['workers']:
+                if (self.directory/'STOP').exists(): break
+                info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
+                if time.time() < info.get('next_retry_epoch', 0): continue
+                try: self.tick(worker)
+                except Exception as error:
+                    self.failed(info, error, 'TRANSPORT_PENDING', host_id=worker['host_id'], phase=info.get('phase'))
+                else: self.succeeded(info)
+        self.state['heartbeat_epoch'] = time.time()
+        atomic_json(self.directory/'STATUS.json', self.state)
 
     def run(self):
         lock = (self.directory/'RELAY.lock').open('a')
@@ -149,16 +209,8 @@ class Relay:
         atomic_json(self.directory/'STATUS.json', self.state)
         try:
             while not (self.directory/'STOP').exists():
-                self.ensure_tunnel()
-                for worker in self.config['workers']:
-                    if (self.directory/'STOP').exists(): break
-                    try: self.tick(worker)
-                    except Exception as error:
-                        self.state['workers'][worker['host_id']] = dict(error=str(error), last_error_epoch=time.time())
-                        self.log('TRANSPORT_PENDING', host_id=worker['host_id'], error=str(error))
-                self.state['heartbeat_epoch'] = time.time()
-                atomic_json(self.directory/'STATUS.json', self.state)
-                time.sleep(self.config.get('poll_seconds', 1))
+                self.cycle()
+                time.sleep(self.poll_seconds)
         finally:
             if self.tunnel is not None and self.tunnel.poll() is None:
                 self.tunnel.terminate(); self.tunnel.wait(timeout=10)
