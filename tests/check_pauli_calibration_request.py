@@ -162,6 +162,10 @@ class CalibrationTests(unittest.TestCase):
         self.assertEqual(r['status'],'NEEDS_INPUT_OR_FIXED_IMPLEMENTATION_SOURCE')
         self.assertIn('candidate P0 SOURCE',r['needs'][0])
         self.assertIsNone(r['driver_request'])
+        s=deepcopy(self.preps[3]['configuration']['spec']);s['binding']['state']='OTHER_STATE'
+        cfg=E.p1.b_api(ROOT).generate(s)
+        with self.no_science():r=C.prepare(ROOT,prepared(cfg),missing(cfg))
+        self.assertIn('FIXED_H4',r['needs'][0])
 
     def test_unregistered_artificial_split_passes_real_driver_and_worker_input_checks(self):
         item=deepcopy(E.dictionary_item(ROOT,self.preps[3]['configuration']))

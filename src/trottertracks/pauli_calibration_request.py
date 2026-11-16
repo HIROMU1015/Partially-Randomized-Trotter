@@ -212,6 +212,12 @@ def prepare(root, preparation, quote, *, execution=None, inspect_saved_cell=Fals
             preparation = ready[0]
         config = preparation['configuration']; A.E.p1.b_api(root).validate(config)
         result['configuration_id'] = config['id']
+        reference = A.E.load_configuration(root, A.E.SAVED_PACKETS[0],
+                                           configuration_id=A.E.L.SAVED_PAULI_IDS[1])[0]['spec']
+        if config['spec']['binding'] != reference['binding']:
+            raise ValueError('FIXED_H4_HAMILTONIAN_STATE_SNAPSHOT_BINDING_REQUIRED')
+        if config['spec']['profile'] != reference['profile']:
+            raise ValueError('SOURCED_COMPILER_PROFILE_IMPLEMENTATION_CONTRACT_REQUIRED')
         if preparation.get('dictionary_source') != config['spec']['split']['tail_dictionary']['source']:
             raise ValueError('A_DICTIONARY_SOURCE_DIFFERS')
         if preparation.get('configuration_source'):
