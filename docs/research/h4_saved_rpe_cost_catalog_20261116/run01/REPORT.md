@@ -29,8 +29,6 @@ LD5_KAPPA_X2_INTERRUPTED_BEST：探索方針変更による途中終了（INTERR
 保存総額と26軸MODEL適用summaryを受入。個別26単価は未保存/null、全26軸外挿、qualified_for_candidate=false。
 exact MSE上下界は公開hashと一致した最安点1件のOUTCOMEを保持し、再評価していない。
 
-FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75：信号13 round・価格26軸あり、Q3待ち。Q3_inputsの配分はtemplate/提案であり、評価済み点ではない。配分・判定・達成費用はnull。
-
 |候補|方式|LD|公式|判定|費用 RZ|X/Y配分|
 |---|---|---:|---|---|---:|---|
 |FULL_PF_S2_16h_over_7__BASELINE_N0|FULL_PF|10|2nd|適合|838,693,580.00|[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 15, 11] / [59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 15, 11]|
@@ -90,7 +88,7 @@ FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75：信号13 round・価格26軸�
 |PR_PAULI_AUTO_8bf6eb88c735_7a94374fe4d2d0aaee49|PR_PAULI|4|2nd|適合|725,939,453.71|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9]|
 |LD5_S2_delta_h_kappa_abs_2__9d10cc9f815edeeefdd7|PR_PAULI|5|2nd|適合|500,962,225.57|[48, 45, 42, 39, 36, 31, 14, 21, 17, 14, 7, 7, 5] / [48, 45, 42, 39, 36, 31, 14, 21, 17, 14, 7, 7, 5]|
 |LD5_S2_delta_h_kappa_abs_7__32ecd1ff57d0b2e6a8c6|PR_PAULI|5|2nd|適合|518,960,285.57|[48, 45, 42, 39, 36, 33, 16, 20, 17, 16, 10, 12, 2] / [48, 45, 42, 39, 36, 33, 16, 20, 17, 16, 10, 12, 2]|
-|FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75|FULL_PF|10|2nd|Q3待ち|—|None / None|
+|22bbe4a8d5aee8bfa9b8|FULL_PF|10|2nd|適合|956,592,146.00|[59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 15, 11] / [59, 55, 51, 47, 43, 39, 35, 31, 27, 23, 19, 15, 11]|
 
 重複除去：7件。詳細・固定SOURCE・26軸の価格対応はCATALOG.jsonを参照。
 Q3適合・価格待ちは費用nullで選択対象外。信号だけの旧状態はsignal_only_historyへ保持する。
@@ -198,6 +196,8 @@ PRの事前固定予算・旧PF基準はhistorical_*に元SOURCEとともに保�
 - `e3b4c1114139258a2c6e5d3e14de8b73fc4f7cda:docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/best_points/LD5_kappa2_lookahead_not_adopted_9d10cc9f815edeeefdd7/REQUEST.json`
 - `e3b4c1114139258a2c6e5d3e14de8b73fc4f7cda:docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/best_points/LD5_kappa7_32ecd1ff57d0b2e6a8c6/REQUEST.json`
 - `578fc2e7383ce76e0f895a7e7766c6baa45d95ca:docs/research/d_pf_on_demand_evidence_20261116/C_RESULT_JOIN.json`
+- `f2a6930ed638d98db09b357412caaa7eef2d44ae:docs/research/d_full_pf_s2_2h_q3_e2e_20261116/C_RESULT_JOIN.json`
+- `f2a6930ed638d98db09b357412caaa7eef2d44ae:docs/research/d_full_pf_s2_2h_q3_e2e_20261116/SUMMARY.json`
 
 PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。
 
