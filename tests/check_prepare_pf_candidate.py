@@ -18,6 +18,13 @@ class Entry(unittest.TestCase):
             self.assertEqual(D.comparison_method(cfg),route)
         with self.assertRaises(ValueError):D.comparison_method({'spec':{'method':'PR'}})
 
+    def test_native_selection_preserves_full_vs_b0i(self):
+        for p,original,method in [(10,'FULL','FULL'),(0,'B0I','B0I'),(8,'B0I','B0I')]:
+            cfg={'spec':{'method':'PF','L_D':p,'split':{'original_PF_method':original}}}
+            physical=dict(system='H4',method=method,prefix=p,formula='2nd',T=3.2,q=16,delta=.2,id='ARTIFICIAL')
+            self.assertEqual(D.native_row(cfg,physical),dict(physical,R_outer=None,K=None))
+            with self.assertRaises(ValueError):D.native_row(cfg,dict(physical,method='B0I' if p==10 else 'FULL'))
+
     def test_new_prefix_order_and_historical_hash_gate(self):
         for p in (0,1,8,9):
             prep=SimpleNamespace(preparation_hash='OWN_'+str(p),deterministic_fragment_indices=tuple(range(p)))

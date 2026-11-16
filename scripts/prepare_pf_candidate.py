@@ -54,6 +54,14 @@ def comparison_method(cfg):
     raise ValueError('D handles canonical deterministic PF only')
 
 
+def native_row(cfg,physical):
+    import run_pf_m0_prices as M
+    route=comparison_method(cfg)
+    if physical['method']!=('FULL' if route=='FULL_PF' else 'B0I') or physical['prefix']!=cfg['spec']['L_D']:
+        raise ValueError('Native candidate route/prefix mismatch')
+    return M.ROUTES[route].native_row(physical)
+
+
 def selected_configuration(item):
     from trottertracks import pf_candidate_space as K,pf_evidence_preparation as E
     if item.get('configuration_body') is not None:cfg=deepcopy(item['configuration_body'])
@@ -81,7 +89,7 @@ def native_child(path):
     cfg=allowed['configuration'];prefix=cfg['spec']['L_D'];route=comparison_method(cfg)
     if route!=job['route'] or prefix!=job['prefix']:raise ValueError('Native prefix/route binding differs')
     requests={r['m']:r['physical_candidate'] for r in allowed['prepared']['pending']['requests']}
-    if any(c['row']!=M.T.native_row(requests[c['m']]) for c in job['cells']):raise ValueError('Native schedule differs')
+    if any(c['row']!=native_row(cfg,requests[c['m']]) for c in job['cells']):raise ValueError('Native schedule differs')
     for file in SOURCES:
         if (ROOT/file).read_bytes()!=subprocess.check_output(['git','show',job['driver_source']['commit']+':'+file],cwd=ROOT):raise ValueError('Native source changed')
     return M.child(path,validate_rounds=lambda rounds: M.check(list(rounds)==[c['m'] for c in job['cells']],'Wrong selected native rounds'))
@@ -132,7 +140,7 @@ def acquire(value,out,phase,ms,source):
     folder=out/phase/'run01';private=ROOT/'.pf_evidence_private'/value['configuration']['id']/phase/'run01'
     folder.mkdir(parents=True);private.mkdir(parents=True,exist_ok=False)
     cfg=value['configuration'];p=cfg['spec']['L_D'];route=comparison_method(cfg)
-    cells=[dict(m=r['m'],formula=r['physical_candidate']['formula'],row=M.T.native_row(r['physical_candidate']),role=phase.upper()) for r in value['prepared']['pending']['requests'] if r['m'] in ms]
+    cells=[dict(m=r['m'],formula=r['physical_candidate']['formula'],row=native_row(cfg,r['physical_candidate']),role=phase.upper()) for r in value['prepared']['pending']['requests'] if r['m'] in ms]
     saved=M.read(dict(commit=M.BASELINE,path=(M.F if route=='FULL_PF' else M.T).OUTPUT_ROOT+'/holdout/run01/RESULT.json'))['results'][0]
     constant=saved['facts']['scalar'] if route=='FULL_PF' else saved['facts']['scalar']-saved['facts']['tail_identity']
     # Use the original saved H constant, not subtraction, for binary64 order.
