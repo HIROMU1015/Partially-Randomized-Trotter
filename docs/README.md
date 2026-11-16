@@ -373,3 +373,5 @@
 [O5実H4 q4最終結果](research/track_d_cut_h4_q4_completion_20261108/REPORT.md)：原本回収後に中央cut2を選択し追加差0。旧4 P0適格再利用、重複compile0。
 
 - [PR要求PF幅の探索接続（保存metadata・人工検収）](research/pr_requested_step_search_20261117/REPORT.md) / [通常入口と再開](research/pr_requested_step_search_20261117/HANDOFF.md)。
+
+- [計算用ローカルQ3の準備と接続待ち項目](research/rpe_distributed_q3/hosts/local/HANDOFF.md) / [実測環境・固定routeの不足](research/rpe_distributed_q3/hosts/local/READINESS.md)。同一Linuxの人工検査まで、Windows/実3台検収は未実施。

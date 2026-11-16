@@ -343,3 +343,5 @@ artifacts/<validation_name>/
 [C7-4保存再解析runner](run_track_d_c7_4.py)／[結果projection](summarize_track_d_c7_4.py)：保存88 pathのみの探索fit/CV/bootstrapと固定人工6系列/短P0 2本。新H4 sampling/build/compileなし。既存runのmain/guardを変更しない。
 
 - `run_rpe_schedule_search.py` の `search_overrides.requested_widths` は両PR方式の要求幅を通常の準備・価格・V2 shot/Q3へ渡す。保存照合は `check_pr_requested_width_saved.py`。[SOURCEと起動方法](../docs/research/pr_requested_step_search_20261117/HANDOFF.md)。
+
+- `prepare_rpe_q3_local.py`：所有するLinux/WSLのpath・slots・DP worker設定と資源確認。任意のsmokeは既存人工fixture/executorのみ使用する。[ローカルQ3 HANDOFF](../docs/research/rpe_distributed_q3/hosts/local/HANDOFF.md)。共通workerへの接続・科学実行はしない。
