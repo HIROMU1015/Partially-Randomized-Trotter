@@ -1,0 +1,311 @@
+{
+  "schema": "RPE_OPTIMIZER_SEARCH_ROUND_V1",
+  "round_id": "H4_DISTRIBUTED_FOUR_METHOD_READINESS_PLAN_20261117",
+  "base_commit": "5829a7288d28395d2b3e89bfb676c23c690b9ddb",
+  "methods": [
+    "FULL_PF",
+    "TRUNCATED_PF",
+    "PR_PAULI",
+    "PR_DF"
+  ],
+  "science_approved": false,
+  "max_new_q3_per_method": {
+    "FULL_PF": 0,
+    "TRUNCATED_PF": 0,
+    "PR_PAULI": 0,
+    "PR_DF": 0
+  },
+  "initial": "all",
+  "method_overrides": {
+    "PR_PAULI": {
+      "saved_configurations_only": false,
+      "generation": {
+        "formulas": [
+          "2nd"
+        ],
+        "delta_over_h_values": [
+          "1",
+          "2"
+        ],
+        "kappa_multipliers": [
+          "2/3",
+          "1",
+          "2"
+        ]
+      },
+      "L_D_values": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "PR_DF": {
+      "L_D_values": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "saved_configurations_only": false,
+      "generation": {
+        "formulas": [
+          "2nd"
+        ],
+        "delta_over_h_values": [
+          "1",
+          "1/2"
+        ]
+      }
+    },
+    "FULL_PF": {
+      "p_values": [
+        10
+      ]
+    },
+    "TRUNCATED_PF": {
+      "p_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  },
+  "search_overrides": {
+    "rule": "METHOD_MINIMUM_PRIORITY_V2",
+    "seed_saved_same_L_D": true,
+    "explore_every": 4,
+    "explore_window": "3/2",
+    "small_gain_fraction": "1/1000",
+    "deferral_fail_margin": "1/10000",
+    "transfer_count": 2,
+    "lookahead": 16,
+    "lookahead_mode": "HYBRID",
+    "adaptive_lookahead": false,
+    "coarse_gain_fraction": "1/100",
+    "small_and_deferred": "STOP",
+    "schedule_wide": {
+      "rule": "SCHEDULE_WIDE_V1",
+      "ladder_ratio": "4",
+      "explore_ratio": "2",
+      "refine_ratio": "33/32",
+      "exploit_per_explore": 2,
+      "window": "3/2",
+      "upper_stop_steps": 2,
+      "upper_stop_margin": "1/20",
+      "max_kappa": "65536",
+      "per_decision": 8,
+      "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family"
+    },
+    "note": "Absolute requested PF widths. JSON .2 retains binary64, string 1/5 exact rational. Fixed h/M/T and evaluation contract unchanged; mapper may reject per method.",
+    "adaptive_hybrid": true,
+    "allocation_exchange": null,
+    "max_steps_per_method": 100000,
+    "kappa_neighbourhood": {
+      "outer_planner": "SCHEDULE_WIDE_V1_METADATA_PLAN_SEPARATE"
+    }
+  },
+  "executor": {
+    "prior_run_dirs": [
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-candidate-autoprepare-20261116/docs/research/d_pr_candidates_auto_20261116/run02",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01"
+    ]
+  },
+  "routes_override": {
+    "PR_PAULI": [
+      {
+        "kind": "pauli_b_common_entry",
+        "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+        "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+        "configuration_ids": [
+          "23ec179150682e0af256fc7c7bfcdf6f39af772f62418d6b45326afd5da1b2a8",
+          "300085cf7225ed0a0a1ed40bb7d7d6cd499cc219c2b0309a94ae622351d378af",
+          "39355bcf7968bdcfc8bef7c40e9b2c7d970aa954b452639c32041c15e0406383",
+          "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+          "569c14aa1dac9f84b3ee826dcd9b33fd749c4c5c0605ecffe54030b1e362ff47",
+          "6cf83f34a924e0318114a2850a771ab69c912b68963234fa94018e66036f2e28",
+          "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+          "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847"
+        ],
+        "configurations": {
+          "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3": {
+            "label": "LD2_S2_delta_h_kappa_x1_saved_reuse",
+            "configuration": {
+              "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+              "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+              "selector": [
+                "packets",
+                1,
+                "configuration"
+              ]
+            },
+            "signal_packet": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+            },
+            "binding_id": "f4165e534ad8423fcd32aec689b1a9a7110fe6b59e747fe9d69d82e016d22690",
+            "total_configuration_id": "285bf4812e07a519f266ed88b83293bc4675493c5a9cc03985a6312363c6b8f0",
+            "intake_status": "SOURCE_BOUND_LD2_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+          },
+          "6cf83f34a924e0318114a2850a771ab69c912b68963234fa94018e66036f2e28": {
+            "label": "LD2_S2_delta_h_kappa_x2o3",
+            "configuration": {
+              "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD2_S2_delta_h_kappa_x2o3.json"
+            },
+            "signal_packet": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+            },
+            "binding_id": "f3a21bb413ceb34d9f79a4bfed72c201b242bf6c7713162c129e3edadfcf1fb5",
+            "total_configuration_id": "c706f775b79b03ef209b6f45360d4cba1ec9cb3405ff213783b206dd9e454e7f",
+            "intake_status": "SOURCE_BOUND_LD2_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+          },
+          "300085cf7225ed0a0a1ed40bb7d7d6cd499cc219c2b0309a94ae622351d378af": {
+            "label": "LD2_S2_delta_h_kappa_x2",
+            "configuration": {
+              "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD2_S2_delta_h_kappa_x2.json"
+            },
+            "signal_packet": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+            },
+            "binding_id": "52f346fd76e8efda8b8a0b6bf89ee384d326895fc48b0bf3ae586a9bb101adf7",
+            "total_configuration_id": "89b52510449e70a75155308bc9078e9a273056d4739e2071cb1430416c101cb6",
+            "intake_status": "SOURCE_BOUND_LD2_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+          },
+          "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847": {
+            "label": "LD3_S2_delta_h_kappa_x1_saved_reuse",
+            "configuration": {
+              "commit": "421258d400a86fffd7c4955d5cf1bd24ac5729cb",
+              "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/config_run01/CONFIGURATION_LD3.json"
+            },
+            "signal_packet": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+            },
+            "binding_id": "122900d26d9412a569496e8ef98ff425614eac9885e43164bab400991980a858",
+            "total_configuration_id": "6757998a50bec243e1cd14d1b968457c673d383c47cb95c6b52e8b0ed7e1a0eb",
+            "intake_status": "SOURCE_BOUND_LD3_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+          },
+          "569c14aa1dac9f84b3ee826dcd9b33fd749c4c5c0605ecffe54030b1e362ff47": {
+            "label": "LD3_S2_delta_h_kappa_x2o3",
+            "configuration": {
+              "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD3_S2_delta_h_kappa_x2o3.json"
+            },
+            "signal_packet": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+            },
+            "binding_id": "2b038d41951b5f4a65170b61ca5d6f4e85a165c66f4ff4c25417974cc554a9f0",
+            "total_configuration_id": "78acf41de5c594a2ff93a203ad01f5fb058f251ccd3f6ebb575058b1a1d18217",
+            "intake_status": "SOURCE_BOUND_LD3_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+          },
+          "23ec179150682e0af256fc7c7bfcdf6f39af772f62418d6b45326afd5da1b2a8": {
+            "label": "LD3_S2_delta_h_kappa_x2",
+            "configuration": {
+              "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD3_S2_delta_h_kappa_x2.json"
+            },
+            "signal_packet": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+            },
+            "binding_id": "f216c0a19ef8c5f91e68d3a1a1801fcb1f0d9955f49afb070d40a9521920038e",
+            "total_configuration_id": "28112ed4d897d227e105b71c0e071149b2645920a8b8db71824a01bac992a52e",
+            "intake_status": "SOURCE_BOUND_LD3_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+          },
+          "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb": {
+            "label": "LD5_S2_delta_h_kappa_x1_saved_reuse",
+            "configuration": {
+              "commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+              "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/config_run01/CONFIGURATION_LD5.json"
+            },
+            "signal_packet": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+            },
+            "binding_id": "59198e931cb97974dd8a5101f4a2982865ee0b831946170e250d00af551f343e",
+            "total_configuration_id": "42309d00702fa11c43d62eb27a5ff928657dc1a4d9d8e9401547433af5c25403",
+            "intake_status": "SOURCE_BOUND_LD5_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+          },
+          "39355bcf7968bdcfc8bef7c40e9b2c7d970aa954b452639c32041c15e0406383": {
+            "label": "LD5_S2_delta_h_kappa_x2o3",
+            "configuration": {
+              "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD5_S2_delta_h_kappa_x2o3.json"
+            },
+            "signal_packet": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+            },
+            "binding_id": "9366f3ebf60ff6baaacd847b162abe6f889fa69ec0e3e7afe360f29637d56c2e",
+            "total_configuration_id": "d1a40d460db2e2a373f1fec4e188bffa803b7046600740bb2acbf932f7813f83",
+            "intake_status": "SOURCE_BOUND_LD5_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+          },
+          "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052": {
+            "label": "LD5_S2_delta_h_kappa_x2",
+            "configuration": {
+              "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD5_S2_delta_h_kappa_x2.json"
+            },
+            "signal_packet": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+            },
+            "binding_id": "38d4a055730b2ad61e5cc8a7c99f6fda06c359d74a60ec0b76a60a9e581f52d4",
+            "total_configuration_id": "f411ec466a47ba221376a9705afa569e9317db7c8aef0f9b287e33b5ddbf5173",
+            "intake_status": "SOURCE_BOUND_LD5_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+          }
+        },
+        "contract_template": {
+          "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+          "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json"
+        },
+        "signal_entry_source": "93a5ef3b9fed337cc4d26ee684defd304fa0eac0",
+        "signal_intake_source": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+        "signal_packets_commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "existing_caller": "B bd42dd1e9 scripts/run_pauli_ld5_two_vectors_q3_fixed.py worker (L.SAVED_WORKER + L.installed + M.supervise), metadata generalized to accept_saved(handoff_source)",
+        "configurations_file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/ROUTE_REGISTRY.json"
+      }
+    ]
+  },
+  "price_rules_overrides": {
+    "registry_file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/PRICE_RULES_REGISTRY.json",
+    "source": {
+      "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+      "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/PRICE_RULES_REGISTRY.json",
+      "note": "D2 run02 registry: B2 round03 entries unchanged + PAULI_LD4 + AUTO_DF"
+    }
+  },
+  "pf_completion": {
+    "mode": "plan"
+  },
+  "note": "PLAN_ONLY: no new Q3/signal/calibration/compile; original independent V2 allocation frontier; outer width proposals planned separately. No distributed/production queue instantiated."
+}

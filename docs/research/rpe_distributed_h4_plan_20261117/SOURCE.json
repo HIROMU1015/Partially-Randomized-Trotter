@@ -1,0 +1,57 @@
+{
+  "schema": "RPE_REAL_H4_DISTRIBUTED_PLAN_SOURCE_V1",
+  "date_jst": "2026-11-17",
+  "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "plan_branch": "codex/rpe-distributed-h4-plan-20261117",
+  "branch_base": "36a49d6df6705425c9b1af4ce8a62cfb6f56e8c5",
+  "catalog": {
+    "commit": "e665e9ee60f35bdc40a69894c9cbbc861efa467a",
+    "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+    "git_blob": "6add55fea352cb5e465761942720766f9d233df5"
+  },
+  "comparison_run_snapshots": [
+    "inputs/SNAPSHOT_LOCATORS.json",
+    "inputs/PR_MINIMUM_SNAPSHOT.json",
+    "checks/PF_INVENTORY.json.gz",
+    "checks/SERVER2_INVENTORY.json"
+  ],
+  "real_hamiltonian_inputs_verified": {
+    "snapshot": {
+      "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+      "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+    },
+    "receipt": {
+      "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+      "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+    }
+  },
+  "plan_only_commands": [
+    {
+      "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+      "program": "scripts/run_rpe_schedule_search.py",
+      "problem": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/inputs/PROBLEM.json",
+      "round": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/inputs/SHOT_PLAN_ROUND.json",
+      "run_dir": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99/docs/research/rpe_distributed_h4_plan_20261117/local_plan/shot_frontier",
+      "flags": [
+        "--plan-only"
+      ],
+      "returncode": 0
+    },
+    {
+      "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+      "program": "scripts/run_rpe_schedule_search.py",
+      "problem": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/inputs/PROBLEM.json",
+      "round": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/inputs/FULL_HISTORY_PLAN_ROUND.json",
+      "run_dir": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99/docs/research/rpe_distributed_h4_plan_20261117/local_plan/full_history",
+      "flags": [
+        "--plan-only"
+      ],
+      "returncode": 0
+    }
+  ],
+  "evaluation_contract_digest": "2e3dac22b1065151",
+  "no_new_scientific_execution": true,
+  "prior_acceptance_tests_rerun": false,
+  "new_tool_script": "scripts/check_rpe_q3_host_readiness.py",
+  "new_tool_sha256": "f479a001f1a74468f8329e4b75b8e66c3ff6ccce4c1ca8a401c1e30403bf428c"
+}

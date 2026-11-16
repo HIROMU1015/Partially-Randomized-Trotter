@@ -1,5 +1,7 @@
 # 文書索引
 
+[次の実H4分散runの計画・実入力dry-check](research/rpe_distributed_h4_plan_20261117/REPORT.md)：最新保存履歴・科学job keyを照合、server2の実経路3候補PASSとPauli不足、遠隔未確認を区別。新科学0件。[開始/再開案](research/rpe_distributed_h4_plan_20261117/START_RESUME.md)。
+
 [分散Q3とローカル0中継](research/rpe_distributed_q3/REPORT.md)／[固定SHA・ホスト別運用](research/rpe_distributed_q3/HANDOFF.md)：永続割当と再開回収を人工検証。実機間検収・人工速度倍率・実H4性能を区別する。
 
 [PR複数幅＋並列/DP再利用＋B0I自動pの統合](research/pr_width_throughput_integration_20261117/REPORT.md)／[通常コマンド・再開・設定](research/pr_width_throughput_integration_20261117/HANDOFF.md)。

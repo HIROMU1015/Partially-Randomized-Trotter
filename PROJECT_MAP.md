@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[次の実H4分散run：保存履歴照合・plan-only・実入力dry-check](docs/research/rpe_distributed_h4_plan_20261117/REPORT.md)：固定28d。B0I/DFの未反映保存最安を反映し既評価点を除外。server2でPF/B0I/DF乾式PASS、Pauliは価格binding・assembly SOURCE不足、遠隔は未確認。新科学0件、[機械結果](docs/research/rpe_distributed_h4_plan_20261117/RESULT.json)／[local0検査手順](docs/research/rpe_distributed_h4_plan_20261117/LOCAL0_DRY_CHECK.md)。
+
 [複数ホストQ3とローカル0 SSH中継](docs/research/rpe_distributed_q3/HANDOFF.md)：通常schedule入口の共通queue/永続予算/host別試行。実2台・3台の人工探索、切断回収・controller再開・重複完了を検収済み。次回固定版28d976b99、Windows中継ZIPとホスト別運用付き。実H4性能は未測定。[性能手法](docs/PERFORMANCE_METHODS.md)。
 
 [PR複数幅・共通queue/DP・B0I自動pの統合](docs/research/pr_width_throughput_integration_20261117/REPORT.md)：同じschedule CLIで両PR幅→実step価格→共通queue、実DP HITと逐次exact一致、準備後継続/再開0起動を人工検証。固定H4 metadataのB0Iはp無指定でp9/Y4/32h/5、実H4はplan-only。起動/再開は[HANDOFF](docs/research/pr_width_throughput_integration_20261117/HANDOFF.md)。

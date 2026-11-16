@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[実H4分散runの事前検査](../../docs/research/rpe_distributed_h4_plan_20261117/REPORT.md)：既存workerの入力照合と既存adapterの明示dry-checkを、新しい専用directoryで直接利用する。数値kernelや固定28dの計算SOURCEは変更しない。
+
 [分散Q3](../../docs/research/rpe_distributed_q3/HANDOFF.md)：実装はtrottertracksの既存concurrent executor拡張、`rpe_q3_store`、`rpe_q3_worker`、`rpe_q3_coordinator`。数値kernelは変更せず、固定route adapterを各hostで再利用する。
 
 [PR複数幅/queue/DPとB0I選択の統合](../../docs/research/pr_width_throughput_integration_20261117/HANDOFF.md)：研究別`pr_candidate_completion`、`rpe_optimizer_concurrent`、`rpe_dp_prefix_reuse`、PF metadata helperを通常入口から再利用。新科学0。
