@@ -5,11 +5,26 @@
 
 |方式|公式 / LD|要求幅|最安適合の条件付き費用 RZ|point ID|
 |---|---|---|---:|---|
-|FULL_PF|S2 / 10|16h/7|559,457,386.00|54f360874da5113ae6efd9c0|
+|FULL_PF|M5 / 10|16h|480,258,064.00|6531de11e60718dc79f7c12f|
 |TRUNCATED_PF|Yoshida4 / 7|32h/5|372,035,410.00|bfc0c1081b78c5adcb12b43b|
-|PR_PAULI|S2 / 5|1h|541,743,905.57|ab0a231b9cd06286a79c1155|
+|PR_PAULI|S2 / 5|1h|410,470,823.86|b267c5f55fbe9a4bce945a06|
 |PR_DF|S2 / 7|1h|1,235,340,731.91|ab1d8980b9d136b73e43b0f3|
 |FULL_H|pure RTE / 0|—|1,246,382,808,920.55|62aee6d389d5ebd3045509b0|
+
+現在の保存集合内最安同士の差（方式の費用−各基準、正なら基準より高額）：
+
+|方式|−Full PF RZ|−B0I p7 RZ|
+|---|---:|---:|
+|FULL_PF|0.00|108,222,654.00|
+|TRUNCATED_PF|-108,222,654.00|0.00|
+|PR_PAULI|-69,787,240.14|38,435,413.86|
+|PR_DF|755,082,667.91|863,305,321.91|
+|FULL_H|1,245,902,550,856.55|1,246,010,773,510.55|
+
+LD5_KAPPA_X2_INTERRUPTED_BEST：探索方針変更による途中終了（INTERRUPTED_SEARCH_POLICY_CHANGE）。収束値ではない。
+κ絶対値=26225228882306721296844821347007773673162352858535179072118456320/539496659426909122096437389293855970805348475396548904610992201、元κ倍率=2。
+保存総額と26軸MODEL適用summaryを受入。個別26単価は未保存/null、全26軸外挿、qualified_for_candidate=false。
+exact MSE上下界は公開hashと一致した最安点1件のOUTCOMEを保持し、再評価していない。
 
 |候補|方式|LD|公式|判定|費用 RZ|X/Y配分|
 |---|---|---:|---|---|---:|---|
@@ -62,8 +77,10 @@
 |LD7_FULL_PF_S2__B_PRICE|PR_DF|7|2nd|モデル不適合|548,149,803.13|[64, 60, 56, 52, 47, 43, 38, 34, 30, 19, 7, 3, 1] / [64, 60, 56, 52, 47, 43, 38, 34, 30, 19, 7, 3, 1]|
 |LD5__FULL_PF__B_PRICE|PR_PAULI|5|2nd|適合|541,743,905.57|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 8, 2] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 8, 2]|
 |LD5__VP|PR_PAULI|5|2nd|適合|872,241,518.14|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9]|
+|FULL_PF_OPTIMIZER_4th(m5_best)_16h|FULL_PF|10|4th(m5_best)|適合|480,258,064.00|[20, 25, 26, 24, 16, 20, 17, 15, 12, 11, 8, 7, 2] / [20, 25, 26, 24, 16, 20, 17, 15, 12, 11, 8, 7, 2]|
+|LD5_KAPPA_X2_INTERRUPTED_BEST|PR_PAULI|5|2nd|適合|410,470,823.86|[48, 45, 42, 39, 24, 27, 14, 20, 16, 16, 8, 7, 2] / [48, 45, 42, 39, 24, 27, 14, 20, 16, 16, 8, 7, 2]|
 
-重複除去：4件。詳細・固定SOURCE・26軸の価格対応はCATALOG.jsonを参照。
+重複除去：7件。詳細・固定SOURCE・26軸の価格対応はCATALOG.jsonを参照。
 Q3適合・価格待ちは費用nullで選択対象外。信号だけの旧状態はsignal_only_historyへ保持する。
 Full-Hは同一固定配分のQ3を照合した経験的m0＋24モデル価格のシナリオ。
 PRの事前固定予算・旧PF基準はhistorical_*に元SOURCEとともに保持し、新PF最安値で再計算しない。
@@ -152,6 +169,13 @@ PRの事前固定予算・旧PF基準はhistorical_*に元SOURCEとともに保�
 - `7ccb3e63b687bd13426f3e53d96b93d918707641:docs/research/pr_df_ld7_pf_budget_q3_results_20261116/C_RESULT_JOIN.json`
 - `1c4a83d1b841bfc23ba87c45f850fb4233f22c30:docs/research/pauli_ld5_two_vectors_q3_results_20261116/C_COMPARISON_JOIN.json`
 - `c7c8c1edd0996ad9ef97629961f67ca508a182f0:docs/research/d_p7_y4_coarse_price_calibration_20261116/PRICE_AND_COST.json`
+- `438d6c9a43351d45c31921a5676359dbc2c80b32:docs/research/h4_pf_optimizer_search_20261116/C_RESULT_JOIN.json`
+- `5304fc149ac3e522f806457b36c03d91a170593e:docs/research/h4_optimizer_saved_results_intake_20261116/B2_SAVED_TOTAL_INDEX.json`
+- `cbc471c913072de45c25a0ed22d51dff8a9b7034:docs/research/p7_s2_m12_one_results_20261116/C_RESULT_JOIN.json`
+- `93ab9dbbe610d66eba39ea9299b070a13a867a3e:docs/research/p7_s2_m12_two_results_20261116/C_RESULT_JOIN.json`
+- `93ab9dbbe610d66eba39ea9299b070a13a867a3e:docs/research/p7_s2_m12_two_results_20261116/SUMMARY.json`
+- `b4296b110b129d226dbef2743c14f725a27c3bf6:docs/research/pf6_cost_budget_q3_results_20261115/C_RESULT_JOIN.json`
+- `8ec7c882806809460d38a638a891bafcf18fafd1:docs/research/d_pr_df_ld_split_q3_resume_20261116/C_HANDOFF.json`
 
 PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。
 
@@ -165,7 +189,5 @@ LD9 V0の保存m6直接価格（別cohortの各軸4path平均、全13round費用
 |---|---:|---:|---:|
 |X|492,573.00|393,837.25|98,735.75|
 |Y|492,573.00|393,837.25|98,735.75|
-
-PR-Pauli LD5 LD5__FULL_PF__B_PRICEのLD3同名配分に対する保存差（LD5−LD3）は -192,390.38 RZ。採用したモデル参照価格規則での数値差であり、価格精度を保証する差ではない。全26軸MODEL・qualified_for_candidate=falseを保持する。
 
 再実行コマンドと追加方法は親directoryのHANDOFF.mdを参照。

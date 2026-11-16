@@ -2,7 +2,6 @@
 import argparse
 import json
 from pathlib import Path
-import subprocess
 import time
 
 from trottertracks.saved_rpe_cost_catalog import Catalog, Reader, ref, report
@@ -22,13 +21,12 @@ def main():
     for source in sources:
         print('READ',source['commit'],source['path'],flush=True);catalog.add(source)
     result=catalog.result()
-    result['execution_source']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
-    result['input_manifest']=str(args.inputs);result['wall_seconds']=time.perf_counter()-start
+    result['input_manifest']=str(args.inputs)
     args.output.mkdir(parents=True,exist_ok=True)
     (args.output/'CATALOG.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
     (args.output/'REPORT.md').write_text(report(result))
     (args.output/'INPUTS.json').write_text(json.dumps(dict(inputs,sources=sources),ensure_ascii=False,indent=2)+'\n')
-    print(json.dumps(dict(candidates=len(result['candidates']),duplicates=result['duplicates_removed'],
+    print(json.dumps(dict(candidates=len(result['candidates']),duplicates=result['duplicates_removed'],wall_seconds=time.perf_counter()-start,
         minima={k:v['conditional_cost']for k,v in result['method_minima'].items()})),flush=True)
 
 

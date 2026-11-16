@@ -1,5 +1,9 @@
 # H4 保存RPE結果の自動比較：B・B2・D・D2・統合担当への引渡し
 
+## 継続的な公開成果の統合（2026-11-16）
+
+[運用HANDOFF](../h4_optimizer_saved_results_intake_20261116/HANDOFF.md)を参照。最新の比較はrun01、現在地は[RESEARCH_ROADMAP](../RESEARCH_ROADMAP.md)。公開branch検出から既存adapter・表・文書・commit/pushへ接続する。新しい科学実行は行わない。以下の各節はその時点の固定受入履歴であり、最新費用はrun01だけで管理する。
+
 同じコマンドでINPUTS.jsonの固定commit/path一覧を読み、公開済みQ3判定と保存条件付き費用を照合して方式別最安点を返す。対象は **指定した保存候補集合内の最安適合点**。新しい信号・価格・N・Q3や全配分の探索は実行しない。
 
 ## p7粗幅Yoshida4 A_SHAPEへの価格接続（2026-11-16、現行入力）

@@ -1,5 +1,7 @@
 # Validation status
 
+[H4公開成果の定期統合と探索結果の受入](docs/research/h4_optimizer_saved_results_intake_20261116/REPORT.md)：Full PF M5要求16h・480258064、Pauli LD5元κ×2・2873295767/7 RZの保存適合点を追加。既存点と価格資格を保全。公開branchの検出・既存join・比較表・ロードマップ現在地の更新を利用者自身の10分cronへ接続。費用だけではロードマップを変更しない。未知schemaは理由付き保留、新科学call0。
+
 [PR-Pauli厳密stepの価格binding診断](docs/research/pauli_exact_step_price_binding_20261116/REPORT.md)：厳密ΔPF=1/5とbinary64 0.2を分離。m1はq2/q1で別回路。保存LD3/LD5のm0/m1は同一recipe、m2〜m12はA providerの実step非binary64-exactでUNKNOWNを維持。C guardの条件を変えず、round/不一致fieldを診断可能にした。保存metadata52行一致、人工5＋回帰34＝39 PASS、新科学計算0。
 
 [p7粗幅Yoshida4の価格接続と最安更新](docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。

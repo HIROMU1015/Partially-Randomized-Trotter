@@ -133,6 +133,10 @@ class Catalog:
             return
         d = self.r.read(locator)
         parent = str(PurePosixPath(path).parent)
+        if d.get('schema')=='RPE_OPTIMIZER_FIXED_RESULTS_FOR_C_V1':
+            self.pf_optimizer_results(locator,d);return
+        if d.get('schema')=='B2_INTERRUPTED_SAVED_TOTAL_ADMISSION_V1':
+            self.interrupted_pauli_best(locator,d);return
         if d.get('status')=='CONDITIONAL_WIDTH_SPECIFIC_A_SHAPE_COST':
             self.coarse_pf_prices(locator,d);return
         if d.get('kind')=='LD5_FIXED_ALLOCATION_MODEL_COST_AND_Q3_NOT_QUALIFIED_G':
@@ -271,6 +275,138 @@ class Catalog:
             row['status']='MISMATCH';row['issues'].append(str(error))
         row['status_display']=LABELS[row['status']]
         self.rows.append(row)
+
+    def pf_optimizer_results(self,loc,d):
+        """Import a completed method's saved result, not its running siblings."""
+        index=self.r.read(d['records'][0]['price_source_index'])
+        baseline=ref(d['saved_catalog_inputs']['commit'],str(PurePosixPath(d['saved_catalog_inputs']['path']).parent/'run01/CATALOG.json'))
+        old=self.r.read(baseline)
+        for i,r in enumerate(d['records']):
+            require(r['method'] in ('FULL_PF','TRUNCATED_PF'),'Unsupported completed PF method')
+            entry=next(e for e in index['configurations']if e['configuration_id']==r['configuration_id'])
+            base=next(e for e in old['candidates']if e['configuration_id']==r['configuration_id'])
+            result=self.r.read(r['result_source']);api_rows=self.r.read(r['source'])
+            require(len(api_rows)==1 and api_rows[0]==result['record'],'PF optimizer original API/result mismatch')
+            api=api_rows[0];conf=self.r.read(result['configuration_source'])
+            require(conf['id']==r['configuration_id']==entry['configuration_id'] and
+                    result['configuration_source']==base['configuration_source']==entry['configuration_source'],
+                    'PF optimizer configuration SOURCE mismatch')
+            require(r['total_configuration_id']==api['configuration_id']==entry['total_configuration_id'] and
+                    r['binding_id']==api['canonical_binding']==entry['binding_id'] and
+                    shots(api['allocation'])==shots(r['allocation'])==shots(result['allocation']),
+                    'PF optimizer total-view/allocation mismatch')
+            risk=api['diagnostic']['deterministic_risk'];adopted=base['adopted_evaluation']
+            require(r['status']==result['status']==result['adopted_q3_assessment']['status'] and
+                    frac(r['MSE_lower'])==frac(risk['MSE_lower']) and frac(r['MSE_upper'])==frac(risk['MSE_upper']) and
+                    frac(r['tau'])==frac(adopted['MSE_upper']) and risk['estimator']==adopted['estimator'],
+                    'PF optimizer saved Q3/MSE mismatch')
+            require(r['signal_packet']==result['signal_packet_source']==entry['signal_source'] and
+                    api['statistical_contract']==r['statistical_contract'] and api['evaluation_target']==r['evaluation_target'],
+                    'PF optimizer signal/contract mismatch')
+            require(r['configuration']['formula']==conf['spec']['formula'] and
+                    frac(r['configuration']['delta_over_h'])==frac(conf['spec']['delta_pf'])/frac(conf['spec']['h']),
+                    'PF optimizer formula/width mismatch')
+            axes={(p['m'],p['axis']):p for p in entry['axes']};terms=[]
+            require(len(r['price_axes'])==26,'PF optimizer price coverage missing')
+            for p in r['price_axes']:
+                a=axes[p['m'],p['axis']];original=self.r.read(p['price_source']);m=p['m']
+                require(p['physical_id']==a['physical_id']==original['physical_id'] and
+                        a['canonical_id']==original['original_candidate_id']==conf['rounds'][m]['candidate']['id'] and
+                        p['price_source']==a['price_source'] and p['price_kind']==a['price_kind']==original['price_class'],
+                        'PF optimizer price physical/SOURCE/class mismatch')
+                require(frac(p['unit_price_RZ_exact'])==frac(a['unit_price_RZ_exact'])==frac(original['C']) and
+                        p['compiler_profile']==a['compiler_profile']==conf['spec']['profile'],
+                        'PF optimizer unit price/compiler mismatch')
+                terms.append(dict(m=m,axis=p['axis'],N=p['N'],price_source=p['price_source']))
+            case=dict(configuration=result['configuration_source'],original_configuration_id=conf['id'],
+                total_configuration_id=r['total_configuration_id'],binding_id=r['binding_id'],
+                label=r['method']+'_OPTIMIZER_'+r['configuration']['formula']+'_'+r['configuration']['delta_over_h']+'h',
+                signal_packet=r['signal_packet'],evaluation_target=r['evaluation_target'],_source=r['result_source'])
+            self.make(case,r['allocation'],r['status'],r['conditional_total_RZ'],r['MSE_lower'],r['MSE_upper'],
+                adopted,dict(loc,selector=['records',i]),terms)
+            out=self.rows[-1]
+            out.update(q3_source=r['source'],optimizer_result_source=r['optimizer_result_source'],
+                search_status='COMPLETED_METHOD_FINITE_SEARCH',campaign_status=d['status'],
+                price_binding_level='26_AXIS_SAVED_PRICE_RECORDS',price_kind_counts=deepcopy(r['price_kind_counts']),
+                price_evidence=dict(source_index=r['price_source_index'],inherited=r.get('price_evidence'),
+                    inherited_qualification=r['price_qualification']),price_scenario=r.get('price_scenario'),
+                conditional_cost_source=dict(loc,selector=['records',i,'conditional_total_RZ']))
+            for p in out['price_axes']:
+                observed=next(x for x in r['price_axes']if (x['m'],x['axis'])==(p['m'],p['axis']))
+                p.update(C_ref=deepcopy(observed['unit_price_RZ_exact']),saved_weighted_term=deepcopy(observed['N_times_C_exact']))
+
+    def interrupted_pauli_best(self,loc,d):
+        """Saved-total-only admission with explicit missing per-axis unit prices.
+
+        The producer's fixed 26-model coverage summary is retained as such;
+        no quote is regenerated and no base-kappa price record is relabelled.
+        """
+        rr=self.r.read(d['round_result']);method=rr['methods']['PR_PAULI'];best=method['best'];ev=self.r.read(d['evaluation'])
+        require(method['stop_reason']=='INTERRUPTED_SEARCH_POLICY_CHANGE','B2 interrupted search reason differs')
+        require(best['configuration_id']==ev['configuration_id']==d['configuration_id'] and
+                best['N_X']==ev['N_X'] and best['N_Y']==ev['N_Y'] and best['cost']==ev['cost'] and
+                best['status']==ev['status'] and ev['adopted_by_rule'] is True,'B2 saved best/evaluation mismatch')
+        raw_ref=ref(loc['commit'],str(PurePosixPath(loc['path']).parent/d['outcome_file']))
+        raw=blob(self.r.root,self.r.commit(raw_ref['commit']),raw_ref['path'])
+        require(hashlib.sha256(raw).hexdigest()==ev['outcome_sha256']==d['outcome_sha256'],
+                'B2 single saved OUTCOME sha256 mismatch')
+        outcome=self.r.read(raw_ref);identity=outcome['identity']
+        route=next(x for x in rr['round']['routes_override']['PR_PAULI']if d['configuration_id']in x['configurations'])
+        item=route['configurations'][d['configuration_id']];conf=self.r.read(item['configuration'])
+        packet=self.r.read(item['signal_packet'])['packets'][0];template=self.r.read(route['contract_template'])
+        require(conf['id']==packet['configuration']['id']==identity['configuration_id']==d['configuration_id'] and
+                conf==packet['configuration'] and identity['contract_matches'] is True and
+                identity['signal_packet']==item['signal_packet'] and
+                identity['total_configuration_id']==item['total_configuration_id'] and identity['binding_id']==item['binding_id'],
+                'B2 saved outcome physical/total/signal identity mismatch')
+        vector=shots(identity['allocation'])
+        require(vector['X']==ev['N_X'] and vector['Y']==ev['N_Y'] and outcome['status']==ev['status'] and
+                outcome['request_id']==PurePosixPath(ev['job']).name and outcome['route']==route['kind'],
+                'B2 saved outcome allocation/route mismatch')
+        coverage=self.r.read(d['price_coverage']);quote=coverage['price_quote']
+        require(coverage['configuration_id']==conf['id'] and coverage['ready'] is True and coverage['needs']==[] and
+                coverage['price_status']=='PRICE_RULES_MODEL_COMPLETE' and quote['complete'] is True and quote['policy']=='MODEL' and
+                quote['status']=='QUOTED' and quote['registry']=='PAULI_LD5' and quote['classifications']=={'MODEL_REFERENCE':26} and
+                quote['extrapolated_axes']==26 and quote['implementation_source']==d['price_rules']['commit'],
+                'B2 saved model coverage/implementation mismatch')
+        rule=next(x for x in self.r.read(d['price_rules'])['entries']if x['name']==quote['registry'])
+        base=self.r.read(d['base_configuration']);rule_base=self.r.read(rule['configuration_source'])
+        require(base==rule_base and all(base['spec'][k]==conf['spec'][k]for k in
+                ('binding','profile','method','L_D','split','formula','delta_pf','h','M','finite_K','law')) and
+                rule['model_source']['commit']==d['original_model']['commit'] and
+                rule['model_source']['path']==d['original_model']['path'],
+                'B2 price model SOURCE/domain mismatch')
+        multiplier=frac(best['configuration']['kappa_multiplier']);absolute=frac(conf['spec']['kappa']['value'])
+        require(absolute==multiplier*frac(base['spec']['kappa']['value']),'B2 kappa absolute/multiplier mismatch')
+        require(len(packet['rounds'])==13 and [r['m']for r in packet['rounds']]==list(range(13)),
+                'B2 saved signal round coverage mismatch')
+        for row,saved in zip(conf['rounds'],packet['rounds']):
+            c=saved['mean_record']['physical_context']['physical_candidate']
+            require(saved['candidate_id']==c['id']==row['candidate']['id'] and saved['identity']==row['identity'] and
+                    saved['law_binding']==row['law_binding'] and c['q']==row['q_PF'] and c['R_outer']==row['R_outer'] and
+                    Fraction(c['T'])==frac(row['T']) and Fraction(c['delta'])==frac(row['actual_delta_pf']),
+                    'B2 signal physical round/law mismatch')
+        case=dict(item,original_configuration_id=conf['id'],label='LD5_KAPPA_X2_INTERRUPTED_BEST',
+            evaluation_target=identity['evaluation_target'],_source=raw_ref)
+        self.make(case,identity['allocation'],outcome['status'],best['cost'],outcome['MSE_lower'],outcome['MSE_upper'],
+            template['adopted_evaluation'],loc,[])
+        out=self.rows[-1]
+        # make() retains PRICE_WAITING without per-axis numeric records. This
+        # narrowly scoped alternative admits the PRODUCER'S saved total only,
+        # after the independent identity/hash/coverage checks above.
+        if out['status']=='PRICE_WAITING':out.update(status='FEASIBLE',status_display=LABELS['FEASIBLE'])
+        out.update(q3_source=raw_ref,original_outcome_path=d['original_outcome_path'],outcome_sha256=d['outcome_sha256'],
+            public_evaluation_source=d['evaluation'],conditional_cost_source=dict(d['round_result'],selector=['methods','PR_PAULI','best','cost']),
+            search_status='INTERRUPTED_SEARCH_POLICY_CHANGE',search_converged=False,
+            kappa_absolute=enc(absolute),kappa_multiplier=enc(multiplier),kappa_base_source=d['base_configuration'],
+            kappa_base_absolute=enc(base['spec']['kappa']['value']),price_binding_level='SAVED_TOTAL_AND_26_MODEL_COVERAGE_SUMMARY',
+            price_axis_unit_values_persisted=False,price_scenario='MODEL_REFERENCE_PRICE_NOT_E_C',qualified_for_candidate=False,CI=None,
+            price_evidence=dict(coverage_source=d['price_coverage'],summary=quote,rule_source=d['price_rules'],rule=rule,
+                original_model=d['original_model'],per_axis_unit_values=None),
+            model_coverage_axes=[dict(m=r['m'],axis=a,N=vector[a][r['m']],canonical_id=r['candidate']['id'],
+                q=r['q_PF'],R=r['R_outer'],law_binding=deepcopy(r['law_binding']),C_ref=None,
+                classification='MODEL_REFERENCE',extrapolated=True,coverage_source=d['price_coverage'])
+                for r in conf['rounds']for a in ('X','Y')])
 
     def pf(self, loc, d):
         inp=self.r.read(d['execution_source']);cases=inp['cases']
@@ -807,8 +943,12 @@ class Catalog:
             best[method]=dict(conditional_cost=enc(value)if value is not None else None,
                 point_ids=[r['point_id']for r in eligible if frac(r['conditional_cost'])==value],
                 scope='指定した保存候補集合内の最安適合点')
+        differences={method:{benchmark:enc(frac(item['conditional_cost'])-frac(best[benchmark]['conditional_cost']))
+            for benchmark in ('FULL_PF','TRUNCATED_PF') if best[benchmark]['conditional_cost'] is not None}
+            for method,item in best.items() if item['conditional_cost'] is not None}
         return dict(schema='SAVED_H4_RPE_CONDITIONAL_COST_CATALOG_V1',comparison=self.comparison,
             adopted_inputs=self.inputs,candidates=rows,method_minima=best,
+            current_minimum_differences=differences,
             signal_only_history=history,duplicates_removed=len(self.rows)-len(history)-len(rows),new_signal=0,new_sampling=0,new_compile=0,
             new_price_fit=0,new_allocation_search=0,new_Q3=0,formal_G=None,winner=None,mandatory_stop=True)
 
@@ -827,6 +967,16 @@ def report(result):
             return str(ratio.numerator)+'h'+('/'+str(ratio.denominator)if ratio.denominator!=1 else'')
         widths=', '.join(width(r)for r in points)or'—'
         lines.append('|'+method+'|'+attrs+'|'+widths+'|'+display(item['conditional_cost'])+'|'+', '.join(item['point_ids'])+'|')
+    lines+=['','現在の保存集合内最安同士の差（方式の費用−各基準、正なら基準より高額）：','',
+        '|方式|−Full PF RZ|−B0I p7 RZ|','|---|---:|---:|']
+    for method,diff in result.get('current_minimum_differences',{}).items():
+        lines.append('|'+method+'|'+display(diff.get('FULL_PF'))+'|'+display(diff.get('TRUNCATED_PF'))+'|')
+    for r in result['candidates']:
+        if r.get('search_status')=='INTERRUPTED_SEARCH_POLICY_CHANGE':
+            lines+=['',r['label']+'：探索方針変更による途中終了（INTERRUPTED_SEARCH_POLICY_CHANGE）。収束値ではない。',
+                'κ絶対値='+str(frac(r['kappa_absolute']))+'、元κ倍率='+str(frac(r['kappa_multiplier']))+'。',
+                '保存総額と26軸MODEL適用summaryを受入。個別26単価は未保存/null、全26軸外挿、qualified_for_candidate=false。',
+                'exact MSE上下界は公開hashと一致した最安点1件のOUTCOMEを保持し、再評価していない。']
     lines+=['','|候補|方式|LD|公式|判定|費用 RZ|X/Y配分|','|---|---|---:|---|---|---:|---|']
     for r in result['candidates']:
         lines.append('|'+str(r['label'])+'|'+r['method']+'|'+str(r['L_D'])+'|'+str(r['formula'])+'|'+r['status_display']+'|'+

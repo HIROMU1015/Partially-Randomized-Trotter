@@ -1,5 +1,6 @@
 """Synthetic binding checks and the explicitly requested saved-result acceptance."""
 from copy import deepcopy
+from fractions import Fraction
 import json
 from pathlib import Path
 import subprocess
@@ -73,7 +74,10 @@ class Technical(unittest.TestCase):
 class PublishedAcceptance(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.inputs=json.loads(INPUT.read_text());cls.reader=Reader(ROOT)
+        cls.reader=Reader(ROOT)
+        # Keep the prior 49-point acceptance scope as an immutable regression.
+        cls.inputs=cls.reader.read(ref('417a73e7329fd520381dc88cc0de00a11dd0b641',
+            'docs/research/h4_saved_rpe_cost_catalog_20261116/INPUTS.json'))
 
     def test_four_m12_points_and_all_required_routes(self):
         cat=Catalog(self.reader,self.inputs['comparison'])
@@ -318,6 +322,55 @@ class PublishedAcceptance(unittest.TestCase):
             subprocess.run(cmd,cwd=ROOT,env=env,check=True,capture_output=True)
             second=json.loads((out/'CATALOG.json').read_text())
             self.assertEqual(frac(second['method_minima']['TRUNCATED_PF']['conditional_cost']),395962678)
+            before={p.name:p.read_bytes()for p in out.iterdir()}
+            subprocess.run(cmd,cwd=ROOT,env=env,check=True,capture_output=True)
+            self.assertEqual(before,{p.name:p.read_bytes()for p in out.iterdir()})
+
+
+class OptimizerPublicationAcceptance(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.inputs=json.loads(INPUT.read_text());cls.inputs['sources']=cls.inputs['sources'][:22];cls.reader=Reader(ROOT)
+
+    def test_completed_and_interrupted_results_update_minima_and_keep_old_points(self):
+        cat=Catalog(self.reader,self.inputs['comparison'])
+        for source in self.inputs['sources']:cat.add(source)
+        d=cat.result();self.assertEqual(len(d['candidates']),51)
+        self.assertEqual(frac(d['method_minima']['FULL_PF']['conditional_cost']),480258064)
+        self.assertEqual(frac(d['method_minima']['PR_PAULI']['conditional_cost']),Fraction(2873295767,7))
+        self.assertEqual(frac(d['method_minima']['TRUNCATED_PF']['conditional_cost']),372035410)
+        self.assertFalse([r for r in d['candidates']if r['status']=='MISMATCH'])
+        pauli=next(r for r in d['candidates']if r.get('search_status')=='INTERRUPTED_SEARCH_POLICY_CHANGE')
+        self.assertEqual(frac(pauli['kappa_multiplier']),2)
+        self.assertEqual(frac(pauli['kappa_absolute']),2*frac(pauli['kappa_base_absolute']))
+        self.assertEqual(pauli['price_axes'],[]);self.assertEqual(len(pauli['model_coverage_axes']),26)
+        self.assertTrue(all(x['C_ref']is None for x in pauli['model_coverage_axes']))
+        self.assertFalse(pauli['qualified_for_candidate']);self.assertFalse(pauli['search_converged'])
+        full=next(r for r in d['candidates']if r.get('search_status')=='COMPLETED_METHOD_FINITE_SEARCH')
+        self.assertEqual(len(full['price_axes']),26)
+        self.assertEqual(full['price_kind_counts'],{'DIRECT_COMPILED_DETERMINISTIC':16,'CONDITIONAL_FIXED_COMPILER_CLOSURE_DERIVATION':10})
+        self.assertTrue(any(r['method']=='FULL_PF' and r['status']=='FEASIBLE' and frac(r['conditional_cost'])==559457386 for r in d['candidates']))
+        self.assertEqual(frac(d['current_minimum_differences']['PR_PAULI']['FULL_PF']),Fraction(-488510681,7))
+        old=self.reader.read(ref('417a73e7329fd520381dc88cc0de00a11dd0b641','docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json'))
+        byid={r['point_id']:r for r in d['candidates']}
+        self.assertTrue(all(byid[r['point_id']]==r for r in old['candidates']))
+        for source in self.inputs['sources']:cat.add(source)
+        self.assertEqual(d,cat.result())
+
+    def test_bad_saved_hash_and_missing_model_summary_rejected(self):
+        source=next(s for s in self.inputs['sources']if s['path'].endswith('B2_SAVED_TOTAL_INDEX.json'))
+        changed=deepcopy(self.reader.read(source));changed['outcome_sha256']='0'*64
+        with self.assertRaisesRegex(ValueError,'sha256'):
+            Catalog(self.reader,self.inputs['comparison']).interrupted_pauli_best(source,changed)
+        changed=deepcopy(self.reader.read(source))
+        from unittest.mock import patch
+        original=self.reader.read
+        def broken(ref):
+            value=deepcopy(original(ref))
+            if ref==changed['price_coverage']:value['price_quote']['classifications']={'MODEL_REFERENCE':25}
+            return value
+        with patch.object(self.reader,'read',side_effect=broken),self.assertRaisesRegex(ValueError,'coverage'):
+            Catalog(self.reader,self.inputs['comparison']).interrupted_pauli_best(source,changed)
 
 
 if __name__=='__main__':unittest.main()
