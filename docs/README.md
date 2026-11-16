@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli必要時準備](research/pauli_candidate_preparation_20261116/REPORT.md)／[B2 HANDOFF](research/pauli_candidate_preparation_20261116/HANDOFF.md)／[性能手法](PERFORMANCE_METHODS.md)。
+
 [PR-Pauli LD5 信号](research/df_head_pauli_tail_ld5_signals_20261116/REPORT.md)：configuration `4d6e2c9c` の13 round信号を取得（13/13 gate PASS）。偏りはLD3の1.0020倍。[B向けMEAN_HANDOFF](research/df_head_pauli_tail_ld5_signals_20261116/MEAN_HANDOFF.json)／[HANDOFF_B](research/df_head_pauli_tail_ld5_signals_20261116/HANDOFF_B.md)。Q3・compileなし、公開後STOP。
 
 [PR-Pauli LD5 段階1](research/df_head_pauli_tail_ld5_stage1_20261116/REPORT.md)：LD5辞書184項・λ_P＝0.0616、configuration `4d6e2c9c`。tail eventはLD3の0.62%（m0〜m10はR＝1の下限）、FULL_PF__B_PRICEのshot加重eventは29,341,636→209,940。[HANDOFF_B](research/df_head_pauli_tail_ld5_stage1_20261116/HANDOFF_B.md)／[表](research/df_head_pauli_tail_ld5_stage1_20261116/config_run01/SCHEDULE_LD3_LD5.csv)。信号・compile・価格・Q3なし、公開後STOP。

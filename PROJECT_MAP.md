@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-Pauli必要時準備](docs/research/pauli_candidate_preparation_20261116/REPORT.md)：B2 requestから保存辞書/canonicalを価格catalogと独立に解決。未登録分割のstage1 bridge・signal/価格hand-off、保存＋人工23検査、新H4科学0。性能再利用は[手法集](docs/PERFORMANCE_METHODS.md)。
+
 [DF head＋Pauli tail全13round結果](docs/research/df_head_pauli_tail_all_round_results_20261114/REPORT.md)：保存H4 DF10/LD1・LD2/S2/Δ.1/K2/元κで未評価22meanが全局所gate通過。旧m0/m6の4件を再計算せず全26rowへ統合。[caller](scripts/run_df_head_pauli_tail_completion.py)／[packet統合](src/trottertracks/df_head_pauli_tail_completion.py)／[人工6test](tests/check_df_head_pauli_tail_completion.py)＋P1回帰6 PASS。新66complex/normalizer22、SOURCE7084fbc9a/raw fce4e4f7e、最大closure4.3729e−10、N/MSE/compile/C/G0・公開後STOP。
 
 [DF head＋Pauli tail P1結果](docs/research/df_head_pauli_tail_p1_results_20261114/REPORT.md)：保存H4 DF10/LD1・LD2/S2/Δ.1/K2/元κ、m0/m6のPauli4mean＋LD1/m0 fixedR2/full256の計6件が全数値gate通過。18complex/normalizer5、新reference/P0再計算/N/MSE/compile/C/G0。[caller](scripts/run_df_head_pauli_tail_p1.py)／[adapter](src/trottertracks/df_head_pauli_tail_p1.py)／[人工6test](tests/check_df_head_pauli_tail_p1.py)＋既存17 PASS。B canonical新IDと[部分mean packet](docs/research/df_head_pauli_tail_p1_results_20261114/MEAN_HANDOFF.json)、他11round/prefix null、公開後STOP。

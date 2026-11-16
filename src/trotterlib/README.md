@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+PR-PauliのB2準備adapterは[trottertracks/pauli_candidate_preparation.py](../trottertracks/pauli_candidate_preparation.py)。[仕様・検証](../../docs/research/pauli_candidate_preparation_20261116/REPORT.md)、[性能手法](../../docs/PERFORMANCE_METHODS.md)。
+
 [Pauli全round completion adapter](../trottertracks/df_head_pauli_tail_completion.py)：P1 providerを変更せず未評価22件のみbatch呼出し、旧4件を元SOURCEのまま統合。[結果](../../docs/research/df_head_pauli_tail_all_round_results_20261114/REPORT.md)／[人工6test](../../tests/check_df_head_pauli_tail_completion.py)。全26row canonical/law保持、新22局所gate・P1回帰6 PASS、sector36 ideal meanとfull256 operator証拠を分離、N/MSE/compile/C/G0・公開後STOP。
 
 [DF head＋Pauli tail P1 adapter](../trottertracks/df_head_pauli_tail_p1.py)：P0 Pauli和を既存finite-K providerへ接続し、B canonical/dictionary/lawを保持。[限定6mean結果](../../docs/research/df_head_pauli_tail_p1_results_20261114/REPORT.md)と[人工6test](../../tests/check_df_head_pauli_tail_p1.py)。変更は辞書付きID検査と任意normalizer共有、旧DF default/数値式保全。全局所数値gate・既存17回帰PASS、full/36はLD1/m0/R2だけ。全RPE/N/compile/C/Gへ進まずSTOP。
