@@ -22,6 +22,7 @@ C=I.C
 MODULE='src/trottertracks/pf_evidence_preparation.py'
 INDEX=dict(commit='7f27e18f06dde12127c85be898777b685d29bacc',path='docs/research/pf_joint_width_shot_plan_20261115/WIDTH_SIGNAL_COVERAGE.json')
 COSTS=dict(commit='1002f1dfea34de439ca1b704a0192bca473c5387',path='docs/research/pf6_allround_cost_20261115/INPUTS.json')
+CATALOG=dict(commit='1d44d07397031547e402171faae268a640a2807b',path='docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json')
 T1='5e6f9fd214631f7ce92fad0e9c0d273dfb479533'
 D='015d04a2a3db1c7d7140f36edd86cc700191808b'
 
@@ -43,6 +44,37 @@ def physical_key(c):return tuple(c.get(k) for k in ('system','method','prefix','
 def plan(root,cfg,source):
     manifest=read(root,S.MANIFEST)
     return I.plan(root,cfg,target=manifest['shared']['target'],signal_source=source,references=S.references(root,cfg,manifest['shared']['binding']))
+
+
+def published_ready(root,cfg):
+    """Return an already complete fixed-C input row, with no refit or science.
+
+    A previous Q3 failure does not invalidate complete inputs. Conditional
+    prices retain their saved scientific status; this does not upgrade them.
+    """
+    catalog=read(root,CATALOG)
+    for index,row in enumerate(catalog['candidates']):
+        if row['configuration_id']!=cfg['id'] or len(row.get('price_axes',[]))!=26:continue
+        if not row.get('signal_source') or not row.get('configuration_source') or not row.get('case_source'):continue
+        original=read(root,row['configuration_source']);packet=read(root,row['signal_source'])
+        check(original['id']==cfg['id'] and C.p.same(original['spec'],cfg['spec']),'Saved catalog configuration differs')
+        check(packet['configuration_id']==cfg['id'] and len(packet['means'])==13,'Saved catalog signal packet incomplete')
+        prepared=plan(root,cfg,packet['source'])
+        means={m['m']:m for m in packet['means']}
+        check(set(means)==set(range(13)),'Saved catalog mean round identity differs')
+        for m,mean in means.items():
+            check(mean.get('raw') is not None and mean['normalization']['numerical'].get('gates_passed') is True,'Saved catalog numerical mean unresolved')
+            check(mean['identity']==cfg['rounds'][m]['identity'] and mean['law_binding']==cfg['rounds'][m]['law_binding'],'Saved catalog signal identity differs')
+            I.provider_binding_check(prepared,mean)
+        axes=row['price_axes']
+        check(len({(a['m'],a['axis']) for a in axes})==26 and {(a['m'],a['axis']) for a in axes}=={(m,a) for m in range(13) for a in ('X','Y')},'Saved catalog price axes incomplete')
+        for axis in axes:
+            m=axis['m'];expected=prepared['pending']['requests'][m]
+            check(axis['physical_id']==expected['physical_candidate']['id'],'Saved catalog price physical identity differs')
+            check(axis.get('canonical_id',cfg['rounds'][m]['candidate']['id'])==cfg['rounds'][m]['candidate']['id'],'Saved catalog canonical price identity differs')
+            check(all(axis['compiler_profile'].get(k)==v for k,v in cfg['spec']['profile'].items()),'Saved catalog price profile differs')
+        return dict(row=deepcopy(row),index=index,catalog_source=dict(CATALOG,selector=['candidates',index]))
+    return None
 
 
 @lru_cache(maxsize=8)
@@ -86,12 +118,21 @@ def price_pool(root):
                               ('d_p7_y4_coarse_price_calibration_20261116','c7c8c1edd0996ad9ef97629961f67ca508a182f0','axes')]:
         file='run01/AXIS_PRICES.json' if name.startswith('d_pf_p7_s2') else 'PRICE_AND_COST.json'
         data=read(root,ref(commit,'docs/research/'+name+'/'+file))
-        rows=data.get(field,data.get('rows',[]))
-        for row in rows:
-            if name.startswith('d_pf_p7_s2'):continue  # normal direct receipts already visible to duplicate review; no relabel
-            if row['kind']!='DIRECT_COMPILED_DETERMINISTIC':continue
-            origin=row['price_evidence']['source'];v=read(root,origin);c=v['physical_context']['physical_candidate']
-            out.setdefault((physical_key(c),v['axis']),dict(value=v,source=origin,admission=ref(commit,'docs/research/'+name+'/'+file,'axes',rows.index(row))))
+        is_h=name.startswith('d_pf_p7_s2')
+        rows=data.get('rows' if is_h else field,[])
+        for i,row in enumerate(rows):
+            if is_h:
+                if row.get('status')!='ACCEPTED_DIRECT':continue
+                check(row['gate_result']['C_guard']=='PASS' and row['gate_result']['original_action_gates']=='PASS','Saved h-price admission unresolved')
+                origin=row['receipt']
+            else:
+                if row['kind']!='DIRECT_COMPILED_DETERMINISTIC':continue
+                origin=row['price_evidence']['source']
+            v=read(root,origin);c=v['physical_context']['physical_candidate']
+            if is_h:
+                check(c==row['physical_candidate'] and v['axis']==row['axis'],'Saved h-price row/receipt binding differs')
+                check(v['mean']['rz_count']==row['compiled_RZ'],'Saved h-price row/receipt count differs')
+            out.setdefault((physical_key(c),v['axis']),dict(value=v,source=origin,admission=ref(commit,'docs/research/'+name+'/'+file,'rows' if is_h else field,i)))
     return out
 
 
@@ -122,12 +163,19 @@ def make_plan(root,cfg,source):
     width=frac(cfg['spec']['delta_pf']);saturated=[r for r in requests if frac(r['T'])/r['q_PF']==width]
     eligible=[r for r in saturated if r['q_PF']>=2]
     check(len(eligible)>=3,'At least two distinct-q calibration cells and one later holdout required')
-    calibration=eligible[:2];hold=next((r for r in eligible[2:] if r['q_PF']>=4*calibration[-1]['q_PF']),eligible[-1])
+    calibration=eligible[:2]
+    existing={(r['m'],r['axis']) for r in direct}
+    later=[r for r in eligible[2:] if r['q_PF']>=4*calibration[-1]['q_PF']]
+    # Choose from receipt availability, never observed price values. A saved
+    # later-width check avoids rebuilding an earlier unsaved wrapper solely
+    # because its round index is smaller. It remains outside calibration.
+    saved_later=[r for r in later if all((r['m'],a) in existing for a in ('X','Y'))]
+    hold=(saved_later or later or eligible[-1:])[0]
     calibration_ms=[r['m'] for r in calibration];hm=hold['m']
     # Every early actual-width exception needs direct prices; same-width later
     # cells may use only the explicitly conditional candidate-specific model.
     needed=sorted({r['m'] for r in requests if frac(r['T'])/r['q_PF']!=width or r['q_PF']==1}|set(calibration_ms+[hm]))
-    existing={(r['m'],r['axis']) for r in direct};new=[]
+    new=[]
     for m in needed:
         axes=[a for a in ('X','Y') if (m,a) not in existing]
         if axes:

@@ -124,5 +124,43 @@ class Evidence(unittest.TestCase):
             with patch.object(E,'price_pool',return_value={key:changed}),patch.object(E.I,'price_requests',return_value=[req]),self.assertRaises(ValueError):
                 E.accepted_direct(ROOT,self.prepared)
 
+    def test_h_direct_receipts_prevent_repeat_compile(self):
+        cfg=P.configure(ROOT,'B0I',7,'2nd','1')
+        plan=E.make_plan(ROOT,cfg,dict(module='METADATA_ONLY'))
+        self.assertTrue(cfg['id'].startswith('e6754564'))
+        self.assertEqual(len(plan['direct_prices']),10)
+        self.assertEqual({r['m'] for r in plan['direct_prices']},set(range(5)))
+        self.assertEqual(plan['calibration_rounds'],[1,2])
+        self.assertEqual(plan['holdout_round'],4)
+        self.assertEqual(plan['maximum_new_compile'],0)
+        self.assertEqual(plan['new_compile_cells'],[])
+
+    def test_later_existing_holdout_avoids_repeat_coarse_compile(self):
+        cfg=P.configure(ROOT,'B0I',7,'4th','32/5')
+        plan=E.make_plan(ROOT,cfg,dict(module='METADATA_ONLY'))
+        self.assertTrue(cfg['id'].startswith('dd8bfc24'))
+        self.assertEqual(len(plan['direct_prices']),16)
+        self.assertEqual(plan['calibration_rounds'],[5,6])
+        self.assertEqual(plan['holdout_round'],9)
+        self.assertEqual(plan['maximum_new_compile'],0)
+        self.assertEqual(plan['new_compile_cells'],[])
+
+    def test_published_ready_reuses_complete_inputs_without_new_fit(self):
+        cfg=P.configure(ROOT,'B0I',7,'4th','32/5')
+        ready=E.published_ready(ROOT,cfg)
+        self.assertEqual(ready['index'],37)
+        self.assertEqual(ready['catalog_source']['selector'],['candidates',37])
+        self.assertEqual(len(ready['row']['price_axes']),26)
+        self.assertEqual(ready['row']['configuration_id'],cfg['id'])
+        self.assertIsNone(E.published_ready(ROOT,P.configure(ROOT,'B0I',7,'2nd','1')))
+        original=E.read
+        def bad(root,loc):
+            value=original(root,loc)
+            if loc==E.CATALOG:
+                value=deepcopy(value);value['candidates'][37]['price_axes'][0]['physical_id']='OTHER_PHYSICAL_SCHEDULE'
+            return value
+        with patch.object(E,'read',bad),self.assertRaisesRegex(ValueError,'physical identity'):
+            E.published_ready(ROOT,cfg)
+
 
 if __name__=='__main__':unittest.main(verbosity=2)

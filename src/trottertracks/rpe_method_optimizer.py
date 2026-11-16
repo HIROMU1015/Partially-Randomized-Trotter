@@ -492,6 +492,7 @@ class Executor:
         self.wait_for_running, self.poll_seconds = wait_for_running, poll_seconds
         # Completed jobs of earlier rounds (same job key, same route for the configuration) answer without a new Q3.
         self.prior_run_dirs, self.launch_disabled = [Path(d) for d in prior_run_dirs], launch_disabled
+        self.pf_template_reader, self.pf_template_cache = Reader(self.root), {}
 
     def log(self, **event):
         with self.lock:
@@ -547,25 +548,49 @@ class Executor:
             proc = subprocess.Popen(cmd, cwd=str(self.root), env=env, stdout=log, stderr=subprocess.STDOUT)
         return proc
 
+    def pf_template_source(self, rule, cid):
+        """Effective first PF template, exactly as the saved worker selects it.
+
+        Other configurations' templates may be appended to a registry without
+        changing this candidate's SOURCE. Only metadata JSON is read and cached.
+        """
+        templates=rule['templates'];key=(cid,json.dumps(templates,sort_keys=True))
+        if key in self.pf_template_cache:
+            return self.pf_template_cache[key]
+        for loc in templates:
+            source=dict(commit=self.pf_template_reader.commit(loc['commit']),path=loc['path'],
+                        selector=list(loc.get('inputs_selector',[])))
+            inputs=self.pf_template_reader.read(source)
+            if any((case.get('configuration_id')or case.get('original_configuration_id'))==cid for case in inputs['cases']):
+                self.pf_template_cache[key]=source
+                return source
+        raise ValueError('No effective PF template for prior candidate')
+
     def same_route(self, job, cid):
         """A prior job is reusable only if it ran the same route (kind, worker view, contract, signal packet, binding)."""
         try:
             old = json.loads((job / 'REQUEST.json').read_text())
-        except (OSError, ValueError):
+            now = self.route(cid) or {};before=old.get('route')or{}
+            pf=before.get('kind')==now.get('kind')=='pf_b_pf6'
+            omitted=('configurations','configuration_ids','existing_caller','configurations_file')+(('templates',)if pf else())
+            fixed=lambda r:{k:v for k,v in r.items()if k not in omitted}
+            entry=lambda r:(r.get('configurations')or{}).get(cid)
+            if not (old.get('configuration_id')==cid and fixed(before)==fixed(now) and entry(before)==entry(now)
+                    and old.get('expected')==json.loads(json.dumps(self.expected_for(cid,now),default=str))):
+                return False
+            return not pf or self.pf_template_source(before,cid)==self.pf_template_source(now,cid)
+        except (OSError,ValueError,KeyError,TypeError,subprocess.CalledProcessError):
             return False
-        now = self.route(cid) or {}
-        fixed = lambda r: {k: v for k, v in (r or {}).items() if k not in ('configurations', 'configuration_ids', 'existing_caller',
-                                                                           'configurations_file')}
-        entry = lambda r: ((r or {}).get('configurations') or {}).get(cid)
-        return (old.get('configuration_id') == cid and fixed(old.get('route')) == fixed(now) and entry(old.get('route')) == entry(now)
-                and old.get('expected') == json.loads(json.dumps(self.expected_for(cid, now), default=str)))
 
     def prior_job(self, proposal):
         name = self.job_dir(proposal).name
-        for base in self.prior_run_dirs:
-            job = base / 'jobs' / self.method / name
-            if (job / 'OUTCOME.json').exists() and self.same_route(job, proposal['configuration_id']):
-                return job
+        # A matching launched job remains owned by its earlier run, even when
+        # it has no outcome. Prefer a completed observation when one exists.
+        for marker in ('OUTCOME.json', 'LAUNCH.json'):
+            for base in self.prior_run_dirs:
+                job = base / 'jobs' / self.method / name
+                if (job / marker).exists():
+                    return job
         return None
 
     def has_job(self, proposal):
@@ -598,6 +623,9 @@ class Executor:
 
     def launch(self, proposal, rule):
         """Start one job without waiting; a waiter thread records the return and frees the slot."""
+        prior = self.prior_job(proposal)
+        if prior is not None:
+            return prior  # no duplicate launch or mutation of an earlier run
         job = self.job_dir(proposal);done = threading.Event()
         if self.launch_disabled:
             raise RuntimeError('launch disabled (saved-job replay): ' + job.name)
@@ -657,7 +685,22 @@ class Executor:
         if not (job / 'LAUNCH.json').exists():
             prior = self.prior_job(proposal)
             if prior is not None:
-                return dict(self.ingest(prior, proposal, calls=0), source='PRIOR_ROUND_JOB')
+                if not self.same_route(prior,proposal['configuration_id']):
+                    return dict(status='STALE_JOB',job=str(prior),calls=0,source='PRIOR_ROUND_JOB',owner_review_required=True,
+                                reason='PRIOR_OWNER_ROUTE_OR_SOURCE_UNRESOLVED_REVIEW_REQUIRED')
+                if (prior / 'OUTCOME.json').exists():
+                    return dict(self.ingest(prior, proposal, calls=0), source='PRIOR_ROUND_JOB')
+                # The prior owner's worker/collector is never invoked here.
+                # A dead or incomplete prior launch needs that owner's review,
+                # rather than collect/retry or a fresh launch in this run.
+                try:
+                    launch = json.loads((prior / 'LAUNCH.json').read_text())
+                    running = self.alive(launch, prior)
+                except (OSError, ValueError, KeyError, TypeError):
+                    running = False
+                return dict(status='IN_PROGRESS' if running else 'STALE_JOB', job=str(prior), calls=0,
+                            source='PRIOR_ROUND_JOB', owner_review_required=True,
+                            reason='PRIOR_OWNER_JOB_RUNNING' if running else 'PRIOR_OWNER_JOB_INCOMPLETE_REVIEW_REQUIRED')
         if (job / 'LAUNCH.json').exists():
             launch = json.loads((job / 'LAUNCH.json').read_text())
             if job in self.events:

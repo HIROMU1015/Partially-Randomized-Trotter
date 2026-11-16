@@ -57,6 +57,19 @@ class Entry(unittest.TestCase):
             self.assertEqual(D.load(out/'FROZEN_MODEL.json'),frozen)
             self.assertTrue((out/'STOP.json').exists())
 
+    def test_public_complete_inputs_bypass_all_science_and_refit(self):
+        from trottertracks import pf_evidence_preparation as E,pf_candidate_space as K
+        cfg=K.configure(ROOT,'TRUNCATED_PF',7,'4th','32/5');saved=E.published_ready(ROOT,cfg)
+        self.assertIsNotNone(saved)
+        with TemporaryDirectory(dir=ROOT,prefix='.pf_public_fixture_') as tmp:
+            folder=Path(tmp)/cfg['id'];registry=Path(tmp)/'registry.json'
+            with patch.object(D,'publish'),patch.object(D,'signals',side_effect=AssertionError('No repeated mean')),patch.object(D,'freeze',side_effect=AssertionError('No repeated fit')),patch.object(D,'acquire',side_effect=AssertionError('No repeated compile')):
+                result=D.reuse_published(cfg,folder,registry,saved)
+            self.assertEqual(result['status'],'REUSED_PUBLISHED_COMPLETE_INPUTS')
+            self.assertEqual(len(D.load(folder/'SAVED_AXIS_PRICES.json')['axes']),26)
+            self.assertEqual(len(D.load(folder/'SAVED_Q3_INPUTS.json')['cases']),1)
+            self.assertEqual(D.load(folder/'COMPLETION.json')['new_Q3'],0)
+
     def test_registry_reuse_does_not_reenter_science(self):
         with TemporaryDirectory(dir=ROOT,prefix='.pf_fixture_') as tmp:
             root=Path(tmp);cid='ARTIFICIAL';registry=root/'registry.json'

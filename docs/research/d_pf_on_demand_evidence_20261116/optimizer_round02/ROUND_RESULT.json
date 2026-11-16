@@ -1,0 +1,168 @@
+{
+  "schema": "RPE_OPTIMIZER_ROUND_RESULT_V1",
+  "round": {
+    "round_id": "D_PF_SAVED_REGISTRY_RETURN_02",
+    "methods": [
+      "FULL_PF"
+    ],
+    "initial": "all",
+    "science_approved": true,
+    "max_new_q3_per_method": {
+      "FULL_PF": 0
+    },
+    "max_steps_per_method": 1,
+    "method_overrides": {
+      "FULL_PF": {
+        "configuration_ids": [
+          "9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981"
+        ]
+      }
+    },
+    "executor": {
+      "max_concurrent_jobs": 1,
+      "wait_for_running_jobs": false,
+      "prior_run_dirs": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/TRUNCATED_PF"
+      ]
+    },
+    "pf_evidence_registry": "docs/research/d_pf_on_demand_evidence_20261116/C_RESULT_JOIN.json"
+  },
+  "methods": {
+    "FULL_PF": {
+      "method": "FULL_PF",
+      "best": null,
+      "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+      "pending_request": {
+        "configuration_id": "9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981",
+        "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+        "vector": [
+          59,
+          59,
+          55,
+          55,
+          51,
+          51,
+          47,
+          47,
+          43,
+          43,
+          39,
+          39,
+          35,
+          35,
+          31,
+          31,
+          27,
+          27,
+          23,
+          23,
+          19,
+          19,
+          15,
+          15,
+          11,
+          11
+        ],
+        "cost": {
+          "numerator": 956592146,
+          "denominator": 1,
+          "display": "956,592,146.00"
+        },
+        "origin": {
+          "kind": "GENERATOR_SEED",
+          "rule": "B_PRICE",
+          "budget": "956592146"
+        },
+        "method": "FULL_PF",
+        "shot_change": 0,
+        "route": {
+          "kind": "pf_b_pf6",
+          "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+        },
+        "queue": [
+          {
+            "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+            "cost": {
+              "numerator": 956592146,
+              "denominator": 1,
+              "display": "956,592,146.00"
+            },
+            "vector": [
+              59,
+              59,
+              55,
+              55,
+              51,
+              51,
+              47,
+              47,
+              43,
+              43,
+              39,
+              39,
+              35,
+              35,
+              31,
+              31,
+              27,
+              27,
+              23,
+              23,
+              19,
+              19,
+              15,
+              15,
+              11,
+              11
+            ],
+            "origin": {
+              "kind": "GENERATOR_SEED",
+              "rule": "B_PRICE",
+              "budget": "956592146"
+            }
+          }
+        ],
+        "job": null
+      },
+      "trace": [],
+      "held": [],
+      "new_calls": 0,
+      "evaluated_count": 0,
+      "evaluated": [],
+      "not_ready_candidates": [],
+      "ready_candidates": [
+        "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75"
+      ],
+      "search_range": {
+        "candidates": [
+          "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75"
+        ],
+        "rule": "FINITE_LOCAL_DESCENT_V1"
+      },
+      "resume_records": [],
+      "by_configuration": null,
+      "incumbent_scope": "METHOD",
+      "prior_rounds": {
+        "run_dirs": [
+          "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/TRUNCATED_PF"
+        ],
+        "loaded": 0,
+        "already_known": 0,
+        "refused": 0,
+        "refused_reasons": []
+      },
+      "budget": {
+        "max_new_q3": 0,
+        "science_approved": true,
+        "spent_before": 0,
+        "new_calls": 0
+      },
+      "generation": null,
+      "parameter_assessment": null
+    }
+  },
+  "pf_completion": null,
+  "optimizer_source": "41fce13b18948d509f53802b9271c5461933dfcf",
+  "wall_seconds": 10.883611261844635,
+  "exact_bounds": "MSE bounds with more than 60 digits: outward 30-digit intervals; exact in job OUTCOME.json / C"
+}

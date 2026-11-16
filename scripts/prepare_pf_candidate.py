@@ -300,6 +300,25 @@ def finish_saved_inputs(value,out,registry):
     return dict(status='READY_FOR_SAME_OPTIMIZER',configuration_id=value['configuration']['id'],entry=entry,output=str(out))
 
 
+def reuse_published(cfg,out,registry,saved):
+    """Register existing C-admitted complete inputs, with zero science/refit."""
+    from trottertracks import pf_evidence_preparation as E
+    row=saved['row'];inputs=E.read(ROOT,row['case_source'])
+    cases=[c for c in inputs['cases'] if (c.get('configuration_id') or c.get('original_configuration_id'))==cfg['id'] and c.get('signal_packet')==row['signal_source']]
+    E.check(bool(cases),'Saved Q3 template has a different signal/configuration')
+    case=cases[0];out.mkdir(parents=True,exist_ok=False)
+    table=dict(configuration_id=cfg['id'],axes=[dict(m=x['m'],axis=x['axis'],physical_id=x['physical_id'],unit_price_RZ=deepcopy(x['unit_price_RZ']),kind=x['price_kind'],price_evidence=deepcopy(x.get('price_evidence') or {'source':x['price_source']}),original_comparison_source=x.get('price_source')) for x in row['price_axes']],original_catalog_source=saved['catalog_source'],price_error_bound=None,qualified_for_candidate=False)
+    write(out/'SAVED_AXIS_PRICES.json',table);inputs=deepcopy(inputs);inputs['cases']=[case];write(out/'SAVED_Q3_INPUTS.json',inputs)
+    publish([out],'Reuse complete published PF signal price and worker-template sources without science')
+    entry=dict(method=comparison_method(cfg),p=cfg['spec']['L_D'],formula=cfg['spec']['formula'],delta_over_h=str(E.frac(cfg['spec']['delta_pf'])/SAVED_H()),configuration=case['configuration'],signal_packet=row['signal_source'],prices=gitref(out/'SAVED_AXIS_PRICES.json'),q3_inputs=gitref(out/'SAVED_Q3_INPUTS.json'),total_configuration_id=row['total_configuration_id'],binding_id=row['binding_id'],price_scope='SAVED_CONDITIONAL_COMPARISON_REFERENCE_RETAINS_ORIGINAL_LIMITATIONS')
+    data=load(registry) if registry.exists() else dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={})
+    if cfg['id'] in data['configurations']:raise ValueError('Preserve existing registry record')
+    data['configurations'][cfg['id']]=entry;registry.parent.mkdir(parents=True,exist_ok=True);registry.write_text(json.dumps(data,indent=2)+'\n')
+    write(out/'COMPLETION.json',dict(status='REUSED_PUBLISHED_COMPLETE_INPUTS',configuration_id=cfg['id'],new_means=0,new_compiles=0,new_fit=0,new_Q3=0,original_catalog_source=saved['catalog_source']))
+    publish([out,registry],'Register already published PF inputs; do not repeat their acquisition')
+    return dict(status='REUSED_PUBLISHED_COMPLETE_INPUTS',configuration_id=cfg['id'],entry=entry,output=str(out))
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--request',type=Path);p.add_argument('--output',type=Path);p.add_argument('--mode',choices=('plan','complete','finish-saved-zero-compile'));p.add_argument('--native-child',type=Path)
     args=p.parse_args()
@@ -313,6 +332,11 @@ def main():
         if saved and saved.get('signal_packet') and saved.get('prices') and saved.get('q3_inputs'):
             response['items'].append(dict(status='REUSED_COMPLETED_REGISTRY',configuration_id=cfg['id'],entry=saved));continue
         out=output_root/cfg['id']
+        if args.mode=='complete' and not out.exists():
+            from trottertracks import pf_evidence_preparation as E
+            public=E.published_ready(ROOT,cfg)
+            if public:
+                response['items'].append(reuse_published(cfg,out,registry,public));continue
         if args.mode=='finish-saved-zero-compile':
             value=load(out/'PLAN.json')
             if value['configuration']!=cfg:raise ValueError('Saved plan belongs to another candidate')

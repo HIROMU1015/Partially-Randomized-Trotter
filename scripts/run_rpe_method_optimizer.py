@@ -107,7 +107,11 @@ def scoped(problem, overrides):
 
 
 def price_overrides(problem, spec):
-    """Round-level price-rule settings (e.g. registry_file: a B2-extended registry with newly calibrated split entries)."""
+    """Round price settings, including a completed PF registry without completion.
+
+    ``pf_evidence_registry`` is independent of ``pf_completion``: a later round
+    can consume already published evidence without invoking its provider.
+    """
     if spec.get('price_rules_overrides'):
         problem = json.loads(json.dumps(problem));problem['price_rules'].update(spec['price_rules_overrides'])
     if spec.get('pf_evidence_registry'):

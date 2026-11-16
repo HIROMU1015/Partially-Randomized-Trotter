@@ -1,11 +1,13 @@
 """Artificial registry/normal-entry checks. No scientific calls or H4 loading."""
 from copy import deepcopy
 from fractions import Fraction
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -215,6 +217,91 @@ class Connection(unittest.TestCase):
         self.assertFalse(row['qualified_for_candidate'])
         self.assertIsNone(result['method_minima']['FULL_PF']['conditional_cost'])
 
+    def test_normal_c_reconcile_integrates_prepared_registry_without_science(self):
+        _,ids,docs,registry,_=fixture()
+        cfg=docs['CONFIG'];s=cfg['spec']
+        s.update(method='PF',M=12,profile=dict(P=0),law=dict(model='deterministic'))
+        s['split']['deterministic_scope']='FULL_H'
+        for r in cfg['rounds']:
+            r.update(actual_delta_pf=enc(1,5),candidate=dict(id='CANONICAL_M'+str(r['m'])))
+        path='docs/artificial/C_RESULT_JOIN.json';docs[path]=registry
+        source=loc(path)
+        comparison=dict(binding=dict(snapshot='SNAP',hamiltonian='HAM',state='STATE'),h=enc(1,10),M=12,compiler_profile=dict(P=0))
+        module_spec=importlib.util.spec_from_file_location('pf_normal_c_sync_fixture',ROOT/'scripts/sync_saved_rpe_publications.py')
+        sync=importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(sync)
+        self.assertTrue(sync.schema_supported(registry,path))
+        item=dict(source=source,blob='ARTIFICIAL_BLOB',branches=['ARTIFICIAL_D_BRANCH'])
+        key=path+'@ARTIFICIAL_BLOB'
+        with patch.object(PF,'physical_ids',return_value=ids), \
+             patch.object(sync,'git',side_effect=AssertionError('No Git publication/scheduler in reconcile fixture')), \
+             patch.object(PF.subprocess,'run',side_effect=AssertionError('No producer or science process permitted')):
+            result,records,accepted=sync.reconcile(Reader(docs),dict(comparison=comparison,sources=[]),{key:item},{})
+        self.assertEqual(records[key]['status'],'INTEGRATED')
+        self.assertEqual(accepted,[source])
+        row=result['candidates'][0]
+        self.assertEqual(row['status'],'Q3_WAITING')
+        self.assertEqual(len(row['price_axes']),26)
+        self.assertEqual(row['price_scope'],'ARTIFICIAL_CONDITIONAL_ONLY')
+        self.assertIsNone(row['q3_status']);self.assertIsNone(row['conditional_cost'])
+        self.assertIsNone(result['method_minima']['FULL_PF']['conditional_cost'])
+        self.assertEqual(result['new_Q3'],0)
+        self.assertEqual(result['new_compile'],0)
+        self.assertEqual(sync.stage_summary(result,list(records.values()))['science_execution'],'NOT_STARTED_BY_SYNC')
+
+    def test_real_canonical_pf_method_dispatches_using_split_metadata(self):
+        from trottertracks import pf_evidence_preparation as E
+        module_spec=importlib.util.spec_from_file_location('pf_provider_dispatch_fixture',ROOT/'scripts/prepare_pf_candidate.py')
+        provider=importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(provider)
+        calls=[]
+        def emitter(route):
+            def native_row(physical):
+                calls.append((route,deepcopy(physical)))
+                return dict(selected_route=route)
+            return SimpleNamespace(native_row=native_row)
+        # Only the native emitter is replaced. These are the real canonical
+        # method='PF' configurations and original split/physical metadata.
+        native=SimpleNamespace(ROUTES={m:emitter(m)for m in PF.METHODS})
+        with patch.dict(sys.modules,{'run_pf_m0_prices':native}):
+            for p in (0,7,8,10):
+                method='FULL_PF' if p==10 else 'TRUNCATED_PF'
+                cfg=P.configure(ROOT,method,p,'2nd','2')
+                self.assertEqual(cfg['spec']['method'],'PF')
+                prepared=E.plan(ROOT,cfg,loc('ARTIFICIAL_METADATA_SOURCE'))
+                self.assertEqual(prepared['science_calls'],0)
+                physical=prepared['pending']['requests'][0]['physical_candidate']
+                self.assertEqual(provider.comparison_method(cfg),method)
+                self.assertEqual(provider.native_row(cfg,physical)['selected_route'],method)
+                self.assertEqual(calls[-1][0],method)
+
+    def test_normal_round_accepts_top_level_completed_registry_without_provider(self):
+        cid,ids,docs,registry,problem=fixture()
+        reader=Reader(docs)
+        facts=dict(fragment_count=10,snapshot_sha256='SNAP',hamiltonian_hash='HAM',state_hash='STATE')
+        module_spec=importlib.util.spec_from_file_location('pf_completed_registry_cli_fixture',ROOT/'scripts/run_rpe_method_optimizer.py')
+        cli=importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(cli)
+        with tempfile.TemporaryDirectory()as tmp:
+            root=Path(tmp);path=root/'completed_registry.json';path.write_text(json.dumps(registry))
+            spec=dict(round_id='ARTIFICIAL_COMPLETED_PF_REGISTRY',methods=['FULL_PF'],initial='all',
+                      max_new_q3_per_method={'FULL_PF':0},science_approved=False,pf_evidence_registry=str(path))
+            round_path=root/'ROUND.json';round_path.write_text(json.dumps(spec))
+            args=SimpleNamespace(round=round_path,run_dir=root/'run')
+            with patch.object(cli,'ROOT',root),patch.object(cli,'head',return_value='ARTIFICIAL_SOURCE'), \
+                 patch.object(O,'hamiltonian_facts',return_value=facts), \
+                 patch.object(O,'load_catalog',return_value=(reader,{'comparison':{}},{'candidates':[]})), \
+                 patch.object(O,'check_comparison'),patch.object(O,'pinned_function',return_value=generator), \
+                 patch.object(PF,'physical_ids',return_value=ids), \
+                 patch.object(PF.subprocess,'run',side_effect=AssertionError('No provider/science process allowed')):
+                cli.round_mode(args,problem,[])
+            result=json.loads((args.run_dir/'ROUND_RESULT.json').read_text())
+            self.assertIsNone(result['pf_completion'])
+            row=result['methods']['FULL_PF']
+            self.assertEqual(len(row['ready_candidates']),1)
+            self.assertEqual(row['pending_request']['configuration_id'],cid)
+            self.assertEqual(row['pending_request']['origin']['kind'],'GENERATOR_SEED')
+            self.assertEqual(row['new_calls'],0)
+            self.assertFalse((args.run_dir/'pf_completion').exists())
+            self.assertFalse((args.run_dir/'jobs').exists())
+
     def test_normal_round_runs_explicit_provider_then_same_optimizer_seeds_and_resumes(self):
         cid, ids, docs, reg, problem = fixture()
         reader = Reader(docs)
@@ -254,6 +341,120 @@ class Connection(unittest.TestCase):
             spec['pf_completion']['selected'] = []
             with self.assertRaises(ValueError):
                 PF.complete_selected(root, spec, root / 'refused')
+
+
+class PriorJobOwnership(unittest.TestCase):
+    """A prior run's live/incomplete job is metadata-only for the new run."""
+    route=dict(kind='artificial',interpreter=sys.executable,configuration_ids='*',view_commit='ARTIFICIAL')
+    proposal=dict(configuration_id='A',vector=tuple([2]*26),cost=Fraction(1),origin=dict(kind='TEST'))
+
+    def executors(self,base,prior_route=None,current_route=None):
+        prior_route=self.route if prior_route is None else prior_route
+        current_route=prior_route if current_route is None else current_route
+        problem=dict(accuracy=dict(e=1),target=dict(energy_ha=0),rpe=dict(M=12))
+        expected=dict(A=dict(total_configuration_id='TOTAL',binding_id='BIND'))
+        prior=O.Executor(ROOT,base/'B',dict(M=[prior_route]),expected,problem).for_method('M')
+        current=O.Executor(ROOT,base/'D',dict(M=[current_route]),expected,problem,prior_run_dirs=[base/'B']).for_method('M')
+        job=prior.job_dir(self.proposal);job.mkdir(parents=True)
+        (job/'REQUEST.json').write_text(json.dumps(prior.request(self.proposal,job,prior_route),default=str))
+        (job/'LAUNCH.json').write_text(json.dumps(dict(pid=123456789)))
+        (job/'PARTIAL.json').write_text(json.dumps(dict(status='OWNED_BY_B')))
+        return current,job
+
+    def hashes(self,job):
+        return {p.name:hashlib.sha256(p.read_bytes()).hexdigest()for p in job.iterdir()if p.is_file()}
+
+    def test_prior_running_and_stale_jobs_block_prefetch_answer_and_direct_launch_read_only(self):
+        for running in (True,False):
+            with self.subTest(running=running),tempfile.TemporaryDirectory()as tmp:
+                current,prior=self.executors(Path(tmp));before=self.hashes(prior)
+                with patch.object(current,'alive',return_value=running), \
+                     patch.object(current,'run_adapter',side_effect=AssertionError('Never collect or execute prior-owner job')):
+                    self.assertEqual(current.prior_job(self.proposal),prior)
+                    self.assertTrue(current.has_job(self.proposal))
+                    current.prefetch([self.proposal])
+                    answer=current.answer(self.proposal,allow_new=True)
+                    self.assertEqual(answer['status'],'IN_PROGRESS' if running else 'STALE_JOB')
+                    self.assertEqual(answer['source'],'PRIOR_ROUND_JOB')
+                    self.assertEqual(answer['calls'],0)
+                    self.assertTrue(answer['owner_review_required'])
+                    self.assertEqual(current.launch(self.proposal,self.route),prior)
+                self.assertEqual(self.hashes(prior),before)
+                self.assertFalse(current.job_dir(self.proposal).exists())
+                self.assertEqual(current.launched('M'),0)
+
+    def test_malformed_prior_launch_stays_stale_and_does_not_collect(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            current,prior=self.executors(Path(tmp))
+            (prior/'LAUNCH.json').write_text('{BROKEN_OLD_RECORD')
+            before=self.hashes(prior)
+            with patch.object(current,'run_adapter',side_effect=AssertionError('No prior collection')):
+                self.assertEqual(current.answer(self.proposal,allow_new=True)['status'],'STALE_JOB')
+            self.assertEqual(self.hashes(prior),before)
+            self.assertFalse(current.job_dir(self.proposal).exists())
+
+    def test_completed_prior_observation_is_ingested_without_mutation(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            current,prior=self.executors(Path(tmp))
+            outcome=dict(status=O.PASS,MSE_lower=enc(1,1000),MSE_upper=enc(1,1000),identity=dict(
+                configuration_id='A',allocation=[dict(m=m,N_X=2,N_Y=2)for m in range(13)],
+                total_configuration_id='TOTAL',binding_id='BIND',contract_matches=True))
+            (prior/'OUTCOME.json').write_text(json.dumps(outcome))
+            before=self.hashes(prior)
+            with patch.object(current,'run_adapter',side_effect=AssertionError('No prior execution or collection')):
+                answer=current.answer(self.proposal,allow_new=True)
+            self.assertEqual((answer['status'],answer['source'],answer['calls']),(O.PASS,'PRIOR_ROUND_JOB',0))
+            self.assertEqual(self.hashes(prior),before)
+            self.assertFalse(current.job_dir(self.proposal).exists())
+
+    def test_unrelated_pf_template_append_preserves_prior_owner_identity(self):
+        target=dict(loc('TARGET_TEMPLATE'),inputs_selector=['inputs'])
+        unrelated=loc('OTHER_TEMPLATE')
+        old=dict(kind='pf_b_pf6',interpreter=sys.executable,configuration_ids='*',view='FIXED_VIEW',view_commit='FIXED_SOURCE',
+                 templates=[target])
+        new=dict(old,templates=[unrelated,target])
+        docs=dict(TARGET_TEMPLATE=dict(inputs=dict(cases=[dict(configuration_id='A')])),
+                  OTHER_TEMPLATE=dict(cases=[dict(configuration_id='ANOTHER_CONFIGURATION')]))
+        with tempfile.TemporaryDirectory()as tmp:
+            current,prior=self.executors(Path(tmp),old,new)
+            current.pf_template_reader=Reader(docs);before=self.hashes(prior)
+            with patch.object(current,'alive',return_value=True), \
+                 patch.object(current,'run_adapter',side_effect=AssertionError('No prior mutation/collection')):
+                self.assertTrue(current.same_route(prior,'A'))
+                self.assertTrue(current.has_job(self.proposal))
+                current.prefetch([self.proposal])
+                self.assertEqual(current.answer(self.proposal,allow_new=True)['status'],'IN_PROGRESS')
+            self.assertEqual(self.hashes(prior),before)
+            self.assertFalse(current.job_dir(self.proposal).exists())
+            # Reader uses inputs_selector as the worker does, never the
+            # unrelated locator's contents as the selected SOURCE.
+            self.assertEqual(current.pf_template_source(new,'A')['path'],'TARGET_TEMPLATE')
+            self.assertEqual(current.pf_template_source(new,'A')['selector'],['inputs'])
+
+    def test_changed_or_unresolved_pf_template_view_source_is_held_without_launch(self):
+        old=dict(kind='pf_b_pf6',interpreter=sys.executable,configuration_ids='*',view='FIXED_VIEW',view_commit='FIXED_SOURCE',
+                 templates=[loc('TARGET_TEMPLATE')])
+        variants=[dict(old,templates=[loc('CHANGED_TARGET_TEMPLATE')]),dict(old,view='OTHER_VIEW'),
+                  dict(old,view_commit='OTHER_WORKER_SOURCE'),
+                  dict(old,templates=[dict(loc('TARGET_TEMPLATE'),commit='CHANGED_TEMPLATE_SOURCE')]),
+                  dict(old,templates=[loc('MISSING_TEMPLATE')])]
+        docs=dict(TARGET_TEMPLATE=dict(cases=[dict(configuration_id='A')]),
+                  CHANGED_TARGET_TEMPLATE=dict(cases=[dict(configuration_id='A')]))
+        for new in variants:
+            with self.subTest(route=new),tempfile.TemporaryDirectory()as tmp:
+                current,prior=self.executors(Path(tmp),old,new)
+                current.pf_template_reader=Reader(docs);before=self.hashes(prior)
+                with patch.object(current,'alive',return_value=True), \
+                     patch.object(current,'run_adapter',side_effect=AssertionError('No execute or collect on changed source')):
+                    self.assertFalse(current.same_route(prior,'A'))
+                    self.assertTrue(current.has_job(self.proposal))
+                    current.prefetch([self.proposal])
+                    answer=current.answer(self.proposal,allow_new=True)
+                    self.assertEqual(answer['status'],'STALE_JOB')
+                    self.assertTrue(answer['owner_review_required'])
+                    self.assertEqual(current.launch(self.proposal,new),prior)
+                self.assertEqual(self.hashes(prior),before)
+                self.assertFalse(current.job_dir(self.proposal).exists())
 
 
 if __name__ == '__main__':
