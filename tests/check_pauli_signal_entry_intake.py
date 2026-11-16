@@ -55,7 +55,7 @@ class Repository:
         common = subprocess.check_output(['git','rev-parse','--git-common-dir'],cwd=ROOT,text=True).strip()
         objects = (ROOT/common/'objects').resolve()
         (self.root/'.git/objects/info/alternates').write_text(str(objects)+'\n')
-        for name in A.ENTRY_FILES:
+        for name in A.ENTRY_VERSION_FILES.get(source, A.ENTRY_FILES):
             path=self.root/name; path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(blob(source,name))
         self.commit()

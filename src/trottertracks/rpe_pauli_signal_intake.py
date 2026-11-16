@@ -32,9 +32,11 @@ LD5_DICTIONARY = dict(commit='6255fbc422121fd777cad52763ef5a684abd46a3',
     path='docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json')
 ENTRY_SOURCE = '93a5ef3b9fed337cc4d26ee684defd304fa0eac0'
 CURRENT_ENTRY_SOURCE = '4e5b8bef634e3f071fe63df9683d7245df984d98'
-ENTRY_SOURCES = (ENTRY_SOURCE, CURRENT_ENTRY_SOURCE)
+DESCRIPTOR_ENTRY_SOURCE = '6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb'
+ENTRY_SOURCES = (ENTRY_SOURCE, CURRENT_ENTRY_SOURCE, DESCRIPTOR_ENTRY_SOURCE)
 ENTRY_MODULE = 'src/trottertracks/pauli_signal_entry.py'
 ENTRY_FILES = (ENTRY_MODULE, 'scripts/run_pauli_signal_entry.py')
+ENTRY_VERSION_FILES = {DESCRIPTOR_ENTRY_SOURCE: ENTRY_FILES + ('src/trottertracks/pauli_split_descriptor.py',)}
 ENTRY_DICTIONARY_HELPER = dict(commit=LD3_HELPER_SOURCE,
     path='src/trottertracks/df_head_pauli_tail_ld3_signals.py', function='b_intake_dictionary_identity')
 
@@ -176,12 +178,20 @@ def bind_packet(config, packet, records, dictionary, *, target, target_source,
 def _entry_assembly_source(root, assembly):
     """Pin the assembler implementation, not every new output/configuration commit."""
     try:
-        actual = [subprocess.check_output(['git', 'show', assembly['commit'] + ':' + path], cwd=root,
-                                          stderr=subprocess.PIPE) for path in ENTRY_FILES]
+        actual_entry = [subprocess.check_output(['git', 'show', assembly['commit'] + ':' + path], cwd=root,
+                                                stderr=subprocess.PIPE) for path in ENTRY_FILES]
         for source in ENTRY_SOURCES:
+            files = ENTRY_VERSION_FILES.get(source, ENTRY_FILES)
             fixed = [subprocess.check_output(['git', 'show', source + ':' + path], cwd=root,
                                              stderr=subprocess.PIPE) for path in ENTRY_FILES]
-            if actual == fixed:
+            if actual_entry != fixed:
+                continue
+            dependencies = files[len(ENTRY_FILES):]
+            actual_deps = [subprocess.check_output(['git', 'show', assembly['commit'] + ':' + path], cwd=root,
+                                                   stderr=subprocess.PIPE) for path in dependencies]
+            fixed_deps = [subprocess.check_output(['git', 'show', source + ':' + path], cwd=root,
+                                                  stderr=subprocess.PIPE) for path in dependencies]
+            if actual_deps == fixed_deps:
                 return source
         raise ValueError('Unsupported saved Pauli assembly SOURCE: entry code differs from fixed versions')
     except (KeyError, subprocess.CalledProcessError) as error:
@@ -201,7 +211,8 @@ def accept_saved(root, *, integration, handoff_source=None):
     When available, C's source-bound Pauli metadata bridge is checked too.
     No IDs are rewritten to bypass physical or dictionary checks. Besides the
     historical assemblies, new immutable handoffs may use A's fixed common entry
-    (ENTRY_SOURCES). Its two entry files must match at the output commit; the
+    (ENTRY_SOURCES). Entry files and version-specific descriptor dependencies
+    must match at the output commit; the
     configuration, dictionary and per-round Git carriers are still checked.
     """
     assembly = HANDOFF if handoff_source is None else handoff_source
