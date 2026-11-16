@@ -6,6 +6,7 @@ The public API accepts the optimizer's input request/canonical configuration.
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 from fractions import Fraction
+from . import pr_candidate_selection as Selection
 import hashlib
 import json
 import os
@@ -124,6 +125,7 @@ class Completion:
             self.state['records'][identifier]=rec;self.save()
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
         try:
+            if request.get('selection_error'):raise Held('B2_SELECTION_NORMALIZATION:'+request['selection_error'])
             if request['method']=='PR_PAULI':config,prepared=self.pauli_configuration(request,d)
             else:
                 generated=self.service('df-generate',request,d)
@@ -138,15 +140,18 @@ class Completion:
             if request.get('design')and dec(config['spec']['kappa']['value'])!=dec(request['design']['kappa']):raise Held('ABSOLUTE_KAPPA_MISMATCH')
             put(d/'CONFIGURATION.json',config);commit=publish([d],'Fix selected PR candidate configuration')
             cref=dict(commit=commit,path=rel(d/'CONFIGURATION.json'));rec.update(configuration=cref,configuration_id=config['id'])
+            initial_quote=None
             if request['method']=='PR_PAULI':signal=self.pauli_signals(config,prepared,d)
             else:
-                design=self.service('df-price-design',dict(configuration=config),d)
-                if design['status']!='CALIBRATION_DESIGN_READY':raise Held('DF_MODEL_DESIGN:'+str(design.get('reasons')))
+                initial_quote=self.initial_quote(config,cref,d)
+                if not initial_quote['complete']:
+                    design=self.service('df-price-design',dict(configuration=config),d)
+                    if design['status']!='CALIBRATION_DESIGN_READY':raise Held('DF_MODEL_DESIGN:'+str(design.get('reasons')))
                 signal=self.df_signals(config,cref,d,request.get('tail_descriptor'))
             rec.update(signal=signal);self.save()
             intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(B_VIEW if request['method']=='PR_PAULI'else DF_Q3_VIEW)),d)
             rec['intake']=intake;self.save()
-            quote=self.price(config,cref,prepared,request,d)
+            quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
             if not quote['complete']:raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
             quote_commit=publish([d],'Publish completed candidate prices and receipt bindings')
             with self.lock:
@@ -224,10 +229,16 @@ class Completion:
         pub=publish([d],'Assemble DF bundle for normal intake')
         return dict(status='SIGNALS_READY',configuration_source=configref,packet_source=dict(commit=pub,path=rel(d/'df-bundle.json')),new_signal_calls=result.get('new_provider_calls'))
 
-    def price(self,config,cref,prepared,r,d):
-        registry=d/'PRICE_RULES.json';put(registry,read(self.registry))
+    def initial_quote(self,config,cref,d):
+        registry=d/'PRICE_RULES.json'
+        if not registry.exists():put(registry,read(self.registry))
         req=dict(configuration=cref,view=str(D2_VIEW),registry_file=str(registry),policy='MODEL')
-        quote=self.service('quote',req,d,tag='INITIAL_QUOTE',python=PRICE)
+        return self.service('quote',req,d,tag='INITIAL_QUOTE',python=PRICE)
+
+    def price(self,config,cref,prepared,r,d,initial_quote=None):
+        registry=d/'PRICE_RULES.json'
+        req=dict(configuration=cref,view=str(D2_VIEW),registry_file=str(registry),policy='MODEL')
+        quote=self.initial_quote(config,cref,d)if initial_quote is None else initial_quote
         if not quote['complete']:
             if r['method']=='PR_PAULI':
                 inp=d/'PAULI_PRICE_REQUEST.json';out=d/'PAULI_PRICE_RESULT.json'
@@ -265,28 +276,54 @@ class Completion:
         reg['entries']=[e for e in reg['entries']if e['name']!=entry['name']]+[entry];put(registry,reg)
 
     def install(self,context,problem,records):
-        from . import rpe_method_optimizer as O
+        from . import rpe_method_optimizer as O,rpe_candidate_preparation as R
         routes=deepcopy(problem['execution_routes'])
         for rec in records:
             if rec['status']!='READY_FOR_SEARCH':continue
             config=value(rec['configuration']);method=rec['method'];binding=rec['intake'];signal=rec['signal'];cid=config['id']
+            # Populate original B2 physical keys from saved metadata only. R.register
+            # owns the equivalence/alias decision; no new schedule rule is defined.
+            for candidate in context['candidates']:
+                if candidate['method']!=method or not candidate.get('configuration_id')or candidate.get('schedule_keys')is not None:continue
+                try:existing,_=Selection.configuration_for(context,candidate['configuration_id'],value)
+                except ValueError:continue
+                candidate['schedule_keys']=O.schedule_keys(existing)
             old=next((c for c in context['candidates']if c['method']==method and(c['configuration_id']==cid or(c['configuration_id']is None and c['key']['L_D']==config['spec']['L_D']))),None)
-            caps=old['caps']if old else next(c['caps']for c in context['candidates']if c['method']==method)
-            cand=dict(method=method,family='PR',key=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],delta_over_h=str(dec(config['spec']['delta_pf'])/dec(config['spec']['h']))),
-                kappa_value=str(dec(config['spec']['kappa']['value'])),configuration_id=cid,name=method+':AUTO:'+cid[:16],caps=caps,ready=True,needs=[],labels=[],saved_points=[],
-                generated=True,generated_configuration=config,configuration_source=rec['configuration'],signal_source=signal['packet_source'],prices=[dec(x)for x in rec['prices']],price_status='MODEL_REFERENCE',price_quote=value(rec['quote']))
-            if old:context['candidates'][context['candidates'].index(old)]=cand
-            else:context['candidates'].append(cand)
+            ready_before={c['configuration_id']:c for c in context['candidates']if c['method']==method and c.get('ready')and c.get('configuration_id')}
+            item=dict(status='GENERATED',configuration=deepcopy(config),configuration_id=cid,
+                configuration_source=rec['configuration'],L_D=config['spec']['L_D'],
+                readiness=dict(configuration_complete=True),requested_changes={})
+            disposition=R.register(method,old,item,context['candidates'],rec.get('directory',self.directory),
+                key=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],
+                    delta_over_h=str(dec(config['spec']['delta_pf'])/dec(config['spec']['h']))))
+            alias=disposition.split(':',1)[1]if disposition.startswith('PHYSICALLY_IDENTICAL_TO:')else None
+            installed=alias or cid
+            rec.update(installed_configuration_id=installed,installation_disposition=disposition)
+            if alias is not None and installed in ready_before:
+                # Keep the original candidate, its own prices/evaluations and route.
+                # The new declaration remains visible as B2's physical_alias record.
+                continue
+            if alias:
+                rec.update(status='HELD_PHYSICAL_ALIAS_CANONICAL_NOT_READY',
+                    reason='Preserve existing partial prices/Q3; prepared metadata needs rebinding to the original canonical view')
+                continue
+            cand=next(c for c in context['candidates']if c['method']==method and c.get('configuration_id')==installed)
+            cand.update(kappa_value=str(dec(config['spec']['kappa']['value'])),ready=True,needs=[],
+                generated=True,generated_configuration=config,configuration_source=rec['configuration'],
+                signal_source=signal['packet_source'],prices=[dec(x)for x in rec['prices']],
+                price_status='MODEL_REFERENCE',price_quote=value(rec['quote']),
+                schedule_keys=O.schedule_keys(config),prepared_by='D2_COMMON_CANDIDATE_COMPLETION')
             context['expected'][cid]=dict(configuration_id=cid,binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])
             rule=dict(kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=NATIVE,
                 view=str(B_VIEW if method=='PR_PAULI'else DF_Q3_VIEW),view_commit=git('rev-parse','HEAD',cwd=B_VIEW if method=='PR_PAULI'else DF_Q3_VIEW),
                 configuration_ids=[cid],contract_template=(dict(commit='b6d4dea49c39f364048af422bc2928ee7c169261',path='docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json')if method=='PR_PAULI'else dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json',inputs_selector=['inputs'])),
                 configurations={cid:dict(configuration=signal.get('configuration_source',rec['configuration']),signal_packet=signal['packet_source'],binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])})
             routes[method]=[rule]+routes.get(method,[])
+        self.save()
         return routes
 
 
-def prepare_for_search(root,problem,context,spec,run):
+def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,completion=None):
     """V2 chooses missing inputs; this callback completes them and returns ready inputs.
 
     A finite demonstration may bound completions per method; unknown/failed
@@ -297,40 +334,31 @@ def prepare_for_search(root,problem,context,spec,run):
     if spec.get('science_approved')is not True:raise ValueError('Candidate acquisition requires the adopted science scope')
     old_state=Path(run)/'completion/STATE.json'
     settings.setdefault('source',read(old_state)['source']if old_state.exists()else git('rev-parse','HEAD'))
-    completion=Completion(Path(run)/'completion',settings)
+    completion=completion or Completion(Path(run)/'completion',settings)
     ready=[r for r in completion.state['records'].values()if r['status']=='READY_FOR_SEARCH']
     routes=completion.install(context,problem,ready)
     search=dict(problem['search'],**spec.get('search_overrides',{}))
     frozen=dict(methods=spec['methods'],method_scope={m:problem['methods'][m]for m in spec['methods']},
-        design=settings.get('new_candidate_design'),max_completed_per_method=settings.get('max_completed_per_method',1),source=settings['source'])
+        design=settings.get('new_candidate_design'),max_completed_per_method=settings.get('max_completed_per_method'),source=settings['source'])
     put(completion.directory/'INPUTS.json',frozen);publish([completion.directory/'INPUTS.json'],'Fix finite PR preparation scope and SOURCE')
     def one(method):
         current=[r for r in completion.state['records'].values()if r['method']==method]
-        if any(r['status']=='READY_FOR_SEARCH'for r in current):return current
-        attempted={r['request']['selection'].get('candidate')for r in current if r['request'].get('selection')}
+        maximum=settings.get('max_completed_per_method')
+        if isinstance(maximum,dict):maximum=maximum.get(method)
+        if maximum is not None and sum(r['status']=='READY_FOR_SEARCH'for r in current)>=maximum:return current
+        attempted={Selection.identity(r['request']['selection'])for r in current if r['request'].get('selection')}
         limit=settings.get('max_attempted_per_method',9)
         for _ in range(max(0,limit-len(current))):
             # Uses the published B2 rule verbatim; no local LD/kappa priority implementation.
-            answer=O.optimize(root,dict(problem,search=search),context=context,methods=[method],max_new={method:0},science_approved=False,
-                initial=spec.get('initial','all'))[method]
+            answer=(selection_results or{}).get(method)
+            if answer is None:
+                answer=O.optimize(root,dict(problem,search=search),context=context,methods=[method],max_new={method:0},science_approved=False,
+                    initial=spec.get('initial','all'))[method]
             requests=answer.get('input_requests')or[]
-            selection=next((r for r in requests if r['kind']in('NEW_L_D','CONFIGURATION_INPUTS_MISSING','KAPPA_PROPOSAL')and r.get('candidate')not in attempted),None)
+            selection=next((r for r in requests if r['kind']in('NEW_L_D','CONFIGURATION_INPUTS_MISSING','KAPPA_PROPOSAL')and Selection.identity(r)not in attempted),None)
             if selection is None:break
-            attempted.add(selection.get('candidate'));candidate=next((c for c in context['candidates']if c['name']==selection.get('candidate')),None)
-            req=dict(method=method,selection=selection)
-            cfg=candidate.get('generated_configuration')if candidate else None
-            if not cfg and candidate and candidate.get('configuration_source'):cfg=value(candidate['configuration_source'])
-            if not cfg and candidate and candidate.get('configuration_id'):
-                point=next((x for x in context['catalog']['candidates']if x['configuration_id']==candidate['configuration_id']),None)
-                if point:cfg=value(point['configuration_source'])
-            if cfg:
-                req['configuration']=cfg
-            else:
-                design=deepcopy(settings['new_candidate_design']);design.update(selection.get('family')or selection.get('configuration')or{})
-                design['L_D']=(selection.get('family')or selection.get('configuration'))['L_D']
-                if selection.get('kappa')is not None:design['kappa']=selection['kappa']
-                if 'kappa_multiplier'in design:design.pop('kappa_multiplier')  # absolute kappa is supplied by the driver scope
-                req['design']=design
+            attempted.add(Selection.identity(selection))
+            req=Selection.normalize(method,selection,context,settings.get('new_candidate_design',{}),value)
             put(completion.directory/(method+'_LATEST_SELECTION.json'),req)
             result=completion.complete(req);current.append(result)
             if result['status']=='READY_FOR_SEARCH':break
@@ -344,27 +372,58 @@ def prepare_for_search(root,problem,context,spec,run):
     if settings.get('evaluate_completed_only',False):
         # Integration acceptance scope: V2 still chooses both missing candidates
         # and their shot proposals. Existing ready baselines stay out of new Q3.
-        allowed={r['configuration_id']for r in records if r['status']=='READY_FOR_SEARCH'}
+        allowed={r.get('installed_configuration_id',r['configuration_id'])for r in records if r['status']=='READY_FOR_SEARCH'}
         context['candidates']=[c for c in context['candidates']if c.get('configuration_id')in allowed]
     return context,routes,completion
 
 
+def continue_selected_preparation(root,problem,context,spec,run,completion,executor,result,extra_results=()):
+    """Consume subsequent V2 requests with the same cumulative Q3 budget.
+
+    No new chooser or independent scientific worker loop: each continuation is
+    the normal optimizer with the same Executor/job keys. Failed requests are
+    retained and skipped, while independent missing inputs remain eligible.
+    """
+    from . import rpe_method_optimizer as O
+    cycles=[]
+    while True:
+        cycles.append(dict(ready=[r.get('configuration_id')for r in completion.state['records'].values()if r['status']=='READY_FOR_SEARCH'],
+            methods={m:dict(stop=r['stop_reason'],new_calls=r['new_calls'],launched=executor.launched(m))for m,r in result.items()}))
+        put(completion.directory/'SEARCH_CYCLES.json',dict(cycles=cycles,cumulative_budget=spec['max_new_q3_per_method']))
+        remaining=[]
+        for method in spec['methods']:
+            maximum=spec['max_new_q3_per_method'][method]
+            if maximum in (None,'UNLIMITED')or executor.launched(method)<maximum:remaining.append(method)
+        pending={m:result[m]if m in remaining else dict(input_requests=[])for m in spec['methods']}
+        if not any(r.get('input_requests')for r in pending.values()):break
+        before={k for k,v in completion.state['records'].items()if v['status']=='READY_FOR_SEARCH'}
+        context,routes,_=prepare_for_search(root,problem,context,spec,run,selection_results=pending,completion=completion)
+        after={k for k,v in completion.state['records'].items()if v['status']=='READY_FOR_SEARCH'}
+        if after==before:break
+        executor.routes=routes;executor.expected=context['expected']
+        O.apply_published(context['candidates'],routes)
+        result=O.optimize(root,problem,context=context,methods=spec['methods'],initial=spec.get('initial','all'),
+            max_new=spec['max_new_q3_per_method'],executor=executor,extra_results=extra_results,science_approved=True)
+    return result
+
+
 def publish_comparison_exports(completion,run,context):
     """Publish each acquired candidate's actual Q3 answer for unchanged C sync."""
+    from .rpe_method_optimizer import job_outcome
     run=Path(run);exports=[]
     for record in completion.state['records'].values():
         if record['status']!='READY_FOR_SEARCH':continue
         cid=record['configuration_id'];method=record['method']
         for job in sorted((run/'jobs'/method).glob('*')):
             if not(job/'OUTCOME.json').exists()or not(job/'REQUEST.json').exists():continue
-            request=read(job/'REQUEST.json');outcome=read(job/'OUTCOME.json')
+            request=read(job/'REQUEST.json');outcome,outcome_path=job_outcome(job)
             if request['configuration_id']!=cid or outcome['status']not in ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD','MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD','INCONCLUSIVE'):continue
             leaf=job/job.name;result=leaf/'RESULT.json'
             if not result.exists():continue
             raw=publish([job],'Publish automated candidate Q3 raw and individual receipts')
             d=completion.directory/'comparisons'/method/job.name;d.mkdir(parents=True,exist_ok=True)
             req=dict(configuration=record['intake']['configuration'],case_inputs=dict(commit=raw,path=rel(job/'CASE_INPUTS.json')),
-                result=dict(commit=raw,path=rel(result)),outcome=dict(commit=raw,path=rel(job/'OUTCOME.json')),api=dict(commit=raw,path=rel(leaf/'API_RETURN.json')),
+                result=dict(commit=raw,path=rel(result)),outcome=dict(commit=raw,path=rel(outcome_path)),api=dict(commit=raw,path=rel(leaf/'API_RETURN.json')),
                 quote=record['quote'],comparison_label=method+'_AUTO_'+cid[:12]+'_'+job.name)
             inp=d/'EXPORT_REQUEST.json';put(inp,req);script=str(ROOT/'scripts/export_pr_candidate_comparison.py')
             completion.call([NATIVE,'-B',script,'prices','--request',str(inp),'--output',str(d/'AXIS_PRICES.json')],d,'EXPORT_PRICES')

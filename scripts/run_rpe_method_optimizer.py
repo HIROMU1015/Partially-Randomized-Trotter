@@ -169,7 +169,8 @@ def round_mode(a, problem, extra):
                         initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
                         extra_results=extra, science_approved=approved)
     if spec.get('candidate_completion'):
-        from trottertracks.pr_candidate_completion import publish_comparison_exports
+        from trottertracks.pr_candidate_completion import continue_selected_preparation,publish_comparison_exports
+        result=continue_selected_preparation(ROOT,dict(problem,search=search),context,spec,run,completion,executor,result,extra)
         publish_comparison_exports(completion,run,context)
     write(run / 'ROUND_RESULT.json', slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
                                           optimizer_source=head(), wall_seconds=time.perf_counter() - start,

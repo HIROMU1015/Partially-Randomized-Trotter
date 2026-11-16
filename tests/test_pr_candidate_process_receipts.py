@@ -26,4 +26,22 @@ class Receipts(unittest.TestCase):
             (p/'PROCESS_EXITS_2.jsonl').write_text('{"children":[{"exitcode":-9}]}\n')
             self.assertFalse(Q.process_exit_evidence(req,{},p)['all_exit_codes_zero'])
 
+class CollectedOutcomes(unittest.TestCase):
+    def test_unknown_is_preserved_and_collection_requires_original_and_exit_gate(self):
+        import sys,json,hashlib
+        sys.path.insert(0,str(ROOT/'src'))
+        from trottertracks.rpe_method_optimizer import job_outcome
+        with tempfile.TemporaryDirectory()as tmp:
+            p=Path(tmp);original=p/'OUTCOME.json'
+            original.write_text('{"status":"UNKNOWN","reason":"OLD_SCHEMA_STOP"}')
+            new=dict(status='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD',mode='collect',collection_source='fixed',
+                     original_outcome_sha256=hashlib.sha256(original.read_bytes()).hexdigest())
+            (p/'COLLECTED_OUTCOME.json').write_text(json.dumps(new))
+            self.assertEqual(job_outcome(p)[0]['status'],'UNKNOWN')
+            (p/'COLLECT_SUPERVISION.json').write_text('{"process_exit_gate":{"all_exit_codes_zero":true}}')
+            self.assertEqual(job_outcome(p)[0]['status'],new['status'])
+            self.assertEqual(json.loads(original.read_text())['status'],'UNKNOWN')
+            original.write_text('{"status":"UNKNOWN","reason":"CHANGED"}')
+            self.assertEqual(job_outcome(p)[0]['status'],'UNKNOWN')
+
 if __name__=='__main__':unittest.main(verbosity=2)

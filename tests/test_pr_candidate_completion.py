@@ -66,4 +66,25 @@ class CompletionTests(unittest.TestCase):
         self.assertEqual(case['original_configuration_id'],'cfg');self.assertEqual(case['allocation']['shots'][-1]['N_Y'],2)
 
 
+class Continuation(unittest.TestCase):
+    def test_next_selected_candidate_uses_same_executor_and_total_budget(self):
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory()as tmp:
+            completion=SimpleNamespace(directory=Path(tmp),state={'records':{'old':{'status':'READY_FOR_SEARCH','configuration_id':'a'}}})
+            ex=SimpleNamespace(routes={},expected={},launched=lambda m:1)
+            spec=dict(methods=['PR_DF'],max_new_q3_per_method={'PR_DF':2})
+            result={'PR_DF':dict(stop_reason='INPUTS',new_calls=1,input_requests=[{'kind':'NEW_L_D'}])}
+            context={'candidates':[],'expected':{}}
+            def prepare(*args,**kwargs):
+                self.assertIs(kwargs['completion'],completion)
+                self.assertEqual(kwargs['selection_results'],result)
+                completion.state['records']['next']=dict(status='READY_FOR_SEARCH',configuration_id='b')
+                return context,{'PR_DF':['original_route']},completion
+            final={'PR_DF':dict(stop_reason='BUDGET',new_calls=1,input_requests=[])}
+            with patch.object(C,'prepare_for_search',side_effect=prepare),patch.object(O,'apply_published'),patch.object(O,'optimize',return_value=final)as opt:
+                out=C.continue_selected_preparation(ROOT,{},context,spec,tmp,completion,ex,result)
+            self.assertIs(out,final);self.assertIs(opt.call_args.kwargs['executor'],ex)
+            self.assertEqual(opt.call_args.kwargs['max_new'],spec['max_new_q3_per_method'])
+            self.assertEqual(ex.routes,{'PR_DF':['original_route']})
+
 if __name__=='__main__':unittest.main(verbosity=2)
