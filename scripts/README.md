@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H4の高速な準備](../docs/research/rpe_h4_readiness_fast_20261117/README.md)：`run_rpe_schedule_search.py --plan-only --prepare-readiness --preparation-cache DIR` で保存履歴差分→選定→乾式検査→READY。既定の科学経路と旧遠隔配布物は保持する。
+
 [実H4分散runの事前検査](../docs/research/rpe_distributed_h4_plan_20261117/REPORT.md)：`check_rpe_q3_host_readiness.py` は固定workerのSOURCE/入力照合と既存adapterの明示dry-checkだけを呼ぶ。queue/worker/execute/collectは起動しない。[local0運用](../docs/research/rpe_distributed_h4_plan_20261117/LOCAL0_DRY_CHECK.md)。
 
 [分散Q3運用](../docs/research/rpe_distributed_q3/HANDOFF.md)：`run_rpe_q3_worker.py` はHTTP pull/SSH mailbox、`run_rpe_q3_relay.py` はローカル0のqg1/qg2中継、`check_rpe_distributed_q3.py` は通常schedule入口の人工検収。中央探索・予算はserver2のみ。

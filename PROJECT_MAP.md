@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4準備の1コマンド化・差分履歴・早期READY](docs/research/rpe_h4_readiness_fast_20261117/README.md)：通常入口から選定前の全履歴照合→server2乾式検査→旧遠隔REQUEST確定。固定入力の初回106.53秒、反復6.47秒でREADY、科学実行0件。[計測と限界](docs/research/rpe_h4_readiness_fast_20261117/REPORT.md)。
+
 [次の実H4分散run：保存履歴照合・plan-only・実入力dry-check](docs/research/rpe_distributed_h4_plan_20261117/REPORT.md)：固定28d。B0I/DFの未反映保存最安を反映し既評価点を除外。server2でPF/B0I/DF乾式PASS、Pauliは価格binding・assembly SOURCE不足、遠隔は未確認。新科学0件、[機械結果](docs/research/rpe_distributed_h4_plan_20261117/RESULT.json)／[local0検査手順](docs/research/rpe_distributed_h4_plan_20261117/LOCAL0_DRY_CHECK.md)。
 
 [複数ホストQ3とローカル0 SSH中継](docs/research/rpe_distributed_q3/HANDOFF.md)：通常schedule入口の共通queue/永続予算/host別試行。実2台・3台の人工探索、切断回収・controller再開・重複完了を検収済み。次回固定版28d976b99、Windows中継ZIPとホスト別運用付き。実H4性能は未測定。[性能手法](docs/PERFORMANCE_METHODS.md)。

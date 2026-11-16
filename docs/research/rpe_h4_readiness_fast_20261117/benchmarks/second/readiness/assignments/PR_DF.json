@@ -1,0 +1,148 @@
+{
+  "job_id": "48494ae31276a64c46ce",
+  "attempt_id": "READINESS_ONLY_NO_EXECUTION_48494ae31276a64c46ce",
+  "method": "PR_DF",
+  "request": {
+    "request_id": "48494ae31276a64c46ce",
+    "method": "PR_DF",
+    "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+    "N_X": [
+      48,
+      45,
+      42,
+      39,
+      35,
+      32,
+      29,
+      25,
+      22,
+      19,
+      16,
+      10,
+      3
+    ],
+    "N_Y": [
+      48,
+      45,
+      42,
+      39,
+      35,
+      32,
+      29,
+      25,
+      22,
+      19,
+      16,
+      10,
+      3
+    ],
+    "cost": {
+      "numerator": 111229232165,
+      "denominator": 126
+    },
+    "origin": {
+      "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+      "m": 11,
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "d": 2,
+      "base_vector": [
+        48,
+        48,
+        45,
+        45,
+        42,
+        42,
+        39,
+        39,
+        35,
+        35,
+        32,
+        32,
+        29,
+        29,
+        25,
+        25,
+        22,
+        22,
+        19,
+        19,
+        16,
+        16,
+        12,
+        12,
+        3,
+        3
+      ],
+      "base_headroom": "0.565039"
+    },
+    "route": {
+      "kind": "prdf_d2_split",
+      "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+      "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+      "configuration_ids": "*",
+      "templates": [
+        {
+          "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+          "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+          "inputs_selector": [
+            "inputs"
+          ]
+        },
+        {
+          "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+          "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json"
+        }
+      ],
+      "existing_caller": "D2 005dc8c01 scripts/run_pr_df_ld_split_q3_resume.py (W.supervise) as used by B2 cf19fc36f"
+    },
+    "expected": {
+      "total_configuration_id": "f00769918f264994d62080929bced34a3ac576e2aa47a1d783abd32360a7a9f4",
+      "binding_id": "a122e536aabe6f84b8d6e2eac6e342051676477e7a4f26d743582c540adcb9b8",
+      "signal_source": {
+        "commit": "1cbc24cfc0fb0972f75cdef81db6bf62c51141e4",
+        "path": "docs/research/d_pr_df_ld7_v0_results_20261116/B_MEANS_LD7.json"
+      },
+      "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1"
+    },
+    "optimizer_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+    "execution_profile": {
+      "dp_workers": 3,
+      "prefix_checkpoint_rounds": [
+        5,
+        11
+      ]
+    }
+  },
+  "request_sha256": "2906eeafee0f39909ef2db9c169924bcb74d48354995ab443e9231f94c0d2e2a",
+  "source_manifest": {
+    "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+    "files": {
+      "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+      "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+      "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+      "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+      "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+      "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+      "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+      "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+    }
+  },
+  "input_hashes": [
+    {
+      "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+      "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+      "sha256": "bad7f828ab46757c9ec724e189b038c47edec751b2ac6878041cbacfd742c063"
+    },
+    {
+      "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+      "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json",
+      "sha256": "671d7f0d2e3286111355cdc0d33f7fae7e46da32107be0337a53b0991e5c8fc1"
+    }
+  ],
+  "prefix_key": "ad59cb96087850aa5512ab2cd4f430dbe72e9a1a06206ed1a164ccaecc1a2bd3",
+  "scope": "READINESS_ONLY_NEVER_SUBMIT"
+}

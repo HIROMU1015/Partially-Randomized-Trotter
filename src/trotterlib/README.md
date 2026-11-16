@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H4準備の差分cache](../../docs/research/rpe_h4_readiness_fast_20261117/README.md)：`trottertracks.rpe_plan_prepare` が既存optimizerと `rpe_plan_history_cache`・`rpe_plan_readiness` を接続する。計算SOURCE28dと数値kernelは変更せず、科学実行0の準備を速く返す。
+
 [実H4分散runの事前検査](../../docs/research/rpe_distributed_h4_plan_20261117/REPORT.md)：既存workerの入力照合と既存adapterの明示dry-checkを、新しい専用directoryで直接利用する。数値kernelや固定28dの計算SOURCEは変更しない。
 
 [分散Q3](../../docs/research/rpe_distributed_q3/HANDOFF.md)：実装はtrottertracksの既存concurrent executor拡張、`rpe_q3_store`、`rpe_q3_worker`、`rpe_q3_coordinator`。数値kernelは変更せず、固定route adapterを各hostで再利用する。

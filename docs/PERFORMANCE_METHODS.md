@@ -1,5 +1,11 @@
 # 性能対策の再利用索引
 
+## H4計画の差分取込・小さい出力・早期READY（2026-11-17）
+
+`run_rpe_schedule_search.py --plan-only --prepare-readiness --preparation-cache DIR` は既存method optimizerへ、context再利用と `rpe_plan_history_cache` のexact履歴差分readerを接続する。適合/不適合を候補選択前に取込み、未確定job/queueは毎回観測する。巨大な評価配列を繰返しdecimal化せず原OUTCOME/私物cacheへ参照し、明示dry-check後のREADYをREPORT保存より先に返す。準備実装b5a8a60c5、計算SOURCE28d、旧339の遠隔配布物はbyte不変。
+
+固定H4 metadata/dry-checkの実測は初回READY106.53秒・入力不変6.47秒、REPORT保存107.30秒/6.97秒。これは科学Q3性能や利用者実測50分との倍率ではない。変更したjobは既存identity/route検査へ戻す。保存追加による選択更新を人工検査。失敗例：巨大Fractionのcache復元でもGCD再計算が残り、既存cache互換の正規化済み復元で除いた。cacheは自分生成のlocalだけ、入力/科学条件変更では無条件再利用しない。[実測・限界](research/rpe_h4_readiness_fast_20261117/REPORT.md)／[1コマンド](research/rpe_h4_readiness_fast_20261117/README.md)。
+
 ## 複数ホストQ3・SSH mailbox中継（2026-11-17）
 
 次回固定版`28d976b99`の`rpe_optimizer_concurrent.DistributedExecutor`と`rpe_q3_store/worker/coordinator`は通常schedule入口の同じ候補順/予算/後着READYを保ち、独立Q3をhostの空きslotへ割り当てる。local0 relayはWindows PowerShellから既存qg1/qg2/RomuTailを使い、科学選択は中央だけが行う。SOURCE/route/input/評価契約を照合し、DP並列化とcacheは既存adapter/helperをhost内で使用する。選択routeの固定blob hashをprocess内で再利用し、無関係configurationの入力を要求しない。DP worker数はhostごとに解決し、元の科学REQUEST/job IDを変えない。
