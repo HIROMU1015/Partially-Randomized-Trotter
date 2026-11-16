@@ -1,5 +1,9 @@
 # 性能対策の再利用索引
 
+## PR複数幅のR06→R07継続（2026-11-17）
+
+候補自身のconfigurationで既存PriceRulesを照会し、保存総額のexact一致で省略26軸を復元する。DFは固定entryのpacket別検査を再利用して、今回のphysical keyだけをmergeする。対象keyのrecord差は従来どおりSTOP。READY入力・完了Q3・prefix cacheをコピー/元SOURCE参照で再利用し、旧STOPへ書き込まない。[REPORT](research/h4_pr_multiwidth_resume_20261117/REPORT.md)／[再開](research/h4_pr_multiwidth_resume_20261117/HANDOFF.md)。人工25件と実入力metadataで確認、科学開始後の速度倍率は未測定。
+
 ## PR複数幅：保存候補のQ3 routeとtemplate適合性（2026-11-17）
 
 `Completion.install_saved_routes/common_route`と`Executor.route`は保存候補のSOURCE/bindingを既存common workerへ結び、Reader cacheでtemplate照合を共有する。有効な旧route/job keyは保持し、未接続候補のみ保留して他のqueueを進める。R06ではcatalog-only候補のroute登録漏れと、DFのwildcardに未対応templateを使う失敗があった。人工72件・停止2候補の元worker metadataで確認、実科学call0・実H4速度倍率未測定。[REPORT](research/pr_multiwidth_route_fix_20261117/REPORT.md)／[HANDOFF](research/pr_multiwidth_route_fix_20261117/HANDOFF.md)。旧STOP、数値UNKNOWN、保存値の競合は解除しない。
