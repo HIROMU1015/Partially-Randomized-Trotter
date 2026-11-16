@@ -36,4 +36,8 @@ PR-Pauliの方式全体の保存最安は **410,199,237 RZ**、絶対κ=2限定�
 
 保存catalog回帰14件、同期7件、計21件PASS。通常discoveryで最終索引と公開2点を検出し、両最安・exact OUTCOME hash・26軸coverage・旧点保全を確認した。hash・配分・価格bindingの改変はPENDING、他のFull PF結果は反映する。同じ公開入力を再同期してcatalogが一致し、最終索引なしで2公開pointだけからも読めることを確認した。費用だけの変更でロードマップ本文を変更しない既存検査も再利用した。[実行記録](TESTS.txt)。
 
-primary agentが同期/consumer実装・回帰と運用確認を担当し、sub-agentがB2公開結果の所在・hash・metadataの読取調査を担当した。独立科学レビューではない。新signal・sampling・compile・fit・Q3は0件。通常10分cronによる反映の固定commit・運用結果はHANDOFFへ追記する。
+2026-11-16 **12:10:01〜12:10:22 UTC（21:10 JST）**の通常cronが、実装`76474c3d7`を使って51点→53点へ更新し、`97aff2f3c54afe5fdef26802dc729bed668fae49`を自動commit/pushした（19.665秒、終了0）。最終索引と公開REQUEST2件はINTEGRATED。古いROUND_RESULTの別配分にはexact元結果の不足をPENDINGとして記録し、新しい最終2点と混同しない。
+
+12:11:15 UTCにcronと同じ`/bin/bash`入口で再同期し、1.731秒・終了0・UNCHANGED。候補53点、CATALOGのSHA-256 `9790abe356cb3fde276223c27c2c54eb7dcfaa0121feada2720466d82e3af7ad`、HEADともに不変で、重複登録も追加commitもない。[運用確認](SYNC_VERIFICATION.json)。この検証では手動のcommit/path追加や比較表書換えをしていない。
+
+primary agentが同期/consumer実装・回帰と運用確認を担当し、sub-agentがB2公開結果の所在・hash・metadataの読取調査を担当した。独立科学レビューではない。新signal・sampling・compile・fit・Q3は0件。10分cronは継続し、新しい科学実行は開始しない。

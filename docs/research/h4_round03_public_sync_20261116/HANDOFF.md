@@ -5,7 +5,7 @@ branch：`codex/h4-saved-rpe-cost-catalog-20261116`。
 通常の利用者自身の`*/10`cronを維持する。設定・担当branchへの追加変更は不要。実装・原因・元証拠は[REPORT](REPORT.md)。B2や利用者が新commit/pathをCへ転送する手順は不要である。
 
 ```bash
-scripts/run_h4_catalog_sync.sh --python \
+/bin/bash scripts/run_h4_catalog_sync.sh --python \
   /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python
 ```
 
@@ -21,3 +21,5 @@ scripts/run_h4_catalog_sync.sh --python \
 次roundは既存監視branch pattern上へ、既存joinか、公開`best_points/<label>/REQUEST.json`・`OUTCOME.json`・`CASE_INPUTS.json`と同一roundの`EVALUATIONS.json`・`ROUND_RESULT.json`・`NEEDS.json`、参照されるSOURCEを公開すれば同じ入口で照合する。finalの`KAPPA_ABS_RESULTS.json`も対応する。公開元hash・価格binding等がなければ必要な証拠を表示し、自動的な科学再実行はしない。
 
 ロードマップ差分：PR-Pauliの新しい保存適合配分と探索停止理由を接続。費用の数値は比較表だけを正本とし、ロードマップ本文へ重複管理しない。未資格MODEL、全law E[C]・CI・正式Gの未認定、旧予算・STOPは変更しない。
+
+通常10分cronの実反映：2026-11-16 12:10 UTC、固定比較表commit `97aff2f3c54afe5fdef26802dc729bed668fae49`。51→53点、2点とも適合、費用は上記exact値。12:11 UTCの同入口再同期はUNCHANGED、53点・catalog byte・HEAD不変。[機械可読確認](SYNC_VERIFICATION.json)。実装SOURCE `76474c3d7`。利用者によるcommit/path転送やSkill起動は不要。
