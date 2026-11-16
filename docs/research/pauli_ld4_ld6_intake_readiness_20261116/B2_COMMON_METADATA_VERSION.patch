@@ -1,0 +1,11 @@
+--- a/scripts/run_rpe_optimizer_q3_job.py
++++ b/scripts/run_rpe_optimizer_q3_job.py
+@@ -150,7 +150,7 @@
+     """B's LD5 metadata with the handoff generalized to any common-entry MEAN_HANDOFF accepted by B's intake."""
+     view, X = COMMON['view'], COMMON['X'];A, T = X.A, X.T
+     accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case['signal_packet'])
+-    if accepted.get('assembly_implementation_source', {}).get('commit') != A.ENTRY_SOURCE:
++    if accepted.get('assembly_implementation_source', {}).get('commit') not in A.ENTRY_SOURCES:
+         raise ValueError('Not a common-entry Pauli assembly')
+     accepted = accepted['results'][0];original = T._selected(view, case['configuration'])
+     if original != accepted['configuration'] or original['id'] != case['original_configuration_id']:

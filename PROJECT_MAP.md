@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Pauli LD4/6：descriptor入口→通常intake・total・Q3入力](docs/research/pauli_ld4_ld6_intake_readiness_20261116/REPORT.md)／[B2向け固定API・差分](docs/research/pauli_ld4_ld6_intake_readiness_20261116/HANDOFF.md)：bd42とff9の同一性を照合し、A6e4の版付きSOURCE・descriptor依存を受入。保存configuration/P0・実CLI plan＋人工完備meanで26技術test PASS。両構成の実signalは全13round未取得、B2旧SOURCE判定patchとtail-descriptor引数を引渡し。新規実signal/compile/Q3各0。
+
 [H4 PF方式別探索：Full PF完了・p7継続中](docs/research/h4_pf_optimizer_search_20261116/REPORT.md)／[C・B2向けHANDOFF](docs/research/h4_pf_optimizer_search_20261116/HANDOFF.md)：固定53bb0a1d7でFull PF 244新Q3、適合23/不適合221。M5・16h・480,258,064 RZへ探索内最安を更新。原API/partials/資源を全件保存。入力ready3/不足17、価格資格と十分N/G null保全。p7は別runで実行中。
 
 [A共通Pauli入口・新旧SOURCEの受入](docs/research/pauli_entry_source_update_20261116/REPORT.md)／[B2向けHANDOFF](docs/research/pauli_entry_source_update_20261116/HANDOFF.md)：4e5b8bef6/93a5ef3b9両版を通常intakeで判別・保全。21技術test PASS。厳密ΔPF=1/5のA provider未対応とC価格UNKNOWNを分離、Pauli実signal/compile/Q3 0件。
