@@ -1,0 +1,70 @@
+{
+  "status": "REAL_HOST_DRY_CHECK_MISSING_OR_INVALID_INPUT",
+  "scientific_evaluation_calls": 0,
+  "queue_operations": 0,
+  "output": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/dry/PR_DF",
+  "host": "abe-Precision-3260",
+  "python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+  "python_version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+  "host_id": "local",
+  "job_id": "48494ae31276a64c46ce",
+  "source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "request_sha256": "2906eeafee0f39909ef2db9c169924bcb74d48354995ab443e9231f94c0d2e2a",
+  "input_hashes": [
+    {
+      "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+      "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+      "sha256": "bad7f828ab46757c9ec724e189b038c47edec751b2ac6878041cbacfd742c063"
+    },
+    {
+      "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+      "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json",
+      "sha256": "671d7f0d2e3286111355cdc0d33f7fae7e46da32107be0337a53b0991e5c8fc1"
+    }
+  ],
+  "route": {
+    "kind": "prdf_d2_split",
+    "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+    "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+    "configuration_ids": "*",
+    "templates": [
+      {
+        "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+        "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+        "inputs_selector": [
+          "inputs"
+        ]
+      },
+      {
+        "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+        "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json"
+      }
+    ],
+    "existing_caller": "D2 005dc8c01 scripts/run_pr_df_ld_split_q3_resume.py (W.supervise) as used by B2 cf19fc36f"
+  },
+  "execution_profile": {
+    "dp_workers": 2,
+    "prefix_checkpoint_rounds": [
+      5,
+      11
+    ],
+    "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache"
+  },
+  "resolved_request_sha256": "1d5910a65dd1a568bf11eea7b54a3de9ac69985d958930c79d8e79b3b6421533",
+  "command": [
+    "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "-B",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py",
+    "--request",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/dry/PR_DF/RESOLVED_REQUEST.json",
+    "--output",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/dry/PR_DF/adapter",
+    "--mode",
+    "dry-check"
+  ],
+  "adapter_returncode": 1,
+  "error": "Traceback (most recent call last):\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 398, in main\n    case, inputs = build(view, request);inputs = execution_profile(inputs, request);r = route(view, kind)\n                                                                                        ^^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 207, in route\n    W = load(view, 'run_pr_df_ld_split_q3_resume', 'scripts/run_pr_df_ld_split_q3_resume.py')\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 138, in load\n    spec.loader.exec_module(module)\n  File \"<frozen importlib._bootstrap_external>\", line 940, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 241, in _call_with_frames_removed\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7/scripts/run_pr_df_ld_split_q3_resume.py\", line 38, in <module>\n    exec(compile(blob(OLD,'scripts/run_pr_df_ld_split_q3.py'),Q.__file__+'@'+OLD,'exec'),Q.__dict__)\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7/scripts/run_pr_df_ld_split_q3.py@e0b3cad2a024070389f757160f3a20d7da02c5ff\", line 20, in <module>\n  File \"<frozen importlib._bootstrap_external>\", line 936, in exec_module\n  File \"<frozen importlib._bootstrap_external>\", line 1073, in get_code\n  File \"<frozen importlib._bootstrap_external>\", line 1130, in get_data\nFileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115/scripts/run_pr_df_fullh_total_q3_fixed.py'\n",
+  "stage": "EXISTING_ADAPTER_DRY_CHECK",
+  "wall_seconds": 0.08016859402414411
+}
