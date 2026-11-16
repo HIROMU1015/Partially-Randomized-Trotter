@@ -19,6 +19,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--view', type=Path, required=True);p.add_argument('--request', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--raw', action='store_true', help='also keep D2\'s raw PR_PRICE_APPLICABILITY_V1 response per item (input of the '
+                                                     'C/A common calibration-request entry, which needs the unsummarised rows)')
     p.add_argument('--registry', type=Path, help='registry JSON to use instead of the view\'s own (e.g. a B2 extension of D2\'s '
                                                  'registry with newly calibrated entries; D2\'s PriceRules code is unchanged)')
     a = p.parse_args();req = json.loads(a.request.read_text())
@@ -39,11 +41,11 @@ def main():
                          event_step_changed=(r.get('model_alternative') or {}).get('event_step_changed_from_calibration'),
                          needs=r.get('needs')) for r in q['rows']]
             out['items'].append(dict(item_id=item['item_id'], registry=item['registry'], configuration_id=cfg['id'], status='QUOTED',
-                                     complete=q['complete'], policy=q['policy'], rows=rows))
+                                     complete=q['complete'], policy=q['policy'], rows=rows, **(dict(raw=q) if a.raw else {})))
         except Exception as exc:
             out['items'].append(dict(item_id=item['item_id'], registry=item['registry'], status='QUOTE_REJECTED',
                                      reason=type(exc).__name__ + ': ' + str(exc), complete=False))
-    a.output.write_text(json.dumps(out, ensure_ascii=False) + '\n')
+    a.output.write_text(json.dumps(out, ensure_ascii=False, default=str) + '\n')
     print(json.dumps({i['item_id']: (i['status'], i['complete']) for i in out['items']}))
 
 

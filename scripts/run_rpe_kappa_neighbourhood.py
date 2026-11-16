@@ -29,6 +29,7 @@ sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'scripts')]
 from trottertracks import rpe_method_optimizer as O  # noqa: E402
 from trottertracks import rpe_priority_search as P  # noqa: E402
 from trottertracks import rpe_split_stage as SPL  # noqa: E402
+from trottertracks import rpe_kappa_schedule as KS  # noqa: E402
 import run_rpe_method_optimizer as CLI  # noqa: E402
 
 if hasattr(sys, 'set_int_max_str_digits'):
@@ -106,9 +107,80 @@ class Driver:
             if c.get('prices') is None:
                 p.update(status='HELD', reason='PRICE_INCOMPLETE:%s' % json.dumps(p['price_quote'], default=str));continue
             p['status'] = 'PREPARED';p['_configuration'] = c['generated_configuration']
+        self.family_constants(ctx)
+        if self.spec.get('price_batch'):
+            self.price_batch(ctx, [p for p in self.state['points'] if p['status'] == 'PREPARED'])
         self.log(event='PREPARE_END', statuses={s: sum(1 for p in self.state['points'] if p['status'] == s)
                                                 for s in {p['status'] for p in self.state['points']}})
         return ctx
+
+    def family_constants(self, ctx):
+        """Exact schedule constants per L_D (from any generated configuration) and each point's 13-round R vector."""
+        fc = self.state.setdefault('family_constants', {})
+        for c in ctx['candidates']:
+            g = c.get('generated_configuration')
+            if c['method'] != 'PR_PAULI' or not g or not (g.get('spec') or {}).get('kappa'):
+                continue
+            if KS._frac(g['spec']['delta_pf']) != KS._frac(g['spec']['h']):
+                continue  # one family per (L_D, width); this search runs at delta_PF = h only
+            rows = KS.constants(g);kappa = KS._frac(g['spec']['kappa']['value'])
+            if KS.R_vector(rows, kappa) != [r['R_outer'] for r in sorted(g['rounds'], key=lambda r: r['m'])]:
+                raise ValueError('MAPPER_FORMULA_DOES_NOT_REPRODUCE_GENERATED_R: ' + c['configuration_id'])
+            enc = KS.encode_rows(rows);key = str(g['spec']['L_D'])
+            if fc.setdefault(key, enc) != enc:
+                raise ValueError('SCHEDULE_CONSTANTS_DIFFER_WITHIN_FAMILY_L_D_%s' % key)
+        for p in self.state['points']:
+            if str(p['L_D']) in fc:
+                p['R'] = list(KS.Sched(fc, ['0', '1000000']).R(p['L_D'], Fraction(p['kappa'])))
+
+    def price_batch(self, ctx, points):
+        """Prices through the C/A common calibration-request entry (02e7cc6a1): raw D2 MODEL quotes + canonical
+        configurations of the new points in one batch; identical calibration cells are pooled.  Only
+        REUSE_SUPPLIED_PRICES_NO_CALIBRATION proceeds here; anything else is held with the entry's needs / cells."""
+        if not points:
+            return
+        pb = self.spec['price_batch'];d = self.run / 'price_batch' / ('cycle%02d' % self.state['cycle']);d.mkdir(parents=True, exist_ok=True)
+        by_cid = {c['configuration_id']: c for c in ctx['candidates']}
+        req = [dict(name='%s:%s' % (p['L_D'], p['kappa']), configuration=by_cid[p['configuration_id']]['generated_configuration'],
+                    entry='PAULI_LD%d' % p['L_D']) for p in points]
+        qreq = dict(policy='MODEL', items=[dict(item_id=r['name'], registry=r['entry'], configuration=r['configuration']) for r in req])
+        (d / 'QUOTE_REQUEST.json').write_text(json.dumps(qreq) + '\n')
+        reg = ROOT / self.spec['price_rules_overrides']['registry_file'];pr = O.load_json(self.a.problem)['price_rules']
+        subprocess.run([pr['interpreter'], '-B', str(ROOT / 'scripts/run_rpe_optimizer_price_quotes.py'), '--view', pr['view'], '--raw',
+                        '--registry', str(reg), '--request', str(d / 'QUOTE_REQUEST.json'), '--output', str(d / 'QUOTES.json')],
+                       cwd=ROOT, env=ENV, check=True, stdout=subprocess.DEVNULL)
+        quotes = {x['item_id']: x.get('raw') for x in json.loads((d / 'QUOTES.json').read_text())['items']}
+        held = [r for r in req if quotes.get(r['name']) is None]  # D2 rejected the quote: nothing for the entry to check
+        batch = [dict(configuration=r['configuration'], quote=quotes[r['name']]) for r in req if quotes.get(r['name']) is not None]
+        (d / 'BATCH_INPUT.json').write_text(json.dumps(batch) + '\n')
+        (d / 'EXECUTION_OPS.json').write_text(json.dumps(dict(branch=pb['execution_branch'])) + '\n')
+        code = subprocess.run([pb['interpreter'], '-B', 'scripts/prepare_pauli_calibration.py', '--batch', str(d / 'BATCH_INPUT.json'),
+                               '--output', str(d / 'BATCH.json'), '--execution', str(d / 'EXECUTION_OPS.json')], cwd=pb['view'],
+                              env=dict(ENV, PYTHONPATH='src'), stdout=open(d / 'BATCH.log', 'w'), stderr=subprocess.STDOUT).returncode if batch else None
+        result = json.loads((d / 'BATCH.json').read_text()) if code == 0 and (d / 'BATCH.json').exists() else None
+        statuses = {}
+        for x in (result or {}).get('results', []):
+            statuses[x.get('configuration_id')] = x
+        for p in points:
+            x = statuses.get(p['configuration_id'])
+            st = None if x is None else x.get('status')
+            # per round: reused price / calibration cell (request id, actual step, R) / needs -- what a held point lacks
+            rounds = [dict(m=a['m'], q=a['q'], R=a['R'], actual_step=a['actual_step'], action=a.get('action'), request_id=a.get('request_id'),
+                           missing_axes=a.get('missing_axes'), needs=a.get('needs')) for a in (x or {}).get('round_actions') or []]
+            p['price_entry'] = dict(status=st, next_action=None if x is None else x.get('next_action'),
+                                    reused_axes=None if x is None else len(x.get('reused_prices') or []),
+                                    missing_axes=None if x is None else len(x.get('missing_prices') or []), needs=(x or {}).get('needs'),
+                                    rounds=rounds, batch=str(d.relative_to(self.run) / 'BATCH.json'), returncode=code)
+            if st != 'REUSE_SUPPLIED_PRICES_NO_CALIBRATION':
+                rejected = quotes.get('%s:%s' % (p['L_D'], p['kappa'])) is None
+                p.update(status='HELD', reason='PRICE_ENTRY:%s' % (st or ('D2_QUOTE_REJECTED' if rejected else 'NO_ENTRY_RESULT')))
+        cells = [dict(request_id=g['request_id'], status=g['status'], consumers=[(c['configuration_id'], c['rounds']) for c in g['consumers']],
+                      cell=g['driver_request']['driver_spec']['cell'], actual_step=g['proposed_applicability']['actual_step'])
+                 for g in (result or {}).get('calibration_requests') or []]
+        self.state.setdefault('calibration_cells', []).extend(dict(cycle=self.state['cycle'], **c) for c in cells)
+        self.log(event='PRICE_BATCH', points=len(points), d2_rejected=len(held), returncode=code,
+                 unique_calibration_requests=(result or {}).get('unique_calibration_requests'),
+                 statuses={k: v.get('status') for k, v in statuses.items()})
 
     # ------------------------------------------------------------ 2. signals
     def git(self, *args, check=True):
@@ -259,7 +331,8 @@ class Driver:
         for p in pts:
             if p['status'] in ('PENDING', 'PREPARED'):
                 p['status'] = 'PENDING'
-        proposals, decisions, m_nb = P.kappa_neighbourhood_plan(pts, self.nb)
+        sched = KS.Sched(self.state.get('family_constants', {}), self.nb['bounds']) if self.spec.get('schedule_aware') else None
+        proposals, decisions, m_nb = P.kappa_neighbourhood_plan(pts, self.nb, sched)
         for q in proposals:
             if self.point(q['L_D'], q['kappa']) is None:
                 self.state['points'].append(dict(L_D=q['L_D'], kappa=str(q['kappa']), status='PENDING', requested_cycle=self.state['cycle'],

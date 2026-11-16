@@ -888,7 +888,10 @@ def prepare_kappa_points(root, name, g, candidates, points, configs, preparation
             src = points[c['configuration_id']]['configuration_source'] if saved_base else c['configuration_source']
             bases[ld] = dict(source=src, configuration_id=c['configuration_id'], kappa_value=c['kappa_value'])
     base = g['baseline']
-    proposals = [dict(kind='KAPPA_POINT', family=dict(L_D=int(p['L_D']), formula=base['formula'], delta_over_h=base['delta_over_h']),
+    # a point may name its own width delta_pf (JSON value kept: '1/5' exact, 0.2 binary64); otherwise the baseline delta/h
+    proposals = [dict(kind='KAPPA_POINT', family=dict(L_D=int(p['L_D']), formula=base['formula'], delta_over_h=base['delta_over_h'])
+                      if p.get('delta_pf') is None else dict(L_D=int(p['L_D']), formula=base['formula'], delta_over_h=None,
+                                                             delta_pf=p['delta_pf']),
                       kappa=str(Fraction(str(p['kappa'])))) for p in kp]
     if preparation_dir:
         return R.prepare_kappa(root, name, g['preparation'], candidates, proposals, bases, Path(preparation_dir) / name, label='kappa_points')

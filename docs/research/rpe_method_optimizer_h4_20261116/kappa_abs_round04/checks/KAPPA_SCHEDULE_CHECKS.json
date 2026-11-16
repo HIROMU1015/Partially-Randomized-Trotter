@@ -1,0 +1,236 @@
+{
+ "mapper": {
+  "ok": true,
+  "configurations": 18,
+  "mismatches": []
+ },
+ "intervals": {
+  "ok": true,
+  "problems": [],
+  "first_distinct": {
+   "1:down": [
+    "531/266",
+    [
+     12
+    ]
+   ],
+   "1:up": [
+    "683/341",
+    [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ]
+   ],
+   "2:down": [
+    "175/88",
+    [
+     12
+    ]
+   ],
+   "2:up": [
+    "343/171",
+    [
+     11,
+     12
+    ]
+   ],
+   "3:down": [
+    "43/22",
+    [
+     11,
+     12
+    ]
+   ],
+   "3:up": [
+    "33/16",
+    [
+     12
+    ]
+   ],
+   "5:down": null,
+   "5:up": [
+    "7",
+    [
+     12
+    ]
+   ]
+  }
+ },
+ "plan": {
+  "ok": true,
+  "first": [
+   [
+    3,
+    "33/16",
+    "FIRST_DISTINCT_SCHEDULE_UP"
+   ],
+   [
+    3,
+    "43/22",
+    "FIRST_DISTINCT_SCHEDULE_DOWN"
+   ],
+   [
+    5,
+    "7",
+    "FIRST_DISTINCT_SCHEDULE_UP"
+   ]
+  ],
+  "after": {
+   "3": "STOP_FAMILY_NO_FEASIBLE_POINT",
+   "5": "STOP_FAMILY_RULE_EXHAUSTED"
+  },
+  "after_proposals": []
+ },
+ "snap": {
+  "ok": true,
+  "adjacent_schedules_proposals": [],
+  "decisions": [
+   "STOP_FAMILY_RULE_EXHAUSTED"
+  ],
+  "moved_step": [
+   [
+    "13",
+    "EDGE_EXTEND_ONE_STEP"
+   ]
+  ]
+ },
+ "regression_without_schedules": {
+  "ok": true,
+  "cases": 6
+ },
+ "widths": {
+  "ok": true,
+  "request_value_types": [
+   "float",
+   "str"
+  ],
+  "q_exact_1o5": [
+   1,
+   2,
+   3,
+   5,
+   9,
+   17,
+   33,
+   65,
+   129,
+   257,
+   513,
+   1025,
+   2049
+  ],
+  "q_binary64_0p2": [
+   1,
+   1,
+   2,
+   4,
+   8,
+   16,
+   32,
+   64,
+   128,
+   256,
+   512,
+   1024,
+   2048
+  ]
+ },
+ "price": {
+  "ok": true,
+  "points": [
+   [
+    2,
+    "h",
+    "PREPARED",
+    "REUSE_SUPPLIED_PRICES_NO_CALIBRATION",
+    26
+   ],
+   [
+    3,
+    "h",
+    "PREPARED",
+    "REUSE_SUPPLIED_PRICES_NO_CALIBRATION",
+    26
+   ],
+   [
+    5,
+    "h",
+    "PREPARED",
+    "REUSE_SUPPLIED_PRICES_NO_CALIBRATION",
+    26
+   ],
+   [
+    1,
+    "h",
+    "PREPARED",
+    "REUSE_SUPPLIED_PRICES_NO_CALIBRATION",
+    26
+   ],
+   [
+    1,
+    "binary64_0p2",
+    "HELD",
+    "CALIBRATION_REQUEST_READY_NOT_EXECUTED",
+    2
+   ],
+   [
+    2,
+    "binary64_0p2",
+    "HELD",
+    "CALIBRATION_REQUEST_READY_NOT_EXECUTED",
+    2
+   ],
+   [
+    3,
+    "binary64_0p2",
+    "HELD",
+    "CALIBRATION_REQUEST_READY_NOT_EXECUTED",
+    2
+   ],
+   [
+    5,
+    "binary64_0p2",
+    "HELD",
+    "CALIBRATION_REQUEST_READY_NOT_EXECUTED",
+    2
+   ]
+  ],
+  "cells": [
+   [
+    "Q8R1792",
+    {
+     "numerator": 3602879701896397,
+     "denominator": 18014398509481984
+    }
+   ],
+   [
+    "Q8R692",
+    {
+     "numerator": 3602879701896397,
+     "denominator": 18014398509481984
+    }
+   ],
+   [
+    "Q8R109",
+    {
+     "numerator": 3602879701896397,
+     "denominator": 18014398509481984
+    }
+   ],
+   [
+    "Q8R1",
+    {
+     "numerator": 3602879701896397,
+     "denominator": 18014398509481984
+    }
+   ]
+  ]
+ },
+ "ok": true
+}

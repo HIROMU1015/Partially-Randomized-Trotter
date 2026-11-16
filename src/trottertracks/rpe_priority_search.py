@@ -445,7 +445,7 @@ def neighbourhood_settings(nb):
                 family_window=Fraction(str(s['family_window'])))
 
 
-def kappa_neighbourhood_plan(points, nb):
+def kappa_neighbourhood_plan(points, nb, sched=None):
     """Next absolute-kappa points per L_D family around the centre (no automatic doubling / halving).
 
     points: dicts with L_D, kappa (Fraction), status (EVALUATED / PENDING / HELD / ALIAS), best (Fraction or None),
@@ -461,6 +461,10 @@ def kappa_neighbourhood_plan(points, nb):
                              towards the inner neighbour while the ratio exceeds min_ratio
       STOP / WAIT            nothing left under these rules / some point not settled yet
     A family is active while its best <= family_window x the neighbourhood minimum over all families.
+    With ``sched`` (exact kappa -> 13-round R vector of the family, see rpe_kappa_schedule) the rule works on physical
+    schedules: points with the same schedule are one point; the first neighbours are the first DIFFERENT schedules below
+    and above the centre (FIRST_DISTINCT_SCHEDULE_DOWN/UP), and a proposed kappa whose schedule is already sampled is
+    moved to the next different schedule in its direction (never dropped because of the kappa step size).
     """
     s = neighbourhood_settings(nb);lo, hi = s['bounds'];r = s['step_ratio'];INF = None
     fams = defaultdict(list)
@@ -473,8 +477,30 @@ def kappa_neighbourhood_plan(points, nb):
     bests = [p['best'] for p in points if p['status'] in ('EVALUATED', 'ALIAS') and p.get('best') is not None and inside(p['kappa'])]
     m_nb = min(bests) if bests else None
     proposals, decisions = [], []
+    def R(ld, k):
+        return None if sched is None else sched.R(ld, k)
+
+    def snap(ld, k, toward, have_R, stop_at=None):
+        """k, or the next schedule not yet sampled in direction ``toward`` ('up'/'down'); None if none before stop_at."""
+        if sched is None:
+            return k
+        guard = 0
+        while k is not None and R(ld, k) in have_R and guard < 1000:
+            k = sched.next(ld, k, toward);guard += 1
+        if k is None or not inside(k) or (stop_at is not None and (k >= stop_at if toward == 'up' else k <= stop_at)):
+            return None
+        if stop_at is not None and R(ld, k) == R(ld, stop_at):
+            return None
+        return k
+
     for ld in sorted(fams):
         pts = [p for p in fams[ld] if inside(p['kappa'])];have = {p['kappa'] for p in fams[ld]}
+        have_R = {R(ld, p['kappa']) for p in fams[ld]} if sched is not None and sched.known(ld) else set()
+        if sched is not None and sched.known(ld):  # one point per physical schedule (the one nearest the centre)
+            by_R = {}
+            for p in sorted(pts, key=lambda p: (abs(p['kappa'] - s['center']), p['kappa'])):
+                by_R.setdefault(R(ld, p['kappa']), p)
+            pts = list(by_R.values())
         usable = [p for p in pts if p['status'] != 'HELD']
         if not usable:
             held = [p for p in pts if p['status'] == 'HELD']
@@ -494,11 +520,22 @@ def kappa_neighbourhood_plan(points, nb):
             decisions.append(dict(L_D=ld, decision='STOP_FAMILY_OUTSIDE_WINDOW', family_best=fam_best, neighbourhood_min=m_nb,
                                   window=str(s['family_window'])))
             continue
-        first = [k for k in (s['center'] / r, s['center'] * r) if inside(k) and k not in have]
-        if first:
-            for k in first:
-                proposals.append(dict(L_D=ld, kappa=k, reason='FIRST_NEIGHBOURS', centre_best=centre.get('best')))
-            decisions.append(dict(L_D=ld, decision='FIRST_NEIGHBOURS', kappas=[str(k) for k in first]));continue
+        if sched is not None and sched.known(ld):
+            first = []
+            for toward in ('down', 'up'):
+                k = sched.next(ld, s['center'], toward)
+                if k is not None and inside(k) and R(ld, k) not in have_R:
+                    first.append((k, 'FIRST_DISTINCT_SCHEDULE_' + toward.upper(), sched.describe(ld, s['center'], toward)))
+            if first:
+                for k, why, info in first:
+                    proposals.append(dict(L_D=ld, kappa=k, reason=why, centre_best=centre.get('best'), schedule_change=info))
+                decisions.append(dict(L_D=ld, decision='FIRST_DISTINCT_SCHEDULES', kappas=[str(k) for k, _, _ in first]));continue
+        else:
+            first = [k for k in (s['center'] / r, s['center'] * r) if inside(k) and k not in have]
+            if first:
+                for k in first:
+                    proposals.append(dict(L_D=ld, kappa=k, reason='FIRST_NEIGHBOURS', centre_best=centre.get('best')))
+                decisions.append(dict(L_D=ld, decision='FIRST_NEIGHBOURS', kappas=[str(k) for k in first]));continue
         if waiting:
             decisions.append(dict(L_D=ld, decision='WAIT', waiting=waiting));continue
         rows = sorted((p['kappa'], p['best'] if p.get('best') is not None else INF) for p in usable)
@@ -511,9 +548,11 @@ def kappa_neighbourhood_plan(points, nb):
         if 0 < i < len(rows) - 1:
             for j in sorted((i - 1, i + 1), key=lambda j: cost(rows[j][1])):
                 mid = (kstar + rows[j][0]) / 2
-                if rows[j][1] == cstar:  # equal cost on both ends (physically identical plateau): nothing to refine there
+                if rows[j][1] == cstar and sched is None:  # equal cost on both ends (plateau): nothing to refine there
                     continue
-                if max(kstar, rows[j][0]) / min(kstar, rows[j][0]) > s['min_ratio'] and mid not in have:
+                toward = 'up' if rows[j][0] > kstar else 'down'
+                mid = snap(ld, mid, toward, have_R, stop_at=rows[j][0]) if sched is not None and sched.known(ld) else mid
+                if mid is not None and max(kstar, rows[j][0]) / min(kstar, rows[j][0]) > s['min_ratio'] and mid not in have:
                     new, why = mid, 'INTERIOR_REFINE';evidence.update(neighbour=str(rows[j][0]), neighbour_cost=rows[j][1]);break
         else:
             j = 1 if i == 0 else len(rows) - 2
@@ -523,13 +562,18 @@ def kappa_neighbourhood_plan(points, nb):
                         new, why = k, 'EDGE_EXTEND_ONE_STEP';break
             else:
                 kin, cin = rows[j];step = kstar / r if i == 0 else kstar * r
+                outward = 'down' if i == 0 else 'up'
+                if sched is not None and sched.known(ld) and inside(step):
+                    step = snap(ld, step, outward, have_R) or step  # the step kappa's schedule may already be sampled
                 gain_ok = cin is None or cstar <= cin * (1 - s['extend_margin'])
                 evidence.update(inner=str(kin), inner_cost=cin, margin=str(s['extend_margin']))
-                if gain_ok and inside(step) and step not in have:
+                if gain_ok and inside(step) and step not in have and R(ld, step) not in have_R:
                     new, why = step, 'EDGE_EXTEND_ONE_STEP'
                 else:
                     mid = (kstar + kin) / 2
-                    if cin != cstar and max(kstar, kin) / min(kstar, kin) > s['min_ratio'] and mid not in have:
+                    if sched is not None and sched.known(ld):
+                        mid = snap(ld, mid, 'up' if kin > kstar else 'down', have_R, stop_at=kin)
+                    if mid is not None and cin != cstar and max(kstar, kin) / min(kstar, kin) > s['min_ratio'] and mid not in have:
                         new, why = mid, 'EDGE_REFINE'
                         evidence['edge_extension_skipped'] = ('gain below margin' if not gain_ok else
                                                               'outside bounds' if not inside(step) else 'already sampled')

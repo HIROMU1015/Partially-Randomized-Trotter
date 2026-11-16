@@ -168,6 +168,25 @@ def _kappa(config):
     return Fraction(int(v['numerator']), int(v['denominator'])) if isinstance(v, dict) else Fraction(str(v))
 
 
+def width_tag(fam):
+    """Requested width of a family as given: delta_pf keeps its JSON representation (the string '1/5' is the exact rational,
+    the number 0.2 is its binary64 value; they are different widths and never rounded into one another)."""
+    if fam.get('delta_pf') is not None:
+        return 'delta_pf=' + json.dumps(fam['delta_pf'])
+    return 'delta_over_h=%s' % fam['delta_over_h']
+
+
+def kappa_item(name, fam, base, mult, tag, K=2):
+    """A-entry item of one kappa point: the requested width goes to A's mapper unchanged (q_m and T_m/q_m come back)."""
+    changes = dict(formula=fam['formula'], kappa_multiplier=str(mult), K=K)
+    if fam.get('delta_pf') is not None:
+        changes['delta_pf'] = fam['delta_pf']
+    else:
+        changes['delta_over_h'] = fam['delta_over_h']
+    wid = '' if fam.get('delta_pf') is None else ':' + width_tag(fam)
+    return dict(item_id='%s:L_D=%s%s:%s' % (name, fam['L_D'], wid, tag), base=base['source'], changes=changes)
+
+
 def prepare_kappa(root, name, prep, candidates, proposals, base_sources, out_dir, label='kappa_proposals'):
     """Kappa proposals of the search rule -> A's entry with the saved configuration of that L_D as base."""
     from fractions import Fraction
@@ -181,9 +200,7 @@ def prepare_kappa(root, name, prep, candidates, proposals, base_sources, out_dir
             tag = 'kappa=%s' % target
         else:
             target, mult = None, Fraction(str(p['kappa_multiplier']));tag = 'kappa_x=%s' % mult
-        items.append(dict(item_id='%s:L_D=%s:%s' % (name, fam['L_D'], tag), base=base['source'],
-                          changes=dict(formula=fam['formula'], delta_over_h=fam['delta_over_h'], kappa_multiplier=str(mult),
-                                       K=prep.get('K', 2))))
+        items.append(kappa_item(name, fam, base, mult, tag, K=prep.get('K', 2)))
         keep.append(dict(proposal=p, base=base['configuration_id'], item_id=items[-1]['item_id'], kappa=None if target is None else str(target),
                          kappa_base=None if base.get('kappa_value') is None else str(base['kappa_value']), kappa_multiplier=str(mult)))
     if not items:
@@ -196,7 +213,9 @@ def prepare_kappa(root, name, prep, candidates, proposals, base_sources, out_dir
         item = by_id.get(row['item_id']) or dict(item_id=row['item_id'], status=response.get('status', 'NO_RESPONSE_ITEM'),
                                                  missing_inputs=response.get('missing_inputs') or [])
         fam = row['proposal']['family']
-        key = dict(L_D=fam['L_D'], formula=fam['formula'], delta_over_h=fam['delta_over_h'])
+        key = dict(L_D=fam['L_D'], formula=fam['formula'], delta_over_h=fam.get('delta_over_h'))
+        if fam.get('delta_pf') is not None:
+            key['delta_pf'] = fam['delta_pf']
         if row['kappa'] is not None:
             key['kappa'] = row['kappa']
             got = item.get('configuration') and Fraction(str(_kappa(item['configuration'])))
