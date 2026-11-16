@@ -371,3 +371,5 @@
 [O5保存H4 q4入力STOP](research/track_d_cut_h4_q4_20261108/REPORT.md)：q4_sample00の非公開event/QPY未取得。SOURCE互換確認のみ、新科学call0・資源差UNKNOWN。
 
 [O5実H4 q4最終結果](research/track_d_cut_h4_q4_completion_20261108/REPORT.md)：原本回収後に中央cut2を選択し追加差0。旧4 P0適格再利用、重複compile0。
+
+[B0I prefixの通常探索・不足補完接続](research/b0i_prefix_auto_selection_20261117/REPORT.md)／[HANDOFF](research/b0i_prefix_auto_selection_20261117/HANDOFF.md)：保存入力と人工応答のみの受入。

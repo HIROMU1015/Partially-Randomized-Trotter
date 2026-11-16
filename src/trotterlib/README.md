@@ -285,3 +285,5 @@ DF部分ランダム化研究と混同しない。
 
 `trottertracks.track_d_cut_h4_saved` は既存archive/recordのlossless hash binding、`track_d_cut_h4_reuse` は中央cutの同request/P0/旧PASS資格を確認する薄いguard。既存selector/C3/Strong/gadget/compilerは変更なし。人工guardは`tests/check_track_d_cut_h4_saved.py`と`check_track_d_cut_h4_reuse.py`。[資料](../../docs/research/track_d_cut_h4_q4_completion_20261108/IMPLEMENTATION_AND_REUSE.md)。
 C7-4の[保存モデル再解析](../trottertracks/track_d_c7_4_models.py)と[人工native比較](../trottertracks/track_d_c7_4_stability.py)は明示runnerだけから利用する。q≥64分子計算を含まず、[技術報告](../../docs/research/track_d_c7_4_model_stability_20261107/REPORT.md)を参照する。
+
+B0I候補のmetadata自動選択・既存D補完への接続は `trottertracks.pf_candidate_space`、`pf_candidate_selection`、`pf_optimizer_connection`。[通常入口と検証](../../docs/research/b0i_prefix_auto_selection_20261117/HANDOFF.md)。数値kernelは変更しない。

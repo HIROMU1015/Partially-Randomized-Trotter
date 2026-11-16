@@ -95,3 +95,8 @@ D2公開 `1eda4ba3f` / `0742a750b` のhelperを再利用し、`run_rpe_schedule_
 `adaptive_hybrid`、round間shot振替、`overlap_ready_batch` はopt-in。適応先読みは模擬起動数を減らしてもlatencyが増える例があり、一律に有効化しない。通常・再開経路で発見したfamily引継ぎ漏れ、未実行planの再開、prior重複、live終了待ち、準備中失敗のSTOP保存、V2全体previewの未起動予約残りを小さい人工検査で修正した。観測counterは再開でresetするが完了結果/起動済み予算は維持する。
 
 [REPORT](research/h4_rpe_search_throughput_20261116/REPORT.md)、[B2設定例・開始/再開・制約](research/h4_rpe_search_throughput_20261116/HANDOFF.md)、[検査](research/h4_rpe_search_throughput_20261116/checks/VALIDATION.json)。通常入口はplan-only開始/同run再開で科学0を確認し、4方式の共通経路は人工workerで検査した。保存運用/再生の効果はPR-Pauliの範囲。今回の実科学0件。
+
+
+## B0I prefix候補の不足計画・保存応答の再利用（2026-11-17）
+
+`pf_candidate_selection.py` → 既存D `pf_optimizer_connection.complete_selected` は、通常方式共通CLIで選択後に1候補の不足を準備し、同run再開では保存SELECTION/REQUEST/RESPONSEを再利用する。T1/T2 metadataとcanonical mapperのcacheを使い、p10はFullのaliasとして重複させない。concurrent/HYBRID/prefix-cacheと元shot規則はe839のまま。適用範囲・SOURCE・例は[REPORT](research/b0i_prefix_auto_selection_20261117/REPORT.md)と[HANDOFF](research/b0i_prefix_auto_selection_20261117/HANDOFF.md)。保存H4の計画と人工の補完→shot/Q3→再開で確認。実H4の取得・高速化倍率は未測定。旧入口のoptional registry/contextへの適用漏れを回帰で検出・修正し、prefix-cache検査は固定viewを使う独立processで行う。

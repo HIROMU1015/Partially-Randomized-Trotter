@@ -341,3 +341,5 @@ artifacts/<validation_name>/
 
 `run_track_d_cut_h4_select.py`：hash一致したq4_sample00だけから不変ruleで一回decisionを価格参照前に保存。`run_track_d_cut_h4_reuse.py`：中央cut選択時だけ、旧QPY/PASS/全7価格を照合して新compileなしでSTOP。[完了済み結果](../docs/research/track_d_cut_h4_q4_completion_20261108/REPORT.md)。再実行しない。
 [C7-4保存再解析runner](run_track_d_c7_4.py)／[結果projection](summarize_track_d_c7_4.py)：保存88 pathのみの探索fit/CV/bootstrapと固定人工6系列/短P0 2本。新H4 sampling/build/compileなし。既存runのmain/guardを変更しない。
+
+B0I prefix自動選択は既存 `run_rpe_method_optimizer.py` の通常round入口を使用する。[入力・SOURCE・再開手順](../docs/research/b0i_prefix_auto_selection_20261117/HANDOFF.md)。`artificial_pf_preparation_fixture.py` は人工検証専用で、実価格・信号を取得しない。

@@ -507,3 +507,5 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## O5実H4 q4移送完了：中央cut選択（2026-11-08）
 
 [最終報告](docs/research/track_d_cut_h4_q4_completion_20261108/REPORT.md)。提供されたC6a q4_sample00 archive全20 memberのhash一致後、固定ruleを一回適用しcut2を選択。旧raw1/compiled4 PASS・全7価格を適格再利用、新build/compile/post0、選択−中央は全7差0。前回入力STOPは履歴保全、他cut/path・q64は対象外、公開後mandatory STOP。
+
+[B0I p自動選択の通常入口・人工通し検証](docs/research/b0i_prefix_auto_selection_20261117/REPORT.md)／[B2/C HANDOFF](docs/research/b0i_prefix_auto_selection_20261117/HANDOFF.md)：保存H4の不足計画、未評価pの選択→既存D補完→通常shot生成→人工Q3・再開。新H4科学call0。
