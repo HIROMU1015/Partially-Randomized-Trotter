@@ -243,6 +243,13 @@ def main():
                         and nr['pending_request'] is not None and not ex.has_job(dict(configuration_id=nr['pending_request']['configuration_id'],
                                                                                        vector=tuple(nr['pending_request']['vector']))),
                         loaded=nr['prior_rounds']['loaded'], completed_prior_jobs=len(done), stop=nr['stop_reason']))
+    # The same prior jobs with a route that also names a growing registry file (configurations_file) are still reused.
+    rr = out / 'next_round_registry';fr = pauli_budget_round(out / 'next_round_registry.json', 'ART_NEXT_REGISTRY',
+                                                              dict(pr, configurations_file=str(out / 'REGISTRY.json')), 0,
+                                                              rule='METHOD_MINIMUM_PRIORITY_V2', prior=ri, approved=False)
+    nrr = cli(rr, fr)['PR_PAULI']
+    checks.append(check('prior_jobs_reused_when_route_names_a_registry_file', nrr['prior_rounds']['loaded'] == len(done)
+                        and nrr['prior_rounds']['refused'] == 0 and not launches(rr), loaded=nrr['prior_rounds']['loaded']))
     other = artificial_route(problem);other['artificial']['scale'] = str(Fraction(pr['artificial']['scale']) * 2)
     rm = out / 'next_round_other_route';fm = pauli_budget_round(out / 'next_round_other_route.json', 'ART_NEXT_OTHER', other, 0,
                                                                  rule='METHOD_MINIMUM_PRIORITY_V2', prior=ri, approved=False)

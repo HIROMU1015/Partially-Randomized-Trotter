@@ -35,7 +35,10 @@ def check_view(prep):
 def run_preparation(root, prep, items, out_dir, label):
     """One call of the entry; returns the parsed response (or a failure record) and where it was written."""
     out_dir = Path(out_dir).resolve()  # the entry runs with the view as cwd: every path handed over is absolute
-    out = out_dir / label;out.mkdir(parents=True, exist_ok=True)
+    import hashlib
+    # one directory per distinct item list: the entry refuses to overwrite PREPARATION.<i>.CONFIGURATION.json with another body
+    tag = hashlib.sha256(json.dumps(items, sort_keys=True, default=str).encode()).hexdigest()[:12]
+    out = out_dir / (label + '_' + tag);out.mkdir(parents=True, exist_ok=True)
     request = dict(kind=prep.get('request_kind', 'pauli_native'), view=prep.get('view'), view_commit=prep.get('view_commit'),
                    items=items, saved_packets=prep.get('saved_packets', []), saved_configurations=prep.get('saved_configurations', []))
     if prep.get('kind') == 'artificial':

@@ -551,7 +551,8 @@ class Executor:
         except (OSError, ValueError):
             return False
         now = self.route(cid) or {}
-        fixed = lambda r: {k: v for k, v in (r or {}).items() if k not in ('configurations', 'configuration_ids', 'existing_caller')}
+        fixed = lambda r: {k: v for k, v in (r or {}).items() if k not in ('configurations', 'configuration_ids', 'existing_caller',
+                                                                           'configurations_file')}
         entry = lambda r: ((r or {}).get('configurations') or {}).get(cid)
         return (old.get('configuration_id') == cid and fixed(old.get('route')) == fixed(now) and entry(old.get('route')) == entry(now)
                 and old.get('expected') == json.loads(json.dumps(self.expected_for(cid, now), default=str)))
