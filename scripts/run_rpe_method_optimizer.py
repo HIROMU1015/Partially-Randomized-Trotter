@@ -54,6 +54,7 @@ def round_phase(run, name):
 def candidate_rows(context):
     return [dict(name=c['name'], method=c['method'], configuration=c['key'], configuration_id=c['configuration_id'],
                  ready=c['ready'], needs=c['needs'], price_status=c['price_status'], signal_source=c['signal_source'],
+                 execution_needs=c.get('execution_needs'), execution_binding_hold=c.get('execution_binding_hold'),
                  labels=c['labels'], saved_points=c['saved_points'], outside_index=c.get('outside_index', False),
                  prepared_by=c.get('prepared_by'), preparation=c.get('preparation'), price_quote=c.get('price_quote'),
                  kappa_value=c.get('kappa_value'), kappa_base=c.get('kappa_base'), kappa_multiplier_exact=c.get('kappa_multiplier_exact'),

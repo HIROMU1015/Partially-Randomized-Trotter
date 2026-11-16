@@ -1,5 +1,9 @@
 # 性能対策の再利用索引
 
+## PR複数幅：保存候補のQ3 routeとtemplate適合性（2026-11-17）
+
+`Completion.install_saved_routes/common_route`と`Executor.route`は保存候補のSOURCE/bindingを既存common workerへ結び、Reader cacheでtemplate照合を共有する。有効な旧route/job keyは保持し、未接続候補のみ保留して他のqueueを進める。R06ではcatalog-only候補のroute登録漏れと、DFのwildcardに未対応templateを使う失敗があった。人工72件・停止2候補の元worker metadataで確認、実科学call0・実H4速度倍率未測定。[REPORT](research/pr_multiwidth_route_fix_20261117/REPORT.md)／[HANDOFF](research/pr_multiwidth_route_fix_20261117/HANDOFF.md)。旧STOP、数値UNKNOWN、保存値の競合は解除しない。
+
 ## PR複数幅と共通queue/DP・B0Iの通常入口統合（2026-11-17）
 
 `run_rpe_method_optimizer.make_executor`を幅版batchと共用し、Completion後も同じoptimizer/queue/予算/profileを維持する。元prefixのSOURCE・信号・契約・精度照合を再利用し、別構成へのHITや完了jobの二重起動を防ぐ。明示overlapでは準備前snapshotを使い、準備後に同じqueueへ戻す。B0Iは既存自動p選択を同じschedule入口から呼ぶ。

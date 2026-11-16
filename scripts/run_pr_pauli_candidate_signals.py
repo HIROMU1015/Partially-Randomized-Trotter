@@ -18,7 +18,9 @@ import time
 
 ENTRY_SOURCE='6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb'
 ENTRY_FILES=('src/trottertracks/pauli_signal_entry.py','scripts/run_pauli_signal_entry.py',
-             'src/trottertracks/pauli_split_descriptor.py')
+             'src/trottertracks/pauli_split_descriptor.py',
+             'scripts/run_df_head_pauli_tail_ld3_signals.py',
+             'scripts/verify_h4_df10_rpe_shot_integers.py')
 SUCCESS='ENTRY_CARRIERS_COMPLETE_NOT_RPE_QUALIFIED'
 GIT_ID=['-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp']
 

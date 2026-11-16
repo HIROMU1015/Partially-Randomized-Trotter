@@ -216,6 +216,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         return out
 
     def local(st):
+        if st.c.get('execution_needs'):
+            return []  # retain saved feasible points, but do not enqueue an unbound worker
         if not st.dirty:
             return st.cache
         c, prices = st.c, st.c['prices'];caps = tuple(n for n in c['caps'] for _ in O.AXES);raw = []
@@ -565,12 +567,13 @@ def new_ld_requests(candidates, states, M, facts, baseline):
         lead = next((st.c['key'].get('L_D') for st in states.values() if st.best is not None and st.best[0] == M), None)
     out = []
     for c in candidates:
-        if c['ready']:
+        if c['ready'] and not c.get('execution_needs'):
             continue
         ld = c['key'].get('L_D')
         prep = c.get('preparation') or {}
         out.append(dict(kind='NEW_L_D' if c['configuration_id'] is None else 'CONFIGURATION_INPUTS_MISSING', candidate=c['name'],
-                        configuration=c['key'], configuration_id=c['configuration_id'], needs=c['needs'],
+                        configuration=c['key'], configuration_id=c['configuration_id'], needs=c['needs'] + c.get('execution_needs', []),
+                        execution_binding_hold=c.get('execution_binding_hold'),
                         price_needs=c.get('price_needs'), distance_to_leading_L_D=None if lead is None or ld is None else abs(ld - lead),
                         preparation=prep and dict(status=prep.get('status'), preparation_status=prep.get('preparation_status'),
                                                   next_actions=prep.get('next_actions'), readiness=prep.get('readiness'),

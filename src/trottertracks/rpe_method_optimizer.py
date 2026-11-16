@@ -352,7 +352,7 @@ def proposals(candidates, knowledge, threshold, search, generate):
     out = []
     large = Fraction(search['large_step_headroom'])
     for c in candidates:
-        if not c['ready']:
+        if not c['ready'] or c.get('execution_needs'):
             continue
         cid, prices = c['configuration_id'], c['prices']
         caps = tuple(n for n in c['caps'] for _ in AXES)
@@ -398,6 +398,29 @@ def proposals(candidates, knowledge, threshold, search, generate):
 HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW'}
 
 
+def route_supports_configuration(rule, cid, reader):
+    """A wildcard declaration cannot make an absent saved case executable.
+
+    Only inspect published metadata; the caller's cached Reader avoids reading
+    a template once per allocation. Numerical/intake guards still run in the worker.
+    """
+    allowed = rule.get('configuration_ids')
+    if allowed not in (None, '*') and cid not in allowed:
+        return False
+    if rule.get('kind') in ('pauli_b_common_entry', 'prdf_d2_common_entry'):
+        entry = (rule.get('configurations') or {}).get(cid) or {}
+        return all(entry.get(k) is not None for k in
+                   ('configuration', 'signal_packet', 'binding_id', 'total_configuration_id')) and bool(rule.get('contract_template'))
+    if rule.get('kind') in ('pf_b_pf6', 'pauli_b_ld3', 'pauli_b_ld5', 'prdf_d2_split'):
+        for loc in rule.get('templates', []):
+            source = dict(loc, selector=loc.get('inputs_selector', []))
+            inputs = reader.read(source)
+            if any((c.get('configuration_id') or c.get('original_configuration_id')) == cid for c in inputs['cases']):
+                return True
+        return False
+    return True  # artificial/custom adapters retain their own contract
+
+
 def run_method(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None, spent=0, free=None,
                science_approved=True, prefetch=None):
     """Finite loop: select, ask backend, update knowledge, repeat until a stop rule fires.
@@ -411,7 +434,7 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
     jobs run concurrently; the rule still consumes answers one at a time in that order (same trajectory).
     """
     trace, held, new_calls, pending, stop = [], [], spent, None, None
-    ready = [c for c in candidates if c['ready']];missing = [c['name'] for c in candidates if not c['ready']]
+    ready = [c for c in candidates if c['ready']];missing = [c['name'] for c in candidates if not c['ready'] or c.get('execution_needs')]
     limit = 0 if not science_approved else (float('inf') if max_new is None else max_new)
     large_headroom = Fraction(search['large_step_headroom'])
     for step in range(search['max_steps_per_method']):
@@ -531,8 +554,11 @@ class Executor:
 
     def route(self, cid):
         for rule in self.routes.get(self.method, []):
-            if rule.get('configuration_ids') in (None, '*') or cid in rule['configuration_ids']:
-                return rule
+            try:
+                if route_supports_configuration(rule, cid, self.pf_template_reader):
+                    return rule
+            except (KeyError,ValueError,TypeError,OSError,subprocess.CalledProcessError):
+                continue  # unresolved source is an input need, never a wildcard fallback
         return None
 
     def job_dir(self, proposal):
@@ -1114,11 +1140,12 @@ def summarize_method(name, candidates, result, knowledge, threshold):
                       MSE_upper=r.get('MSE_upper'), cost=None if r.get('cost') is None else r['cost'], source=r['source'],
                       result_sources=r.get('result_sources'), point_id=r.get('point_id'), job=r.get('job'), label=r.get('label'))
                  for (cid, v), r in knowledge.items() if any(c['configuration_id'] == cid for c in candidates)]
-    unevaluated = [dict(candidate=c['name'], configuration=c['key'], configuration_id=c['configuration_id'], needs=c['needs'],
+    unevaluated = [dict(candidate=c['name'], configuration=c['key'], configuration_id=c['configuration_id'], needs=c['needs'] + c.get('execution_needs', []),
+                        execution_binding_hold=c.get('execution_binding_hold'),
                         price_status=c['price_status'], price_quote=c.get('price_quote'), price_needs=c.get('price_needs'),
                         signal_source=c['signal_source'], reusable=c.get('reusable'),
                         next='Q3 of a generated/decremented allocation after the listed items exist')
-                   for c in candidates if not c['ready']]
+                   for c in candidates if not c['ready'] or c.get('execution_needs')]
     return dict(method=name, best=best, stop_reason=result['stop_reason'], pending_request=result['pending_request'],
                 trace=result['trace'], held=result['held'], new_calls=result['new_calls'],
                 evaluated_count=len(evaluated), evaluated=evaluated, not_ready_candidates=unevaluated,
@@ -1175,6 +1202,12 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
     out = {}
     for name in methods or problem['methods']:
         cands = [c for c in context['candidates'] if c['method'] == name]
+        if executor is not None:
+            ex = executor.for_method(name)
+            for c in cands:
+                if c['ready']:
+                    c['execution_needs'] = ([] if ex.route(c['configuration_id']) is not None
+                                            else ['Q3_ROUTE_CONFIGURATION_OR_TEMPLATE'])
         start = initial if isinstance(initial, str) else initial.get(name, [])
         knowledge = ingest(initial_knowledge(context['saved'], cands, start), cands, extra_results)
         budget = max_new.get(name, 0) if isinstance(max_new, dict) else max_new

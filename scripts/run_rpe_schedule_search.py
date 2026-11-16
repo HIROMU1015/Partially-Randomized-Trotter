@@ -821,7 +821,8 @@ class WidthDriver:
             if failed:
                 self.state['stop']=dict(reason='V2_RESULT_REQUIRES_REVIEW',methods=failed,UTC=K.now());self.save();return
             waiting=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
-                     any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values()))
+                     any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values())or
+                     any(r.get('input_requests')for r in result.values()))
             pending=any(p['status']in('COMPLETION','REGISTERED')or(p['status']=='EVALUATED'and p.get('promising'))for p in self.state['points'])
             if not proposals and not pending:
                 self.state['stop']=dict(reason='WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED',

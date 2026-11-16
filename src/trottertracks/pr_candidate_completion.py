@@ -438,8 +438,15 @@ class Completion:
 
     def pauli_signals(self,config,prepared,d):
         packets=self.saved_signal_packets('PR_PAULI')
-        descriptor=dict(prefix=config['spec']['L_D'],binding=config['spec']['binding'],
-            descriptor=prepared['descriptor']['descriptor'],source=prepared['descriptor']['source'])
+        source=prepared['descriptor']['source']
+        if 'commit'in source and 'path'not in source:raise Held('PAULI_DESCRIPTOR_SOURCE_UNRESOLVED')
+        # Saved LD1/2/3/5 descriptors use A's index/context locator, not a
+        # commit/path override. Let that same fixed entry resolve its saved
+        # descriptor. Derived prefixes still require the explicit envelope.
+        descriptor=(dict(prefix=config['spec']['L_D'],binding=config['spec']['binding'],
+            descriptor=prepared['descriptor']['descriptor'],source=source)if 'commit'in source else None)
+        if descriptor is None and(config['spec']['L_D']not in(1,2,3,5)or not all(k in source for k in('index','context_sha256'))):
+            raise Held('PAULI_DESCRIPTOR_SOURCE_UNRESOLVED')
         request=dict(configuration=config,tail_descriptor=descriptor,saved_packets=packets,
             workspace=str(self.settings.get('pauli_workspace',A_WORKSPACE)),directory='docs/research/d2_automatic_pr_20261116/'+config['id'][:20]+'/'+self.settings.get('signal_epoch','descriptor_envelope_v2'),interpreter=NATIVE)
         inp=d/'PAULI_SIGNAL_REQUEST.json';out=d/'PAULI_SIGNAL_RESULT.json';put(inp,request)
@@ -553,6 +560,66 @@ class Completion:
             inputs_source=dict(commit=inputs,path=rel(inp)),model_source=dict(commit=frozen,path=rel(base/'FROZEN_MODELS.json')),
             price_source=dict(commit=frozen,path=rel(base/'AXIS_PRICES.json')),holdout_source=holdout)
 
+    def common_route(self,method,cid,configuration,packet,binding):
+        """The same fixed worker/contract for newly prepared and saved candidates."""
+        view=B_VIEW if method=='PR_PAULI'else DF_Q3_VIEW
+        return dict(kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=NATIVE,
+            view=str(view),view_commit=git('rev-parse','HEAD',cwd=view),configuration_ids=[cid],
+            contract_template=(dict(commit='b6d4dea49c39f364048af422bc2928ee7c169261',path='docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json')if method=='PR_PAULI'else dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json',inputs_selector=['inputs'])),
+            configurations={cid:dict(configuration=configuration,signal_packet=packet,
+                binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])})
+
+    def install_saved_routes(self,context,routes):
+        """Reconnect catalog-only PR cases through their own source-bound metadata.
+
+        Existing usable routes remain unchanged, preserving prior-job reuse.
+        Missing/conflicting metadata is a candidate-specific preparation need;
+        neither signals nor numerical results are synthesized here.
+        """
+        from . import rpe_method_optimizer as O
+        reader=context.get('reader')or O.Reader(ROOT)
+        points=context.get('catalog',{}).get('candidates',[])
+        for c in context['candidates']:
+            method=c['method'];cid=c.get('configuration_id')
+            if method not in('PR_PAULI','PR_DF')or not cid or not c.get('ready'):continue
+            usable=False
+            for rule in routes.get(method,[]):
+                try:usable=O.route_supports_configuration(rule,cid,reader)
+                except (KeyError,ValueError,TypeError,OSError,subprocess.CalledProcessError):continue
+                if usable:break
+            if usable:continue
+            saved=[p for p in points if p.get('method')==method and p.get('configuration_id')==cid]
+            try:
+                if not saved:continue
+                p=saved[0]
+                fields=('configuration_source','signal_source','binding_id','total_configuration_id')
+                if any(any(row.get(k)!=p.get(k)for k in fields)for row in saved):
+                    raise ValueError('SAVED_ROUTE_BINDINGS_CONFLICT')
+                if any(p.get(k)is None for k in fields):raise ValueError('SAVED_ROUTE_BINDING_INCOMPLETE')
+                if c.get('signal_source')!=p['signal_source']:raise ValueError('SAVED_ROUTE_CANDIDATE_SIGNAL_DIFFERS')
+                config=reader.read(p['configuration_source'])
+                if config['id']!=cid:raise ValueError('SAVED_ROUTE_CONFIGURATION_ID_DIFFERS')
+                inputs=reader.read(p['case_source'])
+                cases=[row for row in inputs['cases']if(row.get('original_configuration_id')or row.get('configuration_id'))==cid]
+                if not cases:raise ValueError('SAVED_ROUTE_CASE_MISSING')
+                rule=self.common_route(method,cid,p['configuration_source'],p['signal_source'],p)
+                loc=rule['contract_template'];contract=reader.read(dict(loc,selector=loc.get('inputs_selector',[])))
+                if inputs['adopted_evaluation']!=contract['adopted_evaluation']:
+                    raise ValueError('SAVED_ROUTE_EVALUATION_CONTRACT_DIFFERS')
+                for case in cases:
+                    if any(case.get(k)!=p[v]for k,v in [('configuration','configuration_source'),('signal_packet','signal_source'),('binding_id','binding_id'),('total_configuration_id','total_configuration_id')]):
+                        raise ValueError('SAVED_ROUTE_CASE_BINDING_DIFFERS')
+                    if case.get('evaluation_target')!=contract['cases'][0].get('evaluation_target'):
+                        raise ValueError('SAVED_ROUTE_EVALUATION_TARGET_DIFFERS')
+                expected=context['expected'].get(cid,{})
+                if any(expected.get(k)!=p[k]for k in('binding_id','total_configuration_id')):
+                    raise ValueError('SAVED_ROUTE_EXPECTED_BINDING_DIFFERS')
+                routes.setdefault(method,[]).insert(0,rule)
+                c['execution_binding_source']=p['case_source'];c.pop('execution_binding_hold',None)
+            except (KeyError,ValueError,TypeError,OSError,subprocess.CalledProcessError)as exc:
+                c['execution_binding_hold']=str(exc)
+        return routes
+
     def install(self,context,problem,records):
         from . import rpe_method_optimizer as O,rpe_candidate_preparation as R
         routes=deepcopy(problem['execution_routes'])
@@ -617,11 +684,9 @@ class Completion:
                 price_status='MODEL_REFERENCE',price_quote=value(rec['quote']),
                 schedule_keys=O.schedule_keys(config),prepared_by='D2_COMMON_CANDIDATE_COMPLETION')
             context['expected'][cid]=dict(configuration_id=cid,binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])
-            rule=dict(kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=NATIVE,
-                view=str(B_VIEW if method=='PR_PAULI'else DF_Q3_VIEW),view_commit=git('rev-parse','HEAD',cwd=B_VIEW if method=='PR_PAULI'else DF_Q3_VIEW),
-                configuration_ids=[cid],contract_template=(dict(commit='b6d4dea49c39f364048af422bc2928ee7c169261',path='docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json')if method=='PR_PAULI'else dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json',inputs_selector=['inputs'])),
-                configurations={cid:dict(configuration=signal.get('configuration_source',rec['configuration']),signal_packet=signal['packet_source'],binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])})
+            rule=self.common_route(method,cid,signal.get('configuration_source',rec['configuration']),signal['packet_source'],binding)
             routes[method]=[rule]+routes.get(method,[])
+        routes=self.install_saved_routes(context,routes)
         self.save()
         return routes
 

@@ -236,12 +236,24 @@ class SchedulerTests(unittest.TestCase):
             self.assertFalse((ex.job_dir(props[1])/'REQUEST.json').exists())
             with self.assertRaisesRegex(RuntimeError,'no new launches'):ex.answer(props[1])
 
-    def test_selection_functions_are_exactly_the_fixed_source(self):
+    def test_fixed_selection_except_explicit_execution_readiness_guard(self):
         old=ast.parse(subprocess.check_output(['git','show','1e88cd85c:src/trottertracks/rpe_method_optimizer.py'],cwd=ROOT))
         new=ast.parse((ROOT/'src/trottertracks/rpe_method_optimizer.py').read_bytes())
+        # The route repair adds only a pre-proposal availability gate. Retain
+        # the strict AST comparison for every ranking, price and update rule.
+        guard=ast.dump(ast.parse("not c['ready'] or c.get('execution_needs')",mode='eval').body)
+        class StripReadiness(ast.NodeTransformer):
+            count=0
+            def visit_BoolOp(self,node):
+                if ast.dump(node)==guard:
+                    self.count+=1
+                    return ast.parse("not c['ready']",mode='eval').body
+                return self.generic_visit(node)
         for name in ('proposals','method_state','run_method','run_by_configuration'):
             a=next(n for n in old.body if isinstance(n,ast.FunctionDef)and n.name==name)
             b=next(n for n in new.body if isinstance(n,ast.FunctionDef)and n.name==name)
+            strip=StripReadiness();b=strip.visit(b)
+            self.assertEqual(strip.count,1 if name in('proposals','run_method')else 0,name)
             self.assertEqual(ast.dump(a),ast.dump(b),name)
 
 

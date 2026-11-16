@@ -64,10 +64,10 @@ class CompletionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory()as tmp:
             c=C.Completion.__new__(C.Completion);c.settings={};c.state={'records':{}}
             config=dict(id='fixture',spec=dict(L_D=4,binding={'H':'fixed'}))
-            prepared=dict(descriptor=dict(status='READY',descriptor={'tail':'own'},source={'commit':'fixed'}))
+            prepared=dict(descriptor=dict(status='READY',descriptor={'tail':'own'},source={'commit':'fixed','path':'descriptor'}))
             def call(cmd,d,stage,output,**kwargs):
                 req=json.loads((d/'PAULI_SIGNAL_REQUEST.json').read_text())
-                self.assertEqual(req['tail_descriptor'],dict(prefix=4,binding={'H':'fixed'},descriptor={'tail':'own'},source={'commit':'fixed'}))
+                self.assertEqual(req['tail_descriptor'],dict(prefix=4,binding={'H':'fixed'},descriptor={'tail':'own'},source={'commit':'fixed','path':'descriptor'}))
                 self.assertTrue(req['directory'].endswith('/descriptor_envelope_v2'))
                 return dict(status='SIGNALS_READY')
             with patch.object(c,'call',side_effect=call):c.pauli_signals(config,prepared,Path(tmp))
