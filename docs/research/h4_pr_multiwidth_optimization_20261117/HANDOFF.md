@@ -67,3 +67,9 @@ PR-Pauli=[数値0.1,数値0.2]、PR-DF=[数値0.1,数値0.05]、各LD1〜9。Pau
 通常C同期は既存`codex/b2-rpe-*`発見条件を利用する。実際の結果は既存`publish_comparison_exports`／`export_pr_candidate_comparison.py`で各候補の実信号/価格/元Q3をC_RESULT_JOINへ結び、固定commit/pathを公開する。必要なら新幅contextを同Completion.installで復元して元Executor.prior_recordsに渡す。古いround_contextだけで未登録の新幅を消さない。未採用完了も検査し、単に採用traceだけから最安を決めない。C branch/cronには書き込まず、元consumerの読取確認を残す。
 
 実行中のchat終了では最終集計を済ませたとは扱わない。次担当はこの同runを回収し、必要な後処理・REPORT更新・commit/push・remote照合を行う。ロードマップ本体は統合担当へ渡す。
+
+## 起動済み・復旧境界
+
+起動時SOURCE b0257d78026ade89bb3ba61dc88634570039dae8、controller PID32111、wrapper PID32104、tmux h4-pr-width-r06。[LIVE_START_SNAPSHOT](LIVE_START_SNAPSHOT.json)に実requestのprofile・同時稼働・HIT・全起動と個別結果・保留を記録。snapshotは時点情報であり、今動いているかを先に確かめる。
+
+Pauli初期8件は新信号0件の旧STOPとして残す。すでに固定されたA_SOURCEに含まれる不足module2件だけを配置し、caller/環境/ROUND/数値規則を変更していない。配置SOURCE/blobとguard証拠はDECLARED_DEPENDENCY_DEPLOYMENTを参照。新たな数値SOURCEをライブで選び直したり、旧8件を自動retryしたりしない。legacy descriptorの形式不一致とDF4件の保存template不足はclean SOURCE/接続での将来対応が残る。4件とも既存科学結果の回収ができると仮定しない（API前失敗）。現在の正常較正をchat終了のために中断しない。

@@ -1,0 +1,593 @@
+{
+  "schema": "H4_PR_MULTIWIDTH_LIVE_START_SNAPSHOT_V1",
+  "UTC": "2026-11-16T18:04:52.193350+00:00",
+  "host": "GPUA100-gleap02",
+  "integration_commit": "5829a7288d28395d2b3e89bfb676c23c690b9ddb",
+  "execution_implementation_commit": "7f1e267537f8a5aed76ea1447d7a5e82a678c314",
+  "initial_input_source": "b0257d78026ade89bb3ba61dc88634570039dae8",
+  "controller_pid": 32111,
+  "wrapper_pid": 32104,
+  "tmux_session": "h4-pr-width-r06",
+  "controller_alive": true,
+  "controller_cmdline": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python -B scripts/run_rpe_schedule_search.py --problem docs/research/h4_pr_multiwidth_optimization_20261117/PROBLEM.json --round docs/research/h4_pr_multiwidth_optimization_20261117/ROUND.json --run-dir docs/research/h4_pr_multiwidth_optimization_20261117/run01 --batch 64 --max-cycles 200 ",
+  "requested_scope": {
+    "PR_PAULI": [
+      0.1,
+      0.2
+    ],
+    "PR_DF": [
+      0.1,
+      0.05
+    ]
+  },
+  "Q3": {
+    "launched": 21,
+    "valid_outcomes": 17,
+    "statuses": {
+      "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD": 9,
+      "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD": 8
+    },
+    "launched_by_method": {
+      "PR_PAULI": 2,
+      "PR_DF": 19
+    },
+    "peak_active": 16,
+    "process_returns": {
+      "0": 17,
+      "1": 4
+    },
+    "pre_API_technical_failures": [
+      {
+        "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/8c5d1e61fcd61ed8e5d5",
+        "method": "PR_DF",
+        "returncode": 1,
+        "pre_API_template_failure": true,
+        "reason": "NO_SAVED_TEMPLATE_BEFORE_CASE_AND_SCIENTIFIC_API",
+        "retry": false
+      },
+      {
+        "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/d5d9b81aa27e0d8995ec",
+        "method": "PR_DF",
+        "returncode": 1,
+        "pre_API_template_failure": true,
+        "reason": "NO_SAVED_TEMPLATE_BEFORE_CASE_AND_SCIENTIFIC_API",
+        "retry": false
+      },
+      {
+        "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/dabcbd4e3ed004589aab",
+        "method": "PR_DF",
+        "returncode": 1,
+        "pre_API_template_failure": true,
+        "reason": "NO_SAVED_TEMPLATE_BEFORE_CASE_AND_SCIENTIFIC_API",
+        "retry": false
+      },
+      {
+        "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/58a493ba9c8a8acfe72b",
+        "method": "PR_DF",
+        "returncode": 1,
+        "pre_API_template_failure": true,
+        "reason": "NO_SAVED_TEMPLATE_BEFORE_CASE_AND_SCIENTIFIC_API",
+        "retry": false
+      }
+    ]
+  },
+  "DP_prefix": {
+    "events": {
+      "MISS": 14,
+      "SAVE": 31,
+      "HIT": 3
+    },
+    "Q3_jobs_with_hit": 3,
+    "speedup_unmeasured": true
+  },
+  "execution_profiles": [
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_PAULI/8b7c989861ea926fd3fe",
+      "method": "PR_PAULI",
+      "route": "pauli_b_common_entry",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_PAULI/b5f9b4bfce620713a538",
+      "method": "PR_PAULI",
+      "route": "pauli_b_common_entry",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/d999d38431b0d2673df9",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/8c5d1e61fcd61ed8e5d5",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/cdcaea9e6f89660e4397",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/d5d9b81aa27e0d8995ec",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/936d3a1f27d1696e9bec",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/dabcbd4e3ed004589aab",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/76249e3a15aa5d36c5cf",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/d642f2547e354f4cacd9",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/550cec81c5fbe632d59d",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/c580294d46226ff2d6fd",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/47aca9059c9f88c8d89f",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/52e728516f214c103834",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/58a493ba9c8a8acfe72b",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/99ecbaa68b07b0a9ab47",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/217af459c605ff957c8c",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/8878dea062c9c79cab2a",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/9d2d14562f3aed9e0413",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/63f79b5d2d04ec9c303b",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "job": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/jobs/PR_DF/911d52eb920fe9f4f33b",
+      "method": "PR_DF",
+      "route": "prdf_d2_split",
+      "profile": {
+        "dp_workers": 3,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/prefix_cache",
+        "prefix_checkpoint_rounds": [
+          5,
+          11
+        ]
+      }
+    }
+  ],
+  "held_candidates": [
+    {
+      "key": "41a046569f425c3f67ea",
+      "method": "PR_PAULI",
+      "design": {
+        "L_D": 5,
+        "formula": "2nd",
+        "K": 2,
+        "delta_pf": 0.1,
+        "kappa": "97"
+      },
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/41a046569f425c3f67ea/PAULI_SIGNALS.log",
+      "scientific_failure": true
+    },
+    {
+      "key": "3ac4704a3c5f4257199d",
+      "method": "PR_PAULI",
+      "design": {
+        "L_D": 1,
+        "formula": "2nd",
+        "K": 2,
+        "delta_pf": 0.2,
+        "kappa": "1/896"
+      },
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/3ac4704a3c5f4257199d/PAULI_SIGNALS.log",
+      "scientific_failure": true
+    },
+    {
+      "key": "f6eaddee46c97c33db57",
+      "method": "PR_PAULI",
+      "design": {
+        "L_D": 3,
+        "formula": "2nd",
+        "K": 2,
+        "delta_pf": 0.1,
+        "kappa": "1/28"
+      },
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/f6eaddee46c97c33db57/PAULI_SIGNALS.log",
+      "scientific_failure": true
+    },
+    {
+      "key": "9941c15e0d66f0d676f8",
+      "method": "PR_PAULI",
+      "design": {
+        "L_D": 1,
+        "formula": "2nd",
+        "K": 2,
+        "delta_pf": 0.1,
+        "kappa": "1/448"
+      },
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/9941c15e0d66f0d676f8/PAULI_SIGNALS.log",
+      "scientific_failure": true
+    },
+    {
+      "key": "dd7d0965c38ed39ca915",
+      "method": "PR_PAULI",
+      "design": {
+        "L_D": 4,
+        "formula": "2nd",
+        "K": 2,
+        "delta_pf": 0.1,
+        "kappa": "1"
+      },
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/dd7d0965c38ed39ca915/PAULI_SIGNALS.log",
+      "scientific_failure": true
+    },
+    {
+      "key": "035232b67c2bbd4a077f",
+      "method": "PR_PAULI",
+      "design": {
+        "L_D": 2,
+        "formula": "2nd",
+        "K": 2,
+        "delta_pf": 0.2,
+        "kappa": "1/346"
+      },
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/035232b67c2bbd4a077f/PAULI_SIGNALS.log",
+      "scientific_failure": true
+    },
+    {
+      "key": "f4629d1ae1d9f46743d0",
+      "method": "PR_PAULI",
+      "design": {
+        "L_D": 2,
+        "formula": "2nd",
+        "K": 2,
+        "delta_pf": 0.1,
+        "kappa": "1/173"
+      },
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/f4629d1ae1d9f46743d0/PAULI_SIGNALS.log",
+      "scientific_failure": true
+    },
+    {
+      "key": "c5c4fdeb2f1696a5ed95",
+      "method": "PR_PAULI",
+      "design": {
+        "L_D": 3,
+        "formula": "2nd",
+        "K": 2,
+        "delta_pf": 0.2,
+        "kappa": "1/55"
+      },
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/c5c4fdeb2f1696a5ed95/PAULI_SIGNALS.log",
+      "scientific_failure": true
+    }
+  ],
+  "latest_driver_events": [
+    {
+      "UTC": "2026-11-16T17:38:14Z",
+      "cycle": 1,
+      "event": "CANDIDATE_INPUTS_END",
+      "family": "PR_PAULI|LD4|2nd|delta=3602879701896397/36028797018963968|K2",
+      "kappa": "1",
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/dd7d0965c38ed39ca915/PAULI_SIGNALS.log",
+      "wall_seconds": 10.597708007087931
+    },
+    {
+      "UTC": "2026-11-16T17:38:14Z",
+      "cycle": 1,
+      "event": "CANDIDATE_INPUTS_START",
+      "family": "PR_PAULI|LD2|2nd|delta=3602879701896397/18014398509481984|K2",
+      "kappa": "1/346"
+    },
+    {
+      "UTC": "2026-11-16T17:38:25Z",
+      "cycle": 1,
+      "event": "CANDIDATE_INPUTS_END",
+      "family": "PR_PAULI|LD2|2nd|delta=3602879701896397/18014398509481984|K2",
+      "kappa": "1/346",
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/035232b67c2bbd4a077f/PAULI_SIGNALS.log",
+      "wall_seconds": 10.907255494967103
+    },
+    {
+      "UTC": "2026-11-16T17:38:25Z",
+      "cycle": 1,
+      "event": "CANDIDATE_INPUTS_START",
+      "family": "PR_PAULI|LD2|2nd|delta=3602879701896397/36028797018963968|K2",
+      "kappa": "1/173"
+    },
+    {
+      "UTC": "2026-11-16T17:38:35Z",
+      "cycle": 1,
+      "event": "CANDIDATE_INPUTS_END",
+      "family": "PR_PAULI|LD2|2nd|delta=3602879701896397/36028797018963968|K2",
+      "kappa": "1/173",
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/f4629d1ae1d9f46743d0/PAULI_SIGNALS.log",
+      "wall_seconds": 10.641339613124728
+    },
+    {
+      "UTC": "2026-11-16T17:38:35Z",
+      "cycle": 1,
+      "event": "CANDIDATE_INPUTS_START",
+      "family": "PR_PAULI|LD3|2nd|delta=3602879701896397/18014398509481984|K2",
+      "kappa": "1/55"
+    },
+    {
+      "UTC": "2026-11-16T17:38:46Z",
+      "cycle": 1,
+      "event": "CANDIDATE_INPUTS_END",
+      "family": "PR_PAULI|LD3|2nd|delta=3602879701896397/18014398509481984|K2",
+      "kappa": "1/55",
+      "status": "HELD_WITH_REASON",
+      "reason": "STAGE_FAILED:PAULI_SIGNALS:STOP_PLAN_FAILED:A_ENTRY_PLAN_FAILED:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/c5c4fdeb2f1696a5ed95/PAULI_SIGNALS.log",
+      "wall_seconds": 10.82060190406628
+    },
+    {
+      "UTC": "2026-11-16T17:38:46Z",
+      "cycle": 1,
+      "event": "CANDIDATE_INPUTS_START",
+      "family": "PR_DF|LD6|2nd|delta=3602879701896397/36028797018963968|K2",
+      "kappa": "151"
+    }
+  ],
+  "latest_completion_events": [
+    {
+      "epoch": 1794850760.1256464,
+      "event": "STAGE_RETURN",
+      "stage": "intake",
+      "returncode": 0,
+      "seconds": 2.055403232574463
+    },
+    {
+      "epoch": 1794850760.1673992,
+      "event": "STAGE_START",
+      "stage": "DF_PRICE_GROUPS",
+      "science": false,
+      "directory": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/ac1c5805547ee8751d02"
+    },
+    {
+      "epoch": 1794850760.3847725,
+      "event": "STAGE_RETURN",
+      "stage": "DF_PRICE_GROUPS",
+      "returncode": 0,
+      "seconds": 0.21726322174072266
+    },
+    {
+      "epoch": 1794850760.3893056,
+      "event": "STAGE_START",
+      "stage": "DF_PRICE_PREPARE",
+      "science": false,
+      "directory": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/ac1c5805547ee8751d02/df_price_groups/ccb1d1a4aae33c0b3f03"
+    },
+    {
+      "epoch": 1794850763.3641179,
+      "event": "STAGE_RETURN",
+      "stage": "DF_PRICE_PREPARE",
+      "returncode": 0,
+      "seconds": 2.9747040271759033
+    },
+    {
+      "epoch": 1794850763.723451,
+      "event": "STAGE_START",
+      "stage": "DF_CALIBRATION",
+      "science": true,
+      "directory": "docs/research/h4_pr_multiwidth_optimization_20261117/run01/completion/candidates/ac1c5805547ee8751d02/df_price_groups/ccb1d1a4aae33c0b3f03"
+    }
+  ],
+  "semantic_note": "PASS/EXCEEDS are individual allocation model-MSE outcomes; no width/split infeasibility or final winner inferred. Scientific final aggregation remains pending.",
+  "deployment_repair": "DECLARED_DEPENDENCY_DEPLOYMENT.json",
+  "remaining_technical_gaps": [
+    "Legacy composite Pauli descriptor forwarding needs future clean bridge SOURCE; old8HELD not retried.",
+    "Four PR_DF wrapper starts lack saved case template; no scientific API reached; no retry."
+  ],
+  "final_costs_not_yet_aggregated": true
+}
