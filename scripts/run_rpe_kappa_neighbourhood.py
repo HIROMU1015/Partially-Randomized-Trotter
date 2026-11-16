@@ -134,10 +134,14 @@ class Driver:
                  'Publish PR-Pauli absolute-kappa configurations (cycle %d): %s [skip ci]\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>'
                  % (self.state['cycle'], ', '.join(p['name'] for p in todo)), check=False)  # unchanged files on a resumed cycle
         src = self.git('rev-parse', 'HEAD')
-        for p in todo:  # plan (metadata only)
+        for p in todo:  # plan (metadata only); a resumed cycle writes its plan next to the earlier one
+            k = 1
+            while (base / 'plans' / p['name'] / ('attempt%02d' % k) / 'PLAN.json').exists():
+                k += 1
+            pdir = rel('plans', p['name'], 'attempt%02d' % k)
             code = self.entry('--plan', '--config', rel('configurations', p['name'] + '.json'), '--saved-packets', str(packets_file),
-                              '--out', rel('plans', p['name']), log=base / 'logs' / (p['name'] + '.plan.log'))
-            plan = json.loads((base / 'plans' / p['name'] / 'PLAN.json').read_text()) if code == 0 else {}
+                              '--out', pdir, log=base / 'logs' / (p['name'] + '.plan%02d.log' % k))
+            plan = json.loads((self.wt / pdir / 'PLAN.json').read_text()) if code == 0 else {}
             p['signal_plan'] = dict(counts=plan.get('counts'), request_rounds=plan.get('request_rounds'), unsupported_rounds=plan.get('unsupported_rounds'),
                                     reuse_rounds=plan.get('reuse_rounds'), rebind_rounds=plan.get('rebind_rounds'), plan_returncode=code)
             if code != 0 or plan.get('unsupported_rounds') or plan.get('configuration_reasons'):
