@@ -84,6 +84,8 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(row['preparation_status'], 'REUSED_CONFIGURATION', row.get('error'))
         self.assertEqual(row['configuration_id'], '23ec179150682e0af256fc7c7bfcdf6f39af772f62418d6b45326afd5da1b2a8')
         self.assertEqual(row['configuration'], saved.read(row['configuration_source']))
+        self.assertEqual(row['status'], 'GENERATED')
+        self.assertEqual(row['structure'], A.generator(str(ROOT))[1].structure_checks(row['configuration'])[1])
         self.assertEqual(row['dictionary_identity'], saved.baselines[3][0]['spec']['split']['tail_dictionary'])
         self.assertEqual(row['signal_plan']['reuse_rounds'], list(range(13)))
         self.assertEqual(row['signal_plan']['request_rounds'], [])

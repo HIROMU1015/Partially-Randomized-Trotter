@@ -42,7 +42,9 @@ def generator(root):
     source = E.p0.blob(root, B2, GENERATOR)
     scope = dict(__name__='fixed_b2_config_generator', __file__=str(root/GENERATOR))
     exec(compile(source, B2+':'+GENERATOR, 'exec'), scope)
-    return scope['generator']('pauli_native', root)
+    b, build = scope['generator']('pauli_native', root)
+    build.structure_checks = scope['structure_checks']
+    return b, build
 
 
 class Assets:
@@ -351,6 +353,9 @@ def prepare_item(assets, item, *, materialize=None):
         if base['spec']['split']['tail_dictionary'] != E.L.dictionary_identity(dictionary):
             raise ValueError('BASE_DICTIONARY_DIFFERS')
         config = changed_configuration(assets, base, changes)
+        structure_ok, structure = generator(str(assets.root))[1].structure_checks(config)
+        if not structure_ok:
+            raise ValueError('B2_STRUCTURE_CHECK_FAILED')
         if item.get('configuration_id') is not None and not changes and item['configuration_id'] != config['id']:
             raise ValueError('REQUESTED_CONFIGURATION_ID_DIFFERS')
         hits = [(c, loc) for c, loc in assets.configurations if c['id'] == config['id']]
@@ -382,6 +387,7 @@ def prepare_item(assets, item, *, materialize=None):
         out.update(status='GENERATED', preparation_status=resolution,
                    kind='pauli_native', base=deepcopy(item.get('base')), changes=deepcopy(changes),
                    base_reproduced=True, identical_to_base=config == base, supported_formulas=list(FORMULAS),
+                   structure=structure,
                    descriptor=descriptor, dictionary_source=dictionary['source'], dictionary_identity=E.L.dictionary_identity(dictionary),
                    lambda_P=dictionary['payload']['lambda_P'], lambda_DF=descriptor['descriptor']['lambda_R'],
                    configuration=config, configuration_id=config['id'], configuration_source=locator, schedule=rows,
