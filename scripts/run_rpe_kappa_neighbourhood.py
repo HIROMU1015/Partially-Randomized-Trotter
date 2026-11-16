@@ -132,7 +132,7 @@ class Driver:
         self.git('add', '--sparse', rel('configurations'), rel('logs'))
         self.git('-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp', '-c', 'core.hooksPath=/dev/null', 'commit', '-q', '-m',
                  'Publish PR-Pauli absolute-kappa configurations (cycle %d): %s [skip ci]\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>'
-                 % (self.state['cycle'], ', '.join(p['name'] for p in todo)))
+                 % (self.state['cycle'], ', '.join(p['name'] for p in todo)), check=False)  # unchanged files on a resumed cycle
         src = self.git('rev-parse', 'HEAD')
         for p in todo:  # plan (metadata only)
             code = self.entry('--plan', '--config', rel('configurations', p['name'] + '.json'), '--saved-packets', str(packets_file),
@@ -146,6 +146,11 @@ class Driver:
 
         def execute(p):
             t = time.time()
+            done = base / 'runs' / p['name'] / 'run01' / 'result.json'
+            if done.exists():  # completed by an earlier attempt: reuse it (and its SOURCE), no new mean
+                p['signal_source'] = json.loads(done.read_text())['scientific_source'];p['signal_execute_reused'] = True
+                return p, 0, 0.0
+            p['signal_source'] = src
             code = self.entry('--execute', '--approve-new-means', '--source', src, '--config', rel('configurations', p['name'] + '.json'),
                               '--saved-packets', str(packets_file), '--out', rel('runs', p['name'], 'run01'),
                               log=base / 'logs' / (p['name'] + '.execute.log'))
@@ -161,8 +166,12 @@ class Driver:
                  % self.state['cycle'], check=False)
         raw = self.git('rev-parse', 'HEAD');todo = [p for p in todo if p['status'] == 'PREPARED']
         for p in todo:
+            stale = base / 'packets' / p['name']
+            if stale.exists() and not (stale / 'MEAN_HANDOFF.json').exists() and not any(stale.iterdir()):
+                stale.rmdir()  # empty directory left by a failed assemble
             code = self.entry('--assemble', '--config', rel('configurations', p['name'] + '.json'), '--saved-packets', str(packets_file),
-                              '--source', src, '--raw-commit', raw, '--run-dir', rel('runs', p['name'], 'run01'), '--out', rel('packets', p['name']),
+                              '--source', p.get('signal_source', src), '--raw-commit', raw, '--run-dir', rel('runs', p['name'], 'run01') + '/',
+                              '--out', rel('packets', p['name']),
                               log=base / 'logs' / (p['name'] + '.assemble.log'))
             if code != 0:
                 p.update(status='HELD', reason='SIGNAL_ASSEMBLE_INCOMPLETE:see logs/%s.assemble.log' % p['name'])
