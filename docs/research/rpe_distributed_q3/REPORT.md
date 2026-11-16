@@ -1,12 +1,14 @@
 # 分散Q3実装と固定SOURCE人工検収
 
 2026-11-17 JST。固定基点 `5829a7288d28395d2b3e89bfb676c23c690b9ddb`、
-採用実装SOURCE **`4ae47cf4844638647c83ea898ee53588675b0d75`**。
+計算SOURCE（controller/worker） **`4ae47cf4844638647c83ea898ee53588675b0d75`**。
+local0 relay・配置helperの補正SOURCEは
+**`25575ce0f3b43396144c768e9f7dab7dc193beab`**。
 公開branchは `codex/rpe-distributed-q3-coordinator`。
 起動・停止・再開・接続設定は [HANDOFF](HANDOFF.md)、
 数値の小記録は [PUBLIC_ACCEPTANCE.json](checks/PUBLIC_ACCEPTANCE.json)。
 
-local0のWindows PowerShell/cmd対応を反映した4aeを統合SOURCEとした。
+4aeを計算SOURCEとし、local0 relayのWindows補正SOURCEを別に管理する。
 旧716のLinux人工検収は [716参考記録](checks/PUBLIC_ACCEPTANCE_71667549e.json)
 として保全した。以下は固定4aeのfresh runで取り直した採用記録。
 
@@ -114,7 +116,7 @@ controller終了codeは−9。detached workerは完了し、
 ## DPと検証範囲
 
 固定4aeの人工unitは29件PASS（22＋7、[UNIT_TESTS](checks/UNIT_TESTS_4ae47cf48.log)）。
-通常入口の回帰29件もPASS（[回帰log](checks/REGRESSION_TESTS_4ae47cf48.log)）。Windows固有分岐の人工検査3件とLinux relay検査2件は
+通常入口の回帰29件もPASS（[回帰log](checks/REGRESSION_TESTS_4ae47cf48.log)）。初版4ae時点のWindows固有分岐の人工検査3件とLinux relay検査2件は
 [ZIP記録](checks/LOCAL0_ZIP.json) に記載した。Windows native実行はlocal0待ちで、
 これらの人工分岐検査をWindows実機検収と扱わない。
 既存prefix-cache回帰10件と通常CLI人工DPの2件もPASS
@@ -152,6 +154,31 @@ PYTHONDONTWRITEBYTECODE=1 \
 そのrun、中間89f51a4feと716の検収記録は保全し、固定4aeの受入値に混ぜていない。
 この人工開発時の停止と、実機参加がまだない状態を区別する。
 
+## Windows実機でのterminal多重発生とrelay補正
+
+local0で初版ZIPを起動すると大量のterminalが開き、利用者がSTOP fileによる
+停止を確認した。親relayのdaemon起動を隠す設定に加え、SSH mailbox用の
+`subprocess.run` とtunnel用の `Popen` にも `CREATE_NO_WINDOW` を渡す必要があった。
+補正版は両経路へ適用し、起動直後の `stopped=false` と初期heartbeatも保存する。
+後者はlocal担当4058の再開時表示修正を再利用した。
+固定25575ce0fのrelay人工検査7件とhelperのfake SSH/一時Git repository検査3件がPASS
+（[補正検査log](checks/RELAY_CORRECTION_TESTS.log)）。
+補正ZIPのstatus/help smokeもPASSした。科学worker/controllerのSOURCE4aeは変更していない。
+Windows実機で余分なterminalが出ないことは、補正版の再開時に確認する。
+
+提供logはrelay PID34652の `stopped=true`、server1の固定4ae worker rootへの
+`No such file` を示した。qg1のPythonには到達したが専用checkoutが未配置である。
+TUNNEL.logが空であることから、tunnel接続成功を認定しない。
+計算SOURCE4ae、controller PID97835、人工runのSOURCE/入力/DBは変更せず、
+新規Q3起動0件を維持した。稼働中の実H4探索にも影響を与えていない。
+
+補正ZIPはSOURCE.txt=25575ce0f、COMPUTATION_SOURCE.txt=4aeとし、
+server1 profileと初回配置helperを同梱した。
+[補正ZIP記録](checks/LOCAL0_ZIP.json) と [再開手順](HANDOFF.md) を参照する。
+利用者がlocal0からhelperを明示実行すると、qg1の既存repositoryをfetchし、
+固定4aeの専用detached worktreeとprofileを設置してmailbox statusを確認する。
+既存root branchや旧結果を変更せず、relayを再開する前に配置不足を解消する。
+
 ## 実機統合の現在地
 
 716の待機controller PID73114は科学Q3起動0件のまま停止し、SOURCE・入力・DBを保全した。
@@ -162,10 +189,12 @@ server1用固定worktree/profileとlocal0用relay設定・4操作を公開した
 [待機状態の記録](checks/REAL_TWO_HOST_STATUS.json) に起動0件を残した。
 server1担当の `d8ee4efe4` は旧89 SOURCEのmailbox statusと単体人工jobの準備記録で、
 実機参加前に4aeの専用checkout/profileへ更新する必要がある。
-local0でrelayが実行され、server1上の専用profileが配置されたことは未確認。
+local0のrelayは一度実行され、terminal多重発生によりSTOP fileで停止した。
+server1専用checkoutの配置不足を確認しており、補正版helperでの配置とrelay再開は未確認。
 
-計算用ローカル担当の `a7d39a6` はLinuxでの準備記録で、
-Windows/WSL実機・接続経路・3台目参加を完了したものではない。
+計算用ローカル担当の `4058b48d` は、利用者確認のlocal0→RomuTail aliasと
+既存Linuxのworker配置を記録した。実際のSSH接続計測と3台目参加は未完了。
+local固有のhost DP上書き拡張は今回統合せず、controller指定DPを使う。
 実2台で両hostの結果採用→次候補のserver1再配送→切断回収を確認し、
 次に新しい専用runで計算用ローカルを加える。
 実際に通った構成・host別件数・待ち/転送/全体時間は、その受入後に追記する。

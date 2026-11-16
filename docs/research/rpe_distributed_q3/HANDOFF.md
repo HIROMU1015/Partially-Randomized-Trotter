@@ -2,9 +2,14 @@
 
 2026-11-17 JST。公開branchは `codex/rpe-distributed-q3-coordinator`。
 固定基点は `5829a7288d28395d2b3e89bfb676c23c690b9ddb`、
-**実行SOURCEは `4ae47cf4844638647c83ea898ee53588675b0d75`**。
-文書更新後もworkerとcontrollerはこのSHAの専用checkoutを使う。
-local0のWindows PowerShell/cmdに対応した固定SOURCEで運用する。
+**計算SOURCE（controller/worker）は `4ae47cf4844638647c83ea898ee53588675b0d75`**。
+**local0 relay・配置helperの補正SOURCEは
+`25575ce0f3b43396144c768e9f7dab7dc193beab`**。計算SOURCEを変更せず、
+transport補正だけをZIPで配布する。
+文書更新後もworkerとcontrollerは計算SOURCE4aeの専用checkoutを使う。
+計算SOURCEとlocal0 transportの補正SOURCEを区別して記録する。
+local0では初回relayが大量terminalを開いたためSTOP fileで停止済み。
+補正版でserver1専用checkoutを準備してから再開し、Windows実機での抑止を確認する。
 旧716の待機runはQ3起動0件のまま停止して保全し、4aeの専用runへ分離した。
 [REPORT](REPORT.md)／[公開人工検収記録](checks/PUBLIC_ACCEPTANCE.json)。
 
@@ -111,23 +116,26 @@ mailboxはrelayの要求ごとに起動し、`submit` が1回限りのsupervisor
 `status` は保存assignmentの照合・未開始assignmentの開始・完了成果物の回収準備を行う。
 新しい候補を自分で選んだり、新しいjob IDを作ったりしない。
 
-## local0（Windows PowerShell/cmd）：ZIP配置と4操作
+## local0（Windows PowerShell/cmd）：補正ZIP・server1準備・再開
 
-利用者確認によりlocal0はWindows PowerShell/cmd環境。
-Windows対応の固定4ae実装と `relay.json` を `LOCAL0_RELAY.zip` で配布する。
-取得先は下記の共通branch checkout。旧716のLinux人工記録は参考として保持する。
-このサーバー2環境からlocal0へアクセスする経路は確認できないため、
-以下はlocal0で実行する。cmdの場合は `powershell` を起動して同じコマンドを使う。
+初回の大量terminal発生後、利用者がSTOP fileで旧relayの `stopped=true` を確認済み。
+受信済みQ3は0件で、controller/workerの計算SOURCE4aeと専用runはそのまま保持する。
+**同じhome・同じrelay stateへ補正ZIPを展開し、server1配置helperの成功後だけ再開する。**
+cmdの場合は `powershell` を起動し、以下を実行する。
 
-ZIPには固定SOURCEのrelay本体、`src/trottertracks/__init__.py`、
-coordinator helper、`relay.json`、`SOURCE.txt` と操作説明が入る。
-[配布ZIP記録](checks/LOCAL0_ZIP.json) は固定SOURCEとzip SHA-256を記載し、
-Windows native実行が未検収であることも保持する。local0に既存のPython 3 launcher `py -3`、
-OpenSSHの `ssh` / `scp` とalias `qg1` / `qg2` を使う。
-WSLやBashを追加する操作、鍵・認証情報の複製は行わない。
+補正ZIPはrelay/helper SOURCE25575ce0f、controller/worker SOURCE4aeの組合せ。
+`SOURCE.txt` と `COMPUTATION_SOURCE.txt` に両者を記載した。
+同梱物はrelay本体、`setup_rpe_q3_mailbox.py`、coordinator helper、
+`relay.json`、`server1.profile.json`、操作説明。
+[ZIPと検査の記録](checks/LOCAL0_ZIP.json) を参照する。
+新しいSSH windowを作らない分岐は人工検査済みで、Windows nativeでの抑止確認は再開待ち。
+
+以下はlocal0の既存Python 3 launcher `py -3`、OpenSSH `ssh` / `scp` と
+alias `qg1` / `qg2` を使う。このサーバー2環境からlocal0への実行経路はない。
+WSLやBashを追加せず、鍵・認証情報も複製しない。
 
 ```powershell
-# local0：Windows対応の固定SOURCE ZIPを専用directoryへ取得
+# local0：旧relayはSTOP済み。同じhomeへ補正ZIPを取得・展開する。
 $RpeRelayHome = Join-Path $env:USERPROFILE 'rpe-q3-relay-4ae47cf48'
 New-Item -ItemType Directory -Force -Path $RpeRelayHome | Out-Null
 $RpeRelayZip = Join-Path $RpeRelayHome 'relay.zip'
@@ -135,54 +143,79 @@ scp 'qg2:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-dis
 if ($LASTEXITCODE -ne 0) { throw 'Relay ZIP download failed' }
 Expand-Archive -LiteralPath $RpeRelayZip -DestinationPath $RpeRelayHome -Force
 $RpeRelayScript = Join-Path $RpeRelayHome 'scripts\run_rpe_q3_relay.py'
+$RpeRelaySetup = Join-Path $RpeRelayHome 'scripts\setup_rpe_q3_mailbox.py'
 $RpeRelayConfig = Join-Path $RpeRelayHome 'relay.json'
+$RpeServer1Profile = Join-Path $RpeRelayHome 'server1.profile.json'
 
-# 開始：qg2 tunnelとqg1 mailbox配送
+# 明示した初回配置：qg1でfetch、専用4ae worktree/profile配置、mailbox status確認。
+# helperはok=trueのときだけ終了code0を返す。失敗時はrelayを起動しない。
+py -3 -B $RpeRelaySetup --config $RpeRelayConfig --profile $RpeServer1Profile --source 4ae47cf4844638647c83ea898ee53588675b0d75
+if ($LASTEXITCODE -eq 0) {
+    py -3 -B $RpeRelayScript --config $RpeRelayConfig --start
+    Start-Sleep -Seconds 2
+    py -3 -B $RpeRelayScript --config $RpeRelayConfig --status
+} else {
+    throw 'Server1 mailbox setup failed; relay was not restarted'
+}
+```
+
+helperはqg1の既存正本repositoryをfetchし、専用detached worker viewとprofileを
+作成または同一内容で再利用する。既存正本のbranchを切り替えず、他SOURCEや
+変更済みview/profileを上書きしない。初回の専用spoolが空である状態でmailbox statusを
+確認し、科学的な新候補を選ばず、relayも自動では起動しない。
+setupの `ok=true` / `source=4ae...` を確認してから上の条件分岐で再開する。
+
+以降の4操作は同じ設定・stateを使う。
+
+```powershell
+# 開始・再接続：保存STOPを消し、qg2 tunnelとqg1配送を開始
 py -3 -B $RpeRelayScript --config $RpeRelayConfig --start
-# 状態確認：host別の最終成功・error・heartbeat age
+# 状態：stopped=false、初期heartbeatとhost別error/最終成功を確認
 py -3 -B $RpeRelayScript --config $RpeRelayConfig --status
 # 停止：relay/tunnelだけを止める。受信済みQ3は継続する。
 py -3 -B $RpeRelayScript --config $RpeRelayConfig --stop
-# --statusでstoppedを確認し、同じ設定・state directoryで再接続
+# --statusでstopped=trueを確認し、同じ設定・stateで再接続
 py -3 -B $RpeRelayScript --config $RpeRelayConfig --start
 ```
 
-relay設定はqg2の8763をlocal0の18763へ転送し、qg1上の同じ固定SHAのworkerと
-profileを使う。state directoryはZIP同梱 `relay.json` を参照する。
-`STATUS.json`、`EVENTS.jsonl`、配送intent、tunnel logを保持し、
-切断してもjob/attemptを作り直さない。
-途中で完了したserver1の結果は、再開時の `status` → controller受理 → `ack` で回収する。
-受信済みjobの子processをrelay停止でkillしない。
-Windows実機でのrelay起動・SSH配送が通った事実は、実機検収後に追記する。
+relay設定はqg2の8763をlocal0の18763へ転送し、qg1上の固定4ae workerとprofileを使う。
+state directoryは同梱 `relay.json` を参照する。既存 `STATUS.json`、`EVENTS.jsonl`、
+配送intent・STOP以外の保存状態・tunnel logを保持し、job/attemptを作り直さない。
+切断中に完了したserver1の結果は、再開時の `status` → controller受理 → `ack` で回収する。
+補正版が `stopped=false` を先に保存するため、起動直後の古い停止表示を避ける。
+Windows nativeの余分なterminal抑止、server1配置、実SSH配送は利用者の再開後に受入する。
 
-## 計算用ローカル：3台目は接続確認後に参加
+## 計算用ローカルRomuTail：2台受入後に参加
 
-local担当の `codex/rpe-distributed-q3-local`／`a7d39a6` の
-`docs/research/rpe_distributed_q3/hosts/local/HANDOFF.md` はLinux上の準備記録。
-Windows/WSL実機へのアクセスと、計算用ローカル→サーバー2/local0の経路は未確認である。
-その環境ではqg1/qg2 aliasも利用確認されていない。local0のaliasを計算用ローカルへ
-引き継いだ扱いにはせず、実3台検収は未完了とする。
+local担当の `codex/rpe-distributed-q3-local`／`4058b48d5935b949929f093381447336ac86714d`
+は、利用者確認の **local0 → RomuTail** を記載している。
+その実際のSSH接続計測は当セッションから行えておらず、3台での採用検収も未実施。
+local0のqg1/qg2 aliasを計算用ローカルへ引き継ぐ必要はなく、local0からmailbox relayする。
 
-固定4ae47cf48の専用checkout、絶対pathのPython、`host_id=local` の専用profile/spool/cacheを準備し、
-到達可能なcontroller URLを既存経路で確認した後に、正式worker CLIを使う。
+RomuTailの既知Linux配置は
+`/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local`、
+Pythonは `/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python`。
+local担当の現在の固定worker viewは旧89なので、参加前に計算SOURCE4aeの専用viewへ更新する。
+今回、local branchのhost DP上書き拡張は統合していない。
+workerのDP数はcontrollerの `execution_profile.dp_workers` を継承する。
+
+固定4aeの専用worker viewと `host_id=local` のprofile/spool/cacheをlocal担当が準備し、
+新しい3台用人工runでlocal0のrelay設定にRomuTail mailboxを加える。
+local0の開始・状態・停止・再接続は同じ4操作を使い、RomuTail自身からqg2へ接続しない。
+新規3台用設定のremote root/profile絶対pathは、local担当が4aeへの更新後に確定する。
 
 ```bash
-# 計算用ローカル：各変数はその実機で確認した絶対path/URL。
+# RomuTail：固定viewとprofileを配置した後の状態確認。
+# 各変数はlocal担当がそのLinux実機で確認した絶対path。
 "$RPE_LOCAL_PYTHON" -B "$RPE_LOCAL_ROOT/scripts/run_rpe_q3_worker.py" \
-  --profile "$RPE_LOCAL_PROFILE" --controller "$RPE_CONTROLLER_URL"
-
-# 受付停止：上のforeground workerへCtrl-C。取得済みjobの完了・転送を待つ。
-# 再接続：同じprofile/spool/cacheで同じコマンドを実行。
-# 回収だけ：新規取得を行わず保存attemptを照合して転送する。
-"$RPE_LOCAL_PYTHON" -B "$RPE_LOCAL_ROOT/scripts/run_rpe_q3_worker.py" \
-  --profile "$RPE_LOCAL_PROFILE" --controller "$RPE_CONTROLLER_URL" --drain
+  --profile "$RPE_LOCAL_PROFILE" --mailbox status </dev/null
 ```
 
-HTTP workerをCtrl-C/SIGTERMで止めると新規取得を止め、保存attemptをdrainする。
-通信が切れている間は未転送結果を保持して再接続を待つため、停止の完了が遅れることがある。
-`--once` は1回の取得pollの後にdrainする。接続断をjobの停止や再実行の根拠にしない。
+停止はlocal0のrelayを `--stop` し、受信済みjobはRomuTail内で完了・保存させる。
+再開は同じhost ID/profile/spool/cacheとrelay stateで `--start` し、未転送結果を回収する。
 3台目用の新しい専用人工runではtotal slot・required_hostsをその構成に設定する。
-既に待機中の2台runのSOURCE・round・科学予算を書き換えない。
+待機中の2台runのSOURCE・round・科学予算を書き換えない。
+HTTP直結workerの `--drain` 等は既存CLIとして保持するが、今回の実機接続はmailboxを使う。
 
 ## 固定入力・ID・永続状態
 
