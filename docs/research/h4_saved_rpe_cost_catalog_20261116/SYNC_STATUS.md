@@ -32,5 +32,6 @@
 |`8dba096dc:docs/research/pf_shortlist_q3_fixed_results_20261115/SUMMARY.json`|Unsupported saved schema; needs consumer adapter, not scientific rerun|
 |`a82b0f0ec:docs/research/pr_df_fullh_q3_fixed_results_20261115/C_RESULT_JOIN.json`|ValueError: Unsupported saved index schema: a82b0f0ec7f0f11d9981ddb2343fcd5378a87503:docs/research/pr_df_fullh_q3_fixed_results_20261115/SUMMARY.json|
 |`a82b0f0ec:docs/research/pr_df_fullh_q3_fixed_results_20261115/SUMMARY.json`|Unsupported saved schema; needs consumer adapter, not scientific rerun|
+|`d7a976a62:docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01/ROUND_RESULT.json`|ROUND_RESULT selected allocation lacks matching public OUTCOME/hash/price binding; configuration-only match rejected. A later KAPPA_ABS_RESULTS/best_points selection is admitted separately; no job started|
 
 未対応schema/結合不足は保存し、他の取込みを止めない。新科学計算の承認・採択・旧STOPは変更しない。

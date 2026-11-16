@@ -7,7 +7,7 @@
 |---|---|---|---:|---|
 |FULL_PF|M5 / 10|16h|480,258,064.00|6531de11e60718dc79f7c12f|
 |TRUNCATED_PF|Yoshida4 / 7|32h/5|372,035,410.00|bfc0c1081b78c5adcb12b43b|
-|PR_PAULI|S2 / 5|1h|410,470,823.86|b267c5f55fbe9a4bce945a06|
+|PR_PAULI|S2 / 5|1h|410,199,237.00|b36673acc8bb5d916b6b658b|
 |PR_DF|S2 / 7|1h|1,235,340,731.91|ab1d8980b9d136b73e43b0f3|
 |FULL_H|pure RTE / 0|—|1,246,382,808,920.55|62aee6d389d5ebd3045509b0|
 
@@ -17,9 +17,12 @@
 |---|---:|---:|
 |FULL_PF|0.00|108,222,654.00|
 |TRUNCATED_PF|-108,222,654.00|0.00|
-|PR_PAULI|-69,787,240.14|38,435,413.86|
+|PR_PAULI|-70,058,827.00|38,163,827.00|
 |PR_DF|755,082,667.91|863,305,321.91|
 |FULL_H|1,245,902,550,856.55|1,246,010,773,510.55|
+
+PR_PAULI_KAPPA_ABSOLUTE_2：501,233,190.43 RZ（絶対κ=2限定。元κの倍率×2や方式全体の最安とは別）。
+point ID：fe8b73742b890af3820ca6f9。
 
 LD5_KAPPA_X2_INTERRUPTED_BEST：探索方針変更による途中終了（INTERRUPTED_SEARCH_POLICY_CHANGE）。収束値ではない。
 κ絶対値=26225228882306721296844821347007773673162352858535179072118456320/539496659426909122096437389293855970805348475396548904610992201、元κ倍率=2。
@@ -79,6 +82,8 @@ exact MSE上下界は公開hashと一致した最安点1件のOUTCOMEを保持�
 |LD5__VP|PR_PAULI|5|2nd|適合|872,241,518.14|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9]|
 |FULL_PF_OPTIMIZER_4th(m5_best)_16h|FULL_PF|10|4th(m5_best)|適合|480,258,064.00|[20, 25, 26, 24, 16, 20, 17, 15, 12, 11, 8, 7, 2] / [20, 25, 26, 24, 16, 20, 17, 15, 12, 11, 8, 7, 2]|
 |LD5_KAPPA_X2_INTERRUPTED_BEST|PR_PAULI|5|2nd|適合|410,470,823.86|[48, 45, 42, 39, 24, 27, 14, 20, 16, 16, 8, 7, 2] / [48, 45, 42, 39, 24, 27, 14, 20, 16, 16, 8, 7, 2]|
+|LD5_S2_delta_h_kappa_x2__edd63e0befd3af591809|PR_PAULI|5|2nd|適合|410,199,237.00|[48, 45, 42, 39, 22, 27, 14, 20, 16, 16, 8, 7, 2] / [48, 45, 42, 39, 22, 27, 14, 20, 16, 16, 8, 7, 2]|
+|LD5_S2_delta_h_kappa_abs_2__e3cb2cfda719117d6222|PR_PAULI|5|2nd|適合|501,233,190.43|[48, 45, 42, 39, 36, 32, 14, 21, 17, 14, 7, 7, 5] / [48, 45, 42, 39, 36, 32, 14, 21, 17, 14, 7, 7, 5]|
 
 重複除去：7件。詳細・固定SOURCE・26軸の価格対応はCATALOG.jsonを参照。
 Q3適合・価格待ちは費用nullで選択対象外。信号だけの旧状態はsignal_only_historyへ保持する。
@@ -176,6 +181,9 @@ PRの事前固定予算・旧PF基準はhistorical_*に元SOURCEとともに保�
 - `93ab9dbbe610d66eba39ea9299b070a13a867a3e:docs/research/p7_s2_m12_two_results_20261116/SUMMARY.json`
 - `b4296b110b129d226dbef2743c14f725a27c3bf6:docs/research/pf6_cost_budget_q3_results_20261115/C_RESULT_JOIN.json`
 - `8ec7c882806809460d38a638a891bafcf18fafd1:docs/research/d_pr_df_ld_split_q3_resume_20261116/C_HANDOFF.json`
+- `d7a976a629a6db68197b24f8f86734e109c8bf5d:docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/KAPPA_ABS_RESULTS.json`
+- `d7a976a629a6db68197b24f8f86734e109c8bf5d:docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/best_points/LD5_kappa_x2_edd63e0befd3af591809/REQUEST.json`
+- `d7a976a629a6db68197b24f8f86734e109c8bf5d:docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/best_points/LD5_kappa2_e3cb2cfda719117d6222/REQUEST.json`
 
 PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。
 
