@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 PF方式別探索：Full PF完了・p7継続中](docs/research/h4_pf_optimizer_search_20261116/REPORT.md)／[C・B2向けHANDOFF](docs/research/h4_pf_optimizer_search_20261116/HANDOFF.md)：固定53bb0a1d7でFull PF 244新Q3、適合23/不適合221。M5・16h・480,258,064 RZへ探索内最安を更新。原API/partials/資源を全件保存。入力ready3/不足17、価格資格と十分N/G null保全。p7は別runで実行中。
+
 [A共通Pauli入口・新旧SOURCEの受入](docs/research/pauli_entry_source_update_20261116/REPORT.md)／[B2向けHANDOFF](docs/research/pauli_entry_source_update_20261116/HANDOFF.md)：4e5b8bef6/93a5ef3b9両版を通常intakeで判別・保全。21技術test PASS。厳密ΔPF=1/5のA provider未対応とC価格UNKNOWNを分離、Pauli実signal/compile/Q3 0件。
 
 [A共通PR-Pauli packetの通常intake](docs/research/pauli_common_entry_intake_20261116/REPORT.md)／[B2向け固定入口](docs/research/pauli_common_entry_intake_20261116/HANDOFF.md)：A固定SOURCEの組立てcodeで受け入れ、κ/ΔPF/LDごとのSOURCE追加を不要化。保存4構成一致、変更構成は人工のみ、31技術test PASS。Cのexact-step価格guardは保全、実signal/compile/Q3各0。
