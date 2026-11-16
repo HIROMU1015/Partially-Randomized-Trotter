@@ -1,0 +1,599 @@
+{
+  "schema": "SAVED_PR_PRICE_RULE_REGISTRY_V1",
+  "entries": [
+    {
+      "name": "DF_LD1",
+      "configuration_source": {
+        "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+        "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+        "selector": []
+      },
+      "implementation": {
+        "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+        "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+        "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+        "contract_source": {
+          "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+          "path": "src/trottertracks/p2_direct_pilot.py"
+        }
+      },
+      "price_source": {
+        "commit": "85dab58d6d29d54502a7650c129bc38a9bb5ec99",
+        "path": "docs/research/d_pr_df_ld1_reference_budget_20261115/run01/RESULT.json",
+        "selector": []
+      },
+      "model_source": {
+        "commit": "3cac53da1a4a8b2228245593c74c1ff9ec1f5212",
+        "path": "docs/research/pr_df_ld1_residual_freeze_20261115/run01/FROZEN_MODELS.json",
+        "selector": []
+      },
+      "mode": "SAVED_STRUCTURAL_PLUS_RESIDUAL",
+      "calibration_domain": {
+        "q": [
+          1,
+          64
+        ],
+        "R": [
+          2,
+          128
+        ]
+      },
+      "direct_sources": [
+        {
+          "source": {
+            "commit": "063f2b3b6ea271a179a469be91252fa4e5a7d096",
+            "path": "docs/research/d_pr_df_ld1_m4_holdout_results_20261115/COMPARISON.json",
+            "selector": [
+              "units"
+            ]
+          },
+          "value_key": "O",
+          "role": "INDEPENDENT_HOLDOUT",
+          "receipt_source": {
+            "commit": "063f2b3b6ea271a179a469be91252fa4e5a7d096",
+            "path": "docs/research/d_pr_df_ld1_m4_holdout_results_20261115/COMPARISON.json",
+            "selector": [
+              "units"
+            ]
+          },
+          "require_valid": true
+        }
+      ],
+      "direct_path_means": {
+        "commit": "d83737b6d5241962ce39c81d39c56af3506c0cdd",
+        "path": "docs/research/pr_df_ld1_residual_freeze_20261115/INPUTS.json",
+        "selector": [
+          "paths"
+        ]
+      },
+      "calibration_R": [
+        2,
+        16,
+        128
+      ]
+    },
+    {
+      "name": "DF_LD2",
+      "configuration_source": {
+        "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+        "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+        "selector": []
+      },
+      "implementation": {
+        "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+        "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+        "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+        "contract_source": {
+          "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+          "path": "src/trottertracks/p2_direct_pilot.py"
+        }
+      },
+      "price_source": {
+        "commit": "e0b3cad2a024070389f757160f3a20d7da02c5ff",
+        "path": "docs/research/d_pr_df_ld_split_results_20261115/AXIS_PRICES.json",
+        "selector": []
+      },
+      "model_source": {
+        "commit": "e0b3cad2a024070389f757160f3a20d7da02c5ff",
+        "path": "docs/research/d_pr_df_ld_split_results_20261115/FROZEN_LD2_MODELS.json",
+        "selector": []
+      },
+      "mode": "FULL_AFFINE_QR",
+      "calibration_domain": {
+        "q": [
+          1,
+          64
+        ],
+        "R": [
+          1,
+          40
+        ]
+      },
+      "direct_sources": [
+        {
+          "source": {
+            "commit": "e0b3cad2a024070389f757160f3a20d7da02c5ff",
+            "path": "docs/research/d_pr_df_ld_split_results_20261115/FROZEN_LD2_MODELS.json",
+            "selector": [
+              "means"
+            ]
+          },
+          "value_key": "mean_C",
+          "role": "CALIBRATION",
+          "receipt_source": {
+            "commit": "e0b3cad2a024070389f757160f3a20d7da02c5ff",
+            "path": "docs/research/d_pr_df_ld_split_results_20261115/FROZEN_LD2_MODELS.json",
+            "selector": [
+              "models"
+            ]
+          }
+        }
+      ],
+      "calibration_R": [
+        1,
+        5,
+        40
+      ]
+    },
+    {
+      "name": "DF_LD7",
+      "configuration_source": {
+        "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+        "path": "docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json",
+        "selector": []
+      },
+      "implementation": {
+        "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+        "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+        "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+        "contract_source": {
+          "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+          "path": "src/trottertracks/p2_direct_pilot.py"
+        }
+      },
+      "price_source": {
+        "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+        "path": "docs/research/d_pr_df_ld7_price_results_20261116/AXIS_PRICES.json",
+        "selector": []
+      },
+      "model_source": {
+        "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+        "path": "docs/research/d_pr_df_ld7_price_results_20261116/FROZEN_MODELS.json",
+        "selector": []
+      },
+      "mode": "FULL_AFFINE_Q_R1",
+      "calibration_domain": {
+        "q": [
+          1,
+          64
+        ],
+        "R": [
+          1,
+          1
+        ]
+      },
+      "direct_sources": [
+        {
+          "source": {
+            "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+            "path": "docs/research/d_pr_df_ld7_price_results_20261116/FROZEN_MODELS.json",
+            "selector": [
+              "models",
+              "X",
+              "calibration"
+            ]
+          },
+          "value_key": "mean_C",
+          "role": "CALIBRATION"
+        },
+        {
+          "source": {
+            "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+            "path": "docs/research/d_pr_df_ld7_price_results_20261116/FROZEN_MODELS.json",
+            "selector": [
+              "models",
+              "Y",
+              "calibration"
+            ]
+          },
+          "value_key": "mean_C",
+          "role": "CALIBRATION"
+        },
+        {
+          "source": {
+            "commit": "5c5d87ab32d03bb107a9a6bfed3cba253aef2aa0",
+            "path": "docs/research/d_pr_df_ld7_price_results_20261116/HOLDOUT_COMPARISON.json",
+            "selector": [
+              "rows"
+            ]
+          },
+          "value_key": "mean_C",
+          "role": "INDEPENDENT_HOLDOUT"
+        }
+      ],
+      "calibration_R": [
+        1
+      ]
+    },
+    {
+      "name": "DF_LD9",
+      "configuration_source": {
+        "commit": "460d77d8f56ef0bde41dbddaa27852dd8b05513e",
+        "path": "docs/research/d_pr_df_ld9_v0_results_20261116/generation/CONFIGURATION.json",
+        "selector": []
+      },
+      "implementation": {
+        "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+        "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+        "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+        "contract_source": {
+          "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+          "path": "src/trottertracks/p2_direct_pilot.py"
+        }
+      },
+      "price_source": null,
+      "model_source": null,
+      "mode": null,
+      "calibration_domain": {},
+      "direct_sources": [
+        {
+          "source": {
+            "commit": "d85150cd1b51f87da4e767b32cf52f532765d358",
+            "path": "docs/research/d_pr_df_ld9_m6_price_20261116/COMPARISON.json",
+            "selector": [
+              "comparisons"
+            ]
+          },
+          "value_key": "LD9_mean",
+          "m": 6,
+          "n_paths": 4,
+          "cohort": "D_PR_DF_LD9_M6_DIRECT_PRICE_20261116_V1",
+          "role": "DIRECT_M6_ONLY",
+          "receipt_source": {
+            "commit": "d85150cd1b51f87da4e767b32cf52f532765d358",
+            "path": "docs/research/d_pr_df_ld9_m6_price_20261116/COMPARISON.json",
+            "selector": [
+              "cohorts",
+              1,
+              "rows"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PAULI_LD1",
+      "configuration_source": {
+        "commit": "ccf0793de17a6b20d1dada6d8b6fe6e5c585c238",
+        "path": "docs/research/b2_pauli_calibration_20261116/LD1/A_PREPARATION.0.CONFIGURATION.json"
+      },
+      "implementation": {
+        "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+        "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+        "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+        "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+        "contract_source": {
+          "commit": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "path": "scripts/run_pauli_b1_prices.py"
+        }
+      },
+      "price_source": {
+        "commit": "86fa4ce9e3e7e12ff25f1a84734c1a5f7c58678c",
+        "path": "docs/research/pauli_candidate_calibrations/4d0baf604bfbdf204538/Q8R896/PRICE_26AXIS.json",
+        "selector": []
+      },
+      "model_source": {
+        "commit": "86fa4ce9e3e7e12ff25f1a84734c1a5f7c58678c",
+        "path": "docs/research/pauli_candidate_calibrations/4d0baf604bfbdf204538/Q8R896/PRICE_26AXIS.json",
+        "selector": []
+      },
+      "mode": "PAULI_AUDIT",
+      "calibration_domain": {
+        "q": [
+          8,
+          8
+        ],
+        "R": [
+          896,
+          896
+        ]
+      },
+      "direct_sources": [
+        {
+          "source": {
+            "commit": "00f74f86d16cc6878e1d4c5977eb9abd9ce9c076",
+            "path": "docs/research/d_pauli_ld1_m0_pilot_results_20261114/run02/PRICES.json",
+            "selector": []
+          },
+          "value_selector": [
+            "mean",
+            "rz_count"
+          ],
+          "role": "B0_WIRING_ONLY_NOT_CALIBRATION"
+        }
+      ],
+      "calibration_R": [
+        896
+      ],
+      "caveats": [
+        "A S0-r1 decomposition supports this candidate (B2 request-driven audit of cell Q8R896); all round prices are model applications, not cell direct observations"
+      ],
+      "calibration_evidence": {
+        "commit": "86fa4ce9e3e7e12ff25f1a84734c1a5f7c58678c",
+        "path": "docs/research/pauli_candidate_calibrations/4d0baf604bfbdf204538/Q8R896/PRICE_26AXIS.json",
+        "selector": [
+          "calibration_cell",
+          "rows"
+        ]
+      },
+      "registration": {
+        "by": "B2 (comment(B1114) 2026-11-16)",
+        "base_registry": {
+          "commit": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "path": "configs/pr_price_rules/h4_saved_rules.json"
+        },
+        "calibration_request": {
+          "commit": "ccf0793de17a",
+          "path": "docs/research/b2_pauli_calibration_20261116/LD1/CAL_PREPARATION.CALIBRATION_REQUEST.json"
+        },
+        "raw": {
+          "commit": "1b049cbe4b37",
+          "path": "docs/research/pauli_candidate_calibrations/4d0baf604bfbdf204538/Q8R896/run01"
+        },
+        "audit_source": {
+          "commit": "48ac16d80",
+          "path": "scripts/pauli_split_cal_audit_request.py"
+        },
+        "note": "only PAULI_LD1 changed; every other entry is the D2 c1f95e080 entry unchanged; D2 PriceRules code unchanged"
+      }
+    },
+    {
+      "name": "PAULI_LD2",
+      "configuration_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+        "selector": [
+          "packets",
+          1,
+          "configuration"
+        ]
+      },
+      "implementation": {
+        "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+        "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+        "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+        "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+        "contract_source": {
+          "commit": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "path": "scripts/run_pauli_b1_prices.py"
+        }
+      },
+      "price_source": {
+        "commit": "a7eceecba5f1d2172682a4e5cc6f1573568debd0",
+        "path": "docs/research/pauli_ld2_tref_20261115/AXIS_TABLE.json",
+        "selector": []
+      },
+      "model_source": {
+        "commit": "b74e4e536392c2bbe94cd371436615fc56c0564f",
+        "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/run01/FROZEN_MODELS.json",
+        "selector": []
+      },
+      "mode": "PAULI_C2",
+      "calibration_domain": {
+        "q": [
+          1,
+          8
+        ],
+        "R": [
+          66,
+          4205
+        ]
+      },
+      "direct_sources": [
+        {
+          "source": {
+            "commit": "705f59ea863e1b9fe90e023f1cb1057d00366b16",
+            "path": "docs/research/d_pauli_ld2_b1_holdout_results_20261115/COMPARISON.json",
+            "selector": [
+              "rows"
+            ]
+          },
+          "value_key": "O",
+          "role": "INDEPENDENT_HOLDOUT",
+          "receipt_source": {
+            "commit": "705f59ea863e1b9fe90e023f1cb1057d00366b16",
+            "path": "docs/research/d_pauli_ld2_b1_holdout_results_20261115/RECEIPT_ADMISSION.json",
+            "selector": [
+              "units"
+            ]
+          }
+        },
+        {
+          "source": {
+            "commit": "6c4709f85d0f28ce7c6957e9a70c85e378d8cad0",
+            "path": "docs/research/d_pauli_ld2_b1_w_results_20261115/run01/PRICES.json",
+            "selector": []
+          },
+          "value_selector": [
+            "mean",
+            "rz_count"
+          ],
+          "role": "B1_W_WIRING_ONLY_NOT_CALIBRATION"
+        },
+        {
+          "source": {
+            "commit": "adeae8f831b0cf7ffbf3448ad39b3c0ea259a655",
+            "path": "docs/research/d_pauli_ld2_m9_longpoint_results_20261115/COMPARISON.json",
+            "selector": [
+              "rows"
+            ]
+          },
+          "value_key": "O",
+          "role": "INDEPENDENT_LONG_POINT"
+        }
+      ],
+      "caveats": [
+        "calibration contains correlated paired q2, not an extra independent cohort; law-I vs implemented sampler not identified by this model"
+      ],
+      "calibration_handoff": {
+        "commit": "5dac74959ed9ea49465d393fc792ef5b4727edba",
+        "path": "docs/research/d_pauli_ld2_b1_cal_results_20261115/C_HANDOFF.json",
+        "selector": []
+      },
+      "calibration_R": [
+        66,
+        526,
+        4205
+      ]
+    },
+    {
+      "name": "PAULI_LD3",
+      "configuration_source": {
+        "commit": "421258d400a86fffd7c4955d5cf1bd24ac5729cb",
+        "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/config_run01/CONFIGURATION_LD3.json"
+      },
+      "implementation": {
+        "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+        "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+        "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+        "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+        "contract_source": {
+          "commit": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "path": "scripts/run_pauli_b1_prices.py"
+        }
+      },
+      "price_source": {
+        "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+        "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": []
+      },
+      "model_source": {
+        "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+        "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": []
+      },
+      "mode": "PAULI_AUDIT",
+      "calibration_domain": {
+        "q": [
+          8,
+          8
+        ],
+        "R": [
+          660,
+          660
+        ]
+      },
+      "direct_sources": [],
+      "calibration_R": [
+        660
+      ],
+      "caveats": [
+        "A S0-r1 decomposition supports this candidate and saved wrapper margins; all round prices are model applications, not cell direct observations"
+      ],
+      "calibration_evidence": {
+        "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+        "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": [
+          "calibration_cell",
+          "rows"
+        ]
+      }
+    },
+    {
+      "name": "PAULI_LD5",
+      "configuration_source": {
+        "commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+        "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/config_run01/CONFIGURATION_LD5.json"
+      },
+      "implementation": {
+        "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+        "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+        "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+        "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+        "contract_source": {
+          "commit": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "path": "scripts/run_pauli_b1_prices.py"
+        }
+      },
+      "price_source": {
+        "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+        "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": []
+      },
+      "model_source": {
+        "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+        "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": []
+      },
+      "mode": "PAULI_AUDIT",
+      "calibration_domain": {
+        "q": [
+          8,
+          8
+        ],
+        "R": [
+          4,
+          4
+        ]
+      },
+      "direct_sources": [],
+      "calibration_R": [
+        4
+      ],
+      "caveats": [
+        "A S0-r1 decomposition supports this candidate and saved wrapper margins; all round prices are model applications, not cell direct observations"
+      ],
+      "calibration_evidence": {
+        "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+        "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": [
+          "calibration_cell",
+          "rows"
+        ]
+      }
+    },
+    {
+      "name": "AUTO_DF_5bebe69183952f0c",
+      "configuration_source": {
+        "commit": "8efd3930b77e616feb0cee603d46a6d3f0ec1916",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/CONFIGURATION.json"
+      },
+      "implementation": {
+        "lowering_id": "CONTROLLED_ZZ_CX_CRZ_CX_V1",
+        "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+        "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+        "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+        "contract_source": {
+          "commit": "39ddd59edf54a3a901e5302207b2765ddbd03fbb",
+          "path": "src/trottertracks/p2_direct_pilot.py"
+        }
+      },
+      "price_source": {
+        "commit": "d698d93e6216f2335bd2b7b5d011f49cbd3a7bbc",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df_prices/AXIS_PRICES.json"
+      },
+      "model_source": {
+        "commit": "d698d93e6216f2335bd2b7b5d011f49cbd3a7bbc",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df_prices/FROZEN_MODELS.json"
+      },
+      "mode": "FULL_AFFINE_Q_R1",
+      "calibration_domain": {
+        "q": [
+          1,
+          64
+        ],
+        "R": [
+          1,
+          1
+        ]
+      },
+      "caveats": [
+        "candidate-owned finite-cohort model; independent holdout is descriptive; no all-law E[C]/CI"
+      ]
+    }
+  ]
+}
