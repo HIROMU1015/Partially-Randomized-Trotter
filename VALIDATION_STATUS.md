@@ -1,5 +1,7 @@
 # Validation status
 
+[H4 LD7/8/9 P0の原因特定](docs/research/pauli_p0_factor_trace_results_20261116/REPORT.md)：SOURCE655e74212でdefault保存JW完全一致、no-filter shadow tail残差3.56e-19/7.32e-20/4.37e-22。人工12PASS、元gate1e-9/STOP不変。原因診断のみで新production辞書・RPE資格なし。
+
 [Pauli LD1/2全13round signal](docs/research/df_head_pauli_tail_all_round_results_20261114/REPORT.md)：承認済み未評価22件が全局所gate通過、旧P1の4件をSOURCE付き再利用し全26row完成。最大closure4.3728735746e−10・power unitarity8.81894e−12（gate1e−9）、reference pair9.27981e−12（gate1e−10）。人工6＋P1回帰6 PASS、新reference/旧mean再計算/full256 mean/N/MSE/compile/C/G0。十分N/global RMSEは未資格、公開後STOP。
 
 [Pauli tail限定P1](docs/research/df_head_pauli_tail_p1_results_20261114/REPORT.md)：SOURCE05447d1d4の6meanが全局所数値gate通過。LD1/m0/R2のDF/Pauli corrected差2.7756e−17、full256/36最大mean差3.4332e−16。共通κ4候補は旧DFとR不一致でsignal差を計算せず、元SOURCE/allowanceを保持。人工6＋既存17 PASS、normalizer5unique、新reference/DF mean/N/RMSE/compile/C/G0。全RPE未資格/null、公開後STOP。

@@ -1,0 +1,33 @@
+Python: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B
+
+PRE-SCIENCE ARTIFICIAL TESTS:
+tests/check_pauli_p0_factor_trace.py: 6 PASS, primary run 0.162s
+  Default is exactly the frozen P0 on complex/signed/small coefficients.
+  First one-body, weighted-Fermion and JW losses isolated.
+  No-filter bridge, insertion order, float hex and bad-input checks.
+  OpenFermion global methods/tolerance remain unchanged; no H4 loads.
+tests/check_pauli_p0_operator_analysis.py: 4 PASS, 0.001s
+  Absolute/relative norms; identity/traceless orthogonality;
+  saved-scalar control; vector telescope (not norm addition); nonfinite/zero handling.
+tests/check_pauli_p0_factor_trace_runner.py: 2 PASS, 1.433s
+  Actual caller with synthetic 256x256 data, all three traces and fresh-output guard.
+  Default mismatch preserves the trace and raw diagnostic before STOP.
+  Initial synthetic fixture basis ordering and caller path precedence bugs were
+  fixed before any real scientific call; production P0 was never changed.
+
+AUTHORIZED SCIENTIFIC DIAGNOSTIC:
+SOURCE=655e74212; complete SHA in run01/EXECUTION.json.
+Exit 0; body elapsed 5.379543s. One run, no retry.
+Three saved-operator analyses, one saved-input restore, three split traces.
+All saved-JW -> saved-A reconstructions bitwise equal.
+All default raw-JW outputs exactly equal saved terms/order/coefficients.
+Old absolute residuals reproduced with numerical difference 0.
+No-filter shadow matches each saved DF tail within original 1e-9 gate.
+Global EQ_TOLERANCE remains 1e-8; old P0 FAIL/STOP untouched.
+New state/H generation/reference/mean/normalizer/sampling/compile/Q3/N/G=0.
+
+No independent science review or production dictionary adoption is claimed.
+
+Final saved-artifact checks PASS: all JSON/gzip records and 3 CSV rows readable;
+SOURCE code bytes unchanged; old raw-JW/full residual preserved; post-execution
+input byte binding and original STOP records unchanged. No scientific rerun.

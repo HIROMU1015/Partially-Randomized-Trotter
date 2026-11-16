@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 Pauli P0の実係数追跡](research/pauli_p0_factor_trace_results_20261116/REPORT.md)：保存norm/相対残差・消失項・誤差vector分解、最小局所修正案とB2引渡し。
+
 [Pauli P0 gate原因調査](research/pauli_p0_gate_diagnosis_20261116/REPORT.md)：LD7/8/9別の保存証拠・人工15検査・未実行の最小追加検証。
 
 [PR-Pauli複数実stepの較正要求](research/pauli_multistep_calibration_request_20261116/REPORT.md)／[API・B2/D2接続](research/pauli_multistep_calibration_request_20261116/HANDOFF.md)／[保存・人工検収](research/pauli_multistep_calibration_request_20261116/ACCEPTANCE.json)。
