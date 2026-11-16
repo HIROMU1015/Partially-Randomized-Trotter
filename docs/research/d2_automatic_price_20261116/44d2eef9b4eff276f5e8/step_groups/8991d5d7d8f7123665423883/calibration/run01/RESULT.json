@@ -1,0 +1,367 @@
+{
+  "status": "FINITE_LD4_CAL_PATHS_COMPLETE",
+  "source": {
+    "commit": "a8019f6a89400d22030fb96b1da2f942069e6662",
+    "caller": "scripts/run_pauli_split_cal.py",
+    "prefix": 4,
+    "kind": "LD4_CAL_Q8R1",
+    "cell": "Q8R1",
+    "cohort": "A_PAULI_CAL_8991d5d7d8f712366542_N2_V1",
+    "step_seeds": [
+      [
+        8344592517902054394,
+        2504200113469784548,
+        8044879350119971878,
+        8064873154393213422,
+        17187615491836957775,
+        18101652290243097531,
+        6419867532348671769,
+        16294516613041779324
+      ],
+      [
+        16828387665133346179,
+        3727096715467009890,
+        10519775030169759010,
+        5029225389650461562,
+        13463042682465651624,
+        4285448557977732716,
+        12110388575630576253,
+        3239462217638597888
+      ]
+    ],
+    "result_path": "docs/research/d2_automatic_price_20261116/44d2eef9b4eff276f5e8/step_groups/8991d5d7d8f7123665423883/calibration/run01/RESULT.json",
+    "legacy_source": "13ab1acfaebe5f33958e1db67862f5c45725ab91"
+  },
+  "binding": {
+    "commit": "3cc6c775441df13d429851358e00664f79ab9f9f",
+    "path": "docs/research/d2_automatic_price_20261116/44d2eef9b4eff276f5e8/step_groups/8991d5d7d8f7123665423883/calibration/BINDING.json"
+  },
+  "summaries": [
+    {
+      "status": "PASS",
+      "index": 0,
+      "result": {
+        "status": "PASS",
+        "prices": {
+          "cosine": {
+            "rz_count": 28444,
+            "rz_depth": 7795,
+            "cx_count": 13132,
+            "cx_depth": 7156,
+            "total_depth": 18952,
+            "circuit_size": 59165
+          },
+          "sine": {
+            "rz_count": 28444,
+            "rz_depth": 7795,
+            "cx_count": 13132,
+            "cx_depth": 7156,
+            "total_depth": 18952,
+            "circuit_size": 59165
+          }
+        },
+        "scalar": 2.3087006272210147,
+        "z": [
+          -0.9409183058578701,
+          -0.3360884970574747
+        ],
+        "seeds": [
+          8344592517902054394,
+          2504200113469784548,
+          8044879350119971878,
+          8064873154393213422,
+          17187615491836957775,
+          18101652290243097531,
+          6419867532348671769,
+          16294516613041779324
+        ],
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 2.087844363674952e-14,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "independent_full_space_vector",
+            "error": 3.733619028819534e-14,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 1.7319479184152442e-14,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 4.274358644806853e-15,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 2.8595826199386084e-12,
+            "tolerance": 1e-07
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 2.5994744626739064e-12,
+            "tolerance": 1e-07
+          }
+        ],
+        "bit_order": {
+          "labels_reversed": true,
+          "saved_vs_saved_labels": 3.962455804600755e-17,
+          "qiskit_vs_qiskit_labels": 3.962455804600755e-17,
+          "unconverted_mismatch": 0.18777026016964518,
+          "head_vs_blocks": 0.0,
+          "tail_vs_blocks": 0.0,
+          "tail_vs_pauli_plus_pauli_identity": 3.520203079632695e-16,
+          "tail_vs_pauli_plus_saved_sR": 3.5020332469923607e-16,
+          "pass": true
+        },
+        "distribution": {
+          "orders": [
+            0,
+            2
+          ],
+          "probabilities": [
+            0.9997324168752959,
+            0.00026758312470407834
+          ]
+        },
+        "n": 8,
+        "terms": 184,
+        "fingerprints": {
+          "cosine": {
+            "fingerprint": "1c170cfcab19a73956af7fdbf216be44e0310e4e10f9cc671207eae6650d8a54",
+            "cache_reused": false,
+            "wrapper_qubits": 9,
+            "measurement": true
+          },
+          "sine": {
+            "fingerprint": "ea6a191448d8f7ffdcc4f347641eda7f416288d2d01e642df456443b760e4c6f",
+            "cache_reused": false,
+            "wrapper_qubits": 9,
+            "measurement": true
+          }
+        },
+        "compile_receipts": {
+          "cosine": {
+            "metrics": {
+              "rz_count": 28444,
+              "rz_depth": 7795,
+              "cx_count": 13132,
+              "cx_depth": 7156,
+              "total_depth": 18952,
+              "circuit_size": 59165
+            },
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "fingerprint": "1c170cfcab19a73956af7fdbf216be44e0310e4e10f9cc671207eae6650d8a54"
+          },
+          "sine": {
+            "metrics": {
+              "rz_count": 28444,
+              "rz_depth": 7795,
+              "cx_count": 13132,
+              "cx_depth": 7156,
+              "total_depth": 18952,
+              "circuit_size": 59165
+            },
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "fingerprint": "ea6a191448d8f7ffdcc4f347641eda7f416288d2d01e642df456443b760e4c6f"
+          }
+        },
+        "sampling": "ORIGINAL_NORMAL_SAMPLER",
+        "acceleration": {
+          "event_cache_hits": 0,
+          "event_cache_misses": 8
+        },
+        "compile_calls": [
+          "X",
+          "Y"
+        ]
+      },
+      "peak_RSS_KiB": 610548
+    },
+    {
+      "status": "PASS",
+      "index": 1,
+      "result": {
+        "status": "PASS",
+        "prices": {
+          "cosine": {
+            "rz_count": 28395,
+            "rz_depth": 7758,
+            "cx_count": 13132,
+            "cx_depth": 7160,
+            "total_depth": 18886,
+            "circuit_size": 59058
+          },
+          "sine": {
+            "rz_count": 28395,
+            "rz_depth": 7758,
+            "cx_count": 13132,
+            "cx_depth": 7160,
+            "total_depth": 18886,
+            "circuit_size": 59058
+          }
+        },
+        "scalar": 2.3087006272210147,
+        "z": [
+          -0.9545423886393304,
+          -0.2939961088315987
+        ],
+        "seeds": [
+          16828387665133346179,
+          3727096715467009890,
+          10519775030169759010,
+          5029225389650461562,
+          13463042682465651624,
+          4285448557977732716,
+          12110388575630576253,
+          3239462217638597888
+        ],
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 2.074600040315083e-14,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "independent_full_space_vector",
+            "error": 3.8391760701912504e-14,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 2.275957200481571e-14,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 2.3314683517128287e-15,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 2.8380550540631666e-12,
+            "tolerance": 1e-07
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 2.602661725818569e-12,
+            "tolerance": 1e-07
+          }
+        ],
+        "bit_order": {
+          "labels_reversed": true,
+          "saved_vs_saved_labels": 3.962455804600755e-17,
+          "qiskit_vs_qiskit_labels": 3.962455804600755e-17,
+          "unconverted_mismatch": 0.18777026016964518,
+          "head_vs_blocks": 0.0,
+          "tail_vs_blocks": 0.0,
+          "tail_vs_pauli_plus_pauli_identity": 3.520203079632695e-16,
+          "tail_vs_pauli_plus_saved_sR": 3.5020332469923607e-16,
+          "pass": true
+        },
+        "distribution": {
+          "orders": [
+            0,
+            2
+          ],
+          "probabilities": [
+            0.9997324168752959,
+            0.00026758312470407834
+          ]
+        },
+        "n": 8,
+        "terms": 184,
+        "fingerprints": {
+          "cosine": {
+            "fingerprint": "a0371c0e8b83616fc77315422d509f0e4183df4f80907be1d327f765e0f322a0",
+            "cache_reused": false,
+            "wrapper_qubits": 9,
+            "measurement": true
+          },
+          "sine": {
+            "fingerprint": "014a9f7057f3e7ec8298d9c2f6ba6832ddc7266592f908ffb1367f90752ffd2e",
+            "cache_reused": false,
+            "wrapper_qubits": 9,
+            "measurement": true
+          }
+        },
+        "compile_receipts": {
+          "cosine": {
+            "metrics": {
+              "rz_count": 28395,
+              "rz_depth": 7758,
+              "cx_count": 13132,
+              "cx_depth": 7160,
+              "total_depth": 18886,
+              "circuit_size": 59058
+            },
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "fingerprint": "a0371c0e8b83616fc77315422d509f0e4183df4f80907be1d327f765e0f322a0"
+          },
+          "sine": {
+            "metrics": {
+              "rz_count": 28395,
+              "rz_depth": 7758,
+              "cx_count": 13132,
+              "cx_depth": 7160,
+              "total_depth": 18886,
+              "circuit_size": 59058
+            },
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "fingerprint": "014a9f7057f3e7ec8298d9c2f6ba6832ddc7266592f908ffb1367f90752ffd2e"
+          }
+        },
+        "sampling": "ORIGINAL_NORMAL_SAMPLER",
+        "acceleration": {
+          "event_cache_hits": 0,
+          "event_cache_misses": 8
+        },
+        "compile_calls": [
+          "X",
+          "Y"
+        ]
+      },
+      "peak_RSS_KiB": 608496
+    }
+  ],
+  "raw_paths": [
+    {
+      "index": 0,
+      "path": "docs/research/d2_automatic_price_20261116/44d2eef9b4eff276f5e8/step_groups/8991d5d7d8f7123665423883/calibration/run01/PATH0.json.gz",
+      "bytes": 4194,
+      "sha256": "cc523149d96e4d799658048bc77d5d1f75c4be7e180181aae97b0819720ec9ce",
+      "encoding": "GZIP_JSON",
+      "selector": []
+    },
+    {
+      "index": 1,
+      "path": "docs/research/d2_automatic_price_20261116/44d2eef9b4eff276f5e8/step_groups/8991d5d7d8f7123665423883/calibration/run01/PATH1.json.gz",
+      "bytes": 4230,
+      "sha256": "8a6a42afbc66d2fd7d964558048d3e3e5ff067850fe0ef8af0a4bcd3911cc41c",
+      "encoding": "GZIP_JSON",
+      "selector": []
+    }
+  ],
+  "compiles": 4,
+  "automatic_retry": false,
+  "mean": null,
+  "fit": null,
+  "price": null,
+  "N": null,
+  "G": null,
+  "mandatory_stop": true
+}
