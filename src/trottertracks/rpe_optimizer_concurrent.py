@@ -361,6 +361,7 @@ class DistributedExecutor(ConcurrentExecutor):
         run = Path(args[1]).resolve()
         self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
         self.hosts = {}
+        self.input_hash_cache = {}
         self.local_worker = None
         self.local_worker_pid = None
         self.rpc_server = None
@@ -503,7 +504,7 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_q3_coordinator import input_hashes, prefix_key
         return dict(job_id=row['job_id'], method=row['method'], attempt_id=row['attempt_id'], request=row['request'],
             request_sha256=row['request_sha256'], source_manifest=self.source_manifest,
-            input_hashes=input_hashes(self.root, row['request']), prefix_key=prefix_key(row['request']))
+            input_hashes=input_hashes(self.root, row['request'], self.input_hash_cache), prefix_key=prefix_key(row['request']))
 
     def rpc(self, path, value):
         from . import rpe_q3_coordinator as Q
@@ -623,14 +624,18 @@ class DistributedExecutor(ConcurrentExecutor):
         elif answer:
             current = self.store.row(self.job_dir(proposal).name)
             if current and current['state'] == 'ACCEPTED': self.store.adopt(current['job_id'])
-        if answer and answer.get('calls') == 0:
-            current = self.store.row(self.job_dir(proposal).name)
-            if current and current['state'] == 'ACCEPTED':
-                with self.state.cv:
-                    reused = getattr(self.state, 'reused_jobs', set())
-                    if current['job_id'] not in reused:
-                        reused.add(current['job_id']); self.state.reused_jobs = reused
-                        self.log(event='RESULT_REUSE', job=current['job_id'], host_id=current['host_id'])
+        return answer
+
+    def ingest(self, job, proposal, calls):
+        answer = super().ingest(job, proposal, calls)
+        current = self.store.row(Path(job).name)
+        own = current is not None and Path(job) == self.run_dir/'jobs'/current['method']/current['job_id']
+        if calls == 0 and own and current['state'] == 'ACCEPTED':
+            with self.state.cv:
+                reused = getattr(self.state, 'reused_jobs', set())
+                if current['job_id'] not in reused:
+                    reused.add(current['job_id']); self.state.reused_jobs = reused
+                    self.log(event='RESULT_REUSE', job=current['job_id'], host_id=current['host_id'])
         return answer
 
     def metrics(self):

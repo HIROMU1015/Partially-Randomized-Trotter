@@ -40,9 +40,10 @@ def source_manifest(root, commit):
     return dict(commit=commit, files={p: hashlib.sha256((Path(root)/p).read_bytes()).hexdigest() for p in paths})
 
 
-def input_hashes(root, request):
+def input_hashes(root, request, cache=None):
     """Hash fixed locator blobs; selectors retain the original full input blob."""
     found = {}
+    cache = {} if cache is None else cache
     def visit(value):
         if isinstance(value, list):
             for item in value: visit(item)
@@ -50,10 +51,16 @@ def input_hashes(root, request):
             if isinstance(value.get('commit'), str) and isinstance(value.get('path'), str):
                 key = (value['commit'], value['path'])
                 if key not in found:
-                    blob = subprocess.check_output(['git', 'show', key[0]+':'+key[1]], cwd=root)
-                    found[key] = dict(commit=key[0], path=key[1], sha256=hashlib.sha256(blob).hexdigest())
+                    if key not in cache:
+                        blob = subprocess.check_output(['git', 'show', key[0]+':'+key[1]], cwd=root)
+                        cache[key] = dict(commit=key[0], path=key[1], sha256=hashlib.sha256(blob).hexdigest())
+                    found[key] = cache[key]
             for item in value.values(): visit(item)
-    if request['route']['kind'] != 'artificial': visit(request['route'])
+    if request['route']['kind'] != 'artificial':
+        effective = dict(request['route'])
+        if 'configurations' in effective:
+            effective['configurations'] = {request['configuration_id']:effective['configurations'][request['configuration_id']]}
+        visit(effective)
     return list(found.values())
 
 

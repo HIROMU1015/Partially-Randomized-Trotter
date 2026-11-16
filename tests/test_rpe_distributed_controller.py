@@ -139,6 +139,45 @@ class ControllerFailures(unittest.TestCase):
         self.assertNotEqual(executor.store.row(task.job.name)['state'], 'ACCEPTED')
         self.assertFalse((task.job/'OUTCOME.json').exists())
 
+    def test_prior_records_counts_host_reuse_once_and_excludes_transfer_validation(self):
+        executor = self.executor()
+        proposal = self.proposal('first')
+        task = self.enqueue(executor, 'first')
+        assigned = self.poll(executor)['assignments'][0]
+        payload = self.completion(assigned)
+        executor.rpc('/v1/complete', payload)
+        view = executor.for_method('PR_PAULI')
+        self.assertEqual(executor.metrics()['by_host']['server1']['reused'], 0)
+
+        # Validation of the transfer copy is not reuse by the optimizer, even
+        # after the same attempt has been durably accepted and published.
+        staging = self.run/'distributed'/'transfers'/assigned['job_id']/assigned['attempt_id']
+        self.assertEqual(view.ingest(staging, proposal, calls=0)['status'], O.PASS)
+        self.assertEqual(executor.metrics()['by_host']['server1']['reused'], 0)
+        self.assertEqual(view.ingest(task.job, proposal, calls=1)['status'], O.PASS)
+        self.assertEqual(executor.metrics()['by_host']['server1']['reused'], 0)
+
+        # Use the normal saved-result entry, rather than answer(), because
+        # optimize loads prior_records before asking for any new proposals.
+        view.prior_run_dirs = [self.run]
+        candidate = dict(configuration_id='first', ready=True, prices=[Fraction(1)]*4)
+        known, refused = view.prior_records([candidate])
+        self.assertEqual(refused, [])
+        self.assertEqual(known[('first', proposal['vector'])]['source'], 'PRIOR_ROUND_JOB')
+        self.assertEqual(known[('first', proposal['vector'])]['calls'], 0)
+        self.assertEqual(executor.metrics()['by_host']['server1']['reused'], 1)
+
+        # Reloading the catalog and directly ingesting/answering the same saved
+        # job within this invocation must not inflate the host's reuse count.
+        view.prior_records([candidate])
+        view.ingest(task.job, proposal, calls=0)
+        view.answer(proposal)
+        self.assertEqual(executor.metrics()['by_host']['server1']['reused'], 1)
+        events = [json.loads(line) for line in (self.run/'PROGRESS.jsonl').read_text().splitlines()]
+        reused = [event for event in events if event['event'] == 'RESULT_REUSE']
+        self.assertEqual(len(reused), 1)
+        self.assertEqual((reused[0]['host_id'], reused[0]['job']), ('server1', task.job.name))
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
