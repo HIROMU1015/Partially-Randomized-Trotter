@@ -14,6 +14,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from types import SimpleNamespace
 import unittest
@@ -109,6 +110,36 @@ os.execv(command[0], command)
 
 
 class RelayTests(unittest.TestCase):
+    def test_startup_status_replaces_old_stopped_state_before_first_blocked_tick(self):
+        with tempfile.TemporaryDirectory(prefix='relay-startup-status-') as temporary:
+            directory = Path(temporary)/'relay-state'; directory.mkdir()
+            configuration = Path(temporary)/'relay.json'
+            worker = dict(host_id='ARTIFICIAL_BLOCKED_WORKER')
+            write(configuration, dict(state_directory=str(directory), external_tunnel=True,
+                controller=dict(ssh_alias='qg2'), workers=[worker], poll_seconds=.01))
+            write(directory/'STATUS.json', dict(pid=-12345, stopped=True, stopped_epoch=1))
+            relay = R.Relay(configuration)
+            entered, release = threading.Event(), threading.Event()
+            def blocking_tick(_):
+                entered.set()
+                release.wait(5)
+            with patch.object(relay, 'ensure_tunnel'), patch.object(relay, 'tick', side_effect=blocking_tick):
+                process = threading.Thread(target=relay.run, name='artificial-blocked-relay')
+                process.start()
+                try:
+                    self.assertTrue(entered.wait(3), 'Fixture did not reach its blocked first tick')
+                    observed = json.loads((directory/'STATUS.json').read_text())
+                    self.assertEqual(observed['pid'], os.getpid())
+                    self.assertIs(observed['stopped'], False)
+                    self.assertNotIn('stopped_epoch', observed)
+                    self.assertGreater(observed['started_epoch'], 1)
+                finally:
+                    (directory/'STOP').touch()
+                    release.set()
+                    process.join(timeout=3)
+            self.assertFalse(process.is_alive())
+            self.assertIs(json.loads((directory/'STATUS.json').read_text())['stopped'], True)
+
     def test_real_mailbox_rpc_next_assignment_and_lost_ack_duplicate(self):
         with tempfile.TemporaryDirectory(prefix='q3-relay-artificial-') as temporary:
             harness = Harness(temporary)
@@ -219,6 +250,34 @@ class PortableRelayBranches(unittest.TestCase):
             self.assertEqual(options['stdin'], subprocess.DEVNULL)
             self.assertEqual(Path(options['stdout'].name), directory/'RELAY.log')
             self.assertEqual(json.loads(output.getvalue())['pid'], 43210)
+
+    def test_windows_mailbox_and_tunnel_children_suppress_console_creation(self):
+        self.assertEqual(R.child_options('posix'), {})
+        expected = getattr(subprocess, 'CREATE_NO_WINDOW', 0x08000000)
+        self.assertEqual(R.child_options('nt'), dict(creationflags=expected))
+        with tempfile.TemporaryDirectory(prefix='relay-hidden-children-') as temporary:
+            configuration = Path(temporary)/'relay.json'
+            write(configuration, dict(state_directory=str(Path(temporary)/'relay-state'),
+                controller=dict(ssh_alias='qg2'), workers=[]))
+            relay = R.Relay(configuration)
+            worker = dict(ssh_alias='qg1', root='/ARTIFICIAL/worker root', profile='/ARTIFICIAL/worker profile.json')
+            original_options = R.child_options
+            with patch.object(R, 'child_options', side_effect=lambda: original_options('nt')), \
+                    patch.object(R.subprocess, 'run', return_value=SimpleNamespace(returncode=0,
+                        stdout='{"host_id":"ARTIFICIAL_SERVER1"}', stderr='')) as mailbox, \
+                    patch.object(R.subprocess, 'Popen', return_value=SimpleNamespace(pid=42420, poll=lambda:None)) as tunnel:
+                observed, _ = relay.remote(worker, 'status')
+                self.assertEqual(observed, dict(host_id='ARTIFICIAL_SERVER1'))
+                self.assertEqual(mailbox.call_args.kwargs['creationflags'], expected)
+                self.assertNotIn('start_new_session', mailbox.call_args.kwargs)
+                self.assertEqual(mailbox.call_args.args[0][-2], 'qg1')
+                relay.ensure_tunnel()
+                self.assertEqual(tunnel.call_args.kwargs['creationflags'], expected)
+                self.assertNotIn('start_new_session', tunnel.call_args.kwargs)
+                self.assertEqual(tunnel.call_args.kwargs['stdin'], subprocess.DEVNULL)
+                self.assertEqual(tunnel.call_args.args[0][-1], 'qg2')
+                relay.ensure_tunnel()
+                self.assertEqual(tunnel.call_count, 1, 'A live tunnel must not spawn another child each poll')
 
     def test_msvcrt_lock_fallback_uses_first_byte_and_normalizes_busy_error(self):
         with tempfile.TemporaryDirectory(prefix='relay-windows-lock-stub-') as temporary:

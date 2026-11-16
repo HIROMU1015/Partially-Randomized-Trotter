@@ -44,6 +44,13 @@ def background_options(platform_name=None):
     return dict(start_new_session=True)
 
 
+def child_options(platform_name=None):
+    """SSH must stay invisible when its parent relay has no Windows console."""
+    if (platform_name or os.name) == 'nt':
+        return dict(creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0x08000000))
+    return {}
+
+
 class Relay:
     def __init__(self, configuration):
         self.configuration = Path(configuration).resolve()
@@ -54,8 +61,10 @@ class Relay:
         self.controller = self.config['controller']
         self.url = 'http://127.0.0.1:'+str(self.controller.get('local_port', 18763))
         self.tunnel = None
+        started = time.time()
         self.state = dict(pid=os.getpid(), configuration=str(self.configuration), workers={},
-                          started_epoch=time.time(), transport='local0 SSH qg2 forwarding + qg1 mailbox')
+                          started_epoch=started, heartbeat_epoch=started, stopped=False,
+                          transport='local0 SSH controller forwarding + worker mailbox')
 
     def log(self, event, **value):
         row = dict(epoch=time.time(), event=event, **value)
@@ -76,7 +85,7 @@ class Relay:
         process = subprocess.run(self.ssh+['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, shlex.join(command)],
             input=json.dumps(value or {}), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
             encoding='utf-8', errors='replace',
-            timeout=self.config.get('request_timeout_seconds', 60))
+            timeout=self.config.get('request_timeout_seconds', 60), **child_options())
         if process.returncode:
             raise RuntimeError('SSH mailbox '+action+' failed ('+str(process.returncode)+'): '+process.stderr[-1500:])
         result = json.loads(process.stdout)
@@ -93,7 +102,7 @@ class Relay:
             self.tunnel = subprocess.Popen(self.ssh+['-N', '-o', 'BatchMode=yes', '-o', 'ExitOnForwardFailure=yes',
                 '-o', 'ServerAliveInterval=15', '-o', 'ServerAliveCountMax=3',
                 '-L', '127.0.0.1:%d:127.0.0.1:%d' % (local_port, remote_port), alias],
-                stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
+                stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, **child_options())
         self.log('TUNNEL_START', pid=self.tunnel.pid, ssh_alias=alias)
 
     def tick(self, worker):
@@ -135,6 +144,9 @@ class Relay:
         try: acquire_lock(lock)
         except BlockingIOError: raise ValueError('This relay is already running')
         self.log('RELAY_START', pid=os.getpid())
+        # Reuse RomuTail's startup-state fix (4058b48d5): a previous daemon's
+        # stopped=True must not satisfy this new daemon's status/stop checks.
+        atomic_json(self.directory/'STATUS.json', self.state)
         try:
             while not (self.directory/'STOP').exists():
                 self.ensure_tunnel()
