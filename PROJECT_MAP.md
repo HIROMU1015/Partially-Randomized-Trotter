@@ -6,6 +6,17 @@
 - V2のκ案は、設定すれば同じ入口へ送れる。
 - 保存結果と人工系で8/8 PASS。
 
+[H4 PR-Pauli κ=2近傍と未準備L_Dの準備](docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/HANDOFF.md)：
+- κそのもの＝2の近傍（κ=4/3・2・3）
+  - κ=2の最安：LD5で501,233,190 RZ。LD5ではκ=4/3・2・3の物理scheduleが同一。
+  - LD1・2・3は、shot上限内に適合配分がない。
+- PR-Pauli全体の保存最安：410,199,237 RZ（LD5、κ≈48.6）。Full PFの0.733倍、p7の1.103倍。
+- 未準備L_Dの準備
+  - LD1は較正して登録し、Q3まで進んだ。
+  - LD4・6は、Bの取込みが新しい信号入口の版を受け付けないため保留。
+  - LD7・8・9は、P0の数値gateで停止。
+- 停止理由：近傍規則の候補が尽きた。新規Q3は270件。
+
 [H4 PR-Pauli κ round01の途中終了とV2候補選択](docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/HANDOFF.md)：
 - κ探索（LD2/3/5×κ{2/3,1,2}）を、方針変更のため停止した（`INTERRUPTED_SEARCH_POLICY_CHANGE`）。
 - 完了Q3は4,229件（採用3,334、先読み895）。PR-Pauliの最安は541.74Mから410.47Mへ更新した（LD5 κ×2）。
