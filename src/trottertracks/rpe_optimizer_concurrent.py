@@ -54,7 +54,7 @@ class ConcurrentExecutor(O.Executor):
             base=self.run_dir/'jobs'/method
             existing[method]=sum((d/'LAUNCH.json').exists()or(d/'STARTING.json').exists()for d in base.iterdir())if base.exists()else 0
         self.state=SimpleNamespace(cv=threading.Condition(threading.RLock()),tasks={},active=0,closed=False,
-            owner_clock={},clock=0,budgets=budgets or {},approved=science_approved,existing=existing,
+            failure=None,owner_clock={},clock=0,budgets=budgets or {},approved=science_approved,existing=existing,
             reserved=Counter(),metrics=Counter(),by_method={},pids={},driver=driver,peak_RSS_KiB=0,peak_active=0,adopted_jobs=set(),external={},monitor_stop=threading.Event())
         self.invocation=str(os.getpid())+'-'+str(time.time_ns())
         self.log(event='EXECUTOR_START',capacity=self.capacity,dp_workers=dp_workers)
@@ -106,6 +106,7 @@ class ConcurrentExecutor(O.Executor):
     def _enqueue(self,proposal,demand=False):
         job=self.job_dir(proposal);s=self.state
         with s.cv:
+            if s.failure:raise RuntimeError('Executor persistence/start failure; no new launches: '+s.failure)
             old=s.tasks.get(job)
             if old and old.status!='CANCELLED':
                 if demand:old.demand=True;s.cv.notify_all()
@@ -119,9 +120,11 @@ class ConcurrentExecutor(O.Executor):
             if s.closed:raise RuntimeError('Executor is closed')
             task=SimpleNamespace(view=self,job=job,proposal=deepcopy(proposal),rule=rule,
                 owner=(self.method,proposal['configuration_id']),demand=demand,status='QUEUED',
-                event=threading.Event(),enqueue=time.monotonic(),error=None)
+                event=threading.Event(),enqueue=time.monotonic(),error=None,started=False)
             s.tasks[job]=task;s.reserved[self.method]+=1;s.metrics['submitted']+=1
-            self.log(event='ENQUEUE',job=job.name,configuration=proposal['configuration_id'],demand=demand)
+            try:self.log(event='ENQUEUE',job=job.name,configuration=proposal['configuration_id'],demand=demand)
+            except OSError as exc:
+                self._stop_after_failure(exc);raise
             s.cv.notify_all();return task
 
     def prefetch(self,proposals):
@@ -144,38 +147,52 @@ class ConcurrentExecutor(O.Executor):
             with s.cv:
                 queue=[t for t in s.tasks.values()if t.status=='QUEUED']
                 if s.closed and not queue:return
-                if not queue or s.active>=self.capacity:
+                if s.failure or not queue or s.active>=self.capacity:
                     s.cv.wait(.1);continue
                 t=min(queue,key=lambda t:(not t.demand,s.owner_clock.get(t.owner,-1),t.enqueue))
                 s.clock+=1;s.owner_clock[t.owner]=s.clock;t.status='RUNNING';t.speculative=not t.demand;s.active+=1
                 s.peak_active=max(s.peak_active,s.active)
             self._start(t)
 
+    def _stop_after_failure(self,error):
+        # Persistence/start failure stops new launches; existing children finish.
+        with self.state.cv:
+            self.state.failure=str(error)
+            for task in self.state.tasks.values():
+                if task.status=='QUEUED':
+                    task.error=str(error)
+                    try:self._cancel(task)
+                    except OSError:pass  # the queue event is already released
+            self.state.cv.notify_all()
+
     def _start(self,t):
-        s=self.state;v=t.view;job=t.job;start=time.time()
+        s=self.state;v=t.view;job=t.job;start=time.time();proc=None
         try:
             job.mkdir(parents=True,exist_ok=True)
             if not(job/'REQUEST.json').exists():_write(job/'REQUEST.json',v.request(t.proposal,job,t.rule))
             # A crash in the Popen -> LAUNCH interval is unresolved, never a retry.
             _write(job/'STARTING.json',dict(parent_pid=os.getpid(),epoch=start,automatic_retry=False))
-            proc=v.run_adapter(job,t.rule,'execute')
-            _write(job/'LAUNCH.json',dict(pid=proc.pid,started=start,kind=t.rule['kind']))
+            proc=v.run_adapter(job,t.rule,'execute');t.started=True
             with self.lock:self.uncounted.add(job)
             with s.cv:
                 s.metrics['launched']+=1;s.by_method.setdefault(v.method,Counter())['launched']+=1
                 s.pids[job]=proc.pid
                 if t.speculative:s.metrics['speculative_launched']+=1
+            _write(job/'LAUNCH.json',dict(pid=proc.pid,started=start,kind=t.rule['kind']))
             v.log(event='LAUNCH',job=job.name,configuration=t.proposal['configuration_id'],
                   pid=proc.pid,queue_wait_seconds=time.monotonic()-t.enqueue,active=s.active,demand=not t.speculative)
         except Exception as exc:
-            t.error=repr(exc);self._finished(t,None,start);return
+            t.error=repr(exc);self._stop_after_failure(t.error)
+            if proc is None:self._finished(t,None,start);return
+            # Popen succeeded: retain its slot and wait even if LAUNCH could not save.
         def wait():
             code=None
             try:
                 code=proc.wait()
                 _write(job/'PROCESS_RETURN.json',dict(returncode=code if code>=0 else None,signal=-code if code<0 else None,
                                                     wall_seconds=time.time()-start,automatic_retry=False))
-            except Exception as exc:t.error=repr(exc)
+            except Exception as exc:
+                t.error=repr(exc);self._stop_after_failure(t.error)
             finally:self._finished(t,code,start)
         thread=threading.Thread(target=wait,name='rpe-wait-'+job.name,daemon=False)
         with self.lock:self.waiters.append(thread)
@@ -186,6 +203,8 @@ class ConcurrentExecutor(O.Executor):
         with s.cv:
             t.status='DONE';s.active-=1;s.pids.pop(t.job,None);s.metrics['finished']+=1
             try:t.view.log(event='EXIT',job=t.job.name,returncode=code,error=t.error,wall_seconds=time.time()-start)
+            except OSError as exc:
+                t.error=repr(exc);self._stop_after_failure(t.error)
             finally:t.event.set();s.cv.notify_all()
 
     def _monitor(self):
@@ -212,6 +231,9 @@ class ConcurrentExecutor(O.Executor):
             if task and task.status=='CANCELLED':task=None
             if task:task.demand=True;s.cv.notify_all()
         if task:task.event.wait()  # retain the parent-exit gate, even if OUTCOME appeared first
+        if task and task.error:
+            return dict(status='UNKNOWN',reason=task.error,source='EXECUTOR_FAILURE',calls=self.take_count(job),
+                        MSE_lower=None,MSE_upper=None,job=str(job))
         if(job/'OUTCOME.json').exists():answer=self.ingest(job,proposal,calls=self.take_count(job))
         else:
             if task is None and(job/'LAUNCH.json').exists():
@@ -248,13 +270,13 @@ class ConcurrentExecutor(O.Executor):
             s.monitor_stop.set()
         self.dispatcher.join();self.monitor.join()
         for t in self.waiters:t.join()
-        self.log(event='EXECUTOR_STOP')
-        fcntl.flock(s.driver,fcntl.LOCK_UN);s.driver.close()
+        try:self.log(event='EXECUTOR_STOP')
+        finally:fcntl.flock(s.driver,fcntl.LOCK_UN);s.driver.close()
 
     def metrics(self):
         s=self.state
         with s.cv:
-            launched={str(t.job)for t in s.tasks.values()if(t.job/'LAUNCH.json').exists()}
+            launched={str(t.job)for t in s.tasks.values()if t.started}
             adopted=set();events=[]
             for line in (self.run_dir/'PROGRESS.jsonl').read_text().splitlines()if(self.run_dir/'PROGRESS.jsonl').exists()else []:
                 e=json.loads(line)
@@ -274,12 +296,12 @@ class ConcurrentExecutor(O.Executor):
                 elif event in('EXIT','RESUME_EXIT'):active.discard(job)
                 elif event=='RESUME_RUNNING':active.add(job)
             elapsed=events[-1]['monotonic']-events[0]['monotonic']
-            real=sum(t.rule['kind']!='artificial'and(t.job/'LAUNCH.json').exists()for t in s.tasks.values())
+            real=sum(t.rule['kind']!='artificial'and t.started for t in s.tasks.values())
             counts={k:s.metrics[k]for k in ('submitted','queued_cancelled','launched','finished','adopted','speculative_launched','speculative_adopted')}
             return dict(**counts,peak_active=s.peak_active,sampled_owned_tree_peak_RSS_KiB=s.peak_RSS_KiB,
                 completed_not_adopted=sum(Path(j).name not in adopted for j in launched),
                 by_method={m:dict(c)for m,c in s.by_method.items()},max_concurrent_jobs=self.capacity,
-                dp_workers=self.dp_workers,new_real_route_launches=real,elapsed_seconds=elapsed,
+                dp_workers=self.dp_workers,new_real_route_launches=real,executor_failure=s.failure,elapsed_seconds=elapsed,
                 busy_job_seconds=busy,idle_slot_seconds_no_queued_candidate=idle_empty,
                 idle_slot_seconds_with_queued_candidate=idle_ready,
                 slot_utilization=busy/(elapsed*self.capacity)if elapsed else 0,

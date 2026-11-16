@@ -210,6 +210,27 @@ class SchedulerTests(unittest.TestCase):
             self.assertEqual(set(data['methods']),set(METHODS))
             self.assertTrue(all(r['executor_metrics']['new_real_route_launches']==0 for r in data['methods'].values()))
 
+    def test_launch_persistence_failure_stops_queue_and_waits_started_child(self):
+        p,c,r=fixture(['PR_DF'],1);r['PR_DF'][0]['artificial']['sleep_seconds']=.15
+        with tempfile.TemporaryDirectory()as tmp:
+            root=C.ConcurrentExecutor(ROOT,tmp,r,{},p,max_concurrent=1,budgets={'PR_DF':2})
+            ex=root.for_method('PR_DF');cid=c['candidates'][0]['configuration_id']
+            props=[dict(configuration_id=cid,vector=tuple([n]*26),cost=Fraction(n),origin={})for n in (2,1)]
+            original=C._write
+            def fail_launch(path,value):
+                if Path(path).name=='LAUNCH.json':raise OSError('ARTIFICIAL_DISK_FAILURE_AFTER_POPEN')
+                return original(path,value)
+            with patch.object(C,'_write',side_effect=fail_launch):
+                with root.state.cv:ex.prefetch(props)
+                answer=ex.answer(props[0]);root.finish()
+            self.assertEqual(answer['status'],'UNKNOWN')
+            self.assertEqual(root.metrics()['launched'],1)
+            self.assertEqual(root.metrics()['peak_active'],1)
+            self.assertEqual(len(list(Path(tmp).glob('jobs/*/*/ARTIFICIAL_RESULT.json'))),1)
+            self.assertTrue((ex.job_dir(props[0])/'PROCESS_RETURN.json').exists())
+            self.assertFalse((ex.job_dir(props[1])/'REQUEST.json').exists())
+            with self.assertRaisesRegex(RuntimeError,'no new launches'):ex.answer(props[1])
+
     def test_selection_functions_are_exactly_the_fixed_source(self):
         old=ast.parse(subprocess.check_output(['git','show','1e88cd85c:src/trottertracks/rpe_method_optimizer.py'],cwd=ROOT))
         new=ast.parse((ROOT/'src/trottertracks/rpe_method_optimizer.py').read_bytes())
