@@ -1,0 +1,168 @@
+{
+  "methods": [
+    "PR_PAULI",
+    "PR_DF"
+  ],
+  "method_scope": {
+    "PR_PAULI": {
+      "family": "PR",
+      "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body always in head; tail non-empty",
+      "L_D_range": {
+        "min": 1,
+        "max_offset_from_fragment_count": -1
+      },
+      "caps": [
+        48,
+        45,
+        42,
+        39,
+        36,
+        33,
+        29,
+        26,
+        23,
+        19,
+        16,
+        13,
+        9
+      ],
+      "generation": {
+        "kind": "pauli_native",
+        "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+        "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-a-39a1fc7df",
+        "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+        "baseline": {
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1"
+        },
+        "formulas": [
+          "2nd"
+        ],
+        "delta_over_h_values": [
+          "1"
+        ],
+        "kappa_multipliers": [
+          "1"
+        ],
+        "mapper": "A P1 B API (B ce0517de native generate, PAPER_TOTAL_UNIFORM_OUTER_DRAFT mapper)",
+        "supported_formulas": [
+          "2nd",
+          "4th(m5_best)"
+        ],
+        "note": "q_m=ceil(T_m/delta); h stays the RPE base time",
+        "preparation": {
+          "kind": "a_pauli_candidate_preparation",
+          "request_kind": "pauli_native",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+          "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-a-6e4b6bd6a",
+          "view_commit": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+          "entry": "scripts/prepare_pauli_candidate.py",
+          "handoff": {
+            "commit": "7cf4e1f0536567df6dcf2da6c7bc63f4547aad7b",
+            "path": "docs/research/pauli_candidate_preparation_20261116/HANDOFF.md"
+          },
+          "K": 2,
+          "saved_packets": [
+            {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+            },
+            {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+            },
+            {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+            },
+            {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+            },
+            {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+            },
+            {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+            },
+            {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+            },
+            {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+            },
+            {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+            }
+          ],
+          "note": "metadata only (no --prepare-missing): unregistered L_D of the search range and selected kappa proposals; complete configurations are registered even without price; P0 split work stays a preparation request"
+        }
+      },
+      "saved_configurations_only": false
+    },
+    "PR_DF": {
+      "family": "PR",
+      "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body separate head; prefix and tail non-empty",
+      "L_D_range": {
+        "min": 1,
+        "max_offset_from_fragment_count": -1
+      },
+      "caps": [
+        64,
+        60,
+        56,
+        52,
+        47,
+        43,
+        38,
+        34,
+        30,
+        25,
+        21,
+        17,
+        12
+      ],
+      "generation": {
+        "kind": "prdf_a_fixed_grid",
+        "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+        "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "baseline": {
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1"
+        },
+        "formulas": [
+          "2nd"
+        ],
+        "delta_over_h_values": [
+          "1"
+        ],
+        "kappa_multipliers": [
+          "1"
+        ],
+        "mapper": "D2 B release 437ba4ac A_FIXED_GRID_510FBACD_V1 adapter (run_pr_df_ld7_v0.signal_modules) with the paper common-kappa mapper",
+        "supported_formulas": [
+          "2nd",
+          "4th(m5_best)"
+        ],
+        "note": "delta must make T_m/delta integral for every round (A fixed grid); h stays the RPE base time"
+      },
+      "saved_configurations_only": false
+    }
+  },
+  "design": {
+    "formula": "2nd",
+    "delta_over_h": "1",
+    "kappa": "2",
+    "K": 2
+  },
+  "max_completed_per_method": 1,
+  "source": "1691f5f34e43a971ead2f67673788678588106fb"
+}
