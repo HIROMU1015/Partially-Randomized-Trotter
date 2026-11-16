@@ -378,7 +378,8 @@ def proposals(candidates, knowledge, threshold, search, generate):
     return ordered, incumbent
 
 
-HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW'}
+HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW',
+        'BUDGET_EXHAUSTED': 'Q3_BUDGET_EXHAUSTED'}
 
 
 def run_method(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None, spent=0, free=None,
@@ -1012,7 +1013,8 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                           problem.get('q3_routes'), spent, free, science_approved, prefetch)
         else:
             result = run_method(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
-                                problem.get('q3_routes'), spent, free, science_approved)
+                                problem.get('q3_routes'), spent, free, science_approved,
+                                prefetch if getattr(executor,'supports_nonblocking_prefetch',False) else None)
         out[name] = summarize_method(name, cands, result, knowledge, threshold)
         out[name]['budget'] = dict(max_new_q3='UNLIMITED_WITHIN_RANGE' if budget is None else budget, science_approved=science_approved,
                                    spent_before=spent, new_calls=result['new_calls'])

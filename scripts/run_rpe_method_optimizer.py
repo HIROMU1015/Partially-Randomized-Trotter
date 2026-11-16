@@ -119,13 +119,23 @@ def round_mode(a, problem, extra):
     search.update(spec.get('search_overrides', {}))  # e.g. incumbent_scope CONFIGURATION, lookahead, seed_saved_same_L_D
     O.apply_published(context['candidates'], routes)
     ex_opts = spec.get('executor', {})
-    executor = O.Executor(ROOT, run, routes, context['expected'], problem, optimizer_source=head(),
-                          max_concurrent=ex_opts.get('max_concurrent_jobs', 1), wait_for_running=ex_opts.get('wait_for_running_jobs', False))
+    if ex_opts.get('scheduler','legacy') not in ('legacy','concurrent'):
+        raise SystemExit('Unknown executor.scheduler')
     budgets = spec['max_new_q3_per_method']
     approved = spec.get('science_approved', any(v not in (0, None) for v in budgets.values()))
     if any(v == 'UNLIMITED' for v in budgets.values()) and spec.get('science_approved') is not True:
         raise SystemExit('UNLIMITED (no Q3 count limit) requires science_approved: true in the round file')
-    result = O.optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
+    if ex_opts.get('scheduler','legacy')=='concurrent':
+        from trottertracks import rpe_optimizer_concurrent as C
+        executor = C.ConcurrentExecutor(ROOT,run,routes,context['expected'],problem,optimizer_source=head(),
+            max_concurrent=ex_opts.get('max_concurrent_jobs',1),wait_for_running=ex_opts.get('wait_for_running_jobs',False),
+            budgets=budgets,science_approved=approved,dp_workers=ex_opts.get('dp_workers'))
+        optimize=C.optimize
+    else:
+        executor = O.Executor(ROOT,run,routes,context['expected'],problem,optimizer_source=head(),
+            max_concurrent=ex_opts.get('max_concurrent_jobs',1),wait_for_running=ex_opts.get('wait_for_running_jobs',False))
+        optimize=O.optimize
+    result = optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
                         initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
                         extra_results=extra, science_approved=approved)
     write(run / 'ROUND_RESULT.json', dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,

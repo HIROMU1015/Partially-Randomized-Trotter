@@ -267,7 +267,10 @@ def artificial(request, out, mode):
                         scientific_evaluation_calls=0, identity=None, artificial=True)
         saved = json.loads(artifact.read_text())
         return dict(saved, identity=ident, artificial=True, collected=True)
+    stage(out,'ARTIFICIAL_EVALUATION_START')
+    artificial_load(spec.get('load'),request.get('execution_profile',{}).get('dp_workers'))
     time.sleep(spec.get('sleep_seconds', 0))
+    time.sleep(spec.get('sleep_by_first_shot',{}).get(str(request['N_X'][0]),0))
     if spec.get('force_unknown'):
         value = dict(status='UNKNOWN', reason='ARTIFICIAL_GATE_FAILURE', MSE_lower=None, MSE_upper=None, scientific_evaluation_calls=1)
     else:
@@ -276,7 +279,47 @@ def artificial(request, out, mode):
         tau = Fraction(spec['tau']);enc = dict(numerator=mse.numerator, denominator=mse.denominator)
         value = dict(status=PASS if mse <= tau else FAIL, MSE_lower=enc, MSE_upper=enc, scientific_evaluation_calls=1)
     write(artifact, value)
+    stage(out,'ARTIFICIAL_EVALUATION_RETURNED')
     return dict(value, identity=ident, artificial=True)
+
+
+def _artificial_chunk(units):
+    value=0
+    for i in range(units):value=(value+i*i)%1000000007
+    return value
+
+
+def artificial_load(spec,workers):
+    """Explicit artificial fork/CPU workload for execution-profile benchmarks.
+
+    Does not use quantum inputs or kernels. It does not affect the artificial
+    answer. Its scaling is not a model or measurement of real Q3 speedup.
+    """
+    if not spec:return
+    from concurrent.futures import ProcessPoolExecutor
+    import multiprocessing as mp
+    workers=workers or spec.get('baseline_dp_workers',8)
+    memory=bytearray(spec.get('memory_MiB',0)*1024*1024)
+    for i in range(0,len(memory),4096):memory[i]=1
+    time.sleep(spec.get('serial_seconds',0))
+    for _ in range(spec.get('parallel_rounds',1)):
+        units=[spec.get('units_per_chunk',10000)]*spec.get('chunks',8)
+        if workers==1:list(map(_artificial_chunk,units))
+        else:
+            with ProcessPoolExecutor(max_workers=workers,mp_context=mp.get_context('fork'))as pool:list(pool.map(_artificial_chunk,units))
+
+
+def execution_profile(inputs, request):
+    """Change only the existing DP worker parameter, never numerical contracts."""
+    workers=request.get('execution_profile',{}).get('dp_workers')
+    if workers is None:return inputs
+    if type(workers)is not int or workers<1:raise ValueError('Positive integer dp_workers required')
+    frozen={k:deepcopy(inputs[k])for k in CONTRACT}
+    if 'workers_per_configuration' not in inputs.get('acceleration',{}):
+        raise ValueError('Route has no existing workers_per_configuration parameter')
+    inputs=deepcopy(inputs);inputs['acceleration']['workers_per_configuration']=workers
+    if any(inputs[k]!=frozen[k]for k in CONTRACT):raise ValueError('Execution profile changed scientific contract')
+    return inputs
 
 
 def main():
@@ -292,7 +335,7 @@ def main():
         outcome = artificial(request, out, a.mode)
     else:
         view = Path(request['route']['view'])
-        case, inputs = build(view, request);r = route(view, kind)
+        case, inputs = build(view, request);inputs=execution_profile(inputs,request);r = route(view, kind)
         stage(out, 'CASE_BUILT', template=inputs['template_source'])
         bounds = r.bounds(case['allocation']['shots'])
         if not in_scope(bounds, inputs['options']):
@@ -302,7 +345,8 @@ def main():
             runtime = r.runtime() if r.runtime is not None else None
             r.metadata(case);stage(out, 'METADATA_PASS', bounds=bounds)
             source = dict(request_id=request['request_id'], route=kind, view_commit=request['route']['view_commit'],
-                          adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=request.get('optimizer_source'), runtime=runtime)
+                          adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=request.get('optimizer_source'), runtime=runtime,
+                          execution_profile=request.get('execution_profile'))
             if a.mode == 'dry-check':
                 outcome = dict(status='DRY_CHECK_PASS', bounds=bounds, case_label=case['label'], template=inputs['template_source'],
                                metadata='PASS', runtime=runtime)
