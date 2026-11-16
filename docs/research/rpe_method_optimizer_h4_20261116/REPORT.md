@@ -2,6 +2,16 @@
 
 2026-11-16 JST、B2（Claude Code、主agentのみ。作成者自身の確認で、独立レビューではない）。実装SOURCEは `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`。**新規の実信号・価格・compile・Q3は0件。** 確認は保存資料と人工fixtureだけで行った。第2・第1段階の記録は後半に残した。
 
+## P. AのPR-Pauli候補準備入口の接続（`05c7022fa`／`76bb92184`）
+
+[PREPARATION_CONNECTION](PREPARATION_CONNECTION.md) が正本。
+
+- **接続**：Aの入口（SOURCE `6e4b6bd6a`）を、`generate_variants()` がIDのない候補を除外する前に呼ぶ。
+- **登録**：保存LD1（`d905d219`）は、価格不足（D2 MODELで26軸すべて `NEEDS_PRICE_EVIDENCE`）のまま登録した。
+- **準備要求**：LD4・6・7・8・9は、Aのnext_actionsを付けて準備要求として保持する。
+- **V2のκ案**：設定を有効にすれば、同じ入口へ送れる（雛形ではfalse）。
+- **確認**：保存結果と人工系で8/8 PASS。metadataだけで、新しい科学計算は0件。
+
 ## K. κ round01の途中終了と、次版の候補選択（`cbe2947ad`）
 
 [kappa_round01/REPORT](kappa_round01/REPORT.md)／[HANDOFF](kappa_round01/HANDOFF.md) が正本。

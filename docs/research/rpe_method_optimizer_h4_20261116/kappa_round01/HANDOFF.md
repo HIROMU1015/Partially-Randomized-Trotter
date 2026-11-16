@@ -39,8 +39,17 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /home/AbeHiromu/projects/Evaluation-of-
 - **Q3**：LD5 κ×2のm5を1減らす（410,199,859.00）。その後m4・m3を減らし、LD5 κ×1／κ×2/3を探索する。
 - **入力要求**
   - κ案：LD5 κ×4、LD3 κ×4/9、LD2 κ×4/9。初期候補は近いκの適合配分。
-  - 新L_D：4・6・7・8・1・9。
+  - 新L_D：4・6・7・8・9（P0準備要求）。LD1は、登録済みで入力不足の構成。
   - 価格・信号・経路がそろうまで、Q3枠は使わない。
+
+## AのPR-Pauli候補準備入口（`76bb92184`）
+
+[PREPARATION_CONNECTION](../PREPARATION_CONNECTION.md) を参照。
+
+- **次roundでの動き**：全L_Dを列挙すると、未登録のL_DがAの入口へ送られる。
+  - 保存LD1は、価格不足のまま候補として登録される。
+  - LD4・6・7・8・9は、準備要求（P0）として残る。
+- **κ案**：`search.prepare_kappa_proposals: true` にすると、同じ入口で構成を作る。作られるのはmetadataで、価格はD2のMODELで引用する。
 
 ## ロードマップへの差分（本体は統合担当が更新）
 

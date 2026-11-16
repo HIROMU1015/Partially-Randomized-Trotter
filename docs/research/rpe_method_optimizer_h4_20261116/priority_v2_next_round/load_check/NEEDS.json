@@ -1,23 +1,96 @@
 {
   "candidates": [
     {
-      "name": "PR_PAULI:L_D=1:NONE",
+      "name": "PR_PAULI:L_D=1,formula=2nd,delta_over_h=1,kappa_multiplier=1:d905d219",
       "method": "PR_PAULI",
       "configuration": {
-        "L_D": 1
+        "L_D": 1,
+        "formula": "2nd",
+        "delta_over_h": "1",
+        "kappa_multiplier": "1"
       },
-      "configuration_id": null,
+      "configuration_id": "d905d2197d4b01df3074b3844c0f4a2b990c21b9c3e1a0e3b6ea13a488b1fd27",
       "ready": false,
       "needs": [
-        "CONFIGURATION_AND_SCHEDULE",
-        "SIGNAL_13ROUND_PACKET",
-        "PRICE_26AXIS"
+        "SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS",
+        "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION",
+        "PRICE_AXES:26_of_26"
       ],
-      "price_status": "NO_SAVED_26_AXIS_PRICE",
+      "price_status": "PRICE_RULES_MODEL_INCOMPLETE",
       "signal_source": null,
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": "A_PAULI_CANDIDATE_PREPARATION",
+      "preparation": {
+        "item_id": "PR_PAULI:L_D=1",
+        "status": "GENERATED",
+        "preparation_status": "REUSED_CONFIGURATION",
+        "L_D": 1,
+        "readiness": {
+          "configuration_complete": true,
+          "signal_13round_complete": true,
+          "price_26axis_complete": false
+        },
+        "next_actions": [
+          "ASSEMBLE_REUSED_SIGNAL_PACKET",
+          "PROCESS_D2_PRICE_HANDOFF"
+        ],
+        "missing_inputs": [],
+        "configuration_id": "d905d2197d4b01df3074b3844c0f4a2b990c21b9c3e1a0e3b6ea13a488b1fd27",
+        "configuration_source": {
+          "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+          "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+          "selector": [
+            "packets",
+            0,
+            "configuration"
+          ]
+        },
+        "configuration_file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/priority_v2_next_round/load_check/preparation/PR_PAULI/unregistered_L_D/PREPARATION.0.CONFIGURATION.json",
+        "requested_changes": {
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "K": 2
+        },
+        "descriptor_status": "SAVED",
+        "dictionary_source": {
+          "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+          "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD1_DICTIONARY.json"
+        },
+        "lambda_P": 3.3066052942233157,
+        "lambda_DF": 2.8629570945298686,
+        "signal_counts": {
+          "REUSE": 13
+        },
+        "signal_request_rounds": [],
+        "signal_unsupported_rounds": [],
+        "signal_split_validation": "SAVED_MEANS_FOR_THIS_DICTIONARY_EXIST",
+        "price_handoff": {
+          "implementation_status": "SAVED_CONTRACT_PENDING_APPLICABILITY",
+          "needs": [
+            "MODEL_QUOTE_APPLICABILITY_OR_MISSING_26_AXIS_EVIDENCE"
+          ],
+          "next_action": "QUOTE_MODEL",
+          "quote_executed": false,
+          "registry_entry": "PAULI_LD1"
+        },
+        "scientific_request": null,
+        "call": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/priority_v2_next_round/load_check/preparation/PR_PAULI/unregistered_L_D"
+      },
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": false,
+        "registry": "PAULI_LD1",
+        "classifications": {
+          "NEEDS_PRICE_EVIDENCE": 26
+        },
+        "extrapolated_axes": 0,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     },
     {
       "name": "PR_PAULI:L_D=2:d7dd4f52",
@@ -46,7 +119,21 @@
         "e96a88252d013acf15f192cf",
         "d15f6fb8f73fafdefe5354fa"
       ],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": null,
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": true,
+        "registry": "PAULI_LD2",
+        "classifications": {
+          "MODEL_REFERENCE": 26
+        },
+        "extrapolated_axes": 26,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     },
     {
       "name": "PR_PAULI:L_D=3:dd5b881d",
@@ -76,7 +163,21 @@
         "9fe5181d82bc7c5472aba4ad",
         "06f67f6f4ae4a7390d403c96"
       ],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": null,
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": true,
+        "registry": "PAULI_LD3",
+        "classifications": {
+          "MODEL_REFERENCE": 26
+        },
+        "extrapolated_axes": 26,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     },
     {
       "name": "PR_PAULI:L_D=4:NONE",
@@ -87,15 +188,68 @@
       "configuration_id": null,
       "ready": false,
       "needs": [
-        "CONFIGURATION_AND_SCHEDULE",
-        "SIGNAL_13ROUND_PACKET",
-        "PRICE_26AXIS"
+        "SPLIT_PREPARATION:DERIVE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
       ],
       "price_status": "NO_SAVED_26_AXIS_PRICE",
       "signal_source": null,
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": {
+        "item_id": "PR_PAULI:L_D=4",
+        "status": "NEEDS_SPLIT_PREPARATION",
+        "preparation_status": null,
+        "L_D": 4,
+        "readiness": {
+          "configuration_complete": false,
+          "signal_13round_complete": false,
+          "price_26axis_complete": null
+        },
+        "next_actions": [
+          "DERIVE_DESCRIPTOR",
+          "P0_DICTIONARY_AND_OPERATOR_GATES",
+          "P1_CONFIGURATION"
+        ],
+        "missing_inputs": [],
+        "configuration_id": null,
+        "configuration_source": null,
+        "configuration_file": null,
+        "requested_changes": {
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "K": 2
+        },
+        "descriptor_status": "NEEDS_DERIVATION",
+        "dictionary_source": null,
+        "lambda_P": null,
+        "lambda_DF": null,
+        "signal_counts": null,
+        "signal_request_rounds": null,
+        "signal_unsupported_rounds": null,
+        "signal_split_validation": null,
+        "price_handoff": null,
+        "scientific_request": {
+          "prefix": 4,
+          "descriptor": {
+            "status": "NEEDS_DERIVATION",
+            "descriptor": null,
+            "source": {
+              "commit": "7f4c9a171a1d4caeaeaee6c443217edec761f4c9",
+              "path": "scripts/h46_new2_core.py",
+              "function": "matrix_only_tail_coefficients"
+            },
+            "missing_inputs": [],
+            "additional_science": "saved DF factor coefficient extraction (no fit/circuit)"
+          },
+          "stage1": "scripts/run_df_head_pauli_tail_split_stage1.py:execute_p0",
+          "route": "scripts/prepare_pauli_candidate.py --prepare-missing --source SOURCE --request REQUEST --output OUT",
+          "new_H4_dictionary_executed": false
+        },
+        "call": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/priority_v2_next_round/load_check/preparation/PR_PAULI/unregistered_L_D"
+      },
+      "price_quote": null
     },
     {
       "name": "PR_PAULI:L_D=5:4d6e2c9c",
@@ -119,7 +273,21 @@
         "ab0a231b9cd06286a79c1155",
         "64ca8d12b20ac47e1c87d860"
       ],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": null,
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": true,
+        "registry": "PAULI_LD5",
+        "classifications": {
+          "MODEL_REFERENCE": 26
+        },
+        "extrapolated_axes": 26,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     },
     {
       "name": "PR_PAULI:L_D=6:NONE",
@@ -130,15 +298,68 @@
       "configuration_id": null,
       "ready": false,
       "needs": [
-        "CONFIGURATION_AND_SCHEDULE",
-        "SIGNAL_13ROUND_PACKET",
-        "PRICE_26AXIS"
+        "SPLIT_PREPARATION:DERIVE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
       ],
       "price_status": "NO_SAVED_26_AXIS_PRICE",
       "signal_source": null,
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": {
+        "item_id": "PR_PAULI:L_D=6",
+        "status": "NEEDS_SPLIT_PREPARATION",
+        "preparation_status": null,
+        "L_D": 6,
+        "readiness": {
+          "configuration_complete": false,
+          "signal_13round_complete": false,
+          "price_26axis_complete": null
+        },
+        "next_actions": [
+          "DERIVE_DESCRIPTOR",
+          "P0_DICTIONARY_AND_OPERATOR_GATES",
+          "P1_CONFIGURATION"
+        ],
+        "missing_inputs": [],
+        "configuration_id": null,
+        "configuration_source": null,
+        "configuration_file": null,
+        "requested_changes": {
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "K": 2
+        },
+        "descriptor_status": "NEEDS_DERIVATION",
+        "dictionary_source": null,
+        "lambda_P": null,
+        "lambda_DF": null,
+        "signal_counts": null,
+        "signal_request_rounds": null,
+        "signal_unsupported_rounds": null,
+        "signal_split_validation": null,
+        "price_handoff": null,
+        "scientific_request": {
+          "prefix": 6,
+          "descriptor": {
+            "status": "NEEDS_DERIVATION",
+            "descriptor": null,
+            "source": {
+              "commit": "7f4c9a171a1d4caeaeaee6c443217edec761f4c9",
+              "path": "scripts/h46_new2_core.py",
+              "function": "matrix_only_tail_coefficients"
+            },
+            "missing_inputs": [],
+            "additional_science": "saved DF factor coefficient extraction (no fit/circuit)"
+          },
+          "stage1": "scripts/run_df_head_pauli_tail_split_stage1.py:execute_p0",
+          "route": "scripts/prepare_pauli_candidate.py --prepare-missing --source SOURCE --request REQUEST --output OUT",
+          "new_H4_dictionary_executed": false
+        },
+        "call": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/priority_v2_next_round/load_check/preparation/PR_PAULI/unregistered_L_D"
+      },
+      "price_quote": null
     },
     {
       "name": "PR_PAULI:L_D=7:NONE",
@@ -149,15 +370,75 @@
       "configuration_id": null,
       "ready": false,
       "needs": [
-        "CONFIGURATION_AND_SCHEDULE",
-        "SIGNAL_13ROUND_PACKET",
-        "PRICE_26AXIS"
+        "SPLIT_PREPARATION:REUSE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
       ],
       "price_status": "NO_SAVED_26_AXIS_PRICE",
       "signal_source": null,
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": {
+        "item_id": "PR_PAULI:L_D=7",
+        "status": "NEEDS_SPLIT_PREPARATION",
+        "preparation_status": null,
+        "L_D": 7,
+        "readiness": {
+          "configuration_complete": false,
+          "signal_13round_complete": false,
+          "price_26axis_complete": null
+        },
+        "next_actions": [
+          "REUSE_DESCRIPTOR",
+          "P0_DICTIONARY_AND_OPERATOR_GATES",
+          "P1_CONFIGURATION"
+        ],
+        "missing_inputs": [],
+        "configuration_id": null,
+        "configuration_source": null,
+        "configuration_file": null,
+        "requested_changes": {
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "K": 2
+        },
+        "descriptor_status": "SAVED",
+        "dictionary_source": null,
+        "lambda_P": null,
+        "lambda_DF": null,
+        "signal_counts": null,
+        "signal_request_rounds": null,
+        "signal_unsupported_rounds": null,
+        "signal_split_validation": null,
+        "price_handoff": null,
+        "scientific_request": {
+          "prefix": 7,
+          "descriptor": {
+            "status": "SAVED",
+            "descriptor": {
+              "lambda_R": 0.0003129539143720037,
+              "scalar": 4.5302064712666724e-05
+            },
+            "source": {
+              "index": {
+                "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+              },
+              "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+              "selector": [
+                "prefixes",
+                "7"
+              ]
+            }
+          },
+          "stage1": "scripts/run_df_head_pauli_tail_split_stage1.py:execute_p0",
+          "route": "scripts/prepare_pauli_candidate.py --prepare-missing --source SOURCE --request REQUEST --output OUT",
+          "new_H4_dictionary_executed": false
+        },
+        "call": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/priority_v2_next_round/load_check/preparation/PR_PAULI/unregistered_L_D"
+      },
+      "price_quote": null
     },
     {
       "name": "PR_PAULI:L_D=8:NONE",
@@ -168,15 +449,68 @@
       "configuration_id": null,
       "ready": false,
       "needs": [
-        "CONFIGURATION_AND_SCHEDULE",
-        "SIGNAL_13ROUND_PACKET",
-        "PRICE_26AXIS"
+        "SPLIT_PREPARATION:DERIVE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
       ],
       "price_status": "NO_SAVED_26_AXIS_PRICE",
       "signal_source": null,
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": {
+        "item_id": "PR_PAULI:L_D=8",
+        "status": "NEEDS_SPLIT_PREPARATION",
+        "preparation_status": null,
+        "L_D": 8,
+        "readiness": {
+          "configuration_complete": false,
+          "signal_13round_complete": false,
+          "price_26axis_complete": null
+        },
+        "next_actions": [
+          "DERIVE_DESCRIPTOR",
+          "P0_DICTIONARY_AND_OPERATOR_GATES",
+          "P1_CONFIGURATION"
+        ],
+        "missing_inputs": [],
+        "configuration_id": null,
+        "configuration_source": null,
+        "configuration_file": null,
+        "requested_changes": {
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "K": 2
+        },
+        "descriptor_status": "NEEDS_DERIVATION",
+        "dictionary_source": null,
+        "lambda_P": null,
+        "lambda_DF": null,
+        "signal_counts": null,
+        "signal_request_rounds": null,
+        "signal_unsupported_rounds": null,
+        "signal_split_validation": null,
+        "price_handoff": null,
+        "scientific_request": {
+          "prefix": 8,
+          "descriptor": {
+            "status": "NEEDS_DERIVATION",
+            "descriptor": null,
+            "source": {
+              "commit": "7f4c9a171a1d4caeaeaee6c443217edec761f4c9",
+              "path": "scripts/h46_new2_core.py",
+              "function": "matrix_only_tail_coefficients"
+            },
+            "missing_inputs": [],
+            "additional_science": "saved DF factor coefficient extraction (no fit/circuit)"
+          },
+          "stage1": "scripts/run_df_head_pauli_tail_split_stage1.py:execute_p0",
+          "route": "scripts/prepare_pauli_candidate.py --prepare-missing --source SOURCE --request REQUEST --output OUT",
+          "new_H4_dictionary_executed": false
+        },
+        "call": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/priority_v2_next_round/load_check/preparation/PR_PAULI/unregistered_L_D"
+      },
+      "price_quote": null
     },
     {
       "name": "PR_PAULI:L_D=9:NONE",
@@ -187,15 +521,75 @@
       "configuration_id": null,
       "ready": false,
       "needs": [
-        "CONFIGURATION_AND_SCHEDULE",
-        "SIGNAL_13ROUND_PACKET",
-        "PRICE_26AXIS"
+        "SPLIT_PREPARATION:REUSE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
       ],
       "price_status": "NO_SAVED_26_AXIS_PRICE",
       "signal_source": null,
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": {
+        "item_id": "PR_PAULI:L_D=9",
+        "status": "NEEDS_SPLIT_PREPARATION",
+        "preparation_status": null,
+        "L_D": 9,
+        "readiness": {
+          "configuration_complete": false,
+          "signal_13round_complete": false,
+          "price_26axis_complete": null
+        },
+        "next_actions": [
+          "REUSE_DESCRIPTOR",
+          "P0_DICTIONARY_AND_OPERATOR_GATES",
+          "P1_CONFIGURATION"
+        ],
+        "missing_inputs": [],
+        "configuration_id": null,
+        "configuration_source": null,
+        "configuration_file": null,
+        "requested_changes": {
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "K": 2
+        },
+        "descriptor_status": "SAVED",
+        "dictionary_source": null,
+        "lambda_P": null,
+        "lambda_DF": null,
+        "signal_counts": null,
+        "signal_request_rounds": null,
+        "signal_unsupported_rounds": null,
+        "signal_split_validation": null,
+        "price_handoff": null,
+        "scientific_request": {
+          "prefix": 9,
+          "descriptor": {
+            "status": "SAVED",
+            "descriptor": {
+              "lambda_R": 1.5605698403540042e-07,
+              "scalar": 5.193351122457893e-08
+            },
+            "source": {
+              "index": {
+                "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+                "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+              },
+              "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+              "selector": [
+                "prefixes",
+                "9"
+              ]
+            }
+          },
+          "stage1": "scripts/run_df_head_pauli_tail_split_stage1.py:execute_p0",
+          "route": "scripts/prepare_pauli_candidate.py --prepare-missing --source SOURCE --request REQUEST --output OUT",
+          "new_H4_dictionary_executed": false
+        },
+        "call": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/priority_v2_next_round/load_check/preparation/PR_PAULI/unregistered_L_D"
+      },
+      "price_quote": null
     },
     {
       "name": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa_multiplier=2/3:6cf83f34",
@@ -216,7 +610,21 @@
       },
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": null,
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": true,
+        "registry": "PAULI_LD2",
+        "classifications": {
+          "MODEL_REFERENCE": 26
+        },
+        "extrapolated_axes": 26,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     },
     {
       "name": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa_multiplier=2:300085cf",
@@ -237,7 +645,21 @@
       },
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": null,
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": true,
+        "registry": "PAULI_LD2",
+        "classifications": {
+          "MODEL_REFERENCE": 26
+        },
+        "extrapolated_axes": 26,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     },
     {
       "name": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa_multiplier=2/3:569c14aa",
@@ -258,7 +680,21 @@
       },
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": null,
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": true,
+        "registry": "PAULI_LD3",
+        "classifications": {
+          "MODEL_REFERENCE": 26
+        },
+        "extrapolated_axes": 26,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     },
     {
       "name": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa_multiplier=2:23ec1791",
@@ -279,7 +715,21 @@
       },
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": null,
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": true,
+        "registry": "PAULI_LD3",
+        "classifications": {
+          "MODEL_REFERENCE": 26
+        },
+        "extrapolated_axes": 26,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     },
     {
       "name": "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1,kappa_multiplier=2/3:39355bcf",
@@ -300,7 +750,21 @@
       },
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": null,
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": true,
+        "registry": "PAULI_LD5",
+        "classifications": {
+          "MODEL_REFERENCE": 26
+        },
+        "extrapolated_axes": 26,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     },
     {
       "name": "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1,kappa_multiplier=2:cb1aa748",
@@ -321,7 +785,21 @@
       },
       "labels": [],
       "saved_points": [],
-      "outside_index": false
+      "outside_index": false,
+      "prepared_by": null,
+      "preparation": null,
+      "price_quote": {
+        "policy": "MODEL",
+        "status": "QUOTED",
+        "complete": true,
+        "registry": "PAULI_LD5",
+        "classifications": {
+          "MODEL_REFERENCE": 26
+        },
+        "extrapolated_axes": 26,
+        "reason": null,
+        "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+      }
     }
   ],
   "pending_Q3": {

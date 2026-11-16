@@ -1,5 +1,11 @@
 # プロジェクト案内
 
+[H4方式別最適化：AのPR-Pauli候補準備入口の接続](docs/research/rpe_method_optimizer_h4_20261116/PREPARATION_CONNECTION.md)：
+- A 6e4b6bd6aの準備入口を、`generate_variants()` がIDのない候補を除外する前に呼ぶ（metadataのみ）。
+- 保存LD1は、価格不足のまま登録した。LD4・6・7・8・9は、P0の準備要求として保持する。
+- V2のκ案は、設定すれば同じ入口へ送れる。
+- 保存結果と人工系で8/8 PASS。
+
 [H4 PR-Pauli κ round01の途中終了とV2候補選択](docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/HANDOFF.md)：
 - κ探索（LD2/3/5×κ{2/3,1,2}）を、方針変更のため停止した（`INTERRUPTED_SEARCH_POLICY_CHANGE`）。
 - 完了Q3は4,229件（採用3,334、先読み895）。PR-Pauliの最安は541.74Mから410.47Mへ更新した（LD5 κ×2）。

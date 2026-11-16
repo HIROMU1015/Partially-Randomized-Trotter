@@ -2,6 +2,14 @@
 
 正本は[REPORT](REPORT.md)の§E〜H（第3段階）と§A〜D（第2段階）。branch `codex/b2-rpe-method-optimizer-20261116`、実装SOURCE：PR生成は `2fa2dbfac3646b801a3d5b8ebb02676b989bcb78`、D2価格適用判定の接続は `47f86eb20`（報告出力 `d993d5e5b`、公開 `3014ae142`）。新規の実信号・価格・compile・Q3は0件。
 
+## 追加：AのPR-Pauli候補準備入口の接続（`76bb92184`）
+
+[PREPARATION_CONNECTION](PREPARATION_CONNECTION.md) を参照。
+
+- **呼び方**：問題入力の `generation.preparation`（PR_PAULI）に、入口・固定view・保存packetを書いてある。
+- **登録されたもの**：未登録L_Dのうち、完成したもの（現時点では保存LD1）。価格不足でも登録する。
+- **準備要求**：残りのL_D（4・6・7・8・9）。各L_DのP0には、別途の科学実行承認が必要（Aの `--prepare-missing`）。
+
 ## 追加：κ round01の途中終了とV2候補選択（`cbe2947ad`）
 
 [kappa_round01/HANDOFF](kappa_round01/HANDOFF.md) を参照。

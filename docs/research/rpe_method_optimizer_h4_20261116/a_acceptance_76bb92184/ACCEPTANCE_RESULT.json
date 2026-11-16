@@ -1,0 +1,1249 @@
+{
+ "schema": "A_RPE_OPTIMIZER_ACCEPTANCE_RESULT_V1",
+ "optimizer_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116",
+ "optimizer_commit": "76bb921844ff2da617d8ca242c49396e07b5be29",
+ "entry": "trottertracks.rpe_method_optimizer.prepare/optimize",
+ "counts": {
+  "PASS": 20,
+  "PENDING_NOT_PUBLISHED": 1
+ },
+ "cases": [
+  {
+   "case": "1_P7_S2_SHOT_SEARCH",
+   "checks": [
+    {
+     "check": "search_space_follows_requested_range",
+     "status": "PASS",
+     "outside_candidates": []
+    },
+    {
+     "check": "starts_from_given_saved_point_only",
+     "status": "PASS",
+     "seed_cost": "435481090",
+     "run": "1a_from_m12_4"
+    },
+    {
+     "check": "saved_Q3_revealed_only_after_selection",
+     "status": "PASS",
+     "queries": 2,
+     "steps": 2,
+     "run": "1a_from_m12_4"
+    },
+    {
+     "check": "next_action_decided_without_asking",
+     "status": "PASS",
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "pending_route": {
+      "kind": "pf_b_pf6",
+      "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+     },
+     "run": "1a_from_m12_4"
+    },
+    {
+     "check": "continues_after_improvement",
+     "status": "PASS",
+     "improvements": 1,
+     "steps_after_last_improvement": 1,
+     "pending_cheaper_than_new_incumbent": true,
+     "run": "1a_from_m12_4"
+    },
+    {
+     "check": "starts_from_given_saved_point_only",
+     "status": "PASS",
+     "seed_cost": "415721884",
+     "run": "1b_after_m12_3"
+    },
+    {
+     "check": "saved_Q3_revealed_only_after_selection",
+     "status": "PASS",
+     "queries": 1,
+     "steps": 1,
+     "run": "1b_after_m12_3"
+    },
+    {
+     "check": "next_action_decided_without_asking",
+     "status": "PASS",
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "pending_route": {
+      "kind": "pf_b_pf6",
+      "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+     },
+     "run": "1b_after_m12_3"
+    },
+    {
+     "check": "next_action_from_m12_3_state_without_budget",
+     "status": "PASS",
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "run": "1b_after_m12_3"
+    },
+    {
+     "check": "remaining_budget_used_then_rule_stop",
+     "status": "PASS",
+     "new_calls": 1,
+     "stop_reason": "Q3_BUDGET_EXHAUSTED",
+     "run": "1b_after_m12_3_budget_1_artificial"
+    }
+   ],
+   "runs": {
+    "1a_from_m12_4": {
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "new_calls": 0,
+     "best": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "cost": "395962678",
+      "N_X": [
+       59,
+       55,
+       51,
+       47,
+       43,
+       39,
+       35,
+       31,
+       27,
+       23,
+       19,
+       13,
+       2
+      ],
+      "N_Y": [
+       59,
+       55,
+       51,
+       47,
+       43,
+       39,
+       35,
+       31,
+       27,
+       23,
+       19,
+       13,
+       2
+      ],
+      "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+     },
+     "trace": [
+      {
+       "step": 1,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        13,
+        13,
+        2,
+        2
+       ],
+       "cost": "395962678",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+       "improved": true
+      },
+      {
+       "step": 2,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        13,
+        13,
+        1,
+        1
+       ],
+       "cost": "376203472",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+       "improved": false
+      }
+     ],
+     "pending": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "vector": [
+       59,
+       59,
+       55,
+       55,
+       51,
+       51,
+       47,
+       47,
+       43,
+       43,
+       39,
+       39,
+       35,
+       35,
+       31,
+       31,
+       27,
+       27,
+       23,
+       23,
+       19,
+       19,
+       12,
+       12,
+       2,
+       2
+      ],
+      "cost": "386082768",
+      "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+      "route": {
+       "kind": "pf_b_pf6",
+       "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+     },
+     "not_ready": [],
+     "backend_queries": [
+      {
+       "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        13,
+        13,
+        2,
+        2
+       ],
+       "answered": true,
+       "source": "SAVED",
+       "calls": 0
+      },
+      {
+       "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        13,
+        13,
+        1,
+        1
+       ],
+       "answered": true,
+       "source": "SAVED",
+       "calls": 0
+      }
+     ]
+    },
+    "1b_after_m12_3": {
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "new_calls": 0,
+     "best": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "cost": "415721884",
+      "N_X": [
+       59,
+       55,
+       51,
+       47,
+       43,
+       39,
+       35,
+       31,
+       27,
+       23,
+       19,
+       13,
+       3
+      ],
+      "N_Y": [
+       59,
+       55,
+       51,
+       47,
+       43,
+       39,
+       35,
+       31,
+       27,
+       23,
+       19,
+       13,
+       3
+      ],
+      "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+     },
+     "trace": [
+      {
+       "step": 1,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        13,
+        13,
+        1,
+        1
+       ],
+       "cost": "376203472",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+       "improved": false
+      }
+     ],
+     "pending": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "vector": [
+       59,
+       59,
+       55,
+       55,
+       51,
+       51,
+       47,
+       47,
+       43,
+       43,
+       39,
+       39,
+       35,
+       35,
+       31,
+       31,
+       27,
+       27,
+       23,
+       23,
+       19,
+       19,
+       11,
+       11,
+       3,
+       3
+      ],
+      "cost": "395962064",
+      "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+      "route": {
+       "kind": "pf_b_pf6",
+       "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+     },
+     "not_ready": [],
+     "backend_queries": [
+      {
+       "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        13,
+        13,
+        1,
+        1
+       ],
+       "answered": true,
+       "source": "SAVED",
+       "calls": 0
+      }
+     ]
+    },
+    "1b_after_m12_3_budget_1_artificial": {
+     "stop_reason": "Q3_BUDGET_EXHAUSTED",
+     "new_calls": 1,
+     "best": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "cost": "395962064",
+      "N_X": [
+       59,
+       55,
+       51,
+       47,
+       43,
+       39,
+       35,
+       31,
+       27,
+       23,
+       19,
+       11,
+       3
+      ],
+      "N_Y": [
+       59,
+       55,
+       51,
+       47,
+       43,
+       39,
+       35,
+       31,
+       27,
+       23,
+       19,
+       11,
+       3
+      ],
+      "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+     },
+     "trace": [
+      {
+       "step": 1,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        13,
+        13,
+        1,
+        1
+       ],
+       "cost": "376203472",
+       "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+       "source": "SAVED",
+       "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+       "improved": false
+      },
+      {
+       "step": 2,
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        11,
+        11,
+        3,
+        3
+       ],
+       "cost": "395962064",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_FIXTURE",
+       "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+       "improved": true
+      }
+     ],
+     "pending": {
+      "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=16/7:a6e55777",
+      "vector": [
+       59,
+       59,
+       55,
+       55,
+       51,
+       51,
+       47,
+       47,
+       43,
+       43,
+       39,
+       39,
+       35,
+       35,
+       31,
+       31,
+       27,
+       27,
+       23,
+       23,
+       19,
+       19,
+       11,
+       11,
+       2,
+       2
+      ],
+      "cost": "376202858",
+      "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+      "route": {
+       "kind": "pf_b_pf6",
+       "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+     },
+     "not_ready": [],
+     "backend_queries": [
+      {
+       "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        13,
+        13,
+        1,
+        1
+       ],
+       "answered": true,
+       "source": "SAVED",
+       "calls": 0
+      },
+      {
+       "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+       "vector": [
+        59,
+        59,
+        55,
+        55,
+        51,
+        51,
+        47,
+        47,
+        43,
+        43,
+        39,
+        39,
+        35,
+        35,
+        31,
+        31,
+        27,
+        27,
+        23,
+        23,
+        19,
+        19,
+        11,
+        11,
+        3,
+        3
+       ],
+       "answered": true,
+       "source": "ARTIFICIAL_FIXTURE",
+       "calls": 1
+      }
+     ]
+    }
+   },
+   "not_a_pass_condition": "The saved 4 -> 3 -> 2 -> 1 order of m12 shots is not required."
+  },
+  {
+   "case": "2_Y4_COARSE_A_SHAPE_PRICE_WAIT",
+   "checks": [
+    {
+     "check": "price_missing_identified",
+     "status": "PASS",
+     "needs": [
+      "PRICE_26AXIS"
+     ],
+     "saved_q3": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+    },
+    {
+     "check": "price_wait_reported_in_output",
+     "status": "PASS",
+     "listed": [
+      {
+       "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+       "configuration": {
+        "formula": "4th",
+        "delta_over_h": "32/5"
+       },
+       "configuration_id": "dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0",
+       "needs": [
+        "PRICE_26AXIS"
+       ],
+       "price_status": "NO_SAVED_26_AXIS_PRICE",
+       "price_quote": null,
+       "price_needs": null,
+       "signal_source": {
+        "commit": "f23c3f10ed56d0c218e49efbdbfb31d12ffa8a53",
+        "path": "docs/research/d_p7_y4_coarse_signal_q3_20261116/BOUND_SIGNAL_INPUT.json",
+        "selector": []
+       },
+       "reusable": null,
+       "next": "Q3 of a generated/decremented allocation after the listed items exist"
+      }
+     ]
+    },
+    {
+     "check": "price_input_is_D_saved_file",
+     "status": "PASS",
+     "price_input": {
+      "commit": "c7c8c1edd0996ad9ef97629961f67ca508a182f0",
+      "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/PRICE_AND_COST.json"
+     }
+    },
+    {
+     "check": "saved_Q3_reused_without_new_call",
+     "status": "PASS",
+     "new_calls": 0
+    },
+    {
+     "check": "D_price_total_in_comparison_table",
+     "status": "PASS",
+     "best": "372,035,410.00",
+     "coarse_rows": [
+      "365218506",
+      "372035410"
+     ]
+    }
+   ],
+   "runs": {
+    "2b_with_D_price": {
+     "stop_reason": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+     "new_calls": 0,
+     "best": {
+      "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+      "cost": "372035410",
+      "N_X": [
+       37,
+       34,
+       32,
+       29,
+       27,
+       24,
+       22,
+       19,
+       17,
+       14,
+       11,
+       9,
+       6
+      ],
+      "N_Y": [
+       37,
+       34,
+       32,
+       29,
+       27,
+       24,
+       22,
+       19,
+       17,
+       14,
+       11,
+       9,
+       6
+      ],
+      "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+     },
+     "trace": [],
+     "pending": {
+      "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=32/5:dd8bfc24",
+      "vector": [
+       37,
+       37,
+       34,
+       34,
+       32,
+       32,
+       29,
+       29,
+       27,
+       27,
+       24,
+       24,
+       22,
+       22,
+       19,
+       19,
+       17,
+       17,
+       14,
+       14,
+       11,
+       11,
+       9,
+       9,
+       4,
+       4
+      ],
+      "cost": "329694342",
+      "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+      "route": {
+       "kind": "pf_b_pf6",
+       "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      }
+     },
+     "not_ready": [
+      {
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=1:e6754564",
+       "needs": [
+        "PRICE_26AXIS"
+       ]
+      },
+      {
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=2:155a3a2e",
+       "needs": [
+        "SIGNAL_13ROUND_PACKET",
+        "PRICE_26AXIS"
+       ]
+      },
+      {
+       "candidate": "TRUNCATED_PF:formula=2nd,delta_over_h=8/3:5576418d",
+       "needs": [
+        "SIGNAL_13ROUND_PACKET",
+        "PRICE_26AXIS"
+       ]
+      },
+      {
+       "candidate": "TRUNCATED_PF:formula=4th,delta_over_h=4:05d246cb",
+       "needs": [
+        "SIGNAL_13ROUND_PACKET",
+        "PRICE_26AXIS"
+       ]
+      },
+      {
+       "candidate": "TRUNCATED_PF:formula=4th(m5_best),delta_over_h=8:a62d4ab0",
+       "needs": [
+        "SIGNAL_13ROUND_PACKET",
+        "PRICE_26AXIS"
+       ]
+      }
+     ],
+     "backend_queries": []
+    }
+   }
+  },
+  {
+   "case": "3_BUDGET_END_AND_RESUME",
+   "checks": [
+    {
+     "check": "budget_end_returns_best_unevaluated_and_reason_separately",
+     "status": "PASS",
+     "stop_reason": "Q3_BUDGET_EXHAUSTED",
+     "best_cost": "988",
+     "pending_cost": "940",
+     "not_ready": [
+      "ART:L_D=2:BBBBBBBB"
+     ],
+     "new_calls": 2
+    },
+    {
+     "check": "no_science_call_beyond_budget",
+     "status": "PASS",
+     "backend_calls_made": 2,
+     "calls_counted_by_optimizer": 2,
+     "budget": 2,
+     "note": "an answer computed and then discarded beyond the budget would be an unapproved Q3 with a real executor"
+    },
+    {
+     "check": "resume_input_recoverable_from_output",
+     "status": "PASS",
+     "missing": []
+    },
+    {
+     "check": "resume_does_not_repeat_completed_calls",
+     "status": "PASS",
+     "first_run_calls": 2,
+     "resumed_calls": 2,
+     "repeated": 0
+    },
+    {
+     "check": "resume_starts_from_previous_state",
+     "status": "PASS",
+     "previous_best": "988",
+     "resumed_first_incumbent": "988"
+    }
+   ],
+   "runs": {
+    "3a_budget_2": {
+     "stop_reason": "Q3_BUDGET_EXHAUSTED",
+     "new_calls": 2,
+     "best": {
+      "candidate": "ART:L_D=1:AAAAAAAA",
+      "cost": "988",
+      "N_X": [
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       2
+      ],
+      "N_Y": [
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       2
+      ],
+      "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+     },
+     "trace": [
+      {
+       "step": 1,
+       "candidate": "ART:L_D=1:AAAAAAAA",
+       "vector": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        4,
+        4
+       ],
+       "cost": "1040",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_FIXTURE",
+       "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+       "improved": true
+      },
+      {
+       "step": 2,
+       "candidate": "ART:L_D=1:AAAAAAAA",
+       "vector": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        2,
+        2
+       ],
+       "cost": "988",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_FIXTURE",
+       "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+       "improved": true
+      }
+     ],
+     "pending": {
+      "candidate": "ART:L_D=1:AAAAAAAA",
+      "vector": [
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       4,
+       4,
+       2,
+       2
+      ],
+      "cost": "940",
+      "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+      "route": {
+       "caller": "ARTIFICIAL_ROUTE"
+      }
+     },
+     "not_ready": [
+      {
+       "candidate": "ART:L_D=2:BBBBBBBB",
+       "needs": [
+        "PRICE_26AXIS"
+       ]
+      }
+     ],
+     "backend_queries": null
+    },
+    "3b_resume_budget_2": {
+     "stop_reason": "Q3_BUDGET_EXHAUSTED",
+     "new_calls": 2,
+     "best": {
+      "candidate": "ART:L_D=1:AAAAAAAA",
+      "cost": "892",
+      "N_X": [
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       2,
+       2
+      ],
+      "N_Y": [
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       2,
+       2
+      ],
+      "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+     },
+     "trace": [
+      {
+       "step": 1,
+       "candidate": "ART:L_D=1:AAAAAAAA",
+       "vector": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        4,
+        4,
+        2,
+        2
+       ],
+       "cost": "940",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_FIXTURE",
+       "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+       "improved": true
+      },
+      {
+       "step": 2,
+       "candidate": "ART:L_D=1:AAAAAAAA",
+       "vector": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        2,
+        2,
+        2,
+        2
+       ],
+       "cost": "892",
+       "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+       "source": "ARTIFICIAL_FIXTURE",
+       "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+       "improved": true
+      }
+     ],
+     "pending": {
+      "candidate": "ART:L_D=1:AAAAAAAA",
+      "vector": [
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       6,
+       4,
+       4,
+       2,
+       2,
+       2,
+       2
+      ],
+      "cost": "848",
+      "origin": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+      "route": {
+       "caller": "ARTIFICIAL_ROUTE"
+      }
+     },
+     "not_ready": [
+      {
+       "candidate": "ART:L_D=2:BBBBBBBB",
+       "needs": [
+        "PRICE_26AXIS"
+       ]
+      }
+     ],
+     "backend_queries": null
+    }
+   }
+  },
+  {
+   "case": "SKILL_ENTRY_B",
+   "checks": [
+    {
+     "check": "skill_entry_runs_the_same_cases",
+     "status": "PENDING_NOT_PUBLISHED",
+     "expected": "The Skill passes the case input file to the optimizer entry and returns the same output fields; the predicates above are applied to its output."
+    }
+   ]
+  }
+ ],
+ "science": {
+  "new_signal": 0,
+  "new_price": 0,
+  "compile": 0,
+  "new_Q3": 0,
+  "artificial_answers": "LABELLED_ARTIFICIAL_FIXTURE"
+ }
+}
