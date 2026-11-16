@@ -18,3 +18,5 @@ branch：`codex/h4-saved-rpe-cost-catalog-20261116`。
 原13信号と26軸価格のphysical ID・identity/law・compiler・scalar等の出所はD readerが照合した範囲と、軸別`price_evidence`からたどる。新条件の科学資格は付与しない。欠測や不一致は既存SYNC_STATUSへ理由付きで残す。
 
 ロードマップへの差分は「Full PF・S2・2hの信号/条件付き価格入力が準備済み、Q3待ち」。費用はnullであるため数値改善として扱わず、方針・Q3/価格資格・原STOPを変更しない。
+
+通常10分cronの実反映は2026-11-16 22:20 JST、固定比較表commit `8b22ca2341f7bdf421fba7a3c018a4ff6d9b281f`。新Fullは1点、既存p7は2評価点のままbyte同等。22:21 JSTの同入口再同期はUNCHANGED、58点・catalog・HEAD不変。[検収JSON](SYNC_VERIFICATION.json)。通常manifestへ手動でcommit/pathを加えていない。実装SOURCE `9c70a1aeee7ee9179e6e6db79ac2e3a9d048821b`。
