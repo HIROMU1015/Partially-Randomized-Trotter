@@ -129,7 +129,8 @@ def round_mode(a, problem, extra):
         from trottertracks import rpe_optimizer_concurrent as C
         executor = C.ConcurrentExecutor(ROOT,run,routes,context['expected'],problem,optimizer_source=head(),
             max_concurrent=ex_opts.get('max_concurrent_jobs',1),wait_for_running=ex_opts.get('wait_for_running_jobs',False),
-            budgets=budgets,science_approved=approved,dp_workers=ex_opts.get('dp_workers'))
+            budgets=budgets,science_approved=approved,dp_workers=ex_opts.get('dp_workers'),
+            prefix_cache_directory=ex_opts.get('prefix_cache_directory'),prefix_checkpoint_rounds=ex_opts.get('prefix_checkpoint_rounds'))
         optimize=C.optimize
     else:
         executor = O.Executor(ROOT,run,routes,context['expected'],problem,optimizer_source=head(),

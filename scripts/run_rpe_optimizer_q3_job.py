@@ -322,6 +322,27 @@ def execution_profile(inputs, request):
     return inputs
 
 
+@contextmanager
+def prefix_cache_context(request,case,inputs,out):
+    """Opt-in cache in the real existing worker path, inherited by its fork."""
+    profile=request.get('execution_profile',{});directory=profile.get('prefix_cache_directory')
+    if directory is None:
+        yield;return
+    module=sys.modules.get('trottertracks.rpe_total_dp_parallel')
+    if module is None:raise ValueError('Route has no supported fixed total-state accelerator')
+    C=load(Path(__file__).resolve().parents[1],'_rpe_opt_prefix_reuse','src/trottertracks/rpe_dp_prefix_reuse.py')
+    namespace=dict(method=request['method'],configuration_id=request['configuration_id'],expected=request['expected'],
+        route_commit=request['route']['view_commit'],
+        physical={k:case.get(k)for k in ('configuration','signal_packet','evaluation_target','binding_id','total_configuration_id')},
+        contract={k:inputs[k]for k in CONTRACT},adapter_prefix_version=C.SCHEMA)
+    def event(value):
+        with (Path(out)/'DP_PREFIX_EVENTS.jsonl').open('a')as f:
+            f.write(json.dumps(dict(UTC=utc(),pid=os.getpid(),**value))+'\n')
+    with C.installed(module,directory=directory,cache_namespace=namespace,
+                     checkpoint_rounds=profile.get('prefix_checkpoint_rounds'),event_sink=event):
+        yield
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--request', type=Path, required=True)
@@ -359,7 +380,7 @@ def main():
             else:
                 write(out / 'SOURCE.json', source);write(out / 'CASE_INPUTS.json', inputs);(out / case['label']).mkdir()
                 stage(out, 'SCIENTIFIC_ROUTE_START')
-                with r.installed(out):
+                with prefix_cache_context(request,case,inputs,out), r.installed(out):
                     supervision = r.supervise([case], inputs, source, out)
                 stage(out, 'SCIENTIFIC_ROUTE_RETURNED')
                 outcome = outcome_from(view, request, case, inputs, r, out, source, supervision)

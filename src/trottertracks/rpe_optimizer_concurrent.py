@@ -39,7 +39,7 @@ def _tree_rss(pid):
 
 class ConcurrentExecutor(O.Executor):
     supports_nonblocking_prefetch=True
-    def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,**kwargs):
+    def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,prefix_cache_directory=None,prefix_checkpoint_rounds=None,**kwargs):
         super().__init__(*args,**kwargs)
         if dp_workers is not None and (type(dp_workers)is not int or dp_workers<1):
             raise ValueError('Positive integer dp_workers required')
@@ -49,6 +49,8 @@ class ConcurrentExecutor(O.Executor):
         except BlockingIOError:
             driver.close();raise ValueError('A fast driver already owns this run directory')
         self.capacity=max(1,kwargs.get('max_concurrent',1));self.dp_workers=dp_workers
+        self.prefix_cache_directory=None if prefix_cache_directory is None else str(Path(prefix_cache_directory).resolve())
+        self.prefix_checkpoint_rounds=prefix_checkpoint_rounds
         existing={}
         for method in self.routes:
             base=self.run_dir/'jobs'/method
@@ -90,6 +92,9 @@ class ConcurrentExecutor(O.Executor):
     def request(self,proposal,job,rule):
         req=super().request(proposal,job,rule)
         req['execution_profile']=dict(dp_workers=self.dp_workers)
+        if self.prefix_cache_directory is not None:
+            req['execution_profile'].update(prefix_cache_directory=self.prefix_cache_directory,
+                prefix_checkpoint_rounds=self.prefix_checkpoint_rounds)
         return req
 
     def launched(self,method):
