@@ -325,8 +325,8 @@ def analyze(spec):
                                        'later_body_sum': coef['later_body_sum'], 'intervals': coef['intervals'],
                                        'events_in_denominator': coef['events_in_denominator'], 'A_parts': coef['A_parts'],
                                        'H%d_minus_H3' % p_: coef['H'] - ld3_coef['H'], 'A%d_minus_A3' % p_: coef['A'] - ld3_coef['A'],
-                                           evidence=dict(edges='audit_run01/EDGES.json', segments='audit_run01/SEGMENTS.csv',
-                                                         audit='audit_run01/AUDIT_RESULT.json')),
+                                       'evidence': dict(edges='audit_run01/EDGES.json', segments='audit_run01/SEGMENTS.csv',
+                                                        audit='audit_run01/AUDIT_RESULT.json')},
                          rows=rows, comparison=comparison,
                          model_value_at_cell=AU.exact_json(model_cell), model_value_at_cell_display=float(model_cell),
                          stage1_break_even_guides=None)
