@@ -31,3 +31,9 @@ event-matrix memo/同値fingerprintを使用する[split driver](../scripts/run_
 ## P0係数追跡の保存入力・局所JW再利用
 
 [係数trace](../src/trottertracks/pauli_p0_factor_trace.py)は既存M1関数とJW bytecodeを局所globalsで再利用し、library globalを変更しない。保存operator3件とfactor復元1回を使い回し、LD9→8→7を順に追う。SOURCE655e74212の実H4診断全体5.38秒、人工12件で順序・SOURCE・部分STOPを確認。[結果/適用条件](research/pauli_p0_factor_trace_results_20261116/REPORT.md)。他LDや本番辞書での性能・資格は未検証。
+
+## no-drop P0の通常入口・再利用
+
+[新builder/結果](research/pauli_p0_no_drop_preparation_20261116/REPORT.md)は既存M1/JWと全P0検査を再利用し、局所の非zero部分和だけ保持する。科学SOURCE25a08afafでH4 LD7/8/9の単一分割P0本体は約2.216/2.066/1.985秒。
+`Assets`のbuilder/SOURCE/hash付きcacheと固定registryにより、κ/幅を変えても辞書を再生成しない。通常cache・cacheなし・fresh cacheとD2の実request形で15保存候補解決を確認し、P0/信号leafは0。
+同一configがlocal cacheとfixed registryの両方にある場合はimmutable locatorを優先する（旧選択順の技術回帰を含む）。別SOURCE・失敗gate・異なる辞書を黙って再利用しない。これは保存準備の重複削減であり、新signal/価格取得の性能測定ではない。

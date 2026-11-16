@@ -1,5 +1,7 @@
 # 文書索引
 
+[P0 no-drop builderと通常候補準備](research/pauli_p0_no_drop_preparation_20261116/REPORT.md)：LD7/8/9の実P0各66PASS、新旧辞書版別保存、固定configuration locatorと[D2 HANDOFF](research/pauli_p0_no_drop_preparation_20261116/HANDOFF.md)。
+
 [H4 Pauli P0の実係数追跡](research/pauli_p0_factor_trace_results_20261116/REPORT.md)：保存norm/相対残差・消失項・誤差vector分解、最小局所修正案とB2引渡し。
 
 [Pauli P0 gate原因調査](research/pauli_p0_gate_diagnosis_20261116/REPORT.md)：LD7/8/9別の保存証拠・人工15検査・未実行の最小追加検証。

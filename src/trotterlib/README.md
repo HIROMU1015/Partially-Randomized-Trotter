@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[P0 no-drop局所builder](../trottertracks/pauli_p0_no_drop.py)は固定M1/JW/collectorを再利用し、global toleranceを変更せず部分和を保持する。[実P0結果](../../docs/research/pauli_p0_no_drop_preparation_20261116/REPORT.md)：LD7/8/9各66PASS、通常入口へ登録。既存library本体と旧辞書/STOPは変更しない。
+
 [P0局所係数trace](../trottertracks/pauli_p0_factor_trace.py)／[operator分解](../trottertracks/pauli_p0_operator_analysis.py)：固定P0/JWを再利用しglobal変更なしで原因を追う。[実H4診断](../../docs/research/pauli_p0_factor_trace_results_20261116/REPORT.md)。本番libraryは変更しない。
 
 [P0記号係数の内部閾値調査](../../docs/research/pauli_p0_gate_diagnosis_20261116/REPORT.md)：collector追加cutoff=0とOpenFermion部分和除去を区別。既存libraryの変更なし、人工fixtureを再利用。

@@ -1,5 +1,7 @@
 # scripts 索引
 
+[prepare_pauli_candidate.py](prepare_pauli_candidate.py)の`--p0-builder no-drop`は、P0局所builderを通常入口へ接続する。LD7/8/9は保存registryからmetadataのみで再利用可能。[固定SOURCE/結果/HANDOFF](../docs/research/pauli_p0_no_drop_preparation_20261116/REPORT.md)。新科学実行には別途承認が必要。
+
 [run_pauli_p0_factor_trace.py](run_pauli_p0_factor_trace.py)：固定SOURCE/fresh出力でLD9→8→7の保存演算子再解析・実factor traceを行う限定診断。[結果](../docs/research/pauli_p0_factor_trace_results_20261116/REPORT.md)。追加実行は別途承認。
 
 [P0失敗の保存・人工切り分け](../docs/research/pauli_p0_gate_diagnosis_20261116/REPORT.md)：元stage1 runnerを変更・再実行せず調査。実H4の追加診断は未承認・未実行。

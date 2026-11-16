@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[LD7/8/9の通常P0準備完了](docs/research/pauli_p0_no_drop_preparation_20261116/REPORT.md)：採択済みno-drop局所builder25a08afafで各66/66検査PASS、最終360項、残差3.36e−19/6.47e−20/4.33e−22。辞書/SOURCE版別cacheとB canonical各13roundを通常入口へ登録。63人工・metadata回帰、保存再利用15解決PASS。旧STOP保持、signal/価格/Q3なし。
+
 [LD7/8/9実factor原因診断](docs/research/pauli_p0_factor_trace_results_20261116/REPORT.md)：元JWを完全再現し、no-filter shadowは保存tailと約1e-19以下で一致。LD7はJW、LD8/9はFermion/JW途中除去。元gate/STOP保持、本番辞書未採用。
 
 [P0 LD7/8/9 gate調査](docs/research/pauli_p0_gate_diagnosis_20261116/REPORT.md)：保存LD4/6対照、scalar/nonidentityの差、OpenFermion部分和除去の人工再現。元1e-9/STOP不変、実H4再計算0。
