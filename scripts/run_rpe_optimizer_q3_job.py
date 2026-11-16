@@ -225,16 +225,36 @@ def identity(result, case, inputs):
                 and strip(record.get('deterministic_input', {}).get('options'), src) == inputs.get('options'))
 
 
+def process_exit_evidence(request, supervision, out):
+    """Read the existing route's real exit receipt, without changing its gate.
+
+    DF's fixed supervisor returns joined pool processes directly. Other routes
+    emit PROCESS_EXITS files from their installed context. Neither is inferred
+    from a result status or from process disappearance.
+    """
+    if request['route']['kind'] in ('prdf_d2_split','prdf_d2_common_entry'):
+        exits=supervision.get('process_exitcodes') or []
+        expected=len(supervision.get('receipts') or [])+len(supervision.get('errors') or [])
+        gate=bool(exits) and len(exits)==expected and all(
+            type(c.get('exitcode')) is int and c['exitcode']==0 and c.get('signal') is None for c in exits)
+        return dict(schema='DF_FIXED_SUPERVISOR_JOINED_PROCESSES',recorded_children=len(exits),
+                    expected_cases=expected,all_exit_codes_zero=gate)
+    exits=[c for p in out.glob('PROCESS_EXITS_*.jsonl') for line in p.read_text().splitlines()
+           for c in json.loads(line)['children']]
+    return dict(schema='INSTALLED_ROUTE_PROCESS_EXITS',recorded_children=len(exits),
+                all_exit_codes_zero=bool(exits) and all(c['exitcode']==0 for c in exits))
+
+
 def outcome_from(view, request, case, inputs, r, out, source, supervision=None):
     folder = out / case['label']
     try:
         if supervision is not None:
-            exits = [c for p in out.glob('PROCESS_EXITS_*.jsonl') for line in p.read_text().splitlines() for c in json.loads(line)['children']]
-            gate = bool(exits) and all(c['exitcode'] == 0 for c in exits)
-            write(out / 'SUPERVISION.json', dict(supervision, process_exit_gate=dict(recorded_children=len(exits), all_exit_codes_zero=gate)))
-            bad = not gate or supervision.get('errors') or supervision.get('monitor_errors')
+            gate = process_exit_evidence(request, supervision, out)
+            destination='COLLECT_SUPERVISION.json' if request.get('_collect') else 'SUPERVISION.json'
+            write(out / destination, dict(supervision, process_exit_gate=gate))
+            bad = not gate['all_exit_codes_zero'] or supervision.get('errors') or supervision.get('monitor_errors')
         else:
-            bad = False
+            bad = True  # An artifact alone cannot prove that its worker exited cleanly.
         result = json.loads((folder / 'RESULT.json').read_text())
         if result.get('status') == 'UNKNOWN':
             raise ValueError('Worker reported UNKNOWN: ' + str(result.get('reason')))
@@ -313,7 +333,10 @@ def main():
                     outcome = dict(status='UNKNOWN', reason='NO_WORKER_ARTIFACT_TO_COLLECT', MSE_lower=None, MSE_upper=None,
                                    scientific_evaluation_calls=0, identity=None)
                 else:
-                    outcome = outcome_from(view, request, case, inputs, r, out, json.loads((out / 'SOURCE.json').read_text()))
+                    saved_supervision=json.loads((out/'SUPERVISION.json').read_text()) if (out/'SUPERVISION.json').exists() else None
+                    outcome = outcome_from(view, dict(request,_collect=True), case, inputs, r, out,
+                        json.loads((out / 'SOURCE.json').read_text()), saved_supervision)
+                    outcome['collection_source']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=Path(__file__).resolve().parents[1],text=True).strip()
             else:
                 write(out / 'SOURCE.json', source);write(out / 'CASE_INPUTS.json', inputs);(out / case['label']).mkdir()
                 stage(out, 'SCIENTIFIC_ROUTE_START')
