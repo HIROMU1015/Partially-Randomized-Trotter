@@ -1,0 +1,17 @@
+{
+  "previous_snapshot": "fd5c63006c4b8c14c56b5ef7691ce3d73236ad9d",
+  "DF_READY_reused": true,
+  "Pauli_previous_new_signals": 0,
+  "Pauli_descriptor_metadata_fix_no_retry_of_scientific_calls": true,
+  "epoch": 1794830243.099839,
+  "relevant_live_processes": [
+    {
+      "pid": 3525199,
+      "command": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python -B /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/scripts/run_rpe_method_optimizer.py --problem /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/configs/rpe_method_optimizer/h4_df10_problem.json --round /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01/ROUND_INVOCATION.json --run-dir /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01 "
+    },
+    {
+      "pid": 3620000,
+      "command": "/usr/bin/bash -lc python3 - <<'PY'\nfrom pathlib import Path\nimport json,subprocess,time\nroot=Path.cwd();base=root/'docs/research/d_pr_candidates_auto_20261116'\nx=json.loads((base/'ROUND.json').read_text());x['round_id']='H4_PR_PAULI_DF_AUTOMATIC_PREPARATION_20261116_RUN02'\nx['max_new_q3_per_method']={'PR_PAULI':1,'PR_DF':1};x['max_steps_per_method']=4\nx['candidate_completion'].update(source='1691f5f34e43a971ead2f67673788678588106fb',evaluate_completed_only=True,resume_preparation_from={'commit':'fd5c63006c4b8c14c56b5ef7691ce3d73236ad9d','path':str((base/'run01/completion/STATE.json').relative_to(root))})\nx['executor']['prior_run_dirs'].append(str(base/'run01'))\n(base/'ROUND_RUN02.json').write_text(json.dumps(x,indent=2)+'\\n')\n# Relevant live process commands only; observation does not freeze other worktrees.\nrows=[]\nfor p in Path('/proc').iterdir():\n if p.name.isdigit():\n  try:\n   cmd=(p/'cmdline').read_bytes().replace(b'\\0',b' ').decode(errors='replace')\n   if any(t in cmd for t in ('"
+    }
+  ]
+}
