@@ -95,6 +95,11 @@ class CompletionTests(unittest.TestCase):
             self.assertEqual(service.call_args.args[0],'quote')
             self.assertEqual(out['recovered_by'],'METADATA_REQUERY_NO_SCIENTIFIC_RETRY')
 
+    def test_completion_does_not_treat_pf_as_a_df_scientific_request(self):
+        c=C.Completion.__new__(C.Completion)
+        with self.assertRaisesRegex(ValueError,'PR_CANDIDATE_COMPLETION_ONLY'):
+            c.complete(dict(method='FULL_PF'))
+
     def test_normal_cli_contains_callback_and_df_route_is_generic(self):
         spec=importlib.util.spec_from_file_location('_completion_cli',ROOT/'scripts/run_rpe_method_optimizer.py');cli=importlib.util.module_from_spec(spec);spec.loader.exec_module(cli)
         import inspect

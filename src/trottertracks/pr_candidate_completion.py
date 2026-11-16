@@ -153,6 +153,7 @@ class Completion:
         self.save();return record
 
     def complete(self,request):
+        if request['method']not in ('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
         identifier=key(request);d=self.directory/'candidates'/identifier
         with self.lock:
             old=self.state['records'].get(identifier)
@@ -409,8 +410,10 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
             result=completion.complete(req);current.append(result)
             if result['status']=='READY_FOR_SEARCH':break
         return current
-    with ThreadPoolExecutor(max_workers=len(spec['methods']))as pool:
-        for _ in pool.map(one,spec['methods']):pass
+    preparation_methods=[m for m in spec['methods']if m in ('PR_PAULI','PR_DF')]
+    if preparation_methods:
+        with ThreadPoolExecutor(max_workers=len(preparation_methods))as pool:
+            for _ in pool.map(one,preparation_methods):pass
     records=list(completion.state['records'].values())
     routes=completion.install(context,problem,records)
     put(completion.directory/'RETURN_TO_SEARCH.json',dict(source=completion.source,records=records,
