@@ -1,0 +1,41 @@
+['/usr/bin/python3', '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_rpe_q3_*.py', '-v']
+test_unselected_route_does_not_require_foreign_input_and_cache_reuses_blob (test_rpe_q3_coordinator.FixedRouteInputs.test_unselected_route_does_not_require_foreign_input_and_cache_reuses_blob) ... ok
+test_background_platform_options_and_windows_start_arguments (test_rpe_q3_relay.PortableRelayBranches.test_background_platform_options_and_windows_start_arguments) ... ok
+test_json_atomic_windows_branch_flushes_file_and_skips_directory_open (test_rpe_q3_relay.PortableRelayBranches.test_json_atomic_windows_branch_flushes_file_and_skips_directory_open) ... ok
+test_msvcrt_lock_fallback_uses_first_byte_and_normalizes_busy_error (test_rpe_q3_relay.PortableRelayBranches.test_msvcrt_lock_fallback_uses_first_byte_and_normalizes_busy_error) ... ok
+test_cli_stop_leaves_received_job_running_then_start_recovers (test_rpe_q3_relay.RelayTests.test_cli_stop_leaves_received_job_running_then_start_recovers) ... ok
+test_real_mailbox_rpc_next_assignment_and_lost_ack_duplicate (test_rpe_q3_relay.RelayTests.test_real_mailbox_rpc_next_assignment_and_lost_ack_duplicate) ... ok
+test_assignment_never_expires_after_disconnect (test_rpe_q3_store.StoreTests.test_assignment_never_expires_after_disconnect) ... ok
+test_completion_retransmit_and_adoption_are_exactly_once (test_rpe_q3_store.StoreTests.test_completion_retransmit_and_adoption_are_exactly_once) ... ok
+test_concurrent_budget_reservations_are_atomic (test_rpe_q3_store.StoreTests.test_concurrent_budget_reservations_are_atomic) ... ok
+test_controller_order_survives_prefix_hints (test_rpe_q3_store.StoreTests.test_controller_order_survives_prefix_hints) ... ok
+test_hash_owner_and_state_regression_rejected (test_rpe_q3_store.StoreTests.test_hash_owner_and_state_regression_rejected) ... ok
+test_only_unassigned_queue_can_release_reservation (test_rpe_q3_store.StoreTests.test_only_unassigned_queue_can_release_reservation) ... ok
+test_reservation_survives_reopen_and_budget_is_per_method (test_rpe_q3_store.StoreTests.test_reservation_survives_reopen_and_budget_is_per_method) ... ok
+test_scientific_identity_cannot_change_under_same_job (test_rpe_q3_store.StoreTests.test_scientific_identity_cannot_change_under_same_job) ... ok
+test_two_hosts_cannot_claim_same_scientific_job (test_rpe_q3_store.StoreTests.test_two_hosts_cannot_claim_same_scientific_job) ... ok
+test_ambiguous_start_is_unknown_and_never_reexecuted (test_rpe_q3_worker.WorkerTests.test_ambiguous_start_is_unknown_and_never_reexecuted) ... ok
+test_artificial_execute_transfer_duplicate_ack_and_resume (test_rpe_q3_worker.WorkerTests.test_artificial_execute_transfer_duplicate_ack_and_resume) ... ok
+test_host_daemon_lock_and_unsafe_bundle_paths (test_rpe_q3_worker.WorkerTests.test_host_daemon_lock_and_unsafe_bundle_paths) ... ok
+test_host_paths_resolve_without_changing_original_or_scientific_id (test_rpe_q3_worker.WorkerTests.test_host_paths_resolve_without_changing_original_or_scientific_id) ... ok
+test_polling_restart_adopts_live_supervisor_and_saved_exit (test_rpe_q3_worker.WorkerTests.test_polling_restart_adopts_live_supervisor_and_saved_exit) ... ok
+test_source_request_and_input_hashes_fail_before_execution (test_rpe_q3_worker.WorkerTests.test_source_request_and_input_hashes_fail_before_execution) ... ok
+test_ssh_mailbox_submit_status_duplicate_and_ack (test_rpe_q3_worker.WorkerTests.test_ssh_mailbox_submit_status_duplicate_and_ack) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 6.150s
+
+OK
+['/usr/bin/python3', '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_rpe_distributed*.py', '-v']
+test_controller_restart_publishes_accepted_staging_without_new_attempt (test_rpe_distributed_controller.ControllerFailures.test_controller_restart_publishes_accepted_staging_without_new_attempt) ... ok
+test_lost_poll_response_replays_same_attempt_without_overfilling (test_rpe_distributed_controller.ControllerFailures.test_lost_poll_response_replays_same_attempt_without_overfilling) ... ok
+test_prior_records_counts_host_reuse_once_and_excludes_transfer_validation (test_rpe_distributed_controller.ControllerFailures.test_prior_records_counts_host_reuse_once_and_excludes_transfer_validation) ... ok
+test_retransmit_after_accept_before_publish_releases_waiter_once (test_rpe_distributed_controller.ControllerFailures.test_retransmit_after_accept_before_publish_releases_waiter_once) ... ok
+test_successful_artifact_requires_both_zero_return_and_no_signal (test_rpe_distributed_controller.ControllerFailures.test_successful_artifact_requires_both_zero_return_and_no_signal) ... ok
+test_ordinary_entry_late_ready_two_methods_exact_results_and_resume (test_rpe_distributed_q3.ArtificialScheduleEntry.test_ordinary_entry_late_ready_two_methods_exact_results_and_resume) ... ok
+test_prepare_only_writes_artificial_metadata_and_host_local_paths (test_rpe_distributed_q3.ArtificialScheduleEntry.test_prepare_only_writes_artificial_metadata_and_host_local_paths) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 4.568s
+
+OK

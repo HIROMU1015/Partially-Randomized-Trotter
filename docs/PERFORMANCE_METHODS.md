@@ -1,5 +1,11 @@
 # 性能対策の再利用索引
 
+## 複数ホストQ3・SSH mailbox中継（2026-11-17）
+
+固定`4ae47cf48`の`rpe_optimizer_concurrent.DistributedExecutor`と`rpe_q3_store/worker/coordinator`は通常schedule入口の同じ候補順/予算/後着READYを保ち、独立Q3をhostの空きslotへ割り当てる。local0 relayはWindows PowerShellから既存qg1/qg2を使い、科学選択は中央だけが行う。SOURCE/route/input/評価契約を照合し、DP並列化とcacheは既存adapter/helperをhost内で使用する。選択routeの固定blob hashをprocess内で再利用し、無関係configurationの入力を要求しない。
+
+模擬1/2/3hostの18人工jobは単一host参照とMSE/判定exact一致、切断・controller再開・完了通知重複でも同attemptは実行1回。人工負荷は分散1host比2.09/2.53倍だがlegacy参照比0.70/0.85倍で、実H4性能は未測定。分散worker経由の人工DPでも逐次exact一致、4 HIT各12round、同host donorと別host cacheを確認。失敗例のlost-poll枠超過、ACCEPT後公開中断での待機解除漏れ、保存結果読取時のhost再利用件数漏れを修正・回帰検証。実機間接続は未検収。[適用条件・証拠・運用](research/rpe_distributed_q3/HANDOFF.md)／[REPORT](research/rpe_distributed_q3/REPORT.md)。
+
 ## PR複数幅と共通queue/DP・B0Iの通常入口統合（2026-11-17）
 
 `run_rpe_method_optimizer.make_executor`を幅版batchと共用し、Completion後も同じoptimizer/queue/予算/profileを維持する。元prefixのSOURCE・信号・契約・精度照合を再利用し、別構成へのHITや完了jobの二重起動を防ぐ。明示overlapでは準備前snapshotを使い、準備後に同じqueueへ戻す。B0Iは既存自動p選択を同じschedule入口から呼ぶ。

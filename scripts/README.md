@@ -1,5 +1,9 @@
 # scripts 索引
 
+[分散Q3運用](../docs/research/rpe_distributed_q3/HANDOFF.md)：`run_rpe_q3_worker.py` はHTTP pull/SSH mailbox、`run_rpe_q3_relay.py` はローカル0のqg1/qg2中継、`check_rpe_distributed_q3.py` は通常schedule入口の人工検収。中央探索・予算はserver2のみ。
+
+`check_rpe_distributed_prefix.py`：固定SOURCEを指定し、分散worker経由の既存guarded DPを人工表で検査。host別cacheのHIT・逐次exact一致・再開0を確認する。実H4を評価しない。
+
 [run_rpe_schedule_search.py](run_rpe_schedule_search.py)：PR複数要求幅と共通queue/DP cache、PF/B0Iの元method CLIへのdispatch。[統合HANDOFF](../docs/research/pr_width_throughput_integration_20261117/HANDOFF.md)。
 
 `collect_saved_rpe_costs.py`：[固定入力と同一commandによるH4保存比較](../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。INPUTS.sourcesに固定SHA/pathを追加して再実行。出力は候補CATALOG/方式別最安/REPORT。Q3/価格の計算、solverや探索は起動しない。

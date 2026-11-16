@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[複数ホストQ3とローカル0 SSH中継](docs/research/rpe_distributed_q3/HANDOFF.md)：通常schedule入口の共通queue/永続予算/host別試行、切断回収・再開・人工検収。固定実装4ae47cf48、Windows中継ZIP付き。実機間接続はREPORTで別管理。[性能手法](docs/PERFORMANCE_METHODS.md)。
+
 [PR複数幅・共通queue/DP・B0I自動pの統合](docs/research/pr_width_throughput_integration_20261117/REPORT.md)：同じschedule CLIで両PR幅→実step価格→共通queue、実DP HITと逐次exact一致、準備後継続/再開0起動を人工検証。固定H4 metadataのB0Iはp無指定でp9/Y4/32h/5、実H4はplan-only。起動/再開は[HANDOFF](docs/research/pr_width_throughput_integration_20261117/HANDOFF.md)。
 
 [H4方式別最適化：AのPR-Pauli候補準備入口の接続](docs/research/rpe_method_optimizer_h4_20261116/PREPARATION_CONNECTION.md)：

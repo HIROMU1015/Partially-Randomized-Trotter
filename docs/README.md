@@ -1,5 +1,7 @@
 # 文書索引
 
+[分散Q3とローカル0中継](research/rpe_distributed_q3/REPORT.md)／[固定SHA・ホスト別運用](research/rpe_distributed_q3/HANDOFF.md)：永続割当と再開回収を人工検証。実機間検収・人工速度倍率・実H4性能を区別する。
+
 [PR複数幅＋並列/DP再利用＋B0I自動pの統合](research/pr_width_throughput_integration_20261117/REPORT.md)／[通常コマンド・再開・設定](research/pr_width_throughput_integration_20261117/HANDOFF.md)。
 
 [p7粗幅Yoshida4の価格接続と最安更新](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。

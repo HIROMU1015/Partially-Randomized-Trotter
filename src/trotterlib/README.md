@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[分散Q3](../../docs/research/rpe_distributed_q3/HANDOFF.md)：実装はtrottertracksの既存concurrent executor拡張、`rpe_q3_store`、`rpe_q3_worker`、`rpe_q3_coordinator`。数値kernelは変更せず、固定route adapterを各hostで再利用する。
+
 [PR複数幅/queue/DPとB0I選択の統合](../../docs/research/pr_width_throughput_integration_20261117/HANDOFF.md)：研究別`pr_candidate_completion`、`rpe_optimizer_concurrent`、`rpe_dp_prefix_reuse`、PF metadata helperを通常入口から再利用。新科学0。
 
 [H4保存結果の自動比較](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)：実装はtrottertracks/CLI。物理library・数値solverを変更せず、保存判定と費用を照合する。
