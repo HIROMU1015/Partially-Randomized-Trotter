@@ -2,21 +2,28 @@
 
 The fake qg1 SSH command executes locally. external_tunnel=True substitutes an
 already-reachable loopback endpoint; these tests establish no actual host link.
+Windows branches below use stubs on Linux; no native Windows machine was tested.
 """
+from contextlib import redirect_stdout
 from fractions import Fraction
 import importlib.util
+import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import time
+from types import SimpleNamespace
 import unittest
+from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src'))
 from trottertracks import rpe_optimizer_concurrent as C
 from trottertracks import rpe_q3_worker as W
+from trottertracks import rpe_q3_coordinator as Q
 
 spec = importlib.util.spec_from_file_location('_relay_under_test', ROOT/'scripts/run_rpe_q3_relay.py')
 R = importlib.util.module_from_spec(spec);spec.loader.exec_module(R)
@@ -152,6 +159,7 @@ class RelayTests(unittest.TestCase):
             finally:
                 harness.close()
 
+
     def test_cli_stop_leaves_received_job_running_then_start_recovers(self):
         with tempfile.TemporaryDirectory(prefix='q3-relay-cli-artificial-') as temporary:
             harness = Harness(temporary,sleep_seconds=1.)
@@ -179,6 +187,76 @@ class RelayTests(unittest.TestCase):
                 self.assertEqual(sum(e['event']=='ACCEPT' for e in harness.executor.store.events()),1)
             finally:
                 harness.close()
+
+
+class PortableRelayBranches(unittest.TestCase):
+    """Artificial Windows decisions on Linux, not native Windows validation."""
+
+    def test_background_platform_options_and_windows_start_arguments(self):
+        self.assertEqual(R.background_options('posix'), dict(start_new_session=True))
+        windows = R.background_options('nt')
+        expected = getattr(subprocess, 'DETACHED_PROCESS', 0x8) | getattr(subprocess, 'CREATE_NEW_PROCESS_GROUP', 0x200)
+        self.assertEqual(windows, dict(creationflags=expected))
+        # Also prove --start passes the selected Windows options to Popen,
+        # rather than only checking a helper unused by the actual entry point.
+        with tempfile.TemporaryDirectory(prefix='relay-portable-') as temporary:
+            directory = Path(temporary) / 'ユーザー relay state'
+            configuration = Path(temporary) / 'relay 設定.json'
+            value = dict(state_directory=str(directory), external_tunnel=True,
+                controller=dict(ssh_alias='qg2', local_port=18763), workers=[])
+            configuration.write_text(json.dumps(value, ensure_ascii=False), encoding='utf-8-sig')
+            original_options = R.background_options
+            output = io.StringIO()
+            with patch.object(R, 'background_options', side_effect=lambda: original_options('nt')), \
+                    patch.object(R.subprocess, 'Popen', return_value=SimpleNamespace(pid=43210)) as launch, \
+                    redirect_stdout(output):
+                R.main(['--config', str(configuration), '--start'])
+            command = launch.call_args.args[0]
+            options = launch.call_args.kwargs
+            self.assertEqual(command[-3:], ['--config', str(configuration.resolve()), '--run'])
+            self.assertEqual(options['creationflags'], expected)
+            self.assertNotIn('start_new_session', options)
+            self.assertEqual(options['stdin'], subprocess.DEVNULL)
+            self.assertEqual(Path(options['stdout'].name), directory/'RELAY.log')
+            self.assertEqual(json.loads(output.getvalue())['pid'], 43210)
+
+    def test_msvcrt_lock_fallback_uses_first_byte_and_normalizes_busy_error(self):
+        with tempfile.TemporaryDirectory(prefix='relay-windows-lock-stub-') as temporary:
+            path = Path(temporary)/'RELAY.lock'
+            with path.open('a+') as stream:
+                positions = []
+                def locking(descriptor, mode, length):
+                    positions.append((descriptor, mode, length, stream.tell()))
+                stub = SimpleNamespace(LK_NBLCK=17, locking=Mock(side_effect=locking))
+                with patch.object(R, 'fcntl', None), patch.dict(sys.modules, {'msvcrt': stub}):
+                    R.acquire_lock(stream)
+                    self.assertEqual(path.read_bytes(), b'\0')
+                    stream.seek(0, os.SEEK_END)
+                    R.acquire_lock(stream)
+                    self.assertEqual(path.read_bytes(), b'\0')
+                    self.assertEqual(positions, [(stream.fileno(), 17, 1, 0)]*2)
+                    stub.locking.side_effect = OSError('Artificial lock owned by another process')
+                    with self.assertRaisesRegex(BlockingIOError, 'Another relay owns'):
+                        R.acquire_lock(stream)
+
+    def test_json_atomic_windows_branch_flushes_file_and_skips_directory_open(self):
+        # Patching only this module's os binding avoids changing pathlib's
+        # platform choice on the Linux machine running these artificial checks.
+        fake_os = SimpleNamespace(name='nt', fsync=Mock(wraps=os.fsync), O_RDONLY=os.O_RDONLY,
+            open=Mock(side_effect=AssertionError('Windows directory open must be skipped')),
+            close=Mock(side_effect=AssertionError('No Windows directory fd should exist')))
+        with tempfile.TemporaryDirectory(prefix='relay-json-windows-stub-') as temporary:
+            path = Path(temporary)/'STATUS.json'
+            with patch.object(Q, 'os', fake_os):
+                Q.atomic_json(path, dict(state='STARTING', host='人工ホスト'))
+                self.assertEqual(json.loads(path.read_text()), dict(state='STARTING', host='人工ホスト'))
+                Q.atomic_json(path, dict(state='STOPPED'))
+            self.assertEqual(json.loads(path.read_text()), dict(state='STOPPED'))
+            self.assertFalse(path.with_name(path.name+'.tmp').exists())
+            self.assertEqual(fake_os.fsync.call_count, 2)
+            fake_os.open.assert_not_called()
+            fake_os.close.assert_not_called()
+
 
 
 if __name__=='__main__':

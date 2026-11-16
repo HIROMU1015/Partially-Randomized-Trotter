@@ -5,7 +5,10 @@ Only the server2 controller selects candidates and reserves/adopts evaluations.
 Stopping this relay leaves all received server1 jobs running independently.
 """
 import argparse
-import fcntl
+try:
+    import fcntl
+except ImportError:  # Native Windows local0; numerical workers remain Linux.
+    fcntl = None
 import json
 import os
 from pathlib import Path
@@ -20,10 +23,31 @@ sys.path.insert(0, str(ROOT/'src'))
 from trottertracks.rpe_q3_coordinator import atomic_json
 
 
+def acquire_lock(stream):
+    """One local relay process, using the platform's ordinary file lock."""
+    if fcntl is not None:
+        fcntl.flock(stream, fcntl.LOCK_EX|fcntl.LOCK_NB)
+        return
+    import msvcrt
+    stream.seek(0, os.SEEK_END)
+    if stream.tell() == 0:
+        stream.write('\0'); stream.flush()
+    stream.seek(0)
+    try: msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+    except OSError as error: raise BlockingIOError('Another relay owns this lock') from error
+
+
+def background_options(platform_name=None):
+    if (platform_name or os.name) == 'nt':
+        return dict(creationflags=getattr(subprocess, 'DETACHED_PROCESS', 0x8) |
+                    getattr(subprocess, 'CREATE_NEW_PROCESS_GROUP', 0x200))
+    return dict(start_new_session=True)
+
+
 class Relay:
     def __init__(self, configuration):
         self.configuration = Path(configuration).resolve()
-        self.config = json.loads(self.configuration.read_text())
+        self.config = json.loads(self.configuration.read_text(encoding='utf-8-sig'))
         self.directory = Path(self.config['state_directory']).expanduser().resolve()
         self.directory.mkdir(parents=True, exist_ok=True)
         self.ssh = self.config.get('ssh_command', ['ssh'])
@@ -51,6 +75,7 @@ class Relay:
         started = time.monotonic()
         process = subprocess.run(self.ssh+['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, shlex.join(command)],
             input=json.dumps(value or {}), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            encoding='utf-8', errors='replace',
             timeout=self.config.get('request_timeout_seconds', 60))
         if process.returncode:
             raise RuntimeError('SSH mailbox '+action+' failed ('+str(process.returncode)+'): '+process.stderr[-1500:])
@@ -107,7 +132,7 @@ class Relay:
 
     def run(self):
         lock = (self.directory/'RELAY.lock').open('a')
-        try: fcntl.flock(lock, fcntl.LOCK_EX|fcntl.LOCK_NB)
+        try: acquire_lock(lock)
         except BlockingIOError: raise ValueError('This relay is already running')
         self.log('RELAY_START', pid=os.getpid())
         try:
@@ -151,13 +176,13 @@ def main(argv=None):
         print('Stop requested; received Q3 jobs keep running. Check --status for stopped_epoch.'); return
     if args.start:
         lock = (relay.directory/'RELAY.lock').open('a')
-        try: fcntl.flock(lock, fcntl.LOCK_EX|fcntl.LOCK_NB)
+        try: acquire_lock(lock)
         except BlockingIOError: raise ValueError('This relay is already running')
         (relay.directory/'STOP').unlink(missing_ok=True)
         lock.close()
         with (relay.directory/'RELAY.log').open('a') as log:
             process = subprocess.Popen([sys.executable, '-B', str(Path(__file__).resolve()), '--config', str(relay.configuration), '--run'],
-                start_new_session=True, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
+                **background_options(), stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
         print(json.dumps(dict(pid=process.pid, log=str(relay.directory/'RELAY.log')))); return
     relay.run()
 

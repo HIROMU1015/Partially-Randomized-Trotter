@@ -24,12 +24,12 @@ def atomic_json(path, value):
         json.dump(value, output, indent=2, default=str)
         output.write('\n')
         output.flush()
-        import os
         os.fsync(output.fileno())
     temporary.replace(path)
-    directory = os.open(path.parent, os.O_RDONLY)
-    try: os.fsync(directory)
-    finally: os.close(directory)
+    if os.name != 'nt':  # Windows cannot open directory handles with os.open.
+        directory = os.open(path.parent, os.O_RDONLY)
+        try: os.fsync(directory)
+        finally: os.close(directory)
 
 
 def source_manifest(root, commit):
