@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[保存価格感度helper](../trottertracks/price_extrapolation_analysis.py)は既存catalog Reader/exact会計とD2 quoteを接続する小さな解析。候補/辞書/回路/確率lawは変更しない。[REPORT](../../docs/research/h4_price_extrapolation_20261116/REPORT.md)。
+
 [H4保存結果の自動比較](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)：実装はtrottertracks/CLI。物理library・数値solverを変更せず、保存判定と費用を照合する。
 
 [Full-H κ2 m0再判定・固定総額](../../docs/research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)：保存証拠とscript会計だけを接続。物理library・compilerの変更なし。

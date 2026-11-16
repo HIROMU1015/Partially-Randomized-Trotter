@@ -1,5 +1,7 @@
 # scripts 索引
 
+[analyze_price_extrapolation.py](analyze_price_extrapolation.py)：固定二点の保存単価/配分を再現し、tier別費用と共有係数感度を出力。`--normalized`で今後のB2/D点にも接続。[結果とAPI](../docs/research/h4_price_extrapolation_20261116/HANDOFF.md)。fit/compile/shot探索は行わない。
+
 [PR-Pauli厳密stepの価格binding診断](../docs/research/pauli_exact_step_price_binding_20261116/REPORT.md)：厳密ΔPF=1/5とbinary64 0.2を分離。m1はq2/q1で別回路。保存LD3/LD5のm0/m1は同一recipe、m2〜m12はA providerの実step非binary64-exactでUNKNOWNを維持。C guardの条件を変えず、round/不一致fieldを診断可能にした。保存metadata52行一致、人工5＋回帰34＝39 PASS、新科学計算0。
 
 `collect_saved_rpe_costs.py`：[固定入力と同一commandによるH4保存比較](../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。INPUTS.sourcesに固定SHA/pathを追加して再実行。出力は候補CATALOG/方式別最安/REPORT。Q3/価格の計算、solverや探索は起動しない。

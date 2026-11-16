@@ -1,0 +1,261 @@
+{
+  "scope": "read-only fixed Git records plus named worktree status/progress; no new scientific calculation, no all-server absence claim",
+  "observation_UTC": "2026-11-16 12:58:47 UTC",
+  "p7": {
+    "configuration_id": "dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0",
+    "report": {
+      "commit": "015d04a2a3db1c7d7140f36edd86cc700191808b",
+      "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/REPORT.md"
+    },
+    "prices": {
+      "commit": "c7c8c1edd0996ad9ef97629961f67ca508a182f0",
+      "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/PRICE_AND_COST.json"
+    },
+    "frozen_model": {
+      "commit": "d4ae4c408fb2218c041e2a24aa04c1c2d42df629",
+      "path": "docs/research/d_p7_y4_coarse_price_calibration_20261116/FROZEN_MODEL.json"
+    },
+    "formula": "C_axis(q)=307+16539*q",
+    "actual_delta": "32h/5 (about 0.64); use saved exact configuration",
+    "calibration": {
+      "rounds": [
+        5,
+        6
+      ],
+      "q": [
+        5,
+        10
+      ],
+      "C_each_axis": [
+        83002,
+        165697
+      ],
+      "science_source": "7f7622a944a6c6b446b959cec54f0cb48ecc9f08",
+      "raw_source": "e59329ddb49f3a8a886601ca6e38eb4275b780d6",
+      "C_admission_source": "0e28adbd9580d37ae3f7a7063c8857477ccd7933",
+      "n_compile": 4,
+      "wall_seconds": 172.276,
+      "max_worker_peak_RSS_bytes": 704888832
+    },
+    "holdout": {
+      "round": 9,
+      "q": 80,
+      "C_X": 1323427,
+      "C_Y": 1323427,
+      "observed_minus_frozen_prediction_X": 0,
+      "observed_minus_frozen_prediction_Y": 0,
+      "science_source": "d4ae4c408fb2218c041e2a24aa04c1c2d42df629",
+      "raw_source": "0fb16570382cf36e0e1472c93e7806c378df8ea1",
+      "C_admission_source": "51c94af414e3171b5ee37cf6a8891afc858d67b3",
+      "wall_seconds": 1222.373,
+      "max_worker_peak_RSS_bytes": 3419529216,
+      "n_compile": 2,
+      "used_for_fit": false
+    },
+    "early_direct": {
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "q": [
+        1,
+        1,
+        1,
+        2,
+        3
+      ],
+      "actual_delta_display": [
+        0.1,
+        0.2,
+        0.4,
+        0.4,
+        "16h/3"
+      ],
+      "C_each_axis": [
+        16846,
+        16846,
+        16846,
+        33385,
+        49924
+      ],
+      "scope": "direct early points only, not calibration of common-width model"
+    },
+    "unmeasured_in_anchor_span": {
+      "rounds": [
+        7,
+        8
+      ],
+      "q": [
+        20,
+        40
+      ],
+      "qualification": "model interpolation; not direct or continuous-domain guarantee"
+    },
+    "unmeasured_beyond_holdout": {
+      "rounds": [
+        10,
+        11,
+        12
+      ],
+      "q": [
+        160,
+        320,
+        640
+      ]
+    },
+    "direct_axis_count": 16,
+    "model_axis_count": 10,
+    "model_total_RZ": 315602188,
+    "beyond_q80_total_RZ": 280517404,
+    "qualified_for_candidate": false,
+    "error_bound_CI": null,
+    "metadata_note": "PRICE_AND_COST.calibration_rounds is [5], while fixed FROZEN_MODEL calibration_records and accepted direct receipts establish m5 and m6; use receipt-level evidence, preserve summary unchanged."
+  },
+  "LD5": {
+    "report": {
+      "commit": "b8bcdf97b693fa7e99d3d35f44f5ce6d3a691201",
+      "path": "docs/research/a_pauli_ld5_cal_price_20261116/REPORT.md"
+    },
+    "model": {
+      "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+      "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json"
+    },
+    "formula": "C_axis(q,R)=311+4215*q+(255/28)*q*R",
+    "coefficients": {
+      "A": 311,
+      "H": 4215,
+      "E": "255/28"
+    },
+    "calibration": {
+      "q": 8,
+      "R": 4,
+      "T": 0.8,
+      "normal_paths": 2,
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "n_compile": 4,
+      "cohort": "A_PAULI_LD5_CAL_Q8R4_N2_V1",
+      "science_source": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+      "raw_source": "f78ec5c2eda01590c3d4bce167d830d24fc9092d",
+      "path0_C_XY": 34315,
+      "path1_C_XY": 34314,
+      "wall_seconds_approx": 41,
+      "peak_RSS_GB_approx": 0.7,
+      "audit_QPY_reads": 8,
+      "audit_wall_seconds": 3.1,
+      "event_interiors": 14,
+      "event_count_for_E": 56,
+      "sum_body_C": 510
+    },
+    "independent_same_split_holdout_found": false,
+    "round_prices_are_models": true,
+    "actual_sampler_law_qualified": false,
+    "order2_events_observed": false,
+    "caveat": "LD2 or LD4 holdouts do not qualify LD5; two same-path axes are not independent cohorts; observed finite cell mean is not E[C] or CI"
+  },
+  "ongoing_observation": {
+    "D": {
+      "commit": "c94f290d5fb1f14e244fb4f87903b58df6d27690",
+      "worktree": "d-pf-on-demand-evidence-20261116",
+      "clean": true,
+      "report_path": "docs/research/d_pf_on_demand_evidence_20261116/REPORT.md",
+      "new_completed_work": "Full PF S2/2h q16 holdout, different configuration; p7/dd8bfc re-registration reuse only",
+      "optimizer_stop": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+      "new_p7_calibration_fit_compile_Q3": 0
+    },
+    "D2": {
+      "commit": "0ef9668e997b57214eeab2f944e4bcff967b7b4d",
+      "worktree": "d2-pr-candidate-autoprepare-20261116",
+      "clean": true,
+      "report_path": "docs/research/d_pr_candidates_auto_20261116/REPORT.md",
+      "result_candidates": [
+        "PR_DF LD6",
+        "PR_PAULI LD4"
+      ],
+      "LD5_new_holdout_record_found": false
+    },
+    "D2_nodrop": {
+      "commit": "8478b8200286815ad7ba2652e535d4756ca3c330",
+      "worktree": "d2-pauli-auto-nodrop-evidence-20261116",
+      "clean": true,
+      "latest_change": "audit helper reuse; no new LD5 price record in named scope"
+    },
+    "pending_same_point_measurement_in_inspected_metadata": false,
+    "must_recheck_before_future_acquisition": true,
+    "do_not_duplicate": [
+      "p7 Y4 32h/5 q80 X/Y holdout",
+      "LD5 q8/R4 two-path calibration"
+    ]
+  },
+  "measurement_priorities_qualitative": [
+    "p7 q160 or q320 at the exact saved common actual width: extends q80 frontier; choose after contribution/effort accounting; q640 not automatic",
+    "LD5 R1 moderate-long q from the selected candidate to test head-slope/whole-wrapper portability, not merely E at R4; strong head cost leverage",
+    "No extrapolated coefficient shift is measured error. Any A/H/E or p7 alpha/beta global perturbation that would break exact saved anchors is a counterfactual stress test, not evidence compatible with observed anchors without an added q-dependent discrepancy model"
+  ],
+  "implementation_readiness": {
+    "LD5_Q128_R1": {
+      "ready_unmodified": false,
+      "driver": {
+        "commit": "02e7cc6a127954fa7c446e7383d037f0617d50d3",
+        "path": "scripts/run_pauli_split_cal.py",
+        "function": "--request / select_job_spec / metadata / worker"
+      },
+      "blocking_guard": {
+        "commit": "02e7cc6a127954fa7c446e7383d037f0617d50d3",
+        "path": "src/trottertracks/pauli_calibration_request.py",
+        "function": "validate_driver_spec",
+        "condition": "q==8, cell_id==Q8R{R}, T==actual_step*8, R==m12/max-covered anchor R"
+      },
+      "reusable_scientific_leaf": {
+        "commit": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+        "path": "scripts/run_pauli_b1_prices.py",
+        "function": "acquire_path"
+      },
+      "minimum_extension": "Explicit independent HOLDOUT cell-layout metadata with selected canonical m7 q128/R1/T12.8 and exact step/dictionary/source; arbitrary-q cell identity; R bound to selected round rather than m12; fresh cohort and namespace; frozen prediction/no-refit; retain old Q8 calibration route unchanged",
+      "normal_engine": "Existing two independent path workers and X/Y max4compile unchanged; generic cell_request and acquire_path already accept arbitrary q/R",
+      "audit_note": "8478b820 scripts/pauli_split_cal_audit_request.py uses paths*(q-1), no hard q8 in coefficient calculation; use holdout/no-fit output instead of automatic new26-price publication"
+    },
+    "p7_m10_q160": {
+      "ready_unmodified": false,
+      "fixed_caller": {
+        "commit": "015d04a2a3db1c7d7140f36edd86cc700191808b",
+        "path": "scripts/run_p7_y4_coarse_prices.py",
+        "condition": "STAGES CALIBRATION5/6 HOLDOUT9; TARGETS5/6/9 only; no --round/q CLI; frozen model check holdout_round9/q80"
+      },
+      "reusable_internal": {
+        "commit": "c94f290d5fb1f14e244fb4f87903b58df6d27690",
+        "path": "scripts/prepare_pf_candidate.py",
+        "function": "acquire(value,out,phase,ms,source) plus native_child"
+      },
+      "minimum_extension": "New fixed SOURCE-scoped holdout cell manifest/caller using exact canonical m10 physical record, immutable coefficient-model reference and prediction, fresh namespace/cohort, no refit; preserve oldm9 SOURCE/output",
+      "on_demand_caveat": "Normal complete path reuses already-complete published p7 inputs; not an exposed additional-holdout mode"
+    }
+  },
+  "publication_recheck": {
+    "UTC": "2026-11-16T13:20:33.968378+00:00",
+    "worktrees": [
+      {
+        "worktree": "d-pf-on-demand-evidence-20261116",
+        "commit": "352539e2749989b4ddc3ab74c31f486982bfe265",
+        "clean": true
+      },
+      {
+        "worktree": "d2-pr-candidate-autoprepare-20261116",
+        "commit": "0ef9668e997b57214eeab2f944e4bcff967b7b4d",
+        "clean": true
+      },
+      {
+        "worktree": "d2-pauli-auto-nodrop-evidence-20261116",
+        "commit": "8478b8200286815ad7ba2652e535d4756ca3c330",
+        "clean": true
+      }
+    ],
+    "D_delta_from_c94f": "352539e27 changes HANDOFF only (2 lines); numerical evidence and pending-cell assessment unchanged",
+    "no_new_measurement_claims_added": true
+  }
+}
