@@ -42,6 +42,24 @@ class CompletionTests(unittest.TestCase):
             self.assertEqual(sent['formula'],'4th(m5_best)');self.assertEqual(sent['delta_over_h'],'2')
             self.assertEqual(config,result)
 
+    def test_registered_no_drop_selected_for_ld7_ld8_ld9_without_science(self):
+        for prefix in (7,8,9):
+            with self.subTest(prefix=prefix),tempfile.TemporaryDirectory()as tmp:
+                c=C.Completion.__new__(C.Completion);c.settings={};calls=[]
+                base=dict(spec=dict(L_D=prefix,kappa=dict(value=dict(numerator=7,denominator=1))))
+                def call(cmd,d,tag,*args,**kwargs):
+                    calls.append((cmd,kwargs))
+                    self.assertIn('--p0-builder',cmd);self.assertEqual(cmd[cmd.index('--p0-builder')+1],'no-drop')
+                    self.assertNotIn('--prepare-missing',cmd);self.assertFalse(kwargs.get('science'))
+                    return dict(items=[dict(status='GENERATED',preparation_status='REUSED_CONFIGURATION',
+                        dictionary_builder_id='P0_NO_INTERMEDIATE_DROP_V1',configuration=base)])
+                with patch.object(c,'call',side_effect=call):
+                    _,item=c.pauli_configuration(dict(design=dict(L_D=prefix,formula='4th(m5_best)',delta_over_h='2',kappa='3',K=2)),Path(tmp))
+                sent=json.loads((Path(tmp)/'A_DESIGN.REQUEST.json').read_text())['items'][0]['changes']
+                self.assertEqual(sent,dict(formula='4th(m5_best)',K=2,kappa_multiplier='3/7',delta_over_h='2'))
+                self.assertEqual(item['dictionary_builder_id'],'P0_NO_INTERMEDIATE_DROP_V1')
+                self.assertEqual(len(calls),2)
+
     def test_descriptor_envelope_is_passed_to_all_signal_stages(self):
         with tempfile.TemporaryDirectory()as tmp:
             c=C.Completion.__new__(C.Completion);c.settings={};c.state={'records':{}}

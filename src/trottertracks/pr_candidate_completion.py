@@ -21,7 +21,7 @@ PRICE='/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-ener
 D2_VIEW=ROOT.parent/'b2-route-view-d2-c1f95e080'
 B_VIEW=ROOT.parent/'d2-auto-b-intake-33e324b'
 DF_Q3_VIEW=ROOT.parent/'b2-route-view-d2-23160cc87'
-A_WORKSPACE=ROOT.parent/'d2-pauli-auto-evidence-20261116'
+A_WORKSPACE=ROOT.parent/'d2-pauli-auto-nodrop-evidence-20261116'
 GIT_LOCK=threading.RLock()
 IDENTITY=['-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp']
 
@@ -215,6 +215,8 @@ class Completion:
             inp=d/(tag+'.REQUEST.json');out=d/(tag+'.json')
             put(inp,dict(kind='pauli_native',items=[item],saved_configurations=saved,saved_packets=self.settings.get('saved_pauli_packets',[])))
             cmd=[NATIVE,'-B',str(workspace/'scripts/prepare_pauli_candidate.py'),'--request',str(inp),'--output',str(out),'--cache',str(d/'SPLITS.json')]
+            requested_prefix=(item.get('configuration')or{}).get('spec',{}).get('L_D',(item.get('configuration')or{}).get('L_D'))
+            if requested_prefix in (7,8,9):cmd+=['--p0-builder','no-drop']
             if science:
                 publish([d],'Fix selected Pauli P0 request')
                 cmd+=['--prepare-missing','--source',git('rev-parse','HEAD',cwd=workspace),'--p0-directory',str(workspace/'docs/research/d2_auto_p0_20261116')]
@@ -225,7 +227,7 @@ class Completion:
         else:
             design=r['design'];item=prepare(dict(item_id='B2_SELECTED_BASE',configuration=dict(L_D=design['L_D'])),'A_BASE')
             if item['status']=='NEEDS_SPLIT_PREPARATION':
-                if design['L_D']in(7,8,9):raise Held('PRIOR_PAULI_P0_NUMERICAL_GATE_FAILURE_NO_RETRY:'+str(design['L_D']))
+                if design['L_D']in(7,8,9):raise Held('REGISTERED_NO_DROP_CONFIGURATION_UNRESOLVED_NO_P0_RETRY:'+str(design['L_D']))
                 item=prepare(dict(item_id='B2_SELECTED_BASE',configuration=dict(L_D=design['L_D'])),'A_BASE_P0',True)
             if item['status']!='GENERATED':raise Held('A_PREPARATION:'+str(item))
             base=item['configuration'];changes=dict(formula=design['formula'],K=design.get('K',2),kappa_multiplier=str(dec(design['kappa'])/dec(base['spec']['kappa']['value'])))
