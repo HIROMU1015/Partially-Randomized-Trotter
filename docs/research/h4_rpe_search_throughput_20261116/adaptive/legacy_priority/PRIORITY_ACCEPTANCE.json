@@ -1,0 +1,115 @@
+{
+ "schema": "RPE_PRIORITY_SEARCH_ACCEPTANCE_V1",
+ "source": "d8e806265c3ded8e1184181c37c2d7ec71f08ade",
+ "counts": {
+  "PASS": 6
+ },
+ "checks": [
+  {
+   "check": "v2_same_method_minimum_fewer_q3_than_v1",
+   "status": "PASS",
+   "v1_min": "580.00",
+   "v2_min": "580.00",
+   "v2_q3_to_v1_min": 42,
+   "v1_all_steps": 245,
+   "v1_leading_configuration_steps_to_min": 104,
+   "v2_stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+  },
+  {
+   "check": "deferred_allocation_evaluated_when_nothing_else_left",
+   "status": "PASS",
+   "cls": "DEFERRED",
+   "pick_status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+   "position": 24,
+   "picks": 47
+  },
+  {
+   "check": "exploration_share_and_fresh_configuration_first",
+   "status": "PASS",
+   "classes": [
+    "UPDATE",
+    "UPDATE",
+    "UPDATE",
+    "EXPLORE",
+    "UPDATE",
+    "UPDATE",
+    "UPDATE",
+    "EXPLORE",
+    "UPDATE",
+    "UPDATE",
+    "UPDATE",
+    "EXPLORE",
+    "UPDATE",
+    "UPDATE",
+    "UPDATE",
+    "EXPLORE",
+    "UPDATE",
+    "UPDATE",
+    "UPDATE",
+    "EXPLORE",
+    "UPDATE",
+    "UPDATE",
+    "UPDATE",
+    "EXPLORE"
+   ],
+   "first_explore": "D"
+  },
+  {
+   "check": "transfer_seed_from_nearest_kappa",
+   "status": "PASS",
+   "transfer": {
+    "kind": "TRANSFER_FROM_NEAREST_KAPPA",
+    "from_configuration": "A",
+    "from_kappa": "2",
+    "to_kappa": "4",
+    "kappa_is_absolute": false
+   }
+  },
+  {
+   "check": "kappa_plan_edge_interior_bounds",
+   "status": "PASS",
+   "edge_up": [
+    [
+     "4",
+     "EDGE_EXTEND_UP",
+     "KAPPA_PROPOSAL"
+    ]
+   ],
+   "edge_down": [
+    [
+     "4/9",
+     "EDGE_EXTEND_DOWN",
+     "KAPPA_PROPOSAL"
+    ]
+   ],
+   "interior": [
+    [
+     "5/6",
+     "INTERIOR_REFINE",
+     "KAPPA_PROPOSAL"
+    ],
+    [
+     "3/2",
+     "INTERIOR_REFINE",
+     "KAPPA_PROPOSAL"
+    ]
+   ],
+   "fine_spacing": [],
+   "outside_bounds": [
+    [
+     "16",
+     "EDGE_EXTEND_UP",
+     "KAPPA_PROPOSAL_NOT_REQUESTED"
+    ]
+   ]
+  },
+  {
+   "check": "replay_unanswered_is_unevaluated_and_not_counted",
+   "status": "PASS",
+   "unevaluated": 47,
+   "picks": 19,
+   "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+  }
+ ],
+ "science": "ARTIFICIAL configurations and MSE; no Q3"
+}

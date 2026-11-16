@@ -84,3 +84,14 @@
   - 次roundではHYBRIDを使う。多数のscheduleを同時に評価する実runでの効果は未検証。
 - **全完了Q3の照合と再利用**（`build_rpe_q3_ledger.py`）：4,783件を照合し、拒否は0件。2種類の最安を分けて出す。
 - 根拠：[kappa_wide_round05/REPORT](research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/REPORT.md) §1・§3。
+
+
+## H4 RPE探索：D2共通queue・DP prefixをB2通常入口へ接続（2026-11-17）
+
+D2公開 `1eda4ba3f` / `0742a750b` のhelperを再利用し、`run_rpe_schedule_search.py` → 通常round CLI → workerへ接続。実装版は [SOURCE](research/h4_rpe_search_throughput_20261116/SOURCE.json)。`executor.scheduler="concurrent"`、`dp_workers`、`prefix_cache_directory`、`prefix_checkpoint_rounds` を指定する。同じsignal/contract/runtime/scopeのprefixだけが対象で、元AST guard・MSE/残余会計を保持する。新配分はQ3予算1件。元のschedule集約・価格下界・HYBRIDは再実装しない。
+
+保存4,783起動ではm11の完了済みdonor機会532件、m5+m11は3,761件。ただし完全runtime/frontierが旧記録になくHIT実測ではない。人工3配分列はm5+m11でwall3.927→2.522秒/CPU3.926→2.519秒、110,437bytes、DP全出力一致。m2単独は機会が多くても0.987倍。同時coldの重複計算を消すものではない。実H4での速度・容量は未測定。
+
+`adaptive_hybrid`、round間shot振替、`overlap_ready_batch` はopt-in。適応先読みは模擬起動数を減らしてもlatencyが増える例があり、一律に有効化しない。通常・再開経路で発見したfamily引継ぎ漏れ、未実行planの再開、prior重複、live終了待ち、準備中失敗のSTOP保存、V2全体previewの未起動予約残りを小さい人工検査で修正した。観測counterは再開でresetするが完了結果/起動済み予算は維持する。
+
+[REPORT](research/h4_rpe_search_throughput_20261116/REPORT.md)、[B2設定例・開始/再開・制約](research/h4_rpe_search_throughput_20261116/HANDOFF.md)、[検査](research/h4_rpe_search_throughput_20261116/checks/VALIDATION.json)。通常入口はplan-only開始/同run再開で科学0を確認し、4方式の共通経路は人工workerで検査した。保存運用/再生の効果はPR-Pauliの範囲。今回の実科学0件。

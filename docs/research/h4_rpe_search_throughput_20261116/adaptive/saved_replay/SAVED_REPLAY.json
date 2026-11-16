@@ -1,0 +1,3479 @@
+{
+  "schema": "RPE_FIXED_READY_SET_REPLAY_V1",
+  "index_jobs": 4783,
+  "missing_raw_jobs": [],
+  "compared_budget": 400,
+  "slots": 32,
+  "ready_configurations": 26,
+  "variants": {
+    "BASELINE_HYBRID": {
+      "clock": "RECORDED_JOB_WALL_WITH_CONSTANT_MEAN_FOR_UNKNOWN_SPECULATION",
+      "modeled_elapsed_to_last_adoption": 751.0629153251648,
+      "modeled_elapsed_including_outstanding": 878.1766578157367,
+      "summed_modeled_job_service_seconds": 17572.02182429747,
+      "observed_CPU_seconds_of_selected_jobs": 5602.51330056,
+      "selected_jobs_with_CPU_measurement": 23,
+      "modeled_total_CPU_seconds": null,
+      "CPU_limit": "A changed concurrency/worker profile cannot inherit old CPU or wall timings as a real measurement",
+      "jobs_launched": 126,
+      "recorded_results_revealed": 23,
+      "selected_unknown_allocations": [
+        {
+          "configuration_id": "ff6b21aee0a04845c587e73f13622e982bd5ed80c303e66aab83c89d8a6168eb",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            16,
+            16,
+            7,
+            7,
+            2,
+            2
+          ],
+          "cls": "EXPLORE",
+          "origin": {
+            "kind": "TRANSFER_FROM_NEAREST_KAPPA",
+            "from_configuration": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+            "from_kappa": "26225228882306721296844821347007773673162352858535179072118456320/539496659426909122096437389293855970805348475396548904610992201",
+            "to_kappa": "2",
+            "kappa_is_absolute": true
+          },
+          "status": "UNEVALUATED_NO_ANSWER_IN_LOG"
+        }
+      ],
+      "launched_without_saved_answer": 70,
+      "speculative_launched": 76,
+      "speculative_adopted": 0,
+      "stop_reason": "NEW_Q3_REQUIRED_NO_EXECUTOR",
+      "best_adopted_cost": {
+        "numerator": 3620059111,
+        "denominator": 7,
+        "display": "517,151,301.57"
+      },
+      "calls_adopted": 23,
+      "prefetch_policy": {
+        "decisions": 0,
+        "maximum_preview": 0,
+        "chain_proposals": 0,
+        "latest": null
+      },
+      "selection_timing": {
+        "candidate_classification_seconds": 0.8011078278068453,
+        "candidate_classification_calls": 25,
+        "preview_order_seconds": 0.7091909300070256,
+        "preview_order_calls": 25,
+        "backend_answer_seconds": 0.14497727900743484,
+        "backend_answer_calls": 24
+      },
+      "target_reach": [
+        {
+          "target_cost": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "reached": {
+            "seconds": 0,
+            "launched": 0
+          }
+        },
+        {
+          "target_cost": {
+            "numerator": 3620059111,
+            "denominator": 7,
+            "display": "517,151,301.57"
+          },
+          "reached": {
+            "seconds": 751.0629153251648,
+            "launched": 122
+          }
+        },
+        {
+          "target_cost": {
+            "numerator": 3065260145,
+            "denominator": 7,
+            "display": "437,894,306.43"
+          },
+          "reached": null
+        },
+        {
+          "target_cost": {
+            "numerator": 41430122937,
+            "denominator": 100,
+            "display": "414,301,229.37"
+          },
+          "reached": null
+        },
+        {
+          "target_cost": {
+            "numerator": 410199237,
+            "denominator": 1,
+            "display": "410,199,237.00"
+          },
+          "reached": null
+        }
+      ],
+      "adopted_allocations": [
+        {
+          "configuration_id": "0c520cf974b12b332e775855afcc5a8883982faed742dca32b94f3f26c39b0b6",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 136869283932,
+            "denominator": 385,
+            "display": "355,504,633.59"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "1b090cfc040484d6a39c56ef9efac8911a5be62abe22271d5423c561a2f6e35a",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 416237764372,
+            "denominator": 1155,
+            "display": "360,379,016.77"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "43ad992610639c87161e318e184968b4eaf7102033b95f264d9e9fcc9ab16a2a",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 416620805908,
+            "denominator": 1155,
+            "display": "360,710,654.47"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3802652139,
+            "denominator": 7,
+            "display": "543,236,019.86"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+            "from_label": "LD5__FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "1e3c835297de523f4b2497512b5dfe0472177ddb3dbb819cb99def41c55bc7bc",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3969033204,
+            "denominator": 11,
+            "display": "360,821,200.36"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "cedf24b39389b003e206b054b62b5d24e165c73b64db3e5736476f1fc827c233",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 142015407068,
+            "denominator": 385,
+            "display": "368,871,187.19"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "f5623a42a23bb45dfd019012eb377692b7b652ddd9b5bcf2e28790ae661d7b0f",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 40481546896000360,
+            "denominator": 90343469,
+            "display": "448,084,929.04"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "f5623a42a23bb45dfd019012eb377692b7b652ddd9b5bcf2e28790ae661d7b0f",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 50485477855370928,
+            "denominator": 90343469,
+            "display": "558,817,127.73"
+          },
+          "origin": {
+            "kind": "GENERATOR_SEED",
+            "rule": "B_PRICE",
+            "budget": "50485477855370928/90343469"
+          }
+        },
+        {
+          "configuration_id": "569c14aa1dac9f84b3ee826dcd9b33fd749c4c5c0605ecffe54030b1e362ff47",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 183218806044,
+            "denominator": 385,
+            "display": "475,893,002.71"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 558396304238,
+            "denominator": 1155,
+            "display": "483,460,003.67"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.995934"
+          }
+        },
+        {
+          "configuration_id": "9614c3945de46997441ca8768cd5794bcfd5ad208013943747d95acd53a833df",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 45666573787080440,
+            "denominator": 90343469,
+            "display": "505,477,311.12"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "0c520cf974b12b332e775855afcc5a8883982faed742dca32b94f3f26c39b0b6",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 134305881964,
+            "denominator": 231,
+            "display": "581,410,744.43"
+          },
+          "origin": {
+            "kind": "GENERATOR_SEED",
+            "rule": "B_PRICE",
+            "budget": "134305881964/231"
+          }
+        },
+        {
+          "configuration_id": "6bd4be94dfd04318bde1d5f6a9d79cf3093b2975c218e3162dc3283119126bf4",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 45690015724437240,
+            "denominator": 90343469,
+            "display": "505,736,786.84"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "d772dd34d122808455f6b54cd51ed560157bfe24ec4175647c8710af6eb8f71e",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 45743932180357880,
+            "denominator": 90343469,
+            "display": "506,333,581.02"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3548409065,
+            "denominator": 7,
+            "display": "506,915,580.71"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.984524"
+          }
+        },
+        {
+          "configuration_id": "c97b01c5110e52331805dadfba2291bef6ba7ed02231cab14abb1b4b487015c3",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 53543788142500860,
+            "denominator": 90343469,
+            "display": "592,669,162.86"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3556764905,
+            "denominator": 7,
+            "display": "508,109,272.14"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.895127"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            6,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            6,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 508407073,
+            "denominator": 1,
+            "display": "508,407,073.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 2,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.895127"
+          }
+        },
+        {
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 602699643758,
+            "denominator": 1155,
+            "display": "521,817,873.38"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.995934"
+          }
+        },
+        {
+          "configuration_id": "1b090cfc040484d6a39c56ef9efac8911a5be62abe22271d5423c561a2f6e35a",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 19600946228,
+            "denominator": 33,
+            "display": "593,968,067.52"
+          },
+          "origin": {
+            "kind": "GENERATOR_SEED",
+            "rule": "B_PRICE",
+            "budget": "19600946228/33"
+          }
+        },
+        {
+          "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3670828265,
+            "denominator": 7,
+            "display": "524,404,037.86"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.984524"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3680750825,
+            "denominator": 7,
+            "display": "525,821,546.43"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.895127"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            15,
+            7,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            15,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3620059111,
+            "denominator": 7,
+            "display": "517,151,301.57"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 10,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              7,
+              7,
+              2,
+              2
+            ],
+            "base_headroom": "0.976042"
+          }
+        }
+      ]
+    },
+    "ADAPTIVE_HYBRID": {
+      "clock": "RECORDED_JOB_WALL_WITH_CONSTANT_MEAN_FOR_UNKNOWN_SPECULATION",
+      "modeled_elapsed_to_last_adoption": 751.0629153251648,
+      "modeled_elapsed_including_outstanding": 891.5668725967407,
+      "summed_modeled_job_service_seconds": 10254.948757409147,
+      "observed_CPU_seconds_of_selected_jobs": 5602.51330056,
+      "selected_jobs_with_CPU_measurement": 23,
+      "modeled_total_CPU_seconds": null,
+      "CPU_limit": "A changed concurrency/worker profile cannot inherit old CPU or wall timings as a real measurement",
+      "jobs_launched": 69,
+      "recorded_results_revealed": 23,
+      "selected_unknown_allocations": [
+        {
+          "configuration_id": "ff6b21aee0a04845c587e73f13622e982bd5ed80c303e66aab83c89d8a6168eb",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            16,
+            16,
+            7,
+            7,
+            2,
+            2
+          ],
+          "cls": "EXPLORE",
+          "origin": {
+            "kind": "TRANSFER_FROM_NEAREST_KAPPA",
+            "from_configuration": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+            "from_kappa": "26225228882306721296844821347007773673162352858535179072118456320/539496659426909122096437389293855970805348475396548904610992201",
+            "to_kappa": "2",
+            "kappa_is_absolute": true
+          },
+          "status": "UNEVALUATED_NO_ANSWER_IN_LOG"
+        }
+      ],
+      "launched_without_saved_answer": 19,
+      "speculative_launched": 19,
+      "speculative_adopted": 0,
+      "stop_reason": "NEW_Q3_REQUIRED_NO_EXECUTOR",
+      "best_adopted_cost": {
+        "numerator": 3620059111,
+        "denominator": 7,
+        "display": "517,151,301.57"
+      },
+      "calls_adopted": 23,
+      "prefetch_policy": {
+        "decisions": 24,
+        "maximum_preview": 32,
+        "chain_proposals": 130,
+        "latest": {
+          "capacity": 32,
+          "preview_limit": 32,
+          "independent_heads": 23,
+          "chain_slots": 1,
+          "completed_speculation": 17,
+          "adopted_speculation": 0,
+          "adoption_fraction": "1/19"
+        }
+      },
+      "selection_timing": {
+        "candidate_classification_seconds": 0.7936993851326406,
+        "candidate_classification_calls": 25,
+        "preview_order_seconds": 0.17968907905742526,
+        "preview_order_calls": 25,
+        "backend_answer_seconds": 0.14457433321513236,
+        "backend_answer_calls": 24
+      },
+      "target_reach": [
+        {
+          "target_cost": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "reached": {
+            "seconds": 0,
+            "launched": 0
+          }
+        },
+        {
+          "target_cost": {
+            "numerator": 3620059111,
+            "denominator": 7,
+            "display": "517,151,301.57"
+          },
+          "reached": {
+            "seconds": 751.0629153251648,
+            "launched": 65
+          }
+        },
+        {
+          "target_cost": {
+            "numerator": 3065260145,
+            "denominator": 7,
+            "display": "437,894,306.43"
+          },
+          "reached": null
+        },
+        {
+          "target_cost": {
+            "numerator": 41430122937,
+            "denominator": 100,
+            "display": "414,301,229.37"
+          },
+          "reached": null
+        },
+        {
+          "target_cost": {
+            "numerator": 410199237,
+            "denominator": 1,
+            "display": "410,199,237.00"
+          },
+          "reached": null
+        }
+      ],
+      "adopted_allocations": [
+        {
+          "configuration_id": "0c520cf974b12b332e775855afcc5a8883982faed742dca32b94f3f26c39b0b6",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 136869283932,
+            "denominator": 385,
+            "display": "355,504,633.59"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "1b090cfc040484d6a39c56ef9efac8911a5be62abe22271d5423c561a2f6e35a",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 416237764372,
+            "denominator": 1155,
+            "display": "360,379,016.77"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "43ad992610639c87161e318e184968b4eaf7102033b95f264d9e9fcc9ab16a2a",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 416620805908,
+            "denominator": 1155,
+            "display": "360,710,654.47"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3802652139,
+            "denominator": 7,
+            "display": "543,236,019.86"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+            "from_label": "LD5__FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "1e3c835297de523f4b2497512b5dfe0472177ddb3dbb819cb99def41c55bc7bc",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3969033204,
+            "denominator": 11,
+            "display": "360,821,200.36"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "cedf24b39389b003e206b054b62b5d24e165c73b64db3e5736476f1fc827c233",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 142015407068,
+            "denominator": 385,
+            "display": "368,871,187.19"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "f5623a42a23bb45dfd019012eb377692b7b652ddd9b5bcf2e28790ae661d7b0f",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 40481546896000360,
+            "denominator": 90343469,
+            "display": "448,084,929.04"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "f5623a42a23bb45dfd019012eb377692b7b652ddd9b5bcf2e28790ae661d7b0f",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 50485477855370928,
+            "denominator": 90343469,
+            "display": "558,817,127.73"
+          },
+          "origin": {
+            "kind": "GENERATOR_SEED",
+            "rule": "B_PRICE",
+            "budget": "50485477855370928/90343469"
+          }
+        },
+        {
+          "configuration_id": "569c14aa1dac9f84b3ee826dcd9b33fd749c4c5c0605ecffe54030b1e362ff47",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 183218806044,
+            "denominator": 385,
+            "display": "475,893,002.71"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 558396304238,
+            "denominator": 1155,
+            "display": "483,460,003.67"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.995934"
+          }
+        },
+        {
+          "configuration_id": "9614c3945de46997441ca8768cd5794bcfd5ad208013943747d95acd53a833df",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 45666573787080440,
+            "denominator": 90343469,
+            "display": "505,477,311.12"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "0c520cf974b12b332e775855afcc5a8883982faed742dca32b94f3f26c39b0b6",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 134305881964,
+            "denominator": 231,
+            "display": "581,410,744.43"
+          },
+          "origin": {
+            "kind": "GENERATOR_SEED",
+            "rule": "B_PRICE",
+            "budget": "134305881964/231"
+          }
+        },
+        {
+          "configuration_id": "6bd4be94dfd04318bde1d5f6a9d79cf3093b2975c218e3162dc3283119126bf4",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 45690015724437240,
+            "denominator": 90343469,
+            "display": "505,736,786.84"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "d772dd34d122808455f6b54cd51ed560157bfe24ec4175647c8710af6eb8f71e",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 45743932180357880,
+            "denominator": 90343469,
+            "display": "506,333,581.02"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3548409065,
+            "denominator": 7,
+            "display": "506,915,580.71"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.984524"
+          }
+        },
+        {
+          "configuration_id": "c97b01c5110e52331805dadfba2291bef6ba7ed02231cab14abb1b4b487015c3",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 53543788142500860,
+            "denominator": 90343469,
+            "display": "592,669,162.86"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3556764905,
+            "denominator": 7,
+            "display": "508,109,272.14"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.895127"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            6,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            6,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 508407073,
+            "denominator": 1,
+            "display": "508,407,073.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 2,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.895127"
+          }
+        },
+        {
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 602699643758,
+            "denominator": 1155,
+            "display": "521,817,873.38"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.995934"
+          }
+        },
+        {
+          "configuration_id": "1b090cfc040484d6a39c56ef9efac8911a5be62abe22271d5423c561a2f6e35a",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 19600946228,
+            "denominator": 33,
+            "display": "593,968,067.52"
+          },
+          "origin": {
+            "kind": "GENERATOR_SEED",
+            "rule": "B_PRICE",
+            "budget": "19600946228/33"
+          }
+        },
+        {
+          "configuration_id": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3670828265,
+            "denominator": 7,
+            "display": "524,404,037.86"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.984524"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3680750825,
+            "denominator": 7,
+            "display": "525,821,546.43"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 11,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.895127"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            15,
+            7,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            15,
+            7,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3620059111,
+            "denominator": 7,
+            "display": "517,151,301.57"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 10,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              7,
+              7,
+              2,
+              2
+            ],
+            "base_headroom": "0.976042"
+          }
+        }
+      ]
+    },
+    "EXCHANGE": {
+      "clock": "RECORDED_JOB_WALL_WITH_CONSTANT_MEAN_FOR_UNKNOWN_SPECULATION",
+      "modeled_elapsed_to_last_adoption": 287.9909852941455,
+      "modeled_elapsed_including_outstanding": 461.3301366765918,
+      "summed_modeled_job_service_seconds": 7186.264825959512,
+      "observed_CPU_seconds_of_selected_jobs": 2384.172233781,
+      "selected_jobs_with_CPU_measurement": 10,
+      "modeled_total_CPU_seconds": null,
+      "CPU_limit": "A changed concurrency/worker profile cannot inherit old CPU or wall timings as a real measurement",
+      "jobs_launched": 47,
+      "recorded_results_revealed": 10,
+      "selected_unknown_allocations": [
+        {
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "vector": [
+            48,
+            48,
+            45,
+            45,
+            42,
+            42,
+            39,
+            39,
+            36,
+            36,
+            33,
+            33,
+            29,
+            29,
+            26,
+            26,
+            23,
+            23,
+            19,
+            19,
+            16,
+            16,
+            9,
+            9,
+            1,
+            1
+          ],
+          "cls": "UPDATE",
+          "origin": {
+            "kind": "COST_DECREASING_ROUND_EXCHANGE",
+            "remove_m": 12,
+            "remove_axes": [
+              "X",
+              "Y"
+            ],
+            "remove_shots": 1,
+            "add_m": 11,
+            "add_axes": [
+              "X",
+              "Y"
+            ],
+            "add_shots": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ]
+          },
+          "status": "UNEVALUATED_NO_ANSWER_IN_LOG"
+        }
+      ],
+      "launched_without_saved_answer": 8,
+      "speculative_launched": 9,
+      "speculative_adopted": 0,
+      "stop_reason": "NEW_Q3_REQUIRED_NO_EXECUTOR",
+      "best_adopted_cost": {
+        "numerator": 3792207339,
+        "denominator": 7,
+        "display": "541,743,905.57"
+      },
+      "calls_adopted": 10,
+      "prefetch_policy": {
+        "decisions": 11,
+        "maximum_preview": 32,
+        "chain_proposals": 69,
+        "latest": {
+          "capacity": 32,
+          "preview_limit": 32,
+          "independent_heads": 25,
+          "chain_slots": 7,
+          "completed_speculation": 7,
+          "adopted_speculation": 0,
+          "adoption_fraction": null
+        }
+      },
+      "selection_timing": {
+        "candidate_classification_seconds": 0.4295792714692652,
+        "candidate_classification_calls": 12,
+        "preview_order_seconds": 0.08592828898690641,
+        "preview_order_calls": 12,
+        "backend_answer_seconds": 0.06269813771359622,
+        "backend_answer_calls": 11
+      },
+      "target_reach": [
+        {
+          "target_cost": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "reached": {
+            "seconds": 0,
+            "launched": 0
+          }
+        },
+        {
+          "target_cost": {
+            "numerator": 3620059111,
+            "denominator": 7,
+            "display": "517,151,301.57"
+          },
+          "reached": null
+        },
+        {
+          "target_cost": {
+            "numerator": 3065260145,
+            "denominator": 7,
+            "display": "437,894,306.43"
+          },
+          "reached": null
+        },
+        {
+          "target_cost": {
+            "numerator": 41430122937,
+            "denominator": 100,
+            "display": "414,301,229.37"
+          },
+          "reached": null
+        },
+        {
+          "target_cost": {
+            "numerator": 410199237,
+            "denominator": 1,
+            "display": "410,199,237.00"
+          },
+          "reached": null
+        }
+      ],
+      "adopted_allocations": [
+        {
+          "configuration_id": "0c520cf974b12b332e775855afcc5a8883982faed742dca32b94f3f26c39b0b6",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 136869283932,
+            "denominator": 385,
+            "display": "355,504,633.59"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "1b090cfc040484d6a39c56ef9efac8911a5be62abe22271d5423c561a2f6e35a",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 416237764372,
+            "denominator": 1155,
+            "display": "360,379,016.77"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "43ad992610639c87161e318e184968b4eaf7102033b95f264d9e9fcc9ab16a2a",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 416620805908,
+            "denominator": 1155,
+            "display": "360,710,654.47"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3802652139,
+            "denominator": 7,
+            "display": "543,236,019.86"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+            "from_label": "LD5__FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "1e3c835297de523f4b2497512b5dfe0472177ddb3dbb819cb99def41c55bc7bc",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 3969033204,
+            "denominator": 11,
+            "display": "360,821,200.36"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "cedf24b39389b003e206b054b62b5d24e165c73b64db3e5736476f1fc827c233",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 142015407068,
+            "denominator": 385,
+            "display": "368,871,187.19"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "f5623a42a23bb45dfd019012eb377692b7b652ddd9b5bcf2e28790ae661d7b0f",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            5
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 40481546896000360,
+            "denominator": 90343469,
+            "display": "448,084,929.04"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+            "from_label": "OWN_B_LD2"
+          }
+        },
+        {
+          "configuration_id": "f5623a42a23bb45dfd019012eb377692b7b652ddd9b5bcf2e28790ae661d7b0f",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            13,
+            9
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 50485477855370928,
+            "denominator": 90343469,
+            "display": "558,817,127.73"
+          },
+          "origin": {
+            "kind": "GENERATOR_SEED",
+            "rule": "B_PRICE",
+            "budget": "50485477855370928/90343469"
+          }
+        },
+        {
+          "configuration_id": "569c14aa1dac9f84b3ee826dcd9b33fd749c4c5c0605ecffe54030b1e362ff47",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            2
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 183218806044,
+            "denominator": 385,
+            "display": "475,893,002.71"
+          },
+          "origin": {
+            "kind": "SAVED_SAME_L_D_INCUMBENT_SEED",
+            "from_configuration": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+            "from_label": "FULL_PF__B_PRICE"
+          }
+        },
+        {
+          "configuration_id": "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847",
+          "N_X": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "N_Y": [
+            48,
+            45,
+            42,
+            39,
+            36,
+            33,
+            29,
+            26,
+            23,
+            19,
+            16,
+            8,
+            1
+          ],
+          "status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD",
+          "cost": {
+            "numerator": 558396304238,
+            "denominator": 1155,
+            "display": "483,460,003.67"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              48,
+              48,
+              45,
+              45,
+              42,
+              42,
+              39,
+              39,
+              36,
+              36,
+              33,
+              33,
+              29,
+              29,
+              26,
+              26,
+              23,
+              23,
+              19,
+              19,
+              16,
+              16,
+              8,
+              8,
+              2,
+              2
+            ],
+            "base_headroom": "0.995934"
+          }
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Fixed ready configurations isolate allocation/scheduling; outer schedule-wide choices and preparation latency are excluded.",
+    "The first selected unknown allocation stops each trajectory; it remains unevaluated and is not treated as a failure.",
+    "Saved results were generated by earlier policies and censor this comparison.",
+    "Wall is a timing model using old job durations, not a new scientific timing measurement.",
+    "All outcome records are opened only after selection; original outcomes and STOPs remain unchanged."
+  ],
+  "real_scientific_calls": 0,
+  "tool_wall_seconds": 104.38376460317522,
+  "context_seconds": null,
+  "context_timing_note": "Original run printed context duration at millisecond resolution but did not store it separately; tool_wall_seconds preserves the measured full-tool wall time."
+}

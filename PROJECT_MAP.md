@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 RPE探索の並列化・DP prefix接続](docs/research/h4_rpe_search_throughput_20261116/REPORT.md)／[HANDOFF](docs/research/h4_rpe_search_throughput_20261116/HANDOFF.md)：D2共通queue・途中状態をB2通常/再開入口へ接続。保存運用分析、人工DP一致、選択式の適応先読み・振替。実科学0件、実H4速度は未測定。
+
 [H4方式別最適化：AのPR-Pauli候補準備入口の接続](docs/research/rpe_method_optimizer_h4_20261116/PREPARATION_CONNECTION.md)：
 - A 6e4b6bd6aの準備入口を、`generate_variants()` がIDのない候補を除外する前に呼ぶ（metadataのみ）。
 - 保存LD1は、価格不足のまま登録した。LD4・6・7・8・9は、P0の準備要求として保持する。

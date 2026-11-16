@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 RPE探索の並列化・高速化](research/h4_rpe_search_throughput_20261116/REPORT.md)／[通常入口・再開](research/h4_rpe_search_throughput_20261116/HANDOFF.md)：保存ログ4,783件の運用分析と人工性能。科学実行0、実H4速度未測定。
+
 [p7粗幅Yoshida4の価格接続と最安更新](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。
 
 [Pauli LD5の2適合配分を比較へ追加](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：PR-Pauli LD5のFULL_PF__B_PRICEとVPをQ3適合点として追加し、Pauliの保存集合内最安をLD5 FULL_PF__B_PRICE・3792207339/7 RZ（541,743,905.57）へ更新。VPは6105690627/7 RZ（872,241,518.14）。LD3同名配分は別候補として維持。最安点のLD3との差−222210893/1155 RZ（−192,390.38）は採用モデル価格規則での数値差。全26軸MODEL・qualified_for_candidate=false。旧47点不変、固定19入力49点（適合34/不適合13/価格待ち2）、回帰11 PASS、新科学call0、公開後STOP。

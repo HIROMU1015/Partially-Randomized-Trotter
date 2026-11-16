@@ -1,0 +1,230 @@
+{
+  "schema": "RPE_ADAPTIVE_THROUGHPUT_ARTIFICIAL_V1",
+  "checks": [
+    {
+      "check": "completed_only_adoption_and_capacity",
+      "status": "PASS",
+      "missing_counters": {
+        "capacity": 8,
+        "preview_limit": 8,
+        "independent_heads": 2,
+        "chain_slots": 6,
+        "completed_speculation": null,
+        "adopted_speculation": 0,
+        "adoption_fraction": null
+      },
+      "low_adoption": {
+        "capacity": 8,
+        "preview_limit": 8,
+        "independent_heads": 2,
+        "chain_slots": 1,
+        "completed_speculation": 20,
+        "adopted_speculation": 1,
+        "adoption_fraction": "1/11"
+      },
+      "high_adoption": {
+        "capacity": 8,
+        "preview_limit": 8,
+        "independent_heads": 2,
+        "chain_slots": 6,
+        "completed_speculation": 20,
+        "adopted_speculation": 20,
+        "adoption_fraction": "21/22"
+      },
+      "independent_queue": {
+        "capacity": 8,
+        "preview_limit": 8,
+        "independent_heads": 8,
+        "chain_slots": 0,
+        "completed_speculation": 20,
+        "adopted_speculation": 1,
+        "adoption_fraction": "1/11"
+      }
+    },
+    {
+      "check": "same_adoptions_1_configurations",
+      "status": "PASS",
+      "adopted": 32,
+      "baseline": {
+        "kind": "ARTIFICIAL_CONSTANT_DURATION_CLOCK",
+        "elapsed_to_last_adoption": 250.0,
+        "elapsed_including_outstanding": 250.0,
+        "summed_job_service_seconds": 880,
+        "total_CPU_seconds": null,
+        "CPU_reason": "No real CPU worker in a clock model",
+        "jobs_launched": 88,
+        "jobs_adopted": 32,
+        "complete_outcome_reuses": 0,
+        "speculative_launched": 65,
+        "speculative_adopted": 9,
+        "unused_launched": 56
+      },
+      "adaptive": {
+        "kind": "ARTIFICIAL_CONSTANT_DURATION_CLOCK",
+        "elapsed_to_last_adoption": 240.0,
+        "elapsed_including_outstanding": 240.0,
+        "summed_job_service_seconds": 590,
+        "total_CPU_seconds": null,
+        "CPU_reason": "No real CPU worker in a clock model",
+        "jobs_launched": 59,
+        "jobs_adopted": 32,
+        "complete_outcome_reuses": 0,
+        "speculative_launched": 36,
+        "speculative_adopted": 9,
+        "unused_launched": 27
+      }
+    },
+    {
+      "check": "resume_completed_outcomes_1_configurations",
+      "status": "PASS",
+      "reused": 32,
+      "fresh_jobs": 8,
+      "duplicate_launches": 0,
+      "limit": "This fake restart resets utilization counters and can issue different unused speculation; real restart counters are tested at the executor entry"
+    },
+    {
+      "check": "same_adoptions_12_configurations",
+      "status": "PASS",
+      "adopted": 120,
+      "baseline": {
+        "kind": "ARTIFICIAL_CONSTANT_DURATION_CLOCK",
+        "elapsed_to_last_adoption": 900.0,
+        "elapsed_including_outstanding": 910.0,
+        "summed_job_service_seconds": 5630,
+        "total_CPU_seconds": null,
+        "CPU_reason": "No real CPU worker in a clock model",
+        "jobs_launched": 563,
+        "jobs_adopted": 120,
+        "complete_outcome_reuses": 0,
+        "speculative_launched": 463,
+        "speculative_adopted": 32,
+        "unused_launched": 443
+      },
+      "adaptive": {
+        "kind": "ARTIFICIAL_CONSTANT_DURATION_CLOCK",
+        "elapsed_to_last_adoption": 1080.0,
+        "elapsed_including_outstanding": 1080.0,
+        "summed_job_service_seconds": 1280,
+        "total_CPU_seconds": null,
+        "CPU_reason": "No real CPU worker in a clock model",
+        "jobs_launched": 128,
+        "jobs_adopted": 120,
+        "complete_outcome_reuses": 0,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "unused_launched": 8
+      }
+    },
+    {
+      "check": "resume_completed_outcomes_12_configurations",
+      "status": "PASS",
+      "reused": 120,
+      "fresh_jobs": 0,
+      "duplicate_launches": 0,
+      "limit": "This fake restart resets utilization counters and can issue different unused speculation; real restart counters are tested at the executor entry"
+    },
+    {
+      "check": "finite_prefetch_preview_never_exceeds_remaining_budget",
+      "status": "PASS",
+      "previews": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "check": "independent_queue_can_fill_pool_larger_than_chain_depth",
+      "status": "PASS",
+      "configured_chain_depth": 16,
+      "pool_slots": 32,
+      "initial_independent_heads": 32
+    },
+    {
+      "check": "same_configuration_exchange_escapes_decrement_local_minimum",
+      "status": "PASS",
+      "decrement_only_cost": "896",
+      "exchange_cost": "698",
+      "Q3_to_exchange": 26,
+      "exchange_candidates_evaluated": 180
+    },
+    {
+      "check": "exchange_preserves_caps_and_requires_lower_cost",
+      "status": "PASS",
+      "candidates": 32
+    },
+    {
+      "check": "exchange_window_advances_past_evaluated_and_unknown",
+      "status": "PASS",
+      "first_window": 32,
+      "next_window": 32
+    }
+  ],
+  "clock_models": {
+    "1": {
+      "legacy": {
+        "kind": "ARTIFICIAL_CONSTANT_DURATION_CLOCK",
+        "elapsed_to_last_adoption": 250.0,
+        "elapsed_including_outstanding": 250.0,
+        "summed_job_service_seconds": 880,
+        "total_CPU_seconds": null,
+        "CPU_reason": "No real CPU worker in a clock model",
+        "jobs_launched": 88,
+        "jobs_adopted": 32,
+        "complete_outcome_reuses": 0,
+        "speculative_launched": 65,
+        "speculative_adopted": 9,
+        "unused_launched": 56
+      },
+      "adaptive": {
+        "kind": "ARTIFICIAL_CONSTANT_DURATION_CLOCK",
+        "elapsed_to_last_adoption": 240.0,
+        "elapsed_including_outstanding": 240.0,
+        "summed_job_service_seconds": 590,
+        "total_CPU_seconds": null,
+        "CPU_reason": "No real CPU worker in a clock model",
+        "jobs_launched": 59,
+        "jobs_adopted": 32,
+        "complete_outcome_reuses": 0,
+        "speculative_launched": 36,
+        "speculative_adopted": 9,
+        "unused_launched": 27
+      },
+      "same_adoption_order": true
+    },
+    "12": {
+      "legacy": {
+        "kind": "ARTIFICIAL_CONSTANT_DURATION_CLOCK",
+        "elapsed_to_last_adoption": 900.0,
+        "elapsed_including_outstanding": 910.0,
+        "summed_job_service_seconds": 5630,
+        "total_CPU_seconds": null,
+        "CPU_reason": "No real CPU worker in a clock model",
+        "jobs_launched": 563,
+        "jobs_adopted": 120,
+        "complete_outcome_reuses": 0,
+        "speculative_launched": 463,
+        "speculative_adopted": 32,
+        "unused_launched": 443
+      },
+      "adaptive": {
+        "kind": "ARTIFICIAL_CONSTANT_DURATION_CLOCK",
+        "elapsed_to_last_adoption": 1080.0,
+        "elapsed_including_outstanding": 1080.0,
+        "summed_job_service_seconds": 1280,
+        "total_CPU_seconds": null,
+        "CPU_reason": "No real CPU worker in a clock model",
+        "jobs_launched": 128,
+        "jobs_adopted": 120,
+        "complete_outcome_reuses": 0,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "unused_launched": 8
+      },
+      "same_adoption_order": true
+    }
+  },
+  "passed": 10,
+  "failed": 0,
+  "source": "d8e806265c3ded8e1184181c37c2d7ec71f08ade",
+  "science": "Artificial truth tables and fake worker clock; real scientific calls = 0"
+}

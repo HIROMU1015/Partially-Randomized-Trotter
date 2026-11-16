@@ -1,0 +1,242 @@
+{
+ "schema": "RPE_PREPARATION_CONNECTION_V1",
+ "optimizer_source": "d8e806265c3ded8e1184181c37c2d7ec71f08ade",
+ "preparation_source": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+ "handoff": {
+  "commit": "7cf4e1f0536567df6dcf2da6c7bc63f4547aad7b",
+  "path": "docs/research/pauli_candidate_preparation_20261116/HANDOFF.md"
+ },
+ "counts": {
+  "PASS": 8
+ },
+ "checks": [
+  {
+   "check": "LD1_registered_without_price_requirement",
+   "status": "PASS",
+   "needs": [
+    "SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS",
+    "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION",
+    "PRICE_AXES:26_of_26"
+   ],
+   "price_status": "PRICE_RULES_MODEL_INCOMPLETE",
+   "price_quote": {
+    "policy": "MODEL",
+    "status": "QUOTED",
+    "complete": false,
+    "registry": "PAULI_LD1",
+    "classifications": {
+     "NEEDS_PRICE_EVIDENCE": 26
+    },
+    "extrapolated_axes": 0,
+    "reason": null,
+    "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+   },
+   "readiness": {
+    "configuration_complete": true,
+    "signal_13round_complete": true,
+    "price_26axis_complete": false
+   }
+  },
+  {
+   "check": "unregistered_L_D_kept_as_preparation_requests",
+   "status": "PASS",
+   "needs": {
+    "4": [
+     "SPLIT_PREPARATION:DERIVE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
+    ],
+    "6": [
+     "SPLIT_PREPARATION:DERIVE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
+    ],
+    "7": [
+     "SPLIT_PREPARATION:REUSE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
+    ],
+    "8": [
+     "SPLIT_PREPARATION:DERIVE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
+    ],
+    "9": [
+     "SPLIT_PREPARATION:REUSE_DESCRIPTOR,P0_DICTIONARY_AND_OPERATOR_GATES,P1_CONFIGURATION"
+    ]
+   },
+   "rows": [
+    [
+     1,
+     "GENERATED",
+     "REGISTERED_WITHOUT_PRICE_REQUIREMENT"
+    ],
+    [
+     4,
+     "NEEDS_SPLIT_PREPARATION",
+     "PREPARATION_REQUEST"
+    ],
+    [
+     6,
+     "NEEDS_SPLIT_PREPARATION",
+     "PREPARATION_REQUEST"
+    ],
+    [
+     7,
+     "NEEDS_SPLIT_PREPARATION",
+     "PREPARATION_REQUEST"
+    ],
+    [
+     8,
+     "NEEDS_SPLIT_PREPARATION",
+     "PREPARATION_REQUEST"
+    ],
+    [
+     9,
+     "NEEDS_SPLIT_PREPARATION",
+     "PREPARATION_REQUEST"
+    ]
+   ]
+  },
+  {
+   "check": "saved_and_kappa_variant_candidates_unchanged",
+   "status": "PASS",
+   "configurations": 9
+  },
+  {
+   "check": "kappa_proposal_path_returns_registered_configurations",
+   "status": "PASS",
+   "rows": [
+    [
+     "PR_PAULI:L_D=3:kappa_x=2",
+     "GENERATED",
+     "ALREADY_REGISTERED",
+     "23ec1791",
+     {
+      "REUSE": 13
+     }
+    ],
+    [
+     "PR_PAULI:L_D=5:kappa_x=1",
+     "GENERATED",
+     "ALREADY_REGISTERED",
+     "4d6e2c9c",
+     {
+      "REUSE": 13
+     }
+    ]
+   ],
+   "configurations": 11
+  },
+  {
+   "check": "registered_unready_configuration_never_evaluated",
+   "status": "PASS",
+   "asked": 52,
+   "requests": [
+    [
+     "CONFIGURATION_INPUTS_MISSING",
+     "PR_PAULI:L_D=1,formula=2nd,delta_over_h=1,kappa_multiplier=1:d905d219"
+    ],
+    [
+     "CONFIGURATION_INPUTS_MISSING",
+     "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa_multiplier=2/3:6cf83f34"
+    ],
+    [
+     "CONFIGURATION_INPUTS_MISSING",
+     "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa_multiplier=2:300085cf"
+    ],
+    [
+     "CONFIGURATION_INPUTS_MISSING",
+     "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa_multiplier=2/3:569c14aa"
+    ],
+    [
+     "CONFIGURATION_INPUTS_MISSING",
+     "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa_multiplier=2:23ec1791"
+    ],
+    [
+     "CONFIGURATION_INPUTS_MISSING",
+     "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1,kappa_multiplier=2/3:39355bcf"
+    ],
+    [
+     "CONFIGURATION_INPUTS_MISSING",
+     "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1,kappa_multiplier=2:cb1aa748"
+    ],
+    [
+     "NEW_L_D",
+     "PR_PAULI:L_D=4:NONE"
+    ],
+    [
+     "NEW_L_D",
+     "PR_PAULI:L_D=6:NONE"
+    ],
+    [
+     "NEW_L_D",
+     "PR_PAULI:L_D=7:NONE"
+    ],
+    [
+     "NEW_L_D",
+     "PR_PAULI:L_D=8:NONE"
+    ],
+    [
+     "NEW_L_D",
+     "PR_PAULI:L_D=9:NONE"
+    ]
+   ]
+  },
+  {
+   "check": "artificial_registration_dispositions",
+   "status": "PASS",
+   "rows": [
+    [
+     4,
+     "GENERATED",
+     "REGISTERED_WITHOUT_PRICE_REQUIREMENT"
+    ],
+    [
+     6,
+     "NEEDS_SPLIT_PREPARATION",
+     "PREPARATION_REQUEST"
+    ],
+    [
+     7,
+     "GENERATED",
+     "REGISTERED_WITHOUT_PRICE_REQUIREMENT"
+    ],
+    [
+     8,
+     "GENERATED",
+     "ALREADY_REGISTERED"
+    ]
+   ],
+   "needs": {
+    "4": [
+     "CONFIGURATION_PUBLICATION",
+     "SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS",
+     "PRICE_AXES:pending_quote",
+     "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+    ],
+    "6": [
+     "SPLIT_PREPARATION:DERIVE_DESCRIPTOR,P0"
+    ],
+    "7": [
+     "SIGNAL_ROUNDS:11,12",
+     "SIGNAL_PACKET_ASSEMBLY_FROM_REUSED_ROUNDS",
+     "PRICE_AXES:pending_quote",
+     "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+    ],
+    "5": []
+   }
+  },
+  {
+   "check": "failed_entry_call_keeps_candidates_with_failure_need",
+   "status": "PASS",
+   "needs": [
+    [
+     "PREPARATION_PREPARATION_CALL_FAILED"
+    ],
+    [
+     "PREPARATION_PREPARATION_CALL_FAILED"
+    ]
+   ]
+  },
+  {
+   "check": "entry_refused_unless_view_at_fixed_source",
+   "status": "PASS",
+   "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-a-6e4b6bd6a",
+   "fixed": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb"
+  }
+ ],
+ "science": "saved results (A entry metadata only: no dictionary, mean, price fit, compile, Q3) + ARTIFICIAL entry"
+}

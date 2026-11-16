@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H4 RPE探索の共通queue・DP prefix](../../docs/research/h4_rpe_search_throughput_20261116/HANDOFF.md)：trottertracks/既存CLIへの接続。固定数値kernel・AST guardを保持し、人工DP/MSE一致を確認。実H4の再計算は行わない。
+
 [H4保存結果の自動比較](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)：実装はtrottertracks/CLI。物理library・数値solverを変更せず、保存判定と費用を照合する。
 
 [Full-H κ2 m0再判定・固定総額](../../docs/research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)：保存証拠とscript会計だけを接続。物理library・compilerの変更なし。

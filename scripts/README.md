@@ -1,5 +1,7 @@
 # scripts 索引
 
+`prepare_rpe_throughput_round.py`、`analyze_rpe_search_throughput.py`、`benchmark_rpe_prefix_boundaries.py`：[H4 RPE探索の設定・計測・再現手順](../docs/research/h4_rpe_search_throughput_20261116/HANDOFF.md)。既存広域/round CLIに共通queueとDP prefixを接続。実H4本番は別許可。
+
 `collect_saved_rpe_costs.py`：[固定入力と同一commandによるH4保存比較](../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。INPUTS.sourcesに固定SHA/pathを追加して再実行。出力は候補CATALOG/方式別最安/REPORT。Q3/価格の計算、solverや探索は起動しない。
 
 `reassess_full_h_m0_zero_zz.py`：[採択規則による保存m0再判定・固定総額](../docs/research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)。run01完了、再実行しない。旧会計を無変更で再利用し、sampling/QPY parse/build/compile/予測/fit/Q3は呼ばない。旧保留run01は別pathで保全。
