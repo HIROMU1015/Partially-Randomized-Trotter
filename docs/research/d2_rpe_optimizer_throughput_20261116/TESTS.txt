@@ -1,0 +1,90 @@
+SOURCE c3bb2ad2c409c48ab73708ca61aeab5b9323b317
+D2 author technical checks; no independent review claimed.
+
+COMMAND: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 tests/test_rpe_optimizer_concurrent.py
+test_actual_cli_round_path_with_artificial_context (__main__.SchedulerTests.test_actual_cli_round_path_with_artificial_context) ... ok
+test_completed_resume_no_duplicate_launch (__main__.SchedulerTests.test_completed_resume_no_duplicate_launch) ... ok
+test_duplicate_demands_share_one_job (__main__.SchedulerTests.test_duplicate_demands_share_one_job) ... ok
+test_execution_profile_changes_only_acceleration (__main__.SchedulerTests.test_execution_profile_changes_only_acceleration) ... ok
+test_finite_budget_reserved_before_launch (__main__.SchedulerTests.test_finite_budget_reserved_before_launch) ... ok
+test_four_methods_same_adoption_order_best_and_stop (__main__.SchedulerTests.test_four_methods_same_adoption_order_best_and_stop) ... ok
+test_launch_persistence_failure_stops_queue_and_waits_started_child (__main__.SchedulerTests.test_launch_persistence_failure_stops_queue_and_waits_started_child) ... ok
+test_method_scope_trajectory_is_unchanged (__main__.SchedulerTests.test_method_scope_trajectory_is_unchanged) ... ok
+test_pending_and_crash_claim_not_retried (__main__.SchedulerTests.test_pending_and_crash_claim_not_retried) ... ok
+test_queued_prefetch_budget_includes_every_reservation (__main__.SchedulerTests.test_queued_prefetch_budget_includes_every_reservation) ... ok
+test_resumed_live_jobs_occupy_capacity_without_relaunch (__main__.SchedulerTests.test_resumed_live_jobs_occupy_capacity_without_relaunch) ... ok
+test_selection_functions_are_exactly_the_fixed_source (__main__.SchedulerTests.test_selection_functions_are_exactly_the_fixed_source) ... ok
+test_speculation_is_recorded_and_adopted_in_demand_order (__main__.SchedulerTests.test_speculation_is_recorded_and_adopted_in_demand_order) ... ok
+test_two_drivers_cannot_own_same_directory (__main__.SchedulerTests.test_two_drivers_cannot_own_same_directory) ... ok
+test_unknown_keeps_same_stop_as_legacy (__main__.SchedulerTests.test_unknown_keeps_same_stop_as_legacy) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 12.037s
+
+OK
+{
+ "FULL_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "FULL_PF:ARTIFICIAL_FULL_PF_0",
+   "890.00"
+  ]
+ },
+ "TRUNCATED_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "TRUNCATED_PF:ARTIFICIAL_TRUNCATED_PF_0",
+   "890.00"
+  ]
+ },
+ "PR_PAULI": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_PAULI:ARTIFICIAL_PR_PAULI_0",
+   "890.00"
+  ]
+ },
+ "PR_DF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_DF:ARTIFICIAL_PR_DF_0",
+   "890.00"
+  ]
+ }
+}
+
+COMMAND: unittest classes Search, ExecutorJobs, Inputs from tests/check_rpe_method_optimizer.py (SavedEvidence excluded)
+test_budget_checked_before_backend_call (_old_optimizer_checks.Search.test_budget_checked_before_backend_call) ... ok
+test_decrements_headroom_gate_strict_cheaper_and_order (_old_optimizer_checks.Search.test_decrements_headroom_gate_strict_cheaper_and_order) ... ok
+test_ingest_changes_next_request (_old_optimizer_checks.Search.test_ingest_changes_next_request) ... ok
+test_loop_continues_after_improvement_and_stops_by_rule (_old_optimizer_checks.Search.test_loop_continues_after_improvement_and_stops_by_rule) ... ok
+test_no_monotonicity_pruning_and_axis_split_when_prices_differ (_old_optimizer_checks.Search.test_no_monotonicity_pruning_and_axis_split_when_prices_differ) ... ok
+test_not_ready_candidates_are_never_searched (_old_optimizer_checks.Search.test_not_ready_candidates_are_never_searched) ... ok
+test_resume_records_written_by_a_run_are_valid_ingest_input (_old_optimizer_checks.Search.test_resume_records_written_by_a_run_are_valid_ingest_input) ... ok
+test_round_key_ignores_kappa_but_not_schedule (_old_optimizer_checks.Search.test_round_key_ignores_kappa_but_not_schedule) ... ok
+test_saved_answers_cost_no_calls_and_missing_answer_becomes_request (_old_optimizer_checks.Search.test_saved_answers_cost_no_calls_and_missing_answer_becomes_request) ... ok
+test_seed_for_configuration_without_feasible_point (_old_optimizer_checks.Search.test_seed_for_configuration_without_feasible_point) ... ok
+test_stop_semantics_unlimited_unapproved_and_inputs_missing (_old_optimizer_checks.Search.test_stop_semantics_unlimited_unapproved_and_inputs_missing) ... ok
+test_unknown_stops_and_inconclusive_is_held (_old_optimizer_checks.Search.test_unknown_stops_and_inconclusive_is_held) ... ok
+test_budget_launch_reuse_and_identity (_old_optimizer_checks.ExecutorJobs.test_budget_launch_reuse_and_identity) ... ok
+test_running_job_is_not_launched_twice_and_dead_job_is_reported (_old_optimizer_checks.ExecutorJobs.test_running_job_is_not_launched_twice_and_dead_job_is_reported) ... ok
+test_unknown_is_distinct_from_model_failure (_old_optimizer_checks.ExecutorJobs.test_unknown_is_distinct_from_model_failure) ... ok
+test_hamiltonian_facts_from_receipt_and_mismatch (_old_optimizer_checks.Inputs.test_hamiltonian_facts_from_receipt_and_mismatch) ... ok
+test_prices_must_reproduce_saved_totals (_old_optimizer_checks.Inputs.test_prices_must_reproduce_saved_totals) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.333s
+
+OK

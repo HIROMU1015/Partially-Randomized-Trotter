@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[RPE共通scheduler：D2実装・人工比較](../../docs/research/d2_rpe_optimizer_throughput_20261116/REPORT.md)／[起動・再開](../../docs/research/d2_rpe_optimizer_throughput_20261116/HANDOFF.md)：4方式共有queue、元の採否順、有限予約、重複・保存/live再開。実Q3 0。人工4方式3.52倍、単一方式飽和では短縮なし。手法入口は [PERFORMANCE_METHODS](../../docs/PERFORMANCE_METHODS.md)。
+
 [H4保存結果の自動比較](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)：実装はtrottertracks/CLI。物理library・数値solverを変更せず、保存判定と費用を照合する。
 
 [Full-H κ2 m0再判定・固定総額](../../docs/research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)：保存証拠とscript会計だけを接続。物理library・compilerの変更なし。
