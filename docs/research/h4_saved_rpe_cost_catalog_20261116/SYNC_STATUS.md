@@ -10,6 +10,7 @@
 |`64624ea07:docs/research/d_full_h_m0_zz_evidence_20261115/HANDOFF_C.json`|Unsupported saved schema; needs consumer adapter, not scientific rerun|
 |`4768ca3cd:docs/research/d_full_h_p2_calibration_resume_20261115/HANDOFF_C.json`|Unsupported saved schema; needs consumer adapter, not scientific rerun|
 |`e628c0d69:docs/research/d_full_h_p2_calibration_resume_20261115/HANDOFF_C.json`|Unsupported saved schema; needs consumer adapter, not scientific rerun|
+|`0ef9668e9:docs/research/d_pr_candidates_auto_20261116/tests/SUMMARY.json`|Unsupported saved schema; needs consumer adapter, not scientific rerun|
 |`778118926:docs/research/d_pr_df_ld9_v0_results_20261116/SUMMARY.json`|Unsupported saved schema; needs consumer adapter, not scientific rerun|
 |`e0b3cad2a:docs/research/d_pr_df_ld_split_results_20261115/C_HANDOFF.json`|ValueError: Unsupported saved index schema: e0b3cad2a024070389f757160f3a20d7da02c5ff:docs/research/d_pr_df_ld_split_results_20261115/SUMMARY.json|
 |`e0b3cad2a:docs/research/d_pr_df_ld_split_results_20261115/SUMMARY.json`|Unsupported saved schema; needs consumer adapter, not scientific rerun|

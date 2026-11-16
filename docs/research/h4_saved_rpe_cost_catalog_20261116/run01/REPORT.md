@@ -21,8 +21,8 @@
 |PR_DF|755,082,667.91|863,305,321.91|
 |FULL_H|1,245,902,550,856.55|1,246,010,773,510.55|
 
-PR_PAULI_KAPPA_ABSOLUTE_2：501,233,190.43 RZ（絶対κ=2限定。元κの倍率×2や方式全体の最安とは別）。
-point ID：fe8b73742b890af3820ca6f9。
+PR_PAULI_KAPPA_ABSOLUTE_2：500,962,225.57 RZ（絶対κ=2限定。元κの倍率×2や方式全体の最安とは別）。
+point ID：ca0ca25b442eac16dffa188a。
 
 LD5_KAPPA_X2_INTERRUPTED_BEST：探索方針変更による途中終了（INTERRUPTED_SEARCH_POLICY_CHANGE）。収束値ではない。
 κ絶対値=26225228882306721296844821347007773673162352858535179072118456320/539496659426909122096437389293855970805348475396548904610992201、元κ倍率=2。
@@ -86,6 +86,8 @@ exact MSE上下界は公開hashと一致した最安点1件のOUTCOMEを保持�
 |LD5_S2_delta_h_kappa_abs_2__e3cb2cfda719117d6222|PR_PAULI|5|2nd|適合|501,233,190.43|[48, 45, 42, 39, 36, 32, 14, 21, 17, 14, 7, 7, 5] / [48, 45, 42, 39, 36, 32, 14, 21, 17, 14, 7, 7, 5]|
 |PR_DF_AUTO_5bebe6918395_3b9c916b4f882df82b2d|PR_DF|6|2nd|適合|1,452,972,904.07|[64, 60, 56, 52, 47, 43, 38, 34, 30, 25, 21, 17, 12] / [64, 60, 56, 52, 47, 43, 38, 34, 30, 25, 21, 17, 12]|
 |PR_PAULI_AUTO_8bf6eb88c735_7a94374fe4d2d0aaee49|PR_PAULI|4|2nd|適合|725,939,453.71|[48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9] / [48, 45, 42, 39, 36, 33, 29, 26, 23, 19, 16, 13, 9]|
+|LD5_S2_delta_h_kappa_abs_2__9d10cc9f815edeeefdd7|PR_PAULI|5|2nd|適合|500,962,225.57|[48, 45, 42, 39, 36, 31, 14, 21, 17, 14, 7, 7, 5] / [48, 45, 42, 39, 36, 31, 14, 21, 17, 14, 7, 7, 5]|
+|LD5_S2_delta_h_kappa_abs_7__32ecd1ff57d0b2e6a8c6|PR_PAULI|5|2nd|適合|518,960,285.57|[48, 45, 42, 39, 36, 33, 16, 20, 17, 16, 10, 12, 2] / [48, 45, 42, 39, 36, 33, 16, 20, 17, 16, 10, 12, 2]|
 
 重複除去：7件。詳細・固定SOURCE・26軸の価格対応はCATALOG.jsonを参照。
 Q3適合・価格待ちは費用nullで選択対象外。信号だけの旧状態はsignal_only_historyへ保持する。
@@ -190,6 +192,8 @@ PRの事前固定予算・旧PF基準はhistorical_*に元SOURCEとともに保�
 - `1e107cf4de2186ee7df324412d18be9644a87d91:docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_DF/3b9c916b4f882df82b2d/SUMMARY.json`
 - `70578fdc21a6b4516a9f6b538ad9e305b8d7e28e:docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_PAULI/7a94374fe4d2d0aaee49/C_RESULT_JOIN.json`
 - `70578fdc21a6b4516a9f6b538ad9e305b8d7e28e:docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_PAULI/7a94374fe4d2d0aaee49/SUMMARY.json`
+- `e3b4c1114139258a2c6e5d3e14de8b73fc4f7cda:docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/best_points/LD5_kappa2_lookahead_not_adopted_9d10cc9f815edeeefdd7/REQUEST.json`
+- `e3b4c1114139258a2c6e5d3e14de8b73fc4f7cda:docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/best_points/LD5_kappa7_32ecd1ff57d0b2e6a8c6/REQUEST.json`
 
 PR-Pauli LD3 VPは保存Q3とAの26軸モデル価格を接続した条件付き参照総額。直接取得は別較正cellの2pathのみ、qualified_for_candidate=falseを保持する。
 
