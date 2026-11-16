@@ -319,6 +319,7 @@ class WidthSearchTests(unittest.TestCase):
                     d.completion_api().complete=lambda request,changed=changed:dict(status='READY_FOR_SEARCH',key='DRIFT',
                         configuration_id=changed['configuration_id'],configuration=changed)
                     point.update(status='COMPLETION')
+                    d.state['cycle']+=1  # Each synthetic drift gets its own bounded preparation wave.
                     d.a.plan_only=False;d.spec['science_approved']=True;d.complete_points()
                     self.assertEqual(point['status'],'HELD')
                     self.assertIn('COMPLETED_CONFIGURATION_MISMATCH:DIFFERENT_',point['reason'])

@@ -520,11 +520,24 @@ class WidthDriver:
     def plan(self):
         families=self.families();points=[]
         for p in self.state['points']:
-            status=('FEASIBLE'if p.get('best')is not None else 'NO_FEASIBLE_FOUND'if p['status']=='EVALUATED'
+            costs=[O.frac(v)for v in(p.get('best'),p.get('confirmed_all_best'))if v is not None]
+            best=min(costs)if costs else None
+            status=('FEASIBLE'if best is not None else 'NO_FEASIBLE_FOUND'if p['status']=='EVALUATED'
                     else 'UNAVAILABLE'if p['status']in('HELD','PRUNED')else'PENDING')
             points.append(dict(family=p['family'],kappa=Fraction(p['kappa']),status=status,
-                best=None if p.get('best')is None else O.frac(p['best']),min_lower_over_tau=p.get('min_lower_over_tau')))
-        proposals,decisions,report=W.plan_wide(families,points,self.wide)
+                best=best,min_lower_over_tau=p.get('min_lower_over_tau')))
+        # The existing rule chooses schedules within each method. An incumbent
+        # from another method must not close this method's refinement window.
+        proposals=[];decisions=[];reports={};family_reports={}
+        methods=list(dict.fromkeys(self.state['families'][key]['method']for key in families))
+        for method in methods:
+            scoped={key:f for key,f in families.items()if self.state['families'][key]['method']==method}
+            chosen,why,summary=W.plan_wide(scoped,[p for p in points if p['family']in scoped],self.wide)
+            proposals.extend(chosen);decisions.extend(why);reports[method]=summary;family_reports.update(summary['families'])
+        report=dict(per_method=reports,global_best_by_method={m:r['global_best']for m,r in reports.items()},
+            global_best=next(iter(reports.values()))['global_best']if len(reports)==1 else None,families=family_reports,
+            scope='INDEPENDENT_METHOD_MINIMA',stop=None if proposals else
+                'WAIT_FOR_PENDING'if any(r['stop']=='WAIT_FOR_PENDING'for r in reports.values())else'RULE_EXHAUSTED')
         for proposal in proposals:
             family=proposal['family']
             if self.point(family,proposal['kappa'])is not None:continue
@@ -551,8 +564,46 @@ class WidthDriver:
     def complete_points(self):
         comp=self.completion_api()
         if hasattr(comp,'ingest_price_results'):comp.ingest_price_results()
-        for p in self.state['points']:
-            if p['status']not in('COMPLETION','WAITING_INPUTS'):continue
+        # INIT may expose a whole far-kappa ladder at once. Transfer only the
+        # existing per_decision-sized wave to preparation, so its late READY
+        # points return to the Q3 queue before preparing the remaining ladder.
+        pending=[p for p in self.state['points']if p['status']in('COMPLETION','WAITING_INPUTS')]
+        cycle=self.state['cycle'];limit=W.settings(self.wide)['per_decision']
+        wave=self.state.get('preparation_wave')
+        if wave is None or wave['cycle']!=cycle:
+            wave=self.state['preparation_wave']=dict(cycle=cycle,dispatched={})
+        selected=[];counts={}
+        for method in self.methods:
+            queues={}
+            for p in pending:
+                if p['method']==method:queues.setdefault(p['family'],[]).append(p)
+            costs={};loads={}
+            for family in queues:
+                members=[p for p in self.state['points']if p.get('family')==family]
+                saved=[O.frac(v)for p in members for v in(p.get('best'),p.get('confirmed_all_best'))if v is not None]
+                costs[family]=min(saved)if saved else None
+                loads[family]=sum(p.get('input_dispatches',0)for p in members)
+                queues[family].sort(key=lambda p:p.get('input_dispatches',0))
+            known=sorted((f for f in queues if costs[f]is not None),key=lambda f:costs[f])
+            unknown=[f for f in queues if costs[f]is None]
+            order=[]
+            for i in range(max(len(known),len(unknown))):
+                if i<len(known):order.append(known[i])
+                if i<len(unknown):order.append(unknown[i])
+            # Fairness is only a dispatch order, not a price estimate or veto.
+            order.sort(key=lambda f:loads[f])
+            available=max(0,limit-wave['dispatched'].get(method,0));chosen=[]
+            while len(chosen)<available and any(queues.values()):
+                for family in order:
+                    if queues[family]and len(chosen)<available:chosen.append(queues[family].pop(0))
+            selected.extend(chosen);counts[method]=len(chosen)
+            wave['dispatched'][method]=wave['dispatched'].get(method,0)+len(chosen)
+        reason='EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN'
+        self.log(event='PREPARATION_WAVE_START',dispatch_reason=reason,per_method_limit=limit,
+            selected_by_method=counts,pending_before=len(pending),deferred=len(pending)-len(selected),
+            selected=[dict(method=p['method'],family=p['family'],kappa=p['kappa'])for p in selected])
+        for p in selected:
+            p['input_dispatches']=p.get('input_dispatches',0)+1
             started=time.monotonic();self.log(event='CANDIDATE_INPUTS_START',family=p['family'],kappa=p['kappa'])
             if self.a.plan_only or self.spec.get('science_approved')is not True:
                 record=comp.plan(p['completion_request'])
@@ -572,6 +623,8 @@ class WidthDriver:
                 p.update(status='HELD',reason=record.get('reason',record['status']))
             else:
                 p.update(status='WAITING_INPUTS',reason=record.get('reason',record['status']))
+        self.log(event='PREPARATION_WAVE_END',dispatch_reason=reason,selected_by_method=counts,
+            remaining_pending=sum(p['status']in('COMPLETION','WAITING_INPUTS')for p in self.state['points']))
 
     def check_completed_configuration(self, point, record):
         """Metadata check against the mapper that set this family's kappa intervals."""
@@ -594,6 +647,61 @@ class WidthDriver:
     def context(self, problem):
         return O.prepare(ROOT,problem,methods=self.methods,generate_configurations=False,
                          preparation_dir=self.run/'preparation')
+
+    def confirm_completed(self, context, executor, result):
+        """Existing ledger checks after finish, including unadopted speculation.
+
+        No Q3/collect/price fit is run. Rule-adopted best stays separate; only
+        source/identity-checked outcomes with consistent exact bounds and own
+        request prices enter the confirmed minimum, regardless of gain size.
+        """
+        import hashlib
+        tau=context['tau'];methods={}
+        for method,r in result.items():
+            candidates=[c for c in context['candidates']if c['method']==method];ready={c['configuration_id']:c for c in candidates if c['ready']}
+            view=executor.for_method(method)
+            view.prior_run_dirs=list(dict.fromkeys([*view.prior_run_dirs,self.run]))
+            known,refused=view.prior_records(candidates)
+            adopted={(t['configuration_id'],tuple(t['vector']))for t in r.get('trace',[])}
+            r['rule_adopted_best']=deepcopy(r.get('best'));confirmed=deepcopy(r.get('best'));rows=[];by_config={}
+            for b in r.get('by_configuration')or[]:
+                b['rule_adopted_best']=deepcopy(b.get('best'));b['confirmed_all_best']=deepcopy(b.get('best'))
+                by_config[b['configuration_id']]=b
+            for (cid,vector),saved in known.items():
+                job=Path(saved['job']);job=job if job.is_absolute()else view.root/job
+                request=O.load_json(job/'REQUEST.json');c=ready[cid];price=O.cost(vector,c['prices'])
+                requested=O.frac(request['cost'])if request.get('cost')is not None else None
+                lo,up=saved.get('MSE_lower'),saved.get('MSE_upper');status=saved['status']
+                consistent=((status==O.PASS and up is not None and up<=tau)or
+                    (status==O.FAIL and lo is not None and lo>tau)or
+                    (status=='INCONCLUSIVE'and lo is not None and up is not None and lo<=tau<up))
+                outcome,path=O.job_outcome(job)
+                row=dict(configuration_id=cid,N_X=O.split(vector)[0],N_Y=O.split(vector)[1],status=status,
+                    cost=price,request_cost=requested,price_match=requested==price,status_consistent=consistent,
+                    identity='EXECUTOR_PRIOR_RECORD_CHECK_PASSED',verified=requested==price and consistent,
+                    adopted_by_rule=(cid,vector)in adopted,job=str(job),outcome_file=str(path),
+                    outcome_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),artificial=outcome.get('artificial')is True)
+                rows.append(row)
+                if not row['verified']or status!=O.PASS:continue
+                best=dict(candidate=c['name'],configuration_id=cid,configuration=c['key'],N_X=row['N_X'],N_Y=row['N_Y'],
+                    status=status,MSE_lower=lo,MSE_upper=up,cost=price,cost_display=O.show(price),evidence='VERIFIED_COMPLETED_JOB',
+                    job=str(job),outcome_source=dict(path=str(path),sha256=row['outcome_sha256']),adopted_by_rule=row['adopted_by_rule'])
+                if confirmed is None or price<O.frac(confirmed['cost']):confirmed=best
+                b=by_config.get(cid)
+                if b is not None and(b['confirmed_all_best']is None or price<O.frac(b['confirmed_all_best']['cost'])):
+                    b['confirmed_all_best']=dict(vector=list(vector),cost=price,cost_display=O.show(price),status=status,
+                        MSE_lower=lo,MSE_upper=up,source='VERIFIED_COMPLETED_JOB',job=str(job),outcome_source=best['outcome_source'],
+                        adopted_by_rule=row['adopted_by_rule'])
+            r['confirmed_all_best']=confirmed
+            r['completed_ledger']=dict(jobs_checked=len(rows),jobs_verified=sum(row['verified']for row in rows),
+                refused=refused,rows=rows,scope='EXACT_TAU_AND_OWN_PRICE_CHECK_AFTER_EXECUTOR_FINISH')
+            methods[method]=dict(rule_adopted_best=r['rule_adopted_best'],confirmed_all_best=confirmed,
+                rule_adopted_min=None if r['best']is None else r['best']['cost'],
+                verified_all_min=None if confirmed is None else confirmed['cost'],
+                jobs_checked=len(rows),jobs_verified=r['completed_ledger']['jobs_verified'],jobs_refused=len(refused))
+        self.state['method_minima']=methods
+        K.CLI.write(self.run/'CONFIRMED_MINIMA.json',K.CLI.slim(dict(schema='RPE_WIDTH_CONFIRMED_MINIMA_V1',tau=tau,
+            methods=methods,scope='PER_METHOD_EVALUATED_SET_CONDITIONAL_PRICE_NOT_FORMAL_G',new_scientific_calls=0)))
 
     def batch(self, prepare_during=False):
         # Same V2/Executor and risk contract as the old ordinary round entry.
@@ -663,6 +771,7 @@ class WidthDriver:
         finally:
             if preparation_pool is not None:preparation_pool.shutdown(wait=True)
             executor.finish()
+        self.confirm_completed(context,executor,result)
         with(self.run/'INVOCATIONS.jsonl').open('a')as f:
             f.write(json.dumps(O.jsonable(dict(time=time.time(),requested_widths=self.widths,budget=budgets,
                 launched={m:executor.launched(m)for m in self.methods},
@@ -675,7 +784,10 @@ class WidthDriver:
             rows=result.get(p['method'],{}).get('by_configuration',[])
             b=next((v for v in rows if v['configuration_id']==p.get('evaluation_configuration_id',p.get('configuration_id'))),None)
             if b:
-                best=b.get('best');p.update(status='EVALUATED',best=None if best is None else best['cost'],
+                adopted=b.get('best');best=b.get('confirmed_all_best')or adopted
+                p.update(status='EVALUATED',best=None if best is None else best['cost'],
+                    rule_adopted_best=None if adopted is None else adopted['cost'],
+                    confirmed_all_best=None if best is None else best['cost'],
                     best_N_X=None if best is None else O.split(best['vector'])[0],
                     best_N_Y=None if best is None else O.split(best['vector'])[1],
                     best_MSE_upper=None if best is None else best.get('MSE_upper'),
@@ -710,7 +822,7 @@ class WidthDriver:
                 self.state['stop']=dict(reason='V2_RESULT_REQUIRES_REVIEW',methods=failed,UTC=K.now());self.save();return
             waiting=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
                      any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values()))
-            pending=any(p['status']=='REGISTERED'or(p['status']=='EVALUATED'and p.get('promising'))for p in self.state['points'])
+            pending=any(p['status']in('COMPLETION','REGISTERED')or(p['status']=='EVALUATED'and p.get('promising'))for p in self.state['points'])
             if not proposals and not pending:
                 self.state['stop']=dict(reason='WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED',
                     UTC=K.now(),methods={m:r['stop_reason']for m,r in result.items()});self.save();return
