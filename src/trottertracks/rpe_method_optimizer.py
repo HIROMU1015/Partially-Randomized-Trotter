@@ -1013,6 +1013,9 @@ def quote_prices(root, problem, candidates, catalog, methods=None):
     if not targets:
         return dict(policy=policy, quotes=[])
     import tempfile
+    reader=Reader(Path(root))
+    saved_points={}
+    for point in catalog['candidates']:saved_points.setdefault(point['configuration_id'],[]).append(point)
     with tempfile.TemporaryDirectory() as d:
         probe = Path(d) / 'PROBE.json';(Path(d) / 'P.json').write_text(json.dumps(dict(policy=policy, items=[])))
         run_quotes(root, pr, Path(d) / 'P.json', probe)
@@ -1025,8 +1028,14 @@ def quote_prices(root, problem, candidates, catalog, methods=None):
             entry_name = ('PAULI_LD%s' if c['method'] == 'PR_PAULI' else 'DF_LD%s') % c['key'].get('L_D')
             if base not in registry and entry_name not in names:
                 c['price_quote'] = dict(policy=policy, status='NO_REGISTERED_PRICE_RULE_FOR_BASE');continue
-            items.append(dict(item_id=c['name'], registry=registry[base] if base in registry else entry_name,
-                              configuration=c.get('generated_configuration') if c.get('generated') else None))
+            config=c.get('generated_configuration')
+            if config is None:
+                source=c.get('configuration_source')or(saved_points.get(c['configuration_id'])or[{}])[0].get('configuration_source')
+                if source is None:
+                    c['price_quote']=dict(policy=policy,status='CANDIDATE_CONFIGURATION_SOURCE_MISSING');continue
+                config=reader.read(source)
+            if config['id']!=c['configuration_id']:raise ValueError('PRICE_QUOTE_CONFIGURATION_ID_DIFFERS')
+            items.append(dict(item_id=c['name'], registry=registry[base] if base in registry else entry_name,configuration=config))
         req, out = Path(d) / 'REQ.json', Path(d) / 'OUT.json'
         req.write_text(json.dumps(dict(policy=policy, items=items)))
         run_quotes(root, pr, req, out)
@@ -1034,6 +1043,8 @@ def quote_prices(root, problem, candidates, catalog, methods=None):
     by_name = {c['name']: c for c in targets};report = []
     for q in result['items']:
         c = by_name[q['item_id']];rows = q.get('rows') or []
+        if q['complete']and q.get('configuration_id')!=c['configuration_id']:
+            raise ValueError('PRICE_QUOTE_RETURNED_ANOTHER_CONFIGURATION')
         quoted = [frac(r['unit_price_RZ']) for r in rows] if q['complete'] else None
         counts = {}
         for r in rows:
@@ -1049,7 +1060,17 @@ def quote_prices(root, problem, candidates, catalog, methods=None):
         if not c.get('generated'):
             entry['reproduces_saved_unit_prices'] = None if c['prices'] is None else (quoted == list(c['prices']))
             if c['prices'] is None and q['complete']:
-                entry['note'] = 'saved catalog has no price for this configuration; quote not adopted for saved points'
+                points=[p for p in saved_points.get(c['configuration_id'],[])if p.get('conditional_cost')is not None]
+                axes=[(r['m'],r['axis'])for r in rows]
+                valid=(c['price_status']=='NO_SAVED_26_AXIS_PRICE'and all(not p.get('price_axes')for p in points)
+                       and axes==[(m,a)for m in range(13)for a in AXES]and all(v>0 for v in quoted)and points
+                       and all(cost(point_vector(p),quoted)==frac(p['conditional_cost'])for p in points))
+                entry['reproduces_all_saved_totals']=bool(valid)
+                if valid:
+                    c.update(prices=quoted,price_status='SOURCE_BOUND_MODEL_QUOTE_REPRODUCES_ALL_SAVED_TOTALS')
+                    c['needs']=[n for n in c['needs']if n!='PRICE_26AXIS'];c['ready']=not c['needs']
+                    entry['note']='Own MODEL quote, same canonical configuration, exact match to every saved total'
+                else:entry['note']='Own quote does not reproduce saved totals; retain price need'
         else:
             c['needs'] = [n for n in c['needs'] if not n.startswith('PRICE_AXES')]
             if q['complete']:

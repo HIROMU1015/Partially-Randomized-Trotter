@@ -44,12 +44,36 @@ def df_extension():
     helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper);return helper
 
 
-def df_entry(tail_descriptor=None,saved_bundles=()):
+def scope_df_saved_index(entry,configuration):
+    """Validate with the fixed entry; unrelated rounds cannot conflict here.
+
+    Every packet is indexed by the original implementation in isolation. Only
+    the requested physical keys are merged; a conflict on a requested key
+    retains the original strict record-equality STOP. No raw value is replaced.
+    """
+    wanted={entry.physical_key(job)for job in entry.runtime.jobs(configuration)}
+    inventory=list(entry.saved);selected={}
+    try:
+        for source in inventory:
+            entry.saved=[source];entry._index=None
+            for key,item in entry.saved_index().items():
+                if key not in wanted:continue
+                if key in selected and entry.reader.read(selected[key]['source'])!=entry.reader.read(item['source']):
+                    raise ValueError('Conflicting saved means: select explicit saved inventory')
+                selected.setdefault(key,item)
+    finally:
+        entry.saved=inventory;entry._index=None
+    entry._index=selected
+    return entry
+
+
+def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None):
     # Same fixed entry as326fe; no source edits to its canonical/provider contracts.
     sys.path.insert(0,str(DF_VIEW/'src'))
     from trottertracks.pr_df_signal_entry import DFSignalEntry
     entry=DFSignalEntry(ROOT)if tail_descriptor is None else df_extension().entry(ROOT,tail_descriptor,DFSignalEntry)
     entry.saved.extend(x for x in saved_bundles if x not in entry.saved)
+    if configuration is not None and not entry._support(configuration):scope_df_saved_index(entry,configuration)
     return entry
 
 
@@ -105,11 +129,12 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('mode',choices=('df-generate','df-plan','df-stage','df-bundle','df-price-design','pauli-price-plan','quote','intake'))
     p.add_argument('--input',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();r=json.loads(a.input.read_text())
     if a.mode=='df-generate':value=df_generate(r)
-    elif a.mode=='df-plan':value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[])).plan(read(r['configuration']))
+    elif a.mode=='df-plan':
+        config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config).plan(config)
     elif a.mode=='df-stage':
-        value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[])).stage(read(r['configuration']),ROOT/r['directory'],obtained={int(m):v for m,v in r.get('obtained',{}).items()})
+        config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config).stage(config,ROOT/r['directory'],obtained={int(m):v for m,v in r.get('obtained',{}).items()})
     elif a.mode=='df-bundle':
-        entry=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]));value=entry.assemble(r['configuration_source'],{int(m):v for m,v in r['raw_sources'].items()})
+        config=read(r['configuration_source']);entry=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config);value=entry.assemble(r['configuration_source'],{int(m):v for m,v in r['raw_sources'].items()})
     elif a.mode=='df-price-design':
         spec=importlib.util.spec_from_file_location('_df_candidate_price_design',ROOT/'scripts/run_pr_df_candidate_prices.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
