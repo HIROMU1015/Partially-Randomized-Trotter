@@ -43,16 +43,21 @@ class PriceTests(unittest.TestCase):
             self.assertEqual(result['model_verdict'],'NOT_ASSESSED_NO_ADOPTED_TOLERANCE')
 
     def test_reuse_complete_receipt_and_prior_start_no_retry(self):
+        fixture_spec=importlib.util.spec_from_file_location('_df_price_receipt_fixtures',ROOT/'tests/test_partial_df_price_reuse.py')
+        fixtures=importlib.util.module_from_spec(fixture_spec);fixture_spec.loader.exec_module(fixtures)
         with tempfile.TemporaryDirectory(dir=ROOT,prefix='.df-price-test-')as d:
-            out=Path(d);base=E.rel(out);req={'fixture':'REQUEST'};cell=dict(m=0,role='CALIBRATION',request=req,seeds=[[17]],cohort='ARTIFICIAL_COHORT',indices=[0])
-            inputs=dict(output_directory=base,cells=[cell]);receipt=out/'calibration/acquisition/m0/p0/PATH_RECEIPT.json';receipt.parent.mkdir(parents=True)
-            value=dict(status='VALID',m=0,index=0,record=dict(request=req,seeds=[17],cohort=cell['cohort'],index=0),compiles=[])
-            receipt.write_text(json.dumps(value));original=receipt.read_bytes()
-            with patch.object(E,'runtime',return_value=SimpleNamespace()):self.assertTrue(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
-            result=json.loads((out/'calibration/acquisition/RESULT.json').read_text());self.assertEqual(result['new_paths'],0);self.assertEqual(result['reused_paths'],1);self.assertEqual(receipt.read_bytes(),original)
+            out=Path(d);base=E.rel(out);cell=fixtures.cell();inputs=dict(output_directory=base,cells=[cell])
+            receipt=out/'calibration/acquisition/m0/p0/PATH_RECEIPT.json';receipt.parent.mkdir(parents=True)
+            value=fixtures.fixture_path(cell);receipt.write_text(json.dumps(value));original=receipt.read_bytes()
+            for a in value['record']['records']:
+                (receipt.parent/({'X':'cosine','Y':'sine'}[a['axis']]+'.json')).write_text(json.dumps(dict(metrics=a['metrics'],fingerprint=a['fingerprint'],compiler='COMPILER')))
+            with patch.object(E,'runtime',return_value=SimpleNamespace()),patch.object(E,'blob',return_value=b'ARTIFICIAL_SOURCE'):
+                self.assertTrue(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
+            result=json.loads((out/'calibration/acquisition/RESULT.json').read_text());self.assertEqual(result['new_paths'],0);self.assertEqual(result['reused_axes'],2);self.assertEqual(receipt.read_bytes(),original)
             receipt.unlink();(out/'calibration/acquisition/STARTED_m0_p0.json').write_text('{}')
-            with patch.object(E,'runtime',return_value=SimpleNamespace()):self.assertFalse(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
-            result=json.loads((out/'calibration/acquisition/RESULT.json').read_text());self.assertEqual(result['rows'][0]['status'],'HELD_PRIOR_START_OR_FAILURE_NO_RETRY');self.assertEqual(result['new_paths'],0)
+            with patch.object(E,'runtime',return_value=SimpleNamespace()),patch.object(E,'blob',return_value=b'ARTIFICIAL_SOURCE'):
+                self.assertFalse(E.acquire(inputs,'INPUTS','calibration','SOURCE'))
+            result=json.loads((out/'calibration/acquisition/RESULT.json').read_text());self.assertTrue(all(a['status']=='HELD_PRIOR_START_OR_FAILURE_NO_RETRY'for a in result['rows'][0]['axes'].values()));self.assertEqual(result['new_paths'],0)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

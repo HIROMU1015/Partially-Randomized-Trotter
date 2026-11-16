@@ -54,6 +54,29 @@ class CompletionTests(unittest.TestCase):
                 return dict(status='SIGNALS_READY')
             with patch.object(c,'call',side_effect=call):c.pauli_signals(config,prepared,Path(tmp))
 
+    def test_df_descriptor_is_shared_across_kappa_requests(self):
+        c=C.Completion.__new__(C.Completion)
+        loc=dict(commit='fixed',path='DESCRIPTOR.json')
+        c.state={'records':{'saved':dict(method='PR_DF',design={'L_D':6},request={'tail_descriptor':loc})}}
+        self.assertEqual(c.saved_df_descriptor(dict(design={'L_D':6,'kappa':'3'})),loc)
+        self.assertIsNone(c.saved_df_descriptor(dict(design={'L_D':5,'kappa':'3'})))
+        canonical=dict(spec=dict(split=dict(lambda_source=loc)))
+        self.assertEqual(c.saved_df_descriptor(dict(configuration=canonical)),loc)
+
+    def test_new_registry_recovers_price_hold_without_scientific_retry(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            c=C.Completion.__new__(C.Completion);c.directory=Path(tmp);c.registry=Path(tmp)/'registry.json'
+            C.put(c.registry,{'entries':['new published evidence']})
+            r=dict(key='selected',status='HELD_WITH_REASON',reason='price missing',configuration={'commit':'cfg','path':'cfg'},signal={'packet':'fixed'},intake={'binding':'fixed'},registry_at_hold='old')
+            cfg=dict(spec=dict(L_D=6,formula='2nd',kappa={'value':'2'},delta_pf='0.1'),rounds=[])
+            q=dict(complete=True,rows=[{'unit_price_RZ':{'numerator':7,'denominator':1}}])
+            with patch.object(C,'ROOT',Path(tmp)),patch.object(c,'service',return_value=q)as service,patch.object(c,'save'),patch.object(C,'publish',return_value='published'),patch.object(C,'value',return_value=cfg):
+                out=c.refresh_price_hold(r)
+            self.assertEqual(out['status'],'READY_FOR_SEARCH')
+            self.assertEqual(out['previous_hold']['reason'],'price missing')
+            self.assertEqual(service.call_args.args[0],'quote')
+            self.assertEqual(out['recovered_by'],'METADATA_REQUERY_NO_SCIENTIFIC_RETRY')
+
     def test_normal_cli_contains_callback_and_df_route_is_generic(self):
         spec=importlib.util.spec_from_file_location('_completion_cli',ROOT/'scripts/run_rpe_method_optimizer.py');cli=importlib.util.module_from_spec(spec);spec.loader.exec_module(cli)
         import inspect

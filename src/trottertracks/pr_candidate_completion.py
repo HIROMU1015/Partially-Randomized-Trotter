@@ -115,12 +115,49 @@ class Completion:
         tag=tag or mode;inp=d/(tag+'.INPUT.json');out=d/(tag+'.json');put(inp,request)
         return self.call([python,'-B',str(ROOT/'scripts/pr_candidate_services.py'),mode,'--input',str(inp),'--output',str(out)],d,tag,out)
 
+    def saved_df_descriptor(self,request):
+        if request.get('tail_descriptor'):return request['tail_descriptor']
+        cfg=request.get('configuration')
+        if cfg:
+            cfg=value(cfg)if 'commit'in cfg else cfg
+            source=cfg.get('spec',{}).get('split',{}).get('lambda_source',{})
+            if source.get('commit')and source.get('path'):
+                # The descriptor validator still checks its H/state/prefix.
+                return source
+        prefix=(request.get('design')or{}).get('L_D')
+        for record in self.state['records'].values():
+            source=record.get('request',{}).get('tail_descriptor')
+            if record['method']=='PR_DF'and source and (record.get('design')or record.get('request',{}).get('design',{})).get('L_D')==prefix:
+                return source
+        return None
+
+    def refresh_price_hold(self,record):
+        """Requery newly registered evidence, never retry a scientific leaf."""
+        if not all(record.get(k)for k in ('configuration','signal','intake')):return None
+        digest=key(read(self.registry))
+        if record.get('registry_at_hold')==digest:return None
+        d=self.directory/'refresh'/record['key']/digest
+        registry=d/'PRICE_RULES.json';put(registry,read(self.registry))
+        quote=self.service('quote',dict(configuration=record['configuration'],view=str(D2_VIEW),
+            registry_file=str(registry),policy='MODEL'),d,tag='AVAILABLE_EVIDENCE_QUOTE',python=PRICE)
+        if not quote.get('complete'):
+            record['registry_at_hold']=digest;self.save();return None
+        fixed=publish([d],'Reuse newly available candidate prices without scientific retry')
+        config=value(record['configuration'])
+        record.update(previous_hold=dict(status=record['status'],reason=record.get('reason')),
+            status='READY_FOR_SEARCH',reason=None,price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']],
+            quote=dict(commit=fixed,path=rel(d/'AVAILABLE_EVIDENCE_QUOTE.json')),
+            design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),delta_pf=config['spec']['delta_pf']),
+            schedule=[dict(m=r['m'],T=r['T'],q=r['q_PF'],R=r['R_outer'],actual_delta_pf=r['actual_delta_pf'],structure=r['structure'],physical_id=r['candidate']['id'])for r in config['rounds']],
+            recovered_by='METADATA_REQUERY_NO_SCIENTIFIC_RETRY')
+        self.save();return record
+
     def complete(self,request):
         identifier=key(request);d=self.directory/'candidates'/identifier
         with self.lock:
             old=self.state['records'].get(identifier)
             if old and old['status']=='READY_FOR_SEARCH':return dict(old,resumed=True)
-            if old and old['status'].startswith(('HELD','STOP')):return dict(old,resumed=True)
+            if old and old['status'].startswith(('HELD','STOP')):return dict(self.refresh_price_hold(old)or old,resumed=True)
             rec=dict(method=request['method'],selection=request.get('selection'),request=request,status='SELECTED',key=identifier,directory=rel(d))
             self.state['records'][identifier]=rec;self.save()
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
@@ -128,6 +165,8 @@ class Completion:
             if request.get('selection_error'):raise Held('B2_SELECTION_NORMALIZATION:'+request['selection_error'])
             if request['method']=='PR_PAULI':config,prepared=self.pauli_configuration(request,d)
             else:
+                saved_descriptor=self.saved_df_descriptor(request)
+                if saved_descriptor:request['tail_descriptor']=saved_descriptor
                 generated=self.service('df-generate',request,d)
                 if generated['status']=='NEEDS_DF_TAIL_DESCRIPTOR':
                     prefix=request['design']['L_D'];descriptor=d/'DF_TAIL_DESCRIPTOR.json'
@@ -164,6 +203,7 @@ class Completion:
                     delta_pf=config['spec']['delta_pf']),schedule=[dict(m=r['m'],T=r['T'],q=r['q_PF'],R=r['R_outer'],actual_delta_pf=r['actual_delta_pf'],structure=r['structure'],physical_id=r['candidate']['id'])for r in config['rounds']])
         except Held as exc:rec.update(status='HELD_WITH_REASON',reason=str(exc))
         except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc))
+        if rec['status'].startswith(('HELD','STOP')):rec['registry_at_hold']=key(read(self.registry))
         self.save();self.log(event='CANDIDATE_COMPLETED',method=request['method'],status=rec['status'],reason=rec.get('reason'));return rec
 
     def pauli_configuration(self,r,d):
@@ -335,6 +375,8 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
     old_state=Path(run)/'completion/STATE.json'
     settings.setdefault('source',read(old_state)['source']if old_state.exists()else git('rev-parse','HEAD'))
     completion=completion or Completion(Path(run)/'completion',settings)
+    for record in list(completion.state['records'].values()):
+        if record['status'].startswith(('HELD','STOP')):completion.refresh_price_hold(record)
     ready=[r for r in completion.state['records'].values()if r['status']=='READY_FOR_SEARCH']
     routes=completion.install(context,problem,ready)
     search=dict(problem['search'],**spec.get('search_overrides',{}))
@@ -347,8 +389,10 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
         if isinstance(maximum,dict):maximum=maximum.get(method)
         if maximum is not None and sum(r['status']=='READY_FOR_SEARCH'for r in current)>=maximum:return current
         attempted={Selection.identity(r['request']['selection'])for r in current if r['request'].get('selection')}
-        limit=settings.get('max_attempted_per_method',9)
-        for _ in range(max(0,limit-len(current))):
+        limit=settings.get('max_attempted_per_method')
+        remaining=None if limit is None else max(0,limit-len(current))
+        while remaining is None or remaining>0:
+            if remaining is not None:remaining-=1
             # Uses the published B2 rule verbatim; no local LD/kappa priority implementation.
             answer=(selection_results or{}).get(method)
             if answer is None:
