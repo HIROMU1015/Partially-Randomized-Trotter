@@ -1,0 +1,205 @@
+{
+  "schema": "D2_PR_NORMAL_C_DAEMON_ACCEPTANCE_V1",
+  "status": "PASS_BOTH_METHODS_IN_NORMAL_C_PUBLIC_TABLE",
+  "producer_branch": "codex/d2-pr-df-pauli-autoprepare-20261116",
+  "producer_publication_commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+  "C_branch": "codex/h4-saved-rpe-cost-catalog-20261116",
+  "C_remote_SHA": "1d44d07397031547e402171faae268a640a2807b",
+  "C_local_equals_remote": true,
+  "C_observed_producer_head": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+  "producer_publication_is_ancestor_of_observed_head": true,
+  "actual_consumer_sources": {
+    "scripts/sync_saved_rpe_publications.py": {
+      "commit": "76474c3d737cae31603e9524a9b3bf56fdebe476",
+      "path": "scripts/sync_saved_rpe_publications.py",
+      "blob": "1a62408d28bf5ca2514fdc7add4185500a02c126"
+    },
+    "src/trottertracks/saved_rpe_cost_catalog.py": {
+      "commit": "76474c3d737cae31603e9524a9b3bf56fdebe476",
+      "path": "src/trottertracks/saved_rpe_cost_catalog.py",
+      "blob": "e68453cd1628059cd7440bfe66ac414567918d9d"
+    }
+  },
+  "earlier_local_replay_consumer_source": "06e0b67634265d6dc818d4032f0cdb8fe8fd5629",
+  "scheduled_cycle": {
+    "start_UTC": "2026-11-16T12:20:01Z",
+    "end_UTC": "2026-11-16T12:20:23Z",
+    "end_JST": "2026-11-16 21:20:23 JST",
+    "cron_log_readonly_path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/c-h4-saved-cost-catalog-20261116/artifacts/local_h4_catalog_sync/cron.log",
+    "captured_cycle": [
+      "2026-11-16T12:20:01Z START H4 saved-publication sync",
+      "SYNC FETCH_START",
+      "SYNC DISCOVERY_START",
+      "SYNC RECONCILED 55",
+      "SYNC WRITTEN 7",
+      "{\"status\": \"UPDATED\", \"changed\": [\"docs/research/h4_saved_rpe_cost_catalog_20261116/INPUTS.json\", \"docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json\", \"docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md\", \"docs/research/h4_saved_rpe_cost_catalog_20261116/run01/INPUTS.json\", \"docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CHECKS.json\", \"docs/research/h4_saved_rpe_cost_catalog_20261116/PUBLICATIONS.json\", \"docs/research/h4_saved_rpe_cost_catalog_20261116/SYNC_STATUS.md\"], \"accepted\": 2, \"pending\": 29, \"head\": \"1d44d07397031547e402171faae268a640a2807b\", \"wall_seconds\": 20.680083676008508}",
+      "2026-11-16T12:20:23Z END H4 saved-publication sync status=0"
+    ],
+    "invoked_by_D2": false
+  },
+  "public_metadata": {
+    "publications": {
+      "commit": "1d44d07397031547e402171faae268a640a2807b",
+      "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/PUBLICATIONS.json"
+    },
+    "catalog": {
+      "commit": "1d44d07397031547e402171faae268a640a2807b",
+      "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json"
+    },
+    "report": {
+      "commit": "1d44d07397031547e402171faae268a640a2807b",
+      "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md"
+    }
+  },
+  "accepted_methods": [
+    {
+      "method": "PR_DF",
+      "L_D": 6,
+      "configuration_id": "5bebe69183952f0cab73860b5680d5a6d034fe0be0e74c866b66efa5735d5e4d",
+      "point_id": "62d59d80a6190c5370c2338d",
+      "status": "FEASIBLE",
+      "q3_status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+      "N_X": [
+        64,
+        60,
+        56,
+        52,
+        47,
+        43,
+        38,
+        34,
+        30,
+        25,
+        21,
+        17,
+        12
+      ],
+      "N_Y": [
+        64,
+        60,
+        56,
+        52,
+        47,
+        43,
+        38,
+        34,
+        30,
+        25,
+        21,
+        17,
+        12
+      ],
+      "price_axes": 26,
+      "price_kind_counts": {
+        "MODEL_REFERENCE": 26
+      },
+      "conditional_cost": {
+        "numerator": 20341620657,
+        "denominator": 14
+      },
+      "MSE_lower_outward_22digits": "4.490321550542429919738E-7",
+      "MSE_upper_outward_22digits": "4.490321550542429920792E-7",
+      "producer_export": {
+        "commit": "1e107cf4de2186ee7df324412d18be9644a87d91",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_DF/3b9c916b4f882df82b2d/C_RESULT_JOIN.json"
+      },
+      "C_canonical_export": {
+        "commit": "1e107cf4de2186ee7df324412d18be9644a87d91",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_DF/3b9c916b4f882df82b2d/C_RESULT_JOIN.json",
+        "selector": []
+      },
+      "identical_export_blob": true,
+      "producer_export_is_ancestor_of_observed_head": true,
+      "raw_outcome": {
+        "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/jobs/PR_DF/3b9c916b4f882df82b2d/COLLECTED_OUTCOME.json"
+      },
+      "catalog_locator": {
+        "commit": "1d44d07397031547e402171faae268a640a2807b",
+        "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+        "selector": [
+          "candidates",
+          53
+        ]
+      },
+      "report_contains_saved_label": true,
+      "scientific_qualification": "UNCHANGED_CONDITIONAL_MODEL_COMPARISON_NOT_FORMAL_E_C_G"
+    },
+    {
+      "method": "PR_PAULI",
+      "L_D": 4,
+      "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012",
+      "point_id": "baec57f59a42675330f9dad1",
+      "status": "FEASIBLE",
+      "q3_status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+      "N_X": [
+        48,
+        45,
+        42,
+        39,
+        36,
+        33,
+        29,
+        26,
+        23,
+        19,
+        16,
+        13,
+        9
+      ],
+      "N_Y": [
+        48,
+        45,
+        42,
+        39,
+        36,
+        33,
+        29,
+        26,
+        23,
+        19,
+        16,
+        13,
+        9
+      ],
+      "price_axes": 26,
+      "price_kind_counts": {
+        "MODEL_REFERENCE": 26
+      },
+      "conditional_cost": {
+        "numerator": 5081576176,
+        "denominator": 7
+      },
+      "MSE_lower_outward_22digits": "0.000001579495343671234563344",
+      "MSE_upper_outward_22digits": "0.000001579495343671605871389",
+      "producer_export": {
+        "commit": "f6477f5009d52c50836036f4eb6c5835e1fa02ef",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_PAULI/7a94374fe4d2d0aaee49/C_RESULT_JOIN.json"
+      },
+      "C_canonical_export": {
+        "commit": "70578fdc21a6b4516a9f6b538ad9e305b8d7e28e",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_PAULI/7a94374fe4d2d0aaee49/C_RESULT_JOIN.json",
+        "selector": []
+      },
+      "identical_export_blob": true,
+      "producer_export_is_ancestor_of_observed_head": true,
+      "raw_outcome": {
+        "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/jobs/PR_PAULI/7a94374fe4d2d0aaee49/OUTCOME.json"
+      },
+      "catalog_locator": {
+        "commit": "1d44d07397031547e402171faae268a640a2807b",
+        "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+        "selector": [
+          "candidates",
+          54
+        ]
+      },
+      "report_contains_saved_label": true,
+      "scientific_qualification": "UNCHANGED_CONDITIONAL_MODEL_COMPARISON_NOT_FORMAL_E_C_G"
+    }
+  ],
+  "new_scientific_calls": 0,
+  "C_worktree_modified_by_this_check": false,
+  "verification_scope": "EXISTING_SCHEDULED_SYNC_PUBLICATION_AND_ACTUAL_COMPARISON_TABLE_NOT_ONLY_LOCAL_REPLAY"
+}

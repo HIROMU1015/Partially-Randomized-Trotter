@@ -122,3 +122,11 @@ Pauliの複数actual stepはAの要求生成まで対応するが、現価格登
 |DF descriptor係数helper|`7f4c9a171a1d4caeaeaee6c443217edec761f4c9:scripts/h46_new2_core.py:matrix_only_tail_coefficients`|
 
 viewは他担当の稼働中作業treeではなく、固定読取viewまたは今回の所有workspaceを使う。数値signal/Q3は既存Python 3.11.0rc1環境、compileは固定NumPy1.26.4/Qiskit1.3.0環境。guard・compiler・normalization・総Tでのscalar一回規則を変えず、未対応は具体的な理由付きで返す。
+
+## 追記：LD7/8/9の登録済み新P0 identity
+
+Aの最新HANDOFF `d3a1a3d359014e7d0bd95e648b4174cfe1598c9e`、準備API/登録表 `9f00ddd86a44b5d1443f29b5f02dbf1db4ef9ab8`、builder `25a08afafa32af2ca52bca4f63233c38b3af0e6e` を反映した。今後の `settings.pauli_workspace` は新登録表を含む所有checkout `d2-pauli-auto-nodrop-evidence-20261116` を使う。LD7/8/9は通常入口へ `--p0-builder no-drop` を渡し、`REUSED_CONFIGURATION` と `P0_NO_INTERMEDIATE_DROP_V1` の保存辞書・基準構成を使う。LD8を含めtail descriptorをplan/execute/assembleへ渡す。
+
+旧辞書のSTOPは旧SOURCE/identityの履歴として残す。新辞書のidentity・λ_P・lawを別物として登録し、旧辞書の価格係数を黙って移送しない。新P0を再生成せず、分割は同じまま公式/幅/κを変える際も辞書を共有する。固定参照とmetadata検収は[NO_DROP_REGISTRY_CHECK.json](NO_DROP_REGISTRY_CHECK.json)。3分割の信号はここでは取得せず、実候補選択と不足round取得は通常B2探索に委ねる。完了済みRUN02のA checkoutとSOURCEは変更していない。
+
+既存のB2公開registryは `candidate_completion.price_registry_source={commit,path}`、または通常problemの `price_rules.registry_file` から直接引き継げる。候補ごとの手動再登録は不要。各規則の元SOURCEは維持する。共通4方式driver内でも、この準備callbackが科学取得を担当するのはPR_PAULI/PR_DFだけで、PFをDF候補へ読み替えない。

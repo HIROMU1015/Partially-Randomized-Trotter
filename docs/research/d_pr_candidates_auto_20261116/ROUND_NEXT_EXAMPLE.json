@@ -1,0 +1,144 @@
+{
+  "schema": "RPE_OPTIMIZER_SEARCH_ROUND_V1",
+  "round_id": "H4_PR_AUTOMATION_NEXT_EXAMPLE_NOT_EXECUTED",
+  "methods": [
+    "PR_PAULI",
+    "PR_DF"
+  ],
+  "science_approved": true,
+  "max_new_q3_per_method": {
+    "PR_PAULI": 1,
+    "PR_DF": 1
+  },
+  "initial": "all",
+  "max_steps_per_method": 4,
+  "method_overrides": {
+    "PR_PAULI": {
+      "saved_configurations_only": false,
+      "generation": {
+        "formulas": [
+          "2nd"
+        ],
+        "delta_over_h_values": [
+          "1"
+        ],
+        "kappa_multipliers": [
+          "1"
+        ]
+      }
+    },
+    "PR_DF": {
+      "saved_configurations_only": false,
+      "generation": {
+        "formulas": [
+          "2nd"
+        ],
+        "delta_over_h_values": [
+          "1"
+        ],
+        "kappa_multipliers": [
+          "1"
+        ]
+      }
+    }
+  },
+  "search_overrides": {
+    "rule": "METHOD_MINIMUM_PRIORITY_V2",
+    "seed_saved_same_L_D": true,
+    "explore_every": 4,
+    "explore_window": "3/2",
+    "small_gain_fraction": "1/1000",
+    "deferral_fail_margin": "1/10000",
+    "transfer_count": 2,
+    "lookahead": 1,
+    "small_and_deferred": "STOP",
+    "on_missing": "CONTINUE"
+  },
+  "executor": {
+    "max_concurrent_jobs": 16,
+    "wait_for_running_jobs": true,
+    "prior_run_dirs": [
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-candidate-autoprepare-20261116/docs/research/d_pr_candidates_auto_20261116/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-candidate-autoprepare-20261116/docs/research/d_pr_candidates_auto_20261116/run02"
+    ]
+  },
+  "candidate_completion": {
+    "bootstrap_saved_only": true,
+    "new_candidate_design": {
+      "formula": "2nd",
+      "delta_over_h": "1",
+      "kappa": "2",
+      "K": 2
+    },
+    "max_attempted_per_method": 9,
+    "pauli_workspace": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pauli-auto-nodrop-evidence-20261116",
+    "saved_pauli_packets": [
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      }
+    ],
+    "source": "98b40e4390ec23f581eea10bdbb33f2caa2870dd",
+    "evaluate_completed_only": false,
+    "resume_preparation_from": {
+      "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+      "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/STATE.json"
+    },
+    "price_registry_source": {
+      "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+      "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/PRICE_RULES_REGISTRY.json"
+    }
+  },
+  "execution_scope": {
+    "system": "SAVED_H4_LINEAR_1ANGSTROM_STO3G_TOL_ONLY_DF10",
+    "splits": "B2 selected within existing1..9",
+    "absolute_kappa": "2 for a newly requested split at the adopted neighbourhood centre; existing canonical requests preserved",
+    "first_ready_per_method": true,
+    "price_policy": "MODEL",
+    "no_guard_relaxation": true,
+    "keep_old_STOPS": true,
+    "unknown_prices": "NEEDS_NOT_ZERO_OR_FAILURE",
+    "previous_sources": {
+      "B2": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+      "A": "02e7cc6a127954fa7c446e7383d037f0617d50d3",
+      "B": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+      "D2": "326feadd093920bbea29b498108aa4eae6f67a75"
+    }
+  },
+  "example_only": "B2 supplies next adopted scope; not executed by D2"
+}
