@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-Pauli複数実stepの較正要求](research/pauli_multistep_calibration_request_20261116/REPORT.md)／[API・B2/D2接続](research/pauli_multistep_calibration_request_20261116/HANDOFF.md)／[保存・人工検収](research/pauli_multistep_calibration_request_20261116/ACCEPTANCE.json)。
+
 [PR-Pauli較正要求・検収](research/pauli_calibration_request_20261116/REPORT.md)／[B2・D2 HANDOFF](research/pauli_calibration_request_20261116/HANDOFF.md)。
 
 [PR-Pauli必要時準備](research/pauli_candidate_preparation_20261116/REPORT.md)／[B2 HANDOFF](research/pauli_candidate_preparation_20261116/HANDOFF.md)／[性能手法](PERFORMANCE_METHODS.md)。

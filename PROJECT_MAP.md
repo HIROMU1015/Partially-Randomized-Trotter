@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR-Pauli複数実stepの較正要求](docs/research/pauli_multistep_calibration_request_20261116/REPORT.md)：canonical＋D2の26軸応答から再利用・実step別要求・SOURCE不足を返す。現幅互換、exact1/5とbinary64 .2の区別、候補間の同一cell重複除去。[B2/D2接続](docs/research/pauli_multistep_calibration_request_20261116/HANDOFF.md)、人工・保存metadata15 test、新科学0。
+
 [PR-Pauli較正要求](docs/research/pauli_calibration_request_20261116/REPORT.md)：A候補＋D2価格不足からS0-r1較正specを生成。保存LD3/5入力一致・未登録人工fixture、17 test PASS、新H4 path/compile/fit/Q3 0。
 
 [PR-Pauli必要時準備](docs/research/pauli_candidate_preparation_20261116/REPORT.md)：B2 requestから保存辞書/canonicalを価格catalogと独立に解決。未登録分割のstage1 bridge・signal/価格hand-off、保存＋人工23検査、新H4科学0。性能再利用は[手法集](docs/PERFORMANCE_METHODS.md)。

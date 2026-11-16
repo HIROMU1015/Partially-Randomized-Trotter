@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+PR-Pauli複数実step：[pauli_calibration_request](../trottertracks/pauli_calibration_request.py)はcanonical＋D2応答を実step別の較正要求へ接続する。[API・適用範囲](../../docs/research/pauli_multistep_calibration_request_20261116/HANDOFF.md)。科学計算の実行やモデル資格は付与しない。
+
 PR-Pauli較正request adapter：[pauli_calibration_request.py](../trottertracks/pauli_calibration_request.py)／[仕様・検証](../../docs/research/pauli_calibration_request_20261116/REPORT.md)。
 
 PR-PauliのB2準備adapterは[trottertracks/pauli_candidate_preparation.py](../trottertracks/pauli_candidate_preparation.py)。[仕様・検証](../../docs/research/pauli_candidate_preparation_20261116/REPORT.md)、[性能手法](../../docs/PERFORMANCE_METHODS.md)。

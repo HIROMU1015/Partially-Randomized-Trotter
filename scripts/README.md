@@ -1,5 +1,7 @@
 # scripts 索引
 
+[prepare_pauli_calibration.py](prepare_pauli_calibration.py)の複数実step・canonical直接入力・`--batch`：[最新HANDOFF](../docs/research/pauli_multistep_calibration_request_20261116/HANDOFF.md)。同一物理cellだけ重複除去し、非binary64-exactなstepは必要SOURCEを返す。
+
 [prepare_pauli_calibration.py](prepare_pauli_calibration.py)：候補固有の価格不足→[split driver](run_pauli_split_cal.py) request。[API/HANDOFF](../docs/research/pauli_calibration_request_20261116/HANDOFF.md)。
 
 [prepare_pauli_candidate.py](prepare_pauli_candidate.py)：B2のPR-Pauli requestを必要時に準備する入口。[HANDOFF](../docs/research/pauli_candidate_preparation_20261116/HANDOFF.md)／[性能手法](../docs/PERFORMANCE_METHODS.md)。

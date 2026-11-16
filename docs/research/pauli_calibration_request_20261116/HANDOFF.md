@@ -1,5 +1,7 @@
 # B2・D2：候補固有Pauli較正要求API
 
+後続の[複数実step・canonical直接入力・batch接続](../pauli_multistep_calibration_request_20261116/HANDOFF.md)で入口を拡張した。以下は元SOURCEの現幅経路の記録として保持する。
+
 固定技術SOURCE：`7d6a8c385fc057de012c7e1e603bc0bc358f313c`。
 branch `codex/a-pauli-on-demand-preparation-20261116`。
 [REPORT](REPORT.md)／[SOURCE](SOURCE_INDEX.json)／[検収](ACCEPTANCE.json)。

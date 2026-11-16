@@ -97,6 +97,12 @@ def select_job_spec(job):
     request = binding['request']; cell = spec['cell']
     same((request['prefix'], request['q'], request['R'], request['T'], request['K']),
          (spec['prefix'], cell['q'], cell['R'], cell['T'], cell['K']), 'Job spec/binding cell differs')
+    if 'calibration_domain' in spec:
+        same(binding.get('calibration_domain'), spec['calibration_domain'], 'Job spec/binding step domain differs')
+        same(binding.get('covered_rounds'), spec['covered_rounds'], 'Job spec/binding covered rounds differ')
+        step = spec['calibration_domain']['actual_step']
+        same(Fraction(request['step_time']), Fraction(step['numerator'], step['denominator']),
+             'Job spec/binding exact step differs')
     same(request['physical_cell']['split'], spec['configuration']['spec']['split'],
          'Job spec/binding physical split differs')
     same(request['physical_cell']['profile'], spec['configuration']['spec']['profile'],
@@ -146,7 +152,14 @@ def metadata(spec):
     ld2 = D3.cell_request(P, ld2_spec, dict(q=8, R=66, T=.1 * 8, K=2), saved['lambda_P'])
     same(ld2, saved, 'Cell identity rule does not reproduce the saved LD2 Q8R66 request')
     request = D3.cell_request(P, s, cell, dictionary['lambda_P'])
-    same((request['q'], request['R'], request['T'], request['step_time']), (cell['q'], cell['R'], 0.8, 0.1), 'Cell q/R/T differs')
+    if 'calibration_domain' in spec:
+        step = spec['calibration_domain']['actual_step']
+        step = Fraction(step['numerator'], step['denominator'])
+        same((request['q'], request['R'], request['T'], Fraction(request['step_time'])),
+             (cell['q'], cell['R'], cell['T'], step), 'Cell q/R/T/exact step differs')
+    else:
+        same((request['q'], request['R'], request['T'], request['step_time']),
+             (cell['q'], cell['R'], 0.8, 0.1), 'Cell q/R/T differs')
     m12 = config['rounds'][12]
     same((m12['candidate']['id'], m12['q_PF'], m12['R_outer']), (spec['m12']['id'], spec['m12']['q'], spec['m12']['R']),
          'm12 per-step R differs')
@@ -155,7 +168,7 @@ def metadata(spec):
     previous = old_seeds(spec)
     if len(set(flat)) != len(flat) or set(flat) & previous:
         raise ValueError('New or old cohort seed collision')
-    return dict(schema='A_PAULI_LD%d_CAL_BINDING_V1' % prefix, cell_id=cell['cell_id'], prefix=prefix, cohort=spec['cohort'],
+    value = dict(schema='A_PAULI_LD%d_CAL_BINDING_V1' % prefix, cell_id=cell['cell_id'], prefix=prefix, cohort=spec['cohort'],
         path_indices=[0, 1], axes=['X', 'Y'], n_paths=2, compile_maximum=COMPILE_MAXIMUM, request=request,
         step_seeds=seeds, dictionary_identity=identity, configuration=dict(spec.get('config') or {}, id=spec['config_id'],
             **({'embedded': True} if not spec.get('config') else {})),
@@ -170,6 +183,10 @@ def metadata(spec):
                          old_sources=spec['old_seed_sources'], old_seed_count=len(previous)),
         legacy_source=D3.PIN, legacy_checkout=str(D3.PIN_ROOT), c2_worker_pattern=D3.C2_DRIVER, driver=SCRIPT,
         plan=spec['plan'])
+    if 'calibration_domain' in spec:
+        value.update(calibration_domain=deepcopy(spec['calibration_domain']), covered_rounds=deepcopy(spec['covered_rounds']))
+        value['m12_canonical']['relation'] = 'WHOLE_SCHEDULE_PROVENANCE_NOT_CALIBRATION_R_OR_STEP_ANCHOR'
+    return value
 
 
 def input_preflight(spec, scratch):

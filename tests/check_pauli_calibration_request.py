@@ -127,8 +127,7 @@ class CalibrationTests(unittest.TestCase):
     def test_out_of_scope_formula_actual_step_K_or_contract_returns_needs(self):
         base=self.preps[3]['configuration']; b=E.p1.b_api(ROOT)
         for key,value,reason in [('formula','4th(m5_best)','FORMULA_OR_K'),
-                                 ('finite_K',4,'FORMULA_OR_K'),
-                                 ('delta_pf',A.encoded(.05),'SAME_STEP')]:
+                                 ('finite_K',4,'FORMULA_OR_K')]:
             s=deepcopy(base['spec']);s[key]=value;cfg=b.generate(s)
             with self.no_science():result=C.prepare(ROOT,prepared(cfg),missing(cfg))
             self.assertEqual(result['status'],'NEEDS_RULE_OR_IMPLEMENTATION_EXTENSION')

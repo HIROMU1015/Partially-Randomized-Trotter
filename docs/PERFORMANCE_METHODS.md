@@ -25,3 +25,5 @@ event-matrix memo/同値fingerprintを使用する[split driver](../scripts/run_
 [検収](research/pauli_calibration_request_20261116/REPORT.md)は保存metadata・人工fixtureのみ。
 新H4 pathの速度倍率・新runtimeでの取得性能は未測定。旧sourceのBLAS設定は旧経路だけ保持し、
 新requestはjob環境を継承する。SOURCE/input/gate/STOPは保持する。
+
+[複数実step拡張](research/pauli_multistep_calibration_request_20261116/REPORT.md)はcanonicalのexact実stepでroundをまとめ、複数候補間では同じ物理request・law・cohortのcellだけを共有する。異なるTの同名Q8R1は物理hashで出力先を分ける。旧LD3/LD5 metadata再現、通常CLIとbatch→driver/worker入口を人工検査。取得性能の速度倍率は未測定。同stepのgroupingは後続audit・価格model適用資格の代用ではない。

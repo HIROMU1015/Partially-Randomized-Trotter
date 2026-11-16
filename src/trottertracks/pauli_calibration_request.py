@@ -8,6 +8,7 @@ from fractions import Fraction
 from functools import lru_cache
 import importlib.util
 import json
+import math
 from pathlib import Path
 import subprocess
 
@@ -25,6 +26,11 @@ SAVED_BINDINGS = (
 
 def frac(v):
     return Fraction(v['numerator'], v['denominator']) if isinstance(v, dict) else Fraction(v)
+
+
+def exact(value):
+    value=frac(value)
+    return dict(numerator=value.numerator,denominator=value.denominator)
 
 
 @lru_cache(maxsize=None)
@@ -53,7 +59,7 @@ def implementation_sources():
                 provider=dict(commit='c31ef424175c02379eafebe8fc6c7548c1d9aabe'))
 
 
-def scope_reasons(config, rounds=None):
+def scope_reasons(config, rounds=None, *, multiple_steps=False):
     s = config['spec']; reasons = []
     if s['method'] != 'PR' or not s['split'].get('tail_dictionary'):
         reasons.append('PR_PAULI_CONFIGURATION_REQUIRED')
@@ -64,7 +70,11 @@ def scope_reasons(config, rounds=None):
     for row in config['rounds']:
         if rounds is not None and row['m'] not in rounds:
             continue
-        if frac(row['actual_delta_pf']) != Fraction(.1):
+        step=frac(row['actual_delta_pf']);T=frac(row['T'])
+        if (T!=row['q_PF']*step or step<=0 or not math.isfinite(float(step)) or
+                not math.isfinite(float(T)) or Fraction(float(step))!=step or Fraction(float(T))!=T):
+            reasons.append('EXACT_STEP_OR_T_NOT_BINARY64_DRIVER_REPRESENTABLE:m%d' % row['m'])
+        if not multiple_steps and step != Fraction(.1):
             reasons.append('SAME_STEP_CALIBRATION_OR_AUDIT_EXTENSION_REQUIRED:m%d' % row['m'])
         st = row['structure']
         if (st.get('signed_weights') != [1.] or st.get('allocation') != [row['R_outer']]
@@ -91,7 +101,11 @@ def validate_driver_spec(root, spec):
     the scientific driver additionally checks its frozen binding and source.
     """
     config = spec['configuration']; s = config['spec']; cell = spec['cell']
-    reasons = scope_reasons(config)
+    domain=spec.get('calibration_domain');covered=spec.get('covered_rounds')
+    if domain is not None and (not covered or len(set(covered))!=len(covered) or
+            any(type(m)is not int or m not in range(13)for m in covered)):
+        raise ValueError('COVERED_CANONICAL_ROUNDS_REQUIRED')
+    reasons = scope_reasons(config,covered,multiple_steps=domain is not None)
     if reasons:
         raise ValueError('; '.join(reasons))
     td = s['split']['tail_dictionary']; p = s['L_D']; last = config['rounds'][12]
@@ -101,8 +115,14 @@ def validate_driver_spec(root, spec):
             or td['scalar_policy'] != 'KEEP_SAVED_sR_AND_c_ONCE'
             or td['event_space'] != 'FULL_2_TO_N_NOT_PROJECTED_PAULI'):
         raise ValueError('DRIVER_CONFIGURATION_DICTIONARY_OR_OPERATOR_SOURCE_DIFFERS')
+    step=Fraction(.1)if domain is None else frac(domain['actual_step'])
+    anchor_R=last['R_outer']if domain is None else max(config['rounds'][m]['R_outer']for m in covered)
+    if domain is not None:
+        if (Fraction(float(step))!=step or domain.get('actual_step_hex')!=float(step).hex() or
+                any(frac(config['rounds'][m]['actual_delta_pf'])!=step for m in covered)):
+            raise ValueError('CALIBRATION_EXACT_STEP_DOMAIN_DIFFERS')
     if (type(cell['q']) is not int or cell['q'] != 8 or type(cell['R']) is not int
-            or cell['R'] < 1 or cell['R'] != last['R_outer'] or cell['T'] != .1*8 or cell['K'] != 2
+            or cell['R'] < 1 or cell['R'] != anchor_R or Fraction(cell['T']) != step*8 or cell['K'] != 2
             or spec['m12'] != dict(id=last['candidate']['id'], q=last['q_PF'], R=last['R_outer'])):
         raise ValueError('CALIBRATION_TEMPLATE_OR_M12_MAPPING_DIFFERS')
     if cell['cell_id'] != 'Q8R%d' % cell['R'] or not spec.get('cohort'):
@@ -144,7 +164,7 @@ def validate_quote(config, quote):
     return reuse, missing
 
 
-def build_spec(root, config, configuration_source, *, execution=None, saved_bindings=SAVED_BINDINGS):
+def build_spec(root, config, configuration_source, *, execution=None, saved_bindings=SAVED_BINDINGS, covered_rounds=None):
     """One S0-r1 cell from the candidate, with published scientific inputs reused if identical."""
     A = _api(); d = driver(str(Path(root).resolve())); P = d.D3.legacy().B0.connection()
     A.E.p1.b_api(root).validate(config)
@@ -162,7 +182,15 @@ def build_spec(root, config, configuration_source, *, execution=None, saved_bind
     for ref in (COMMON, A.E.S3.operators_locator(item)):
         A.E.p0.blob(root, ref['commit'], ref['path'])
     last = config['rounds'][12]
-    cell = dict(cell_id='Q8R%d' % last['R_outer'], q=8, R=last['R_outer'], T=.1*8, K=2)
+    domain=None
+    if covered_rounds is None:
+        R=last['R_outer'];step=Fraction(.1)
+    else:
+        steps={frac(config['rounds'][m]['actual_delta_pf'])for m in covered_rounds}
+        if len(steps)!=1:raise ValueError('ONE_EXACT_STEP_PER_CALIBRATION_REQUIRED')
+        step=next(iter(steps));R=max(config['rounds'][m]['R_outer']for m in covered_rounds)
+        domain=dict(actual_step=exact(step),actual_step_hex=float(step).hex())
+    cell = dict(cell_id='Q8R%d' % R, q=8, R=R, T=float(step)*8, K=2)
     request = d.D3.cell_request(P, s, cell, item['payload']['lambda_P'])
     matched = []
     for loc in saved_bindings:
@@ -176,14 +204,15 @@ def build_spec(root, config, configuration_source, *, execution=None, saved_bind
     if old and execution:
         raise ValueError('SAVED_CALIBRATION_IS_REUSE_ONLY_NOT_A_NEW_COHORT')
     identifier = config['id'][:20]
+    cell_folder=cell['cell_id']if domain is None else cell['cell_id']+'_'+request['candidate_id'].split(':')[1][:16]
     cohort = old['cohort'] if old else execution.get('cohort', 'A_PAULI_CAL_'+request['candidate_id'].split(':')[1][:20]+'_N2_V1')
     spec = dict(prefix=p, config=deepcopy(configuration_source), configuration=deepcopy(config), config_id=config['id'],
                 p0=dict(commit=item['source']['commit'], directory=item['source']['path'].rsplit('/', 1)[0]+'/'),
                 cell=cell, cohort=cohort, m12=dict(id=last['candidate']['id'], q=last['q_PF'], R=last['R_outer']),
                 total_view=None, plan=dict(commit='7cf4e1f0536567df6dcf2da6c7bc63f4547aad7b',
                     path='docs/research/pauli_candidate_preparation_20261116/HANDOFF.md'),
-                base=execution.get('base', 'docs/research/pauli_candidate_calibrations/'+identifier+'/'+cell['cell_id']),
-                private=execution.get('private', str(Path(root).parent/'a-pauli-on-demand-calibrations'/identifier/cell['cell_id'])),
+                base=execution.get('base', 'docs/research/pauli_candidate_calibrations/'+identifier+'/'+cell_folder),
+                private=execution.get('private', str(Path(root).parent/'a-pauli-on-demand-calibrations'/identifier/cell_folder)),
                 old_seed_sources=deepcopy(old['seed_checks']['old_sources'] if old else
                                          list(d.D3.OLD_SEEDS)+list(saved_bindings)),
                 reuse_only=old is not None, saved_binding_source=old_source,
@@ -196,15 +225,28 @@ def build_spec(root, config, configuration_source, *, execution=None, saved_bind
     if not branch:
         raise ValueError('PUBLISHED_EXECUTION_BRANCH_REQUIRED_FOR_DETACHED_VIEW')
     spec['execution_branch'] = branch
+    if domain is not None:
+        spec.update(calibration_domain=domain,covered_rounds=sorted(covered_rounds))
     validate_driver_spec(root, spec)
     return spec, item, old_source
 
 
+def canonical_preparation(config,source=None):
+    """Canonical input is already generated by B2; never reconstruct q from a width."""
+    return dict(configuration=config,configuration_source=source,
+        dictionary_source=config['spec']['split']['tail_dictionary']['source'],
+        schedule=[dict(m=r['m'],q_RPE=r['q_RPE'],T=r['T'],q_PF=r['q_PF'],
+            actual_delta_pf=r['actual_delta_pf'],R_outer=r['R_outer'],physical_id=r['candidate']['id'],
+            structure=r['structure'],mapping=r['mapping'],law_binding=r['law_binding'])for r in config['rounds']])
+
+
 def prepare(root, preparation, quote, *, execution=None, inspect_saved_cell=False):
     A = _api(); result = dict(schema='A_PAULI_CALIBRATION_PREPARATION_V1', status='NOT_PREPARED',
-        driver_request=None, reused_prices=[], missing_prices=[], needs=[], science_calls=0,
+        driver_request=None,calibration_requests=[],round_actions=[],reused_prices=[], missing_prices=[], needs=[], science_calls=0,
         path_calls=0, compile_calls=0, fit_calls=0, Q3_calls=0, sufficient_N=None, G=None)
+    result.update(execution_authorized=False,next_action='RESOLVE_INPUT_OR_IMPLEMENTATION_EVIDENCE')
     try:
+        if preparation.get('schema')=='PR_RPE_RMSE_V2':preparation=canonical_preparation(preparation)
         if 'items' in preparation:
             ready = [x for x in preparation['items'] if x.get('configuration')]
             if len(ready) != 1:
@@ -218,6 +260,8 @@ def prepare(root, preparation, quote, *, execution=None, inspect_saved_cell=Fals
             raise ValueError('FIXED_H4_HAMILTONIAN_STATE_SNAPSHOT_BINDING_REQUIRED')
         if config['spec']['profile'] != reference['profile']:
             raise ValueError('SOURCED_COMPILER_PROFILE_IMPLEMENTATION_CONTRACT_REQUIRED')
+        if frac(config['spec']['h'])!=frac(reference['h']):
+            raise ValueError('FIXED_RPE_H_REQUIRED_NO_TIME_GRID_CHANGE')
         if preparation.get('dictionary_source') != config['spec']['split']['tail_dictionary']['source']:
             raise ValueError('A_DICTIONARY_SOURCE_DIFFERS')
         if preparation.get('configuration_source'):
@@ -242,28 +286,93 @@ def prepare(root, preparation, quote, *, execution=None, inspect_saved_cell=Fals
                       supplied_D2_response_recomputed=False, prices_complete=not missing)
         if not missing and not inspect_saved_cell:
             result['status'] = 'REUSE_SUPPLIED_PRICES_NO_CALIBRATION'
+            result['next_action']='RETURN_SUPPLIED_PRICES_NO_ACQUISITION'
+            result['round_actions']=[dict(m=r['m'],configuration_id=config['id'],physical_id=r['candidate']['id'],
+                q=r['q_PF'],R=r['R_outer'],T=r['T'],actual_step=r['actual_delta_pf'],
+                action='REUSE_SUPPLIED_PRICES',missing_axes=[])for r in config['rounds']]
             return result
-        reasons = scope_reasons(config)  # this driver is a common-step S2/K2 template
-        if reasons:
-            result.update(status='NEEDS_RULE_OR_IMPLEMENTATION_EXTENSION', needs=reasons,
-                next_steps=['candidate-specific same-formula/step boundary/event calibration',
-                            'sourced wrapper terminal-angle/nonzero-margin audit at requested T'])
-            return result
-        spec, item, old_source = build_spec(root, config, preparation.get('configuration_source'), execution=execution)
-        d = driver(str(Path(root).resolve()))
-        binding = d.metadata(spec)  # existing driver's actual metadata/input checks, no native preflight
-        result.update(driver_request=dict(schema='A_PAULI_SPLIT_CAL_REQUEST_V1', driver_spec=spec),
-            driver_metadata=binding, implementation=implementation(), implementation_sources=implementation_sources(),
-            candidate_implementation_binding=dict(configuration_id=config['id'], dictionary_identity=A.E.L.dictionary_identity(item),
-                profile=config['spec']['profile'], operators=binding['operators'],
-                qualification='SOURCE_BOUND_RECIPE_PENDING_NUMERICAL_INPUT_PREFLIGHT'),
-            saved_calibration_source=old_source,
-            post_acquisition_needs=['same-candidate S0-r1 boundary/normal-body decomposition audit',
-                'wrapper margins at all requested round T; no other L_D coefficients',
-                'D2 candidate-specific model registration/applicability; not an E[C] guarantee'],
-            requested_wrapper_times=[dict(m=r['m'], T=r['T']) for r in config['rounds']
-                                     if any(x['m']==r['m'] for x in missing)],
-            status='REUSE_SAVED_CALIBRATION' if old_source else 'CALIBRATION_REQUEST_READY_NOT_EXECUTED')
+        grouped={};missing_rounds={x['m']for x in missing}
+        if inspect_saved_cell:missing_rounds=set(range(13))
+        for r in config['rounds']:
+            axes=[x['axis']for x in missing if x['m']==r['m']]
+            action=dict(m=r['m'],configuration_id=config['id'],physical_id=r['candidate']['id'],
+                q=r['q_PF'],R=r['R_outer'],T=r['T'],actual_step=r['actual_delta_pf'],missing_axes=axes)
+            result['round_actions'].append(action)
+            if r['m']not in missing_rounds:
+                action['action']='REUSE_SUPPLIED_PRICES';continue
+            reasons=scope_reasons(config,[r['m']],multiple_steps=True)
+            if reasons:
+                action.update(action='NEEDS_RULE_OR_IMPLEMENTATION_EXTENSION',needs=reasons)
+                result['needs'].extend(reasons);continue
+            grouped.setdefault(frac(r['actual_delta_pf']),[]).append(r['m'])
+        for step,needed in grouped.items():
+            covered=[r['m']for r in config['rounds']if frac(r['actual_delta_pf'])==step]
+            # Preserve the existing .1 whole-schedule request and saved metadata.
+            legacy=len(covered)==13 and step==Fraction(.1)
+            spec,item,old_source=build_spec(root,config,preparation.get('configuration_source'),execution=execution,
+                covered_rounds=None if legacy else covered)
+            d=driver(str(Path(root).resolve()));binding=d.metadata(spec)
+            identifier=binding['request']['candidate_id']
+            group=dict(request_id=identifier,status='REUSE_SAVED_CALIBRATION'if old_source else'CALIBRATION_REQUEST_READY_NOT_EXECUTED',
+                next_action='D2_AUDIT_OR_REGISTER_SAVED_CALIBRATION'if old_source else'SELECT_FINITE_CALIBRATION_SCOPE_NOT_EXECUTE',
+                execution_authorized=False,
+                driver_request=dict(schema='A_PAULI_SPLIT_CAL_REQUEST_V1',driver_spec=spec),driver_metadata=binding,
+                saved_calibration_source=old_source,covered_rounds=covered,requested_missing_rounds=needed,
+                proposed_applicability=dict(configuration_id=config['id'],formula=config['spec']['formula'],K=2,
+                    law=deepcopy(config['spec']['law']),implementation=implementation(),
+                    actual_step=exact(step),actual_step_hex=float(step).hex(),rounds=covered,
+                    q_values=[config['rounds'][m]['q_PF']for m in covered],R_values=[config['rounds'][m]['R_outer']for m in covered],
+                    qualification='SAME_STEP_METADATA_ONLY_CALIBRATION_NOT_MODEL_OR_WRAPPER_QUALIFICATION'))
+            result['calibration_requests'].append(group)
+            for action in result['round_actions']:
+                if action['m']in needed:action.update(action=group['status'],request_id=identifier)
+        result.update(implementation=implementation(),implementation_sources=implementation_sources(),
+            post_acquisition_needs=['same-step S0-r1 boundary/normal-body decomposition audit',
+                'wrapper margins at all requested round T; no other step or L_D coefficients',
+                'D2 model registration/applicability and validation; not an E[C] guarantee'],
+            requested_wrapper_times=[dict(m=r['m'],T=r['T'])for r in config['rounds']if r['m']in missing_rounds])
+        groups=result['calibration_requests']
+        if len({g['driver_request']['driver_spec']['base']for g in groups})!=len(groups) or \
+                len({g['driver_request']['driver_spec']['private']for g in groups})!=len(groups):
+            raise ValueError('DISTINCT_OUTPUT_LOCATIONS_REQUIRED_FOR_STEP_GROUPS')
+        if len(groups)==1:
+            g=groups[0];result.update(driver_request=g['driver_request'],driver_metadata=g['driver_metadata'],
+                saved_calibration_source=g['saved_calibration_source'],
+                candidate_implementation_binding=dict(configuration_id=config['id'],dictionary_identity=A.E.L.dictionary_identity(item),
+                    profile=config['spec']['profile'],operators=g['driver_metadata']['operators'],
+                    qualification='SOURCE_BOUND_RECIPE_PENDING_NUMERICAL_INPUT_PREFLIGHT'))
+        result['status']=('NEEDS_RULE_OR_IMPLEMENTATION_EXTENSION'if result['needs']else
+            groups[0]['status']if len(groups)==1 else 'CALIBRATION_GROUPS_READY_NOT_EXECUTED')
+        result['next_action']=('RESOLVE_ROUND_NEEDS_KEEP_REUSED_PRICES'if result['needs']else
+            groups[0]['next_action']if len(groups)==1 else'HANDLE_UNIQUE_CALIBRATION_REQUESTS')
     except (KeyError, ValueError, FileNotFoundError, subprocess.CalledProcessError) as exc:
-        result.update(status='NEEDS_INPUT_OR_FIXED_IMPLEMENTATION_SOURCE', needs=[type(exc).__name__+': '+str(exc)])
+        result.update(status='NEEDS_INPUT_OR_FIXED_IMPLEMENTATION_SOURCE', needs=[type(exc).__name__+': '+str(exc)],
+            calibration_requests=[],driver_request=None,next_action='RESOLVE_INPUT_OR_IMPLEMENTATION_EVIDENCE')
     return result
+
+
+def prepare_many(root,inputs,*,execution=None):
+    """Deduplicate identical physical calibration requests across selected candidates.
+
+    No configurations, rounds or price records are merged/relabelled. The one
+    executable cell retains its canonical producer; consumers are metadata.
+    """
+    results=[prepare(root,x.get('preparation',x.get('configuration')),x['quote'],execution=execution)for x in inputs]
+    groups={}
+    for result in results:
+        for group in result['calibration_requests']:
+            request=group['driver_metadata']['request'];key=group['request_id']
+            consumer=dict(configuration_id=result['configuration_id'],rounds=group['requested_missing_rounds'],
+                proposed_applicability=group['proposed_applicability'])
+            if key not in groups:groups[key]=dict(deepcopy(group),consumers=[])
+            other=groups[key]
+            if other['driver_metadata']['request']!=request or other['driver_metadata']['cohort']!=group['driver_metadata']['cohort']:
+                raise ValueError('CALIBRATION_CELL_OR_COHORT_CONFLICT_NO_POOLING')
+            if other['proposed_applicability']['law']!=group['proposed_applicability']['law']:
+                raise ValueError('CALIBRATION_LAW_BINDING_CONFLICT_NO_IMPLICIT_TRANSFER')
+            if consumer not in other['consumers']:other['consumers'].append(consumer)
+    return dict(schema='A_PAULI_MULTI_CANDIDATE_CALIBRATION_PREPARATION_V1',results=results,
+        calibration_requests=list(groups.values()),unique_calibration_requests=len(groups),
+        maximum_new_paths=sum(2 for g in groups.values()if not g['saved_calibration_source']),
+        maximum_new_compiles=sum(4 for g in groups.values()if not g['saved_calibration_source']),
+        science_calls=0,execution_authorized=False)
