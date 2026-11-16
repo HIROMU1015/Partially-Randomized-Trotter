@@ -1,0 +1,137 @@
+{
+  "schema": "PR_MULTIWIDTH_INTEGRATION_READINESS_V1",
+  "observed_at_utc": "2026-11-16 16:58:00 UTC",
+  "audit_scope": "Read-only owner-source/metadata audit plus one explicitly requested tiny artificial planner comparison. No H4 scientific inputs, scientific computations or owner-file changes.",
+  "ready_for_scientific_launch": false,
+  "required_action": "PREPARE_ONLY_UNTIL_PUBLISHED_INTEGRATED_SOURCE_AND_REMAINING_GATES_ARE_RESOLVED",
+  "integration": {
+    "worktree": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/pr-width-throughput-integration-20261117",
+    "branch": "codex/pr-width-throughput-integration-20261117",
+    "observed_HEAD": "d69516191f3126a076b23bc55f6818b3f866f10e",
+    "remote_query": "git ls-remote origin refs/heads/codex/pr-width-throughput-integration-20261117",
+    "remote_query_result": "NO_MATCHING_PUBLIC_REF",
+    "throughput_commit_is_ancestor_of_HEAD": false,
+    "requested_width_base": "d69516191f3126a076b23bc55f6818b3f866f10e",
+    "throughput_base": "e839b0d3f5469c21f5944aec5d978f91d193efc8",
+    "observed_working_tree_status": "Integration files staged; further unstaged CLI/WidthDriver changes; draft REPORT/HANDOFF/tests/check outputs untracked. No fixed integration commit yet.",
+    "source_snapshot": {
+      "width_driver_path": "scripts/run_rpe_schedule_search.py",
+      "width_driver_git_blob": "1c495a8e856dc437789a1de36c20c10428691e3d",
+      "method_cli_path": "scripts/run_rpe_method_optimizer.py",
+      "method_cli_git_blob": "93a588cfeb7370d99c7776821c9408353e4ffd4d"
+    },
+    "owner_may_continue_work": true,
+    "snapshot_warning": "Local owner code changed during this audit. These findings describe the listed working-tree blobs, not an immutable published result."
+  },
+  "findings": [
+    {
+      "id": "PUBLICATION",
+      "severity": "LAUNCH_BLOCKER",
+      "status": "UNPUBLISHED",
+      "evidence": "Named integration branch had no remote ref. Local HEAD is width-only d695; e839 and glue exist only as staged/dirty files.",
+      "required": "Wait for owner publication, then verify exact remote SHA/tree and relevant fixed artifacts. Do not launch d695 or substitute an older implementation."
+    },
+    {
+      "id": "CONFIRMED_COMPLETED_MINIMUM",
+      "severity": "LAUNCH_OR_REPORTING_BLOCKER",
+      "status": "GAP_IN_OBSERVED_WIDTHDRIVER",
+      "code_references": [
+        "scripts/run_rpe_schedule_search.py:WidthDriver.batch (~668), copies by_configuration.best only",
+        "scripts/run_rpe_schedule_search.py:WidthDriver.plan (~520), uses point.best only",
+        "scripts/run_rpe_schedule_search.py:WideDriver.absorb (~202), separate older path"
+      ],
+      "detail": "The width path does not re-verify/absorb all finished speculative Q3 after executor.finish. A valid cheaper unadopted completion can be omitted from final point state and ROUND_RESULT, especially if no later batch reloads prior_records.",
+      "required": "Retain adopted minimum separately from minimum of all identity/source/contract-verified completed observations. Reuse existing Executor/prior-record validation or verified ledger; do not treat raw OUTCOME status alone as sufficient."
+    },
+    {
+      "id": "PREPARATION_Q3_OVERLAP",
+      "severity": "SETTING_AND_PUBLICATION_GATE",
+      "status": "NEW_LOCAL_CODE_PRESENT_NOT_FIXED_PUBLIC",
+      "code_references": [
+        "scripts/run_rpe_schedule_search.py:WidthDriver.loop (~697)",
+        "scripts/run_rpe_schedule_search.py:WidthDriver.batch(prepare_during=False) (~598)",
+        "scripts/run_rpe_schedule_search.py:WIDTH_READY_DURING_PREPARATION"
+      ],
+      "detail": "Latest inspected dirty code honors overlap_ready_batch=true, science_approved=true and not plan_only. It submits complete_points to a thread, runs initially READY Q3 on the same executor while preparation continues, then installs READY records after the whole preparation future returns.",
+      "limitation": "Newly READY records are not streamed individually while that preparation future is still pending.",
+      "required": "Actual owned round must explicitly enable overlap_ready_batch. Draft HANDOFF example has false. Owner must publish and validate the new branch; do not describe the earlier sequential snapshot as the current implementation."
+    },
+    {
+      "id": "QUEUE_AND_COMPLETION",
+      "severity": "INFORMATION",
+      "status": "LOCAL_GLUE_PRESENT",
+      "code_references": [
+        "scripts/run_rpe_method_optimizer.py:make_executor (~150)",
+        "scripts/run_rpe_schedule_search.py:WidthDriver.batch (~598)",
+        "src/trottertracks/pr_candidate_completion.py:continue_selected_preparation"
+      ],
+      "detail": "WidthDriver now obtains the ordinary legacy/concurrent executor factory, carries the same context/routes/expected IDs and cumulative budget into Completion continuation, and closes its owned executor in finally. Outer width/kappa planner suppresses the independent inner kappa chooser."
+    },
+    {
+      "id": "DRAFT_EVIDENCE_INDEX",
+      "severity": "PUBLICATION_GATE",
+      "status": "INCOMPLETE_AT_OBSERVATION",
+      "evidence": "Local REPORT/HANDOFF link SOURCE.json and CHECKS.json under docs/research/pr_width_throughput_integration_20261117; those two files were absent when inspected. Local queue/prefix/B0I check outputs exist, but are untracked and not immutable published evidence.",
+      "required": "Resolve draft references and publish matching code/test/evidence before selecting a scientific execution SOURCE."
+    },
+    {
+      "id": "INDEPENDENT_METHOD_SEARCH_SCOPE",
+      "severity": "METHOD_OPTIMIZATION_BLOCKER",
+      "status": "VERIFIED_WITH_TINY_ARTIFICIAL_CASE",
+      "code_references": [
+        "scripts/run_rpe_schedule_search.py:WidthDriver.plan (~520), combines both methods in W.plan_wide",
+        "src/trottertracks/rpe_schedule_search.py:plan_wide, global_best and window refinement gate"
+      ],
+      "detail": "A cheaper PR-Pauli incumbent supplies the global window for PR-DF too. In the artificial reproduction joint planning gives only Pauli REFINE_UP and marks DF RESOLVED, whereas the unchanged DF-only family gives DF REFINE_UP and OPEN. This suppresses DF refinement even when the objective is an independent DF minimum.",
+      "evidence": "METHOD_ISOLATION_ARTIFICIAL.json",
+      "required": "Keep each method optimization independent: partition families/points by method before applying the existing planner, or introduce an equivalent method-local incumbent/window. Preserve the original rule within each method; any global queue interleave must not veto a method based on another method cost. Add the artificial isolation regression in the owner source before scientific launch."
+    }
+  ],
+  "launch_settings_to_bind": {
+    "entry": "scripts/run_rpe_schedule_search.py",
+    "methods": [
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "explicit_requested_widths": true,
+    "width_representation": "Preserve raw binary64 JSON numbers versus exact rational strings; binary64 0.2 and exact \"1/5\" remain separate families. Keep original h_RPE and T_m.",
+    "executor_scheduler": "concurrent",
+    "overlap_ready_batch": true,
+    "profile_keys": [
+      "max_concurrent_jobs",
+      "dp_workers",
+      "wait_for_running_jobs",
+      "prefix_cache_directory",
+      "prefix_checkpoint_rounds"
+    ],
+    "profile_warning": "Draft worker/slot/checkpoint numbers are examples, not scientific adoption or permanent resource caps. Use owned run/cache paths and the permitted resource profile.",
+    "budgets": "Bind total scientific scope and cumulative per-method Q3 limits; prefix-assisted evaluation of a new allocation still consumes one new Q3. Only completed-result reuse consumes zero.",
+    "controls": "Keep existing mapper, SOURCE, H/state/snapshot, scalar-once, compiler/lowering, decoder/loss/exact threshold, price law/domain qualifications and one-shot/STOP rules.",
+    "pending_price_policy": "Unsupported widths and incomplete calibration stay explicit waiting/held; no zero price, no cross-width coefficients and no Q3 rejection inferred from preparation diagnostics."
+  },
+  "observations": {
+    "relevant_named_running_optimizer_or_Q3_processes_seen": 0,
+    "process_scope": "Read-only own-user ps metadata for run_rpe_schedule_search.py/run_rpe_method_optimizer.py/run_rpe_optimizer_q3_job.py; not a whole-server absence claim."
+  },
+  "boundaries": {
+    "scientific_calls": 0,
+    "new_test_runs": 2,
+    "owner_worktree_writes": 0,
+    "process_changes": 0,
+    "branch_changes": 0,
+    "test_scope": "Tiny artificial W.plan_wide check plus ordinary WidthDriver.plan regression; neither reads H4 data or starts scientific/Q3 workers."
+  },
+  "confirmed_minimum_requirement": "Final results must separately record rule-adopted minimum and the minimum of every SOURCE/identity/contract-verified completed observation, including unadopted speculative jobs, using existing ledger-compatible provenance.",
+  "method_isolation_regression": {
+    "test": "tests/test_pr_multiwidth_launch_contracts.py",
+    "test_count": 1,
+    "before_status": "EXPECTED_FAIL",
+    "before_returncode": 1,
+    "before_wall_seconds": 0.003,
+    "before_log": "launch_contracts/BEFORE_METHOD_SCOPE.log",
+    "before_source": "d69516191f3126a076b23bc55f6818b3f866f10e",
+    "production_code_modified": false,
+    "completed_minimum_unit_test": "Not added: current WidthDriver has no identity-verified completed-minimum hook to exercise without building another implementation."
+  },
+  "confirmed_minimum_ledger_reference": "scripts/build_rpe_q3_ledger.py: preserve rule_adopted and verified_all with receipt/OUTCOME/SOURCE/identity provenance; include valid completed unadopted observations without silently labelling them rule-adopted."
+}

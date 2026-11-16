@@ -1,0 +1,33 @@
+ARTIFICIAL-ONLY expected pre-fix regression. No H4 data or scientific calls.
+Command: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B tests/test_pr_multiwidth_launch_contracts.py
+
+test_joint_method_planning_matches_independent_method_refinements (__main__.IndependentMethodLaunchContract.test_joint_method_planning_matches_independent_method_refinements) ... FAIL
+
+======================================================================
+FAIL: test_joint_method_planning_matches_independent_method_refinements (__main__.IndependentMethodLaunchContract.test_joint_method_planning_matches_independent_method_refinements)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/tests/test_pr_multiwidth_launch_contracts.py", line 56, in test_joint_method_planning_matches_independent_method_refinements
+    self.assertEqual(joint,sorted(independent))
+AssertionError: Lists differ: [('PR_PAULI|ARTIFICIAL', '3', 'REFINE_UP')] != [('PR_DF|ARTIFICIAL', '3', 'REFINE_UP'), ('PR_P[31 chars]UP')]
+
+First differing element 0:
+('PR_PAULI|ARTIFICIAL', '3', 'REFINE_UP')
+('PR_DF|ARTIFICIAL', '3', 'REFINE_UP')
+
+Second list contains 1 additional elements.
+First extra element 1:
+('PR_PAULI|ARTIFICIAL', '3', 'REFINE_UP')
+
++ [('PR_DF|ARTIFICIAL', '3', 'REFINE_UP'),
+- [('PR_PAULI|ARTIFICIAL', '3', 'REFINE_UP')]
+? ^
+
++  ('PR_PAULI|ARTIFICIAL', '3', 'REFINE_UP')]
+? ^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (failures=1)

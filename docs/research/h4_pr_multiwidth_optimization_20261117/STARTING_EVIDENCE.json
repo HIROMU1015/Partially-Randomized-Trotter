@@ -1,0 +1,1892 @@
+{
+  "schema": "PR_MULTIWIDTH_STARTING_SAVED_EVIDENCE_V1",
+  "observed_UTC": "2026-11-16T16:58:43.270127+00:00",
+  "scope": "READ_ONLY_SAVED_SOURCE_AND_JOB_METADATA; NO_NEW_LEDGER_RECALCULATION_OR_SCIENCE",
+  "intended_methods": [
+    "PR_PAULI",
+    "PR_DF"
+  ],
+  "intended_widths": {
+    "PR_PAULI": [
+      "binary64 0.1",
+      "binary64 0.2"
+    ],
+    "PR_DF": [
+      "binary64 0.1",
+      "binary64 0.05"
+    ]
+  },
+  "intended_L_D": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "published_heads": {
+    "codex/h4-saved-rpe-cost-catalog-20261116": "fee61d272c3564ef393fecef5b738dbda825b658",
+    "codex/b2-rpe-method-optimizer-20261116": "683241106ce00ea64c7a877281861654c0b5e7c7",
+    "codex/b2-rpe-split-preparation-20261116": "d8e806265c3ded8e1184181c37c2d7ec71f08ade",
+    "codex/h4-rpe-search-throughput-20261116": "e839b0d3f5469c21f5944aec5d978f91d193efc8",
+    "codex/d2-pr-df-pauli-autoprepare-20261116": "0ef9668e997b57214eeab2f944e4bcff967b7b4d",
+    "codex/d2-pr-df-ld2-saved-price-assessment-20261115": "d8f04ce26e3b0584842cf56be7890fce20ec4acc"
+  },
+  "C_comparison_source": {
+    "commit": "fee61d272c3564ef393fecef5b738dbda825b658",
+    "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+    "selector": [
+      "comparison"
+    ]
+  },
+  "comparison": {
+    "binding": {
+      "system": "H4",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "basis": "STO-3G",
+      "geometry": "linear_1Angstrom",
+      "rank_policy": "tol_only_1e-8"
+    },
+    "accuracy": {
+      "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+      "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+      "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+      "epsilon_E_decimal": "0.00159360010199040",
+      "MSE_upper": {
+        "numerator": 15136964828156312001,
+        "denominator": 5960464477539062500000000
+      },
+      "scope": "MODEL_MSE_FILTER_ONLY"
+    },
+    "h": {
+      "numerator": 3602879701896397,
+      "denominator": 36028797018963968
+    },
+    "M": 12,
+    "P": 0,
+    "price_quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+    "interpretation": "CONDITIONAL_RAW_IID_MODEL_MSE_AND_SAVED_PRICE_SCENARIOS_NOT_FORMAL_G",
+    "compiler_profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "P": 0,
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    },
+    "energy_prior_ha": [
+      -4.994249624417489,
+      -2.0985459369977186
+    ],
+    "target": {
+      "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+      "energy_ha": -2.1663874486347634
+    }
+  },
+  "catalog_minima": {
+    "PR_PAULI": {
+      "saved_minimum": {
+        "conditional_cost": {
+          "numerator": 410199237,
+          "denominator": 1
+        },
+        "point_ids": [
+          "b36673acc8bb5d916b6b658b"
+        ],
+        "scope": "指定した保存候補集合内の最安適合点"
+      },
+      "minimum_source": {
+        "commit": "fee61d272c3564ef393fecef5b738dbda825b658",
+        "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+        "selector": [
+          "method_minima",
+          "PR_PAULI"
+        ]
+      },
+      "rows": [
+        {
+          "catalog_locator": {
+            "commit": "fee61d272c3564ef393fecef5b738dbda825b658",
+            "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+            "selector": [
+              "candidates",
+              51
+            ]
+          },
+          "record": {
+            "point_id": "b36673acc8bb5d916b6b658b",
+            "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+            "total_configuration_id": "f411ec466a47ba221376a9705afa569e9317db7c8aef0f9b287e33b5ddbf5173",
+            "binding_id": "38d4a055730b2ad61e5cc8a7c99f6fda06c359d74a60ec0b76a60a9e581f52d4",
+            "L_D": 5,
+            "formula": "2nd",
+            "delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "kappa": {
+              "kind": "PAPER_TOTAL_ROTATIONS",
+              "value": {
+                "numerator": 26225228882306721296844821347007773673162352858535179072118456320,
+                "denominator": 539496659426909122096437389293855970805348475396548904610992201
+              },
+              "definition_source": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              },
+              "A_definition_name": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED"
+            },
+            "status": "FEASIBLE",
+            "q3_status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "conditional_cost": {
+              "numerator": 410199237,
+              "denominator": 1
+            },
+            "configuration_source": {
+              "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD5_S2_delta_h_kappa_x2.json"
+            },
+            "signal_source": {
+              "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+              "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+            },
+            "case_source": {
+              "commit": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+              "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/best_points/LD5_kappa_x2_edd63e0befd3af591809/CASE_INPUTS.json",
+              "selector": []
+            },
+            "q3_source": {
+              "commit": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+              "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/best_points/LD5_kappa_x2_edd63e0befd3af591809/OUTCOME.json",
+              "selector": []
+            },
+            "result_sources": [
+              {
+                "commit": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+                "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/best_points/LD5_kappa_x2_edd63e0befd3af591809/REQUEST.json",
+                "selector": []
+              },
+              {
+                "commit": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+                "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/KAPPA_ABS_RESULTS.json",
+                "selector": []
+              }
+            ],
+            "adopted_evaluation": {
+              "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+              "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+              "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+              "epsilon_E_decimal": "0.00159360010199040",
+              "MSE_upper": {
+                "numerator": 15136964828156312001,
+                "denominator": 5960464477539062500000000
+              },
+              "scope": "MODEL_MSE_FILTER_ONLY",
+              "measurement_law": "SAVED_IDEAL_FINITE_K_RAW_IID_EXACT_AFFINE",
+              "minkowski": "SEPARATE_REFERENCE_NOT_COMBINED",
+              "physical_total_error_guarantee": false
+            },
+            "N_X": [
+              48,
+              45,
+              42,
+              39,
+              22,
+              27,
+              14,
+              20,
+              16,
+              16,
+              8,
+              7,
+              2
+            ],
+            "N_Y": [
+              48,
+              45,
+              42,
+              39,
+              22,
+              27,
+              14,
+              20,
+              16,
+              16,
+              8,
+              7,
+              2
+            ],
+            "price_binding_level": "SAVED_TOTAL_AND_26_MODEL_COVERAGE_SUMMARY",
+            "price_axis_unit_values_persisted": false,
+            "price_evidence": {
+              "coverage_source": {
+                "commit": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+                "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01/NEEDS.json",
+                "selector": [
+                  "candidates",
+                  14
+                ]
+              },
+              "summary": {
+                "policy": "MODEL",
+                "status": "QUOTED",
+                "complete": true,
+                "registry": "PAULI_LD5",
+                "classifications": {
+                  "MODEL_REFERENCE": 26
+                },
+                "extrapolated_axes": 26,
+                "reason": null,
+                "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa"
+              },
+              "rule_source": {
+                "commit": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+                "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/PRICE_RULES_REGISTRY.json",
+                "selector": []
+              },
+              "rule": {
+                "name": "PAULI_LD5",
+                "configuration_source": {
+                  "commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+                  "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/config_run01/CONFIGURATION_LD5.json"
+                },
+                "implementation": {
+                  "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+                  "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+                  "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+                  "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+                  "contract_source": {
+                    "commit": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+                    "path": "scripts/run_pauli_b1_prices.py"
+                  }
+                },
+                "price_source": {
+                  "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+                  "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+                  "selector": []
+                },
+                "model_source": {
+                  "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+                  "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+                  "selector": []
+                },
+                "mode": "PAULI_AUDIT",
+                "calibration_domain": {
+                  "q": [
+                    8,
+                    8
+                  ],
+                  "R": [
+                    4,
+                    4
+                  ]
+                },
+                "direct_sources": [],
+                "calibration_R": [
+                  4
+                ],
+                "caveats": [
+                  "A S0-r1 decomposition supports this candidate and saved wrapper margins; all round prices are model applications, not cell direct observations"
+                ],
+                "calibration_evidence": {
+                  "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+                  "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+                  "selector": [
+                    "calibration_cell",
+                    "rows"
+                  ]
+                }
+              },
+              "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+              "original_model": {
+                "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+                "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+                "selector": []
+              },
+              "per_axis_unit_values": null
+            }
+          }
+        }
+      ]
+    },
+    "PR_DF": {
+      "saved_minimum": {
+        "conditional_cost": {
+          "numerator": 155652932221,
+          "denominator": 126
+        },
+        "point_ids": [
+          "ab1d8980b9d136b73e43b0f3"
+        ],
+        "scope": "指定した保存候補集合内の最安適合点"
+      },
+      "minimum_source": {
+        "commit": "fee61d272c3564ef393fecef5b738dbda825b658",
+        "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+        "selector": [
+          "method_minima",
+          "PR_DF"
+        ]
+      },
+      "rows": [
+        {
+          "catalog_locator": {
+            "commit": "fee61d272c3564ef393fecef5b738dbda825b658",
+            "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+            "selector": [
+              "candidates",
+              35
+            ]
+          },
+          "record": {
+            "point_id": "ab1d8980b9d136b73e43b0f3",
+            "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+            "total_configuration_id": "f00769918f264994d62080929bced34a3ac576e2aa47a1d783abd32360a7a9f4",
+            "binding_id": "a122e536aabe6f84b8d6e2eac6e342051676477e7a4f26d743582c540adcb9b8",
+            "L_D": 7,
+            "formula": "2nd",
+            "delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "kappa": {
+              "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+              "value": {
+                "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+                "denominator": 539496659426909122096437389293855970805348475396548904610992201
+              },
+              "definition_source": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              }
+            },
+            "status": "FEASIBLE",
+            "q3_status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "conditional_cost": {
+              "numerator": 155652932221,
+              "denominator": 126
+            },
+            "configuration_source": {
+              "commit": "12efc9dca2737c5d930877050817f3aae8186742",
+              "path": "docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json"
+            },
+            "signal_source": {
+              "commit": "1cbc24cfc0fb0972f75cdef81db6bf62c51141e4",
+              "path": "docs/research/d_pr_df_ld7_v0_results_20261116/B_MEANS_LD7.json"
+            },
+            "case_source": {
+              "commit": "37b20a07d8ee3535c925d7abdcd15dea914b9418",
+              "path": "docs/research/d_pr_df_ld7_price_results_20261116/Q3_INPUTS.json"
+            },
+            "q3_source": {
+              "commit": "2b3b3bcc909c889d82d0302078725fd328579421",
+              "path": "docs/research/d_pr_df_ld7_price_results_20261116/q3/LD7_A_SHAPE/RESULT.json"
+            },
+            "result_sources": [
+              {
+                "commit": "fd010b111e95411702be51adc73e56b0bba6c093",
+                "path": "docs/research/d_pr_df_ld7_price_results_20261116/SUMMARY.json",
+                "selector": [
+                  "menu",
+                  7
+                ]
+              }
+            ],
+            "adopted_evaluation": {
+              "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+              "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+              "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+              "epsilon_E_decimal": "0.00159360010199040",
+              "MSE_upper": {
+                "numerator": 15136964828156312001,
+                "denominator": 5960464477539062500000000
+              },
+              "scope": "MODEL_MSE_FILTER_ONLY",
+              "measurement_law": "SAVED_IDEAL_FINITE_K_RAW_IID_EXACT_AFFINE",
+              "minkowski": "SEPARATE_REFERENCE_NOT_COMBINED",
+              "physical_total_error_guarantee": false
+            },
+            "N_X": [
+              48,
+              45,
+              42,
+              39,
+              35,
+              32,
+              29,
+              25,
+              22,
+              19,
+              16,
+              12,
+              9
+            ],
+            "N_Y": [
+              48,
+              45,
+              42,
+              39,
+              35,
+              32,
+              29,
+              25,
+              22,
+              19,
+              16,
+              12,
+              9
+            ],
+            "price_binding_level": null,
+            "price_axis_unit_values_persisted": null,
+            "price_evidence": {
+              "model_source": {
+                "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+                "path": "docs/research/d_pr_df_ld7_price_results_20261116/FROZEN_MODELS.json"
+              },
+              "axis_prices_source": {
+                "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+                "path": "docs/research/d_pr_df_ld7_price_results_20261116/AXIS_PRICES.json"
+              },
+              "holdout_source": {
+                "commit": "c160ffb2f3d1e83de80db4ec6eeac97271569897",
+                "path": "docs/research/d_pr_df_ld7_price_results_20261116/HOLDOUT_COMPARISON.json"
+              },
+              "model_holdout_verdict": "NOT_ASSESSED_NO_ADOPTED_TOLERANCE",
+              "producer_price_acceptance": "SOURCE_RECEIPT_CHECKED_EXPLORATORY_MODEL_NOT_LAW_EXPECTATION",
+              "calibration_sources": {
+                "X": [
+                  {
+                    "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+                    "path": "docs/research/d_pr_df_ld7_price_results_20261116/FROZEN_MODELS.json",
+                    "selector": [
+                      "models",
+                      "X",
+                      "calibration",
+                      0
+                    ]
+                  },
+                  {
+                    "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+                    "path": "docs/research/d_pr_df_ld7_price_results_20261116/FROZEN_MODELS.json",
+                    "selector": [
+                      "models",
+                      "X",
+                      "calibration",
+                      1
+                    ]
+                  }
+                ],
+                "Y": [
+                  {
+                    "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+                    "path": "docs/research/d_pr_df_ld7_price_results_20261116/FROZEN_MODELS.json",
+                    "selector": [
+                      "models",
+                      "Y",
+                      "calibration",
+                      0
+                    ]
+                  },
+                  {
+                    "commit": "4326422a4633ed46968d6e348fe5ffaa24fbb468",
+                    "path": "docs/research/d_pr_df_ld7_price_results_20261116/FROZEN_MODELS.json",
+                    "selector": [
+                      "models",
+                      "Y",
+                      "calibration",
+                      1
+                    ]
+                  }
+                ]
+              },
+              "qualifications": {
+                "prices": "MODEL_REFERENCES_NOT_FORMAL_E_C",
+                "LD1": "STRUCTURE_PLUS_RESIDUAL",
+                "LD2": "THREE_POINT_FULL_C",
+                "LD7": "TWO_POINT_FULL_C_ALPHA_PLUS_BETA_Q_R1",
+                "long_round": "m7..12 EXTRAPOLATION",
+                "E_C": null,
+                "CI": null,
+                "G": null,
+                "winner": null,
+                "global_LD_optimality": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "validated_all_completed_pauli": {
+    "source": {
+      "commit": "d8e806265c3ded8e1184181c37c2d7ec71f08ade",
+      "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/ledger/LEDGER_SUMMARY.json",
+      "selector": []
+    },
+    "reported_jobs_verified": 4783,
+    "reported_jobs_checked": 4783,
+    "reported_jobs_refused": 0,
+    "reported_method_minima": {
+      "rule_adopted_min": {
+        "numerator": 410199237,
+        "denominator": 1,
+        "display": "410,199,237.00"
+      },
+      "verified_all_min": {
+        "numerator": 410199237,
+        "denominator": 1,
+        "display": "410,199,237.00"
+      }
+    },
+    "reported_by_configuration": {
+      "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3": {
+        "candidate": "PR_PAULI:L_D=2:d7dd4f52",
+        "rule_adopted": {
+          "numerator": 120925543665626408,
+          "denominator": 90343469,
+          "display": "1,338,508,970.31"
+        },
+        "verified_all": {
+          "numerator": 120925543665626408,
+          "denominator": 90343469,
+          "display": "1,338,508,970.31"
+        },
+        "verified_all_job": "5aba7ce88449d64d4293",
+        "verified_all_run": "kappa_abs_round03/run01",
+        "verified_all_adopted": false,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          26,
+          25,
+          32,
+          19,
+          24,
+          18,
+          18,
+          12,
+          8,
+          2
+        ],
+        "L_D": 2,
+        "kappa": "13112614441153360648422410673503886836581176429267589536059228160/539496659426909122096437389293855970805348475396548904610992201",
+        "verified_below_rule_by": {
+          "numerator": 0,
+          "denominator": 1,
+          "display": "0.00"
+        }
+      },
+      "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847": {
+        "candidate": "PR_PAULI:L_D=3:dd5b881d",
+        "rule_adopted": {
+          "numerator": 82539347702,
+          "denominator": 165,
+          "display": "500,238,470.92"
+        },
+        "verified_all": {
+          "numerator": 82539347702,
+          "denominator": 165,
+          "display": "500,238,470.92"
+        },
+        "verified_all_job": "b41f2439ffb92361789b",
+        "verified_all_run": "kappa_round01/run01",
+        "verified_all_adopted": true,
+        "verified_all_N": [
+          36,
+          38,
+          42,
+          38,
+          27,
+          33,
+          27,
+          25,
+          22,
+          17,
+          12,
+          8,
+          2
+        ],
+        "L_D": 3,
+        "kappa": "13112614441153360648422410673503886836581176429267589536059228160/539496659426909122096437389293855970805348475396548904610992201",
+        "verified_below_rule_by": {
+          "numerator": 0,
+          "denominator": 1,
+          "display": "0.00"
+        }
+      },
+      "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb": {
+        "candidate": "PR_PAULI:L_D=5:4d6e2c9c",
+        "rule_adopted": {
+          "numerator": 3065260145,
+          "denominator": 7,
+          "display": "437,894,306.43"
+        },
+        "verified_all": {
+          "numerator": 437758513,
+          "denominator": 1,
+          "display": "437,758,513.00"
+        },
+        "verified_all_job": "6b0fb4b02ae5f2f79bba",
+        "verified_all_run": "kappa_abs_round04/run01",
+        "verified_all_adopted": false,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          39,
+          19,
+          27,
+          14,
+          19,
+          16,
+          15,
+          10,
+          8,
+          2
+        ],
+        "L_D": 5,
+        "kappa": "13112614441153360648422410673503886836581176429267589536059228160/539496659426909122096437389293855970805348475396548904610992201",
+        "verified_below_rule_by": {
+          "numerator": 950554,
+          "denominator": 7,
+          "display": "135,793.43"
+        }
+      },
+      "6cf83f34a924e0318114a2850a771ab69c912b68963234fa94018e66036f2e28": {
+        "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa_multiplier=2/3:6cf83f34",
+        "rule_adopted": {
+          "numerator": 93151836046875513,
+          "denominator": 90343469,
+          "display": "1,031,085,446.22"
+        },
+        "verified_all": {
+          "numerator": 93151836046875513,
+          "denominator": 90343469,
+          "display": "1,031,085,446.22"
+        },
+        "verified_all_job": "055ea6d3f1bfde4f7b85",
+        "verified_all_run": "kappa_round01/run01",
+        "verified_all_adopted": true,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          25,
+          27,
+          32,
+          20,
+          24,
+          20,
+          18,
+          10,
+          10,
+          2
+        ],
+        "L_D": 2,
+        "kappa": "8741742960768907098948273782335924557720784286178393024039485440/539496659426909122096437389293855970805348475396548904610992201",
+        "verified_below_rule_by": {
+          "numerator": 0,
+          "denominator": 1,
+          "display": "0.00"
+        }
+      },
+      "300085cf7225ed0a0a1ed40bb7d7d6cd499cc219c2b0309a94ae622351d378af": {
+        "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa_multiplier=2:300085cf",
+        "rule_adopted": {
+          "numerator": 200099798096914810,
+          "denominator": 90343469,
+          "display": "2,214,878,400.31"
+        },
+        "verified_all": {
+          "numerator": 200099798096914810,
+          "denominator": 90343469,
+          "display": "2,214,878,400.31"
+        },
+        "verified_all_job": "29f0776794f5dc4dee96",
+        "verified_all_run": "kappa_round01/run01",
+        "verified_all_adopted": true,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          32,
+          24,
+          32,
+          18,
+          23,
+          16,
+          15,
+          9,
+          7,
+          2
+        ],
+        "L_D": 2,
+        "kappa": "26225228882306721296844821347007773673162352858535179072118456320/539496659426909122096437389293855970805348475396548904610992201",
+        "verified_below_rule_by": {
+          "numerator": 0,
+          "denominator": 1,
+          "display": "0.00"
+        }
+      },
+      "569c14aa1dac9f84b3ee826dcd9b33fd749c4c5c0605ecffe54030b1e362ff47": {
+        "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa_multiplier=2/3:569c14aa",
+        "rule_adopted": {
+          "numerator": 6808113322,
+          "denominator": 15,
+          "display": "453,874,221.47"
+        },
+        "verified_all": {
+          "numerator": 6808113322,
+          "denominator": 15,
+          "display": "453,874,221.47"
+        },
+        "verified_all_job": "aaa5b209a288a20e0bcd",
+        "verified_all_run": "kappa_round01/run01",
+        "verified_all_adopted": true,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          24,
+          26,
+          33,
+          21,
+          25,
+          19,
+          18,
+          10,
+          10,
+          2
+        ],
+        "L_D": 3,
+        "kappa": "8741742960768907098948273782335924557720784286178393024039485440/539496659426909122096437389293855970805348475396548904610992201",
+        "verified_below_rule_by": {
+          "numerator": 0,
+          "denominator": 1,
+          "display": "0.00"
+        }
+      },
+      "23ec179150682e0af256fc7c7bfcdf6f39af772f62418d6b45326afd5da1b2a8": {
+        "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa_multiplier=2:23ec1791",
+        "rule_adopted": {
+          "numerator": 697511351774,
+          "denominator": 1155,
+          "display": "603,905,932.27"
+        },
+        "verified_all": {
+          "numerator": 697511351774,
+          "denominator": 1155,
+          "display": "603,905,932.27"
+        },
+        "verified_all_job": "027dac365939052afe5b",
+        "verified_all_run": "kappa_abs_round03/run01",
+        "verified_all_adopted": false,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          31,
+          22,
+          32,
+          18,
+          22,
+          16,
+          15,
+          9,
+          7,
+          2
+        ],
+        "L_D": 3,
+        "kappa": "26225228882306721296844821347007773673162352858535179072118456320/539496659426909122096437389293855970805348475396548904610992201",
+        "verified_below_rule_by": {
+          "numerator": 0,
+          "denominator": 1,
+          "display": "0.00"
+        }
+      },
+      "39355bcf7968bdcfc8bef7c40e9b2c7d970aa954b452639c32041c15e0406383": {
+        "candidate": "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1,kappa_multiplier=2/3:39355bcf",
+        "rule_adopted": {
+          "numerator": 441301209,
+          "denominator": 1,
+          "display": "441,301,209.00"
+        },
+        "verified_all": {
+          "numerator": 3088631009,
+          "denominator": 7,
+          "display": "441,233,001.29"
+        },
+        "verified_all_job": "6f3c004cb77ce6025037",
+        "verified_all_run": "kappa_abs_round04/run01",
+        "verified_all_adopted": false,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          36,
+          23,
+          31,
+          14,
+          21,
+          18,
+          14,
+          8,
+          9,
+          2
+        ],
+        "L_D": 5,
+        "kappa": "8741742960768907098948273782335924557720784286178393024039485440/539496659426909122096437389293855970805348475396548904610992201",
+        "verified_below_rule_by": {
+          "numerator": 477454,
+          "denominator": 7,
+          "display": "68,207.71"
+        }
+      },
+      "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052": {
+        "candidate": "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1,kappa_multiplier=2:cb1aa748",
+        "rule_adopted": {
+          "numerator": 410199237,
+          "denominator": 1,
+          "display": "410,199,237.00"
+        },
+        "verified_all": {
+          "numerator": 410199237,
+          "denominator": 1,
+          "display": "410,199,237.00"
+        },
+        "verified_all_job": "edd63e0befd3af591809",
+        "verified_all_run": "kappa_abs_round03/run01",
+        "verified_all_adopted": false,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          39,
+          22,
+          27,
+          14,
+          20,
+          16,
+          16,
+          8,
+          7,
+          2
+        ],
+        "L_D": 5,
+        "kappa": "26225228882306721296844821347007773673162352858535179072118456320/539496659426909122096437389293855970805348475396548904610992201",
+        "verified_below_rule_by": {
+          "numerator": 0,
+          "denominator": 1,
+          "display": "0.00"
+        }
+      },
+      "4d0baf604bfbdf204538bca0b889b94c138680babd06a5db92e9cc7a1c4b4b4d": {
+        "candidate": "PR_PAULI:L_D=1,formula=2nd,delta_over_h=1,kappa=2,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/6556307220576680324211205336751943418290588214633794768029614080:4d0baf60",
+        "rule_adopted": null,
+        "L_D": 1,
+        "kappa": "2",
+        "verified_below_rule_by": null
+      },
+      "6bd4be94dfd04318bde1d5f6a9d79cf3093b2975c218e3162dc3283119126bf4": {
+        "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa=2,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/6556307220576680324211205336751943418290588214633794768029614080:6bd4be94",
+        "rule_adopted": null,
+        "L_D": 2,
+        "kappa": "2",
+        "verified_below_rule_by": null
+      },
+      "43ad992610639c87161e318e184968b4eaf7102033b95f264d9e9fcc9ab16a2a": {
+        "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa=2,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/6556307220576680324211205336751943418290588214633794768029614080:43ad9926",
+        "rule_adopted": null,
+        "L_D": 3,
+        "kappa": "2",
+        "verified_below_rule_by": null
+      },
+      "ff6b21aee0a04845c587e73f13622e982bd5ed80c303e66aab83c89d8a6168eb": {
+        "candidate": "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1,kappa=2,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/6556307220576680324211205336751943418290588214633794768029614080:ff6b21ae",
+        "rule_adopted": {
+          "numerator": 3508632333,
+          "denominator": 7,
+          "display": "501,233,190.43"
+        },
+        "verified_all": {
+          "numerator": 3506735579,
+          "denominator": 7,
+          "display": "500,962,225.57"
+        },
+        "verified_all_job": "9d10cc9f815edeeefdd7",
+        "verified_all_run": "kappa_abs_round04/run01",
+        "verified_all_adopted": false,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          31,
+          14,
+          21,
+          17,
+          14,
+          7,
+          7,
+          5
+        ],
+        "L_D": 5,
+        "kappa": "2",
+        "verified_below_rule_by": {
+          "numerator": 1896754,
+          "denominator": 7,
+          "display": "270,964.86"
+        }
+      },
+      "f5623a42a23bb45dfd019012eb377692b7b652ddd9b5bcf2e28790ae661d7b0f": {
+        "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa=4/3,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/9834460830865020486316808005127915127435882321950692152044421120:f5623a42",
+        "rule_adopted": null,
+        "L_D": 2,
+        "kappa": "4/3",
+        "verified_below_rule_by": null
+      },
+      "c97b01c5110e52331805dadfba2291bef6ba7ed02231cab14abb1b4b487015c3": {
+        "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa=3,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/4370871480384453549474136891167962278860392143089196512019742720:c97b01c5",
+        "rule_adopted": null,
+        "L_D": 2,
+        "kappa": "3",
+        "verified_below_rule_by": null
+      },
+      "0c520cf974b12b332e775855afcc5a8883982faed742dca32b94f3f26c39b0b6": {
+        "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa=4/3,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/9834460830865020486316808005127915127435882321950692152044421120:0c520cf9",
+        "rule_adopted": null,
+        "L_D": 3,
+        "kappa": "4/3",
+        "verified_below_rule_by": null
+      },
+      "cedf24b39389b003e206b054b62b5d24e165c73b64db3e5736476f1fc827c233": {
+        "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa=3,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/4370871480384453549474136891167962278860392143089196512019742720:cedf24b3",
+        "rule_adopted": null,
+        "L_D": 3,
+        "kappa": "3",
+        "verified_below_rule_by": null
+      },
+      "8f2144288dfdce5d2c3fae6c62989647bdeb8ba516a1394dd6ab2f825ec4e81e": {
+        "candidate": "PR_PAULI:L_D=1,formula=2nd,delta_over_h=1,kappa=4/3,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/9834460830865020486316808005127915127435882321950692152044421120:8f214428",
+        "rule_adopted": null,
+        "L_D": 1,
+        "kappa": "4/3",
+        "verified_below_rule_by": null
+      },
+      "d7e49411ad7a32f87b196b2c5f3a6614515670f00e2739f6102d4a970eddfc63": {
+        "candidate": "PR_PAULI:L_D=1,formula=2nd,delta_over_h=1,kappa=3,kappa_multiplier=539496659426909122096437389293855970805348475396548904610992201/4370871480384453549474136891167962278860392143089196512019742720:d7e49411",
+        "rule_adopted": null,
+        "L_D": 1,
+        "kappa": "3",
+        "verified_below_rule_by": null
+      },
+      "05b06b6f12712506877e89e58afdfb2e682ae609844bdd076efe6638416eb1d4": {
+        "candidate": "PR_PAULI:L_D=1,formula=2nd,delta_over_h=1,kappa=531/266,kappa_multiplier=95490908718562914611069417905012506832546680145189156116145619577/1162651813782264644160120413050677966176864310061726272197251563520:05b06b6f",
+        "rule_adopted": null,
+        "L_D": 1,
+        "kappa": "531/266",
+        "verified_below_rule_by": null
+      },
+      "aab0f0a3bd32ac7d43d1b025bda9664f19071a807da6be7b109dd9ddb264249e": {
+        "candidate": "PR_PAULI:L_D=1,formula=2nd,delta_over_h=1,kappa=683/341,kappa_multiplier=368476218388578930391866736887703628060053008695842901849307673283/4471401524433295981112042039664825411274181162380248031796196802560:aab0f0a3",
+        "rule_adopted": null,
+        "L_D": 1,
+        "kappa": "683/341",
+        "verified_below_rule_by": null
+      },
+      "9614c3945de46997441ca8768cd5794bcfd5ad208013943747d95acd53a833df": {
+        "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa=175/88,kappa_multiplier=18882383079941819273375308625284958978187196638879211661384727035/230782014164299147412234427853668408323828705155109575834642415616:9614c394",
+        "rule_adopted": null,
+        "L_D": 2,
+        "kappa": "175/88",
+        "verified_below_rule_by": null
+      },
+      "d772dd34d122808455f6b54cd51ed560157bfe24ec4175647c8710af6eb8f71e": {
+        "candidate": "PR_PAULI:L_D=2,formula=2nd,delta_over_h=1,kappa=343/171,kappa_multiplier=185047354183429828879078024527792597986234527061016274281570324943/2242257069437224670880232225169164649055381169404757810666128015360:d772dd34",
+        "rule_adopted": null,
+        "L_D": 2,
+        "kappa": "343/171",
+        "verified_below_rule_by": null
+      },
+      "1b090cfc040484d6a39c56ef9efac8911a5be62abe22271d5423c561a2f6e35a": {
+        "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa=43/22,kappa_multiplier=23198356355357092250146807739635806744629984442051602898272664643/288477517705373934265293034817085510404785881443886969793303019520:1b090cfc",
+        "rule_adopted": null,
+        "L_D": 3,
+        "kappa": "43/22",
+        "verified_below_rule_by": null
+      },
+      "1e3c835297de523f4b2497512b5dfe0472177ddb3dbb819cb99def41c55bc7bc": {
+        "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1,kappa=33/16,kappa_multiplier=5934463253696000343060811282232415678858833229362037950720914211/69933943686151256791586190258687396461766274289427144192315883520:1e3c8352",
+        "rule_adopted": null,
+        "L_D": 3,
+        "kappa": "33/16",
+        "verified_below_rule_by": null
+      },
+      "a620a3552aa8acd9beaac5096ed69e5c49917c0016012e6c2c2653b0b17a8a5e": {
+        "candidate": "PR_PAULI:L_D=5,formula=2nd,delta_over_h=1,kappa=7,kappa_multiplier=3776476615988363854675061725056991795637439327775842332276945407/13112614441153360648422410673503886836581176429267589536059228160:a620a355",
+        "rule_adopted": {
+          "numerator": 3632721999,
+          "denominator": 7,
+          "display": "518,960,285.57"
+        },
+        "verified_all": {
+          "numerator": 3632721999,
+          "denominator": 7,
+          "display": "518,960,285.57"
+        },
+        "verified_all_job": "32ecd1ff57d0b2e6a8c6",
+        "verified_all_run": "kappa_abs_round04/run01",
+        "verified_all_adopted": true,
+        "verified_all_N": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          16,
+          20,
+          17,
+          16,
+          10,
+          12,
+          2
+        ],
+        "L_D": 5,
+        "kappa": "7",
+        "verified_below_rule_by": {
+          "numerator": 0,
+          "denominator": 1,
+          "display": "0.00"
+        }
+      }
+    },
+    "scope": "COPY_OF_EXISTING_VALIDATED_LEDGER; includes_speculative_unadopted_complete_outcomes; not_new_reanalysis",
+    "restricted_kappa2_warning": "LD5 kappa=2 verified-all 3506735579/7 vs rule-adopted 3508632333/7 is configuration-restricted; global PR_PAULI minimum stays 410199237.",
+    "runs": [
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01",
+      "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+      "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01"
+    ]
+  },
+  "additional_completed_D2_observations": [
+    {
+      "export": {
+        "method": "PR_DF",
+        "configuration_id": "5bebe69183952f0cab73860b5680d5a6d034fe0be0e74c866b66efa5735d5e4d",
+        "job": "3b9c916b4f882df82b2d",
+        "source": {
+          "commit": "52db15b8ae86291b5740313f7de75f0f69292604",
+          "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_DF/3b9c916b4f882df82b2d/C_RESULT_JOIN.json"
+        },
+        "C_sync_check": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_DF/3b9c916b4f882df82b2d/C_SYNC_CHECK.json"
+      },
+      "catalog_matches": [
+        {
+          "locator": {
+            "commit": "fee61d272c3564ef393fecef5b738dbda825b658",
+            "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+            "selector": [
+              "candidates",
+              53
+            ]
+          },
+          "record": {
+            "point_id": "62d59d80a6190c5370c2338d",
+            "configuration_id": "5bebe69183952f0cab73860b5680d5a6d034fe0be0e74c866b66efa5735d5e4d",
+            "total_configuration_id": "ed89a599d913ff92543135d8bb925ed2808e457d90581c05801a72adb9163528",
+            "binding_id": "e9c67b07a4420af23bffa144d6e0150d5ecf9073671f732ed6b21e307600f261",
+            "L_D": 6,
+            "formula": "2nd",
+            "delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "kappa": {
+              "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+              "value": {
+                "numerator": 2,
+                "denominator": 1
+              },
+              "definition_source": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              }
+            },
+            "status": "FEASIBLE",
+            "q3_status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "conditional_cost": {
+              "numerator": 20341620657,
+              "denominator": 14
+            },
+            "configuration_source": {
+              "commit": "3000afeb0261cf9f378b757981d70a8b2dcd3ac0",
+              "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df_carrier/CONFIGURATION.json"
+            },
+            "signal_source": {
+              "commit": "30d869becd0a55f2a720af4ccc53cc2a3dbd8a9a",
+              "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df-bundle.json"
+            },
+            "case_source": {
+              "commit": "0f792747677c561853fa9a2302b4845bceba42aa",
+              "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_DF/3b9c916b4f882df82b2d/INPUTS.json"
+            },
+            "q3_source": null,
+            "result_sources": [
+              {
+                "commit": "1e107cf4de2186ee7df324412d18be9644a87d91",
+                "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_DF/3b9c916b4f882df82b2d/SUMMARY.json",
+                "selector": [
+                  "rows",
+                  0
+                ]
+              }
+            ],
+            "adopted_evaluation": {
+              "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+              "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+              "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+              "epsilon_E_decimal": "0.00159360010199040",
+              "MSE_upper": {
+                "numerator": 15136964828156312001,
+                "denominator": 5960464477539062500000000
+              },
+              "scope": "MODEL_MSE_FILTER_ONLY",
+              "measurement_law": "SAVED_IDEAL_FINITE_K_RAW_IID_EXACT_AFFINE",
+              "minkowski": "SEPARATE_REFERENCE_NOT_COMBINED",
+              "physical_total_error_guarantee": false
+            },
+            "N_X": [
+              64,
+              60,
+              56,
+              52,
+              47,
+              43,
+              38,
+              34,
+              30,
+              25,
+              21,
+              17,
+              12
+            ],
+            "N_Y": [
+              64,
+              60,
+              56,
+              52,
+              47,
+              43,
+              38,
+              34,
+              30,
+              25,
+              21,
+              17,
+              12
+            ],
+            "price_binding_level": null,
+            "price_axis_unit_values_persisted": null,
+            "price_evidence": null
+          }
+        }
+      ]
+    },
+    {
+      "export": {
+        "method": "PR_PAULI",
+        "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012",
+        "job": "7a94374fe4d2d0aaee49",
+        "source": {
+          "commit": "84cd20474934e0da93a2965ffaf13e8a73e0ae4c",
+          "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_PAULI/7a94374fe4d2d0aaee49/C_RESULT_JOIN.json"
+        },
+        "C_sync_check": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_PAULI/7a94374fe4d2d0aaee49/C_SYNC_CHECK.json"
+      },
+      "catalog_matches": [
+        {
+          "locator": {
+            "commit": "fee61d272c3564ef393fecef5b738dbda825b658",
+            "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+            "selector": [
+              "candidates",
+              54
+            ]
+          },
+          "record": {
+            "point_id": "baec57f59a42675330f9dad1",
+            "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012",
+            "total_configuration_id": "5a659a71154f9bea21711c8a931ede86c74e33090c42b4fcc1ad413ebdaaa19f",
+            "binding_id": "cb4f9e0d431f94cabaa07a6ecc01e2dd26a7f3c597d22b3635794612187ad55a",
+            "L_D": 4,
+            "formula": "2nd",
+            "delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "kappa": {
+              "kind": "PAPER_TOTAL_ROTATIONS",
+              "value": {
+                "numerator": 2,
+                "denominator": 1
+              },
+              "definition_source": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              },
+              "A_definition_name": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED"
+            },
+            "status": "FEASIBLE",
+            "q3_status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "conditional_cost": {
+              "numerator": 5081576176,
+              "denominator": 7
+            },
+            "configuration_source": {
+              "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+              "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json"
+            },
+            "signal_source": {
+              "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+              "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json"
+            },
+            "case_source": {
+              "commit": "0d306d41605bfd91b644e8feef6a34fe06d47eb6",
+              "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_PAULI/7a94374fe4d2d0aaee49/INPUTS.json"
+            },
+            "q3_source": null,
+            "result_sources": [
+              {
+                "commit": "70578fdc21a6b4516a9f6b538ad9e305b8d7e28e",
+                "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/comparisons/PR_PAULI/7a94374fe4d2d0aaee49/SUMMARY.json",
+                "selector": [
+                  "rows",
+                  0
+                ]
+              }
+            ],
+            "adopted_evaluation": {
+              "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+              "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+              "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+              "epsilon_E_decimal": "0.00159360010199040",
+              "MSE_upper": {
+                "numerator": 15136964828156312001,
+                "denominator": 5960464477539062500000000
+              },
+              "scope": "MODEL_MSE_FILTER_ONLY",
+              "measurement_law": "SAVED_IDEAL_FINITE_K_RAW_IID_EXACT_AFFINE",
+              "minkowski": "SEPARATE_REFERENCE_NOT_COMBINED",
+              "physical_total_error_guarantee": false
+            },
+            "N_X": [
+              48,
+              45,
+              42,
+              39,
+              36,
+              33,
+              29,
+              26,
+              23,
+              19,
+              16,
+              13,
+              9
+            ],
+            "N_Y": [
+              48,
+              45,
+              42,
+              39,
+              36,
+              33,
+              29,
+              26,
+              23,
+              19,
+              16,
+              13,
+              9
+            ],
+            "price_binding_level": null,
+            "price_axis_unit_values_persisted": null,
+            "price_evidence": null
+          }
+        }
+      ]
+    }
+  ],
+  "source_bound_completion_ready": [
+    {
+      "source": {
+        "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/STATE.json",
+        "selector": [
+          "records",
+          "20950c2caf36faaf2eb9"
+        ]
+      },
+      "method": "PR_DF",
+      "status": "READY_FOR_SEARCH",
+      "configuration_id": "5bebe69183952f0cab73860b5680d5a6d034fe0be0e74c866b66efa5735d5e4d",
+      "design": {
+        "L_D": 6,
+        "formula": "2nd",
+        "kappa": {
+          "numerator": 2,
+          "denominator": 1
+        },
+        "delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        }
+      },
+      "configuration_source": {
+        "commit": "8efd3930b77e616feb0cee603d46a6d3f0ec1916",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/CONFIGURATION.json"
+      },
+      "signal_source": {
+        "status": "SIGNALS_READY",
+        "configuration_source": {
+          "commit": "3000afeb0261cf9f378b757981d70a8b2dcd3ac0",
+          "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df_carrier/CONFIGURATION.json"
+        },
+        "packet_source": {
+          "commit": "30d869becd0a55f2a720af4ccc53cc2a3dbd8a9a",
+          "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df-bundle.json"
+        },
+        "new_signal_calls": 13
+      },
+      "price_source": [
+        {
+          "numerator": 5697,
+          "denominator": 1
+        },
+        {
+          "numerator": 5697,
+          "denominator": 1
+        },
+        {
+          "numerator": 2784557,
+          "denominator": 252
+        },
+        {
+          "numerator": 2784557,
+          "denominator": 252
+        },
+        {
+          "numerator": 1827461,
+          "denominator": 84
+        },
+        {
+          "numerator": 1827461,
+          "denominator": 84
+        },
+        {
+          "numerator": 1554005,
+          "denominator": 36
+        },
+        {
+          "numerator": 1554005,
+          "denominator": 36
+        },
+        {
+          "numerator": 7223113,
+          "denominator": 84
+        },
+        {
+          "numerator": 7223113,
+          "denominator": 84
+        },
+        {
+          "numerator": 43251947,
+          "denominator": 252
+        },
+        {
+          "numerator": 43251947,
+          "denominator": 252
+        },
+        {
+          "numerator": 1371701,
+          "denominator": 4
+        },
+        {
+          "numerator": 1371701,
+          "denominator": 4
+        },
+        {
+          "numerator": 172747595,
+          "denominator": 252
+        },
+        {
+          "numerator": 172747595,
+          "denominator": 252
+        },
+        {
+          "numerator": 115136153,
+          "denominator": 84
+        },
+        {
+          "numerator": 115136153,
+          "denominator": 84
+        },
+        {
+          "numerator": 98675741,
+          "denominator": 36
+        },
+        {
+          "numerator": 98675741,
+          "denominator": 36
+        },
+        {
+          "numerator": 460457881,
+          "denominator": 84
+        },
+        {
+          "numerator": 460457881,
+          "denominator": 84
+        },
+        {
+          "numerator": 2762660555,
+          "denominator": 252
+        },
+        {
+          "numerator": 2762660555,
+          "denominator": 252
+        },
+        {
+          "numerator": 87702133,
+          "denominator": 4
+        },
+        {
+          "numerator": 87702133,
+          "denominator": 4
+        }
+      ],
+      "intake": {
+        "status": "INTAKE_AND_TOTAL_VIEW_READY",
+        "configuration": {
+          "commit": "3000afeb0261cf9f378b757981d70a8b2dcd3ac0",
+          "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df_carrier/CONFIGURATION.json"
+        },
+        "signal_packet": {
+          "commit": "30d869becd0a55f2a720af4ccc53cc2a3dbd8a9a",
+          "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df-bundle.json"
+        },
+        "binding_id": "e9c67b07a4420af23bffa144d6e0150d5ecf9073671f732ed6b21e307600f261",
+        "total_configuration_id": "ed89a599d913ff92543135d8bb925ed2808e457d90581c05801a72adb9163528",
+        "statistics_executed": false
+      }
+    },
+    {
+      "source": {
+        "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/STATE.json",
+        "selector": [
+          "records",
+          "3b127c39973a21be33a0"
+        ]
+      },
+      "method": "PR_PAULI",
+      "status": "READY_FOR_SEARCH",
+      "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012",
+      "design": {
+        "L_D": 4,
+        "formula": "2nd",
+        "kappa": {
+          "numerator": 2,
+          "denominator": 1
+        },
+        "delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        }
+      },
+      "configuration_source": {
+        "commit": "8690e962bd9ee884b0b7961c5f0dfcd000c25885",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/candidates/3b127c39973a21be33a0/CONFIGURATION.json"
+      },
+      "signal_source": {
+        "schema": "PR_PAULI_CANDIDATE_SIGNALS_V1",
+        "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012",
+        "workspace": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pauli-auto-evidence-20261116",
+        "directory": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2",
+        "entry_source": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+        "new_signal_calls": 13,
+        "compile_calls": 0,
+        "Q3_calls": 0,
+        "automatic_retry": false,
+        "request_rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "reuse_rounds": [],
+        "rebind_rounds": [],
+        "counts": {
+          "REQUEST": 13
+        },
+        "status": "SIGNALS_READY",
+        "execution_source": "243abf38c4375504762ec80c1e945995fa5877c6",
+        "configuration_source": {
+          "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+          "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json"
+        },
+        "descriptor_source": {
+          "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+          "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/DESCRIPTOR.json"
+        },
+        "raw_commit": "5c653c406726298ca99499d74e9ecff97e4689be",
+        "raw_result": {
+          "commit": "5c653c406726298ca99499d74e9ecff97e4689be",
+          "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/run01/result.json"
+        },
+        "signal_status": "ENTRY_CARRIERS_COMPLETE_NOT_RPE_QUALIFIED",
+        "packet_commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+        "packet_source": {
+          "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+          "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json"
+        },
+        "executed_source_distinct_from_result_commit": true,
+        "resumed": true
+      },
+      "price_source": [
+        {
+          "numerator": 26868,
+          "denominator": 7
+        },
+        {
+          "numerator": 26868,
+          "denominator": 7
+        },
+        {
+          "numerator": 51503,
+          "denominator": 7
+        },
+        {
+          "numerator": 51503,
+          "denominator": 7
+        },
+        {
+          "numerator": 100773,
+          "denominator": 7
+        },
+        {
+          "numerator": 100773,
+          "denominator": 7
+        },
+        {
+          "numerator": 199313,
+          "denominator": 7
+        },
+        {
+          "numerator": 199313,
+          "denominator": 7
+        },
+        {
+          "numerator": 396393,
+          "denominator": 7
+        },
+        {
+          "numerator": 396393,
+          "denominator": 7
+        },
+        {
+          "numerator": 790553,
+          "denominator": 7
+        },
+        {
+          "numerator": 790553,
+          "denominator": 7
+        },
+        {
+          "numerator": 1578873,
+          "denominator": 7
+        },
+        {
+          "numerator": 1578873,
+          "denominator": 7
+        },
+        {
+          "numerator": 3155513,
+          "denominator": 7
+        },
+        {
+          "numerator": 3155513,
+          "denominator": 7
+        },
+        {
+          "numerator": 6308793,
+          "denominator": 7
+        },
+        {
+          "numerator": 6308793,
+          "denominator": 7
+        },
+        {
+          "numerator": 12615353,
+          "denominator": 7
+        },
+        {
+          "numerator": 12615353,
+          "denominator": 7
+        },
+        {
+          "numerator": 25228473,
+          "denominator": 7
+        },
+        {
+          "numerator": 25228473,
+          "denominator": 7
+        },
+        {
+          "numerator": 50454713,
+          "denominator": 7
+        },
+        {
+          "numerator": 50454713,
+          "denominator": 7
+        },
+        {
+          "numerator": 101402809,
+          "denominator": 7
+        },
+        {
+          "numerator": 101402809,
+          "denominator": 7
+        }
+      ],
+      "intake": {
+        "status": "INTAKE_AND_TOTAL_VIEW_READY",
+        "configuration": {
+          "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+          "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json"
+        },
+        "signal_packet": {
+          "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+          "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json"
+        },
+        "binding_id": "cb4f9e0d431f94cabaa07a6ecc01e2dd26a7f3c597d22b3635794612187ad55a",
+        "total_configuration_id": "5a659a71154f9bea21711c8a931ede86c74e33090c42b4fcc1ad413ebdaaa19f",
+        "statistics_executed": false
+      }
+    }
+  ],
+  "completion_reuse_sources": {
+    "resume_preparation_from": {
+      "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+      "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/STATE.json"
+    },
+    "price_registry_source": {
+      "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+      "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/PRICE_RULES_REGISTRY.json"
+    },
+    "saved_pauli_packets": [
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      }
+    ]
+  },
+  "prior_Q3_metadata": [
+    {
+      "round": "kappa_round01",
+      "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116",
+      "job_count": 4238,
+      "outcome_present": 4229,
+      "launch_without_outcome": 0,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01/jobs/PR_PAULI",
+      "observation_kind": "FILESYSTEM_METADATA_ONLY_NO_RISK_OR_PRICE_REEVALUATION"
+    },
+    {
+      "round": "kappa_abs_round02",
+      "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116",
+      "job_count": 185,
+      "outcome_present": 185,
+      "launch_without_outcome": 0,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01/jobs/PR_PAULI",
+      "observation_kind": "FILESYSTEM_METADATA_ONLY_NO_RISK_OR_PRICE_REEVALUATION"
+    },
+    {
+      "round": "kappa_abs_round03",
+      "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116",
+      "job_count": 85,
+      "outcome_present": 85,
+      "launch_without_outcome": 0,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01/jobs/PR_PAULI",
+      "observation_kind": "FILESYSTEM_METADATA_ONLY_NO_RISK_OR_PRICE_REEVALUATION"
+    },
+    {
+      "round": "kappa_abs_round04",
+      "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116",
+      "job_count": 284,
+      "outcome_present": 284,
+      "launch_without_outcome": 0,
+      "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01/jobs/PR_PAULI",
+      "observation_kind": "FILESYSTEM_METADATA_ONLY_NO_RISK_OR_PRICE_REEVALUATION"
+    }
+  ],
+  "round05": {
+    "source": {
+      "commit": "d8e806265c3ded8e1184181c37c2d7ec71f08ade",
+      "path": "configs/rpe_method_optimizer/rounds/h4_pr_pauli_schedule_wide_round05.json",
+      "selector": []
+    },
+    "published_run_path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/run01",
+    "science_approved_in_old_plan": false,
+    "observed_status": "STATE_AND_ROUTE_METADATA_ONLY_NO_JOBS",
+    "historical_prior_run_dirs": [
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01",
+      "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+      "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01",
+      "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-candidate-autoprepare-20261116/docs/research/d_pr_candidates_auto_20261116/run02",
+      "docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/run01"
+    ],
+    "historical_limits_are_not_new_limits": true
+  },
+  "noninterference": {
+    "relevant_process_patterns": [
+      "run_rpe_schedule_search.py",
+      "run_rpe_method_optimizer.py",
+      "run_rpe_optimizer_q3_job.py",
+      "complete_pr_candidate.py",
+      "candidate_completion.py"
+    ],
+    "matching_live_processes_observed": [],
+    "no_process_or_file_modified": true,
+    "unlaunched_request_only_jobs_are_not_completed_observations": true
+  },
+  "reuse_conditions": [
+    "Match method, physical configuration/schedule, L_D, exact binary64 width/piece times, kappa schedule, signal/law, scalar, dictionary/tail identity, compiler/lowering/wrapper, evaluation contract and allocation before reuse.",
+    "Pauli LD7/8/9 use latest source-bound no-drop P0 identity; preserve old dictionary STOP. Use existing no-drop workspace per D2 0ef report; do not regenerate P0 or borrow its old coefficients.",
+    "DF LD6 READY is not Pauli LD6 evidence. A changed requested width cannot borrow an old signal or price merely because q or event count agrees.",
+    "Use the validated prior ledger and executor ownership rules; do not rerun completed or prior-owned jobs, or collect science under another owner.",
+    "Any missing completion/risk/price or uncertain independence stays NEEDS/HELD/UNKNOWN; no zero price or automatic Q3 failure.",
+    "When moving round05 to a new checkout, resolve round03/round04 prior_run_dirs to their original b2-rpe-split-preparation workspace; a relative path in the new checkout omits their private completed observations.",
+    "The recovered DF LD6 Q3 keeps its old UNKNOWN OUTCOME. Reuse its C-admitted collected/exported receipt through the saved catalog/completion sources; do not overwrite the old outcome or re-run science."
+  ],
+  "new_calls": {
+    "signal": 0,
+    "reference": 0,
+    "step_build": 0,
+    "circuit_build": 0,
+    "compile": 0,
+    "price_fit": 0,
+    "Q3": 0,
+    "ledger_recalculation": 0
+  },
+  "formal_G": null,
+  "winner": null,
+  "known_failed_start_archive": {
+    "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01/failed_start_20261116T0724Z/jobs",
+    "status": "PRESERVED_FAILED_START_METADATA_NOT_A_NEW_EVALUATION; NOT_INCLUDED_AS_SUCCESS_OR_AUTOMATIC_RETRY"
+  }
+}

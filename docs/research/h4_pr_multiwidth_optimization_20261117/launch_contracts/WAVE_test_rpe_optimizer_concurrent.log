@@ -1,0 +1,62 @@
+test_actual_cli_round_path_with_artificial_context (__main__.SchedulerTests.test_actual_cli_round_path_with_artificial_context) ... ok
+test_completed_resume_no_duplicate_launch (__main__.SchedulerTests.test_completed_resume_no_duplicate_launch) ... ok
+test_duplicate_demands_share_one_job (__main__.SchedulerTests.test_duplicate_demands_share_one_job) ... ok
+test_execution_profile_changes_only_acceleration (__main__.SchedulerTests.test_execution_profile_changes_only_acceleration) ... ok
+test_finite_budget_reserved_before_launch (__main__.SchedulerTests.test_finite_budget_reserved_before_launch) ... ok
+test_four_methods_same_adoption_order_best_and_stop (__main__.SchedulerTests.test_four_methods_same_adoption_order_best_and_stop) ... ok
+test_launch_persistence_failure_stops_queue_and_waits_started_child (__main__.SchedulerTests.test_launch_persistence_failure_stops_queue_and_waits_started_child) ... ok
+test_method_scope_trajectory_is_unchanged (__main__.SchedulerTests.test_method_scope_trajectory_is_unchanged) ... ok
+test_pending_and_crash_claim_not_retried (__main__.SchedulerTests.test_pending_and_crash_claim_not_retried) ... ok
+test_queued_prefetch_budget_includes_every_reservation (__main__.SchedulerTests.test_queued_prefetch_budget_includes_every_reservation) ... ok
+test_resumed_live_jobs_occupy_capacity_without_relaunch (__main__.SchedulerTests.test_resumed_live_jobs_occupy_capacity_without_relaunch) ... ok
+test_selection_functions_are_exactly_the_fixed_source (__main__.SchedulerTests.test_selection_functions_are_exactly_the_fixed_source) ... ok
+test_speculation_is_recorded_and_adopted_in_demand_order (__main__.SchedulerTests.test_speculation_is_recorded_and_adopted_in_demand_order) ... ok
+test_two_drivers_cannot_own_same_directory (__main__.SchedulerTests.test_two_drivers_cannot_own_same_directory) ... ok
+test_unknown_keeps_same_stop_as_legacy (__main__.SchedulerTests.test_unknown_keeps_same_stop_as_legacy) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 13.700s
+
+OK
+{
+ "FULL_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "FULL_PF:ARTIFICIAL_FULL_PF_0",
+   "890.00"
+  ]
+ },
+ "TRUNCATED_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "TRUNCATED_PF:ARTIFICIAL_TRUNCATED_PF_0",
+   "890.00"
+  ]
+ },
+ "PR_PAULI": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_PAULI:ARTIFICIAL_PR_PAULI_0",
+   "890.00"
+  ]
+ },
+ "PR_DF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_DF:ARTIFICIAL_PR_DF_0",
+   "890.00"
+  ]
+ }
+}

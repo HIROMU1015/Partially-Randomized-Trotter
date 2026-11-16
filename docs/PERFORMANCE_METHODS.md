@@ -96,3 +96,8 @@
   - 次roundではHYBRIDを使う。多数のscheduleを同時に評価する実runでの効果は未検証。
 - **全完了Q3の照合と再利用**（`build_rpe_q3_ledger.py`）：4,783件を照合し、拒否は0件。2種類の最安を分けて出す。
 - 根拠：[kappa_wide_round05/REPORT](research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/REPORT.md) §1・§3。
+
+
+## PR複数幅の方式別計画・段階準備（2026-11-17）
+
+公開統合5829a7288の通常WidthDriverで、各方式の既存W計画を分離し、元per_decisionの準備waveでfamilyを巡回する。未選択は次cycleへ保持し、初期222候補を一括準備しない。finish後の未採用完了jobも元Executor/価格/exactτ検査で確認済み最安へ含め、規則採用最安とは分ける。実装SOURCEと36人工回帰、実H4稼働範囲は[REPORT](research/h4_pr_multiwidth_optimization_20261117/REPORT.md)／[HANDOFF](research/h4_pr_multiwidth_optimization_20261117/HANDOFF.md)。共通queue・prefix-cache・元数値kernelを維持。実H4速度倍率は未測定。
