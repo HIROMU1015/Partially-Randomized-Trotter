@@ -74,6 +74,15 @@ CLIの実行区間とは異なるため、この値からCLIの速度倍率を�
 REPORTの保存完了後に行うGit commit/pushの時刻は[PUBLICATION_TIMING](PUBLICATION_TIMING.json)で別に記録する。
 旧339版の遠隔bundleは既に公開済みであり、今回のREPORT公開を待って再配布する必要はない。
 
+両runの報告・データをまとめた初回公開は `1c9c248be24ebee55cd5524cab31c119349aef0b`、
+観測時刻2026-11-16 21:09:33 UTC。
+command開始から公開まではfirst 750.08秒（12分30秒）、second 642.12秒（10分42秒）だった。
+これはCLI後の両結果の照合、REPORT整形、commit/pushを含む一括公開の時間であり、
+1回のCLIの追加処理時間とはみなさない。公開時刻の追記は後続のmetadata commitで保存する。
+今回の開発sessionで最初に時刻を観測してからこの公開までは約36分27秒で、調査・実装・検証を含む。
+利用者の依頼受信・最終チャット配信時刻は取得できておらず、前回約50分との速度倍率は出さない。
+
+
 同じ最終runの内部指標は次の通り。firstでは旧339報告にexact配列を再出力していなかった
 元OUTCOMEを一度読んで検証・cache化する。secondでも元jobのmarker走査と未確定状態の確認は省略しない。
 
