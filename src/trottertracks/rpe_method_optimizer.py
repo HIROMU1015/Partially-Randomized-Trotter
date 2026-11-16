@@ -928,11 +928,14 @@ def quote_prices(root, problem, candidates, catalog, methods=None):
         run_quotes(root, pr, Path(d) / 'P.json', probe)
         registry = {v['configuration_id']: k for k, v in json.loads(probe.read_text())['registry'].items()}
         items = []
+        names = set(registry.values())
         for c in targets:
             base = c.get('generated_from') or c['configuration_id']
-            if base not in registry:
+            # A split registered after the saved catalog (e.g. a newly calibrated PAULI_LD<p>) is found by its entry name.
+            entry_name = ('PAULI_LD%s' if c['method'] == 'PR_PAULI' else 'DF_LD%s') % c['key'].get('L_D')
+            if base not in registry and entry_name not in names:
                 c['price_quote'] = dict(policy=policy, status='NO_REGISTERED_PRICE_RULE_FOR_BASE');continue
-            items.append(dict(item_id=c['name'], registry=registry[base],
+            items.append(dict(item_id=c['name'], registry=registry[base] if base in registry else entry_name,
                               configuration=c.get('generated_configuration') if c.get('generated') else None))
         req, out = Path(d) / 'REQ.json', Path(d) / 'OUT.json'
         req.write_text(json.dumps(dict(policy=policy, items=items)))
@@ -973,9 +976,11 @@ def quote_prices(root, problem, candidates, catalog, methods=None):
 
 
 def run_quotes(root, pr, request, output):
-    subprocess.run([pr['interpreter'], '-B', str(Path(root) / 'scripts/run_rpe_optimizer_price_quotes.py'), '--view', pr['view'],
-                    '--request', str(request), '--output', str(output)], cwd=str(root), check=True, stdout=subprocess.DEVNULL,
-                   env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+    cmd = [pr['interpreter'], '-B', str(Path(root) / 'scripts/run_rpe_optimizer_price_quotes.py'), '--view', pr['view'],
+           '--request', str(request), '--output', str(output)]
+    if pr.get('registry_file'):  # a registry extended with newly calibrated split entries (sources are committed locators)
+        f = Path(pr['registry_file']);cmd += ['--registry', str(f if f.is_absolute() else Path(root) / f)]
+    subprocess.run(cmd, cwd=str(root), check=True, stdout=subprocess.DEVNULL, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
 
 
 def parameter_assessment(name, candidates, generation, summary):

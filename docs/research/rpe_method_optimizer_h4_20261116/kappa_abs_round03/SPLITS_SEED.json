@@ -1,0 +1,112 @@
+{
+ "1": {
+  "L_D": 1,
+  "status": "PREPARED",
+  "stage": "READY",
+  "selected_cycle": null,
+  "selection": {
+   "kind": "CONFIGURATION_INPUTS_MISSING",
+   "distance_to_leading_L_D": 4,
+   "rule": "V2 input-request order",
+   "note": "prepared before round03 by B2 step by step (same entries as the driver stage)"
+  },
+  "reason": "configuration (A metadata, saved dictionary), signal entry 93a5ef3b9 supported (LD1 descriptor in the saved context), 26-axis MODEL price after calibration",
+  "price": {
+   "status": "CALIBRATED_AND_REGISTERED",
+   "calibration_request": {
+    "commit": "ccf0793de17a",
+    "path": "docs/research/b2_pauli_calibration_20261116/LD1/CAL_PREPARATION.CALIBRATION_REQUEST.json"
+   },
+   "binding": "ccf0793de17a",
+   "raw": "1b049cbe4b37",
+   "audit": "86fa4ce9e",
+   "registry": {
+    "commit": "54b4353b9826",
+    "path": "docs/research/b2_pauli_calibration_20261116/PRICE_RULES_REGISTRY_EXTENDED.json"
+   },
+   "coefficients": {
+    "A1": 307,
+    "H1": 1035,
+    "E1": "11461/1792"
+   },
+   "cell": "Q8R896"
+  }
+ },
+ "4": {
+  "L_D": 4,
+  "status": "HELD",
+  "stage": "SIGNAL",
+  "selection": {
+   "kind": "NEW_L_D",
+   "distance_to_leading_L_D": 1,
+   "rule": "V2 input-request order"
+  },
+  "p0": {
+   "status": "GENERATED",
+   "evidence": "c35495565",
+   "note": "P0 81 gates PASS; entry commit failed for missing git identity, products committed unchanged"
+  },
+  "configuration": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012",
+  "reason": "SIGNAL_ENTRY_93a5ef3b9_UNSUPPORTED: DICTIONARY_OPERATORS_OR_DESCRIPTOR_UNAVAILABLE (descriptor not in the saved context); the 6e4b6bd6a entry (--tail-descriptor) would support it but B intake bd42dd1e9 accepts only 93a5ef3b9 packets"
+ },
+ "6": {
+  "L_D": 6,
+  "status": "HELD",
+  "stage": "SIGNAL",
+  "selection": {
+   "kind": "NEW_L_D",
+   "distance_to_leading_L_D": 1,
+   "rule": "V2 input-request order"
+  },
+  "p0": {
+   "status": "GENERATED",
+   "evidence": "f3f47f7f9"
+  },
+  "reason": "same as LD4 (descriptor derived, not in the saved context)"
+ },
+ "7": {
+  "L_D": 7,
+  "status": "HELD",
+  "stage": "P0",
+  "selection": {
+   "kind": "NEW_L_D",
+   "distance_to_leading_L_D": 2,
+   "rule": "V2 input-request order"
+  },
+  "p0": {
+   "status": "STOP_P0_FAILED",
+   "evidence": "10baee31e"
+  },
+  "reason": "P0_NUMERICAL_GATE: LD7_Pauli_tail_full_fro (1.11e-7; lambda_P 4.29e-4); mandatory STOP, no retry"
+ },
+ "8": {
+  "L_D": 8,
+  "status": "HELD",
+  "stage": "P0",
+  "selection": {
+   "kind": "NEW_L_D",
+   "distance_to_leading_L_D": 3,
+   "rule": "V2 input-request order"
+  },
+  "p0": {
+   "status": "STOP_P0_FAILED",
+   "evidence": "9fa9525b3"
+  },
+  "reason": "P0_NUMERICAL_GATE: LD8_Pauli_tail_full_fro (9.56e-7; lambda_P 1.37e-4)"
+ },
+ "9": {
+  "L_D": 9,
+  "status": "HELD",
+  "stage": "P0",
+  "selection": {
+   "kind": "NEW_L_D",
+   "distance_to_leading_L_D": 4,
+   "rule": "V2 input-request order"
+  },
+  "p0": {
+   "status": "STOP_P0_FAILED",
+   "evidence": "9fa9525b3"
+  },
+  "reason": "P0_NUMERICAL_GATE: LD9_Pauli_tail_full_fro (1.33e-6; lambda_P 1.10e-8)"
+ }
+}

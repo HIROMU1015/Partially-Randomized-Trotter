@@ -32,7 +32,7 @@ from trottertracks import rpe_method_optimizer as O
 
 RULE_V2 = 'METHOD_MINIMUM_PRIORITY_V2'
 DEFAULTS = dict(explore_every=4, explore_window='3/2', small_gain_fraction='1/10000', deferral_fail_margin='1/10000',
-                transfer_count=2, kappa_bounds=['1/4', '8'], kappa_min_ratio='9/8', lookahead=1)
+                transfer_count=2, kappa_bounds=['1/4', '8'], kappa_min_ratio='9/8', lookahead=1, adaptive_lookahead=False)
 CLASS_ORDER = ('UPDATE', 'EXPLORE', 'SMALL', 'DEFERRED')
 
 
@@ -69,6 +69,7 @@ class ConfigState:
     def __init__(self, c):
         self.c, self.cid, self.dirty, self.cache = c, c['configuration_id'], True, []
         self.fails, self.best, self.picks, self.explore_picks, self.evaluated, self.promising = [], None, 0, 0, 0, None
+        self.fail_streak = 0  # consecutive failed picks: lookahead depth for this configuration (1 + streak)
 
     def add_failure(self, v):
         if any(leq(v, f) for f in self.fails):
@@ -205,18 +206,36 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         groups['_queues'] = [queues[cid] for _, cid, _ in explore]
         return groups, M
 
+    def depth(cid):
+        return max(1, min(s['lookahead'], 1 + states[cid].fail_streak)) if s.get('adaptive_lookahead') else s['lookahead']
+
     def order(groups, k):
         """The next k picks if no state changed (lookahead only): UPDATE in cost order with every explore_every-th pick
-        going round-robin over the EXPLORE configurations, each contributing its next candidate."""
-        out, u, since, qs, i = [], list(groups['UPDATE']), since_explore, [list(q) for q in groups['_queues']], 0
-        while len(out) < k:
-            live = [q for q in qs if q]
+        going round-robin over the EXPLORE configurations, each contributing its next candidate.  With adaptive_lookahead a
+        configuration contributes at most 1 + its current run of failed picks (a passing pick moves its incumbent and makes
+        deeper speculation stale; a failing streak keeps the incumbent, so deeper candidates stay valid)."""
+        used = defaultdict(int)
+
+        def take(p):
+            if used[p['configuration_id']] >= depth(p['configuration_id']):
+                return False
+            used[p['configuration_id']] += 1;return True
+        out, u, since, qs, i = [], [p for p in groups['UPDATE']], since_explore, [list(q) for q in groups['_queues']], 0
+        guard = 0
+        while len(out) < k and guard < 10000:
+            guard += 1
+            live = [q for q in qs if q and used[q[0]['configuration_id']] < depth(q[0]['configuration_id'])]
+            u = [p for p in u if used[p['configuration_id']] < depth(p['configuration_id'])]
             if u and not (live and since >= s['explore_every'] - 1):
-                out.append(u.pop(0));since += 1
+                p = u.pop(0)
+                if take(p):
+                    out.append(p);since += 1
             elif live:
-                q = live[i % len(live)];out.append(q.pop(0));i += 1;since = 0
+                q = live[i % len(live)];p = q.pop(0);i += 1
+                if take(p):
+                    out.append(p);since = 0
             else:
-                rest = groups['SMALL'] + groups['DEFERRED'];out += rest[:k - len(out)];break
+                rest = [p for p in groups['SMALL'] + groups['DEFERRED'] if take(p)];out += rest[:k - len(out)];break
         seen, uniq = set(), []
         for p in out:
             if (p['configuration_id'], p['vector']) not in seen:
@@ -267,6 +286,7 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         key = (choice['configuration_id'], choice['vector']);knowledge[key] = dict(answer, cost=choice['cost'])
         st = states[choice['configuration_id']];before_cfg = None if st.best is None else st.best[0]
         st.picks += 1;absorb(choice['configuration_id'], choice['vector'], knowledge[key])
+        st.fail_streak = 0 if answer['status'] == O.PASS else st.fail_streak + 1
         after = method_min();nx, ny = O.split(choice['vector'])
         row = dict(step=step, cls=choice['cls'], candidate=choice['candidate'], configuration_id=choice['configuration_id'],
                    vector=list(choice['vector']), N_X=nx, N_Y=ny, cost=choice['cost'], origin=choice['origin'],

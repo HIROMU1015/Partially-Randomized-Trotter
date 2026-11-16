@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'scripts')]
 from trottertracks import rpe_method_optimizer as O  # noqa: E402
 from trottertracks import rpe_priority_search as P  # noqa: E402
+from trottertracks import rpe_split_stage as SPL  # noqa: E402
 import run_rpe_method_optimizer as CLI  # noqa: E402
 
 if hasattr(sys, 'set_int_max_str_digits'):
@@ -48,6 +49,9 @@ class Driver:
         self.state = O.load_json(self.state_file) if self.state_file.exists() else dict(
             schema='RPE_KAPPA_NEIGHBOURHOOD_STATE_V1', round_id=self.spec['round_id'], started=now(), cycle=0, points=[], history=[],
             saved_packets=list(sig['saved_packets']), settings=self.nb)
+        if 'splits' not in self.state:  # outcomes of splits prepared before this run (seed) or by earlier cycles
+            seed = self.spec.get('splits', {}).get('seed_file')
+            self.state['splits'] = json.loads((ROOT / seed).read_text()) if seed else {}
         self.registry_file = ROOT / self.spec['routes_override']['PR_PAULI'][0]['configurations_file']
         self.points_file = ROOT / self.spec['method_overrides']['PR_PAULI']['generation']['kappa_points_file']
 
@@ -73,7 +77,7 @@ class Driver:
     # ------------------------------------------------------------ 1. prepare
     def prepare(self):
         self.write_points();self.log(event='PREPARE_START', points=len(self.state['points']))
-        problem = CLI.scoped(O.load_json(self.a.problem), self.spec.get('method_overrides'))
+        problem = CLI.price_overrides(CLI.scoped(O.load_json(self.a.problem), self.spec.get('method_overrides')), self.spec)
         g = problem['methods']['PR_PAULI']['generation'];g['kappa_points_file'] = str(self.points_file)
         ctx = O.prepare(ROOT, problem, methods=['PR_PAULI'], preparation_dir=self.run / 'preparation_driver')
         rows = {(r['proposal']['family']['L_D'], Fraction(r['proposal']['kappa'])): r for r in ctx['generation']['PR_PAULI'].get('kappa_points') or []}
@@ -215,6 +219,7 @@ class Driver:
         jobs = self.run / 'jobs' / 'PR_PAULI'
         launched = sum(1 for d in jobs.iterdir() if (d / 'LAUNCH.json').exists()) if jobs.exists() else 0
         spec = json.loads(json.dumps(self.spec));spec['max_new_q3_per_method'] = {'PR_PAULI': launched + self.a.batch}
+        spec['max_steps_per_method'] = self.a.batch  # the budget ends the batch, not the problem's default step limit
         inv = self.run / 'ROUND_INVOCATION.json';inv.write_text(json.dumps(spec, indent=1, ensure_ascii=False) + '\n')
         self.log(event='V2_START', launched_before=launched, budget=launched + self.a.batch)
         t = time.time()
@@ -263,6 +268,35 @@ class Driver:
                                           proposals=[dict(L_D=q['L_D'], kappa=str(q['kappa']), reason=q['reason']) for q in proposals]))
         return proposals, decisions
 
+    def split_stage(self, res):
+        """Prepare the next unprepared / unpriced split(s) in V2's order; a prepared split becomes a kappa family."""
+        cfg = self.spec.get('splits')
+        if not cfg:
+            return
+        chosen = SPL.select(res.get('input_requests') or [], self.state['splits'], cfg.get('per_cycle', 1))
+        stage = SPL.SplitStage(cfg, self.run, self.log, ROOT)
+        for ld, why in chosen:
+            rec = dict(L_D=ld, selected_cycle=self.state['cycle'], selected_UTC=now(), selection=why, status='SELECTED')
+            self.state['splits'][str(ld)] = rec;self.save();self.log(event='SPLIT_SELECTED', L_D=ld, why=why)
+            t = time.time()
+            try:
+                stage.prepare(ld, rec, has_configuration=why['kind'] == 'CONFIGURATION_INPUTS_MISSING')
+            except Exception as exc:  # recorded; the other candidates continue
+                rec.update(status='HELD', stage=rec.get('stage', 'UNKNOWN'), reason='STAGE_ERROR:%s: %s' % (type(exc).__name__, str(exc)[:300]))
+            rec['seconds'] = round(time.time() - t, 1);self.log(event='SPLIT_END', L_D=ld, status=rec['status'], reason=rec.get('reason'))
+            if rec['status'] == 'PREPARED':
+                self.activate(ld, 'SPLIT_PREPARED_CYCLE_%d' % self.state['cycle'])
+            self.save()
+
+    def activate(self, ld, reason):
+        """Add (or re-open) the centre kappa point of a split that became preparable."""
+        p = self.point(ld, self.nb['center'])
+        if p is None:
+            self.state['points'].append(dict(L_D=ld, kappa=str(Fraction(self.nb['center'])), status='PENDING', requested_cycle=self.state['cycle'],
+                                             request_reason='CENTER', activation=reason))
+        elif p['status'] == 'HELD':
+            p.update(status='PENDING', reopened=dict(reason=reason, previous=p.get('reason'), cycle=self.state['cycle']));p.pop('reason', None)
+
     def families_active(self, decisions):
         return {d['L_D'] for d in decisions if not d['decision'].startswith('STOP_FAMILY_OUTSIDE') and not d['decision'].startswith('STOP_FAMILY_INPUTS')
                 and not d['decision'].startswith('STOP_FAMILY_CENTER_HELD')}
@@ -274,6 +308,10 @@ class Driver:
                                                  request_reason='CENTER'))
             self.state['history'].append(dict(cycle=0, UTC=now(), decisions=[dict(L_D=ld, decision='CENTER') for ld in self.spec['kappa_families']]))
             self.save()
+        for key, rec in self.state['splits'].items():
+            if rec.get('status') == 'PREPARED':
+                self.activate(int(key), 'SPLIT_PREPARED_BEFORE_THIS_RUN')
+        self.save()
         while self.state['cycle'] < self.a.max_cycles:
             self.state['cycle'] += 1;self.save()
             if any(p['status'] in ('PENDING', 'PREPARED') for p in self.state['points']):
@@ -282,10 +320,14 @@ class Driver:
             if res is None:
                 self.state['stop'] = dict(reason='V2_INVOCATION_FAILED', returncode=code, UTC=now());self.save();return
             self.absorb(res)
+            self.split_stage(res)
             proposals, decisions = self.plan();self.save()
             active = self.families_active(decisions)
             promising = sum(p.get('promising') or 0 for p in self.state['points'] if p['L_D'] in active and p['status'] in ('EVALUATED',))
             pending = [p for p in self.state['points'] if p['status'] in ('PENDING', 'PREPARED', 'REGISTERED')]
+            open_splits = SPL.select(res.get('input_requests') or [], self.state['splits'], 99) if self.spec.get('splits') else []
+            if open_splits:  # unprepared splits still waiting for their turn keep the run going
+                pending = pending + [dict(split=ld) for ld, _ in open_splits]
             self.log(event='CYCLE_END', v2_stop=res['stop_reason'], proposals=len(proposals), promising_active=promising, pending=len(pending),
                      decisions=[(d['L_D'], d['decision']) for d in decisions])
             if res['stop_reason'] in ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER'):

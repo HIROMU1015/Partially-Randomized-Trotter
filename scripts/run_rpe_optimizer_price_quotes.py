@@ -19,12 +19,14 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--view', type=Path, required=True);p.add_argument('--request', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--registry', type=Path, help='registry JSON to use instead of the view\'s own (e.g. a B2 extension of D2\'s '
+                                                 'registry with newly calibrated entries; D2\'s PriceRules code is unchanged)')
     a = p.parse_args();req = json.loads(a.request.read_text())
     if req.get('policy') not in ('MODEL', 'AUTO', 'DIRECT'):
         raise SystemExit('An explicit price policy is required')
     sys.path.insert(0, str(a.view / 'src'))
-    from trottertracks.pr_price_rules import PriceRules
-    rules = PriceRules.from_repo(a.view)
+    from trottertracks.pr_price_rules import PriceRules, GitReader
+    rules = PriceRules(GitReader(a.view), json.loads(a.registry.read_text())) if a.registry else PriceRules.from_repo(a.view)
     registry = {e['name']: rules.template(e['name']) for e in rules.entries}
     out = dict(policy=req['policy'], registry={k: dict(configuration_id=v['configuration']['id']) for k, v in registry.items()}, items=[])
     for item in req['items']:

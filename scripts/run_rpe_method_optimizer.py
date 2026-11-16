@@ -103,6 +103,13 @@ def scoped(problem, overrides):
     return p
 
 
+def price_overrides(problem, spec):
+    """Round-level price-rule settings (e.g. registry_file: a B2-extended registry with newly calibrated split entries)."""
+    if spec.get('price_rules_overrides'):
+        problem = json.loads(json.dumps(problem));problem['price_rules'].update(spec['price_rules_overrides'])
+    return problem
+
+
 def merged_routes(problem, spec):
     """Route rules of the round; a rule's ``configurations_file`` (a growing registry of published configurations,
     written between invocations) is merged into its ``configurations`` table and configuration_ids."""
@@ -125,7 +132,7 @@ def merged_routes(problem, spec):
 def round_mode(a, problem, extra):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
-    problem = scoped(problem, spec.get('method_overrides'))
+    problem = price_overrides(scoped(problem, spec.get('method_overrides')), spec)
     for m in spec['methods']:
         g = problem['methods'][m].get('generation') or {}
         if g.get('kappa_points_file') and not Path(g['kappa_points_file']).is_absolute():
