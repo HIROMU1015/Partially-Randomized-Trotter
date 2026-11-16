@@ -345,3 +345,4 @@ artifacts/<validation_name>/
 - `run_rpe_schedule_search.py` の `search_overrides.requested_widths` は両PR方式の要求幅を通常の準備・価格・V2 shot/Q3へ渡す。保存照合は `check_pr_requested_width_saved.py`。[SOURCEと起動方法](../docs/research/pr_requested_step_search_20261117/HANDOFF.md)。
 
 - `prepare_rpe_q3_local.py`：所有するLinux/WSLのpath・slots・DP worker設定と資源確認。任意のsmokeは既存人工fixture/executorのみ使用する。[ローカルQ3 HANDOFF](../docs/research/rpe_distributed_q3/hosts/local/HANDOFF.md)。共通workerへの接続・科学実行はしない。
+- `check_rpe_q3_local_join.py`：`--common-root <固定共通checkout> --output <新directory>`。既存の共通人工fixture/HTTP workerを使い、模擬3workerの途中参加・通信断・同一attempt回収・参照MSE一致を検査する。同一Linux上の検査で、実SSH/H4は使わない。

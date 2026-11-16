@@ -4,10 +4,10 @@
   "common_protocol_commit": "b9a39567a51bd27ca89e751d4f42e170af7e6c71",
   "scope": "NATIVE_LINUX_PREPARATION_AND_SYNTHETIC_ONLY",
   "new_real_H4_scientific_calls": 0,
-  "distributed_worker_published": false,
+  "distributed_worker_published": true,
   "windows_machine_access_verified": false,
   "compute_local_to_server2_route_verified": false,
-  "three_host_acceptance": "NOT_RUN",
+  "three_host_acceptance": "ONE_OS_SIMULATED_PASS_REAL_THREE_HOSTS_PENDING",
   "artificial_adapter_dry_check": "PASS",
   "artificial_adapter_execute": "PASS",
   "configured_smoke": "PASS",
@@ -58,5 +58,34 @@
       "detail": "DRY_CHECK_PASS",
       "new_scientific_calls": 0
     }
-  ]
+  ],
+  "common_implementation_commit": "89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce",
+  "compute_local_host_identified_by_user": "RomuTail",
+  "local0_to_compute_local_alias": "RomuTail",
+  "local0_to_compute_local_connection_scope": "USER_CONFIRMED_NOT_MEASURED_FROM_THIS_SESSION",
+  "compute_local_to_server2_route_required": false,
+  "selected_transport": "LOCAL0_QG2_CONTROLLER_FORWARD_PLUS_ROMUTAIL_SSH_MAILBOX",
+  "common_worker_tests": {
+    "source": "89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce",
+    "passed": 7,
+    "total": 7
+  },
+  "local_worker_extension_tests": {
+    "passed": 8,
+    "total": 8,
+    "scope": "ARTIFICIAL_ONLY_LOCAL_WORKTREE"
+  },
+  "local_relay_tests": {
+    "passed": 2,
+    "total": 2,
+    "scope": "LOOPBACK_HTTP_FAKE_SSH_NOT_ACTUAL_NETWORK"
+  },
+  "common_relay_test_failure": {
+    "source": "89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce",
+    "passed": 1,
+    "total": 2,
+    "error": "KeyError: stopped after restart; prior stopped STATUS remained visible until first tick",
+    "local_fix": "Publish stopped=false STATUS before any mailbox delivery"
+  },
+  "host_dp_override_in_common_89f51a4": false
 }

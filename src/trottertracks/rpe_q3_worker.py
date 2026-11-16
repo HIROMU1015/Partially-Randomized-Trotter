@@ -130,6 +130,11 @@ def validate_assignment(profile, assignment):
         # Existing route check_source/metadata guards are additionally run by dry-check.
         rule['view'] = str(view)
     execution = resolved.setdefault('execution_profile', {})
+    workers = profile.get('dp_workers')
+    if workers is not None:
+        if type(workers) is not int or workers < 1:
+            raise ValueError('Positive integer host dp_workers required')
+        execution['dp_workers'] = workers
     if profile.get('prefix_cache_directory') is not None:
         execution['prefix_cache_directory'] = str(Path(profile['prefix_cache_directory']).resolve())
     else:

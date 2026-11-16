@@ -510,4 +510,4 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 - PR-Pauli/PR-DFの複数要求PF幅を通常探索へ接続する入口・保存/人工検収: [HANDOFF](docs/research/pr_requested_step_search_20261117/HANDOFF.md)。科学実行は未実施。
 
-- 計算用ローカルQ3の環境準備・人工検査・実接続の不足：[HANDOFF](docs/research/rpe_distributed_q3/hosts/local/HANDOFF.md)。共通worker実装待ち、Windows/実3台の検収は未実施。
+- RomuTailのQ3環境準備・ローカル0 mailbox relay・固定共通SHAの人工途中参加/復帰検査：[HANDOFF](docs/research/rpe_distributed_q3/hosts/local/HANDOFF.md)。実3台の検収は未実施。

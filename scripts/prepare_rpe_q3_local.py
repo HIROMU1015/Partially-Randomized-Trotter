@@ -1,7 +1,7 @@
 """Prepare host-local Q3 settings; optionally run existing artificial fixtures.
 
-Never connects to a controller or executes a scientific route. The distributed
-worker profile is provisional until the coordinator publishes its implementation.
+Never connects to a controller or executes a scientific route. Use a dedicated
+fixed common checkout for --worker-root, matching the server2 controller SHA.
 """
 import argparse
 import json
@@ -96,6 +96,9 @@ def main():
     parser.add_argument('--slots', type=positive, required=True)
     parser.add_argument('--dp-workers', type=positive, required=True)
     parser.add_argument('--interpreter', default=sys.executable)
+    parser.add_argument('--worker-root', type=Path, help='fixed common checkout, matching the server2 controller SHA')
+    parser.add_argument('--host-dp-override', action='store_true',
+                        help='include profile dp_workers; requires the local extension in the matching common SOURCE')
     parser.add_argument('--route-views', type=Path, help='JSON: full commit SHA -> local detached view path')
     parser.add_argument('--smoke-output', type=Path, help='new directory; existing synthetic fixture only')
     args = parser.parse_args()
@@ -111,20 +114,24 @@ def main():
             raise ValueError('Route view has tracked edits: ' + sha)
         views[sha] = str(view)
     state.mkdir(parents=True, exist_ok=True)
-    settings = dict(host_id=args.host_id, root=str(ROOT), work_dir=str(state / 'spool'),
+    worker_root = (args.worker_root or ROOT).expanduser().resolve()
+    settings = dict(host_id=args.host_id, root=str(worker_root), work_dir=str(state / 'spool'),
                     interpreter=interpreter, slots=args.slots, dp_workers=args.dp_workers,
                     route_views=views, prefix_cache_directory=str(state / 'prefix-cache'))
     write(state / 'LOCAL_SETTINGS.json', settings)
-    # Only the profile keys already published in the protocol HANDOFF. dp_workers
-    # remains in LOCAL_SETTINGS until the common worker's override API is fixed.
-    write(state / 'worker.provisional.json', {k: v for k, v in settings.items() if k != 'dp_workers'})
+    # 89f51a4 inherits REQUEST dp_workers; opt in only after the extension is
+    # integrated in the fixed SOURCE used by BOTH controller and workers.
+    write(state / 'worker.json', {k: v for k, v in settings.items()
+                                if k != 'dp_workers' or args.host_dp_override})
     write(state / 'READINESS.json', probe(interpreter))
     fixture_path = ROOT / 'docs/research/rpe_distributed_q3/fixtures/ARTIFICIAL_REQUEST.json'
     request = json.loads(fixture_path.read_text())
     request['execution_profile'] = dict(dp_workers=args.dp_workers)
     write(state / 'ARTIFICIAL_REQUEST.json', request)
     print('Prepared', state / 'LOCAL_SETTINGS.json')
-    print('Distributed worker profile remains provisional; no controller connection made.')
+    print('worker.json uses host dp_workers; matching common extension required.' if args.host_dp_override else
+          'worker.json inherits REQUEST dp_workers; LOCAL_SETTINGS dp_workers configures standalone smoke only.')
+    print('No controller connection made.')
     if args.smoke_output:
         # Use the selected interpreter, also for child processes of the fixture.
         code = ('import runpy; m=runpy.run_path(' + repr(str(Path(__file__).resolve())) + '); '

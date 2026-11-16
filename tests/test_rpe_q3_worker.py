@@ -116,6 +116,21 @@ class WorkerTests(unittest.TestCase):
             self.assertEqual(resolved['request_id'], assignment['job_id'])
             self.assertEqual(resolved['execution_profile']['prefix_cache_directory'], profile['prefix_cache_directory'])
 
+    def test_host_dp_workers_override_preserves_original_request_and_hash(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            profile, assignment = fixture(temporary)
+            assignment['request']['execution_profile'] = dict(dp_workers=8)
+            assignment['request_sha256'] = W.digest(assignment['request'])
+            original = deepcopy(assignment)
+            resolved = W.validate_assignment(dict(profile, dp_workers=2), assignment)
+            self.assertEqual(resolved['execution_profile']['dp_workers'], 2)
+            self.assertEqual(assignment, original)
+            for key in ('method', 'configuration_id', 'N_X', 'N_Y', 'expected', 'request_id'):
+                self.assertEqual(resolved[key], original['request'][key])
+            for invalid in (0, -1, True, '2'):
+                with self.assertRaisesRegex(ValueError, 'host dp_workers'):
+                    W.validate_assignment(dict(profile, dp_workers=invalid), assignment)
+
     def test_ambiguous_start_is_unknown_and_never_reexecuted(self):
         with tempfile.TemporaryDirectory() as temporary:
             profile, assignment = fixture(temporary); remote = FakeController(assignment)

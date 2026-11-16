@@ -1,88 +1,93 @@
-# 計算用ローカルQ3 worker：準備と未接続項目
+# RomuTail：計算用ローカルQ3の参加・離脱・復帰
 
-2026-11-17。公開branchは `codex/rpe-distributed-q3-local`。
-固定基点 `5829a7288d28395d2b3e89bfb676c23c690b9ddb` の子孫である共通仕様
-`b9a39567a51bd27ca89e751d4f42e170af7e6c71` を基点にした。
-[共通HANDOFF](../../HANDOFF.md)を直接確認した。このSHAには共通worker・relay・分散検収runnerはまだ無い。
+2026-11-17。成果branch: `codex/rpe-distributed-q3-local`。
+固定基点: `5829a7288d28395d2b3e89bfb676c23c690b9ddb`。
+[共通HANDOFF](../../HANDOFF.md)を直接確認し、公開された共通実装
+`89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce` を取り込んだ。
 
-**状態：Linux上の準備・人工検査まで。Windows実機準備と実3台接続検収は未完了。**
-このセッションはnative Ubuntuで、Windows PCやローカル0へのアクセスは確認できない。
-`qg1`・`qg2` はこの環境では未定義で、`ssh qg2` は名前解決で失敗した。
-ローカル0のalias・認証設定を計算用ローカルへ引き継いだ扱いにはしていない。
+利用者確認：**ローカル0→qg2、ローカル0→qg1、ローカル0→RomuTail** が使える。
+この実行環境が `RomuTail` のLinux側。サーバー1/2にRomuTailのaliasは不要。
+採用経路はローカル0のSSH mailbox relay。候補選択・予算・結果採用はサーバー2だけが行う。
+実際のローカル0→RomuTail接続はこのセッションから再測定できていない。
 
-## 今すぐ使える準備コマンド
+**準備・模擬検収済み。実2台検収後の実3台参加は未実施。新規H4は起動していない。**
 
-Windows PowerShellで `wsl.exe --list --verbose` を実行し、既存のVERSION 2のdistroを確認する。
-このセッションからWindowsのWSL一覧は取得できていない。以下はそのWSL/Linux内で実行する。
-新規WSLの導入、鍵のコピー、SSH設定の変更は実施していない。
+## RomuTailに用意した配置
+
+- 専用checkout: `/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local`
+- 実worker用固定view: 上記の `.local-q3/common-89f51a4`（HEAD=89f51a4…、tracked変更なし）
+- Python: `/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python`（既存3.11.0rc1）
+- 設定: `.local-q3/LOCAL_SETTINGS.json`、参加profile: `.local-q3/worker.json`
+- spool: `.local-q3/spool`、cache: `.local-q3/prefix-cache`。復帰まで保持する。
+- 固定route: `.local-q3/views/<full SHA>`。対応表は `.local-q3/route_views.json`。
+
+workerはcontrollerとHEADが完全一致する必要がある。**ローカル固有branchをそのままworker rootにしない。**
+現在のcloneは共有Git objectsを使うので元repositoryを残す。別PCへ持ち出す場合はobjectsも取得する。
+Windows本体のWSL一覧は未取得だが、この既存Linuxを使う経路に新規WSL導入は不要。
 
 ```bash
-# 専用checkout内。Q3_PYTHONはその端末で確認したPythonへの絶対path。
-Q3_PYTHON=/absolute/path/to/python
+# RomuTailの専用checkout内。設定変更だけなら --smoke-output は不要。
+Q3_PYTHON='/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python'
 "$Q3_PYTHON" -B scripts/prepare_rpe_q3_local.py \
-  --state-dir .local-q3 --slots 1 --dp-workers 2 \
-  --interpreter "$Q3_PYTHON" \
-  --smoke-output .local-q3/checks/first-smoke
+  --state-dir .local-q3 --slots 2 --dp-workers 2 --interpreter "$Q3_PYTHON" \
+  --worker-root .local-q3/common-89f51a4 --route-views .local-q3/route_views.json
 cat .local-q3/READINESS.json
-cat .local-q3/checks/first-smoke/CHECKS.json
 ```
 
-`--slots` は同時Q3数、`--dp-workers` は1件内のDP worker数。例の1/2は変更できる。
-既存 `ConcurrentExecutor` と人工fixtureを再利用する。smokeは人工2方式各2件だけを
-単一slot/DP=1の参照と比較する。実H4のproblem/catalogは読まず、新規H4科学callは0。
-再検査する場合は `--smoke-output` に別の新directoryを指定する。
-設定だけを変更する場合は同オプションを外す。実workerへの設定適用は下記の公開待ち。
+`slots` は同時Q3数。`dp_workers` は1件内のDP数で、単独人工smokeでは設定を適用済み。
+共通89f51a4の実workerはREQUESTのDP数を継承するため、現在のworker.jsonにはDP上書きを入れていない。
+このbranchにはhost profileの `dp_workers` を `RESOLVED_REQUEST` だけに適用する最小拡張と8テストを収録した。
+controllerとworker双方の固定共通SOURCEへ拡張を取り込んだ後に、準備コマンドへ
+`--host-dp-override` を追加すればローカルDP数も独立に変更できる。元REQUEST/hash/job IDは変更しない。
+未統合のまま89f51a4でローカルDP数が反映された扱いにはしない。
 
-`LOCAL_SETTINGS.json` がローカル設定、`ARTIFICIAL_REQUEST.json` が既存adapter用人工入力。
-`worker.provisional.json` は共通仕様の予定profileで、稼働確認済みprofileではない。
-共通仕様にはまだDP worker上書きのprofileキーが無いため、その設定を黙って渡さず
-`LOCAL_SETTINGS.json` に保持する。共通実装SHAで有効な指定方法に対応させてから接続する。
+## ローカル0の普段の4操作
 
-## 実測した配置と検査
+ローカル0の **qg2/RomuTailが使えるLinux/WSL** で行う。共通relayにはLinuxのfcntl依存がある。
+ローカル0のこの環境・Python・alias解決は、このセッションからは未測定。
+まず最初の2台検収（qg2/qg1の両人工結果採用→次候補をqg1へ配送）を完了する。
+その後、サーバー2担当の人工専用runのport/SHAを合わせて参加する。
 
-このUbuntuの専用checkout:
-`/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local`。
-Python: `/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python`
-（3.11.0rc1、既存環境を読取利用）。詳細は [READINESS.md](READINESS.md)。
-
-設定・spool予定場所・cacheはcheckout内 `.local-q3/` 以下（Git対象外）。
-`route_views.json` は固定commit→ `.local-q3/views/<full SHA>` の絶対path対応。
-`--route-views .local-q3/route_views.json` を準備コマンドに追加するとHEADとtracked変更を検査する。
-現在のroute viewは共有objectの専用cloneなので、元repositoryを残すこと。
-別PCにはGit objectsを含むcloneと各固定SHAのdetached viewを用意し、path対応を作り直す。
-
-[人工検査](checks/CONFIGURED_SMOKE.json)はslots=2/DP=2で同時2件を観測し、参照と
-MSE上下界・判定・方式別採用順・停止理由が一致した。同一Linux上の検査である。
-既存DP cacheの10テストもPASS。実workerの転送・再接続は検査していない。
-
-## 共通公開後の普段の4操作
-
-現仕様には参加コマンド案だけがあり、実装もstatus/drain/reconnectのCLIも未公開である。
-したがって現時点では4操作を稼働可能なコマンドとして提供できない。
-
-| 操作 | 公開後に確定する内容 |
-|---|---|
-| 参加 | サーバー2担当の固定実装SHAで `python -B scripts/run_rpe_q3_worker.py --profile <local profile> --controller http://127.0.0.1:18763`（共通仕様案、現SHAにはファイルなし） |
-| 状態確認 | 共通workerの正式CLIと保存job状態・未転送結果の表示。コマンド未公開 |
-| 新規受付を止めて実行中を完了 | 共通workerのdrain操作。コマンド未公開。トンネル切断をdrainと同一視しない |
-| 再接続 | 同じhost ID・spool・cacheで通信を再開し、同じjob/attemptを照合。正式コマンド未公開 |
-
-計算用ローカル自身の既存SSH経路が確認できた場合のトンネル案:
+[relay.local0.example.json](relay.local0.example.json) をローカル0の所有場所へコピーし、
+`state_directory` をローカル0の絶対pathへ変更する。`remote_port=8765` は人工fixtureの例であり、
+サーバー2担当の指定値へ合わせる。local_port=18764は既存server1 relayとの衝突を避ける例。
+worker側の絶対pathは上記実配置を記載済み。鍵・パスワードは含まない。
 
 ```bash
-# <確認済みalias> は計算用ローカル自身で接続確認したもの。
-ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 \
-  -o ServerAliveCountMax=3 -L 127.0.0.1:18763:127.0.0.1:8763 <確認済みserver2-alias>
+# ローカル0。このbranchのrelayを使う（再開時の古い停止表示の競合を修正済み）。
+Q3_CONTROL_CHECKOUT=/absolute/path/to/local0-checkout
+Q3_RELAY_CONFIG=/absolute/path/to/relay.local0.json
+
+# 参加：専用relayをチャットと独立して起動
+python3 -B "$Q3_CONTROL_CHECKOUT/scripts/run_rpe_q3_relay.py" --config "$Q3_RELAY_CONFIG" --start
+# 状態確認：workerごとの状態・heartbeat・通信エラー
+python3 -B "$Q3_CONTROL_CHECKOUT/scripts/run_rpe_q3_relay.py" --config "$Q3_RELAY_CONFIG" --status
+# 新規受付停止：受領済みjobはRomuTail内で完了して保存される
+python3 -B "$Q3_CONTROL_CHECKOUT/scripts/run_rpe_q3_relay.py" --config "$Q3_RELAY_CONFIG" --stop
+# 再接続：同じ設定・host ID・spool。未転送結果を回収してから空き枠へ次jobを取得
+python3 -B "$Q3_CONTROL_CHECKOUT/scripts/run_rpe_q3_relay.py" --config "$Q3_RELAY_CONFIG" --start
 ```
 
-計算用ローカル→サーバー2が無くローカル0へのSSH経路がある場合は、ローカル0側の
-サーバー2転送先loopbackへローカル起点で転送する経路を確認する。両経路とも現在未確認。
-サーバー1→2の直接接続には依存しない。候補選択・予算・結果採用はサーバー2だけが所有する。
+停止要求後は `--status` の `stopped: true` を確認する。停止中の結果は次の再接続まで未転送。
+PCを落とす前に、RomuTailで次を実行し、各attemptが `COMPLETED_PENDING_TRANSFER` / `TRANSFERRED`
+になったことを確認する。`UNKNOWN` は再実行せず状態を調べる。
 
-## 次に担当者が行うこと
+```bash
+# RomuTailの専用checkout内。relay停止後のworker状態確認。
+"$Q3_PYTHON" -B .local-q3/common-89f51a4/scripts/run_rpe_q3_worker.py \
+  --profile .local-q3/worker.json --mailbox status < /dev/null
+```
 
-1. 利用者：計算用Windows/WSLへの既存アクセス先、またはその端末→サーバー2/ローカル0の既存経路を指定する。認証情報を成果物へ記載しない。
-2. サーバー2担当：共通worker・ローカル0 relay・固定SHAと4操作のCLIを公開し、最初の2台検収を行う（ローカル0中継→両serverで別の人工Q3→server2が両結果採用→次候補をserver1へ配送）。
-3. Codex（ローカル担当）：そのSHAでprofile/DP設定を接続し、新しい人工専用runに途中参加。参照とのMSE上下界/判定一致、切断中の他job続行、復帰時の未転送結果回収/二重採用0、適合jobでのDP cache HITを確認し、この4操作表を実コマンドへ更新する。既許可の人工検収範囲で行い、新規H4は起動しない。
+## 確認範囲と残作業
 
-spool・cache・未転送結果は復帰まで保持し、接続断を根拠にjobを再実行しない。
+[詳細](READINESS.md) / [固定89f51a4の途中参加・復帰検査](checks/LOCAL_JOIN_CHECKS.json)。
+同一Linuxの模擬3workerで途中参加・切断中の他job続行・同一attemptの結果回収・重複完了の冪等性がPASS。
+人工参照18件とMSE上下界/判定、方式別最安が一致し、ローカル役は7件採用された。
+人工adapterはDPを使わないため、このrunのcache HITは0。別途、既存人工DP cacheの10テストはPASS。
+共通worker7テスト、ローカル拡張8テスト、修正後relay2テストもPASS。
+PF/Pauliの実route metadataは4経路PASS。実PR-DF routeは内側のサーバー絶対path不足で保留。
+
+次の担当：サーバー2担当が実2台検収・接続port/固定SHAを確定し、必要ならDP拡張を統合する。
+利用者がローカル0で上記relayを起動する（このセッションからローカル0のプログラムは起動できない）。
+Codexは既許可の人工専用runで実3台の途中参加・離脱・回収・二重採用0・DP cache再利用を確認する。
+新規H4計算の許可には広げない。

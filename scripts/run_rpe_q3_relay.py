@@ -31,7 +31,8 @@ class Relay:
         self.url = 'http://127.0.0.1:'+str(self.controller.get('local_port', 18763))
         self.tunnel = None
         self.state = dict(pid=os.getpid(), configuration=str(self.configuration), workers={},
-                          started_epoch=time.time(), transport='local0 SSH qg2 forwarding + qg1 mailbox')
+                          started_epoch=time.time(), stopped=False,
+                          transport='local0 SSH controller forwarding + worker mailbox')
 
     def log(self, event, **value):
         row = dict(epoch=time.time(), event=event, **value)
@@ -110,6 +111,9 @@ class Relay:
         try: fcntl.flock(lock, fcntl.LOCK_EX|fcntl.LOCK_NB)
         except BlockingIOError: raise ValueError('This relay is already running')
         self.log('RELAY_START', pid=os.getpid())
+        # Publish this daemon's running state before any mailbox delivery. A
+        # prior daemon's stopped=True must not satisfy a new stop/status check.
+        atomic_json(self.directory/'STATUS.json', self.state)
         try:
             while not (self.directory/'STOP').exists():
                 self.ensure_tunnel()

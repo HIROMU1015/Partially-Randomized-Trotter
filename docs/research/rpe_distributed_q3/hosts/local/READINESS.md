@@ -1,7 +1,9 @@
 # ローカル担当の観測範囲
 
 2026-11-17の実行セッションはUbuntu 22.04系 / Linux 6.8.0-47-generic。
-WSL marker、`wsl.exe`、`powershell.exe`、Windows drive mountを確認できず、Windows PCの資源を測定したものではない。
+WSL marker、`wsl.exe`、`powershell.exe`、Windows drive mountを確認できず、Windows本体の資源を測定したものではない。
+後続の利用者確認で、この環境の接続aliasがRomuTailであり、ローカル0にqg1/qg2/RomuTailが定義されていると判明した。
+採用経路はローカル0からのSSH mailbox relay。このセッションからローカル0へ接続する経路は無い。
 
 | 項目 | このLinuxでの確認 |
 |---|---|
@@ -11,7 +13,7 @@ WSL marker、`wsl.exe`、`powershell.exe`、Windows drive mountを確認でき�
 | GPU | nvidia-smiはdriverに接続できず。GPU利用可能とは判定しない |
 | SSH | ssh/rsyncあり。`~/.ssh/config` は空。qg1/qg2は `ssh -G` でも別名展開なし。qg2の接続試行は名前解決失敗 |
 | Python | default 3.10.12には数値依存なし。既存 `.venv311` は3.11.0rc1でnumpy/scipy/numba/psutil/pytestあり。flintなし |
-| 実機間の経路 | 計算用Windows、ローカル0、server2のいずれへの経路もこのセッションからは未確認 |
+| 実機間の経路 | 利用者確認済み：ローカル0→qg1/qg2/RomuTail。このセッションからのSSH実測はしていない |
 
 新環境のinstall、共有設定変更、SSH鍵/認証設定変更は行っていない。
 flint未導入でも下記PF/Pauli metadata検査と人工cacheテストは通過した。
@@ -22,7 +24,7 @@ DFのpath不足を直しても、DF全依存と入力の検査が完了すると
 - `scripts/run_rpe_optimizer_q3_job.py`: 既存 `dry-check` / 人工Q3。配布fixtureは `../../fixtures/ARTIFICIAL_REQUEST.json`。
 - `tests/test_rpe_optimizer_concurrent.py`: 人工problem/信号/価格fixture。準備コマンドのsmokeは同fixtureと `rpe_optimizer_concurrent.ConcurrentExecutor` を使用する。
 - `tests/test_rpe_dp_prefix_reuse.py`: 人工tables、exact mass、forkした既存worker、disk cache再開、SOURCE guard、MSE判定一致を検査。`RPE_FIXED_VIEW` でbd42dd1e9のローカルviewへ対応付けた。
-- 共有実装のworker/relayは再実装しなかった。追加したのはローカル設定・資源probe・既存人工fixtureを呼ぶ準備入口のみ。
+- 共通89f51a4のworker/relayを再利用した。ローカルbranchではhost別DP worker設定をRESOLVED_REQUESTに適用する最小拡張と、relay再開時の状態表示の修正を追加した。DP拡張はcontroller/workerの固定SOURCEへ統合されるまで89f51a4の実profileでは有効にしない。
 
 ## 固定routeと入力
 
@@ -73,3 +75,31 @@ RPE_FIXED_VIEW="$PWD/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c" \
 10/10 PASS（約0.95秒）。SOURCEの固定guardを維持し、人工13-roundで末尾のみ変更した
 次jobの12-round再利用、別processでのdisk cache再開、MSE上下界と判定の一致を確認した。
 共通workerの通信を経由するcache再利用はまだ未検収。
+
+## 共通実装公開後の検査
+
+`89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce` の専用detached view
+`.local-q3/common-89f51a4` を用意した。SOURCE manifestにHEAD一致条件があるので、
+ローカル成果branchのHEADを実workerとして代用しない。固定viewのtracked sourceは変更していない。
+
+`scripts/check_rpe_q3_local_join.py` は同固定viewの人工producer・通常schedule入口・worker・fault proxyを再利用する。
+両初期workerのARTIFICIAL_EVALUATION_STARTを確認してからローカル役を起動し、
+その最初の人工job開始後に通信を遮断してpolling daemonだけを停止した。
+detached supervisorの結果保存と他hostの完了増加を確認してから同じspoolで復帰した。
+同一attempt・保存結果不変・そのjobのexecute1回・重複完了通知の冪等性を確認した。
+参照18件のMSE上下界/判定と方式別最安も一致した。[結果](checks/LOCAL_JOIN_CHECKS.json)。
+
+```bash
+"/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python" -B \
+  scripts/check_rpe_q3_local_join.py --common-root .local-q3/common-89f51a4 \
+  --output .local-q3/checks/late-join-NEW
+```
+
+共通workerの7テストは固定89f51a4でPASS。relayの既存2テストは同固定SHAで1件PASS、
+再開時に前daemonのstopped状態が残る競合で1件失敗した。
+ローカルbranchのrelayはtick前に新しいstopped=false状態を保存する修正を行い、2件ともPASS。
+host別DP設定のローカル拡張を含むworkerテストは8件PASS。
+これらは単一Linux上の人工検査であり、実SSH経路の検収ではない。
+
+通常sandboxではloopback socket作成がPermissionErrorになったため、HTTPを使う人工検査だけ
+実行環境の許可された制限外実行で行った。実サーバー・H4入力には接続していない。
