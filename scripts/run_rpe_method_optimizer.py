@@ -19,6 +19,7 @@ REPLAY.json, FIXTURE.json, OWN_PRICE.json and CHECKS.json.
 """
 import argparse
 import csv
+from contextlib import contextmanager
 from fractions import Fraction
 import inspect
 import json
@@ -33,6 +34,21 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def write(path, value):
     path.write_text(json.dumps(O.jsonable(value), ensure_ascii=False, indent=2) + '\n')
+
+
+@contextmanager
+def round_phase(run, name):
+    """High-resolution controller timings; not a scientific progress gate."""
+    started=time.perf_counter();status='ERROR'
+    def record(event, **values):
+        with (run / 'ROUND_STAGES.jsonl').open('a') as f:
+            f.write(json.dumps(dict(event=event,phase=name,epoch=time.time(),monotonic=time.monotonic(),**values))+'\n')
+    record('START')
+    try:
+        yield
+        status='OK'
+    finally:
+        record('END',seconds=time.perf_counter()-started,status=status)
 
 
 def candidate_rows(context):
@@ -137,8 +153,9 @@ def round_mode(a, problem, extra):
         g = problem['methods'][m].get('generation') or {}
         if g.get('kappa_points_file') and not Path(g['kappa_points_file']).is_absolute():
             g['kappa_points_file'] = str(ROOT / g['kappa_points_file'])
-    context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation',
-                        generate_configurations=not (spec.get('candidate_completion')or{}).get('bootstrap_saved_only',False))
+    with round_phase(run, 'PREPARE_INPUTS_AND_PRICES'):
+        context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation',
+                            generate_configurations=not (spec.get('candidate_completion')or{}).get('bootstrap_saved_only',False))
     extra = extra + resume_input([Path(x) for x in spec.get('resume_from', [])])
     stored = run / 'ROUND.json'
     if stored.exists():
@@ -151,33 +168,57 @@ def round_mode(a, problem, extra):
     routes = merged_routes(problem, spec)
     if spec.get('candidate_completion'):
         from trottertracks.pr_candidate_completion import prepare_for_search
-        context,routes,completion = prepare_for_search(ROOT,dict(problem,execution_routes=routes),context,spec,run)
+        with round_phase(run, 'PREPARE_SELECTED_CANDIDATES'):
+            context,routes,completion = prepare_for_search(ROOT,dict(problem,execution_routes=routes),context,spec,run)
     unlimited = any(v == 'UNLIMITED' for v in spec['max_new_q3_per_method'].values())
     steps = spec.get('max_steps_per_method', 100000 if unlimited else problem['search']['max_steps_per_method'])
     search = dict(problem['search'], max_steps_per_method=steps)  # the finite range ends an UNLIMITED round
     search.update(spec.get('search_overrides', {}))  # e.g. incumbent_scope CONFIGURATION, lookahead, seed_saved_same_L_D
     O.apply_published(context['candidates'], routes)
     ex_opts = spec.get('executor', {})
-    executor = O.Executor(ROOT, run, routes, context['expected'], problem, optimizer_source=head(),
-                          max_concurrent=ex_opts.get('max_concurrent_jobs', 1), wait_for_running=ex_opts.get('wait_for_running_jobs', False),
-                          prior_run_dirs=[(ROOT / d).resolve() for d in ex_opts.get('prior_run_dirs', [])])
+    scheduler = ex_opts.get('scheduler', 'legacy')
+    if scheduler not in ('legacy', 'concurrent'):
+        raise SystemExit('Unknown executor.scheduler')
     budgets = spec['max_new_q3_per_method']
     approved = spec.get('science_approved', any(v not in (0, None) for v in budgets.values()))
     if any(v == 'UNLIMITED' for v in budgets.values()) and spec.get('science_approved') is not True:
         raise SystemExit('UNLIMITED (no Q3 count limit) requires science_approved: true in the round file')
-    result = O.optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
-                        initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
-                        extra_results=extra, science_approved=approved)
-    if spec.get('candidate_completion'):
-        from trottertracks.pr_candidate_completion import continue_selected_preparation,publish_comparison_exports
-        result=continue_selected_preparation(ROOT,dict(problem,search=search),context,spec,run,completion,executor,result,extra)
-        publish_comparison_exports(completion,run,context)
-    write(run / 'ROUND_RESULT.json', slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
-                                          optimizer_source=head(), wall_seconds=time.perf_counter() - start,
-                                          exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)))
-    table(result, run / 'PER_METHOD.csv')
-    write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
-                                   pending_Q3={m: r['pending_request'] for m, r in result.items()}))
+    executor_options = dict(optimizer_source=head(), max_concurrent=ex_opts.get('max_concurrent_jobs', 1),
+        wait_for_running=ex_opts.get('wait_for_running_jobs', False),
+        prior_run_dirs=[(ROOT / d).resolve() for d in ex_opts.get('prior_run_dirs', [])])
+    if scheduler == 'concurrent':
+        from trottertracks import rpe_optimizer_concurrent as C
+        cache = ex_opts.get('prefix_cache_directory')
+        if cache is not None and not Path(cache).is_absolute():
+            cache = str(run / cache)
+        executor = C.ConcurrentExecutor(ROOT, run, routes, context['expected'], problem, **executor_options,
+            budgets=budgets, science_approved=approved, dp_workers=ex_opts.get('dp_workers'),
+            prefix_cache_directory=cache, prefix_checkpoint_rounds=ex_opts.get('prefix_checkpoint_rounds'))
+        def optimize(*args, **kwargs):
+            return C.optimize(*args, close_executor=False, **kwargs)
+    else:
+        executor = O.Executor(ROOT, run, routes, context['expected'], problem, **executor_options)
+        optimize = O.optimize
+    try:
+        with round_phase(run, 'SEARCH_AND_Q3'):
+            result = optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
+                              initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
+                              extra_results=extra, science_approved=approved)
+        if spec.get('candidate_completion'):
+            from trottertracks.pr_candidate_completion import continue_selected_preparation,publish_comparison_exports
+            result=continue_selected_preparation(ROOT,dict(problem,search=search),context,spec,run,completion,executor,result,extra,
+                                                 optimizer=optimize)
+            with round_phase(run, 'EXPORT_COMPARISON'):
+                publish_comparison_exports(completion,run,context)
+    finally:
+        executor.finish()
+    with round_phase(run, 'SAVE_RESULTS'):
+        write(run / 'ROUND_RESULT.json', slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
+                                              optimizer_source=head(), wall_seconds=time.perf_counter() - start,
+                                              exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)))
+        table(result, run / 'PER_METHOD.csv')
+        write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
+                                       pending_Q3={m: r['pending_request'] for m, r in result.items()}))
     with (run / 'INVOCATIONS.jsonl').open('a') as f:
         f.write(json.dumps(O.jsonable(dict(time=time.time(), budget=spec['max_new_q3_per_method'],
             launched={m: executor.launched(m) for m in spec['methods']},

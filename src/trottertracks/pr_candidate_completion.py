@@ -436,7 +436,7 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
     return context,routes,completion
 
 
-def continue_selected_preparation(root,problem,context,spec,run,completion,executor,result,extra_results=()):
+def continue_selected_preparation(root,problem,context,spec,run,completion,executor,result,extra_results=(),optimizer=None):
     """Consume subsequent V2 requests with the same cumulative Q3 budget.
 
     No new chooser or independent scientific worker loop: each continuation is
@@ -461,7 +461,7 @@ def continue_selected_preparation(root,problem,context,spec,run,completion,execu
         if after==before:break
         executor.routes=routes;executor.expected=context['expected']
         O.apply_published(context['candidates'],routes)
-        result=O.optimize(root,problem,context=context,methods=spec['methods'],initial=spec.get('initial','all'),
+        result=(optimizer or O.optimize)(root,problem,context=context,methods=spec['methods'],initial=spec.get('initial','all'),
             max_new=spec['max_new_q3_per_method'],executor=executor,extra_results=extra_results,science_approved=True)
     return result
 

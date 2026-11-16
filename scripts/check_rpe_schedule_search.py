@@ -150,7 +150,7 @@ def main():
             if d['L_D'] == 7:
                 return dict(status='HELD_WITH_REASON', reason='PAULI_PRICE:ARTIFICIAL_HOLD', key='k7')
             return dict(status='READY_FOR_SEARCH', configuration_id='ARTIFICIAL_LD%d' % d['L_D'], key='k%d' % d['L_D'])
-    drv = object.__new__(RS.WideDriver);drv.spec = spec;drv.run = a.output / 'completion_check';drv.a = types.SimpleNamespace(plan_only=False)
+    drv = object.__new__(RS.WideDriver);drv.spec = spec;drv.run = a.output / 'completion_check';drv.run.mkdir(parents=True, exist_ok=True);drv.a = types.SimpleNamespace(plan_only=False)
     drv.completion_api = lambda settings: FakeCompletion()
     drv.state = dict(cycle=1, points=[dict(L_D=4, kappa='2', status='COMPLETION', requested_cycle=1, request_reason='CARRIED'),
                                       dict(L_D=6, kappa='2', status='COMPLETION', requested_cycle=1, request_reason='CARRIED_PR_DF_RECORD_EXISTS'),

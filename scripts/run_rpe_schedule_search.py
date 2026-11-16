@@ -18,6 +18,7 @@ Stops when the plan proposes nothing, nothing is pending and V2 has no non-small
 before any signal, calibration or Q3 (metadata only).
 """
 import argparse
+from copy import deepcopy
 from fractions import Fraction
 import json
 from pathlib import Path
@@ -45,7 +46,19 @@ def read_loc(loc):
 
 class WideDriver(K.Driver):
     def __init__(self, a):
+        existing = (a.run_dir.resolve() / 'KAPPA_STATE.json').exists()
         super().__init__(a)
+        if not existing and self.spec.get('continues'):
+            previous = ROOT / self.spec['continues']['run_dir'] / 'KAPPA_STATE.json'
+            carried = O.load_json(previous)
+            for key in ('points', 'family_constants', 'saved_packets', 'splits'):
+                if key in carried:self.state[key] = deepcopy(carried[key])
+            self.state['continuation'] = dict(directory=str(previous.parent),
+                previous_round=carried.get('round_id'), previous_stop=carried.get('stop'))
+        # These requests were never executed; actual scientific HELD/STOPs stay held.
+        for p in self.state['points']:
+            if p['status'] == 'HELD' and p.get('reason') == 'COMPLETION_REQUIRED_NOT_RUN_IN_THIS_INVOCATION':
+                p.update(status='COMPLETION', unrun_previous_reason=p.pop('reason'))
         self.wide = self.spec['search_overrides']['schedule_wide']
         if 'seeded' not in self.state:
             self.seed()
@@ -131,7 +144,7 @@ class WideDriver(K.Driver):
             if p['status'] == 'PREPARED' and best is not None and p['price_floor'] >= best:
                 p.update(status='PRUNED', reason='PROVEN_COST_FLOOR:%s>=%s' % (O.show(p['price_floor']), O.show(best)))
 
-    def completion_requests(self):
+    def completion_requests(self, on_wait=None):
         """New splits: D2 completion (READY -> search, HELD -> recorded).  --plan-only records the request only."""
         todo = [p for p in self.state['points'] if p['status'] == 'COMPLETION']
         if not todo:
@@ -159,12 +172,17 @@ class WideDriver(K.Driver):
         comp = self.completion_api(dict(cc, max_attempted_per_method=0))
         from concurrent.futures import ThreadPoolExecutor
         with ThreadPoolExecutor(max(1, min(len(run), int(cc.get('parallel', 4))))) as pool:  # independent splits / schedules
-            for p, rec in zip(run, pool.map(comp.complete, [p['completion_request'] for p in run])):
+            futures = [pool.submit(comp.complete, p['completion_request']) for p in run]
+            self.log(event='COMPLETION_WAIT_START', requests=len(run))
+            if on_wait is not None:on_wait()
+            for p, future in zip(run, futures):
+                rec = future.result()
                 if rec['status'] == 'READY_FOR_SEARCH':
                     p.update(status='REGISTERED', configuration_id=rec['configuration_id'], completion=dict(status=rec['status'], key=rec['key']))
                 else:  # HELD: the concrete reason is kept and the other candidates go on
                     p.update(status='HELD', reason='COMPLETION:%s:%s' % (rec['status'], str(rec.get('reason'))[:300]),
                              completion=dict(status=rec['status'], key=rec['key']))
+            self.log(event='COMPLETION_WAIT_END', requests=len(run))
 
     def completion_api(self, settings):
         from trottertracks.pr_candidate_completion import Completion
@@ -195,8 +213,12 @@ class WideDriver(K.Driver):
                 p['run_completed_best'] = done[cid]
 
     # ------------------------------------------------------------ loop
-    def batch(self):
+    def batch(self, ready_only=False):
         spec = json.loads(json.dumps(self.spec))
+        if ready_only:
+            # Completion owns its state/registry while working. This interim batch
+            # uses only the already published points and route registry snapshot.
+            spec.pop('candidate_completion', None)
         if spec.get('candidate_completion'):
             spec['candidate_completion']['max_attempted_per_method'] = 0  # install READY records only; B2 chooses what to complete
         self.spec, keep = spec, self.spec
@@ -206,10 +228,36 @@ class WideDriver(K.Driver):
             self.spec = keep
 
     def loop(self):
+        previous_stop = self.state.get('stop', {}).get('reason')
+        transient = {'PLAN_ONLY_FIRST_DECISION_WRITTEN', 'SCIENCE_NOT_APPROVED_FIRST_DECISION_WRITTEN',
+                     'PLAN_ONLY_NOTHING_TO_PREPARE', 'MAX_CYCLES'}
+        if previous_stop and previous_stop not in transient:
+            self.log(event='PRESERVED_STOP', reason=previous_stop);return
+        if previous_stop:self.state.pop('stop')
         while self.state['cycle'] < self.a.max_cycles:
             self.state['cycle'] += 1;self.save()
             proposals, report = self.plan();self.save()
-            self.completion_requests();self.save()
+            interim = []
+            def ready_work():
+                if self.spec.get('overlap_ready_batch') and any(p['status'] in ('REGISTERED', 'EVALUATED', 'ALIAS') for p in self.state['points']):
+                    self.log(event='READY_BATCH_DURING_COMPLETION_START')
+                    code, res = self.batch(ready_only=True)
+                    if res is None:
+                        interim.append(dict(stop_reason='INVOCATION_FAILED', returncode=code))
+                        self.log(event='READY_BATCH_DURING_COMPLETION_END', returncode=code, stop='INVOCATION_FAILED')
+                        return
+                    interim.append(res)
+                    self.absorb(res);self.save()
+                    self.log(event='READY_BATCH_DURING_COMPLETION_END', stop=res['stop_reason'], new_calls=res['new_calls'])
+            self.completion_requests(on_wait=ready_work);self.save()
+            if interim and interim[-1]['stop_reason'] == 'INVOCATION_FAILED':
+                self.state['stop'] = dict(reason='V2_INVOCATION_FAILED', returncode=interim[-1]['returncode'], UTC=K.now())
+                self.save();return
+            fatal = {'UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER',
+                     'Q3_BUDGET_EXHAUSTED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'}
+            if interim and interim[-1]['stop_reason'] in fatal:
+                self.state['stop'] = dict(reason='V2_' + interim[-1]['stop_reason'], UTC=K.now())
+                self.save();return
             stop_here = self.a.plan_only or self.spec.get('science_approved') is not True
             if any(p['status'] in ('PENDING', 'PREPARED') for p in self.state['points']):
                 ctx = self.prepare();self.prune(ctx);self.save()
@@ -227,6 +275,8 @@ class WideDriver(K.Driver):
             promising = sum(p.get('promising') or 0 for p in self.state['points'] if p['status'] == 'EVALUATED')
             self.log(event='CYCLE_END', v2_stop=res['stop_reason'], proposals=len(proposals), pending=len(pending), promising=promising,
                      plan_stop=report['stop'])
+            if res['stop_reason'] in ('Q3_BUDGET_EXHAUSTED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'):
+                self.state['stop'] = dict(reason=res['stop_reason'], UTC=K.now());self.save();return
             if res['stop_reason'] in ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER'):
                 self.state['stop'] = dict(reason='V2_' + res['stop_reason'], UTC=K.now());self.save();return
             if not proposals and not pending and res['stop_reason'] in ('ONLY_SMALL_OR_DEFERRED_LEFT', 'NO_CANDIDATE_LEFT_IN_RANGE'):

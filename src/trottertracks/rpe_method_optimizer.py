@@ -1138,12 +1138,19 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             ex = executor.for_method(name)
             answer, spent = ChainBackend(context['saved'], ex), ex.launched(name)
             free = lambda p, ex=ex: (p['configuration_id'], p['vector']) in table or ex.has_job(p)
-            prefetch = lambda ps, ex=ex: ex.prefetch([p for p in ps if (p['configuration_id'], p['vector']) not in table])
+            if getattr(ex, 'supports_nonblocking_prefetch', False) and search.get('rule') == 'METHOD_MINIMUM_PRIORITY_V2':
+                prefetch = lambda ps, ex=ex: ex.prefetch([p for p in ps if (p['configuration_id'], p['vector']) not in table], scope='METHOD')
+            else:
+                prefetch = lambda ps, ex=ex: ex.prefetch([p for p in ps if (p['configuration_id'], p['vector']) not in table])
         else:
             answer, spent = (context['saved'] if backend is None else backend), 0
             free = lambda p: (p['configuration_id'], p['vector']) in table
         if executor is not None and executor.prior_run_dirs:
+            ingest_start = time.perf_counter()
+            executor.for_method(name).log(event='PRIOR_INGEST_START')
             known, refused = executor.for_method(name).prior_records(cands)
+            executor.for_method(name).log(event='PRIOR_INGEST_END', seconds=time.perf_counter()-ingest_start,
+                                          reused=len(known), refused=len(refused))
             fresh = {k: v for k, v in known.items() if k not in knowledge}
             knowledge.update(fresh)
             prior = dict(run_dirs=[str(d) for d in executor.prior_run_dirs], loaded=len(fresh), already_known=len(known) - len(fresh),
@@ -1155,13 +1162,14 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             log = None
             if executor is not None:
                 ex_log = executor.for_method(name)
-                log = lambda row, ex_log=ex_log: ex_log.log(event='ADOPT', configuration=row['configuration_id'][:8], cls=row['cls'],
+                log = lambda row, ex_log=ex_log: ex_log.log(event='SEARCH_ADOPT' if getattr(ex_log, 'supports_nonblocking_prefetch', False) else 'ADOPT', configuration=row['configuration_id'][:8], cls=row['cls'],
                                                            status=row['status'], cost=show(row['cost']),
                                                            method_min=row['method_min_after'] and show(row['method_min_after']))
             result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                     baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),
                                     routes=problem.get('q3_routes'), spent=spent, free=free, science_approved=science_approved,
-                                    prefetch=prefetch, on_missing=search.get('on_missing', 'STOP'), facts=context.get('facts'), log=log)
+                                    prefetch=prefetch, on_missing=search.get('on_missing', 'STOP'), facts=context.get('facts'), log=log,
+                                    prefetch_state=getattr(ex, 'prefetch_state', None) if executor is not None else None)
             prep = (problem['methods'][name].get('generation') or {}).get('preparation')
             if prep and search.get('prepare_kappa_proposals'):
                 result['input_requests'] = prepare_kappa_requests(root, problem, context, name, prep, result['input_requests'])
@@ -1173,7 +1181,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                 problem.get('q3_routes'), spent, free, science_approved)
         out[name] = summarize_method(name, cands, result, knowledge, threshold)
         out[name]['prior_rounds'] = prior
-        for key in ('unevaluated', 'input_requests', 'left', 'settings'):
+        for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing'):
             if key in result:
                 out[name][key] = result[key]
         out[name]['budget'] = dict(max_new_q3='UNLIMITED_WITHIN_RANGE' if budget is None else budget, science_approved=science_approved,

@@ -59,7 +59,7 @@ class Driver:
     # ------------------------------------------------------------ bookkeeping
     def log(self, **event):
         with (self.run / 'DRIVER_PROGRESS.jsonl').open('a') as f:
-            f.write(json.dumps(dict(UTC=now(), cycle=self.state['cycle'], **event), default=str) + '\n')
+            f.write(json.dumps(dict(UTC=now(), epoch=time.time(), monotonic=time.monotonic(), cycle=self.state['cycle'], **event), default=str) + '\n')
 
     def save(self):
         tmp = self.state_file.with_suffix('.tmp');tmp.write_text(json.dumps(O.jsonable(self.state), indent=1, ensure_ascii=False, default=str) + '\n')
@@ -290,10 +290,14 @@ class Driver:
     def batch(self):
         jobs = self.run / 'jobs' / 'PR_PAULI'
         launched = sum(1 for d in jobs.iterdir() if (d / 'LAUNCH.json').exists()) if jobs.exists() else 0
-        spec = json.loads(json.dumps(self.spec));spec['max_new_q3_per_method'] = {'PR_PAULI': launched + self.a.batch}
+        spec = json.loads(json.dumps(self.spec))
+        maximum = spec['max_new_q3_per_method'].get('PR_PAULI')
+        budget = launched + self.a.batch
+        if maximum not in (None, 'UNLIMITED'):budget = min(budget, maximum)
+        spec['max_new_q3_per_method'] = {'PR_PAULI': budget}
         spec['max_steps_per_method'] = self.a.batch  # the budget ends the batch, not the problem's default step limit
         inv = self.run / 'ROUND_INVOCATION.json';inv.write_text(json.dumps(spec, indent=1, ensure_ascii=False) + '\n')
-        self.log(event='V2_START', launched_before=launched, budget=launched + self.a.batch)
+        self.log(event='V2_START', launched_before=launched, budget=budget)
         t = time.time()
         with (self.run / 'V2_STDOUT.log').open('a') as f:
             f.write('\n=== cycle %d %s\n' % (self.state['cycle'], now()));f.flush()
