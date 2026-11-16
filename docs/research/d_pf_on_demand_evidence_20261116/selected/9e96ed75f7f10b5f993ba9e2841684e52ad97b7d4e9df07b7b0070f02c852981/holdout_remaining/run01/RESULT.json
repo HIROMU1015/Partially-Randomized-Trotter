@@ -1,0 +1,204 @@
+{
+  "results": [
+    {
+      "cell": {
+        "m": 5,
+        "formula": "2nd",
+        "row": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 3.2,
+          "q": 16,
+          "delta": 0.2,
+          "R_outer": null,
+          "K": null,
+          "id": "987ba8031fd5b790cf59"
+        },
+        "role": "HOLDOUT_REMAINING"
+      },
+      "trial": {
+        "status": "PASS",
+        "candidate": {
+          "system": "H4",
+          "method": "FULL",
+          "prefix": 10,
+          "formula": "2nd",
+          "T": 3.2,
+          "q": 16,
+          "delta": 0.2,
+          "R_outer": null,
+          "K": null,
+          "id": "987ba8031fd5b790cf59"
+        },
+        "cohort": "D_PF_SELECTED_9e96ed75f7f1_holdout_remaining",
+        "index": 0,
+        "prices": {
+          "cosine": {
+            "rz_count": 124835,
+            "rz_depth": 34139,
+            "cx_count": 59344,
+            "cx_depth": 32436,
+            "total_depth": 84137,
+            "circuit_size": 261884
+          },
+          "sine": {
+            "rz_count": 124835,
+            "rz_depth": 34139,
+            "cx_count": 59344,
+            "cx_depth": 32436,
+            "total_depth": 84137,
+            "circuit_size": 261884
+          }
+        },
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 4.5655064366689266e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "independent_occupation_vector",
+            "error": 2.897972108987422e-13,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 1.3988810110276972e-14,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 4.8677318120803e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 1.1102230246251565e-15,
+            "tolerance": 1e-09,
+            "phase_alignment": false
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 4.953585521331255e-11,
+            "tolerance": 1e-07,
+            "phase_alignment": false
+          }
+        ],
+        "laws": [],
+        "orders": {
+          "0": 0
+        },
+        "conditional": false,
+        "scalar": 2.29310124732,
+        "log_B": 0,
+        "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+        "cache_hits": 0,
+        "wall_seconds": 120.06531511386856,
+        "peak_RSS_bytes": 600690688,
+        "technical_acceleration": [
+          {
+            "compose_seconds": 5.545252887066454,
+            "builder_calls": 16,
+            "reused_parts": 15,
+            "distinct_parts": 1
+          }
+        ]
+      },
+      "facts": {
+        "retained_blocks": 11,
+        "fragment_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scalar": 2.29310124732,
+        "tail_identity": 0.0,
+        "signed_pieces": 16,
+        "negative_pieces": 0,
+        "gates": [
+          "low_control",
+          "high_control_leakage",
+          "independent_occupation_vector",
+          "Hadamard_cosine",
+          "compiled_vector_cosine",
+          "Hadamard_sine",
+          "compiled_vector_sine"
+        ]
+      },
+      "ok": true,
+      "wrappers": {
+        "cosine": {
+          "fingerprint": "e080fd17e8d07193e35a4c7e12d9a7c222411a2a08e873432878150e60757366",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        },
+        "sine": {
+          "fingerprint": "a1a8ce6cab8c3c22e08bee587d3a246072fbdf33b5616b4cdf1300218a8bbf29",
+          "cache_reused": false,
+          "wrapper_qubits": 9,
+          "compiled_qubits": 9
+        }
+      },
+      "wall_seconds": 120.06584797194228,
+      "worker_pid": 3744952,
+      "worker_exit_code": 0,
+      "worker_signal": null
+    }
+  ],
+  "resources": {
+    "workers": 1,
+    "cells": 1,
+    "started": 1,
+    "not_started_after_failure": 0
+  },
+  "context_gate": {
+    "scalar": 2.29310124732,
+    "scalar_hex": "0x1.25845777d3feap+1",
+    "preparation_hash": "bb736dc3158aa52f205ae0c23e4be374ae4e5edfa614d3cbceda04dcd5a28cfd",
+    "fragment_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "wall_seconds": 124.23593382304534,
+  "context_peak_RSS_bytes": 368603136,
+  "source": {
+    "commit": "0b3d104e2e2950207a9600dbd18206fd7785bd61",
+    "caller": "scripts/prepare_pf_candidate.py",
+    "frozen_model": {
+      "commit": "e093fe760c2ca173eefaf3eb098cf5ed2527aea7",
+      "path": "docs/research/d_pf_on_demand_evidence_20261116/selected/9e96ed75f7f10b5f993ba9e2841684e52ad97b7d4e9df07b7b0070f02c852981/FROZEN_MODEL.json",
+      "selector": []
+    }
+  },
+  "child_exit_code": 0,
+  "child_signal": null
+}
