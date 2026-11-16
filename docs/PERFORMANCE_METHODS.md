@@ -1,5 +1,9 @@
 # 性能対策の再利用索引
 
+## 候補ごとの実入力適合ホストへ割当
+
+通常schedule入口の準備で `HOST_ELIGIBILITY.json` を作り、distributed controllerがREQUEST/SOURCE/入力とhostの現在fingerprintをclaim直前に照合する。先頭jobが非対応でも既存優先順位の独立候補へ進む。全host不足は予算予約前に保留し、busyな適合hostは待機する。方式名やjob IDの固定割当はしない。既存attemptの回収・再開は保持。新transportと固定科学adapter SOURCEを分ける。人工queueの検査であり実H4の速度測定はない。[使い方と根拠](research/rpe_q3_host_eligibility/REPORT.md)。
+
 ## H4計画の差分取込・小さい出力・早期READY（2026-11-17）
 
 `run_rpe_schedule_search.py --plan-only --prepare-readiness --preparation-cache DIR` は既存method optimizerへ、context再利用と `rpe_plan_history_cache` のexact履歴差分readerを接続する。適合/不適合を候補選択前に取込み、未確定job/queueは毎回観測する。巨大な評価配列を繰返しdecimal化せず原OUTCOME/私物cacheへ参照し、明示dry-check後のREADYをREPORT保存より先に返す。準備実装b5a8a60c5、計算SOURCE28d、旧339の遠隔配布物はbyte不変。

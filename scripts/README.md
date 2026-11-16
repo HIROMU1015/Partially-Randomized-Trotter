@@ -1,5 +1,7 @@
 # scripts 索引
 
+[候補別のdry-check PASSホストへのQ3割当](../docs/research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
+
 [H4の高速な準備](../docs/research/rpe_h4_readiness_fast_20261117/README.md)：`run_rpe_schedule_search.py --plan-only --prepare-readiness --preparation-cache DIR` で保存履歴差分→選定→乾式検査→READY。既定の科学経路と旧遠隔配布物は保持する。
 
 [実H4分散runの事前検査](../docs/research/rpe_distributed_h4_plan_20261117/REPORT.md)：`check_rpe_q3_host_readiness.py` は固定workerのSOURCE/入力照合と既存adapterの明示dry-checkだけを呼ぶ。queue/worker/execute/collectは起動しない。[local0運用](../docs/research/rpe_distributed_h4_plan_20261117/LOCAL0_DRY_CHECK.md)。

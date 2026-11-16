@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[候補別のdry-check PASSホストへのQ3割当](../../docs/research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
+
 [H4準備の差分cache](../../docs/research/rpe_h4_readiness_fast_20261117/README.md)：`trottertracks.rpe_plan_prepare` が既存optimizerと `rpe_plan_history_cache`・`rpe_plan_readiness` を接続する。計算SOURCE28dと数値kernelは変更せず、科学実行0の準備を速く返す。
 
 [実H4分散runの事前検査](../../docs/research/rpe_distributed_h4_plan_20261117/REPORT.md)：既存workerの入力照合と既存adapterの明示dry-checkを、新しい専用directoryで直接利用する。数値kernelや固定28dの計算SOURCEは変更しない。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[候補別のdry-check PASSホストへのQ3割当](research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
+
 [H4準備の差分cacheと早期READY](research/rpe_h4_readiness_fast_20261117/REPORT.md)：候補・費用・乾式判定を前回と保ち、通常入口で初回/入力不変時を計測。[1コマンドと再計測](research/rpe_h4_readiness_fast_20261117/README.md)。
 
 [次の実H4分散runの計画・実入力dry-check](research/rpe_distributed_h4_plan_20261117/REPORT.md)：最新保存履歴・科学job keyを照合、server2の実経路3候補PASSとPauli不足、遠隔未確認を区別。新科学0件。[開始/再開案](research/rpe_distributed_h4_plan_20261117/START_RESUME.md)。
