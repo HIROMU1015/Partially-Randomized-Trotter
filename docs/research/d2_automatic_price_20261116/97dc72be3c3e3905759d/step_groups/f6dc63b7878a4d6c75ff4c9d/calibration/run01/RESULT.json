@@ -1,0 +1,367 @@
+{
+  "status": "FINITE_LD6_CAL_PATHS_COMPLETE",
+  "source": {
+    "commit": "29e6c1e63b89a494501cefbcbc0f536a87d87c42",
+    "caller": "scripts/run_pauli_split_cal.py",
+    "prefix": 6,
+    "kind": "LD6_CAL_Q8R1",
+    "cell": "Q8R1",
+    "cohort": "A_PAULI_CAL_f6dc63b7878a4d6c75ff_N2_V1",
+    "step_seeds": [
+      [
+        13666793134860750534,
+        15989621299916392303,
+        17035969626956556573,
+        5989477875941983176,
+        4187058375517165326,
+        17387078260642390427,
+        2511636325968668463,
+        5039905353470251354
+      ],
+      [
+        1033993705809497426,
+        4995216407253425534,
+        1021972421767135246,
+        10975919112565673703,
+        3700902295889576904,
+        14965091732501645415,
+        1946016721449169198,
+        8077801880396966430
+      ]
+    ],
+    "result_path": "docs/research/d2_automatic_price_20261116/97dc72be3c3e3905759d/step_groups/f6dc63b7878a4d6c75ff4c9d/calibration/run01/RESULT.json",
+    "legacy_source": "13ab1acfaebe5f33958e1db67862f5c45725ab91"
+  },
+  "binding": {
+    "commit": "7e27b9ec5c413f93959d9090146caf5f1717e2b0",
+    "path": "docs/research/d2_automatic_price_20261116/97dc72be3c3e3905759d/step_groups/f6dc63b7878a4d6c75ff4c9d/calibration/BINDING.json"
+  },
+  "summaries": [
+    {
+      "status": "PASS",
+      "index": 0,
+      "result": {
+        "status": "PASS",
+        "prices": {
+          "cosine": {
+            "rz_count": 40667,
+            "rz_depth": 10976,
+            "cx_count": 19096,
+            "cx_depth": 10404,
+            "total_depth": 27004,
+            "circuit_size": 84900
+          },
+          "sine": {
+            "rz_count": 40667,
+            "rz_depth": 10976,
+            "cx_count": 19096,
+            "cx_depth": 10404,
+            "total_depth": 27004,
+            "circuit_size": 84900
+          }
+        },
+        "scalar": 2.297284778496914,
+        "z": [
+          -0.947364498465105,
+          -0.32009988042733095
+        ],
+        "seeds": [
+          13666793134860750534,
+          15989621299916392303,
+          17035969626956556573,
+          5989477875941983176,
+          4187058375517165326,
+          17387078260642390427,
+          2511636325968668463,
+          5039905353470251354
+        ],
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 7.988613476810747e-15,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "independent_full_space_vector",
+            "error": 4.782587734901748e-14,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 2.7755575615628914e-15,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 4.3298697960381105e-15,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 5.566492327259256e-13,
+            "tolerance": 1e-07
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 8.738620329463816e-13,
+            "tolerance": 1e-07
+          }
+        ],
+        "bit_order": {
+          "labels_reversed": true,
+          "saved_vs_saved_labels": 2.5049821630289964e-17,
+          "qiskit_vs_qiskit_labels": 2.5049821630289964e-17,
+          "unconverted_mismatch": 0.051665705888695325,
+          "head_vs_blocks": 0.0,
+          "tail_vs_blocks": 0.0,
+          "tail_vs_pauli_plus_pauli_identity": 2.7319975148781314e-16,
+          "tail_vs_pauli_plus_saved_sR": 2.66649990072622e-16,
+          "pass": true
+        },
+        "distribution": {
+          "orders": [
+            0,
+            2
+          ],
+          "probabilities": [
+            0.9999861723911112,
+            1.3827608888820711e-05
+          ]
+        },
+        "n": 8,
+        "terms": 184,
+        "fingerprints": {
+          "cosine": {
+            "fingerprint": "22c33aa0af1f805d2ccb079fa5250bdc42e446958cbbcbc336ac4ec84ac16468",
+            "cache_reused": false,
+            "wrapper_qubits": 9,
+            "measurement": true
+          },
+          "sine": {
+            "fingerprint": "3db31d8cffab33b2c6c19428ff607ce8b18b3be883916a986b04cb58d62d62e1",
+            "cache_reused": false,
+            "wrapper_qubits": 9,
+            "measurement": true
+          }
+        },
+        "compile_receipts": {
+          "cosine": {
+            "metrics": {
+              "rz_count": 40667,
+              "rz_depth": 10976,
+              "cx_count": 19096,
+              "cx_depth": 10404,
+              "total_depth": 27004,
+              "circuit_size": 84900
+            },
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "fingerprint": "22c33aa0af1f805d2ccb079fa5250bdc42e446958cbbcbc336ac4ec84ac16468"
+          },
+          "sine": {
+            "metrics": {
+              "rz_count": 40667,
+              "rz_depth": 10976,
+              "cx_count": 19096,
+              "cx_depth": 10404,
+              "total_depth": 27004,
+              "circuit_size": 84900
+            },
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "fingerprint": "3db31d8cffab33b2c6c19428ff607ce8b18b3be883916a986b04cb58d62d62e1"
+          }
+        },
+        "sampling": "ORIGINAL_NORMAL_SAMPLER",
+        "acceleration": {
+          "event_cache_hits": 1,
+          "event_cache_misses": 7
+        },
+        "compile_calls": [
+          "X",
+          "Y"
+        ]
+      },
+      "peak_RSS_KiB": 655376
+    },
+    {
+      "status": "PASS",
+      "index": 1,
+      "result": {
+        "status": "PASS",
+        "prices": {
+          "cosine": {
+            "rz_count": 40805,
+            "rz_depth": 10981,
+            "cx_count": 19128,
+            "cx_depth": 10404,
+            "total_depth": 27011,
+            "circuit_size": 85162
+          },
+          "sine": {
+            "rz_count": 40805,
+            "rz_depth": 10981,
+            "cx_count": 19128,
+            "cx_depth": 10404,
+            "total_depth": 27011,
+            "circuit_size": 85162
+          }
+        },
+        "scalar": 2.297284778496914,
+        "z": [
+          -0.9489247430903651,
+          -0.3154516324734472
+        ],
+        "seeds": [
+          1033993705809497426,
+          4995216407253425534,
+          1021972421767135246,
+          10975919112565673703,
+          3700902295889576904,
+          14965091732501645415,
+          1946016721449169198,
+          8077801880396966430
+        ],
+        "checks": [
+          {
+            "check": "low_control",
+            "error": 8.045977280683825e-15,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "high_control_leakage",
+            "error": 0.0,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "independent_full_space_vector",
+            "error": 4.7439411941268254e-14,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "Hadamard_cosine",
+            "error": 1.3322676295501878e-15,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "Hadamard_sine",
+            "error": 4.884981308350689e-15,
+            "tolerance": 1e-09
+          },
+          {
+            "check": "compiled_vector_cosine",
+            "error": 5.231442148760033e-13,
+            "tolerance": 1e-07
+          },
+          {
+            "check": "compiled_vector_sine",
+            "error": 8.988051681747762e-13,
+            "tolerance": 1e-07
+          }
+        ],
+        "bit_order": {
+          "labels_reversed": true,
+          "saved_vs_saved_labels": 2.5049821630289964e-17,
+          "qiskit_vs_qiskit_labels": 2.5049821630289964e-17,
+          "unconverted_mismatch": 0.051665705888695325,
+          "head_vs_blocks": 0.0,
+          "tail_vs_blocks": 0.0,
+          "tail_vs_pauli_plus_pauli_identity": 2.7319975148781314e-16,
+          "tail_vs_pauli_plus_saved_sR": 2.66649990072622e-16,
+          "pass": true
+        },
+        "distribution": {
+          "orders": [
+            0,
+            2
+          ],
+          "probabilities": [
+            0.9999861723911112,
+            1.3827608888820711e-05
+          ]
+        },
+        "n": 8,
+        "terms": 184,
+        "fingerprints": {
+          "cosine": {
+            "fingerprint": "10b8ea151a6f39d960982609de80bb688d2afe1eda3ef02874dd2b4bcefd551b",
+            "cache_reused": false,
+            "wrapper_qubits": 9,
+            "measurement": true
+          },
+          "sine": {
+            "fingerprint": "ff92192d42082d1ffddc54fc580bfefac7f6c881100fa673a344bda96dd0cb33",
+            "cache_reused": false,
+            "wrapper_qubits": 9,
+            "measurement": true
+          }
+        },
+        "compile_receipts": {
+          "cosine": {
+            "metrics": {
+              "rz_count": 40805,
+              "rz_depth": 10981,
+              "cx_count": 19128,
+              "cx_depth": 10404,
+              "total_depth": 27011,
+              "circuit_size": 85162
+            },
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "fingerprint": "10b8ea151a6f39d960982609de80bb688d2afe1eda3ef02874dd2b4bcefd551b"
+          },
+          "sine": {
+            "metrics": {
+              "rz_count": 40805,
+              "rz_depth": 10981,
+              "cx_count": 19128,
+              "cx_depth": 10404,
+              "total_depth": 27011,
+              "circuit_size": 85162
+            },
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "fingerprint": "ff92192d42082d1ffddc54fc580bfefac7f6c881100fa673a344bda96dd0cb33"
+          }
+        },
+        "sampling": "ORIGINAL_NORMAL_SAMPLER",
+        "acceleration": {
+          "event_cache_hits": 1,
+          "event_cache_misses": 7
+        },
+        "compile_calls": [
+          "X",
+          "Y"
+        ]
+      },
+      "peak_RSS_KiB": 648080
+    }
+  ],
+  "raw_paths": [
+    {
+      "index": 0,
+      "path": "docs/research/d2_automatic_price_20261116/97dc72be3c3e3905759d/step_groups/f6dc63b7878a4d6c75ff4c9d/calibration/run01/PATH0.json.gz",
+      "bytes": 4139,
+      "sha256": "3bfbfa423a1fa36835fc180c08bff852e97e3967aebbe3d1ecc3dd57ff0926c0",
+      "encoding": "GZIP_JSON",
+      "selector": []
+    },
+    {
+      "index": 1,
+      "path": "docs/research/d2_automatic_price_20261116/97dc72be3c3e3905759d/step_groups/f6dc63b7878a4d6c75ff4c9d/calibration/run01/PATH1.json.gz",
+      "bytes": 4183,
+      "sha256": "456d57c606e2866a1fc4ad9f09a8553eebe5e4bd5543503b4611cf7120feaf7f",
+      "encoding": "GZIP_JSON",
+      "selector": []
+    }
+  ],
+  "compiles": 4,
+  "automatic_retry": false,
+  "mean": null,
+  "fit": null,
+  "price": null,
+  "N": null,
+  "G": null,
+  "mandatory_stop": true
+}
