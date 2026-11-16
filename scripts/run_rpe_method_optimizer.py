@@ -39,7 +39,10 @@ def candidate_rows(context):
     return [dict(name=c['name'], method=c['method'], configuration=c['key'], configuration_id=c['configuration_id'],
                  ready=c['ready'], needs=c['needs'], price_status=c['price_status'], signal_source=c['signal_source'],
                  labels=c['labels'], saved_points=c['saved_points'], outside_index=c.get('outside_index', False),
-                 prepared_by=c.get('prepared_by'), preparation=c.get('preparation'), price_quote=c.get('price_quote'))
+                 prepared_by=c.get('prepared_by'), preparation=c.get('preparation'), price_quote=c.get('price_quote'),
+                 kappa_value=c.get('kappa_value'), kappa_base=c.get('kappa_base'), kappa_multiplier_exact=c.get('kappa_multiplier_exact'),
+                 physical_aliases=[dict(configuration_id=x['configuration_id'], kappa_value=x.get('kappa_value'))
+                                   for x in c.get('physical_aliases') or []])
             for c in context['candidates']]
 
 
@@ -100,10 +103,33 @@ def scoped(problem, overrides):
     return p
 
 
+def merged_routes(problem, spec):
+    """Route rules of the round; a rule's ``configurations_file`` (a growing registry of published configurations,
+    written between invocations) is merged into its ``configurations`` table and configuration_ids."""
+    routes = dict(problem['execution_routes']);routes.update(json.loads(json.dumps(spec.get('routes_override', {}))))
+    for rules in routes.values():
+        for rule in rules:
+            f = rule.get('configurations_file')
+            if f:
+                path = Path(f) if Path(f).is_absolute() else ROOT / f
+                extra = json.loads(path.read_text()) if path.exists() else {}
+                table = dict(rule.get('configurations') or {});clash = [c for c in extra if c in table and extra[c] != table[c]]
+                if clash:
+                    raise SystemExit('Registry changes an existing route entry: ' + ','.join(c[:8] for c in clash))
+                table.update(extra);rule['configurations'] = table
+                if isinstance(rule.get('configuration_ids'), list):
+                    rule['configuration_ids'] = sorted(set(rule['configuration_ids']) | set(extra))
+    return routes
+
+
 def round_mode(a, problem, extra):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
     problem = scoped(problem, spec.get('method_overrides'))
+    for m in spec['methods']:
+        g = problem['methods'][m].get('generation') or {}
+        if g.get('kappa_points_file') and not Path(g['kappa_points_file']).is_absolute():
+            g['kappa_points_file'] = str(ROOT / g['kappa_points_file'])
     context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation')
     extra = extra + resume_input([Path(x) for x in spec.get('resume_from', [])])
     stored = run / 'ROUND.json'
@@ -114,7 +140,7 @@ def round_mode(a, problem, extra):
                 raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
     else:
         write(stored, spec)
-    routes = dict(problem['execution_routes']);routes.update(spec.get('routes_override', {}))
+    routes = merged_routes(problem, spec)
     unlimited = any(v == 'UNLIMITED' for v in spec['max_new_q3_per_method'].values())
     steps = spec.get('max_steps_per_method', 100000 if unlimited else problem['search']['max_steps_per_method'])
     search = dict(problem['search'], max_steps_per_method=steps)  # the finite range ends an UNLIMITED round

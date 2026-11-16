@@ -752,6 +752,12 @@ def schedule_keys(config):
     return [round_key(config, r) for r in sorted(config['rounds'], key=lambda r: r['m'])]
 
 
+def dec_kappa(config):
+    """spec.kappa.value as an exact rational (kappa itself, not a multiplier)."""
+    v = config['spec']['kappa']['value']
+    return Fraction(int(v['numerator']), int(v['denominator'])) if isinstance(v, dict) else Fraction(str(v))
+
+
 def variant_grid(spec):
     g = spec['generation']
     for formula in g['formulas']:
@@ -786,6 +792,10 @@ def generate_variants(root, problem, reader, catalog, candidates, methods=None, 
             points.setdefault(point['configuration_id'], point)
         configs = {c['configuration_id']: reader.read(points[c['configuration_id']]['configuration_source']) for c in saved}
         base_keys = {cid: schedule_keys(cfg) for cid, cfg in configs.items()}
+        for c in saved:
+            c['schedule_keys'] = base_keys[c['configuration_id']]
+            if c['family'] == 'PR' and (configs[c['configuration_id']].get('spec') or {}).get('kappa'):
+                c['kappa_value'] = str(dec_kappa(configs[c['configuration_id']]))
         signal_keys = {k for c in saved if c['signal_source'] for k in base_keys[c['configuration_id']]}
         price_keys = {}
         for c in saved:
@@ -834,7 +844,8 @@ def generate_variants(root, problem, reader, catalog, candidates, methods=None, 
                                 configuration_id=gen['configuration_id'], index_signal=None, caps=base['caps'], generated=True,
                                 generated_from=base['configuration_id'], labels=[], signal_source=None, prices=prices,
                                 price_status='REUSED_FOR_ALL_AXES' if prices else 'MISSING_FOR_%d_AXES' % len(missing_price),
-                                saved_points=[], needs=needs, ready=False, generated_configuration=gen['configuration'],
+                                saved_points=[], needs=needs, ready=False, generated_configuration=gen['configuration'], schedule_keys=keys,
+                                kappa_value=str(dec_kappa(gen['configuration'])) if (gen['configuration'].get('spec') or {}).get('kappa') else None,
                                 reusable=dict(signal_rounds=[m for m in range(13) if m not in missing_signal],
                                               price_axes=26 - len(missing_price)))
                     cand['name'] = name + ':' + ','.join('%s=%s' % kv for kv in cand['key'].items()) + ':' + gen['configuration_id'][:8]
@@ -845,12 +856,43 @@ def generate_variants(root, problem, reader, catalog, candidates, methods=None, 
                 row['disposition'] = 'NOT_GENERATED'
                 row['needs'] = ['GENERATOR_SUPPORT:' + (gen.get('reason') or gen['status'])]
             rows.append(row)
-        out[name] = dict(kind=g['kind'], view_commit=g['view_commit'], preparation=prepared,
+        kappa_rows = prepare_kappa_points(root, name, g, candidates, points, configs, preparation_dir)
+        out[name] = dict(kind=g['kind'], view_commit=g['view_commit'], preparation=prepared, kappa_points=kappa_rows,
                          preparation_source=(g.get('preparation') or {}).get('view_commit'),
                          supported_formulas=result['items'][0].get('supported_formulas') if result['items'] else None,
                          baseline=g['baseline'], range=dict(formulas=g['formulas'], delta_over_h=g['delta_over_h_values'],
                          kappa_multipliers=g['kappa_multipliers']), h='fixed RPE base time (not a search variable)', variants=rows)
     return out
+
+
+def prepare_kappa_points(root, name, g, candidates, points, configs, preparation_dir):
+    """Absolute-kappa points of the round (``generation.kappa_points`` or ``kappa_points_file``: [{L_D, kappa}]) through A's
+    preparation entry; base = the saved configuration of that L_D (or one A registered), multiplier = kappa / base kappa
+    (exact), and the generated spec.kappa.value must equal the target exactly before the point is registered."""
+    kp = list(g.get('kappa_points') or [])
+    f = g.get('kappa_points_file')
+    if f and Path(f).exists():
+        kp += json.loads(Path(f).read_text())
+    if not kp or not g.get('preparation'):
+        return None
+    from . import rpe_candidate_preparation as R
+    import tempfile
+    bases = {}
+    for c in candidates:
+        if c['method'] != name or not c['configuration_id'] or c.get('kappa_value') is None:
+            continue
+        ld = c['key'].get('L_D');saved_base = not c.get('generated') and c['configuration_id'] in points
+        a_registered = c.get('prepared_by') and c.get('configuration_source') and c['key'].get('kappa_multiplier', '1') == '1' and 'kappa' not in c['key']
+        if (saved_base or a_registered) and ld not in bases:
+            src = points[c['configuration_id']]['configuration_source'] if saved_base else c['configuration_source']
+            bases[ld] = dict(source=src, configuration_id=c['configuration_id'], kappa_value=c['kappa_value'])
+    base = g['baseline']
+    proposals = [dict(kind='KAPPA_POINT', family=dict(L_D=int(p['L_D']), formula=base['formula'], delta_over_h=base['delta_over_h']),
+                      kappa=str(Fraction(str(p['kappa'])))) for p in kp]
+    if preparation_dir:
+        return R.prepare_kappa(root, name, g['preparation'], candidates, proposals, bases, Path(preparation_dir) / name, label='kappa_points')
+    with tempfile.TemporaryDirectory(prefix='rpe_prep_') as d:
+        return R.prepare_kappa(root, name, g['preparation'], candidates, proposals, bases, Path(d), label='kappa_points')
 
 
 def run_generator(root, g, items):

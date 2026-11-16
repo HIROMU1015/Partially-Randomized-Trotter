@@ -101,7 +101,17 @@ def register(name, cand, item, candidates, call_dir, generated_from=None, key=No
             cand['ready'] = False;cand['preparation'] = info;cand['preparation_request'] = item.get('scientific_request')
         return 'PREPARATION_REQUEST'
     cid = item['configuration_id']
+    from . import rpe_method_optimizer as O  # lazy: O imports this module
+    config = item['configuration'];keys = O.schedule_keys(config) if config.get('rounds') else None
+    kappa = str(O.dec_kappa(config)) if (config.get('spec') or {}).get('kappa') else None
     existing = next((c for c in candidates if c['configuration_id'] == cid), None)
+    if existing is None and keys is not None:  # same physical schedule (kappa acts only through R): reuse its evaluations
+        twin = next((c for c in candidates if c['method'] == name and c.get('schedule_keys') == keys), None)
+        if twin is not None:
+            twin.setdefault('physical_aliases', []).append(dict(configuration_id=cid, preparation=info, kappa_value=kappa))
+            if cand is not None and cand in candidates and cand['configuration_id'] is None:
+                candidates.remove(cand)
+            return 'PHYSICALLY_IDENTICAL_TO:' + twin['configuration_id']
     if existing is not None:
         existing.setdefault('preparation_matches', []).append(info)
         if cand is not None and cand is not existing and cand in candidates and cand['configuration_id'] is None:
@@ -116,7 +126,8 @@ def register(name, cand, item, candidates, call_dir, generated_from=None, key=No
     new = dict(method=name, family='PR', key=k, configuration_id=cid, index_signal=None, caps=caps, generated=True,
                generated_from=generated_from, labels=[], signal_source=None, prices=None, price_status='NOT_QUOTED_YET', saved_points=[],
                needs=needs_of(item), ready=False, generated_configuration=item['configuration'],
-               configuration_source=item.get('configuration_source'), preparation=info, prepared_by='A_PAULI_CANDIDATE_PREPARATION')
+               configuration_source=item.get('configuration_source'), preparation=info, prepared_by='A_PAULI_CANDIDATE_PREPARATION',
+               kappa_value=kappa, schedule_keys=keys)
     new['name'] = name + ':' + ','.join('%s=%s' % kv for kv in k.items()) + ':' + cid[:8]
     if cand is not None and cand in candidates:
         candidates[candidates.index(cand)] = new
@@ -148,17 +159,30 @@ def prepare_unregistered(root, name, prep, candidates, baseline, out_dir):
     return rows
 
 
+def _kappa(config):
+    v = config['spec']['kappa']['value']
+    from fractions import Fraction
+    return Fraction(int(v['numerator']), int(v['denominator'])) if isinstance(v, dict) else Fraction(str(v))
+
+
 def prepare_kappa(root, name, prep, candidates, proposals, base_sources, out_dir, label='kappa_proposals'):
     """Kappa proposals of the search rule -> A's entry with the saved configuration of that L_D as base."""
+    from fractions import Fraction
     items, keep = [], []
     for p in proposals:
         fam = p['family'];base = base_sources.get(fam['L_D'])
         if base is None:
             keep.append(dict(proposal=p, disposition='NO_SAVED_BASE_FOR_L_D'));continue
-        items.append(dict(item_id='%s:L_D=%s:kappa=%s' % (name, fam['L_D'], p['kappa_multiplier']), base=base['source'],
-                          changes=dict(formula=fam['formula'], delta_over_h=fam['delta_over_h'], kappa_multiplier=p['kappa_multiplier'],
+        if p.get('kappa') is not None:  # kappa itself: multiplier = target / the base's own spec.kappa.value, exactly
+            target = Fraction(str(p['kappa']));mult = target / Fraction(str(base['kappa_value']))
+            tag = 'kappa=%s' % target
+        else:
+            target, mult = None, Fraction(str(p['kappa_multiplier']));tag = 'kappa_x=%s' % mult
+        items.append(dict(item_id='%s:L_D=%s:%s' % (name, fam['L_D'], tag), base=base['source'],
+                          changes=dict(formula=fam['formula'], delta_over_h=fam['delta_over_h'], kappa_multiplier=str(mult),
                                        K=prep.get('K', 2))))
-        keep.append(dict(proposal=p, base=base['configuration_id'], item_id=items[-1]['item_id']))
+        keep.append(dict(proposal=p, base=base['configuration_id'], item_id=items[-1]['item_id'], kappa=None if target is None else str(target),
+                         kappa_base=None if base.get('kappa_value') is None else str(base['kappa_value']), kappa_multiplier=str(mult)))
     if not items:
         return keep
     response, call = run_preparation(root, prep, items, out_dir, label)
@@ -169,9 +193,19 @@ def prepare_kappa(root, name, prep, candidates, proposals, base_sources, out_dir
         item = by_id.get(row['item_id']) or dict(item_id=row['item_id'], status=response.get('status', 'NO_RESPONSE_ITEM'),
                                                  missing_inputs=response.get('missing_inputs') or [])
         fam = row['proposal']['family']
-        row['disposition'] = register(name, None, item, candidates, call, generated_from=row['base'],
-                                      key=dict(L_D=fam['L_D'], formula=fam['formula'], delta_over_h=fam['delta_over_h'],
-                                               kappa_multiplier=row['proposal']['kappa_multiplier']))
+        key = dict(L_D=fam['L_D'], formula=fam['formula'], delta_over_h=fam['delta_over_h'])
+        if row['kappa'] is not None:
+            key['kappa'] = row['kappa']
+            got = item.get('configuration') and Fraction(str(_kappa(item['configuration'])))
+            row['kappa_exact_check'] = dict(target=row['kappa'], generated=None if got is None else str(got), equal=got == Fraction(row['kappa']))
+            if item.get('status') == 'GENERATED' and got != Fraction(row['kappa']):
+                row.update(disposition='KAPPA_VALUE_MISMATCH', status=item.get('status'), configuration_id=item.get('configuration_id'));continue
+        else:
+            key['kappa_multiplier'] = row['proposal']['kappa_multiplier']
+        row['disposition'] = register(name, None, item, candidates, call, generated_from=row['base'], key=key)
+        reg = next((c for c in candidates if c['configuration_id'] == item.get('configuration_id')), None)
+        if reg is not None and row['kappa'] is not None:
+            reg.update(kappa_base=row['kappa_base'], kappa_multiplier_exact=row['kappa_multiplier'])
         row.update(status=item.get('status'), configuration_id=item.get('configuration_id'), readiness=item.get('readiness'),
                    signal_counts=(item.get('signal_plan') or {}).get('counts'), next_actions=item.get('next_actions'))
     return keep

@@ -53,6 +53,12 @@ def kappa_of(c, baseline):
     return Fraction(str(c['key'].get('kappa_multiplier', baseline.get('kappa_multiplier', '1'))))
 
 
+def kappa_value(c):
+    """kappa itself (spec.kappa.value, exact) when the candidate carries it."""
+    v = c.get('kappa_value')
+    return None if v is None else Fraction(str(v))
+
+
 def leq(a, b):
     return all(x <= y for x, y in zip(a, b))
 
@@ -62,7 +68,7 @@ class ConfigState:
 
     def __init__(self, c):
         self.c, self.cid, self.dirty, self.cache = c, c['configuration_id'], True, []
-        self.fails, self.best, self.picks, self.explore_picks, self.evaluated = [], None, 0, 0, 0
+        self.fails, self.best, self.picks, self.explore_picks, self.evaluated, self.promising = [], None, 0, 0, 0, None
 
     def add_failure(self, v):
         if any(leq(v, f) for f in self.fails):
@@ -105,18 +111,21 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         return min(rows) if rows else None
 
     def transfers(st):
-        fam = family(st.c, baseline);k0 = kappa_of(st.c, baseline);near = []
+        fam = family(st.c, baseline);near = []
+        absolute = kappa_value(st.c) is not None
+        kv = (lambda c: kappa_value(c)) if absolute else (lambda c: kappa_of(c, baseline))
+        k0 = kv(st.c)
         for o in states.values():
-            if o is st or family(o.c, baseline) != fam:
+            if o is st or family(o.c, baseline) != fam or kv(o.c) is None:
                 continue
             feas = sorted((O.cost(v, st.c['prices']), v) for (cid, v), r in knowledge.items() if cid == o.cid and r['status'] == O.PASS)
             if feas:
-                near.append((abs(math.log(kappa_of(o.c, baseline) / k0)), o, feas))
+                near.append((abs(math.log(kv(o.c) / k0)), o, feas))
         out = []
-        for dist, o, feas in sorted(near, key=lambda x: (x[0], kappa_of(x[1].c, baseline)))[:2]:
-            for t, v in feas[:s['transfer_count']]:
+        for dist, o, feas in sorted(near, key=lambda x: (x[0], kv(x[1].c)))[:2]:
+            for t, v in feas[:s['transfer_count']]:  # re-priced with this configuration's own prices (O.cost above)
                 out.append((v, dict(kind='TRANSFER_FROM_NEAREST_KAPPA', from_configuration=o.cid,
-                                    from_kappa=str(kappa_of(o.c, baseline)), to_kappa=str(kappa_of(st.c, baseline)))))
+                                    from_kappa=str(kv(o.c)), to_kappa=str(k0), kappa_is_absolute=absolute)))
         return out
 
     def local(st):
@@ -162,39 +171,50 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         return out
 
     def classify():
+        """SMALL = saving below small_gain_fraction of the configuration's own best (any cost); UPDATE = not small and
+        cheaper than M; EXPLORE = per non-leading configuration its non-small, non-deferred candidates (head first)."""
         mm = method_min();M = None if mm is None else mm[0];lead = None if mm is None else mm[1]
-        groups = {k: [] for k in CLASS_ORDER};explore = []
+        groups = {k: [] for k in CLASS_ORDER};explore, queues = [], {}
         for cid, st in states.items():
-            items = local(st)
+            items = local(st);open_ = []
             for p in items:
                 if p['deferred']:
-                    groups['DEFERRED'].append(dict(p, cls='DEFERRED'))
+                    groups['DEFERRED'].append(dict(p, cls='DEFERRED'));continue
+                small = st.best is not None and (st.best[0] - p['cost']) < s['small_gain_fraction'] * st.best[0]
+                if small:
+                    groups['SMALL'].append(dict(p, cls='SMALL'))
                 elif M is None or p['cost'] < M:
-                    small = st.best is not None and (st.best[0] - p['cost']) < s['small_gain_fraction'] * st.best[0]
-                    groups['SMALL' if small else 'UPDATE'].append(dict(p, cls='SMALL' if small else 'UPDATE'))
-            if cid != lead:
-                head = next((p for p in items if not p['deferred']), None)
-                if head is not None:
-                    if st.best is None:
-                        rank = (0, head['cost'], 0)
-                    elif M is not None and st.best[0] <= s['explore_window'] * M:
-                        rank = (1, st.explore_picks, st.best[0])
-                    else:
-                        rank = (2, st.best[0], 0)
-                    explore.append((rank, cid, dict(head, cls='EXPLORE', explore_rank=rank[0])))
+                    groups['UPDATE'].append(dict(p, cls='UPDATE'))
+                else:
+                    open_.append(p)
+            st.promising = sum(1 for p in items if not p['deferred'] and not (st.best is not None and (st.best[0] - p['cost'])
+                                                                                < s['small_gain_fraction'] * st.best[0]))
+            if cid != lead and open_:
+                if st.best is None:
+                    rank = (0, open_[0]['cost'], 0)
+                elif M is not None and st.best[0] <= s['explore_window'] * M:
+                    rank = (1, st.explore_picks, st.best[0])
+                else:
+                    rank = (2, st.best[0], 0)
+                explore.append((rank, cid, dict(open_[0], cls='EXPLORE', explore_rank=rank[0])))
+                queues[cid] = [dict(p, cls='EXPLORE', explore_rank=rank[0]) for p in open_]
         for k in groups:
             groups[k].sort(key=lambda x: (x['cost'], x['shot_change'], x['candidate'], x['vector']))
-        groups['EXPLORE'] = [p for _, _, p in sorted(explore, key=lambda x: (x[0], x[1]))]
+        explore.sort(key=lambda x: (x[0], x[1]))
+        groups['EXPLORE'] = [p for _, _, p in explore]
+        groups['_queues'] = [queues[cid] for _, cid, _ in explore]
         return groups, M
 
     def order(groups, k):
-        """The next k picks if no state changed (used for lookahead only)."""
-        out, u, e, since = [], list(groups['UPDATE']), list(groups['EXPLORE']), since_explore
-        while len(out) < k and (u or e or groups['SMALL'] or groups['DEFERRED']):
-            if u and not (e and since >= s['explore_every'] - 1):
+        """The next k picks if no state changed (lookahead only): UPDATE in cost order with every explore_every-th pick
+        going round-robin over the EXPLORE configurations, each contributing its next candidate."""
+        out, u, since, qs, i = [], list(groups['UPDATE']), since_explore, [list(q) for q in groups['_queues']], 0
+        while len(out) < k:
+            live = [q for q in qs if q]
+            if u and not (live and since >= s['explore_every'] - 1):
                 out.append(u.pop(0));since += 1
-            elif e:
-                out.append(e.pop(0));since = 0
+            elif live:
+                q = live[i % len(live)];out.append(q.pop(0));i += 1;since = 0
             else:
                 rest = groups['SMALL'] + groups['DEFERRED'];out += rest[:k - len(out)];break
         seen, uniq = set(), []
@@ -209,6 +229,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             choice = groups['UPDATE'][0]
         elif groups['EXPLORE']:
             choice = groups['EXPLORE'][0]
+        elif (groups['SMALL'] or groups['DEFERRED']) and search.get('small_and_deferred') == 'STOP':
+            stop = 'ONLY_SMALL_OR_DEFERRED_LEFT';break
         elif groups['SMALL']:
             choice = groups['SMALL'][0]
         elif groups['DEFERRED']:
@@ -217,8 +239,9 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             stop = 'NO_CANDIDATE_LEFT_IN_RANGE' if M is not None else 'NO_FEASIBLE_POINT_IN_RANGE'
             break
         allow = new_calls < limit;is_free = free is not None and free(choice)
-        if prefetch is not None and limit == float('inf') and science_approved and s['lookahead'] > 1:
-            prefetch(order(groups, s['lookahead']))
+        if prefetch is not None and science_approved and s['lookahead'] > 1 and new_calls < limit:
+            # finite budgets prefetch too (rounds driven in batches); unconsumed jobs stay reusable knowledge
+            prefetch(order(groups, s['lookahead'] if limit == float('inf') else int(min(s['lookahead'], limit - new_calls))))
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
         hold = None if answer is None else O.HOLD.get(answer['status'])
         if answer is None and on_missing == 'SKIP':
@@ -268,16 +291,17 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
     for cid, st in states.items():
         b = st.best
         by.append(dict(candidate=st.c['name'], configuration_id=cid, key=st.c['key'], picks=st.picks, explore_picks=st.explore_picks,
+                       kappa_value=None if kappa_value(st.c) is None else str(kappa_value(st.c)), promising=st.promising,
                        left=dict((k, sum(1 for p in groups[k] if p['configuration_id'] == cid)) for k in CLASS_ORDER),
                        best=None if b is None else dict(vector=list(b[1]), cost=b[0], cost_display=O.show(b[0]), status=b[2]['status'],
                                                         MSE_lower=b[2].get('MSE_lower'), MSE_upper=b[2].get('MSE_upper'),
                                                         source=b[2].get('source'), job=b[2].get('job'), label=b[2].get('label'))))
-    plan = kappa_plan(candidates, states, s, baseline, knowledge)
+    plan = [] if search.get('kappa_neighbourhood') else kappa_plan(candidates, states, s, baseline, knowledge)
     requests = plan + new_ld_requests(candidates, states, M, facts, baseline)
     return dict(method=name, rule=RULE_V2, stop_reason=stop, trace=trace, held=held, new_calls=new_calls - spent, spent_before=spent,
                 pending_request=pending, incumbent=incumbent, not_ready_in_range=[c['name'] for c in candidates if not c['ready']],
                 by_configuration=by, incumbent_scope='METHOD_PRIORITY', unevaluated=unevaluated,
-                left={k: len(v) for k, v in groups.items()}, input_requests=requests, settings={k: str(v) if isinstance(v, Fraction) else v
+                left={k: len(v) for k, v in groups.items() if not k.startswith('_')}, input_requests=requests, settings={k: str(v) if isinstance(v, Fraction) else v
                                                                                                 for k, v in s.items()})
 
 
@@ -342,3 +366,112 @@ def new_ld_requests(candidates, states, M, facts, baseline):
                                                   next_actions=prep.get('next_actions'), readiness=prep.get('readiness'),
                                                   descriptor_status=prep.get('descriptor_status'))))
     return sorted(out, key=lambda r: (r['distance_to_leading_L_D'] is None, r['distance_to_leading_L_D'] or 0, str(r['configuration'])))
+
+
+# ---------------------------------------------------------------- kappa neighbourhood (absolute kappa)
+NEIGHBOURHOOD_DEFAULTS = dict(center='2', step_ratio='3/2', bounds=['1/2', '8'], min_ratio='9/8', extend_margin='1/100',
+                              settle_after_picks=80, family_window='3/2')
+
+
+def neighbourhood_settings(nb):
+    s = dict(NEIGHBOURHOOD_DEFAULTS, **(nb or {}))
+    return dict(center=Fraction(str(s['center'])), step_ratio=Fraction(str(s['step_ratio'])),
+                bounds=[Fraction(str(x)) for x in s['bounds']], min_ratio=Fraction(str(s['min_ratio'])),
+                extend_margin=Fraction(str(s['extend_margin'])), settle_after_picks=int(s['settle_after_picks']),
+                family_window=Fraction(str(s['family_window'])))
+
+
+def kappa_neighbourhood_plan(points, nb):
+    """Next absolute-kappa points per L_D family around the centre (no automatic doubling / halving).
+
+    points: dicts with L_D, kappa (Fraction), status (EVALUATED / PENDING / HELD / ALIAS), best (Fraction or None),
+    promising (non-small, non-deferred candidates left), picks.  A point is SETTLED when it has no promising candidate
+    or has had settle_after_picks picks; a settled point without a feasible allocation counts as infinitely expensive.
+    Rules, one new point per family per decision, all recorded with the costs used:
+      CENTER                 the centre is evaluated first in every family that can be prepared
+      FIRST_NEIGHBOURS       centre / r and centre * r once the centre has a feasible point and the family is active
+      INTERIOR_REFINE        minimum inside the sampled set: midpoint towards the cheaper neighbour first, while the
+                             kappa ratio exceeds min_ratio
+      EDGE_EXTEND_ONE_STEP   minimum at an edge AND cheaper than the inner neighbour by >= extend_margin: one step r
+      EDGE_REFINE            minimum at an edge but the gain is below the margin (or the bound is reached): midpoint
+                             towards the inner neighbour while the ratio exceeds min_ratio
+      STOP / WAIT            nothing left under these rules / some point not settled yet
+    A family is active while its best <= family_window x the neighbourhood minimum over all families.
+    """
+    s = neighbourhood_settings(nb);lo, hi = s['bounds'];r = s['step_ratio'];INF = None
+    fams = defaultdict(list)
+    for p in points:
+        fams[p['L_D']].append(p)
+
+    def settled(p):  # an ALIAS follows the configuration it is physically identical to
+        return p['status'] in ('EVALUATED', 'ALIAS') and (p.get('promising') == 0 or (p.get('picks') or 0) >= s['settle_after_picks'])
+    inside = lambda k: lo <= k <= hi
+    bests = [p['best'] for p in points if p['status'] in ('EVALUATED', 'ALIAS') and p.get('best') is not None and inside(p['kappa'])]
+    m_nb = min(bests) if bests else None
+    proposals, decisions = [], []
+    for ld in sorted(fams):
+        pts = [p for p in fams[ld] if inside(p['kappa'])];have = {p['kappa'] for p in fams[ld]}
+        usable = [p for p in pts if p['status'] != 'HELD']
+        if not usable:
+            held = [p for p in pts if p['status'] == 'HELD']
+            decisions.append(dict(L_D=ld, decision='STOP_FAMILY_INPUTS_HELD', reason='; '.join(str(p.get('reason')) for p in held)))
+            continue
+        if s['center'] not in have:
+            proposals.append(dict(L_D=ld, kappa=s['center'], reason='CENTER'));decisions.append(dict(L_D=ld, decision='CENTER'))
+            continue
+        fam_best = min((p['best'] for p in usable if p.get('best') is not None), default=None)
+        waiting = [str(p['kappa']) for p in usable if not settled(p)]
+        centre = next(p for p in fams[ld] if p['kappa'] == s['center'])
+        if centre['status'] == 'HELD':
+            decisions.append(dict(L_D=ld, decision='STOP_FAMILY_CENTER_HELD', reason=centre.get('reason')));continue
+        if centre.get('best') is None and not settled(centre):  # neighbours once the centre has a feasible point
+            decisions.append(dict(L_D=ld, decision='WAIT', waiting=waiting));continue
+        if fam_best is not None and m_nb is not None and fam_best > s['family_window'] * m_nb:
+            decisions.append(dict(L_D=ld, decision='STOP_FAMILY_OUTSIDE_WINDOW', family_best=fam_best, neighbourhood_min=m_nb,
+                                  window=str(s['family_window'])))
+            continue
+        first = [k for k in (s['center'] / r, s['center'] * r) if inside(k) and k not in have]
+        if first:
+            for k in first:
+                proposals.append(dict(L_D=ld, kappa=k, reason='FIRST_NEIGHBOURS', centre_best=centre.get('best')))
+            decisions.append(dict(L_D=ld, decision='FIRST_NEIGHBOURS', kappas=[str(k) for k in first]));continue
+        if waiting:
+            decisions.append(dict(L_D=ld, decision='WAIT', waiting=waiting));continue
+        rows = sorted((p['kappa'], p['best'] if p.get('best') is not None else INF) for p in usable)
+        cost = lambda c: (1, 0) if c is None else (0, c)
+        i = min(range(len(rows)), key=lambda j: (cost(rows[j][1]), abs(rows[j][0] - s['center'])))
+        kstar, cstar = rows[i]
+        if cstar is None:
+            decisions.append(dict(L_D=ld, decision='STOP_FAMILY_NO_FEASIBLE_POINT'));continue
+        new, why, evidence = None, None, dict(kappa_min=str(kstar), cost_min=cstar)
+        if 0 < i < len(rows) - 1:
+            for j in sorted((i - 1, i + 1), key=lambda j: cost(rows[j][1])):
+                mid = (kstar + rows[j][0]) / 2
+                if rows[j][1] == cstar:  # equal cost on both ends (physically identical plateau): nothing to refine there
+                    continue
+                if max(kstar, rows[j][0]) / min(kstar, rows[j][0]) > s['min_ratio'] and mid not in have:
+                    new, why = mid, 'INTERIOR_REFINE';evidence.update(neighbour=str(rows[j][0]), neighbour_cost=rows[j][1]);break
+        else:
+            j = 1 if i == 0 else len(rows) - 2
+            if j < 0 or j >= len(rows) or j == i:  # a single sampled point: step outward on both sides
+                for k in (kstar / r, kstar * r):
+                    if inside(k) and k not in have:
+                        new, why = k, 'EDGE_EXTEND_ONE_STEP';break
+            else:
+                kin, cin = rows[j];step = kstar / r if i == 0 else kstar * r
+                gain_ok = cin is None or cstar <= cin * (1 - s['extend_margin'])
+                evidence.update(inner=str(kin), inner_cost=cin, margin=str(s['extend_margin']))
+                if gain_ok and inside(step) and step not in have:
+                    new, why = step, 'EDGE_EXTEND_ONE_STEP'
+                else:
+                    mid = (kstar + kin) / 2
+                    if cin != cstar and max(kstar, kin) / min(kstar, kin) > s['min_ratio'] and mid not in have:
+                        new, why = mid, 'EDGE_REFINE'
+                        evidence['edge_extension_skipped'] = ('gain below margin' if not gain_ok else
+                                                              'outside bounds' if not inside(step) else 'already sampled')
+        if new is None:
+            decisions.append(dict(L_D=ld, decision='STOP_FAMILY_RULE_EXHAUSTED', **evidence))
+        else:
+            proposals.append(dict(L_D=ld, kappa=new, reason=why, **evidence))
+            decisions.append(dict(L_D=ld, decision=why, kappa=str(new), **evidence))
+    return proposals, decisions, m_nb
