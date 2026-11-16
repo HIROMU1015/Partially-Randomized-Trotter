@@ -89,6 +89,8 @@ def common_case(view, request):
     case = dict(label=request['request_id'], configuration=deepcopy(entry['configuration']), signal_packet=deepcopy(entry['signal_packet']),
                 original_configuration_id=request['configuration_id'], evaluation_target=deepcopy(base['evaluation_target']),
                 binding_id=entry['binding_id'], total_configuration_id=entry['total_configuration_id'])
+    if request['route']['kind']=='prdf_d2_common_entry':
+        case['signal_packet_kind']='A_BUNDLE_REQUIRES_EXISTING_K_ACCEPT_SAVED'
     case['allocation'] = dict(allocation_id='RPE_OPT_' + request['request_id'], shot_policy='USER_SUPPLIED',
                               shots=[dict(m=m, N_X=x, N_Y=y) for m, (x, y) in enumerate(zip(request['N_X'], request['N_Y']))])
     inputs = {k: deepcopy(saved[k]) for k in ('kernel_source', 'C_source', 'acceleration') + CONTRACT if k in saved}
@@ -98,7 +100,7 @@ def common_case(view, request):
 
 
 def build(view, request):
-    if request['route']['kind'] == 'pauli_b_common_entry':
+    if request['route']['kind'] in ('pauli_b_common_entry','prdf_d2_common_entry'):
         return common_case(view, request)
     loc, saved, base = template(view, request)
     case = {k: deepcopy(v) for k, v in base.items() if k not in DROP}
@@ -150,7 +152,7 @@ def common_metadata(case):
     """B's LD5 metadata with the handoff generalized to any common-entry MEAN_HANDOFF accepted by B's intake."""
     view, X = COMMON['view'], COMMON['X'];A, T = X.A, X.T
     accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case['signal_packet'])
-    if accepted.get('assembly_implementation_source', {}).get('commit') != A.ENTRY_SOURCE:
+    if accepted.get('assembly_implementation_source', {}).get('commit') not in A.ENTRY_SOURCES:
         raise ValueError('Not a common-entry Pauli assembly')
     accepted = accepted['results'][0];original = T._selected(view, case['configuration'])
     if original != accepted['configuration'] or original['id'] != case['original_configuration_id']:
@@ -198,7 +200,7 @@ def route(view, kind):
         return NS(metadata=common_metadata, installed=common_installed, supervise=X.L.M.supervise,
                   validate=pinned_validator(view, X.L.H, X.L.T.Q.a.exact_scalar),
                   bounds=lambda s: X.L.H.finite_bounds([r['N_X'] for r in s]), runtime=None)
-    if kind == 'prdf_d2_split':
+    if kind in ('prdf_d2_split','prdf_d2_common_entry'):
         W = load(view, 'run_pr_df_ld_split_q3_resume', 'scripts/run_pr_df_ld_split_q3_resume.py')
         return NS(metadata=W.U.metadata, installed=lambda out: nullcontext(), supervise=W.supervise,
                   validate=pinned_validator(view, W.U.H, W.U.T.Q.a.exact_scalar), bounds=lambda s: W.Q.bounds(dict(allocation=dict(shots=s))),
