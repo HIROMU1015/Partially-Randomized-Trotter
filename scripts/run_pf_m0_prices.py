@@ -225,6 +225,16 @@ def processes(cells, directory, workers):
     return results, dict(workers=workers, cells=len(cells), started=len(results), not_started_after_failure=len(pending))
 
 
+def check_preparation(prep, job, prefix):
+    """Keep historical hash gates; new prefixes record their own preparation."""
+    check(tuple(prep.deterministic_fragment_indices) == tuple(range(prefix)), 'Preparation/fragment order mismatch')
+    if job.get('prefix_specific_preparation') is True:
+        check(job['route']=='TRUNCATED_PF' and prefix not in (7,10) and job.get('preparation_hash') is None, 'Invalid prefix-specific preparation binding')
+        check(bool(prep.preparation_hash), 'Missing observed prefix preparation hash')
+    else:
+        check(prep.preparation_hash == job['preparation_hash'], 'Preparation hash mismatch')
+
+
 def child(job_path, *, validate_rounds=scope):
     job = json.loads(Path(job_path).read_text()); route = job['route']; module = ROUTES[route]
     validate_rounds(job.get('rounds', (0,)))
@@ -244,11 +254,13 @@ def child(job_path, *, validate_rounds=scope):
             T.provider_checks()
             import h46_long_time_native as native
             native.PRIVATE, native.PUBLIC = Path(job['private']), Path(job['public'])
-            prefix = 10 if route == 'FULL_PF' else 7
+            prefix = job.get('prefix', 10 if route == 'FULL_PF' else 7)
+            check(type(prefix) is int and ((route=='FULL_PF' and prefix==10) or (route=='TRUNCATED_PF' and 0<=prefix<10)), 'Native route/prefix differs')
+            check(all(c['row']['prefix']==prefix for c in job['cells']), 'Mixed prefix cells')
             ctx = native.native_context('H4', (prefix,)); prep = ctx.preparations[prefix]
             scalar = ctx.ham.constant + (prep.extracted_identity_coefficient if route == 'TRUNCATED_PF' else 0.)
             check(scalar.hex() == job['expected_scalar'].hex(), 'Saved total scalar mismatch')
-            check(prep.preparation_hash == job['preparation_hash'] and tuple(prep.deterministic_fragment_indices) == tuple(range(prefix)), 'Preparation/fragment order mismatch')
+            check_preparation(prep, job, prefix)
             native.CONTEXT['H4'] = ctx
         original = F.full_trial if route == 'FULL_PF' else T.checked_trial
         def checked(native, ctx, row, cohort, **kw):

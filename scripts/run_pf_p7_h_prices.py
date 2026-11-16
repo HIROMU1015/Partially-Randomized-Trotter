@@ -189,7 +189,7 @@ def bind(publication):
     return bind_records(plan,STUDY+'/run01',publication)
 
 
-def bind_records(plan,relative,publication,*,names=RAW,policy_id='P7_S2_H_DIRECT_IMPLEMENTATION_ONLY_V1'):
+def bind_records(plan,relative,publication,*,names=RAW,policy_id='P7_S2_H_DIRECT_IMPLEMENTATION_ONLY_V1',route='TRUNCATED_PF'):
     """Bind an already published native stage using the existing C guard."""
     out=ROOT/relative;fixed=M.S.committed(ROOT,relative,names,commit=publication)
     M.T._meta()
@@ -204,7 +204,8 @@ def bind_records(plan,relative,publication,*,names=RAW,policy_id='P7_S2_H_DIRECT
         s['implementation_evidence']['commit']=publication
         s['implementation_evidence']['path']=expected
     cohorts={(cfg['rounds'][p['m']]['candidate']['id'],p['axis']):p['cohort'] for p in prices}
-    policy=dict(id=policy_id,source=M.S.GUARD_SOURCE,profile=cfg['spec']['profile'],by_method=dict(TRUNCATED_PF=dict(native_policy=M.T.NATIVE_POLICY,rte_rotation_lowering=M.T.NO_RTE,scalar_quantity=M.T.SCALAR_QUANTITY)))
+    scalar_quantity=M.F.SCALAR_QUANTITY if route=='FULL_PF' else M.T.SCALAR_QUANTITY
+    policy=dict(id=policy_id,source=M.S.GUARD_SOURCE,profile=cfg['spec']['profile'],by_method={route:dict(native_policy=M.T.NATIVE_POLICY,rte_rotation_lowering=M.T.NO_RTE,scalar_quantity=scalar_quantity)})
     result=G.check(ROOT,cfg,prices,cohorts=cohorts,bindings=sides,policy=policy)
     check(len(result['checked'])==len(prices),'Unchecked axis receipt')
     write(out/'SIDECARS.json',sides);write(out/'GUARD_CHECK.json',dict(raw_evidence=fixed,guard=result,model_qualified=False,binding_path_corrections=corrections))

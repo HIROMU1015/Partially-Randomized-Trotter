@@ -175,7 +175,7 @@ def child(job_path):
     return 0 if len(results) == len(job['cells']) and all(r['ok'] for r in results) else 2
 
 
-def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, evidence_path):
+def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, evidence_path, scalar_source=None):
     C, I = _meta()
     profile = plan['configuration']['spec']['profile']; m = cell['m']
     row = plan['configuration']['rounds'][m]
@@ -190,7 +190,7 @@ def price_bindings(root, plan, cell, trial, *, price_source, evidence_commit, ev
             profile_extension=dict(lowering_id=NATIVE_POLICY, source=NATIVE), normalization_is_price_multiplier=False)
         facts = dict(method='TRUNCATED_PF', profile=deepcopy(profile), native_policy=NATIVE_POLICY,
             rte_rotation_lowering=NO_RTE, rte_lowering_source=None, native_source=deepcopy(NATIVE),
-            wrapper_source=deepcopy(WRAPPER), scalar_source=deepcopy(SCALAR_SOURCE), scalar_quantity=SCALAR_QUANTITY,
+            wrapper_source=deepcopy(WRAPPER), scalar_source=deepcopy(SCALAR_SOURCE if scalar_source is None else scalar_source), scalar_quantity=SCALAR_QUANTITY,
             scalar_application='ONCE_AT_TOTAL_T', measurement=I.providers(str(root)).B.p.measurement(row, axis),
             resolved_scalar=trial['scalar'], expected_scalar=trial['scalar'])
         key = '%s_m%d%s' % (plan['configuration']['spec']['formula'], m, axis)

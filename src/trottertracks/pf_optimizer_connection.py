@@ -1,0 +1,286 @@
+"""Deterministic PF evidence -> the existing optimizer (metadata and saved I/O).
+
+The registry publishes configuration, signal, exact per-axis prices and a Q3
+template.  It does not choose shots, fit prices, compute signals, or certify
+unobserved prices.  A normal optimizer round may explicitly request its finite
+``selected`` candidates from D's existing completion entry before preparation.
+"""
+from copy import deepcopy
+from fractions import Fraction
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+from .saved_rpe_cost_catalog import frac
+
+SCHEMA = 'D_PF_EVIDENCE_REGISTRY_V1'
+METHODS = ('FULL_PF', 'TRUNCATED_PF')
+AXES = ('X', 'Y')
+
+
+def read_source(root, reader, source):
+    if isinstance(source, dict) and 'commit' in source and 'path' in source:
+        return reader.read(source)
+    if isinstance(source, (str, Path)):
+        path = Path(source)
+        return json.loads((path if path.is_absolute() else Path(root) / path).read_text())
+    return deepcopy(source)
+
+
+def load_registry(root, reader, source=None):
+    registry = read_source(root, reader, source) if source is not None else dict(schema=SCHEMA, configurations={})
+    if registry.get('schema') != SCHEMA or not isinstance(registry.get('configurations'), dict):
+        raise ValueError('Unsupported deterministic PF evidence registry')
+    return registry
+
+
+def physical_ids(root, config):
+    """Existing B/D physical ID rules; no preparation, signal or circuit call."""
+    from .baseline_signal_pipeline import published_api
+    api = published_api(str(root));B, D = api.B, api.D
+    B._validate(config)
+    method = B.comparison_method(config['spec'])
+    if method == 'FULL_PF':
+        physical = D.physical_schedule(config['spec'])
+        D._check_against_b(physical, config)
+        return {r['m']: r['physical_candidate']['id'] for r in physical['rounds']}
+    if method != 'TRUNCATED_PF' or config['spec']['split']['original_PF_method'] != 'B0I':
+        raise ValueError('PF registry supports Full PF or B0I deterministic PF only')
+    s = config['spec'];result = {}
+    for r in config['rounds']:
+        T = float(B.a.exact_scalar(r['T']))
+        c = dict(system=s['binding']['system'], method='B0I', prefix=s['L_D'], formula=s['formula'],
+                 T=T, q=r['q_PF'], delta=T / r['q_PF'], R_outer=None, K=None)
+        result[r['m']] = B.p.candidate_id(c)
+    return result
+
+
+def configuration_metadata(config):
+    s = config['spec'];split = s.get('split') or {}
+    method = 'TRUNCATED_PF' if split.get('original_PF_method') == 'B0I' else 'FULL_PF'
+    p = s['L_D'] if method == 'TRUNCATED_PF' else s['binding']['rank']
+    return dict(method=method, p=p, formula=s['formula'], delta_over_h=frac(s['delta_pf']) / frac(s['h']))
+
+
+def _inside(entry, spec):
+    return (entry['formula'] in spec['formulas']
+            and Fraction(spec['delta_over_h_range'][0]) <= frac(entry['delta_over_h']) <= Fraction(spec['delta_over_h_range'][1])
+            and (spec.get('p_values') is None or entry['p'] in spec['p_values']))
+
+
+def enumerate_prefixes(root, reader, problem, candidates, methods=None):
+    """Expose requested p as missing candidates before any acquisition choice.
+
+    Formula/width choices come from the existing fixed PF index and method
+    scope.  Only canonical configuration metadata and saved T1/T2 priority
+    evidence are generated; no scientific input is completed by enumeration.
+    A registry can then hydrate any selected subset.  p10 is represented by the
+    existing Full PF method, never a second truncated-PF candidate.
+    """
+    from . import pf_candidate_space as P
+    index=reader.document(problem['evidence']['pf_candidate_index']['commit'],
+                          problem['evidence']['pf_candidate_index']['path'])
+    by_id={c['configuration_id']:c for c in candidates}
+    for method,spec in problem['methods'].items():
+        if (spec['family']!='PF' or spec.get('p_values') is None
+                or (methods is not None and method not in methods)):
+            continue
+        values=spec['p_values']
+        if (len(set(values))!=len(values) or any(type(p)is not int or p not in range(11)for p in values)
+                or (method=='FULL_PF' and any(p!=10 for p in values))):
+            raise ValueError('PF p_values must be unique legal prefixes; Full PF is p10')
+        widths={f:[] for f in spec['formulas']}
+        for row in index['candidates']:
+            width=row.get('requested_delta_over_h');formula=row['formula']
+            if (row['method']==spec['index_method'] and formula in widths and width is not None
+                    and Fraction(spec['delta_over_h_range'][0])<=frac(width)<=Fraction(spec['delta_over_h_range'][1])):
+                if frac(width) not in widths[formula]:
+                    widths[formula].append(frac(width))
+        for meta in P.candidates(root,formulas=spec['formulas'],widths=widths,p_values=values):
+            # P's p10 canonical alias is already enumerated under Full PF.
+            if meta['method']!=method:
+                continue
+            cid=meta['configuration_id']
+            if spec.get('configuration_ids') is not None and cid not in spec['configuration_ids']:
+                continue
+            c=by_id.get(cid)
+            if c is None:
+                c=dict(method=method,family='PF',configuration_id=cid,caps=spec['caps'],labels=[],saved_points=[],
+                       prices=None,signal_source=None,index_signal=None,price_status='NO_SAVED_26_AXIS_PRICE',
+                       needs=['SIGNAL_13ROUND_PACKET','PRICE_26AXIS','Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION'],
+                       ready=False,outside_index=True)
+                candidates.append(c);by_id[cid]=c
+            elif c['method']!=method:
+                raise ValueError('PF prefix metadata has a conflicting method/configuration identity')
+            c['key']=dict(p=meta['p'],formula=meta['formula'],delta_over_h=str(frac(meta['delta_over_h'])))
+            c['name']=method+':'+','.join('%s=%s'%kv for kv in c['key'].items())+':'+cid[:8]
+            c['configuration_body']=deepcopy(meta['configuration'])
+            c['priority_evidence']=deepcopy(meta['priority_evidence'])
+            c['p10_alias_full_pf']=meta.get('p10_alias_full_pf',False)
+    return candidates
+
+
+def hydrate(root, reader, problem, candidates, registry, facts=None):
+    """Join only each configuration's own saved 13-round signal and 26 prices.
+
+    Partial entries stay explicit missing inputs.  A different prefix, physical
+    schedule, axis, or canonical configuration cannot borrow another price.
+    Existing catalog candidates are hydrated too; no ``generated`` exception.
+    """
+    expected = {}
+    for cid, entry in registry['configurations'].items():
+        method = entry['method']
+        if method not in METHODS:
+            raise ValueError('Non-PF method in deterministic PF registry')
+        if type(entry['p']) is not int or not 0 <= entry['p'] <= 10 or (entry['p'] == 10) != (method == 'FULL_PF'):
+            raise ValueError('B0I p=0..9; p=10 is the existing Full PF alias')
+        if method not in problem['methods']:
+            continue
+        spec = problem['methods'][method]
+        if spec['family'] != 'PF' or not _inside(entry, spec):
+            continue
+        allowed = spec.get('configuration_ids')
+        if allowed is not None and cid not in allowed:
+            continue
+        config = read_source(root, reader, entry['configuration'])
+        if (config.get('id') or config.get('configuration_id')) != cid:
+            raise ValueError('PF registry configuration ID mismatch')
+        meta = configuration_metadata(config)
+        if any(meta[k] != (frac(entry[k]) if k == 'delta_over_h' else entry[k]) for k in meta):
+            raise ValueError('PF registry prefix/formula/width differs from configuration')
+        rounds = {r['m']: r for r in config['rounds']}
+        if len(config['rounds']) != 13 or set(rounds) != set(range(13)):
+            raise ValueError('PF registry needs the canonical 13-round schedule')
+        if facts:
+            for key, fk in [('snapshot', 'snapshot_sha256'), ('hamiltonian', 'hamiltonian_hash'), ('state', 'state_hash')]:
+                if config['spec']['binding'][key] != facts[fk]:
+                    raise ValueError('PF registry physical input mismatch: ' + key)
+        hits = [c for c in candidates if c['configuration_id'] == cid]
+        if len(hits) > 1 or (hits and hits[0]['method'] != method):
+            raise ValueError('PF registry configuration belongs to a different candidate')
+        if hits:
+            c = hits[0]
+        else:
+            c = dict(method=method, family='PF', configuration_id=cid, caps=spec['caps'], labels=[], saved_points=[],
+                     prices=None, signal_source=None, needs=['SIGNAL_13ROUND_PACKET', 'PRICE_26AXIS'],
+                     price_status='NO_SAVED_26_AXIS_PRICE', outside_index=True)
+            candidates.append(c)
+        c['key'] = dict(p=entry['p'], formula=entry['formula'], delta_over_h=str(frac(entry['delta_over_h'])))
+        c['name'] = method + ':' + ','.join('%s=%s' % kv for kv in c['key'].items()) + ':' + cid[:8]
+        c['pf_evidence'] = deepcopy(entry)
+        c['configuration_source'] = deepcopy(entry['configuration'])
+        ids = None
+        if entry.get('signal_packet'):
+            packet = read_source(root, reader, entry['signal_packet'])
+            means = packet.get('means') or []
+            if packet.get('configuration_id') != cid or len(means) != 13 or {m['m'] for m in means} != set(rounds):
+                raise ValueError('PF registry signal packet/configuration/round mismatch')
+            ids = physical_ids(root, config)
+            for row in means:
+                r = rounds[row['m']]
+                if row.get('identity') != r['identity'] or row.get('law_binding') != r['law_binding']:
+                    raise ValueError('PF registry signal identity/law mismatch')
+                if row.get('physical_candidate', {}).get('id') != ids[row['m']]:
+                    raise ValueError('PF registry signal physical schedule mismatch')
+                if row.get('status') != 'SIGNAL_AVAILABLE_NOT_RMSE_QUALIFIED':
+                    raise ValueError('PF registry signal is not an available saved mean')
+            c['signal_source'] = deepcopy(entry['signal_packet'])
+            c['needs'] = [n for n in c['needs'] if n != 'SIGNAL_13ROUND_PACKET']
+        if entry.get('prices'):
+            table = read_source(root, reader, entry['prices']);rows = table['axes']
+            ids = ids or physical_ids(root, config)
+            units = {}
+            for row in rows:
+                key = (row['m'], row['axis'])
+                if key in units or key[0] not in rounds or key[1] not in AXES or row['physical_id'] != ids[key[0]]:
+                    raise ValueError('PF registry price axis/physical schedule mismatch')
+                if row.get('configuration_id', cid) != cid or not row.get('kind') or not row.get('price_evidence'):
+                    raise ValueError('PF registry price lacks own configuration/provenance')
+                if row['kind'].startswith('STRUCTURAL'):
+                    raise ValueError('Structural price is not compiled RZ price')
+                units[key] = frac(row['unit_price_RZ'])
+            if len(rows) != 26 or sorted(units) != [(m, a) for m in range(13) for a in AXES] or any(v <= 0 for v in units.values()):
+                raise ValueError('PF registry needs 26 unique positive own-axis prices')
+            prices = [units[(m, a)] for m in range(13) for a in AXES]
+            if c['prices'] is not None and c['prices'] != prices:
+                raise ValueError('PF registry conflicts with existing accepted unit prices')
+            c.update(prices=prices, price_status='SOURCE_BOUND_PF_26_AXIS_PRICES', price_scope=entry.get('price_scope'),
+                     price_axes=deepcopy(rows), price_source=deepcopy(entry['prices']))
+            c['needs'] = [n for n in c['needs'] if n != 'PRICE_26AXIS']
+        if entry.get('q3_inputs'):
+            inputs = read_source(root, reader, entry['q3_inputs'])
+            cases = [r for r in inputs['cases'] if (r.get('configuration_id') or r.get('original_configuration_id')) == cid]
+            if len(cases) != 1:
+                raise ValueError('PF registry needs one matching Q3 template case')
+            case = cases[0]
+            for key in ('total_configuration_id', 'binding_id'):
+                # Existing PF cases call the same canonical total ID
+                # ``total_view_id``; the executor uses total_configuration_id.
+                actual = case.get(key) or (case.get('total_view_id') if key == 'total_configuration_id' else None)
+                if not entry.get(key) or actual != entry[key]:
+                    raise ValueError('PF registry Q3 template binding mismatch: ' + key)
+            if case.get('signal_packet') != entry.get('signal_packet') or case.get('configuration') != entry['configuration']:
+                raise ValueError('PF registry Q3 template sources differ from published candidate')
+            c['needs'] = [n for n in c['needs'] if n != 'Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION']
+        elif not c['saved_points'] and 'Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION' not in c['needs']:
+            c['needs'].append('Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION')
+        c['ready'] = not c['needs'] and c['prices'] is not None and c['signal_source'] is not None
+        expected[cid] = {k: entry.get(k) for k in ('total_configuration_id', 'binding_id')}
+        expected[cid]['signal_source'] = c['signal_source']
+    return expected
+
+
+def registry_routes(routes, registry):
+    """Use the existing pf_b_pf6 saved-template route; no new worker pipeline."""
+    routes = deepcopy(routes)
+    for cid, entry in registry['configurations'].items():
+        if not entry.get('q3_inputs'):
+            continue
+        rules = [r for r in routes.get(entry['method'], []) if r.get('kind') == 'pf_b_pf6']
+        if not rules:
+            raise ValueError('Published PF candidate has no existing pf_b_pf6 route')
+        rule = next((r for r in rules if r.get('configuration_ids') in (None, '*') or cid in r['configuration_ids']), rules[0])
+        loc = deepcopy(entry['q3_inputs'])
+        if loc.get('selector'):
+            loc['inputs_selector'] = loc.pop('selector')
+        if loc not in rule.setdefault('templates', []):
+            rule['templates'].append(loc)
+        rule.setdefault('configurations', {})[cid] = {k: deepcopy(entry[k]) for k in
+                                                     ('configuration', 'signal_packet', 'total_configuration_id', 'binding_id')}
+        if isinstance(rule.get('configuration_ids'), list) and cid not in rule['configuration_ids']:
+            rule['configuration_ids'].append(cid)
+    return routes
+
+
+def complete_selected(root, spec, run_dir):
+    """One explicitly selected finite provider call before normal O.prepare.
+
+    A saved response resumes without invoking the provider again.  Missing or
+    UNKNOWN results stay visible; this hook never retries science implicitly.
+    """
+    completion = spec.get('pf_completion')
+    if not completion:
+        return None
+    selected = completion.get('selected')
+    if spec.get('science_approved') is not True or not selected:
+        raise ValueError('PF completion needs explicit selected candidates and science_approved')
+    if any(m not in METHODS for m in spec['methods']):
+        raise ValueError('Deterministic PF completion cannot request a PR method')
+    root = Path(root);run = Path(run_dir) / 'pf_completion';run.mkdir(parents=True, exist_ok=True)
+    request = {k: deepcopy(v) for k, v in completion.items() if k not in ('entry', 'interpreter')}
+    for key in ('registry_file', 'output_root'):
+        path = Path(request[key]);request[key] = str(path if path.is_absolute() else root / path)
+    req, out = run / 'REQUEST.json', run / 'RESPONSE.json'
+    if req.exists() and json.loads(req.read_text()) != request:
+        raise ValueError('PF completion directory belongs to another selected request')
+    if not req.exists():
+        req.write_text(json.dumps(request, ensure_ascii=False, indent=2) + '\n')
+    if not out.exists():
+        entry = Path(completion.get('entry', 'scripts/prepare_pf_candidate.py'))
+        entry = entry if entry.is_absolute() else root / entry
+        cmd = [completion.get('interpreter', sys.executable), '-B', str(entry), '--request', str(req.resolve()),
+               '--output', str(out.resolve()), '--mode', 'complete']
+        subprocess.run(cmd, cwd=root, check=True)
+    response = json.loads(out.read_text())
+    return dict(registry_file=request['registry_file'], response=response, request=str(req), output=str(out))
