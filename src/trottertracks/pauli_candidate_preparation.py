@@ -496,8 +496,8 @@ def prepare_item(assets, item, *, materialize=None):
         if item.get('configuration_id') is not None and not changes and item['configuration_id'] != config['id']:
             raise ValueError('REQUESTED_CONFIGURATION_ID_DIFFERS')
         hits = [(c, loc) for c, loc in assets.configurations if c['id'] == config['id']]
-        locator = hits[0][1] if hits else None
-        if hits and hits[0][0] != config:
+        locator = next((loc for _, loc in hits if loc is not None), None)
+        if any(c != config for c, _ in hits):
             raise ValueError('SAVED_ID_HAS_DIFFERENT_CANONICAL_BODY')
         try:
             plan = assets.signal_plan(config, locator, descriptor)

@@ -127,14 +127,24 @@ class PreparationTests(unittest.TestCase):
 
     def test_missing_real_split_only_plans_and_reports_missing_input(self):
         with self.no_science():
+            legacy = A.Assets(ROOT, builder_id=A.LEGACY_BUILDER)
             rows = A.prepare(dict(items=[dict(item_id=str(p), configuration=dict(L_D=p))
-                                       for p in (4, 7, 9)]), self.assets)['items']
+                                       for p in (4, 7, 9)]), legacy)['items']
         self.assertEqual([r['status'] for r in rows], ['NEEDS_SPLIT_PREPARATION']*3)
         self.assertEqual(rows[0]['next_actions'][0], 'DERIVE_DESCRIPTOR')
         self.assertEqual(rows[1]['next_actions'][0], 'REUSE_DESCRIPTOR')
         bad = A.prepare(dict(items=[dict(configuration=dict(L_D=10)),
                                    dict(configuration=dict(L_D=3), snapshot='WRONG')]), self.assets)['items']
         self.assertTrue(all(r['missing_inputs'] and r['configuration'] is None for r in bad))
+
+    def test_fixed_locator_wins_over_identical_local_cached_configuration(self):
+        config, locator = self.assets.baselines[1]
+        with self.no_science(), patch.object(self.assets, 'configurations',
+                [(config, None), (deepcopy(config), locator)]):
+            row = A.prepare(dict(items=[dict(configuration=dict(L_D=1))]), self.assets)['items'][0]
+        self.assertEqual(row['configuration_source'], locator)
+        self.assertEqual(row['preparation_status'], 'REUSED_CONFIGURATION')
+        self.assertEqual(row['configuration'], config)
 
     def test_missing_price_source_does_not_discard_completed_configuration(self):
         with self.no_science(), patch.object(A, 'price_input', side_effect=FileNotFoundError('D2 candidate evidence')):
