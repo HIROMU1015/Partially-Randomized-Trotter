@@ -34,7 +34,8 @@ def check_view(prep):
 
 def run_preparation(root, prep, items, out_dir, label):
     """One call of the entry; returns the parsed response (or a failure record) and where it was written."""
-    out = Path(out_dir) / label;out.mkdir(parents=True, exist_ok=True)
+    out_dir = Path(out_dir).resolve()  # the entry runs with the view as cwd: every path handed over is absolute
+    out = out_dir / label;out.mkdir(parents=True, exist_ok=True)
     request = dict(kind=prep.get('request_kind', 'pauli_native'), view=prep.get('view'), view_commit=prep.get('view_commit'),
                    items=items, saved_packets=prep.get('saved_packets', []), saved_configurations=prep.get('saved_configurations', []))
     if prep.get('kind') == 'artificial':
@@ -46,7 +47,7 @@ def run_preparation(root, prep, items, out_dir, label):
     else:
         entry, cwd = Path(prep['view']) / prep.get('entry', 'scripts/prepare_pauli_candidate.py'), Path(prep['view'])
     cmd = [prep['interpreter'], '-B', str(entry), '--request', str(out / 'REQUEST.json'), '--output', str(out / 'PREPARATION.json'),
-           '--cache', str(Path(out_dir) / 'SPLITS.json')]
+           '--cache', str(out_dir / 'SPLITS.json')]
     with (out / 'ENTRY.log').open('w') as log:
         code = subprocess.run(cmd, cwd=str(cwd), stdout=log, stderr=subprocess.STDOUT,
                               env=dict(__import__('os').environ, PYTHONDONTWRITEBYTECODE='1')).returncode
