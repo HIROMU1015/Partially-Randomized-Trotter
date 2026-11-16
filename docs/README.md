@@ -1,5 +1,7 @@
 # 文書索引
 
+[同じ構成のshot変更：DP prefix再利用](research/d2_rpe_dp_prefix_reuse_20261116/REPORT.md)／[B2入口](research/d2_rpe_dp_prefix_reuse_20261116/HANDOFF.md)：同じ数値条件のm11 checkpointを再利用。人工32検査PASS、disk cold+warm人工2件で1.91倍、実Q3全体は未測定。新科学Q3 0。[手法集](PERFORMANCE_METHODS.md)。
+
 [RPE共通scheduler：D2実装・人工比較](research/d2_rpe_optimizer_throughput_20261116/REPORT.md)／[起動・再開](research/d2_rpe_optimizer_throughput_20261116/HANDOFF.md)：4方式共有queue、元の採否順、有限予約、重複・保存/live再開。実Q3 0。人工4方式3.52倍、単一方式飽和では短縮なし。手法入口は [PERFORMANCE_METHODS](PERFORMANCE_METHODS.md)。
 
 [p7粗幅Yoshida4の価格接続と最安更新](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。

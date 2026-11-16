@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[同じ構成のshot変更：DP prefix再利用](docs/research/d2_rpe_dp_prefix_reuse_20261116/REPORT.md)／[B2入口](docs/research/d2_rpe_dp_prefix_reuse_20261116/HANDOFF.md)：同じ数値条件のm11 checkpointを再利用。人工32検査PASS、disk cold+warm人工2件で1.91倍、実Q3全体は未測定。新科学Q3 0。[手法集](docs/PERFORMANCE_METHODS.md)。
+
 [RPE共通scheduler：D2実装・人工比較](docs/research/d2_rpe_optimizer_throughput_20261116/REPORT.md)／[起動・再開](docs/research/d2_rpe_optimizer_throughput_20261116/HANDOFF.md)：4方式共有queue、元の採否順、有限予約、重複・保存/live再開。実Q3 0。人工4方式3.52倍、単一方式飽和では短縮なし。手法入口は [PERFORMANCE_METHODS](docs/PERFORMANCE_METHODS.md)。
 
 [H4方式別最適化：D2価格適用判定の接続](docs/research/rpe_method_optimizer_h4_20261116/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/HANDOFF.md)：PR候補（保存・生成）にD2 PriceRules（c1f95e08）をpolicy=MODEL明示で接続。保存PR単価・総額をexactに再現。生成構成は26軸が揃えば費用に使用し、不足は理由・較正をNEEDSへ（Δ_PF=h/2は実step変化、DF L_D=1のκ×2はE_I[S]）。価格とQ3の状態は分離。受入：生成11、実行器10、A 20 PASS。compile・fit・Q3 0件。
