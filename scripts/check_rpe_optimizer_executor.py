@@ -280,6 +280,24 @@ def main():
                         steps=len(seq_path), jobs=dict(one_at_a_time=len(launches(out / 'v2_batch_seq')), lookahead=len(l1)),
                         stops=[one['stop_reason'], par['stop_reason']]))
 
+    # Chain speculation (adaptive_lookahead): with a slow artificial worker the adopted trajectory equals one-at-a-time,
+    # and wall time drops because the likely next picks already run.
+    slow = artificial_route(problem, sleep_seconds=2);slow['artificial']['scale'] = pr['artificial']['scale']
+    def chain_round(path, lookahead, concurrent, adaptive):
+        spec = json.loads(pauli_budget_round(path, 'ART_V2_CHAIN', slow, 16, rule='METHOD_MINIMUM_PRIORITY_V2').read_text())
+        spec['search_overrides'].update(lookahead=lookahead, adaptive_lookahead=adaptive);spec['executor'].update(max_concurrent_jobs=concurrent)
+        path.write_text(json.dumps(spec, indent=1) + '\n');return path
+    t0 = time.time();c1 = cli(out / 'v2_chain_seq', chain_round(out / 'v2_chain_seq.json', 1, 1, False))['PR_PAULI'];w1 = time.time() - t0
+    t0 = time.time();c2 = cli(out / 'v2_chain_par', chain_round(out / 'v2_chain_par.json', 8, 8, True))['PR_PAULI'];w2 = time.time() - t0
+    p1 = [(t['configuration_id'], tuple(t['vector']), t['status']) for t in c1['trace']]
+    p2 = [(t['configuration_id'], tuple(t['vector']), t['status']) for t in c2['trace']]
+    # Jobs that are already finished are free, so the chain run may adopt a few more steps within the same budget; the
+    # adopted path must coincide with the one-at-a-time path on its whole length.
+    checks.append(check('v2_chain_lookahead_same_trajectory_and_faster', p2[:len(p1)] == p1 and len(p1) == 16 and w2 < w1,
+                        steps=dict(one_at_a_time=len(p1), chain=len(p2)), wall_seconds=dict(one_at_a_time=round(w1, 1), chain=round(w2, 1)),
+                        jobs=dict(one_at_a_time=len(launches(out / 'v2_chain_seq')), chain=len(launches(out / 'v2_chain_par'))),
+                        passes=sum(1 for x in p1 if x[2] == O.PASS)))
+
     counts = {}
     for k in checks:
         counts[k['status']] = counts.get(k['status'], 0) + 1

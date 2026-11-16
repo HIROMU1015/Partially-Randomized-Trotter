@@ -236,11 +236,55 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                     out.append(p);since = 0
             else:
                 rest = [p for p in groups['SMALL'] + groups['DEFERRED'] if take(p)];out += rest[:k - len(out)];break
+        if s.get('adaptive_lookahead'):
+            out += chains(out)
         seen, uniq = set(), []
         for p in out:
             if (p['configuration_id'], p['vector']) not in seen:
                 seen.add((p['configuration_id'], p['vector']));uniq.append(p)
         return uniq
+
+    def chain_next(st, v, exclude):
+        """The pick V2 makes next for this configuration if allocation v passes: the cheapest non-small, non-deferred
+        decrement of v (same steps rule with the incumbent's headroom, same order: cost, shot change, vector)."""
+        prices = st.c['prices'];h = O.headroom(st.best[2], threshold)
+        steps = search['decrement_steps'] if h is not None and h < large else [min(search['decrement_steps'])]
+        tv = O.cost(v, prices);best = None
+        for m in range(13):
+            for group in O.axis_groups(prices, m):
+                for d in steps:
+                    w = list(v)
+                    for a in group:
+                        w[2 * m + O.AXES.index(a)] -= d
+                    w = tuple(w)
+                    if min(w) < 1 or (st.cid, w) in knowledge or (st.cid, w) in skipped or w in exclude or st.deferred(w):
+                        continue
+                    t = O.cost(w, prices)
+                    if t >= tv or (tv - t) < s['small_gain_fraction'] * tv:
+                        continue
+                    key = (t, d * len(group), w)
+                    if best is None or key < best[0]:
+                        best = (key, dict(configuration_id=st.cid, candidate=st.c['name'], vector=w, cost=t, method=st.c['method'],
+                                          origin=dict(kind='CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES', base_vector=list(v)), deferred=False,
+                                          shot_change=d * len(group), cls='CHAIN'))
+        return None if best is None else best[1]
+
+    def chains(preview):
+        """Speculation along the likely path for configurations whose last pick passed: assume their next pick passes too
+        and prefetch the pick that would follow from it, up to ``lookahead`` deep.  Consumption stays one answer at a time in
+        V2's order, so the adopted trajectory is unchanged; a wrong guess is only an unused (reusable) job."""
+        extra = []
+        for cid in dict.fromkeys(p['configuration_id'] for p in preview):
+            st = states[cid]
+            if st.best is None or st.fail_streak > 0:
+                continue
+            head = next(p for p in preview if p['configuration_id'] == cid);v, seen = head['vector'], {head['vector']}
+            for _ in range(s['lookahead'] - 1):
+                nxt = chain_next(st, v, seen)
+                if nxt is None:
+                    break
+                extra.append(nxt);seen.add(nxt['vector']);v = nxt['vector']
+        return extra
 
     while step < search['max_steps_per_method']:
         groups, M = classify()
