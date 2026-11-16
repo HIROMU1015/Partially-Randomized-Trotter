@@ -66,7 +66,8 @@ def df_generate(request):
     h=Fraction(inputs['design']['base_time'])
     delta=dec(design['delta_pf'])if design.get('delta_pf')is not None else h*dec(design['delta_over_h'])
     if Fraction(float(delta))!=delta:
-        return dict(status='UNSUPPORTED',reason='REQUESTED_DF_DELTA_NOT_EXACT_BINARY64',requested=str(delta))
+        return dict(status='UNSUPPORTED',reason='REQUESTED_DF_DELTA_NOT_EXACT_BINARY64',requested=str(delta),
+                    requested_delta_pf=deepcopy(design.get('delta_pf')),requested_delta_over_h=deepcopy(design.get('delta_over_h')))
     inputs['design']['delta']=float(delta)
     inputs['kappa_paper']=str(dec(design['kappa']))  # absolute, never a multiplier
     inputs['design']['K']=design.get('K',base['spec']['finite_K'])
@@ -88,14 +89,20 @@ def df_generate(request):
         tail=context['prefixes'][str(ld)]
         source=dict(index=INDEX,context_sha256=desc['sha256'],selector=['prefixes',str(ld)])
     inputs['tail_norm'].update(prefix=ld,lambda_R=tail['lambda_R'],source=source)
-    config=b.generate(b.a_spec(inputs,'PR'));b.validate(config)
+    try:config=b.generate(b.a_spec(inputs,'PR'))
+    except ValueError as exc:
+        if 'Nonintegral PF grid; no implicit delta change'not in str(exc):raise
+        return dict(status='UNSUPPORTED',reason='DF_MAPPER_REJECTED_REQUESTED_STEP_WIDTH',mapper_reason=str(exc),
+                    requested_delta_pf=deepcopy(design.get('delta_pf')),requested_delta_over_h=deepcopy(design.get('delta_over_h')),
+                    requested_exact=dict(numerator=delta.numerator,denominator=delta.denominator))
+    b.validate(config)
     if dec(config['spec']['kappa']['value'])!=dec(design['kappa']):raise ValueError('DF absolute kappa changed')
     if config['spec']['L_D']!=ld:raise ValueError('DF prefix changed')
     return dict(status='CONFIGURATION_READY',configuration=config,tail_descriptor=tail,descriptor_source=source)
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('mode',choices=('df-generate','df-plan','df-stage','df-bundle','df-price-design','quote','intake'))
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('mode',choices=('df-generate','df-plan','df-stage','df-bundle','df-price-design','pauli-price-plan','quote','intake'))
     p.add_argument('--input',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();r=json.loads(a.input.read_text())
     if a.mode=='df-generate':value=df_generate(r)
     elif a.mode=='df-plan':value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[])).plan(read(r['configuration']))
@@ -106,7 +113,14 @@ def main():
     elif a.mode=='df-price-design':
         spec=importlib.util.spec_from_file_location('_df_candidate_price_design',ROOT/'scripts/run_pr_df_candidate_prices.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
-        value={k:v for k,v in helper.design(read(r['configuration'])).items()if k!='matrix'}
+        value=helper.design_groups(read(r['configuration']),r.get('price_quote'))
+        for group in value.get('groups',[]):group.get('design',{}).pop('matrix',None)
+    elif a.mode=='pauli-price-plan':
+        sys.path.insert(0,str(ROOT/'src'))
+        from trottertracks import pauli_calibration_request as P
+        config=read(r['configuration'])
+        preparation=r.get('prepared_item')or P.canonical_preparation(config,r.get('configuration_source'))
+        value=P.prepare(Path(r.get('workspace',ROOT)),preparation,r['price_quote'])
     elif a.mode=='quote':
         view=Path(r['view']);sys.path.insert(0,str(view/'src'))
         from trottertracks.pr_price_rules import PriceRules,GitReader

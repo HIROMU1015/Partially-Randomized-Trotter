@@ -4,6 +4,7 @@ Scientific leaves are the published method-specific providers/acquisition paths.
 The public API accepts the optimizer's input request/canonical configuration.
 """
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import nullcontext
 from copy import deepcopy
 from fractions import Fraction
 from . import pr_candidate_selection as Selection
@@ -53,6 +54,31 @@ def publish(paths,message):
         return git('rev-parse','HEAD')
 
 
+def physical_evaluation_contract(config):
+    """Exact schedule/family contract, independent of declared width and kappa.
+
+    Requested parameters act through the mapper's physical rounds. Administrative
+    configuration IDs are removed; H/state, dictionary and law SOURCE, target,
+    error/decoder/profile contracts and actual steps remain part of equality.
+    """
+    spec=deepcopy(config['spec'])
+    for field in ('kappa','delta_pf','delta_over_h'):spec.pop(field,None)
+    # DF keeps the original mapper input as provenance as well as the resolved
+    # spec. Its declared width/kappa are not extra physical conditions.
+    if isinstance(spec.get('A_input'),dict):
+        spec['A_input'].pop('kappa_paper',None)
+        design=spec['A_input'].get('design',{})
+        for field in ('delta','delta_pf','delta_over_h'):design.pop(field,None)
+    rows=[]
+    for row in sorted(config['rounds'],key=lambda r:r['m']):
+        physical=deepcopy(row.get('physical_candidate',{}));physical.pop('id',None)
+        candidate=deepcopy(row.get('candidate',{}));candidate.pop('id',None)
+        rows.append(dict(m=row['m'],T=row['T'],q=row['q_PF'],R=row['R_outer'],
+            actual_delta_pf=row['actual_delta_pf'],structure=row['structure'],
+            law_binding=row.get('law_binding'),physical_candidate=physical,candidate=candidate))
+    return dict(spec=spec,rounds=rows)
+
+
 class Held(Exception):pass
 
 
@@ -73,6 +99,8 @@ class Completion:
                                    if r['status']=='READY_FOR_SEARCH'}
         if self.state['source']!=self.source:raise ValueError('Completion SOURCE changed; preserve prior state')
         self.lock=threading.RLock()
+        self.pauli_price_lock=threading.RLock()
+        self.pauli_metadata_lock=threading.RLock()
         self.registry=self.directory/'PRICE_RULES_REGISTRY.json'
         if not self.registry.exists():
             provided=settings.get('price_registry_source')or settings.get('price_registry_file')
@@ -90,6 +118,42 @@ class Completion:
                     for entry in saved_registry['entries']:by.setdefault(entry['name'],entry)
                 else:by.update({e['name']:e for e in saved_registry['entries']})
             put(self.registry,dict(initial,entries=list(by.values())))
+        self.step_registry_path=self.directory/'STEP_PRICE_RULES.json'
+        if settings.get('price_evidence_results'):
+            self.ingest_price_results()
+
+    def saved_signal_packets(self,method):
+        name='saved_pauli_packets'if method=='PR_PAULI'else'saved_df_bundles'
+        packets=list(getattr(self,'settings',{}).get(name,[]))
+        for record in getattr(self,'state',{}).get('records',{}).values():
+            loc=(record.get('signal')or{}).get('packet_source')
+            if record.get('method')==method and loc and loc not in packets:packets.append(loc)
+        return packets
+
+    def _step_rules(self):
+        """The partial-step registry is independent of the legacy 26-axis rule."""
+        from .pr_price_rules import GitReader
+        from .pr_step_price_registry import StepPriceRegistry
+        path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
+        return StepPriceRegistry(GitReader(ROOT),read(self.registry),state=read(path)if path.exists()else None)
+
+    def ingest_price_results(self,packages=None):
+        """Accept fixed audited results once; never launch a calibration here."""
+        packages=(getattr(self,'settings',{}).get('price_evidence_results',[])if packages is None else packages)
+        if not packages:return []
+        with self.lock:
+            rules=self._step_rules();answers=[rules.ingest(item)for item in packages]
+            put(getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json'),rules.state)
+        return answers
+
+    def price_registry_digest(self):
+        path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
+        return key(dict(legacy=read(self.registry),steps=read(path)if path.exists()else None))
+
+    def quote_with_steps(self,config,quote):
+        path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
+        if not path.exists():return quote
+        return self._step_rules().quote(config,quote['implementation'],base_quote=quote)
 
     def save(self):
         with self.lock:put(self.state_path,self.state)
@@ -136,17 +200,26 @@ class Completion:
             source=record.get('request',{}).get('tail_descriptor')
             if record['method']=='PR_DF'and source and (record.get('design')or record.get('request',{}).get('design',{})).get('L_D')==prefix:
                 return source
+        for record in self.state.get('family_metadata',{}).values():
+            if record.get('method')=='PR_DF'and record.get('L_D')==prefix and record.get('tail_descriptor'):
+                return record['tail_descriptor']
         return None
 
     def refresh_price_hold(self,record):
         """Requery newly registered evidence, never retry a scientific leaf."""
+        reason=str(record.get('reason',''))
+        if record.get('scientific_failure')or record.get('status','').startswith('STOP')or any(
+                token in reason for token in ('STAGE_FAILED:','PRIOR_STAGE_FAILED','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')):
+            return None
         if not all(record.get(k)for k in ('configuration','signal','intake')):return None
-        digest=key(read(self.registry))
+        digest=self.price_registry_digest()
         if record.get('registry_at_hold')==digest:return None
         d=self.directory/'refresh'/record['key']/digest
         registry=d/'PRICE_RULES.json';put(registry,read(self.registry))
         quote=self.service('quote',dict(configuration=record['configuration'],view=str(D2_VIEW),
             registry_file=str(registry),policy='MODEL'),d,tag='AVAILABLE_EVIDENCE_QUOTE',python=PRICE)
+        quote=self.quote_with_steps(value(record['configuration']),quote)
+        put(d/'AVAILABLE_EVIDENCE_QUOTE.json',quote)
         if not quote.get('complete'):
             record['registry_at_hold']=digest;self.save();return None
         fixed=publish([d],'Reuse newly available candidate prices without scientific retry')
@@ -161,11 +234,15 @@ class Completion:
 
     def complete(self,request):
         if request['method']not in ('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
+        if request.get('plan_only')or getattr(self,'settings',{}).get('plan_only'):
+            return self.plan(request)
         identifier=key(request);d=self.directory/'candidates'/identifier
         with self.lock:
             old=self.state['records'].get(identifier)
             if old and old['status']=='READY_FOR_SEARCH':return dict(old,resumed=True)
-            if old and old['status'].startswith(('HELD','STOP')):return dict(self.refresh_price_hold(old)or old,resumed=True)
+            if old and old['status'].startswith(('HELD','STOP','WAITING')):
+                self.ingest_price_results()
+                return dict(self.refresh_price_hold(old)or old,resumed=True)
             rec=dict(method=request['method'],selection=request.get('selection'),request=request,status='SELECTED',key=identifier,directory=rel(d))
             self.state['records'][identifier]=rec;self.save()
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
@@ -187,13 +264,27 @@ class Completion:
             if request.get('design')and dec(config['spec']['kappa']['value'])!=dec(request['design']['kappa']):raise Held('ABSOLUTE_KAPPA_MISMATCH')
             put(d/'CONFIGURATION.json',config);commit=publish([d],'Fix selected PR candidate configuration')
             cref=dict(commit=commit,path=rel(d/'CONFIGURATION.json'));rec.update(configuration=cref,configuration_id=config['id'])
+            # A declaration can differ while the complete physical schedule and
+            # evaluation contract are identical. Reuse READY inputs before any
+            # scientific leaf; install() retains both declarations as aliases.
+            twin=next((old for old in self.state['records'].values()
+                if old is not rec and old.get('method')==request['method']and old.get('status')=='READY_FOR_SEARCH'
+                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical_evaluation_contract(config)),None)
+            if twin is not None:
+                rec.update(status='READY_FOR_SEARCH',signal=deepcopy(twin['signal']),intake=deepcopy(twin['intake']),
+                    quote=deepcopy(twin['quote']),prices=deepcopy(twin['prices']),price_policy=twin.get('price_policy','MODEL'),
+                    reused_physical_configuration=twin['configuration'],new_scientific_calls=0,
+                    design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),delta_pf=config['spec']['delta_pf']),
+                    schedule=deepcopy(twin.get('schedule',[])))
+                self.save();return rec
             initial_quote=None
             if request['method']=='PR_PAULI':signal=self.pauli_signals(config,prepared,d)
             else:
                 initial_quote=self.initial_quote(config,cref,d)
                 if not initial_quote['complete']:
-                    design=self.service('df-price-design',dict(configuration=config),d)
-                    if design['status']!='CALIBRATION_DESIGN_READY':raise Held('DF_MODEL_DESIGN:'+str(design.get('reasons')))
+                    design=self.service('df-price-design',dict(configuration=config,price_quote=initial_quote),d)
+                    bad=[g for g in design.get('groups',[])if g['status']!='CALIBRATION_DESIGN_READY']
+                    if bad:raise Held('DF_MODEL_DESIGN:'+str(bad))
                 signal=self.df_signals(config,cref,d,request.get('tail_descriptor'))
             rec.update(signal=signal);self.save()
             intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(B_VIEW if request['method']=='PR_PAULI'else DF_Q3_VIEW)),d)
@@ -209,32 +300,132 @@ class Completion:
                 price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']],
                 design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),
                     delta_pf=config['spec']['delta_pf']),schedule=[dict(m=r['m'],T=r['T'],q=r['q_PF'],R=r['R_outer'],actual_delta_pf=r['actual_delta_pf'],structure=r['structure'],physical_id=r['candidate']['id'])for r in config['rounds']])
-        except Held as exc:rec.update(status='HELD_WITH_REASON',reason=str(exc))
-        except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc))
-        if rec['status'].startswith(('HELD','STOP')):rec['registry_at_hold']=key(read(self.registry))
+        except Held as exc:
+            text=str(exc)
+            waiting=text.startswith(('PRICE_RULE_INCOMPLETE:','PRICE_EVIDENCE_REQUIRED:'))
+            rec.update(status='WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
+                       scientific_failure=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')))
+        except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),scientific_failure=True)
+        if rec['status'].startswith(('HELD','STOP','WAITING')):rec['registry_at_hold']=self.price_registry_digest()
         self.save();self.log(event='CANDIDATE_COMPLETED',method=request['method'],status=rec['status'],reason=rec.get('reason'));return rec
 
-    def pauli_configuration(self,r,d):
+    def plan(self,request):
+        """Normal preparation entry without a scientific producer call.
+
+        h/T and the requested width are passed to each existing mapper. A missing
+        descriptor/dictionary or an unrepresentable step is returned as needs;
+        another candidate can continue independently.
+        """
+        if request.get('method')not in ('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
+        identifier=key(request);prior=self.state['records'].get(identifier)
+        if prior and prior['status']=='READY_FOR_SEARCH':return dict(prior,resumed=True,plan_only=True)
+        d=self.directory/'plans'/identifier/self.price_registry_digest()
+        answer=d/'PLAN.json'
+        if answer.exists():return dict(read(answer),resumed=True)
+        d.mkdir(parents=True,exist_ok=True)
+        out=dict(status='WAITING_INPUTS',method=request['method'],request=deepcopy(request),plan_only=True,
+                 source=self.source,configuration=None,rounds=[],calibration_requests=[],new_scientific_calls=0)
+        try:
+            if request['method']=='PR_PAULI':
+                config,prepared=self.pauli_configuration(request,d,allow_science=False)
+                signals=prepared.get('signal_plan')or dict(status='SOURCE_UNRESOLVED',rounds=[],unsupported_rounds=list(range(13)))
+            else:
+                selected=deepcopy(request);descriptor=self.saved_df_descriptor(selected)
+                if descriptor:selected['tail_descriptor']=descriptor
+                generated=self.service('df-generate',selected,d)
+                if generated.get('status')!='CONFIGURATION_READY':
+                    out.update(reason=generated.get('reason',generated.get('status')),configuration_needs=generated)
+                    put(answer,out);return out
+                config=generated['configuration'];prepared=None
+                signals=self.service('df-plan',dict(configuration=config,tail_descriptor=selected.get('tail_descriptor'),
+                    saved_bundles=self.saved_signal_packets('PR_DF')),d)
+            quote=self.initial_quote(config,config,d)
+            if request['method']=='PR_PAULI':
+                cal=self.service('pauli-price-plan',dict(configuration=config,prepared_item=prepared,price_quote=quote,
+                    workspace=str(self.settings.get('pauli_workspace',A_WORKSPACE))),d)
+            else:
+                cal=self.service('df-price-design',dict(configuration=config,price_quote=quote),d)
+            signal_rows={r['m']:r for r in signals.get('rounds',[])}
+            out.update(configuration=config,configuration_id=config['id'],signal_plan=signals,price_quote=quote,
+                calibration_plan=cal,calibration_requests=cal.get('calibration_requests',cal.get('groups',[])),
+                rounds=[dict(m=r['m'],physical_id=r['candidate']['id'],T=r['T'],q=r['q_PF'],R=r['R_outer'],
+                    actual_delta_pf=r['actual_delta_pf'],signal=signal_rows.get(r['m'],dict(decision='SOURCE_UNRESOLVED')),
+                    price_axes=[row for row in quote['rows']if row['m']==r['m']])for r in config['rounds']],
+                requested_delta_pf=config['spec']['delta_pf'],readiness=dict(configuration=True,
+                    signal=not signals.get('request_rounds')and not signals.get('unsupported_rounds')
+                        and len(signals.get('reuse_rounds',[]))==13,
+                    prices=quote['complete']))
+        except Held as exc:out['reason']=str(exc)
+        put(answer,out)
+        return out
+
+    def prepare_family(self,request,allow_science=False):
+        """Prepare a chosen split's mapper metadata only, never signal or price.
+
+        The caller supplies a same-H template kappa solely to obtain that split's
+        constants. Each split still derives its own descriptor/dictionary; the
+        template never supplies another split's coefficients.
+        """
+        if request.get('method')not in('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
+        d=self.directory/'family_metadata'/key(request);d.mkdir(parents=True,exist_ok=True)
+        out=dict(status='NEEDS_FAMILY_PREPARATION',configuration=None,needs=[],
+                 new_signal_calls=0,new_price_calls=0,scope='DICTIONARY_DESCRIPTOR_AND_MAPPER_METADATA_ONLY')
+        try:
+            if request['method']=='PR_PAULI':
+                config,prepared=self.pauli_configuration(request,d,allow_science=allow_science)
+                out.update(configuration=config,configuration_source=prepared.get('configuration_source'))
+            else:
+                selected=deepcopy(request);descriptor=self.saved_df_descriptor(selected)
+                if descriptor:selected['tail_descriptor']=descriptor
+                generated=self.service('df-generate',selected,d)
+                if generated.get('status')=='NEEDS_DF_TAIL_DESCRIPTOR'and allow_science:
+                    prefix=selected['design']['L_D'];target=d/'DF_TAIL_DESCRIPTOR.json'
+                    template=selected.get('template_source')or dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json')
+                    self.call([NATIVE,'-B',str(ROOT/'scripts/derive_pr_df_candidate_descriptor.py'),'--prefix',str(prefix),
+                        '--configuration',template['commit']+':'+template['path'],'--output',str(target),'--source',self.source],
+                        d,'DF_DESCRIPTOR',target,science=True)
+                    fixed=publish([d],'Fix chosen split descriptor for mapper metadata')
+                    selected['tail_descriptor']=dict(commit=fixed,path=rel(target))
+                    generated=self.service('df-generate',selected,d,tag='DF_GENERATE_WITH_DESCRIPTOR')
+                if generated.get('status')!='CONFIGURATION_READY':
+                    out.update(reason=generated.get('reason',generated.get('status')),needs=[generated])
+                    put(d/'FAMILY.json',out);return out
+                out.update(configuration=generated['configuration'],configuration_source=generated.get('configuration_source'),
+                           tail_descriptor=selected.get('tail_descriptor'))
+            out.update(status='CONFIGURATION_READY',needs=[])
+            if out.get('tail_descriptor'):
+                self.state.setdefault('family_metadata',{})[key(dict(method=request['method'],L_D=request['design']['L_D']))]=dict(
+                    method=request['method'],L_D=request['design']['L_D'],tail_descriptor=out['tail_descriptor'])
+                self.save()
+        except Held as exc:out.update(reason=str(exc),needs=[str(exc)])
+        put(d/'FAMILY.json',out);return out
+
+    def pauli_configuration(self,r,d,allow_science=True):
         workspace=Path(self.settings.get('pauli_workspace',A_WORKSPACE));d.mkdir(parents=True,exist_ok=True)
         saved=[dict(commit='d7a976a629a6db68197b24f8f86734e109c8bf5d',path=p)for p in (
             'docs/research/rpe_split_preparation_20261116/LD4/PREPARATION_P1.0.CONFIGURATION.json',
             'docs/research/rpe_split_preparation_20261116/LD6/PREPARATION.0.CONFIGURATION.json')]
         def prepare(item,tag,science=False):
             inp=d/(tag+'.REQUEST.json');out=d/(tag+'.json')
-            put(inp,dict(kind='pauli_native',items=[item],saved_configurations=saved,saved_packets=self.settings.get('saved_pauli_packets',[])))
-            cmd=[NATIVE,'-B',str(workspace/'scripts/prepare_pauli_candidate.py'),'--request',str(inp),'--output',str(out),'--cache',str(d/'SPLITS.json')]
+            put(inp,dict(kind='pauli_native',items=[item],saved_configurations=saved,saved_packets=self.saved_signal_packets('PR_PAULI')))
+            cache=(self.directory/'PAULI_SPLITS.json')if hasattr(self,'directory')else d/'SPLITS.json'
+            cmd=[NATIVE,'-B',str(workspace/'scripts/prepare_pauli_candidate.py'),'--request',str(inp),'--output',str(out),'--cache',str(cache)]
             requested_prefix=(item.get('configuration')or{}).get('spec',{}).get('L_D',(item.get('configuration')or{}).get('L_D'))
             if requested_prefix in (7,8,9):cmd+=['--p0-builder','no-drop']
             if science:
                 publish([d],'Fix selected Pauli P0 request')
                 cmd+=['--prepare-missing','--source',git('rev-parse','HEAD',cwd=workspace),'--p0-directory',str(workspace/'docs/research/d2_auto_p0_20261116')]
-            response=self.call(cmd,d,tag,out,science=science);return response['items'][0]
+            lock=getattr(self,'pauli_metadata_lock',None)
+            with (lock if lock is not None else nullcontext()):
+                response=self.call(cmd,d,tag,out,science=science)
+            return response['items'][0]
         if r.get('configuration'):
             config=value(r['configuration'])if 'commit'in r['configuration']else r['configuration']
             item=prepare(dict(item_id='B2_SELECTED',configuration=config),'A_CANONICAL')
         else:
             design=r['design'];item=prepare(dict(item_id='B2_SELECTED_BASE',configuration=dict(L_D=design['L_D'])),'A_BASE')
             if item['status']=='NEEDS_SPLIT_PREPARATION':
+                if not allow_science:raise Held('CONFIGURATION_PREPARATION_REQUIRED_NOT_EXECUTED:'+str(item))
                 if design['L_D']in(7,8,9):raise Held('REGISTERED_NO_DROP_CONFIGURATION_UNRESOLVED_NO_P0_RETRY:'+str(design['L_D']))
                 item=prepare(dict(item_id='B2_SELECTED_BASE',configuration=dict(L_D=design['L_D'])),'A_BASE_P0',True)
             if item['status']!='GENERATED':raise Held('A_PREPARATION:'+str(item))
@@ -246,10 +437,7 @@ class Completion:
         return item['configuration'],item
 
     def pauli_signals(self,config,prepared,d):
-        packets=list(self.settings.get('saved_pauli_packets',[]))
-        for record in self.state['records'].values():
-            loc=(record.get('signal')or{}).get('packet_source')
-            if record['method']=='PR_PAULI'and loc and loc not in packets:packets.append(loc)
+        packets=self.saved_signal_packets('PR_PAULI')
         descriptor=dict(prefix=config['spec']['L_D'],binding=config['spec']['binding'],
             descriptor=prepared['descriptor']['descriptor'],source=prepared['descriptor']['source'])
         request=dict(configuration=config,tail_descriptor=descriptor,saved_packets=packets,
@@ -260,7 +448,7 @@ class Completion:
         return result
 
     def df_signals(self,config,cref,d,descriptor=None):
-        bundles=[record['signal']['packet_source']for record in self.state['records'].values()if record['method']=='PR_DF'and(record.get('signal')or{}).get('packet_source')]
+        bundles=self.saved_signal_packets('PR_DF')
         plan=self.service('df-plan',dict(configuration=config,tail_descriptor=descriptor,saved_bundles=bundles),d)
         if plan.get('unsupported_rounds')or any(r['decision']=='UNSUPPORTED'for r in plan['rounds']):raise Held('DF_PROVIDER_UNSUPPORTED:'+str(plan))
         request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=self.source,output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(ROOT.parent/'d2-pr-df-ld7-signal-source-fefd-20261116')))
@@ -283,30 +471,68 @@ class Completion:
         registry=d/'PRICE_RULES.json'
         if not registry.exists():put(registry,read(self.registry))
         req=dict(configuration=cref,view=str(D2_VIEW),registry_file=str(registry),policy='MODEL')
-        return self.service('quote',req,d,tag='INITIAL_QUOTE',python=PRICE)
+        quote=self.service('quote',req,d,tag='INITIAL_QUOTE',python=PRICE)
+        return self.quote_with_steps(config,quote)
 
     def price(self,config,cref,prepared,r,d,initial_quote=None):
+        # Pauli stages publish into one owned mutable checkout. Retain its
+        # normal worker parallelism, but requery after another candidate has
+        # registered the same calibration before launching a duplicate cell.
+        lock=getattr(self,'pauli_price_lock',None)
+        with (lock if r['method']=='PR_PAULI'and lock is not None else nullcontext()):
+            return self._price(config,cref,prepared,r,d,initial_quote)
+
+    def _price(self,config,cref,prepared,r,d,initial_quote=None):
         registry=d/'PRICE_RULES.json'
         req=dict(configuration=cref,view=str(D2_VIEW),registry_file=str(registry),policy='MODEL')
         quote=self.initial_quote(config,cref,d)if initial_quote is None else initial_quote
+        quote=self.quote_with_steps(config,quote)
         if not quote['complete']:
             if r['method']=='PR_PAULI':
                 inp=d/'PAULI_PRICE_REQUEST.json';out=d/'PAULI_PRICE_RESULT.json'
                 put(inp,dict(configuration_source=cref,configuration=config,prepared_item=prepared,price_quote=quote,registry_file=str(registry),workspace=str(self.settings.get('pauli_workspace',A_WORKSPACE)),
-                    directory='docs/research/d2_automatic_price_20261116/'+config['id'][:20],private_root=str(ROOT.parent/'d2-auto-private'/config['id'][:20]),d2_view=str(D2_VIEW),interpreter=PRICE))
-                result=self.call([PRICE,'-B',str(ROOT/'scripts/run_pr_pauli_candidate_prices.py'),'--request',str(inp),'--output',str(out),'--execute'],d,'PAULI_PRICES',out,science=True)
-                if result['status']not in('PRICES_READY','PRICE_READY','COMPLETE_MODEL_26_AXES'):raise Held('PAULI_PRICE:'+str(result))
-            else:self.df_price(cref,quote,d,registry,r.get('tail_descriptor'))
-            quote=self.service('quote',req,d,tag='REQUOTE',python=PRICE)
+                    directory='docs/research/d2_automatic_price_20261116/'+config['id'][:20],private_root=str(ROOT.parent/'d2-auto-private'/config['id'][:20]),d2_view=str(D2_VIEW),interpreter=PRICE,
+                    scoped_registration=True,execution_source=self.source))
+                try:
+                    result=self.call([PRICE,'-B',str(ROOT/'scripts/run_pr_pauli_candidate_prices.py'),'--request',str(inp),'--output',str(out),'--execute'],d,'PAULI_PRICES',out,science=True)
+                except Held:
+                    # Valid completed groups remain useful to independent
+                    # candidates even if a later group reaches its own STOP.
+                    if out.exists()and read(out).get('evidence_packages'):
+                        self.ingest_price_results(read(out)['evidence_packages'])
+                    raise
+                if result.get('evidence_packages'):
+                    self.ingest_price_results(result['evidence_packages'])
+                if result['status']not in('PRICES_READY','PRICE_READY','COMPLETE_MODEL_26_AXES','STEP_MODELS_READY'):
+                    raise Held(('PRICE_EVIDENCE_REQUIRED:'if result['status']in('WAITING_PRICE_EVIDENCE','CALIBRATION_PLANNED_NOT_EXECUTED')else'PAULI_PRICE:')+str(result))
+            else:self.ingest_price_results(self.df_price(cref,quote,d,registry,r.get('tail_descriptor')))
+            quote=self.quote_with_steps(config,quote)
+            if not quote['complete']:
+                quote=self.service('quote',req,d,tag='REQUOTE',python=PRICE)
+                quote=self.quote_with_steps(config,quote)
         put(d/'FINAL_QUOTE.json',quote)
         return quote
 
     def df_price(self,cref,quote,d,registry,descriptor=None):
-        base=d/'df_prices';inp=base/'INPUTS.json'
+        config=value(cref)
+        planned=self.service('df-price-design',dict(configuration=config,price_quote=quote),d,tag='DF_PRICE_GROUPS')
+        groups=planned.get('groups',[])
+        if any(g['status']!='CALIBRATION_DESIGN_READY'for g in groups):
+            raise Held('DF_MODEL_DESIGN:'+str(groups))
+        packages=[]
+        for group in groups:
+            package=self.df_price_group(cref,quote,d/'df_price_groups'/group['group_id'][:20],registry,group,descriptor)
+            self.ingest_price_results([package]);packages.append(package)
+        return packages
+
+    def df_price_group(self,cref,quote,d,registry,group,descriptor=None):
+        """One existing DF calibration/holdout campaign per exact actual step."""
+        d.mkdir(parents=True,exist_ok=True);base=d/'df_prices';inp=base/'INPUTS.json'
         args=[PRICE,'-B',str(ROOT/'scripts/run_pr_df_candidate_prices.py')]
         descriptor_file=d/'DF_DESCRIPTOR_LOCATOR.json'
         if descriptor:put(descriptor_file,descriptor)
-        self.call(args+['prepare']+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort','D2_AUTO_DF_'+d.name,'--source',self.source,'--price-quote',str(d/'INITIAL_QUOTE.json')],d,'DF_PRICE_PREPARE')
+        quote_file=d/'AVAILABLE_PRICE_QUOTE.json';put(quote_file,quote)
+        self.call(args+['prepare']+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort','D2_AUTO_DF_'+d.name,'--source',self.source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,'DF_PRICE_PREPARE')
         if not inp.exists():raise Held('DF_PRICE_RULE_OR_RECEIPT_REUSE_REQUIRED:'+str(read(base/'NEEDS.json')))
         inputs=publish([d],'Fix candidate DF calibration and independent holdout inputs')
         common=['--input',str(inp),'--inputs-commit',inputs,'--source',self.source]
@@ -314,16 +540,18 @@ class Completion:
         raw=publish([d],'Save DF calibration wrapper receipts')
         self.call(args+['freeze',*common,'--raw-commit',raw],d,'DF_MODEL_FREEZE',science=True)
         frozen=publish([d],'Freeze candidate DF full-wrapper model before holdout')
-        self.call(args+['acquire',*common,'--stage','holdout','--model-commit',frozen],d,'DF_HOLDOUT',science=True)
-        hold=publish([d],'Save independent DF holdout receipts')
-        self.call(args+['compare-holdout',*common,'--raw-commit',hold,'--model-commit',frozen],d,'DF_HOLDOUT_COMPARE',science=True)
-        model=read(base/'FROZEN_MODELS.json');config=value(cref);reg=read(registry)
+        holdout=None
+        if read(inp)['model_design'].get('holdout_round')is not None:
+            self.call(args+['acquire',*common,'--stage','holdout','--model-commit',frozen],d,'DF_HOLDOUT',science=True)
+            hold=publish([d],'Save independent DF holdout receipts')
+            self.call(args+['compare-holdout',*common,'--raw-commit',hold,'--model-commit',frozen],d,'DF_HOLDOUT_COMPARE',science=True)
+            compared=publish([d],'Publish scoped DF independent holdout comparison')
+            holdout=dict(commit=compared,path=rel(base/'HOLDOUT_COMPARISON.json'))
+        reg=read(registry)
         imp=next(e['implementation']for e in reg['entries']if e['name']=='DF_LD7')
-        entry=dict(name='AUTO_DF_'+config['id'][:16],configuration_source=cref,implementation=imp,
-            price_source=dict(commit=frozen,path=rel(base/'AXIS_PRICES.json')),model_source=dict(commit=frozen,path=rel(base/'FROZEN_MODELS.json')),
-            mode=model['mode'],calibration_domain=dict(q=[min(config['rounds'][m]['q_PF']for m in read(inp)['model_design']['calibration_rounds']),max(config['rounds'][m]['q_PF']for m in read(inp)['model_design']['calibration_rounds'])],R=[min(config['rounds'][m]['R_outer']for m in read(inp)['model_design']['calibration_rounds']),max(config['rounds'][m]['R_outer']for m in read(inp)['model_design']['calibration_rounds'])]),
-            caveats=['candidate-owned finite-cohort model; independent holdout is descriptive; no all-law E[C]/CI'])
-        reg['entries']=[e for e in reg['entries']if e['name']!=entry['name']]+[entry];put(registry,reg)
+        return dict(kind='PR_DF_STEP_MODEL',configuration_source=cref,implementation=imp,
+            inputs_source=dict(commit=inputs,path=rel(inp)),model_source=dict(commit=frozen,path=rel(base/'FROZEN_MODELS.json')),
+            price_source=dict(commit=frozen,path=rel(base/'AXIS_PRICES.json')),holdout_source=holdout)
 
     def install(self,context,problem,records):
         from . import rpe_method_optimizer as O,rpe_candidate_preparation as R
@@ -331,6 +559,9 @@ class Completion:
         for rec in records:
             if rec['status']!='READY_FOR_SEARCH':continue
             config=value(rec['configuration']);method=rec['method'];binding=rec['intake'];signal=rec['signal'];cid=config['id']
+            requested=(problem.get('methods',{}).get(method,{})or{}).get('requested_delta_pf_values')
+            if requested is not None and dec(config['spec']['delta_pf'])not in{dec(v)for v in requested}:
+                continue
             # Populate original B2 physical keys from saved metadata only. R.register
             # owns the equivalence/alias decision; no new schedule rule is defined.
             for candidate in context['candidates']:
@@ -338,14 +569,36 @@ class Completion:
                 try:existing,_=Selection.configuration_for(context,candidate['configuration_id'],value)
                 except ValueError:continue
                 candidate['schedule_keys']=O.schedule_keys(existing)
-            old=next((c for c in context['candidates']if c['method']==method and(c['configuration_id']==cid or(c['configuration_id']is None and c['key']['L_D']==config['spec']['L_D']))),None)
+            def same_placeholder(candidate):
+                if candidate.get('configuration_id')is not None:return False
+                k=candidate.get('key',{})
+                if k.get('L_D')!=config['spec']['L_D']or k.get('formula',config['spec']['formula'])!=config['spec']['formula']:
+                    return False
+                width=(dec(k['delta_pf'])if k.get('delta_pf')is not None else
+                       dec(config['spec']['h'])*dec(k.get('delta_over_h','1')))
+                return width==dec(config['spec']['delta_pf'])
+            old=next((c for c in context['candidates']if c['method']==method and
+                (c.get('configuration_id')==cid or same_placeholder(c))),None)
             ready_before={c['configuration_id']:c for c in context['candidates']if c['method']==method and c.get('ready')and c.get('configuration_id')}
             item=dict(status='GENERATED',configuration=deepcopy(config),configuration_id=cid,
                 configuration_source=rec['configuration'],L_D=config['spec']['L_D'],
                 readiness=dict(configuration_complete=True),requested_changes={})
-            disposition=R.register(method,old,item,context['candidates'],rec.get('directory',self.directory),
-                key=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],
-                    delta_over_h=str(dec(config['spec']['delta_pf'])/dec(config['spec']['h']))))
+            # Legacy register() uses a smaller schedule key. Do not let that
+            # key alias different dictionaries, targets, SOURCE or law contracts.
+            hidden=[];new_keys=O.schedule_keys(config)
+            for candidate in context['candidates']:
+                if candidate['method']!=method or candidate.get('schedule_keys')!=new_keys:continue
+                try:existing,_=Selection.configuration_for(context,candidate['configuration_id'],value)
+                except (ValueError,KeyError):existing=None
+                if existing is None or physical_evaluation_contract(existing)!=physical_evaluation_contract(config):
+                    if candidate.get('configuration_id')==cid:raise ValueError('CANONICAL_CONFIGURATION_PHYSICAL_CONTRACT_DIFFERS')
+                    hidden.append((candidate,candidate.get('schedule_keys')));candidate['schedule_keys']=None
+            try:
+                disposition=R.register(method,old,item,context['candidates'],rec.get('directory',self.directory),
+                    key=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],
+                        delta_over_h=str(dec(config['spec']['delta_pf'])/dec(config['spec']['h']))))
+            finally:
+                for candidate,keys in hidden:candidate['schedule_keys']=keys
             alias=disposition.split(':',1)[1]if disposition.startswith('PHYSICALLY_IDENTICAL_TO:')else None
             installed=alias or cid
             rec.update(installed_configuration_id=installed,installation_disposition=disposition)
@@ -388,8 +641,9 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
     old_state=Path(run)/'completion/STATE.json'
     settings.setdefault('source',read(old_state)['source']if old_state.exists()else git('rev-parse','HEAD'))
     completion=completion or Completion(Path(run)/'completion',settings)
+    completion.ingest_price_results()
     for record in list(completion.state['records'].values()):
-        if record['status'].startswith(('HELD','STOP')):completion.refresh_price_hold(record)
+        if record['status'].startswith(('HELD','STOP','WAITING')):completion.refresh_price_hold(record)
     ready=[r for r in completion.state['records'].values()if r['status']=='READY_FOR_SEARCH']
     routes=completion.install(context,problem,ready)
     search=dict(problem['search'],**spec.get('search_overrides',{}))

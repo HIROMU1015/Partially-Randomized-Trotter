@@ -282,6 +282,15 @@ def enumerate_candidates(reader, problem, facts, catalog):
                 if values is not None and ld not in values:
                     continue
                 configs = sorted({cid for cid, ps in by_config.items() if ps[0]['method'] == name and ps[0]['L_D'] == ld})
+                widths = spec.get('requested_delta_pf_values')
+                if widths is not None:
+                    # Multi-width rounds scope saved candidates by the exact
+                    # requested width, before generation/preparation.  Do not
+                    # reinterpret a binary64 declaration as a decimal rational.
+                    from .rpe_kappa_schedule import _frac as exact_width
+                    allowed_widths = {exact_width(v) for v in widths}
+                    configs = [cid for cid in configs if by_config[cid][0].get('delta_pf') is not None
+                               and exact_width(by_config[cid][0]['delta_pf']) in allowed_widths]
                 if not configs and not spec.get('saved_configurations_only'):
                     out.append(dict(method=name, family='PR', key=dict(L_D=ld), configuration_id=None, index_signal=None, caps=caps))
                 for cid in configs:

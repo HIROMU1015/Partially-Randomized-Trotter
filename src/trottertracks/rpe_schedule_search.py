@@ -39,6 +39,40 @@ DEFAULTS = dict(ladder_ratio='4', explore_ratio='2', refine_ratio='33/32', explo
 TINY = Fraction(1, 10 ** 12)
 
 
+def requested_widths(problem, spec):
+    """Absolute requested PF widths, preserving exact JSON numbers.
+
+    A missing declaration means the historical single-width entry.  In
+    particular a JSON float is never parsed through str(float).
+    """
+    raw = spec.get('search_overrides', {}).get('requested_widths',
+        problem.get('search', {}).get('requested_widths'))
+    if raw is None:
+        return None
+    if not isinstance(raw, dict) or not raw:
+        raise ValueError('requested_widths must map PR method names to nonempty lists')
+    out = {}
+    for method, values in raw.items():
+        if method not in ('PR_PAULI', 'PR_DF') or method not in spec.get('methods', raw):
+            raise ValueError('Unsupported requested-width method: '+method)
+        if not isinstance(values, list) or not values:
+            raise ValueError('Each method needs at least one requested PF width')
+        seen = set(); out[method] = []
+        for value in values:
+            width = KS._frac(value)
+            if width <= 0:
+                raise ValueError('Requested PF width must be positive')
+            if width not in seen:
+                out[method].append(dict(raw=value, exact=str(width)))
+                seen.add(width)
+    return out
+
+
+def width_family_key(method, ld, formula, delta, K=2):
+    """A search family; kappa is deliberately absent from its identity."""
+    return '%s|LD%d|%s|delta=%s|K%d' % (method, ld, formula, KS._frac(delta), K)
+
+
 def settings(s):
     out = dict(DEFAULTS, **(s or {}))
     for k in ('ladder_ratio', 'explore_ratio', 'refine_ratio', 'window', 'upper_stop_margin', 'max_kappa'):

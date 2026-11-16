@@ -11,6 +11,7 @@ from fractions import Fraction
 import hashlib
 import fcntl
 import importlib.util
+import itertools
 import json
 import multiprocessing as mp
 import os
@@ -73,21 +74,82 @@ def solve(matrix,rhs):
     return namespace['_solve'](matrix,rhs)
 
 
-def design(config):
-    rows=config['rounds'];s=config['spec'];bad=[]
+def design(config,covered_rounds=None):
+    all_rows=config['rounds'];s=config['spec'];bad=[]
+    covered=list(range(13))if covered_rounds is None else sorted(covered_rounds)
+    if not covered or len(set(covered))!=len(covered)or any(type(m)is not int or m not in range(13)for m in covered):
+        raise ValueError('INVALID_DF_PRICE_ROUND_COVERAGE')
+    rows=[all_rows[m]for m in covered]
     if s['method']!='PR'or s['split'].get('tail_dictionary'):bad.append('PR_DF_REQUIRED')
     if s['formula']!='2nd'or s['finite_K']!=2 or any(r['structure']['signed_weights']!=[1.]or len(r['structure']['allocation'])!=1 for r in rows):
         bad.append('PRICE_COEFFICIENTS_FOR_CHANGED_FORMULA_PIECES_OR_K_NOT_ADOPTED')
     if len({dec(r['actual_delta_pf'])for r in rows})!=1:bad.append('MULTIPLE_ACTUAL_STEPS_REQUIRE_SEPARATE_CALIBRATION_GROUPS')
-    if len(rows)!=13 or [r['m']for r in rows]!=list(range(13)):bad.append('CURRENT_H4_13_ROUND_SCOPE_REQUIRED')
+    if len(all_rows)!=13 or [r['m']for r in all_rows]!=list(range(13)):bad.append('CURRENT_H4_13_ROUND_SCOPE_REQUIRED')
+    if len(rows)==1 and covered_rounds is not None:
+        return dict(status='CALIBRATION_DESIGN_READY'if not bad else'NEEDS_PRICE_RULE_OR_DESIGN_EXTENSION',reasons=bad,
+                    mode='DIRECT_FINITE_COHORT',calibration_rounds=covered,holdout_round=None,matrix=[[Fraction(1)]],covered_rounds=covered)
     mode='FULL_AFFINE_Q_R1'if all(r['R_outer']==1 for r in rows)else'FULL_AFFINE_QR'
-    calibration=[0,6]if mode=='FULL_AFFINE_Q_R1'else[0,3,6]
-    holdout=3 if mode=='FULL_AFFINE_Q_R1'else 4
-    matrix=[[Fraction(1),Fraction(rows[m]['q_PF'])]+([]if mode=='FULL_AFFINE_Q_R1'else[Fraction(rows[m]['q_PF']*rows[m]['R_outer'])])for m in calibration]
+    dimension=2 if mode=='FULL_AFFINE_Q_R1'else 3
+    offsets=[0,6]if dimension==2 else[0,3,6]
+    calibration=[covered[min(i,len(covered)-1)]for i in offsets]
+    def features(m):
+        r=all_rows[m]
+        return [Fraction(1),Fraction(r['q_PF'])]+([]if dimension==2 else[Fraction(r['q_PF']*r['R_outer'])])
+    def full_rank(ms):
+        if len(set(ms))!=dimension:return False
+        try:solve([features(m)for m in ms],[Fraction(0)]*dimension);return True
+        except ValueError:return False
+    if covered_rounds is not None and not full_rank(calibration):
+        calibration=next((list(ms)for ms in itertools.combinations(covered,dimension)if full_rank(ms)),calibration)
+    preferred=covered[min(3 if dimension==2 else 4,len(covered)-1)]
+    holdout=preferred if preferred not in calibration else next((m for m in covered if m not in calibration),None)
+    if holdout is None:bad.append('INDEPENDENT_SAME_STEP_HOLDOUT_ROUND_UNAVAILABLE')
+    matrix=[features(m)for m in calibration]
     try:solve(matrix,[Fraction(0)]*len(matrix))
     except ValueError:bad.append('RANK_DEFICIENT_HEAD_Q_AND_TAIL_QR_COEFFICIENTS')
     return dict(status='CALIBRATION_DESIGN_READY'if not bad else'NEEDS_PRICE_RULE_OR_DESIGN_EXTENSION',reasons=bad,
-                mode=mode,calibration_rounds=calibration,holdout_round=holdout,matrix=matrix)
+                mode=mode,calibration_rounds=calibration,holdout_round=holdout,matrix=matrix,
+                **({}if covered_rounds is None else dict(covered_rounds=covered)))
+
+
+def design_groups(config,quote=None):
+    """Keep every supplied mapper row; identify only missing actual-step inputs."""
+    seen=set();missing=set();actions=[]
+    for row in (quote or{}).get('rows',[]):
+        key=row['m'],row['axis']
+        if key in seen:raise ValueError('DUPLICATE_DF_PRICE_AXIS')
+        seen.add(key);r=config['rounds'][row['m']]
+        if (row.get('q')!=r['q_PF']or row.get('R')!=r['R_outer']or
+                row.get('physical_id')not in(r['candidate']['id'],r.get('physical_candidate',{}).get('id'))):
+            raise ValueError('DF_QUOTE_PHYSICAL_SCHEDULE_DIFFERS')
+        if row.get('unit_price_RZ')is None:missing.add(key)
+        elif dec(row['unit_price_RZ'])<=0 or not row.get('source'):raise ValueError('UNSOURCED_OR_NONPOSITIVE_DF_PRICE')
+    if quote is not None and (quote.get('configuration_id')!=config['id']or seen!={(m,a)for m in range(13)for a in('X','Y')}):
+        raise ValueError('DF_QUOTE_CONFIGURATION_OR_COVERAGE_DIFFERS')
+    if quote is None:missing={(m,a)for m in range(13)for a in('X','Y')}
+    grouped={}
+    for row in config['rounds']:grouped.setdefault(dec(row['actual_delta_pf']),[]).append(row['m'])
+    groups=[]
+    for step,ms in grouped.items():
+        keys=[dict(m=m,axis=a)for m in ms for a in('X','Y')if(m,a)in missing]
+        if not keys:continue
+        selected=design(config,ms)
+        payload=dict(configuration_family=dict(binding=config['spec']['binding'],split=config['spec']['split'],
+            formula=config['spec']['formula'],K=config['spec']['finite_K'],law=config['spec']['law'],profile=config['spec']['profile']),
+            actual_step=enc(step),cells=[dict(m=m,q=config['rounds'][m]['q_PF'],R=config['rounds'][m]['R_outer'],
+                T=config['rounds'][m]['T'],structure=config['rounds'][m]['structure'])
+                for m in selected['calibration_rounds']+([]if selected['holdout_round']is None else[selected['holdout_round']])])
+        gid=hashlib.sha256(json.dumps(payload,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        groups.append(dict(group_id=gid,actual_step=enc(step),covered_rounds=ms,axis_keys=keys,
+                           design={k:v for k,v in selected.items()if k!='matrix'},status=selected['status']))
+    for m in range(13):
+        for axis in('X','Y'):
+            g=next((v for v in groups if m in v['covered_rounds']),None)
+            actions.append(dict(m=m,axis=axis,action='REUSE_PRICE'if(m,axis)not in missing else
+                'CALIBRATION_REQUEST'if g and g['status']=='CALIBRATION_DESIGN_READY'else'UNSUPPORTED',
+                group_id=None if g is None else g['group_id'],reasons=[]if g is None else g['design']['reasons']))
+    return dict(status='REUSE_SUPPLIED_PRICES_NO_CALIBRATION'if not groups else'ACTUAL_STEP_GROUPS_PLANNED',
+                groups=groups,round_actions=actions,execution_performed=False)
 
 
 
@@ -259,9 +321,9 @@ def adopt_saved_calibration_cohorts(cells,quote,reader=None,source_reader=None):
         else:decisions.append(dict(m=cell['m'],status='KEEP_NEW_FIXED_COHORT',cohort=cell['cohort'],rejected=rejected))
     return decisions
 
-def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=None):
+def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=None,covered_rounds=None):
     fixed(source);config=read(config_source);output=ROOT/output;output.mkdir(parents=True,exist_ok=True)
-    selected=design(config)
+    selected=design(config,covered_rounds)
     if price_quote is not None:
         if price_quote.get('configuration_id')!=config['id']:raise ValueError('Price quote belongs to another configuration')
         write(output/'PRICE_QUOTE.json',price_quote)
@@ -283,7 +345,7 @@ def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=
     scalar=constant['value']+tail['scalar'];scalar_record=dict(hamiltonian_constant=constant,tail_identity=dict(value=tail['scalar'],source=tail_source),total=scalar,total_hex=scalar.hex(),application='ONCE_AT_TOTAL_T')
     write(output/'SCALAR.json',scalar_record)
     seed=R.P.trial_seed_function(ROOT);cells=[]
-    for m,n,role in [(m,4,'CALIBRATION')for m in selected['calibration_rounds']]+[(selected['holdout_round'],2,'HOLDOUT')]:
+    for m,n,role in [(m,4,'CALIBRATION')for m in selected['calibration_rounds']]+([]if selected['holdout_round']is None else[(selected['holdout_round'],2,'HOLDOUT')]):
         request=R.D.from_b(config,m,config['rounds'][m]['physical_candidate'],
             input_source=dict(configuration=config_source,tail=tail_source,scalar=dict(hamiltonian_constant=SCALAR_CONSTANT,tail=tail_source)),
             execution_source=dict(commit=source,path=CALLER),expected_scalar=scalar)
@@ -296,6 +358,7 @@ def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=
     if len(set(all_seeds))!=len(all_seeds):raise ValueError('Calibration/holdout seed overlap')
     old=read(BASE_INPUTS)
     write(output/'INPUTS.json',dict(schema='PR_DF_CANDIDATE_PRICE_INPUTS_V1',source=source,configuration=config_source,configuration_id=config['id'],output_directory=rel(output),
+        **({}if covered_rounds is None else dict(covered_rounds=selected['covered_rounds'])),
         cohort_adoption=adoption_summary,price_reuse=reuse_summary,tail_descriptor=tail_descriptor,cells=cells,model_design={k:v for k,v in selected.items()if k!='matrix'},runtime=old['runtime'],saved_input_files=old['saved_input_files'],
         local_support=old['local_support'],reused_worker=REUSED,adapter_source=ADAPTER_SOURCE,scalar=scalar_record,
         max_new_paths=sum(any(v['status']=='MISSING'for v in path.values())for c in cells for path in c['axis_evidence'].values()),max_wrapper_compiles=sum(v['status']=='MISSING'for c in cells for path in c['axis_evidence'].values()for v in path.values()),
@@ -394,7 +457,8 @@ def _acquire(inputs,input_commit,stage,source,model_commit=None):
     if stage=='holdout':
         if not model_commit:raise ValueError('Independent holdout requires published frozen model')
         model=read(dict(commit=model_commit,path=base+'/FROZEN_MODELS.json'));prices=read(dict(commit=model_commit,path=base+'/AXIS_PRICES.json'))
-        if model['status']!='FROZEN_2_AXIS_MODELS'or len(prices['rows'])!=26 or any(dec(r['C_ref'])<=0 for r in prices['rows']):raise ValueError('Positive frozen model prerequisite')
+        covered=inputs.get('covered_rounds',list(range(13)))
+        if model['status']!='FROZEN_2_AXIS_MODELS'or len(prices['rows'])!=2*len(covered) or any(dec(r['C_ref'])<=0 for r in prices['rows']):raise ValueError('Positive frozen model prerequisite')
     out=ROOT/R.PUBLIC/'acquisition';out.mkdir(parents=True,exist_ok=True);pending=[];processes=[];start=time.perf_counter();initial={};new_results=[]
     for cell in cells:
         for index in cell['indices']:
@@ -485,21 +549,30 @@ def means(inputs,raw_commit,stage):
 
 def freeze(inputs,raw_commit,source):
     cfg=read(inputs['configuration']);mode=inputs['model_design']['mode'];cells=means(inputs,raw_commit,'calibration');models={};rows=[]
+    covered=inputs.get('covered_rounds',list(range(13)))
+    if len({dec(cfg['rounds'][m]['actual_delta_pf'])for m in covered})!=1:
+        raise ValueError('DF_MODEL_MIXES_DIFFERENT_ACTUAL_STEPS')
     for axis in ('X','Y'):
         own=[c for c in cells if c['axis']==axis]
-        matrix=[[Fraction(1),Fraction(c['q'])]+([]if mode=='FULL_AFFINE_Q_R1'else[Fraction(c['q']*c['R'])])for c in own]
-        co=solve(matrix,[dec(c['mean_C'])for c in own]);model=dict(features=['one','q']if len(co)==2 else['one','q','qR'],offset=0,
-            calibration=own,calibration_residuals=[enc(0)]*len(own),independent_validation='NOT_YET_OPENED',coefficients={k:enc(v)for k,v in zip(('one','q','qR'),co)})
-        if len(co)==2:model.update(alpha=enc(co[0]),beta=enc(co[1]))
+        if mode=='DIRECT_FINITE_COHORT':
+            if len(own)!=1 or len(covered)!=1 or own[0]['m']!=covered[0]:raise ValueError('DIRECT_DF_POINT_SCOPE_DIFFERS')
+            co=[];model=dict(features=[],offset=0,calibration=own,coefficients={},direct=True,
+                independent_validation='FINITE_COHORT_DIRECT_POINT_ONLY_NOT_FIT')
+        else:
+            matrix=[[Fraction(1),Fraction(c['q'])]+([]if mode=='FULL_AFFINE_Q_R1'else[Fraction(c['q']*c['R'])])for c in own]
+            co=solve(matrix,[dec(c['mean_C'])for c in own]);model=dict(features=['one','q']if len(co)==2 else['one','q','qR'],offset=0,
+                calibration=own,calibration_residuals=[enc(0)]*len(own),independent_validation='NOT_YET_OPENED',coefficients={k:enc(v)for k,v in zip(('one','q','qR'),co)})
+            if len(co)==2:model.update(alpha=enc(co[0]),beta=enc(co[1]))
         models[axis]=model
-        for r in cfg['rounds']:
-            q,Rr=r['q_PF'],r['R_outer'];p=co[0]+co[1]*q+(co[2]*q*Rr if len(co)==3 else 0)
+        for r in [cfg['rounds'][m]for m in covered]:
+            q,Rr=r['q_PF'],r['R_outer'];p=dec(own[0]['mean_C'])if mode=='DIRECT_FINITE_COHORT'else co[0]+co[1]*q+(co[2]*q*Rr if len(co)==3 else 0)
             if p<=0:raise ValueError('Nonpositive candidate model price; no clipping/refit')
             rows.append(dict(L_D=cfg['spec']['L_D'],configuration_id=cfg['id'],m=r['m'],axis=axis,physical_id=r['physical_candidate']['id'],q=q,R=Rr,C_ref=enc(p),
-                application='CALIBRATION'if r['m']in inputs['model_design']['calibration_rounds']else'LONG_ROUND_EXTRAPOLATION'if r['m']>6 else'UNCHECKED_INTERPOLATION',law=r['law_binding']))
+                application='DIRECT_FINITE_COHORT'if mode=='DIRECT_FINITE_COHORT'else'CALIBRATION'if r['m']in inputs['model_design']['calibration_rounds']else'LONG_ROUND_EXTRAPOLATION'if r['m']>max(inputs['model_design']['calibration_rounds'])else'UNCHECKED_INTERPOLATION',law=r['law_binding']))
     output=ROOT/inputs['output_directory'];write(output/'FROZEN_MODELS.json',dict(status='FROZEN_2_AXIS_MODELS',source=source,raw_commit=raw_commit,mode=mode,models=models,
-        model_verdict='NOT_ASSESSED_NO_ADOPTED_TOLERANCE',finite_cohort_is_law_expectation=False,holdout_not_opened=True,formula='FULL_WRAPPER_C_OFFSET_ZERO_NO_S_ADDITION'))
-    write(output/'AXIS_PRICES.json',dict(source=source,rows=sorted(rows,key=lambda r:(r['m'],r['axis'])),positive_finite_axes=26))
+        model_verdict='NOT_ASSESSED_NO_ADOPTED_TOLERANCE',finite_cohort_is_law_expectation=False,holdout_not_opened=True,formula='FULL_WRAPPER_C_OFFSET_ZERO_NO_S_ADDITION',
+        **({}if 'covered_rounds'not in inputs else dict(covered_rounds=covered,actual_step=cfg['rounds'][covered[0]]['actual_delta_pf']))))
+    write(output/'AXIS_PRICES.json',dict(source=source,rows=sorted(rows,key=lambda r:(r['m'],r['axis'])),positive_finite_axes=2*len(covered)))
 
 
 def compare(inputs,raw_commit,model_commit,source):
@@ -512,9 +585,9 @@ def compare(inputs,raw_commit,model_commit,source):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('mode',choices=('prepare','acquire','freeze','compare-holdout'));ap.add_argument('--source',required=True)
-    ap.add_argument('--tail-descriptor',type=Path);ap.add_argument('--price-quote',type=Path);ap.add_argument('--configuration');ap.add_argument('--selector',default='[]');ap.add_argument('--output');ap.add_argument('--cohort');ap.add_argument('--input',type=Path);ap.add_argument('--inputs-commit');ap.add_argument('--stage',choices=('calibration','holdout'));ap.add_argument('--raw-commit');ap.add_argument('--model-commit');a=ap.parse_args()
+    ap.add_argument('--tail-descriptor',type=Path);ap.add_argument('--price-quote',type=Path);ap.add_argument('--configuration');ap.add_argument('--selector',default='[]');ap.add_argument('--output');ap.add_argument('--cohort');ap.add_argument('--input',type=Path);ap.add_argument('--inputs-commit');ap.add_argument('--stage',choices=('calibration','holdout'));ap.add_argument('--raw-commit');ap.add_argument('--model-commit');ap.add_argument('--covered-rounds',type=json.loads);a=ap.parse_args()
     if a.mode=='prepare':
-        commit,path=a.configuration.split(':',1);prepare(dict(commit=commit,path=path,selector=json.loads(a.selector)),a.output,a.source,a.cohort,None if a.price_quote is None else json.loads(a.price_quote.read_text()),None if a.tail_descriptor is None else json.loads(a.tail_descriptor.read_text()))
+        commit,path=a.configuration.split(':',1);prepare(dict(commit=commit,path=path,selector=json.loads(a.selector)),a.output,a.source,a.cohort,None if a.price_quote is None else json.loads(a.price_quote.read_text()),None if a.tail_descriptor is None else json.loads(a.tail_descriptor.read_text()),a.covered_rounds)
     else:
         inputs=load_inputs(a.input,a.inputs_commit,a.source)
         if a.mode=='acquire':return 0 if acquire(inputs,a.inputs_commit,a.stage,a.source,a.model_commit)else 2
