@@ -1,0 +1,71 @@
+test_full_chain_register_requote_and_completed_resume (__main__.PriceWrapperTests.test_full_chain_register_requote_and_completed_resume) ... ERROR
+test_multistep_held_before_compile (__main__.PriceWrapperTests.test_multistep_held_before_compile) ... ERROR
+test_saved_calibration_preserved_without_new_execution (__main__.PriceWrapperTests.test_saved_calibration_preserved_without_new_execution) ... ERROR
+
+======================================================================
+ERROR: test_full_chain_register_requote_and_completed_resume (__main__.PriceWrapperTests.test_full_chain_register_requote_and_completed_resume)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-pr-step-width-search-20261117/tests/test_pr_pauli_candidate_prices.py", line 67, in test_full_chain_register_requote_and_completed_resume
+    first=W.run(request,execute=True);n=len(calls);second=W.run(request,execute=True)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-pr-step-width-search-20261117/scripts/run_pr_pauli_candidate_prices.py", line 255, in run
+    return _run_one(request,execute=execute,push=push)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-pr-step-width-search-20261117/scripts/run_pr_pauli_candidate_prices.py", line 93, in _run_one
+    if(workspace/AUDIT_ADAPTER).read_bytes()!=subprocess.check_output(['git','show',adapter_source+':'+AUDIT_ADAPTER],cwd=workspace):
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1050, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpe0zr5f86/cal/scripts/pauli_split_cal_audit_request.py'
+
+======================================================================
+ERROR: test_multistep_held_before_compile (__main__.PriceWrapperTests.test_multistep_held_before_compile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-pr-step-width-search-20261117/tests/test_pr_pauli_candidate_prices.py", line 84, in test_multistep_held_before_compile
+    result=W.run(request,execute=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-pr-step-width-search-20261117/scripts/run_pr_pauli_candidate_prices.py", line 255, in run
+    return _run_one(request,execute=execute,push=push)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-pr-step-width-search-20261117/scripts/run_pr_pauli_candidate_prices.py", line 93, in _run_one
+    if(workspace/AUDIT_ADAPTER).read_bytes()!=subprocess.check_output(['git','show',adapter_source+':'+AUDIT_ADAPTER],cwd=workspace):
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1050, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpc8ye_ure/cal/scripts/pauli_split_cal_audit_request.py'
+
+======================================================================
+ERROR: test_saved_calibration_preserved_without_new_execution (__main__.PriceWrapperTests.test_saved_calibration_preserved_without_new_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-pr-step-width-search-20261117/tests/test_pr_pauli_candidate_prices.py", line 93, in test_saved_calibration_preserved_without_new_execution
+    result=W.run(request,execute=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-pr-step-width-search-20261117/scripts/run_pr_pauli_candidate_prices.py", line 255, in run
+    return _run_one(request,execute=execute,push=push)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/a-pr-step-width-search-20261117/scripts/run_pr_pauli_candidate_prices.py", line 93, in _run_one
+    if(workspace/AUDIT_ADAPTER).read_bytes()!=subprocess.check_output(['git','show',adapter_source+':'+AUDIT_ADAPTER],cwd=workspace):
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1050, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpnpz6bocz/cal/scripts/pauli_split_cal_audit_request.py'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.010s
+
+FAILED (errors=3)

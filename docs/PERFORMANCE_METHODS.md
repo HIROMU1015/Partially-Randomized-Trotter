@@ -1,5 +1,11 @@
 # 性能対策の再利用索引
 
+## PRの複数要求幅：実stepごとの準備再利用（2026-11-17）
+
+`run_rpe_schedule_search.WidthDriver` は方式・分割・公式・exact要求幅・Kごとに既存mapperのschedule区間でκを探索し、共通Completionから同じV2/Executorへ戻す。`pr_step_price_registry.py` は固定監査結果をactual step・辞書・law・構造・wrapper時間の範囲だけに登録し、複数候補で共有する。同一物理scheduleの宣言aliasはH/state/辞書/target/law/SOURCEを含む契約で照合し、完了済みQ3を再起動しない。
+
+人工系で両方式の別幅選択・部分価格の取込・同run再開0起動を確認した。保存JSONで旧単一幅とround04較正要求を再現したが、別幅の実H4信号・価格・Q3の性能は未測定。旧価格wrapperで新auditを無条件要求した回帰は、旧経路を維持する分岐と回帰テストで修正した。[SOURCE・適用条件・検収](research/pr_requested_step_search_20261117/HANDOFF.md)を参照。
+
 既存の大規模計算の手法集は固定 `481c4b7abffbf070347f697980f2ec051e6a6538:docs/PERFORMANCE_METHODS.md` を参照する。本C branchへその科学runnerを取り込んだ意味ではない。
 
 ## 保存RPE結果の読取
