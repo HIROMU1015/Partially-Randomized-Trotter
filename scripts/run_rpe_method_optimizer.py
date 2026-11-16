@@ -19,6 +19,7 @@ REPLAY.json, FIXTURE.json, OWN_PRICE.json and CHECKS.json.
 """
 import argparse
 import csv
+from contextlib import contextmanager
 from fractions import Fraction
 import inspect
 import json
@@ -33,6 +34,21 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def write(path, value):
     path.write_text(json.dumps(O.jsonable(value), ensure_ascii=False, indent=2) + '\n')
+
+
+@contextmanager
+def round_phase(run, name):
+    """High-resolution controller timings; not a scientific progress gate."""
+    started=time.perf_counter();status='ERROR'
+    def record(event, **values):
+        with (run / 'ROUND_STAGES.jsonl').open('a') as f:
+            f.write(json.dumps(dict(event=event,phase=name,epoch=time.time(),monotonic=time.monotonic(),**values))+'\n')
+    record('START')
+    try:
+        yield
+        status='OK'
+    finally:
+        record('END',seconds=time.perf_counter()-started,status=status)
 
 
 def candidate_rows(context):
@@ -107,6 +123,8 @@ def price_overrides(problem, spec):
     """Round-level price-rule settings (e.g. registry_file: a B2-extended registry with newly calibrated split entries)."""
     if spec.get('price_rules_overrides'):
         problem = json.loads(json.dumps(problem));problem['price_rules'].update(spec['price_rules_overrides'])
+    if spec.get('pf_evidence_registry'):
+        problem = dict(problem, pf_evidence_registry=spec['pf_evidence_registry'])
     return problem
 
 
@@ -129,55 +147,98 @@ def merged_routes(problem, spec):
     return routes
 
 
+def make_executor(root, run, routes, expected, problem, spec):
+    """One normal executor/profile factory, also used by requested-width batches.
+
+    The caller owns finish(): preparation continuations keep the same queue,
+    launch budget, expected identities and prefix-cache profile alive.
+    """
+    run=Path(run);root=Path(root);options=spec.get('executor',{})
+    scheduler=options.get('scheduler','legacy')
+    if scheduler not in('legacy','concurrent'):raise ValueError('Unknown executor.scheduler')
+    budgets=spec['max_new_q3_per_method']
+    approved=spec.get('science_approved',any(v not in(0,None)for v in budgets.values()))
+    if any(v=='UNLIMITED'for v in budgets.values())and spec.get('science_approved')is not True:
+        raise ValueError('UNLIMITED requires science_approved: true in the round file')
+    common=dict(optimizer_source=head(),max_concurrent=options.get('max_concurrent_jobs',1),
+        wait_for_running=options.get('wait_for_running_jobs',False),
+        prior_run_dirs=[(root/d).resolve()for d in options.get('prior_run_dirs',[])])
+    if scheduler=='concurrent':
+        from trottertracks import rpe_optimizer_concurrent as C
+        cache=options.get('prefix_cache_directory')
+        if cache is not None and not Path(cache).is_absolute():cache=str(run/cache)
+        executor=C.ConcurrentExecutor(root,run,routes,expected,problem,**common,budgets=budgets,
+            science_approved=approved,dp_workers=options.get('dp_workers'),prefix_cache_directory=cache,
+            prefix_checkpoint_rounds=options.get('prefix_checkpoint_rounds'))
+        def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
+    else:
+        executor=O.Executor(root,run,routes,expected,problem,**common);optimize=O.optimize
+    return executor,optimize
+
+
 def round_mode(a, problem, extra):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
+    if getattr(a,'plan_only',False):
+        spec=dict(spec,science_approved=False,max_new_q3_per_method={m:0 for m in spec['methods']})
+        if spec.get('pf_completion'):spec['pf_completion']=dict(spec['pf_completion'],mode='plan')
     problem = price_overrides(scoped(problem, spec.get('method_overrides')), spec)
     for m in spec['methods']:
         g = problem['methods'][m].get('generation') or {}
         if g.get('kappa_points_file') and not Path(g['kappa_points_file']).is_absolute():
             g['kappa_points_file'] = str(ROOT / g['kappa_points_file'])
-    context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation',
-                        generate_configurations=not (spec.get('candidate_completion')or{}).get('bootstrap_saved_only',False))
+    with round_phase(run, 'PREPARE_INPUTS_AND_PRICES'):
+        context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation',
+                            generate_configurations=not (spec.get('candidate_completion')or{}).get('bootstrap_saved_only',False))
     extra = extra + resume_input([Path(x) for x in spec.get('resume_from', [])])
     stored = run / 'ROUND.json'
     if stored.exists():
         old = O.load_json(stored)
-        for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides'):
+        for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
             if old.get(key) != spec.get(key):
                 raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
     else:
         write(stored, spec)
     routes = merged_routes(problem, spec)
+    from trottertracks import pf_optimizer_connection as PFConnection
+    if context.get('pf_evidence_registry'):
+        routes = PFConnection.registry_routes(routes, context['pf_evidence_registry'])
+    from trottertracks import pf_candidate_selection as PFSelect
+    with round_phase(run, 'SELECT_AND_PREPARE_PF'):
+        context,routes,pf_preparation = PFSelect.prepare(ROOT,problem,context,spec,run,routes)
     if spec.get('candidate_completion'):
         from trottertracks.pr_candidate_completion import prepare_for_search
-        context,routes,completion = prepare_for_search(ROOT,dict(problem,execution_routes=routes),context,spec,run)
+        with round_phase(run, 'PREPARE_SELECTED_CANDIDATES'):
+            context,routes,completion = prepare_for_search(ROOT,dict(problem,execution_routes=routes),context,spec,run)
     unlimited = any(v == 'UNLIMITED' for v in spec['max_new_q3_per_method'].values())
     steps = spec.get('max_steps_per_method', 100000 if unlimited else problem['search']['max_steps_per_method'])
     search = dict(problem['search'], max_steps_per_method=steps)  # the finite range ends an UNLIMITED round
     search.update(spec.get('search_overrides', {}))  # e.g. incumbent_scope CONFIGURATION, lookahead, seed_saved_same_L_D
     O.apply_published(context['candidates'], routes)
-    ex_opts = spec.get('executor', {})
-    executor = O.Executor(ROOT, run, routes, context['expected'], problem, optimizer_source=head(),
-                          max_concurrent=ex_opts.get('max_concurrent_jobs', 1), wait_for_running=ex_opts.get('wait_for_running_jobs', False),
-                          prior_run_dirs=[(ROOT / d).resolve() for d in ex_opts.get('prior_run_dirs', [])])
     budgets = spec['max_new_q3_per_method']
     approved = spec.get('science_approved', any(v not in (0, None) for v in budgets.values()))
-    if any(v == 'UNLIMITED' for v in budgets.values()) and spec.get('science_approved') is not True:
-        raise SystemExit('UNLIMITED (no Q3 count limit) requires science_approved: true in the round file')
-    result = O.optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
-                        initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
-                        extra_results=extra, science_approved=approved)
-    if spec.get('candidate_completion'):
-        from trottertracks.pr_candidate_completion import continue_selected_preparation,publish_comparison_exports
-        result=continue_selected_preparation(ROOT,dict(problem,search=search),context,spec,run,completion,executor,result,extra)
-        publish_comparison_exports(completion,run,context)
-    write(run / 'ROUND_RESULT.json', slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
-                                          optimizer_source=head(), wall_seconds=time.perf_counter() - start,
-                                          exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)))
-    table(result, run / 'PER_METHOD.csv')
-    write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
-                                   pending_Q3={m: r['pending_request'] for m, r in result.items()}))
+    executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,spec)
+    try:
+        with round_phase(run, 'SEARCH_AND_Q3'):
+            result = optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
+                              initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
+                              extra_results=extra, science_approved=approved)
+        if spec.get('candidate_completion'):
+            from trottertracks.pr_candidate_completion import continue_selected_preparation,publish_comparison_exports
+            result=continue_selected_preparation(ROOT,dict(problem,search=search),context,spec,run,completion,executor,result,extra,
+                                                 optimizer=optimize)
+            with round_phase(run, 'EXPORT_COMPARISON'):
+                publish_comparison_exports(completion,run,context)
+    finally:
+        executor.finish()
+    with round_phase(run, 'SAVE_RESULTS'):
+        write(run / 'ROUND_RESULT.json', slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
+                                              optimizer_source=head(), wall_seconds=time.perf_counter() - start,
+                                              pf_preparation=pf_preparation,artificial_only=bool((pf_preparation or {}).get('artificial_only')),
+                                              exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)))
+        table(result, run / 'PER_METHOD.csv')
+        write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
+                                       pending_Q3={m: r['pending_request'] for m, r in result.items()}))
     with (run / 'INVOCATIONS.jsonl').open('a') as f:
         f.write(json.dumps(O.jsonable(dict(time=time.time(), budget=spec['max_new_q3_per_method'],
             launched={m: executor.launched(m) for m in spec['methods']},
@@ -235,7 +296,7 @@ def interrupted_mode(a, problem, extra):
     """
     spec = O.load_json(a.round);run = a.run_dir.resolve();start = time.perf_counter()
     old = O.load_json(run / 'ROUND.json')
-    for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides'):
+    for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
         if old.get(key) != spec.get(key):
             raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
     stop = O.load_json(a.interrupted)

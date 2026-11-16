@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[PR複数幅/queue/DPとB0I選択の統合](../../docs/research/pr_width_throughput_integration_20261117/HANDOFF.md)：研究別`pr_candidate_completion`、`rpe_optimizer_concurrent`、`rpe_dp_prefix_reuse`、PF metadata helperを通常入口から再利用。新科学0。
+
 [H4保存結果の自動比較](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)：実装はtrottertracks/CLI。物理library・数値solverを変更せず、保存判定と費用を照合する。
 
 [Full-H κ2 m0再判定・固定総額](../../docs/research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)：保存証拠とscript会計だけを接続。物理library・compilerの変更なし。

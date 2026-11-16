@@ -1,0 +1,59 @@
+"""Selection and resume boundaries without scientific providers or numeric H4 calls."""
+from copy import deepcopy
+from pathlib import Path
+import tempfile
+import unittest
+from unittest.mock import patch
+
+from trottertracks import pf_candidate_selection as S
+
+
+def candidate(cid, p, formula='2nd', shift='100', t2=()):
+    return dict(configuration_id=cid,method='TRUNCATED_PF',key=dict(p=p,formula=formula,delta_over_h='2'),
+                ready=False,needs=['SIGNAL_13ROUND_PACKET','PRICE_26AXIS'],
+                configuration_body=dict(id=cid,spec=dict(split=dict(original_PF_method='B0I'))),
+                priority_evidence=dict(T1=dict(delta_E_trunc_B0I_ha=shift),T2=list(t2)))
+
+
+def context():
+    return dict(catalog=dict(candidates=[dict(method='TRUNCATED_PF',L_D=7,
+        q3_status='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD',status='FEASIBLE',conditional_cost=100,
+        configuration_id='saved7')]),candidates=[candidate('saved7',7),candidate('missing',0)])
+
+
+class Selection(unittest.TestCase):
+    def test_large_shift_is_priority_only_and_p_is_not_supplied(self):
+        d=S.select(context(),['TRUNCATED_PF'])
+        self.assertEqual(d['selected']['configuration_id'],'missing')
+        self.assertEqual(d['evaluated_prefixes'],[7])
+        self.assertEqual({c['key']['p']for c in d['candidates']},{0,7})
+        self.assertEqual(d['priority_scope'],'REQUEST_ORDER_ONLY_NOT_Q3_REJECTION_OR_PRICE_BOUND')
+
+    def test_default_plan_and_resume_pass_selected_body_to_existing_helper(self):
+        ctx=context();spec=dict(methods=['TRUNCATED_PF'],science_approved=False,
+                              pf_completion=dict(mode='plan',entry='fixed_D_entry'))
+        with tempfile.TemporaryDirectory()as d:
+            with patch.object(S.PF,'complete_selected',return_value=dict(response=dict(items=[]),registry_file='registry'))as helper:
+                _,_,first=S.prepare(Path(d),{},ctx,spec,Path(d)/'run',{})
+                _,_,second=S.prepare(Path(d),{},ctx,spec,Path(d)/'run',{})
+                sent=helper.call_args.args[1]['pf_completion']['selected']
+                self.assertEqual(sent,[dict(configuration_body=ctx['candidates'][1]['configuration_body'])])
+            self.assertEqual(first,second)
+            self.assertEqual(first['new_scientific_calls'],0)
+            changed=deepcopy(ctx);changed['candidates'][1]['key']['p']=1
+            with self.assertRaisesRegex(ValueError,'identity changed'):
+                S.prepare(Path(d),{},changed,spec,Path(d)/'run',{})
+
+    def test_prepared_identity_and_artificial_route_cannot_be_substituted(self):
+        ctx=context();spec=dict(methods=['TRUNCATED_PF'],science_approved=True,
+            pf_completion=dict(mode='artificial',entry='fixture'))
+        with tempfile.TemporaryDirectory()as d:
+            with self.assertRaisesRegex(ValueError,'only artificial'):
+                S.prepare(Path(d),{},ctx,spec,Path(d)/'mixed',{'TRUNCATED_PF':[dict(kind='pf_b_pf6')]})
+            after=deepcopy(ctx);after['candidates'][1]['key']['formula']='4th';after['pf_evidence_registry']=dict(configurations={})
+            with patch.object(S.PF,'complete_selected',return_value=dict(response=dict(items=[]),registry_file='registry')),patch.object(S,'_refresh',return_value=after):
+                with self.assertRaisesRegex(ValueError,'another p/formula/width'):
+                    S.prepare(Path(d),{},ctx,spec,Path(d)/'wrong',{'TRUNCATED_PF':[dict(kind='artificial')]})
+
+
+if __name__=='__main__':unittest.main()

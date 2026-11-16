@@ -1,0 +1,1322 @@
+{
+  "schema": "RPE_OPTIMIZER_ROUND_RESULT_V1",
+  "round": {
+    "round_id": "ARTIFICIAL_WIDTH_THROUGHPUT",
+    "methods": [
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "science_approved": true,
+    "initial": "all",
+    "max_new_q3_per_method": {
+      "PR_PAULI": 2,
+      "PR_DF": 2
+    },
+    "candidate_completion": {
+      "max_attempted_per_method": 0
+    },
+    "executor": {
+      "scheduler": "concurrent",
+      "max_concurrent_jobs": 2,
+      "dp_workers": 1,
+      "prefix_cache_directory": "/tmp/pr-width-throughput-artificial-qucnzvls/prefix_cache",
+      "prefix_checkpoint_rounds": [
+        5,
+        11
+      ]
+    },
+    "width_families": [
+      {
+        "method": "PR_PAULI",
+        "L_D": 3,
+        "configuration": {
+          "method": "PR_PAULI",
+          "path": "ARTIFICIAL",
+          "commit": "ARTIFICIAL"
+        }
+      },
+      {
+        "method": "PR_DF",
+        "L_D": 8,
+        "configuration": {
+          "method": "PR_DF",
+          "path": "ARTIFICIAL",
+          "commit": "ARTIFICIAL"
+        }
+      }
+    ],
+    "search_overrides": {
+      "requested_widths": {
+        "PR_PAULI": [
+          0.1,
+          0.2,
+          "1/5"
+        ],
+        "PR_DF": [
+          0.1,
+          0.05,
+          0.2
+        ]
+      },
+      "schedule_wide": {
+        "max_kappa": "1/1000000000",
+        "per_decision": 8
+      }
+    }
+  },
+  "methods": {
+    "PR_PAULI": {
+      "method": "PR_PAULI",
+      "best": {
+        "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=2:e80ff616",
+        "configuration_id": "e80ff616555a8b2586c456a8b330404f4477e5971631b3d9e22399f1330d25e5",
+        "configuration": {
+          "L_D": 3,
+          "formula": "2nd",
+          "delta_over_h": "2"
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 57608,
+          "denominator": 1,
+          "display": "57,608.00"
+        },
+        "cost_display": "57,608.00",
+        "evidence": "PRIOR_ROUND_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "stop_reason": "NO_CANDIDATE_LEFT_IN_RANGE",
+      "pending_request": null,
+      "trace": [],
+      "held": [],
+      "new_calls": 0,
+      "evaluated_count": 2,
+      "evaluated": [
+        {
+          "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=2:e80ff616",
+          "configuration_id": "e80ff616555a8b2586c456a8b330404f4477e5971631b3d9e22399f1330d25e5",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 57608,
+            "denominator": 1,
+            "display": "57,608.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_PAULI/06ff7daad47186c3c815",
+          "label": null
+        },
+        {
+          "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1:2f7904db",
+          "configuration_id": "2f7904db52b5143139e51e340b9bbd7c3bdf87c8ac27d93056875f72275b6219",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 5200000,
+            "denominator": 1,
+            "display": "5,200,000.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_PAULI/f49a3840a99164751e80",
+          "label": null
+        }
+      ],
+      "not_ready_candidates": [
+        {
+          "candidate": "ARTIFICIAL_PLACEHOLDER:PR_PAULI:1/5",
+          "configuration": {
+            "L_D": 3,
+            "formula": "2nd",
+            "delta_pf": {
+              "numerator": 1,
+              "denominator": 5,
+              "display": "0.20"
+            }
+          },
+          "configuration_id": null,
+          "needs": [
+            "PRICE_26_AXIS_MISSING"
+          ],
+          "price_status": "ARTIFICIAL",
+          "price_quote": null,
+          "price_needs": null,
+          "signal_source": null,
+          "reusable": null,
+          "next": "Q3 of a generated/decremented allocation after the listed items exist"
+        }
+      ],
+      "ready_candidates": [
+        "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1:2f7904db",
+        "PR_PAULI:L_D=3,formula=2nd,delta_over_h=2:e80ff616"
+      ],
+      "search_range": {
+        "candidates": [
+          "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1:2f7904db",
+          "PR_PAULI:L_D=3,formula=2nd,delta_over_h=2:e80ff616",
+          "ARTIFICIAL_PLACEHOLDER:PR_PAULI:1/5"
+        ],
+        "rule": "METHOD_MINIMUM_PRIORITY_V2"
+      },
+      "resume_records": [
+        {
+          "configuration_id": "e80ff616555a8b2586c456a8b330404f4477e5971631b3d9e22399f1330d25e5",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_PAULI/06ff7daad47186c3c815"
+        },
+        {
+          "configuration_id": "2f7904db52b5143139e51e340b9bbd7c3bdf87c8ac27d93056875f72275b6219",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_PAULI/f49a3840a99164751e80"
+        }
+      ],
+      "by_configuration": [
+        {
+          "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=1:2f7904db",
+          "configuration_id": "2f7904db52b5143139e51e340b9bbd7c3bdf87c8ac27d93056875f72275b6219",
+          "key": {
+            "L_D": 3,
+            "formula": "2nd",
+            "delta_over_h": "1"
+          },
+          "picks": 0,
+          "explore_picks": 0,
+          "kappa_value": "1/3",
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 5200000,
+              "denominator": 1,
+              "display": "5,200,000.00"
+            },
+            "cost_display": "5,200,000.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_PAULI/f49a3840a99164751e80",
+            "label": null
+          }
+        },
+        {
+          "candidate": "PR_PAULI:L_D=3,formula=2nd,delta_over_h=2:e80ff616",
+          "configuration_id": "e80ff616555a8b2586c456a8b330404f4477e5971631b3d9e22399f1330d25e5",
+          "key": {
+            "L_D": 3,
+            "formula": "2nd",
+            "delta_over_h": "2"
+          },
+          "picks": 0,
+          "explore_picks": 0,
+          "kappa_value": "1/6",
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 57608,
+              "denominator": 1,
+              "display": "57,608.00"
+            },
+            "cost_display": "57,608.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_PAULI/06ff7daad47186c3c815",
+            "label": null
+          }
+        }
+      ],
+      "incumbent_scope": "METHOD_PRIORITY",
+      "prior_rounds": {
+        "run_dirs": [
+          "/tmp/pr-width-throughput-artificial-qucnzvls/run"
+        ],
+        "loaded": 2,
+        "already_known": 0,
+        "refused": 0,
+        "refused_reasons": []
+      },
+      "unevaluated": [],
+      "input_requests": [
+        {
+          "kind": "NEW_L_D",
+          "candidate": "ARTIFICIAL_PLACEHOLDER:PR_PAULI:1/5",
+          "configuration": {
+            "L_D": 3,
+            "formula": "2nd",
+            "delta_pf": {
+              "numerator": 1,
+              "denominator": 5,
+              "display": "0.20"
+            }
+          },
+          "configuration_id": null,
+          "needs": [
+            "PRICE_26_AXIS_MISSING"
+          ],
+          "price_needs": null,
+          "distance_to_leading_L_D": 0,
+          "preparation": {}
+        }
+      ],
+      "left": {
+        "UPDATE": 0,
+        "EXPLORE": 0,
+        "FINE": 0,
+        "SMALL": 0,
+        "DEFERRED": 0
+      },
+      "settings": {
+        "explore_every": 4,
+        "explore_window": "3/2",
+        "small_gain_fraction": "1/10000",
+        "deferral_fail_margin": "1/10000",
+        "transfer_count": 2,
+        "kappa_bounds": [
+          {
+            "numerator": 1,
+            "denominator": 4,
+            "display": "0.25"
+          },
+          {
+            "numerator": 8,
+            "denominator": 1,
+            "display": "8.00"
+          }
+        ],
+        "kappa_min_ratio": "9/8",
+        "lookahead": 1,
+        "adaptive_lookahead": false,
+        "coarse_gain_fraction": null,
+        "lookahead_mode": "CHAIN",
+        "adaptive_hybrid": false,
+        "allocation_exchange": null
+      },
+      "prefetch_policy": {
+        "decisions": 0,
+        "maximum_preview": 0,
+        "chain_proposals": 0,
+        "latest": null
+      },
+      "selection_timing": {
+        "candidate_classification_seconds": 0.00015978887677192688,
+        "candidate_classification_calls": 2,
+        "preview_order_seconds": 0.0,
+        "preview_order_calls": 0,
+        "backend_answer_seconds": 0.0,
+        "backend_answer_calls": 0
+      },
+      "budget": {
+        "max_new_q3": 2,
+        "science_approved": true,
+        "spent_before": 2,
+        "new_calls": 0
+      },
+      "generation": null,
+      "parameter_assessment": null,
+      "adopted_new_calls": 0,
+      "executor_metrics": {
+        "submitted": 0,
+        "queued_cancelled": 0,
+        "launched": 0,
+        "finished": 0,
+        "adopted": 0,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 0,
+        "sampled_owned_tree_peak_RSS_KiB": 0,
+        "completed_not_adopted": 0,
+        "by_method": {},
+        "max_concurrent_jobs": 2,
+        "dp_workers": 1,
+        "new_real_route_launches": 0,
+        "executor_failure": null,
+        "elapsed_seconds": 0.004968642024323344,
+        "busy_job_seconds": 0.0,
+        "idle_slot_seconds_no_queued_candidate": 0.009937284048646688,
+        "idle_slot_seconds_waiting_selected_result": 0.0,
+        "idle_slot_seconds_no_queued_or_selected_result": 0.009937284048646688,
+        "idle_slot_seconds_with_queued_candidate": 0.0,
+        "slot_utilization": 0.0,
+        "speculative_adoption_fraction": null,
+        "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+        "method_launched": 0,
+        "method_adopted": 0
+      }
+    },
+    "PR_DF": {
+      "method": "PR_DF",
+      "best": {
+        "candidate": "PR_DF:L_D=8,formula=2nd,delta_over_h=1/2:f2f3d0b8",
+        "configuration_id": "f2f3d0b832a24c45a980354e64f71312cea574f3b0a79e6df36627be7cbecb44",
+        "configuration": {
+          "L_D": 8,
+          "formula": "2nd",
+          "delta_over_h": "1/2"
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 231,
+          "denominator": 1,
+          "display": "231.00"
+        },
+        "cost_display": "231.00",
+        "evidence": "PRIOR_ROUND_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "stop_reason": "NO_CANDIDATE_LEFT_IN_RANGE",
+      "pending_request": null,
+      "trace": [],
+      "held": [],
+      "new_calls": 0,
+      "evaluated_count": 2,
+      "evaluated": [
+        {
+          "candidate": "PR_DF:L_D=8,formula=2nd,delta_over_h=1:b800da0a",
+          "configuration_id": "b800da0acd7f3d26adb0d873e2a3a42a1d478a2f65a00874d44b9d6113b84482",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 5200000,
+            "denominator": 1,
+            "display": "5,200,000.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_DF/254731ebee8b35737033",
+          "label": null
+        },
+        {
+          "candidate": "PR_DF:L_D=8,formula=2nd,delta_over_h=1/2:f2f3d0b8",
+          "configuration_id": "f2f3d0b832a24c45a980354e64f71312cea574f3b0a79e6df36627be7cbecb44",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 231,
+            "denominator": 1,
+            "display": "231.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_DF/b591909243078c6c9216",
+          "label": null
+        }
+      ],
+      "not_ready_candidates": [
+        {
+          "candidate": "ARTIFICIAL_PLACEHOLDER:PR_DF:3602879701896397/18014398509481984",
+          "configuration": {
+            "L_D": 8,
+            "formula": "2nd",
+            "delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 18014398509481984,
+              "display": "0.20"
+            }
+          },
+          "configuration_id": null,
+          "needs": [
+            "PRICE_26_AXIS_MISSING"
+          ],
+          "price_status": "ARTIFICIAL",
+          "price_quote": null,
+          "price_needs": null,
+          "signal_source": null,
+          "reusable": null,
+          "next": "Q3 of a generated/decremented allocation after the listed items exist"
+        }
+      ],
+      "ready_candidates": [
+        "PR_DF:L_D=8,formula=2nd,delta_over_h=1:b800da0a",
+        "PR_DF:L_D=8,formula=2nd,delta_over_h=1/2:f2f3d0b8"
+      ],
+      "search_range": {
+        "candidates": [
+          "PR_DF:L_D=8,formula=2nd,delta_over_h=1:b800da0a",
+          "PR_DF:L_D=8,formula=2nd,delta_over_h=1/2:f2f3d0b8",
+          "ARTIFICIAL_PLACEHOLDER:PR_DF:3602879701896397/18014398509481984"
+        ],
+        "rule": "METHOD_MINIMUM_PRIORITY_V2"
+      },
+      "resume_records": [
+        {
+          "configuration_id": "b800da0acd7f3d26adb0d873e2a3a42a1d478a2f65a00874d44b9d6113b84482",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_DF/254731ebee8b35737033"
+        },
+        {
+          "configuration_id": "f2f3d0b832a24c45a980354e64f71312cea574f3b0a79e6df36627be7cbecb44",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_DF/b591909243078c6c9216"
+        }
+      ],
+      "by_configuration": [
+        {
+          "candidate": "PR_DF:L_D=8,formula=2nd,delta_over_h=1:b800da0a",
+          "configuration_id": "b800da0acd7f3d26adb0d873e2a3a42a1d478a2f65a00874d44b9d6113b84482",
+          "key": {
+            "L_D": 8,
+            "formula": "2nd",
+            "delta_over_h": "1"
+          },
+          "picks": 0,
+          "explore_picks": 0,
+          "kappa_value": "1/3",
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 5200000,
+              "denominator": 1,
+              "display": "5,200,000.00"
+            },
+            "cost_display": "5,200,000.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_DF/254731ebee8b35737033",
+            "label": null
+          }
+        },
+        {
+          "candidate": "PR_DF:L_D=8,formula=2nd,delta_over_h=1/2:f2f3d0b8",
+          "configuration_id": "f2f3d0b832a24c45a980354e64f71312cea574f3b0a79e6df36627be7cbecb44",
+          "key": {
+            "L_D": 8,
+            "formula": "2nd",
+            "delta_over_h": "1/2"
+          },
+          "picks": 0,
+          "explore_picks": 0,
+          "kappa_value": "1/2",
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 231,
+              "denominator": 1,
+              "display": "231.00"
+            },
+            "cost_display": "231.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/pr-width-throughput-artificial-qucnzvls/run/jobs/PR_DF/b591909243078c6c9216",
+            "label": null
+          }
+        }
+      ],
+      "incumbent_scope": "METHOD_PRIORITY",
+      "prior_rounds": {
+        "run_dirs": [
+          "/tmp/pr-width-throughput-artificial-qucnzvls/run"
+        ],
+        "loaded": 2,
+        "already_known": 0,
+        "refused": 0,
+        "refused_reasons": []
+      },
+      "unevaluated": [],
+      "input_requests": [
+        {
+          "kind": "NEW_L_D",
+          "candidate": "ARTIFICIAL_PLACEHOLDER:PR_DF:3602879701896397/18014398509481984",
+          "configuration": {
+            "L_D": 8,
+            "formula": "2nd",
+            "delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 18014398509481984,
+              "display": "0.20"
+            }
+          },
+          "configuration_id": null,
+          "needs": [
+            "PRICE_26_AXIS_MISSING"
+          ],
+          "price_needs": null,
+          "distance_to_leading_L_D": 0,
+          "preparation": {}
+        }
+      ],
+      "left": {
+        "UPDATE": 0,
+        "EXPLORE": 0,
+        "FINE": 0,
+        "SMALL": 0,
+        "DEFERRED": 0
+      },
+      "settings": {
+        "explore_every": 4,
+        "explore_window": "3/2",
+        "small_gain_fraction": "1/10000",
+        "deferral_fail_margin": "1/10000",
+        "transfer_count": 2,
+        "kappa_bounds": [
+          {
+            "numerator": 1,
+            "denominator": 4,
+            "display": "0.25"
+          },
+          {
+            "numerator": 8,
+            "denominator": 1,
+            "display": "8.00"
+          }
+        ],
+        "kappa_min_ratio": "9/8",
+        "lookahead": 1,
+        "adaptive_lookahead": false,
+        "coarse_gain_fraction": null,
+        "lookahead_mode": "CHAIN",
+        "adaptive_hybrid": false,
+        "allocation_exchange": null
+      },
+      "prefetch_policy": {
+        "decisions": 0,
+        "maximum_preview": 0,
+        "chain_proposals": 0,
+        "latest": null
+      },
+      "selection_timing": {
+        "candidate_classification_seconds": 7.50997569411993e-05,
+        "candidate_classification_calls": 2,
+        "preview_order_seconds": 0.0,
+        "preview_order_calls": 0,
+        "backend_answer_seconds": 0.0,
+        "backend_answer_calls": 0
+      },
+      "budget": {
+        "max_new_q3": 2,
+        "science_approved": true,
+        "spent_before": 2,
+        "new_calls": 0
+      },
+      "generation": null,
+      "parameter_assessment": null,
+      "adopted_new_calls": 0,
+      "executor_metrics": {
+        "submitted": 0,
+        "queued_cancelled": 0,
+        "launched": 0,
+        "finished": 0,
+        "adopted": 0,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 0,
+        "sampled_owned_tree_peak_RSS_KiB": 0,
+        "completed_not_adopted": 0,
+        "by_method": {},
+        "max_concurrent_jobs": 2,
+        "dp_workers": 1,
+        "new_real_route_launches": 0,
+        "executor_failure": null,
+        "elapsed_seconds": 0.004968642024323344,
+        "busy_job_seconds": 0.0,
+        "idle_slot_seconds_no_queued_candidate": 0.009937284048646688,
+        "idle_slot_seconds_waiting_selected_result": 0.0,
+        "idle_slot_seconds_no_queued_or_selected_result": 0.009937284048646688,
+        "idle_slot_seconds_with_queued_candidate": 0.0,
+        "slot_utilization": 0.0,
+        "speculative_adoption_fraction": null,
+        "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+        "method_launched": 0,
+        "method_adopted": 0
+      }
+    }
+  },
+  "optimizer_source": "d69516191f3126a076b23bc55f6818b3f866f10e"
+}

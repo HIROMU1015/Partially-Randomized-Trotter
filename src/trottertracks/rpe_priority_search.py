@@ -27,13 +27,15 @@ an answer as UNEVALUATED and continues; ``'STOP'`` (rounds) stops with the next 
 from collections import defaultdict
 from fractions import Fraction
 import math
+import time
 
 from trottertracks import rpe_method_optimizer as O
 
 RULE_V2 = 'METHOD_MINIMUM_PRIORITY_V2'
 DEFAULTS = dict(explore_every=4, explore_window='3/2', small_gain_fraction='1/10000', deferral_fail_margin='1/10000',
                 transfer_count=2, kappa_bounds=['1/4', '8'], kappa_min_ratio='9/8', lookahead=1, adaptive_lookahead=False,
-                coarse_gain_fraction=None, lookahead_mode='CHAIN')
+                coarse_gain_fraction=None, lookahead_mode='CHAIN', adaptive_hybrid=False,
+                allocation_exchange=None)
 CLASS_ORDER = ('UPDATE', 'EXPLORE', 'FINE', 'SMALL', 'DEFERRED')
 # FINE (only with coarse_gain_fraction): a non-small saving below coarse_gain_fraction of the configuration's own best.  It is
 # taken only when no UPDATE / EXPLORE pick is left in any configuration, so every schedule gets its coarse descent (and new
@@ -71,6 +73,77 @@ def leq(a, b):
     return all(x <= y for x, y in zip(a, b))
 
 
+def hybrid_limits(heads, requested, observation=None):
+    """Bound independent-first previews using measured completed speculation only.
+
+    A launch is not a failure to adopt while its worker is still running.  With
+    missing completion counters the initial depth is retained, and the report
+    marks utilization as unmeasured.  Capacity changes never stop live jobs.
+    """
+    observation = observation or {}
+    capacity = max(1, int(observation.get('capacity') or requested))
+    total = min(max(0, requested), capacity)
+    independent = min(heads, total)
+    spare = total - independent
+    completed = observation.get('speculative_completed')
+    adopted = observation.get('speculative_adopted')
+    ratio = None
+    if completed is not None and adopted is not None and completed >= 8:
+        # One pseudo-success and one pseudo-failure avoid an abrupt permanent
+        # zero-depth state after a small unlucky sample.  This is scheduling,
+        # not a model of MSE as a function of shots.
+        ratio = Fraction(min(int(adopted), int(completed)) + 1, int(completed) + 2)
+        spare = min(spare, max(1, math.ceil(spare * ratio))) if spare else 0
+    return dict(capacity=capacity, preview_limit=total, independent_heads=independent,
+                chain_slots=spare, completed_speculation=completed,
+                adopted_speculation=adopted, adoption_fraction=None if ratio is None else str(ratio))
+
+
+def exchange_moves(base, prices, caps, steps, settings, excluded=()):
+    """Cost-decreasing expensive-round -> cheap-round moves, with no MSE prediction.
+
+    Existing nearest-kappa TRANSFER seeds copy whole allocations between
+    configurations.  These moves instead change two rounds of one incumbent.
+    They remain opt-in, inside the existing shot caps, and need their own Q3.
+    """
+    if not settings or not settings.get('enabled', False):
+        return []
+    count = int(settings.get('max_moves', 8))
+    adds = [int(x) for x in settings.get('add_steps', [1, 2])]
+    if count < 0 or any(x < 1 for x in adds):
+        raise ValueError('allocation_exchange needs nonnegative max_moves and positive add_steps')
+    original = O.cost(base, prices);excluded = set(excluded)
+    out = []
+    for remove_m in range(13):
+        for give in O.axis_groups(prices, remove_m):
+            for d in steps:
+                reduced = list(base)
+                for axis in give:
+                    reduced[2 * remove_m + O.AXES.index(axis)] -= d
+                if min(reduced) < 1:
+                    continue
+                for add_m in range(13):
+                    if add_m == remove_m:
+                        continue
+                    for receive in O.axis_groups(prices, add_m):
+                        for a in adds:
+                            vector = list(reduced)
+                            for axis in receive:
+                                vector[2 * add_m + O.AXES.index(axis)] += a
+                            vector = tuple(vector)
+                            if vector in excluded or any(n > cap for n, cap in zip(vector, caps)) or O.cost(vector, prices) >= original:
+                                continue
+                            out.append((vector, dict(kind='COST_DECREASING_ROUND_EXCHANGE',
+                                remove_m=remove_m, remove_axes=list(give), remove_shots=d,
+                                add_m=add_m, add_axes=list(receive), add_shots=a, base_vector=list(base))))
+    unique = {}
+    for vector, origin in out:
+        unique.setdefault(vector, origin)
+    ordered = sorted(unique.items(), key=lambda x: (O.cost(x[0], prices),
+                     sum(abs(a-b) for a, b in zip(x[0], base)), x[0]))
+    return ordered[:count]
+
+
 class ConfigState:
     """Per-configuration incumbent, maximal margin failures and cached local candidates."""
 
@@ -89,7 +162,8 @@ class ConfigState:
 
 
 def run_priority(name, candidates, knowledge, backend, search, threshold, generate, max_new, *, baseline=None, routes=None,
-                 spent=0, free=None, science_approved=True, prefetch=None, on_missing='STOP', facts=None, log=None):
+                 spent=0, free=None, science_approved=True, prefetch=None, on_missing='STOP', facts=None, log=None,
+                 prefetch_state=None):
     s = settings(search);baseline = baseline or {}
     ready = [c for c in candidates if c['ready'] and c['configuration_id']]
     states = {c['configuration_id']: ConfigState(c) for c in ready}
@@ -97,6 +171,10 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
     large = Fraction(search['large_step_headroom']);margin = 1 + s['deferral_fail_margin']
     trace, held, unevaluated, skipped = [], [], [], set()
     new_calls, pending, stop, since_explore, step = spent, None, None, 0, 0
+    prefetch_metrics = dict(decisions=0, maximum_preview=0, chain_proposals=0, latest=None)
+    selection_timing = dict(candidate_classification_seconds=0.0, candidate_classification_calls=0,
+                            preview_order_seconds=0.0, preview_order_calls=0,
+                            backend_answer_seconds=0.0, backend_answer_calls=0)
     if search.get('seed_saved_same_L_D'):
         O.sibling_seeds(candidates, knowledge)
 
@@ -153,6 +231,9 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                         if min(v) >= 1:
                             raw.append((tuple(v), dict(kind='DECREMENT_FROM_CONFIGURATION_INCUMBENT', m=m, axes=list(group), d=d,
                                                        base_vector=list(base), base_headroom=None if h is None else '%.6f' % float(h))))
+            if s['allocation_exchange']:
+                excluded = {v for cid, v in knowledge if cid == st.cid} | {v for cid, v in skipped if cid == st.cid}
+                raw += exchange_moves(base, prices, caps, steps, s['allocation_exchange'], excluded)
         else:
             budget = O.cost(caps, prices)
             for rule in search['seed_rules']:
@@ -182,6 +263,7 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
     def classify():
         """SMALL = saving below small_gain_fraction of the configuration's own best (any cost); UPDATE = not small and
         cheaper than M; EXPLORE = per non-leading configuration its non-small, non-deferred candidates (head first)."""
+        selection_started = time.perf_counter()
         mm = method_min();M = None if mm is None else mm[0];lead = None if mm is None else mm[1]
         groups = {k: [] for k in CLASS_ORDER};explore, queues = [], {}
         for cid, st in states.items():
@@ -216,6 +298,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         explore.sort(key=lambda x: (x[0], x[1]))
         groups['EXPLORE'] = [p for _, _, p in explore]
         groups['_queues'] = [queues[cid] for _, cid, _ in explore]
+        selection_timing['candidate_classification_seconds'] += time.perf_counter() - selection_started
+        selection_timing['candidate_classification_calls'] += 1
         return groups, M
 
     def depth(cid):
@@ -223,11 +307,12 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             return 1
         return max(1, min(s['lookahead'], 1 + states[cid].fail_streak)) if s.get('adaptive_lookahead') else s['lookahead']
 
-    def order(groups, k):
+    def order(groups, k, observe=False):
         """The next k picks if no state changed (lookahead only): UPDATE in cost order with every explore_every-th pick
         going round-robin over the EXPLORE configurations, each contributing its next candidate.  With adaptive_lookahead a
         configuration contributes at most 1 + its current run of failed picks (a passing pick moves its incumbent and makes
         deeper speculation stale; a failing streak keeps the incumbent, so deeper candidates stay valid)."""
+        selection_started = time.perf_counter()
         used = defaultdict(int)
 
         def take(p):
@@ -250,12 +335,26 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                     out.append(p);since = 0
             else:
                 rest = [p for p in groups['FINE'] + groups['SMALL'] + groups['DEFERRED'] if take(p)];out += rest[:k - len(out)];break
-        if (s.get('adaptive_lookahead') and s.get('lookahead_mode') != 'INDEPENDENT') or s.get('lookahead_mode') == 'HYBRID':
-            out += chains(out)  # HYBRID: independent heads of all configurations first, chain speculation only for the slots left
+        adaptive = s.get('adaptive_hybrid') and s.get('lookahead_mode') == 'HYBRID'
+        limits = None
+        if adaptive:
+            limits = hybrid_limits(len(out), k, prefetch_state() if prefetch_state is not None else None)
+            out = out[:limits['preview_limit']]
+            extra = chains(out, limits['chain_slots'])
+            out += extra
+            if observe:
+                prefetch_metrics['decisions'] += 1
+                prefetch_metrics['maximum_preview'] = max(prefetch_metrics['maximum_preview'], len(out))
+                prefetch_metrics['chain_proposals'] += len(extra)
+                prefetch_metrics['latest'] = limits
+        elif (s.get('adaptive_lookahead') and s.get('lookahead_mode') != 'INDEPENDENT') or s.get('lookahead_mode') == 'HYBRID':
+            out += chains(out)  # legacy: retained byte-for-byte ordering when the opt-in is off
         seen, uniq = set(), []
         for p in out:
             if (p['configuration_id'], p['vector']) not in seen:
                 seen.add((p['configuration_id'], p['vector']));uniq.append(p)
+        selection_timing['preview_order_seconds'] += time.perf_counter() - selection_started
+        selection_timing['preview_order_calls'] += 1
         return uniq
 
     def chain_next(st, v, exclude):
@@ -283,21 +382,40 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                                           shot_change=d * len(group), cls='CHAIN'))
         return None if best is None else best[1]
 
-    def chains(preview):
+    def chains(preview, maximum=None):
         """Speculation along the likely path for configurations whose last pick passed: assume their next pick passes too
         and prefetch the pick that would follow from it, up to ``lookahead`` deep.  Consumption stays one answer at a time in
         V2's order, so the adopted trajectory is unchanged; a wrong guess is only an unused (reusable) job."""
         extra = []
+        if maximum == 0:
+            return extra
+        frontiers = []
         for cid in dict.fromkeys(p['configuration_id'] for p in preview):
             st = states[cid]
             if st.best is None or st.fail_streak > 0:
                 continue
             head = next(p for p in preview if p['configuration_id'] == cid);v, seen = head['vector'], {head['vector']}
+            if maximum is not None:
+                frontiers.append([st, v, seen, 0])
+                continue
             for _ in range(s['lookahead'] - 1):
                 nxt = chain_next(st, v, seen)
                 if nxt is None:
                     break
                 extra.append(nxt);seen.add(nxt['vector']);v = nxt['vector']
+        # Capacity-limited chains grow one round at a time across independent
+        # configurations, so the first configuration cannot consume all spares.
+        while maximum is not None and len(extra) < maximum and frontiers:
+            pending_frontiers = []
+            for st, v, seen, depth_ in frontiers:
+                if len(extra) >= maximum:
+                    break
+                nxt = chain_next(st, v, seen)
+                if nxt is None or depth_ >= s['lookahead'] - 1:
+                    continue
+                extra.append(nxt);seen.add(nxt['vector'])
+                pending_frontiers.append([st, nxt['vector'], seen, depth_ + 1])
+            frontiers = pending_frontiers
         return extra
 
     while step < search['max_steps_per_method']:
@@ -320,8 +438,18 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         allow = new_calls < limit;is_free = free is not None and free(choice)
         if prefetch is not None and science_approved and s['lookahead'] > 1 and new_calls < limit:
             # finite budgets prefetch too (rounds driven in batches); unconsumed jobs stay reusable knowledge
-            prefetch(order(groups, s['lookahead'] if limit == float('inf') else int(min(s['lookahead'], limit - new_calls))))
+            width = s['lookahead']
+            if s.get('adaptive_hybrid') and s.get('lookahead_mode') == 'HYBRID' and prefetch_state is not None:
+                # lookahead remains the maximum depth of each speculative
+                # chain; many independent heads may fill a larger global pool.
+                width = max(width, int(prefetch_state().get('capacity') or width))
+            if limit != float('inf'):
+                width = int(min(width, limit - new_calls))
+            prefetch(order(groups, width, observe=True))
+        answer_started = time.perf_counter()
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
+        selection_timing['backend_answer_seconds'] += time.perf_counter() - answer_started
+        selection_timing['backend_answer_calls'] += int(backend is not None and (is_free or allow))
         hold = None if answer is None else O.HOLD.get(answer['status'])
         if answer is None and on_missing == 'SKIP':
             skipped.add((choice['configuration_id'], choice['vector']));states[choice['configuration_id']].dirty = True
@@ -381,6 +509,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
     return dict(method=name, rule=RULE_V2, stop_reason=stop, trace=trace, held=held, new_calls=new_calls - spent, spent_before=spent,
                 pending_request=pending, incumbent=incumbent, not_ready_in_range=[c['name'] for c in candidates if not c['ready']],
                 by_configuration=by, incumbent_scope='METHOD_PRIORITY', unevaluated=unevaluated,
+                prefetch_policy=prefetch_metrics,
+                selection_timing=selection_timing,
                 left={k: len(v) for k, v in groups.items() if not k.startswith('_')}, input_requests=requests, settings={k: str(v) if isinstance(v, Fraction) else v
                                                                                                 for k, v in s.items()})
 

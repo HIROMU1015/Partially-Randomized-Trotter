@@ -29,6 +29,7 @@ import importlib.util
 import hashlib
 import json
 import os
+import resource
 from pathlib import Path
 import subprocess
 import sys
@@ -294,7 +295,12 @@ def artificial(request, out, mode):
                         scientific_evaluation_calls=0, identity=None, artificial=True)
         saved = json.loads(artifact.read_text())
         return dict(saved, identity=ident, artificial=True, collected=True)
+    resource_start=resource.getrusage(resource.RUSAGE_SELF);child_start=resource.getrusage(resource.RUSAGE_CHILDREN)
+    wall_start=time.perf_counter()
+    stage(out, 'ARTIFICIAL_EVALUATION_START')
+    artificial_load(spec.get('load'), request.get('execution_profile', {}).get('dp_workers'))
     time.sleep(spec.get('sleep_seconds', 0))
+    time.sleep(spec.get('sleep_by_first_shot', {}).get(str(request['N_X'][0]), 0))
     if spec.get('force_unknown'):
         value = dict(status='UNKNOWN', reason='ARTIFICIAL_GATE_FAILURE', MSE_lower=None, MSE_upper=None, scientific_evaluation_calls=1)
     else:
@@ -303,7 +309,77 @@ def artificial(request, out, mode):
         tau = Fraction(spec['tau']);enc = dict(numerator=mse.numerator, denominator=mse.denominator)
         value = dict(status=PASS if mse <= tau else FAIL, MSE_lower=enc, MSE_upper=enc, scientific_evaluation_calls=1)
     write(artifact, value)
+    usage=resource.getrusage(resource.RUSAGE_SELF);children=resource.getrusage(resource.RUSAGE_CHILDREN)
+    write(out / 'ARTIFICIAL_RESOURCE.json', dict(artificial=True,
+        wall_seconds=time.perf_counter()-wall_start,
+        process_tree_CPU_seconds=(usage.ru_utime+usage.ru_stime-resource_start.ru_utime-resource_start.ru_stime
+                                  +children.ru_utime+children.ru_stime-child_start.ru_utime-child_start.ru_stime),
+        peak_self_RSS_KiB=usage.ru_maxrss, peak_child_RSS_KiB=children.ru_maxrss))
+    stage(out, 'ARTIFICIAL_EVALUATION_RETURNED')
     return dict(value, identity=ident, artificial=True)
+
+
+def _artificial_chunk(units):
+    value=0
+    for i in range(units):value=(value+i*i)%1000000007
+    return value
+
+
+def artificial_load(spec,workers):
+    """Explicit artificial fork/CPU workload for execution-profile benchmarks.
+
+    Does not use quantum inputs or kernels. It does not affect the artificial
+    answer. Its scaling is not a model or measurement of real Q3 speedup.
+    """
+    if not spec:return
+    from concurrent.futures import ProcessPoolExecutor
+    import multiprocessing as mp
+    workers=workers or spec.get('baseline_dp_workers',8)
+    memory=bytearray(spec.get('memory_MiB',0)*1024*1024)
+    for i in range(0,len(memory),4096):memory[i]=1
+    time.sleep(spec.get('serial_seconds',0))
+    for _ in range(spec.get('parallel_rounds',1)):
+        units=[spec.get('units_per_chunk',10000)]*spec.get('chunks',8)
+        if workers==1:list(map(_artificial_chunk,units))
+        else:
+            with ProcessPoolExecutor(max_workers=workers,mp_context=mp.get_context('fork'))as pool:list(pool.map(_artificial_chunk,units))
+
+
+def execution_profile(inputs, request):
+    """Change only the existing DP worker parameter, never numerical contracts."""
+    workers=request.get('execution_profile',{}).get('dp_workers')
+    if workers is None:return inputs
+    if type(workers)is not int or workers<1:raise ValueError('Positive integer dp_workers required')
+    frozen={k:deepcopy(inputs[k])for k in CONTRACT}
+    if 'workers_per_configuration' not in inputs.get('acceleration',{}):
+        raise ValueError('Route has no existing workers_per_configuration parameter')
+    inputs=deepcopy(inputs);inputs['acceleration']['workers_per_configuration']=workers
+    if any(inputs[k]!=frozen[k]for k in CONTRACT):raise ValueError('Execution profile changed scientific contract')
+    return inputs
+
+
+@contextmanager
+def prefix_cache_context(request,case,inputs,out):
+    """Opt-in cache in the real existing worker path, inherited by its fork."""
+    profile=request.get('execution_profile',{});directory=profile.get('prefix_cache_directory')
+    if directory is None:
+        yield;return
+    module=sys.modules.get('trottertracks.rpe_total_dp_parallel')
+    if module is None:raise ValueError('Route has no supported fixed total-state accelerator')
+    helper=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_dp_prefix_reuse.py'
+    spec=importlib.util.spec_from_file_location('_rpe_opt_prefix_reuse',helper)
+    C=importlib.util.module_from_spec(spec);spec.loader.exec_module(C)  # keep pinned route import paths unchanged
+    namespace=dict(method=request['method'],configuration_id=request['configuration_id'],expected=request['expected'],
+        route_commit=request['route']['view_commit'],
+        physical={k:case.get(k)for k in ('configuration','signal_packet','evaluation_target','binding_id','total_configuration_id')},
+        contract={k:inputs[k]for k in CONTRACT},adapter_prefix_version=C.SCHEMA)
+    def event(value):
+        with (Path(out)/'DP_PREFIX_EVENTS.jsonl').open('a')as f:
+            f.write(json.dumps(dict(UTC=utc(),pid=os.getpid(),**value))+'\n')
+    with C.installed(module,directory=directory,cache_namespace=namespace,
+                     checkpoint_rounds=profile.get('prefix_checkpoint_rounds'),event_sink=event):
+        yield
+
 
 
 def main():
@@ -319,7 +395,7 @@ def main():
         outcome = artificial(request, out, a.mode)
     else:
         view = Path(request['route']['view'])
-        case, inputs = build(view, request);r = route(view, kind)
+        case, inputs = build(view, request);inputs = execution_profile(inputs, request);r = route(view, kind)
         stage(out, 'CASE_BUILT', template=inputs['template_source'])
         bounds = r.bounds(case['allocation']['shots'])
         if not in_scope(bounds, inputs['options']):
@@ -329,7 +405,7 @@ def main():
             runtime = r.runtime() if r.runtime is not None else None
             r.metadata(case);stage(out, 'METADATA_PASS', bounds=bounds)
             source = dict(request_id=request['request_id'], route=kind, view_commit=request['route']['view_commit'],
-                          adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=request.get('optimizer_source'), runtime=runtime)
+                          adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=request.get('optimizer_source'), runtime=runtime, execution_profile=request.get('execution_profile'))
             if a.mode == 'dry-check':
                 outcome = dict(status='DRY_CHECK_PASS', bounds=bounds, case_label=case['label'], template=inputs['template_source'],
                                metadata='PASS', runtime=runtime)
@@ -348,7 +424,7 @@ def main():
             else:
                 write(out / 'SOURCE.json', source);write(out / 'CASE_INPUTS.json', inputs);(out / case['label']).mkdir()
                 stage(out, 'SCIENTIFIC_ROUTE_START')
-                with r.installed(out):
+                with prefix_cache_context(request, case, inputs, out), r.installed(out):
                     supervision = r.supervise([case], inputs, source, out)
                 stage(out, 'SCIENTIFIC_ROUTE_RETURNED')
                 outcome = outcome_from(view, request, case, inputs, r, out, source, supervision)

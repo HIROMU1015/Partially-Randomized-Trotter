@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR複数幅・共通queue/DP・B0I自動pの統合](docs/research/pr_width_throughput_integration_20261117/REPORT.md)：同じschedule CLIで両PR幅→実step価格→共通queue、実DP HITと逐次exact一致、準備後継続/再開0起動を人工検証。固定H4 metadataのB0Iはp無指定でp9/Y4/32h/5、実H4はplan-only。起動/再開は[HANDOFF](docs/research/pr_width_throughput_integration_20261117/HANDOFF.md)。
+
 [H4方式別最適化：AのPR-Pauli候補準備入口の接続](docs/research/rpe_method_optimizer_h4_20261116/PREPARATION_CONNECTION.md)：
 - A 6e4b6bd6aの準備入口を、`generate_variants()` がIDのない候補を除外する前に呼ぶ（metadataのみ）。
 - 保存LD1は、価格不足のまま登録した。LD4・6・7・8・9は、P0の準備要求として保持する。

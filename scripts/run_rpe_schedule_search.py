@@ -51,7 +51,19 @@ def read_loc(loc):
 
 class WideDriver(K.Driver):
     def __init__(self, a):
+        existing = (a.run_dir.resolve() / 'KAPPA_STATE.json').exists()
         super().__init__(a)
+        if not existing and self.spec.get('continues'):
+            previous = ROOT / self.spec['continues']['run_dir'] / 'KAPPA_STATE.json'
+            carried = O.load_json(previous)
+            for key in ('points', 'family_constants', 'saved_packets', 'splits'):
+                if key in carried:self.state[key] = deepcopy(carried[key])
+            self.state['continuation'] = dict(directory=str(previous.parent),
+                previous_round=carried.get('round_id'), previous_stop=carried.get('stop'))
+        # These requests were never executed; actual scientific HELD/STOPs stay held.
+        for p in self.state['points']:
+            if p['status'] == 'HELD' and p.get('reason') == 'COMPLETION_REQUIRED_NOT_RUN_IN_THIS_INVOCATION':
+                p.update(status='COMPLETION', unrun_previous_reason=p.pop('reason'))
         self.wide = self.spec['search_overrides']['schedule_wide']
         if 'seeded' not in self.state:
             self.seed()
@@ -137,7 +149,7 @@ class WideDriver(K.Driver):
             if p['status'] == 'PREPARED' and best is not None and p['price_floor'] >= best:
                 p.update(status='PRUNED', reason='PROVEN_COST_FLOOR:%s>=%s' % (O.show(p['price_floor']), O.show(best)))
 
-    def completion_requests(self):
+    def completion_requests(self, on_wait=None):
         """New splits: D2 completion (READY -> search, HELD -> recorded).  --plan-only records the request only."""
         todo = [p for p in self.state['points'] if p['status'] == 'COMPLETION']
         if not todo:
@@ -165,12 +177,17 @@ class WideDriver(K.Driver):
         comp = self.completion_api(dict(cc, max_attempted_per_method=0))
         from concurrent.futures import ThreadPoolExecutor
         with ThreadPoolExecutor(max(1, min(len(run), int(cc.get('parallel', 4))))) as pool:  # independent splits / schedules
-            for p, rec in zip(run, pool.map(comp.complete, [p['completion_request'] for p in run])):
+            futures = [pool.submit(comp.complete, p['completion_request']) for p in run]
+            self.log(event='COMPLETION_WAIT_START', requests=len(run))
+            if on_wait is not None:on_wait()
+            for p, future in zip(run, futures):
+                rec = future.result()
                 if rec['status'] == 'READY_FOR_SEARCH':
                     p.update(status='REGISTERED', configuration_id=rec['configuration_id'], completion=dict(status=rec['status'], key=rec['key']))
                 else:  # HELD: the concrete reason is kept and the other candidates go on
                     p.update(status='HELD', reason='COMPLETION:%s:%s' % (rec['status'], str(rec.get('reason'))[:300]),
                              completion=dict(status=rec['status'], key=rec['key']))
+            self.log(event='COMPLETION_WAIT_END', requests=len(run))
 
     def completion_api(self, settings):
         from trottertracks.pr_candidate_completion import Completion
@@ -201,8 +218,12 @@ class WideDriver(K.Driver):
                 p['run_completed_best'] = done[cid]
 
     # ------------------------------------------------------------ loop
-    def batch(self):
+    def batch(self, ready_only=False):
         spec = json.loads(json.dumps(self.spec))
+        if ready_only:
+            # Completion owns its state/registry while working. This interim batch
+            # uses only the already published points and route registry snapshot.
+            spec.pop('candidate_completion', None)
         if spec.get('candidate_completion'):
             spec['candidate_completion']['max_attempted_per_method'] = 0  # install READY records only; B2 chooses what to complete
         self.spec, keep = spec, self.spec
@@ -212,10 +233,36 @@ class WideDriver(K.Driver):
             self.spec = keep
 
     def loop(self):
+        previous_stop = self.state.get('stop', {}).get('reason')
+        transient = {'PLAN_ONLY_FIRST_DECISION_WRITTEN', 'SCIENCE_NOT_APPROVED_FIRST_DECISION_WRITTEN',
+                     'PLAN_ONLY_NOTHING_TO_PREPARE', 'MAX_CYCLES'}
+        if previous_stop and previous_stop not in transient:
+            self.log(event='PRESERVED_STOP', reason=previous_stop);return
+        if previous_stop:self.state.pop('stop')
         while self.state['cycle'] < self.a.max_cycles:
             self.state['cycle'] += 1;self.save()
             proposals, report = self.plan();self.save()
-            self.completion_requests();self.save()
+            interim = []
+            def ready_work():
+                if self.spec.get('overlap_ready_batch') and any(p['status'] in ('REGISTERED', 'EVALUATED', 'ALIAS') for p in self.state['points']):
+                    self.log(event='READY_BATCH_DURING_COMPLETION_START')
+                    code, res = self.batch(ready_only=True)
+                    if res is None:
+                        interim.append(dict(stop_reason='INVOCATION_FAILED', returncode=code))
+                        self.log(event='READY_BATCH_DURING_COMPLETION_END', returncode=code, stop='INVOCATION_FAILED')
+                        return
+                    interim.append(res)
+                    self.absorb(res);self.save()
+                    self.log(event='READY_BATCH_DURING_COMPLETION_END', stop=res['stop_reason'], new_calls=res['new_calls'])
+            self.completion_requests(on_wait=ready_work);self.save()
+            if interim and interim[-1]['stop_reason'] == 'INVOCATION_FAILED':
+                self.state['stop'] = dict(reason='V2_INVOCATION_FAILED', returncode=interim[-1]['returncode'], UTC=K.now())
+                self.save();return
+            fatal = {'UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER',
+                     'Q3_BUDGET_EXHAUSTED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'}
+            if interim and interim[-1]['stop_reason'] in fatal:
+                self.state['stop'] = dict(reason='V2_' + interim[-1]['stop_reason'], UTC=K.now())
+                self.save();return
             stop_here = self.a.plan_only or self.spec.get('science_approved') is not True
             if any(p['status'] in ('PENDING', 'PREPARED') for p in self.state['points']):
                 ctx = self.prepare();self.prune(ctx);self.save()
@@ -233,6 +280,8 @@ class WideDriver(K.Driver):
             promising = sum(p.get('promising') or 0 for p in self.state['points'] if p['status'] == 'EVALUATED')
             self.log(event='CYCLE_END', v2_stop=res['stop_reason'], proposals=len(proposals), pending=len(pending), promising=promising,
                      plan_stop=report['stop'])
+            if res['stop_reason'] in ('Q3_BUDGET_EXHAUSTED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'):
+                self.state['stop'] = dict(reason=res['stop_reason'], UTC=K.now());self.save();return
             if res['stop_reason'] in ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER'):
                 self.state['stop'] = dict(reason='V2_' + res['stop_reason'], UTC=K.now());self.save();return
             if not proposals and not pending and res['stop_reason'] in ('ONLY_SMALL_OR_DEFERRED_LEFT', 'NO_CANDIDATE_LEFT_IN_RANGE'):
@@ -546,7 +595,7 @@ class WidthDriver:
         return O.prepare(ROOT,problem,methods=self.methods,generate_configurations=False,
                          preparation_dir=self.run/'preparation')
 
-    def batch(self):
+    def batch(self, prepare_during=False):
         # Same V2/Executor and risk contract as the old ordinary round entry.
         # Completion selects no new designs here: the width planner already did.
         problem=deepcopy(self.problem)
@@ -554,27 +603,70 @@ class WidthDriver:
             problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
         context=self.context(problem);comp=self.completion_api()
         routes=K.CLI.merged_routes(problem,self.spec)
-        accepted={p.get('completion',{}).get('key')for p in self.state['points']if p['status']in('REGISTERED','EVALUATED')}
-        records=[r for r in comp.state['records'].values()if r.get('key')in accepted]
-        routes=comp.install(context,dict(problem,execution_routes=routes),records)
-        installed={r['key']:r.get('installed_configuration_id',r.get('configuration_id'))for r in records}
-        for p in self.state['points']:
-            canonical=installed.get(p.get('completion',{}).get('key'))
-            if canonical:p['evaluation_configuration_id']=canonical
+        def install_ready(current_routes):
+            accepted={p.get('completion',{}).get('key')for p in self.state['points']if p['status']in('REGISTERED','EVALUATED')}
+            records=[r for r in comp.state['records'].values()if r.get('key')in accepted]
+            current_routes=comp.install(context,dict(problem,execution_routes=current_routes),records)
+            installed={r['key']:r.get('installed_configuration_id',r.get('configuration_id'))for r in records}
+            for p in self.state['points']:
+                canonical=installed.get(p.get('completion',{}).get('key'))
+                if canonical:p['evaluation_configuration_id']=canonical
+            return current_routes
+        routes=install_ready(routes)
         O.apply_published(context['candidates'],routes)
         options=self.spec.get('executor',{})
-        prior=[(ROOT/p).resolve()for p in options.get('prior_run_dirs',[])]+[self.run]
-        executor=O.Executor(ROOT,self.run,routes,context['expected'],problem,
-            optimizer_source=K.CLI.head(),max_concurrent=options.get('max_concurrent_jobs',1),
-            wait_for_running=options.get('wait_for_running_jobs',False),prior_run_dirs=prior)
-        budgets={m:executor.launched(m)+self.a.batch for m in self.methods}
+        launched={m:sum((job/'LAUNCH.json').exists()or(job/'STARTING.json').exists()
+            for job in(self.run/'jobs'/m).glob('*'))for m in self.methods}
+        budgets={m:launched[m]+self.a.batch for m in self.methods}
         for method,budget in budgets.items():
             maximum=self.spec.get('max_new_q3_per_method',{}).get(method)
             if maximum not in(None,'UNLIMITED'):budgets[method]=min(budget,maximum)
         search=dict(problem['search'],**self.spec.get('search_overrides',{}))
-        result=O.optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
-            initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,
-            science_approved=self.spec.get('science_approved')is True)
+        # Existing V2 switch: kappa schedules are chosen by this outer width
+        # planner, not by a second inner multiplier-neighbour chooser.
+        search.setdefault('kappa_neighbourhood',dict(outer_planner=W.RULE))
+        # The width planner still chooses designs. Continuation may refresh and
+        # install its existing waiting records, without a second design chooser.
+        active_spec=deepcopy(self.spec);active_spec['max_new_q3_per_method']=budgets
+        active_spec['executor']=dict(options,prior_run_dirs=list(options.get('prior_run_dirs',[]))+[str(self.run)])
+        active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
+        executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
+        preparation_pool=None
+        try:
+            interim=None
+            if prepare_during:
+                # Snapshot/install happens before starting preparation. While
+                # it owns Completion state, Q3 only reads this frozen context.
+                from concurrent.futures import ThreadPoolExecutor
+                preparation_pool=ThreadPoolExecutor(max_workers=1)
+                pending=preparation_pool.submit(self.complete_points)
+                if any(c['ready']for c in context['candidates']):
+                    with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION'):
+                        interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
+                            initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True)
+                pending.result()
+                # No other thread now changes Completion or its registry.
+                routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']
+                O.apply_published(context['candidates'],routes)
+            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER'}
+            if interim and any(r['stop_reason']in fatal for r in interim.values()):result=interim
+            else:
+                with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):
+                    result=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
+                        initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,
+                        science_approved=self.spec.get('science_approved')is True)
+            if not any(r['stop_reason']in fatal for r in result.values())and any(r.get('input_requests')for r in result.values()):
+                from trottertracks.pr_candidate_completion import continue_selected_preparation
+                with K.CLI.round_phase(self.run,'WIDTH_PREPARATION_CONTINUATION'):
+                    result=continue_selected_preparation(ROOT,dict(problem,search=search),context,
+                        active_spec,self.run,comp,executor,result,optimizer=optimize)
+        finally:
+            if preparation_pool is not None:preparation_pool.shutdown(wait=True)
+            executor.finish()
+        with(self.run/'INVOCATIONS.jsonl').open('a')as f:
+            f.write(json.dumps(O.jsonable(dict(time=time.time(),requested_widths=self.widths,budget=budgets,
+                launched={m:executor.launched(m)for m in self.methods},
+                stop={m:r['stop_reason']for m,r in result.items()},new_calls={m:r['new_calls']for m,r in result.items()})))+'\n')
         K.CLI.write(self.run/'ROUND_RESULT.json',K.CLI.slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1',
             round=self.spec,methods=result,optimizer_source=K.CLI.head())))
         K.CLI.table(result,self.run/'PER_METHOD.csv')
@@ -591,18 +683,26 @@ class WidthDriver:
         return result
 
     def loop(self):
-        if self.state.get('stop',{}).get('reason')in('REQUESTED_WIDTH_RULE_EXHAUSTED','V2_RESULT_REQUIRES_REVIEW'):return
+        previous=self.state.get('stop',{}).get('reason')
+        transient={'REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','MAX_CYCLES'}
+        if previous and previous not in transient:
+            self.log(event='PRESERVED_STOP',reason=previous);return
+        if previous:self.state.pop('stop')
         end=self.state['cycle']+self.a.max_cycles
         while self.state['cycle']<end:
             self.state['cycle']+=1;started=time.monotonic();self.log(event='PLAN_START')
             self.bootstrap_families();proposals,report=self.plan();self.save()
             self.log(event='PLAN_END',wall_seconds=time.monotonic()-started,proposals=len(proposals))
             started=time.monotonic();self.log(event='INPUTS_START')
-            self.complete_points();self.save();self.log(event='INPUTS_END',wall_seconds=time.monotonic()-started)
+            overlap=(self.spec.get('overlap_ready_batch')is True and not self.a.plan_only and
+                     self.spec.get('science_approved')is True)
+            if not overlap:self.complete_points()
+            self.save();self.log(event='INPUTS_END',wall_seconds=time.monotonic()-started,deferred_to_batch=overlap)
             if self.a.plan_only or self.spec.get('science_approved')is not True:
                 self.state['stop']=dict(reason='REQUESTED_WIDTH_METADATA_ONLY',UTC=K.now());self.save();return
             started=time.monotonic();self.log(event='V2_BATCH_START')
-            result=self.batch();self.save();self.log(event='V2_BATCH_END',wall_seconds=time.monotonic()-started,
+            result=self.batch(prepare_during=True)if overlap else self.batch()
+            self.save();self.log(event='V2_BATCH_END',wall_seconds=time.monotonic()-started,
                 methods={m:dict(stop=r['stop_reason'],new_calls=r['new_calls'])for m,r in result.items()})
             failed={m:r['stop_reason']for m,r in result.items()if r['stop_reason']in
                     ('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER')}
@@ -623,7 +723,17 @@ def main(argv=None, *, driver_factory=None):
     ap.add_argument('--run-dir', type=Path, required=True);ap.add_argument('--batch', type=int, default=64)
     ap.add_argument('--max-cycles', type=int, default=200);ap.add_argument('--plan-only', action='store_true')
     a = ap.parse_args(argv);a.problem = a.problem.resolve()
-    declared=W.requested_widths(O.load_json(a.problem),O.load_json(a.round))
+    problem=O.load_json(a.problem);spec=O.load_json(a.round)
+    declared=W.requested_widths(problem,spec)
+    if driver_factory is None and declared is None and any(m in('FULL_PF','TRUNCATED_PF')for m in spec.get('methods',[])):
+        # PF selection and shot/Q3 remain owned by the existing method CLI.
+        # This is the same public entry, not another PF driver/optimizer.
+        from types import SimpleNamespace
+        a.run_dir.mkdir(parents=True,exist_ok=True)
+        K.CLI.round_mode(a,problem,[])
+        result=O.load_json(a.run_dir/'ROUND_RESULT.json')
+        return SimpleNamespace(run=a.run_dir,state=dict(stop=dict(reason='METHOD_ROUND_COMPLETE',
+            methods={m:r['stop_reason']for m,r in result['methods'].items()})))
     factory=driver_factory or (WidthDriver if declared is not None else WideDriver)
     d = factory(a);d.log(event='DRIVER_START', plan_only=a.plan_only);d.loop();d.log(event='DRIVER_END', stop=d.state.get('stop'))
     print(json.dumps(O.jsonable(d.state.get('stop')), default=str)[:2000])

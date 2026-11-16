@@ -1,5 +1,11 @@
 # 性能対策の再利用索引
 
+## PR複数幅と共通queue/DP・B0Iの通常入口統合（2026-11-17）
+
+`run_rpe_method_optimizer.make_executor`を幅版batchと共用し、Completion後も同じoptimizer/queue/予算/profileを維持する。元prefixのSOURCE・信号・契約・精度照合を再利用し、別構成へのHITや完了jobの二重起動を防ぐ。明示overlapでは準備前snapshotを使い、準備後に同じqueueへ戻す。B0Iは既存自動p選択を同じschedule入口から呼ぶ。
+
+人工8入力で逐次参照とMSE/判定exact一致、4 HIT/各12round、後着READYと同一invocation、再開0起動。実H4はplan-only/保存metadataのみで、実速度や最安幅を認定していない。相対出力制約は所有view内のrunで満たす。[SOURCE・検査・注意点](research/pr_width_throughput_integration_20261117/HANDOFF.md)。
+
 ## PRの複数要求幅：実stepごとの準備再利用（2026-11-17）
 
 `run_rpe_schedule_search.WidthDriver` は方式・分割・公式・exact要求幅・Kごとに既存mapperのschedule区間でκを探索し、共通Completionから同じV2/Executorへ戻す。`pr_step_price_registry.py` は固定監査結果をactual step・辞書・law・構造・wrapper時間の範囲だけに登録し、複数候補で共有する。同一物理scheduleの宣言aliasはH/state/辞書/target/law/SOURCEを含む契約で照合し、完了済みQ3を再起動しない。

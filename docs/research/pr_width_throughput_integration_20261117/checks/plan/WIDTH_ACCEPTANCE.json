@@ -1,0 +1,141 @@
+{
+  "scope": "REAL_H4_METADATA_PLAN_ONLY_NO_SCIENTIFIC_KERNELS",
+  "start_exit_code": 0,
+  "resume_exit_code": 0,
+  "methods": [
+    "PR_PAULI",
+    "PR_DF"
+  ],
+  "L_D_scope": {
+    "PR_PAULI": [
+      1
+    ],
+    "PR_DF": [
+      7
+    ]
+  },
+  "requested_widths": {
+    "PR_PAULI": [
+      {
+        "raw": 0.1,
+        "exact": "3602879701896397/36028797018963968"
+      },
+      {
+        "raw": 0.2,
+        "exact": "3602879701896397/18014398509481984"
+      },
+      {
+        "raw": "1/5",
+        "exact": "1/5"
+      }
+    ],
+    "PR_DF": [
+      {
+        "raw": 0.1,
+        "exact": "3602879701896397/36028797018963968"
+      },
+      {
+        "raw": 0.05,
+        "exact": "3602879701896397/72057594037927936"
+      },
+      {
+        "raw": 0.2,
+        "exact": "3602879701896397/18014398509481984"
+      },
+      {
+        "raw": "1/5",
+        "exact": "1/5"
+      }
+    ]
+  },
+  "family_count": 7,
+  "start": {
+    "cycle": 1,
+    "stop": {
+      "reason": "REQUESTED_WIDTH_METADATA_ONLY",
+      "UTC": "2026-11-16T16:48:10Z"
+    },
+    "point_count": 17,
+    "candidate_metadata_plans": 16,
+    "metadata_stages": 70
+  },
+  "resume": {
+    "cycle": 2,
+    "stop": {
+      "reason": "REQUESTED_WIDTH_METADATA_ONLY",
+      "UTC": "2026-11-16T16:50:54Z"
+    },
+    "point_count": 25,
+    "new_metadata_candidate_plans": 8,
+    "new_metadata_stages": 32,
+    "old_completed_stage_or_plan_changes": 0,
+    "completed_stage_restarts": 0
+  },
+  "metadata_stage_events_total": 102,
+  "metadata_duplicate_starts": {},
+  "scientific_stage_starts": 0,
+  "new_signal_sampling_compile_fit_Q3": 0,
+  "Q3_launches": 0,
+  "stage_end_returncodes": [
+    0
+  ],
+  "original_input": {
+    "source": {
+      "commit": "d69516191f3126a076b23bc55f6818b3f866f10e",
+      "path": "docs/research/pr_requested_step_search_20261117/entry_plan/ENTRY_ROUND.json",
+      "sha256": "692e0f0f48810f5af8e3e807dc0907f39162412a3a8b218b36c53d856c9efc59"
+    },
+    "price_source": {
+      "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+      "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/PRICE_RULES_REGISTRY.json",
+      "note": "D2 run02 registry: B2 round03 entries unchanged + PAULI_LD4 + AUTO_DF"
+    },
+    "price_sha256": "d9162cfcb6d2c66e379f371898cec5ab8dff7edadb48ef541e6b96547e6dfc9d"
+  },
+  "normal_commands": {
+    "cwd": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/pr-width-throughput-integration-20261117",
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "src"
+    },
+    "same_start_resume_commands": {
+      "width": [
+        "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+        "-B",
+        "scripts/run_rpe_schedule_search.py",
+        "--problem",
+        "configs/rpe_method_optimizer/h4_df10_problem.json",
+        "--round",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/pr-width-throughput-integration-20261117/docs/research/pr_width_throughput_integration_20261117/local_plan/WIDTH_ROUND.json",
+        "--run-dir",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/pr-width-throughput-integration-20261117/docs/research/pr_width_throughput_integration_20261117/local_plan/width_run",
+        "--max-cycles",
+        "1",
+        "--plan-only"
+      ],
+      "legacy": [
+        "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+        "-B",
+        "scripts/run_rpe_schedule_search.py",
+        "--problem",
+        "configs/rpe_method_optimizer/h4_df10_problem.json",
+        "--round",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/pr-width-throughput-integration-20261117/docs/research/pr_width_throughput_integration_20261117/local_plan/LEGACY_ROUND.json",
+        "--run-dir",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/pr-width-throughput-integration-20261117/docs/research/pr_width_throughput_integration_20261117/local_plan/legacy_run",
+        "--max-cycles",
+        "1",
+        "--plan-only"
+      ]
+    },
+    "saved_acceptance_command": [
+      "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+      "-B",
+      "scripts/check_pr_requested_width_saved.py",
+      "--output",
+      "/tmp/pr-width-throughput-plan-_075w7d8/SAVED_ACCEPTANCE.json"
+    ]
+  },
+  "input_round_sha256": "314cc732ed3c0d1642204adf23c35a68a70acd9fc3427d214c5e55810506e15f",
+  "plan_only_resume_can_generate_new_metadata": true
+}
