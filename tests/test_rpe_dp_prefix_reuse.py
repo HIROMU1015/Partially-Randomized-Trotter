@@ -143,7 +143,9 @@ class PrefixTests(unittest.TestCase):
             case=dict(configuration={'fixture':'ARTIFICIAL'},signal_packet={'fixture':'ARTIFICIAL'})
             for i,trial in enumerate((tt,changed_tail(tt))):
                 out=Path(d)/str(i);out.mkdir()
+                route_path=list(sys.path)
                 with A.prefix_cache_context(request,case,inputs,out):
+                    self.assertEqual(sys.path,route_path)
                     child=mp.get_context('fork').Process(target=artificial_child,args=(trial,scope,out,observed))
                     child.start();child.join(20);self.assertEqual(child.exitcode,0)
                 result=json.loads((out/'RESULT.json').read_text())

@@ -330,7 +330,9 @@ def prefix_cache_context(request,case,inputs,out):
         yield;return
     module=sys.modules.get('trottertracks.rpe_total_dp_parallel')
     if module is None:raise ValueError('Route has no supported fixed total-state accelerator')
-    C=load(Path(__file__).resolve().parents[1],'_rpe_opt_prefix_reuse','src/trottertracks/rpe_dp_prefix_reuse.py')
+    helper=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_dp_prefix_reuse.py'
+    spec=importlib.util.spec_from_file_location('_rpe_opt_prefix_reuse',helper)
+    C=importlib.util.module_from_spec(spec);spec.loader.exec_module(C)  # keep pinned route import paths unchanged
     namespace=dict(method=request['method'],configuration_id=request['configuration_id'],expected=request['expected'],
         route_commit=request['route']['view_commit'],
         physical={k:case.get(k)for k in ('configuration','signal_packet','evaluation_target','binding_id','total_configuration_id')},
