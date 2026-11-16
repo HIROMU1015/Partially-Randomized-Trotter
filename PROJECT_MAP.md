@@ -6,6 +6,15 @@
 - V2のκ案は、設定すれば同じ入口へ送れる。
 - 保存結果と人工系で8/8 PASS。
 
+[H4 PR-Pauli：κの中心を固定しない広域schedule探索とD2自動準備の接続（round05の準備）](docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/HANDOFF.md)：
+- 探索規則SCHEDULE_WIDE_V1を作った。
+  - 最小イベント数のschedule・保存適合点・等比の遠方scheduleから始め、細分化と未探索gapの探索を交互に行う。
+  - 価格下界による証明付きの打ち切り、FINEの後回し、HYBRID並列を含む。
+- D2 `98b40e439` をmergeした。run02の再開と、round04までの4,783件の再利用で、新規の科学計算0件を確認した。
+- 照合台帳：規則が採択した最安と全評価での最安を分けた。LD5 κ=2は501.23Mと500.96M。
+- 再生：新規則は、437.9M・414.3Mの水準に答え285件・324件で到達した（履歴では683件・2,448件）。410.2Mには未到達。
+- round05の設定は未承認で、実行は0件。
+
 [H4 PR-Pauli：Cの共通較正入口とκの物理schedule区間（round04）](docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/HANDOFF.md)：
 - κ=2から上下で最初に異なるscheduleを評価した。
   - LD5 κ=7（m12のR=2）は518,960,286 RZで、κ=2（501,233,190）より高い。範囲[1/2, 8]の中にあるLD5のscheduleは2つだけ。

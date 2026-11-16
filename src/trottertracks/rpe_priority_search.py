@@ -32,8 +32,15 @@ from trottertracks import rpe_method_optimizer as O
 
 RULE_V2 = 'METHOD_MINIMUM_PRIORITY_V2'
 DEFAULTS = dict(explore_every=4, explore_window='3/2', small_gain_fraction='1/10000', deferral_fail_margin='1/10000',
-                transfer_count=2, kappa_bounds=['1/4', '8'], kappa_min_ratio='9/8', lookahead=1, adaptive_lookahead=False)
-CLASS_ORDER = ('UPDATE', 'EXPLORE', 'SMALL', 'DEFERRED')
+                transfer_count=2, kappa_bounds=['1/4', '8'], kappa_min_ratio='9/8', lookahead=1, adaptive_lookahead=False,
+                coarse_gain_fraction=None, lookahead_mode='CHAIN')
+CLASS_ORDER = ('UPDATE', 'EXPLORE', 'FINE', 'SMALL', 'DEFERRED')
+# FINE (only with coarse_gain_fraction): a non-small saving below coarse_gain_fraction of the configuration's own best.  It is
+# taken only when no UPDATE / EXPLORE pick is left in any configuration, so every schedule gets its coarse descent (and new
+# schedules their seeds) before one schedule's small shot reductions are explored; FINE picks are never dropped.
+# lookahead_mode INDEPENDENT: free slots take the next picks of OTHER configurations (one per configuration, in V2's order)
+# instead of chaining speculative picks along one configuration (CHAIN, adaptive_lookahead); HYBRID: the independent heads
+# first, then chain speculation for the slots still free.
 
 
 def settings(search):
@@ -41,6 +48,7 @@ def settings(search):
     s.update(explore_window=Fraction(s['explore_window']), small_gain_fraction=Fraction(s['small_gain_fraction']),
              deferral_fail_margin=Fraction(s['deferral_fail_margin']), kappa_min_ratio=Fraction(s['kappa_min_ratio']),
              kappa_bounds=[Fraction(x) for x in s['kappa_bounds']])
+    s['coarse_gain_fraction'] = None if s.get('coarse_gain_fraction') is None else Fraction(str(s['coarse_gain_fraction']))
     return s
 
 
@@ -182,8 +190,12 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                 if p['deferred']:
                     groups['DEFERRED'].append(dict(p, cls='DEFERRED'));continue
                 small = st.best is not None and (st.best[0] - p['cost']) < s['small_gain_fraction'] * st.best[0]
+                fine = (s['coarse_gain_fraction'] is not None and st.best is not None
+                        and (st.best[0] - p['cost']) < s['coarse_gain_fraction'] * st.best[0])
                 if small:
                     groups['SMALL'].append(dict(p, cls='SMALL'))
+                elif fine:
+                    groups['FINE'].append(dict(p, cls='FINE'))
                 elif M is None or p['cost'] < M:
                     groups['UPDATE'].append(dict(p, cls='UPDATE'))
                 else:
@@ -207,6 +219,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         return groups, M
 
     def depth(cid):
+        if s.get('lookahead_mode') in ('INDEPENDENT', 'HYBRID'):
+            return 1
         return max(1, min(s['lookahead'], 1 + states[cid].fail_streak)) if s.get('adaptive_lookahead') else s['lookahead']
 
     def order(groups, k):
@@ -235,9 +249,9 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                 if take(p):
                     out.append(p);since = 0
             else:
-                rest = [p for p in groups['SMALL'] + groups['DEFERRED'] if take(p)];out += rest[:k - len(out)];break
-        if s.get('adaptive_lookahead'):
-            out += chains(out)
+                rest = [p for p in groups['FINE'] + groups['SMALL'] + groups['DEFERRED'] if take(p)];out += rest[:k - len(out)];break
+        if (s.get('adaptive_lookahead') and s.get('lookahead_mode') != 'INDEPENDENT') or s.get('lookahead_mode') == 'HYBRID':
+            out += chains(out)  # HYBRID: independent heads of all configurations first, chain speculation only for the slots left
         seen, uniq = set(), []
         for p in out:
             if (p['configuration_id'], p['vector']) not in seen:
@@ -292,6 +306,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             choice = groups['UPDATE'][0]
         elif groups['EXPLORE']:
             choice = groups['EXPLORE'][0]
+        elif groups['FINE']:
+            choice = groups['FINE'][0]
         elif (groups['SMALL'] or groups['DEFERRED']) and search.get('small_and_deferred') == 'STOP':
             stop = 'ONLY_SMALL_OR_DEFERRED_LEFT';break
         elif groups['SMALL']:

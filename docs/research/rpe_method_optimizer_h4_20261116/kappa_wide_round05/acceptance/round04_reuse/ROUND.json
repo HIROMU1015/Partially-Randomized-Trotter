@@ -1,0 +1,360 @@
+{
+ "schema": "RPE_OPTIMIZER_SEARCH_ROUND_V1",
+ "round_id": "ACCEPTANCE_ROUND04_REUSE_AFTER_D2_MERGE_NO_NEW_Q3",
+ "approved_by": "comment(B1114) 2026-11-16: H4 PR-Pauli around kappa itself = 2 (S2, Delta_PF=h, K=2); after the 10.5 check: configuration generation, existing MODEL prices, missing-round signals, packet intake, Q3 route registration, new Q3 and saving; inputs needing new P0 dictionaries, price calibration, path/compile/fit are held | comment(B1114) 2026-11-16 change: unprepared L_D chosen by the search are prepared (descriptor, P0, P1, signals, price calibration and registration within existing rules) and evaluated by Q3 | comment(B1114) 2026-11-16 addendum (C common entry 02e7cc6a1): per L_D and width the mapper fixes q_m and T_m/q_m (exact 1/5 and binary64 0.2 kept apart); from kappa itself = 2 the candidates are the kappa intervals on which some R_m changes (same 13-round schedule = one candidate, evaluated schedules reused); new points go through the C/A common calibration-request entry (round-level price reuse, pooled calibration cells); shots optimised per schedule at the same accuracy threshold; first the first different schedule above and below kappa=2; new science only within the adopted scope (S2, K=2, Delta_PF=h, kappa in [1/2, 8], L_D 1-9)",
+ "base_commit": "24b51fbc3c0377ce9572bfdfcb49c26f5441fdc7",
+ "comparison_reference": {
+  "label": "round01 stop-time PR-Pauli minimum",
+  "L_D": 5,
+  "kappa_multiplier": "2",
+  "kappa_approx": 48.6105,
+  "cost_RZ": "410,470,823.86",
+  "job": "docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01 (EVALUATIONS.csv)"
+ },
+ "other_methods_reference": {
+  "FULL_PF": "559,457,386 RZ",
+  "TRUNCATED_PF_p7": "372,035,410 RZ"
+ },
+ "methods": [
+  "PR_PAULI"
+ ],
+ "science_approved": true,
+ "max_new_q3_per_method": {
+  "PR_PAULI": 0
+ },
+ "initial": "all",
+ "method_overrides": {
+  "PR_PAULI": {
+   "saved_configurations_only": false,
+   "generation": {
+    "formulas": [
+     "2nd"
+    ],
+    "delta_over_h_values": [
+     "1"
+    ],
+    "kappa_multipliers": [
+     "2/3",
+     "1",
+     "2"
+    ],
+    "kappa_points_file": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01/KAPPA_POINTS.json"
+   }
+  }
+ },
+ "search_overrides": {
+  "rule": "METHOD_MINIMUM_PRIORITY_V2",
+  "seed_saved_same_L_D": true,
+  "explore_every": 4,
+  "explore_window": "3/2",
+  "small_gain_fraction": "1/1000",
+  "deferral_fail_margin": "1/10000",
+  "transfer_count": 2,
+  "lookahead": 16,
+  "small_and_deferred": "STOP",
+  "kappa_neighbourhood": {
+   "center": "2",
+   "step_ratio": "3/2",
+   "bounds": [
+    "1/2",
+    "8"
+   ],
+   "min_ratio": "9/8",
+   "extend_margin": "1/100",
+   "settle_after_picks": 80,
+   "family_window": "3/2",
+   "note": "kappa itself (spec.kappa.value). Centre 2 first in every L_D that can be prepared; first neighbours 2/r and 2r (r=3/2) once the centre has a feasible point; then one point per family per decision: interior minimum -> midpoint towards the cheaper neighbour while the ratio > 9/8; edge minimum -> one step r only if cheaper than the inner neighbour by >= 1%, else midpoint towards it; bounds [1/2, 8]; a point counts as settled when no non-small candidate is left or after 80 evaluations; a family is followed while its best <= 3/2 x the neighbourhood minimum. No doubling/halving rule.",
+   "schedule_note": "With schedule_aware, kappa values with the same 13-round R vector are one point; the first neighbours are the first DIFFERENT schedules below and above the centre (exact interval from the mapper constants, representative = simplest rational inside the interval and the bounds); a proposed kappa whose schedule is already sampled moves to the next different schedule in its direction. Bounds, margins and window unchanged."
+  },
+  "adaptive_lookahead": true
+ },
+ "executor": {
+  "max_concurrent_jobs": 32,
+  "wait_for_running_jobs": true,
+  "prior_run_dirs": [
+   "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01",
+   "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01",
+   "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+   "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01"
+  ]
+ },
+ "routes_override": {
+  "PR_PAULI": [
+   {
+    "kind": "pauli_b_common_entry",
+    "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+    "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+    "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+    "configuration_ids": [
+     "23ec179150682e0af256fc7c7bfcdf6f39af772f62418d6b45326afd5da1b2a8",
+     "300085cf7225ed0a0a1ed40bb7d7d6cd499cc219c2b0309a94ae622351d378af",
+     "39355bcf7968bdcfc8bef7c40e9b2c7d970aa954b452639c32041c15e0406383",
+     "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb",
+     "569c14aa1dac9f84b3ee826dcd9b33fd749c4c5c0605ecffe54030b1e362ff47",
+     "6cf83f34a924e0318114a2850a771ab69c912b68963234fa94018e66036f2e28",
+     "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+     "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3",
+     "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847"
+    ],
+    "configurations": {
+     "d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3": {
+      "label": "LD2_S2_delta_h_kappa_x1_saved_reuse",
+      "configuration": {
+       "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+       "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json",
+       "selector": [
+        "packets",
+        1,
+        "configuration"
+       ]
+      },
+      "signal_packet": {
+       "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      "binding_id": "f4165e534ad8423fcd32aec689b1a9a7110fe6b59e747fe9d69d82e016d22690",
+      "total_configuration_id": "285bf4812e07a519f266ed88b83293bc4675493c5a9cc03985a6312363c6b8f0",
+      "intake_status": "SOURCE_BOUND_LD2_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+     },
+     "6cf83f34a924e0318114a2850a771ab69c912b68963234fa94018e66036f2e28": {
+      "label": "LD2_S2_delta_h_kappa_x2o3",
+      "configuration": {
+       "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD2_S2_delta_h_kappa_x2o3.json"
+      },
+      "signal_packet": {
+       "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      "binding_id": "f3a21bb413ceb34d9f79a4bfed72c201b242bf6c7713162c129e3edadfcf1fb5",
+      "total_configuration_id": "c706f775b79b03ef209b6f45360d4cba1ec9cb3405ff213783b206dd9e454e7f",
+      "intake_status": "SOURCE_BOUND_LD2_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+     },
+     "300085cf7225ed0a0a1ed40bb7d7d6cd499cc219c2b0309a94ae622351d378af": {
+      "label": "LD2_S2_delta_h_kappa_x2",
+      "configuration": {
+       "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD2_S2_delta_h_kappa_x2.json"
+      },
+      "signal_packet": {
+       "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      },
+      "binding_id": "52f346fd76e8efda8b8a0b6bf89ee384d326895fc48b0bf3ae586a9bb101adf7",
+      "total_configuration_id": "89b52510449e70a75155308bc9078e9a273056d4739e2071cb1430416c101cb6",
+      "intake_status": "SOURCE_BOUND_LD2_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+     },
+     "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847": {
+      "label": "LD3_S2_delta_h_kappa_x1_saved_reuse",
+      "configuration": {
+       "commit": "421258d400a86fffd7c4955d5cf1bd24ac5729cb",
+       "path": "docs/research/df_head_pauli_tail_ld3_stage1_20261116/config_run01/CONFIGURATION_LD3.json"
+      },
+      "signal_packet": {
+       "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      "binding_id": "122900d26d9412a569496e8ef98ff425614eac9885e43164bab400991980a858",
+      "total_configuration_id": "6757998a50bec243e1cd14d1b968457c673d383c47cb95c6b52e8b0ed7e1a0eb",
+      "intake_status": "SOURCE_BOUND_LD3_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+     },
+     "569c14aa1dac9f84b3ee826dcd9b33fd749c4c5c0605ecffe54030b1e362ff47": {
+      "label": "LD3_S2_delta_h_kappa_x2o3",
+      "configuration": {
+       "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD3_S2_delta_h_kappa_x2o3.json"
+      },
+      "signal_packet": {
+       "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      "binding_id": "2b038d41951b5f4a65170b61ca5d6f4e85a165c66f4ff4c25417974cc554a9f0",
+      "total_configuration_id": "78acf41de5c594a2ff93a203ad01f5fb058f251ccd3f6ebb575058b1a1d18217",
+      "intake_status": "SOURCE_BOUND_LD3_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+     },
+     "23ec179150682e0af256fc7c7bfcdf6f39af772f62418d6b45326afd5da1b2a8": {
+      "label": "LD3_S2_delta_h_kappa_x2",
+      "configuration": {
+       "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD3_S2_delta_h_kappa_x2.json"
+      },
+      "signal_packet": {
+       "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      },
+      "binding_id": "f216c0a19ef8c5f91e68d3a1a1801fcb1f0d9955f49afb070d40a9521920038e",
+      "total_configuration_id": "28112ed4d897d227e105b71c0e071149b2645920a8b8db71824a01bac992a52e",
+      "intake_status": "SOURCE_BOUND_LD3_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+     },
+     "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb": {
+      "label": "LD5_S2_delta_h_kappa_x1_saved_reuse",
+      "configuration": {
+       "commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+       "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/config_run01/CONFIGURATION_LD5.json"
+      },
+      "signal_packet": {
+       "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      "binding_id": "59198e931cb97974dd8a5101f4a2982865ee0b831946170e250d00af551f343e",
+      "total_configuration_id": "42309d00702fa11c43d62eb27a5ff928657dc1a4d9d8e9401547433af5c25403",
+      "intake_status": "SOURCE_BOUND_LD5_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+     },
+     "39355bcf7968bdcfc8bef7c40e9b2c7d970aa954b452639c32041c15e0406383": {
+      "label": "LD5_S2_delta_h_kappa_x2o3",
+      "configuration": {
+       "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD5_S2_delta_h_kappa_x2o3.json"
+      },
+      "signal_packet": {
+       "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      "binding_id": "9366f3ebf60ff6baaacd847b162abe6f889fa69ec0e3e7afe360f29637d56c2e",
+      "total_configuration_id": "d1a40d460db2e2a373f1fec4e188bffa803b7046600740bb2acbf932f7813f83",
+      "intake_status": "SOURCE_BOUND_LD5_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+     },
+     "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052": {
+      "label": "LD5_S2_delta_h_kappa_x2",
+      "configuration": {
+       "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD5_S2_delta_h_kappa_x2.json"
+      },
+      "signal_packet": {
+       "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+       "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      },
+      "binding_id": "38d4a055730b2ad61e5cc8a7c99f6fda06c359d74a60ec0b76a60a9e581f52d4",
+      "total_configuration_id": "f411ec466a47ba221376a9705afa569e9317db7c8aef0f9b287e33b5ddbf5173",
+      "intake_status": "SOURCE_BOUND_LD5_ALL_13_MEANS_NOT_RPE_QUALIFIED"
+     }
+    },
+    "contract_template": {
+     "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+     "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json"
+    },
+    "signal_entry_source": "93a5ef3b9fed337cc4d26ee684defd304fa0eac0",
+    "signal_intake_source": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+    "signal_packets_commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "existing_caller": "B bd42dd1e9 scripts/run_pauli_ld5_two_vectors_q3_fixed.py worker (L.SAVED_WORKER + L.installed + M.supervise), metadata generalized to accept_saved(handoff_source)",
+    "configurations_file": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01/ROUTE_REGISTRY.json"
+   }
+  ]
+ },
+ "kappa_families": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "signals": {
+  "worktree": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116",
+  "branch": "codex/b2-pauli-kappa-signals-20261116",
+  "directory": "docs/research/b2_pauli_kappa_signals_20261116/kappa_abs_round04",
+  "entry_source": "93a5ef3b9fed337cc4d26ee684defd304fa0eac0",
+  "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+  "saved_packets": [
+   {
+    "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+    "path": "docs/research/df_head_pauli_tail_all_round_results_20261114/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "cdbce383f9944b7f9da1cbbd7851406dbbaae88a",
+    "path": "docs/research/df_head_pauli_tail_ld3_signals_20261116/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "ac46d100e74f3f56b4a3ff4d95c15fdc7fe8ca98",
+    "path": "docs/research/df_head_pauli_tail_ld5_signals_20261116/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+   },
+   {
+    "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+    "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+   }
+  ],
+  "parallel": 8,
+  "intake_view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+  "intake_interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python"
+ },
+ "scope_note": "PR-Pauli H4 DF10, S2, K=2, Delta_PF=h, kappa itself in [1/2, 8] on physical schedules; L_D 1..9 (4/6 held at B intake, 7/8/9 P0 STOP); prices via D2 PriceRules MODEL, checked through the C/A common entry; Delta_PF != h: metadata only (scripts/prepare_pauli_width_requests.py)",
+ "continues": {
+  "round": "H4_PR_PAULI_KAPPA_ABS_2_NEIGHBOURHOOD_R03",
+  "run_dir": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+  "note": "points, splits, route registry and completed jobs carried over (KAPPA_STATE carried with its stop removed); the neighbourhood rule now works on physical schedules"
+ },
+ "price_rules_overrides": {
+  "registry_file": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/PRICE_RULES_REGISTRY.json"
+ },
+ "splits": {
+  "seed_file": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/SPLITS_SEED.json",
+  "per_cycle": 1,
+  "centre": "2",
+  "centre_multiplier": "539496659426909122096437389293855970805348475396548904610992201/6556307220576680324211205336751943418290588214633794768029614080",
+  "p0_checkout": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-split-p0-20261116",
+  "p0_branch": "codex/b2-pauli-split-p0-20261116",
+  "p0_directory": "docs/research/b2_pauli_split_p0_20261116",
+  "prep_source": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+  "prep_interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+  "signal_worktree": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116",
+  "signal_interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+  "signal_entry_source": "93a5ef3b9fed337cc4d26ee684defd304fa0eac0",
+  "intake_source": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+  "calibration_checkout": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-calibration-20261116",
+  "calibration_branch": "codex/b2-pauli-calibration-20261116",
+  "calibration_private_root": "/home/AbeHiromu/projects/b2-pauli-calibration-private",
+  "calibration_source": "7d6a8c385fc057de012c7e1e603bc0bc358f313c",
+  "driver_interpreter": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+  "d2_view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-c1f95e080",
+  "registry_file": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/PRICE_RULES_REGISTRY.json"
+ },
+ "schedule_aware": true,
+ "price_batch": {
+  "kind": "c_a_common_calibration_request_entry",
+  "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+  "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-a-02e7cc6a1",
+  "view_commit": "02e7cc6a127954fa7c446e7383d037f0617d50d3",
+  "handoff": {
+   "commit": "02e7cc6a127954fa7c446e7383d037f0617d50d3",
+   "path": "docs/research/pauli_multistep_calibration_request_20261116/HANDOFF.md"
+  },
+  "execution_branch": "codex/b2-pauli-calibration-20261116",
+  "rule": "raw D2 MODEL quotes (B2-extended registry) + canonical configurations of the new points in one batch; REUSE_SUPPLIED_PRICES_NO_CALIBRATION proceeds; any other status holds the point with per-round actions, pooled calibration cells and needs recorded (no calibration is executed by this round)"
+ },
+ "note": "acceptance only: every completed Q3 of rounds 01-04 must be reused after merging D2 98b40e439; budget 0 (no launch)"
+}

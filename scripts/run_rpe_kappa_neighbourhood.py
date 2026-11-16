@@ -44,7 +44,7 @@ def now():
 class Driver:
     def __init__(self, a):
         self.a, self.run = a, a.run_dir.resolve();self.run.mkdir(parents=True, exist_ok=True)
-        self.spec = O.load_json(a.round);self.nb = self.spec['search_overrides']['kappa_neighbourhood']
+        self.spec = O.load_json(a.round);self.nb = self.spec['search_overrides'].get('kappa_neighbourhood')
         sig = self.spec['signals'];self.sig = sig;self.wt = Path(sig['worktree']);self.sub = sig['directory']
         self.state_file = self.run / 'KAPPA_STATE.json'
         self.state = O.load_json(self.state_file) if self.state_file.exists() else dict(

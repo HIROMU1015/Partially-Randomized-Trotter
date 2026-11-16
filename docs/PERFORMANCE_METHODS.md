@@ -63,3 +63,24 @@
 - 実対象でPauli LD4/DF LD6の準備→Q3→C同期と完了runの新規Q3 0件を確認。部分axis再開・後続候補継続は人工検査。速度倍率は測定していない。
 - 失敗例：最初のdescriptor envelope不足は科学call前に停止。DF supervisorの終了receipt形式をPauli形式として読んだ誤りは、保存exitcode/identityをcollectして解決し、再Q3していない。
 - SOURCE・適用条件・検収：[API](research/d_pr_candidates_auto_20261116/API.md)、[REPORT](research/d_pr_candidates_auto_20261116/REPORT.md)。曖昧な稼働jobや失敗leafをretryせず、既存科学STOPを保持する。
+
+## PR-Pauli広域schedule探索：粗い探索の優先・HYBRID並列・価格下界による打ち切り（B2、2026-11-16）
+
+- **価格下界による打ち切り**（`run_rpe_schedule_search.py` の `prune`、`rpe_schedule_search.plan_wide(price_floor=)`）
+  - 候補scheduleのMODEL価格で、1 shotずつの配分の費用を計算する。これは、そのscheduleで最も安い配分の費用になる。
+  - この値が照合済みの全体最安以上なら、信号・Q3の前に除外する。価格はRとともに増えるので、それより大きいκも同じ理由で除外する。
+  - 実対象（round05の初回選択、メタデータのみ）では、37件中7件を除外した。
+- **粗い探索の優先**（V2の `coarse_gain_fraction`）：1%未満の削減を後回しにして、別のscheduleの評価を先にする。人工系で確認した。
+- **並列枠**（V2の `lookahead_mode`：INDEPENDENT／HYBRID／CHAIN）
+  - 保存結果の再生（時刻モデル、32枠、同時に調べるschedule 7つ）の結果：
+
+| 方式 | Q3起動 | 実時間 |
+|---|---:|---:|
+| 独立候補のみ | 355 | 704分 |
+| 連鎖 | 1,898 | 383分 |
+| HYBRID | 1,799 | 395分 |
+
+  - **失敗例**：調べるscheduleが少ないと、独立候補だけでは枠が埋まらない。
+  - 次roundではHYBRIDを使う。多数のscheduleを同時に評価する実runでの効果は未検証。
+- **全完了Q3の照合と再利用**（`build_rpe_q3_ledger.py`）：4,783件を照合し、拒否は0件。2種類の最安を分けて出す。
+- 根拠：[kappa_wide_round05/REPORT](research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/REPORT.md) §1・§3。
