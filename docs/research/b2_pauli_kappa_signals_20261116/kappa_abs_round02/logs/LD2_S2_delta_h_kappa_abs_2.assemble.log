@@ -1,25 +1,22 @@
-fatal: path 'docs/research/b2_pauli_kappa_signals_20261116/kappa_abs_round02/runs/LD2_S2_delta_h_kappa_abs_2/run01result.json' does not exist in '9a93f8b55612a66a5fc940dabe7c74bd1ed97763'
-Traceback (most recent call last):
-  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116/scripts/run_pauli_signal_entry.py", line 255, in <module>
-    main()
-  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116/scripts/run_pauli_signal_entry.py", line 246, in main
-    value, problems = assemble(args.out, args.config, configuration_id=args.configuration_id, packets=packets,
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116/scripts/run_pauli_signal_entry.py", line 181, in assemble
-    raw = read(run_dir+'result.json'); saved_plan = read(run_dir+'PLAN.json')
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116/scripts/run_pauli_signal_entry.py", line 180, in <lambda>
-    read = (lambda path: L.read(ROOT, raw_commit, path)) if git else (lambda path: json.loads((ROOT/path).read_text()))
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116/src/trottertracks/df_head_pauli_tail_ld3.py", line 50, in read
-    return json.loads(p0.blob(root, commit, path))
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-pauli-kappa-signals-20261116/src/trottertracks/df_head_pauli_tail_p0.py", line 32, in blob
-    return subprocess.check_output(['git', 'show', commit+':'+path], cwd=root)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/subprocess.py", line 465, in check_output
-    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/subprocess.py", line 569, in run
-    raise CalledProcessError(retcode, process.args,
-subprocess.CalledProcessError: Command '['git', 'show', '9a93f8b55612a66a5fc940dabe7c74bd1ed97763:docs/research/b2_pauli_kappa_signals_20261116/kappa_abs_round02/runs/LD2_S2_delta_h_kappa_abs_2/run01result.json']' returned non-zero exit status 128.
+{
+  "status": "ALL_13_PAULI_LD2_MEANS_AVAILABLE_NOT_RPE_QUALIFIED",
+  "reused": [
+    0
+  ],
+  "new": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "failed": [],
+  "b_intake_conditions": "PASS"
+}
