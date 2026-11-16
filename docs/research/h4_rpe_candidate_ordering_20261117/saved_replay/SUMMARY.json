@@ -1,0 +1,1630 @@
+{
+  "schema": "RPE_JOINT_CANDIDATE_ORDERING_REPLAY_V1",
+  "base_commit": "e839b0d3f5469c21f5944aec5d978f91d193efc8",
+  "source_round05": "d8e806265c3ded8e1184181c37c2d7ec71f08ade",
+  "archive_index_size": 4783,
+  "missing_archive_locators": [],
+  "metadata_input": {
+    "kind": "FIXED_GIT_INPUTS_AND_PINNED_PREPARATION",
+    "context_cache_sha256": "904ebd163c974c38dfee75eeb9d880c406ea88cdd633bdb63a65195da13ede4a",
+    "note": "Cache bytes are the replay input; its header states origin, not independent verification of its contents."
+  },
+  "initial_numeric_records": 9,
+  "initial_record_ids": [
+    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,7,7,1,1,1,1",
+    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,5,5",
+    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9",
+    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:21,21,19,19,18,18,17,17,15,15,14,14,12,12,11,11,10,10,8,8,7,7,5,5,3,3",
+    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,15,15,4,4,1,1",
+    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:26,26,24,24,23,23,21,21,19,19,18,18,16,16,14,14,12,12,10,10,8,8,7,7,4,4",
+    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9"
+  ],
+  "static_prepared_inputs": {
+    "source": {
+      "commit": "d8e806265c3ded8e1184181c37c2d7ec71f08ade",
+      "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01/KAPPA_POINTS.json"
+    },
+    "ready_candidates": 26,
+    "qualification": "Declared archived configuration/signal/price cache; outcomes are not initially known"
+  },
+  "replay_compute_seconds_before_serialization": 43.53104199282825,
+  "new_real_scientific_calls": 0,
+  "limits": [
+    "Every first unsaved chosen action, including speculative launch, stops that branch.",
+    "Unknown preparation/service times are not zero or an all-archive mean.",
+    "Only the horizon before the earlier branch censor supports a paired comparison.",
+    "Historical raw numerical results and original STOPs are read-only."
+  ],
+  "results": {
+    "MAIN_ROUND05_PROFILE": {
+      "conditions": {
+        "slots": 32,
+        "lookahead": 16,
+        "lookahead_mode": "HYBRID",
+        "DP_workers": 8,
+        "prefix_reuse": false,
+        "shot_exchange": false,
+        "Q3_budget": 400,
+        "initial_records": 9,
+        "width": "BINARY64_H"
+      },
+      "paired_observable_horizon": 0.0,
+      "qualification": "Retrospective round05-rule replay with limited initial C knowledge, not actual round05 initial state",
+      "policies": {
+        "ROUND05": {
+          "stop": "CENSORED_UNSAVED_SCHEDULE_PREPARATION",
+          "censor": {
+            "reason": "UNSAVED_SCHEDULE_PREPARATION",
+            "action": {
+              "id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+              "kind": "NEW_SCHEDULE",
+              "a_rank": [
+                0,
+                0
+              ],
+              "method": "PR_PAULI",
+              "L_D": 1,
+              "width": "BINARY64_H",
+              "kappa": "1/448",
+              "physical_R": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+              ],
+              "configuration_id": null,
+              "cost": null,
+              "price_floor": null,
+              "untried": true,
+              "profile": {
+                "slots": 32,
+                "dp_workers": 8,
+                "prefix_reuse": false
+              },
+              "preparation": {
+                "signal_reuse": false,
+                "price_reuse": false,
+                "requires_calibration": null,
+                "seconds": null,
+                "source": "UNSAVED_INPUT_PREPARATION"
+              },
+              "origin": "INIT_FLOOR_SCHEDULE"
+            },
+            "seconds": 0.0
+          },
+          "seconds": 0.0,
+          "initial_best": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_adopted": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_all_completed": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "Q3_launched": 0,
+          "unknown_Q3_requests": 0,
+          "completed": 0,
+          "revealed_records": 0,
+          "adopted": 0,
+          "completed_not_adopted": 0,
+          "target_reach": [
+            {
+              "cost_level": {
+                "numerator": 50123319043,
+                "denominator": 100,
+                "display": "501,233,190.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 43789430643,
+                "denominator": 100,
+                "display": "437,894,306.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 41430122937,
+                "denominator": 100,
+                "display": "414,301,229.37"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 410199237,
+                "denominator": 1,
+                "display": "410,199,237.00"
+              },
+              "reach": null,
+              "right_censored": true
+            }
+          ],
+          "timing_qualification": "SIMULATED_RECORDED_OLD_SERVICE",
+          "physical_scientific_calls": 0
+        },
+        "IMPROVEMENT_PER_TIME_V1": {
+          "stop": "CENSORED_UNSAVED_Q3_INCLUDING_SPECULATION",
+          "censor": {
+            "reason": "UNSAVED_Q3_INCLUDING_SPECULATION",
+            "action": {
+              "id": "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,7,7,1,1",
+              "kind": "SHOT_Q3"
+            },
+            "seconds": 0.0
+          },
+          "seconds": 0.0,
+          "initial_best": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_adopted": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_all_completed": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "Q3_launched": 3,
+          "unknown_Q3_requests": 1,
+          "completed": 0,
+          "revealed_records": 0,
+          "adopted": 0,
+          "completed_not_adopted": 0,
+          "target_reach": [
+            {
+              "cost_level": {
+                "numerator": 50123319043,
+                "denominator": 100,
+                "display": "501,233,190.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 43789430643,
+                "denominator": 100,
+                "display": "437,894,306.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 41430122937,
+                "denominator": 100,
+                "display": "414,301,229.37"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 410199237,
+                "denominator": 1,
+                "display": "410,199,237.00"
+              },
+              "reach": null,
+              "right_censored": true
+            }
+          ],
+          "timing_qualification": "SIMULATED_RECORDED_OLD_SERVICE",
+          "physical_scientific_calls": 0
+        }
+      },
+      "first_divergence": {
+        "index": 0,
+        "same_pool": true,
+        "A": {
+          "seconds": 0.0,
+          "selected": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+          "kind": "NEW_SCHEDULE",
+          "selection": {
+            "policy": "ROUND05",
+            "selection": 1,
+            "now": 0.0,
+            "baseline_id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "chosen_id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "changed_from_a_rank": false,
+            "reason": "ROUND05_A_RANK",
+            "method_best": {
+              "numerator": 3792207339,
+              "denominator": 7,
+              "display": "541,743,905.57"
+            },
+            "tau": {
+              "numerator": 15136964828156312001,
+              "denominator": 5960464477539062500000000,
+              "display": "0.00"
+            },
+            "ranks": [
+              {
+                "id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+                "kind": "NEW_SCHEDULE",
+                "method": "PR_PAULI",
+                "L_D": 1,
+                "width": "BINARY64_H",
+                "a_rank": [
+                  0,
+                  0
+                ],
+                "point_cost": null,
+                "profile": {
+                  "slots": 32,
+                  "dp_workers": 8,
+                  "prefix_reuse": false
+                },
+                "preparation": {
+                  "signal_reuse": false,
+                  "price_reuse": false,
+                  "requires_calibration": null,
+                  "seconds": null,
+                  "source": "UNSAVED_INPUT_PREPARATION"
+                },
+                "explicit_q3_prior": null,
+                "price_floor": null,
+                "price_floor_role": "BOUND_ONLY_NEVER_PREDICTED_POINT_COST",
+                "parent_cost": null,
+                "parent_MSE_upper": null,
+                "parent_headroom": null,
+                "immediate_saving": null,
+                "pass_rate": {
+                  "value": {
+                    "numerator": 6,
+                    "denominator": 11,
+                    "display": "0.55"
+                  },
+                  "passed": 5,
+                  "samples": 9,
+                  "source": "COMPLETED_METHOD_BETA_1_1",
+                  "observation_ids": [
+                    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,7,7,1,1,1,1",
+                    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,5,5",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:21,21,19,19,18,18,17,17,15,15,14,14,12,12,11,11,10,10,8,8,7,7,5,5,3,3",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,15,15,4,4,1,1",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:26,26,24,24,23,23,21,21,19,19,18,18,16,16,14,14,12,12,10,10,8,8,7,7,4,4",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9"
+                  ],
+                  "limitation": "Empirical ordering feature with shrinkage; no MSE monotonicity or pass guarantee."
+                },
+                "timing": {
+                  "preparation_seconds": null,
+                  "preparation_source": "UNSAVED_INPUT_PREPARATION",
+                  "q3_seconds": null,
+                  "q3_source": "Q3_TIME_UNKNOWN",
+                  "total_seconds": null,
+                  "timing_observation_ids": [],
+                  "unknown_reasons": [
+                    "PREPARATION_TIME_UNKNOWN",
+                    "Q3_TIME_UNKNOWN_NO_FIXED_OR_COMPLETED_PRIOR"
+                  ]
+                },
+                "score": null,
+                "zero_time_positive_saving": false,
+                "previous_selections": 0,
+                "untried": true
+              }
+            ],
+            "invariant": "Score never rejects an allocation, proves infeasibility or assumes MSE monotonicity.",
+            "scored_candidates": 78,
+            "omitted_rank_rows": "Reproducible from candidate pool and visible observations; chosen and A-baseline rows retained."
+          }
+        },
+        "B": {
+          "seconds": 0.0,
+          "selected": "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,1,1",
+          "kind": "SHOT_Q3",
+          "selection": {
+            "policy": "IMPROVEMENT_PER_TIME_V1",
+            "selection": 1,
+            "now": 0.0,
+            "baseline_id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "chosen_id": "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,1,1",
+            "changed_from_a_rank": true,
+            "reason": "POINT_SAVING_A_RANK_FALLBACK_TIMING_OR_POSITIVE_SCORE_UNAVAILABLE",
+            "method_best": {
+              "numerator": 3792207339,
+              "denominator": 7,
+              "display": "541,743,905.57"
+            },
+            "tau": {
+              "numerator": 15136964828156312001,
+              "denominator": 5960464477539062500000000,
+              "display": "0.00"
+            },
+            "ranks": [
+              {
+                "id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+                "kind": "NEW_SCHEDULE",
+                "method": "PR_PAULI",
+                "L_D": 1,
+                "width": "BINARY64_H",
+                "a_rank": [
+                  0,
+                  0
+                ],
+                "point_cost": null,
+                "profile": {
+                  "slots": 32,
+                  "dp_workers": 8,
+                  "prefix_reuse": false
+                },
+                "preparation": {
+                  "signal_reuse": false,
+                  "price_reuse": false,
+                  "requires_calibration": null,
+                  "seconds": null,
+                  "source": "UNSAVED_INPUT_PREPARATION"
+                },
+                "explicit_q3_prior": null,
+                "price_floor": null,
+                "price_floor_role": "BOUND_ONLY_NEVER_PREDICTED_POINT_COST",
+                "parent_cost": null,
+                "parent_MSE_upper": null,
+                "parent_headroom": null,
+                "immediate_saving": null,
+                "pass_rate": {
+                  "value": {
+                    "numerator": 6,
+                    "denominator": 11,
+                    "display": "0.55"
+                  },
+                  "passed": 5,
+                  "samples": 9,
+                  "source": "COMPLETED_METHOD_BETA_1_1",
+                  "observation_ids": [
+                    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,7,7,1,1,1,1",
+                    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,5,5",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:21,21,19,19,18,18,17,17,15,15,14,14,12,12,11,11,10,10,8,8,7,7,5,5,3,3",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,15,15,4,4,1,1",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:26,26,24,24,23,23,21,21,19,19,18,18,16,16,14,14,12,12,10,10,8,8,7,7,4,4",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9"
+                  ],
+                  "limitation": "Empirical ordering feature with shrinkage; no MSE monotonicity or pass guarantee."
+                },
+                "timing": {
+                  "preparation_seconds": null,
+                  "preparation_source": "UNSAVED_INPUT_PREPARATION",
+                  "q3_seconds": null,
+                  "q3_source": "Q3_TIME_UNKNOWN",
+                  "total_seconds": null,
+                  "timing_observation_ids": [],
+                  "unknown_reasons": [
+                    "PREPARATION_TIME_UNKNOWN",
+                    "Q3_TIME_UNKNOWN_NO_FIXED_OR_COMPLETED_PRIOR"
+                  ]
+                },
+                "score": null,
+                "zero_time_positive_saving": false,
+                "previous_selections": 0,
+                "untried": true
+              },
+              {
+                "id": "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,1,1",
+                "kind": "SHOT_Q3",
+                "method": "PR_PAULI",
+                "L_D": 3,
+                "width": "BINARY64_H",
+                "a_rank": [
+                  1,
+                  0,
+                  0
+                ],
+                "point_cost": {
+                  "numerator": 558396304238,
+                  "denominator": 1155,
+                  "display": "483,460,003.67"
+                },
+                "profile": {
+                  "slots": 32,
+                  "dp_workers": 8,
+                  "prefix_reuse": false
+                },
+                "preparation": {
+                  "signal_reuse": true,
+                  "price_reuse": true,
+                  "requires_calibration": false,
+                  "seconds": 0
+                },
+                "explicit_q3_prior": null,
+                "price_floor": null,
+                "price_floor_role": "BOUND_ONLY_NEVER_PREDICTED_POINT_COST",
+                "parent_cost": {
+                  "numerator": 625936421828,
+                  "denominator": 1155,
+                  "display": "541,936,295.95"
+                },
+                "parent_MSE_upper": {
+                  "lower_30": "252923567564983898749963057893e-35",
+                  "upper_30": "252923567564983898749963057894e-35",
+                  "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+                },
+                "parent_headroom": {
+                  "lower_30": "406590282924195544194754490669e-32",
+                  "upper_30": "406590282924195544194754490670e-32",
+                  "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+                },
+                "immediate_saving": {
+                  "numerator": 67317906697,
+                  "denominator": 1155,
+                  "display": "58,283,901.90"
+                },
+                "pass_rate": {
+                  "value": {
+                    "numerator": 3,
+                    "denominator": 7,
+                    "display": "0.43"
+                  },
+                  "passed": 2,
+                  "samples": 5,
+                  "source": "COMPLETED_CONFIGURATION_BETA_1_1",
+                  "observation_ids": [
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:21,21,19,19,18,18,17,17,15,15,14,14,12,12,11,11,10,10,8,8,7,7,5,5,3,3",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,15,15,4,4,1,1",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:26,26,24,24,23,23,21,21,19,19,18,18,16,16,14,14,12,12,10,10,8,8,7,7,4,4",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2"
+                  ],
+                  "limitation": "Empirical ordering feature with shrinkage; no MSE monotonicity or pass guarantee."
+                },
+                "timing": {
+                  "preparation_seconds": 0.0,
+                  "preparation_source": "REUSED_INPUTS_NO_PREPARATION",
+                  "q3_seconds": null,
+                  "q3_source": "Q3_TIME_UNKNOWN",
+                  "total_seconds": null,
+                  "timing_observation_ids": [],
+                  "unknown_reasons": [
+                    "Q3_TIME_UNKNOWN_NO_FIXED_OR_COMPLETED_PRIOR"
+                  ]
+                },
+                "score": null,
+                "zero_time_positive_saving": false,
+                "previous_selections": 0,
+                "untried": false
+              }
+            ],
+            "invariant": "Score never rejects an allocation, proves infeasibility or assumes MSE monotonicity.",
+            "scored_candidates": 78,
+            "omitted_rank_rows": "Reproducible from candidate pool and visible observations; chosen and A-baseline rows retained."
+          }
+        }
+      }
+    },
+    "MAIN_NO_SPECULATION": {
+      "conditions": {
+        "slots": 1,
+        "lookahead": 1,
+        "lookahead_mode": "HYBRID",
+        "DP_workers": 8,
+        "prefix_reuse": false,
+        "shot_exchange": false,
+        "Q3_budget": 400,
+        "initial_records": 9,
+        "width": "BINARY64_H"
+      },
+      "paired_observable_horizon": 0.0,
+      "qualification": "Retrospective round05-rule replay with limited initial C knowledge, not actual round05 initial state",
+      "policies": {
+        "ROUND05": {
+          "stop": "CENSORED_UNSAVED_SCHEDULE_PREPARATION",
+          "censor": {
+            "reason": "UNSAVED_SCHEDULE_PREPARATION",
+            "action": {
+              "id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+              "kind": "NEW_SCHEDULE",
+              "a_rank": [
+                0,
+                0
+              ],
+              "method": "PR_PAULI",
+              "L_D": 1,
+              "width": "BINARY64_H",
+              "kappa": "1/448",
+              "physical_R": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+              ],
+              "configuration_id": null,
+              "cost": null,
+              "price_floor": null,
+              "untried": true,
+              "profile": {
+                "slots": 1,
+                "dp_workers": 8,
+                "prefix_reuse": false
+              },
+              "preparation": {
+                "signal_reuse": false,
+                "price_reuse": false,
+                "requires_calibration": null,
+                "seconds": null,
+                "source": "UNSAVED_INPUT_PREPARATION"
+              },
+              "origin": "INIT_FLOOR_SCHEDULE"
+            },
+            "seconds": 0.0
+          },
+          "seconds": 0.0,
+          "initial_best": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_adopted": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_all_completed": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "Q3_launched": 0,
+          "unknown_Q3_requests": 0,
+          "completed": 0,
+          "revealed_records": 0,
+          "adopted": 0,
+          "completed_not_adopted": 0,
+          "target_reach": [
+            {
+              "cost_level": {
+                "numerator": 50123319043,
+                "denominator": 100,
+                "display": "501,233,190.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 43789430643,
+                "denominator": 100,
+                "display": "437,894,306.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 41430122937,
+                "denominator": 100,
+                "display": "414,301,229.37"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 410199237,
+                "denominator": 1,
+                "display": "410,199,237.00"
+              },
+              "reach": null,
+              "right_censored": true
+            }
+          ],
+          "timing_qualification": "SIMULATED_RECORDED_OLD_SERVICE",
+          "physical_scientific_calls": 0
+        },
+        "IMPROVEMENT_PER_TIME_V1": {
+          "stop": "CENSORED_UNSAVED_SCHEDULE_PREPARATION",
+          "censor": {
+            "reason": "UNSAVED_SCHEDULE_PREPARATION",
+            "action": {
+              "id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+              "kind": "NEW_SCHEDULE",
+              "a_rank": [
+                0,
+                0
+              ],
+              "method": "PR_PAULI",
+              "L_D": 1,
+              "width": "BINARY64_H",
+              "kappa": "1/448",
+              "physical_R": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+              ],
+              "configuration_id": null,
+              "cost": null,
+              "price_floor": null,
+              "untried": true,
+              "profile": {
+                "slots": 1,
+                "dp_workers": 8,
+                "prefix_reuse": false
+              },
+              "preparation": {
+                "signal_reuse": false,
+                "price_reuse": false,
+                "requires_calibration": null,
+                "seconds": null,
+                "source": "UNSAVED_INPUT_PREPARATION"
+              },
+              "origin": "INIT_FLOOR_SCHEDULE"
+            },
+            "seconds": 484.5309638977051
+          },
+          "seconds": 484.5309638977051,
+          "initial_best": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_adopted": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_all_completed": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "Q3_launched": 3,
+          "unknown_Q3_requests": 0,
+          "completed": 3,
+          "revealed_records": 3,
+          "adopted": 3,
+          "completed_not_adopted": 0,
+          "target_reach": [
+            {
+              "cost_level": {
+                "numerator": 50123319043,
+                "denominator": 100,
+                "display": "501,233,190.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 43789430643,
+                "denominator": 100,
+                "display": "437,894,306.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 41430122937,
+                "denominator": 100,
+                "display": "414,301,229.37"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 410199237,
+                "denominator": 1,
+                "display": "410,199,237.00"
+              },
+              "reach": null,
+              "right_censored": true
+            }
+          ],
+          "timing_qualification": "SIMULATED_RECORDED_OLD_SERVICE",
+          "physical_scientific_calls": 0
+        }
+      },
+      "first_divergence": {
+        "index": 0,
+        "same_pool": true,
+        "A": {
+          "seconds": 0.0,
+          "selected": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+          "kind": "NEW_SCHEDULE",
+          "selection": {
+            "policy": "ROUND05",
+            "selection": 1,
+            "now": 0.0,
+            "baseline_id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "chosen_id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "changed_from_a_rank": false,
+            "reason": "ROUND05_A_RANK",
+            "method_best": {
+              "numerator": 3792207339,
+              "denominator": 7,
+              "display": "541,743,905.57"
+            },
+            "tau": {
+              "numerator": 15136964828156312001,
+              "denominator": 5960464477539062500000000,
+              "display": "0.00"
+            },
+            "ranks": [
+              {
+                "id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+                "kind": "NEW_SCHEDULE",
+                "method": "PR_PAULI",
+                "L_D": 1,
+                "width": "BINARY64_H",
+                "a_rank": [
+                  0,
+                  0
+                ],
+                "point_cost": null,
+                "profile": {
+                  "slots": 1,
+                  "dp_workers": 8,
+                  "prefix_reuse": false
+                },
+                "preparation": {
+                  "signal_reuse": false,
+                  "price_reuse": false,
+                  "requires_calibration": null,
+                  "seconds": null,
+                  "source": "UNSAVED_INPUT_PREPARATION"
+                },
+                "explicit_q3_prior": null,
+                "price_floor": null,
+                "price_floor_role": "BOUND_ONLY_NEVER_PREDICTED_POINT_COST",
+                "parent_cost": null,
+                "parent_MSE_upper": null,
+                "parent_headroom": null,
+                "immediate_saving": null,
+                "pass_rate": {
+                  "value": {
+                    "numerator": 6,
+                    "denominator": 11,
+                    "display": "0.55"
+                  },
+                  "passed": 5,
+                  "samples": 9,
+                  "source": "COMPLETED_METHOD_BETA_1_1",
+                  "observation_ids": [
+                    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,7,7,1,1,1,1",
+                    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,5,5",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:21,21,19,19,18,18,17,17,15,15,14,14,12,12,11,11,10,10,8,8,7,7,5,5,3,3",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,15,15,4,4,1,1",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:26,26,24,24,23,23,21,21,19,19,18,18,16,16,14,14,12,12,10,10,8,8,7,7,4,4",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9"
+                  ],
+                  "limitation": "Empirical ordering feature with shrinkage; no MSE monotonicity or pass guarantee."
+                },
+                "timing": {
+                  "preparation_seconds": null,
+                  "preparation_source": "UNSAVED_INPUT_PREPARATION",
+                  "q3_seconds": null,
+                  "q3_source": "Q3_TIME_UNKNOWN",
+                  "total_seconds": null,
+                  "timing_observation_ids": [],
+                  "unknown_reasons": [
+                    "PREPARATION_TIME_UNKNOWN",
+                    "Q3_TIME_UNKNOWN_NO_FIXED_OR_COMPLETED_PRIOR"
+                  ]
+                },
+                "score": null,
+                "zero_time_positive_saving": false,
+                "previous_selections": 0,
+                "untried": true
+              }
+            ],
+            "invariant": "Score never rejects an allocation, proves infeasibility or assumes MSE monotonicity.",
+            "scored_candidates": 78,
+            "omitted_rank_rows": "Reproducible from candidate pool and visible observations; chosen and A-baseline rows retained."
+          }
+        },
+        "B": {
+          "seconds": 0.0,
+          "selected": "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,1,1",
+          "kind": "SHOT_Q3",
+          "selection": {
+            "policy": "IMPROVEMENT_PER_TIME_V1",
+            "selection": 1,
+            "now": 0.0,
+            "baseline_id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "chosen_id": "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,1,1",
+            "changed_from_a_rank": true,
+            "reason": "POINT_SAVING_A_RANK_FALLBACK_TIMING_OR_POSITIVE_SCORE_UNAVAILABLE",
+            "method_best": {
+              "numerator": 3792207339,
+              "denominator": 7,
+              "display": "541,743,905.57"
+            },
+            "tau": {
+              "numerator": 15136964828156312001,
+              "denominator": 5960464477539062500000000,
+              "display": "0.00"
+            },
+            "ranks": [
+              {
+                "id": "S:1:1,1,1,1,1,1,1,1,1,1,1,1,1",
+                "kind": "NEW_SCHEDULE",
+                "method": "PR_PAULI",
+                "L_D": 1,
+                "width": "BINARY64_H",
+                "a_rank": [
+                  0,
+                  0
+                ],
+                "point_cost": null,
+                "profile": {
+                  "slots": 1,
+                  "dp_workers": 8,
+                  "prefix_reuse": false
+                },
+                "preparation": {
+                  "signal_reuse": false,
+                  "price_reuse": false,
+                  "requires_calibration": null,
+                  "seconds": null,
+                  "source": "UNSAVED_INPUT_PREPARATION"
+                },
+                "explicit_q3_prior": null,
+                "price_floor": null,
+                "price_floor_role": "BOUND_ONLY_NEVER_PREDICTED_POINT_COST",
+                "parent_cost": null,
+                "parent_MSE_upper": null,
+                "parent_headroom": null,
+                "immediate_saving": null,
+                "pass_rate": {
+                  "value": {
+                    "numerator": 6,
+                    "denominator": 11,
+                    "display": "0.55"
+                  },
+                  "passed": 5,
+                  "samples": 9,
+                  "source": "COMPLETED_METHOD_BETA_1_1",
+                  "observation_ids": [
+                    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,7,7,1,1,1,1",
+                    "Q:d7dd4f52bece343126258ffa24b9c4d7e1b8d76af82d1f4f4004819e832aa4d3:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,5,5",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:21,21,19,19,18,18,17,17,15,15,14,14,12,12,11,11,10,10,8,8,7,7,5,5,3,3",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,15,15,4,4,1,1",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:26,26,24,24,23,23,21,21,19,19,18,18,16,16,14,14,12,12,10,10,8,8,7,7,4,4",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9"
+                  ],
+                  "limitation": "Empirical ordering feature with shrinkage; no MSE monotonicity or pass guarantee."
+                },
+                "timing": {
+                  "preparation_seconds": null,
+                  "preparation_source": "UNSAVED_INPUT_PREPARATION",
+                  "q3_seconds": null,
+                  "q3_source": "Q3_TIME_UNKNOWN",
+                  "total_seconds": null,
+                  "timing_observation_ids": [],
+                  "unknown_reasons": [
+                    "PREPARATION_TIME_UNKNOWN",
+                    "Q3_TIME_UNKNOWN_NO_FIXED_OR_COMPLETED_PRIOR"
+                  ]
+                },
+                "score": null,
+                "zero_time_positive_saving": false,
+                "previous_selections": 0,
+                "untried": true
+              },
+              {
+                "id": "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,1,1",
+                "kind": "SHOT_Q3",
+                "method": "PR_PAULI",
+                "L_D": 3,
+                "width": "BINARY64_H",
+                "a_rank": [
+                  1,
+                  0,
+                  0
+                ],
+                "point_cost": {
+                  "numerator": 558396304238,
+                  "denominator": 1155,
+                  "display": "483,460,003.67"
+                },
+                "profile": {
+                  "slots": 1,
+                  "dp_workers": 8,
+                  "prefix_reuse": false
+                },
+                "preparation": {
+                  "signal_reuse": true,
+                  "price_reuse": true,
+                  "requires_calibration": false,
+                  "seconds": 0
+                },
+                "explicit_q3_prior": null,
+                "price_floor": null,
+                "price_floor_role": "BOUND_ONLY_NEVER_PREDICTED_POINT_COST",
+                "parent_cost": {
+                  "numerator": 625936421828,
+                  "denominator": 1155,
+                  "display": "541,936,295.95"
+                },
+                "parent_MSE_upper": {
+                  "lower_30": "252923567564983898749963057893e-35",
+                  "upper_30": "252923567564983898749963057894e-35",
+                  "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+                },
+                "parent_headroom": {
+                  "lower_30": "406590282924195544194754490669e-32",
+                  "upper_30": "406590282924195544194754490670e-32",
+                  "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+                },
+                "immediate_saving": {
+                  "numerator": 67317906697,
+                  "denominator": 1155,
+                  "display": "58,283,901.90"
+                },
+                "pass_rate": {
+                  "value": {
+                    "numerator": 3,
+                    "denominator": 7,
+                    "display": "0.43"
+                  },
+                  "passed": 2,
+                  "samples": 5,
+                  "source": "COMPLETED_CONFIGURATION_BETA_1_1",
+                  "observation_ids": [
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:21,21,19,19,18,18,17,17,15,15,14,14,12,12,11,11,10,10,8,8,7,7,5,5,3,3",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,15,15,4,4,1,1",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:26,26,24,24,23,23,21,21,19,19,18,18,16,16,14,14,12,12,10,10,8,8,7,7,4,4",
+                    "Q:dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2"
+                  ],
+                  "limitation": "Empirical ordering feature with shrinkage; no MSE monotonicity or pass guarantee."
+                },
+                "timing": {
+                  "preparation_seconds": 0.0,
+                  "preparation_source": "REUSED_INPUTS_NO_PREPARATION",
+                  "q3_seconds": null,
+                  "q3_source": "Q3_TIME_UNKNOWN",
+                  "total_seconds": null,
+                  "timing_observation_ids": [],
+                  "unknown_reasons": [
+                    "Q3_TIME_UNKNOWN_NO_FIXED_OR_COMPLETED_PRIOR"
+                  ]
+                },
+                "score": null,
+                "zero_time_positive_saving": false,
+                "previous_selections": 0,
+                "untried": false
+              }
+            ],
+            "invariant": "Score never rejects an allocation, proves infeasibility or assumes MSE monotonicity.",
+            "scored_candidates": 78,
+            "omitted_rank_rows": "Reproducible from candidate pool and visible observations; chosen and A-baseline rows retained."
+          }
+        }
+      }
+    },
+    "LD5_KAPPA_LE64_NO_SPECULATION": {
+      "conditions": {
+        "slots": 1,
+        "lookahead": 1,
+        "lookahead_mode": "HYBRID",
+        "DP_workers": 8,
+        "prefix_reuse": false,
+        "shot_exchange": false,
+        "Q3_budget": 400,
+        "initial_records": 2,
+        "width": "BINARY64_H"
+      },
+      "paired_observable_horizon": 9146.992981433868,
+      "qualification": "Retrospective round05-rule replay with limited initial C knowledge, not actual round05 initial state",
+      "policies": {
+        "ROUND05": {
+          "stop": "CENSORED_UNSAVED_Q3_INCLUDING_SPECULATION",
+          "censor": {
+            "reason": "UNSAVED_Q3_INCLUDING_SPECULATION",
+            "action": {
+              "id": "Q:a620a3552aa8acd9beaac5096ed69e5c49917c0016012e6c2c2653b0b17a8a5e:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,7,7,7,7,5,5",
+              "kind": "SHOT_Q3"
+            },
+            "seconds": 9146.992981433868
+          },
+          "seconds": 9146.992981433868,
+          "initial_best": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_adopted": {
+            "numerator": 3091849533,
+            "denominator": 7,
+            "display": "441,692,790.43"
+          },
+          "best_all_completed": {
+            "numerator": 3091849533,
+            "denominator": 7,
+            "display": "441,692,790.43"
+          },
+          "Q3_launched": 67,
+          "unknown_Q3_requests": 1,
+          "completed": 67,
+          "revealed_records": 67,
+          "adopted": 67,
+          "completed_not_adopted": 0,
+          "target_reach": [
+            {
+              "cost_level": {
+                "numerator": 50123319043,
+                "denominator": 100,
+                "display": "501,233,190.43"
+              },
+              "reach": {
+                "seconds": 1361.3622109889984,
+                "launched": 9,
+                "cost": {
+                  "numerator": 3489401569,
+                  "denominator": 7,
+                  "display": "498,485,938.43"
+                }
+              },
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 43789430643,
+                "denominator": 100,
+                "display": "437,894,306.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 41430122937,
+                "denominator": 100,
+                "display": "414,301,229.37"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 410199237,
+                "denominator": 1,
+                "display": "410,199,237.00"
+              },
+              "reach": null,
+              "right_censored": true
+            }
+          ],
+          "timing_qualification": "SIMULATED_RECORDED_OLD_SERVICE",
+          "physical_scientific_calls": 0
+        },
+        "IMPROVEMENT_PER_TIME_V1": {
+          "stop": "CENSORED_UNSAVED_Q3_INCLUDING_SPECULATION",
+          "censor": {
+            "reason": "UNSAVED_Q3_INCLUDING_SPECULATION",
+            "action": {
+              "id": "Q:a620a3552aa8acd9beaac5096ed69e5c49917c0016012e6c2c2653b0b17a8a5e:48,48,45,45,42,42,39,39,36,36,33,33,14,14,21,21,17,17,14,14,7,7,7,7,5,5",
+              "kind": "SHOT_Q3"
+            },
+            "seconds": 14477.543641805649
+          },
+          "seconds": 14477.543641805649,
+          "initial_best": {
+            "numerator": 3792207339,
+            "denominator": 7,
+            "display": "541,743,905.57"
+          },
+          "best_adopted": {
+            "numerator": 3091849533,
+            "denominator": 7,
+            "display": "441,692,790.43"
+          },
+          "best_all_completed": {
+            "numerator": 3091849533,
+            "denominator": 7,
+            "display": "441,692,790.43"
+          },
+          "Q3_launched": 114,
+          "unknown_Q3_requests": 1,
+          "completed": 114,
+          "revealed_records": 114,
+          "adopted": 114,
+          "completed_not_adopted": 0,
+          "target_reach": [
+            {
+              "cost_level": {
+                "numerator": 50123319043,
+                "denominator": 100,
+                "display": "501,233,190.43"
+              },
+              "reach": {
+                "seconds": 1052.9007005691528,
+                "launched": 7,
+                "cost": {
+                  "numerator": 3489401569,
+                  "denominator": 7,
+                  "display": "498,485,938.43"
+                }
+              },
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 43789430643,
+                "denominator": 100,
+                "display": "437,894,306.43"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 41430122937,
+                "denominator": 100,
+                "display": "414,301,229.37"
+              },
+              "reach": null,
+              "right_censored": true
+            },
+            {
+              "cost_level": {
+                "numerator": 410199237,
+                "denominator": 1,
+                "display": "410,199,237.00"
+              },
+              "reach": null,
+              "right_censored": true
+            }
+          ],
+          "timing_qualification": "SIMULATED_RECORDED_OLD_SERVICE",
+          "physical_scientific_calls": 0
+        }
+      },
+      "first_divergence": {
+        "index": 0,
+        "same_pool": true,
+        "A": {
+          "seconds": 0.0,
+          "selected": "S:5:1,1,1,1,1,1,1,1,1,1,1,1,1",
+          "kind": "NEW_SCHEDULE",
+          "selection": {
+            "policy": "ROUND05",
+            "selection": 1,
+            "now": 0.0,
+            "baseline_id": "S:5:1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "chosen_id": "S:5:1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "changed_from_a_rank": false,
+            "reason": "ROUND05_A_RANK",
+            "method_best": {
+              "numerator": 3792207339,
+              "denominator": 7,
+              "display": "541,743,905.57"
+            },
+            "tau": {
+              "numerator": 15136964828156312001,
+              "denominator": 5960464477539062500000000,
+              "display": "0.00"
+            },
+            "ranks": [
+              {
+                "id": "S:5:1,1,1,1,1,1,1,1,1,1,1,1,1",
+                "kind": "NEW_SCHEDULE",
+                "method": "PR_PAULI",
+                "L_D": 5,
+                "width": "BINARY64_H",
+                "a_rank": [
+                  0,
+                  0
+                ],
+                "point_cost": null,
+                "profile": {
+                  "slots": 1,
+                  "dp_workers": 8,
+                  "prefix_reuse": false
+                },
+                "preparation": {
+                  "signal_reuse": true,
+                  "price_reuse": true,
+                  "requires_calibration": false,
+                  "seconds": 0.0,
+                  "source": "DECLARED_ARCHIVED_PREPARED_INPUTS"
+                },
+                "explicit_q3_prior": null,
+                "price_floor": {
+                  "numerator": 968903729,
+                  "denominator": 14,
+                  "display": "69,207,409.21"
+                },
+                "price_floor_role": "BOUND_ONLY_NEVER_PREDICTED_POINT_COST",
+                "parent_cost": null,
+                "parent_MSE_upper": null,
+                "parent_headroom": null,
+                "immediate_saving": null,
+                "pass_rate": {
+                  "value": {
+                    "numerator": 3,
+                    "denominator": 4,
+                    "display": "0.75"
+                  },
+                  "passed": 2,
+                  "samples": 2,
+                  "source": "COMPLETED_METHOD_BETA_1_1",
+                  "observation_ids": [
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9"
+                  ],
+                  "limitation": "Empirical ordering feature with shrinkage; no MSE monotonicity or pass guarantee."
+                },
+                "timing": {
+                  "preparation_seconds": 0.0,
+                  "preparation_source": "REUSED_INPUTS_NO_PREPARATION",
+                  "q3_seconds": null,
+                  "q3_source": "Q3_TIME_UNKNOWN",
+                  "total_seconds": null,
+                  "timing_observation_ids": [],
+                  "unknown_reasons": [
+                    "Q3_TIME_UNKNOWN_NO_FIXED_OR_COMPLETED_PRIOR"
+                  ]
+                },
+                "score": null,
+                "zero_time_positive_saving": false,
+                "previous_selections": 0,
+                "untried": true
+              }
+            ],
+            "invariant": "Score never rejects an allocation, proves infeasibility or assumes MSE monotonicity.",
+            "scored_candidates": 7,
+            "omitted_rank_rows": "Reproducible from candidate pool and visible observations; chosen and A-baseline rows retained."
+          }
+        },
+        "B": {
+          "seconds": 0.0,
+          "selected": "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,1,1",
+          "kind": "SHOT_Q3",
+          "selection": {
+            "policy": "IMPROVEMENT_PER_TIME_V1",
+            "selection": 1,
+            "now": 0.0,
+            "baseline_id": "S:5:1,1,1,1,1,1,1,1,1,1,1,1,1",
+            "chosen_id": "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,1,1",
+            "changed_from_a_rank": true,
+            "reason": "POINT_SAVING_A_RANK_FALLBACK_TIMING_OR_POSITIVE_SCORE_UNAVAILABLE",
+            "method_best": {
+              "numerator": 3792207339,
+              "denominator": 7,
+              "display": "541,743,905.57"
+            },
+            "tau": {
+              "numerator": 15136964828156312001,
+              "denominator": 5960464477539062500000000,
+              "display": "0.00"
+            },
+            "ranks": [
+              {
+                "id": "S:5:1,1,1,1,1,1,1,1,1,1,1,1,1",
+                "kind": "NEW_SCHEDULE",
+                "method": "PR_PAULI",
+                "L_D": 5,
+                "width": "BINARY64_H",
+                "a_rank": [
+                  0,
+                  0
+                ],
+                "point_cost": null,
+                "profile": {
+                  "slots": 1,
+                  "dp_workers": 8,
+                  "prefix_reuse": false
+                },
+                "preparation": {
+                  "signal_reuse": true,
+                  "price_reuse": true,
+                  "requires_calibration": false,
+                  "seconds": 0.0,
+                  "source": "DECLARED_ARCHIVED_PREPARED_INPUTS"
+                },
+                "explicit_q3_prior": null,
+                "price_floor": {
+                  "numerator": 968903729,
+                  "denominator": 14,
+                  "display": "69,207,409.21"
+                },
+                "price_floor_role": "BOUND_ONLY_NEVER_PREDICTED_POINT_COST",
+                "parent_cost": null,
+                "parent_MSE_upper": null,
+                "parent_headroom": null,
+                "immediate_saving": null,
+                "pass_rate": {
+                  "value": {
+                    "numerator": 3,
+                    "denominator": 4,
+                    "display": "0.75"
+                  },
+                  "passed": 2,
+                  "samples": 2,
+                  "source": "COMPLETED_METHOD_BETA_1_1",
+                  "observation_ids": [
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9"
+                  ],
+                  "limitation": "Empirical ordering feature with shrinkage; no MSE monotonicity or pass guarantee."
+                },
+                "timing": {
+                  "preparation_seconds": 0.0,
+                  "preparation_source": "REUSED_INPUTS_NO_PREPARATION",
+                  "q3_seconds": null,
+                  "q3_source": "Q3_TIME_UNKNOWN",
+                  "total_seconds": null,
+                  "timing_observation_ids": [],
+                  "unknown_reasons": [
+                    "Q3_TIME_UNKNOWN_NO_FIXED_OR_COMPLETED_PRIOR"
+                  ]
+                },
+                "score": null,
+                "zero_time_positive_saving": false,
+                "previous_selections": 0,
+                "untried": true
+              },
+              {
+                "id": "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,1,1",
+                "kind": "SHOT_Q3",
+                "method": "PR_PAULI",
+                "L_D": 5,
+                "width": "BINARY64_H",
+                "a_rank": [
+                  1,
+                  0,
+                  0
+                ],
+                "point_cost": {
+                  "numerator": 3548409065,
+                  "denominator": 7,
+                  "display": "506,915,580.71"
+                },
+                "profile": {
+                  "slots": 1,
+                  "dp_workers": 8,
+                  "prefix_reuse": false
+                },
+                "preparation": {
+                  "signal_reuse": true,
+                  "price_reuse": true,
+                  "requires_calibration": false,
+                  "seconds": 0
+                },
+                "explicit_q3_prior": null,
+                "price_floor": null,
+                "price_floor_role": "BOUND_ONLY_NEVER_PREDICTED_POINT_COST",
+                "parent_cost": {
+                  "numerator": 3792207339,
+                  "denominator": 7,
+                  "display": "541,743,905.57"
+                },
+                "parent_MSE_upper": {
+                  "lower_30": "250025936735575162806818654753e-35",
+                  "upper_30": "250025936735575162806818654754e-35",
+                  "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+                },
+                "parent_headroom": {
+                  "lower_30": "154758689775325063602873661575e-31",
+                  "upper_30": "154758689775325063602873661576e-31",
+                  "exact": "OMITTED_SEE_JOB_OUTCOME_JSON"
+                },
+                "immediate_saving": {
+                  "numerator": 243798274,
+                  "denominator": 7,
+                  "display": "34,828,324.86"
+                },
+                "pass_rate": {
+                  "value": {
+                    "numerator": 3,
+                    "denominator": 4,
+                    "display": "0.75"
+                  },
+                  "passed": 2,
+                  "samples": 2,
+                  "source": "COMPLETED_CONFIGURATION_BETA_1_1",
+                  "observation_ids": [
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,8,8,2,2",
+                    "Q:4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb:48,48,45,45,42,42,39,39,36,36,33,33,29,29,26,26,23,23,19,19,16,16,13,13,9,9"
+                  ],
+                  "limitation": "Empirical ordering feature with shrinkage; no MSE monotonicity or pass guarantee."
+                },
+                "timing": {
+                  "preparation_seconds": 0.0,
+                  "preparation_source": "REUSED_INPUTS_NO_PREPARATION",
+                  "q3_seconds": null,
+                  "q3_source": "Q3_TIME_UNKNOWN",
+                  "total_seconds": null,
+                  "timing_observation_ids": [],
+                  "unknown_reasons": [
+                    "Q3_TIME_UNKNOWN_NO_FIXED_OR_COMPLETED_PRIOR"
+                  ]
+                },
+                "score": null,
+                "zero_time_positive_saving": false,
+                "previous_selections": 0,
+                "untried": false
+              }
+            ],
+            "invariant": "Score never rejects an allocation, proves infeasibility or assumes MSE monotonicity.",
+            "scored_candidates": 7,
+            "omitted_rank_rows": "Reproducible from candidate pool and visible observations; chosen and A-baseline rows retained."
+          }
+        }
+      }
+    }
+  },
+  "budget_scan": [
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 4,
+      "policy": "ROUND05",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 617.1160976886749,
+      "Q3_launched": 4,
+      "completed": 4,
+      "adopted": 4,
+      "best_all_RZ": 533092312.14285713
+    },
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 4,
+      "policy": "IMPROVEMENT_PER_TIME_V1",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 618.5028920173645,
+      "Q3_launched": 4,
+      "completed": 4,
+      "adopted": 4,
+      "best_all_RZ": 524440718.71428573
+    },
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 8,
+      "policy": "ROUND05",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 1218.1743121147156,
+      "Q3_launched": 8,
+      "completed": 8,
+      "adopted": 8,
+      "best_all_RZ": 507137531.85714287
+    },
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 8,
+      "policy": "IMPROVEMENT_PER_TIME_V1",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 1197.250816822052,
+      "Q3_launched": 8,
+      "completed": 8,
+      "adopted": 8,
+      "best_all_RZ": 489834345.0
+    },
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 16,
+      "policy": "ROUND05",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 2459.288691520691,
+      "Q3_launched": 16,
+      "completed": 16,
+      "adopted": 16,
+      "best_all_RZ": 489834345.0
+    },
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 16,
+      "policy": "IMPROVEMENT_PER_TIME_V1",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 2318.755918264389,
+      "Q3_launched": 16,
+      "completed": 16,
+      "adopted": 16,
+      "best_all_RZ": 468203184.4285714
+    },
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 32,
+      "policy": "ROUND05",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 4743.20126581192,
+      "Q3_launched": 32,
+      "completed": 32,
+      "adopted": 32,
+      "best_all_RZ": 470366549.28571427
+    },
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 32,
+      "policy": "IMPROVEMENT_PER_TIME_V1",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 4384.83167719841,
+      "Q3_launched": 32,
+      "completed": 32,
+      "adopted": 32,
+      "best_all_RZ": 449812406.14285713
+    },
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 64,
+      "policy": "ROUND05",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 8675.204219818115,
+      "Q3_launched": 64,
+      "completed": 64,
+      "adopted": 64,
+      "best_all_RZ": 441692790.4285714
+    },
+    {
+      "scenario": "LD5_KAPPA_LE64_NO_SPECULATION",
+      "Q3_budget": 64,
+      "policy": "IMPROVEMENT_PER_TIME_V1",
+      "stop": "Q3_BUDGET_EXHAUSTED",
+      "censored": false,
+      "simulated_seconds": 8650.921946525574,
+      "Q3_launched": 64,
+      "completed": 64,
+      "adopted": 64,
+      "best_all_RZ": 441692790.4285714
+    }
+  ]
+}

@@ -95,3 +95,9 @@ D2公開 `1eda4ba3f` / `0742a750b` のhelperを再利用し、`run_rpe_schedule_
 `adaptive_hybrid`、round間shot振替、`overlap_ready_batch` はopt-in。適応先読みは模擬起動数を減らしてもlatencyが増える例があり、一律に有効化しない。通常・再開経路で発見したfamily引継ぎ漏れ、未実行planの再開、prior重複、live終了待ち、準備中失敗のSTOP保存、V2全体previewの未起動予約残りを小さい人工検査で修正した。観測counterは再開でresetするが完了結果/起動済み予算は維持する。
 
 [REPORT](research/h4_rpe_search_throughput_20261116/REPORT.md)、[B2設定例・開始/再開・制約](research/h4_rpe_search_throughput_20261116/HANDOFF.md)、[検査](research/h4_rpe_search_throughput_20261116/checks/VALIDATION.json)。通常入口はplan-only開始/同run再開で科学0を確認し、4方式の共通経路は人工workerで検査した。保存運用/再生の効果はPR-Pauliの範囲。今回の実科学0件。
+
+## H4 RPE探索：scheduleとshotを同じ候補menuで比較する（2026-11-17）
+
+`rpe_candidate_ordering.Selector` と `rpe_priority_search.priority_session` は、既存W/V2の候補生成を保ち、候補順だけを比較する。時刻推定は完了済み・同profileの観測のみ、価格下界を予測適合価格へ転用しない。未知候補や先読みの保存欠測でbranchを打ち切り、選択後の結果開示・採択外完了の最安包含を検査した。実装固定版は [SOURCE](research/h4_rpe_candidate_ordering_20261117/SOURCE.json)。
+
+全L_D主比較は初回欠測で優劣不明。PR-Pauli・要求幅h・LD5/κ≤64の保存再生では501.23M以下へA9起動/1361模擬秒、B7起動/1053模擬秒。同予算64件では最安同値。これは計算本体の高速化や実H4速度の実測ではない。1手ずつV2を呼ぶcounter reset、予算停止の外側伝播、report用JSONによる価格cache欠落、live round05 metadataの混入を小さい人工回帰で防いだ。Bは比較入口のみのopt-in、既定roundは変更しない。[REPORT](research/h4_rpe_candidate_ordering_20261117/REPORT.md)、[再現・幅接続API](research/h4_rpe_candidate_ordering_20261117/HANDOFF.md)。

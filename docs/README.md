@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 RPE候補の評価順序](research/h4_rpe_candidate_ordering_20261117/REPORT.md)／[B2向けAPI・再現](research/h4_rpe_candidate_ordering_20261117/HANDOFF.md)：新scheduleとshot改善を同じ候補menuで比較。全L_D主比較は保存欠測で判断不能、LD5限定の模擬比較・人工反例を保存。新規実科学0。
+
 [H4 RPE探索の並列化・高速化](research/h4_rpe_search_throughput_20261116/REPORT.md)／[通常入口・再開](research/h4_rpe_search_throughput_20261116/HANDOFF.md)：保存ログ4,783件の運用分析と人工性能。科学実行0、実H4速度未測定。
 
 [p7粗幅Yoshida4の価格接続と最安更新](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。

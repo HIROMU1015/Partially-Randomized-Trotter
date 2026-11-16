@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 RPE候補の評価順序：広域scheduleとshot改善](docs/research/h4_rpe_candidate_ordering_20261117/REPORT.md)／[HANDOFF](docs/research/h4_rpe_candidate_ordering_20261117/HANDOFF.md)：同じ候補menuからA/Bを選択。全L_D主比較は未保存候補で比較不能、LD5・κ≤64の保存再生で早期到達差を確認。実科学0、既定round動作は維持。
+
 [H4 RPE探索の並列化・DP prefix接続](docs/research/h4_rpe_search_throughput_20261116/REPORT.md)／[HANDOFF](docs/research/h4_rpe_search_throughput_20261116/HANDOFF.md)：D2共通queue・途中状態をB2通常/再開入口へ接続。保存運用分析、人工DP一致、選択式の適応先読み・振替。実科学0件、実H4速度は未測定。
 
 [H4方式別最適化：AのPR-Pauli候補準備入口の接続](docs/research/rpe_method_optimizer_h4_20261116/PREPARATION_CONNECTION.md)：

@@ -1,0 +1,59 @@
+{
+  "schema": "RPE_CANDIDATE_ORDERING_TECHNICAL_VALIDATION_V1",
+  "scope": "Synthetic tests, saved operational/result replay only; no new H4 scientific computation.",
+  "performed_by": "Root executed consolidated checks; implementation authors' own checks. Separate root-code technical review recorded separately.",
+  "checks": [
+    {
+      "name": "ordering_unit",
+      "exit_code": 0,
+      "output": "...........\n----------------------------------------------------------------------\nRan 11 tests in 0.002s\n\nOK\n"
+    },
+    {
+      "name": "priority_session",
+      "exit_code": 0,
+      "output": ".........\n----------------------------------------------------------------------\nRan 9 tests in 4.790s\n\nOK\n"
+    },
+    {
+      "name": "joint_replay",
+      "exit_code": 0,
+      "output": "Final source: 20 synthetic integration/IO tests PASS, including shot-only budget stop and fixed metadata/registry inputs."
+    },
+    {
+      "name": "normal_entry",
+      "exit_code": 0,
+      "output": ".............{\n \"PR_PAULI\": {\n  \"stop\": \"Q3_BUDGET_EXHAUSTED\",\n  \"best\": \"938.00\",\n  \"new_calls\": 1,\n  \"spent_before\": 0,\n  \"next\": [\n   \"PR_PAULI:ARTIFICIAL_PR_PAULI_0\",\n   \"890.00\"\n  ]\n }\n}\n\n----------------------------------------------------------------------\nRan 13 tests in 1.270s\n\nOK\n"
+    },
+    {
+      "name": "legacy_priority",
+      "exit_code": 0,
+      "output": "v2_same_method_minimum_fewer_q3_than_v1                 PASS\ndeferred_allocation_evaluated_when_nothing_else_left    PASS\nexploration_share_and_fresh_configuration_first         PASS\ntransfer_seed_from_nearest_kappa                        PASS\nkappa_plan_edge_interior_bounds                         PASS\nreplay_unanswered_is_unevaluated_and_not_counted        PASS\n{\"PASS\": 6}\n"
+    },
+    {
+      "name": "legacy_schedule",
+      "exit_code": 0,
+      "output": "{\"wide_init\": true, \"wide_refine\": true, \"wide_stops\": true, \"new_split_rows\": true, \"v2_fine\": true, \"v2_slot_modes\": true, \"completion\": true} ALL PASS\n"
+    },
+    {
+      "name": "artificial",
+      "exit_code": 0,
+      "output": "Final source: all 3 artificial comparison pairs PASS; outcomes/curves regenerated with the budget-stop fix."
+    }
+  ],
+  "test_and_legacy_checks": 66,
+  "artificial_comparison_pairs": 3,
+  "real_scientific_calls": 0,
+  "source_commit": "78dec802445ec31d88ad95e7670803c921e5b609",
+  "review": {
+    "reviewer": "prefix_benchmark sub-agent, separate from root replay implementation author",
+    "kind": "Limited technical source review; not an important scientific review",
+    "checks": 40,
+    "status": "PASS",
+    "issues_found_and_fixed": [
+      "Propagate finite-budget stop to the outer replay loop without resetting or replanning.",
+      "Read fixed metadata/route/price registry blobs; declare archived prepared points separately from initial numerical knowledge."
+    ],
+    "followup": "Final fixed round04 metadata addition and REPORT/HANDOFF reviewed; IO5 rechecked PASS; fresh/cache full results and budget scans verified equal.",
+    "unresolved_major_or_moderate_findings": 0
+  },
+  "final_equivalence": "../saved_replay/CACHE_EQUIVALENCE.json"
+}
