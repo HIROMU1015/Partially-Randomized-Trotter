@@ -167,7 +167,9 @@ def make_executor(root, run, routes, expected, problem, spec):
         from trottertracks import rpe_optimizer_concurrent as C
         cache=options.get('prefix_cache_directory')
         if cache is not None and not Path(cache).is_absolute():cache=str(run/cache)
-        executor=C.ConcurrentExecutor(root,run,routes,expected,problem,**common,budgets=budgets,
+        executor_class=C.DistributedExecutor if options.get('distributed') is not None else C.ConcurrentExecutor
+        extra={} if executor_class is C.ConcurrentExecutor else dict(distributed=options['distributed'])
+        executor=executor_class(root,run,routes,expected,problem,**common,**extra,budgets=budgets,
             science_approved=approved,dp_workers=options.get('dp_workers'),prefix_cache_directory=cache,
             prefix_checkpoint_rounds=options.get('prefix_checkpoint_rounds'))
         def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)

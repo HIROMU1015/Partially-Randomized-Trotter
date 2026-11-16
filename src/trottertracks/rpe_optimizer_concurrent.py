@@ -14,6 +14,9 @@ from pathlib import Path
 import threading
 import time
 from types import SimpleNamespace
+import subprocess
+import sys
+import signal
 
 from . import rpe_method_optimizer as O
 
@@ -343,6 +346,322 @@ class ConcurrentExecutor(O.Executor):
                 slot_utilization=busy/(elapsed*self.capacity)if elapsed else 0,
                 speculative_adoption_fraction=s.metrics['speculative_adopted']/s.metrics['speculative_launched']if s.metrics['speculative_launched']else None,
                 memory_scope='sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted')
+
+
+class DistributedExecutor(ConcurrentExecutor):
+    """The existing queue/adoption order, with persistent host-owned attempts.
+
+    Every host, including this controller's local slots, uses the same adapter
+    worker. Assignment never expires merely because transport is unavailable.
+    """
+    def __init__(self, *args, distributed, **kwargs):
+        from .rpe_q3_store import JobStore
+        from . import rpe_q3_coordinator as Q
+        self.distributed = deepcopy(distributed)
+        run = Path(args[1]).resolve()
+        self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
+        self.hosts = {}
+        self.local_worker = None
+        self.local_worker_pid = None
+        self.rpc_server = None
+        super().__init__(*args, **kwargs)
+        try:
+            self.source_manifest = Q.source_manifest(self.root, self.optimizer_source)
+            contract_path = run/'distributed'/'SOURCE.json'
+            fixed = dict(source=self.source_manifest, evaluation_contract=self.contract)
+            if contract_path.exists() and json.loads(contract_path.read_text()) != fixed:
+                raise ValueError('Distributed run SOURCE/evaluation contract changed; use a new run')
+            if not contract_path.exists(): Q.atomic_json(contract_path, fixed)
+            with self.state.cv:
+                for row in self.store.rows():
+                    if row['state'] not in ('CANCELLED', 'ACCEPTED'):
+                        self._restore_task(row)
+                    elif row['state'] == 'ACCEPTED':
+                        self._publish_transfer(row)
+            self.rpc_server, self.rpc_thread = Q.serve(self, distributed.get('bind', '127.0.0.1'), distributed.get('port', 8763))
+            address = self.rpc_server.server_address
+            self.controller_url = 'http://127.0.0.1:'+str(address[1])
+            Q.atomic_json(run/'distributed'/'ENDPOINT.json', dict(url=self.controller_url, pid=os.getpid(), source=self.optimizer_source))
+            profile = distributed.get('local_worker')
+            if profile and profile.get('slots', 0) > 0:
+                profile = dict(profile, root=str(self.root.resolve()))
+                profile_path = run/'distributed'/'LOCAL_WORKER.json'
+                Q.atomic_json(profile_path, profile)
+                daemon_path = run/'distributed'/'LOCAL_DAEMON.json'
+                previous = json.loads(daemon_path.read_text()) if daemon_path.exists() else {}
+                if self._local_daemon_alive(previous.get('pid'), profile_path):
+                    self.local_worker_pid = previous['pid']
+                else:
+                    with (run/'distributed'/'LOCAL_WORKER.log').open('a') as log:
+                        self.local_worker = subprocess.Popen([sys.executable, '-B', str(self.root/'scripts/run_rpe_q3_worker.py'),
+                            '--profile', str(profile_path), '--controller', self.controller_url, '--poll-seconds', '.1'],
+                            cwd=self.root, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
+                            start_new_session=True, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+                    self.local_worker_pid = self.local_worker.pid
+                    Q.atomic_json(daemon_path, dict(pid=self.local_worker_pid, profile=str(profile_path)))
+            self.log(event='DISTRIBUTED_START', url=self.controller_url)
+        except BaseException:
+            with self.state.cv:
+                self.state.closed = True
+                self.state.cv.notify_all()
+                self.state.monitor_stop.set()
+            self.dispatcher.join(); self.monitor.join()
+            if self.rpc_server: self.rpc_server.shutdown(); self.rpc_server.server_close()
+            fcntl.flock(self.state.driver, fcntl.LOCK_UN); self.state.driver.close()
+            raise
+
+    def for_method(self, method):
+        view = DistributedExecutor.__new__(DistributedExecutor)
+        view.__dict__.update(self.__dict__)
+        view.method = method
+        return view
+
+    def alive(self, launch, job):
+        if launch.get('attempt_id'): return False  # a remote PID has no controller-local meaning
+        return super().alive(launch, job)
+
+    def _local_daemon_alive(self, pid, profile_path):
+        if type(pid) is not int: return False
+        try:
+            command = Path('/proc/%s/cmdline' % pid).read_bytes().decode(errors='replace')
+            return str(profile_path) in command and str(self.root/'scripts/run_rpe_q3_worker.py') in command
+        except OSError: return False
+
+    def _dispatch(self):
+        # RPC claims supply host slots; the original dispatcher order is used
+        # in _poll rather than launching controller-local adapters directly.
+        with self.state.cv:
+            while not self.state.closed: self.state.cv.wait(.2)
+
+    def _restore_task(self, row, proposal=None, demand=False):
+        request = row['request']; method = row['method']
+        job = self.run_dir/'jobs'/method/row['job_id']
+        old = self.state.tasks.get(job)
+        if old and old.status != 'CANCELLED':
+            old.demand |= demand
+            return old
+        job.mkdir(parents=True, exist_ok=True)
+        if not (job/'REQUEST.json').exists(): _write(job/'REQUEST.json', request)
+        if proposal is None:
+            proposal = dict(configuration_id=request['configuration_id'], vector=O.interleave(request['N_X'], request['N_Y']),
+                            cost=O.frac(request['cost']), origin=request['origin'])
+        running = row['state'] != 'QUEUED'
+        task = SimpleNamespace(view=self.for_method(method), job=job, proposal=deepcopy(proposal), rule=request['route'],
+            owner=(method, request['configuration_id']), demand=demand, status='RUNNING' if running else 'QUEUED',
+            event=threading.Event(), enqueue=time.monotonic()-max(0, time.time()-row['enqueued_epoch']),
+            error=None, started=running, speculative=not demand)
+        self.state.tasks[job] = task
+        if running:
+            self.state.active += 1
+            task.view.log(event='RESUME_RUNNING', job=job.name, host_id=row['host_id'], attempt_id=row['attempt_id'])
+        else:
+            self.state.reserved[method] += 1
+        if row['state'] == 'UNKNOWN':
+            task.error = 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED'
+            task.status = 'DONE'; task.event.set(); self.state.active -= 1
+        self.state.peak_active = max(self.state.peak_active, self.state.active)
+        return task
+
+    def _enqueue(self, proposal, demand=False):
+        from .rpe_q3_coordinator import prefix_key
+        job = self.job_dir(proposal); s = self.state
+        with s.cv:
+            if s.failure: raise RuntimeError('Executor persistence failure: '+s.failure)
+            task = s.tasks.get(job)
+            if task and task.status != 'CANCELLED':
+                task.demand |= demand
+                return task
+            row = self.store.row(job.name)
+            if row and row['state'] == 'ACCEPTED': return None
+            if row and row['state'] != 'CANCELLED': return self._restore_task(row, proposal, demand)
+            if (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists() or self.prior_job(proposal) is not None: return None
+            rule = self.route(proposal['configuration_id'])
+            if rule is None: return None
+            if s.closed: raise RuntimeError('Executor is closed')
+            request = self.request(proposal, job, rule)
+            if row is not None: request = row['request']  # same cancelled scientific job; origin may have changed
+            if not self.store.reserve(self.method, job.name, request, s.budgets.get(self.method), s.approved,
+                                      contract=dict(evaluation=self.contract, prefix_key=prefix_key(request))): return False
+            task = self._restore_task(self.store.row(job.name), proposal, demand)
+            s.metrics['submitted'] += 1
+            self.log(event='ENQUEUE', job=job.name, configuration=proposal['configuration_id'], demand=demand,
+                     origin=proposal.get('origin', {}).get('kind'))
+            s.cv.notify_all()
+            return task
+
+    def _cancel(self, task):
+        if self.store.cancel(task.view.method, task.job.name): super()._cancel(task)
+
+    def launched(self, method):
+        return self.store.counts(method, started_only=True)
+
+    def has_job(self, proposal):
+        row = self.store.row(self.job_dir(proposal).name)
+        return (row is not None and row['state'] != 'CANCELLED') or super().has_job(proposal)
+
+    def _assignment(self, row):
+        from .rpe_q3_coordinator import input_hashes, prefix_key
+        return dict(job_id=row['job_id'], method=row['method'], attempt_id=row['attempt_id'], request=row['request'],
+            request_sha256=row['request_sha256'], source_manifest=self.source_manifest,
+            input_hashes=input_hashes(self.root, row['request']), prefix_key=prefix_key(row['request']))
+
+    def rpc(self, path, value):
+        from . import rpe_q3_coordinator as Q
+        s = self.state
+        with s.cv:
+            host = value['host_id']
+            if not isinstance(host, str) or not host: raise ValueError('Nonempty host_id required')
+            if path == '/v1/poll':
+                if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
+                slots = value['slots']
+                if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
+                self.hosts[host] = dict(epoch=time.time(), slots=slots, cached_prefixes=value.get('cached_prefixes', []))
+                required = self.distributed.get('required_hosts', [])
+                if any(name not in self.hosts for name in required):
+                    return dict(assignments=[], stop=False, waiting_for_hosts=[name for name in required if name not in self.hosts])
+                queue = sorted((t for t in s.tasks.values() if t.status == 'QUEUED'),
+                    key=lambda t: (not t.demand, s.owner_clock.get(t.owner, -1), t.enqueue))
+                if s.failure or s.closed: return dict(assignments=[], stop=False)
+                # Prefix locality chooses a host only within a short bounded
+                # wait. It never skips the controller's first scientific job.
+                if queue and time.monotonic()-queue[0].enqueue < self.distributed.get('affinity_wait_seconds', .2):
+                    key = Q.prefix_key(self.store.row(queue[0].job.name)['request'])
+                    if key not in value.get('cached_prefixes', []):
+                        preferred = [h for h, info in self.hosts.items() if h != host and info['slots'] > 0
+                            and time.time()-info['epoch'] < 2 and key in info['cached_prefixes']]
+                        if preferred: return dict(assignments=[], stop=False)
+                # Recover lost assignment responses BEFORE consuming new slots.
+                assignments = [self._assignment(row) for row in self.store.rows()
+                    if row['host_id'] == host and row['state'] == 'ASSIGNED'][:slots]
+                for task in queue[:max(0, min(slots-len(assignments), self.capacity-s.active))]:
+                    rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name])
+                    if not rows: continue
+                    row = rows[0]
+                    # Assignment and reservation are committed before a worker
+                    # receives anything. A lost HTTP response retains ownership.
+                    Q.atomic_json(task.job/'LAUNCH.json', dict(host_id=host, attempt_id=row['attempt_id'],
+                        pid=None, started=row['assigned_epoch'], kind=task.rule['kind'], transport='distributed'))
+                    task.status = 'RUNNING'; task.started = True; task.speculative = not task.demand
+                    s.clock += 1; s.owner_clock[task.owner] = s.clock; s.active += 1
+                    s.peak_active = max(s.peak_active, s.active)
+                    self.uncounted.add(task.job)
+                    s.metrics['launched'] += 1
+                    s.by_method.setdefault(row['method'], Counter())['launched'] += 1
+                    if task.speculative: s.metrics['speculative_launched'] += 1
+                    task.view.log(event='LAUNCH', job=row['job_id'], host_id=host, attempt_id=row['attempt_id'],
+                        configuration=task.proposal['configuration_id'], queue_wait_seconds=time.monotonic()-task.enqueue,
+                        active=s.active, demand=task.demand)
+                    assignments.append(self._assignment(row))
+                return dict(assignments=assignments, stop=False)
+            row = self.store.row(value['job_id'])
+            if row is None or row['host_id'] != host or row['attempt_id'] != value['attempt_id']:
+                raise ValueError('Different execution host/attempt')
+            job = self.run_dir/'jobs'/row['method']/row['job_id']
+            task = s.tasks.get(job)
+            if path == '/v1/transfer-metric':
+                self.for_method(row['method']).log(event='TRANSFER_TIMING', job=row['job_id'], host_id=host,
+                    **value.get('timing', {}))
+                return dict(ok=True)
+            if path == '/v1/state':
+                if row['state'] != 'ACCEPTED':
+                    self.store.update(host, row['job_id'], value['attempt_id'], value['state'], value.get('detail'))
+                    if value['state'] == 'UNKNOWN' and task and task.status == 'RUNNING':
+                        task.error = 'WORKER_UNKNOWN:'+str(value.get('detail'))
+                        self._finished(task, None, row['assigned_epoch'])
+                return dict(ok=True)
+            if path != '/v1/complete': raise ValueError('Unknown Q3 RPC endpoint')
+            started = time.monotonic()
+            if value['request_sha256'] != row['request_sha256']: raise ValueError('Completion request hash differs')
+            transfer = self.run_dir/'distributed'/'transfers'/row['job_id']/row['attempt_id']
+            transfer.mkdir(parents=True, exist_ok=True)
+            Q.install_files(transfer, value['files'])
+            if not (transfer/'REQUEST.json').exists(): _write(transfer/'REQUEST.json', row['request'])
+            receipt = json.loads((transfer/'PROCESS_RETURN.json').read_text())
+            outcome = json.loads((transfer/'OUTCOME.json').read_text())
+            if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and (receipt.get('returncode') != 0 or receipt.get('signal') is not None):
+                raise ValueError('Successful outcome without a clean adapter exit')
+            proposal = task.proposal if task else dict(configuration_id=row['request']['configuration_id'],
+                vector=O.interleave(row['request']['N_X'], row['request']['N_Y']))
+            validation = self.for_method(row['method']).ingest(transfer, proposal, calls=0)
+            if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and validation['status'] == 'UNKNOWN':
+                raise ValueError('Transferred outcome identity mismatch: '+str(validation.get('reason')))
+            accepted, duplicate = self.store.complete(host, row['job_id'], row['attempt_id'], value['request_sha256'], value['files'])
+            self._publish_transfer(accepted)
+            if not duplicate:
+                self.for_method(row['method']).log(event='TRANSFER_COMPLETE', job=row['job_id'], host_id=host,
+                    transfer_seconds=time.monotonic()-started, transfer_bytes=sum(len(x)*3//4-x.count('=') for x in value['files'].values()),
+                    worker_transfer_seconds=value.get('transfer_seconds'))
+            if task:
+                task.error = None
+                if task.status == 'RUNNING': self._finished(task, receipt.get('returncode'), row['assigned_epoch'])
+                else: task.event.set()
+            s.cv.notify_all()
+            return dict(ok=True, duplicate=duplicate)
+
+    def _publish_transfer(self, row):
+        from . import rpe_q3_coordinator as Q
+        import base64
+        job = self.run_dir/'jobs'/row['method']/row['job_id']
+        stage = self.run_dir/'distributed'/'transfers'/row['job_id']/row['attempt_id']
+        if not stage.exists():
+            if (job/'OUTCOME.json').exists(): return
+            raise ValueError('Accepted completion is missing its transfer directory')
+        job.mkdir(parents=True, exist_ok=True)
+        files = {str(p.relative_to(stage)): base64.b64encode(p.read_bytes()).decode() for p in stage.rglob('*')
+                 if p.is_file() and str(p.relative_to(stage)) not in ('REQUEST.json', 'OUTCOME.json')}
+        Q.install_files(job, files)
+        outcome = stage/'OUTCOME.json'
+        if outcome.exists(): Q.install_files(job, {'OUTCOME.json': base64.b64encode(outcome.read_bytes()).decode()})
+
+    def answer(self, proposal, allow_new=True):
+        row = self.store.row(self.job_dir(proposal).name)
+        if row and row['state'] not in ('ACCEPTED', 'CANCELLED'):
+            with self.state.cv: self._restore_task(row, proposal, demand=True)
+        answer = super().answer(proposal, allow_new)
+        if answer and row is not None and self.store.row(row['job_id'])['state'] == 'ACCEPTED':
+            self.store.adopt(row['job_id'])
+        elif answer:
+            current = self.store.row(self.job_dir(proposal).name)
+            if current and current['state'] == 'ACCEPTED': self.store.adopt(current['job_id'])
+        if answer and answer.get('calls') == 0:
+            current = self.store.row(self.job_dir(proposal).name)
+            if current and current['state'] == 'ACCEPTED':
+                with self.state.cv:
+                    reused = getattr(self.state, 'reused_jobs', set())
+                    if current['job_id'] not in reused:
+                        reused.add(current['job_id']); self.state.reused_jobs = reused
+                        self.log(event='RESULT_REUSE', job=current['job_id'], host_id=current['host_id'])
+        return answer
+
+    def metrics(self):
+        result = super().metrics()
+        rows = self.store.rows(); by_host = {}
+        for row in rows:
+            if row['host_id'] is None: continue
+            counts = by_host.setdefault(row['host_id'], dict(assigned=0, launched=0, completed=0, adopted=0, reused=0))
+            counts['assigned'] += 1
+            counts['launched'] += row['started_epoch'] is not None
+            counts['completed'] += row['state'] == 'ACCEPTED'
+            counts['adopted'] += row['adopted_epoch'] is not None
+        for line in (self.run_dir/'PROGRESS.jsonl').read_text().splitlines():
+            event = json.loads(line)
+            if event.get('event') == 'RESULT_REUSE' and event.get('host_id') in by_host:
+                by_host[event['host_id']]['reused'] += 1
+        result.update(distributed=True, by_host=by_host, persistent_reserved={m:self.store.counts(m) for m in self.routes},
+                      actual_OS_host_count='recorded by integration harness; host IDs alone do not establish separate machines')
+        return result
+
+    def finish(self):
+        if self.method is not None: return super().finish()
+        if self.state.driver.closed: return
+        super().finish()
+        if self.local_worker is not None:
+            self.local_worker.terminate()
+            self.local_worker.wait(timeout=10)
+        elif self._local_daemon_alive(self.local_worker_pid, self.run_dir/'distributed'/'LOCAL_WORKER.json'):
+            os.kill(self.local_worker_pid, signal.SIGTERM)
+        if self.rpc_server is not None:
+            self.rpc_server.shutdown(); self.rpc_server.server_close(); self.rpc_thread.join()
 
 
 def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
