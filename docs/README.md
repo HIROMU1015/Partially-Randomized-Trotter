@@ -1,5 +1,7 @@
 # 文書索引
 
+[Pauli P0 gate原因調査](research/pauli_p0_gate_diagnosis_20261116/REPORT.md)：LD7/8/9別の保存証拠・人工15検査・未実行の最小追加検証。
+
 [PR-Pauli複数実stepの較正要求](research/pauli_multistep_calibration_request_20261116/REPORT.md)／[API・B2/D2接続](research/pauli_multistep_calibration_request_20261116/HANDOFF.md)／[保存・人工検収](research/pauli_multistep_calibration_request_20261116/ACCEPTANCE.json)。
 
 [PR-Pauli較正要求・検収](research/pauli_calibration_request_20261116/REPORT.md)／[B2・D2 HANDOFF](research/pauli_calibration_request_20261116/HANDOFF.md)。

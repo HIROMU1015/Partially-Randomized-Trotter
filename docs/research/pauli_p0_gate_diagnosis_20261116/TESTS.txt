@@ -1,0 +1,29 @@
+Runtime: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B
+OpenFermion 1.6.1; EQ_TOLERANCE=1e-8 observed, not changed.
+
+tests/check_pauli_p0_saved_evidence.py: 4 PASS
+  Saved H/state/snapshot binding; exact JSON report reproduction;
+  JW -> dictionary coefficient/identity consistency for LD4/6/7/8/9;
+  unchanged 1e-9 gate, original STOP, late-check absence;
+  missing comparator Frobenius norm remains null.
+
+tests/check_pauli_p0_symbolic_tolerance.py: 6 PASS (1.192 s in primary run)
+  Frozen P0/adapter byte equivalence;
+  one_body += removal despite nonzero input;
+  weighted residual += removal despite a larger aggregate;
+  JW partial-sum removal of identity/nonidentity;
+  fixed square_factor_dictionary on an artificial two-mode Hamiltonian;
+  adapter and SparsePauliOp matrix keep supplied tiny I/Z coefficients.
+  np.load and explicit compress are blocked in relevant tests.
+  Existing docstring invalid-escape DeprecationWarnings observed; no failures.
+
+tests/check_df_head_pauli_tail_p0.py: existing 5 PASS (1.525 s)
+  Artificial signed/complex factors, bit permutation, sector action,
+  scalar mismatch STOP and non-Hermitian/state-lift rejection unchanged.
+
+15 technical checks. Primary agent ran all three suites; sub-agent authored
+the six mechanism fixtures and separately ran that suite. No independent
+scientific review or real-H4 cause-identification run is claimed.
+
+Real H4 array loads/new norms/P0 reruns/means/reference/normalizers/
+sampling/compiled circuits/price/N/RPE/G: 0.

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[P0記号係数の内部閾値調査](../../docs/research/pauli_p0_gate_diagnosis_20261116/REPORT.md)：collector追加cutoff=0とOpenFermion部分和除去を区別。既存libraryの変更なし、人工fixtureを再利用。
+
 PR-Pauli複数実step：[pauli_calibration_request](../trottertracks/pauli_calibration_request.py)はcanonical＋D2応答を実step別の較正要求へ接続する。[API・適用範囲](../../docs/research/pauli_multistep_calibration_request_20261116/HANDOFF.md)。科学計算の実行やモデル資格は付与しない。
 
 PR-Pauli較正request adapter：[pauli_calibration_request.py](../trottertracks/pauli_calibration_request.py)／[仕様・検証](../../docs/research/pauli_calibration_request_20261116/REPORT.md)。

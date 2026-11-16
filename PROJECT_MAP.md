@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[P0 LD7/8/9 gate調査](docs/research/pauli_p0_gate_diagnosis_20261116/REPORT.md)：保存LD4/6対照、scalar/nonidentityの差、OpenFermion部分和除去の人工再現。元1e-9/STOP不変、実H4再計算0。
+
 [PR-Pauli複数実stepの較正要求](docs/research/pauli_multistep_calibration_request_20261116/REPORT.md)：canonical＋D2の26軸応答から再利用・実step別要求・SOURCE不足を返す。現幅互換、exact1/5とbinary64 .2の区別、候補間の同一cell重複除去。[B2/D2接続](docs/research/pauli_multistep_calibration_request_20261116/HANDOFF.md)、人工・保存metadata15 test、新科学0。
 
 [PR-Pauli較正要求](docs/research/pauli_calibration_request_20261116/REPORT.md)：A候補＋D2価格不足からS0-r1較正specを生成。保存LD3/5入力一致・未登録人工fixture、17 test PASS、新H4 path/compile/fit/Q3 0。
