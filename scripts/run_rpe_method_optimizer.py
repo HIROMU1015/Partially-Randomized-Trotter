@@ -123,6 +123,8 @@ def price_overrides(problem, spec):
     """Round-level price-rule settings (e.g. registry_file: a B2-extended registry with newly calibrated split entries)."""
     if spec.get('price_rules_overrides'):
         problem = json.loads(json.dumps(problem));problem['price_rules'].update(spec['price_rules_overrides'])
+    if spec.get('pf_evidence_registry'):
+        problem = dict(problem, pf_evidence_registry=spec['pf_evidence_registry'])
     return problem
 
 
@@ -160,12 +162,18 @@ def round_mode(a, problem, extra):
     stored = run / 'ROUND.json'
     if stored.exists():
         old = O.load_json(stored)
-        for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides'):
+        for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
             if old.get(key) != spec.get(key):
                 raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
     else:
         write(stored, spec)
     routes = merged_routes(problem, spec)
+    from trottertracks import pf_optimizer_connection as PFConnection
+    if context.get('pf_evidence_registry'):
+        routes = PFConnection.registry_routes(routes, context['pf_evidence_registry'])
+    from trottertracks import pf_candidate_selection as PFSelect
+    with round_phase(run, 'SELECT_AND_PREPARE_PF'):
+        context,routes,pf_preparation = PFSelect.prepare(ROOT,problem,context,spec,run,routes)
     if spec.get('candidate_completion'):
         from trottertracks.pr_candidate_completion import prepare_for_search
         with round_phase(run, 'PREPARE_SELECTED_CANDIDATES'):
@@ -215,6 +223,7 @@ def round_mode(a, problem, extra):
     with round_phase(run, 'SAVE_RESULTS'):
         write(run / 'ROUND_RESULT.json', slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
                                               optimizer_source=head(), wall_seconds=time.perf_counter() - start,
+                                              pf_preparation=pf_preparation,artificial_only=bool((pf_preparation or {}).get('artificial_only')),
                                               exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)))
         table(result, run / 'PER_METHOD.csv')
         write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
@@ -276,7 +285,7 @@ def interrupted_mode(a, problem, extra):
     """
     spec = O.load_json(a.round);run = a.run_dir.resolve();start = time.perf_counter()
     old = O.load_json(run / 'ROUND.json')
-    for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides'):
+    for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
         if old.get(key) != spec.get(key):
             raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
     stop = O.load_json(a.interrupted)

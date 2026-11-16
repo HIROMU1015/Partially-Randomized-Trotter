@@ -260,7 +260,9 @@ class ConcurrentExecutor(O.Executor):
         else:
             prior = self.prior_job(proposal) if task is None and not (job/'LAUNCH.json').exists() else None
             if prior is not None:
-                answer=dict(self.ingest(prior,proposal,calls=0),source='PRIOR_ROUND_JOB')
+                # The base handles completed, live and unresolved prior-owner
+                # jobs read-only; do not ingest a LAUNCH without an OUTCOME.
+                answer=super().answer(proposal,allow_new=False)
             elif task is None and(job/'LAUNCH.json').exists():
                 answer=super().answer(proposal,allow_new=False)
             elif task is None and(job/'STARTING.json').exists():

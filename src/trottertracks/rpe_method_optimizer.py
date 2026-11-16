@@ -260,20 +260,23 @@ def enumerate_candidates(reader, problem, facts, catalog):
         caps = spec['caps']
         allowed = spec.get('configuration_ids')  # optional allow-list, applied to every candidate source
         if spec['family'] == 'PF':
-            def inside(formula, delta):
-                return (formula in spec['formulas'] and delta is not None and delta_ok(delta, spec['delta_over_h_range']))
+            prefix = facts['fragment_count'] if name == 'FULL_PF' else 7
+            def inside(formula, delta, p=prefix):
+                return (formula in spec['formulas'] and delta is not None and delta_ok(delta, spec['delta_over_h_range'])
+                        and (spec.get('p_values') is None or p in spec['p_values']))
             indexed = [r for r in index['candidates'] if r['method'] == spec['index_method']]
             seen = {r['configuration_id'] for r in indexed}
             for r in indexed:
                 if inside(r['formula'], r['requested_delta_over_h']):
-                    out.append(dict(method=name, family='PF', key=dict(formula=r['formula'], delta_over_h=r['requested_delta_over_h']),
+                    out.append(dict(method=name, family='PF', key=dict(p=prefix, formula=r['formula'], delta_over_h=r['requested_delta_over_h']),
                                     configuration_id=r['configuration_id'], index_signal=r['source_bound_13round_packet'], caps=caps))
             for cid, ps in by_config.items():
                 if ps[0]['method'] == name and cid not in seen:
                     # Catalog-only configurations get the same formula/width range test (width = delta_pf / h).
                     delta = None if ps[0].get('delta_pf') is None else str(frac(ps[0]['delta_pf']) / frac(ps[0]['h']))
-                    if inside(ps[0]['formula'], delta):
-                        out.append(dict(method=name, family='PF', key=dict(formula=ps[0]['formula'], delta_over_h=delta),
+                    catalog_prefix = (ps[0].get('L_D') if name != 'FULL_PF' and ps[0].get('L_D') is not None else prefix)
+                    if inside(ps[0]['formula'], delta, catalog_prefix):
+                        out.append(dict(method=name, family='PF', key=dict(p=catalog_prefix, formula=ps[0]['formula'], delta_over_h=delta),
                                         configuration_id=cid, index_signal=None, caps=caps, outside_index=True))
         else:
             lo = spec['L_D_range']['min'];hi = facts['fragment_count'] + spec['L_D_range']['max_offset_from_fragment_count']
@@ -503,6 +506,7 @@ class Executor:
         self.wait_for_running, self.poll_seconds = wait_for_running, poll_seconds
         # Completed jobs of earlier rounds (same job key, same route for the configuration) answer without a new Q3.
         self.prior_run_dirs, self.launch_disabled = [Path(d) for d in prior_run_dirs], launch_disabled
+        self.pf_template_reader, self.pf_template_cache = Reader(self.root), {}
 
     def log(self, **event):
         with self.lock:
@@ -558,25 +562,44 @@ class Executor:
             proc = subprocess.Popen(cmd, cwd=str(self.root), env=env, stdout=log, stderr=subprocess.STDOUT)
         return proc
 
+    def pf_template_source(self, rule, cid):
+        """Effective first PF template SOURCE; unrelated additions are harmless."""
+        templates=rule['templates'];key=(cid,json.dumps(templates,sort_keys=True))
+        if key in self.pf_template_cache:
+            return self.pf_template_cache[key]
+        for loc in templates:
+            source=dict(commit=self.pf_template_reader.commit(loc['commit']),path=loc['path'],
+                        selector=list(loc.get('inputs_selector',[])))
+            inputs=self.pf_template_reader.read(source)
+            if any((case.get('configuration_id')or case.get('original_configuration_id'))==cid for case in inputs['cases']):
+                self.pf_template_cache[key]=source
+                return source
+        raise ValueError('No effective PF template for prior candidate')
+
     def same_route(self, job, cid):
         """A prior job is reusable only if it ran the same route (kind, worker view, contract, signal packet, binding)."""
         try:
             old = json.loads((job / 'REQUEST.json').read_text())
-        except (OSError, ValueError):
+            now = self.route(cid) or {};before=old.get('route')or{}
+            pf=before.get('kind')==now.get('kind')=='pf_b_pf6'
+            omitted=('configurations','configuration_ids','existing_caller','configurations_file')+(('templates',)if pf else())
+            fixed=lambda r:{k:v for k,v in r.items()if k not in omitted}
+            entry=lambda r:(r.get('configurations')or{}).get(cid)
+            if not (old.get('configuration_id')==cid and fixed(before)==fixed(now) and entry(before)==entry(now)
+                    and old.get('expected')==json.loads(json.dumps(self.expected_for(cid,now),default=str))):
+                return False
+            return not pf or self.pf_template_source(before,cid)==self.pf_template_source(now,cid)
+        except (OSError,ValueError,KeyError,TypeError,subprocess.CalledProcessError):
             return False
-        now = self.route(cid) or {}
-        fixed = lambda r: {k: v for k, v in (r or {}).items() if k not in ('configurations', 'configuration_ids', 'existing_caller',
-                                                                           'configurations_file')}
-        entry = lambda r: ((r or {}).get('configurations') or {}).get(cid)
-        return (old.get('configuration_id') == cid and fixed(old.get('route')) == fixed(now) and entry(old.get('route')) == entry(now)
-                and old.get('expected') == json.loads(json.dumps(self.expected_for(cid, now), default=str)))
 
     def prior_job(self, proposal):
         name = self.job_dir(proposal).name
-        for base in self.prior_run_dirs:
-            job = base / 'jobs' / self.method / name
-            if (job / 'OUTCOME.json').exists() and self.same_route(job, proposal['configuration_id']):
-                return job
+        # A same-key prior LAUNCH remains owned there, even without an outcome.
+        for marker in ('OUTCOME.json', 'LAUNCH.json'):
+            for base in self.prior_run_dirs:
+                job = base / 'jobs' / self.method / name
+                if (job / marker).exists():
+                    return job
         return None
 
     def has_job(self, proposal):
@@ -609,6 +632,9 @@ class Executor:
 
     def launch(self, proposal, rule):
         """Start one job without waiting; a waiter thread records the return and frees the slot."""
+        prior = self.prior_job(proposal)
+        if prior is not None:
+            return prior
         job = self.job_dir(proposal);done = threading.Event()
         if self.launch_disabled:
             raise RuntimeError('launch disabled (saved-job replay): ' + job.name)
@@ -668,7 +694,19 @@ class Executor:
         if not (job / 'LAUNCH.json').exists():
             prior = self.prior_job(proposal)
             if prior is not None:
-                return dict(self.ingest(prior, proposal, calls=0), source='PRIOR_ROUND_JOB')
+                if not self.same_route(prior,proposal['configuration_id']):
+                    return dict(status='STALE_JOB',job=str(prior),calls=0,source='PRIOR_ROUND_JOB',owner_review_required=True,
+                                reason='PRIOR_OWNER_ROUTE_OR_SOURCE_UNRESOLVED_REVIEW_REQUIRED')
+                if (prior / 'OUTCOME.json').exists():
+                    return dict(self.ingest(prior, proposal, calls=0), source='PRIOR_ROUND_JOB')
+                try:
+                    launch = json.loads((prior / 'LAUNCH.json').read_text())
+                    running = self.alive(launch, prior)
+                except (OSError, ValueError, KeyError, TypeError):
+                    running = False
+                return dict(status='IN_PROGRESS' if running else 'STALE_JOB', job=str(prior), calls=0,
+                            source='PRIOR_ROUND_JOB', owner_review_required=True,
+                            reason='PRIOR_OWNER_JOB_RUNNING' if running else 'PRIOR_OWNER_JOB_INCOMPLETE_REVIEW_REQUIRED')
         if (job / 'LAUNCH.json').exists():
             launch = json.loads((job / 'LAUNCH.json').read_text())
             if job in self.events:
@@ -1280,14 +1318,25 @@ def prepare(root, problem, generate_configurations=True, methods=None, preparati
     reader, inputs, catalog = load_catalog(root, problem)
     check_comparison(problem, facts, inputs['comparison'])
     candidates = enumerate_candidates(reader, problem, facts, catalog)
+    from . import pf_optimizer_connection as PF
+    PF.enumerate_prefixes(root, reader, problem, candidates, methods)
     generation = generate_variants(root, problem, reader, catalog, candidates, methods, preparation_dir) if generate_configurations else {}
     price_rules = quote_prices(root, problem, candidates, catalog, methods) if problem.get('price_rules') else None
+    artificial_pf = problem.get('artificial_pf_evidence') is True
+    pf_registry = PF.load_registry(root, reader, problem.get('pf_evidence_registry'),allow_artificial=artificial_pf)
+    pf_expected = PF.hydrate(root, reader, problem, candidates, pf_registry, facts,allow_artificial=artificial_pf)
     prices = {c['configuration_id']: c['prices'] for c in candidates if c['prices'] is not None}
     saved = SavedBackend(catalog['candidates'], prices)
     expected = {}
     for point in catalog['candidates']:
         expected.setdefault(point['configuration_id'], dict(total_configuration_id=point.get('total_configuration_id'),
                                                             binding_id=point.get('binding_id'), signal_source=point.get('signal_source')))
+    for cid, entry in pf_expected.items():
+        if cid in expected:
+            for key in ('total_configuration_id', 'binding_id'):
+                if expected[cid].get(key) is not None and entry.get(key) is not None and expected[cid][key] != entry[key]:
+                    raise ValueError('PF registry conflicts with saved Q3 binding: ' + key)
+        expected[cid] = dict(expected.get(cid) or {}, **{k: v for k, v in entry.items() if v is not None})
     return dict(facts=facts, reader=reader, catalog=catalog, candidates=candidates, saved=saved, tau=tau(problem),
                 expected=expected, generate=pinned_function(reader, problem['generator']), generation=generation,
-                price_rules=price_rules, preparation_dir=preparation_dir)
+                price_rules=price_rules, preparation_dir=preparation_dir, pf_evidence_registry=pf_registry)
