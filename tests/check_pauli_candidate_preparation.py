@@ -190,6 +190,12 @@ class PreparationTests(unittest.TestCase):
             with patch.object(subprocess, 'check_output', return_value=b'CURRENT_CARRIER\n'):
                 with self.assertRaisesRegex(ValueError, 'FIXED_CURRENT'):
                     leaf(4, dict(descriptor=None))
+            # A used preparation file may not drift behind the claimed scientific SOURCE.
+            with patch.object(subprocess, 'check_output', return_value=b'CLAIMED_SOURCE\n'), \
+                 patch.object(E.p0, 'blob', return_value=b'different source bytes'), self.no_science():
+                leaf = RUN.materializer(ROOT, Path(tmp)/'p0', 'CLAIMED_SOURCE')
+                with self.assertRaisesRegex(ValueError, 'USED_PREPARATION_SOURCE_CHANGED'):
+                    leaf(4, dict(descriptor=None))
 
     def test_local_metadata_cache_reopens_through_fresh_B2_entry(self):
         request = dict(items=[dict(item_id='MOCK-SCHEDULE-NO-SCIENCE', configuration=dict(L_D=3),

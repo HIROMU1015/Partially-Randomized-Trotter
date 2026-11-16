@@ -41,7 +41,8 @@ class Stop(Exception):
 def code_sources(source):
     """Own files at SOURCE; LD3 stage-2/stage-1 modules and P1 kernel files byte-equal to their commits."""
     records = []
-    for commit, path in [(source, E.MODULE), (source, CALLER), (LD3_SIGNALS, S3.MODULE), (LD3_SIGNALS, R3.CALLER),
+    for commit, path in [(source, E.MODULE), (source, CALLER), (source, 'src/trottertracks/pauli_split_descriptor.py'),
+                         (LD3_SIGNALS, S3.MODULE), (LD3_SIGNALS, R3.CALLER),
                          (S3.P1_KERNEL, p1.MODULE), (S3.P1_KERNEL, p1.provider.MODULE),
                          (S3.P1_KERNEL, 'src/trottertracks/df_head_pauli_tail_p0.py'),
                          *[(S3.P1_KERNEL, path) for path in E.KERNEL_FILES[1:]], (S3.STAGE1_CODE, L.MODULE)]:

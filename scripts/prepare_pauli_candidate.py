@@ -33,6 +33,9 @@ def materializer(root, directory, source):
     def create(prefix, descriptor):
         if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root).decode().strip() != source:
             raise ValueError('FIXED_CURRENT_SCIENTIFIC_SOURCE_REQUIRED')
+        for path in (A.MODULE, 'src/trottertracks/pauli_split_descriptor.py', 'scripts/prepare_pauli_candidate.py'):
+            if (root/path).read_bytes() != A.E.p0.blob(root, source, path):
+                raise ValueError('USED_PREPARATION_SOURCE_CHANGED:'+path)
         import run_df_head_pauli_tail_split_stage1 as stage1
         out = directory / ('LD%d' % prefix)
         if out.exists():
