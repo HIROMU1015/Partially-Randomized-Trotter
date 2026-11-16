@@ -13,7 +13,7 @@ Repository：`HIROMU1015/Partially-Randomized-Trotter`。進捗統合担当：C�
 
 |方式|価格付き適合点|Q3待ち|価格待ち|公開探索の状態|
 |---|---|---|---|---|
-|FULL_PF|あり|なし|なし|COMPLETED_METHOD_FINITE_SEARCH|
+|FULL_PF|あり|あり|なし|COMPLETED_METHOD_FINITE_SEARCH|
 |TRUNCATED_PF|あり|なし|なし|保存評価のみ|
 |PR_PAULI|あり|なし|なし|INTERRUPTED_SEARCH_POLICY_CHANGE, ONLY_SMALL_OR_DEFERRED_LEFT|
 |PR_DF|あり|なし|あり|保存評価のみ|
