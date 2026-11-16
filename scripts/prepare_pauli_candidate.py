@@ -21,7 +21,7 @@ from trottertracks import pauli_candidate_preparation as A
 from trottertracks import pauli_split_descriptor as D
 
 
-def materializer(root, directory, source):
+def materializer(root, directory, source, *, builder_id='P0_NO_INTERMEDIATE_DROP_V1'):
     """Future scientific leaf. An already committed split is reused by Assets first.
 
     Scientific SOURCE is fixed before entry. Only fresh, scoped P0 products are
@@ -30,14 +30,20 @@ def materializer(root, directory, source):
     """
     root, directory = Path(root).resolve(), Path(directory).resolve()
     directory.relative_to(root)
+    legacy=builder_id=='P0_LEGACY_OPENFERMION_DEFAULT_V1'
+    if builder_id not in ('P0_NO_INTERMEDIATE_DROP_V1','P0_LEGACY_OPENFERMION_DEFAULT_V1'):
+        raise ValueError('UNKNOWN_P0_BUILDER')
     def create(prefix, descriptor):
-        if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root).decode().strip() != source:
+        head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root).decode().strip()
+        if legacy and head != source:
             raise ValueError('FIXED_CURRENT_SCIENTIFIC_SOURCE_REQUIRED')
+        if not legacy:
+            subprocess.run(['git','merge-base','--is-ancestor',source,head],cwd=root,check=True)
         for path in (A.MODULE, 'src/trottertracks/pauli_split_descriptor.py', 'scripts/prepare_pauli_candidate.py'):
             if (root/path).read_bytes() != A.E.p0.blob(root, source, path):
                 raise ValueError('USED_PREPARATION_SOURCE_CHANGED:'+path)
         import run_df_head_pauli_tail_split_stage1 as stage1
-        out = directory / ('LD%d' % prefix)
+        out = (directory if legacy else directory/builder_id) / ('LD%d' % prefix)
         if out.exists():
             return dict(status='STOP_EXISTING_P0_OUTPUT_NO_RETRY', missing_inputs=[str(out)])
         meta = A.E.p0.metadata(root)
@@ -48,8 +54,13 @@ def materializer(root, directory, source):
             d = D.derive_descriptor(root, ham, prefix)
         origin = dict(**D.DERIVATION_SOURCE, scientific_source=source,
                       snapshot=meta['binding']['snapshot'], prefix=prefix)
-        with D.stage1_metadata(root, prefix, d, descriptor.get('source') if descriptor['descriptor'] is not None else origin):
-            result = stage1.execute_p0(out, source, prefix)
+        descriptor_origin=descriptor.get('source') if descriptor['descriptor'] is not None else origin
+        if legacy:
+            with D.stage1_metadata(root, prefix, d, descriptor_origin):
+                result = stage1.execute_p0(out, source, prefix)
+        else:
+            from trottertracks import pauli_p0_no_drop as no_drop
+            result=no_drop.execute_p0(root,out,source,prefix,d,descriptor_origin)
         if result['status'] != stage1.success(prefix):
             return dict(status='STOP_P0_FAILED', P0_output=str(out), reason=result.get('error'), missing_inputs=[])
         descriptor_path = out/'DESCRIPTOR.json'
@@ -68,7 +79,8 @@ def materializer(root, directory, source):
                     P0_metrics=row['identity_metrics'], P0_result_source=dict(commit=carrier, path=relative+'/result.json'))
         return dict(status='SPLIT_READY', item=item,
                     descriptor=dict(status='COMMITTED_DERIVED_OR_SAVED', descriptor=d, source=descriptor_source),
-                    scientific_source=source, validation_scope='P0_OPERATOR_GATES_NOT_SIGNAL_OR_PRICE')
+                    scientific_source=source, builder_id=builder_id,
+                    validation_scope='P0_OPERATOR_GATES_NOT_SIGNAL_OR_PRICE')
     return create
 
 
@@ -80,13 +92,19 @@ def main(argv=None, *, assets_factory=A.Assets, materializer_factory=materialize
     parser.add_argument('--prepare-missing', action='store_true')
     parser.add_argument('--source')
     parser.add_argument('--p0-directory', type=Path)
+    parser.add_argument('--p0-builder',choices=('no-drop','legacy'),
+                        help='Explicit dictionary version; missing splits default to adopted no-drop builder')
     args = parser.parse_args(argv)
     if args.prepare_missing and not (args.source and args.p0_directory and args.cache):
         parser.error('--prepare-missing requires --source --p0-directory --cache')
     request = json.loads(args.request.read_text())
     try:
-        assets = assets_factory(ROOT, cache=args.cache, packets=request.get('saved_packets', ()),
-                                configurations=request.get('saved_configurations', ()))
+        options=dict(cache=args.cache,packets=request.get('saved_packets', ()),
+                     configurations=request.get('saved_configurations', ()))
+        if args.p0_builder:
+            options['builder_id']=('P0_NO_INTERMEDIATE_DROP_V1' if args.p0_builder=='no-drop'
+                                   else 'P0_LEGACY_OPENFERMION_DEFAULT_V1')
+        assets = assets_factory(ROOT,**options)
     except (KeyError, ValueError, FileNotFoundError, subprocess.CalledProcessError) as exc:
         result = dict(schema='A_PAULI_CANDIDATE_PREPARATION_V1', status='NEEDS_INPUT_SOURCE',
                       missing_inputs=[str(exc)], items=[], signal_price_Q3_evaluation_performed=False)
@@ -96,7 +114,10 @@ def main(argv=None, *, assets_factory=A.Assets, materializer_factory=materialize
         return result
     if args.prepare_missing and len(request.get('items', [request])) != 1:
         parser.error('--prepare-missing prepares one B2-selected candidate per request')
-    create = materializer_factory(ROOT, args.p0_directory, args.source) if args.prepare_missing else None
+    if args.prepare_missing:
+        create=(materializer_factory(ROOT,args.p0_directory,args.source,builder_id=options['builder_id'])
+                if args.p0_builder else materializer_factory(ROOT,args.p0_directory,args.source))
+    else:create=None
     result = A.prepare(request, assets, materialize=create)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     # Complete configurations are directly consumable files even when price evidence is absent.

@@ -188,14 +188,16 @@ class PreparationTests(unittest.TestCase):
             self.assertEqual(row['preparation_status'], 'REUSED_CONFIGURATION')
         # A source mismatch is still rejected when a genuinely new split is requested.
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
-            leaf = RUN.materializer(ROOT, Path(tmp)/'p0', 'OLDER_SCIENCE_SOURCE')
+            leaf = RUN.materializer(ROOT, Path(tmp)/'p0', 'OLDER_SCIENCE_SOURCE',
+                                    builder_id='P0_LEGACY_OPENFERMION_DEFAULT_V1')
             with patch.object(subprocess, 'check_output', return_value=b'CURRENT_CARRIER\n'):
                 with self.assertRaisesRegex(ValueError, 'FIXED_CURRENT'):
                     leaf(4, dict(descriptor=None))
             # A used preparation file may not drift behind the claimed scientific SOURCE.
             with patch.object(subprocess, 'check_output', return_value=b'CLAIMED_SOURCE\n'), \
                  patch.object(E.p0, 'blob', return_value=b'different source bytes'), self.no_science():
-                leaf = RUN.materializer(ROOT, Path(tmp)/'p0', 'CLAIMED_SOURCE')
+                leaf = RUN.materializer(ROOT, Path(tmp)/'p0', 'CLAIMED_SOURCE',
+                                        builder_id='P0_LEGACY_OPENFERMION_DEFAULT_V1')
                 with self.assertRaisesRegex(ValueError, 'USED_PREPARATION_SOURCE_CHANGED'):
                     leaf(4, dict(descriptor=None))
 

@@ -22,6 +22,21 @@ REGISTRY = 'configs/pr_price_rules/h4_saved_rules.json'
 VARIANTS = '31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81'
 VARIANT_DIR = 'docs/research/b2_pauli_kappa_signals_20261116/configurations/'
 FORMULAS = ('2nd', '4th(m5_best)')
+LEGACY_BUILDER = 'P0_LEGACY_OPENFERMION_DEFAULT_V1'
+NO_DROP_BUILDER = 'P0_NO_INTERMEDIATE_DROP_V1'
+DICTIONARY_REGISTRY = 'configs/pauli_candidate_preparation/h4_no_drop_splits.json'
+
+
+def dictionary_builder(item):
+    """Scientific construction policy; a legacy payload has no builder field."""
+    value = item['payload'].get('builder')
+    if value is None:
+        return LEGACY_BUILDER
+    if (not isinstance(value, dict) or value.get('id') != NO_DROP_BUILDER
+            or not isinstance(value.get('source'), dict)
+            or not value['source'].get('commit') or not value['source'].get('path')):
+        raise ValueError('UNKNOWN_OR_UNSOURCED_DICTIONARY_BUILDER')
+    return value['id']
 
 
 def rational(value):
@@ -53,8 +68,11 @@ class Assets:
     Cache entries locate scientific products; they do not certify approval.
     Dictionary cache keys are binding + prefix + dictionary rules, never kappa/Delta.
     """
-    def __init__(self, root, *, cache=None, packets=(), configurations=()):
+    def __init__(self, root, *, cache=None, packets=(), configurations=(), builder_id=None):
         self.root = Path(root)
+        if builder_id not in (None, LEGACY_BUILDER, NO_DROP_BUILDER):
+            raise ValueError('UNKNOWN_DICTIONARY_BUILDER_REQUEST')
+        self.builder_id = builder_id
         self.cache = Path(cache) if cache else None
         self.meta = E.p0.metadata(self.root)
         self.binding = self.meta['binding']
@@ -67,6 +85,8 @@ class Assets:
         self.local_configurations = []
         self.baselines = {}
         self.extra_splits = {}
+        self.split_versions = {}
+        self._legacy_splits = {}
         for ref in E.SAVED_PACKETS:
             obj = E.read_ref(self.root, ref)
             for i, packet in enumerate(obj['packets']):
@@ -88,9 +108,10 @@ class Assets:
                 item = E.dictionary_item(self.root, config)
                 res = self.read(item['P0_result_source'])
                 ix = next(i for i, r in enumerate(res['prefixes']) if r['prefix'] == p)
-                self.extra_splits[p] = dict(status='SPLIT_READY', item=item,
+                product = dict(status='SPLIT_READY', item=item,
                     descriptor=dict(status='SAVED_P0_DESCRIPTOR', descriptor=res['prefixes'][ix]['saved_DF_descriptor'],
                         source=dict(item['P0_result_source'], selector=['prefixes', ix, 'saved_DF_descriptor'])))
+                self._store_split(p, product, verify=False)
         self.price_registry_needs = []
         try:
             self.price_registry = E.L.read(self.root, D2, REGISTRY)
@@ -103,7 +124,14 @@ class Assets:
             if saved['binding'] != self.binding:
                 raise ValueError('CACHE_H_STATE_SNAPSHOT_BINDING_DIFFERS')
             for key, value in saved.get('splits', {}).items():
-                self.extra_splits[int(key)] = value
+                if dictionary_builder(value['item']) != LEGACY_BUILDER:
+                    raise ValueError('VERSIONED_BUILDER_IN_LEGACY_CACHE_SLOT')
+                self._store_split(int(key), value, verify=False)
+            for key, versions in saved.get('split_versions', {}).items():
+                for builder, value in versions.items():
+                    if dictionary_builder(value['item']) != builder:
+                        raise ValueError('CACHE_DICTIONARY_BUILDER_TAG_DIFFERS')
+                    self._store_split(int(key), value, verify=True)
             for value in saved.get('configurations', []):
                 config = value['configuration']
                 generator(str(self.root))[0].validate(config)
@@ -113,12 +141,86 @@ class Assets:
                     raise ValueError('CACHED_LOCAL_CONFIGURATION_FILE_DIFFERS')
                 self.local_configurations.append(value)
                 self.configurations.append((config, None))
+        registry = self.root/DICTIONARY_REGISTRY
+        if registry.exists():
+            for row in json.loads(registry.read_text()).get('entries', []):
+                p = row['prefix']; result = self.read(row['p0_result_source'])
+                record = next(v for v in result['prefixes'] if v['prefix'] == p)
+                payload = self.read(row['dictionary_source'])
+                product = dict(status='SPLIT_READY', item=dict(payload=payload,
+                    dictionary_sha256=record['dictionary_sha256'], source=deepcopy(row['dictionary_source']),
+                    P0_metrics=deepcopy(record['identity_metrics']), P0_result_source=deepcopy(row['p0_result_source'])),
+                    descriptor=dict(status='REGISTERED_SAVED_DESCRIPTOR', descriptor=self.read(row['descriptor_source']),
+                                    source=deepcopy(row['descriptor_source'])))
+                if dictionary_builder(product['item']) != row['builder_id']:
+                    raise ValueError('REGISTRY_DICTIONARY_BUILDER_TAG_DIFFERS')
+                self._store_split(p, product, verify=True)
+                if row.get('configuration_source'):
+                    config, source = E.load_configuration(self.root, row['configuration_source'])
+                    if (config['spec']['binding'] != self.binding or config['spec']['L_D'] != p
+                            or config['spec']['split']['tail_dictionary'] != E.L.dictionary_identity(product['item'])):
+                        raise ValueError('REGISTERED_CONFIGURATION_DICTIONARY_DIFFERS')
+                    self.configurations.append((config, source))
 
     def read(self, ref):
         return E.read_ref(self.root, ref)
 
+    def _validate_product(self, prefix, value):
+        item = value['item']; payload = item['payload']; result = self.read(item['P0_result_source'])
+        row = next(r for r in result['prefixes'] if r['prefix'] == prefix)
+        if (payload['binding'] != self.binding or payload['prefix'] != prefix
+                or self.read(item['source']) != payload
+                or E.L.canonical_sha(payload) != item['dictionary_sha256']
+                or row['dictionary_sha256'] != item['dictionary_sha256']
+                or result['binding'] != self.binding
+                or not result['status'].endswith('_COMPLETE_NOT_P1_OR_RPE_QUALIFIED')
+                or not result['checks'] or not all(v['PASS'] for v in result['checks'])
+                or result.get('control', dict(PASS=True)).get('PASS') is not True
+                or 'GATES_PASS' not in row['status']
+                or row['identity_metrics'] != item['P0_metrics']):
+            raise ValueError('VERSIONED_P0_DICTIONARY_SOURCE_OR_GATES_DIFFER')
+        descriptor = value['descriptor']
+        if (self.read(descriptor['source']) != descriptor['descriptor']
+                or descriptor['descriptor']['scalar'] != payload['saved_DF_scalar']):
+            raise ValueError('VERSIONED_DESCRIPTOR_SOURCE_OR_SCALAR_DIFFERS')
+        if dictionary_builder(item) == NO_DROP_BUILDER:
+            if result.get('builder') != payload['builder'] or row.get('builder') != payload['builder']:
+                raise ValueError('VERSIONED_P0_BUILDER_PROVENANCE_DIFFERS')
+
+    def _store_split(self, prefix, value, *, verify):
+        if type(prefix) is not int or not 1 <= prefix < self.fragment_count:
+            raise ValueError('CACHED_PREFIX_OUTSIDE_NONEMPTY_TAIL')
+        builder = dictionary_builder(value['item'])
+        if verify:
+            self._validate_product(prefix, value)
+        if not hasattr(self, 'split_versions'):
+            self.split_versions = {}
+            self._legacy_splits = deepcopy(getattr(self, 'extra_splits', {}))
+        versions = self.split_versions.setdefault(prefix, {})
+        old = versions.get(builder)
+        if old is not None and old['item'] != value['item']:
+            raise ValueError('DIFFERENT_DICTIONARY_FOR_SAME_BUILDER_SELECT_FIXED_SOURCE')
+        versions[builder] = deepcopy(value)
+        if builder == LEGACY_BUILDER:
+            self._legacy_splits[prefix] = deepcopy(value)
+        selected = self._selected_split(prefix)
+        if selected is not None:
+            self.extra_splits[prefix] = selected
+        else:
+            self.extra_splits.pop(prefix, None)
+
+    def _selected_split(self, prefix):
+        versions = getattr(self, 'split_versions', {}).get(prefix, {})
+        requested = getattr(self, 'builder_id', None)
+        if requested:
+            return versions.get(requested)
+        return versions.get(NO_DROP_BUILDER) or versions.get(LEGACY_BUILDER)
+
     def save_split(self, prefix, value):
-        self.extra_splits[prefix] = deepcopy(value)
+        builder = dictionary_builder(value['item'])
+        if getattr(self, 'builder_id', None) not in (None, builder):
+            raise ValueError('MATERIALIZED_DICTIONARY_BUILDER_DIFFERS_FROM_REQUEST')
+        self._store_split(prefix, value, verify=builder == NO_DROP_BUILDER)
         self.write_cache()
 
     def remember_configuration(self, config, path):
@@ -132,7 +234,11 @@ class Assets:
         if self.cache:
             self.cache.parent.mkdir(parents=True, exist_ok=True)
             temp = self.cache.with_suffix(self.cache.suffix+'.tmp')
-            temp.write_text(json.dumps(dict(binding=self.binding, splits=self.extra_splits,
+            legacy = getattr(self, '_legacy_splits', self.extra_splits)
+            versions = {str(p): {k:v for k,v in values.items() if k != LEGACY_BUILDER}
+                        for p, values in getattr(self, 'split_versions', {}).items()
+                        if any(k != LEGACY_BUILDER for k in values)}
+            temp.write_text(json.dumps(dict(binding=self.binding, splits=legacy, split_versions=versions,
                                            configurations=self.local_configurations), indent=2)+'\n')
             temp.replace(self.cache)
 
@@ -141,20 +247,39 @@ class Assets:
             return dict(status='SAVED', descriptor=deepcopy(self.context['prefixes'][str(prefix)]),
                         source=dict(index=deepcopy(E.p0.INDEX), context_sha256=self.meta['context_source']['sha256'],
                                     selector=['prefixes', str(prefix)]))
-        saved = self.extra_splits.get(prefix, {}).get('descriptor')
+        product = self.extra_splits.get(prefix) or getattr(self, '_legacy_splits', {}).get(prefix)
+        if product is None:
+            versions = getattr(self, 'split_versions', {}).get(prefix, {})
+            product = next(iter(versions.values()), {})
+        saved = product.get('descriptor') if product else None
         if saved:
             if self.read(saved['source']) != saved['descriptor']:
                 raise ValueError('CACHED_DESCRIPTOR_DIFFERS_FROM_IMMUTABLE_SOURCE')
             return deepcopy(saved)
+        if prefix in (7, 8, 9):
+            # FIXED_INPUTS is an input descriptor, not adoption of its failed P0 dictionary.
+            source = dict(commit='9fa9525b3', path='docs/research/b2_pauli_split_p0_20261116/LD%d/FIXED_INPUTS.json' % prefix)
+            fixed = self.read(source)
+            if fixed['binding'] != self.binding:
+                raise ValueError('SAVED_P0_INPUT_DESCRIPTOR_BINDING_DIFFERS')
+            return dict(status='SAVED_P0_INPUT_DESCRIPTOR', descriptor=deepcopy(fixed['saved_tail_descriptors'][str(prefix)]),
+                        source=dict(source, selector=['saved_tail_descriptors', str(prefix)]))
         return dict(status='NEEDS_DERIVATION', descriptor=None,
                     source=dict(commit='7f4c9a171a1d4caeaeaee6c443217edec761f4c9',
                                 path='scripts/h46_new2_core.py', function='matrix_only_tail_coefficients'),
                     missing_inputs=[], additional_science='saved DF factor coefficient extraction (no fit/circuit)')
 
     def dictionary(self, prefix):
+        saved = self._selected_split(prefix)
+        if saved and dictionary_builder(saved['item']) == NO_DROP_BUILDER:
+            # This immutable product was validated at registration/cache load/save.
+            return deepcopy(saved['item'])
         if prefix in self.baselines:
-            return E.dictionary_item(self.root, self.baselines[prefix][0])
-        saved = self.extra_splits.get(prefix)
+            item = E.dictionary_item(self.root, self.baselines[prefix][0])
+            if getattr(self, 'builder_id', None) in (None, dictionary_builder(item)):
+                return item
+            return None
+        saved = saved or self.extra_splits.get(prefix)
         if not saved:
             return None
         # The signal entry checks hash, prefix, binding, scalar and P0 gates from its own locators.
@@ -189,16 +314,24 @@ class Assets:
 
 
 def inventory(assets):
+    rows = []
+    for p in range(1, assets.fragment_count):
+        item = assets.dictionary(p)
+        identity = E.L.dictionary_identity(item) if item is not None else None
+        matches = [(c, loc) for c, loc in assets.configurations
+                   if c['spec']['L_D'] == p and c['spec']['split'].get('tail_dictionary') == identity]
+        baseline = next((value for value in matches if value[1] is not None), matches[0] if matches else None)
+        rows.append(dict(L_D=p, descriptor=assets.descriptor(p),
+            dictionary_source=None if item is None else item['source'],
+            dictionary_builder_id=None if item is None else dictionary_builder(item),
+            available_builder_ids=sorted(getattr(assets, 'split_versions', {}).get(p, {})),
+            baseline_configuration_source=None if baseline is None else baseline[1],
+            baseline_configuration_id=None if baseline is None else baseline[0]['id']))
     return dict(fragment_count=assets.fragment_count, one_body='ALWAYS_DETERMINISTIC_HEAD',
                 fragment_count_source=dict(index=deepcopy(E.p0.INDEX), input='H4_tol_receipt.json',
                     selectors=[['arrays', 'lambdas', 'shape'], ['arrays', 'g_matrices', 'shape']]),
                 admissible_L_D=list(range(1, assets.fragment_count)),
-                rows=[dict(L_D=p, descriptor=assets.descriptor(p),
-                    dictionary_source=(assets.baselines[p][0]['spec']['split']['tail_dictionary']['source']
-                                       if p in assets.baselines else assets.extra_splits.get(p, {}).get('item', {}).get('source')),
-                    baseline_configuration_source=assets.baselines[p][1] if p in assets.baselines else None,
-                    baseline_configuration_id=assets.baselines[p][0]['id'] if p in assets.baselines else None)
-                    for p in range(1, assets.fragment_count)])
+                rows=rows)
 
 
 def request_parts(item, assets):
@@ -322,7 +455,8 @@ def prepare_item(assets, item, *, materialize=None):
                missing_inputs=[], next_actions=[])
     try:
         prefix, base, changes = request_parts(item, assets)
-        out.update(L_D=prefix, requested_changes=changes)
+        out.update(L_D=prefix, requested_changes=changes,
+                   requested_dictionary_builder_id=getattr(assets, 'builder_id', None))
         descriptor = assets.descriptor(prefix)
         dictionary = assets.dictionary(prefix)
         out.update(descriptor=descriptor, dictionary_source=None if dictionary is None else dictionary['source'])
@@ -348,9 +482,12 @@ def prepare_item(assets, item, *, materialize=None):
         if (dictionary['payload']['binding'] != assets.binding or dictionary['payload']['prefix'] != prefix
                 or dictionary['payload']['saved_DF_scalar'] != descriptor['descriptor']['scalar']):
             raise ValueError('DICTIONARY_H_SPLIT_OR_SCALAR_DIFFERS')
+        selected_identity = E.L.dictionary_identity(dictionary)
         if base is None:
-            base = (assets.baselines[prefix][0] if prefix in assets.baselines else assets.baseline_from_item(prefix, dictionary))
-        if base['spec']['split']['tail_dictionary'] != E.L.dictionary_identity(dictionary):
+            previous = assets.baselines.get(prefix)
+            base = (previous[0] if previous and previous[0]['spec']['split']['tail_dictionary'] == selected_identity
+                    else assets.baseline_from_item(prefix, dictionary))
+        if base['spec']['split']['tail_dictionary'] != selected_identity:
             raise ValueError('BASE_DICTIONARY_DIFFERS')
         config = changed_configuration(assets, base, changes)
         structure_ok, structure = generator(str(assets.root))[1].structure_checks(config)
@@ -389,6 +526,8 @@ def prepare_item(assets, item, *, materialize=None):
                    base_reproduced=True, identical_to_base=config == base, supported_formulas=list(FORMULAS),
                    structure=structure,
                    descriptor=descriptor, dictionary_source=dictionary['source'], dictionary_identity=E.L.dictionary_identity(dictionary),
+                   dictionary_builder_id=dictionary_builder(dictionary),
+                   dictionary_builder=deepcopy(dictionary['payload'].get('builder', dict(id=LEGACY_BUILDER))),
                    lambda_P=dictionary['payload']['lambda_P'], lambda_DF=descriptor['descriptor']['lambda_R'],
                    configuration=config, configuration_id=config['id'], configuration_source=locator, schedule=rows,
                    signal_plan=plan, price_handoff=price,
