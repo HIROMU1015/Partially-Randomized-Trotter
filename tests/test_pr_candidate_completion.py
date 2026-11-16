@@ -42,6 +42,18 @@ class CompletionTests(unittest.TestCase):
             self.assertEqual(sent['formula'],'4th(m5_best)');self.assertEqual(sent['delta_over_h'],'2')
             self.assertEqual(config,result)
 
+    def test_descriptor_envelope_is_passed_to_all_signal_stages(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            c=C.Completion.__new__(C.Completion);c.settings={};c.state={'records':{}}
+            config=dict(id='fixture',spec=dict(L_D=4,binding={'H':'fixed'}))
+            prepared=dict(descriptor=dict(status='READY',descriptor={'tail':'own'},source={'commit':'fixed'}))
+            def call(cmd,d,stage,output,**kwargs):
+                req=json.loads((d/'PAULI_SIGNAL_REQUEST.json').read_text())
+                self.assertEqual(req['tail_descriptor'],dict(prefix=4,binding={'H':'fixed'},descriptor={'tail':'own'},source={'commit':'fixed'}))
+                self.assertTrue(req['directory'].endswith('/descriptor_envelope_v2'))
+                return dict(status='SIGNALS_READY')
+            with patch.object(c,'call',side_effect=call):c.pauli_signals(config,prepared,Path(tmp))
+
     def test_normal_cli_contains_callback_and_df_route_is_generic(self):
         spec=importlib.util.spec_from_file_location('_completion_cli',ROOT/'scripts/run_rpe_method_optimizer.py');cli=importlib.util.module_from_spec(spec);spec.loader.exec_module(cli)
         import inspect

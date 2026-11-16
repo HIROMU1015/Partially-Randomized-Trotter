@@ -63,6 +63,13 @@ class Completion:
         prior=read(self.state_path)if self.state_path.exists()else None
         self.source=settings.get('source')or (prior or{}).get('source')or git('rev-parse','HEAD')
         self.state=prior or dict(schema='PR_CANDIDATE_COMPLETION_V1',source=self.source,records={})
+        imported=settings.get('resume_preparation_from')
+        if not prior and imported:
+            saved=value(imported)
+            # Only terminal READY evidence crosses a technical source epoch.
+            # Failed stages and their original STOPs remain in the old state.
+            self.state['records']={k:dict(r,reused_from=imported) for k,r in saved['records'].items()
+                                   if r['status']=='READY_FOR_SEARCH'}
         if self.state['source']!=self.source:raise ValueError('Completion SOURCE changed; preserve prior state')
         self.lock=threading.RLock()
         self.registry=self.directory/'PRICE_RULES_REGISTRY.json'
@@ -70,6 +77,10 @@ class Completion:
             initial=value(dict(commit='c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa',path='configs/pr_price_rules/h4_saved_rules.json'))
             extra=value(dict(commit='54b4353b9',path='docs/research/b2_pauli_calibration_20261116/PRICE_RULES_REGISTRY_EXTENDED.json'))
             by={e['name']:e for e in initial['entries']};by.update({e['name']:e for e in extra['entries']})
+            if imported:
+                previous=Path(imported['path']).with_name('PRICE_RULES_REGISTRY.json')
+                saved_registry=value(dict(commit=imported['commit'],path=str(previous)))
+                by.update({e['name']:e for e in saved_registry['entries']})
             put(self.registry,dict(initial,entries=list(by.values())))
 
     def save(self):
@@ -184,8 +195,10 @@ class Completion:
         for record in self.state['records'].values():
             loc=(record.get('signal')or{}).get('packet_source')
             if record['method']=='PR_PAULI'and loc and loc not in packets:packets.append(loc)
-        request=dict(configuration=config,tail_descriptor=prepared['descriptor'],saved_packets=packets,
-            workspace=str(self.settings.get('pauli_workspace',A_WORKSPACE)),directory='docs/research/d2_automatic_pr_20261116/'+config['id'][:20],interpreter=NATIVE)
+        descriptor=dict(prefix=config['spec']['L_D'],binding=config['spec']['binding'],
+            descriptor=prepared['descriptor']['descriptor'],source=prepared['descriptor']['source'])
+        request=dict(configuration=config,tail_descriptor=descriptor,saved_packets=packets,
+            workspace=str(self.settings.get('pauli_workspace',A_WORKSPACE)),directory='docs/research/d2_automatic_pr_20261116/'+config['id'][:20]+'/'+self.settings.get('signal_epoch','descriptor_envelope_v2'),interpreter=NATIVE)
         inp=d/'PAULI_SIGNAL_REQUEST.json';out=d/'PAULI_SIGNAL_RESULT.json';put(inp,request)
         result=self.call([NATIVE,'-B',str(ROOT/'scripts/run_pr_pauli_candidate_signals.py'),'--request',str(inp),'--output',str(out),'--execute'],d,'PAULI_SIGNALS',out,science=True)
         if result['status']!='SIGNALS_READY':raise Held('PAULI_SIGNAL:'+str(result.get('reason')or result['status']))
@@ -328,6 +341,11 @@ def prepare_for_search(root,problem,context,spec,run):
     routes=completion.install(context,problem,records)
     put(completion.directory/'RETURN_TO_SEARCH.json',dict(source=completion.source,records=records,
         ready=[r['configuration_id']for r in records if r['status']=='READY_FOR_SEARCH'],selection_rule=search.get('rule')))
+    if settings.get('evaluate_completed_only',False):
+        # Integration acceptance scope: V2 still chooses both missing candidates
+        # and their shot proposals. Existing ready baselines stay out of new Q3.
+        allowed={r['configuration_id']for r in records if r['status']=='READY_FOR_SEARCH'}
+        context['candidates']=[c for c in context['candidates']if c.get('configuration_id')in allowed]
     return context,routes,completion
 
 
