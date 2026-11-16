@@ -1,5 +1,10 @@
 # サーバー1からサーバー2担当への先行引渡し
 
+最新：共通worker `89f51a4fef47ecd2364d22c4c5cc2e225df3f2ce` を固定checkoutへ展開し、
+公式mailbox statusを実行済み（server1、空き1、未受信）。
+実path入りprofile・中継設定・起動/状態/停止/再開は [READY](READY.md)。
+以下の先行履歴の「公開待ち」は現在の最新状態ではない。
+
 固定基点 `5829a7288d28395d2b3e89bfb676c23c690b9ddb`。
 branch `codex/rpe-distributed-q3-server1`。[REPORT](REPORT.md)。
 
