@@ -40,3 +40,18 @@
   - round03では、round01の4,229件とround02の185件を読み込んだ。
   - **失敗例**：経路の登録表key（`configurations_file`）があると、前回の経路と別物と判定されて読み込めなかった。照合でこのkeyを無視するよう直し、回帰検査を加えた。
 - 根拠：[kappa_abs_round03/REPORT](research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/REPORT.md) §6、実行器受入 21/21。
+
+## PR-Pauli κ探索：schedule単位の候補・共通入口のbatch・連鎖の先読みの実測（B2、2026-11-16）
+
+- **κの物理schedule区間**（`24b51fbc3`、`rpe_kappa_schedule.py`、`kappa_neighbourhood_plan(..., sched)`）
+  - 同じ13 roundのR vectorになるκを1点として扱い、次に異なるscheduleへ厳密に移る。これで、同じscheduleの重複評価を避ける。
+  - **実対象で確認**：LD5では、範囲[1/2, 8]の中のscheduleが2つしかない。2点の評価で、この範囲を尽くした（旧規則では、κ=4/3・2・3が同じscheduleだった）。
+  - **適用条件**：mapperが R_m=max(J, ceil(ceil(κc_m)/q_m)) であること。生成構成で、毎回の再現を検査している。
+- **信号・価格のround単位の再利用**
+  - 7点の新規平均値は、R_mが変わった16 roundだけで、全91 roundのうち75 roundを再利用した。
+  - 価格は、Cの共通入口（`02e7cc6a1`）のbatchで26軸を再利用し、較正は0件。入口は、同じ較正cellを1件にまとめる。
+- **連鎖の先読みの実測**（実runでの初めての使用）
+  - Q3は284件で、平均145秒。同時実行は平均10.1件。
+  - 採択82件で、V2は72分（逐次なら約198分）。
+  - **失敗例**：適合と不適合が交互に出る下降では、先読みの71%（202件）が採択されなかった。
+- 根拠：[kappa_abs_round04/REPORT](research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/REPORT.md) §2・§5、検査 `kappa_abs_round04/checks/KAPPA_SCHEDULE_CHECKS.json`（7/7）。

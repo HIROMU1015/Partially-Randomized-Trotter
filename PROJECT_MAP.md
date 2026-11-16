@@ -6,6 +6,16 @@
 - V2のκ案は、設定すれば同じ入口へ送れる。
 - 保存結果と人工系で8/8 PASS。
 
+[H4 PR-Pauli：Cの共通較正入口とκの物理schedule区間（round04）](docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/HANDOFF.md)：
+- κ=2から上下で最初に異なるscheduleを評価した。
+  - LD5 κ=7（m12のR=2）は518,960,286 RZで、κ=2（501,233,190）より高い。範囲[1/2, 8]の中にあるLD5のscheduleは2つだけ。
+  - LD1・2・3の6点は、shot上限内に適合配分がない。
+- 新しい点の価格は、Cの共通入口（02e7cc6a1）で判定した。7点とも再利用で、較正は0件。
+- 要求幅Δ_PF≠hは、メタデータのみ。
+  - 厳密な1/5は、実幅がbinary64で表せないため、規則か実装の拡張が必要。
+  - binary64の0.2には、較正cellが4件必要（未実行）。
+- PR-Pauliの最安は410,199,237 RZのまま。新規Q3は284件で、そのうち採択は82件。
+
 [H4 PR-Pauli κ=2近傍と未準備L_Dの準備](docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/REPORT.md)／[HANDOFF](docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/HANDOFF.md)：
 - κそのもの＝2の近傍（κ=4/3・2・3）
   - κ=2の最安：LD5で501,233,190 RZ。LD5ではκ=4/3・2・3の物理scheduleが同一。
