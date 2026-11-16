@@ -116,6 +116,69 @@ class WorkerTests(unittest.TestCase):
             self.assertEqual(resolved['request_id'], assignment['job_id'])
             self.assertEqual(resolved['execution_profile']['prefix_cache_directory'], profile['prefix_cache_directory'])
 
+    def test_host_dp_workers_override_preserves_original_request_and_hash(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            profile, assignment = fixture(temporary)
+            assignment['request']['execution_profile'] = dict(dp_workers=8)
+            assignment['request_sha256'] = W.digest(assignment['request'])
+            original = deepcopy(assignment)
+            resolved = W.validate_assignment(dict(profile, dp_workers=2), assignment)
+            self.assertEqual(resolved['execution_profile']['dp_workers'], 2)
+            self.assertEqual(assignment, original)
+            for key in ('method', 'configuration_id', 'N_X', 'N_Y', 'expected', 'request_id'):
+                self.assertEqual(resolved[key], original['request'][key])
+            for invalid in (0, -1, True, '2'):
+                with self.assertRaisesRegex(ValueError, 'host dp_workers'):
+                    W.validate_assignment(dict(profile, dp_workers=invalid), assignment)
+
+    def test_fresh_process_reads_and_recovers_large_exact_json_without_execution(self):
+        # Fresh -I processes avoid a false PASS from an earlier catalog/adapter
+        # import having already removed Python's integer-string digit limit.
+        with tempfile.TemporaryDirectory() as temporary:
+            profile, assignment = fixture(temporary)
+            directory = Path(temporary)
+            large = '9'*4500
+            number = directory/'LARGE_EXACT.json'
+            number.write_text('{"denominator":1,"numerator":'+large+'}')
+            probe = '''import hashlib, json, sys
+from pathlib import Path
+sys.path.insert(0, str(Path(sys.argv[1])/'src'))
+from trottertracks import rpe_q3_worker as W
+value = W.read(sys.argv[2])
+print(json.dumps(dict(limit=getattr(sys,'get_int_max_str_digits',lambda:0)(),
+    canonical_sha256=hashlib.sha256(W.canonical(value)).hexdigest())))
+'''
+            observed = json.loads(subprocess.check_output([sys.executable, '-I', '-B', '-c', probe,
+                str(ROOT), str(number)], cwd=ROOT))
+            self.assertEqual(observed['limit'], 0)
+            self.assertEqual(observed['canonical_sha256'], hashlib.sha256(number.read_bytes()).hexdigest())
+
+            # Seed saved artificial completion artifacts only. Mailbox status
+            # must collect them without starting any adapter or supervisor.
+            attempt = Path(profile['work_dir'])/assignment['job_id']/assignment['attempt_id']
+            attempt.mkdir(parents=True)
+            W.atomic(attempt/'ASSIGNMENT.json', assignment)
+            W.save_state(attempt, 'RUNNING', synthetic_saved_completion=True)
+            W.atomic(attempt/'PROCESS_RETURN.json', dict(returncode=0, signal=None))
+            body = ('"status":"MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",'
+                '"MSE_upper":{"numerator":'+large+',"denominator":1}')
+            (attempt/'ARTIFICIAL_RESULT.json').write_text('{'+body+'}')
+            outcome = '{'+body+',"request_id":'+json.dumps(assignment['job_id'])+',"route":"artificial"}'
+            (attempt/'OUTCOME.json').write_text(outcome)
+            original_hash = hashlib.sha256((attempt/'OUTCOME.json').read_bytes()).hexdigest()
+            profile_path = directory/'PROFILE.json'; W.atomic(profile_path, profile)
+            response = json.loads(subprocess.check_output([sys.executable, '-I', '-B',
+                str(ROOT/'scripts/run_rpe_q3_worker.py'), '--profile', str(profile_path), '--mailbox', 'status'],
+                input=b'{}', cwd=ROOT))
+            row = response['attempts'][0]
+            self.assertEqual(row['state'], 'COMPLETED_PENDING_TRANSFER')
+            self.assertEqual(W.read(attempt/'WORKER_STATE.json')['state'], 'COMPLETED_PENDING_TRANSFER')
+            transferred = base64.b64decode(row['files']['OUTCOME.json'])
+            self.assertEqual(hashlib.sha256(transferred).hexdigest(), original_hash)
+            self.assertEqual(hashlib.sha256((attempt/'OUTCOME.json').read_bytes()).hexdigest(), original_hash)
+            for name in ('SCIENTIFIC_STARTING.json', 'SUPERVISOR_STARTED.json', 'WORKER_LAUNCH.json', 'JOB_STAGES.jsonl'):
+                self.assertFalse((attempt/name).exists(), 'Saved completion recovery must not execute an adapter')
+
     def test_ambiguous_start_is_unknown_and_never_reexecuted(self):
         with tempfile.TemporaryDirectory() as temporary:
             profile, assignment = fixture(temporary); remote = FakeController(assignment)
