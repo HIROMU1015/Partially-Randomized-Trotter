@@ -134,6 +134,24 @@ class PreparationTests(unittest.TestCase):
                                    dict(configuration=dict(L_D=3), snapshot='WRONG')]), self.assets)['items']
         self.assertTrue(all(r['missing_inputs'] and r['configuration'] is None for r in bad))
 
+    def test_missing_price_source_does_not_discard_completed_configuration(self):
+        with self.no_science(), patch.object(A, 'price_input', side_effect=FileNotFoundError('D2 candidate evidence')):
+            row = A.prepare(dict(items=[dict(configuration=dict(L_D=1))]), self.assets)['items'][0]
+        self.assertEqual(row['status'], 'GENERATED')
+        self.assertEqual(row['configuration_id'], self.assets.baselines[1][0]['id'])
+        self.assertTrue(row['readiness']['configuration_complete'])
+        self.assertFalse(row['readiness']['price_26axis_complete'])
+        self.assertIn('D2 candidate evidence', row['price_handoff']['needs'][0])
+
+    def test_missing_signal_source_retains_configuration_without_new_requests(self):
+        with self.no_science(), patch.object(self.assets, 'signal_plan', side_effect=FileNotFoundError('saved packet')):
+            row = A.prepare(dict(items=[dict(configuration=dict(L_D=1))]), self.assets)['items'][0]
+        self.assertEqual(row['status'], 'GENERATED')
+        self.assertTrue(row['readiness']['configuration_complete'])
+        self.assertFalse(row['readiness']['signal_13round_complete'])
+        self.assertEqual(row['signal_plan']['request_rounds'], [])
+        self.assertEqual(row['signal_plan']['planning_status'], 'SOURCE_UNRESOLVED')
+
     def test_prepared_descriptor_context_reaches_actual_signal_dispatch(self):
         """Check the CLI context encloses plan AND execution/assembly, no science leaf."""
         import run_pauli_signal_entry as signal

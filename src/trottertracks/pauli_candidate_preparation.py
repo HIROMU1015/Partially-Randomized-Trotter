@@ -89,7 +89,12 @@ class Assets:
                 self.extra_splits[p] = dict(status='SPLIT_READY', item=item,
                     descriptor=dict(status='SAVED_P0_DESCRIPTOR', descriptor=res['prefixes'][ix]['saved_DF_descriptor'],
                         source=dict(item['P0_result_source'], selector=['prefixes', ix, 'saved_DF_descriptor'])))
-        self.price_registry = E.L.read(self.root, D2, REGISTRY)
+        self.price_registry_needs = []
+        try:
+            self.price_registry = E.L.read(self.root, D2, REGISTRY)
+        except (FileNotFoundError, subprocess.CalledProcessError) as exc:
+            self.price_registry = dict(entries=[])
+            self.price_registry_needs = ['RECOVER_D2_REGISTRY_SOURCE: '+str(exc)]
         self._index = None
         if self.cache and self.cache.exists():
             saved = json.loads(self.cache.read_text())
@@ -297,7 +302,7 @@ def price_input(assets, config):
     else:
         implementation = None; source = None; evidence = None
         needs = ['CANDIDATE_SPECIFIC_IMPLEMENTATION_CONTRACT', 'CANDIDATE_SPECIFIC_PRICE_EVIDENCE_OR_MODEL',
-                 'CONTROL_LOWERING_SCALAR_FRAGMENT_ORDER_SAMPLER_AND_WRAPPER_SCOPE']
+                 'CONTROL_LOWERING_SCALAR_FRAGMENT_ORDER_SAMPLER_AND_WRAPPER_SCOPE'] + getattr(assets, 'price_registry_needs', [])
         saved_complete = False
     return dict(entry=dict(commit=D2, path='src/trottertracks/pr_price_rules.py', function='PriceRules.quote'),
                 request=dict(configuration=deepcopy(config), implementation=implementation, policy='MODEL'),
@@ -352,11 +357,27 @@ def prepare_item(assets, item, *, materialize=None):
         locator = hits[0][1] if hits else None
         if hits and hits[0][0] != config:
             raise ValueError('SAVED_ID_HAS_DIFFERENT_CANONICAL_BODY')
-        plan = assets.signal_plan(config, locator, descriptor)
+        try:
+            plan = assets.signal_plan(config, locator, descriptor)
+        except (KeyError, ValueError, FileNotFoundError, subprocess.CalledProcessError) as exc:
+            reason = 'SIGNAL_EVIDENCE_SOURCE_UNRESOLVED: '+str(exc)
+            plan = dict(schema='A_PAULI_SIGNAL_ENTRY_PLAN_V1', configuration_id=config['id'],
+                        planning_status='SOURCE_UNRESOLVED', counts=dict(UNSUPPORTED=13),
+                        reuse_rounds=[], rebind_rounds=[], request_rounds=[], unsupported_rounds=list(range(13)),
+                        rounds=[dict(m=r['m'], candidate_id=r['candidate']['id'], decision='UNSUPPORTED',
+                                     provider_support='UNSUPPORTED', reasons=[reason]) for r in config['rounds']],
+                        configuration_reasons=[reason], new_mean_calls=0, compile=0, Q3=0)
         rows = [dict(m=r['m'], q_RPE=r['q_RPE'], T=r['T'], q_PF=r['q_PF'], actual_delta_pf=r['actual_delta_pf'],
                      R_outer=r['R_outer'], physical_id=r['candidate']['id'], structure=r['structure'],
                      mapping=r['mapping'], law_binding=r['law_binding']) for r in config['rounds']]
-        price = price_input(assets, config)
+        try:
+            price = price_input(assets, config)
+        except (KeyError, ValueError, FileNotFoundError, subprocess.CalledProcessError) as exc:
+            price = dict(entry=dict(commit=D2, path='src/trottertracks/pr_price_rules.py', function='PriceRules.quote'),
+                         request=dict(configuration=deepcopy(config), implementation=None, policy='MODEL'),
+                         needs=['RECOVER_OR_CHECK_CANDIDATE_PRICE_CONTRACT_OR_SOURCE: '+str(exc)],
+                         prices_26_complete=False, quote_executed=False,
+                         next_action='RESOLVE_PRICE_EVIDENCE_WITHOUT_CHANGING_CONFIGURATION')
         resolution = ('REUSED_CONFIGURATION' if locator else 'REUSED_LOCAL_METADATA_CONFIGURATION') if hits else 'GENERATED_CONFIGURATION'
         out.update(status='GENERATED', preparation_status=resolution,
                    kind='pauli_native', base=deepcopy(item.get('base')), changes=deepcopy(changes),
