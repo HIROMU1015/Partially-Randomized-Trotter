@@ -46,3 +46,9 @@ python3 scripts/install_h4_catalog_sync.py --remove
 ```
 
 科学実行はSTOPを維持する。今回の定期統合は別途利用者が明示承認した保存成果の後処理であり、新signal/Q3/compile/fit/探索を起動しない。
+
+## 有効化確認
+
+実装SOURCE `aed8ee1ef389a69338117164e13c593e4f1001e9`。利用者自身のcrontabへ`*/10`で登録済み。再登録はUNCHANGED。既存cron daemonはactive。同じshell入口の実起動は終了0・UNCHANGED（約1.61秒）で、tracked checkoutは清浄。定刻の次回発火を待って科学処理を追加することはない。
+
+対応済みschemaの通常運用に利用者の手動操作は不要。監視pattern外の新しい研究系列・未対応schemaはC側の設定/adapter整備、非公開のexact原結果はproducerの固定公開が必要となる。新しい比較契約・科学実行・採択の判断は従来どおり利用者が行う。
