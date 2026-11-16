@@ -62,7 +62,8 @@ class JobStore:
                     adopted_epoch REAL,
                     updated_epoch REAL NOT NULL,
                     detail TEXT NOT NULL DEFAULT '{}',
-                    completion_sha256 TEXT
+                    completion_sha256 TEXT,
+                    eligibility TEXT NOT NULL DEFAULT 'null'
                 );
                 CREATE INDEX IF NOT EXISTS method_state ON jobs(method, state);
                 CREATE TABLE IF NOT EXISTS events (
@@ -73,6 +74,8 @@ class JobStore:
                     detail TEXT NOT NULL
                 );
             ''')
+            if 'eligibility' not in {r['name'] for r in db.execute('PRAGMA table_info(jobs)')}:
+                db.execute("ALTER TABLE jobs ADD COLUMN eligibility TEXT NOT NULL DEFAULT 'null'")
 
     @contextmanager
     def _connection(self, *, write=False):
@@ -97,7 +100,7 @@ class JobStore:
         if row is None:
             return None
         value = dict(row)
-        for key in ('request', 'contract', 'detail'):
+        for key in ('request', 'contract', 'detail', 'eligibility'):
             value[key] = json.loads(value[key])
         return value
 
@@ -128,7 +131,35 @@ class JobStore:
         with self._connection() as db:
             return db.execute('SELECT count(*) FROM jobs WHERE method=?' + condition, (method,)).fetchone()[0]
 
-    def reserve(self, method, job_id, request, budget, approved, contract=None):
+    @staticmethod
+    def artificial(request):
+        route = request.get('route') or {}
+        if route.get('kind') is not None:
+            return route['kind'] == 'artificial'
+        return request.get('artificial') is True
+
+    @staticmethod
+    def eligible(request, eligibility, host_id=None, host_fingerprints=None, job_id=None):
+        """Validate persistent membership and a fresh, request-specific host report."""
+        if eligibility is None:
+            return JobStore.artificial(request)
+        if eligibility.get('request_sha256') != digest(request):
+            raise ValueError('Host eligibility belongs to a different REQUEST')
+        allowed = eligibility.get('eligible_host_ids')
+        if not isinstance(allowed, list) or any(not isinstance(h, str) or not h for h in allowed):
+            raise ValueError('Explicit eligible host IDs required')
+        expected_by_host = eligibility.get('host_fingerprints') or {}
+        if any(not isinstance(expected_by_host.get(h), str) or not expected_by_host[h] for h in allowed):
+            raise ValueError('Every eligible host needs a current-facts fingerprint')
+        if host_id is None:
+            return bool(allowed)
+        if host_id not in allowed:
+            return False
+        expected = expected_by_host.get(host_id)
+        current = (host_fingerprints or {}).get(job_id)
+        return isinstance(current, dict) and isinstance(expected, str) and digest(current) == expected
+
+    def reserve(self, method, job_id, request, budget, approved, contract=None, eligibility=None):
         if not isinstance(method, str) or not method or not isinstance(job_id, str) or not job_id:
             raise ValueError('Nonempty method and scientific job_id required')
         if budget not in (None, 'UNLIMITED') and (type(budget) is not int or budget < 0):
@@ -143,18 +174,41 @@ class JobStore:
                     raise ValueError('Scientific job identity/request/contract changed: ' + job_id)
                 if old['state'] != 'CANCELLED':
                     return True
+            # Existing assigned attempts retain their owner for recovery. New
+            # real jobs need at least one matching dry-check PASS before they
+            # consume a scientific reservation; artificial legacy jobs remain
+            # usable without a host registry.
+            if not self.eligible(request, eligibility):
+                return False
             used = db.execute("SELECT count(*) FROM jobs WHERE method=? AND state!='CANCELLED'", (method,)).fetchone()[0]
             if not approved or (budget not in (None, 'UNLIMITED') and used >= budget):
                 return False
             now = time.time()
             if old is None:
-                db.execute('''INSERT INTO jobs(job_id,method,request,request_sha256,contract,state,enqueued_epoch,updated_epoch)
-                              VALUES(?,?,?,?,?,'QUEUED',?,?)''',
-                           (job_id, method, encoded, request_sha, encoded_contract, now, now))
+                db.execute('''INSERT INTO jobs(job_id,method,request,request_sha256,contract,state,enqueued_epoch,updated_epoch,eligibility)
+                              VALUES(?,?,?,?,?,'QUEUED',?,?,?)''',
+                           (job_id, method, encoded, request_sha, encoded_contract, now, now, canonical(eligibility)))
             else:
-                db.execute("UPDATE jobs SET state='QUEUED',enqueued_epoch=?,updated_epoch=? WHERE job_id=?", (now, now, job_id))
+                db.execute("UPDATE jobs SET state='QUEUED',enqueued_epoch=?,updated_epoch=?,eligibility=? WHERE job_id=?",
+                           (now, now, canonical(eligibility), job_id))
             self._event(db, job_id, 'RESERVE')
             return True
+
+    def set_eligibility(self, job_id, eligibility):
+        """Refresh only an unassigned decision; never reassign a prior attempt."""
+        with self._connection(write=True) as db:
+            old = db.execute('SELECT * FROM jobs WHERE job_id=?', (job_id,)).fetchone()
+            if old is None or old['state'] != 'QUEUED':
+                return False
+            available = self.eligible(json.loads(old['request']), eligibility)
+            state = 'QUEUED' if available else 'CANCELLED'
+            encoded = canonical(eligibility)
+            if old['eligibility'] != encoded or old['state'] != state:
+                db.execute('UPDATE jobs SET eligibility=?,state=?,updated_epoch=? WHERE job_id=?',
+                           (encoded, state, time.time(), job_id))
+                self._event(db, job_id, 'HOST_ELIGIBILITY_UPDATED' if available else 'HOST_ELIGIBILITY_HOLD',
+                            dict(eligibility=eligibility))
+            return available
 
     def cancel(self, method, job_id):
         with self._connection(write=True) as db:
@@ -169,7 +223,7 @@ class JobStore:
             self._event(db, job_id, 'CANCEL_QUEUED')
             return True
 
-    def claim(self, host_id, slots, cached_prefixes=(), allowed_jobs=None):
+    def claim(self, host_id, slots, cached_prefixes=(), allowed_jobs=None, host_fingerprints=None):
         if not isinstance(host_id, str) or not host_id:
             raise ValueError('Nonempty host_id required')
         if type(slots) is not int or slots < 0:
@@ -182,6 +236,9 @@ class JobStore:
             selected = []
             for job_id in order:
                 if job_id not in queued:
+                    continue
+                row = self._decoded(queued[job_id])
+                if not self.eligible(row['request'], row['eligibility'], host_id, host_fingerprints, job_id):
                     continue
                 now, attempt = time.time(), uuid.uuid4().hex
                 db.execute("UPDATE jobs SET state='ASSIGNED',host_id=?,attempt_id=?,assigned_epoch=?,updated_epoch=? WHERE job_id=?",

@@ -148,6 +148,19 @@ def validate_assignment(profile, assignment):
     return resolved
 
 
+def host_fingerprints(profile, challenges):
+    """Read current execution identities; never acquire or launch a job."""
+    from .rpe_host_eligibility import current_host_fingerprint
+    fingerprints, errors = {}, {}
+    for assignment in challenges:
+        job = assignment['job_id']
+        try:
+            fingerprints[job] = current_host_fingerprint(assignment, profile)
+        except Exception as error:
+            errors[job] = type(error).__name__ + ': ' + str(error)
+    return dict(host_fingerprints=fingerprints, readiness_errors=errors)
+
+
 def _adapter_command(profile, attempt, mode, output):
     return [profile['interpreter'], '-B', str(Path(profile['root']) / 'scripts/run_rpe_optimizer_q3_job.py'),
             '--request', str(Path(attempt) / 'RESOLVED_REQUEST.json'), '--output', str(output), '--mode', mode]
@@ -288,6 +301,7 @@ class Worker:
             raise ValueError('Positive poll interval required')
         self.transport = transport or self._http
         self.source_sha = head(self.root)
+        self.eligibility_challenges = []
         self.stop = threading.Event(); self.processes = {}; self.reported = {}; self.records = {}
         self.lock = (self.work / 'WORKER.lock').open('a')
         try:
@@ -409,7 +423,14 @@ class Worker:
                 if a.get('prefix_key') and read(p / 'WORKER_STATE.json')['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED')
                 })
             try:
-                response = self._post('/v1/poll', dict(slots=self.slots-active, cached_prefixes=cached, source_sha=self.source_sha))
+                payload = dict(slots=self.slots-active, cached_prefixes=cached, source_sha=self.source_sha,
+                               **host_fingerprints(self.profile, self.eligibility_challenges))
+                response = self._post('/v1/poll', payload)
+                self.eligibility_challenges = response.get('eligibility_challenges', [])
+                if not response.get('assignments') and self.eligibility_challenges:
+                    payload.update(host_fingerprints(self.profile, self.eligibility_challenges))
+                    response = self._post('/v1/poll', payload)
+                    self.eligibility_challenges = response.get('eligibility_challenges', self.eligibility_challenges)
                 assignments = response.get('assignments', [])
                 new_assignments = [a for a in assignments if
                     self.work / safe_id(a['job_id']) / safe_id(a['attempt_id']) not in self.records]
@@ -453,6 +474,8 @@ def mailbox(profile, action, payload=None):
     saved adapter return/outcome validation. No shared filesystem is assumed.
     """
     payload = payload or {}
+    if action == 'readiness':
+        return dict(host_id=profile['host_id'], **host_fingerprints(profile, payload.get('challenges', [])))
     worker = Worker(profile, 'http://127.0.0.1:1')
     try:
         if action == 'submit':

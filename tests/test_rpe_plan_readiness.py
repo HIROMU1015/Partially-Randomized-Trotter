@@ -17,6 +17,32 @@ FIXED = Path('/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rp
 
 
 class ReadinessTests(unittest.TestCase):
+    def test_cached_wrapper_keeps_original_hash_and_rejects_changed_original(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            R._write(root / 'assignment.json', dict(job_id='ARTIFICIAL_METADATA', request={}))
+            R._write(root / 'profile.json', {})
+            calls = []
+            def checker(command, **kwargs):
+                output = Path(command[command.index('--output') + 1])
+                calls.append(str(output))
+                R._write(output / 'READINESS.json', dict(status='REAL_HOST_DRY_CHECK_MISSING_OR_INVALID_INPUT',
+                    scientific_evaluation_calls=0, error='ARTIFICIAL_MISSING_ROUTE'))
+                return subprocess.CompletedProcess(command, 2)
+            with patch.object(R, 'dry_check_fingerprint', return_value={'ARTIFICIAL_METADATA': True}), \
+                 patch.object(R.subprocess, 'run', side_effect=checker):
+                args = (root, {'M': str(root / 'assignment.json')}, root / 'profile.json')
+                first = R.run_server2_dry_checks(*args, root / 'first')
+                second = R.run_server2_dry_checks(*args, root / 'second', cache=root / 'first')
+                third = R.run_server2_dry_checks(*args, root / 'third', cache=root / 'second')
+                wrapper = R._read(third['methods']['M']['result'])
+                self.assertEqual(wrapper['original_result_sha256'], first['methods']['M']['result_sha256'])
+                self.assertEqual(len(calls), 1)
+                Path(first['methods']['M']['result']).write_text('{"status":"ALTERED_ARTIFICIAL"}')
+                fourth = R.run_server2_dry_checks(*args, root / 'fourth', cache=root / 'third')
+                self.assertEqual(fourth['live_checks'], 1)
+                self.assertEqual(len(calls), 2)
+
     def test_queue_state_snapshot_is_read_only_and_unknown_schema_is_explicit(self):
         with tempfile.TemporaryDirectory(prefix='rpe-plan-queue-') as temporary:
             root = Path(temporary)

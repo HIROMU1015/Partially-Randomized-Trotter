@@ -167,6 +167,46 @@ def _known_minima(context, methods):
     return minimum
 
 
+def merge_host_readiness(prepared, output, code_root, descriptor=None):
+    """Join saved remote evidence with this run's local checks before READY."""
+    from .rpe_host_eligibility import derive_host_eligibility
+    output, code_root = Path(output), Path(code_root)
+    config = Path(descriptor) if descriptor else code_root / 'docs/research/rpe_q3_host_eligibility/EVIDENCE.json'
+    config = config.resolve()
+    data = O.load_json(config) if config.is_file() else {}
+    profiles = {}
+    for path in (Path(prepared['output']) / 'profiles').glob('*.json'):
+        profile = O.load_json(path)
+        profiles[profile['host_id']] = profile
+    evidence = deepcopy(data.get('evidence_by_host', {}))
+    local_host = O.load_json(prepared['server2_profile'])['host_id']
+    evidence[local_host] = dict(kind='local', root=str(output / 'host_checks'),
+                              runtime_cache=str(output / 'host_checks/DRY_CACHE.json'))
+    policy = derive_host_eligibility(prepared['assignments'], profiles, evidence,
+        root=Path(profiles[local_host]['root']), base_directory=config.parent)
+    policy_path = output / 'HOST_ELIGIBILITY.json'
+    write(policy_path, policy)
+    options_path = output / 'DISTRIBUTED_OPTIONS.json'
+    write(options_path, dict(executor=dict(scheduler='concurrent', dp_workers=3,
+        prefix_checkpoint_rounds=[5, 11], prefix_cache_directory=None,
+        distributed=dict(host_eligibility=str(policy_path), computation_root=profiles[local_host]['root'],
+                         computation_source=prepared['computation_source'],
+                         worker_script=str(code_root / 'scripts/run_rpe_q3_worker.py'))),
+        note='Executor fragment only. It grants no scientific execution or budget; merge into a separately approved new round. Worker profiles keep the dry-checked interpreter/routes/DP/cache; work_dir and slots may be added.'))
+    prepared['host_eligibility'] = dict(path=str(policy_path), schema=policy['schema'],
+                                     evidence_descriptor=str(config), jobs=policy['jobs'],
+                                     distributed_options=str(options_path))
+    for row in prepared['candidates']:
+        decision = policy['jobs'].get(row.get('job_id'), {})
+        allowed = decision.get('eligible_host_ids', [])
+        row.update(eligible_host_ids=allowed, host_readiness=decision.get('hosts', {}),
+                   dispatchable=bool(allowed) and row.get('queue_dispatchable', False))
+        if row.get('queue_dispatchable'):
+            row['dispatchability'] = 'DRY_CHECK_PASSED_HOSTS_ONLY' if allowed else 'HELD_NO_DRY_CHECK_PASSED_HOST'
+    prepared['remote_dispatchability'] = 'ONLY_MATCHING_PASS_CELLS_ELIGIBLE'
+    return prepared
+
+
 def prepare(a, *, code_root, cli):
     """The existing schedule CLI's opt-in, zero-science readiness procedure."""
     if not a.plan_only:
@@ -211,6 +251,9 @@ def prepare(a, *, code_root, cli):
                         checker=code_root / 'scripts/check_rpe_q3_host_readiness.py')
                     write(cache / 'DRY_CACHE.json', dry)
                     prepared = finish_readiness(prepared, dry)
+                with stages.phase('MERGE_HOST_READINESS'):
+                    prepared = merge_host_readiness(prepared, output, code_root,
+                                                    getattr(a, 'host_readiness', None))
                 minimum = _known_minima(current, result)
                 for row in prepared['candidates']:
                     method = row['method']
@@ -244,13 +287,14 @@ def prepare(a, *, code_root, cli):
     with stages.phase('COMPACT_REPORT'):
         summary = json.loads((output / 'READY.json').read_text())
         lines = ['# H4 readiness preparation', '', 'Scientific calls and queue submissions: 0.', '',
-                 '| Method | Candidate | Conditional RZ | Server2 dry-check |', '|---|---|---:|---|']
+                 '| Method | Candidate | Conditional RZ | Server2 dry-check | Eligible hosts |', '|---|---|---:|---|---|']
         for row in summary['candidates']:
             method = row['method']
             observed = summary['server2']['methods'].get(method, {})
             status = observed.get('original_status') or observed.get('status', 'NOT_CHECKED')
             cost = '' if row.get('cost') is None else O.show(O.frac(row['cost']))
-            lines.append('| %s | %s | %s | %s |' % (method, row.get('job_id', ''), cost, status))
+            lines.append('| %s | %s | %s | %s | %s |' % (method, row.get('job_id', ''), cost, status,
+                         ', '.join(row.get('eligible_host_ids', [])) or 'HELD: no matching PASS'))
         lines += ['', 'Exact saved outcomes remain in their original job paths and local history cache.',
                   'The previous remote requests, deployment commands and output paths are unchanged.']
         (output / 'REPORT.md').write_text('\n'.join(lines) + '\n')

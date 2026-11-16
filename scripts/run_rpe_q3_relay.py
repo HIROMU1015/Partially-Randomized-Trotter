@@ -169,8 +169,17 @@ class Relay:
                 try: self.post('/v1/transfer-metric', dict(owner, timing=timing))
                 except Exception as error: self.log('TELEMETRY_PENDING', **owner, error=str(error))
         info['phase'] = 'CONTROLLER_POLL'
-        assignments = self.post('/v1/poll', dict(host_id=host, slots=status['slots'],
-            source_sha=status['source_sha'], cached_prefixes=status['cached_prefixes']))['assignments']
+        poll = dict(host_id=host, slots=status['slots'], source_sha=status['source_sha'],
+                    cached_prefixes=status['cached_prefixes'])
+        response = self.post('/v1/poll', poll)
+        if not response['assignments'] and response.get('eligibility_challenges'):
+            current, _ = self.remote(worker, 'readiness', dict(challenges=response['eligibility_challenges']))
+            if current.get('host_id') != host:
+                raise ValueError('Readiness response host differs')
+            poll.update(host_fingerprints=current.get('host_fingerprints', {}),
+                        readiness_errors=current.get('readiness_errors', {}))
+            response = self.post('/v1/poll', poll)
+        assignments = response['assignments']
         for assignment in assignments:
             # Store delivery intent before SSH. A lost submit response is
             # reconciled with the same server2-owned job and attempt next tick.

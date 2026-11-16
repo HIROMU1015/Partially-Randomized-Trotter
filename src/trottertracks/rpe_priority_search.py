@@ -462,6 +462,9 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             pending = dict(choice, route=(routes or {}).get(name), queue=[dict(candidate=p['candidate'], cost=p['cost'], cls=p['cls'],
                            vector=list(p['vector']), origin=p['origin']) for p in order(groups, 5)],
                            job=None if answer is None else answer.get('job'))
+            if answer is not None and answer['status'] == 'HOST_ELIGIBILITY_HOLD':
+                pending['host_eligibility'] = answer.get('host_eligibility')
+                pending['hold_reason'] = answer.get('reason')
             stop = hold or ('NEW_SCIENCE_NOT_APPROVED' if not science_approved and not is_free else
                             'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET' if limit == 0 and not is_free else
                             'Q3_BUDGET_EXHAUSTED' if not allow and not is_free else 'NEW_Q3_REQUIRED_NO_EXECUTOR')

@@ -244,10 +244,17 @@ def run_server2_dry_checks(root, assignments, profile, output, *, cache=None, ch
         prior = old.get(method) or {}
         previous_result = Path(prior.get('result', ''))
         previous_intact = previous_result.is_file() and _sha(previous_result.read_bytes()) == prior.get('result_sha256')
+        if previous_intact:
+            previous = _read(previous_result)
+            if previous.get('status') == 'CACHED_RESULT_REUSED':
+                original_path = Path(previous.get('original_result', ''))
+                previous_intact = (original_path.is_file() and bool(previous.get('original_result_sha256'))
+                    and _sha(original_path.read_bytes()) == previous['original_result_sha256'])
         if fingerprint is not None and fingerprint == prior.get('fingerprint') and previous_intact:
             original = _read(prior['result'])
             _write(target / 'READINESS.json', dict(status='CACHED_RESULT_REUSED',
                 original_result=original.get('original_result', prior['result']), original_status=original.get('original_status', original['status']),
+                original_result_sha256=original.get('original_result_sha256', _sha(previous_result.read_bytes())),
                 fresh_dimensions_checked=['SOURCE', 'route', 'input', 'runtime'],
                 fingerprint=Q.digest(fingerprint), scientific_evaluation_calls=0, queue_operations=0))
             mode = 'CACHED'

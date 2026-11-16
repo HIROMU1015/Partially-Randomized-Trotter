@@ -258,7 +258,7 @@ class WideDriver(K.Driver):
             if interim and interim[-1]['stop_reason'] == 'INVOCATION_FAILED':
                 self.state['stop'] = dict(reason='V2_INVOCATION_FAILED', returncode=interim[-1]['returncode'], UTC=K.now())
                 self.save();return
-            fatal = {'UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER',
+            fatal = {'UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'HOST_ELIGIBILITY_HOLD',
                      'Q3_BUDGET_EXHAUSTED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'}
             if interim and interim[-1]['stop_reason'] in fatal:
                 self.state['stop'] = dict(reason='V2_' + interim[-1]['stop_reason'], UTC=K.now())
@@ -282,7 +282,7 @@ class WideDriver(K.Driver):
                      plan_stop=report['stop'])
             if res['stop_reason'] in ('Q3_BUDGET_EXHAUSTED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'):
                 self.state['stop'] = dict(reason=res['stop_reason'], UTC=K.now());self.save();return
-            if res['stop_reason'] in ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER'):
+            if res['stop_reason'] in ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'HOST_ELIGIBILITY_HOLD'):
                 self.state['stop'] = dict(reason='V2_' + res['stop_reason'], UTC=K.now());self.save();return
             if not proposals and not pending and res['stop_reason'] in ('ONLY_SMALL_OR_DEFERRED_LEFT', 'NO_CANDIDATE_LEFT_IN_RANGE'):
                 self.state['stop'] = dict(reason='SCHEDULE_WIDE_RULE_EXHAUSTED', UTC=K.now(), v2_stop=res['stop_reason'],
@@ -648,7 +648,7 @@ class WidthDriver:
                 # No other thread now changes Completion or its registry.
                 routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']
                 O.apply_published(context['candidates'],routes)
-            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER'}
+            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
             if interim and any(r['stop_reason']in fatal for r in interim.values()):result=interim
             else:
                 with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):
@@ -705,7 +705,7 @@ class WidthDriver:
             self.save();self.log(event='V2_BATCH_END',wall_seconds=time.monotonic()-started,
                 methods={m:dict(stop=r['stop_reason'],new_calls=r['new_calls'])for m,r in result.items()})
             failed={m:r['stop_reason']for m,r in result.items()if r['stop_reason']in
-                    ('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER')}
+                    ('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD')}
             if failed:
                 self.state['stop']=dict(reason='V2_RESULT_REQUIRES_REVIEW',methods=failed,UTC=K.now());self.save();return
             waiting=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
@@ -724,6 +724,7 @@ def main(argv=None, *, driver_factory=None):
     ap.add_argument('--max-cycles', type=int, default=200);ap.add_argument('--plan-only', action='store_true')
     ap.add_argument('--prepare-readiness', action='store_true', help='plan-only: delta saved history, chosen requests, server2 dry-check and immutable remote delivery')
     ap.add_argument('--preparation-cache', type=Path, help='local disposable cache for --prepare-readiness')
+    ap.add_argument('--host-readiness', type=Path, help='saved host READINESS descriptors to join during --prepare-readiness')
     a = ap.parse_args(argv);a.problem = a.problem.resolve()
     if a.prepare_readiness:
         from trottertracks.rpe_plan_prepare import prepare

@@ -36,7 +36,7 @@ class StoreTests(unittest.TestCase):
 
     def test_concurrent_budget_reservations_are_atomic(self):
         def claim(i):
-            return JobStore(self.path).reserve('PR_PAULI', 'j' + str(i), {'request_id': str(i)}, 3, True)
+            return JobStore(self.path).reserve('PR_PAULI', 'j' + str(i), {'request_id': str(i), 'artificial': True}, 3, True)
         with ThreadPoolExecutor(max_workers=12) as pool:
             results = list(pool.map(claim, range(12)))
         self.assertEqual(sum(results), 3)
@@ -126,6 +126,45 @@ class StoreTests(unittest.TestCase):
             self.store.reserve('PR_DF', 'j1', {'request_id': 'j1', 'artificial': True}, 4, True, contract='FIXED')
         with self.assertRaises(ValueError):
             self.store.reserve('PR_PAULI', 'j1', {'request_id': 'j1', 'artificial': True}, 4, True, contract='CHANGED')
+
+    def test_real_job_without_any_eligible_host_never_reserves(self):
+        request = dict(request_id='real', route=dict(kind='synthetic_real_route'))
+        self.assertFalse(self.store.reserve('METHOD', 'real', request, 1, True))
+        empty = dict(request_sha256=digest(request), eligible_host_ids=[], host_fingerprints={})
+        self.assertFalse(self.store.reserve('METHOD', 'real', request, 1, True, eligibility=empty))
+        self.assertEqual(self.store.counts('METHOD'), 0)
+        self.assertIsNone(self.store.row('real'))
+
+    def test_claim_enforces_membership_and_current_facts_and_keeps_priority(self):
+        facts = {'a': dict(runtime='synthetic-a'), 'b': dict(runtime='synthetic-b')}
+        for job, hosts in [('first', ['a']), ('second', ['b']), ('third', ['b'])]:
+            request = dict(request_id=job, route=dict(kind='synthetic_real_route'))
+            policy = dict(request_sha256=digest(request), eligible_host_ids=hosts,
+                          host_fingerprints={h:digest(facts[h]) for h in hosts})
+            self.assertTrue(self.store.reserve('METHOD', job, request, 3, True, eligibility=policy))
+        self.assertEqual(self.store.claim('b', 2), [])
+        self.assertEqual(self.store.claim('b', 1, host_fingerprints={'second':dict(runtime='changed')}), [])
+        rows = self.store.claim('b', 1, host_fingerprints={j:facts['b'] for j in ['first','second','third']})
+        self.assertEqual([r['job_id'] for r in rows], ['second'])
+        self.assertEqual(self.store.row('first')['state'], 'QUEUED')
+        self.assertEqual(self.store.row('third')['state'], 'QUEUED')
+        reopened = JobStore(self.path)
+        self.assertEqual(reopened.row('second')['eligibility'], self.store.row('second')['eligibility'])
+
+    def test_queued_hold_releases_budget_but_assigned_owner_cannot_change(self):
+        request = dict(request_id='real', route=dict(kind='synthetic_real_route'))
+        facts = dict(runtime='synthetic')
+        policy = dict(request_sha256=digest(request), eligible_host_ids=['a'], host_fingerprints={'a':digest(facts)})
+        empty = dict(request_sha256=digest(request), eligible_host_ids=[], host_fingerprints={})
+        self.assertTrue(self.store.reserve('METHOD', 'real', request, 1, True, eligibility=policy))
+        self.assertFalse(self.store.set_eligibility('real', empty))
+        self.assertEqual(self.store.counts('METHOD'), 0)
+        self.assertTrue(self.store.reserve('METHOD', 'real', request, 1, True, eligibility=policy))
+        assigned = self.store.claim('a', 1, host_fingerprints={'real':facts})[0]
+        self.assertFalse(self.store.set_eligibility('real', empty))
+        self.assertEqual(self.store.row('real')['attempt_id'], assigned['attempt_id'])
+        self.assertEqual(self.store.row('real')['state'], 'ASSIGNED')
+        self.assertEqual(self.store.claim('b', 1, host_fingerprints={'real':facts}), [])
 
 
 if __name__ == '__main__':

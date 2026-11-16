@@ -256,6 +256,8 @@ class ConcurrentExecutor(O.Executor):
             self.log(event='DEPENDENCY_WAIT_START',job=job.name)
             try:task.event.wait()  # retain parent-exit gate even if OUTCOME appeared first
             finally:self.log(event='DEPENDENCY_WAIT_END',job=job.name)
+        if task and task.error == 'HOST_ELIGIBILITY_HOLD':
+            return self._held_answer(proposal)
         if task and task.error:
             return dict(status='UNKNOWN',reason=task.error,source='EXECUTOR_FAILURE',calls=self.take_count(job),
                         MSE_lower=None,MSE_upper=None,job=str(job))
@@ -278,6 +280,8 @@ class ConcurrentExecutor(O.Executor):
                 self.log(event='DEPENDENCY_WAIT_START',job=job.name)
                 try:task.event.wait()
                 finally:self.log(event='DEPENDENCY_WAIT_END',job=job.name)
+                if task.error == 'HOST_ELIGIBILITY_HOLD':
+                    return self._held_answer(proposal)
                 if(job/'OUTCOME.json').exists():answer=self.ingest(job,proposal,calls=self.take_count(job))
                 else:answer=dict(status='UNKNOWN',reason=task.error or'ADAPTER_EXIT_WITHOUT_OUTCOME',
                     source='NEW_Q3_JOB',calls=self.take_count(job),MSE_lower=None,MSE_upper=None,job=str(job))
@@ -358,6 +362,8 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_q3_store import JobStore
         from . import rpe_q3_coordinator as Q
         self.distributed = deepcopy(distributed)
+        self.eligibility_holds = {}
+        self.eligibility_policy_cache = {}
         run = Path(args[1]).resolve()
         self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
         self.hosts = {}
@@ -367,7 +373,12 @@ class DistributedExecutor(ConcurrentExecutor):
         self.rpc_server = None
         super().__init__(*args, **kwargs)
         try:
-            self.source_manifest = Q.source_manifest(self.root, self.optimizer_source)
+            self.controller_source = self.optimizer_source
+            self.computation_root = Path(distributed.get('computation_root', self.root)).resolve()
+            self.computation_source = distributed.get('computation_source', self.optimizer_source)
+            self.optimizer_source = self.computation_source
+            self.worker_script = Path(distributed.get('worker_script', self.root/'scripts/run_rpe_q3_worker.py')).resolve()
+            self.source_manifest = Q.source_manifest(self.computation_root, self.computation_source)
             contract_path = run/'distributed'/'SOURCE.json'
             fixed = dict(source=self.source_manifest, evaluation_contract=self.contract)
             if contract_path.exists() and json.loads(contract_path.read_text()) != fixed:
@@ -375,6 +386,12 @@ class DistributedExecutor(ConcurrentExecutor):
             if not contract_path.exists(): Q.atomic_json(contract_path, fixed)
             with self.state.cv:
                 for row in self.store.rows():
+                    if row['state'] == 'QUEUED':
+                        decision = self._eligibility_for(row['request'], row['job_id'])
+                        if not self.store.set_eligibility(row['job_id'], decision):
+                            self.eligibility_holds[row['job_id']] = decision
+                            continue
+                        row = self.store.row(row['job_id'])
                     if row['state'] not in ('CANCELLED', 'ACCEPTED'):
                         self._restore_task(row)
                     elif row['state'] == 'ACCEPTED':
@@ -385,7 +402,8 @@ class DistributedExecutor(ConcurrentExecutor):
             Q.atomic_json(run/'distributed'/'ENDPOINT.json', dict(url=self.controller_url, pid=os.getpid(), source=self.optimizer_source))
             profile = distributed.get('local_worker')
             if profile and profile.get('slots', 0) > 0:
-                profile = dict(profile, root=str(self.root.resolve()))
+                profile = dict(profile)
+                profile.setdefault('root', str(self.computation_root))
                 profile_path = run/'distributed'/'LOCAL_WORKER.json'
                 Q.atomic_json(profile_path, profile)
                 daemon_path = run/'distributed'/'LOCAL_DAEMON.json'
@@ -394,13 +412,14 @@ class DistributedExecutor(ConcurrentExecutor):
                     self.local_worker_pid = previous['pid']
                 else:
                     with (run/'distributed'/'LOCAL_WORKER.log').open('a') as log:
-                        self.local_worker = subprocess.Popen([sys.executable, '-B', str(self.root/'scripts/run_rpe_q3_worker.py'),
+                        self.local_worker = subprocess.Popen([sys.executable, '-B', str(self.worker_script),
                             '--profile', str(profile_path), '--controller', self.controller_url, '--poll-seconds', '.1'],
                             cwd=self.root, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
                             start_new_session=True, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
                     self.local_worker_pid = self.local_worker.pid
                     Q.atomic_json(daemon_path, dict(pid=self.local_worker_pid, profile=str(profile_path)))
-            self.log(event='DISTRIBUTED_START', url=self.controller_url)
+            self.log(event='DISTRIBUTED_START', url=self.controller_url, controller_source=self.controller_source,
+                computation_source=self.computation_source, computation_root=str(self.computation_root))
         except BaseException:
             with self.state.cv:
                 self.state.closed = True
@@ -425,7 +444,7 @@ class DistributedExecutor(ConcurrentExecutor):
         if type(pid) is not int: return False
         try:
             command = Path('/proc/%s/cmdline' % pid).read_bytes().decode(errors='replace')
-            return str(profile_path) in command and str(self.root/'scripts/run_rpe_q3_worker.py') in command
+            return str(profile_path) in command and str(self.worker_script) in command
         except OSError: return False
 
     def _dispatch(self):
@@ -433,6 +452,69 @@ class DistributedExecutor(ConcurrentExecutor):
         # in _poll rather than launching controller-local adapters directly.
         with self.state.cv:
             while not self.state.closed: self.state.cv.wait(.2)
+
+    def _eligibility_for(self, request, job_id):
+        """Bind a prepared host decision to this exact scientific request."""
+        from . import rpe_q3_coordinator as Q
+        policy = self.distributed.get('host_eligibility')
+        if policy is None and self.store.artificial(request):
+            return None
+        result = dict(request_sha256=Q.digest(request), source_manifest_sha256=Q.digest(self.source_manifest),
+                      eligible_host_ids=[], host_fingerprints={}, reasons=[])
+        try:
+            if isinstance(policy, (str, Path)):
+                path = Path(policy)
+                if not path.is_absolute(): path = self.root/path
+                st = path.stat();signature = (str(path.resolve()), st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
+                if self.eligibility_policy_cache.get('signature') != signature:
+                    self.eligibility_policy_cache.update(signature=signature, policy=json.loads(path.read_text()))
+                policy = self.eligibility_policy_cache['policy']
+            if not isinstance(policy, dict) or policy.get('schema') != 'RPE_Q3_HOST_ELIGIBILITY_V1':
+                raise ValueError('MISSING_HOST_ELIGIBILITY_POLICY')
+            record = (policy.get('jobs') or {}).get(job_id)
+            if not isinstance(record, dict): raise ValueError('NO_REQUEST_SPECIFIC_HOST_EVIDENCE')
+            if record.get('decision_sha256') != Q.digest({k:v for k,v in record.items() if k != 'decision_sha256'}):
+                raise ValueError('HOST_ELIGIBILITY_DECISION_CONTENT_CHANGED')
+            current_source = Q.source_manifest(self.computation_root, self.computation_source)
+            head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=self.computation_root, text=True).strip()
+            if current_source != self.source_manifest or head != self.computation_source:
+                raise ValueError('COMPUTATION_SOURCE_CHANGED')
+            for key, expected in (('request_sha256', result['request_sha256']),
+                                  ('source_manifest_sha256', result['source_manifest_sha256']),
+                                  ('method', request['method'])):
+                if record.get(key) != expected: raise ValueError('HOST_ELIGIBILITY_CHANGED_' + key.upper())
+            if record.get('source_manifest') != self.source_manifest:
+                raise ValueError('HOST_ELIGIBILITY_CHANGED_SOURCE_MANIFEST')
+            by_input = lambda rows: sorted(rows, key=lambda r:(r['commit'], r['path'], r['sha256']))
+            actual_inputs = Q.input_hashes(self.computation_root, request, self.input_hash_cache)
+            if by_input(record.get('input_hashes', [])) != by_input(actual_inputs):
+                raise ValueError('HOST_ELIGIBILITY_CHANGED_INPUT_HASHES')
+            result['decision_sha256'] = record.get('decision_sha256')
+            if not result['decision_sha256']: raise ValueError('NO_HOST_ELIGIBILITY_DECISION_DIGEST')
+            result['host_decisions'] = {name: dict(status=cell.get('status', 'UNCHECKED'),
+                reasons=cell.get('reasons', [])) for name, cell in (record.get('hosts') or {}).items()}
+            for host in record.get('eligible_host_ids', []):
+                cell = (record.get('hosts') or {}).get(host, {})
+                fingerprint = cell.get('current_host_fingerprint_sha256')
+                if cell.get('status') == 'PASS' and isinstance(fingerprint, str) and fingerprint:
+                    current = (self.hosts.get(host, {}).get('host_fingerprints') or {}).get(job_id)
+                    if isinstance(current, dict) and Q.digest(current) != fingerprint:
+                        result['reasons'].append('CURRENT_HOST_FINGERPRINT_CHANGED:' + host)
+                        result['host_decisions'][host] = dict(status='UNCHECKED',
+                            reasons=['CURRENT_HOST_FINGERPRINT_CHANGED'])
+                        continue
+                    result['eligible_host_ids'].append(host)
+                    result['host_fingerprints'][host] = fingerprint
+            if not result['eligible_host_ids']: result['reasons'].append('ALL_HOSTS_FAIL_OR_UNCHECKED')
+        except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
+            result['reasons'].append(str(exc))
+        return result
+
+    def _held_answer(self, proposal):
+        job = self.job_dir(proposal)
+        return dict(status='HOST_ELIGIBILITY_HOLD', reason='NO_MATCHING_ELIGIBLE_HOST',
+                    host_eligibility=self.eligibility_holds.get(job.name), source='HOST_READINESS',
+                    calls=0, MSE_lower=None, MSE_upper=None, job=None)
 
     def _restore_task(self, row, proposal=None, demand=False):
         request = row['request']; method = row['method']
@@ -474,15 +556,29 @@ class DistributedExecutor(ConcurrentExecutor):
                 return task
             row = self.store.row(job.name)
             if row and row['state'] == 'ACCEPTED': return None
-            if row and row['state'] != 'CANCELLED': return self._restore_task(row, proposal, demand)
+            if row and row['state'] != 'CANCELLED':
+                if row['state'] == 'QUEUED':
+                    decision = self._eligibility_for(row['request'], row['job_id'])
+                    if not self.store.set_eligibility(row['job_id'], decision):
+                        self.eligibility_holds[job.name] = decision
+                        return False
+                    row = self.store.row(job.name)
+                return self._restore_task(row, proposal, demand)
             if (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists() or self.prior_job(proposal) is not None: return None
             rule = self.route(proposal['configuration_id'])
             if rule is None: return None
             if s.closed: raise RuntimeError('Executor is closed')
             request = self.request(proposal, job, rule)
             if row is not None: request = row['request']  # same cancelled scientific job; origin may have changed
+            eligibility = self._eligibility_for(request, job.name)
+            if not self.store.eligible(request, eligibility):
+                self.eligibility_holds[job.name] = eligibility
+                self.log(event='HOST_ELIGIBILITY_HOLD', job=job.name, eligibility=eligibility)
+                return False
+            self.eligibility_holds.pop(job.name, None)
             if not self.store.reserve(self.method, job.name, request, s.budgets.get(self.method), s.approved,
-                                      contract=dict(evaluation=self.contract, prefix_key=prefix_key(request))): return False
+                                      contract=dict(evaluation=self.contract, prefix_key=prefix_key(request)),
+                                      eligibility=eligibility): return False
             task = self._restore_task(self.store.row(job.name), proposal, demand)
             s.metrics['submitted'] += 1
             self.log(event='ENQUEUE', job=job.name, configuration=proposal['configuration_id'], demand=demand,
@@ -504,7 +600,7 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_q3_coordinator import input_hashes, prefix_key
         return dict(job_id=row['job_id'], method=row['method'], attempt_id=row['attempt_id'], request=row['request'],
             request_sha256=row['request_sha256'], source_manifest=self.source_manifest,
-            input_hashes=input_hashes(self.root, row['request'], self.input_hash_cache), prefix_key=prefix_key(row['request']))
+            input_hashes=input_hashes(self.computation_root, row['request'], self.input_hash_cache), prefix_key=prefix_key(row['request']))
 
     def rpc(self, path, value):
         from . import rpe_q3_coordinator as Q
@@ -516,26 +612,64 @@ class DistributedExecutor(ConcurrentExecutor):
                 if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
                 slots = value['slots']
                 if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
-                self.hosts[host] = dict(epoch=time.time(), slots=slots, cached_prefixes=value.get('cached_prefixes', []))
-                required = self.distributed.get('required_hosts', [])
-                if any(name not in self.hosts for name in required):
-                    return dict(assignments=[], stop=False, waiting_for_hosts=[name for name in required if name not in self.hosts])
-                queue = sorted((t for t in s.tasks.values() if t.status == 'QUEUED'),
-                    key=lambda t: (not t.demand, s.owner_clock.get(t.owner, -1), t.enqueue))
-                if s.failure or s.closed: return dict(assignments=[], stop=False)
-                # Prefix locality chooses a host only within a short bounded
-                # wait. It never skips the controller's first scientific job.
-                if queue and time.monotonic()-queue[0].enqueue < self.distributed.get('affinity_wait_seconds', .2):
-                    key = Q.prefix_key(self.store.row(queue[0].job.name)['request'])
-                    if key not in value.get('cached_prefixes', []):
-                        preferred = [h for h, info in self.hosts.items() if h != host and info['slots'] > 0
-                            and time.time()-info['epoch'] < 2 and key in info['cached_prefixes']]
-                        if preferred: return dict(assignments=[], stop=False)
-                # Recover lost assignment responses BEFORE consuming new slots.
+                fingerprints = value.get('host_fingerprints') or {}
+                if not isinstance(fingerprints, dict): raise ValueError('Host fingerprints must map job IDs to current facts')
+                self.hosts[host] = dict(epoch=time.time(), slots=slots, cached_prefixes=value.get('cached_prefixes', []),
+                                       host_fingerprints=fingerprints)
+                # A lost response is reconciled with its original owner even
+                # if current readiness changed or another host is offline.
                 assignments = [self._assignment(row) for row in self.store.rows()
                     if row['host_id'] == host and row['state'] == 'ASSIGNED'][:slots]
-                for task in queue[:max(0, min(slots-len(assignments), self.capacity-s.active))]:
-                    rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name])
+                required = self.distributed.get('required_hosts', [])
+                if any(name not in self.hosts for name in required):
+                    return dict(assignments=assignments, stop=False,
+                                waiting_for_hosts=[name for name in required if name not in self.hosts])
+                queue = sorted((t for t in s.tasks.values() if t.status == 'QUEUED'),
+                    key=lambda t: (not t.demand, s.owner_clock.get(t.owner, -1), t.enqueue))
+                if s.failure or s.closed: return dict(assignments=assignments, stop=False)
+                eligible, challenges = [], []
+                skipped = False
+                for task in queue:
+                    row = self.store.row(task.job.name)
+                    decision = self._eligibility_for(row['request'], row['job_id'])
+                    if not self.store.set_eligibility(row['job_id'], decision):
+                        self.eligibility_holds[row['job_id']] = decision
+                        task.error = 'HOST_ELIGIBILITY_HOLD'
+                        ConcurrentExecutor._cancel(self, task)
+                        skipped = True
+                        continue
+                    self.eligibility_holds.pop(row['job_id'], None)
+                    if decision is not None and host not in decision['eligible_host_ids']:
+                        skipped = True
+                        continue
+                    if not self.store.eligible(row['request'], decision, host, fingerprints, row['job_id']):
+                        # Metadata challenge only: no attempt ID, reservation
+                        # transition, LAUNCH or scientific execution occurs.
+                        challenge = self._assignment(row)
+                        challenge.pop('attempt_id', None)
+                        challenges.append(challenge)
+                        skipped = True
+                        continue
+                    conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
+                    if skipped and conditional and not task.demand:
+                        continue
+                    eligible.append(task)
+                # Prefix locality is considered only among eligible hosts for
+                # the same first dispatchable task, never an unsupported host.
+                if eligible and time.monotonic()-eligible[0].enqueue < self.distributed.get('affinity_wait_seconds', .2):
+                    first = self.store.row(eligible[0].job.name)
+                    key = Q.prefix_key(first['request'])
+                    if key not in value.get('cached_prefixes', []):
+                        preferred = [h for h, info in self.hosts.items() if h != host and info['slots'] > 0
+                            and time.time()-info['epoch'] < 2 and key in info['cached_prefixes']
+                            and self.store.eligible(first['request'], first['eligibility'], h,
+                                                   info.get('host_fingerprints'), first['job_id'])]
+                        if preferred: return dict(assignments=assignments, stop=False, eligibility_challenges=challenges)
+                remaining = max(0, min(slots-len(assignments), self.capacity-s.active))
+                for task in eligible:
+                    if remaining <= 0: break
+                    rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name],
+                                            host_fingerprints=fingerprints)
                     if not rows: continue
                     row = rows[0]
                     # Assignment and reservation are committed before a worker
@@ -553,7 +687,8 @@ class DistributedExecutor(ConcurrentExecutor):
                         configuration=task.proposal['configuration_id'], queue_wait_seconds=time.monotonic()-task.enqueue,
                         active=s.active, demand=task.demand)
                     assignments.append(self._assignment(row))
-                return dict(assignments=assignments, stop=False)
+                    remaining -= 1
+                return dict(assignments=assignments, stop=False, eligibility_challenges=challenges)
             row = self.store.row(value['job_id'])
             if row is None or row['host_id'] != host or row['attempt_id'] != value['attempt_id']:
                 raise ValueError('Different execution host/attempt')
@@ -615,10 +750,31 @@ class DistributedExecutor(ConcurrentExecutor):
         if outcome.exists(): Q.install_files(job, {'OUTCOME.json': base64.b64encode(outcome.read_bytes()).decode()})
 
     def answer(self, proposal, allow_new=True):
-        row = self.store.row(self.job_dir(proposal).name)
+        job = self.job_dir(proposal)
+        row = self.store.row(job.name)
+        # Readiness is an operational hold, not a failed scientific evaluation
+        # or an exhausted budget. Already owned/complete jobs retain recovery.
+        if (allow_new and (row is None or row['state'] in ('CANCELLED', 'QUEUED')) and
+                not (job/'OUTCOME.json').exists() and not (job/'LAUNCH.json').exists() and self.prior_job(proposal) is None):
+            rule = self.route(proposal['configuration_id'])
+            if rule is not None:
+                request = row['request'] if row is not None else self.request(proposal, job, rule)
+                decision = self._eligibility_for(request, job.name)
+                if not self.store.eligible(request, decision):
+                    with self.state.cv:
+                        self.eligibility_holds[job.name] = decision
+                        if row is not None: self.store.set_eligibility(job.name, decision)
+                        task = self.state.tasks.get(job)
+                        if task and task.status == 'QUEUED':
+                            task.error = 'HOST_ELIGIBILITY_HOLD'
+                            ConcurrentExecutor._cancel(self, task)
+                    return self._held_answer(proposal)
+                self.eligibility_holds.pop(job.name, None)
         if row and row['state'] not in ('ACCEPTED', 'CANCELLED'):
             with self.state.cv: self._restore_task(row, proposal, demand=True)
         answer = super().answer(proposal, allow_new)
+        if answer and answer.get('status') == 'BUDGET_EXHAUSTED' and job.name in self.eligibility_holds:
+            return self._held_answer(proposal)
         if answer and row is not None and self.store.row(row['job_id'])['state'] == 'ACCEPTED':
             self.store.adopt(row['job_id'])
         elif answer:
@@ -653,6 +809,7 @@ class DistributedExecutor(ConcurrentExecutor):
             if event.get('event') == 'RESULT_REUSE' and event.get('host_id') in by_host:
                 by_host[event['host_id']]['reused'] += 1
         result.update(distributed=True, by_host=by_host, persistent_reserved={m:self.store.counts(m) for m in self.routes},
+                      host_eligibility_holds=deepcopy(self.eligibility_holds),
                       actual_OS_host_count='recorded by integration harness; host IDs alone do not establish separate machines')
         return result
 

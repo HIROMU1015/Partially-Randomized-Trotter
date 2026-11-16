@@ -395,7 +395,8 @@ def proposals(candidates, knowledge, threshold, search, generate):
     return ordered, incumbent
 
 
-HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW'}
+HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW',
+        'HOST_ELIGIBILITY_HOLD': 'HOST_ELIGIBILITY_HOLD'}
 
 
 def run_method(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None, spent=0, free=None,
@@ -437,6 +438,9 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
                 vector=list(p['vector']), origin=p['origin']) for p in props[:5]], job=None if answer is None else answer.get('job'))
             if hold:
                 stop = hold
+                if answer['status'] == 'HOST_ELIGIBILITY_HOLD':
+                    pending['host_eligibility'] = answer.get('host_eligibility')
+                    pending['hold_reason'] = answer.get('reason')
             elif not science_approved and not is_free:
                 stop = 'NEW_SCIENCE_NOT_APPROVED'
             elif limit == 0 and not is_free:
@@ -1275,7 +1279,7 @@ def prepare_kappa_requests(root, problem, context, name, prep, requests):
 
 
 EXHAUSTED = ('NO_IMPROVING_PROPOSAL', 'NO_FEASIBLE_POINT_IN_RANGE')
-STOP_PRIORITY = ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'JOB_IN_PROGRESS', 'Q3_BUDGET_EXHAUSTED',
+STOP_PRIORITY = ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'HOST_ELIGIBILITY_HOLD', 'JOB_IN_PROGRESS', 'Q3_BUDGET_EXHAUSTED',
                  'NEW_SCIENCE_NOT_APPROVED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET', 'NEW_Q3_REQUIRED_NO_EXECUTOR', 'STEP_LIMIT')
 
 
