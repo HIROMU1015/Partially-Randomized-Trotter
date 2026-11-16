@@ -27,6 +27,11 @@ Pipeline (one call of ``optimize``):
    ``search.incumbent_scope = "CONFIGURATION"`` applies the same rule to every
    configuration separately (its own incumbent; nothing is dropped because another
    configuration is cheaper), e.g. to compare kappa or L_D on equal terms.
+   ``search.rule = "METHOD_MINIMUM_PRIORITY_V2"`` (``rpe_priority_search``) instead keeps one
+   queue per method that lowers the method minimum first, gives every few picks to other / new
+   configurations, defers allocations dominated by a clear failure, and plans the next kappa.
+   ``executor.prior_run_dirs`` (round file) loads completed jobs of earlier rounds (same job key
+   and route, identity-checked) so a stopped round's evaluations are reused without a new Q3.
 
 No signal, price, compile or Q3 is computed here.  Costs are each candidate's own
 saved unit prices times the integer shots, validated against C's saved totals.
@@ -475,13 +480,15 @@ class Executor:
     """
 
     def __init__(self, root, run_dir, routes, expected, problem, adapter='scripts/run_rpe_optimizer_q3_job.py', optimizer_source=None,
-                 max_concurrent=1, wait_for_running=False, poll_seconds=10):
+                 max_concurrent=1, wait_for_running=False, poll_seconds=10, prior_run_dirs=(), launch_disabled=False):
         self.root, self.run_dir, self.routes, self.expected = Path(root), Path(run_dir), routes, expected
         self.adapter, self.optimizer_source, self.contract = Path(root) / adapter, optimizer_source, contract_digest(problem)
         self.method = None
         self.lock, self.slots = threading.Lock(), threading.BoundedSemaphore(max(1, max_concurrent))
         self.events, self.waiters, self.uncounted = {}, [], set()
         self.wait_for_running, self.poll_seconds = wait_for_running, poll_seconds
+        # Completed jobs of earlier rounds (same job key, same route for the configuration) answer without a new Q3.
+        self.prior_run_dirs, self.launch_disabled = [Path(d) for d in prior_run_dirs], launch_disabled
 
     def log(self, **event):
         with self.lock:
@@ -537,17 +544,63 @@ class Executor:
             proc = subprocess.Popen(cmd, cwd=str(self.root), env=env, stdout=log, stderr=subprocess.STDOUT)
         return proc
 
+    def same_route(self, job, cid):
+        """A prior job is reusable only if it ran the same route (kind, worker view, contract, signal packet, binding)."""
+        try:
+            old = json.loads((job / 'REQUEST.json').read_text())
+        except (OSError, ValueError):
+            return False
+        now = self.route(cid) or {}
+        fixed = lambda r: {k: v for k, v in (r or {}).items() if k not in ('configurations', 'configuration_ids', 'existing_caller')}
+        entry = lambda r: ((r or {}).get('configurations') or {}).get(cid)
+        return (old.get('configuration_id') == cid and fixed(old.get('route')) == fixed(now) and entry(old.get('route')) == entry(now)
+                and old.get('expected') == json.loads(json.dumps(self.expected_for(cid, now), default=str)))
+
+    def prior_job(self, proposal):
+        name = self.job_dir(proposal).name
+        for base in self.prior_run_dirs:
+            job = base / 'jobs' / self.method / name
+            if (job / 'OUTCOME.json').exists() and self.same_route(job, proposal['configuration_id']):
+                return job
+        return None
+
     def has_job(self, proposal):
         job = self.job_dir(proposal)
-        return (job / 'OUTCOME.json').exists() or (job / 'LAUNCH.json').exists()
+        return (job / 'OUTCOME.json').exists() or (job / 'LAUNCH.json').exists() or self.prior_job(proposal) is not None
+
+    def prior_records(self, candidates):
+        """Every completed prior-round job of this method for a ready candidate, validated like a new job (same key,
+        same route, identity checks).  Returns ({(cid, vector): record}, refused rows)."""
+        ready = {c['configuration_id']: c for c in candidates if c['ready'] and c['configuration_id']}
+        known, refused = {}, []
+        for base in self.prior_run_dirs:
+            for job in sorted((base / 'jobs' / self.method).glob('*/OUTCOME.json')):
+                job = job.parent
+                try:
+                    q = json.loads((job / 'REQUEST.json').read_text())
+                except (OSError, ValueError):
+                    refused.append(dict(job=str(job), reason='NO_REQUEST'));continue
+                c = ready.get(q.get('configuration_id'))
+                if c is None:
+                    refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'));continue
+                proposal = dict(configuration_id=c['configuration_id'], vector=interleave(q['N_X'], q['N_Y']))
+                if self.job_dir(proposal).name != job.name or not self.same_route(job, c['configuration_id']):
+                    refused.append(dict(job=str(job), reason='DIFFERENT_JOB_KEY_OR_ROUTE'));continue
+                r = self.ingest(job, proposal, calls=0)
+                if r['status'] not in (PASS, FAIL, 'INCONCLUSIVE'):
+                    refused.append(dict(job=str(job), reason=r['status'] + ':' + str(r.get('reason'))));continue
+                known[(c['configuration_id'], proposal['vector'])] = dict(r, source='PRIOR_ROUND_JOB', cost=cost(proposal['vector'], c['prices']))
+        return known, refused
 
     def launch(self, proposal, rule):
         """Start one job without waiting; a waiter thread records the return and frees the slot."""
         job = self.job_dir(proposal);done = threading.Event()
+        if self.launch_disabled:
+            raise RuntimeError('launch disabled (saved-job replay): ' + job.name)
         with self.lock:
             if (job / 'LAUNCH.json').exists() or (job / 'OUTCOME.json').exists() or job in self.events:
                 return job
-            job.mkdir(parents=True)
+            job.mkdir(parents=True, exist_ok=True)  # a REQUEST-only directory (stopped while waiting for a slot) is reused
             self.events[job] = done
         (job / 'REQUEST.json').write_text(json.dumps(self.request(proposal, job, rule), ensure_ascii=False, indent=2, default=str) + '\n')
         self.slots.acquire()
@@ -597,6 +650,10 @@ class Executor:
             self.events[job].wait()
         if (job / 'OUTCOME.json').exists():
             return self.ingest(job, proposal, calls=self.take_count(job))
+        if not (job / 'LAUNCH.json').exists():
+            prior = self.prior_job(proposal)
+            if prior is not None:
+                return dict(self.ingest(prior, proposal, calls=0), source='PRIOR_ROUND_JOB')
         if (job / 'LAUNCH.json').exists():
             launch = json.loads((job / 'LAUNCH.json').read_text())
             if job in self.events:
@@ -941,7 +998,7 @@ def summarize_method(name, candidates, result, knowledge, threshold):
                 trace=result['trace'], held=result['held'], new_calls=result['new_calls'],
                 evaluated_count=len(evaluated), evaluated=evaluated, not_ready_candidates=unevaluated,
                 ready_candidates=[c['name'] for c in candidates if c['ready']],
-                search_range=dict(candidates=[c['name'] for c in candidates], rule=RULE),
+                search_range=dict(candidates=[c['name'] for c in candidates], rule=result.get('rule', RULE)),
                 resume_records=resume_records(evaluated), by_configuration=result.get('by_configuration'),
                 incumbent_scope=result.get('incumbent_scope', 'METHOD'))
 
@@ -1007,13 +1064,37 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         else:
             answer, spent = (context['saved'] if backend is None else backend), 0
             free = lambda p: (p['configuration_id'], p['vector']) in table
-        if search.get('incumbent_scope') == 'CONFIGURATION':
+        if executor is not None and executor.prior_run_dirs:
+            known, refused = executor.for_method(name).prior_records(cands)
+            fresh = {k: v for k, v in known.items() if k not in knowledge}
+            knowledge.update(fresh)
+            prior = dict(run_dirs=[str(d) for d in executor.prior_run_dirs], loaded=len(fresh), already_known=len(known) - len(fresh),
+                         refused=len(refused), refused_reasons=sorted({r['reason'] for r in refused}))
+        else:
+            prior = None
+        if search.get('rule') == 'METHOD_MINIMUM_PRIORITY_V2':
+            from trottertracks import rpe_priority_search as P
+            log = None
+            if executor is not None:
+                ex_log = executor.for_method(name)
+                log = lambda row, ex_log=ex_log: ex_log.log(event='ADOPT', configuration=row['configuration_id'][:8], cls=row['cls'],
+                                                           status=row['status'], cost=show(row['cost']),
+                                                           method_min=row['method_min_after'] and show(row['method_min_after']))
+            result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
+                                    baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),
+                                    routes=problem.get('q3_routes'), spent=spent, free=free, science_approved=science_approved,
+                                    prefetch=prefetch, on_missing=search.get('on_missing', 'STOP'), facts=context.get('facts'), log=log)
+        elif search.get('incumbent_scope') == 'CONFIGURATION':
             result = run_by_configuration(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                           problem.get('q3_routes'), spent, free, science_approved, prefetch)
         else:
             result = run_method(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                 problem.get('q3_routes'), spent, free, science_approved)
         out[name] = summarize_method(name, cands, result, knowledge, threshold)
+        out[name]['prior_rounds'] = prior
+        for key in ('unevaluated', 'input_requests', 'left', 'settings'):
+            if key in result:
+                out[name][key] = result[key]
         out[name]['budget'] = dict(max_new_q3='UNLIMITED_WITHIN_RANGE' if budget is None else budget, science_approved=science_approved,
                                    spent_before=spent, new_calls=result['new_calls'])
         out[name]['generation'] = context.get('generation', {}).get(name)

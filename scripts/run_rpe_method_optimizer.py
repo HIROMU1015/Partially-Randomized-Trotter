@@ -120,7 +120,8 @@ def round_mode(a, problem, extra):
     O.apply_published(context['candidates'], routes)
     ex_opts = spec.get('executor', {})
     executor = O.Executor(ROOT, run, routes, context['expected'], problem, optimizer_source=head(),
-                          max_concurrent=ex_opts.get('max_concurrent_jobs', 1), wait_for_running=ex_opts.get('wait_for_running_jobs', False))
+                          max_concurrent=ex_opts.get('max_concurrent_jobs', 1), wait_for_running=ex_opts.get('wait_for_running_jobs', False),
+                          prior_run_dirs=[(ROOT / d).resolve() for d in ex_opts.get('prior_run_dirs', [])])
     budgets = spec['max_new_q3_per_method']
     approved = spec.get('science_approved', any(v not in (0, None) for v in budgets.values()))
     if any(v == 'UNLIMITED' for v in budgets.values()) and spec.get('science_approved') is not True:
@@ -128,8 +129,9 @@ def round_mode(a, problem, extra):
     result = O.optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
                         initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
                         extra_results=extra, science_approved=approved)
-    write(run / 'ROUND_RESULT.json', dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
-                                          optimizer_source=head(), wall_seconds=time.perf_counter() - start))
+    write(run / 'ROUND_RESULT.json', slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
+                                          optimizer_source=head(), wall_seconds=time.perf_counter() - start,
+                                          exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)))
     table(result, run / 'PER_METHOD.csv')
     write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
                                    pending_Q3={m: r['pending_request'] for m, r in result.items()}))
@@ -142,6 +144,147 @@ def round_mode(a, problem, extra):
         new_calls=r['new_calls'], spent_before=r['budget']['spent_before'],
         next=r['pending_request'] and (r['pending_request']['candidate'], O.show(r['pending_request']['cost'])))
         for m, r in result.items()}), ensure_ascii=False, indent=1))
+
+
+INTERRUPTED = 'INTERRUPTED_SEARCH_POLICY_CHANGE'
+EXACT_DIGITS = 60
+
+
+def outward(x, digits=30, up=False):
+    """Decimal with ``digits`` significant digits rounded down (or up) -- exact integer arithmetic."""
+    if x == 0:
+        return '0'
+    sign = -1 if x < 0 else 1;x = abs(x)
+    e = len(str(x.numerator)) - len(str(x.denominator))
+    while Fraction(10) ** e > x:
+        e -= 1
+    while Fraction(10) ** (e + 1) <= x:
+        e += 1
+    scaled = x / Fraction(10) ** (e - digits + 1)
+    n = scaled.numerator // scaled.denominator
+    if (up if sign > 0 else not up) and n * scaled.denominator != scaled.numerator:
+        n += 1
+    return ('-' if sign < 0 else '') + '%se%d' % (n, e - digits + 1)
+
+
+def slim(value):
+    """Long exact rationals (MSE bounds) -> outward 30-digit interval; the exact value stays in the job's OUTCOME.json."""
+    if isinstance(value, dict) and set(value) >= {'numerator', 'denominator'} and len(set(value) - {'numerator', 'denominator', 'display'}) == 0:
+        value = Fraction(int(value['numerator']), int(value['denominator']))
+    if isinstance(value, Fraction):
+        if max(len(str(abs(value.numerator))), len(str(value.denominator))) > EXACT_DIGITS:
+            return dict(lower_30=outward(value), upper_30=outward(value, up=True), exact='OMITTED_SEE_JOB_OUTCOME_JSON')
+        return value
+    if isinstance(value, dict):
+        return {k: slim(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [slim(v) for v in value]
+    return value
+
+
+def interrupted_mode(a, problem, extra):
+    """Record a round stopped early because the search policy changed (not because the rule ran out of candidates).
+
+    The round's own rule is replayed through the round's completed jobs only (launching is disabled), so each
+    configuration's trajectory, incumbent and next request are exactly where the stopped round left them.
+    Completed jobs the rule had not consumed yet (lookahead) and REQUEST-only directories (never launched) are listed
+    separately.  Writes ROUND_RESULT_INTERRUPTED.json, EVALUATIONS.json and EVALUATIONS.csv in the run directory.
+    """
+    spec = O.load_json(a.round);run = a.run_dir.resolve();start = time.perf_counter()
+    old = O.load_json(run / 'ROUND.json')
+    for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides'):
+        if old.get(key) != spec.get(key):
+            raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
+    stop = O.load_json(a.interrupted)
+    problem = scoped(problem, spec.get('method_overrides'));context = O.prepare(ROOT, problem, methods=spec['methods'])
+    routes = dict(problem['execution_routes']);routes.update(spec.get('routes_override', {}))
+    search = dict(problem['search'], max_steps_per_method=100000);search.update(spec.get('search_overrides', {}))
+    O.apply_published(context['candidates'], routes)
+    executor = O.Executor(ROOT, run, routes, context['expected'], problem, optimizer_source=head(), launch_disabled=True)
+    result = O.optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
+                        initial=spec.get('initial', 'all'), max_new={m: 0 for m in spec['methods']}, executor=executor,
+                        extra_results=extra, science_approved=True)
+    budget_stop = 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'
+    evaluations, tau = [], context['tau']
+    for name, r in result.items():
+        if r['stop_reason'] == budget_stop:
+            r['stop_reason'] = INTERRUPTED
+        ex = executor.for_method(name);cands = {c['configuration_id']: c for c in context['candidates'] if c['method'] == name}
+        adopted = {(t['configuration_id'], tuple(t['vector'])) for t in r['trace']}
+        jobs = sorted((run / 'jobs' / name).glob('*/REQUEST.json')) if (run / 'jobs' / name).exists() else []
+        not_adopted, unlaunched = [], []
+        for req in jobs:
+            job = req.parent;q = json.loads(req.read_text());c = cands.get(q['configuration_id'])
+            v = O.interleave(q['N_X'], q['N_Y'])
+            if not (job / 'OUTCOME.json').exists():
+                unlaunched.append(dict(job=job.name, configuration_id=q['configuration_id'], N_X=q['N_X'], N_Y=q['N_Y'],
+                                       launched=(job / 'LAUNCH.json').exists(), cost=O.frac(q['cost']) if isinstance(q['cost'], dict) else q['cost'],
+                                       status='REQUESTED_NOT_LAUNCHED' if not (job / 'LAUNCH.json').exists() else 'LAUNCHED_NO_OUTCOME'))
+                continue
+            rec = ex.ingest(job, dict(configuration_id=q['configuration_id'], vector=v), calls=0)
+            row = dict(configuration_id=q['configuration_id'], L_D=c and c['key'].get('L_D'),
+                       kappa_multiplier=c and c['key'].get('kappa_multiplier', '1'), N_X=q['N_X'], N_Y=q['N_Y'],
+                       status=rec['status'], reason=rec.get('reason'), MSE_lower=rec['MSE_lower'], MSE_upper=rec['MSE_upper'],
+                       MSE_upper_over_tau=None if rec['MSE_upper'] is None else float(rec['MSE_upper'] / tau),
+                       cost=O.cost(v, c['prices']), adopted_by_rule=(q['configuration_id'], v) in adopted, source='ROUND_JOB',
+                       job=str(job.relative_to(ROOT)) if job.is_relative_to(ROOT) else str(job), origin=q.get('origin', {}).get('kind'),
+                       outcome_sha256=O.sha256(job / 'OUTCOME.json'))
+            evaluations.append(dict(row, method=name))
+            if not row['adopted_by_rule']:
+                not_adopted.append(row)
+        for (cid, v), rec in context['saved'].table.items():
+            if cid in cands and cands[cid]['ready']:
+                evaluations.append(dict(method=name, configuration_id=cid, L_D=cands[cid]['key'].get('L_D'),
+                                        kappa_multiplier=cands[cid]['key'].get('kappa_multiplier', '1'), N_X=O.split(v)[0], N_Y=O.split(v)[1],
+                                        status=rec['status'], reason=None, MSE_lower=rec['MSE_lower'], MSE_upper=rec['MSE_upper'],
+                                        MSE_upper_over_tau=None if rec['MSE_upper'] is None else float(rec['MSE_upper'] / tau),
+                                        cost=rec['cost'], adopted_by_rule=True, source='SAVED', job=None, origin='C_CATALOG',
+                                        label=rec.get('label')))
+        for b in r.get('by_configuration') or []:
+            if b['stop_reason'] == budget_stop:
+                b['stop_reason'] = INTERRUPTED
+            mine = [e for e in evaluations if e['method'] == name and e['configuration_id'] == b['configuration_id']]
+            feas = [e for e in mine if e['status'] == O.PASS]
+            cheapest = min(feas, key=lambda e: (e['cost'], e['N_X'])) if feas else None
+            b['evaluated'] = dict(total=len(mine), saved=sum(e['source'] == 'SAVED' for e in mine),
+                                  round_jobs_adopted=sum(e['source'] == 'ROUND_JOB' and e['adopted_by_rule'] for e in mine),
+                                  round_jobs_not_adopted=sum(e['source'] == 'ROUND_JOB' and not e['adopted_by_rule'] for e in mine),
+                                  feasible=len(feas), infeasible=sum(e['status'] == O.FAIL for e in mine),
+                                  other=sum(e['status'] not in (O.PASS, O.FAIL) for e in mine))
+            b['cheapest_feasible_evaluated'] = cheapest and dict(
+                N_X=cheapest['N_X'], N_Y=cheapest['N_Y'], cost=cheapest['cost'], cost_display=O.show(cheapest['cost']),
+                MSE_lower=cheapest['MSE_lower'], MSE_upper=cheapest['MSE_upper'], MSE_upper_over_tau=cheapest['MSE_upper_over_tau'],
+                adopted_by_rule=cheapest['adopted_by_rule'], source=cheapest['source'], job=cheapest['job'])
+        r['interrupted'] = dict(stop_reason=INTERRUPTED, computed_not_adopted=not_adopted, requested_not_completed=unlaunched,
+                                note='rule trajectories replayed through completed jobs only; no Q3 launched by this record')
+    write(run / 'ROUND_RESULT_INTERRUPTED.json', slim(dict(
+        schema='RPE_OPTIMIZER_ROUND_INTERRUPTED_V1', status=INTERRUPTED, stop=stop, round=spec, methods=result,
+        record_source=head(), wall_seconds=time.perf_counter() - start,
+        distinct_from=['NO_IMPROVING_PROPOSAL', 'NO_FEASIBLE_POINT_IN_RANGE'],
+        exact_bounds='MSE bounds with more than %d digits are written as outward 30-digit intervals; exact values: each job OUTCOME.json' % EXACT_DIGITS,
+        next_round='load completed jobs with executor.prior_run_dirs (same job key and route) or EVALUATIONS.json resume rows')))
+    write(run / 'EVALUATIONS.json', slim(dict(schema='RPE_OPTIMIZER_EVALUATIONS_V1', tau=tau, rows=evaluations,
+                                         resume_records=[dict(configuration_id=e['configuration_id'], N_X=e['N_X'], N_Y=e['N_Y'],
+                                                              status=e['status'], MSE_lower=O.enc(e['MSE_lower']), MSE_upper=O.enc(e['MSE_upper']),
+                                                              source='ROUND_JOB:' + e['job'], job=e['job'])
+                                                         for e in evaluations if e['source'] == 'ROUND_JOB' and e['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE')])))
+    keys = ['method', 'L_D', 'kappa_multiplier', 'configuration_id', 'N_X', 'N_Y', 'status', 'MSE_upper_over_tau', 'cost',
+            'adopted_by_rule', 'source', 'origin', 'job']
+    with (run / 'EVALUATIONS.csv').open('w', newline='') as f:
+        w = csv.writer(f, lineterminator='\n');w.writerow(keys)
+        for e in sorted(evaluations, key=lambda e: (e['method'], e['L_D'] or 0, Fraction(e['kappa_multiplier']), e['cost'])):
+            w.writerow([' '.join(map(str, e[k])) if isinstance(e[k], list) else (O.show(e[k]) if isinstance(e[k], Fraction) else e[k])
+                        for k in keys])
+    with (run / 'INVOCATIONS.jsonl').open('a') as f:
+        f.write(json.dumps(O.jsonable(dict(time=time.time(), mode='INTERRUPTED_RECORD', launched={m: executor.launched(m) for m in spec['methods']},
+                                           stop={m: r['stop_reason'] for m, r in result.items()})), ensure_ascii=False) + '\n')
+    for name, r in result.items():
+        for b in r.get('by_configuration') or []:
+            ce = b['cheapest_feasible_evaluated']
+            print(name, b['candidate'], b['stop_reason'], 'steps', b['steps'], 'best', b['best'] and b['best']['cost_display'],
+                  'cheapest_any', ce and ce['cost_display'], ce and ce['adopted_by_rule'], b['evaluated'])
+        print(name, r['stop_reason'], 'not adopted', len(r['interrupted']['computed_not_adopted']),
+              'requested not completed', len(r['interrupted']['requested_not_completed']))
 
 
 def dry_check_routes(problem, context, full, out):
@@ -183,12 +326,16 @@ def main():
     p.add_argument('--dry-check-routes', action='store_true')
     p.add_argument('--ingest', type=Path, help='JSON list of Q3 results {configuration_id,N_X,N_Y,status,MSE_lower,MSE_upper,source}')
     p.add_argument('--resume-from', type=Path, action='append', help='previous ROUND_RESULT.json/RESULT.json (resume_records) to reuse')
+    p.add_argument('--interrupted', type=Path, help='with --round/--run-dir: STOP record JSON of a round stopped by a search-policy '
+                   'change; replays the round through its completed jobs (no launch) and writes ROUND_RESULT_INTERRUPTED.json')
     a = p.parse_args();start = time.perf_counter()
     problem = O.load_json(a.problem)
     extra = (O.load_json(a.ingest) if a.ingest else []) + resume_input(a.resume_from)
     if a.round:
         if a.run_dir is None:
             raise SystemExit('--run-dir is required with --round')
+        if a.interrupted:
+            return interrupted_mode(a, problem, extra)
         return round_mode(a, problem, extra)
     context = O.prepare(ROOT, problem)
     out = a.output;out.mkdir(parents=True, exist_ok=True)

@@ -8,6 +8,8 @@ in a budget-0 round, where no job may be launched.  Checks:
   incumbent scope CONFIGURATION (PR-Pauli saved configurations, artificial worker, UNLIMITED approved round):
   a more expensive configuration still descends to its own end; lookahead/concurrency gives the same
   per-configuration trajectories as one-at-a-time; a rerun waits for nothing and launches nothing.
+  interrupted record (search-policy change): no launch, stop label, not-adopted / REQUEST-only jobs listed; resume reuses a
+  REQUEST-only directory; a V2 next round loads the prior round's jobs (and refuses a different route); V2 artificial round.
 Writes EXECUTOR_ACCEPTANCE.json into --output.
 """
 import argparse
@@ -70,6 +72,29 @@ def pauli_round(path, round_id, route, lookahead, concurrent, scope='CONFIGURATI
                                                    generation=dict(formulas=['2nd'], delta_over_h_values=['1'], kappa_multipliers=['1']))},
                 search_overrides=dict(incumbent_scope=scope, seed_saved_same_L_D=True, lookahead=lookahead),
                 executor=dict(max_concurrent_jobs=concurrent, wait_for_running_jobs=True), routes_override={'PR_PAULI': [route]})
+    path.write_text(json.dumps(spec, indent=1) + '\n')
+    return path
+
+
+def cli_interrupted(run_dir, round_file, stop_file):
+    cmd = [sys.executable, '-B', str(ROOT / 'scripts/run_rpe_method_optimizer.py'), '--problem', str(PROBLEM),
+           '--round', str(round_file), '--run-dir', str(run_dir), '--interrupted', str(stop_file)]
+    env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', PYTHONPATH=str(ROOT / 'src'))
+    subprocess.run(cmd, cwd=ROOT, env=env, check=True, stdout=subprocess.DEVNULL)
+    return O.load_json(run_dir / 'ROUND_RESULT_INTERRUPTED.json')['methods']
+
+
+def pauli_budget_round(path, round_id, route, budget, rule=None, prior=None, approved=True, scope='CONFIGURATION'):
+    search = dict(incumbent_scope=scope, seed_saved_same_L_D=True, lookahead=1)
+    if rule:
+        search = dict(rule=rule, seed_saved_same_L_D=True)
+    spec = dict(schema='RPE_OPTIMIZER_SEARCH_ROUND_V1', round_id=round_id, methods=['PR_PAULI'], science_approved=approved,
+                max_new_q3_per_method={'PR_PAULI': budget}, approved_by='ACCEPTANCE_TEST_ARTIFICIAL',
+                method_overrides={'PR_PAULI': dict(saved_configurations_only=True,
+                                                   generation=dict(formulas=['2nd'], delta_over_h_values=['1'], kappa_multipliers=['1']))},
+                search_overrides=search, executor=dict(max_concurrent_jobs=1, wait_for_running_jobs=True,
+                                                       **({'prior_run_dirs': [str(prior)]} if prior else {})),
+                routes_override={'PR_PAULI': [route]})
     path.write_text(json.dumps(spec, indent=1) + '\n')
     return path
 
@@ -174,6 +199,63 @@ def main():
     before = launches(out / 'scope_par');again = cli(out / 'scope_par', par_round)['PR_PAULI']
     checks.append(check('configuration_scope_rerun_reuses_all_jobs', launches(out / 'scope_par') == before and again['new_calls'] == 0
                         and path(again) == path(par), new_calls=again['new_calls']))
+
+    # Interrupted record (search-policy change): a budget-stopped artificial round stands in for the stopped round; one
+    # completed job off the trajectory (lookahead stand-in) and one REQUEST-only directory (stopped while waiting for a slot).
+    ri = out / 'interrupted';fi = pauli_budget_round(out / 'interrupted.json', 'ART_INTERRUPT', pr, 6)
+    first_run = cli(ri, fi)['PR_PAULI'];pend = first_run['pending_request']
+    expected = {}
+    for r in (ri / 'jobs' / 'PR_PAULI').glob('*/REQUEST.json'):  # the round's own expected identities (from C's catalog)
+        e = json.loads(r.read_text())['expected'];expected[e['configuration_id']] = {k: v for k, v in e.items() if k != 'configuration_id'}
+    ex = O.Executor(ROOT, ri, {'PR_PAULI': [pr]}, expected, problem).for_method('PR_PAULI')
+    q = pend['queue'][1];extra = dict(configuration_id=next(b['configuration_id'] for b in first_run['by_configuration'] if b['candidate'] == q['candidate']),
+                                      vector=tuple(q['vector']), cost=O.frac(q['cost']), origin=q['origin'])
+    ex.launch(extra, pr);ex.finish()
+    nxt = dict(configuration_id=pend['configuration_id'], vector=tuple(pend['vector']), cost=O.frac(pend['cost']), origin=pend['origin'])
+    req_only = ex.job_dir(nxt);req_only.mkdir(parents=True)
+    (req_only / 'REQUEST.json').write_text(json.dumps(O.jsonable(ex.request(nxt, req_only, pr))))
+    stop = out / 'STOP.json';stop.write_text(json.dumps(dict(stop_reason='INTERRUPTED_SEARCH_POLICY_CHANGE', note='ARTIFICIAL')))
+    before = launches(ri);rec = cli_interrupted(ri, fi, stop)['PR_PAULI']
+    na = rec['interrupted']['computed_not_adopted'];rq = rec['interrupted']['requested_not_completed']
+    checks.append(check('interrupted_record_labels_lists_and_launches_nothing', launches(ri) == before
+                        and rec['stop_reason'] == 'INTERRUPTED_SEARCH_POLICY_CHANGE'
+                        and any(b['stop_reason'] == 'INTERRUPTED_SEARCH_POLICY_CHANGE' for b in rec['by_configuration'])
+                        and [tuple(O.interleave(x['N_X'], x['N_Y'])) for x in na] == [extra['vector']]
+                        and [x['status'] for x in rq] == ['REQUESTED_NOT_LAUNCHED']
+                        and [t['vector'] for t in rec['trace']] == [t['vector'] for t in first_run['trace']]
+                        and all(b['cheapest_feasible_evaluated'] for b in rec['by_configuration'] if b['best']),
+                        stop=rec['stop_reason'], not_adopted=len(na), requested=[x['status'] for x in rq]))
+    pauli_budget_round(fi, 'ART_INTERRUPT', pr, 8);resumed = cli(ri, fi)['PR_PAULI']
+    checks.append(check('resume_reuses_request_only_directory', (req_only / 'OUTCOME.json').exists()
+                        and any(tuple(t['vector']) == nxt['vector'] and t['calls'] == 1 for t in resumed['trace']),
+                        stop=resumed['stop_reason'], new_calls=resumed['new_calls']))
+
+    # Next round (V2 rule) loads the stopped round's completed jobs: nothing launched for known allocations, same incumbents.
+    done = [p.parent for p in (ri / 'jobs' / 'PR_PAULI').glob('*/OUTCOME.json')]
+    rn = out / 'next_round';fn = pauli_budget_round(out / 'next_round.json', 'ART_NEXT_V2', pr, 0, rule='METHOD_MINIMUM_PRIORITY_V2',
+                                                        prior=ri, approved=False)
+    nr = cli(rn, fn)['PR_PAULI'];after = cli_interrupted(ri, fi, stop)['PR_PAULI']  # cheapest feasible over every evaluation so far
+    prior_best = {b['configuration_id']: b['cheapest_feasible_evaluated'] and list(O.interleave(b['cheapest_feasible_evaluated']['N_X'],
+                  b['cheapest_feasible_evaluated']['N_Y'])) for b in after['by_configuration']}
+    checks.append(check('next_round_loads_prior_jobs_and_launches_nothing', not launches(rn) and nr['prior_rounds']['loaded'] == len(done)
+                        and nr['prior_rounds']['refused'] == 0 and nr['stop_reason'] == 'NEW_SCIENCE_NOT_APPROVED'
+                        and {b['configuration_id']: b['best'] and b['best']['vector'] for b in nr['by_configuration']} == prior_best
+                        and nr['pending_request'] is not None and not ex.has_job(dict(configuration_id=nr['pending_request']['configuration_id'],
+                                                                                       vector=tuple(nr['pending_request']['vector']))),
+                        loaded=nr['prior_rounds']['loaded'], completed_prior_jobs=len(done), stop=nr['stop_reason']))
+    other = artificial_route(problem);other['artificial']['scale'] = str(Fraction(pr['artificial']['scale']) * 2)
+    rm = out / 'next_round_other_route';fm = pauli_budget_round(out / 'next_round_other_route.json', 'ART_NEXT_OTHER', other, 0,
+                                                                 rule='METHOD_MINIMUM_PRIORITY_V2', prior=ri, approved=False)
+    mm = cli(rm, fm)['PR_PAULI']
+    checks.append(check('prior_job_of_a_different_route_is_refused', mm['prior_rounds']['loaded'] == 0
+                        and mm['prior_rounds']['refused'] == len(done) and not launches(rm), refused=mm['prior_rounds']['refused_reasons']))
+
+    # V2 with the artificial worker in an approved UNLIMITED round: runs to its end; a rerun launches nothing.
+    rv = out / 'v2_round';fv = pauli_budget_round(out / 'v2_round.json', 'ART_V2', pr, 'UNLIMITED', rule='METHOD_MINIMUM_PRIORITY_V2')
+    v2 = cli(rv, fv)['PR_PAULI'];l1 = launches(rv);v2b = cli(rv, fv)['PR_PAULI']
+    checks.append(check('v2_round_runs_to_end_and_rerun_launches_nothing', v2['stop_reason'] == 'NO_CANDIDATE_LEFT_IN_RANGE'
+                        and launches(rv) == l1 and v2b['new_calls'] == 0 and v2b['best']['cost'] == v2['best']['cost'],
+                        stop=v2['stop_reason'], jobs=len(l1), best=v2['best'] and v2['best']['cost_display']))
 
     counts = {}
     for k in checks:
