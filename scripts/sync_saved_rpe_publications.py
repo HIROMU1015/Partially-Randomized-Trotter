@@ -76,6 +76,7 @@ def update_roadmap(path,stage):
 
 def schema_supported(d,path=''):
     return isinstance(d,dict) and (d.get('schema')in {
+        'D_PF_EVIDENCE_REGISTRY_V1',
         'RPE_OPTIMIZER_FIXED_RESULTS_FOR_C_V1','B2_INTERRUPTED_SAVED_TOTAL_ADMISSION_V1','RPE_KAPPA_ABS_RESULTS_V1',
         'PR_DF_LD7_PF_BUDGET_MODEL_COST_Q3_JOIN_FOR_C_V1','PR_DF_LD9_CONFIGURATION_V0_Q3_JOIN_V1',
         'PR_DF_LD7_MODEL_COST_Q3_JOIN_FOR_C_V1','PR_DF_LD1_LD2_LD7_NINE_MODEL_MENU_V1',
@@ -131,6 +132,9 @@ def reconcile(reader,inputs,candidates,previous):
                 record.update(status='INTEGRATED',reason=None)
             elif PurePosixPath(source['path']).name=='SUMMARY.json' and str(PurePosixPath(source['path']).parent)in joined_parents:
                 record.update(status='REFERENCE_ONLY',reason='Sibling fixed consumer join already loaded; no additional point inferred')
+            elif d.get('schema')=='RPE_OPTIMIZER_ROUND_RESULT_V1' and d.get('methods') and all(
+                    r.get('best') is None and r.get('new_calls')==0 for r in d['methods'].values()):
+                record.update(status='REFERENCE_ONLY',reason='Metadata-only optimizer return; no evaluated Q3 point published')
             elif PurePosixPath(source['path']).name.startswith('ROUND_RESULT'):
                 # A moving optimizer snapshot can lag the final public selected
                 # points. Configuration identity alone says nothing about N/cost.
@@ -191,7 +195,8 @@ def synchronize(root,config,*,fetch=True,publish=False):
         directory=root/config['directory']
         def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
         implementation=hashlib.sha256((sha(root/'scripts/sync_saved_rpe_publications.py')+
-            sha(root/'src/trottertracks/saved_rpe_cost_catalog.py')+json.dumps(config,sort_keys=True)).encode()).hexdigest()
+            sha(root/'src/trottertracks/saved_rpe_cost_catalog.py')+
+            sha(root/'src/trottertracks/pf_optimizer_connection.py')+json.dumps(config,sort_keys=True)).encode()).hexdigest()
         prior=json.loads((directory/'PUBLICATIONS.json').read_text())if (directory/'PUBLICATIONS.json').exists()else{}
         if (prior.get('heads')==heads and prior.get('implementation')==implementation and
                 prior.get('input_manifest_sha256')==sha(root/config['inputs'])):

@@ -141,6 +141,8 @@ class Catalog:
             self.pf_optimizer_results(locator,d);return
         if d.get('schema')=='B2_INTERRUPTED_SAVED_TOTAL_ADMISSION_V1':
             self.interrupted_pauli_best(locator,d);return
+        if d.get('schema')=='D_PF_EVIDENCE_REGISTRY_V1':
+            self.pf_evidence_registry(locator,d);return
         if d.get('status')=='CONDITIONAL_WIDTH_SPECIFIC_A_SHAPE_COST':
             self.coarse_pf_prices(locator,d);return
         if d.get('kind')=='LD5_FIXED_ALLOCATION_MODEL_COST_AND_Q3_NOT_QUALIFIED_G':
@@ -447,6 +449,52 @@ class Catalog:
             if selector=='kappa2_best':require(frac(row['kappa_absolute'])==2,'kappa2 selection is not absolute kappa=2')
             row.setdefault('reported_selection_sources',[]).append(dict(loc,selector=[selector]))
             if loc not in row['result_sources']:row['result_sources'].append(loc)
+
+    def pf_evidence_registry(self, loc, registry):
+        """Prepared deterministic PF inputs, without inventing a Q3 or total.
+
+        Reuse D's metadata/source join.  A price-ready configuration remains
+        Q3_WAITING until a separately published evaluated allocation exists.
+        This consumes source-bound unit prices, never fits or extends them.
+        """
+        from . import pf_optimizer_connection as PF
+        methods={}
+        for entry in registry['configurations'].values():
+            width=frac(entry['delta_over_h'])
+            spec=methods.setdefault(entry['method'],dict(family='PF',formulas=[],delta_over_h_range=[str(width),str(width)]))
+            if entry['formula'] not in spec['formulas']:
+                spec['formulas'].append(entry['formula'])
+            spec['delta_over_h_range']=[str(min(frac(spec['delta_over_h_range'][0]),width)),
+                                       str(max(frac(spec['delta_over_h_range'][1]),width))]
+            spec['caps']=[1]*13  # metadata only; never used to generate shots
+        prepared=[]
+        PF.hydrate(self.r.root,self.r,dict(methods=methods),prepared,registry)
+        for candidate in prepared:
+            entry=candidate['pf_evidence'];conf=PF.read_source(self.r.root,self.r,entry['configuration'])
+            case=dict(configuration=entry['configuration'],signal_packet=entry.get('signal_packet'),
+                      total_configuration_id=entry.get('total_configuration_id'),binding_id=entry.get('binding_id'),
+                      label=candidate['name'])
+            self.make(case,None,None,None,None,None,{},loc,[],signal_only=True)
+            row=self.rows[-1]
+            row.update(signal_source=entry.get('signal_packet'),prepared_for_optimizer=candidate['ready'],
+                       signal_rounds_available=13 if candidate['signal_source'] is not None else 0,
+                       prepared_input_needs=deepcopy(candidate['needs']),price_scope=entry.get('price_scope'),
+                       price_status=candidate['price_status'],price_registry_source=deepcopy(entry.get('prices')),
+                       q3_template_source=deepcopy(entry.get('q3_inputs')),
+                       allocation_proposal_status='TEMPLATE_ONLY_NOT_EVALUATED',
+                       q3_status=None,conditional_cost=None,N_X=None,N_Y=None,allocation=None,
+                       price_qualification='SOURCE_BOUND_UNIT_PRICES_ONLY_NOT_Q3_OR_FORMAL_G',
+                       qualified_for_candidate=False)
+            if entry.get('prices'):
+                axes=self.r.read(entry['prices'])['axes']
+                row['price_axes']=[dict(m=p['m'],axis=p['axis'],N=None,physical_id=p['physical_id'],
+                    canonical_id=conf['rounds'][p['m']]['candidate']['id'],
+                    price_source=dict(entry['prices'],selector=list(entry['prices'].get('selector',[]))+['axes',i]),
+                    price_kind=p['kind'],unit_price_RZ=deepcopy(p['unit_price_RZ']),
+                    price_evidence=deepcopy(p['price_evidence']),compiler_profile=deepcopy(conf['spec']['profile']))
+                    for i,p in enumerate(axes)]
+            if row['status']!='MISMATCH' and entry.get('signal_packet') is None:
+                row['status']='PENDING';row['status_display']=LABELS['PENDING']
 
     def interrupted_pauli_best(self,loc,d):
         """Saved-total-only admission with explicit missing per-axis unit prices.
@@ -1096,6 +1144,9 @@ def report(result):
         lines+=['',name+'：'+display(item['conditional_cost'])+' RZ（絶対κ=2限定。元κの倍率×2や方式全体の最安とは別）。',
             'point ID：'+', '.join(item['point_ids'])+'。']
     for r in result['candidates']:
+        if r.get('price_registry_source') and r['status']=='Q3_WAITING':
+            lines+=['',r['label']+'：信号'+str(r['signal_rounds_available'])+' round・価格'+str(len(r['price_axes']))+
+                '軸あり、Q3待ち。Q3_inputsの配分はtemplate/提案であり、評価済み点ではない。配分・判定・達成費用はnull。']
         if r.get('search_status')=='INTERRUPTED_SEARCH_POLICY_CHANGE':
             lines+=['',r['label']+'：探索方針変更による途中終了（INTERRUPTED_SEARCH_POLICY_CHANGE）。収束値ではない。',
                 'κ絶対値='+str(frac(r['kappa_absolute']))+'、元κ倍率='+str(frac(r['kappa_multiplier']))+'。',

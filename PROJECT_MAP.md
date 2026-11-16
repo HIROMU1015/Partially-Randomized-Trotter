@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[D PF registryの通常同期](docs/research/d_pf_registry_normal_sync_20261116/REPORT.md)：Dの固定readerを再利用。新Full PF/S2/2hは信号13・価格26・Q3待ち、配分/達成費用null。既存p7/Y4/32h/5の評価済み行は重複させず保全。保存入力検査、新科学0。
+
 [B2 round03の通常同期修正](docs/research/h4_round03_public_sync_20261116/REPORT.md)：公開selected pointのhash・配分・価格summaryを照合し、方式全体と絶対κ=2限定を分離。configuration一致だけの偽取込み済みを修正。既存10分cronへ接続、新科学0。
 
 [H4公開成果の定期統合と探索結果の受入](docs/research/h4_optimizer_saved_results_intake_20261116/REPORT.md)：Full PF M5要求16h・480258064、Pauli LD5元κ×2・2873295767/7 RZの保存適合点を追加。既存点と価格資格を保全。公開branchの検出・既存join・比較表・ロードマップ現在地の更新を利用者自身の10分cronへ接続。費用だけではロードマップを変更しない。未知schemaは理由付き保留、新科学call0。
