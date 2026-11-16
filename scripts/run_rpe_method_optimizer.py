@@ -38,7 +38,8 @@ def write(path, value):
 def candidate_rows(context):
     return [dict(name=c['name'], method=c['method'], configuration=c['key'], configuration_id=c['configuration_id'],
                  ready=c['ready'], needs=c['needs'], price_status=c['price_status'], signal_source=c['signal_source'],
-                 labels=c['labels'], saved_points=c['saved_points'], outside_index=c.get('outside_index', False))
+                 labels=c['labels'], saved_points=c['saved_points'], outside_index=c.get('outside_index', False),
+                 prepared_by=c.get('prepared_by'), preparation=c.get('preparation'), price_quote=c.get('price_quote'))
             for c in context['candidates']]
 
 
@@ -102,7 +103,8 @@ def scoped(problem, overrides):
 def round_mode(a, problem, extra):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
-    problem = scoped(problem, spec.get('method_overrides'));context = O.prepare(ROOT, problem, methods=spec['methods'])
+    problem = scoped(problem, spec.get('method_overrides'))
+    context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation')
     extra = extra + resume_input([Path(x) for x in spec.get('resume_from', [])])
     stored = run / 'ROUND.json'
     if stored.exists():
@@ -337,8 +339,8 @@ def main():
         if a.interrupted:
             return interrupted_mode(a, problem, extra)
         return round_mode(a, problem, extra)
-    context = O.prepare(ROOT, problem)
     out = a.output;out.mkdir(parents=True, exist_ok=True)
+    context = O.prepare(ROOT, problem, preparation_dir=out / 'preparation')
     full = O.optimize(ROOT, problem, context=context, extra_results=extra)
     checks = {}
     minima = context['catalog']['method_minima']

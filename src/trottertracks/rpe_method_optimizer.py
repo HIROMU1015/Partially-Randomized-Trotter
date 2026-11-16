@@ -760,7 +760,7 @@ def variant_grid(spec):
                 yield dict(formula=formula, delta_over_h=delta, kappa_multiplier=kappa)
 
 
-def generate_variants(root, problem, reader, catalog, candidates, methods=None):
+def generate_variants(root, problem, reader, catalog, candidates, methods=None, preparation_dir=None):
     """For each PR method with a ``generation`` range: regenerate every saved configuration over formula x
     step width x kappa with the method's fixed mapper (subprocess, route view, metadata only), then
     deduplicate by physical schedule.  Identical schedules alias the saved configuration (its evaluations are
@@ -769,7 +769,18 @@ def generate_variants(root, problem, reader, catalog, candidates, methods=None):
     for name, spec in problem['methods'].items():
         if spec['family'] != 'PR' or not spec.get('generation') or (methods is not None and name not in methods):
             continue
-        g = spec['generation'];saved = [c for c in candidates if c['method'] == name and c['configuration_id']]
+        g = spec['generation'];prepared = None
+        if g.get('preparation') and any(c['method'] == name and c['configuration_id'] is None for c in candidates):
+            # A's PR-Pauli preparation entry gets the search range's candidates without a configuration BEFORE the id filter
+            # below: complete configurations are registered (even without price), the rest stay preparation requests.
+            from . import rpe_candidate_preparation as R
+            import tempfile
+            if preparation_dir:
+                prepared = R.prepare_unregistered(root, name, g['preparation'], candidates, g['baseline'], Path(preparation_dir) / name)
+            else:  # library call without a run directory: responses are kept in the candidates, files are discarded
+                with tempfile.TemporaryDirectory(prefix='rpe_prep_') as d:
+                    prepared = R.prepare_unregistered(root, name, g['preparation'], candidates, g['baseline'], Path(d))
+        saved = [c for c in candidates if c['method'] == name and c['configuration_id'] and not c.get('generated')]
         points = {}
         for point in catalog['candidates']:
             points.setdefault(point['configuration_id'], point)
@@ -834,7 +845,9 @@ def generate_variants(root, problem, reader, catalog, candidates, methods=None):
                 row['disposition'] = 'NOT_GENERATED'
                 row['needs'] = ['GENERATOR_SUPPORT:' + (gen.get('reason') or gen['status'])]
             rows.append(row)
-        out[name] = dict(kind=g['kind'], view_commit=g['view_commit'], supported_formulas=result['items'][0].get('supported_formulas') if result['items'] else None,
+        out[name] = dict(kind=g['kind'], view_commit=g['view_commit'], preparation=prepared,
+                         preparation_source=(g.get('preparation') or {}).get('view_commit'),
+                         supported_formulas=result['items'][0].get('supported_formulas') if result['items'] else None,
                          baseline=g['baseline'], range=dict(formulas=g['formulas'], delta_over_h=g['delta_over_h_values'],
                          kappa_multipliers=g['kappa_multipliers']), h='fixed RPE base time (not a search variable)', variants=rows)
     return out
@@ -1084,6 +1097,9 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                     baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),
                                     routes=problem.get('q3_routes'), spent=spent, free=free, science_approved=science_approved,
                                     prefetch=prefetch, on_missing=search.get('on_missing', 'STOP'), facts=context.get('facts'), log=log)
+            prep = (problem['methods'][name].get('generation') or {}).get('preparation')
+            if prep and search.get('prepare_kappa_proposals'):
+                result['input_requests'] = prepare_kappa_requests(root, problem, context, name, prep, result['input_requests'])
         elif search.get('incumbent_scope') == 'CONFIGURATION':
             result = run_by_configuration(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                           problem.get('q3_routes'), spent, free, science_approved, prefetch)
@@ -1102,6 +1118,37 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
     if executor is not None:
         executor.finish()
     return out
+
+
+def prepare_kappa_requests(root, problem, context, name, prep, requests):
+    """Kappa proposals of the V2 rule -> A's preparation entry (base = the saved configuration of that L_D); complete
+    configurations are registered (not ready: signals / route still missing) and quoted with D2 PriceRules MODEL."""
+    from . import rpe_candidate_preparation as R
+    import tempfile
+    points = {}
+    for pt in context['catalog']['candidates']:
+        points.setdefault(pt['configuration_id'], pt)
+    bases = {c['key'].get('L_D'): dict(source=points[c['configuration_id']]['configuration_source'], configuration_id=c['configuration_id'])
+             for c in context['candidates'] if c['method'] == name and c['configuration_id'] in points and not c.get('generated')}
+    proposals = [r for r in requests if r['kind'] == 'KAPPA_PROPOSAL']
+    before = {id(c) for c in context['candidates']}
+    if context.get('preparation_dir'):
+        rows = R.prepare_kappa(root, name, prep, context['candidates'], proposals, bases, Path(context['preparation_dir']) / name)
+    else:
+        with tempfile.TemporaryDirectory(prefix='rpe_prep_') as d:
+            rows = R.prepare_kappa(root, name, prep, context['candidates'], proposals, bases, Path(d))
+    new = [c for c in context['candidates'] if id(c) not in before]
+    if new and problem.get('price_rules'):
+        quote_prices(root, problem, new, context['catalog'], [name])
+    by_item = {(r['proposal']['family']['L_D'], r['proposal']['kappa_multiplier']): r for r in rows}
+    for r in requests:
+        if r['kind'] == 'KAPPA_PROPOSAL':
+            row = by_item.get((r['family']['L_D'], r['kappa_multiplier'])) or {}
+            c = next((x for x in context['candidates'] if row.get('configuration_id') and x['configuration_id'] == row['configuration_id']), None)
+            r['preparation'] = dict(disposition=row.get('disposition'), status=row.get('status'), configuration_id=row.get('configuration_id'),
+                                    signal_counts=row.get('signal_counts'), next_actions=row.get('next_actions'),
+                                    needs=c and c['needs'], price_status=c and c.get('price_status'))
+    return requests
 
 
 EXHAUSTED = ('NO_IMPROVING_PROPOSAL', 'NO_FEASIBLE_POINT_IN_RANGE')
@@ -1155,12 +1202,12 @@ def run_by_configuration(name, candidates, knowledge, backend, search, threshold
                 incumbent=incumbent, not_ready_in_range=missing, by_configuration=by, incumbent_scope='CONFIGURATION')
 
 
-def prepare(root, problem, generate_configurations=True, methods=None):
+def prepare(root, problem, generate_configurations=True, methods=None, preparation_dir=None):
     facts = hamiltonian_facts(problem)
     reader, inputs, catalog = load_catalog(root, problem)
     check_comparison(problem, facts, inputs['comparison'])
     candidates = enumerate_candidates(reader, problem, facts, catalog)
-    generation = generate_variants(root, problem, reader, catalog, candidates, methods) if generate_configurations else {}
+    generation = generate_variants(root, problem, reader, catalog, candidates, methods, preparation_dir) if generate_configurations else {}
     price_rules = quote_prices(root, problem, candidates, catalog, methods) if problem.get('price_rules') else None
     prices = {c['configuration_id']: c['prices'] for c in candidates if c['prices'] is not None}
     saved = SavedBackend(catalog['candidates'], prices)
@@ -1170,4 +1217,4 @@ def prepare(root, problem, generate_configurations=True, methods=None):
                                                             binding_id=point.get('binding_id'), signal_source=point.get('signal_source')))
     return dict(facts=facts, reader=reader, catalog=catalog, candidates=candidates, saved=saved, tau=tau(problem),
                 expected=expected, generate=pinned_function(reader, problem['generator']), generation=generation,
-                price_rules=price_rules)
+                price_rules=price_rules, preparation_dir=preparation_dir)
