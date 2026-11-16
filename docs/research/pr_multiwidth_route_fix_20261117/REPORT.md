@@ -30,7 +30,9 @@ R06の最終停止は2026-11-17 04:21 JSTの`V2_RESULT_REQUIRES_REVIEW`。Pauli�
 
 ## 保全と残る条件
 
-停止済み実行checkoutのc8bcb3a65を基点とする独立branch `codex/pr-multiwidth-route-fix-20261117`で作業した。元の実行worktree、固定round05、R06の入力・raw・価格・STOP・失敗jobは編集していない。修正PASSを科学的成功や自動retryの許可へ読み替えていない。
+停止済み実行checkoutのローカルc8bcb3a65を基点とする独立branch `codex/pr-multiwidth-route-fix-20261117`で作業した。元の実行worktree、固定round05、R06の入力・raw・価格・STOP・失敗jobは編集していない。修正PASSを科学的成功や自動retryの許可へ読み替えていない。
+
+初回pushは、その基点の未公開auto-commit履歴に約118 MBの`events_PRIVATE.json`が含まれていたためGitHubに拒否された。raw・履歴・branchは保全し、公開済みe0f7838b09bc09412ec764d80686cb9578e44d01から技術差分だけを`codex/pr-multiwidth-route-fix-public-20261117`へ複写して公開する。両基点の`src/scripts/tests/configs`には差分がなく、公開版の修正codeは検証したblobと一致する。履歴書換え・force push・raw削除は行っていない。
 
 一部DF準備には`Conflicting saved means: select explicit saved inventory`もある。固定DF entryのinventory統合で検出された競合で、今回その数値・出所の選択や検査緩和はしていない。該当候補は保留し、復旧時には対象の保存inventoryを明示して整合を確認する必要がある。対象全域の入力が揃ったことや、未評価幅の最適性は主張しない。
 

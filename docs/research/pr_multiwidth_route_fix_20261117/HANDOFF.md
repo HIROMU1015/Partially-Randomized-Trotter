@@ -1,6 +1,6 @@
 # B2/D2向け：複数幅探索のQ3接続修正
 
-[REPORT](REPORT.md)。基点c8bcb3a65、統合元5829a7288と限定実行修正7f1e26753を保持した専用branch `codex/pr-multiwidth-route-fix-20261117`。元R06はSTOPのままで、科学計算は再開していない。
+[REPORT](REPORT.md)。公開branchは`codex/pr-multiwidth-route-fix-public-20261117`、公開基点はe0f7838b09bc09412ec764d80686cb9578e44d01。ローカルの実装基点c8bcb3a65と公開基点で既存codeは同一。統合元5829a7288と限定実行修正7f1e26753を保持し、検証した技術差分だけを公開した。元R06はSTOPのままで、科学計算は再開していない。旧runの約118 MBのrawを含むauto-commit履歴は削除・書換えず、元のローカルbranchに保全している。
 
 ## 接続
 
