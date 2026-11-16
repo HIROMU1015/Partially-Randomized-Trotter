@@ -91,7 +91,7 @@ def preflight(value,out):
     # Fixed import-time metadata dependency; no restore/prepare/compile here.
     dep='references/h46_m5_tol_pilot_inputs_v1.json'
     E.check((ROOT/dep).read_bytes()==subprocess.check_output(['git','show',head()+':'+dep],cwd=ROOT),'Native dependency not materialized')
-    write(out/'PREFLIGHT.json',audit)
+    write(out/('PREFLIGHT_EXECUTION.json' if (out/'PREFLIGHT.json').exists() else 'PREFLIGHT.json'),audit)
 
 
 def signals(value,out,source):
@@ -268,7 +268,15 @@ def main():
         saved=load(registry).get('configurations',{}).get(cfg['id']) if registry.exists() else None
         if saved and saved.get('signal_packet') and saved.get('prices') and saved.get('q3_inputs'):
             response['items'].append(dict(status='REUSED_COMPLETED_REGISTRY',configuration_id=cfg['id'],entry=saved));continue
-        out=output_root/cfg['id'];value=plan_one(cfg,out)
+        out=output_root/cfg['id']
+        if args.mode=='complete' and (out/'PLAN.json').exists():
+            if (out/'signal_run01').exists() or (out/'STOP.json').exists():raise ValueError('Preserve consumed scientific attempt; no automatic retry')
+            value=load(out/'PLAN.json')
+            if value['configuration']!=cfg:raise ValueError('Fixed plan belongs to another configuration')
+            for name in ('CONFIGURATION.json','PLAN.json'):
+                raw=subprocess.check_output(['git','show',head()+':'+str((out/name).relative_to(ROOT))],cwd=ROOT)
+                if (out/name).read_bytes()!=raw:raise ValueError('Commit metadata plan before execution')
+        else:value=plan_one(cfg,out)
         if args.mode=='complete':
             try:response['items'].append(complete(value,out,registry))
             except Exception as exc:
