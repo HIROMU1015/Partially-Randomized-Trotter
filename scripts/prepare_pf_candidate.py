@@ -272,8 +272,36 @@ def complete(value,out,registry):
     return dict(status='READY_FOR_SAME_OPTIMIZER',configuration_id=value['configuration']['id'],entry=entry,output=str(out))
 
 
+def finish_saved_inputs(value,out,registry):
+    """Explicit continuation of the identified zero-compile route rejection.
+
+    This is never a normal/resume retry. Saved signals/freeze/STOP remain; only
+    the originally unperformed holdout wrappers get a new source and namespace.
+    """
+    from trottertracks import pf_evidence_preparation as E
+    source=source_gate();old=load(out/'holdout/run01/RESULT.json')
+    E.check((out/'STOP.json').exists() and old.get('context_gate') and not load(out/'holdout/run01/PRICES.json'),'Not the saved zero-compile route rejection')
+    E.check(old['results'] and all(not r.get('trial') and r.get('error')=='ValueError: Full PF keeps every block and has no tail identity correction' for r in old['results']),'Scientific/gate failures cannot be automatically retried')
+    E.check(load(out/'signal_run01/STATUS.json')['status']=='COMPLETE_THIRTEEN_ROUNDS','Reuse only completed numerical signals')
+    freeze_ref=old['source']['frozen_model'];frozen=E.read(ROOT,freeze_ref)
+    E.check(frozen==load(out/'FROZEN_MODEL.json'),'Preserve the original pre-holdout freeze')
+    ms=[r['cell']['m'] for r in old['results']]
+    targets=[dict(m=r['m'],axis=a,physical_id=r['physical_candidate']['id'],physical_candidate=r['physical_candidate']) for r in value['prepared']['pending']['requests'] if r['m'] in ms for a in ('X','Y')]
+    import run_pf_m0_prices as M
+    audit=M.duplicate_check((1,2),selected=targets)
+    E.check(all(x['action']=='NEW_COMPILE_MISSING_CONFIRMED' for x in audit['rows']),'Resolve duplicate before remaining wrappers')
+    write(out/'REMAINING_INPUTS.json',dict(source=source,previous_STOP=gitref(out/'STOP.json'),reused_signal=gitref(out/'signal_run01/MEAN_HANDOFF.json'),frozen_model=freeze_ref,preflight=audit,new_means=0,new_Q3=0,remaining_wrapper_limit=2*len(ms)))
+    publish([out],'Fix remaining unperformed Full PF wrappers after zero-compile route correction')
+    source=dict(commit=head(),caller=MODULE,frozen_model=freeze_ref)
+    prices=deepcopy(value['direct_prices'])+acquire(value,out,'holdout_remaining',ms,source)
+    price_ref=finish(value,prices,out,freeze_ref,source);entry=register(value,out,price_ref,registry)
+    write(out/'COMPLETION.json',dict(status='READY_FOR_SAME_OPTIMIZER',configuration_id=value['configuration']['id'],new_signal_means=value['new_signal_means'],new_compiles=2*len(ms),new_Q3=0,prior_zero_compile_STOP=gitref(out/'STOP.json'),registry_entry=entry,mandatory_stop=True))
+    publish([out],'Preserve completed PF inputs and prior zero-compile STOP together')
+    return dict(status='READY_FOR_SAME_OPTIMIZER',configuration_id=value['configuration']['id'],entry=entry,output=str(out))
+
+
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--request',type=Path);p.add_argument('--output',type=Path);p.add_argument('--mode',choices=('plan','complete'));p.add_argument('--native-child',type=Path)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--request',type=Path);p.add_argument('--output',type=Path);p.add_argument('--mode',choices=('plan','complete','finish-saved-zero-compile'));p.add_argument('--native-child',type=Path)
     args=p.parse_args()
     if args.native_child:return native_child(args.native_child)
     request=load(args.request);response=dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=[])
@@ -285,6 +313,10 @@ def main():
         if saved and saved.get('signal_packet') and saved.get('prices') and saved.get('q3_inputs'):
             response['items'].append(dict(status='REUSED_COMPLETED_REGISTRY',configuration_id=cfg['id'],entry=saved));continue
         out=output_root/cfg['id']
+        if args.mode=='finish-saved-zero-compile':
+            value=load(out/'PLAN.json')
+            if value['configuration']!=cfg:raise ValueError('Saved plan belongs to another candidate')
+            response['items'].append(finish_saved_inputs(value,out,registry));continue
         if args.mode=='complete' and (out/'PLAN.json').exists():
             if (out/'signal_run01').exists() or (out/'STOP.json').exists():raise ValueError('Preserve consumed scientific attempt; no automatic retry')
             value=load(out/'PLAN.json')
