@@ -247,10 +247,19 @@ class SchedulerTests(unittest.TestCase):
     held.append(hold_candidate(candidate,choice,answer,backend))
     continue
 """).body[0])
+        local_unknown=ast.dump(ast.parse('''if is_local_unknown(answer):
+    candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
+    new_calls+=answer.get('calls',0)
+    held.append(hold_candidate(candidate,choice,answer,backend))
+    continue
+''').body[0])
         class StripReadiness(ast.NodeTransformer):
             count=0
             isolated_count=0
+            local_unknown_count=0
             def visit_If(self,node):
+                if ast.dump(node)==local_unknown:
+                    self.local_unknown_count+=1;return None
                 if ast.dump(node)==isolated:
                     self.isolated_count+=1;return None
                 return self.generic_visit(node)
@@ -265,6 +274,7 @@ class SchedulerTests(unittest.TestCase):
             strip=StripReadiness();b=strip.visit(b)
             self.assertEqual(strip.count,1 if name in('proposals','run_method')else 0,name)
             self.assertEqual(strip.isolated_count,1 if name=='run_method'else 0,name)
+            self.assertEqual(strip.local_unknown_count,1 if name=='run_method'else 0,name)
             self.assertEqual(ast.dump(a),ast.dump(b),name)
 
 

@@ -37,9 +37,9 @@ def write(path, value):
 
 
 @contextmanager
-def round_phase(run, name):
+def round_phase(run, name, on_error=None):
     """High-resolution controller timings; not a scientific progress gate."""
-    started=time.perf_counter();status='ERROR'
+    started=time.perf_counter();status='ERROR';caught=None
     def record(event, **values):
         with (run / 'ROUND_STAGES.jsonl').open('a') as f:
             f.write(json.dumps(dict(event=event,phase=name,epoch=time.time(),monotonic=time.monotonic(),**values))+'\n')
@@ -47,8 +47,17 @@ def round_phase(run, name):
     try:
         yield
         status='OK'
+    except BaseException as error:
+        caught=error
+        if on_error is not None:on_error(error)
+        O.record_runtime_error(run,error,name)
+        try:record('ERROR',error_type=type(error).__name__,message=str(error),error_log='RUNTIME_ERRORS.jsonl')
+        except OSError:pass  # original failure was also sent to stderr if saving failed
+        raise
     finally:
-        record('END',seconds=time.perf_counter()-started,status=status)
+        try:record('END',seconds=time.perf_counter()-started,status=status)
+        except OSError:
+            if caught is None:raise
 
 
 def candidate_rows(context):

@@ -81,6 +81,10 @@ def physical_evaluation_contract(config):
 
 class Held(Exception):pass
 
+class PreparationYield(Exception):
+    """No new stage started; an orchestration failure requested a boundary yield."""
+
+
 
 class Completion:
     def __init__(self,directory,settings):
@@ -169,6 +173,9 @@ class Completion:
             if r['returncode']!=0:raise Held('PRIOR_STAGE_FAILED_NO_RETRY:'+stage)
             return read(output)if output and Path(output).exists()else r
         if started.exists():raise Held('IN_PROGRESS_OR_AMBIGUOUS_NO_DUPLICATE:'+stage)
+        if getattr(self,'stop_requested',lambda:False)():
+            self.log(event='STAGE_YIELDED_AFTER_ORCHESTRATOR_FAILURE',stage=stage,directory=rel(d))
+            raise PreparationYield(stage)
         put(started,dict(command=cmd,source=self.source,science=science,automatic_retry=False))
         self.log(event='STAGE_START',stage=stage,science=science,directory=rel(d));t=time.time()
         with(d/(stage+'.log')).open('w')as f:
@@ -233,12 +240,23 @@ class Completion:
         self.save();return record
 
     def complete(self,request):
+        request=deepcopy(request)  # internal descriptor resolution must not change the caller's cache key
         if request['method']not in ('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
         if request.get('plan_only')or getattr(self,'settings',{}).get('plan_only'):
             return self.plan(request)
         identifier=key(request);d=self.directory/'candidates'/identifier
         with self.lock:
             old=self.state['records'].get(identifier)
+            if old is None:
+                # Historical callers could persist a request after descriptor
+                # injection under its original key. Keep that record/STOP and
+                # directory; never turn the changed key into a fresh attempt.
+                matches=[(k,r)for k,r in self.state['records'].items()if r.get('request')==request]
+                if len(matches)>1:
+                    return dict(status='HELD_WITH_REASON',method=request['method'],
+                        reason='AMBIGUOUS_EXISTING_COMPLETION_REQUEST_NO_DUPLICATE',key=None)
+                if matches:
+                    identifier,old=matches[0];d=self.directory/'candidates'/identifier
             if old and old['status']=='READY_FOR_SEARCH':return dict(old,resumed=True)
             if old and old['status'].startswith(('HELD','STOP','WAITING')):
                 self.ingest_price_results()
@@ -300,6 +318,9 @@ class Completion:
                 price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']],
                 design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),
                     delta_pf=config['spec']['delta_pf']),schedule=[dict(m=r['m'],T=r['T'],q=r['q_PF'],R=r['R_outer'],actual_delta_pf=r['actual_delta_pf'],structure=r['structure'],physical_id=r['candidate']['id'])for r in config['rounds']])
+        except PreparationYield as exc:
+            rec.update(status='SELECTED',reason='ORCHESTRATOR_YIELD_BEFORE_STAGE:'+str(exc),
+                interrupted_before_stage=str(exc),scientific_failure=False)
         except Held as exc:
             text=str(exc)
             waiting=text.startswith(('PRICE_RULE_INCOMPLETE:','PRICE_EVIDENCE_REQUIRED:'))

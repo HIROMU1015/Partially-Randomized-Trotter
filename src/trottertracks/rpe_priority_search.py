@@ -452,6 +452,11 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
         selection_timing['backend_answer_seconds'] += time.perf_counter() - answer_started
         selection_timing['backend_answer_calls'] += int(backend is not None and (is_free or allow))
+        if O.is_local_unknown(answer):
+            st=states[choice['configuration_id']]
+            new_calls+=answer.get('calls',0)
+            held.append(O.hold_candidate(st.c,choice,answer,backend));st.dirty=True
+            continue
         hold = None if answer is None else O.HOLD.get(answer['status'])
         if hold:
             st=states[choice['configuration_id']]

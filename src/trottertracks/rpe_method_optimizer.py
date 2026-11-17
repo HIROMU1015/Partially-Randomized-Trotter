@@ -46,6 +46,8 @@ from pathlib import Path
 import subprocess
 import threading
 import time
+import sys
+import traceback
 from concurrent.futures import ThreadPoolExecutor
 
 from .baseline_signal_pipeline import blob
@@ -56,6 +58,30 @@ FAIL = 'MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD'
 AXES = ('X', 'Y')
 RULE = 'FINITE_LOCAL_DESCENT_V1'
 UNIT_KEYS = ('C_ref_exact', 'C_ref', 'C', 'unit_price_RZ')
+
+
+_ERROR_LOCK = threading.Lock()
+
+
+def record_runtime_error(run, error, phase, **context):
+    """Save the active exception before any thread/child drain can delay it."""
+    row=dict(event='RUNTIME_EXCEPTION',controller_state='DRAINING_AFTER_EXCEPTION',phase=phase,error_type=type(error).__name__,
+        message=str(error),traceback=''.join(traceback.format_exception(type(error),error,error.__traceback__)),
+        UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),epoch=time.time(),monotonic=time.monotonic(),
+        pid=os.getpid(),thread=threading.current_thread().name,**context)
+    try:
+        Path(run).mkdir(parents=True,exist_ok=True)
+        with _ERROR_LOCK, (Path(run)/'RUNTIME_ERRORS.jsonl').open('a')as stream:
+            stream.write(json.dumps(row,default=str)+'\n');stream.flush();os.fsync(stream.fileno())
+    except OSError as logging_error:
+        # Keep the original exception. A broken result disk is still fatal.
+        print(row['traceback'],file=sys.stderr,flush=True)
+        print('Runtime error record could not save: '+repr(logging_error),file=sys.stderr,flush=True)
+    return row
+
+
+def is_local_unknown(answer):
+    return answer is not None and answer.get('status')=='UNKNOWN' and answer.get('failure_scope')=='CONFIGURATION'
 
 
 def enc(value):
@@ -410,8 +436,10 @@ def hold_candidate(candidate, proposal, answer, backend):
     outside this path and keeps the existing fatal handling.
     """
     row=dict(scope='CONFIGURATION',candidate=candidate['name'],configuration_id=candidate['configuration_id'],
-             method=candidate['method'],status=answer['status'],reason=answer.get('reason')or HOLD[answer['status']],
-             job=answer.get('job'),vector=list(proposal['vector']),new_scientific_calls=0)
+             method=candidate['method'],status=answer['status'],reason=answer.get('reason')or HOLD.get(answer['status'],'LOCAL_UNKNOWN_REQUIRES_REVIEW'),
+             job=answer.get('job'),vector=list(proposal['vector']),
+             new_scientific_calls=answer.get('scientific_evaluation_calls')if is_local_unknown(answer)else 0,
+             launched_attempts=answer.get('calls',0))
     candidate['execution_hold']=row
     candidate['execution_needs']=list(dict.fromkeys(candidate.get('execution_needs',[])+['SAVED_JOB_REVIEW_REQUIRED']))
     if hasattr(backend,'hold_configuration'):backend.hold_configuration(proposal,answer)
@@ -474,6 +502,11 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
             prefetch(props[:search.get('lookahead', 1) if near else 1])
         is_free = free is not None and free(choice)
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
+        if is_local_unknown(answer):
+            candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
+            new_calls+=answer.get('calls',0)
+            held.append(hold_candidate(candidate,choice,answer,backend))
+            continue
         hold = None if answer is None else HOLD.get(answer['status'])
         if hold:
             candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
@@ -581,7 +614,7 @@ class Executor:
 
     def hold_configuration(self,proposal,answer):
         row=dict(scope='CONFIGURATION',configuration_id=proposal['configuration_id'],method=self.method,
-                 status=answer['status'],reason=answer.get('reason')or HOLD[answer['status']],job=answer.get('job'))
+                 status=answer['status'],reason=answer.get('reason')or HOLD.get(answer['status'],'LOCAL_UNKNOWN_REQUIRES_REVIEW'),job=answer.get('job'))
         with self.lock:self.execution_holds.setdefault(self.method,{})[proposal['configuration_id']]=row
         self.log(event='CANDIDATE_HELD',**{k:v for k,v in row.items()if k!='method'})
 
@@ -798,8 +831,8 @@ class Executor:
         if (job / 'LAUNCH.json').exists():
             launch = json.loads((job / 'LAUNCH.json').read_text())
             if job in self.events:
-                return dict(status='UNKNOWN', reason='ADAPTER_EXIT_WITHOUT_OUTCOME', MSE_lower=None, MSE_upper=None,
-                            source='NEW_Q3_JOB', calls=self.take_count(job), job=str(job))
+                return self.scope_unknown(job,proposal,dict(status='UNKNOWN', reason='ADAPTER_EXIT_WITHOUT_OUTCOME', MSE_lower=None, MSE_upper=None,
+                            source='NEW_Q3_JOB', calls=self.take_count(job), job=str(job)))
             while not (job / 'PROCESS_RETURN.json').exists() and self.alive(launch, job):
                 if not self.wait_for_running:
                     return dict(status='IN_PROGRESS', job=str(job))
@@ -818,6 +851,32 @@ class Executor:
         job = self.launch(proposal, rule)
         return self.answer(proposal, allow_new=False)
 
+    def scope_unknown(self,job,proposal,answer):
+        """Only evidenced local failures are isolated; no UNKNOWN is accepted.
+
+        Scope preflight (zero numerical calls) and explicit SIGINT/SIGTERM exit
+        are local. SIGKILL/OOM, numerical/identity/SOURCE failures, persistence
+        faults and unclassified errors keep global protection. No retry occurs.
+        """
+        if answer is None or answer.get('status')!='UNKNOWN':return answer
+        answer=dict(answer,failure_scope='GLOBAL')
+        if getattr(getattr(self,'state',None),'failure',None):return answer
+        reason=answer.get('reason');job=Path(job)
+        if reason not in ('COUNT_ONLY_SCOPE_EXCEEDED','ADAPTER_EXIT_WITHOUT_OUTCOME'):return answer
+        try:
+            request=load_json(job/'REQUEST.json');nx,ny=split(proposal['vector'])
+            if(request['configuration_id']!=proposal['configuration_id']or request['N_X']!=nx or request['N_Y']!=ny
+                or request['request_id']!=self.job_dir(proposal).name or not self.same_route(job,proposal['configuration_id'])):
+                return answer
+            if reason=='COUNT_ONLY_SCOPE_EXCEEDED'and type(answer.get('scientific_evaluation_calls'))is int and answer['scientific_evaluation_calls']==0:
+                answer.update(failure_scope='CONFIGURATION',failure_kind='PRE_API_SCOPE_REJECTION')
+            elif reason=='ADAPTER_EXIT_WITHOUT_OUTCOME':
+                receipt=load_json(job/'PROCESS_RETURN.json')
+                if receipt.get('returncode')is None and receipt.get('signal')in(2,15):
+                    answer.update(failure_scope='CONFIGURATION',failure_kind='WORKER_INTERRUPTED')
+        except(OSError,ValueError,KeyError,TypeError):pass
+        return answer
+
     def ingest(self, job, proposal, calls):
         """Accept a job outcome only for the same configuration, allocation, total view/binding/signal and contract."""
         out, outcome_path = job_outcome(job);ident = out.get('identity') or {}
@@ -835,8 +894,9 @@ class Executor:
         source = 'ARTIFICIAL_JOB' if out.get('artificial') else 'NEW_Q3_JOB'
         lower = None if out.get('MSE_lower') is None else frac(out['MSE_lower'])
         upper = None if out.get('MSE_upper') is None else frac(out['MSE_upper'])
-        return dict(status=status, reason=reason, MSE_lower=lower, MSE_upper=upper, source=source, calls=calls,
-                    job=str(job.relative_to(self.root)) if job.is_relative_to(self.root) else str(job), label=None)
+        return self.scope_unknown(job,proposal,dict(status=status, reason=reason, MSE_lower=lower, MSE_upper=upper, source=source, calls=calls,
+                    scientific_evaluation_calls=out.get('scientific_evaluation_calls'),
+                    job=str(job.relative_to(self.root)) if job.is_relative_to(self.root) else str(job), label=None))
 
 
 def apply_published(candidates, routes):

@@ -183,8 +183,12 @@ class ConcurrentExecutor(O.Executor):
 
     def _stop_after_failure(self,error):
         # Persistence/start failure stops new launches; existing children finish.
+        notify=getattr(self.state,'failure_callback',None)
+        if notify is not None:notify(error)
         with self.state.cv:
-            self.state.failure=str(error)
+            if self.state.failure is None:self.state.failure=str(error)
+            if isinstance(error,BaseException)and getattr(self.state,'primary_exception',None)is None:
+                self.state.primary_exception=error
             for task in self.state.tasks.values():
                 if task.status=='QUEUED':
                     task.error=str(error)
@@ -209,7 +213,8 @@ class ConcurrentExecutor(O.Executor):
             v.log(event='LAUNCH',job=job.name,configuration=t.proposal['configuration_id'],
                   pid=proc.pid,queue_wait_seconds=time.monotonic()-t.enqueue,active=s.active,demand=not t.speculative)
         except Exception as exc:
-            t.error=repr(exc);self._stop_after_failure(t.error)
+            t.error=repr(exc);self._stop_after_failure(exc)
+            O.record_runtime_error(self.run_dir,exc,'Q3_START',job=job.name)
             if proc is None:self._finished(t,None,start);return
             # Popen succeeded: retain its slot and wait even if LAUNCH could not save.
         def wait():
@@ -219,7 +224,8 @@ class ConcurrentExecutor(O.Executor):
                 _write(job/'PROCESS_RETURN.json',dict(returncode=code if code>=0 else None,signal=-code if code<0 else None,
                                                     wall_seconds=time.time()-start,automatic_retry=False))
             except Exception as exc:
-                t.error=repr(exc);self._stop_after_failure(t.error)
+                t.error=repr(exc);self._stop_after_failure(exc)
+                O.record_runtime_error(self.run_dir,exc,'Q3_WAIT',job=job.name)
             finally:self._finished(t,code,start)
         thread=threading.Thread(target=wait,name='rpe-wait-'+job.name,daemon=False)
         with self.lock:self.waiters.append(thread)
@@ -231,7 +237,8 @@ class ConcurrentExecutor(O.Executor):
             t.status='DONE';s.active-=1;s.pids.pop(t.job,None);s.metrics['finished']+=1
             try:t.view.log(event='EXIT',job=t.job.name,returncode=code,error=t.error,wall_seconds=time.time()-start)
             except OSError as exc:
-                t.error=repr(exc);self._stop_after_failure(t.error)
+                t.error=repr(exc);self._stop_after_failure(exc)
+                O.record_runtime_error(self.run_dir,exc,'Q3_EXIT_RECORD',job=t.job.name)
             finally:t.event.set();s.cv.notify_all()
 
     def _monitor(self):
@@ -286,6 +293,7 @@ class ConcurrentExecutor(O.Executor):
                 if(job/'OUTCOME.json').exists():answer=self.ingest(job,proposal,calls=self.take_count(job))
                 else:answer=dict(status='UNKNOWN',reason=task.error or'ADAPTER_EXIT_WITHOUT_OUTCOME',
                     source='NEW_Q3_JOB',calls=self.take_count(job),MSE_lower=None,MSE_upper=None,job=str(job))
+        answer=self.scope_unknown(job,proposal,answer)
         if answer is not None and answer['status']not in('IN_PROGRESS','STALE_JOB','NO_ROUTE'):
             with s.cv:
                 first=job not in s.adopted_jobs
@@ -360,7 +368,24 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
         if kwargs.get('context') is None:kwargs['context']=O.prepare(root,problem,methods=methods)
         with ThreadPoolExecutor(max_workers=max(1,len(methods)))as pool:
             futures={m:pool.submit(O.optimize,root,problem,executor=executor.for_method(m),methods=[m],**kwargs)for m in methods}
+            def report_failure(method,future):
+                if future.cancelled():return
+                error=future.exception()
+                if error is None:
+                    result=future.result().get(method,{})
+                    if result.get('stop_reason')=='UNKNOWN_RESULT':
+                        notify=getattr(executor.state,'failure_callback',None)
+                        if notify is not None:notify(None)
+                    return
+                try:executor._stop_after_failure(error)
+                finally:O.record_runtime_error(executor.run_dir,error,'METHOD_OPTIMIZE',method=method)
+            for method,future in futures.items():
+                future.add_done_callback(lambda done,m=method:report_failure(m,done))
             out={m:futures[m].result()[m]for m in methods}
+    except BaseException:
+        primary=getattr(executor.state,'primary_exception',None)
+        if primary is not None:raise primary
+        raise
     finally:
         if close_executor:executor.finish()
         else:

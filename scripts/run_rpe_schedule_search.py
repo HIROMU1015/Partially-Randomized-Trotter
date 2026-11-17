@@ -621,6 +621,10 @@ class WidthDriver:
                 except (ValueError,KeyError,TypeError) as exc:
                     p.update(status='HELD',reason='COMPLETED_CONFIGURATION_MISMATCH:'+str(exc));continue
                 p.update(status='REGISTERED',configuration_id=record['configuration_id'])
+            elif record['status']=='SELECTED'and str(record.get('reason','')).startswith('ORCHESTRATOR_YIELD_BEFORE_STAGE:'):
+                p.update(status='COMPLETION',reason=record['reason'])
+                self.log(event='PREPARATION_YIELD_AFTER_FATAL',family=p['family'],stage=record.get('interrupted_before_stage'))
+                break
             elif record['status'].startswith('STOP') or 'NUMERICAL_GATE' in str(record.get('reason','')):
                 p.update(status='HELD',reason=record.get('reason',record['status']))
             else:
@@ -756,6 +760,8 @@ class WidthDriver:
                 import inspect,threading
                 preparation_pool=ThreadPoolExecutor(max_workers=1)
                 stop_preparation=threading.Event()
+                executor.state.failure_callback=lambda error:stop_preparation.set()
+                comp.stop_requested=stop_preparation.is_set
                 supports_stop='stop_requested'in inspect.signature(self.complete_points).parameters
                 pending=preparation_pool.submit(self.complete_points,**({'stop_requested':stop_preparation.is_set}if supports_stop else{}))
                 def ready_keys():
@@ -765,7 +771,7 @@ class WidthDriver:
                 can_search=any(c['ready']for c in context['candidates'])
                 while True:
                     if can_search:
-                        with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION'):
+                        with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION',on_error=lambda error:stop_preparation.set()):
                             interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
                                 initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True)
                         if any(r['stop_reason']in fatal for r in interim.values()):
@@ -806,9 +812,27 @@ class WidthDriver:
                 with K.CLI.round_phase(self.run,'WIDTH_PREPARATION_CONTINUATION'):
                     result=continue_selected_preparation(ROOT,dict(problem,search=search),context,
                         active_spec,self.run,comp,executor,result,optimizer=optimize)
+        except BaseException as error:
+            if preparation_pool is not None:stop_preparation.set()
+            O.record_runtime_error(self.run,error,'WIDTH_BATCH')
+            if hasattr(executor,'_stop_after_failure'):executor._stop_after_failure(error)
+            self.state['stop']=dict(reason='RUNTIME_EXCEPTION',error_type=type(error).__name__,message=str(error),
+                error_log='RUNTIME_ERRORS.jsonl',drain='WAIT_FOR_OWNED_RUNNING_STAGES_NO_NEW_PREPARATION',UTC=K.now())
+            self.log(event='BATCH_EXCEPTION',error_type=type(error).__name__,message=str(error))
+            raise
         finally:
-            if preparation_pool is not None:preparation_pool.shutdown(wait=True)
-            executor.finish()
+            original_error=sys.exc_info()[1];cleanup_error=None
+            actions=[] if preparation_pool is None else [('PREPARATION_DRAIN',lambda:preparation_pool.shutdown(wait=True))]
+            actions.append(('EXECUTOR_DRAIN',executor.finish))
+            for phase,close in actions:
+                try:close()
+                except BaseException as error:
+                    O.record_runtime_error(self.run,error,phase)
+                    cleanup_error=cleanup_error or error
+            if original_error is not None:
+                try:self.save()  # the preparation producer has now drained
+                except BaseException as error:O.record_runtime_error(self.run,error,'FAILED_STATE_SAVE')
+            if original_error is None and cleanup_error is not None:raise cleanup_error
         self.confirm_completed(context,executor,result)
         with(self.run/'INVOCATIONS.jsonl').open('a')as f:
             f.write(json.dumps(O.jsonable(dict(time=time.time(),requested_widths=self.widths,budget=budgets,
@@ -886,7 +910,16 @@ def main(argv=None, *, driver_factory=None):
         return SimpleNamespace(run=a.run_dir,state=dict(stop=dict(reason='METHOD_ROUND_COMPLETE',
             methods={m:r['stop_reason']for m,r in result['methods'].items()})))
     factory=driver_factory or (WidthDriver if declared is not None else WideDriver)
-    d = factory(a);d.log(event='DRIVER_START', plan_only=a.plan_only);d.loop();d.log(event='DRIVER_END', stop=d.state.get('stop'))
+    d = factory(a);d.log(event='DRIVER_START', plan_only=a.plan_only)
+    try:d.loop()
+    except BaseException as error:
+        O.record_runtime_error(a.run_dir,error,'DRIVER')
+        d.state['stop']=dict(reason='RUNTIME_EXCEPTION',error_type=type(error).__name__,message=str(error),
+            error_log='RUNTIME_ERRORS.jsonl',UTC=K.now())
+        try:d.save();d.log(event='DRIVER_ERROR',stop=d.state['stop'])
+        except BaseException as save_error:O.record_runtime_error(a.run_dir,save_error,'FAILED_DRIVER_STATE_SAVE')
+        raise
+    d.log(event='DRIVER_END', stop=d.state.get('stop'))
     print(json.dumps(O.jsonable(d.state.get('stop')), default=str)[:2000])
     return d
 
