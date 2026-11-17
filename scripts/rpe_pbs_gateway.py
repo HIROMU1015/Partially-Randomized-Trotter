@@ -61,6 +61,9 @@ def qstat(job_id=None):
         if 'Unknown Job Id' in process.stderr or 'Job has finished' in process.stderr:
             return {}
         raise RuntimeError('qstat failed: ' + process.stderr.strip())
+    # PBS20 returns a blank successful response when this user has no jobs.
+    if not process.stdout.strip():
+        return {}
     jobs = json.loads(process.stdout).get('Jobs', {})
     return {key:value for key,value in jobs.items()
             if value.get('Job_Owner','').split('@')[0] == getpass.getuser()}
