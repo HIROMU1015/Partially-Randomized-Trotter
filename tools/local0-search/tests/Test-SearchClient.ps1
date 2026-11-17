@@ -43,7 +43,7 @@ if($again.run_id -ne $run -or $resume.run_id -ne $run -or
     throw 'Resend or resume changed the run or duplicated the job.'
 }
 $ended=$resume
-for($attempt=0;$attempt -lt 15 -and $ended.runtime.phase -ne 'COMPLETE';$attempt++){
+for($attempt=0;$attempt -lt 40 -and $ended.runtime.phase -ne 'COMPLETE';$attempt++){
     Start-Sleep -Milliseconds 400
     $ended=& $command -Action Status -Config $FixtureConfig -RunId $run
 }
@@ -54,14 +54,32 @@ if($ended.runtime.phase -ne 'COMPLETE' -or $ended.synthetic_launch_count -ne 1 -
 }
 $compile=$ended.progress.stages | Where-Object stage -eq 'compile'
 if($compile.queue_accepted -ne 8 -or $compile.execution_started -ne 0){throw 'Stage accounting differs.'}
+$prepared=$ended.progress.candidates | Where-Object candidate_id -eq 'new-inputs-prepared'
+$receipts=$ended.synthetic_receipts
+$signal=$ended.progress.stages | Where-Object stage -eq 'signal'
+$q3=$ended.progress.stages | Where-Object stage -eq 'q3'
+if($prepared.state -ne 'EVALUATION_COMPLETED' -or $signal.execution_completed -ne 1 -or
+    $q3.execution_completed -ne 2 -or
+    $receipts.ready_evaluation.sequence -ge $receipts.preparation_intake.sequence -or
+    $receipts.preparation_intake.sequence -ge $receipts.prepared_evaluation.sequence -or
+    $receipts.preparation_intake.input_sha256 -notmatch '^[0-9a-f]{64}$' -or
+    $receipts.preparation_intake.input_sha256 -ne $receipts.prepared_evaluation.input_sha256){
+    throw 'Independent evaluation or preparation-result intake and subsequent evaluation differed.'
+}
 $failed=& $command -Action Status -Config $FixtureConfig -RunId 'fixture-failed'
 if($failed.status -ne 'REUSED_COMPLETED' -or $failed.display_status -ne 'TECHNICAL_FAILURE'){
     throw 'The client treated a failed controller as complete.'
+}
+$continuation=& $command -Action Resume -Config $FixtureConfig -RunId 'fixture-failed'
+if($continuation.run_id -ne 'fixture-continuation' -or
+    $continuation.continuation.parent_run_id -ne 'fixture-failed'){
+    throw 'The client did not accept the continuation linked by the central response.'
 }
 $evidence=[ordered]@{
     status='PASS'; run_id=$run; exact_request_sha256=$rawHash
     omitted_budget_and_explicit_zero=$true; explicit_target_required=$true
     artificial_launches=1; independent_client_exit=$true; preparation_wait_and_evaluation_completed=$true
+    preparation_result_intake_and_evaluation=$true; central_continuation_reference=$true
     queue_compile_accepted=8; actual_compile_started=0; stale_completion_display='TECHNICAL_FAILURE'
     real_scientific_calls=0
 }

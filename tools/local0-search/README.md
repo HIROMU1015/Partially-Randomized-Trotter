@@ -46,7 +46,7 @@ Windows PowerShellから使用する。利用者の明確な開始指示を実�
 .\tools\local0-search\Invoke-RpeSearch.ps1 -Action Start -RunId '<run ID>' -Instruction '探索を開始して'
 .\tools\local0-search\Invoke-RpeSearch.ps1 -Action Resume -RunId '<run ID>' -Instruction '探索を再開して'
 
-# サーバー2の対象だけを確定する（実行承認・科学起動は0）
+# 中央の対象だけを確定する（実行承認・科学起動は0）
 .\tools\local0-search\Invoke-RpeSearch.ps1 -Action Prepare -RequestFile '<確定する範囲.json>'
 
 # 範囲を受け取って開始する
@@ -88,7 +88,7 @@ batch/max_cyclesはその値を実際に消費するschedule/neighbourhood入口
 ## 現行入口の対応範囲
 
 既定のmethod入口は、方式・L_D/p・PF公式・PF幅比・自動shot/round別上限・Q3数/step停止を適用する。
-絶対Δ_PFは、サーバー2で採択されたrequested-width schedule設定を登録したときに使用できる。
+絶対Δ_PFは、中央が採択したrequested-width schedule設定を登録したときに使用できる。
 PR-Pauliの絶対κ上下限は、現在のserviceのabsolute_kappa_routeにより、既存schedule探索の両端込みkappa_boundsへ渡す。
 κ区間とL_Dの実行候補filterも同時に設定し、既存の物理schedule単位の選択・shot探索を使う。
 κ倍率だけで保存候補全体を制限する機能は現行入口にないため、generation.kappa_multipliersを範囲制限と偽って使用しない。
@@ -98,7 +98,7 @@ absolute_kappa_routeを持たない旧serviceや未対応方式では、具体�
 
 ## 保存と再利用
 
-サーバー2の各runにREQUEST.json、APPLIED_SCOPE.json、PROBLEM.json、ROUND.requested.jsonを固定保存する。
+中央の各runにREQUEST.json、APPLIED_SCOPE.json、PROBLEM.json、ROUND.requested.jsonを固定保存する。
 Prepareは次回の実行設定とCURRENT_TARGETを固定するだけで、AUTHORIZATIONやLAUNCHを作らない。
 実行設定のscience_approvedは次回Startのための意図であり、Gatewayは明示Startのscope-bound AUTHORIZATIONなしには通常入口を呼ばない。
 範囲・停止条件・評価契約・固定codeが同じなら同じrun IDになる。範囲変更は新runとし、旧ROUND/receiptを上書きしない。
@@ -115,8 +115,8 @@ Prepareは次回の実行設定とCURRENT_TARGETを固定するだけで、AUTHO
 
 ## 運用境界
 
-CLIENT.jsonがサーバー2の固定SERVICE.jsonを参照する。通常入口は同じサーバー2上だけで起動する。
-サーバー2が唯一のcontroller。既存Windows relay、qg1/RomuTail設定、WSLの参加flagは操作しない。
+CLIENT.jsonはRomuTailの通常入口と固定SERVICE.jsonを参照する。controllerの起動と継続は中央が担当する。
+Windowsクライアントからの通信は既存のSSH経路を使う。Windows relay、各ホストのprofileとWSLの参加flagはそれぞれの運用入口が管理する。
 SERVICE/採択済みtemplate変更は新しい固定版として扱う。確定targetはCURRENT_TARGET.jsonに保持する。
 旧runのUNKNOWN/STOPや未解決launchを自動retryしない。通常入口の既存停止条件を維持する。
 

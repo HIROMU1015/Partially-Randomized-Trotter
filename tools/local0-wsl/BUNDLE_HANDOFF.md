@@ -25,6 +25,6 @@ RomuTailの固定release `.rpe-central/releases/95a74e448-pbs-current/.git/objec
 
 ## 中央担当への引き渡し
 
-- `tools/local0-search/tests/Test-SearchClient.ps1` は既存SSHクライアントから隔離した人工bootstrapを呼ぶ。未準備の候補を含むJSONの原本byte、準備予算の未指定と明示0、候補ごとの進捗、準備待ちと並行する評価、Windowsクライアント終了後の継続、再送・再開での起動1回を検収した。
+- `tools/local0-search/tests/Test-SearchClient.ps1` は既存SSHクライアントから隔離した人工bootstrapを呼ぶ。未準備の候補を含むJSONの原本byte、準備予算の未指定と明示0、候補ごとの進捗、準備待ちと並行する評価、Windowsクライアント終了後の継続、再送・再開での起動1回を検収した。人工準備の成果をhash照合して取り込んでから同じ入力で評価へ移行する経路と、中央が返した継続元run IDの照合も確認した。
 - [応答契約](../local0-search/PROGRESS_CONTRACT.md) に従い、中央の台帳から `RPE_LOCAL0_PROGRESS_V1` と継続元run IDを返す。既存の旧runはクライアントの状態照会で技術停止と表示した。継続と共有currentの採用は中央の通常手順で行う。
 - 共通側ではbundle生成・配布時に、前提commitに加えてthin packのdelta base、固定証拠の `commit:path`、sparse展開に必要なtreeとblobの到達可能性を検査する。workerの `_metadata_input_repository` と `_clone` が受け取る固定storeを使い、捨てられる新規cloneでverify、fetch、固定hash照合、sparse展開までを配布前検収に含める。欠けた依存は固定された配布物として宣言し、既にあるobjectは再利用する。今回のlocal0側はこれらの共通worker関数と生成処理を変更していない。
