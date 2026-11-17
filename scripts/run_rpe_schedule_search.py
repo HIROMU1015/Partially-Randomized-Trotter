@@ -234,12 +234,14 @@ class WideDriver(K.Driver):
 
     def loop(self):
         previous_stop = self.state.get('stop', {}).get('reason')
-        transient = {'PLAN_ONLY_FIRST_DECISION_WRITTEN', 'SCIENCE_NOT_APPROVED_FIRST_DECISION_WRITTEN',
+        transient = {'USER_REQUESTED_STOP', 'PLAN_ONLY_FIRST_DECISION_WRITTEN', 'SCIENCE_NOT_APPROVED_FIRST_DECISION_WRITTEN',
                      'PLAN_ONLY_NOTHING_TO_PREPARE', 'MAX_CYCLES'}
         if previous_stop and previous_stop not in transient:
             self.log(event='PRESERVED_STOP', reason=previous_stop);return
         if previous_stop:self.state.pop('stop')
         while self.state['cycle'] < self.a.max_cycles:
+            if (self.run/'STOP_REQUESTED.json').exists():
+                self.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());self.save();return
             self.state['cycle'] += 1;self.save()
             proposals, report = self.plan();self.save()
             interim = []
@@ -868,7 +870,7 @@ class WidthDriver:
 
     def loop(self):
         previous=self.state.get('stop',{}).get('reason')
-        transient={'REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY'}
+        transient={'USER_REQUESTED_STOP','REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY'}
         if previous and previous not in transient:
             self.log(event='PRESERVED_STOP',reason=previous);return
         if previous:self.state.pop('stop')
@@ -890,6 +892,8 @@ class WidthDriver:
             return
         end=self.state['cycle']+self.a.max_cycles
         while self.state['cycle']<end:
+            if (self.run/'STOP_REQUESTED.json').exists():
+                self.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());self.save();return
             self.state['cycle']+=1;started=time.monotonic();self.log(event='PLAN_START')
             self.bootstrap_families();proposals,report=self.plan();self.save()
             self.log(event='PLAN_END',wall_seconds=time.monotonic()-started,proposals=len(proposals))
@@ -945,6 +949,11 @@ def main(argv=None, *, driver_factory=None):
     factory=driver_factory or (WidthDriver if declared is not None else WideDriver)
     d = factory(a);d.log(event='DRIVER_START', plan_only=a.plan_only)
     try:d.loop()
+    except KeyboardInterrupt:
+        # Executor cleanup drains owned work. Scientific UNKNOWN/STOP evidence
+        # remains in job artifacts; only this operational stop is resumable.
+        d.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now())
+        d.save();d.log(event='USER_REQUESTED_STOP')
     except BaseException as error:
         O.record_runtime_error(a.run_dir,error,'DRIVER')
         d.state['stop']=dict(reason='RUNTIME_EXCEPTION',error_type=type(error).__name__,message=str(error),
@@ -952,6 +961,9 @@ def main(argv=None, *, driver_factory=None):
         try:d.save();d.log(event='DRIVER_ERROR',stop=d.state['stop'])
         except BaseException as save_error:O.record_runtime_error(a.run_dir,save_error,'FAILED_DRIVER_STATE_SAVE')
         raise
+    if (a.run_dir/'STOP_REQUESTED.json').exists() and d.state.get('stop',{}).get('reason') not in (
+            'V2_RESULT_REQUIRES_REVIEW','RUNTIME_EXCEPTION'):
+        d.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());d.save()
     d.log(event='DRIVER_END', stop=d.state.get('stop'))
     print(json.dumps(O.jsonable(d.state.get('stop')), default=str)[:2000])
     return d

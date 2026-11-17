@@ -95,7 +95,8 @@ def df_generate(request):
     inputs['design']['delta']=float(delta)
     inputs['kappa_paper']=str(dec(design['kappa']))  # absolute, never a multiplier
     inputs['design']['K']=design.get('K',base['spec']['finite_K'])
-    index=read(INDEX);desc=index['T20_reference_files']['H4'];raw=Path(desc['path']).read_bytes()
+    index=read(INDEX);desc=index['T20_reference_files']['H4']
+    raw=Path(request.get('controller_paths',{}).get('DF_DESCRIPTOR',desc['path'])).read_bytes()
     if hashlib.sha256(raw).hexdigest()!=desc['sha256']:raise ValueError('Saved DF descriptor bytes differ')
     context=json.loads(raw)
     if type(ld)is not int or not 1<=ld<context['binding']['rank']:
@@ -126,8 +127,13 @@ def df_generate(request):
 
 
 def main():
+    global DF_VIEW,SIGNAL_VIEW
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('mode',choices=('df-generate','df-plan','df-stage','df-bundle','df-price-design','pauli-price-plan','quote','intake'))
     p.add_argument('--input',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();r=json.loads(a.input.read_text())
+    # Deployment paths only. Existing provider SOURCE/hash/runtime guards still
+    # validate each relocated checkout and descriptor before scientific work.
+    paths=r.get('controller_paths',{})
+    DF_VIEW=Path(paths.get('DF_VIEW',DF_VIEW));SIGNAL_VIEW=Path(paths.get('SIGNAL_VIEW',SIGNAL_VIEW))
     if a.mode=='df-generate':value=df_generate(r)
     elif a.mode=='df-plan':
         config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config).plan(config)
@@ -169,7 +175,8 @@ def main():
             got=A.accept_saved(view,integration=T.C.interfaces(str(view)).pipeline,handoff_source=r['packet'])
             item=got['results'][0];binding=T.create(view,item['configuration'],original_source=r['configuration']);T.bind_signal(view,binding,item['signal_packet'])
         else:
-            W=module(view,'run_pr_df_ld_split_q3_resume','scripts/run_pr_df_ld_split_q3_resume.py')
+            adapter=module(ROOT,'_portable_prdf_intake','scripts/run_rpe_optimizer_q3_job.py')
+            W,_=adapter.load_prdf_route(view,r.get('controller_paths',{}).get('route_views',{}))
             config=read(r['configuration']);binding,_=W.U.T.create(view,config,original_source=r['configuration']),None
             case=dict(configuration=r['configuration'],original_configuration_id=config['id'],signal_packet=r['packet'],
                 signal_packet_kind='A_BUNDLE_REQUIRES_EXISTING_K_ACCEPT_SAVED',binding_id=binding['id'],total_configuration_id=binding['total_configuration']['id'])

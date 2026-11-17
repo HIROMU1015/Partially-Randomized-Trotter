@@ -134,6 +134,7 @@ class ConcurrentExecutor(O.Executor):
     def _enqueue(self,proposal,demand=False):
         job=self.job_dir(proposal);s=self.state
         with s.cv:
+            if self._user_stop_requested():return False
             if s.failure:raise RuntimeError('Executor persistence/start failure; no new launches: '+s.failure)
             if proposal['configuration_id']in self.execution_holds.get(self.method,{}):return None
             old=s.tasks.get(job)
@@ -192,6 +193,15 @@ class ConcurrentExecutor(O.Executor):
                 s.clock+=1;s.owner_clock[t.owner]=s.clock;t.status='RUNNING';t.speculative=not t.demand;s.active+=1
                 s.peak_active=max(s.peak_active,s.active)
             self._start(t)
+
+    def _user_stop_requested(self):
+        """Stop intake and release only unassigned work; preserve remote owners."""
+        if not (self.run_dir/'STOP_REQUESTED.json').exists():return False
+        with self.state.cv:
+            for task in self.state.tasks.values():
+                if task.status=='QUEUED':self._cancel(task)
+            self.state.cv.notify_all()
+        return True
 
     def _stop_after_failure(self,error):
         # Persistence/start failure stops new launches; existing children finish.
@@ -998,6 +1008,9 @@ class DistributedExecutor(ConcurrentExecutor):
         method = 'PREPARATION:'+preparation['stage']
         task_contract = dict(evaluation=deepcopy(contract),dependencies=preparation['dependencies'])
         with self.state.cv:
+            if self._user_stop_requested():
+                self.preparation_holds[job_id]=dict(status='PREPARATION_HOLD',reason='USER_REQUESTED_STOP')
+                return job_id
             if preparation.get('dry_check_only')is True:
                 self.preparation_holds[job_id]=dict(status='PREPARATION_HOLD',reason='INSPECTION_ONLY_REQUEST_NOT_EXECUTABLE')
                 self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],reason='INSPECTION_ONLY_REQUEST_NOT_EXECUTABLE')
@@ -1194,6 +1207,7 @@ class DistributedExecutor(ConcurrentExecutor):
         if not self._candidate_preparation_ready(proposal): return False
         job = self.job_dir(proposal); s = self.state
         with s.cv:
+            if self._user_stop_requested():return False
             if s.failure: raise RuntimeError('Executor persistence failure: '+s.failure)
             task = s.tasks.get(job)
             if task and task.status != 'CANCELLED':
@@ -1323,6 +1337,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 raise ValueError('Unknown artifact RPC endpoint')
             if path == '/v1/poll':
                 if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
+                stopping = self._user_stop_requested()
                 slots = value['slots']
                 if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
                 fingerprints = value.get('host_fingerprints') or {}
@@ -1358,6 +1373,9 @@ class DistributedExecutor(ConcurrentExecutor):
                         "SELECT job_id FROM jobs WHERE host_id=? AND state='ASSIGNED' ORDER BY enqueued_epoch,job_id LIMIT ?",
                         (host, slots))]
                 assignments = [self._assignment(self.store.row(job)) for job in replay_ids]
+                if stopping:
+                    return reply(assignments=assignments, stop=False,
+                                 host_admission=dict(accepting=False,reason='USER_REQUESTED_STOP'))
                 self._timing_queue()
                 required = [name for name in self.distributed.get('required_hosts', [])
                             if not self._host_admission(name, admission_policy, admission_error)['optional']]

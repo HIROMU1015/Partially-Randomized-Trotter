@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Run the local0 qg2-controller/qg1-mailbox relay without shared storage.
+"""Recover and dispatch fixed worker mailboxes without shared storage.
 
-Only the server2 controller selects candidates and reserves/adopts evaluations.
-Stopping this relay leaves all received server1 jobs running independently.
+The controller owns candidate selection and result adoption. It may run on the
+same host as this relay; SSH mailboxes can be Linux or Windows-hosted WSL.
+Stopping this relay leaves all received jobs running independently.
 """
 import argparse
+import base64
 from concurrent.futures import ThreadPoolExecutor, wait
 import threading
 try:
@@ -54,6 +56,53 @@ def child_options(platform_name=None):
     return {}
 
 
+def ssh_wsl_command(worker, command, action):
+    """Windows SSH -> existing WSL mailbox, preserving JSON stdin/stdout.
+
+    Encoded PowerShell avoids CMD quoting Linux paths or the Japanese Windows
+    participation path. No remote file or authentication setting is created.
+    """
+    argv = [worker.get('wsl_executable', 'wsl.exe'), '-d', worker['distribution'], '--exec'] + command
+    literals = ','.join("'" + str(value).replace("'", "''") + "'" for value in argv[1:])
+    executable = "'" + argv[0].replace("'", "''") + "'"
+    script = (
+        "$ErrorActionPreference='Stop';"
+        "$OutputEncoding=New-Object System.Text.UTF8Encoding($false);"
+        "[Console]::OutputEncoding=New-Object System.Text.UTF8Encoding($false);"
+        "$raw=[Console]::In.ReadToEnd();"
+        "$mailboxArgs=@(" + literals + ");"
+        "$lines=$raw | & " + executable + " @mailboxArgs;"
+        "if($LASTEXITCODE -ne 0){exit $LASTEXITCODE};"
+        "$value=($lines -join [Environment]::NewLine)|ConvertFrom-Json;"
+    )
+    if action == 'status' and (worker.get('participation_file') or worker.get('participation_wsl_file')):
+        if worker.get('participation_wsl_file'):
+            flag_args = ['-d', worker['distribution'], '--exec', 'cat', worker['participation_wsl_file']]
+            flag_literals = ','.join("'" + str(value).replace("'", "''") + "'" for value in flag_args)
+            script += (
+                "$enabled=$false;$flagArgs=@(" + flag_literals + ");"
+                "$flagLines=& " + executable + " @flagArgs 2>$null;"
+                "if($LASTEXITCODE -eq 0){"
+                "$flag=($flagLines -join [Environment]::NewLine)|ConvertFrom-Json;"
+                "$enabled=($flag.accepting_new_jobs -eq $true)};"
+            )
+        else:
+            path = "'" + worker['participation_file'].replace("'", "''") + "'"
+            script += (
+                "$enabled=$false;"
+                "if(Test-Path -LiteralPath " + path + "){"
+                "$flag=Get-Content -LiteralPath " + path + " -Raw -Encoding UTF8|ConvertFrom-Json;"
+                "$enabled=($flag.accepting_new_jobs -eq $true)};"
+            )
+        script += (
+            "$value|Add-Member -Force -NotePropertyName accepting_new_jobs -NotePropertyValue $enabled;"
+            "if(-not $enabled){$value.slots=0};"
+        )
+    script += "$value|ConvertTo-Json -Depth 100 -Compress;"
+    encoded = base64.b64encode(script.encode('utf-16-le')).decode('ascii')
+    return 'powershell.exe -NoProfile -NonInteractive -EncodedCommand ' + encoded
+
+
 class Relay:
     def __init__(self, configuration):
         self.configuration = Path(configuration).resolve()
@@ -76,7 +125,7 @@ class Relay:
         started = time.time()
         self.state = dict(pid=os.getpid(), configuration=str(self.configuration), workers={},
                           started_epoch=started, heartbeat_epoch=started, stopped=False,
-                          transport='local0 SSH controller forwarding + worker mailbox')
+                          transport='controller-local or SSH forwarding + independent worker mailboxes')
 
     def log(self, event, **value):
         row = dict(stamp(), event=event, **value)
@@ -114,7 +163,10 @@ class Relay:
         else:
             alias = worker['ssh_alias']
             if not alias or alias.startswith('-'): raise ValueError('Invalid existing SSH alias')
-            command = self.ssh+['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, shlex.join(command)]
+            remote_command = (ssh_wsl_command(worker, command, action)
+                              if worker.get('transport') == 'ssh-wsl' else shlex.join(command))
+            command = worker.get('ssh_command', self.ssh)+[
+                '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, remote_command]
         started = time.monotonic()
         process = subprocess.run(command,
             input=json.dumps(value or {}), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
@@ -123,7 +175,7 @@ class Relay:
         if process.returncode:
             raise RuntimeError('Worker mailbox '+action+' failed ('+str(process.returncode)+'): '+process.stderr[-1500:])
         result = json.loads(process.stdout)
-        if action == 'status' and worker.get('participation_file'):
+        if action == 'status' and worker.get('participation_file') and worker.get('transport') != 'ssh-wsl':
             participation = Path(worker['participation_file'])
             enabled = participation.is_file() and json.loads(participation.read_text(encoding='utf-8-sig')).get('accepting_new_jobs') is True
             result['accepting_new_jobs'] = enabled
@@ -336,7 +388,14 @@ class Relay:
         budget=max(0,min(self.poll_seconds,float(self.config.get('discovery_wait_seconds',self.poll_seconds))))
         deadline=time.monotonic()+budget
         if self.ensure_tunnel():
-            workers=self.config['workers']
+            workers=[]
+            for worker in self.config['workers']:
+                if worker.get('enabled', True) is False:
+                    self.state['workers'][worker['host_id']] = dict(
+                        phase='DISABLED', accepting_new_jobs=False,
+                        reason=worker.get('disabled_reason', 'Host disabled by controller configuration'))
+                    continue
+                workers.append(worker)
             if self.discovery_pool is None:
                 self.discovery_pool=ThreadPoolExecutor(max_workers=max(1,len(workers)),thread_name_prefix='rpe-mailbox')
             for worker in workers:

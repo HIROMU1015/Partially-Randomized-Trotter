@@ -87,6 +87,10 @@ class PreparationYield(Exception):
 
 
 class Completion:
+    def path(self,name):
+        value=getattr(self,"settings",{}).get("controller_paths",{}).get(name,globals()[name])
+        return str(value) if name in ("NATIVE","PRICE") else Path(value)
+
     def __init__(self,directory,settings):
         self.directory=Path(directory).resolve();self.directory.mkdir(parents=True,exist_ok=True)
         self.settings=settings
@@ -209,7 +213,9 @@ class Completion:
             raise Held('STAGE_FAILED:'+stage+':'+str(detail.get('status'))+':'+str(detail.get('reason'))+':'+str(d/(stage+'.log')))
         return read(output)if output and Path(output).exists()else read(done)
 
-    def service(self,mode,request,d,tag=None,python=NATIVE):
+    def service(self,mode,request,d,tag=None,python=None):
+        python=python or self.path("NATIVE")
+        request=dict(request,controller_paths=self.settings.get("controller_paths",{}))
         tag=tag or mode;inp=d/(tag+'.INPUT.json');out=d/(tag+'.json');put(inp,request)
         return self.call([python,'-B',str(ROOT/'scripts/pr_candidate_services.py'),mode,'--input',str(inp),'--output',str(out)],d,tag,out)
 
@@ -243,8 +249,8 @@ class Completion:
         if record.get('registry_at_hold')==digest:return None
         d=self.directory/'refresh'/record['key']/digest
         registry=d/'PRICE_RULES.json';put(registry,read(self.registry))
-        quote=self.service('quote',dict(configuration=record['configuration'],view=str(D2_VIEW),
-            registry_file=str(registry),policy='MODEL'),d,tag='AVAILABLE_EVIDENCE_QUOTE',python=PRICE)
+        quote=self.service('quote',dict(configuration=record['configuration'],view=str(self.path('D2_VIEW')),
+            registry_file=str(registry),policy='MODEL'),d,tag='AVAILABLE_EVIDENCE_QUOTE',python=self.path('PRICE'))
         quote=self.quote_with_steps(value(record['configuration']),quote)
         put(d/'AVAILABLE_EVIDENCE_QUOTE.json',quote)
         if not quote.get('complete'):
@@ -301,7 +307,7 @@ class Completion:
                 generated=self.service('df-generate',request,d)
                 if generated['status']=='NEEDS_DF_TAIL_DESCRIPTOR':
                     prefix=request['design']['L_D'];descriptor=d/'DF_TAIL_DESCRIPTOR.json'
-                    self.call([NATIVE,'-B',str(ROOT/'scripts/derive_pr_df_candidate_descriptor.py'),'--prefix',str(prefix),'--configuration','0defa286c53a1b9acf513be453907bcad83102b3:docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json','--output',str(descriptor),'--source',self.source],d,'DF_DESCRIPTOR',descriptor,science=True)
+                    self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/derive_pr_df_candidate_descriptor.py'),'--prefix',str(prefix),'--configuration','0defa286c53a1b9acf513be453907bcad83102b3:docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json','--output',str(descriptor),'--source',self.source],d,'DF_DESCRIPTOR',descriptor,science=True)
                     dc=publish([d],'Fix derived DF tail descriptor and scientific SOURCE')
                     request['tail_descriptor']=dict(commit=dc,path=rel(descriptor))
                     generated=self.service('df-generate',request,d,tag='DF_GENERATE_WITH_DESCRIPTOR')
@@ -347,11 +353,11 @@ class Completion:
                     signal_future=pool.submit(signal_work)
                     price_future=pool.submit(self.price,config,cref,prepared,request,d,initial_quote)
                     signal=signal_future.result();rec.update(signal=signal);self.save()
-                    intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(B_VIEW if request['method']=='PR_PAULI'else DF_Q3_VIEW)),d)
+                    intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(self.path('B_VIEW') if request['method']=='PR_PAULI'else self.path('DF_Q3_VIEW'))),d)
                     rec['intake']=intake;self.save();quote=price_future.result()
             else:
                 signal=signal_work();rec.update(signal=signal);self.save()
-                intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(B_VIEW if request['method']=='PR_PAULI'else DF_Q3_VIEW)),d)
+                intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(self.path('B_VIEW') if request['method']=='PR_PAULI'else self.path('DF_Q3_VIEW'))),d)
                 rec['intake']=intake;self.save()
                 quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
             if not quote['complete']:raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
@@ -413,7 +419,7 @@ class Completion:
             quote=self.initial_quote(config,config,d)
             if request['method']=='PR_PAULI':
                 cal=self.service('pauli-price-plan',dict(configuration=config,prepared_item=prepared,price_quote=quote,
-                    workspace=str(self.settings.get('pauli_workspace',A_WORKSPACE))),d)
+                    workspace=str(self.settings.get('pauli_workspace',self.path('A_WORKSPACE')))),d)
             else:
                 cal=self.service('df-price-design',dict(configuration=config,price_quote=quote),d)
             signal_rows={r['m']:r for r in signals.get('rounds',[])}
@@ -452,7 +458,7 @@ class Completion:
                 if generated.get('status')=='NEEDS_DF_TAIL_DESCRIPTOR'and allow_science:
                     prefix=selected['design']['L_D'];target=d/'DF_TAIL_DESCRIPTOR.json'
                     template=selected.get('template_source')or dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json')
-                    self.call([NATIVE,'-B',str(ROOT/'scripts/derive_pr_df_candidate_descriptor.py'),'--prefix',str(prefix),
+                    self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/derive_pr_df_candidate_descriptor.py'),'--prefix',str(prefix),
                         '--configuration',template['commit']+':'+template['path'],'--output',str(target),'--source',self.source],
                         d,'DF_DESCRIPTOR',target,science=True)
                     fixed=publish([d],'Fix chosen split descriptor for mapper metadata')
@@ -472,7 +478,7 @@ class Completion:
         put(d/'FAMILY.json',out);return out
 
     def pauli_configuration(self,r,d,allow_science=True):
-        workspace=Path(self.settings.get('pauli_workspace',A_WORKSPACE));d.mkdir(parents=True,exist_ok=True)
+        workspace=Path(self.settings.get('pauli_workspace',self.path('A_WORKSPACE')));d.mkdir(parents=True,exist_ok=True)
         saved=[dict(commit='d7a976a629a6db68197b24f8f86734e109c8bf5d',path=p)for p in (
             'docs/research/rpe_split_preparation_20261116/LD4/PREPARATION_P1.0.CONFIGURATION.json',
             'docs/research/rpe_split_preparation_20261116/LD6/PREPARATION.0.CONFIGURATION.json')]
@@ -480,7 +486,7 @@ class Completion:
             inp=d/(tag+'.REQUEST.json');out=d/(tag+'.json')
             put(inp,dict(kind='pauli_native',items=[item],saved_configurations=saved,saved_packets=self.saved_signal_packets('PR_PAULI')))
             cache=(self.directory/'PAULI_SPLITS.json')if hasattr(self,'directory')else d/'SPLITS.json'
-            cmd=[NATIVE,'-B',str(workspace/'scripts/prepare_pauli_candidate.py'),'--request',str(inp),'--output',str(out),'--cache',str(cache)]
+            cmd=[self.path('NATIVE'),'-B',str(workspace/'scripts/prepare_pauli_candidate.py'),'--request',str(inp),'--output',str(out),'--cache',str(cache)]
             requested_prefix=(item.get('configuration')or{}).get('spec',{}).get('L_D',(item.get('configuration')or{}).get('L_D'))
             if requested_prefix in (7,8,9):cmd+=['--p0-builder','no-drop']
             if science:
@@ -519,9 +525,9 @@ class Completion:
         if descriptor is None and(config['spec']['L_D']not in(1,2,3,5)or not all(k in source for k in('index','context_sha256'))):
             raise Held('PAULI_DESCRIPTOR_SOURCE_UNRESOLVED')
         request=dict(configuration=config,tail_descriptor=descriptor,saved_packets=packets,
-            workspace=str(self.settings.get('pauli_workspace',A_WORKSPACE)),directory='docs/research/d2_automatic_pr_20261116/'+config['id'][:20]+'/'+self.settings.get('signal_epoch','descriptor_envelope_v2'),interpreter=NATIVE)
+            workspace=str(self.settings.get('pauli_workspace',self.path('A_WORKSPACE'))),directory='docs/research/d2_automatic_pr_20261116/'+config['id'][:20]+'/'+self.settings.get('signal_epoch','descriptor_envelope_v2'),interpreter=self.path('NATIVE'))
         inp=d/'PAULI_SIGNAL_REQUEST.json';out=d/'PAULI_SIGNAL_RESULT.json';put(inp,request)
-        result=self.call([NATIVE,'-B',str(ROOT/'scripts/run_pr_pauli_candidate_signals.py'),'--request',str(inp),'--output',str(out),'--execute'],d,'PAULI_SIGNALS',out,science=True)
+        result=self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/run_pr_pauli_candidate_signals.py'),'--request',str(inp),'--output',str(out),'--execute'],d,'PAULI_SIGNALS',out,science=True)
         if result['status']!='SIGNALS_READY':raise Held('PAULI_SIGNAL:'+str(result.get('reason')or result['status']))
         return result
 
@@ -532,7 +538,7 @@ class Completion:
         request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=self.source,output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(ROOT.parent/'d2-pr-df-ld7-signal-source-fefd-20261116')))
         inp=d/'DF_SIGNAL_REQUEST.json';put(inp,request);input_commit=publish([d],'Fix missing DF round jobs')
         output=d/'df_signals/RESULT.json'
-        result=self.call([NATIVE,'-B',str(ROOT/'scripts/run_pr_df_candidate_signal_jobs.py'),'--input',str(inp),'--inputs-commit',input_commit,'--source',self.source],d,'DF_SIGNALS',output,science=True)
+        result=self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/run_pr_df_candidate_signal_jobs.py'),'--input',str(inp),'--inputs-commit',input_commit,'--source',self.source],d,'DF_SIGNALS',output,science=True)
         if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
         raw=publish([d],'Publish missing DF round signals')
         obtained={str(x['m']):dict(commit=raw,path=x['raw_path'])for x in result['rows']if x.get('raw_path')}
@@ -548,8 +554,8 @@ class Completion:
     def initial_quote(self,config,cref,d):
         registry=d/'PRICE_RULES.json'
         if not registry.exists():put(registry,read(self.registry))
-        req=dict(configuration=cref,view=str(D2_VIEW),registry_file=str(registry),policy='MODEL')
-        quote=self.service('quote',req,d,tag='INITIAL_QUOTE',python=PRICE)
+        req=dict(configuration=cref,view=str(self.path('D2_VIEW')),registry_file=str(registry),policy='MODEL')
+        quote=self.service('quote',req,d,tag='INITIAL_QUOTE',python=self.path('PRICE'))
         return self.quote_with_steps(config,quote)
 
     def price(self,config,cref,prepared,r,d,initial_quote=None):
@@ -562,17 +568,17 @@ class Completion:
 
     def _price(self,config,cref,prepared,r,d,initial_quote=None):
         registry=d/'PRICE_RULES.json'
-        req=dict(configuration=cref,view=str(D2_VIEW),registry_file=str(registry),policy='MODEL')
+        req=dict(configuration=cref,view=str(self.path('D2_VIEW')),registry_file=str(registry),policy='MODEL')
         quote=self.initial_quote(config,cref,d)if initial_quote is None else initial_quote
         quote=self.quote_with_steps(config,quote)
         if not quote['complete']:
             if r['method']=='PR_PAULI':
                 inp=d/'PAULI_PRICE_REQUEST.json';out=d/'PAULI_PRICE_RESULT.json'
-                put(inp,dict(configuration_source=cref,configuration=config,prepared_item=prepared,price_quote=quote,registry_file=str(registry),workspace=str(self.settings.get('pauli_workspace',A_WORKSPACE)),
-                    directory='docs/research/d2_automatic_price_20261116/'+config['id'][:20],private_root=str(ROOT.parent/'d2-auto-private'/config['id'][:20]),d2_view=str(D2_VIEW),interpreter=PRICE,
+                put(inp,dict(configuration_source=cref,configuration=config,prepared_item=prepared,price_quote=quote,registry_file=str(registry),workspace=str(self.settings.get('pauli_workspace',self.path('A_WORKSPACE'))),
+                    directory='docs/research/d2_automatic_price_20261116/'+config['id'][:20],private_root=str(ROOT.parent/'d2-auto-private'/config['id'][:20]),d2_view=str(self.path('D2_VIEW')),interpreter=self.path('PRICE'),
                     scoped_registration=True,execution_source=self.source))
                 try:
-                    cmd=[PRICE,'-B',str(ROOT/'scripts/run_pr_pauli_candidate_prices.py'),'--request',str(inp),'--output',str(out),'--execute']
+                    cmd=[self.path('PRICE'),'-B',str(ROOT/'scripts/run_pr_pauli_candidate_prices.py'),'--request',str(inp),'--output',str(out),'--execute']
                     if getattr(self,'stage_executor',None)is not None:
                         compiled=self.call(cmd+['--phase','compile','--no-push'],d,'PAULI_COMPILE',out,science=True)
                         if compiled.get('status')not in('COMPILE_READY_FOR_AUDIT','STEP_COMPILES_READY_FOR_AUDIT','PRICES_READY','SCOPED_STEP_MODEL_READY','STEP_MODELS_READY'):
@@ -592,7 +598,7 @@ class Completion:
             else:self.ingest_price_results(self.df_price(cref,quote,d,registry,r.get('tail_descriptor')))
             quote=self.quote_with_steps(config,quote)
             if not quote['complete']:
-                quote=self.service('quote',req,d,tag='REQUOTE',python=PRICE)
+                quote=self.service('quote',req,d,tag='REQUOTE',python=self.path('PRICE'))
                 quote=self.quote_with_steps(config,quote)
         put(d/'FINAL_QUOTE.json',quote)
         return quote
@@ -618,7 +624,7 @@ class Completion:
     def df_price_group(self,cref,quote,d,registry,group,descriptor=None):
         """One existing DF calibration/holdout campaign per exact actual step."""
         d.mkdir(parents=True,exist_ok=True);base=d/'df_prices';inp=base/'INPUTS.json'
-        args=[PRICE,'-B',str(ROOT/'scripts/run_pr_df_candidate_prices.py')]
+        args=[self.path('PRICE'),'-B',str(ROOT/'scripts/run_pr_df_candidate_prices.py')]
         descriptor_file=d/'DF_DESCRIPTOR_LOCATOR.json'
         if descriptor:put(descriptor_file,descriptor)
         quote_file=d/'AVAILABLE_PRICE_QUOTE.json';put(quote_file,quote)
@@ -645,8 +651,8 @@ class Completion:
 
     def common_route(self,method,cid,configuration,packet,binding):
         """The same fixed worker/contract for newly prepared and saved candidates."""
-        view=B_VIEW if method=='PR_PAULI'else DF_Q3_VIEW
-        return dict(kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=NATIVE,
+        view=self.path('B_VIEW') if method=='PR_PAULI'else self.path('DF_Q3_VIEW')
+        return dict(kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=self.path('NATIVE'),
             view=str(view),view_commit=git('rev-parse','HEAD',cwd=view),configuration_ids=[cid],
             contract_template=(dict(commit='b6d4dea49c39f364048af422bc2928ee7c169261',path='docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json')if method=='PR_PAULI'else dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json',inputs_selector=['inputs'])),
             configurations={cid:dict(configuration=configuration,signal_packet=packet,
@@ -911,14 +917,14 @@ def publish_comparison_exports(completion,run,context):
                 result=dict(commit=raw,path=rel(result)),outcome=dict(commit=raw,path=rel(outcome_path)),api=dict(commit=raw,path=rel(leaf/'API_RETURN.json')),
                 quote=record['quote'],comparison_label=method+'_AUTO_'+cid[:12]+'_'+job.name)
             inp=d/'EXPORT_REQUEST.json';put(inp,req);script=str(ROOT/'scripts/export_pr_candidate_comparison.py')
-            completion.call([NATIVE,'-B',script,'prices','--request',str(inp),'--output',str(d/'AXIS_PRICES.json')],d,'EXPORT_PRICES')
+            completion.call([completion.path("NATIVE"),'-B',script,'prices','--request',str(inp),'--output',str(d/'AXIS_PRICES.json')],d,'EXPORT_PRICES')
             pc=publish([d],'Bind automated candidate 26 axis prices for C')
-            completion.call([NATIVE,'-B',script,'inputs','--request',str(inp),'--prices',json.dumps(dict(commit=pc,path=rel(d/'AXIS_PRICES.json'))),'--output',str(d/'INPUTS.json')],d,'EXPORT_INPUTS')
+            completion.call([completion.path("NATIVE"),'-B',script,'inputs','--request',str(inp),'--prices',json.dumps(dict(commit=pc,path=rel(d/'AXIS_PRICES.json'))),'--output',str(d/'INPUTS.json')],d,'EXPORT_INPUTS')
             ic=publish([d],'Fix automated candidate cost/Q3 consumer inputs')
-            completion.call([NATIVE,'-B',script,'join','--inputs',json.dumps(dict(commit=ic,path=rel(d/'INPUTS.json'))),'--output-directory',str(d)],d,'EXPORT_JOIN')
+            completion.call([completion.path("NATIVE"),'-B',script,'join','--inputs',json.dumps(dict(commit=ic,path=rel(d/'INPUTS.json'))),'--output-directory',str(d)],d,'EXPORT_JOIN')
             jc=publish([d],'Publish automated PR comparison through existing C schema')
             check=d/'C_SYNC_CHECK.json'
-            completion.call([NATIVE,'-B',str(ROOT/'scripts/check_pr_candidate_c_sync.py'),'--join',jc+':'+rel(d/'C_RESULT_JOIN.json'),'--comparison-only','--output',str(check)],d,'C_READ_SYNC_CHECK',check)
+            completion.call([completion.path("NATIVE"),'-B',str(ROOT/'scripts/check_pr_candidate_c_sync.py'),'--join',jc+':'+rel(d/'C_RESULT_JOIN.json'),'--comparison-only','--output',str(check)],d,'C_READ_SYNC_CHECK',check)
             exports.append(dict(method=method,configuration_id=cid,job=job.name,source=dict(commit=jc,path=rel(d/'C_RESULT_JOIN.json')),C_sync_check=rel(check)))
     put(completion.directory/'C_EXPORTS.json',dict(exports=exports,source=completion.source,scientific_calls_in_export=0))
     return exports

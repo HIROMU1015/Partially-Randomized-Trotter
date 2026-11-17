@@ -11,6 +11,7 @@ import fcntl
 import hashlib
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -105,7 +106,7 @@ def request_service(config, request):
 
 def resolve(config, request):
     """Translate only settings that the selected normal entry actually consumes."""
-    keys(request, {'scope', 'instruction', 'action'}, 'request')
+    keys(request, {'scope', 'instruction', 'action', 'release', 'run_id'}, 'request')
     scope = deepcopy(request.get('scope') or {})
     keys(scope, {'methods', 'per_method', 'shots', 'stop'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
@@ -243,19 +244,37 @@ class Gateway:
         self.preflight = preflight or self.normal_preflight; self.launch = launch or self.normal_launch
 
     def handle(self, request):
+        from trottertracks.rpe_release_registry import select
+        try:
+            release_config = select(self.config, request)
+        except ValueError as error:
+            raise RequestError('release', str(error)) from error
+        if release_config is not self.config:
+            return Gateway(release_config,
+                preflight=None if self.preflight == self.normal_preflight else self.preflight,
+                launch=None if self.launch == self.normal_launch else self.launch).handle(request)
         selected = request_service(self.config, request)
         if selected is not self.config:
             return Gateway(selected,
                 preflight=None if self.preflight == self.normal_preflight else self.preflight,
                 launch=None if self.launch == self.normal_launch else self.launch).handle(request)
-        if request.get('action') not in ('preview', 'prepare', 'start', 'status'):
-            raise RequestError('action', 'preview, prepare, start, or status required')
+        if request.get('action') not in ('preview', 'planonly', 'prepare', 'start', 'resume', 'stop', 'status'):
+            raise RequestError('action', 'preview, planonly, prepare, start, resume, stop, or status required')
+        if (self.state/'MIGRATED_TO.json').exists() and request['action'] not in ('preview', 'status'):
+            raise RequestError('controller', 'this state moved; use '+str(load(self.state/'MIGRATED_TO.json').get('controller','RomuTail')))
         with locked(self.state):
             current = self.state / 'CURRENT_TARGET.json'
             if not request.get('scope'):
-                if not current.exists(): raise RequestError('target', 'server2 has no confirmed target; provide a scope or register a confirmed run')
-                target = load(current); run = Path(target['run_directory'])
+                if request.get('run_id'):
+                    registry=load(self.state/'RUNS.json') if (self.state/'RUNS.json').exists() else {}
+                    if request['run_id'] not in registry:raise RequestError('run_id','unknown existing run')
+                    run=Path(registry[request['run_id']]['run_directory'])
+                else:
+                    if not current.exists(): raise RequestError('target', 'controller has no confirmed target; provide a scope or register a confirmed run')
+                    target = load(current); run = Path(target['run_directory'])
                 if request['action'] == 'status': return self.result(run, 'STATUS')
+                if request['action'] == 'stop': return self.result(run, self.stop(run))
+                if request['action'] == 'planonly': return self.result(run, self.plan_only(run))
                 if request['action'] in ('preview','prepare'): return self.result(run, 'CONFIRMED_TARGET')
                 if not str(request.get('instruction', '')).strip(): raise RequestError('instruction', 'explicit start instruction required')
                 status=self.start(run, request)
@@ -270,7 +289,9 @@ class Gateway:
             signature = digest(dict(problem=problem, method_settings=summary['method_settings'],round={k:v for k,v in spec.items() if k not in ('round_id', 'science_approved','note','method_overrides')}, entry=entry,
                 code_source=self.config['code_source']))
             run_id = 'search-' + signature[:20]; run = self.state / 'runs' / run_id
-            if request['action'] == 'preview': return dict(run_id=run_id,status='PREVIEW',applied=summary,started=False,computation_source=self.config['computation_source'])
+            if request['action'] == 'preview': return dict(run_id=run_id,status='PREVIEW',applied=summary,started=False,computation_source=self.config['computation_source'],release=self.config.get('release'),controller_source=self.config['code_source'])
+            if request['action'] in ('stop','resume','status'):
+                raise RequestError('scope','use the existing run_id or confirmed target for status/stop/resume')
             if request['action']=='start' and not str(request.get('instruction', '')).strip(): raise RequestError('instruction', 'explicit start instruction required')
             registry_path = self.state / 'RUNS.json'; registry = load(registry_path) if registry_path.exists() else {}
             if not run.exists():
@@ -290,9 +311,13 @@ class Gateway:
                     evaluation_identity=evaluation,entry=entry,code_source=self.config['code_source'],applied=summary,
                     problem_sha256=digest(problem),round_requested_sha256=digest(spec),scope=canonical))
                 immutable(run/'REQUEST.json', request)
+                pinned=deepcopy(self.config);pinned['config_path']=str(run/'CONTROLLER_CONFIG.json')
+                immutable(run/'CONTROLLER_CONFIG.json',pinned)
+                if self.config.get('release'):immutable(run/'RELEASE.json',self.config['release'])
                 registry[run_id]=dict(run_directory=str(run),evaluation_identity=evaluation,signature=signature)
                 write(registry_path, registry)
             write(current, dict(run_id=run_id,run_directory=str(run)))
+            if request['action']=='planonly':return self.result(run,self.plan_only(run))
             if request['action']=='prepare':return self.result(run,'PREPARED_NO_EXECUTION_GRANT')
             status=self.start(run, request)
             return self.result(run, status)
@@ -310,7 +335,7 @@ class Gateway:
             reasons={v['stop_reason'] for v in outcomes.values()}
             holds={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
             if reasons & holds:raise RequestError('run','existing scientific hold/STOP is preserved: '+','.join(sorted(reasons & holds)))
-            if reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'}:
+            if reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED'}:
                 return 'REUSED_COMPLETED'
         spec = load(run/'ROUND.requested.json'); problem = load(run/'PROBLEM.json')
         applied = load(run/'APPLIED_SCOPE.json')
@@ -322,16 +347,27 @@ class Gateway:
         if report.get('status') != 'PASS': raise RequestError('preflight', '§10.5 evidence is incomplete/conflicting; see DUPLICATE_PREFLIGHT.json')
         immutable(run/'ROUND.json', spec)
         write(run/'AUTHORIZATION.json', dict(kind='EXPLICIT_USER_START',instruction=request['instruction'],scope_signature=applied['signature'],authorized_utc=time.time()))
+        if (run/'STOP_REQUESTED.json').exists():
+            previous=load(run/'STOP_REQUESTED.json')
+            write(run/'stop-history'/(str(time.time_ns())+'.json'),previous)
+            (run/'STOP_REQUESTED.json').unlink()
         self.launch(run, problem, spec)
         return 'STARTED'
 
     def result(self, run, status):
         a = load(run/'APPLIED_SCOPE.json')
         return dict(run_id=a['run_id'],run_directory=str(run),status=status,applied=a['applied'],started=(run/'LAUNCH.json').exists(),
-                    computation_source=self.config['computation_source'],
+                    computation_source=self.config['computation_source'],release=self.config.get('release'),controller_source=self.config['code_source'],
                     preflight=load(run/'DUPLICATE_PREFLIGHT.json') if (run/'DUPLICATE_PREFLIGHT.json').exists() else None)
 
     def normal_preflight(self, run, problem, spec):
+        if self.config.get('artificial_controller_directory'):
+            fixture=Path(self.config['artificial_controller_directory'])
+            if not str(problem.get('problem',{}).get('system','')).startswith('ARTIFICIAL'):
+                raise RequestError('fixture','artificial controller requires an artificial problem')
+            if not load(fixture/'ROUND.json').get('artificial_fixture',{}).get('only'):
+                raise RequestError('fixture','artificial controller directory is not explicitly artificial')
+            return dict(status='PASS',scientific_calls=0,artificial_only=True,fixture=str(fixture))
         from trottertracks import rpe_method_optimizer as O
         sys.path.insert(0,str(Path(self.config['code_root'])/'scripts'))
         import run_rpe_method_optimizer as CLI
@@ -372,12 +408,37 @@ class Gateway:
     def normal_launch(self, run, problem, spec):
         invocation=uuid.uuid4().hex
         command=[self.config['python'],'-B',str(Path(self.config['code_root'])/'scripts/run_rpe_local0_search.py'),
-                 '--config',self.config['config_path'],'--execute-run',str(run),'--invocation',invocation]
+                 '--config',str(run/'CONTROLLER_CONFIG.json') if (run/'CONTROLLER_CONFIG.json').exists() else self.config['config_path'],'--execute-run',str(run),'--invocation',invocation]
         with (run/'DRIVER.log').open('a') as log:
             process=subprocess.Popen(command,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,
                 env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),start_new_session=True)
         marker=dict(pid=process.pid,command=command,invocation_id=invocation)
         write(run/'invocations'/invocation/'LAUNCH.json',marker);write(run/'LAUNCH.json',marker)
+
+    def plan_only(self,run):
+        applied=load(run/'APPLIED_SCOPE.json')
+        command=[self.config['python'],'-B',str(Path(self.config['code_root'])/'scripts'/ENTRIES[applied['entry']]),
+            '--problem',str(run/'PROBLEM.json'),'--round',str(run/'ROUND.requested.json'),'--run-dir',str(run/'plan-only'),'--plan-only']
+        if self.config.get('artificial_controller_directory'):
+            self.normal_preflight(run,load(run/'PROBLEM.json'),load(run/'ROUND.requested.json'))
+            command=[self.config['python'],'-B',str(Path(self.config['code_root'])/'scripts/check_rpe_romutail_distributed.py'),
+                '--controller',self.config['artificial_controller_directory'],'--control-run',str(run),'--plan-only']
+        if not self.config.get('artificial_controller_directory'):
+            for key in ('batch','max_cycles'):
+                if key in applied['scope'].get('stop',{}):command+=['--'+key.replace('_','-'),str(applied['scope']['stop'][key])]
+        with (run/'PLAN_ONLY.log').open('a')as log:
+            value=subprocess.run(command,cwd=self.config['code_root'],stdout=log,stderr=subprocess.STDOUT,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
+        write(run/'PLAN_ONLY.json',dict(command=command,returncode=value.returncode,scientific_calls=0))
+        return 'PLAN_ONLY_COMPLETE'if value.returncode==0 else'PLAN_ONLY_HOLD'
+
+    def stop(self,run):
+        write(run/'STOP_REQUESTED.json',dict(reason='USER_REQUESTED_STOP',requested_epoch=time.time()))
+        marker=load(run/'NORMAL_DRIVER.json')if(run/'NORMAL_DRIVER.json').exists()else{}
+        pid=marker.get('pid');cmd=Path('/proc')/str(pid)/'cmdline'
+        if pid and cmd.exists()and str(run).encode()in cmd.read_bytes():
+            os.kill(pid,signal.SIGINT)
+            return'STOP_REQUESTED_DRAINING'
+        return'STOPPED_NO_ACTIVE_DRIVER'
 
 def execute_run(config, run, invocation):
     run=Path(run);scope=load(run/'APPLIED_SCOPE.json');spec=load(run/'ROUND.json')
@@ -391,12 +452,27 @@ def execute_run(config, run, invocation):
         raise RequestError('run','applied settings differ before normal entry')
     command=[config['python'],'-B',str(Path(config['code_root'])/'scripts'/ENTRIES[scope['entry']]),
         '--problem',str(run/'PROBLEM.json'),'--round',str(run/'ROUND.json'),'--run-dir',str(run)]
+    if config.get('artificial_controller_directory'):
+        if not str(load(run/'PROBLEM.json').get('problem',{}).get('system','')).startswith('ARTIFICIAL'):
+            raise RequestError('fixture','real problem cannot use the artificial controller')
+        fixture=Path(config['artificial_controller_directory'])
+        if not load(fixture/'ROUND.json').get('artificial_fixture',{}).get('only'):
+            raise RequestError('fixture','fixture is not labelled artificial')
+        command=[config['python'],'-B',str(Path(config['code_root'])/'scripts/check_rpe_romutail_distributed.py'),
+                 '--controller',str(fixture),'--control-run',str(run)]
     stop=scope['scope'].get('stop',{})
-    for key in ('batch','max_cycles'):
-        if key in stop:command+=['--'+key.replace('_','-'),str(stop[key])]
+    if not config.get('artificial_controller_directory'):
+        for key in ('batch','max_cycles'):
+            if key in stop:command+=['--'+key.replace('_','-'),str(stop[key])]
     try:
-        result=subprocess.run(command,cwd=config['code_root'],env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
-        value=dict(returncode=result.returncode,command=command,finished_utc=time.time(),invocation_id=invocation)
+        process=subprocess.Popen(command,cwd=config['code_root'],env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
+        write(run/'NORMAL_DRIVER.json',dict(pid=process.pid,command=command,invocation_id=invocation))
+        code=process.wait()
+        if config.get('artificial_controller_directory'):
+            result_path=Path(config['artificial_controller_directory'])/'run/ROUND_RESULT.json'
+            if result_path.exists():
+                write(run/'ROUND_RESULT.json',load(result_path))
+        value=dict(returncode=code,command=command,finished_utc=time.time(),invocation_id=invocation)
         write(run/'invocations'/invocation/'EXIT.json',value);write(run/'EXIT.json',value)
     except Exception as error:
         value=dict(returncode=1,error=str(error),command=command,invocation_id=invocation)
