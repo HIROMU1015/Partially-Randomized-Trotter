@@ -97,11 +97,21 @@ class AutoAllocationTests(unittest.TestCase):
     def test_first_wsl_poll_discovery_is_bounded_when_preferred_never_respond(self):
         ex = self.executor();ex.allocation_config['discovery_grace_seconds'] = .1
         _, facts = self.jobs(ex, 1)
+        ex.state.allocation_start -= 100  # A slow plan must not expire discovery before the first worker poll.
         first = self.poll(ex, WSL, facts)
         self.assertEqual(first['assignments'], [])
         self.assertTrue(first['waiting_for_discovery'])
-        ex.state.allocation_start -= 1
+        ex.state.allocation_discovery[WSL] -= 1
         self.assertEqual(len(self.poll(ex, WSL, facts)['assignments']), 1)
+
+    def test_known_preferred_surplus_does_not_wait_for_unresponsive_third_host(self):
+        ex = self.executor();ex.allocation_config['discovery_grace_seconds'] = 1
+        _, facts = self.jobs(ex, 3)
+        self.poll(ex, 'server2', facts, observe=True)
+        self.poll(ex, 'server1', facts, observe=True)
+        answer = self.poll(ex, WSL, facts)
+        self.assertEqual(len(answer['assignments']), 1)
+        self.assertNotIn('waiting_for_discovery', answer)
 
     def test_paused_optional_host_is_not_timing_required_or_busy_wait(self):
         ex = self.executor();_, facts = self.jobs(ex, 1)

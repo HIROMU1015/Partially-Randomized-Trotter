@@ -57,6 +57,29 @@ class AutoOptionsTests(unittest.TestCase):
             self.assertEqual(profiles['host']['slots'], 1)
             self.assertEqual(profile_core(profiles['host']), profile_core(profile))
 
+    def test_timed_profile_pack_keeps_scientific_inputs_and_marks_fresh_check(self):
+        import prepare_rpe_auto_profiles as T
+        base = ROOT / 'docs/research/rpe_q3_host_eligibility/optional_wsl/NORMAL_ENTRY/worker_profiles'
+        layout = json.loads((ROOT / 'docs/research/rpe_q3_auto_allocation/HOST_LAYOUT.json').read_text())
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / 'new-pack'
+            rows = T.prepare(base, layout, '870d7c153', output, 'ARTIFICIAL_METADATA')
+            self.assertEqual(len(rows), 4)
+            for row in rows:
+                self.assertEqual(row['status'], 'TIMED_ADAPTER_PROFILE_REQUIRES_FRESH_DRY_CHECK')
+                old = json.loads((base / (row['host_id'] + '.json')).read_text())
+                new = json.loads((output / 'worker_profiles' / (row['host_id'] + '.json')).read_text())
+                self.assertEqual(old['root'], new['root'])
+                self.assertEqual(old['route_views'], new['route_views'])
+                self.assertEqual(new['slot_policy']['initial_slots'], 1)
+                before = [old] + [r['profile'] for r in old.get('route_profiles', [])]
+                after = [new] + [r['profile'] for r in new.get('route_profiles', [])]
+                for a, b in zip(before, after):
+                    for key in ('interpreter', 'route_views', 'dp_workers', 'prefix_cache_directory', 'runtime_checks'):
+                        self.assertEqual(a.get(key), b.get(key))
+                    self.assertEqual(b['adapter_root'], row['transport_root'])
+                    self.assertIn('src/trottertracks/rpe_q3_timing.py', b['adapter_manifest']['files'])
+
     def test_operational_slots_do_not_invalidate_existing_dry_cache(self):
         base = ROOT / 'docs/research/rpe_q3_host_eligibility/optional_wsl/NORMAL_ENTRY'
         profile = json.loads((base / 'worker_profiles/server2.json').read_text())

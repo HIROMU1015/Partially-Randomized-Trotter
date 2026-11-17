@@ -1,0 +1,35 @@
+{
+  "schema": "RPE_AUTO_Q3_HOST_LAYOUT_V1",
+  "hosts": {
+    "server2": {
+      "transport_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-{short}",
+      "profile": "/home/AbeHiromu/projects/rpe-q3-auto-deployment/{run_id}/server2.json",
+      "work_dir": "/home/AbeHiromu/projects/rpe-q3-auto-deployment/{run_id}/server2-spool",
+      "transport_python": "python3"
+    },
+    "server1": {
+      "transport_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-{short}",
+      "profile": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/{run_id}/server1.json",
+      "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/{run_id}/spool",
+      "ssh_alias": "qg1",
+      "transport_python": "/home/AbeHiromu/venvs/trotter-common/bin/python"
+    },
+    "local": {
+      "transport_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-{short}",
+      "profile": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto/{run_id}/local.json",
+      "work_dir": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto/{run_id}/spool",
+      "ssh_alias": "RomuTail",
+      "transport_python": "python3"
+    },
+    "local0-wsl": {
+      "transport_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/{source}",
+      "profile": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/auto/{run_id}/local0-wsl.json",
+      "work_dir": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/auto/{run_id}/spool",
+      "transport": "wsl",
+      "distribution": "Ubuntu",
+      "wsl_executable": "wsl.exe",
+      "transport_python": "/root/myproject/Evaluation_numGate_highorder_DF/venv/bin/python",
+      "participation_file": "C:\\Users\\romuk\\Desktop\\code\\project\\Partially-Randomized-Trotter\\tools\\local0-wsl\\PARTICIPATION.json"
+    }
+  }
+}

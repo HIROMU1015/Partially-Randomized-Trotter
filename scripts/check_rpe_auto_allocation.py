@@ -175,6 +175,9 @@ def run_one(directory, *, reference=False, join_late=False):
             setting = directory / 'run/distributed/ALLOCATION_SETTINGS.json'
             if not setting.exists():raise AssertionError('Normal entry did not preserve allocation settings')
             summary['allocation_settings'] = json.loads(setting.read_text())
+            summary['source_manifest'] = json.loads((directory / 'run/distributed/SOURCE.json').read_text())['source']
+            summary['global_capacity_decisions'] = [r for r in read_lines(directory / 'run/PROGRESS.jsonl')
+                if r.get('event') == 'AUTO_CAPACITY']
             summary['worker_slot_states'] = {}
             summary['worker_slot_decisions'] = {}
             for host in HOSTS:
@@ -246,7 +249,9 @@ def acceptance(directory):
     result = dict(schema='RPE_AUTO_ALLOCATION_ARTIFICIAL_ENTRY_V1', status='PASS',
         scope='ORDINARY_ENTRY_ACTUAL_ARTIFICIAL_PROCESSES_SIMULATED_HOSTS_ONE_OS',
         cases=rows, exact_MSE_bounds_and_decisions_match_reference=True,
-        method_minima_match_reference=True, scientific_H4_calls=0,
+        method_minima_match_reference=True,
+        comparison_limits='Single-host reference omits artificial sleep; wall times are not a speedup comparison. Host names are simulated on one OS.',
+        scientific_H4_calls=0,
         signal_generation_calls=0, compile_calls=0, production_queue_submissions=0)
     F.write(directory / 'AUTO_ACCEPTANCE.json', result)
     return result

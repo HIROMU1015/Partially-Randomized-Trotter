@@ -430,6 +430,7 @@ class DistributedExecutor(ConcurrentExecutor):
             self.state.allocation_epoch = time.time()
             self.state.allocation_waits = {}
             self.state.allocation_wait_totals = {}
+            self.state.allocation_discovery = {}
             if not settings_path.exists(): Q.atomic_json(settings_path, settings)
             self.controller_source = self.optimizer_source
             self.computation_root = Path(distributed.get('computation_root', self.root)).resolve()
@@ -1002,14 +1003,20 @@ class DistributedExecutor(ConcurrentExecutor):
                 # One bounded discovery interval allows simultaneous free
                 # offers to arrive; it never waits for a busy host to finish.
                 rank = self._host_rank(host)
-                if (s.allocation_auto and rank > 0 and eligible and
-                        time.monotonic()-s.allocation_start < self.allocation_config['discovery_grace_seconds']):
+                if s.allocation_auto and rank > 0 and eligible:
                     higher = [h for group in self.allocation_config['priority_groups'][:rank] for h in group]
                     unknown = [h for h in higher if h not in self.hosts]
                     relevant = any((self.store.row(task.job.name)['eligibility'] is None or
                         h in self.store.row(task.job.name)['eligibility']['eligible_host_ids'])
                         for h in unknown for task in eligible)
-                    if relevant:
+                    # Start once at this host's first eligible poll, rather
+                    # than at controller startup (planning/placement can be
+                    # slow). Any higher-group observation ends discovery:
+                    # an absent third host cannot delay known surplus work.
+                    now = time.monotonic()
+                    since = s.allocation_discovery.setdefault(host, now)
+                    if (relevant and not any(h in self.hosts for h in higher) and
+                            now-since < self.allocation_config['discovery_grace_seconds']):
                         return reply(assignments=assignments, stop=False, eligibility_challenges=challenges,
                                      host_admission=admission, waiting_for_discovery=unknown)
                 # Prefix locality is considered only among eligible hosts for
