@@ -179,7 +179,7 @@ def import_inputs(plan, old_run, study):
     registry = str(run / 'PRICE_RULES_REGISTRY.json')
     spec['base_commit'] = plan['new_code_source']
     spec['candidate_completion']['source'] = plan['new_code_source']
-    spec['candidate_completion']['signal_epoch'] = 'multiwidth_r08_recovery_20261117'
+    spec['candidate_completion']['signal_epoch'] = plan.get('signal_epoch', 'multiwidth_r08_recovery_20261117')
     spec['candidate_completion']['price_registry_file'] = registry
     spec['candidate_completion'].pop('resume_preparation_from', None)
     spec['price_rules_overrides']['registry_file'] = registry
