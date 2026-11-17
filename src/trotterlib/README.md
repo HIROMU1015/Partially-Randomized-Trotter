@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H₄探索マップconsumer](../../docs/research/h4_search_map_20261117/HANDOFF.md)：`trottertracks.h4_search_run_evidence`・`h4_search_map`・`h4_search_map_html`。公開記録のみ、solver呼出しなし。
+
 [H4保存結果の自動比較](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)：実装はtrottertracks/CLI。物理library・数値solverを変更せず、保存判定と費用を照合する。
 
 [Full-H κ2 m0再判定・固定総額](../../docs/research/full_h_m0_zero_zz_admission_total_20261116/REPORT.md)：保存証拠とscript会計だけを接続。物理library・compilerの変更なし。

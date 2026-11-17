@@ -17,3 +17,5 @@
 [sync_saved_rpe_publications.py](../scripts/sync_saved_rpe_publications.py)はGitの公開ref/path/blobを用い、同じ入力docのReader cacheを再利用する。ref・入力manifest・consumer実装が不変なら集計を省略し、時刻やHEADだけの差分を作らない。raw/private directoryを走査しない。固定成果からの初回同期は本環境で約13秒（当時の公開16branch、51保存点）、科学計算の速度向上ではない。人工/保存入力で順序独立・冪等性を検査。[運用・検証](research/h4_optimizer_saved_results_intake_20261116/HANDOFF.md)。
 
 [round03の修正](research/h4_round03_public_sync_20261116/REPORT.md)：公開selected REQUEST→EVALUATIONS hash→exact OUTCOME/CASE_INPUTS→保存価格coverageを再利用する。最終索引がなくても公開best_pointsから接続できる。configuration一致だけの偽INTEGRATEDを廃止し、同じ配分の再検出を重複登録しない。新価格予測・Q3は起動しない。
+
+[H₄探索マップ](research/h4_search_map_20261117/REPORT.md)は公開Gitのdocs subtree listingをtree OIDで再利用し、同じ構成のscheduleを索引内で共有する。全配分へ大型bindingを複製しない。元NEW/PRIOR/SAVEDを区別し、共通同期の入力・実装不変時は再集計を省略。人工＋保存metadataで検査、科学処理の高速化実測ではない。

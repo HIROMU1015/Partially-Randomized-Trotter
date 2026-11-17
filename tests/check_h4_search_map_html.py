@@ -1,0 +1,46 @@
+"""Presentation-only fixture: no scientific inputs or producer execution."""
+from copy import deepcopy
+import json
+import re
+import unittest
+from trottertracks.h4_search_map_html import render, source_url
+
+
+class SearchMapHTML(unittest.TestCase):
+    def test_offline_exact_data_source_trace_and_untrusted_labels(self):
+        source={'commit':'a'*40,'path':'docs/research/space name/RESULT.json','selector':['rows',0]}
+        index={'schema':'H4_SEARCH_MAP_V1','comparison':{'snapshot':'SYNTHETIC'},'runs':[],
+            'points':[{'id':'point','method':'PR_DF','configuration_id':'cfg','formula':'2nd',
+            'row_key':'ld1','row_label':'L_D=1','width_key':'1/5','width_label':'1/5',
+            'requested_width':'</script><img src=x onerror=alert(1)>','N_X':[1]*13,'N_Y':[1]*13,
+            'q3_status':'MODEL_BOUND_MEETS_ADOPTED_THRESHOLD','conditional_cost':{'numerator':11,'denominator':3},
+            'sources':[source],'configuration_detail_key':'PR_DF:cfg'}],'configuration_details':{'PR_DF:cfg':{'schedule':[{'m':0,'q':1}], 'configuration_source':source}},'targets':[],'views':[{'id':'all','label':'全run累計','mode':'ALL','cells':[]},{'id':'new:run','label':'そのrunで新たに評価','mode':'NEW','run_id':'run','cells':[]}],
+            'sources':[source],'issues':[]}
+        page=render(index)
+        embedded=re.search(r'<script id="index-data" type="application/json">(.*?)</script>',page,re.S).group(1)
+        self.assertEqual(json.loads(embedded),index)
+        self.assertNotIn('<img',page)
+        self.assertNotIn('fetch(',page)
+        self.assertNotIn('<script src=',page)
+        self.assertIn('全収録点の静的表',page)
+        self.assertIn('11',embedded)
+        self.assertIn('3.67 RZ',page)
+        self.assertIn('space%20name',page)
+        self.assertIn('NEW',page)
+        self.assertIn('そのrunで新たに評価',page)
+        self.assertIn('SOURCE_NOT_IMPORTED',page)
+        self.assertIn('p.schedule||cfg.schedule',page)
+        self.assertIn('cfg.configuration_source',page)
+        self.assertEqual(source_url(source),'https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/'+'a'*40+'/docs/research/space%20name/RESULT.json')
+        self.assertIsNone(source_url({'path':'local'}))
+        # Presentation pages only; the source index and static fallback retain all 80.
+        many=deepcopy(index);many['points']=[dict(index['points'][0],id='point'+str(i),configuration_id='cfg'+str(i))for i in range(80)]
+        page80=render(many)
+        embedded80=re.search(r'<script id="index-data" type="application/json">(.*?)</script>',page80,re.S).group(1)
+        self.assertEqual(len(json.loads(embedded80)['points']),80)
+        self.assertEqual(page80.count('<tr>'),81)
+        self.assertIn('次の50件',page80)
+        self.assertIn('ps.slice(shown,end)',page80)
+
+
+if __name__=='__main__':unittest.main(verbosity=2)

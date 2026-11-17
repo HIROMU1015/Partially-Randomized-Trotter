@@ -104,7 +104,7 @@ def discover(reader,heads):
             meta,path=line.split('\t',1);sha=meta.split()[2]
             parts=PurePosixPath(path).parts
             if PurePosixPath(path).name=='REQUEST.json' and 'best_points'not in parts:continue
-            if PurePosixPath(path).name not in NAMES or any(s in parts for s in ('jobs','load_check')) or any(
+            if PurePosixPath(path).name not in NAMES or any(s in parts for s in ('jobs','load_check','checks','local_plan')) or any(
                     s.startswith(('artificial','executor_acceptance_','preparation_connection_','generation_acceptance_',
                                   'priority_acceptance_','a_acceptance_','pf_power_stability_artificial'))for s in parts):continue
             key=path+'@'+sha
@@ -192,14 +192,35 @@ def synchronize(root,config,*,fetch=True,publish=False):
                 *['+refs/heads/'+b+':refs/remotes/'+config['remote']+'/'+b for b in sorted(branches)])
         else:branches=set(config['branches'])
         heads={b:git(root,'rev-parse','refs/remotes/'+config['remote']+'/'+b)for b in sorted(branches)}
+        publication_heads={}
+        if config.get('search_map'):
+            # Every environment publishes the same small controller manifest.
+            # No branch-name transfer to C is required for new independent runs.
+            if fetch:
+                public=git(root,'ls-remote','--heads',config['remote'])
+                publication_heads={line.split()[1].removeprefix('refs/heads/'):line.split()[0]
+                    for line in public.splitlines()if line.split()[1]!='refs/heads/'+config['branch']}
+                missing=[b for b,h in publication_heads.items() if b not in heads]
+                if missing:
+                    git(root,'fetch','--no-tags',config['remote'],
+                        *['+refs/heads/'+b+':refs/remotes/'+config['remote']+'/'+b for b in missing])
+            else:
+                # Offline replay uses the exact heads from the last manifest.
+                source_path=root/config['search_map']/'SOURCES.json'
+                if source_path.exists():publication_heads=json.loads(source_path.read_text()).get('heads',{})
+            publication_heads.update(heads)
         directory=root/config['directory']
         def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+        map_files=['src/trottertracks/'+name for name in
+            ('h4_search_map.py','h4_search_run_evidence.py','h4_search_map_html.py')]if config.get('search_map')else[]
         implementation=hashlib.sha256((sha(root/'scripts/sync_saved_rpe_publications.py')+
             sha(root/'src/trottertracks/saved_rpe_cost_catalog.py')+
-            sha(root/'src/trottertracks/pf_optimizer_connection.py')+json.dumps(config,sort_keys=True)).encode()).hexdigest()
+            sha(root/'src/trottertracks/pf_optimizer_connection.py')+''.join(sha(root/p)for p in map_files)+
+            json.dumps(config,sort_keys=True)).encode()).hexdigest()
         prior=json.loads((directory/'PUBLICATIONS.json').read_text())if (directory/'PUBLICATIONS.json').exists()else{}
-        if (prior.get('heads')==heads and prior.get('implementation')==implementation and
-                prior.get('input_manifest_sha256')==sha(root/config['inputs'])):
+        if (prior.get('heads')==heads and prior.get('search_publication_heads',{})==publication_heads and prior.get('implementation')==implementation and
+                prior.get('input_manifest_sha256')==sha(root/config['inputs']) and
+                (not config.get('search_map') or (prior.get('search_map')or{}).get('status')=='CURRENT')):
             if publish:
                 remote=git(root,'ls-remote',config['remote'],'refs/heads/'+config['branch']).split()[0]
                 if remote!=git(root,'rev-parse','HEAD'):git(root,'push',config['remote'],config['branch'])
@@ -230,7 +251,37 @@ def synchronize(root,config,*,fetch=True,publish=False):
             method_minima=result['method_minima'],duplicates_removed=result['duplicates_removed'],
             fixed_inputs=len(all_sources),new_scientific_calls=0,
             scope='SAVED_RESULT_METADATA_AND_CONDITIONAL_TOTAL_COMPARISON_ONLY'))
+        map_state=None
+        if config.get('search_map'):
+            from trottertracks.h4_search_run_evidence import discover_runs
+            from trottertracks.h4_search_map import build_index, report as map_report
+            from trottertracks.h4_search_map_html import render
+            print('SYNC SEARCH_MAP_START',flush=True)
+            try:
+                # The comparison has already normalized its saved values. Do
+                # not retain every large producer document through both phases.
+                reader.document.cache_clear()
+                runs,map_issues=discover_runs(reader,publication_heads,legacy_heads=set(heads))
+                reader.document.cache_clear()
+                fixed_sources=[r['source']for r in runs]
+                map_sources=dict(schema='H4_SEARCH_MAP_SOURCES_V1',heads=publication_heads,
+                    legacy_heads=sorted(heads),sources=fixed_sources,
+                    catalog_inputs=config['inputs'],controller_publication='SEARCH_PUBLICATION.json')
+                index=build_index(result,runs,sources=fixed_sources,issues=map_issues)
+                index['included_public_heads']=publication_heads
+                write(config['search_map']+'/SOURCES.json',map_sources)
+                write(config['search_map']+'/INDEX.json',index)
+                write(config['search_map']+'/index.html',render(index))
+                write(config['search_map']+'/REPORT.md',map_report(index))
+                map_state=dict(status='CURRENT',runs=len(index['runs']),unique_points=len(index['points']),
+                    issues=len(index['issues']),path=config['search_map']+'/index.html')
+            except (ValueError,KeyError,TypeError,AttributeError,subprocess.CalledProcessError)as error:
+                # Preserve the last good map and update independent C evidence.
+                map_state=dict(status='PENDING',reason=type(error).__name__+': '+str(error)[:400])
+            write(config['search_map']+'/STATUS.json',map_state)
+            print('SYNC SEARCH_MAP_END',json.dumps(map_state),flush=True)
         status=dict(schema='H4_PUBLICATION_SYNC_V1',heads=heads,publications=records,implementation=implementation,
+            search_publication_heads=publication_heads,search_map=map_state,
             input_manifest_sha256=hashlib.sha256((json.dumps(combined,ensure_ascii=False,indent=2)+'\n').encode()).hexdigest(),
             stage=stage_summary(result,list(records.values())),new_science_calls=0)
         write(config['directory']+'/PUBLICATIONS.json',status)

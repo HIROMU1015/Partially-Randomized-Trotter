@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H₄探索マップ](../docs/research/h4_search_map_20261117/HANDOFF.md)：`publish_h4_search_run.py`でcontroller保存metadataを公開し、既存`sync_saved_rpe_publications.py`が自動検出。`build_h4_search_map.py`は固定入力の再生成だけを行う。
+
 [PR-Pauli厳密stepの価格binding診断](../docs/research/pauli_exact_step_price_binding_20261116/REPORT.md)：厳密ΔPF=1/5とbinary64 0.2を分離。m1はq2/q1で別回路。保存LD3/LD5のm0/m1は同一recipe、m2〜m12はA providerの実step非binary64-exactでUNKNOWNを維持。C guardの条件を変えず、round/不一致fieldを診断可能にした。保存metadata52行一致、人工5＋回帰34＝39 PASS、新科学計算0。
 
 `collect_saved_rpe_costs.py`：[固定入力と同一commandによるH4保存比較](../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。INPUTS.sourcesに固定SHA/pathを追加して再実行。出力は候補CATALOG/方式別最安/REPORT。Q3/価格の計算、solverや探索は起動しない。
