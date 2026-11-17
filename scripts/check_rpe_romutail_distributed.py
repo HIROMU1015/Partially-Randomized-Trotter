@@ -163,6 +163,7 @@ def controller(directory,*,plan_only=False,control_run=None,batch=32,max_cycles=
     if read(inputs/'ROUND.json').get('artificial_fixture',{}).get('only')is not True:
         raise ValueError('Gateway round must preserve artificial-only declaration')
     run=(inputs/'plan-only')if plan_only else(directory/'run')
+    clear_mirrored_stop(directory,inputs,run,explicit_control=control_run is not None,plan_only=plan_only)
     signal.signal(signal.SIGTERM,lambda *_:(_ for _ in()).throw(KeyboardInterrupt()))
     watching=threading.Event()
     def copy_stop():
@@ -181,6 +182,19 @@ def controller(directory,*,plan_only=False,control_run=None,batch=32,max_cycles=
         watching.set()
         if not plan_only:monitor.join(timeout=1)
     if not plan_only:put(directory/'CONTROLLER_COMPLETE.json',dict(status='COMPLETE',scientific_H4_calls=0))
+
+
+def clear_mirrored_stop(directory,control,run,*,explicit_control,plan_only=False):
+    """An explicit Gateway resume may clear only its copied artificial stop."""
+    marker=run/'STOP_REQUESTED.json'
+    if plan_only or not explicit_control or(control/'STOP_REQUESTED.json').exists()or not marker.exists():return
+    if read(directory/'ROUND.json').get('artificial_fixture',{}).get('only')is not True:
+        raise ValueError('Only the artificial mirrored user stop may be cleared')
+    value=read(marker)
+    if value.get('reason')!='USER_REQUESTED_STOP':return
+    archive=run/'STOP_REQUESTED_BEFORE_GATEWAY_RESUME.json'
+    if archive.exists():archive=run/('STOP_REQUESTED_BEFORE_GATEWAY_RESUME_'+str(time.time_ns())+'.json')
+    marker.replace(archive)
 
 
 class RecoveryRelay(R.Relay):
@@ -217,7 +231,7 @@ def synthetic_participation(worker,enabled):
     code=('from pathlib import Path;import json,sys;'
           'p=Path(sys.argv[1]);p.parent.mkdir(parents=True,exist_ok=True);'
           'v=dict(artificial_only=True,accepting_new_jobs=sys.argv[2]=="true");'
-          'p.write_text(json.dumps(v)+"\\n");print(json.dumps(v))')
+          'p.write_text(json.dumps(v)+chr(10));print(json.dumps(v))')
     remote=R.ssh_wsl_command(worker,[worker['python'],'-c',code,path,'true'if enabled else'false'],'fixture-participation')
     command=worker.get('ssh_command',['ssh'])+['-o','BatchMode=yes','-o','ConnectTimeout=10',worker['ssh_alias'],remote]
     result=subprocess.run(command,input='{}',text=True,capture_output=True,timeout=30,check=True)

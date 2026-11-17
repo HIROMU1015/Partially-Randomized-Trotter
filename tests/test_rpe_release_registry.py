@@ -14,7 +14,7 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'tests')]
 from trottertracks.rpe_release_registry import register, select, load_service
-from trottertracks.rpe_local0_search import Gateway, RequestError, load, write
+from trottertracks.rpe_local0_search import Gateway, RequestError, load, write, publish_after_exit
 from test_rpe_local0_search import fixture_config, request
 
 
@@ -157,6 +157,31 @@ class ReleaseTests(unittest.TestCase):
         self.assertTrue(command[2].endswith('check_rpe_romutail_distributed.py'))
         with self.assertRaisesRegex(RequestError,'artificial problem'):
             gateway.normal_preflight(Path(planned['run_directory']),dict(problem=dict(system='H4_REAL')), {})
+
+    def test_absolute_kappa_route_inputs_share_registered_version(self):
+        extra=self.root/'a/ABSOLUTE_ROUND.json';write(extra,load(self.a['round']))
+        config=deepcopy(self.a);config['absolute_kappa_route']=dict(entry='schedule',round=str(extra))
+        service=self.root/'a/ABS_SERVICE.json';write(service,config)
+        register(self.registry,'absolute',service,evidence='ARTIFICIAL_UNIT_TESTS')
+        value=select(self.bootstrap,dict(action='preview',release='absolute',scope={'methods':['PR_PAULI']}))
+        self.assertEqual(value['absolute_kappa_route']['round'],str(extra))
+        changed=load(extra);changed['max_new_q3_per_method']['PR_PAULI']=1;write(extra,changed)
+        with self.assertRaisesRegex(ValueError,'release input changed'):
+            select(self.bootstrap,dict(action='preview',release='absolute',scope={'methods':['PR_PAULI']}))
+
+    def test_artificial_publication_skips_and_publication_failure_is_pending(self):
+        run=self.root/'publication-run';run.mkdir()
+        write(run/'PROBLEM.json',dict(problem=dict(system='ARTIFICIAL')))
+        config=dict(self.a,publication=dict(repository='/OWNED/publication',branch='ARTIFICIAL'))
+        with patch('trottertracks.rpe_local0_search.subprocess.run')as child:
+            publish_after_exit(config,run)
+        child.assert_not_called()
+        self.assertEqual(load(run/'PUBLICATION_STATUS.json')['status'],'ARTIFICIAL_SKIPPED')
+        (run/'PUBLICATION_STATUS.json').unlink()
+        write(run/'PROBLEM.json',dict(problem=dict(system='H4')))
+        with patch('trottertracks.rpe_local0_search.subprocess.run',side_effect=OSError('Artificial transport outage')):
+            publish_after_exit(config,run)
+        self.assertEqual(load(run/'PUBLICATION_STATUS.json')['status'],'FINAL_PUBLICATION_PENDING')
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

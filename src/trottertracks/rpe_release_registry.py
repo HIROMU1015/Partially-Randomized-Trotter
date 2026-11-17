@@ -35,6 +35,14 @@ def load_service(path):
     return value
 
 
+def input_files(config):
+    files={key:config[key] for key in ('problem','round')}
+    for key in ('problem','round'):
+        if config.get('absolute_kappa_route',{}).get(key):
+            files['absolute_kappa_route.'+key]=config['absolute_kappa_route'][key]
+    return files
+
+
 def register(registry_path, release_id, service_path, *, activate=False, evidence=None):
     """One registration/switch operation; retain existing registered versions."""
     service_path = str(Path(service_path).resolve())
@@ -42,13 +50,14 @@ def register(registry_path, release_id, service_path, *, activate=False, evidenc
     for key in ('code_root', 'code_source', 'computation_source', 'problem', 'round', 'python'):
         if not config.get(key):
             raise ValueError('Release service missing ' + key)
-    for key in ('problem', 'round'):
-        if not Path(config[key]).is_file():
-            raise ValueError('Release input missing: ' + config[key])
+    inputs=input_files(config)
+    for path in inputs.values():
+        if not Path(path).is_file():
+            raise ValueError('Release input missing: ' + path)
     registry = read(registry_path) if Path(registry_path).exists() else dict(schema='RPE_VALIDATED_RELEASES_V1', releases={})
     entry = dict(service_config=service_path, status='VALIDATED', implementation_source=config['code_source'],
                  computation_source=config['computation_source'], service_sha256=fingerprint(config),
-                 input_sha256={key: hashlib.sha256(Path(config[key]).read_bytes()).hexdigest() for key in ('problem', 'round')})
+                 input_sha256={key: hashlib.sha256(Path(path).read_bytes()).hexdigest() for key,path in inputs.items()})
     if evidence is not None:
         entry['validation_evidence'] = evidence
     previous = registry['releases'].get(release_id)
@@ -94,7 +103,7 @@ def select(config, request):
     if entry.get('service_sha256') and fingerprint(selected) != entry['service_sha256']:
         raise ValueError('Registered service changed: ' + release_id)
     for key, expected in entry.get('input_sha256', {}).items():
-        if hashlib.sha256(Path(selected[key]).read_bytes()).hexdigest() != expected:
+        if hashlib.sha256(Path(input_files(selected)[key]).read_bytes()).hexdigest() != expected:
             raise ValueError('Registered release input changed: ' + key)
     selected['state_directory'] = str(state)
     selected['release'] = dict(id=release_id, registry=str(Path(config['release_registry']).resolve()),

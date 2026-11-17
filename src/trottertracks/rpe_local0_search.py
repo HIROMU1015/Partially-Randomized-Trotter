@@ -474,6 +474,36 @@ def execute_run(config, run, invocation):
                 write(run/'ROUND_RESULT.json',load(result_path))
         value=dict(returncode=code,command=command,finished_utc=time.time(),invocation_id=invocation)
         write(run/'invocations'/invocation/'EXIT.json',value);write(run/'EXIT.json',value)
+        publish_after_exit(config,run)
     except Exception as error:
         value=dict(returncode=1,error=str(error),command=command,invocation_id=invocation)
         write(run/'invocations'/invocation/'EXIT.json',value);write(run/'EXIT.json',value);raise
+
+
+def publish_after_exit(config,run):
+    """Publish saved result metadata through C's normal path; never alter Q3."""
+    publication=config.get('publication')
+    if not publication:return
+    run=Path(run)
+    problem=load(run/'PROBLEM.json')
+    if config.get('artificial_controller_directory') or str(problem.get('problem',{}).get('system','')).startswith('ARTIFICIAL'):
+        write(run/'PUBLICATION_STATUS.json',dict(status='ARTIFICIAL_SKIPPED',scientific_calls=0))
+        return
+    command=[config['python'],'-B',str(Path(config['code_root'])/'scripts/publish_romutail_search.py'),
+        '--repository',publication['repository'],'--run-dir',str(run),
+        '--controller-source',config['code_source']]
+    if publication.get('branch'):command+=['--branch',publication['branch']]
+    if publication.get('push',False):command+=['--push']
+    try:
+        with (run/'PUBLICATION.log').open('a')as log:
+            result=subprocess.run(command,cwd=config['code_root'],stdout=log,stderr=subprocess.STDOUT,
+                env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
+        # Publisher may write a more specific pending/published locator status.
+        status=load(run/'PUBLICATION_STATUS.json')if(run/'PUBLICATION_STATUS.json').exists()else{}
+        status.update(command=command,returncode=result.returncode,scientific_calls=0)
+        if result.returncode:status['status']='FINAL_PUBLICATION_PENDING'
+        status.setdefault('status','PUBLISHED'if result.returncode==0 else'FINAL_PUBLICATION_PENDING')
+        write(run/'PUBLICATION_STATUS.json',status)
+    except Exception as error:
+        write(run/'PUBLICATION_STATUS.json',dict(status='FINAL_PUBLICATION_PENDING',error=str(error),
+            command=command,scientific_calls=0))

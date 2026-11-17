@@ -49,6 +49,22 @@ class RealHostFixtureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'dedicated synthetic'):
             H.synthetic_participation(worker,True)
 
+    def test_synthetic_participation_code_writes_valid_json_and_only_owned_path(self):
+        with tempfile.TemporaryDirectory()as temporary:
+            path=Path(temporary)/'.romutail-controller-acceptance/settings.json'
+            worker=dict(python=sys.executable,participation_wsl_file=str(path),ssh_alias='synthetic')
+            seen={}
+            def remote(worker,command,action):
+                seen['command']=command;seen['action']=action
+                return 'synthetic-command'
+            original=subprocess.run
+            def run(*args,**kwargs):
+                return original(seen['command'],input=kwargs.get('input'),text=True,capture_output=True,check=True)
+            with patch.object(H.R,'ssh_wsl_command',side_effect=remote),patch.object(H.subprocess,'run',side_effect=run):
+                result=H.synthetic_participation(worker,True)
+            self.assertTrue(result['accepting_new_jobs'])
+            self.assertEqual(json.loads(path.read_text()),result)
+
     def test_gateway_planonly_uses_normal_schedule_without_worker_or_queue(self):
         source=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
         deployment=dict(source_commit=source,hosts={host:dict(root=str(ROOT),python=sys.executable,
@@ -63,6 +79,21 @@ class RealHostFixtureTests(unittest.TestCase):
             self.assertTrue((control/'plan-only/KAPPA_STATE.json').exists())
             self.assertFalse((base/'run').exists())
             self.assertFalse((control/'plan-only/distributed/QUEUE.sqlite3').exists())
+
+    def test_gateway_resume_clears_only_transient_mirrored_artificial_user_stop(self):
+        with tempfile.TemporaryDirectory()as temporary:
+            base=Path(temporary);control=base/'gateway';run=base/'run';control.mkdir();run.mkdir()
+            (base/'ROUND.json').write_text(json.dumps(dict(artificial_fixture=dict(only=True))))
+            marker=run/'STOP_REQUESTED.json'
+            marker.write_text(json.dumps(dict(reason='NUMERICAL_UNKNOWN_MANDATORY_STOP')))
+            H.clear_mirrored_stop(base,control,run,explicit_control=True)
+            self.assertTrue(marker.exists())
+            marker.write_text(json.dumps(dict(reason='USER_REQUESTED_STOP')))
+            H.clear_mirrored_stop(base,control,run,explicit_control=False)
+            self.assertTrue(marker.exists())
+            H.clear_mirrored_stop(base,control,run,explicit_control=True)
+            self.assertFalse(marker.exists())
+            self.assertEqual(json.loads((run/'STOP_REQUESTED_BEFORE_GATEWAY_RESUME.json').read_text())['reason'],'USER_REQUESTED_STOP')
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
