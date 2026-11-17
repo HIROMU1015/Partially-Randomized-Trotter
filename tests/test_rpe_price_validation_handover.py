@@ -43,6 +43,18 @@ class Handover(unittest.TestCase):
                 reconcile(stores[0].path,stores[1].path)
             self.assertEqual(stores[1].row(desc['model_id']),before)
 
+    def test_repeated_snapshot_preserves_newly_collected_metadata_and_shared_publication(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            base=Path(tmp);desc=description();source=V.ModelStore(base/'old')
+            source.register(desc,lambda:([],[]));reconcile(source.path,base/'shared')
+            current=V.ModelStore(base/'shared')
+            current.change(desc['model_id'],lambda r:r.update(status='PENDING',job_id='new-owned-job',owner_run='/local/owner'))
+            self.assertEqual(reconcile(source.path,current.path)['retained'],1)
+            service=V.Service(ROOT,base/'other-run',dict(price_validation={'store':str(current.path),'publish_shared_models':True}))
+            service.export();view=json.loads((service.run/'PRICE_MODEL_VALIDATIONS.json').read_text())
+            self.assertEqual(view['model_scope'],'CONTROLLER_SHARED_MODEL_STORE')
+            self.assertEqual(view['models'][0]['job_id'],'new-owned-job');self.assertEqual(view['applications'],[])
+
     def test_saved_df7_holdout_matches_exact_frozen_axis_price_source(self):
         reader=GitReader(ROOT)
         registry=reader.read(dict(commit='c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa',path='configs/pr_price_rules/h4_saved_rules.json'))

@@ -30,8 +30,12 @@ def reconcile(source, target):
                 raise ValueError('Invalid model identity in source snapshot: '+mid)
             previous=db.execute('SELECT record FROM models WHERE id=?',(mid,)).fetchone()
             if previous:
-                if json.loads(previous[0])!=record:
+                current=json.loads(previous[0])
+                frozen=('identity','selected_round','job_id','request','validation_request','owner_run')
+                if any(record.get(key)is not None and current.get(key)!=record[key]for key in frozen):
                     raise ValueError('Model state differs; retain both stores and reconcile before activation: '+mid)
+                # A repeated transfer must not replace locally collected
+                # results/parser corrections with its older saved snapshot.
                 retained+=1
             else:
                 db.execute('INSERT INTO models VALUES(?,?,?)',(mid,identity,raw));imported+=1

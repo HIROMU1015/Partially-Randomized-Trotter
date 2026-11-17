@@ -99,6 +99,7 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
         # Its saved state must be reconciled before activating this deployment.
         round_value.setdefault('price_validation', {})['store'] = str(
             Path(layout['state_directory']).parent/'price-validation'/'models.sqlite3')
+        round_value['price_validation']['publish_shared_models']=True
         distributed = round_value['executor']['distributed']
         distributed.update(computation_root=profiles['local']['root'],
             local_worker=deepcopy(profiles['local']), worker_script=str(code_root / 'scripts/run_rpe_q3_worker.py'),

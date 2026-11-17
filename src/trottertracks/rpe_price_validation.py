@@ -210,6 +210,9 @@ class ModelStore:
         with self.connect()as db:
             row=db.execute('SELECT record FROM models WHERE id=?',(mid,)).fetchone()
             return None if row is None else json.loads(row[0])
+    def rows(self):
+        with self.connect()as db:
+            return [json.loads(row[0])for row in db.execute('SELECT record FROM models ORDER BY id')]
     def change(self,mid,fn):
         with self.connect()as db:
             db.execute('BEGIN IMMEDIATE');record=json.loads(db.execute('SELECT record FROM models WHERE id=?',(mid,)).fetchone()[0])
@@ -444,7 +447,9 @@ class Service:
         path.parent.mkdir(parents=True,exist_ok=True);tmp=path.with_name(path.name+'.tmp-'+str(threading.get_ident()));tmp.write_text(raw);tmp.replace(path)
     def export(self):
         self._write(self.run/'PRICE_MODEL_VALIDATIONS.json',dict(schema='RPE_PRICE_MODEL_VALIDATIONS_V1',
-            models=[self.store.row(mid)for mid in sorted(self.descriptions)],applications=list(self.applications.values()),issues=self.issues,
+            models=self.store.rows()if self.settings.get('publish_shared_models')else[self.store.row(mid)for mid in sorted(self.descriptions)],
+            model_scope='CONTROLLER_SHARED_MODEL_STORE'if self.settings.get('publish_shared_models')else'CURRENT_RUN_USED_MODELS',
+            applications=list(self.applications.values()),issues=self.issues,
             alters_model_coefficients=False,alters_qualification=False,alters_cost_or_ranking=False))
     def start(self):
         if self.thread is not None:return
