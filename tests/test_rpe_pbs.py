@@ -197,6 +197,15 @@ class ManagerTests(unittest.TestCase):
 
 
 class GatewayTests(unittest.TestCase):
+    def test_json_query_avoids_pbs20_user_table_and_empty_run_does_not_query(self):
+        process = SimpleNamespace(returncode=0, stdout='{"Jobs":{}}', stderr='')
+        with patch.object(G.subprocess, 'run', return_value=process) as run:
+            self.assertEqual(G.qstat(), {})
+            self.assertNotIn('-u', run.call_args[0][0])
+        with tempfile.TemporaryDirectory() as directory, patch.object(G, 'qstat') as query:
+            self.assertEqual(G.snapshot(Path(directory)), [])
+            query.assert_not_called()
+
     def test_lost_qsub_reply_recovers_original_scheduler_job_without_resubmit(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); token = 'artificial-token'

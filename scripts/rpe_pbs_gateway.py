@@ -55,7 +55,8 @@ def memory_bytes(value):
 
 def qstat(job_id=None):
     command = ['/opt/pbs/bin/qstat', '-x', '-f', '-F', 'json']
-    command += [job_id] if job_id else ['-u', getpass.getuser()]
+    # PBS20's -u adds a text summary ahead of JSON, so filter Job_Owner here.
+    command += [job_id] if job_id else []
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     if process.returncode:
         if 'Unknown Job Id' in process.stderr or 'Job has finished' in process.stderr:
@@ -144,9 +145,27 @@ def ensure(root, spec):
 
 
 def snapshot(root):
-    jobs = qstat()
+    directories = [directory for directory in sorted((root/'allocations').glob('*'))
+                   if (directory/'SPEC.json').exists()]
+    if not directories:
+        return []
+    ids = []
+    discovery = False
+    for directory in directories:
+        known = read(directory/'JOB_ID.json')
+        receipt = read(directory/'QSUB_RETURN.json')
+        if known:
+            ids.append(known['job_id'])
+        elif receipt and receipt['returncode'] == 0 and receipt['stdout'].strip():
+            ids.append(receipt['stdout'].split()[0])
+        elif (directory/'QSUB_STARTED.json').exists() and not receipt:
+            discovery = True
+    jobs = qstat() if discovery else {}
+    if not discovery:
+        for job_id in dict.fromkeys(ids):
+            jobs.update(qstat(job_id))
     result = []
-    for directory in sorted((root/'allocations').glob('*')):
+    for directory in directories:
         spec = read(directory/'SPEC.json')
         if spec is None:
             continue
