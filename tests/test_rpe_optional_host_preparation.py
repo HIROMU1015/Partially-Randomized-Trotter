@@ -67,7 +67,7 @@ class OptionalPreparationTests(unittest.TestCase):
                 return subprocess.CompletedProcess(command, 0, json.dumps(dict(slots=1, attempts=['received-job'])), '')
             with patch.object(R.subprocess, 'run', side_effect=run):
                 status, _ = relay.remote(worker, 'status')
-                self.assertEqual(status, dict(slots=0, attempts=['received-job']))
+                self.assertEqual(status, dict(slots=0, attempts=['received-job'], accepting_new_jobs=False))
                 # Pause only suppresses new poll slots. Readiness and result ack
                 # still use the ordinary mailbox transport without launching here.
                 relay.remote(worker, 'ack', {'job_id': 'received-job'})

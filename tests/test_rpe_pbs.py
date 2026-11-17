@@ -98,6 +98,18 @@ class AdmissionTests(unittest.TestCase):
         self.assertEqual(Preparation.preparation_profile_core(fixed),
                          Preparation.preparation_profile_core(operational))
 
+    def test_preparation_estimate_requires_matching_provider_and_source(self):
+        report = dict(pbs=dict(accepting=True, remaining_seconds=210))
+        settings = dict(drain_seconds=30, task_seconds=dict(compile=1),
+                        preparation_task_seconds=[dict(stage='compile', provider='PAULI_COMPILE',
+                                                       source='PINNED', seconds=180)])
+        preparation = dict(stage='compile', provider='PAULI_COMPILE', source=dict(commit='PINNED'))
+        self.assertTrue(P.fits_request(dict(preparation=preparation), report, settings))
+        self.assertFalse(P.fits_request(dict(preparation=dict(preparation, provider='DF_COMPILE')), report, settings))
+        self.assertFalse(P.fits_request(dict(preparation=dict(preparation, source=dict(commit='OTHER'))), report, settings))
+        report['pbs']['remaining_seconds'] = 209
+        self.assertFalse(P.fits_request(dict(preparation=preparation), report, settings))
+
 
 class ManagerTests(unittest.TestCase):
     def manager(self, directory, gateway=None):

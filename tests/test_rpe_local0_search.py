@@ -67,6 +67,26 @@ class Tests(unittest.TestCase):
         g=build(self.config);q=request(4,6);q['action']='preview';preview=g.handle(q)
         self.assertFalse((pathlib.Path(self.config['state_directory'])/'runs').exists())
         q['action']='start';started=g.handle(q);self.assertEqual(preview['run_id'],started['run_id'])
+    def test_normal_scope_uses_central_preparation_defaults_and_keeps_explicit_zero(self):
+        template = load(self.config['round'])
+        template['executor']['distributed'] = dict(preparation=dict(budgets=dict(signal=0, compile=0, audit=0)))
+        write(self.config['round'], template)
+        self.config['preparation_budget_defaults'] = dict(signal='UNLIMITED', compile='UNLIMITED', audit=3)
+        q = request(4, 6)
+        q['action'] = 'preview'
+        gateway = Gateway(self.config)
+        preview = gateway.handle(q)
+        self.assertEqual(preview['applied']['preparation_budgets'], self.config['preparation_budget_defaults'])
+        self.assertFalse(preview['started'])
+        q['scope']['preparation_budgets'] = dict(compile=0)
+        limited = gateway.handle(q)
+        self.assertEqual(limited['applied']['preparation_budgets'], dict(signal='UNLIMITED', compile=0, audit=3))
+        self.assertNotEqual(preview['run_id'], limited['run_id'])
+        q['action'] = 'start'
+        _, spec, _ = resolve(self.config, q)
+        self.assertEqual(spec['executor']['distributed']['preparation']['budgets'], limited['applied']['preparation_budgets'])
+        self.assertEqual(spec['max_new_q3_per_method'], {'PR_PAULI': 0})
+        self.assertEqual(load(self.config['round']), template)
     def test_server2_can_confirm_target_without_grant_then_bare_start(self):
         g=build(self.config);q=request(4,6);q['action']='prepare';q.pop('instruction');prepared=g.handle(q)
         run=pathlib.Path(prepared['run_directory']);self.assertFalse((run/'AUTHORIZATION.json').exists());self.assertFalse((run/'LAUNCH.json').exists())

@@ -76,14 +76,26 @@ class Gateway:
             self.process = None
 
 
+def task_estimate(request, settings):
+    preparation = request.get('preparation') or {}
+    stage = preparation.get('stage', 'q3')
+    rules = settings.get('preparation_task_seconds')
+    if rules is not None and preparation:
+        provider = preparation.get('provider')
+        source = (preparation.get('source') or {}).get('commit')
+        matches = [rule['seconds'] for rule in rules if (rule['stage'], rule['provider'], rule['source'])
+                   == (stage, provider, source)]
+        return matches[0] if len(matches) == 1 else None
+    return (settings.get('task_seconds') or {}).get(stage)
+
+
 def fits_request(request, report, settings):
     """Require a declared conservative runtime before starting scientific work."""
     pbs = (report or {}).get('pbs')
     if pbs is None:
         return True
-    stage = request.get('preparation', {}).get('stage', 'q3')
     artificial = request.get('route', {}).get('kind') == 'artificial' or request.get('preparation', {}).get('artificial')
-    estimate = (settings.get('task_seconds') or {}).get(stage)
+    estimate = task_estimate(request, settings)
     if estimate is None and artificial:
         estimate = pbs.get('minimum_task_seconds', 1)
     if not isinstance(estimate, (int, float)) or estimate <= 0:
@@ -202,8 +214,7 @@ class PbsManager:
         with self.executor.state.cv:
             def relevant(request, eligibility):
                 artificial = self.executor.store.artificial(request)
-                stage = request.get('preparation', {}).get('stage','q3')
-                if not artificial and not (self.settings.get('task_seconds') or {}).get(stage):
+                if not artificial and not (task_estimate(request, self.settings) or 0) > 0:
                     return False
                 return any(self.executor._host_supports_stage(host, request) and
                     (eligibility is None and artificial or host in (eligibility or {}).get('eligible_host_ids', []))
@@ -215,7 +226,8 @@ class PbsManager:
             # Pending preparation metadata is also demand for a live compute
             # worker, but does not consume a scientific budget or reserve a task.
             pending = sum(self.executor.store.row(job) is None and
-                (self.settings.get('task_seconds') or {}).get(record['request']['preparation']['stage'], 0) > 0
+                (task_estimate(record['request'], self.settings) or 0) > 0 and
+                any(self.executor._host_supports_stage(host, record['request']) for host in self.configured)
                 for job,record in self.executor.preparation_pending.items())
             queued = len(tasks) + pending
             policy, error = self.executor._host_admission_policy()

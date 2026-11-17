@@ -253,7 +253,10 @@ def _clone(source, destination, bundles, cache, checkout_input_head=True, source
         relative=artifact_path(name)
         if len(relative.parts)>1 and relative.parts[0]not in directories:
             directories.add(relative.parent.as_posix())
-    subprocess.run(['git','sparse-checkout','set','--cone',*sorted(directories)],cwd=destination,check=True,capture_output=True)
+    # Older supported Git versions interpret --cone after set as a path.
+    subprocess.run(['git','sparse-checkout','init','--cone'],cwd=destination,check=True,capture_output=True)
+    subprocess.run(['git','sparse-checkout','set','--stdin'],input='\n'.join(sorted(directories))+'\n',
+                   text=True,cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','checkout','-b','preparation-owned',commit],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','remote','remove','origin'],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','config','user.name','HIROMU1015'],cwd=destination,check=True)
@@ -278,11 +281,11 @@ def _include_declared_outputs(owned, directory, outputs):
             except ValueError:continue
             if not relative.parts:continue
             target=workspace/relative
-            cone=relative if target.is_dir()or not relative.suffix else relative.parent
+            cone=relative if target.is_dir()or (not target.exists()and not relative.suffix) else relative.parent
             if cone.parts:directories.add(cone.as_posix())
         if directories:
-            subprocess.run(['git','sparse-checkout','add','--cone','--skip-checks',*sorted(directories)],
-                           cwd=workspace,check=True,capture_output=True)
+            subprocess.run(['git','sparse-checkout','add','--stdin'],input='\n'.join(sorted(directories))+'\n',
+                           text=True,cwd=workspace,check=True,capture_output=True)
 
 
 def _export_bundle(root, source, output):

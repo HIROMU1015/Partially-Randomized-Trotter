@@ -212,15 +212,21 @@ def resolve(config, request):
             raise RequestError('scope.shots.max_per_round', 'positive per-round caps required')
         for method in methods: spec['method_overrides'].setdefault(method, {})['caps'] = caps
         canonical['shots'] = dict(min=1, max_per_round=caps)
-    if 'preparation_budgets' in scope:
-        budgets=scope['preparation_budgets']
-        keys(budgets,{'signal','compile','audit'},'scope.preparation_budgets')
-        if not budgets or any(v!='UNLIMITED' and(type(v)is not int or v<0)for v in budgets.values()):
-            raise RequestError('scope.preparation_budgets','nonnegative stage-task budgets or UNLIMITED required')
+    defaults = config.get('preparation_budget_defaults', {})
+    requested_budgets = scope.get('preparation_budgets', {})
+    if 'preparation_budgets' in scope and not requested_budgets:
+        raise RequestError('scope.preparation_budgets', 'supply at least one stage or omit the field')
+    for field, budgets in (('preparation_budget_defaults', defaults),
+                           ('scope.preparation_budgets', requested_budgets)):
+        keys(budgets, {'signal', 'compile', 'audit'}, field)
+        if any(v != 'UNLIMITED' and (type(v) is not int or v < 0) for v in budgets.values()):
+            raise RequestError(field, 'nonnegative stage-task budgets or UNLIMITED required')
+    if defaults or 'preparation_budgets' in scope:
         distributed=spec.get('executor',{}).get('distributed')
         if distributed is None:raise RequestError('scope.preparation_budgets','adopted entry has no distributed preparation executor')
-        distributed.setdefault('preparation',{}).setdefault('budgets',{}).update(budgets)
-        canonical['preparation_budgets']=deepcopy(budgets)
+        distributed.setdefault('preparation',{}).setdefault('budgets',{}).update(defaults | requested_budgets)
+    if 'preparation_budgets' in scope:
+        canonical['preparation_budgets'] = deepcopy(requested_budgets)
     stop = scope.get('stop', {})
     keys(stop, {'max_new_q3_per_method', 'max_steps_per_method', 'max_cycles', 'batch'}, 'scope.stop')
     for key in stop:
@@ -258,10 +264,15 @@ def summarize(problem, spec, canonical):
         change=deepcopy(change)
         if 'generation' in change:effective[method]['generation']=dict(effective[method].get('generation',{}),**change.pop('generation'))
         effective[method].update(change)
-    return dict(methods=spec['methods'], requested=canonical,
+    result = dict(methods=spec['methods'], requested=canonical,
         fixed=dict(problem=problem.get('problem'), accuracy=problem.get('accuracy'), target=problem.get('target'), rpe=problem.get('rpe')),
         method_settings={m:effective[m] for m in spec['methods']},method_overrides=spec.get('method_overrides', {}), search=dict(problem.get('search', {}), **spec.get('search_overrides', {})),
         max_new_q3_per_method=spec.get('max_new_q3_per_method'),max_steps_per_method=spec.get('max_steps_per_method',problem['search']['max_steps_per_method']))
+    preparation = (spec.get('executor', {}).get('distributed') or {}).get('preparation')
+    if preparation is not None:
+        result['preparation_budgets'] = {stage: preparation.get('budgets', {}).get(stage, 0)
+                                         for stage in ('signal', 'compile', 'audit')}
+    return result
 
 class Gateway:
     def __init__(self, config, *, preflight=None, launch=None):
@@ -314,7 +325,13 @@ class Gateway:
             signature = digest(dict(problem=problem, method_settings=summary['method_settings'],round={k:v for k,v in spec.items() if k not in ('round_id', 'science_approved','note','method_overrides')}, entry=entry,
                 code_source=self.config['code_source']))
             run_id = 'search-' + signature[:20]; run = self.state / 'runs' / run_id
-            if request['action'] == 'preview': return dict(run_id=run_id,status='PREVIEW',applied=summary,started=False,computation_source=self.config['computation_source'],release=self.config.get('release'),controller_source=self.config['code_source'])
+            if request['action'] == 'preview':
+                preview = dict(run_id=run_id, status='PREVIEW', applied=summary, started=False,
+                               computation_source=self.config['computation_source'], release=self.config.get('release'),
+                               controller_source=self.config['code_source'])
+                if run.is_dir():
+                    preview['runtime'] = self.runtime_status(run)
+                return preview
             if request['action'] in ('stop','resume','status'):
                 raise RequestError('scope','use the existing run_id or confirmed target for status/stop/resume')
             if request['action']=='start' and not str(request.get('instruction', '')).strip(): raise RequestError('instruction', 'explicit start instruction required')
@@ -409,6 +426,15 @@ class Gateway:
         reasons={method:value.get('stop_reason')for method,value in load(result).get('methods',{}).items()}if result.exists()else{}
         value=dict(phase=phase,controller_alive=alive,invocation_id=launch.get('invocation_id'),
             returncode=finished.get('returncode')if complete else None,stop_reasons=reasons)
+        width_state = actual/'KAPPA_STATE.json'
+        if width_state.is_file():
+            state = load(width_state)
+            value['search_stop'] = state.get('stop')
+            value['candidate_holds'] = [
+                {key: row[key] for key in ('method', 'L_D', 'kappa', 'delta_pf', 'status', 'reason') if key in row}
+                for row in [*state.get('families', {}).values(), *state.get('points', [])]
+                if row.get('status') in ('UNSUPPORTED_MAPPER', 'NEEDS_FAMILY_CONFIGURATION_SOURCE',
+                                         'WAITING_INPUTS', 'HELD')]
         database=actual/'distributed/QUEUE.sqlite3'
         if database.exists():
             import sqlite3
@@ -416,6 +442,11 @@ class Gateway:
                 with sqlite3.connect(database.as_uri()+'?mode=ro',uri=True,timeout=1)as connection:
                     value['jobs_by_state']=dict(connection.execute('SELECT state,count(*) FROM jobs GROUP BY state'))
                     value['adopted_jobs']=connection.execute('SELECT count(*) FROM jobs WHERE adopted_epoch IS NOT NULL').fetchone()[0]
+                    value['jobs_by_stage'] = {}
+                    for stage, state, count in connection.execute("""SELECT
+                            coalesce(json_extract(request, '$.preparation.stage'), 'q3'), state, count(*)
+                            FROM jobs GROUP BY 1, 2"""):
+                        value['jobs_by_stage'].setdefault(stage, {})[state] = count
             except sqlite3.Error as error:value['queue_status_error']=str(error)
         return value
 
