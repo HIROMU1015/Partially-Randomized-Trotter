@@ -158,9 +158,10 @@ def controller(directory,*,plan_only=False,control_run=None,batch=32,max_cycles=
     directory=Path(directory).resolve()
     if read(directory/'ROUND.json')['artificial_fixture']['only']is not True:raise ValueError('Only explicit artificial fixtures allowed')
     inputs=Path(control_run).resolve()if control_run else directory
+    round_path=inputs/('ROUND.requested.json'if plan_only and control_run else'ROUND.json')
     if not str(read(inputs/'PROBLEM.json').get('problem',{}).get('system','')).startswith('ARTIFICIAL'):
         raise ValueError('Only artificial Gateway problem inputs are accepted')
-    if read(inputs/'ROUND.json').get('artificial_fixture',{}).get('only')is not True:
+    if read(round_path).get('artificial_fixture',{}).get('only')is not True:
         raise ValueError('Gateway round must preserve artificial-only declaration')
     run=(inputs/'plan-only')if plan_only else(directory/'run')
     clear_mirrored_stop(directory,inputs,run,explicit_control=control_run is not None,plan_only=plan_only)
@@ -174,10 +175,11 @@ def controller(directory,*,plan_only=False,control_run=None,batch=32,max_cycles=
                 return
     monitor=threading.Thread(target=copy_stop,daemon=True)
     if not plan_only:monitor.start()
-    command=['--problem',str(inputs/'PROBLEM.json'),'--round',str(inputs/'ROUND.json'),
+    command=['--problem',str(inputs/'PROBLEM.json'),'--round',str(round_path),
         '--run-dir',str(run),'--max-cycles',str(max_cycles),'--batch',str(batch)]
     if plan_only:command.append('--plan-only')
-    try:E.main(command,driver_factory=fixture_driver(directory))
+    driver=(F.fixture_driver()if read(directory/'ROUND.json').get('artificial_mode')=='Q3_ONLY'else fixture_driver(directory))
+    try:E.main(command,driver_factory=driver)
     finally:
         watching.set()
         if not plan_only:monitor.join(timeout=1)
@@ -228,13 +230,12 @@ def synthetic_participation(worker,enabled):
     path=worker.get('participation_wsl_file')
     if not path or '.romutail-controller-acceptance/'not in path:
         raise ValueError('Only the dedicated synthetic WSL participation file may be changed')
-    code=('from pathlib import Path;import json,sys;'
-          'p=Path(sys.argv[1]);p.parent.mkdir(parents=True,exist_ok=True);'
-          'v=dict(artificial_only=True,accepting_new_jobs=sys.argv[2]=="true");'
-          'p.write_text(json.dumps(v)+chr(10));print(json.dumps(v))')
-    remote=R.ssh_wsl_command(worker,[worker['python'],'-c',code,path,'true'if enabled else'false'],'fixture-participation')
+    # The dedicated profile directory exists before acceptance starts. Passing
+    # JSON to tee avoids Windows native argv rewriting a quoted Python -c body.
+    remote=R.ssh_wsl_command(worker,['tee',path],'fixture-participation')
     command=worker.get('ssh_command',['ssh'])+['-o','BatchMode=yes','-o','ConnectTimeout=10',worker['ssh_alias'],remote]
-    result=subprocess.run(command,input='{}',text=True,capture_output=True,timeout=30,check=True)
+    result=subprocess.run(command,input=json.dumps(dict(artificial_only=True,accepting_new_jobs=enabled))+chr(10),
+        text=True,encoding='utf-8',errors='replace',capture_output=True,timeout=30,check=True)
     return json.loads(result.stdout)
 
 
@@ -244,6 +245,23 @@ def snapshot(directory):
     return dict(jobs=[dict(job_id=row['job_id'],attempt_id=row['attempt_id'],completion_sha256=row['completion_sha256'])for row in rows],
         event_counts={name:sum(event['event']==name for event in events)for name in ['ASSIGN','ACCEPT','ADOPT']},
         launch_markers=F.launch_markers(directory))
+
+
+def synthetic_admission(directory,enabled):
+    """Update the synthetic run's actual policy, including Gateway's copy."""
+    directory=Path(directory).resolve()
+    policy=dict(hosts={'server1':dict(accepting=False,optional=True),
+        'local0-wsl':dict(accepting=enabled,optional=True)})
+    paths={directory/'HOST_ADMISSION.json'}
+    round_path=directory/'run/ROUND.json'
+    if round_path.exists():
+        current=read(round_path)['executor']['distributed'].get('host_admission')
+        if isinstance(current,str):
+            current=Path(current).resolve()
+            if not current.is_relative_to(directory):
+                raise ValueError('Synthetic host admission must stay in its owned fixture directory')
+            paths.add(current)
+    for path in paths:put(path,policy)
 
 
 def exercise(directory):
@@ -285,8 +303,7 @@ def exercise(directory):
                 return all(any(row['host_id']==host and row['started_epoch']is not None for row in rows)for host in ['local','server2'])
             wait_for(initial_started,'Primary actual hosts did not start artificial work')
             synthetic_participation(wsl,True)
-            put(directory/'HOST_ADMISSION.json',dict(hosts={'server1':dict(accepting=False,optional=True),
-                'local0-wsl':dict(accepting=True,optional=True)}))
+            synthetic_admission(directory,True)
             wait_for(lambda:(directory/'OUTAGE_STARTED.json').exists(),'WSL audit was not delivered')
             outage=read(directory/'OUTAGE_STARTED.json')
             before=sum(row['host_id']in('local','server2')and row['state']=='ACCEPTED'for row in store.rows())
