@@ -1,0 +1,2623 @@
+{
+  "schema": "RPE_Q3_HOST_ELIGIBILITY_V1",
+  "scope": "SAVED_DRY_CHECK_EVIDENCE_REQUIRES_CURRENT_POLL_FINGERPRINT",
+  "jobs": {
+    "9b9b4b5132ff89768c5c": {
+      "method": "FULL_PF",
+      "request_sha256": "a41996a69b95198c11808fef721075f7ad719215c1c3ff43f4ce0f0f8294bea3",
+      "source_manifest": {
+        "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "files": {
+          "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+          "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+          "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+          "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+          "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+          "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+          "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+          "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+        }
+      },
+      "source_manifest_sha256": "05b83675db765e0581c282445452e2b4db637c3d12e47568551e28362e12c0e5",
+      "input_hashes": [
+        {
+          "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+          "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+          "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+        },
+        {
+          "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+          "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+          "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+        }
+      ],
+      "hosts": {
+        "server1": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/server1/dry/FULL_PF/READINESS.json",
+              "sha256": "08925da6c6c708516467365a8bac8eab7cc83c9552ef42532bfd3ab6da8657ae",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "a41996a69b95198c11808fef721075f7ad719215c1c3ff43f4ce0f0f8294bea3",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+                "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+                "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+              },
+              {
+                "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+                "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+                "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+              }
+            ],
+            "profile": {
+              "host_id": "server1",
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+              "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+              "dp_workers": 1,
+              "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+              "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+                "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-6.8.0-49-generic-x86_64-with-glibc2.39",
+              "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+              "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_source": {
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "f8b2cd661fb8f2d723ba6a99765e936390fcb85ca996d7283226d12389f4c2e0",
+          "host_profile_sha256": "01ce31bd8fedd6e3bbab28dc9a29087ec81785deb6e043b47f08a773bc65c2d1",
+          "execution_profile": {
+            "host_id": "server1",
+            "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+            "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+            },
+            "dp_workers": 1,
+            "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+              "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        },
+        "server2": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/server2/dry/FULL_PF/READINESS.json",
+              "sha256": "56177c5928d0f3c4bd12a6268ae57dcae1d6a8f287fa88a527f5bddbf61cbe25",
+              "receipt": null,
+              "manifest": null,
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "a41996a69b95198c11808fef721075f7ad719215c1c3ff43f4ce0f0f8294bea3",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+                "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+                "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+              },
+              {
+                "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+                "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+                "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+              }
+            ],
+            "profile": {
+              "host_id": "server2",
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+              "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+              "dp_workers": 3,
+              "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+              "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+                "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+              "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39"
+            },
+            "adapter_source": {
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "3e4182e4a44354bb57efe528f7ea08e12e0fd7b91ff96ffcb27a3e05a9b9341a",
+          "host_profile_sha256": "30cfb51fde983d72bf934d5abf18ac85fb1740ac92ad51e2903f79d06116e8e2",
+          "execution_profile": {
+            "host_id": "server2",
+            "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+            "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115"
+            },
+            "dp_workers": 3,
+            "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+            "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        },
+        "local": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/local/dry/FULL_PF/READINESS.json",
+              "sha256": "f34bf52ca6884b35bdd5dc6e4927735852ad14026c768432cb73d36b2e37e1ce",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "a41996a69b95198c11808fef721075f7ad719215c1c3ff43f4ce0f0f8294bea3",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+                "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+                "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+              },
+              {
+                "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+                "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+                "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+              }
+            ],
+            "profile": {
+              "host_id": "local",
+              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+              "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+              "route_view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "dp_workers": 2,
+              "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+              "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+              "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35"
+            },
+            "adapter_source": {
+              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "2431ddcc1426bb95a7b423ef504f129b582645debe70a5329d120650fb67aa27",
+          "host_profile_sha256": "b2c70a78db5df9cddf9fc8b95c42f4b20b480b8cf8f8d18ab57f6cc5e1bbbb79",
+          "execution_profile": {
+            "host_id": "local",
+            "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+            "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution/.local-prdf-inner"
+            },
+            "dp_workers": 2,
+            "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+            "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        },
+        "local0-wsl": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/local0-wsl/dry/FULL_PF/READINESS.json",
+              "sha256": "8ef05368d206f938da4eb58419eee48b19b1dbd93a299eda5f94c4a3855edfb7",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "a41996a69b95198c11808fef721075f7ad719215c1c3ff43f4ce0f0f8294bea3",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+                "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+                "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+              },
+              {
+                "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+                "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+                "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+              }
+            ],
+            "profile": {
+              "host_id": "local0-wsl",
+              "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/sources/28d976b99cdf8329adcc1b79327e329e947ef774",
+              "interpreter": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+              "route_view": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "dp_workers": 16,
+              "prefix_cache_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dp-cache",
+              "adapter_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/runtime/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+              "interpreter_invocation": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+              "launcher_sha256": "2f1709fca3c0bc45d64c6362159c5d136f988cdf2393674e9daee0791793e051",
+              "actual_executable_realpath": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/runtime/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_source": {
+              "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "73635efddb894c7fbc33c690e390663d186c8dbefb175be7303e9e0844a6688f",
+          "host_profile_sha256": "df6c5b00ca8438dbb1c28be60b761b8d9f84cd33faad93a719b4f38006ba8813",
+          "execution_profile": {
+            "host_id": "local0-wsl",
+            "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/sources/28d976b99cdf8329adcc1b79327e329e947ef774",
+            "interpreter": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+            "route_views": {
+              "23160cc876807c0300be3de811f767b5810640a7": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/23160cc876807c0300be3de811f767b5810640a7",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/33e324b43690caeaa353ecdb9e3d42f3139198b6"
+            },
+            "dp_workers": 16,
+            "prefix_cache_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dp-cache",
+            "adapter_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        }
+      },
+      "eligible_host_ids": [
+        "local",
+        "local0-wsl",
+        "server1",
+        "server2"
+      ],
+      "decision_sha256": "6701e454c991a862d6d994900c31046b2e77ad639fdc051aff56bbd3c0b9d3b3"
+    },
+    "72864f6cf968d3b514b1": {
+      "method": "TRUNCATED_PF",
+      "request_sha256": "1a61be630a5cc44bceb5680d7c1c232fce3b13dc3a6316f4c99fd26aa8400931",
+      "source_manifest": {
+        "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "files": {
+          "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+          "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+          "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+          "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+          "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+          "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+          "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+          "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+        }
+      },
+      "source_manifest_sha256": "05b83675db765e0581c282445452e2b4db637c3d12e47568551e28362e12c0e5",
+      "input_hashes": [
+        {
+          "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+          "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+          "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+        },
+        {
+          "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+          "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+          "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+        }
+      ],
+      "hosts": {
+        "server1": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/server1/dry/TRUNCATED_PF/READINESS.json",
+              "sha256": "1f6c0004ccaa0372044f96752772b30ac384372b7f71b958819806d5687e3cc0",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "1a61be630a5cc44bceb5680d7c1c232fce3b13dc3a6316f4c99fd26aa8400931",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+                "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+                "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+              },
+              {
+                "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+                "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+                "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+              }
+            ],
+            "profile": {
+              "host_id": "server1",
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+              "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+              "dp_workers": 1,
+              "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+              "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+                "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-6.8.0-49-generic-x86_64-with-glibc2.39",
+              "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+              "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_source": {
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "4d67aad626bb86c7453964262a6847adf339343cb17e77fa7086f238697ac8ac",
+          "host_profile_sha256": "01ce31bd8fedd6e3bbab28dc9a29087ec81785deb6e043b47f08a773bc65c2d1",
+          "execution_profile": {
+            "host_id": "server1",
+            "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+            "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+            },
+            "dp_workers": 1,
+            "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+              "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        },
+        "server2": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/server2/dry/TRUNCATED_PF/READINESS.json",
+              "sha256": "6751534aa11ade993e1e9db5a15eba72c76ab386d4f863f91ed616f88bb8ed45",
+              "receipt": null,
+              "manifest": null,
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "1a61be630a5cc44bceb5680d7c1c232fce3b13dc3a6316f4c99fd26aa8400931",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+                "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+                "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+              },
+              {
+                "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+                "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+                "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+              }
+            ],
+            "profile": {
+              "host_id": "server2",
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+              "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+              "dp_workers": 3,
+              "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+              "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+                "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+              "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39"
+            },
+            "adapter_source": {
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "fd224a706be6047a4f19ab8b8db5b3572d53c82da70484dadf3962a3a0ff4f91",
+          "host_profile_sha256": "30cfb51fde983d72bf934d5abf18ac85fb1740ac92ad51e2903f79d06116e8e2",
+          "execution_profile": {
+            "host_id": "server2",
+            "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+            "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115"
+            },
+            "dp_workers": 3,
+            "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+            "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        },
+        "local": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/local/dry/TRUNCATED_PF/READINESS.json",
+              "sha256": "a9565705a3e5cb3bff5b3d8a6eb21f4d1af82a9fe44fb02d662db2726336d0b0",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "1a61be630a5cc44bceb5680d7c1c232fce3b13dc3a6316f4c99fd26aa8400931",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+                "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+                "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+              },
+              {
+                "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+                "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+                "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+              }
+            ],
+            "profile": {
+              "host_id": "local",
+              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+              "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+              "route_view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "dp_workers": 2,
+              "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+              "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+              "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35"
+            },
+            "adapter_source": {
+              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "4eebca4efec339e4075b1f42e00b93a9aa4aa256a0712c672aaf2e41f6a65fde",
+          "host_profile_sha256": "b2c70a78db5df9cddf9fc8b95c42f4b20b480b8cf8f8d18ab57f6cc5e1bbbb79",
+          "execution_profile": {
+            "host_id": "local",
+            "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+            "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution/.local-prdf-inner"
+            },
+            "dp_workers": 2,
+            "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+            "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        },
+        "local0-wsl": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/local0-wsl/dry/TRUNCATED_PF/READINESS.json",
+              "sha256": "189c75eb447cf9a8990bec4dc4b56c809270c5f90e0674b422fc5751ddd64cb2",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "1a61be630a5cc44bceb5680d7c1c232fce3b13dc3a6316f4c99fd26aa8400931",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+                "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+                "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+              },
+              {
+                "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+                "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+                "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+              }
+            ],
+            "profile": {
+              "host_id": "local0-wsl",
+              "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/sources/28d976b99cdf8329adcc1b79327e329e947ef774",
+              "interpreter": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+              "route_view": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "dp_workers": 16,
+              "prefix_cache_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dp-cache",
+              "adapter_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/runtime/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+              "interpreter_invocation": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+              "launcher_sha256": "2f1709fca3c0bc45d64c6362159c5d136f988cdf2393674e9daee0791793e051",
+              "actual_executable_realpath": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/runtime/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_source": {
+              "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "85ffa37807faf2d812fdc067853ddd657561916a96b9c05eb69255bee70bf33f",
+          "host_profile_sha256": "df6c5b00ca8438dbb1c28be60b761b8d9f84cd33faad93a719b4f38006ba8813",
+          "execution_profile": {
+            "host_id": "local0-wsl",
+            "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/sources/28d976b99cdf8329adcc1b79327e329e947ef774",
+            "interpreter": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+            "route_views": {
+              "23160cc876807c0300be3de811f767b5810640a7": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/23160cc876807c0300be3de811f767b5810640a7",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/33e324b43690caeaa353ecdb9e3d42f3139198b6"
+            },
+            "dp_workers": 16,
+            "prefix_cache_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dp-cache",
+            "adapter_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        }
+      },
+      "eligible_host_ids": [
+        "local",
+        "local0-wsl",
+        "server1",
+        "server2"
+      ],
+      "decision_sha256": "452a874bf3b77b7c3b427e68b6eeb10fe1e149819b3402bd9987ce98583c9820"
+    },
+    "805877c2ab6c3e03f7f1": {
+      "method": "PR_PAULI",
+      "request_sha256": "ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693",
+      "source_manifest": {
+        "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "files": {
+          "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+          "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+          "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+          "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+          "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+          "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+          "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+          "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+        }
+      },
+      "source_manifest_sha256": "05b83675db765e0581c282445452e2b4db637c3d12e47568551e28362e12c0e5",
+      "input_hashes": [
+        {
+          "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+          "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json",
+          "sha256": "31193aa1e80aab7c5801c27c42a0accec603ad1732a0a4c6a597d505acc5e8f0"
+        },
+        {
+          "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+          "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json",
+          "sha256": "a7fcd04d34815e64a28d5c5ee68c470e5b1bafebf481d005843f8551d986e2db"
+        },
+        {
+          "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+          "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json",
+          "sha256": "d141289d8c091306b8a41254a26a151f69ddb8b15633b08435387174c15f5151"
+        }
+      ],
+      "hosts": {
+        "server1": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/server1/dry/PR_PAULI/READINESS.json",
+              "sha256": "c72841f77f5155585b22b01dc0243df090bfa41219d648dc6f5d7bed9834b5a4",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json",
+                "sha256": "31193aa1e80aab7c5801c27c42a0accec603ad1732a0a4c6a597d505acc5e8f0"
+              },
+              {
+                "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json",
+                "sha256": "a7fcd04d34815e64a28d5c5ee68c470e5b1bafebf481d005843f8551d986e2db"
+              },
+              {
+                "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+                "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json",
+                "sha256": "d141289d8c091306b8a41254a26a151f69ddb8b15633b08435387174c15f5151"
+              }
+            ],
+            "profile": {
+              "host_id": "server1",
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+              "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43",
+              "dp_workers": 1,
+              "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+              "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43",
+                "commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-6.8.0-49-generic-x86_64-with-glibc2.39",
+              "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+              "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_source": {
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "3c441a010b4b5df14c96b2d9d9bc6e757845a38e400dd3b74d729daf3be9edd8",
+          "host_profile_sha256": "c149351e9116b48c07cbc04360114e5c8ee3e27bd9765c8709235ee76c17a6f9",
+          "execution_profile": {
+            "host_id": "server1",
+            "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+            "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+              "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+            },
+            "dp_workers": 1,
+            "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+              "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        },
+        "server2": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/server2/dry/PR_PAULI/READINESS.json",
+              "sha256": "40dc85d0cb4c194a62a973a8038253591e03cfcecdcbedd51907def00c15cb1c",
+              "receipt": null,
+              "manifest": null,
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json",
+                "sha256": "31193aa1e80aab7c5801c27c42a0accec603ad1732a0a4c6a597d505acc5e8f0"
+              },
+              {
+                "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json",
+                "sha256": "a7fcd04d34815e64a28d5c5ee68c470e5b1bafebf481d005843f8551d986e2db"
+              },
+              {
+                "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+                "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json",
+                "sha256": "d141289d8c091306b8a41254a26a151f69ddb8b15633b08435387174c15f5151"
+              }
+            ],
+            "profile": {
+              "host_id": "server2",
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+              "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b",
+              "dp_workers": 3,
+              "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+              "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b",
+                "commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+              "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39"
+            },
+            "adapter_source": {
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "dfce076d779a9324d9cc01a65c1a1125fe09625cacc5978b9d06c9b7eda7d5a2",
+          "host_profile_sha256": "44aa9bdd54eaf0836c2a792eb20bd112a06470a12ba9fab2d5335dd5fd9d78ea",
+          "execution_profile": {
+            "host_id": "server2",
+            "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+            "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+              "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115"
+            },
+            "dp_workers": 3,
+            "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+            "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        },
+        "local": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/local/dry/PR_PAULI/READINESS.json",
+              "sha256": "a353b1897bf8393de1e50dfb26536bebb957fb72778193310b5ba8fd1d0cf597",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json",
+                "sha256": "31193aa1e80aab7c5801c27c42a0accec603ad1732a0a4c6a597d505acc5e8f0"
+              },
+              {
+                "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json",
+                "sha256": "a7fcd04d34815e64a28d5c5ee68c470e5b1bafebf481d005843f8551d986e2db"
+              },
+              {
+                "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+                "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json",
+                "sha256": "d141289d8c091306b8a41254a26a151f69ddb8b15633b08435387174c15f5151"
+              }
+            ],
+            "profile": {
+              "host_id": "local",
+              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+              "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+              "route_view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/33e324b43690caeaa353ecdb9e3d42f3139198b6",
+              "dp_workers": 2,
+              "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+              "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+              "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35"
+            },
+            "adapter_source": {
+              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "97aa1583f5d6de9e983f53d483a42fde04a4719334e600e5d1f0ec5be0f38160",
+          "host_profile_sha256": "4c29a65ba830af8bb15d76690bb6826f9fe798e31fa1b37c3316de192ee3b9ae",
+          "execution_profile": {
+            "host_id": "local",
+            "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+            "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+              "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/33e324b43690caeaa353ecdb9e3d42f3139198b6",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution/.local-prdf-inner"
+            },
+            "dp_workers": 2,
+            "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+            "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        },
+        "local0-wsl": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/local0-wsl/dry/PR_PAULI/READINESS.json",
+              "sha256": "f1b60695c8f8bf0ce5eae301f15b58d90467a83aa309c0743819b524fbf11306",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json",
+                "sha256": "31193aa1e80aab7c5801c27c42a0accec603ad1732a0a4c6a597d505acc5e8f0"
+              },
+              {
+                "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json",
+                "sha256": "a7fcd04d34815e64a28d5c5ee68c470e5b1bafebf481d005843f8551d986e2db"
+              },
+              {
+                "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+                "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json",
+                "sha256": "d141289d8c091306b8a41254a26a151f69ddb8b15633b08435387174c15f5151"
+              }
+            ],
+            "profile": {
+              "host_id": "local0-wsl",
+              "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/sources/28d976b99cdf8329adcc1b79327e329e947ef774",
+              "interpreter": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+              "route_view": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/33e324b43690caeaa353ecdb9e3d42f3139198b6",
+              "dp_workers": 16,
+              "prefix_cache_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dp-cache",
+              "adapter_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              },
+              "runtime_checks": [
+                {
+                  "kind": "FIXED_FUNCTION_AST",
+                  "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                  "source_path": "src/trottertracks/rpe_total_risk.py",
+                  "function": "total_state_dp",
+                  "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                  "guard_constant": "REFERENCE_DP_AST_SHA256"
+                }
+              ]
+            },
+            "views": [
+              {
+                "path": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/runtime/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "version_info": [
+                3,
+                11,
+                0,
+                "candidate",
+                1
+              ],
+              "platform": "Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+              "interpreter_invocation": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+              "launcher_sha256": "2f1709fca3c0bc45d64c6362159c5d136f988cdf2393674e9daee0791793e051",
+              "actual_executable_realpath": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/runtime/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_source": {
+              "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "source_files": {
+                  "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+                  "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+                },
+                "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+                "status": "PASS"
+              }
+            ]
+          },
+          "current_host_fingerprint_sha256": "3e1270a62966a2fa75a65434367ccdf713cd1b37aa23c2b159d17df8ec6a7f79",
+          "host_profile_sha256": "651e445a7c5fe5abccad0b74f19fbf5cae49cda4229274553849868e4b08c4ca",
+          "execution_profile": {
+            "host_id": "local0-wsl",
+            "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/sources/28d976b99cdf8329adcc1b79327e329e947ef774",
+            "interpreter": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+            "route_views": {
+              "23160cc876807c0300be3de811f767b5810640a7": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/23160cc876807c0300be3de811f767b5810640a7",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/33e324b43690caeaa353ecdb9e3d42f3139198b6"
+            },
+            "dp_workers": 16,
+            "prefix_cache_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dp-cache",
+            "adapter_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "runtime_checks": [
+              {
+                "kind": "FIXED_FUNCTION_AST",
+                "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "function": "total_state_dp",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "guard_constant": "REFERENCE_DP_AST_SHA256"
+              }
+            ]
+          }
+        }
+      },
+      "eligible_host_ids": [
+        "local",
+        "local0-wsl",
+        "server1",
+        "server2"
+      ],
+      "decision_sha256": "c547e8ceeb873b5ff36493f816428bfb122b6cc2a8aa2aa818977b07800b4178"
+    },
+    "48494ae31276a64c46ce": {
+      "method": "PR_DF",
+      "request_sha256": "2906eeafee0f39909ef2db9c169924bcb74d48354995ab443e9231f94c0d2e2a",
+      "source_manifest": {
+        "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "files": {
+          "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+          "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+          "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+          "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+          "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+          "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+          "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+          "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+        }
+      },
+      "source_manifest_sha256": "05b83675db765e0581c282445452e2b4db637c3d12e47568551e28362e12c0e5",
+      "input_hashes": [
+        {
+          "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+          "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+          "sha256": "bad7f828ab46757c9ec724e189b038c47edec751b2ac6878041cbacfd742c063"
+        },
+        {
+          "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+          "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json",
+          "sha256": "671d7f0d2e3286111355cdc0d33f7fae7e46da32107be0337a53b0991e5c8fc1"
+        }
+      ],
+      "hosts": {
+        "server1": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/server1/dry/PR_DF/READINESS.json",
+              "sha256": "cadcebbe8f2400f062638bd2f2817d37671914ba39fa50645e463c48bd28a7db",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "2906eeafee0f39909ef2db9c169924bcb74d48354995ab443e9231f94c0d2e2a",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+                "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+                "sha256": "bad7f828ab46757c9ec724e189b038c47edec751b2ac6878041cbacfd742c063"
+              },
+              {
+                "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+                "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json",
+                "sha256": "671d7f0d2e3286111355cdc0d33f7fae7e46da32107be0337a53b0991e5c8fc1"
+              }
+            ],
+            "profile": {
+              "host_id": "server1",
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+              "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+              "dp_workers": 1,
+              "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+              "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              }
+            },
+            "views": [
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5",
+                "commit": "27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+                "clean_tracked": true
+              },
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+                "commit": "23160cc876807c0300be3de811f767b5810640a7",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+              "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+              "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_source": {
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            }
+          },
+          "current_host_fingerprint_sha256": "0b30046d4392cd730ca75178f0fcc289a8730d048536a3e94a5884add5335f61",
+          "host_profile_sha256": "4b472e55e798bfdd7ad92846adbbc2cdaa4947eec445aeeaff11e38927caebbc",
+          "execution_profile": {
+            "host_id": "server1",
+            "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+            "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+            "route_views": {
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+            },
+            "dp_workers": 1,
+            "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+            "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            }
+          }
+        },
+        "server2": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/server2/dry/PR_DF/READINESS.json",
+              "sha256": "c08b592acc2625aa11b9c6e4704b84c737358b7e125b23d876f6a82921f2ce92",
+              "receipt": null,
+              "manifest": null,
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "2906eeafee0f39909ef2db9c169924bcb74d48354995ab443e9231f94c0d2e2a",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+                "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+                "sha256": "bad7f828ab46757c9ec724e189b038c47edec751b2ac6878041cbacfd742c063"
+              },
+              {
+                "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+                "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json",
+                "sha256": "671d7f0d2e3286111355cdc0d33f7fae7e46da32107be0337a53b0991e5c8fc1"
+              }
+            ],
+            "profile": {
+              "host_id": "server2",
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+              "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+              "dp_workers": 3,
+              "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+              "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              }
+            },
+            "views": [
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+                "commit": "23160cc876807c0300be3de811f767b5810640a7",
+                "clean_tracked": true
+              },
+              {
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115",
+                "commit": "27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+              "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]"
+            },
+            "adapter_source": {
+              "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            }
+          },
+          "current_host_fingerprint_sha256": "dd91c8ce8d1ea115994c4bc0da9e796c741d4f24804e9f85dd13100d8cfc5fd1",
+          "host_profile_sha256": "15c763c7dbbf88bdbb11dbd026ec36ae7305c88844923c6e054f9d57db8a5bf8",
+          "execution_profile": {
+            "host_id": "server2",
+            "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+            "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115"
+            },
+            "dp_workers": 3,
+            "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+            "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-source-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            }
+          }
+        },
+        "local": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/local/dry/PR_DF/READINESS.json",
+              "sha256": "07f400cd2a58df12bf3464d6befff44ce4a2b8b62d810465c9617812c33da64a",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "2906eeafee0f39909ef2db9c169924bcb74d48354995ab443e9231f94c0d2e2a",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+                "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+                "sha256": "bad7f828ab46757c9ec724e189b038c47edec751b2ac6878041cbacfd742c063"
+              },
+              {
+                "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+                "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json",
+                "sha256": "671d7f0d2e3286111355cdc0d33f7fae7e46da32107be0337a53b0991e5c8fc1"
+              }
+            ],
+            "profile": {
+              "host_id": "local",
+              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+              "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+              "route_view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+              "dp_workers": 2,
+              "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+              "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              }
+            },
+            "views": [
+              {
+                "path": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+                "commit": "23160cc876807c0300be3de811f767b5810640a7",
+                "clean_tracked": true
+              },
+              {
+                "path": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution/.local-prdf-inner",
+                "commit": "27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+              "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]"
+            },
+            "adapter_source": {
+              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            }
+          },
+          "current_host_fingerprint_sha256": "09459e7a5ebd4ec41987a0476a59f4260888348680a639538e0c435eae786ba0",
+          "host_profile_sha256": "333f2b1abaf2354d7cda0067ceeb95d63c112983881b285b22ebbc0bbd621e34",
+          "execution_profile": {
+            "host_id": "local",
+            "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+            "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+            "route_views": {
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution/.local-prdf-inner"
+            },
+            "dp_workers": 2,
+            "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+            "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            }
+          }
+        },
+        "local0-wsl": {
+          "status": "PASS",
+          "dimensions": {
+            "request": "MATCH",
+            "source": "MATCH",
+            "input": "MATCH",
+            "route": "MATCH",
+            "runtime": "MATCH",
+            "receipt": "MATCH"
+          },
+          "reasons": [],
+          "evidence": [
+            {
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/local0-wsl/dry/PR_DF/READINESS.json",
+              "sha256": "dcc60823bfaafb0a1f20fc777d3e0f3d3c9dc93a126c62bc3198dbb3e99a9da8",
+              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/RETURN_RECEIPT.json",
+              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results/TRANSFER_MANIFEST.json",
+              "runtime_source": "LOCAL_FINGERPRINT"
+            }
+          ],
+          "current_host_fingerprint": {
+            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
+            "request_sha256": "2906eeafee0f39909ef2db9c169924bcb74d48354995ab443e9231f94c0d2e2a",
+            "source_manifest": {
+              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            },
+            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
+            "input_hashes": [
+              {
+                "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+                "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+                "sha256": "bad7f828ab46757c9ec724e189b038c47edec751b2ac6878041cbacfd742c063"
+              },
+              {
+                "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+                "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json",
+                "sha256": "671d7f0d2e3286111355cdc0d33f7fae7e46da32107be0337a53b0991e5c8fc1"
+              }
+            ],
+            "profile": {
+              "host_id": "local0-wsl",
+              "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/sources/28d976b99cdf8329adcc1b79327e329e947ef774",
+              "interpreter": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+              "route_view": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/23160cc876807c0300be3de811f767b5810640a7",
+              "dp_workers": 16,
+              "prefix_cache_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dp-cache",
+              "adapter_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+              "adapter_manifest": {
+                "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                  "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+                }
+              }
+            },
+            "views": [
+              {
+                "path": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/23160cc876807c0300be3de811f767b5810640a7",
+                "commit": "23160cc876807c0300be3de811f767b5810640a7",
+                "clean_tracked": true
+              },
+              {
+                "path": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+                "commit": "27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+                "clean_tracked": true
+              }
+            ],
+            "runtime": {
+              "executable": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/runtime/bin/python3",
+              "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+              "interpreter_invocation": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+              "launcher_sha256": "2f1709fca3c0bc45d64c6362159c5d136f988cdf2393674e9daee0791793e051",
+              "actual_executable_realpath": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/runtime/bin/python3.11",
+              "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+            },
+            "adapter_source": {
+              "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            }
+          },
+          "current_host_fingerprint_sha256": "f54994b02eaad5ff479b025b6f2f695322b1f90f18705dff2562a0598a0803d5",
+          "host_profile_sha256": "e2675a81949a8174f916f2aad9f741d67cb1868e24ab4c2b5b163da8a67ee932",
+          "execution_profile": {
+            "host_id": "local0-wsl",
+            "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/sources/28d976b99cdf8329adcc1b79327e329e947ef774",
+            "interpreter": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-prdf-311rc1/e80a6533ce787e22/bin/python3",
+            "route_views": {
+              "23160cc876807c0300be3de811f767b5810640a7": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/23160cc876807c0300be3de811f767b5810640a7",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/33e324b43690caeaa353ecdb9e3d42f3139198b6"
+            },
+            "dp_workers": 16,
+            "prefix_cache_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dp-cache",
+            "adapter_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            }
+          }
+        }
+      },
+      "eligible_host_ids": [
+        "local",
+        "local0-wsl",
+        "server1",
+        "server2"
+      ],
+      "decision_sha256": "ca2e3ef7b9eace4127166dfa115d8d96ea02569c2927572feae00af7740bd17a"
+    }
+  },
+  "scientific_evaluation_calls": 0,
+  "queue_operations": 0
+}

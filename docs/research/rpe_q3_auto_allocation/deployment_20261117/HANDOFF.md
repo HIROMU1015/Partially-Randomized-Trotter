@@ -4,6 +4,10 @@
 科学SOURCEは元28dの8file manifest、計時adapterは別に349版の3file manifestを使う。
 今回の実H4 Q3・信号生成・価格較正・回路compile・本番queue投入は0件。
 
+返送後の取込みは完了した。今回の4 REQUEST×4台は全16セルPASS、readiness保留0件。
+[最終REPORT](REPORT.md)、[能力と参加状態](ALLOCATION_STATUS.json)、[照合結果](FINAL_CHECK.json)を参照。
+WSLの明示Pauseは維持し、controller/worker/relayのdaemonは全台とも今回起動していない。
+
 ## 配置状況
 
 server2のcontroller/worker/timed adapterは次へdetached固定checkoutとして配置した。
@@ -44,6 +48,11 @@ checker上位のPythonではなく、command[0]とadapter_result.runtime、実la
 新profile用のraw runtime indexを既存の照合処理が受理するため、新しい承認証明やguard緩和はない。
 返送だけ失敗した場合は--return-onlyを使い、dry-checkを繰り返さない。
 
+3台への配置と12件の実入力dry-checkは完了し、[返送記録](remote_results/RETURN_RECEIPT.json)の
+157ファイルを全件照合した。各PROFILEは配布物とbyte一致、全12セルの現在worker fingerprintも一致した。
+WSL Pauseは検査の開始時と終了時に同一であることを配布runnerが確認した。サーバー2からWindowsの現在状態を直接観測したものではない。
+この配布手順を再実行する必要はない。
+
 ## 通常入口での取込み
 
 [EVIDENCE.json](EVIDENCE.json)は新profileと上記の受領先を指す。
@@ -64,3 +73,19 @@ python3 -B /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q
 server2の4 PASS、遠隔12 UNCHECKEDを生成した。初回READYまで33.20秒（差分履歴の取込みを含む）。
 実運用の科学予算・SOURCE・queueを今回起動・変更する手順ではない。
 新しい科学runの開始は別途採択されたroundから行う。
+
+返送後も上記コマンドを実行済み。[通常入口の結果](normal_after_remote/READY.json)は全16 PASS、
+server2のdry-check4件再利用・新dry-check0件、READYまで7.302秒、報告完了まで7.821秒。
+同じ検査を将来繰り返す場合は、既存結果を保全して`--run-dir`だけ新しい専用directoryにする。
+生成した[policy](normal_after_remote/HOST_ELIGIBILITY.json)は各ホストの配置済みprofileと一致した。
+
+server2の新run用設定は次に配置した。
+
+```
+/home/AbeHiromu/projects/rpe-q3-auto-deployment/next-h4-auto/CONTROLLER_OPTIONS.json
+```
+
+[同じ設定の保存版](CONTROLLER_OPTIONS.json)は全体auto・host別slot_policyと検査済みlocal_workerを含む。
+これは設定のみで起動しない。別途採択された新roundに使用し、科学予算・明示上限はそのroundの条件を優先する。
+Windows relayを次runで使うときは、各PLACEMENTの新transport_rootとworker_profileを指定する。
+旧人工runのrelay・spoolを再開しない。WSLのrequired待ちはなく、Windowsの明示Pauseは解除しない。

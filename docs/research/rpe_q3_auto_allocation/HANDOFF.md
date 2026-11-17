@@ -1,5 +1,9 @@
 # 分散Q3：自動割当・自動同時枠と計時
 
+固定349版の実配置と新adapterでの実入力dry-checkは、その後[配置HANDOFF](deployment_20261117/HANDOFF.md)で完了した。
+今回の4 REQUEST×4台は全16 PASS。WSLはPause維持、実H4 Q3の起動前。
+以下の未配置・未dry-checkの記述は公開407時点の実装検収範囲を示す。
+
 基準は4ホスト統合 `e64e377a8a27e6693231bb4cdf72f605a20965b5`。
 実装の固定SHAとfile hashは[SOURCE.json](SOURCE.json)、検査範囲は[CHECKS.json](CHECKS.json)。
 計時担当の公開81884bd39d2829294e71be6848c1a3f024d5e75cをmergeし、指定された

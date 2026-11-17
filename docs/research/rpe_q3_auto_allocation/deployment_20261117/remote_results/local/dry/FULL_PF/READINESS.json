@@ -1,0 +1,138 @@
+{
+  "status": "REAL_HOST_DRY_CHECK_PASS",
+  "scientific_evaluation_calls": 0,
+  "queue_operations": 0,
+  "output": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto/next-h4-auto/deployment-dry-20261117-349558b74/dry/FULL_PF",
+  "host": "abe-Precision-3260",
+  "python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+  "python_version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+  "host_id": "local",
+  "job_id": "9b9b4b5132ff89768c5c",
+  "source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "request_sha256": "a41996a69b95198c11808fef721075f7ad719215c1c3ff43f4ce0f0f8294bea3",
+  "input_hashes": [
+    {
+      "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+      "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+      "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+    },
+    {
+      "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+      "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+      "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+    }
+  ],
+  "route": {
+    "kind": "pf_b_pf6",
+    "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+    "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+    "templates": [
+      {
+        "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+        "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json"
+      },
+      {
+        "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+        "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+        "inputs_selector": [
+          "inputs"
+        ]
+      }
+    ],
+    "configuration_ids": "*",
+    "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+  },
+  "execution_profile": {
+    "dp_workers": 2,
+    "prefix_checkpoint_rounds": [
+      5,
+      11
+    ],
+    "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache"
+  },
+  "resolved_request_sha256": "bbc0fd2260ff5585b9886bb5efbd61aa894dc1fc96b9bfe599ca34318a11c6a5",
+  "runtime_precheck": {
+    "status": "PASS",
+    "runtime": {
+      "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+      "version_info": [
+        3,
+        11,
+        0,
+        "candidate",
+        1
+      ],
+      "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35"
+    },
+    "checks": [
+      {
+        "kind": "FIXED_FUNCTION_AST",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "source_path": "src/trottertracks/rpe_total_risk.py",
+        "function": "total_state_dp",
+        "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+        "guard_constant": "REFERENCE_DP_AST_SHA256",
+        "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+        "source_files": {
+          "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+          "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+        },
+        "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+        "status": "PASS"
+      }
+    ]
+  },
+  "adapter_source": {
+    "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+    "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+    "sha256": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+    "manifest": {
+      "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+      "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+      "files": {
+        "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+        "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+        "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+      }
+    },
+    "original_assignment_manifest_rewritten": false
+  },
+  "command": [
+    "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "-B",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74/scripts/run_rpe_optimizer_q3_job.py",
+    "--request",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto/next-h4-auto/deployment-dry-20261117-349558b74/dry/FULL_PF/RESOLVED_REQUEST.json",
+    "--output",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto/next-h4-auto/deployment-dry-20261117-349558b74/dry/FULL_PF/adapter",
+    "--mode",
+    "dry-check",
+    "--route-views",
+    "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto/next-h4-auto/deployment-dry-20261117-349558b74/dry/FULL_PF/ROUTE_VIEWS.json"
+  ],
+  "adapter_returncode": 0,
+  "adapter_result": {
+    "status": "DRY_CHECK_PASS",
+    "bounds": {
+      "maximum_round_outcomes": 3600,
+      "verification_pairs_upper": 38512129,
+      "transition_pairs_upper": 116167184,
+      "rule": "FULL_COUNT_SUPPORT_AND_FRONTIER_UPPER_BOUND_NO_PROBABILITY_EVALUATION"
+    },
+    "case_label": "9b9b4b5132ff89768c5c",
+    "template": {
+      "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+      "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json"
+    },
+    "metadata": "PASS",
+    "runtime": null,
+    "request_id": "9b9b4b5132ff89768c5c",
+    "route": "pf_b_pf6",
+    "mode": "dry-check",
+    "finished_UTC": "2026-11-17T10:18:22.099325+00:00"
+  },
+  "stage": "EXISTING_ADAPTER_DRY_CHECK",
+  "wall_seconds": 0.41877696802839637
+}
