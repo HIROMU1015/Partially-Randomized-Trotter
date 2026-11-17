@@ -130,6 +130,7 @@ def ensure(root, spec):
             '#!/bin/bash', '#PBS -N RPE' + token[:12], '#PBS -q ' + resources['queue'],
             '#PBS -l select=1:ncpus=%d:mem=%s' % (resources['ncpus'], resources['mem']),
             '#PBS -l walltime=' + resources['walltime'], '#PBS -r n',
+            '#PBS -h' if resources.get('initial_hold') else '# RPE submission hold disabled',
             '#PBS -o ' + str(directory/'PBS.stdout'), '#PBS -e ' + str(directory/'PBS.stderr'),
             'set -eu', 'umask 077',
             'python3 ' + shlex.quote(gateway) + ' --record-allocation ' + shlex.quote(str(directory)),

@@ -25,7 +25,7 @@ from .rpe_q3_worker import Worker, atomic, event, head, read, save_state
 
 THREAD_VARIABLES = ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS',
                     'NUMEXPR_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS',
-                    'NUMBA_NUM_THREADS', 'RAYON_NUM_THREADS')
+                    'NUMBA_NUM_THREADS', 'RAYON_NUM_THREADS', 'QISKIT_NUM_PROCS')
 TRANSPORT_FILES = ('src/trottertracks/rpe_pbs_worker.py',
                    'scripts/run_rpe_pbs_worker.py')
 

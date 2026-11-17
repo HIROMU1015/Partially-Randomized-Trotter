@@ -96,6 +96,9 @@ class PbsManager:
     def __init__(self, executor, settings, *, gateway=None):
         self.executor = executor
         self.settings = deepcopy(settings)
+        if self.settings.get('namespace_by_run', True):
+            self.settings['remote_root'] = self.settings['remote_root'].rstrip('/')+'/'+digest(
+                dict(controller_run=str(executor.run_dir.resolve())))[:20]
         self.directory = executor.run_dir/'distributed'/'pbs'
         self.directory.mkdir(parents=True, exist_ok=True)
         self.lock = (self.directory/'MANAGER.lock').open('a')
@@ -107,7 +110,7 @@ class PbsManager:
         if not fixed.exists(): atomic(fixed, self.settings)
         self.path = self.directory/'STATE.json'
         self.state = read(self.path) if self.path.exists() else dict(allocations={}, requests={})
-        self.gateway = gateway or Gateway(settings)
+        self.gateway = gateway or Gateway(self.settings)
         self.stop = threading.Event()
         self.thread = None
         self.allocations = []
@@ -142,6 +145,12 @@ class PbsManager:
         try:
             payload = deepcopy(request['payload'])
             allocation = next((a for a in self.allocations if a['token'] == token), None)
+            if request['endpoint'] == '/v1/poll' and allocation is not None:
+                admission = (payload.get('resource_report') or {}).get('pbs')
+                current = allocation.get('worker') or {}
+                if admission is not None:
+                    admission['remaining_seconds'] = min(admission.get('remaining_seconds',0), current.get('remaining_seconds',0))
+                    admission['accepting'] = admission.get('accepting',False) and current.get('accepting',False)
             if request['endpoint'] == '/v1/poll' and (allocation is None or allocation['status'] != 'R' or
                     not (allocation.get('worker') or {}).get('accepting', False)):
                 # A delayed file survives worker/PBS termination; it cannot
@@ -180,16 +189,34 @@ class PbsManager:
                 self.executor.rpc('/v1/state', dict(host_id=data['host_id'], job_id=assignment['job_id'],
                     attempt_id=assignment['attempt_id'], state='UNKNOWN',
                     detail=dict(reason='PBS_ENDED_WITHOUT_TASK_EXIT_RECEIPT', automatic_retry=False)))
+        if ended:
+            for row in self.executor._owned_attempts():
+                if row['host_id'] == data['host_id'] and row['state'] != 'UNKNOWN':
+                    self.executor.rpc('/v1/state',dict(host_id=row['host_id'], job_id=row['job_id'],
+                        attempt_id=row['attempt_id'], state='UNKNOWN',detail=dict(
+                            reason='PBS_ENDED_WITHOUT_COMPLETE_ORIGINAL_ATTEMPT',automatic_retry=False)))
         self.state['allocations'][token]['harvested'] = ended
         self.log('PBS_SAVED_ARTIFACTS_RECONCILED', token=token, attempts=len(data['attempts']))
 
     def _demand(self):
         with self.executor.state.cv:
+            def relevant(request, eligibility):
+                artificial = self.executor.store.artificial(request)
+                stage = request.get('preparation', {}).get('stage','q3')
+                if not artificial and not (self.settings.get('task_seconds') or {}).get(stage):
+                    return False
+                return any(self.executor._host_supports_stage(host, request) and
+                    (eligibility is None and artificial or host in (eligibility or {}).get('eligible_host_ids', []))
+                    for host in self.configured)
             tasks = [task for task in self.executor.state.tasks.values()
-                     if task.status == 'QUEUED' and self.executor._task_ready(task)]
+                     if task.status == 'QUEUED' and self.executor._task_ready(task) and relevant(
+                         self.executor.store.row(task.job.name)['request'],
+                         self.executor.store.row(task.job.name)['eligibility'])]
             # Pending preparation metadata is also demand for a live compute
             # worker, but does not consume a scientific budget or reserve a task.
-            pending = sum(self.executor.store.row(job) is None for job in self.executor.preparation_pending)
+            pending = sum(self.executor.store.row(job) is None and
+                (self.settings.get('task_seconds') or {}).get(record['request']['preparation']['stage'], 0) > 0
+                for job,record in self.executor.preparation_pending.items())
             queued = len(tasks) + pending
             policy, error = self.executor._host_admission_policy()
             available = {host:self.executor._offer_free(host,policy,error) for host in self.executor.hosts if host not in self.configured}
@@ -243,6 +270,11 @@ class PbsManager:
         for allocation in self.allocations:
             if allocation['status'] not in TERMINAL:
                 self.controls[allocation['token']] = dict(stop=stopping, release_when_idle=queued == 0)
+                if stopping and allocation['status'] in ('Q','H','W') and allocation.get('job_id') and not any(
+                        row['host_id'] == allocation['host_id'] for row in self.executor._owned_attempts()):
+                    result = self.gateway.call(dict(action='delete', token=allocation['token']))
+                    self.log('PBS_UNUSED_ALLOCATION_CANCELLED', token=allocation['token'],
+                        job_id=allocation['job_id'], result=result, reason='STOP_WITHOUT_OWNED_SCIENTIFIC_ATTEMPTS')
         if shortage and not stopping:
             owned_hosts = {a['host_id'] for a in active}
             # A lost remote response may leave an intent absent from this
@@ -290,6 +322,12 @@ class PbsManager:
                         if record['status'] not in TERMINAL}
             if controls or self.responses:
                 self.gateway.call(dict(action='exchange', responses=self.responses, controls=controls))
+            for allocation in self.allocations:
+                if allocation['status'] in ('Q','H','W') and allocation.get('job_id') and not any(
+                        row['host_id'] == allocation['host_id'] for row in self.executor._owned_attempts()):
+                    result = self.gateway.call(dict(action='delete', token=allocation['token']))
+                    self.log('PBS_UNUSED_ALLOCATION_CANCELLED', token=allocation['token'],
+                        job_id=allocation['job_id'], result=result, reason='CONTROLLER_CLOSE_NO_OWNED_ATTEMPTS')
         except Exception as error:
             self.log('PBS_DRAIN_CONTROL_PENDING', error=str(error), recovery='Same run resume reconciles original allocations')
         finally:

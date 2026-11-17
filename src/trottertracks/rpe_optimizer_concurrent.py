@@ -85,6 +85,9 @@ class ConcurrentExecutor(O.Executor):
 
     def for_method(self,method):
         view=ConcurrentExecutor.__new__(ConcurrentExecutor);view.__dict__.update(self.__dict__);view.method=method
+        # A controller-local finish wrapper may capture the main executor.
+        # Method views must use their own class drain without closing it.
+        view.__dict__.pop('finish',None)
         return view
 
     def log(self,**event):
@@ -599,6 +602,7 @@ class DistributedExecutor(ConcurrentExecutor):
         view = DistributedExecutor.__new__(DistributedExecutor)
         view.__dict__.update(self.__dict__)
         view.method = method
+        view.__dict__.pop('finish', None)
         return view
 
     def alive(self, launch, job):
