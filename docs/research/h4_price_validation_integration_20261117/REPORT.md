@@ -22,6 +22,8 @@
 
 ## 保存実測の検収
 
+[LD2保存データの表示例](index.html)／[機械可読VIEW_INDEX](VIEW_INDEX.json)。通常publication parserから読んだ2つの保存配分点と1モデルで、issues=0。新規科学callは0件。
+
 PR-Pauli LD2のモデル：`b74e4e536392c2bbe94cd371436615fc56c0564f:docs/research/d_pauli_ld2_b1_cal_results_20261115/c2_freeze/run01/FROZEN_MODELS.json`。
 
 独立比較：`705f59ea863e1b9fe90e023f1cb1057d00366b16:docs/research/d_pauli_ld2_b1_holdout_results_20261115/COMPARISON.json`。

@@ -31,6 +31,8 @@ Pauli/DFは既存固定normal-path workerの自動組立てを持つ。provider�
 
 ## 公開と探索マップ
 
+[保存LD2のHTML表示例](index.html)は同じ通常parser・rendererを使用する。保存配分2点、共有モデル1件、issues=0。HTMLを保存してブラウザで開ける。
+
 method/schedule入口はcontroller結果保存時に`SEARCH_PUBLICATION.json`を作成し、sidecarを既存公開索引へ含める。従来と同じproducerのcommit/pushで公開する。Cは更新した既存`sync_saved_rpe_publications.py`→`build_h4_search_map.py`で読む。sidecarだけ更新された場合も検証viewを更新し、元Q3 SOURCEは保全する。
 
 INDEXの`price_validation_models`にモデルを1回だけ置き、配分点は`price_validations`で参照する。詳細は回路の条件・実測m/q/R・適用先m/q/R・事前予測・経路別X/Y・平均・`(予測−実測平均)/実測平均`・元receiptリンク。検証roundの寄与率はその配分と保存26軸単価から求め、欠測ならnull。1点の差を全roundへ適用しない。
