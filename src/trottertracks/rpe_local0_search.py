@@ -355,6 +355,10 @@ class Gateway:
             if pid and Path('/proc/%d/cmdline' % pid).exists() and str(run) in Path('/proc/%d/cmdline' % pid).read_bytes().decode(errors='replace'):
                 return 'ALREADY_RUNNING'
             raise RequestError('run', 'previous launch has no completion receipt; existing STOP/UNKNOWN is preserved')
+        if completed and completed.get('returncode') != 0:
+            stop_path = run/'KAPPA_STATE.json'
+            stop = (load(stop_path).get('stop') or {}).get('reason') if stop_path.exists() else None
+            raise RequestError('run', 'failed invocation requires reconciliation: '+str(stop or completed.get('returncode')))
         if (run/'ROUND_RESULT.json').exists():
             outcomes=load(run/'ROUND_RESULT.json')['methods']
             reasons={v['stop_reason'] for v in outcomes.values()}
@@ -367,6 +371,9 @@ class Gateway:
         if applied['code_source']!=self.config['code_source']:raise RequestError('code_source','confirmed target belongs to another fixed deployment; preserve it and prepare the intended scope on this deployment')
         if digest(problem) != applied['problem_sha256'] or digest(spec) != applied['round_requested_sha256']:
             raise RequestError('run', 'saved applied settings changed')
+        if spec.get('continuation'):
+            from .rpe_search_continuation import verify
+            write(run/'CONTINUATION_PREFLIGHT.json', verify(run, problem, spec))
         report = self.preflight(run, problem, spec)
         write(run/'DUPLICATE_PREFLIGHT.json', report)
         if report.get('status') != 'PASS': raise RequestError('preflight', '§10.5 evidence is incomplete/conflicting; see DUPLICATE_PREFLIGHT.json')
@@ -518,6 +525,10 @@ def execute_run(config, run, invocation):
     if auth['scope_signature']!=scope['signature'] or auth['kind']!='EXPLICIT_USER_START':raise RequestError('authorization','scope binding differs')
     if digest(load(run/'PROBLEM.json'))!=scope['problem_sha256'] or digest(spec)!=scope['round_requested_sha256']:
         raise RequestError('run','applied settings differ before normal entry')
+    if spec.get('continuation'):
+        from .rpe_search_continuation import verify
+        if verify(run, load(run/'PROBLEM.json'), spec) != load(run/'CONTINUATION_PREFLIGHT.json'):
+            raise RequestError('continuation','parent reconciliation changed before launch')
     command=[config['python'],'-B',str(Path(config['code_root'])/'scripts'/ENTRIES[scope['entry']]),
         '--problem',str(run/'PROBLEM.json'),'--round',str(run/'ROUND.json'),'--run-dir',str(run)]
     if config.get('artificial_controller_directory'):

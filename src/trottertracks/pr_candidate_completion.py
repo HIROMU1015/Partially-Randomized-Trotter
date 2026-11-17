@@ -238,6 +238,30 @@ class Completion:
                 return record['tail_descriptor']
         return None
 
+    def verify_continuation_inputs(self, record):
+        """Rebind a saved packet and verify its original price evidence."""
+        directory = self.directory/'continuation-inputs'/record['key']
+        directory.mkdir(parents=True, exist_ok=True)
+        config = value(record['configuration'])
+        signal = record['signal']
+        method = record['method']
+        intake = self.service('intake', dict(
+            method=method, configuration=signal.get('configuration_source', record['configuration']),
+            packet=signal['packet_source'],
+            view=str(self.path('B_VIEW') if method == 'PR_PAULI' else self.path('DF_Q3_VIEW'))), directory)
+        if intake != record['intake']:
+            raise ValueError('CONTINUATION_INTAKE_BINDING_DIFFERS')
+        registry = directory/'PRICE_RULES.json'
+        put(registry, read(self.registry))
+        current = self.service('quote', dict(
+            configuration=record['configuration'], view=str(self.path('D2_VIEW')),
+            registry_file=str(registry), policy='MODEL'), directory, python=self.path('PRICE'))
+        current = self.quote_with_steps(config, current)
+        saved = value(record['quote'])
+        if (not current.get('complete') or current.get('rows') != saved.get('rows')
+                or [row['unit_price_RZ'] for row in current['rows']] != record['prices']):
+            raise ValueError('CONTINUATION_PRICE_EVIDENCE_DIFFERS')
+
     def refresh_price_hold(self,record):
         """Requery newly registered evidence, never retry a scientific leaf."""
         reason=str(record.get('reason',''))
