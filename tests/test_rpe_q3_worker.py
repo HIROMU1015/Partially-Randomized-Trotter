@@ -131,6 +131,18 @@ class WorkerTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'host dp_workers'):
                     W.validate_assignment(dict(profile, dp_workers=invalid), assignment)
 
+    def test_prdf_dependency_paths_are_only_added_to_resolved_request(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            profile, assignment = fixture(temporary)
+            commit = W.head(ROOT)
+            profile['route_views'] = {commit: str(ROOT), 'inner-fixture': temporary}
+            assignment['request']['route'].update(kind='prdf_d2_split', view_commit=commit)
+            assignment['request_sha256'] = W.digest(assignment['request'])
+            before = deepcopy(assignment)
+            resolved = W.validate_assignment(profile, assignment)
+            self.assertEqual(resolved['route']['route_views'], profile['route_views'])
+            self.assertEqual(assignment, before)
+
     def test_fresh_process_reads_and_recovers_large_exact_json_without_execution(self):
         # Fresh -I processes avoid a false PASS from an earlier catalog/adapter
         # import having already removed Python's integer-string digit limit.

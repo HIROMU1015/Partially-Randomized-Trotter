@@ -135,6 +135,10 @@ def validate_assignment(profile, assignment):
             raise ValueError('Route view HEAD differs')
         # Existing route check_source/metadata guards are additionally run by dry-check.
         rule['view'] = str(view)
+        if rule['kind'] in ('prdf_d2_split', 'prdf_d2_common_entry'):
+            # Host paths only, on the resolved copy. The saved caller declares
+            # its required inner commit; the adapter checks that checkout.
+            rule['route_views'] = dict(profile['route_views'])
     execution = resolved.setdefault('execution_profile', {})
     workers = profile.get('dp_workers')
     if workers is not None:
