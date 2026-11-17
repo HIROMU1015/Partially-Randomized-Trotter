@@ -29,6 +29,7 @@ summary由来の表示と元SOURCEを残し、最安価格の選択には昇格�
 |D_FULL_PF_S2_2H_Q3_PROPOSAL_ONLY|{"FULL_PF": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET"}|0||[90a52a211](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/90a52a211f6acc4d7b01e1017572c15224ac25de/docs/research/d_full_pf_s2_2h_q3_e2e_20261116/proposal_only/ROUND_RESULT.json)|
 |D_PF_SAVED_REGISTRY_RETURN_02|{"FULL_PF": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET"}|0||[c94f290d5](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c94f290d5fb1f14e244fb4f87903b58df6d27690/docs/research/d_pf_on_demand_evidence_20261116/optimizer_round02/ROUND_RESULT.json)|
 |SAVED_LD2_PRICE_VALIDATION_ACCEPTANCE_ZERO_SCIENCE|{"PR_PAULI": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING"}|0||[a550012d7](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a550012d7db570eb1b204d9a2752bc739663b578/docs/research/h4_price_validation_integration_20261117/saved_entry_example/ROUND_RESULT.json)|
+|normal_saved_entry|{"PR_PAULI": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING"}|0|local, local0-wsl, server1, server2|[187c1b088](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/187c1b088638d9d4cf0a298b56d64e8a91c59105/docs/research/romutail_controller_runs/normal_saved_entry/ROUND_RESULT.json)|
 |B_H4_FULL_PF_FINITE_DESCENT_20261116_RUN01|{"FULL_PF": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING"}|244||[4b28d35da](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4b28d35da197c7a8dcde0a8d60a6a0f9ed917d75/docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF/ROUND_RESULT.json)|
 
 ## 未取込・未確認の範囲
