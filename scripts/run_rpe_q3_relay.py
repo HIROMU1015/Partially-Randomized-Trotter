@@ -19,8 +19,10 @@ from pathlib import Path
 import shlex
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.request
+import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src'))
@@ -56,11 +58,12 @@ def child_options(platform_name=None):
     return {}
 
 
-def ssh_wsl_command(worker, command, action):
+def ssh_wsl_command(worker, command, action, *, input_file=None):
     """Windows SSH -> existing WSL mailbox, preserving JSON stdin/stdout.
 
     Encoded PowerShell avoids CMD quoting Linux paths or the Japanese Windows
-    participation path. No remote file or authentication setting is created.
+    participation path. File-input requests use a temporary file in the SSH
+    user's home and remove it on return. Authentication settings are reused.
     """
     argv = [worker.get('wsl_executable', 'wsl.exe'), '-d', worker['distribution'], '--exec'] + command
     literals = ','.join("'" + str(value).replace("'", "''") + "'" for value in argv[1:])
@@ -69,12 +72,38 @@ def ssh_wsl_command(worker, command, action):
         "$ErrorActionPreference='Stop';"
         "$OutputEncoding=New-Object System.Text.UTF8Encoding($false);"
         "[Console]::OutputEncoding=New-Object System.Text.UTF8Encoding($false);"
-        "$raw=[Console]::In.ReadToEnd();"
-        "$mailboxArgs=@(" + literals + ");"
-        "$lines=$raw | & " + executable + " @mailboxArgs;"
-        "if($LASTEXITCODE -ne 0){exit $LASTEXITCODE};"
-        "$value=($lines -join [Environment]::NewLine)|ConvertFrom-Json;"
     )
+    if input_file is None:
+        script += (
+            "$raw=[Console]::In.ReadToEnd();"
+            "$mailboxArgs=@(" + literals + ");"
+            "$lines=$raw | & " + executable + " @mailboxArgs;"
+            "if($LASTEXITCODE -ne 0){exit $LASTEXITCODE};"
+            "$value=($lines -join [Environment]::NewLine)|ConvertFrom-Json;"
+        )
+    else:
+        # Windows SSH Console stdin can truncate/block JSON larger than a
+        # console buffer. SCP writes an owned input file; WSL gets ordinary
+        # redirected handles and an explicit stdin close, with no console pipe.
+        filename="'"+input_file.replace("'","''")+"'"
+        arguments="'"+subprocess.list2cmdline(argv[1:]).replace("'","''")+"'"
+        script += (
+            "$inputPath=Join-Path $env:USERPROFILE "+filename+";try{"
+            "$raw=[IO.File]::ReadAllText($inputPath);"
+            "$si=New-Object Diagnostics.ProcessStartInfo;"
+            "$si.FileName="+executable+";$si.Arguments="+arguments+";"
+            "$si.UseShellExecute=$false;$si.CreateNoWindow=$true;"
+            "$si.RedirectStandardInput=$true;$si.RedirectStandardOutput=$true;$si.RedirectStandardError=$true;"
+            "$utf8=New-Object System.Text.UTF8Encoding($false);"
+            "$si.StandardOutputEncoding=$utf8;$si.StandardErrorEncoding=$utf8;"
+            "$proc=[Diagnostics.Process]::Start($si);"
+            "$stdout=$proc.StandardOutput.ReadToEndAsync();$stderr=$proc.StandardError.ReadToEndAsync();"
+            "$proc.StandardInput.Write($raw);$proc.StandardInput.Close();$proc.WaitForExit();"
+            "$text=$stdout.GetAwaiter().GetResult();$errorText=$stderr.GetAwaiter().GetResult();"
+            "if($proc.ExitCode -ne 0){[Console]::Error.Write($errorText);exit $proc.ExitCode};"
+            "$value=$text|ConvertFrom-Json;"
+            "}finally{Remove-Item -LiteralPath $inputPath -Force -ErrorAction SilentlyContinue};"
+        )
     if action == 'status' and (worker.get('participation_file') or worker.get('participation_wsl_file')):
         if worker.get('participation_wsl_file'):
             flag_args = ['-d', worker['distribution'], '--exec', 'cat', worker['participation_wsl_file']]
@@ -101,6 +130,22 @@ def ssh_wsl_command(worker, command, action):
     script += "$value|ConvertTo-Json -Depth 100 -Compress;"
     encoded = base64.b64encode(script.encode('utf-16-le')).decode('ascii')
     return 'powershell.exe -NoProfile -NonInteractive -EncodedCommand ' + encoded
+
+
+def scp_prefix(worker, ssh):
+    """Reuse the SSH identity/options; SCP uses -P and user@host instead."""
+    if worker.get('scp_command'):
+        return list(worker['scp_command']), worker.get('scp_alias',worker['ssh_alias'])
+    executable=Path(ssh[0])
+    command=[str(executable.with_name('scp.exe'if executable.name.lower().endswith('.exe')else'scp'))]
+    alias=worker.get('scp_alias',worker['ssh_alias']);index=1
+    while index<len(ssh):
+        value=ssh[index]
+        if value=='-l':alias=ssh[index+1]+'@'+alias;index+=2;continue
+        if value=='-n':index+=1;continue
+        command.append('-P'if value=='-p'else value)
+        index+=1
+    return command,alias
 
 
 class Relay:
@@ -154,24 +199,27 @@ class Relay:
         state.pop('error', None)
 
     def remote(self, worker, action, value=None):
+        started = time.monotonic()
         command = [worker.get('python', 'python3'), '-B', worker['root'].rstrip('/')+'/scripts/run_rpe_q3_worker.py',
                    '--profile', worker['profile'], '--mailbox', action]
         # Reuse local0's published WSL mailbox transport (6e70f5d13061).
         # Scientific execution still resolves the route-specific saved profile.
         if worker.get('transport') == 'wsl':
             command = [worker.get('wsl_executable', 'wsl.exe'), '-d', worker['distribution'], '--exec'] + command
+        elif worker.get('transport') == 'ssh-wsl':
+            process=self._remote_wsl_file(worker,command,action,value or{})
+            command=None
         else:
             alias = worker['ssh_alias']
             if not alias or alias.startswith('-'): raise ValueError('Invalid existing SSH alias')
-            remote_command = (ssh_wsl_command(worker, command, action)
-                              if worker.get('transport') == 'ssh-wsl' else shlex.join(command))
+            remote_command = shlex.join(command)
             command = worker.get('ssh_command', self.ssh)+[
                 '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, remote_command]
-        started = time.monotonic()
-        process = subprocess.run(command,
-            input=json.dumps(value or {}), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-            encoding='utf-8', errors='replace',
-            timeout=self.config.get('request_timeout_seconds', 60), **child_options())
+        if command is not None:
+            process = subprocess.run(command,
+                input=json.dumps(value or {}), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                encoding='utf-8', errors='replace',
+                timeout=self.config.get('request_timeout_seconds', 60), **child_options())
         if process.returncode:
             raise RuntimeError('Worker mailbox '+action+' failed ('+str(process.returncode)+'): '+process.stderr[-1500:])
         result = json.loads(process.stdout)
@@ -183,6 +231,24 @@ class Relay:
                 # Completion transfer and reconciliation above the poll continue.
                 result['slots'] = 0
         return result, time.monotonic()-started
+
+    def _remote_wsl_file(self,worker,command,action,value):
+        ssh=list(worker.get('ssh_command',self.ssh));alias=worker['ssh_alias']
+        if not alias or alias.startswith('-'):raise ValueError('Invalid existing SSH alias')
+        scp,target=scp_prefix(worker,ssh)
+        name='.rpe-mailbox-'+uuid.uuid4().hex+'.json'
+        timeout=self.config.get('request_timeout_seconds',60)
+        with tempfile.TemporaryDirectory(prefix='rpe-mailbox-')as temporary:
+            payload=Path(temporary)/'request.json'
+            payload.write_text(json.dumps(value),encoding='utf-8')
+            transfer=subprocess.run(scp+['-q','-o','BatchMode=yes','-o','ConnectTimeout=10',str(payload),target+':'+name],
+                stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,
+                encoding='utf-8',errors='replace',timeout=timeout,**child_options())
+            if transfer.returncode:raise RuntimeError('WSL mailbox input transfer failed: '+transfer.stderr[-1500:])
+            remote=ssh_wsl_command(worker,command,action,input_file=name)
+            return subprocess.run(ssh+['-n','-o','BatchMode=yes','-o','ConnectTimeout=10',alias,remote],
+                stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,
+                encoding='utf-8',errors='replace',timeout=timeout,**child_options())
 
     def ensure_tunnel(self):
         if self.config.get('external_tunnel'): return True

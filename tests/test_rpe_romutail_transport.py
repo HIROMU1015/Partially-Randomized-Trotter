@@ -55,11 +55,36 @@ class DirectRelayTests(unittest.TestCase):
             self.assertEqual(argv[-2],'Romulaptop')
             encoded = argv[-1].split()[-1]
             script = base64.b64decode(encoded).decode('utf-16-le')
-            self.assertIn("& 'wsl.exe' @mailboxArgs",script)
-            self.assertIn("'/owned/WSL source/scripts/run_rpe_q3_worker.py'",script)
+            self.assertIn("$si.FileName='wsl.exe'",script)
+            self.assertIn('/owned/WSL source/scripts/run_rpe_q3_worker.py',script)
             self.assertIn(worker['participation_file'],script)
             self.assertIn('if(-not $enabled){$value.slots=0}',script)
-            self.assertIn('[Console]::In.ReadToEnd()',script)
+            self.assertNotIn('[Console]::In.ReadToEnd()',script)
+            self.assertIn('$proc.StandardInput.Close()',script)
+            self.assertIn('finally{Remove-Item',script)
+            transfer=call.call_args_list[0].args[0]
+            self.assertEqual(transfer[:3],['scp','-i','owned windows key'])
+            self.assertTrue(transfer[-1].startswith('romuk@Romulaptop:.rpe-mailbox-'))
+            self.assertEqual(call.call_args.kwargs['stdin'],subprocess.DEVNULL)
+
+    def test_large_wsl_request_is_transferred_intact_without_console_stdin(self):
+        with tempfile.TemporaryDirectory()as directory:
+            relay=self.relay(directory)
+            worker=dict(host_id='local0-wsl',ssh_alias='owned-windows',transport='ssh-wsl',
+                distribution='Ubuntu',root='/owned/source',profile='/owned/profile',python='python3',
+                ssh_command=['ssh','-p','2222','-l','owned-user'])
+            payload=dict(blobs={'artificial':'a'*180224});saved={}
+            def run(command,**kwargs):
+                self.assertEqual(kwargs['stdin'],subprocess.DEVNULL)
+                if command[0]=='scp':
+                    self.assertEqual(command[1:3],['-P','2222'])
+                    saved['path']=Path(command[-2]);saved['payload']=json.loads(saved['path'].read_text())
+                return SimpleNamespace(returncode=0,stdout='{"ok":true}',stderr='')
+            with patch.object(R.subprocess,'run',side_effect=run):
+                result,_=relay.remote(worker,'artifacts-put',payload)
+            self.assertTrue(result['ok'])
+            self.assertEqual(saved['payload'],payload)
+            self.assertFalse(saved['path'].exists())
 
     def test_disabled_server_is_never_contacted(self):
         with tempfile.TemporaryDirectory() as directory:

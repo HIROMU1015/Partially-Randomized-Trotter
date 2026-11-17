@@ -99,13 +99,15 @@ class RealHostFixtureTests(unittest.TestCase):
 
     def test_admission_targets_the_gateway_owned_copy_without_touching_real_policy(self):
         with tempfile.TemporaryDirectory()as temporary:
-            base=Path(temporary);run=base/'run';run.mkdir();gateway=base/'gateway/state/run';gateway.mkdir(parents=True)
+            base=Path(temporary);gateway=base/'gateway/state/runs/search-test';gateway.mkdir(parents=True)
             policy=gateway/'HOST_ADMISSION.json';policy.write_text('{}')
-            (run/'ROUND.json').write_text(json.dumps(dict(executor=dict(distributed=dict(host_admission=str(policy))))))
+            (gateway/'ROUND.json').write_text(json.dumps(dict(executor=dict(distributed=dict(host_admission=str(policy))))))
+            (base/'CONTROL_INPUTS.json').write_text(json.dumps(dict(directory=str(gateway),round=str(gateway/'ROUND.json'))))
+            self.assertFalse((base/'run/ROUND.json').exists())
             H.synthetic_admission(base,True)
             self.assertTrue(json.loads(policy.read_text())['hosts']['local0-wsl']['accepting'])
             outside=base.parent/'REAL_WORKER.json'
-            (run/'ROUND.json').write_text(json.dumps(dict(executor=dict(distributed=dict(host_admission=str(outside))))))
+            (gateway/'ROUND.json').write_text(json.dumps(dict(executor=dict(distributed=dict(host_admission=str(outside))))))
             with self.assertRaisesRegex(ValueError,'owned fixture'):H.synthetic_admission(base,False)
 
 

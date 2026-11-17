@@ -85,6 +85,11 @@ class ConcurrentExecutor(O.Executor):
 
     def for_method(self,method):
         view=ConcurrentExecutor.__new__(ConcurrentExecutor);view.__dict__.update(self.__dict__);view.method=method
+        # The normal factory decorates the owning executor's finish() to close
+        # its optional price-validation service. A method view must use its
+        # class finish(), which drains only that method and keeps the shared
+        # queue alive for preparation continuations and subsequent batches.
+        view.__dict__.pop('finish',None)
         return view
 
     def log(self,**event):
@@ -550,6 +555,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def for_method(self, method):
         view = DistributedExecutor.__new__(DistributedExecutor)
         view.__dict__.update(self.__dict__)
+        view.__dict__.pop('finish', None)
         view.method = method
         return view
 
