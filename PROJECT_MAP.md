@@ -1,5 +1,11 @@
 # プロジェクト案内
 
+PBS計算先の追加（2026-11-18）：[運用・検収記録](docs/research/rpe_pbs_worker_20261118/HANDOFF.md)。
+RomuTailの既存DistributedExecutor/JobStoreへPBS割当内workerを接続する実装であり、
+保存実入力metadataと人工PBS検収だけを行った。実H4信号・compile・Q3の追加実行は0件。
+入口は`scripts/run_rpe_schedule_search.py`、接続は`src/trottertracks/rpe_pbs.py`、
+workerは`src/trottertracks/rpe_pbs_worker.py`。固定科学SOURCE・既存run・STOPは維持する。
+
 [ローカルcontrollerへの簡易価格検証統合](docs/research/h4_price_validation_local_controller_20261118/REPORT.md)：共通モデルstore引継ぎ、保存DF holdout照合、metadata公開後の同一run再開。[通常運用](docs/research/h4_price_validation_local_controller_20261118/HANDOFF.md)。実compile・新探索は未実施。
 
 

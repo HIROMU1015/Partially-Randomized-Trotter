@@ -1,0 +1,4410 @@
+{
+  "schema": "RPE_OPTIMIZER_ROUND_RESULT_V1",
+  "round": {
+    "artificial_fixture": {
+      "numerical_leaf": "EXACT_RATIONAL_ARTIFICIAL_MSE",
+      "only": true,
+      "sleep_seconds": 2.0
+    },
+    "executor": {
+      "distributed": {
+        "bind": "127.0.0.1",
+        "local_worker": {
+          "host_id": "local",
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-pbs-worker-20261118/.pbs-source-22a428bd3",
+          "work_dir": "/tmp/rpe-pbs-faults-22a428bd3-20261118/workers/local",
+          "interpreter": "/usr/bin/python3",
+          "slots": 1,
+          "route_views": {},
+          "prefix_cache_directory": "/tmp/rpe-pbs-faults-22a428bd3-20261118/workers/local/prefix-cache"
+        },
+        "port": 44143,
+        "affinity_wait_seconds": 0,
+        "preparation": {
+          "budgets": {
+            "signal": 100,
+            "compile": 100,
+            "audit": 100
+          }
+        },
+        "auto_allocation": {
+          "priority_groups": [
+            [
+              "local",
+              "pbs-0"
+            ]
+          ],
+          "discovery_grace_seconds": 0,
+          "offer_ttl_seconds": 5
+        },
+        "pbs": {
+          "ssh_alias": "prism",
+          "remote_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/artificial-entry-22a428bd3",
+          "gateway_script": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/22a428bd3/scripts/rpe_pbs_gateway.py",
+          "gateway_python": "/usr/bin/python3",
+          "python": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+          "transport_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/22a428bd3",
+          "transport_source": "22a428bd34cbc3705b90ca6f4407053a6d996f05",
+          "resources": {
+            "queue": "workq",
+            "ncpus": 2,
+            "mem": "4gb",
+            "walltime": "00:04:00",
+            "initial_hold": true
+          },
+          "workers": [
+            {
+              "host_id": "pbs-0",
+              "profile": {
+                "host_id": "pbs-0",
+                "root": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/22a428bd3",
+                "interpreter": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+                "route_views": {},
+                "dp_workers": 1,
+                "slot_policy": {
+                  "mode": "auto",
+                  "initial_slots": 2
+                },
+                "pbs": {
+                  "minimum_task_seconds": 3,
+                  "idle_release_seconds": 10,
+                  "library_threads": 1
+                }
+              }
+            }
+          ],
+          "drain_seconds": 10,
+          "task_seconds": {
+            "q3": 5,
+            "signal": 5,
+            "compile": 5,
+            "audit": 5
+          },
+          "poll_seconds": 0.5,
+          "request_timeout_seconds": 15
+        },
+        "host_stage_capabilities": {
+          "local": [
+            "q3",
+            "signal",
+            "audit"
+          ],
+          "pbs-0": [
+            "q3",
+            "compile"
+          ]
+        }
+      },
+      "dp_workers": 1,
+      "max_concurrent_jobs": "auto",
+      "scheduler": "concurrent",
+      "wait_for_running_jobs": true
+    },
+    "initial": "all",
+    "max_new_q3_per_method": {
+      "PR_DF": 32,
+      "PR_PAULI": 32
+    },
+    "methods": [
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "round_id": "ARTIFICIAL_DISTRIBUTED_Q3",
+    "science_approved": true,
+    "search_overrides": {
+      "lookahead": 1,
+      "requested_widths": {
+        "PR_PAULI": [
+          0.1
+        ],
+        "PR_DF": [
+          0.1
+        ]
+      },
+      "schedule_wide": {
+        "max_kappa": "1",
+        "per_decision": 8
+      }
+    },
+    "width_families": [
+      {
+        "L_D": 1,
+        "configuration": {
+          "commit": "ARTIFICIAL",
+          "method": "PR_PAULI",
+          "path": "ARTIFICIAL"
+        },
+        "method": "PR_PAULI"
+      },
+      {
+        "L_D": 1,
+        "configuration": {
+          "commit": "ARTIFICIAL",
+          "method": "PR_DF",
+          "path": "ARTIFICIAL"
+        },
+        "method": "PR_DF"
+      }
+    ],
+    "artificial_pbs_acceptance": true,
+    "artificial_pbs_fault_exercise": true
+  },
+  "methods": {
+    "PR_PAULI": {
+      "method": "PR_PAULI",
+      "best": {
+        "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "PRIOR_ROUND_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "stop_reason": "NO_CANDIDATE_LEFT_IN_RANGE",
+      "pending_request": null,
+      "trace": [
+        {
+          "step": 1,
+          "cls": "EXPLORE",
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "origin": {
+            "kind": "CAP_VECTOR_SEED"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": null,
+          "configuration_best_after": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "improved": false,
+          "improved_configuration": true
+        },
+        {
+          "step": 2,
+          "cls": "EXPLORE",
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              2
+            ],
+            "base_headroom": "0.012500"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "configuration_best_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "improved": false,
+          "improved_configuration": true
+        }
+      ],
+      "held": [],
+      "new_calls": 4,
+      "evaluated_count": 4,
+      "evaluated": [
+        {
+          "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+          "label": null
+        },
+        {
+          "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/89eadd079aaf8d4822ba",
+          "label": null
+        },
+        {
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7",
+          "label": null
+        },
+        {
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+          "label": null
+        }
+      ],
+      "not_ready_candidates": [],
+      "ready_candidates": [
+        "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83"
+      ],
+      "search_range": {
+        "candidates": [
+          "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83"
+        ],
+        "rule": "METHOD_MINIMUM_PRIORITY_V2"
+      },
+      "resume_records": [
+        {
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009"
+        },
+        {
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/89eadd079aaf8d4822ba"
+        },
+        {
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7"
+        },
+        {
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58"
+        }
+      ],
+      "by_configuration": [
+        {
+          "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "key": {
+            "L_D": 1,
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1",
+            "requested_delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968,
+              "display": "0.10"
+            }
+          },
+          "picks": 0,
+          "explore_picks": 0,
+          "kappa_value": null,
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+            "label": null
+          },
+          "rule_adopted_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+            "label": null
+          },
+          "confirmed_all_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+            "label": null
+          }
+        },
+        {
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "key": {
+            "L_D": 2,
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1",
+            "requested_delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968,
+              "display": "0.10"
+            }
+          },
+          "picks": 2,
+          "explore_picks": 2,
+          "kappa_value": null,
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+            "label": null
+          },
+          "rule_adopted_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+            "label": null
+          },
+          "confirmed_all_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+            "label": null
+          }
+        }
+      ],
+      "incumbent_scope": "METHOD_PRIORITY",
+      "execution_holds": [],
+      "prior_rounds": {
+        "run_dirs": [
+          "/tmp/rpe-pbs-faults-22a428bd3-20261118/run"
+        ],
+        "loaded": 2,
+        "already_known": 0,
+        "refused": 0,
+        "refused_reasons": []
+      },
+      "unevaluated": [],
+      "input_requests": [],
+      "left": {
+        "UPDATE": 0,
+        "EXPLORE": 0,
+        "FINE": 0,
+        "SMALL": 0,
+        "DEFERRED": 0
+      },
+      "settings": {
+        "explore_every": 4,
+        "explore_window": "3/2",
+        "small_gain_fraction": "1/10000",
+        "deferral_fail_margin": "1/10000",
+        "transfer_count": 2,
+        "kappa_bounds": [
+          {
+            "numerator": 1,
+            "denominator": 4,
+            "display": "0.25"
+          },
+          {
+            "numerator": 8,
+            "denominator": 1,
+            "display": "8.00"
+          }
+        ],
+        "kappa_min_ratio": "9/8",
+        "lookahead": 1,
+        "adaptive_lookahead": false,
+        "coarse_gain_fraction": null,
+        "lookahead_mode": "CHAIN",
+        "adaptive_hybrid": false,
+        "allocation_exchange": null
+      },
+      "prefetch_policy": {
+        "decisions": 0,
+        "maximum_preview": 0,
+        "chain_proposals": 0,
+        "latest": null
+      },
+      "selection_timing": {
+        "candidate_classification_seconds": 0.00033422186970710754,
+        "candidate_classification_calls": 4,
+        "preview_order_seconds": 0.0,
+        "preview_order_calls": 0,
+        "backend_answer_seconds": 7.10537305905018,
+        "backend_answer_calls": 2
+      },
+      "budget": {
+        "max_new_q3": 32,
+        "science_approved": true,
+        "spent_before": 2,
+        "new_calls": 4
+      },
+      "generation": null,
+      "parameter_assessment": null,
+      "adopted_new_calls": 2,
+      "executor_metrics": {
+        "submitted": 8,
+        "queued_cancelled": 0,
+        "launched": 12,
+        "finished": 13,
+        "adopted": 8,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 2,
+        "sampled_owned_tree_peak_RSS_KiB": 0,
+        "completed_not_adopted": 0,
+        "by_method": {
+          "PREPARATION:audit": {
+            "launched": 1
+          },
+          "PREPARATION:signal": {
+            "launched": 3
+          },
+          "PR_PAULI": {
+            "launched": 4,
+            "adopted": 4
+          },
+          "PR_DF": {
+            "launched": 4,
+            "adopted": 4
+          }
+        },
+        "max_concurrent_jobs": 1,
+        "dp_workers": 1,
+        "new_real_route_launches": 0,
+        "executor_failure": null,
+        "elapsed_seconds": 35.177130990079604,
+        "busy_job_seconds": 43.796222693054006,
+        "idle_slot_seconds_no_queued_candidate": 0.08144772588275373,
+        "idle_slot_seconds_waiting_selected_result": 0.030838940758258104,
+        "idle_slot_seconds_no_queued_or_selected_result": 0.050608785124495625,
+        "idle_slot_seconds_with_queued_candidate": 5.647470061900094,
+        "integrated_available_slot_seconds": 49.52514048083685,
+        "slot_utilization": 0.8843230381143576,
+        "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
+        "speculative_adoption_fraction": null,
+        "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+        "distributed": true,
+        "by_host": {
+          "local": {
+            "assigned": 11,
+            "launched": 11,
+            "completed": 11,
+            "adopted": 11,
+            "reused": 1
+          },
+          "pbs-0": {
+            "assigned": 3,
+            "launched": 3,
+            "completed": 3,
+            "adopted": 3,
+            "reused": 1
+          }
+        },
+        "host_admission": {
+          "local": {
+            "accepting": true,
+            "optional": false,
+            "max_slots": null,
+            "error": null
+          },
+          "pbs-0": {
+            "accepting": true,
+            "optional": false,
+            "max_slots": null,
+            "error": null
+          }
+        },
+        "pbs": {
+          "allocations": [
+            {
+              "token": "eebeb11dd9bb41dbba9c239e31915c5c",
+              "host_id": "pbs-0",
+              "job_id": "267194.CPUcluster-PRISM",
+              "status": "R",
+              "worker": {
+                "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                "monotonic": 399993.02725001,
+                "epoch": 1794934915.7155018,
+                "schema": "RPE_PBS_WORKER_STATE_V1",
+                "state": "READY",
+                "ready": true,
+                "accepting": true,
+                "host_id": "pbs-0",
+                "job_id": "267194.CPUcluster-PRISM",
+                "hostname": "CPUcluster035",
+                "pid": 4007616,
+                "source_sha": "22a428bd34cbc3705b90ca6f4407053a6d996f05",
+                "resources": {
+                  "actual": {
+                    "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                    "exec_host": "CPUcluster035/0*2",
+                    "exec_vnode": "(CPUcluster035:ncpus=2:mem=4194304kb)",
+                    "job_id": "267194.CPUcluster-PRISM",
+                    "memory_bytes": 4294967296,
+                    "ncpus": 2,
+                    "recorded_epoch": 1794934841.43573,
+                    "remaining_seconds": 240,
+                    "select_nodes": 1,
+                    "walltime_seconds": 240
+                  },
+                  "snapshot": {
+                    "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                    "clock": {
+                      "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                      "monotonic": 399918.938773011,
+                      "epoch": 1794934841.6270251
+                    },
+                    "machine_cpu_count": 96,
+                    "machine_mem_total_bytes": 404353814528,
+                    "machine_mem_available_bytes": 399782223872,
+                    "allowed_cpu_count": 2.0,
+                    "cpu_bounds": [
+                      {
+                        "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                        "value": 96
+                      },
+                      {
+                        "kind": "CGROUP_V1_CPUSET",
+                        "value": 96,
+                        "path": "/sys/fs/cgroup/cpuset"
+                      },
+                      {
+                        "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                        "value": 2.0
+                      }
+                    ],
+                    "allowed_memory_bytes": 4294967296,
+                    "memory_bounds": [
+                      {
+                        "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                        "value": 4294967296
+                      }
+                    ],
+                    "remaining_group_memory_bytes": null,
+                    "memory_scope": "BOUNDED_ALLOCATION",
+                    "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                    "cgroup_version": "v1",
+                    "allocation_bounds_complete": true,
+                    "boundary_detection": "OBSERVED",
+                    "missing_controls": [],
+                    "observational_only": true
+                  },
+                  "cpu_count": 2,
+                  "memory_bytes": 4294967296,
+                  "library_threads": 1,
+                  "task_cpu_count": 1,
+                  "cpu_slots": 2,
+                  "maximum_slots": 2,
+                  "task_memory_bytes": null,
+                  "stages": [
+                    "q3"
+                  ],
+                  "one_shared_slot_pool": true
+                },
+                "capacity": 2,
+                "remaining_seconds": 165.91014987503877,
+                "start_clock": {
+                  "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                  "monotonic": 399918.983857362,
+                  "epoch": 1794934841.6721094
+                },
+                "exit_reason": null
+              },
+              "receipt": {
+                "epoch": 1794934786.5471566,
+                "returncode": 0,
+                "stderr": "",
+                "stdout": "267194.CPUcluster-PRISM"
+              },
+              "allocation": {
+                "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                "exec_host": "CPUcluster035/0*2",
+                "exec_vnode": "(CPUcluster035:ncpus=2:mem=4194304kb)",
+                "job_id": "267194.CPUcluster-PRISM",
+                "memory_bytes": 4294967296,
+                "ncpus": 2,
+                "recorded_epoch": 1794934841.43573,
+                "remaining_seconds": 240,
+                "select_nodes": 1,
+                "walltime_seconds": 240
+              },
+              "exit_status": null,
+              "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/artificial-entry-22a428bd3/99fef454d40b64beeebc/allocations/eebeb11dd9bb41dbba9c239e31915c5c"
+            }
+          ],
+          "error": null,
+          "science_budget_per_task": true
+        },
+        "host_admission_error": null,
+        "allocation_settings": {
+          "schema": "RPE_Q3_ALLOCATION_SETTINGS_V1",
+          "mode": "auto",
+          "max_concurrent_jobs": "auto",
+          "auto_allocation": {
+            "priority_groups": [
+              [
+                "local",
+                "pbs-0"
+              ]
+            ],
+            "offer_ttl_seconds": 5,
+            "discovery_grace_seconds": 0
+          }
+        },
+        "automatic_capacity": true,
+        "unresolved_owned_attempts": 0,
+        "host_offers": {
+          "local": {
+            "capacity": 1,
+            "fresh_free_slots": 1,
+            "reported_free_slots": 1,
+            "observed_age_seconds": 0.007218807004392147,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 1,
+              "slots": 1,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ]
+            },
+            "capacity_feedback": {
+              "controller_invocation": "556533-1794934881872472131",
+              "measurement_seconds": 35.18232135602739,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 10,
+              "adopted_results": 10,
+              "decision_wait_seconds": 33.71170762414113,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "capacity": 1
+            }
+          },
+          "pbs-0": {
+            "capacity": 2,
+            "fresh_free_slots": 2,
+            "reported_free_slots": 2,
+            "observed_age_seconds": 0.7023025939706713,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "AUTO",
+              "capacity": 2,
+              "slots": 2,
+              "occupied": 0,
+              "stage": "MEASURED_THROUGHPUT_AND_WAIT",
+              "reasons": [
+                "Insufficient new usable completions for another slot trial"
+              ],
+              "resources": {
+                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                "clock": {
+                  "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                  "monotonic": 399993.035102054,
+                  "epoch": 1794934915.7233539
+                },
+                "machine_cpu_count": 96,
+                "machine_mem_total_bytes": 404353814528,
+                "machine_mem_available_bytes": 399780532224,
+                "allowed_cpu_count": 2.0,
+                "cpu_bounds": [
+                  {
+                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                    "value": 96
+                  },
+                  {
+                    "kind": "CGROUP_V1_CPUSET",
+                    "value": 96,
+                    "path": "/sys/fs/cgroup/cpuset"
+                  },
+                  {
+                    "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                    "value": 2.0
+                  }
+                ],
+                "allowed_memory_bytes": 4294967296,
+                "memory_bounds": [
+                  {
+                    "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                    "value": 4294967296
+                  }
+                ],
+                "remaining_group_memory_bytes": null,
+                "memory_scope": "BOUNDED_PBS_ALLOCATION",
+                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                "cgroup_version": "v1",
+                "allocation_bounds_complete": true,
+                "boundary_detection": "ACTUAL_PBS_SINGLE_NODE_CPU_AND_MEMORY_WITH_PROCESS_LIMITS",
+                "missing_controls": [],
+                "observational_only": true,
+                "pbs_allocation": {
+                  "job_id": "267194.CPUcluster-PRISM",
+                  "ncpus": 2,
+                  "memory_bytes": 4294967296
+                }
+              },
+              "limits": {
+                "cpu_slots": 2,
+                "memory_slots": 66,
+                "explicit_max_slots": 2,
+                "memory_sample_headroom_factor": 1.5
+              },
+              "dp_workers_per_q3": 1,
+              "peak_job_rss_bytes": 43184128.0,
+              "peak_job_cpu_cores": 0.0,
+              "feedback": {
+                "adopted_results": 2,
+                "capacity": 1,
+                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                "controller_invocation": "556533-1794934881872472131",
+                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+                "decision_wait_seconds": 16.415019455947913,
+                "measurement_seconds": 25.51505042798817,
+                "ready_jobs": 0,
+                "usable_results": 2
+              },
+              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+              "trial": null,
+              "running_jobs_may_exceed_reduced_capacity": false,
+              "pbs": {
+                "job_id": "267194.CPUcluster-PRISM",
+                "remaining_seconds": 165.8985097890254,
+                "minimum_task_seconds": 3.0,
+                "drain_seconds": 10.0,
+                "accepting": true
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "556533-1794934881872472131",
+              "measurement_seconds": 35.182796413078904,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 3,
+              "adopted_results": 3,
+              "decision_wait_seconds": 21.370000118971802,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "capacity": 1
+            }
+          }
+        },
+        "persistent_reserved": {
+          "PR_DF": 4,
+          "PR_PAULI": 4
+        },
+        "host_eligibility_holds": {},
+        "preparation": {
+          "signal": {
+            "reserved": 4,
+            "launched": 4
+          },
+          "compile": {
+            "reserved": 1,
+            "launched": 1
+          },
+          "audit": {
+            "reserved": 1,
+            "launched": 1
+          }
+        },
+        "preparation_readiness_pending": {},
+        "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+        "method_launched": 4,
+        "method_adopted": 4
+      },
+      "rule_adopted_best": {
+        "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "PRIOR_ROUND_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "confirmed_all_best": {
+        "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "PRIOR_ROUND_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "completed_ledger": {
+        "jobs_checked": 4,
+        "jobs_verified": 4,
+        "refused": [],
+        "rows": [
+          {
+            "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "request_cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": false,
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+            "outcome_file": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009/OUTCOME.json",
+            "outcome_sha256": "7d4c89c45eb9e4e3cd90fbdb3ba92dd4b4d7c70f3fdf6fefef63521367de5778",
+            "artificial": true
+          },
+          {
+            "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "request_cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": false,
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/89eadd079aaf8d4822ba",
+            "outcome_file": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/89eadd079aaf8d4822ba/OUTCOME.json",
+            "outcome_sha256": "bb0de66ce37087d9248a139b7a705663a9706cbe73e573732ab091be64ee48ae",
+            "artificial": true
+          },
+          {
+            "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "request_cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7",
+            "outcome_file": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7/OUTCOME.json",
+            "outcome_sha256": "b614fb9b3c1bcd50577f12dcdeb02d199787c17ff6b1d7cea46599d95db9a571",
+            "artificial": true
+          },
+          {
+            "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "request_cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+            "outcome_file": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58/OUTCOME.json",
+            "outcome_sha256": "955410f63a626e3df8b104f2fdc6d3c8b278a0347e2f975b3d4c091bad058915",
+            "artificial": true
+          }
+        ],
+        "scope": "EXACT_TAU_AND_OWN_PRICE_CHECK_AFTER_EXECUTOR_FINISH"
+      }
+    },
+    "PR_DF": {
+      "method": "PR_DF",
+      "best": {
+        "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "ARTIFICIAL_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "stop_reason": "NO_CANDIDATE_LEFT_IN_RANGE",
+      "pending_request": null,
+      "trace": [
+        {
+          "step": 1,
+          "cls": "UPDATE",
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "origin": {
+            "kind": "CAP_VECTOR_SEED"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8",
+          "reason": null,
+          "method_min_before": null,
+          "method_min_after": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "configuration_best_before": null,
+          "configuration_best_after": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "improved": true,
+          "improved_configuration": true
+        },
+        {
+          "step": 2,
+          "cls": "UPDATE",
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              2
+            ],
+            "base_headroom": "0.012500"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "configuration_best_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "improved": true,
+          "improved_configuration": true
+        },
+        {
+          "step": 3,
+          "cls": "EXPLORE",
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "origin": {
+            "kind": "CAP_VECTOR_SEED"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/610093c57ae0337aa931",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": null,
+          "configuration_best_after": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "improved": false,
+          "improved_configuration": true
+        },
+        {
+          "step": 4,
+          "cls": "EXPLORE",
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              2
+            ],
+            "base_headroom": "0.012500"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "configuration_best_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "improved": false,
+          "improved_configuration": true
+        }
+      ],
+      "held": [],
+      "new_calls": 4,
+      "evaluated_count": 4,
+      "evaluated": [
+        {
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8",
+          "label": null
+        },
+        {
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+          "label": null
+        },
+        {
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/610093c57ae0337aa931",
+          "label": null
+        },
+        {
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+          "label": null
+        }
+      ],
+      "not_ready_candidates": [],
+      "ready_candidates": [
+        "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d"
+      ],
+      "search_range": {
+        "candidates": [
+          "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d"
+        ],
+        "rule": "METHOD_MINIMUM_PRIORITY_V2"
+      },
+      "resume_records": [
+        {
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8"
+        },
+        {
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e3616f2e093cac4690de"
+        },
+        {
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/610093c57ae0337aa931"
+        },
+        {
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90"
+        }
+      ],
+      "by_configuration": [
+        {
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "key": {
+            "L_D": 1,
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1",
+            "requested_delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968,
+              "display": "0.10"
+            }
+          },
+          "picks": 2,
+          "explore_picks": 2,
+          "kappa_value": null,
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+            "label": null
+          },
+          "rule_adopted_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+            "label": null
+          },
+          "confirmed_all_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+            "label": null
+          }
+        },
+        {
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "key": {
+            "L_D": 2,
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1",
+            "requested_delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968,
+              "display": "0.10"
+            }
+          },
+          "picks": 2,
+          "explore_picks": 0,
+          "kappa_value": null,
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+            "label": null
+          },
+          "rule_adopted_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+            "label": null
+          },
+          "confirmed_all_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+            "label": null
+          }
+        }
+      ],
+      "incumbent_scope": "METHOD_PRIORITY",
+      "execution_holds": [],
+      "prior_rounds": {
+        "run_dirs": [
+          "/tmp/rpe-pbs-faults-22a428bd3-20261118/run"
+        ],
+        "loaded": 0,
+        "already_known": 0,
+        "refused": 0,
+        "refused_reasons": []
+      },
+      "unevaluated": [],
+      "input_requests": [],
+      "left": {
+        "UPDATE": 0,
+        "EXPLORE": 0,
+        "FINE": 0,
+        "SMALL": 0,
+        "DEFERRED": 0
+      },
+      "settings": {
+        "explore_every": 4,
+        "explore_window": "3/2",
+        "small_gain_fraction": "1/10000",
+        "deferral_fail_margin": "1/10000",
+        "transfer_count": 2,
+        "kappa_bounds": [
+          {
+            "numerator": 1,
+            "denominator": 4,
+            "display": "0.25"
+          },
+          {
+            "numerator": 8,
+            "denominator": 1,
+            "display": "8.00"
+          }
+        ],
+        "kappa_min_ratio": "9/8",
+        "lookahead": 1,
+        "adaptive_lookahead": false,
+        "coarse_gain_fraction": null,
+        "lookahead_mode": "CHAIN",
+        "adaptive_hybrid": false,
+        "allocation_exchange": null
+      },
+      "prefetch_policy": {
+        "decisions": 0,
+        "maximum_preview": 0,
+        "chain_proposals": 0,
+        "latest": null
+      },
+      "selection_timing": {
+        "candidate_classification_seconds": 0.000843500136397779,
+        "candidate_classification_calls": 6,
+        "preview_order_seconds": 0.0,
+        "preview_order_calls": 0,
+        "backend_answer_seconds": 18.919763474841602,
+        "backend_answer_calls": 4
+      },
+      "budget": {
+        "max_new_q3": 32,
+        "science_approved": true,
+        "spent_before": 0,
+        "new_calls": 4
+      },
+      "generation": null,
+      "parameter_assessment": null,
+      "adopted_new_calls": 4,
+      "executor_metrics": {
+        "submitted": 8,
+        "queued_cancelled": 0,
+        "launched": 12,
+        "finished": 13,
+        "adopted": 8,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 2,
+        "sampled_owned_tree_peak_RSS_KiB": 0,
+        "completed_not_adopted": 0,
+        "by_method": {
+          "PREPARATION:audit": {
+            "launched": 1
+          },
+          "PREPARATION:signal": {
+            "launched": 3
+          },
+          "PR_PAULI": {
+            "launched": 4,
+            "adopted": 4
+          },
+          "PR_DF": {
+            "launched": 4,
+            "adopted": 4
+          }
+        },
+        "max_concurrent_jobs": 1,
+        "dp_workers": 1,
+        "new_real_route_launches": 0,
+        "executor_failure": null,
+        "elapsed_seconds": 35.177130990079604,
+        "busy_job_seconds": 43.796222693054006,
+        "idle_slot_seconds_no_queued_candidate": 0.08144772588275373,
+        "idle_slot_seconds_waiting_selected_result": 0.030838940758258104,
+        "idle_slot_seconds_no_queued_or_selected_result": 0.050608785124495625,
+        "idle_slot_seconds_with_queued_candidate": 5.647470061900094,
+        "integrated_available_slot_seconds": 49.52514048083685,
+        "slot_utilization": 0.8843230381143576,
+        "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
+        "speculative_adoption_fraction": null,
+        "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+        "distributed": true,
+        "by_host": {
+          "local": {
+            "assigned": 11,
+            "launched": 11,
+            "completed": 11,
+            "adopted": 11,
+            "reused": 1
+          },
+          "pbs-0": {
+            "assigned": 3,
+            "launched": 3,
+            "completed": 3,
+            "adopted": 3,
+            "reused": 1
+          }
+        },
+        "host_admission": {
+          "local": {
+            "accepting": true,
+            "optional": false,
+            "max_slots": null,
+            "error": null
+          },
+          "pbs-0": {
+            "accepting": true,
+            "optional": false,
+            "max_slots": null,
+            "error": null
+          }
+        },
+        "pbs": {
+          "allocations": [
+            {
+              "token": "eebeb11dd9bb41dbba9c239e31915c5c",
+              "host_id": "pbs-0",
+              "job_id": "267194.CPUcluster-PRISM",
+              "status": "R",
+              "worker": {
+                "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                "monotonic": 399993.02725001,
+                "epoch": 1794934915.7155018,
+                "schema": "RPE_PBS_WORKER_STATE_V1",
+                "state": "READY",
+                "ready": true,
+                "accepting": true,
+                "host_id": "pbs-0",
+                "job_id": "267194.CPUcluster-PRISM",
+                "hostname": "CPUcluster035",
+                "pid": 4007616,
+                "source_sha": "22a428bd34cbc3705b90ca6f4407053a6d996f05",
+                "resources": {
+                  "actual": {
+                    "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                    "exec_host": "CPUcluster035/0*2",
+                    "exec_vnode": "(CPUcluster035:ncpus=2:mem=4194304kb)",
+                    "job_id": "267194.CPUcluster-PRISM",
+                    "memory_bytes": 4294967296,
+                    "ncpus": 2,
+                    "recorded_epoch": 1794934841.43573,
+                    "remaining_seconds": 240,
+                    "select_nodes": 1,
+                    "walltime_seconds": 240
+                  },
+                  "snapshot": {
+                    "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                    "clock": {
+                      "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                      "monotonic": 399918.938773011,
+                      "epoch": 1794934841.6270251
+                    },
+                    "machine_cpu_count": 96,
+                    "machine_mem_total_bytes": 404353814528,
+                    "machine_mem_available_bytes": 399782223872,
+                    "allowed_cpu_count": 2.0,
+                    "cpu_bounds": [
+                      {
+                        "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                        "value": 96
+                      },
+                      {
+                        "kind": "CGROUP_V1_CPUSET",
+                        "value": 96,
+                        "path": "/sys/fs/cgroup/cpuset"
+                      },
+                      {
+                        "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                        "value": 2.0
+                      }
+                    ],
+                    "allowed_memory_bytes": 4294967296,
+                    "memory_bounds": [
+                      {
+                        "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                        "value": 4294967296
+                      }
+                    ],
+                    "remaining_group_memory_bytes": null,
+                    "memory_scope": "BOUNDED_ALLOCATION",
+                    "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                    "cgroup_version": "v1",
+                    "allocation_bounds_complete": true,
+                    "boundary_detection": "OBSERVED",
+                    "missing_controls": [],
+                    "observational_only": true
+                  },
+                  "cpu_count": 2,
+                  "memory_bytes": 4294967296,
+                  "library_threads": 1,
+                  "task_cpu_count": 1,
+                  "cpu_slots": 2,
+                  "maximum_slots": 2,
+                  "task_memory_bytes": null,
+                  "stages": [
+                    "q3"
+                  ],
+                  "one_shared_slot_pool": true
+                },
+                "capacity": 2,
+                "remaining_seconds": 165.91014987503877,
+                "start_clock": {
+                  "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                  "monotonic": 399918.983857362,
+                  "epoch": 1794934841.6721094
+                },
+                "exit_reason": null
+              },
+              "receipt": {
+                "epoch": 1794934786.5471566,
+                "returncode": 0,
+                "stderr": "",
+                "stdout": "267194.CPUcluster-PRISM"
+              },
+              "allocation": {
+                "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                "exec_host": "CPUcluster035/0*2",
+                "exec_vnode": "(CPUcluster035:ncpus=2:mem=4194304kb)",
+                "job_id": "267194.CPUcluster-PRISM",
+                "memory_bytes": 4294967296,
+                "ncpus": 2,
+                "recorded_epoch": 1794934841.43573,
+                "remaining_seconds": 240,
+                "select_nodes": 1,
+                "walltime_seconds": 240
+              },
+              "exit_status": null,
+              "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/artificial-entry-22a428bd3/99fef454d40b64beeebc/allocations/eebeb11dd9bb41dbba9c239e31915c5c"
+            }
+          ],
+          "error": null,
+          "science_budget_per_task": true
+        },
+        "host_admission_error": null,
+        "allocation_settings": {
+          "schema": "RPE_Q3_ALLOCATION_SETTINGS_V1",
+          "mode": "auto",
+          "max_concurrent_jobs": "auto",
+          "auto_allocation": {
+            "priority_groups": [
+              [
+                "local",
+                "pbs-0"
+              ]
+            ],
+            "offer_ttl_seconds": 5,
+            "discovery_grace_seconds": 0
+          }
+        },
+        "automatic_capacity": true,
+        "unresolved_owned_attempts": 0,
+        "host_offers": {
+          "local": {
+            "capacity": 1,
+            "fresh_free_slots": 1,
+            "reported_free_slots": 1,
+            "observed_age_seconds": 0.007218807004392147,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 1,
+              "slots": 1,
+              "occupied": 0,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ]
+            },
+            "capacity_feedback": {
+              "controller_invocation": "556533-1794934881872472131",
+              "measurement_seconds": 35.18232135602739,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 10,
+              "adopted_results": 10,
+              "decision_wait_seconds": 33.71170762414113,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "capacity": 1
+            }
+          },
+          "pbs-0": {
+            "capacity": 2,
+            "fresh_free_slots": 2,
+            "reported_free_slots": 2,
+            "observed_age_seconds": 0.7023025939706713,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "AUTO",
+              "capacity": 2,
+              "slots": 2,
+              "occupied": 0,
+              "stage": "MEASURED_THROUGHPUT_AND_WAIT",
+              "reasons": [
+                "Insufficient new usable completions for another slot trial"
+              ],
+              "resources": {
+                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                "clock": {
+                  "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                  "monotonic": 399993.035102054,
+                  "epoch": 1794934915.7233539
+                },
+                "machine_cpu_count": 96,
+                "machine_mem_total_bytes": 404353814528,
+                "machine_mem_available_bytes": 399780532224,
+                "allowed_cpu_count": 2.0,
+                "cpu_bounds": [
+                  {
+                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                    "value": 96
+                  },
+                  {
+                    "kind": "CGROUP_V1_CPUSET",
+                    "value": 96,
+                    "path": "/sys/fs/cgroup/cpuset"
+                  },
+                  {
+                    "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                    "value": 2.0
+                  }
+                ],
+                "allowed_memory_bytes": 4294967296,
+                "memory_bounds": [
+                  {
+                    "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                    "value": 4294967296
+                  }
+                ],
+                "remaining_group_memory_bytes": null,
+                "memory_scope": "BOUNDED_PBS_ALLOCATION",
+                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                "cgroup_version": "v1",
+                "allocation_bounds_complete": true,
+                "boundary_detection": "ACTUAL_PBS_SINGLE_NODE_CPU_AND_MEMORY_WITH_PROCESS_LIMITS",
+                "missing_controls": [],
+                "observational_only": true,
+                "pbs_allocation": {
+                  "job_id": "267194.CPUcluster-PRISM",
+                  "ncpus": 2,
+                  "memory_bytes": 4294967296
+                }
+              },
+              "limits": {
+                "cpu_slots": 2,
+                "memory_slots": 66,
+                "explicit_max_slots": 2,
+                "memory_sample_headroom_factor": 1.5
+              },
+              "dp_workers_per_q3": 1,
+              "peak_job_rss_bytes": 43184128.0,
+              "peak_job_cpu_cores": 0.0,
+              "feedback": {
+                "adopted_results": 2,
+                "capacity": 1,
+                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                "controller_invocation": "556533-1794934881872472131",
+                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+                "decision_wait_seconds": 16.415019455947913,
+                "measurement_seconds": 25.51505042798817,
+                "ready_jobs": 0,
+                "usable_results": 2
+              },
+              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+              "trial": null,
+              "running_jobs_may_exceed_reduced_capacity": false,
+              "pbs": {
+                "job_id": "267194.CPUcluster-PRISM",
+                "remaining_seconds": 165.8985097890254,
+                "minimum_task_seconds": 3.0,
+                "drain_seconds": 10.0,
+                "accepting": true
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "556533-1794934881872472131",
+              "measurement_seconds": 35.182796413078904,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 3,
+              "adopted_results": 3,
+              "decision_wait_seconds": 21.370000118971802,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "capacity": 1
+            }
+          }
+        },
+        "persistent_reserved": {
+          "PR_DF": 4,
+          "PR_PAULI": 4
+        },
+        "host_eligibility_holds": {},
+        "preparation": {
+          "signal": {
+            "reserved": 4,
+            "launched": 4
+          },
+          "compile": {
+            "reserved": 1,
+            "launched": 1
+          },
+          "audit": {
+            "reserved": 1,
+            "launched": 1
+          }
+        },
+        "preparation_readiness_pending": {},
+        "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+        "method_launched": 4,
+        "method_adopted": 4
+      },
+      "rule_adopted_best": {
+        "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "ARTIFICIAL_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "confirmed_all_best": {
+        "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "ARTIFICIAL_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "completed_ledger": {
+        "jobs_checked": 4,
+        "jobs_verified": 4,
+        "refused": [],
+        "rows": [
+          {
+            "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "request_cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+            "outcome_file": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90/OUTCOME.json",
+            "outcome_sha256": "f7fbd863a7136ba391bf4002a8d46e0842fe4e3ea022d5c07c1b35447d25deff",
+            "artificial": true
+          },
+          {
+            "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "request_cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/610093c57ae0337aa931",
+            "outcome_file": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/610093c57ae0337aa931/OUTCOME.json",
+            "outcome_sha256": "0a7b0137b98c58d77de6e7ecdcf9889d4ea91611e12d3f4098f35132e0b64084",
+            "artificial": true
+          },
+          {
+            "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "request_cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+            "outcome_file": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e3616f2e093cac4690de/OUTCOME.json",
+            "outcome_sha256": "e2c07d2976e0938f2dd85dbdb5281e8841b2d9be286660d4b27c4ae46373c8d0",
+            "artificial": true
+          },
+          {
+            "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "request_cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8",
+            "outcome_file": "/tmp/rpe-pbs-faults-22a428bd3-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8/OUTCOME.json",
+            "outcome_sha256": "69591a28ec57bcfd811b302ca62c00091174ecd258533d459aad6c05c08f7c6c",
+            "artificial": true
+          }
+        ],
+        "scope": "EXACT_TAU_AND_OWN_PRICE_CHECK_AFTER_EXECUTOR_FINISH"
+      }
+    }
+  },
+  "optimizer_source": "22a428bd34cbc3705b90ca6f4407053a6d996f05"
+}

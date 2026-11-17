@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -N rpe-env-probe
+#PBS -q workq
+#PBS -l select=1:ncpus=2:mem=2gb
+#PBS -l walltime=00:03:00
+#PBS -j oe
+#PBS -o /home/AbeHiromu/projects/rpe-pbs-20261118/environment/PBS.log
+set -eu
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+cd /home/AbeHiromu/projects/rpe-pbs-20261118/environment
+/usr/bin/python3 probe.py

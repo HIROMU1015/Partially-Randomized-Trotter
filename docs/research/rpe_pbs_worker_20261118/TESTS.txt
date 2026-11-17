@@ -1,0 +1,129 @@
+test_pbs_metadata_does_not_change_preparation_scientific_binding (test_rpe_pbs.AdmissionTests) ... ok
+test_scientific_stage_requires_estimate_and_respects_remaining_time (test_rpe_pbs.AdmissionTests) ... ok
+test_json_query_avoids_pbs20_user_table_and_empty_run_does_not_query (test_rpe_pbs.GatewayTests) ... ok
+test_lost_qsub_reply_recovers_original_scheduler_job_without_resubmit (test_rpe_pbs.GatewayTests) ... ok
+test_saved_artifact_harvest_never_calls_a_worker_or_subprocess (test_rpe_pbs.GatewayTests) ... ok
+test_allocation_submission_preserves_task_scientific_budget (test_rpe_pbs.ManagerTests) ... ok
+test_missing_history_holds_running_attempt_until_worker_exit (test_rpe_pbs.ManagerTests) ... ok
+test_queued_held_and_exited_allocations_cannot_offer_new_slots (test_rpe_pbs.ManagerTests) ... ok
+test_response_replay_does_not_repeat_rpc_and_changed_request_is_rejected (test_rpe_pbs.ManagerTests) ... ok
+test_restart_keeps_submission_token_and_rejects_changed_settings (test_rpe_pbs.ManagerTests) ... ok
+test_saved_cas_harvest_reuses_original_attempt_once (test_rpe_pbs.ManagerTests) ... ok
+test_authoritative_pbs_bounds_allow_auto_slots_without_job_cgroup (test_rpe_pbs_worker.AdmissionTests) ... ok
+test_delayed_assignment_never_launches_past_admission_cutoff (test_rpe_pbs_worker.AdmissionTests) ... ok
+test_idle_release_writes_exit_without_waiting_for_walltime (test_rpe_pbs_worker.AdmissionTests) ... ok
+test_actual_pbs_bound_wins_over_machine_cpu_and_nodefile (test_rpe_pbs_worker.AllocationTests) ... ok
+test_cpu_memory_and_compiler_footprint_share_one_bound (test_rpe_pbs_worker.AllocationTests) ... ok
+test_job_identity_single_node_and_oversized_dp_rejected (test_rpe_pbs_worker.AllocationTests) ... ok
+test_response_roundtrip_cleans_only_consumed_message (test_rpe_pbs_worker.SpoolTests) ... ok
+test_timeout_restart_reuses_the_one_acquisition_before_next_poll (test_rpe_pbs_worker.SpoolTests) ... ok
+test_timeout_retains_request_for_controller_recovery (test_rpe_pbs_worker.SpoolTests) ... ok
+test_method_drains_leave_controller_open_then_main_closes_service_once (test_rpe_executor_price_validation_lifecycle.PriceValidationLifecycleTests) ... ok
+test_assignment_never_expires_after_disconnect (test_rpe_q3_store.StoreTests) ... ok
+test_claim_enforces_membership_and_current_facts_and_keeps_priority (test_rpe_q3_store.StoreTests) ... ok
+test_completion_retransmit_and_adoption_are_exactly_once (test_rpe_q3_store.StoreTests) ... ok
+test_concurrent_budget_reservations_are_atomic (test_rpe_q3_store.StoreTests) ... ok
+test_controller_order_survives_prefix_hints (test_rpe_q3_store.StoreTests) ... ok
+test_hash_owner_and_state_regression_rejected (test_rpe_q3_store.StoreTests) ... ok
+test_only_unassigned_queue_can_release_reservation (test_rpe_q3_store.StoreTests) ... ok
+test_queued_hold_releases_budget_but_assigned_owner_cannot_change (test_rpe_q3_store.StoreTests) ... ok
+test_real_job_without_any_eligible_host_never_reserves (test_rpe_q3_store.StoreTests) ... ok
+test_reservation_survives_reopen_and_budget_is_per_method (test_rpe_q3_store.StoreTests) ... ok
+test_scientific_identity_cannot_change_under_same_job (test_rpe_q3_store.StoreTests) ... ok
+test_two_hosts_cannot_claim_same_scientific_job (test_rpe_q3_store.StoreTests) ... ok
+test_all_ready_host_offers_precede_claims_even_when_wsl_listed_first (test_rpe_q3_resources.DiscoveryTests) ... ok
+test_slow_preferred_ack_does_not_block_wsl_delivery_or_repeat_host_status (test_rpe_q3_resources.DiscoveryTests) ... ok
+test_unresponsive_preferred_host_does_not_block_wsl_or_duplicate_status (test_rpe_q3_resources.DiscoveryTests) ... ok
+test_cold_trial_measured_improvement_revert_and_drain (test_rpe_q3_resources.ResourceTests) ... ok
+test_equal_trial_is_not_improvement_and_polling_does_not_inflate_rate (test_rpe_q3_resources.ResourceTests) ... ok
+test_mailbox_feedback_persists_and_resume_keeps_slot_state (test_rpe_q3_resources.ResourceTests) ... ok
+test_owned_tree_reads_only_explicit_supervisor_and_children (test_rpe_q3_resources.ResourceTests) ... ok
+test_process_cgroup_allocation_bounds_are_not_machine_idle_resources (test_rpe_q3_resources.ResourceTests) ... ok
+test_unknown_and_untransferred_completion_hold_slots_fixed_mode_unchanged (test_rpe_q3_resources.ResourceTests) ... ok
+test_v1_cpu_cpuset_and_memory_ancestors_are_honoured (test_rpe_q3_resources.ResourceTests) ... ok
+test_actual_cli_round_path_with_artificial_context (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_completed_resume_no_duplicate_launch (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_duplicate_demands_share_one_job (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_execution_profile_changes_only_acceleration (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_finite_budget_reserved_before_launch (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_fixed_selection_except_explicit_execution_readiness_guard (test_rpe_optimizer_concurrent.SchedulerTests) ... FAIL
+test_four_methods_same_adoption_order_best_and_stop (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_launch_persistence_failure_stops_queue_and_waits_started_child (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_method_scope_trajectory_is_unchanged (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_pending_and_crash_claim_not_retried (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_queued_prefetch_budget_includes_every_reservation (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_resumed_live_jobs_occupy_capacity_without_relaunch (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_speculation_is_recorded_and_adopted_in_demand_order (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_two_drivers_cannot_own_same_directory (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_unknown_keeps_same_stop_as_legacy (test_rpe_optimizer_concurrent.SchedulerTests) ... ok
+test_absolute_kappa_route_inputs_share_registered_version (test_rpe_release_registry.ReleaseTests) ... ok
+test_artificial_planonly_and_real_input_rejection (test_rpe_release_registry.ReleaseTests) ... ok
+test_artificial_publication_skips_and_publication_failure_is_pending (test_rpe_release_registry.ReleaseTests) ... ok
+test_client_bootstrap_ignores_stale_code_root_and_planonly_pointer (test_rpe_release_registry.ReleaseTests) ... ok
+test_explicit_release_and_registered_input_change_rejection (test_rpe_release_registry.ReleaseTests) ... ok
+test_explicit_resume_archives_transient_stop_marker (test_rpe_release_registry.ReleaseTests) ... ok
+test_migrated_controller_cannot_start_new_work (test_rpe_release_registry.ReleaseTests) ... ok
+test_new_preview_prepare_start_pin_the_same_release_and_inputs (test_rpe_release_registry.ReleaseTests) ... ok
+test_planonly_uses_pinned_normal_entry_same_version (test_rpe_release_registry.ReleaseTests) ... ok
+test_repeated_completed_start_has_no_extra_launch (test_rpe_release_registry.ReleaseTests) ... ok
+test_resume_and_status_keep_run_source_after_current_switch (test_rpe_release_registry.ReleaseTests) ... ok
+test_stop_marks_run_without_signalling_unknown_pid (test_rpe_release_registry.ReleaseTests) ... ok
+test_unknown_action_is_rejected_before_run_creation (test_rpe_release_registry.ReleaseTests) ... ok
+test_ordinary_entry_late_ready_two_methods_exact_results_and_resume (test_rpe_distributed_q3.ArtificialScheduleEntry) ... ok
+test_prepare_only_writes_artificial_metadata_and_host_local_paths (test_rpe_distributed_q3.ArtificialScheduleEntry) ... ok
+
+======================================================================
+FAIL: test_fixed_selection_except_explicit_execution_readiness_guard (test_rpe_optimizer_concurrent.SchedulerTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-pbs-worker-20261118/tests/test_rpe_optimizer_concurrent.py", line 278, in test_fixed_selection_except_explicit_execution_readiness_guard
+    self.assertEqual(ast.dump(a),ast.dump(b),name)
+AssertionError: 'Func[9233 chars]d()))], orelse=[If(test=BoolOp(op=And(), value[8514 chars]=[])' != 'Func[9233 chars]d())), If(test=Compare(left=Subscript(value=Na[9259 chars]=[])'
+Diff is 53723 characters long. Set self.maxDiff to None to see it. : run_method
+
+----------------------------------------------------------------------
+Ran 73 tests in 9.363s
+
+FAILED (failures=1)
+{
+ "FULL_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "FULL_PF:ARTIFICIAL_FULL_PF_0",
+   "890.00"
+  ]
+ },
+ "TRUNCATED_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "TRUNCATED_PF:ARTIFICIAL_TRUNCATED_PF_0",
+   "890.00"
+  ]
+ },
+ "PR_PAULI": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_PAULI:ARTIFICIAL_PR_PAULI_0",
+   "890.00"
+  ]
+ },
+ "PR_DF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_DF:ARTIFICIAL_PR_DF_0",
+   "890.00"
+  ]
+ }
+}

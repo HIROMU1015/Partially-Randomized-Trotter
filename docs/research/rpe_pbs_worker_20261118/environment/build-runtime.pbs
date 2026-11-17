@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -N rpe-python-build
+#PBS -q workq
+#PBS -l select=1:ncpus=8:mem=4gb
+#PBS -l walltime=00:15:00
+#PBS -j oe
+#PBS -o /home/AbeHiromu/projects/rpe-pbs-20261118/runtime/BUILD.log
+set -eu
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+ROOT=/home/AbeHiromu/projects/rpe-pbs-20261118/runtime
+cd "$ROOT"
+tar -xzf Python-3.11.0rc1.tgz
+cd Python-3.11.0rc1
+./configure --prefix="$ROOT/python311rc1" --with-ensurepip=install
+# CPython's generated install target otherwise uses all visible CPUs, even when
+# PBS allocated only eight and process affinity still exposes all 96 cores.
+/usr/bin/python3 -c 'from pathlib import Path; p=Path("Makefile"); p.write_text(p.read_text().replace("-j0", "-j8"))'
+make -j8
+make install
+"$ROOT/python311rc1/bin/python3.11" -m venv "$ROOT/venv311rc1"
+"$ROOT/venv311rc1/bin/python" -m pip install --only-binary=:all: numpy==1.26.4 scipy==1.14.1 mpmath==1.3.0 qiskit==1.3.0 numba==0.60.0 pyscf==2.7.0 openfermion==1.6.1
+"$ROOT/venv311rc1/bin/python" -m pip freeze > "$ROOT/PIP_FREEZE.txt"
+"$ROOT/venv311rc1/bin/python" -c 'import sys,numpy,scipy,mpmath,qiskit,numba,pyscf,openfermion; print(sys.version); print("RUNTIME_BUILD_PASS")' > "$ROOT/RUNTIME_PASS.txt"

@@ -1,0 +1,20 @@
+fatal: path 'scripts/run_pr_df_ld_split_q3.py' exists on disk, but not in 'e0b3cad2a024070389f757160f3a20d7da02c5ff'
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/349558b748a82f384a4589434a63ef9b5572032c/scripts/run_rpe_optimizer_q3_job.py", line 507, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/349558b748a82f384a4589434a63ef9b5572032c/scripts/run_rpe_optimizer_q3_job.py", line 460, in main
+    case, inputs = build(view, request);inputs = execution_profile(inputs, request);r = route(view, kind, route_views)
+                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/349558b748a82f384a4589434a63ef9b5572032c/scripts/run_rpe_optimizer_q3_job.py", line 267, in route
+    W, resolution = load_prdf_route(view, route_views or {})
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/349558b748a82f384a4589434a63ef9b5572032c/scripts/run_rpe_optimizer_q3_job.py", line 198, in load_prdf_route
+    saved = subprocess.check_output(['git', 'show', old + ':' + saved_path], cwd=view).decode()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/python311rc1/lib/python3.11/subprocess.py", line 465, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/python311rc1/lib/python3.11/subprocess.py", line 569, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'show', 'e0b3cad2a024070389f757160f3a20d7da02c5ff:scripts/run_pr_df_ld_split_q3.py']' returned non-zero exit status 128.

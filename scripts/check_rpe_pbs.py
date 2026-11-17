@@ -7,6 +7,7 @@ metadata checks are a separate path; this harness never opens real H4 data.
 import argparse
 from collections import Counter
 from copy import deepcopy
+from contextlib import contextmanager
 import json
 from pathlib import Path
 import subprocess
@@ -45,9 +46,10 @@ def q3_outcomes(directory):
     return values
 
 
-def prepare(directory, source, settings=None):
+def prepare(directory, source, settings=None, *, exercise_faults=False):
     fixture = modules(source)
-    fixture.prepare(directory, port=0, total_slots='auto', sleep_seconds=2.)
+    fixture.prepare(directory, port=fixture.free_port() if exercise_faults else 0,
+                    total_slots='auto', sleep_seconds=2.)
     spec = read(directory/'ROUND.json')
     spec['search_overrides']['requested_widths'] = dict(PR_PAULI=[.1], PR_DF=[.1])
     spec['search_overrides']['lookahead'] = 1
@@ -60,6 +62,8 @@ def prepare(directory, source, settings=None):
         distributed['pbs'] = settings
         distributed['host_stage_capabilities'] = dict(local=['q3','signal','audit'], **{'pbs-0':['q3','compile']})
     spec['artificial_pbs_acceptance'] = True
+    if exercise_faults:
+        spec['artificial_pbs_fault_exercise'] = True
     put(directory/'ROUND.json', spec)
     put(directory/'SOURCE.json', dict(root=str(source), commit=subprocess.check_output(
         ['git','rev-parse','HEAD'],cwd=source,text=True).strip()))
@@ -87,8 +91,10 @@ def driver_type(fixture):
                 runtime = obj.runtime
                 cid = json.dumps(request,sort_keys=True)
                 def task(stage, identity, dependencies=(), inputs=None):
+                    faults = read(obj.root.parent/'ROUND.json').get('artificial_pbs_fault_exercise', False)
                     command=['@PYTHON@','-B','@SOURCE@/scripts/artificial_preparation_leaf.py',
-                        '--stage',stage,'--output','@WORK@/products','--sleep', '.2']
+                        '--stage',stage,'--output','@WORK@/products','--sleep',
+                        '3' if faults and stage == 'signal' else '.2']
                     if stage == 'audit': command += ['--inputs','@INPUTS@']
                     value=normalize_preparation_request(dict(method='ARTIFICIAL',route=dict(kind='preparation'),
                         preparation=dict(stage=stage,provider='ARTIFICIAL_'+stage,artificial=True,
@@ -119,6 +125,63 @@ def driver_type(fixture):
     return Driver
 
 
+@contextmanager
+def artificial_transport_faults(directory, spec):
+    """Fault only this labelled fixture process; production transport is untouched."""
+    if not spec.get('artificial_pbs_fault_exercise'):
+        yield
+        return
+    if not spec.get('artificial_pbs_acceptance'):
+        raise ValueError('Transport fault exercise requires labelled artificial inputs')
+    from trottertracks.rpe_pbs import Gateway
+    from trottertracks.rpe_q3_timing import stamp
+    original = Gateway.call
+
+    def call(gateway, payload):
+        result = original(gateway, payload)
+        lost = directory/'LOST_SUBMIT_REPLY.json'
+        if payload['action'] == 'ensure' and not lost.exists():
+            token = payload['spec']['token']
+            deadline = time.monotonic() + 5
+            while True:
+                snapshot = original(gateway, dict(action='snapshot'))
+                observed = next((row for row in snapshot['allocations']
+                                 if row['token'] == token and row.get('job_id')), None)
+                if observed is not None:
+                    put(lost, dict(stamp(), artificial_only=True, token=token,
+                                   pbs_job_id=observed['job_id'],
+                                   event='ARTIFICIAL_LOST_REPLY_AFTER_QSUB_ACCEPTED',
+                                   scheduler_status=observed['status']))
+                    gateway.close()
+                    raise OSError('ARTIFICIAL_LOST_SUBMIT_REPLY_AFTER_QSUB_ACCEPTED')
+                if time.monotonic() >= deadline:
+                    raise TimeoutError('Artificial fault exercise could not confirm accepted PBS job within 5s')
+                time.sleep(.05)
+        if payload['action'] == 'exchange' and not (directory/'ALLOW_TRANSFER').exists():
+            for token, requests in result.get('requests', {}).items():
+                completed = next((request for request in requests
+                                  if request['endpoint'] == '/v1/complete'), None)
+                if completed is not None:
+                    marker = directory/'COMPLETED_BEFORE_TRANSFER.json'
+                    if not marker.exists():
+                        allocation = next((row for row in result['allocations'] if row['token'] == token), {})
+                        put(marker, dict(stamp(), artificial_only=True, token=token,
+                            pbs_job_id=allocation.get('job_id'),
+                            event='ARTIFICIAL_DISCONNECT_BEFORE_CENTRAL_RESULT_DISPATCH',
+                            request_id=completed['request_id'],
+                            job_id=completed['payload']['job_id'],
+                            attempt_id=completed['payload']['attempt_id']))
+                    gateway.close()
+                    raise OSError('ARTIFICIAL_DISCONNECT_AFTER_COMPUTE_BEFORE_TRANSFER')
+        return result
+
+    Gateway.call = call
+    try:
+        yield
+    finally:
+        Gateway.call = original
+
+
 def execute(directory, source):
     fixture = modules(source)
     import run_rpe_schedule_search as entry
@@ -128,8 +191,9 @@ def execute(directory, source):
     if read(directory/'SOURCE.json')['commit'] != subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip():
         raise ValueError('Fixed acceptance SOURCE changed')
     started=time.monotonic()
-    entry.main(['--problem',str(directory/'PROBLEM.json'),'--round',str(directory/'ROUND.json'),
-                '--run-dir',str(directory/'run'),'--max-cycles','5','--batch','32'],driver_factory=driver_type(fixture))
+    with artificial_transport_faults(directory, spec):
+        entry.main(['--problem',str(directory/'PROBLEM.json'),'--round',str(directory/'ROUND.json'),
+                    '--run-dir',str(directory/'run'),'--max-cycles','5','--batch','32'],driver_factory=driver_type(fixture))
     rows=JobStore(directory/'run/distributed/QUEUE.sqlite3').rows()
     result=dict(artificial_only=True,scientific_H4_calls=0,source=read(directory/'SOURCE.json'),
         controller_wall_seconds=time.monotonic()-started,
@@ -147,9 +211,12 @@ def main():
     parser.add_argument('--source-root',type=Path,required=True)
     parser.add_argument('--settings',type=Path)
     parser.add_argument('--prepare',action='store_true')
+    parser.add_argument('--exercise-faults',action='store_true',
+                        help='Prepare labelled artificial lost-reply/transfer/restart checks')
     args=parser.parse_args(); directory=args.directory.resolve(); source=args.source_root.resolve()
     if args.prepare:
-        prepare(directory,source,read(args.settings) if args.settings else None)
+        prepare(directory,source,read(args.settings) if args.settings else None,
+                exercise_faults=args.exercise_faults)
         print(json.dumps(dict(prepared=str(directory),artificial_only=True)));return
     result=execute(directory,source)
     print(json.dumps({key:value for key,value in result.items() if key!='outcomes'},ensure_ascii=False))

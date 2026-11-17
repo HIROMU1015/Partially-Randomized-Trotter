@@ -300,3 +300,9 @@ C7-4の[保存モデル再解析](../trottertracks/track_d_c7_4_models.py)と[�
 
 Local0 absolute-kappa interval through the normal physical schedule entry (metadata-only acceptance): `docs/research/rpe_local0_absolute_kappa/README.md`.
 - 分散Q3の自動割当・自動同時枠と計時：[HANDOFF](../../docs/research/rpe_q3_auto_allocation/HANDOFF.md)。新run既定auto、保存runの上限保全。実H4起動0。
+# PBS分散実行基盤（2026-11-18）
+
+関連する運用moduleは`src/trottertracks/rpe_pbs.py`と`rpe_pbs_worker.py`。
+既存queue・工程別profile・成果CAS・予算・再開処理を使い、PBS割当内でworkerを動かす。
+数値libraryの科学的SOURCEとは分けて版を記録する。
+[検収・引継ぎ](../../docs/research/rpe_pbs_worker_20261118/HANDOFF.md)を参照。

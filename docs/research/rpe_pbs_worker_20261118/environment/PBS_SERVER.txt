@@ -1,0 +1,51 @@
+#
+# Create resources and set their properties.
+#
+#
+# Create and define resource Qlist
+#
+create resource Qlist
+set resource Qlist type = string_array
+set resource Qlist flag = h
+#
+# Create queues and set their attributes.
+#
+#
+# Create and define queue workq
+#
+create queue workq
+set queue workq queue_type = Execution
+set queue workq resources_default.mem = 350gb
+set queue workq enabled = True
+set queue workq started = True
+#
+# Create and define queue large
+#
+create queue large
+set queue large queue_type = Execution
+set queue large resources_default.mem = 1516gb
+set queue large enabled = True
+set queue large started = True
+#
+# Set server attributes.
+#
+set server scheduling = True
+set server default_queue = workq
+set server log_events = 511
+set server mailer = /usr/sbin/sendmail
+set server mail_from = adm
+set server query_other_jobs = True
+set server resources_default.ncpus = 1
+set server default_chunk.ncpus = 1
+set server scheduler_iteration = 600
+set server resv_enable = True
+set server node_fail_requeue = 310
+set server max_array_size = 10000
+set server pbs_license_min = 0
+set server pbs_license_max = 2147483647
+set server pbs_license_linger_time = 31536000
+set server eligible_time_enable = False
+set server job_history_enable = True
+set server job_history_duration = 168:00:00
+set server max_concurrent_provision = 5
+set server max_job_sequence_id = 9999999
