@@ -1,0 +1,55 @@
+{
+  "round_id": "ARTIFICIAL_MULTI_WIDTH",
+  "methods": [
+    "PR_PAULI",
+    "PR_DF"
+  ],
+  "science_approved": true,
+  "initial": "all",
+  "width_families": [
+    {
+      "method": "PR_PAULI",
+      "L_D": 1,
+      "configuration": {
+        "method": "PR_PAULI",
+        "path": "ARTIFICIAL",
+        "commit": "ARTIFICIAL"
+      }
+    },
+    {
+      "method": "PR_DF",
+      "L_D": 1,
+      "configuration": {
+        "method": "PR_DF",
+        "path": "ARTIFICIAL",
+        "commit": "ARTIFICIAL"
+      }
+    }
+  ],
+  "search_overrides": {
+    "requested_widths": {
+      "PR_PAULI": [
+        0.1,
+        0.2
+      ],
+      "PR_DF": [
+        0.1,
+        0.05
+      ]
+    },
+    "schedule_wide": {
+      "max_kappa": "1",
+      "per_decision": 8
+    }
+  },
+  "executor": {
+    "scheduler": "concurrent",
+    "max_concurrent_jobs": 2,
+    "dp_workers": 1
+  },
+  "max_new_q3_per_method": {
+    "PR_PAULI": 2,
+    "PR_DF": 2
+  },
+  "overlap_ready_batch": true
+}

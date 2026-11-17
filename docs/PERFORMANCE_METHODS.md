@@ -1,5 +1,9 @@
 # 性能対策の再利用索引
 
+## PR探索の失敗を回収待ち前に可視化する（2026-11-17）
+
+SOURCE314524a91は既存concurrent queue/Completionを保ち、method/phase例外を即時保存、producerへ先に協調停止を通知し、走行中stageだけ回収する。未開始stageはyieldし、descriptor補完でcaller request/keyを変えない。失敗例は通知前loggingによるnativeの競合と、別methodの二次例外による一次原因の隠蔽。人工92・native10 PASS、実H4の修正適用/速度は未測定。旧R08はread-onlyでSOURCEを途中変更しない。[REPORT・引継ぎ](research/pr_failure_continuity_fix_20261117/HANDOFF.md)。
+
 ## PR探索の候補分離・後着READY投入（2026-11-17）
 
 `hold_candidate`と既存`ROUND_RESULT.execution_holds`で旧job照合待ちをconfiguration単位に限定し、無検証再利用/retryを避けて他候補を継続する。CompletionのREADY snapshotを元installerへ渡し、準備wave全体を待たず同じqueueでQ3を進める。有限総予算と重大UNKNOWN停止は維持。[REPORT](research/h4_pr_candidate_continuity_20261117/REPORT.md)／[HANDOFF](research/h4_pr_candidate_continuity_20261117/HANDOFF.md)。人工82件・native8件PASS、実H4の速度倍率は未測定。R07 STOPを残す新SOURCE/R08で継続。

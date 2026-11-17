@@ -1,0 +1,31 @@
+test_local_unknown_continues_and_resume_never_restarts_held_candidate (test_rpe_failure_continuity.FailureContinuity.test_local_unknown_continues_and_resume_never_restarts_held_candidate) ... ok
+test_method_exception_is_saved_before_other_method_drains (test_rpe_failure_continuity.FailureContinuity.test_method_exception_is_saved_before_other_method_drains) ... ok
+test_normal_cli_exception_notifies_active_preparation_and_preserves_stop (test_rpe_failure_continuity.FailureContinuity.test_normal_cli_exception_notifies_active_preparation_and_preserves_stop) ... FAIL
+test_only_explicit_interrupt_is_local_not_sigkill_or_numerical (test_rpe_failure_continuity.FailureContinuity.test_only_explicit_interrupt_is_local_not_sigkill_or_numerical) ... ok
+test_phase_records_original_exception_immediately (test_rpe_failure_continuity.FailureContinuity.test_phase_records_original_exception_immediately) ... ok
+test_scope_rejection_requires_zero_calls_and_unchanged_request (test_rpe_failure_continuity.FailureContinuity.test_scope_rejection_requires_zero_calls_and_unchanged_request) ... ok
+test_stage_boundary_yield_reuses_success_and_never_retries_failure (test_rpe_failure_continuity.FailureContinuity.test_stage_boundary_yield_reuses_success_and_never_retries_failure) ... ok
+
+======================================================================
+FAIL: test_normal_cli_exception_notifies_active_preparation_and_preserves_stop (test_rpe_failure_continuity.FailureContinuity.test_normal_cli_exception_notifies_active_preparation_and_preserves_stop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/tests/test_rpe_failure_continuity.py", line 161, in test_normal_cli_exception_notifies_active_preparation_and_preserves_stop
+    self.assertEqual(seen,[dict(error_already_saved=True,stop_requested=True)])
+AssertionError: Lists differ: [{'error_already_saved': True, 'stop_requested': False}] != [{'error_already_saved': True, 'stop_requested': True}]
+
+First differing element 0:
+{'error_already_saved': True, 'stop_requested': False}
+{'error_already_saved': True, 'stop_requested': True}
+
+- [{'error_already_saved': True, 'stop_requested': False}]
+?                                                  ^^^^
+
++ [{'error_already_saved': True, 'stop_requested': True}]
+?                                                  ^^^
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.490s
+
+FAILED (failures=1)

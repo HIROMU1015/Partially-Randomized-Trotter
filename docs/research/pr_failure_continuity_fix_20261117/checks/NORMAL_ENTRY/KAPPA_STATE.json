@@ -1,0 +1,2060 @@
+{
+  "schema": "RPE_REQUESTED_WIDTH_SCHEDULE_STATE_V1",
+  "round_id": "ARTIFICIAL_MULTI_WIDTH",
+  "requested_widths": {
+    "PR_PAULI": [
+      {
+        "raw": 0.1,
+        "exact": "3602879701896397/36028797018963968"
+      },
+      {
+        "raw": 0.2,
+        "exact": "3602879701896397/18014398509481984"
+      }
+    ],
+    "PR_DF": [
+      {
+        "raw": 0.1,
+        "exact": "3602879701896397/36028797018963968"
+      },
+      {
+        "raw": 0.05,
+        "exact": "3602879701896397/72057594037927936"
+      }
+    ]
+  },
+  "cycle": 1,
+  "points": [
+    {
+      "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2",
+      "method": "PR_PAULI",
+      "L_D": 1,
+      "requested_delta_pf": 0.2,
+      "kappa": "1",
+      "status": "COMPLETION",
+      "completion_request": {
+        "method": "PR_PAULI",
+        "selection": {
+          "rule": "SCHEDULE_WIDE_V1",
+          "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2",
+          "reason": "INIT_FLOOR_SCHEDULE"
+        },
+        "design": {
+          "L_D": 1,
+          "formula": "2nd",
+          "K": 2,
+          "delta_pf": 0.2,
+          "kappa": "1"
+        }
+      },
+      "request_reason": "INIT_FLOOR_SCHEDULE",
+      "input_dispatches": 1
+    },
+    {
+      "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+      "method": "PR_PAULI",
+      "L_D": 1,
+      "requested_delta_pf": 0.1,
+      "kappa": "1",
+      "status": "REGISTERED",
+      "completion_request": {
+        "method": "PR_PAULI",
+        "selection": {
+          "rule": "SCHEDULE_WIDE_V1",
+          "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+          "reason": "INIT_FLOOR_SCHEDULE"
+        },
+        "design": {
+          "L_D": 1,
+          "formula": "2nd",
+          "K": 2,
+          "delta_pf": 0.1,
+          "kappa": "1"
+        }
+      },
+      "request_reason": "INIT_FLOOR_SCHEDULE",
+      "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+      "completion": {
+        "key": "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2|k=1",
+        "status": "READY_FOR_SEARCH"
+      },
+      "evaluation_configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296"
+    },
+    {
+      "family": "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+      "method": "PR_DF",
+      "L_D": 1,
+      "requested_delta_pf": 0.1,
+      "kappa": "1",
+      "status": "REGISTERED",
+      "completion_request": {
+        "method": "PR_DF",
+        "selection": {
+          "rule": "SCHEDULE_WIDE_V1",
+          "family": "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+          "reason": "INIT_FLOOR_SCHEDULE"
+        },
+        "design": {
+          "L_D": 1,
+          "formula": "2nd",
+          "K": 2,
+          "delta_pf": 0.1,
+          "kappa": "1"
+        }
+      },
+      "request_reason": "INIT_FLOOR_SCHEDULE",
+      "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+      "completion": {
+        "key": "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2|k=1",
+        "status": "READY_FOR_SEARCH"
+      },
+      "evaluation_configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d"
+    },
+    {
+      "family": "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2",
+      "method": "PR_DF",
+      "L_D": 1,
+      "requested_delta_pf": 0.05,
+      "kappa": "1",
+      "status": "COMPLETION",
+      "completion_request": {
+        "method": "PR_DF",
+        "selection": {
+          "rule": "SCHEDULE_WIDE_V1",
+          "family": "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2",
+          "reason": "INIT_FLOOR_SCHEDULE"
+        },
+        "design": {
+          "L_D": 1,
+          "formula": "2nd",
+          "K": 2,
+          "delta_pf": 0.05,
+          "kappa": "1"
+        }
+      },
+      "request_reason": "INIT_FLOOR_SCHEDULE"
+    }
+  ],
+  "families": {
+    "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+      "method": "PR_PAULI",
+      "L_D": 1,
+      "formula": "2nd",
+      "K": 2,
+      "requested_delta_pf": 0.1,
+      "delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "base_source": {
+        "method": "PR_PAULI",
+        "path": "ARTIFICIAL",
+        "commit": "ARTIFICIAL"
+      },
+      "status": "READY_METADATA",
+      "rows": [
+        {
+          "m": 0,
+          "c": "12980742146337070512478121581609/129807421463370690713262408230502400000000",
+          "q": 1,
+          "J": 1
+        },
+        {
+          "m": 1,
+          "c": "12980742146337070512478121581609/32451855365842672678315602057625600000000",
+          "q": 2,
+          "J": 1
+        },
+        {
+          "m": 2,
+          "c": "12980742146337070512478121581609/8112963841460668169578900514406400000000",
+          "q": 4,
+          "J": 1
+        },
+        {
+          "m": 3,
+          "c": "12980742146337070512478121581609/2028240960365167042394725128601600000000",
+          "q": 8,
+          "J": 1
+        },
+        {
+          "m": 4,
+          "c": "12980742146337070512478121581609/507060240091291760598681282150400000000",
+          "q": 16,
+          "J": 1
+        },
+        {
+          "m": 5,
+          "c": "12980742146337070512478121581609/126765060022822940149670320537600000000",
+          "q": 32,
+          "J": 1
+        },
+        {
+          "m": 6,
+          "c": "12980742146337070512478121581609/31691265005705735037417580134400000000",
+          "q": 64,
+          "J": 1
+        },
+        {
+          "m": 7,
+          "c": "12980742146337070512478121581609/7922816251426433759354395033600000000",
+          "q": 128,
+          "J": 1
+        },
+        {
+          "m": 8,
+          "c": "12980742146337070512478121581609/1980704062856608439838598758400000000",
+          "q": 256,
+          "J": 1
+        },
+        {
+          "m": 9,
+          "c": "12980742146337070512478121581609/495176015714152109959649689600000000",
+          "q": 512,
+          "J": 1
+        },
+        {
+          "m": 10,
+          "c": "12980742146337070512478121581609/123794003928538027489912422400000000",
+          "q": 1024,
+          "J": 1
+        },
+        {
+          "m": 11,
+          "c": "12980742146337070512478121581609/30948500982134506872478105600000000",
+          "q": 2048,
+          "J": 1
+        },
+        {
+          "m": 12,
+          "c": "12980742146337070512478121581609/7737125245533626718119526400000000",
+          "q": 4096,
+          "J": 1
+        }
+      ],
+      "configuration": {
+        "spec": {
+          "h": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "M": 12,
+          "formula": "2nd",
+          "finite_K": 2,
+          "delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "kappa": {
+            "value": {
+              "numerator": 1,
+              "denominator": 1
+            }
+          },
+          "split": {
+            "L_D": 1,
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 10000
+            }
+          }
+        },
+        "rounds": [
+          {
+            "m": 0,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "q_PF": 1,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "40e21a8b8d5bf557e0bb"
+          },
+          {
+            "m": 1,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 18014398509481984
+            },
+            "q_PF": 2,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "604edf558949d559e05d"
+          },
+          {
+            "m": 2,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 9007199254740992
+            },
+            "q_PF": 4,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "128ac8f9d6936388ccdb"
+          },
+          {
+            "m": 3,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "q_PF": 8,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "f939649524a5e39e3c27"
+          },
+          {
+            "m": 4,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 2251799813685248
+            },
+            "q_PF": 16,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "b0db8630ed10878d3ef5"
+          },
+          {
+            "m": 5,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 1125899906842624
+            },
+            "q_PF": 32,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "f5cead987c206b0ca400"
+          },
+          {
+            "m": 6,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 562949953421312
+            },
+            "q_PF": 64,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "b647de35cbf2d7680eec"
+          },
+          {
+            "m": 7,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 281474976710656
+            },
+            "q_PF": 128,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "b2cddf0231010ee3deca"
+          },
+          {
+            "m": 8,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 140737488355328
+            },
+            "q_PF": 256,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "d75d0e39b86841de6952"
+          },
+          {
+            "m": 9,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 70368744177664
+            },
+            "q_PF": 512,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "5174c9c071e4a107a8ae"
+          },
+          {
+            "m": 10,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 35184372088832
+            },
+            "q_PF": 1024,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "958136c0830c3e07fa94"
+          },
+          {
+            "m": 11,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 17592186044416
+            },
+            "q_PF": 2048,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "958d6969d40448e7c077"
+          },
+          {
+            "m": 12,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 8796093022208
+            },
+            "q_PF": 4096,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "3f1f0ff51e7dfac93f1d"
+          }
+        ],
+        "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296"
+      }
+    },
+    "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2": {
+      "method": "PR_PAULI",
+      "L_D": 1,
+      "formula": "2nd",
+      "K": 2,
+      "requested_delta_pf": 0.2,
+      "delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 18014398509481984
+      },
+      "base_source": {
+        "method": "PR_PAULI",
+        "path": "ARTIFICIAL",
+        "commit": "ARTIFICIAL"
+      },
+      "status": "READY_METADATA",
+      "rows": [
+        {
+          "m": 0,
+          "c": "12980742146337070512478121581609/129807421463370690713262408230502400000000",
+          "q": 1,
+          "J": 1
+        },
+        {
+          "m": 1,
+          "c": "12980742146337070512478121581609/32451855365842672678315602057625600000000",
+          "q": 1,
+          "J": 1
+        },
+        {
+          "m": 2,
+          "c": "12980742146337070512478121581609/8112963841460668169578900514406400000000",
+          "q": 2,
+          "J": 1
+        },
+        {
+          "m": 3,
+          "c": "12980742146337070512478121581609/2028240960365167042394725128601600000000",
+          "q": 4,
+          "J": 1
+        },
+        {
+          "m": 4,
+          "c": "12980742146337070512478121581609/507060240091291760598681282150400000000",
+          "q": 8,
+          "J": 1
+        },
+        {
+          "m": 5,
+          "c": "12980742146337070512478121581609/126765060022822940149670320537600000000",
+          "q": 16,
+          "J": 1
+        },
+        {
+          "m": 6,
+          "c": "12980742146337070512478121581609/31691265005705735037417580134400000000",
+          "q": 32,
+          "J": 1
+        },
+        {
+          "m": 7,
+          "c": "12980742146337070512478121581609/7922816251426433759354395033600000000",
+          "q": 64,
+          "J": 1
+        },
+        {
+          "m": 8,
+          "c": "12980742146337070512478121581609/1980704062856608439838598758400000000",
+          "q": 128,
+          "J": 1
+        },
+        {
+          "m": 9,
+          "c": "12980742146337070512478121581609/495176015714152109959649689600000000",
+          "q": 256,
+          "J": 1
+        },
+        {
+          "m": 10,
+          "c": "12980742146337070512478121581609/123794003928538027489912422400000000",
+          "q": 512,
+          "J": 1
+        },
+        {
+          "m": 11,
+          "c": "12980742146337070512478121581609/30948500982134506872478105600000000",
+          "q": 1024,
+          "J": 1
+        },
+        {
+          "m": 12,
+          "c": "12980742146337070512478121581609/7737125245533626718119526400000000",
+          "q": 2048,
+          "J": 1
+        }
+      ],
+      "configuration": {
+        "spec": {
+          "h": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "M": 12,
+          "formula": "2nd",
+          "finite_K": 2,
+          "delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "kappa": {
+            "value": {
+              "numerator": 1,
+              "denominator": 1
+            }
+          },
+          "split": {
+            "L_D": 1,
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 10000
+            }
+          }
+        },
+        "rounds": [
+          {
+            "m": 0,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "q_PF": 1,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "40e21a8b8d5bf557e0bb"
+          },
+          {
+            "m": 1,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 18014398509481984
+            },
+            "q_PF": 1,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "d9eb8f17e6be6457bc11"
+          },
+          {
+            "m": 2,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 9007199254740992
+            },
+            "q_PF": 2,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "aa4dc29bb429eb4e6dd6"
+          },
+          {
+            "m": 3,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "q_PF": 4,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "e0cc1f76664d50b7781e"
+          },
+          {
+            "m": 4,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 2251799813685248
+            },
+            "q_PF": 8,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "55ed5f7203085576eae9"
+          },
+          {
+            "m": 5,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 1125899906842624
+            },
+            "q_PF": 16,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "f6a1f5b5f987874b52ca"
+          },
+          {
+            "m": 6,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 562949953421312
+            },
+            "q_PF": 32,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "3a21c4009e43eb188056"
+          },
+          {
+            "m": 7,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 281474976710656
+            },
+            "q_PF": 64,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "54505162164cbf2641f5"
+          },
+          {
+            "m": 8,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 140737488355328
+            },
+            "q_PF": 128,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "450ab8331e97a4ba0797"
+          },
+          {
+            "m": 9,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 70368744177664
+            },
+            "q_PF": 256,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "8304080b0d944e1bf2a3"
+          },
+          {
+            "m": 10,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 35184372088832
+            },
+            "q_PF": 512,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "08da71f59d00d03789c7"
+          },
+          {
+            "m": 11,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 17592186044416
+            },
+            "q_PF": 1024,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "89dd4c52e5859aecc324"
+          },
+          {
+            "m": 12,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 8796093022208
+            },
+            "q_PF": 2048,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "b503247bb70dbd3f3783"
+          }
+        ],
+        "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661"
+      }
+    },
+    "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+      "method": "PR_DF",
+      "L_D": 1,
+      "formula": "2nd",
+      "K": 2,
+      "requested_delta_pf": 0.1,
+      "delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "base_source": {
+        "method": "PR_DF",
+        "path": "ARTIFICIAL",
+        "commit": "ARTIFICIAL"
+      },
+      "status": "READY_METADATA",
+      "rows": [
+        {
+          "m": 0,
+          "c": "12980742146337070512478121581609/129807421463370690713262408230502400000000",
+          "q": 1,
+          "J": 1
+        },
+        {
+          "m": 1,
+          "c": "12980742146337070512478121581609/32451855365842672678315602057625600000000",
+          "q": 2,
+          "J": 1
+        },
+        {
+          "m": 2,
+          "c": "12980742146337070512478121581609/8112963841460668169578900514406400000000",
+          "q": 4,
+          "J": 1
+        },
+        {
+          "m": 3,
+          "c": "12980742146337070512478121581609/2028240960365167042394725128601600000000",
+          "q": 8,
+          "J": 1
+        },
+        {
+          "m": 4,
+          "c": "12980742146337070512478121581609/507060240091291760598681282150400000000",
+          "q": 16,
+          "J": 1
+        },
+        {
+          "m": 5,
+          "c": "12980742146337070512478121581609/126765060022822940149670320537600000000",
+          "q": 32,
+          "J": 1
+        },
+        {
+          "m": 6,
+          "c": "12980742146337070512478121581609/31691265005705735037417580134400000000",
+          "q": 64,
+          "J": 1
+        },
+        {
+          "m": 7,
+          "c": "12980742146337070512478121581609/7922816251426433759354395033600000000",
+          "q": 128,
+          "J": 1
+        },
+        {
+          "m": 8,
+          "c": "12980742146337070512478121581609/1980704062856608439838598758400000000",
+          "q": 256,
+          "J": 1
+        },
+        {
+          "m": 9,
+          "c": "12980742146337070512478121581609/495176015714152109959649689600000000",
+          "q": 512,
+          "J": 1
+        },
+        {
+          "m": 10,
+          "c": "12980742146337070512478121581609/123794003928538027489912422400000000",
+          "q": 1024,
+          "J": 1
+        },
+        {
+          "m": 11,
+          "c": "12980742146337070512478121581609/30948500982134506872478105600000000",
+          "q": 2048,
+          "J": 1
+        },
+        {
+          "m": 12,
+          "c": "12980742146337070512478121581609/7737125245533626718119526400000000",
+          "q": 4096,
+          "J": 1
+        }
+      ],
+      "configuration": {
+        "spec": {
+          "h": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "M": 12,
+          "formula": "2nd",
+          "finite_K": 2,
+          "delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "kappa": {
+            "value": {
+              "numerator": 1,
+              "denominator": 1
+            }
+          },
+          "split": {
+            "L_D": 1,
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 10000
+            }
+          }
+        },
+        "rounds": [
+          {
+            "m": 0,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "q_PF": 1,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "9bbf4c348a92c424c7cb"
+          },
+          {
+            "m": 1,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 18014398509481984
+            },
+            "q_PF": 2,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "cc7793236b5bfb12cd3a"
+          },
+          {
+            "m": 2,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 9007199254740992
+            },
+            "q_PF": 4,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "bb1f3b4e17fc055a6d8f"
+          },
+          {
+            "m": 3,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "q_PF": 8,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "dfc6ec68e8ca8d9f98e8"
+          },
+          {
+            "m": 4,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 2251799813685248
+            },
+            "q_PF": 16,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "d44aeb76f8d4a0016a71"
+          },
+          {
+            "m": 5,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 1125899906842624
+            },
+            "q_PF": 32,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "ebfe1e140282f8469f5f"
+          },
+          {
+            "m": 6,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 562949953421312
+            },
+            "q_PF": 64,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "79ffb0b7360114a15a29"
+          },
+          {
+            "m": 7,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 281474976710656
+            },
+            "q_PF": 128,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "9059c088ad43e8524361"
+          },
+          {
+            "m": 8,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 140737488355328
+            },
+            "q_PF": 256,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "58b22b815ac1e6f376d6"
+          },
+          {
+            "m": 9,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 70368744177664
+            },
+            "q_PF": 512,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "d78af51a1a5027068eed"
+          },
+          {
+            "m": 10,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 35184372088832
+            },
+            "q_PF": 1024,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "beb4094464e0954ace49"
+          },
+          {
+            "m": 11,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 17592186044416
+            },
+            "q_PF": 2048,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "99e02a9bcdbbf162c7dc"
+          },
+          {
+            "m": 12,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 8796093022208
+            },
+            "q_PF": 4096,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "5eec14e4b3be8aecfd94"
+          }
+        ],
+        "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d"
+      }
+    },
+    "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2": {
+      "method": "PR_DF",
+      "L_D": 1,
+      "formula": "2nd",
+      "K": 2,
+      "requested_delta_pf": 0.05,
+      "delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 72057594037927936
+      },
+      "base_source": {
+        "method": "PR_DF",
+        "path": "ARTIFICIAL",
+        "commit": "ARTIFICIAL"
+      },
+      "status": "READY_METADATA",
+      "rows": [
+        {
+          "m": 0,
+          "c": "12980742146337070512478121581609/129807421463370690713262408230502400000000",
+          "q": 2,
+          "J": 1
+        },
+        {
+          "m": 1,
+          "c": "12980742146337070512478121581609/32451855365842672678315602057625600000000",
+          "q": 4,
+          "J": 1
+        },
+        {
+          "m": 2,
+          "c": "12980742146337070512478121581609/8112963841460668169578900514406400000000",
+          "q": 8,
+          "J": 1
+        },
+        {
+          "m": 3,
+          "c": "12980742146337070512478121581609/2028240960365167042394725128601600000000",
+          "q": 16,
+          "J": 1
+        },
+        {
+          "m": 4,
+          "c": "12980742146337070512478121581609/507060240091291760598681282150400000000",
+          "q": 32,
+          "J": 1
+        },
+        {
+          "m": 5,
+          "c": "12980742146337070512478121581609/126765060022822940149670320537600000000",
+          "q": 64,
+          "J": 1
+        },
+        {
+          "m": 6,
+          "c": "12980742146337070512478121581609/31691265005705735037417580134400000000",
+          "q": 128,
+          "J": 1
+        },
+        {
+          "m": 7,
+          "c": "12980742146337070512478121581609/7922816251426433759354395033600000000",
+          "q": 256,
+          "J": 1
+        },
+        {
+          "m": 8,
+          "c": "12980742146337070512478121581609/1980704062856608439838598758400000000",
+          "q": 512,
+          "J": 1
+        },
+        {
+          "m": 9,
+          "c": "12980742146337070512478121581609/495176015714152109959649689600000000",
+          "q": 1024,
+          "J": 1
+        },
+        {
+          "m": 10,
+          "c": "12980742146337070512478121581609/123794003928538027489912422400000000",
+          "q": 2048,
+          "J": 1
+        },
+        {
+          "m": 11,
+          "c": "12980742146337070512478121581609/30948500982134506872478105600000000",
+          "q": 4096,
+          "J": 1
+        },
+        {
+          "m": 12,
+          "c": "12980742146337070512478121581609/7737125245533626718119526400000000",
+          "q": 8192,
+          "J": 1
+        }
+      ],
+      "configuration": {
+        "spec": {
+          "h": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "M": 12,
+          "formula": "2nd",
+          "finite_K": 2,
+          "delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 72057594037927936
+          },
+          "kappa": {
+            "value": {
+              "numerator": 1,
+              "denominator": 1
+            }
+          },
+          "split": {
+            "L_D": 1,
+            "lambda_R": {
+              "numerator": 1,
+              "denominator": 10000
+            }
+          }
+        },
+        "rounds": [
+          {
+            "m": 0,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "q_PF": 2,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "4ee230a85bb0f19ca5fa"
+          },
+          {
+            "m": 1,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 18014398509481984
+            },
+            "q_PF": 4,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "01f5a4c6069d921266e1"
+          },
+          {
+            "m": 2,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 9007199254740992
+            },
+            "q_PF": 8,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "f785152a76435f73c8b9"
+          },
+          {
+            "m": 3,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "q_PF": 16,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "11a3c70fca88c6e9fdad"
+          },
+          {
+            "m": 4,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 2251799813685248
+            },
+            "q_PF": 32,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "26347984e3a2736c52ac"
+          },
+          {
+            "m": 5,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 1125899906842624
+            },
+            "q_PF": 64,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "430566b937f9a4c13bba"
+          },
+          {
+            "m": 6,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 562949953421312
+            },
+            "q_PF": 128,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "85c816d9e1110eed4c55"
+          },
+          {
+            "m": 7,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 281474976710656
+            },
+            "q_PF": 256,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "66c7c8c36c5ee81b0ebd"
+          },
+          {
+            "m": 8,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 140737488355328
+            },
+            "q_PF": 512,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "6a022e56381fc9c15202"
+          },
+          {
+            "m": 9,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 70368744177664
+            },
+            "q_PF": 1024,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "7778723a5aec7adf4457"
+          },
+          {
+            "m": 10,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 35184372088832
+            },
+            "q_PF": 2048,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "d8c09b2e9e2efe9958c2"
+          },
+          {
+            "m": 11,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 17592186044416
+            },
+            "q_PF": 4096,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "875199d4b5a179f90998"
+          },
+          {
+            "m": 12,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 8796093022208
+            },
+            "q_PF": 8192,
+            "structure": {
+              "signed_weights": [
+                1
+              ]
+            },
+            "R_outer": 1,
+            "physical_candidate_id": "b59d2d583a7d9bbbf88b"
+          }
+        ],
+        "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd"
+      }
+    }
+  },
+  "history": [
+    {
+      "cycle": 0,
+      "decisions": [
+        {
+          "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2",
+          "decision": "INIT",
+          "kappas": [
+            "1"
+          ]
+        },
+        {
+          "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+          "decision": "INIT",
+          "kappas": [
+            "1"
+          ]
+        },
+        {
+          "family": "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+          "decision": "INIT",
+          "kappas": [
+            "1"
+          ]
+        },
+        {
+          "family": "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2",
+          "decision": "INIT",
+          "kappas": [
+            "1"
+          ]
+        }
+      ],
+      "report": {
+        "per_method": {
+          "PR_PAULI": {
+            "stop": null,
+            "global_best": null,
+            "families": {
+              "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2": {
+                "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2",
+                "floor_end": {
+                  "numerator": 15845632502852867518708790067200000000,
+                  "denominator": 12980742146337070512478121581609,
+                  "display": "1,220,703.12"
+                },
+                "sampled": 0,
+                "evaluated": 0,
+                "unavailable": 0,
+                "kappa_range": [
+                  null,
+                  null
+                ],
+                "kappa_range_evaluated": [
+                  null,
+                  null
+                ],
+                "best": null,
+                "upper_limit": {
+                  "numerator": 1,
+                  "denominator": 1,
+                  "display": "1.00"
+                },
+                "upper_basis": "RANGE_LIMIT"
+              },
+              "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+                "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+                "floor_end": {
+                  "numerator": 31691265005705735037417580134400000000,
+                  "denominator": 12980742146337070512478121581609,
+                  "display": "2,441,406.25"
+                },
+                "sampled": 0,
+                "evaluated": 0,
+                "unavailable": 0,
+                "kappa_range": [
+                  null,
+                  null
+                ],
+                "kappa_range_evaluated": [
+                  null,
+                  null
+                ],
+                "best": null,
+                "upper_limit": {
+                  "numerator": 1,
+                  "denominator": 1,
+                  "display": "1.00"
+                },
+                "upper_basis": "RANGE_LIMIT"
+              }
+            }
+          },
+          "PR_DF": {
+            "stop": null,
+            "global_best": null,
+            "families": {
+              "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+                "family": "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+                "floor_end": {
+                  "numerator": 31691265005705735037417580134400000000,
+                  "denominator": 12980742146337070512478121581609,
+                  "display": "2,441,406.25"
+                },
+                "sampled": 0,
+                "evaluated": 0,
+                "unavailable": 0,
+                "kappa_range": [
+                  null,
+                  null
+                ],
+                "kappa_range_evaluated": [
+                  null,
+                  null
+                ],
+                "best": null,
+                "upper_limit": {
+                  "numerator": 1,
+                  "denominator": 1,
+                  "display": "1.00"
+                },
+                "upper_basis": "RANGE_LIMIT"
+              },
+              "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2": {
+                "family": "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2",
+                "floor_end": {
+                  "numerator": 63382530011411470074835160268800000000,
+                  "denominator": 12980742146337070512478121581609,
+                  "display": "4,882,812.50"
+                },
+                "sampled": 0,
+                "evaluated": 0,
+                "unavailable": 0,
+                "kappa_range": [
+                  null,
+                  null
+                ],
+                "kappa_range_evaluated": [
+                  null,
+                  null
+                ],
+                "best": null,
+                "upper_limit": {
+                  "numerator": 1,
+                  "denominator": 1,
+                  "display": "1.00"
+                },
+                "upper_basis": "RANGE_LIMIT"
+              }
+            }
+          }
+        },
+        "global_best_by_method": {
+          "PR_PAULI": null,
+          "PR_DF": null
+        },
+        "global_best": null,
+        "families": {
+          "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2": {
+            "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2",
+            "floor_end": {
+              "numerator": 15845632502852867518708790067200000000,
+              "denominator": 12980742146337070512478121581609,
+              "display": "1,220,703.12"
+            },
+            "sampled": 0,
+            "evaluated": 0,
+            "unavailable": 0,
+            "kappa_range": [
+              null,
+              null
+            ],
+            "kappa_range_evaluated": [
+              null,
+              null
+            ],
+            "best": null,
+            "upper_limit": {
+              "numerator": 1,
+              "denominator": 1,
+              "display": "1.00"
+            },
+            "upper_basis": "RANGE_LIMIT"
+          },
+          "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+            "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+            "floor_end": {
+              "numerator": 31691265005705735037417580134400000000,
+              "denominator": 12980742146337070512478121581609,
+              "display": "2,441,406.25"
+            },
+            "sampled": 0,
+            "evaluated": 0,
+            "unavailable": 0,
+            "kappa_range": [
+              null,
+              null
+            ],
+            "kappa_range_evaluated": [
+              null,
+              null
+            ],
+            "best": null,
+            "upper_limit": {
+              "numerator": 1,
+              "denominator": 1,
+              "display": "1.00"
+            },
+            "upper_basis": "RANGE_LIMIT"
+          },
+          "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+            "family": "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+            "floor_end": {
+              "numerator": 31691265005705735037417580134400000000,
+              "denominator": 12980742146337070512478121581609,
+              "display": "2,441,406.25"
+            },
+            "sampled": 0,
+            "evaluated": 0,
+            "unavailable": 0,
+            "kappa_range": [
+              null,
+              null
+            ],
+            "kappa_range_evaluated": [
+              null,
+              null
+            ],
+            "best": null,
+            "upper_limit": {
+              "numerator": 1,
+              "denominator": 1,
+              "display": "1.00"
+            },
+            "upper_basis": "RANGE_LIMIT"
+          },
+          "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2": {
+            "family": "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2",
+            "floor_end": {
+              "numerator": 63382530011411470074835160268800000000,
+              "denominator": 12980742146337070512478121581609,
+              "display": "4,882,812.50"
+            },
+            "sampled": 0,
+            "evaluated": 0,
+            "unavailable": 0,
+            "kappa_range": [
+              null,
+              null
+            ],
+            "kappa_range_evaluated": [
+              null,
+              null
+            ],
+            "best": null,
+            "upper_limit": {
+              "numerator": 1,
+              "denominator": 1,
+              "display": "1.00"
+            },
+            "upper_basis": "RANGE_LIMIT"
+          }
+        },
+        "scope": "INDEPENDENT_METHOD_MINIMA",
+        "stop": null
+      },
+      "proposals": [
+        {
+          "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2",
+          "kappa": "1",
+          "reason": "INIT_FLOOR_SCHEDULE"
+        },
+        {
+          "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+          "kappa": "1",
+          "reason": "INIT_FLOOR_SCHEDULE"
+        },
+        {
+          "family": "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+          "kappa": "1",
+          "reason": "INIT_FLOOR_SCHEDULE"
+        },
+        {
+          "family": "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2",
+          "kappa": "1",
+          "reason": "INIT_FLOOR_SCHEDULE"
+        }
+      ]
+    },
+    {
+      "cycle": 1,
+      "decisions": [],
+      "report": {
+        "per_method": {
+          "PR_PAULI": {
+            "stop": "WAIT_FOR_PENDING",
+            "global_best": null,
+            "families": {
+              "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2": {
+                "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2",
+                "floor_end": {
+                  "numerator": 15845632502852867518708790067200000000,
+                  "denominator": 12980742146337070512478121581609,
+                  "display": "1,220,703.12"
+                },
+                "sampled": 1,
+                "evaluated": 0,
+                "unavailable": 0,
+                "kappa_range": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  }
+                ],
+                "kappa_range_evaluated": [
+                  null,
+                  null
+                ],
+                "best": null,
+                "upper_limit": {
+                  "numerator": 1,
+                  "denominator": 1,
+                  "display": "1.00"
+                },
+                "upper_basis": "RANGE_LIMIT",
+                "refinement": "RESOLVED",
+                "open_gaps": 0
+              },
+              "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+                "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+                "floor_end": {
+                  "numerator": 31691265005705735037417580134400000000,
+                  "denominator": 12980742146337070512478121581609,
+                  "display": "2,441,406.25"
+                },
+                "sampled": 1,
+                "evaluated": 0,
+                "unavailable": 0,
+                "kappa_range": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  }
+                ],
+                "kappa_range_evaluated": [
+                  null,
+                  null
+                ],
+                "best": null,
+                "upper_limit": {
+                  "numerator": 1,
+                  "denominator": 1,
+                  "display": "1.00"
+                },
+                "upper_basis": "RANGE_LIMIT",
+                "refinement": "RESOLVED",
+                "open_gaps": 0
+              }
+            }
+          },
+          "PR_DF": {
+            "stop": "WAIT_FOR_PENDING",
+            "global_best": null,
+            "families": {
+              "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+                "family": "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+                "floor_end": {
+                  "numerator": 31691265005705735037417580134400000000,
+                  "denominator": 12980742146337070512478121581609,
+                  "display": "2,441,406.25"
+                },
+                "sampled": 1,
+                "evaluated": 0,
+                "unavailable": 0,
+                "kappa_range": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  }
+                ],
+                "kappa_range_evaluated": [
+                  null,
+                  null
+                ],
+                "best": null,
+                "upper_limit": {
+                  "numerator": 1,
+                  "denominator": 1,
+                  "display": "1.00"
+                },
+                "upper_basis": "RANGE_LIMIT",
+                "refinement": "RESOLVED",
+                "open_gaps": 0
+              },
+              "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2": {
+                "family": "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2",
+                "floor_end": {
+                  "numerator": 63382530011411470074835160268800000000,
+                  "denominator": 12980742146337070512478121581609,
+                  "display": "4,882,812.50"
+                },
+                "sampled": 1,
+                "evaluated": 0,
+                "unavailable": 0,
+                "kappa_range": [
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  },
+                  {
+                    "numerator": 1,
+                    "denominator": 1,
+                    "display": "1.00"
+                  }
+                ],
+                "kappa_range_evaluated": [
+                  null,
+                  null
+                ],
+                "best": null,
+                "upper_limit": {
+                  "numerator": 1,
+                  "denominator": 1,
+                  "display": "1.00"
+                },
+                "upper_basis": "RANGE_LIMIT",
+                "refinement": "RESOLVED",
+                "open_gaps": 0
+              }
+            }
+          }
+        },
+        "global_best_by_method": {
+          "PR_PAULI": null,
+          "PR_DF": null
+        },
+        "global_best": null,
+        "families": {
+          "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2": {
+            "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/18014398509481984|K2",
+            "floor_end": {
+              "numerator": 15845632502852867518708790067200000000,
+              "denominator": 12980742146337070512478121581609,
+              "display": "1,220,703.12"
+            },
+            "sampled": 1,
+            "evaluated": 0,
+            "unavailable": 0,
+            "kappa_range": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              }
+            ],
+            "kappa_range_evaluated": [
+              null,
+              null
+            ],
+            "best": null,
+            "upper_limit": {
+              "numerator": 1,
+              "denominator": 1,
+              "display": "1.00"
+            },
+            "upper_basis": "RANGE_LIMIT",
+            "refinement": "RESOLVED",
+            "open_gaps": 0
+          },
+          "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+            "family": "PR_PAULI|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+            "floor_end": {
+              "numerator": 31691265005705735037417580134400000000,
+              "denominator": 12980742146337070512478121581609,
+              "display": "2,441,406.25"
+            },
+            "sampled": 1,
+            "evaluated": 0,
+            "unavailable": 0,
+            "kappa_range": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              }
+            ],
+            "kappa_range_evaluated": [
+              null,
+              null
+            ],
+            "best": null,
+            "upper_limit": {
+              "numerator": 1,
+              "denominator": 1,
+              "display": "1.00"
+            },
+            "upper_basis": "RANGE_LIMIT",
+            "refinement": "RESOLVED",
+            "open_gaps": 0
+          },
+          "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2": {
+            "family": "PR_DF|LD1|2nd|delta=3602879701896397/36028797018963968|K2",
+            "floor_end": {
+              "numerator": 31691265005705735037417580134400000000,
+              "denominator": 12980742146337070512478121581609,
+              "display": "2,441,406.25"
+            },
+            "sampled": 1,
+            "evaluated": 0,
+            "unavailable": 0,
+            "kappa_range": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              }
+            ],
+            "kappa_range_evaluated": [
+              null,
+              null
+            ],
+            "best": null,
+            "upper_limit": {
+              "numerator": 1,
+              "denominator": 1,
+              "display": "1.00"
+            },
+            "upper_basis": "RANGE_LIMIT",
+            "refinement": "RESOLVED",
+            "open_gaps": 0
+          },
+          "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2": {
+            "family": "PR_DF|LD1|2nd|delta=3602879701896397/72057594037927936|K2",
+            "floor_end": {
+              "numerator": 63382530011411470074835160268800000000,
+              "denominator": 12980742146337070512478121581609,
+              "display": "4,882,812.50"
+            },
+            "sampled": 1,
+            "evaluated": 0,
+            "unavailable": 0,
+            "kappa_range": [
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              },
+              {
+                "numerator": 1,
+                "denominator": 1,
+                "display": "1.00"
+              }
+            ],
+            "kappa_range_evaluated": [
+              null,
+              null
+            ],
+            "best": null,
+            "upper_limit": {
+              "numerator": 1,
+              "denominator": 1,
+              "display": "1.00"
+            },
+            "upper_basis": "RANGE_LIMIT",
+            "refinement": "RESOLVED",
+            "open_gaps": 0
+          }
+        },
+        "scope": "INDEPENDENT_METHOD_MINIMA",
+        "stop": "WAIT_FOR_PENDING"
+      },
+      "proposals": []
+    }
+  ],
+  "seeded": {
+    "UTC": "2026-11-17T11:10:20Z",
+    "mapper": "METHOD_SPECIFIC_EXISTING_GENERATOR",
+    "old_single_width_state_untouched": true
+  },
+  "overlap_fixture_seeded": true,
+  "preparation_wave": {
+    "cycle": 1,
+    "dispatched": {
+      "PR_PAULI": 1,
+      "PR_DF": 1
+    }
+  },
+  "stop": {
+    "reason": "RUNTIME_EXCEPTION",
+    "error_type": "RuntimeError",
+    "message": "ARTIFICIAL_NORMAL_ENTRY_FAILURE",
+    "error_log": "RUNTIME_ERRORS.jsonl",
+    "UTC": "2026-11-17T11:10:28Z"
+  }
+}
