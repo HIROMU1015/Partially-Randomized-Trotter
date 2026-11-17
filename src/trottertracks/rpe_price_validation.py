@@ -76,6 +76,7 @@ def describe(rules, configuration, name, quote):
                 calibration_sources=[e[k]for k in('model_source','calibration_evidence','calibration_handoff','direct_path_means')if e.get(k)],
                 calibration_points=calibration, evidence_sources=[deepcopy(d)for d in e.get('direct_sources',[])if d.get('role','').startswith('INDEPENDENT')],
                 calibration_domain=e.get('calibration_domain'),configuration_source=e.get('configuration_source'),
+                evidence_points=[dict(m=m,q=v['q'],R=v['R'])for m,v in e['points'].items()],
                 configuration_id=configuration['id'],points=[],qualified_for_candidate=False)
         groups[mid]['points'].append(dict(m=r['m'],q=p['q'],R=p['R'],physical_id=r['candidate']['id'],
             T=r['T'],actual_step=p['step'],round=deepcopy(r),
@@ -127,7 +128,7 @@ def saved_checks(description,reader):
                 relative=r.get('signed_relative_error',r.get('signed_relative_difference'))
                 if observed is None or predicted is None:continue
                 # A comparison for different frozen coefficients is not evidence.
-                ref=r.get('prediction_source')or{}
+                ref=r.get('prediction_source')or(container.get('prediction_source')if isinstance(container,dict)else None)or{}
                 model=description['identity']['model_source']or{}
                 if ref and (ref.get('commit'),ref.get('path'))!=(model.get('commit'),model.get('path')):
                     doc=reader.read(dict(ref,selector=[]))
@@ -141,9 +142,10 @@ def saved_checks(description,reader):
                     paths=[dict(index=0,axis=axis,compiled_RZ=observed,receipt=r.get('receipt')or src)]
                 if not paths and isinstance(container,dict):
                     units=container.get('receipt_units',[])
-                    if isinstance(units,dict):units=list(units.values())
+                    if isinstance(units,dict):
+                        units=[item for value in units.values()for item in(value if isinstance(value,list)else[value])]
                     paths=[x for x in units if isinstance(x,dict) and x.get('m',m)==m and x.get('axis')==axis]
-                anchor=next((p for p in description['points']if p['m']==m),None)
+                anchor=next((p for p in description.get('evidence_points',description['points'])if p['m']==m),None)
                 p=points.setdefault(m,dict(m=m,q=r.get('q',None if anchor is None else anchor['q']),
                     R=r.get('R',None if anchor is None else anchor['R']),source=src,
                     observations=[],predicted_RZ={},observed_mean_RZ={},signed_relative_difference={},independent_paths=None))
@@ -185,7 +187,7 @@ class ModelStore:
             resolved=resolve();checks,issues=resolved[:2];existing=resolved[2]if len(resolved)>2 else None
             status='PENDING'if existing else'INDEPENDENT_MEASURED'if checks else 'INCOMPLETE'if issues else 'CALIBRATION_ONLY'
             record={k:deepcopy(v)for k,v in desc.items()if k not in('points','configuration_id','configuration_source')}
-            record.update(status=status,label=LABELS[status],validation_points=checks,issues=issues)
+            record.update(status=status,label=LABELS[status],validation_points=checks,issues=issues,evidence_parser_version=2)
             if existing:record.update(external_job=existing,pending_reason='REUSE_EQUIVALENT_ACTIVE_OR_WAITING_JOB')
             db.execute('INSERT INTO models VALUES(?,?,?)',(desc['model_id'],json.dumps(desc['identity'],sort_keys=True),json.dumps(record)))
             return record
@@ -246,9 +248,9 @@ class Service:
                     first=mid not in self.descriptions
                     old=self.store.row(mid)if first else None
                     self.store.register(desc,lambda d=desc:self.resolve(d,reader))
-                    if first and old and old['status']!='INDEPENDENT_MEASURED':
+                    if first and old and(old['status']!='INDEPENDENT_MEASURED'or old.get('evidence_parser_version')!=2):
                         checks,issues,external=self.resolve(desc,reader)
-                        if checks:self.store.change(mid,lambda r:r.update(status='INDEPENDENT_MEASURED',validation_points=checks,issues=issues))
+                        if checks:self.store.change(mid,lambda r:r.update(status='INDEPENDENT_MEASURED',validation_points=checks,issues=issues,evidence_parser_version=2))
                     self.descriptions[mid]=(desc,c)
                     self.applications[c['configuration_id'],mid]=dict(configuration_id=c['configuration_id'],model_id=mid,
                         points=[{k:p.get(k)for k in('m','q','R','physical_id')}for p in desc['points']],

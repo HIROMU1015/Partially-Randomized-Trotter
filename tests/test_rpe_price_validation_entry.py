@@ -132,6 +132,11 @@ class Entry(unittest.TestCase):
             self.assertEqual([p['compiled_RZ']for p in m5['observations']],[68228,68300,68228,68300])
             self.assertEqual(V.frac(m5['signed_relative_difference']['X']),Fraction(2751307649,6167206567816))
             self.assertNotIn('job_id',model)
+            m9=next(p for p in model['validation_points']if p['m']==9)
+            self.assertEqual((m9['q'],m9['R'],m9['independent_paths']),(512,526,2))
+            changed=deepcopy(descs[0]);changed['points'][5]['R']=999
+            kept,issues=V.saved_checks(changed,rules.reader)
+            self.assertEqual(next(p for p in kept if p['m']==5)['R'],33)  # measured and applied q/R stay distinct
 
 
 if __name__=='__main__':unittest.main()
