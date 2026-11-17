@@ -173,6 +173,22 @@ class Relay:
             value['resource_report'] = status['resource_report']
         return value
 
+    def _deliver_challenge_artifacts(self, worker, challenges):
+        hashes=[]
+        for assignment in challenges:
+            request=assignment.get('request',{})
+            if(request.get('route')or{}).get('kind')!='preparation':continue
+            spec=request['preparation']
+            hashes.extend(row['sha256']for row in spec.get('input_git_bundles',[]))
+            for workspace in spec.get('workspaces',{}).values():
+                hashes.extend(row['sha256']for row in workspace.get('input_git_bundles',[]))
+        if not hashes:return
+        response,_=self.remote(worker,'artifacts-missing',dict(hashes=list(dict.fromkeys(hashes))))
+        for sha in response['missing']:
+            result=self.post('/v1/artifacts/get',dict(host_id=worker['host_id'],hashes=[sha]))
+            self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
+            self.log('METADATA_GIT_BUNDLE_DELIVERED',host_id=worker['host_id'],sha256=sha)
+
     def _discover(self, worker):
         # Status and current-request checks may run concurrently for independent
         # hosts; no thread claims a job or delivers an assignment here.
@@ -184,6 +200,7 @@ class Relay:
         observed = self.post('/v1/poll', dict(poll, observe_only=True))
         challenges = observed.get('eligibility_challenges') or []
         if challenges and status['slots']:
+            self._deliver_challenge_artifacts(worker,challenges)
             facts, _ = self.remote(worker, 'readiness', dict(challenges=challenges))
             if facts.get('host_id') != status['host_id']:
                 raise ValueError('Readiness response host differs')
@@ -257,6 +274,7 @@ class Relay:
         # Recovery above always precedes new claims, including while paused.
         response = self.post('/v1/poll', poll)
         if not response['assignments'] and response.get('eligibility_challenges'):
+            self._deliver_challenge_artifacts(worker,response['eligibility_challenges'])
             current, _ = self.remote(worker, 'readiness', dict(challenges=response['eligibility_challenges']))
             if current.get('host_id') != host:
                 raise ValueError('Readiness response host differs')

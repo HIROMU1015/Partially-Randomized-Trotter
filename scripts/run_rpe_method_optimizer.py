@@ -206,6 +206,11 @@ def preparation_runtime(executor,run,spec):
     return DistributedPreparationBridge(executor,ROOT,settings,approved=spec.get('science_approved')is True)
 
 
+def preparation_budgets(spec):
+    settings=(spec.get('executor',{}).get('distributed')or{}).get('preparation')or{}
+    return {stage:settings.get('budgets',{}).get(stage,0)for stage in ('signal','compile','audit')}
+
+
 def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None, result_callback=None):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
@@ -236,6 +241,8 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
         for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
             if old.get(key) != spec.get(key):
                 raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
+        if preparation_budgets(old)!=preparation_budgets(spec):
+            raise ValueError('Preparation budget changed on resume; preserve this run and use a separately adopted new round')
     else:
         write(stored, spec)
     routes = merged_routes(problem, spec)

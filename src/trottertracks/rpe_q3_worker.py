@@ -516,6 +516,15 @@ class Worker:
                 state = save_state(attempt, 'UNKNOWN', reason='LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT', automatic_retry=False)
         return state
 
+    def _prepare_challenge_artifacts(self, challenges):
+        hashes=[]
+        for assignment in challenges:
+            if Preparation.is_preparation(assignment):hashes.extend(Preparation.metadata_bundle_hashes(assignment))
+        if not hashes:return
+        cache=worker_cache(self.profile)
+        for sha in cache.missing(hashes):
+            cache.put(self._post('/v1/artifacts/get',dict(hashes=[sha]))['blobs'])
+
     def _upload_artifacts(self, attempt, assignment):
         if not Preparation.is_preparation(assignment):return
         manifest = read(attempt/'OUTCOME.json').get('artifacts', {})
@@ -570,6 +579,7 @@ class Worker:
                 if a.get('prefix_key') and read(p / 'WORKER_STATE.json')['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED')
                 })
             try:
+                self._prepare_challenge_artifacts(self.eligibility_challenges)
                 payload = dict(slots=max(0,self.slots-active), capacity=self.slots, resource_report=report, cached_prefixes=cached,
                                cached_artifact_sha256=worker_cache(self.profile).hashes(), source_sha=self.source_sha,
                                **host_fingerprints(self.profile, self.eligibility_challenges))
@@ -577,6 +587,7 @@ class Worker:
                 self._capacity_feedback(response)
                 self.eligibility_challenges = response.get('eligibility_challenges', [])
                 if not response.get('assignments') and self.eligibility_challenges:
+                    self._prepare_challenge_artifacts(self.eligibility_challenges)
                     payload.update(host_fingerprints(self.profile, self.eligibility_challenges))
                     response = self._post('/v1/poll', payload)
                     self._capacity_feedback(response)

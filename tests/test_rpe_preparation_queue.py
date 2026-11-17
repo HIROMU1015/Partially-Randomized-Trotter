@@ -101,7 +101,7 @@ class PreparationQueue(Base.ControllerFailures):
         ex=self.executor(capacity=2)
         request=self.request('compile','new-stage-metadata');request['preparation'].update(
             artificial=False,provider='ARTIFICIAL_METADATA_CONTRACT',source=ex.source_manifest,
-            runtime_requirements={'version_info_prefix':[3],'packages':{},'tools':{}})
+            runtime_requirements={'version_info_prefix':[3],'packages':{'qiskit':'ARTIFICIAL_METADATA_ONLY'},'tools':{}})
         profile=dict(host_id='server1',root=str(ROOT),interpreter=sys.executable,route_views={},
             preparation_stage='compile',preparation_provider='ARTIFICIAL_METADATA_CONTRACT',
             preparation_adapter_manifest={'commit':self.source,'files':{'ARTIFICIAL_METADATA_ONLY':'0'*64}})
@@ -114,9 +114,9 @@ class PreparationQueue(Base.ControllerFailures):
         challenge=first['eligibility_challenges'][0]
         selected=select_preparation_profile(profile,challenge)
         fingerprint=dict(schema='RPE_PREPARATION_CURRENT_HOST_FINGERPRINT_V1',stage='compile',provider='ARTIFICIAL_METADATA_CONTRACT',
-            request_sha256=challenge['request_sha256'],source_manifest=ex.source_manifest,input_hashes=[],input_artifacts={},
+            request_sha256=challenge['request_sha256'],source_manifest=ex.source_manifest,input_hashes=[],working_input_hashes=[],required_views={},required_paths={},runtime_paths={},input_artifacts={},
             profile=preparation_profile_core(selected),views={self.source:str(ROOT)},
-            runtime={'executable':sys.executable,'version':sys.version,'version_info':list(sys.version_info),'packages':{}},tools={})
+            runtime={'executable':sys.executable,'version':sys.version,'version_info':list(sys.version_info),'packages':{'qiskit':'ARTIFICIAL_METADATA_ONLY'}},tools={})
         changed=deepcopy(fingerprint);changed['source_manifest']={'commit':'OTHER','files':{}}
         report=dict(host_id='server1',slots=1,capacity=1,source_sha=self.source,host_fingerprints={job:changed})
         self.assertEqual(ex.rpc('/v1/poll',report)['assignments'],[])

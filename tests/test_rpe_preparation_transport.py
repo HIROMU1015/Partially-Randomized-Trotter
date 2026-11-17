@@ -95,6 +95,25 @@ subprocess.run(['git','commit','-qm','one synthetic receipt'],check=True)
         returned=json.loads(subprocess.check_output(['git','show',outcome['git_bundles'][0]['head']+':proof.json'],cwd=consumer))
         self.assertEqual(returned,{'receipt':'synthetic'})
 
+    def test_sparse_clone_keeps_only_declared_output_cones_for_plain_git_add(self):
+        source=self.root/'source';archive=source/'docs/archive/unneeded.json';archive.parent.mkdir(parents=True);archive.write_text('{"historical":true}')
+        subprocess.run(['git','add','docs'],cwd=source,check=True)
+        subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','historical-data'],cwd=source,check=True)
+        self.source['commit']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip()
+        code="""from pathlib import Path
+import subprocess
+assert not Path('docs/archive/unneeded.json').exists()
+p=Path('docs/provider-output/result.json');p.parent.mkdir(parents=True,exist_ok=True);p.write_text('{"done":true}')
+subprocess.run(['git','add',str(p)],check=True)
+subprocess.run(['git','commit','-qm','new result'],check=True)
+"""
+        task=self.task('audit',code,source_workspace=True,outputs=['workspace/docs/provider-output'])
+        result=P.execute(task,self.profile('server1'),self.root/'sparse-attempt')
+        self.assertEqual(result['status'],'PREPARATION_COMPLETE')
+        self.assertFalse((self.root/'sparse-attempt/workspace/docs/archive/unneeded.json').exists())
+        self.assertTrue((self.root/'sparse-attempt/workspace/docs/provider-output/result.json').is_file())
+        self.assertEqual(archive.read_text(),'{"historical":true}')
+
     def test_input_git_bundle_cannot_replace_fixed_scientific_code(self):
         malicious=self.root/'changed-code'
         subprocess.run(['git','clone','-q',str(self.root/'source'),str(malicious)],check=True)
@@ -139,6 +158,38 @@ subprocess.run(['git','commit','-qm','one synthetic receipt'],check=True)
         with self.assertRaisesRegex(ValueError,'Inspection-only'):
             P.execute(assignment,self.profile('server2'),self.root/'never-run')
         self.assertFalse((self.root/'never-run/PREPARATION_STARTED.json').exists())
+
+    def test_required_readonly_source_view_is_resolved_before_body(self):
+        inner=self.root/'inner';manifest=repo(inner)
+        (inner/'leaf.py').write_text('print("inner fixed source")\n')
+        subprocess.run(['git','add','leaf.py'],cwd=inner,check=True)
+        subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','inner'],cwd=inner,check=True)
+        manifest={'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=inner,text=True).strip(),
+                  'files':{'leaf.py':hashlib.sha256((inner/'leaf.py').read_bytes()).hexdigest()}}
+        task=self.task('signal',"from pathlib import Path;import os,json;v=json.loads(os.environ['RPE_PREPARATION_PATH_MAP']);Path(r'@WORK@/result.json').write_text(next(iter(v.values())))",
+            required_views={'inner':{'source':manifest,'controller_path':'/old/server2/inner'}})
+        profile=self.profile('server1')
+        with self.assertRaisesRegex(ValueError,'SOURCE view missing'):P.current_preparation_fingerprint(task,profile)
+        profile['preparation_sources']={self.source['commit']:str(self.root/'source'),manifest['commit']:str(inner)}
+        fp=P.current_preparation_fingerprint(task,profile)
+        self.assertEqual(fp['views']['view:inner'],str(inner))
+        P.execute(task,profile,self.root/'view-attempt')
+        self.assertEqual((self.root/'view-attempt/result.json').read_text(),str(inner))
+        self.assertEqual((inner/'leaf.py').read_text(),'print("inner fixed source")\n')
+
+    def test_required_private_provider_config_needs_mapping_and_matching_bytes(self):
+        config=self.root/'private-config.json';config.write_text('{"fixed":"original-data"}')
+        provider=self.root/'private-provider';provider.mkdir();(provider/'provider.py').write_text('FIXED=1\n')
+        required={'config':{'controller_path':'/server2/config.json','kind':'file','sha256':hashlib.sha256(config.read_bytes()).hexdigest()},
+                  'provider':{'controller_path':'/server2/provider','kind':'directory','files':{'provider.py':hashlib.sha256((provider/'provider.py').read_bytes()).hexdigest()}}}
+        task=self.task('audit','pass',required_paths=required);profile=self.profile('local')
+        with self.assertRaisesRegex(ValueError,'not mapped'):P.current_preparation_fingerprint(task,profile)
+        profile['preparation_paths']={'config':str(config),'provider':str(provider)}
+        fp=P.current_preparation_fingerprint(task,profile)
+        self.assertEqual(fp['runtime_paths']['provider']['path'],str(provider))
+        config.write_text('{"fixed":"different-data"}')
+        with self.assertRaisesRegex(ValueError,'file hash differs'):P.current_preparation_fingerprint(task,profile)
+        self.assertFalse(Path(profile['work_dir']).exists())
 
     def test_missing_stage_profile_does_not_reuse_q3_pass(self):
         task=self.task('signal','pass');task['request']['preparation']['artificial']=False

@@ -25,6 +25,57 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_native_runtime_paths_reuse_original_seals_and_ignore_optional_cache(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            root=Path(tmp);provider=root/'provider';provider.mkdir();code=provider/'worker.py';code.write_text('# fixed native fixture\n')
+            code_sha=hashlib.sha256(code.read_bytes()).hexdigest();config=root/'INPUT_CONFIG.json'
+            C.put(config,{'sealed_files':[{'role':'provider/runtime','path':str(code),'sha256':code_sha},
+                {'role':'unrelated-history','path':str(root/'absent'),'sha256':'0'*64}]})
+            document={'runtime':{'provider_root':str(provider),'input_config':str(config),'old_cache':str(root/'optional-missing-cache')}}
+            paths=B.collect_required_paths([document]);self.assertEqual(len(paths),2)
+            directory=next(row for row in paths.values()if row['kind']=='directory')
+            self.assertEqual(directory['files'],{'worker.py':code_sha})
+            file=next(row for row in paths.values()if row['kind']=='file')
+            self.assertEqual(file['sha256'],hashlib.sha256(config.read_bytes()).hexdigest())
+            self.assertFalse(any('old_cache'in row['controller_path']for row in paths.values()))
+            code.write_text('# changed source\n')
+            with self.assertRaisesRegex(ValueError,'sealed provider/runtime file missing or changed'):
+                B.collect_required_paths([document])
+            config.unlink()
+            with self.assertRaisesRegex(ValueError,'input_config missing'):
+                B.collect_required_paths([document])
+
+    def test_nested_git_locators_and_runtime_views_are_bound_without_import(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            root=Path(tmp)
+            def git(*args):return subprocess.check_output(['git',*args],cwd=root,text=True,stderr=subprocess.DEVNULL).strip()
+            git('init');git('config','user.name','Fixture');git('config','user.email','fixture@example.invalid')
+            payload=root/'CONFIGURATION.json';payload.write_text('{"selector": {"a": 1}, "preserve": true}\n')
+            view_file=root/'src/trottertracks/pr_price_rules.py';view_file.parent.mkdir(parents=True);view_file.write_text('# metadata only, never imported\n')
+            git('add','.');git('commit','-qm','fixed nested fixture');commit=git('rev-parse','HEAD')
+            original={'nested':[{'input':{'commit':commit,'path':'CONFIGURATION.json','selector':['selector']}}],
+                      'd2_view':str(root)}
+            before=deepcopy(original)
+            inputs,working=B.collect_fixed_inputs(root,[original])
+            self.assertEqual(inputs,[{'commit':commit,'path':'CONFIGURATION.json','sha256':hashlib.sha256(payload.read_bytes()).hexdigest()}])
+            self.assertEqual(working,[]);self.assertEqual(original,before)
+            views=B.collect_required_views([original]);row=next(iter(views.values()))
+            self.assertEqual(row['source']['commit'],commit);self.assertEqual(row['controller_path'],str(root))
+            self.assertEqual(row['source']['files']['src/trottertracks/pr_price_rules.py'],hashlib.sha256(view_file.read_bytes()).hexdigest())
+            view_file.write_text('# changed metadata SOURCE\n')
+            with self.assertRaisesRegex(ValueError,'operational SOURCE view changed'):
+                B.collect_required_views([original])
+
+    def test_missing_fixed_input_metadata_holds_before_submission(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            root=Path(tmp);engine=type('Engine',(),{'run_dir':root/'run'})()
+            bridge=B.DistributedPreparationBridge(engine,root)
+            completion=type('Completion',(),{'source':'fixed'})()
+            with patch.object(bridge,'build_request',side_effect=ValueError('missing fixed input object')):
+                with self.assertRaisesRegex(C.Held,'OPERATIONAL_HOLD.*INPUT_OR_SOURCE_METADATA_UNAVAILABLE'):
+                    bridge.call(completion,['fixed'],root,'DF_SIGNALS')
+            self.assertFalse((root/'DF_SIGNALS.DISTRIBUTED.json').exists())
+
     def test_prior_owner_markers_are_checked_at_original_path_before_submission(self):
         with tempfile.TemporaryDirectory()as tmp:
             root=Path(tmp);owner=root/'original-owner';output=owner/'docs/selected';output.mkdir(parents=True)
@@ -166,7 +217,9 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
 ''')
             git('add','.');git('commit','-qm','fixed artificial provider');source=git('rev-parse','HEAD')
             provider=top/'original-provider';git('clone','-q',str(root),str(provider))
-            view=top/'fixed-view';git('worktree','add','--detach',str(view),source)
+            # A real remote host has a separate Git object database. Clone
+            # before the controller creates its unpublished input commits.
+            view=top/'fixed-view';git('clone','-q',str(root),str(view))
             config=root/'docs/CONFIGURATION.json';config.parent.mkdir();config.write_text('{"scientific_fixture": "immutable"}\n')
             git('add','.');git('commit','-qm','new controller input');config_commit=git('rev-parse','HEAD')
             d=root/'docs/candidate';d.mkdir()
@@ -187,6 +240,8 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
                      'artifact_cache_directory':str(top/'worker-cas')}
             hashes=set(task['preparation']['inputs'].values())|root_hashes|provider_hashes
             ArtifactCache(top/'worker-cas').put(executor.artifact_cache.get(hashes))
+            self.assertNotEqual(subprocess.run(['git','cat-file','-e',config_commit],cwd=view,
+                stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode,0)
             attempt=top/'worker-attempt';outcome=W.execute(assignment,profile,attempt)
             self.assertEqual(outcome['status'],'PREPARATION_COMPLETE')
             result=json.loads((attempt/'workspace/docs/candidate/RESULT.json').read_text())
@@ -201,6 +256,12 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
             self.assertEqual(published,{'fixture':True})
             self.assertEqual(git('rev-parse','HEAD'),original_head)
             self.assertEqual(request.read_bytes(),(attempt/'workspace/docs/candidate/REQUEST.json').read_bytes())
+            # A returned --output file describes the previous execution host.
+            # It is dependency evidence, not the next task's runtime request.
+            returned=d/'RESULT.json';returned.write_text(json.dumps(dict(result,workspace='/not-on-controller/old-attempt')))
+            next_task=bridge.build_request(completion,[sys.executable,'-B',str(script),str(request),'--output',str(returned)],d,'PAULI_AUDIT')
+            self.assertNotIn('/not-on-controller/old-attempt',next_task['preparation']['path_bindings'])
+            self.assertIn(str(provider),next_task['preparation']['path_bindings'])
 
     def test_incomplete_descriptor_locator_still_holds_before_signal(self):
         c=C.Completion.__new__(C.Completion);c.settings={};c.state={'records':{}}

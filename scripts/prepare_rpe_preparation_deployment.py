@@ -59,6 +59,14 @@ def saved_examples(source):
                 command=['@PYTHON@','@SOURCE@/'+script,'--input','@INPUTS@/SAVED_INPUT.json','--output','@WORK@/RESULT.json']
                 name='DF_'+{'signal':'SIGNALS','compile':'CALIBRATION','audit':'MODEL_FREEZE'}[stage]
             data=raw(ROOT,commit,path)
+            from trottertracks.rpe_preparation_bridge import collect_fixed_inputs,collect_required_views,collect_required_paths
+            documents=[json.loads(data)];nested_inputs=[];working_inputs=[];required_views={};required_paths={};blockers=[]
+            try:nested_inputs,working_inputs=collect_fixed_inputs(ROOT,documents,{'SAVED_INPUT.json':sha(data)})
+            except Exception as error:blockers.append('NESTED_INPUTS:'+str(error))
+            try:required_views=collect_required_views(documents)
+            except Exception as error:blockers.append('OPERATIONAL_SOURCE_VIEW:'+str(error))
+            try:required_paths=collect_required_paths(documents)
+            except Exception as error:blockers.append('OPERATIONAL_RUNTIME_PATH:'+str(error))
             compiler_versions=set();compiler_bindings=set()
             def bindings(value):
                 if isinstance(value,dict):
@@ -73,7 +81,8 @@ def saved_examples(source):
             packages={'numpy':None,'scipy':None}if stage=='signal'else{'qiskit':next(iter(compiler_versions),'1.3.0')}
             task=dict(schema='RPE_PREPARATION_REQUEST_V1',method=method,route=dict(kind='preparation'),
                 preparation=dict(stage=stage,provider=name,source=source_record,command=command,outputs=['RESULT.json'],inputs={'SAVED_INPUT.json':sha(data)},
-                    input_hashes=[dict(commit=commit,path=path,sha256=sha(data))],
+                    input_hashes=list({(item['commit'],item['path']):item for item in [dict(commit=commit,path=path,sha256=sha(data))]+nested_inputs}.values()),
+                    working_input_hashes=working_inputs,required_views=required_views,required_paths=required_paths,inspection_blockers=blockers,
                     runtime_requirements=dict(version_info_prefix=[3],packages=packages),
                     compiler_bindings=sorted(compiler_bindings),dry_check_only=True,inspection_scope='SAVED_REAL_INPUT_SOURCE_PATH_PYTHON_COMPILER_METADATA_ONLY'),
                 original_contract=dict(saved_input=dict(commit=commit,path=path),scientific_body_evaluation=False))
@@ -97,6 +106,7 @@ def create(tasks,source,output):
     for task in tasks:
         all_sources[task['preparation']['source']['commit']]=task['preparation']['source']
         for workspace in task['preparation'].get('workspaces',{}).values():all_sources[workspace['source']['commit']]=workspace['source']
+        for required in task['preparation'].get('required_views',{}).values():all_sources[required['source']['commit']]=required['source']
     # Actual selected PF completion pins its provider entry HEAD (36ad),
     # while the original native acquisition implementation is d878. Keep
     # both immutable source views available; do not assign either by host.
@@ -127,6 +137,8 @@ def create(tasks,source,output):
                 if host_id=='server2':
                     profile['interpreter']='/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python'
             profile.update(preparation_sources=views,preparation_adapter_root=str(transport),preparation_adapter_manifest=adapter)
+            if host_id=='server2':
+                profile['preparation_paths']={alias:required['controller_path'] for example in tasks for alias,required in example['preparation'].get('required_paths',{}).items()}
             from trottertracks.rpe_preparation_bridge import STAGES
             prefix='PF_'if method in ('FULL_PF','TRUNCATED_PF')else'PAULI_'if method=='PR_PAULI'else'DF_'
             providers=[name for name,value in STAGES.items()if name.startswith(prefix)and value==spec['stage']]

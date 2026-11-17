@@ -74,6 +74,103 @@ def contract_runtime(values, script, configured):
     return result,sorted(compilers)
 
 
+def fixed_input_hashes(root, documents, artifacts):
+    """Hash every fixed Git locator in original JSON, including nested ones."""
+    from .rpe_q3_coordinator import input_hashes
+    working=[]
+    def fixed(value):
+        if isinstance(value,list):return[fixed(item)for item in value]
+        if not isinstance(value,dict):return value
+        result={name:fixed(item)for name,item in value.items()}
+        if value.get('commit')=='WORKING'and isinstance(value.get('path'),str):
+            # Existing providers use WORKING for a raw artifact already in the
+            # owned output tree. Bind that artifact, never pretend it is Git.
+            matches=[(name,sha)for name,sha in artifacts.items()if name.endswith('/'+value['path'])]
+            if len(matches)!=1:raise ValueError('Unfrozen or ambiguous WORKING input: '+value['path'])
+            working.append(dict(path=matches[0][0],sha256=matches[0][1]));result.pop('commit')
+        return result
+    payload={'route':{'kind':'preparation_input','documents':fixed(documents)}}
+    return input_hashes(root,payload),list({row['path']:row for row in working}.values())
+
+
+def operational_source_requirements(documents):
+    """Declare original external runtime views for profile-based host resolution."""
+    found={}
+    paths={
+        'signal_view':('src/trottertracks/pr_rpe_signal_provider.py','src/trottertracks/pr_rpe_signal_plan.py','src/trottertracks/pr_rpe_rmse_s0_v2.py'),
+        'd2_view':('src/trottertracks/pr_price_rules.py',),
+    }
+    def visit(value):
+        if isinstance(value,list):
+            for item in value:visit(item)
+        elif isinstance(value,dict):
+            for name,item in value.items():
+                if name in paths and isinstance(item,str):
+                    root=Path(item).resolve()
+                    commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
+                    files={}
+                    for relative in paths[name]:
+                        raw=subprocess.check_output(['git','show',commit+':'+relative],cwd=root)
+                        if(root/relative).read_bytes()!=raw:raise ValueError('Original operational SOURCE view changed: '+str(root/relative))
+                        files[relative]=hashlib.sha256(raw).hexdigest()
+                    found[str(root)]=dict(path=str(root),field=name,source=dict(commit=commit,files=files))
+                visit(item)
+    visit(documents)
+    return list(found.values())
+
+
+def collect_fixed_inputs(root, documents, artifacts=None):
+    return fixed_input_hashes(root,documents,artifacts or{})
+
+
+def collect_required_views(documents):
+    rows=operational_source_requirements(documents)
+    return {'runtime_'+row['field']+'_'+row['source']['commit'][:10]:
+            dict(source=row['source'],controller_path=row['path'])for row in rows}
+
+
+def collect_required_paths(documents):
+    """Reuse the existing native runtime/config contract, without its approval flow.
+
+    Only runtime.provider_root and runtime.input_config are interpreted. The
+    provider manifest comes from that original config's provider/runtime seals;
+    optional caches and historical permission/ledger fields are not imported.
+    """
+    found={}
+    def visit(value):
+        if isinstance(value,list):
+            for item in value:visit(item)
+        elif isinstance(value,dict):
+            runtime=value.get('runtime')
+            if isinstance(runtime,dict)and(runtime.get('provider_root')or runtime.get('input_config')):
+                config_path=runtime.get('input_config')
+                if not isinstance(config_path,str):raise ValueError('Native provider runtime needs its original input_config')
+                config_path=Path(config_path).resolve()
+                if not config_path.is_file():raise ValueError('Native runtime input_config missing: '+str(config_path))
+                raw=config_path.read_bytes();sha=hashlib.sha256(raw).hexdigest();config=json.loads(raw)
+                found['runtime_input_config_'+sha[:12]]=dict(controller_path=str(config_path),kind='file',sha256=sha)
+                provider=runtime.get('provider_root')
+                if provider:
+                    provider=Path(provider).resolve()
+                    if not provider.is_dir():raise ValueError('Native provider_root missing: '+str(provider))
+                    files={}
+                    for row in config.get('sealed_files',[]):
+                        if row.get('role')!='provider/runtime':continue
+                        path=Path(row['path']).resolve()
+                        if not path.is_relative_to(provider):continue
+                        relative=path.relative_to(provider).as_posix();artifact_path(relative)
+                        expected=row.get('sha256')
+                        if not isinstance(expected,str)or len(expected)!=64:raise ValueError('Original provider seal lacks hash: '+str(path))
+                        if not path.is_file()or hashlib.sha256(path.read_bytes()).hexdigest()!=expected:
+                            raise ValueError('Original sealed provider/runtime file missing or changed: '+str(path))
+                        files[relative]=expected
+                    if not files:raise ValueError('Native provider_root has no original provider/runtime seals: '+str(provider))
+                    found['runtime_provider_root_'+digest(files)[:12]]=dict(controller_path=str(provider),kind='directory',files=files)
+            for item in value.values():visit(item)
+    visit(documents)
+    return found
+
+
 class DistributedPreparationBridge:
     def __init__(self, executor, root, settings=None, *, approved=False):
         self.executor = executor
@@ -93,11 +190,16 @@ class DistributedPreparationBridge:
         self.executor.artifact_cache.put({sha: base64.b64encode(raw).decode('ascii')})
         return sha
 
-    def _bundle(self, root, source):
+    def _bundle(self, root, source, required_commits=()):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         namespace='refs/rpe-preparation/' + digest(str(self.executor.run_dir))[:16]
+        for value in sorted(set(required_commits)):
+            commit=subprocess.check_output(['git','rev-parse',value+'^{commit}'],cwd=root,text=True).strip()
+            subprocess.run(['git','update-ref',namespace+'/input-'+commit,commit],cwd=root,check=True)
         imported=subprocess.check_output(['git','for-each-ref','--format=%(refname)',namespace],cwd=root,text=True).splitlines()
         if head == source and not imported:
+            return []
+        if subprocess.check_output(['git','rev-list','--count','HEAD',*imported,'^'+source],cwd=root,text=True).strip()=='0':
             return []
         # Include the original provider branch even if its publication history
         # diverged. Git bundle prerequisites are checked by the destination;
@@ -106,7 +208,10 @@ class DistributedPreparationBridge:
             path = Path(temporary) / 'input.bundle'
             subprocess.run(['git', 'bundle', 'create', str(path), 'HEAD', *imported, '^' + source], cwd=root,
                            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            return [dict(sha256=self._blob(path.read_bytes()), ref='HEAD')]
+            heads=subprocess.check_output(['git','bundle','list-heads',str(path)],cwd=root,text=True).splitlines()
+            names=[row.split(' ',1)[1]for row in heads]
+            ref='HEAD'if'HEAD'in names else names[0]
+            return [dict(sha256=self._blob(path.read_bytes()), ref=ref,checkout_input_head=ref=='HEAD')]
 
     def build_request(self, completion, command, directory, stage, output=None):
         """Freeze a portable leaf request; never invoke its scientific body."""
@@ -150,7 +255,8 @@ class DistributedPreparationBridge:
         workspaces = {};runtime_inputs=[]
         # Original JSON remains byte-for-byte unchanged. Only runtime path
         # access is resolved by rpe_preparation_paths in the existing provider.
-        for arg in command:
+        for index,arg in enumerate(command):
+            if index and command[index-1]in('--output','--output-directory','--run-dir'):continue
             if not isinstance(arg, str) or not arg.endswith('.json'):
                 continue
             path = Path(arg)
@@ -171,6 +277,8 @@ class DistributedPreparationBridge:
                     files={}
                     for name in ('scripts/run_pauli_signal_entry.py','scripts/prepare_pauli_calibration.py',
                                  'scripts/run_pauli_split_cal.py','scripts/pauli_split_cal_audit_request.py',
+                                 'scripts/pauli_ld2_step_audit.py','scripts/pauli_ld3_cal_audit.py',
+                                 'src/trottertracks/rpe_preparation_paths.py',
                                  'src/trottertracks/pauli_signal_entry.py','src/trottertracks/pauli_calibration_request.py'):
                         item=self.root/name
                         if item.is_file():
@@ -194,10 +302,18 @@ class DistributedPreparationBridge:
                 if Path(private).exists():
                     inputs.update(self._capture(Path(private), 'private'))
         inputs.update(self._capture(directory, 'workspace/' + relative))
+        original_documents=[]
+        for name,sha in inputs.items():
+            if name.endswith('.json'):
+                try:original_documents.append(json.loads(self.executor.artifact_cache.path(sha).read_bytes()))
+                except (ValueError,UnicodeError):raise ValueError('Original preparation JSON is incomplete or invalid: '+name)
+        input_hashes,working_hashes=fixed_input_hashes(root,original_documents,inputs)
+        required_views=collect_required_views(runtime_inputs)
+        required_paths=collect_required_paths(runtime_inputs)
         with self.lock:
             for old, original in self.aliases.items():
                 if original in bindings:bindings[old]=bindings[original]
-        root_bundles=self._bundle(root,source)
+        root_bundles=self._bundle(root,source,[row['commit']for row in input_hashes])
         # Pauli's publication workspace has a separate object database. It
         # reads the controller's newly committed configuration too; importing
         # only the prior provider branch would leave that locator unavailable.
@@ -210,6 +326,9 @@ class DistributedPreparationBridge:
                     controller_root=str(root),
                     input_git_bundles=root_bundles, workspaces=workspaces,
                     path_bindings=bindings, inputs=inputs, outputs=list(dict.fromkeys(outputs)),
+                    input_hashes=input_hashes,working_input_hashes=working_hashes,
+                    required_views=required_views,
+                    required_paths=required_paths,
                     optional_outputs=optional_outputs,
                     runtime_requirements=requirements,compiler_bindings=compiler_bindings)
         return dict(schema='RPE_PREPARATION_REQUEST_V1', route=dict(kind='preparation'), preparation=prep,
@@ -349,7 +468,9 @@ class DistributedPreparationBridge:
                 raise Held('STAGE_FAILED:'+stage+':ORIGINAL_OWNER_STOP_OR_FAILURE:NO_AUTOMATIC_RETRY:'+str(prior))
             if prior['pending']:
                 raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':ORIGINAL_OWNER_RUNNING_OR_UNKNOWN:'+str(prior))
-            request = self.build_request(completion, command, directory, stage, output)
+            try:request = self.build_request(completion, command, directory, stage, output)
+            except (OSError,ValueError,subprocess.CalledProcessError)as error:
+                raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':INPUT_OR_SOURCE_METADATA_UNAVAILABLE:'+str(error))from error
             submitted = dict(request=request, source=completion.source, automatic_retry=False)
         # A Q3 approval/budget does not open signal/compile scope. The round
         # must separately bound preparation tasks and retain leaf input caps.
