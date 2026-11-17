@@ -254,7 +254,10 @@ class DistributedPreparationBridge:
                 item=root/name
                 if item.is_file():
                     raw=subprocess.check_output(['git','show',source+':'+name],cwd=root)
-                    if raw!=item.read_bytes():raise ValueError('Preparation helper differs from fixed SOURCE: '+name)
+                    # The controller's path helper may have newer transport
+                    # declarations. The leaf runs the provider's frozen bytes.
+                    if raw!=item.read_bytes() and name!='src/trottertracks/rpe_preparation_paths.py':
+                        raise ValueError('Preparation helper differs from fixed SOURCE: '+name)
                     source_files[name]=hashlib.sha256(raw).hexdigest()
         else:
             # PF's source-frozen provider is invoked by the new transport
@@ -330,6 +333,10 @@ class DistributedPreparationBridge:
             for old, original in self.aliases.items():
                 if original in bindings:bindings[old]=bindings[original]
         root_bundles=self._bundle(root,source,[row['commit']for row in input_hashes])
+        if script.is_relative_to(root):
+            # This bundle supplies locators for frozen inputs. Checking out
+            # its HEAD would substitute controller code for the provider.
+            root_bundles=[dict(bundle,checkout_input_head=False)for bundle in root_bundles]
         # Pauli's publication workspace has a separate object database. It
         # reads the controller's newly committed configuration too; importing
         # only the prior provider branch would leave that locator unavailable.

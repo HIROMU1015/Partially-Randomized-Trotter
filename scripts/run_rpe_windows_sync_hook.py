@@ -25,7 +25,7 @@ def confirmed_run(config,result):
             stdin=subprocess.DEVNULL,capture_output=True,timeout=timeout)
         if transfer.returncode:raise RuntimeError('Confirmed-run transfer failed: '+transfer.stderr.decode(errors='replace')[-1000:])
         quote=lambda item:"'"+str(item).replace("'","''")+"'"
-        script="$ErrorActionPreference='Stop';$p=Join-Path $env:USERPROFILE "+quote(name)+";try{"
+        script="$ErrorActionPreference='Stop';[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false);$p=Join-Path $env:USERPROFILE "+quote(name)+";try{"
         script+="$v=& "+quote(config['result_sync_script'])+" -Action OnConfirmedRun -ResultFile $p -Config "+quote(config['result_sync_config'])+";"
         script+="$v|ConvertTo-Json -Depth 60 -Compress}finally{Remove-Item -LiteralPath $p -Force -ErrorAction SilentlyContinue}"
         remote='powershell.exe -NoProfile -NonInteractive -EncodedCommand '+base64.b64encode(script.encode('utf-16-le')).decode()

@@ -876,6 +876,18 @@ class DistributedExecutor(ConcurrentExecutor):
             if not result['eligible_host_ids']: result['reasons'].append('ALL_HOSTS_FAIL_OR_UNCHECKED')
         except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
             result['reasons'].append(str(exc))
+        if (self.distributed.get('live_q3_readiness') is True and not result['eligible_host_ids']
+                and result['reasons'] in (['NO_REQUEST_SPECIFIC_HOST_EVIDENCE'],
+                                          ['HOST_ELIGIBILITY_CHANGED_REQUEST_SHA256'])):
+            from .rpe_live_q3_readiness import probe
+            cache = self.eligibility_policy_cache.setdefault('live_checks', {})
+            key = (job_id, result['request_sha256'])
+            try:
+                if key not in cache:
+                    cache[key] = probe(self, request, job_id, result)
+                return deepcopy(cache[key])
+            except (OSError, KeyError, ValueError, subprocess.CalledProcessError) as exc:
+                result['reasons'].append(str(exc))
         return result
 
     @staticmethod
