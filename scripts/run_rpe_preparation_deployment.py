@@ -123,7 +123,10 @@ def finish_return(output,manifest,results,U,utility,*,recovered=False,wsl_paused
     payload=dict(action='receive',directory=manifest['return_directory'],files=returned,
         manifest={n:U.sha(base64.b64decode(v))for n,v in returned.items()},return_transport=manifest['return_transport'])
     U.put(output/'RETURN_PAYLOAD.json',U.encode(payload));receipt=return_only(output,U,utility)
-    print(json.dumps(summary,indent=2,ensure_ascii=False));print(json.dumps(receipt,indent=2))
+    # Keep the full proof on disk/return, but do not make the user copy nested
+    # SOURCE/input/profile manifests for every cell back into the chat.
+    display=dict(summary,rows=[{key:row[key]for key in ('host_id','method','stage','request_id','status','reasons')if key in row}for row in rows])
+    print(json.dumps(display,indent=2,ensure_ascii=False));print(json.dumps(receipt,indent=2))
 
 
 def main():

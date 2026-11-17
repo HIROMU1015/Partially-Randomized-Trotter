@@ -5,8 +5,11 @@
 通常schedule入口の`DistributedExecutor`を準備工程にも使い、独立なsignal/価格枝を並行化する。
 必要なreceipt・回路・Git locatorはCAS/bundleで渡し、同じ成果物の転送と同じ較正の再計算を避ける。
 科学SOURCE・元provider契約、工程別readiness、Q3から分離した準備予算が必要。
+工程実装はf956f5197、配置collectorの障害回収は61d5482f7。
 通常/再開の人工検収と実入力検査は[HANDOFF](research/rpe_distributed_preparation/HANDOFF.md)を参照。
 人工hostは1 OS上の模擬で、実H4の性能は未測定。同じ較正を同時採用するartifact展開は、完全なtemp fileからatomicに公開する必要があった。
+配置時に1台のSSH例外が他2台の返送を妨げたため、host別に例外を保存し、`--collect-saved`で再検査せず回収する。
+全fingerprintはファイルに保持し、consoleはセルの状態と不足理由だけを返す。実入力metadataは30 PASS/6 HOLD、server1停止で12未確認。
 
 ## 分散Q3の配送・body・回収・採用計時（2026-11-17）
 

@@ -20,6 +20,9 @@ server1・RomuTail・WSLへ接続せず、配置・検査・科学処理を再�
 server1は未確認/HOLDとして残し、復旧まで追加接続・自動再試行しない。
 旧bundleと工程実装f956は変更せず、修正したcollectorだけを別ファイルで配布する。
 通常runnerにもhostごとの例外保存を追加し、1台の接続失敗で他hostの保存結果を失わないようにした。
+回収は完了し、返送38ファイルを中央で照合済みである。上の回収手順も繰り返す必要はない。
+server2の12セルとRomuTail/WSLの各9セルがinspection PASS、両遠隔hostのPR-DF各3セルは入力不足のHOLD。
+詳細は[中央照合記録](checks/REMOTE_IMPORT.json)と[工程×host表](deployment_f956f5197/HOST_STAGE_READINESS.json)。
 
 ```powershell
 $P = Join-Path $env:USERPROFILE 'rpe-preparation-deploy-f956f5197a5a'
@@ -131,6 +134,7 @@ local0向けの一括配置・検査は、固定SOURCEのdeployment pack内のPo
 新しい専用transport/profile/検査directoryを使用し、旧relay・spool・runを再開しない。
 Python環境のinstall、WSLのPause解除、workerや科学計算の起動は行わない。
 検査結果はpackに指定したqg2の`remote_results`へ返送する。
+今回の初回配置は実行済みであり、以下の初回例をもう一度実行しない。
 
 固定版の[配置pack](deployment_f956f5197/PACKAGE.json)と
 [一括手順](deployment_f956f5197/RUN_PREPARATION_DEPLOYMENT.ps1)を使用する。
@@ -148,6 +152,9 @@ if ($LASTEXITCODE -ne 0) { throw 'Script download failed' }
 返送だけに失敗した場合は、同じdeployment runnerの`--return-only`を使い、検査や科学処理を再実行しない。
 通常runのrelay設定はpackの`RELAY_TEMPLATE.json`を新しいrunのendpointに結び付ける。
 旧人工runのrelay設定をそのまま再起動しない。worker開始・中継停止の具体的な手順はpackのHANDOFFを参照する。
+server1が停止中の新runでは、コピーした新relay設定のworkersからserver1を外し、接続を試みない。
+通常controllerはserver1をrequired_hostsへ追加せず、現在の照合に合格した他hostで進む。
+server1復旧後の配置は未確認の工程セルだけを対象に、新しい検査directoryで実施する。
 
 ## 計時
 

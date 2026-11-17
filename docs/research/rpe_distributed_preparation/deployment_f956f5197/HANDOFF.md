@@ -19,13 +19,18 @@ compile/auditでは保存契約から取り出したQiskit 1.3.0を照合した�
 通常workerのmetadata challengeで自動照合し、一致したホストだけが取得する。
 旧Q3の16 PASSを新しい準備工程のPASSとして流用しない。
 
-remote3台の36セルは返送待ち。WSLの参加flagは明示Pauseを要求し、検査の前後で変更しない。
+RomuTailとWSLの24セルは返送済み、各9 PASS・PR-DF各3 HOLDを中央照合した。
+server1はSSH経路の`No route to host`により未接続で、今回の12セルは未確認/HOLD。
+[現在の対応表](HOST_STAGE_READINESS.json)と[中央照合](../checks/REMOTE_IMPORT.json)を参照する。
+初回配置は繰り返さず、回収も完了している。server1へ追加接続・自動再試行しない。
+WSLの参加flagは初回開始時・回収時に受付OFFを確認。旧runner例外で初回の前後bytes比較は未完了のため、完全な前後一致の証拠とはしない。
 今回のserver2には専用profileと固定viewだけを置き、運用spoolを作成していない。
 
 ## local0の1コマンド検査
 
 PowerShellで次を実行する。既存のqg1・RomuTail・Ubuntu WSLの経路を使い、
 3台へ同じ固定版を並列に配置して各12セルのmetadataを検査する。
+以下は実行済みの初回手順の記録であり、現在の状態では再実行しない。
 既存checkoutの切替や上書き、Python環境の変更、パッケージ導入はない。
 
 ```powershell

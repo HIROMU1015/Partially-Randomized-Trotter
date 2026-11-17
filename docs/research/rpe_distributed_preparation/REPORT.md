@@ -1,10 +1,12 @@
 # H4準備工程とQ3の共通分散実行
 
 実装固定SHA：`f956f5197a5acfe113fbb2ed3bfa78564e7f4eec`。
+配置runnerの接続失敗回収修正：`61d5482f719673e198f4327210b186344e3acaea`。
 branch：`codex/rpe-distributed-preparation`。
 基点は分散実装349558b74、配置・検収91fe799dd。
 通常の[開始・再開・local0一括配置](HANDOFF.md)、[既存providerとの接続](LEAF_PATHS.md)、
 [SOURCEと検査locator](checks/SOURCE.json)を参照。
+[現在の機械可読状態](STATUS.json)は工程別inspectionとhostの停止・受付OFFを分けて記録する。
 
 ## 実装した動作
 
@@ -69,30 +71,38 @@ body計時の欠測は0件。異なるhost時計の絶対時刻を引いて片�
 ## 工程×ホストの実入力検査
 
 工程profileは4台とも設定済み。表のIは保存実入力とSOURCE/runtimeの実機inspection PASS、
-未確認は今回の遠隔返送がまだないことを示す。新しい完全な実行REQUESTの起動可否は、
+Hは実機検査で確認した入力不足、停止はserver1未接続・未確認を示す。
+新しい完全な実行REQUESTの起動可否は、
 その都度通常workerのmetadata challengeで照合する。
 
 | 方式 | 工程 | server2 | server1 | RomuTail | local0-wsl |
 |---|---|---|---|---|---|
-| Full PF | signal | I | 未確認 | 未確認 | 未確認 |
-| Full PF | compile | I | 未確認 | 未確認 | 未確認 |
-| Full PF | audit | I | 未確認 | 未確認 | 未確認 |
-| B0I | signal | I | 未確認 | 未確認 | 未確認 |
-| B0I | compile | I | 未確認 | 未確認 | 未確認 |
-| B0I | audit | I | 未確認 | 未確認 | 未確認 |
-| PR-Pauli | signal | I | 未確認 | 未確認 | 未確認 |
-| PR-Pauli | compile | I | 未確認 | 未確認 | 未確認 |
-| PR-Pauli | audit | I | 未確認 | 未確認 | 未確認 |
-| PR-DF | signal | I | 未確認 | 未確認 | 未確認 |
-| PR-DF | compile | I | 未確認 | 未確認 | 未確認 |
-| PR-DF | audit | I | 未確認 | 未確認 | 未確認 |
+| Full PF | signal | I | 停止 | I | I・受付OFF |
+| Full PF | compile | I | 停止 | I | I・受付OFF |
+| Full PF | audit | I | 停止 | I | I・受付OFF |
+| B0I | signal | I | 停止 | I | I・受付OFF |
+| B0I | compile | I | 停止 | I | I・受付OFF |
+| B0I | audit | I | 停止 | I | I・受付OFF |
+| PR-Pauli | signal | I | 停止 | I | I・受付OFF |
+| PR-Pauli | compile | I | 停止 | I | I・受付OFF |
+| PR-Pauli | audit | I | 停止 | I | I・受付OFF |
+| PR-DF | signal | I | 停止 | H：descriptor | H：descriptor・受付OFF |
+| PR-DF | compile | I | 停止 | H：native config | H：native config・受付OFF |
+| PR-DF | audit | I | 停止 | H：native config | H：native config・受付OFF |
 
 機械可読の[対応表と不足理由](deployment_f956f5197/HOST_STAGE_READINESS.json)、
 [server2の12件](deployment_f956f5197/server2/dry/READINESS.json)、
 [配布物と配置検査](deployment_f956f5197/CHECKS.json)を公開した。
 保存入力例は`dry_check_only=true`で、queueへの投入を拒否する。
 `SAVED_INPUT_RUNTIME_INSPECTION_PASS`は、その候補の新科学REQUEST全体の実行PASSではない。
-DF compile/auditのnative provider/configが遠隔hostにない場合は具体的path/hashの不足をHOLDに残す。
+RomuTail/WSLからの返送38ファイルをhash照合し、[中央のREQUEST・profileとの照合結果](checks/REMOTE_IMPORT.json)を保存した。
+30セルのinspection PASS、6セルの入力HOLD、12セルのserver1未確認である。
+両遠隔hostのPR-DF signalは、次の保存descriptor commitを取得できずHOLDとなった。
+`62ee29f280bd4774b208259b5ee73c64229cb9cd:docs/research/h4_pr_multiwidth_resume_20261117/run01/completion/candidates/503d195e3975103a4f12/DF_TAIL_DESCRIPTOR.json`。
+fetchの保存エラーは`upload-pack: not our ref`。原入力・原commitを書き換えたり新descriptorを計算したりしていない。
+PR-DF compile/auditは、元native入力`/home/AbeHiromu/projects/h46-pr-exploration-execution/20261021/private/authorization_run01/H4_PR_EXPLORATION/config_APPROVED_PRIVATE.json`のhost別path mapping不足でHOLD。
+元sealed provider/runtimeの固定ファイルも含めて配置・照合してから、その影響セルだけ更新する必要がある。
+Q3のPR-DF実行準備と、この新工程の不足は別に扱う。
 新工程の実4台での科学計算完了は未確認である。
 
 既存4方式×4台のQ3については[全16セルの科学profileが同一](checks/Q3_PROFILE_REUSE.json)と照合した。
@@ -108,9 +118,14 @@ local0の初回実行ではRomuTailとWSLのrunnerが終了し、server1へのSS
 既存のlocal0結果だけをqg2へ返す`--collect-saved`を追加した。
 [修正の人工検査3件](recovery_transport_v1/TESTS.json)では、1台の接続失敗でも2台分を保持・返送し、
 保存結果の回収時はqg2以外へ接続しないことを通常CLIで確認した。
-旧bundle・工程実装・既存の実入力検査を再実行せず、[回収専用手順](HANDOFF.md)から返送する。
-返送後はSOURCE・入力・profile・hashと照合して上表を更新する。server1は復旧まで未確認/HOLDを維持する。
-WSLは受付停止で引き渡し、検査時もPauseを解除しない。
+旧bundle・工程実装・既存の実入力検査を再実行せず、[回収専用手順](HANDOFF.md)から2台分の保存結果を返送した。
+返送38ファイルと18 PASSのfingerprint、6 HOLDの元REQUESTを中央で照合した。
+回収専用処理が接続したのはqg2だけであり、3計算hostへの再接続・再検査は0件である。
+server1は復旧まで未確認/HOLDを維持し、そのために他hostを止めない。
+次の新runでserver1をまだ使わない場合は、新relay設定のworkersからserver1を除外する。既存runや旧configは変更しない。
+初回3台一括配置を繰り返さない。server1復旧後は、その未確認12セルだけを別の検査directoryへ配置・検査する。
+WSLは受付停止で引き渡し、検査・回収処理もPauseを解除していない。
+回収時のローカル参加flagはfalse。旧runnerは例外終了したため、その初回の前後bytes比較は未完了で、`wsl_paused_unchanged=null`を保持した。
 新しい科学roundは、準備範囲・工程別予算・Q3予算・exact readiness policyを採択してから通常入口で開始する。
 controllerは可変の専用worktree、worker adapterとsource viewは固定の別領域とする。
 

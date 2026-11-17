@@ -1,7 +1,9 @@
 """A failed SSH transport must not lose other hosts' saved inspections."""
 import base64
+import contextlib
 import hashlib
 import importlib.util
+import io
 import json
 from pathlib import Path
 import tempfile
@@ -28,12 +30,14 @@ class DeploymentRecovery(unittest.TestCase):
         return bundle,hashlib.sha256(bundle.read_bytes()).hexdigest(),manifest
 
     def saved_result(self,host,source='FIXED_ARTIFICIAL'):
-        row=dict(host_id=host,stage='signal',status='SAVED_INPUT_RUNTIME_INSPECTION_PASS')
+        row=dict(host_id=host,stage='signal',status='SAVED_INPUT_RUNTIME_INSPECTION_PASS',source_manifest={'large_proof':'fixture '*1000})
         return dict(ok=True,result=dict(host_id=host,source=source,rows=[row]),
             files={host+'/READINESS.json':base64.b64encode(json.dumps(row).encode()).decode()})
 
     def invoke(self,args):
-        with patch.object(D.sys,'argv',['run_rpe_preparation_deployment.py',*map(str,args)]):D.main()
+        log=io.StringIO()
+        with patch.object(D.sys,'argv',['run_rpe_preparation_deployment.py',*map(str,args)]),contextlib.redirect_stdout(log):D.main()
+        return log.getvalue()
 
     def test_transport_exception_returns_successful_hosts_and_saves_failure(self):
         with tempfile.TemporaryDirectory()as tmp:
@@ -44,13 +48,15 @@ class DeploymentRecovery(unittest.TestCase):
                 if host['host_id']=='server1':raise RuntimeError('No route to host')
                 return self.saved_result(host['host_id'])
             with patch.object(D,'remote',side_effect=remote):
-                self.invoke(['--bundle',bundle,'--bundle-sha256',sha,'--output',root/'results'])
+                displayed=self.invoke(['--bundle',bundle,'--bundle-sha256',sha,'--output',root/'results'])
             saved=json.loads((root/'results/server1.json').read_text())
             self.assertFalse(saved['ok']);self.assertFalse(saved['automatic_retry'])
             summary=json.loads((root/'returned/SUMMARY.json').read_text())
             self.assertEqual(sum(r['status']=='SAVED_INPUT_RUNTIME_INSPECTION_PASS'for r in summary['rows']),2)
             self.assertEqual(calls.count(('server1','host')),1);self.assertIn((None,'receive'),calls)
             self.assertEqual(summary['wsl_accepting_new_jobs'],False)
+            self.assertNotIn('large_proof',displayed)
+            self.assertTrue(any('source_manifest'in row for row in summary['rows']))
 
     def test_collect_saved_only_contacts_qg2_and_preserves_original_results(self):
         with tempfile.TemporaryDirectory()as tmp:
