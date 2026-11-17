@@ -20,6 +20,8 @@ WindowsとRomuTailの通常Previewは明示指定、release省略のどちらも
 
 親run `search-b1a74e00581b89ea42db` の読取り照合で、採用済みsignal 16、compile stage 8、残枠signal 0・compile 0・audit 8・Q3 32を確認。保存compileは8件とも価格証拠待ちで実回路compile 0。親台帳、終了記録、元成果を保全した。継続時は固定問題、範囲、消費、owner・attempt、STOPを照合し、実行可能な候補を通常の選択規則へ戻す。
 
+最終controllerで継続のPlanOnlyと通常の§10.5照合が通った。保存された候補のうちLD5 / κ58、LD4 / κ64を含む4件が、保存packet・価格・物理scheduleの再照合後に登録できた。継続用scopeのPreviewは `search-a8c8ce3e5d57f171cb97`、新規科学callは0件。
+
 大きい要求幅のPR-DF mapperには非整数PF gridの拒否が残る。別の丸めや分割は採用していない。LD8 descriptorとPR-Pauli LD7は既存providerが不足を識別する経路を使う。各descriptorの新規科学生成とB0Iの新規科学準備は今回の人工検収には含まれない。
 
 この統合作業による新規の実信号、実compile、実Q3、価格fitおよび本番探索は各0件。
