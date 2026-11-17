@@ -371,7 +371,10 @@ class Service:
             legacy=Path(request['acquisition']['legacy_view']).resolve()
             pauli=acquisition['kind']=='PR_PAULI';commit=worker.PAULI_SOURCE if pauli else worker.DF_SOURCE
             files={}
-            for name in (('scripts/run_pauli_b1_prices.py','src/trottertracks/pauli_tail_price_connection.py')if pauli else ('scripts/run_pr_df_candidate_prices.py',)):
+            for name in (('scripts/run_pauli_b1_prices.py','src/trottertracks/pauli_tail_price_connection.py')if pauli else
+                         ('scripts/run_pr_df_ld_split.py','src/trottertracks/p1_efficient_zz.py',
+                          'src/trottertracks/efficient_controlled_zz.py','src/trottertracks/pr_rpe_rmse_controller.py',
+                          'src/trottertracks/h4_df10_rpe_connection.py')):
                 files[name]=hashlib.sha256((legacy/name).read_bytes()).hexdigest()
             task['preparation']['workspaces']['validation_legacy']=dict(source=dict(commit=commit,files=files),input_git_bundles=[],checkout_input_head=False)
             task['preparation']['path_bindings'][str(legacy)]='@WORKSPACE:validation_legacy@'
