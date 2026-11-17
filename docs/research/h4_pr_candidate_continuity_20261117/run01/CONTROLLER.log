@@ -1,0 +1,33 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117/scripts/run_rpe_schedule_search.py", line 895, in <module>
+    main()
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117/scripts/run_rpe_schedule_search.py", line 889, in main
+    d = factory(a);d.log(event='DRIVER_START', plan_only=a.plan_only);d.loop();d.log(event='DRIVER_END', stop=d.state.get('stop'))
+                                                                      ^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117/scripts/run_rpe_schedule_search.py", line 854, in loop
+    result=self.batch(prepare_during=True)if overlap else self.batch()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117/scripts/run_rpe_schedule_search.py", line 769, in batch
+    interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117/scripts/run_rpe_method_optimizer.py", line 174, in optimize
+    def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117/src/trottertracks/rpe_optimizer_concurrent.py", line 363, in optimize
+    out={m:futures[m].result()[m]for m in methods}
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117/src/trottertracks/rpe_method_optimizer.py", line 1326, in optimize
+    result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117/src/trottertracks/rpe_priority_search.py", line 475, in run_priority
+    step += 1;new_calls += answer['calls']
+                           ~~~~~~^^^^^^^^^
+KeyError: 'calls'
