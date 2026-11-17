@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/scripts/pr_candidate_services.py", line 182, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/scripts/pr_candidate_services.py", line 133, in main
+    config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config).plan(config)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/scripts/pr_candidate_services.py", line 76, in df_entry
+    if configuration is not None and not entry._support(configuration):scope_df_saved_index(entry,configuration)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/scripts/pr_candidate_services.py", line 62, in scope_df_saved_index
+    raise ValueError('Conflicting saved means: select explicit saved inventory')
+ValueError: Conflicting saved means: select explicit saved inventory

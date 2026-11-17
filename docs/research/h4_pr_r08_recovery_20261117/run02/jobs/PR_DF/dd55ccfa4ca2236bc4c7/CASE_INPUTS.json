@@ -1,0 +1,1463 @@
+{
+  "acceleration": {
+    "source": {
+      "commit": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+      "path": "src/trottertracks/rpe_total_dp_parallel.py"
+    },
+    "workers_per_configuration": 3,
+    "outcome_batch": 8,
+    "selection": "Artificial benchmark: 8 and 16 workers have similar wall time; use 8 per independent configuration."
+  },
+  "statistical_contract": {
+    "id": "PR_DF_FULL_H_THREE_FIXED_TOTAL_Q3",
+    "claim_level": "TOTAL_RAW_MODEL_DIAGNOSTIC_ONLY",
+    "allow_conditional_unqualified": true,
+    "simulation_policy": {
+      "kind": "IID_SHOTS_INDEPENDENT_AXES_ROUNDS_AND_REPETITIONS",
+      "target_law": "ideal_finite_RTE_law",
+      "interpretation": "CONDITIONAL_IID_SHOTS_AXES_ROUNDS_NO_MC_REPETITIONS"
+    },
+    "summary_options": {
+      "unresolved_loss": {
+        "kind": "BOUNDED_INTERVAL",
+        "lower": 0,
+        "upper": {
+          "numerator": 357405153776690641596902400718249,
+          "denominator": 316912650057057350374175801344
+        }
+      }
+    }
+  },
+  "options": {
+    "probability_rule": "EXACT_AFFINE_OF_BINARY64_RAW",
+    "phase_radii": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "maximum_round_outcomes": 4225,
+    "maximum_verification_pairs": 55043173,
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "model_loss_contract": {
+      "adopted": true,
+      "scope": "THREE_FIXED_PR_DF_FULL_H_TOTAL_ALL_EVENT_DIAGNOSTICS"
+    },
+    "total_state_refinement": {
+      "maximum_frontier_states": 8192,
+      "maximum_transition_pairs": 141559036
+    },
+    "total_dp_acceleration_source": {
+      "source": {
+        "commit": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+        "path": "src/trottertracks/rpe_total_dp_parallel.py"
+      },
+      "workers_per_configuration": 8,
+      "outcome_batch": 8,
+      "selection": "Artificial benchmark: 8 and 16 workers have similar wall time; use 8 per independent configuration."
+    }
+  },
+  "adopted_evaluation": {
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+    "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+    "epsilon_E_decimal": "0.00159360010199040",
+    "MSE_upper": {
+      "numerator": 15136964828156312001,
+      "denominator": 5960464477539062500000000
+    },
+    "scope": "MODEL_MSE_FILTER_ONLY",
+    "measurement_law": "SAVED_IDEAL_FINITE_K_RAW_IID_EXACT_AFFINE",
+    "minkowski": "SEPARATE_REFERENCE_NOT_COMBINED",
+    "physical_total_error_guarantee": false
+  },
+  "cases": [
+    {
+      "original_configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "total_configuration_id": "e6fe7e6845dd5eae8829f54b8bbae655ccf1c81c320c4d0ee1bfed0399bb5583",
+      "decoder_id": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+      "binding_id": "4ca2851ee62edcff1bd84af3841a12ff76a03fe59b47596ff8351a778c526a03",
+      "configuration_source": {
+        "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+        "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json"
+      },
+      "signal_packet_source": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD2.json"
+      },
+      "signal_packet_kind": "A_BUNDLE_REQUIRES_EXISTING_K_ACCEPT_SAVED",
+      "numerical_source": {
+        "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+        "path": "src/trottertracks/pr_rpe_signal_provider.py",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+      },
+      "raw_result_carrier": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+      "schedule_adapter_origin": "A_FIXED_GRID_510FBACD_V1",
+      "schedule_adapter_total": "A_FIXED_GRID_510FBACD_TOTAL_DECODER_VIEW_V1",
+      "kappa": {
+        "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+        "value": {
+          "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+          "denominator": 539496659426909122096437389293855970805348475396548904610992201
+        },
+        "definition_source": {
+          "url": "https://arxiv.org/pdf/2503.05647v2",
+          "sections": [
+            "B.2",
+            "E.1",
+            "E.3"
+          ],
+          "equations": [
+            "A38",
+            "B30",
+            "E1",
+            "E2",
+            "E21",
+            "E22"
+          ]
+        }
+      },
+      "finite_K": 2,
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        }
+      },
+      "scalar": {
+        "expression": "saved_hamiltonian_constant + prefix_tail_scalar; applied once at total T",
+        "constant_source": {
+          "index": {
+            "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+            "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+          },
+          "selector": [
+            "saved_inputs",
+            "H4",
+            "inputs",
+            "H4_tol_snapshot.npz"
+          ],
+          "array": "constant"
+        },
+        "prefix_tail_scalar": 0.2223759094107018,
+        "tail_descriptor": {
+          "path": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json",
+          "sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+          "selector": [
+            "prefixes",
+            "2",
+            "scalar"
+          ]
+        },
+        "application_source": {
+          "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "path": "src/trottertracks/pr_rpe_signal_provider.py",
+          "function": "evaluate"
+        }
+      },
+      "target": {
+        "binding": {
+          "T": 0.8,
+          "basis": "STO-3G",
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "geometry": "linear_1Angstrom",
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+          "profile_is_reference_only": true,
+          "rank": 10,
+          "rank_is_saved_observation_not_generation_argument": true,
+          "rank_policy": "tol_only_1e-8",
+          "series": "H4_TOL_ONLY_DF10",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "system": "H4",
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          },
+          "decomposition": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "contract": {
+              "completion": "saved_weighted_Hermitian_completion",
+              "fragment_order": "saved_snapshot_order",
+              "preparation_binding": {
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+              },
+              "state_preparation_cost": 0,
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              }
+            },
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            }
+          }
+        },
+        "energy_shift_ha": 0,
+        "quantity": "ORIGINAL_DF_H_TARGET_ENERGY",
+        "source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        },
+        "state_assumption": "saved_numerical_state_conditional_ground",
+        "ground_state_certified": false,
+        "truth_proxy_source": {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "selector": [
+            "records",
+            5,
+            "diagnostics"
+          ]
+        },
+        "reference_solver_energy_ha": -2.1663874486347634,
+        "truth_proxy_adopted_for_new_simulation": false,
+        "qualification": "UNQUALIFIED"
+      },
+      "physical_binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4",
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        },
+        "decomposition": {
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          }
+        }
+      },
+      "normalization_source": "Per-round saved bundle normalization; never recomputed or multiplied into shots",
+      "proposed_allocation": {
+        "allocation_id": "PR_DF_LD2_TOTAL_Q3_SAVED_CONTROL_01",
+        "shot_policy": "USER_SUPPLIED",
+        "N_X": [
+          64,
+          60,
+          56,
+          52,
+          47,
+          43,
+          38,
+          34,
+          30,
+          25,
+          21,
+          17,
+          12
+        ],
+        "N_Y": [
+          64,
+          60,
+          56,
+          52,
+          47,
+          43,
+          38,
+          34,
+          30,
+          25,
+          21,
+          17,
+          12
+        ],
+        "vector_source": {
+          "commit": "e7ce23803b5644bd9df0e83c877b390aeb9405e0",
+          "path": "docs/research/h4_dp_risk_fixed_results_20261114/INPUTS.json"
+        }
+      },
+      "reuse": {
+        "signal_rounds": 13,
+        "metadata_bridge": true,
+        "old_partial_risk": "REFERENCE_ONLY_NOT_Q3"
+      },
+      "proposed_new_scientific_calls_if_missing": 1,
+      "closure_and_total_scope": "NOT_VERIFIED_BY_THIS_PLAN",
+      "rows": [
+        {
+          "m": 0,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "q_RPE": 1,
+          "q_PF": 1,
+          "R_outer": 1,
+          "event_count": 1,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "ce7ef02e7926c1a6c924"
+          },
+          "original_canonical_candidate_id": "RMSE:183545d923ab7d3ae8c4dc68af4e739f26125694930a76b5460319dba6f3c28e",
+          "total_canonical_candidate_id": "RMSE:827a2a3d69b04ae3a8911299e6cb55fbe5cb36dc4b7a88d2d3432878cc66f9b9",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m0.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            0
+          ],
+          "normalization_selector": [
+            "means",
+            0,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            0,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              0
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                338
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                339
+              ]
+            }
+          ]
+        },
+        {
+          "m": 1,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "q_RPE": 2,
+          "q_PF": 2,
+          "R_outer": 2,
+          "event_count": 4,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.2,
+            "q": 2,
+            "delta": 0.1,
+            "R_outer": 2,
+            "K": 2,
+            "id": "8f889f60c3a813858814"
+          },
+          "original_canonical_candidate_id": "RMSE:f0448a7771e5b10e6eebc06bbdfb7413d379cd828efb438bb1b3dcda4452150e",
+          "total_canonical_candidate_id": "RMSE:8804d68a65b851e33aea5f3af7d962d4ce6e6c601f05b4d1bc137743f3bae4df",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m1.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            1
+          ],
+          "normalization_selector": [
+            "means",
+            1,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            1,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              1
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                340
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                341
+              ]
+            }
+          ]
+        },
+        {
+          "m": 2,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 9007199254740992
+          },
+          "q_RPE": 4,
+          "q_PF": 4,
+          "R_outer": 3,
+          "event_count": 12,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.4,
+            "q": 4,
+            "delta": 0.1,
+            "R_outer": 3,
+            "K": 2,
+            "id": "8a5aad480758a7cff292"
+          },
+          "original_canonical_candidate_id": "RMSE:d3b81e4a7b2721e1e286a1935f3040fa4b9a470ca2fe86f25d12361394231034",
+          "total_canonical_candidate_id": "RMSE:6462129246a9fe74d6c187134476bf5980fc76649e6a08beeedcba37e890080b",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m2.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            2
+          ],
+          "normalization_selector": [
+            "means",
+            2,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            2,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              2
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                342
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                343
+              ]
+            }
+          ]
+        },
+        {
+          "m": 3,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 4503599627370496
+          },
+          "q_RPE": 8,
+          "q_PF": 8,
+          "R_outer": 5,
+          "event_count": 40,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.8,
+            "q": 8,
+            "delta": 0.1,
+            "R_outer": 5,
+            "K": 2,
+            "id": "334b1fd35cb2f1ad32b0"
+          },
+          "original_canonical_candidate_id": "RMSE:464b6965136fa1a02829017dd0acdd7fb357884535a4aa90a005bc084d150ab0",
+          "total_canonical_candidate_id": "RMSE:0a574914d9bb8fadb5747456585c42663529e57b5406d9a900acf4615acf5552",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m3.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            3
+          ],
+          "normalization_selector": [
+            "means",
+            3,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            3,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              3
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                344
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                345
+              ]
+            }
+          ]
+        },
+        {
+          "m": 4,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 2251799813685248
+          },
+          "q_RPE": 16,
+          "q_PF": 16,
+          "R_outer": 10,
+          "event_count": 160,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 1.6,
+            "q": 16,
+            "delta": 0.1,
+            "R_outer": 10,
+            "K": 2,
+            "id": "cef49970538ca248d77e"
+          },
+          "original_canonical_candidate_id": "RMSE:b8ba31e6ef5190baac92a88a855416341d62f648249c0e8821a0274927888e4b",
+          "total_canonical_candidate_id": "RMSE:c95785a015e64a7cb029d8b179deddec3cc5ca1de0119d78941e7629ce63e51f",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m4.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            4
+          ],
+          "normalization_selector": [
+            "means",
+            4,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            4,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              4
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                346
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                347
+              ]
+            }
+          ]
+        },
+        {
+          "m": 5,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 1125899906842624
+          },
+          "q_RPE": 32,
+          "q_PF": 32,
+          "R_outer": 20,
+          "event_count": 640,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 3.2,
+            "q": 32,
+            "delta": 0.1,
+            "R_outer": 20,
+            "K": 2,
+            "id": "5812e05afec3a9cdcbf4"
+          },
+          "original_canonical_candidate_id": "RMSE:71138e64a1908424ad6464096224f532f12d4133a2d1dd5ff1a5baba50cc79e5",
+          "total_canonical_candidate_id": "RMSE:0e2856890ca9387ae07e08fb2cb94fe43c55ab95d0c1f1170406b6510fdfa276",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m5.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            5
+          ],
+          "normalization_selector": [
+            "means",
+            5,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            5,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              5
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                348
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                349
+              ]
+            }
+          ]
+        },
+        {
+          "m": 6,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 562949953421312
+          },
+          "q_RPE": 64,
+          "q_PF": 64,
+          "R_outer": 40,
+          "event_count": 2560,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 6.4,
+            "q": 64,
+            "delta": 0.1,
+            "R_outer": 40,
+            "K": 2,
+            "id": "fe234d98b289ae91869c"
+          },
+          "original_canonical_candidate_id": "RMSE:e12232d3696d7e8a1fa8115883065ab0d6f39092278ce67a0d9542cfc0576f3e",
+          "total_canonical_candidate_id": "RMSE:db8c94df3cbeb517423799e02587e6a41bd898d99890859e5a02d916c15d86d2",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m6.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            6
+          ],
+          "normalization_selector": [
+            "means",
+            6,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            6,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              6
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                350
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                351
+              ]
+            }
+          ]
+        },
+        {
+          "m": 7,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 281474976710656
+          },
+          "q_RPE": 128,
+          "q_PF": 128,
+          "R_outer": 80,
+          "event_count": 10240,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 12.8,
+            "q": 128,
+            "delta": 0.1,
+            "R_outer": 80,
+            "K": 2,
+            "id": "8425b1e4da150d855b29"
+          },
+          "original_canonical_candidate_id": "RMSE:ac6c2fd63ce94b4daa50edeee82c0c4cfa5f63c1fe3915cee0dab3e4cb055530",
+          "total_canonical_candidate_id": "RMSE:31bebaf1f10294ad255a6e9cd4a469f3fc371efc654036593ef8b469cd95eee3",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m7.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            7
+          ],
+          "normalization_selector": [
+            "means",
+            7,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            7,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              7
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                352
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                353
+              ]
+            }
+          ]
+        },
+        {
+          "m": 8,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 140737488355328
+          },
+          "q_RPE": 256,
+          "q_PF": 256,
+          "R_outer": 160,
+          "event_count": 40960,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 25.6,
+            "q": 256,
+            "delta": 0.1,
+            "R_outer": 160,
+            "K": 2,
+            "id": "3f8def82f66ab24905a1"
+          },
+          "original_canonical_candidate_id": "RMSE:1e630e0e699d3320f58b2c7e0d16e176861f77066f2bc289e92d150b320f389f",
+          "total_canonical_candidate_id": "RMSE:f41393506a8ed276d54a9a4816a4e48150f3df0e42b3718e91aa75d1a2df7200",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m8.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            8
+          ],
+          "normalization_selector": [
+            "means",
+            8,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            8,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              8
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                354
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                355
+              ]
+            }
+          ]
+        },
+        {
+          "m": 9,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 70368744177664
+          },
+          "q_RPE": 512,
+          "q_PF": 512,
+          "R_outer": 320,
+          "event_count": 163840,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 51.2,
+            "q": 512,
+            "delta": 0.1,
+            "R_outer": 320,
+            "K": 2,
+            "id": "4e84fb24b5fc0777a44b"
+          },
+          "original_canonical_candidate_id": "RMSE:90db25348891a2002ccfc0fa5351104bedb4a98212f25c5bec3750db6c684414",
+          "total_canonical_candidate_id": "RMSE:804d8accfec935e1af1a895610d677a7d7901578756a2b157853b2cae69b419b",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m9.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            9
+          ],
+          "normalization_selector": [
+            "means",
+            9,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            9,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              9
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                356
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                357
+              ]
+            }
+          ]
+        },
+        {
+          "m": 10,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 35184372088832
+          },
+          "q_RPE": 1024,
+          "q_PF": 1024,
+          "R_outer": 640,
+          "event_count": 655360,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 102.4,
+            "q": 1024,
+            "delta": 0.1,
+            "R_outer": 640,
+            "K": 2,
+            "id": "44077408e13b64b85978"
+          },
+          "original_canonical_candidate_id": "RMSE:e5ac56b8a4406f959c12beac3d3b4a8c5c55ab3147436362b1ad68118d30b80a",
+          "total_canonical_candidate_id": "RMSE:9e1d010e6cceb0e40e7234f368c3b33c9d5663909c81daee48c95cd1f6358557",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m10.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            10
+          ],
+          "normalization_selector": [
+            "means",
+            10,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            10,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              10
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                358
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                359
+              ]
+            }
+          ]
+        },
+        {
+          "m": 11,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 17592186044416
+          },
+          "q_RPE": 2048,
+          "q_PF": 2048,
+          "R_outer": 1280,
+          "event_count": 2621440,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 204.8,
+            "q": 2048,
+            "delta": 0.1,
+            "R_outer": 1280,
+            "K": 2,
+            "id": "93a7c992650daf2be173"
+          },
+          "original_canonical_candidate_id": "RMSE:4e42906c5781bb7ecd7aad7f37aee7761b05df89a9d9cd63b54629dab1382bfb",
+          "total_canonical_candidate_id": "RMSE:f89c352bd7d6493591d35214739ebd248fbe3b19fa1084896a785adf5289791f",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m11.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            11
+          ],
+          "normalization_selector": [
+            "means",
+            11,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            11,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              11
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                360
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                361
+              ]
+            }
+          ]
+        },
+        {
+          "m": 12,
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 8796093022208
+          },
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "R_outer": 2559,
+          "event_count": 10481664,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 409.6,
+            "q": 4096,
+            "delta": 0.1,
+            "R_outer": 2559,
+            "K": 2,
+            "id": "f73c8ae19a25ef249f0a"
+          },
+          "original_canonical_candidate_id": "RMSE:297b94b4ae8e6fab9079b0c1eee6c9f69e919c90e09bddd9ac640cb564af3c1e",
+          "total_canonical_candidate_id": "RMSE:ef5ccb84a3ab126c41475f61cdfd6f3f94021f717f88770f1fd05118009ca196",
+          "raw_record_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m12.json"
+          },
+          "bundle_mean_selector": [
+            "means",
+            12
+          ],
+          "normalization_selector": [
+            "means",
+            12,
+            "normalization"
+          ],
+          "original_law_selector": [
+            "rounds",
+            12,
+            "law_binding"
+          ],
+          "B_mapping_source": {
+            "commit": "9c0e12d87bf83429e3411d295b16c47d913283d2",
+            "path": "docs/research/rpe_pr_df_total_bridge_20261115/CANONICAL_MAPPING.json",
+            "selector": [
+              "cases",
+              1,
+              "rows",
+              12
+            ]
+          },
+          "C_alignment_sources": [
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                362
+              ]
+            },
+            {
+              "commit": "0b4b2d941cd669aaa45231e1236bc2d3158a9d12",
+              "path": "docs/research/h4_five_method_candidate_alignment_20261115/ALIGNMENT.json",
+              "selector": [
+                "rows",
+                363
+              ]
+            }
+          ]
+        }
+      ],
+      "configuration": {
+        "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+        "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json"
+      },
+      "signal_packet": {
+        "commit": "714247619afb4714fd663eb15c0470ef32bdc7af",
+        "path": "docs/research/pr_rpe_first_signal_results_20261113/B_MEANS_LD2.json"
+      },
+      "evaluation_target": {
+        "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+        "energy_ha": -2.1663874486347634,
+        "source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        },
+        "original_target_source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        },
+        "truth_proxy_source": {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "selector": [
+            "records",
+            5,
+            "diagnostics"
+          ]
+        },
+        "binding": {
+          "T": 0.8,
+          "basis": "STO-3G",
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "geometry": "linear_1Angstrom",
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+          "profile_is_reference_only": true,
+          "rank": 10,
+          "rank_is_saved_observation_not_generation_argument": true,
+          "rank_policy": "tol_only_1e-8",
+          "series": "H4_TOL_ONLY_DF10",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "system": "H4",
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          },
+          "decomposition": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "contract": {
+              "completion": "saved_weighted_Hermitian_completion",
+              "fragment_order": "saved_snapshot_order",
+              "preparation_binding": {
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+              },
+              "state_preparation_cost": 0,
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              }
+            },
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            }
+          }
+        },
+        "qualification_scope": "RAW_MODEL_DIAGNOSTIC_ONLY_NOT_CERTIFIED_GROUND_ENERGY"
+      },
+      "L_D": 2,
+      "label": "dd55ccfa4ca2236bc4c7",
+      "allocation": {
+        "allocation_id": "RPE_OPT_dd55ccfa4ca2236bc4c7",
+        "shot_policy": "USER_SUPPLIED",
+        "shots": [
+          {
+            "m": 0,
+            "N_X": 64,
+            "N_Y": 64
+          },
+          {
+            "m": 1,
+            "N_X": 60,
+            "N_Y": 60
+          },
+          {
+            "m": 2,
+            "N_X": 56,
+            "N_Y": 56
+          },
+          {
+            "m": 3,
+            "N_X": 52,
+            "N_Y": 52
+          },
+          {
+            "m": 4,
+            "N_X": 47,
+            "N_Y": 47
+          },
+          {
+            "m": 5,
+            "N_X": 43,
+            "N_Y": 43
+          },
+          {
+            "m": 6,
+            "N_X": 38,
+            "N_Y": 38
+          },
+          {
+            "m": 7,
+            "N_X": 34,
+            "N_Y": 34
+          },
+          {
+            "m": 8,
+            "N_X": 30,
+            "N_Y": 30
+          },
+          {
+            "m": 9,
+            "N_X": 25,
+            "N_Y": 25
+          },
+          {
+            "m": 10,
+            "N_X": 10,
+            "N_Y": 10
+          },
+          {
+            "m": 11,
+            "N_X": 8,
+            "N_Y": 8
+          },
+          {
+            "m": 12,
+            "N_X": 2,
+            "N_Y": 2
+          }
+        ]
+      }
+    }
+  ],
+  "concurrent_configurations": 1,
+  "maximum_scientific_calls": 1,
+  "template_source": {
+    "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+    "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json"
+  }
+}

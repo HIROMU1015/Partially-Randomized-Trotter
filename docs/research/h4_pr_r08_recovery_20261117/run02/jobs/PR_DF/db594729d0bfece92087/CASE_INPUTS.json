@@ -1,0 +1,271 @@
+{
+  "acceleration": {
+    "source": {
+      "commit": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+      "path": "src/trottertracks/rpe_total_dp_parallel.py"
+    },
+    "workers_per_configuration": 3,
+    "outcome_batch": 8,
+    "selection": "Artificial benchmark: 8 and 16 workers have similar wall time; use 8 per independent configuration."
+  },
+  "statistical_contract": {
+    "id": "PR_DF_FULL_H_THREE_FIXED_TOTAL_Q3",
+    "claim_level": "TOTAL_RAW_MODEL_DIAGNOSTIC_ONLY",
+    "allow_conditional_unqualified": true,
+    "simulation_policy": {
+      "kind": "IID_SHOTS_INDEPENDENT_AXES_ROUNDS_AND_REPETITIONS",
+      "target_law": "ideal_finite_RTE_law",
+      "interpretation": "CONDITIONAL_IID_SHOTS_AXES_ROUNDS_NO_MC_REPETITIONS"
+    },
+    "summary_options": {
+      "unresolved_loss": {
+        "kind": "BOUNDED_INTERVAL",
+        "lower": 0,
+        "upper": {
+          "numerator": 357405153776690641596902400718249,
+          "denominator": 316912650057057350374175801344
+        }
+      }
+    }
+  },
+  "options": {
+    "probability_rule": "EXACT_AFFINE_OF_BINARY64_RAW",
+    "phase_radii": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "maximum_round_outcomes": 4225,
+    "maximum_verification_pairs": 55043173,
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "model_loss_contract": {
+      "adopted": true,
+      "scope": "THREE_FIXED_PR_DF_FULL_H_TOTAL_ALL_EVENT_DIAGNOSTICS"
+    },
+    "total_state_refinement": {
+      "maximum_frontier_states": 8192,
+      "maximum_transition_pairs": 141559036
+    },
+    "total_dp_acceleration_source": {
+      "source": {
+        "commit": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+        "path": "src/trottertracks/rpe_total_dp_parallel.py"
+      },
+      "workers_per_configuration": 8,
+      "outcome_batch": 8,
+      "selection": "Artificial benchmark: 8 and 16 workers have similar wall time; use 8 per independent configuration."
+    }
+  },
+  "adopted_evaluation": {
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+    "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+    "epsilon_E_decimal": "0.00159360010199040",
+    "MSE_upper": {
+      "numerator": 15136964828156312001,
+      "denominator": 5960464477539062500000000
+    },
+    "scope": "MODEL_MSE_FILTER_ONLY",
+    "measurement_law": "SAVED_IDEAL_FINITE_K_RAW_IID_EXACT_AFFINE",
+    "minkowski": "SEPARATE_REFERENCE_NOT_COMBINED",
+    "physical_total_error_guarantee": false
+  },
+  "cases": [
+    {
+      "label": "db594729d0bfece92087",
+      "configuration": {
+        "commit": "3000afeb0261cf9f378b757981d70a8b2dcd3ac0",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df_carrier/CONFIGURATION.json"
+      },
+      "signal_packet": {
+        "commit": "30d869becd0a55f2a720af4ccc53cc2a3dbd8a9a",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df-bundle.json"
+      },
+      "original_configuration_id": "5bebe69183952f0cab73860b5680d5a6d034fe0be0e74c866b66efa5735d5e4d",
+      "evaluation_target": {
+        "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+        "energy_ha": -2.1663874486347634,
+        "source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        },
+        "original_target_source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        },
+        "truth_proxy_source": {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "selector": [
+            "records",
+            5,
+            "diagnostics"
+          ]
+        },
+        "binding": {
+          "T": 0.8,
+          "basis": "STO-3G",
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "geometry": "linear_1Angstrom",
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+          "profile_is_reference_only": true,
+          "rank": 10,
+          "rank_is_saved_observation_not_generation_argument": true,
+          "rank_policy": "tol_only_1e-8",
+          "series": "H4_TOL_ONLY_DF10",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "system": "H4",
+          "source": {
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            },
+            "composition_recipe": {
+              "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+              "path": "src/trottertracks/pr_rpe_signal_provider.py",
+              "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+            },
+            "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+          },
+          "decomposition": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "contract": {
+              "completion": "saved_weighted_Hermitian_completion",
+              "fragment_order": "saved_snapshot_order",
+              "preparation_binding": {
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+              },
+              "state_preparation_cost": 0,
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              }
+            },
+            "source": {
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            }
+          }
+        },
+        "qualification_scope": "RAW_MODEL_DIAGNOSTIC_ONLY_NOT_CERTIFIED_GROUND_ENERGY"
+      },
+      "binding_id": "e9c67b07a4420af23bffa144d6e0150d5ecf9073671f732ed6b21e307600f261",
+      "total_configuration_id": "ed89a599d913ff92543135d8bb925ed2808e457d90581c05801a72adb9163528",
+      "signal_packet_kind": "A_BUNDLE_REQUIRES_EXISTING_K_ACCEPT_SAVED",
+      "allocation": {
+        "allocation_id": "RPE_OPT_db594729d0bfece92087",
+        "shot_policy": "USER_SUPPLIED",
+        "shots": [
+          {
+            "m": 0,
+            "N_X": 64,
+            "N_Y": 64
+          },
+          {
+            "m": 1,
+            "N_X": 60,
+            "N_Y": 60
+          },
+          {
+            "m": 2,
+            "N_X": 56,
+            "N_Y": 56
+          },
+          {
+            "m": 3,
+            "N_X": 52,
+            "N_Y": 52
+          },
+          {
+            "m": 4,
+            "N_X": 47,
+            "N_Y": 47
+          },
+          {
+            "m": 5,
+            "N_X": 43,
+            "N_Y": 43
+          },
+          {
+            "m": 6,
+            "N_X": 38,
+            "N_Y": 38
+          },
+          {
+            "m": 7,
+            "N_X": 34,
+            "N_Y": 34
+          },
+          {
+            "m": 8,
+            "N_X": 30,
+            "N_Y": 30
+          },
+          {
+            "m": 9,
+            "N_X": 18,
+            "N_Y": 18
+          },
+          {
+            "m": 10,
+            "N_X": 7,
+            "N_Y": 7
+          },
+          {
+            "m": 11,
+            "N_X": 7,
+            "N_Y": 7
+          },
+          {
+            "m": 12,
+            "N_X": 2,
+            "N_Y": 2
+          }
+        ]
+      }
+    }
+  ],
+  "concurrent_configurations": 1,
+  "maximum_scientific_calls": 1,
+  "template_source": {
+    "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+    "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+    "inputs_selector": [
+      "inputs"
+    ],
+    "role": "EVALUATION_CONTRACT_ONLY"
+  },
+  "signal_source": {
+    "commit": "30d869becd0a55f2a720af4ccc53cc2a3dbd8a9a",
+    "path": "docs/research/d_pr_candidates_auto_20261116/run01/completion/candidates/20950c2caf36faaf2eb9/df-bundle.json"
+  }
+}
