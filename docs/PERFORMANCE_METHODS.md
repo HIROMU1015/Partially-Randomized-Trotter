@@ -134,3 +134,11 @@
 ## PR複数幅の方式別計画・段階準備（2026-11-17）
 
 公開統合5829a7288の通常WidthDriverで、各方式の既存W計画を分離し、元per_decisionの準備waveでfamilyを巡回する。未選択は次cycleへ保持し、初期222候補を一括準備しない。finish後の未採用完了jobも元Executor/価格/exactτ検査で確認済み最安へ含め、規則採用最安とは分ける。実装SOURCEと36人工回帰、実H4稼働範囲は[REPORT](research/h4_pr_multiwidth_optimization_20261117/REPORT.md)／[HANDOFF](research/h4_pr_multiwidth_optimization_20261117/HANDOFF.md)。共通queue・prefix-cache・元数値kernelを維持。実H4速度倍率は未測定。
+## 分散Q3の自動枠と優先group（2026-11-17）
+
+[実装・検収・適用条件](research/rpe_q3_auto_allocation/HANDOFF.md)。
+固定code e9e63be165ddc8b4d991bca567e0fe20f5007372、rpe_optimizer_concurrent/rpe_q3_resourcesと通常factory。
+新distributed runは省略時auto、READY×照合済み空き枠の対応で全体枠を決め、優先3台の余剰をWSLへ渡す。
+各hostは資源境界・所有RSS/CPU・有効結果rate/判断待ちを使い1枠ずつ試す。減枠はdrain、旧run上限は保存。
+計時81884bd39のhelper/CLIを再利用。実人工process・1OS4模擬hostでpeak5/18結果exact一致、実H4性能は未測定。
+旧adapterのPASSを新timed adapterへ転用せず、配置後の実入力dry-checkが必要。

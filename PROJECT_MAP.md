@@ -3,6 +3,8 @@
 [PR探索の候補単位保留とR08継続](docs/research/h4_pr_candidate_continuity_20261117/REPORT.md)：旧jobの照合待ちを局所化し、後着READYを共通queueへ投入。人工82件・native8件PASS、数値UNKNOWN/保存異常の停止は維持。[稼働確認・再開](docs/research/h4_pr_candidate_continuity_20261117/HANDOFF.md)。
 
 [PR複数幅探索のQ3接続修正](docs/research/pr_multiwidth_route_fix_20261117/REPORT.md)：保存Pauli LD4/DF LD6の候補専用route、template適合性、descriptor形式を修正。人工72件と元worker metadata 2件PASS、実科学call0。R06はSTOP保全。[HANDOFF](docs/research/pr_multiwidth_route_fix_20261117/HANDOFF.md)。
+[分散Q3の自動割当・自動同時枠と計時](docs/research/rpe_q3_auto_allocation/HANDOFF.md)：通常入口で既定auto、優先3台とWSL余剰、資源/有用結果/待ちによるhost枠調整。実人工process peak5・再開0、実H4追加0。
+
 [任意の第4計算ホスト local0-wsl](docs/research/rpe_q3_host_eligibility/optional_wsl/REPORT.md)：能力と受付状態を分離し、WSL停止中は既存3台で進行。WSLは上限1・受付OFF。保存証拠と差分検査の状態は16セル表を参照。
 
 [分散Q3の運用計時](docs/research/rpe_q3_timing_20261117/HANDOFF.md)：保存18人工jobの区間計測と、通常run用1コマンド集計。別時計の片道は包絡/欠測、実H4追加0件。

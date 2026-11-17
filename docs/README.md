@@ -383,3 +383,4 @@
 - [PR要求PF幅の探索接続（保存metadata・人工検収）](research/pr_requested_step_search_20261117/REPORT.md) / [通常入口と再開](research/pr_requested_step_search_20261117/HANDOFF.md)。
 
 Local0 absolute-kappa interval through the normal physical schedule entry (metadata-only acceptance): `docs/research/rpe_local0_absolute_kappa/README.md`.
+- 分散Q3の自動割当・自動同時枠と計時：[HANDOFF](research/rpe_q3_auto_allocation/HANDOFF.md)。新run既定auto、保存runの上限保全。実H4起動0。

@@ -1,10 +1,15 @@
 # 分散Q3：自動割当・自動同時枠と計時
 
+固定349版の実配置と新adapterでの実入力dry-checkは、その後[配置HANDOFF](deployment_20261117/HANDOFF.md)で完了した。
+今回の4 REQUEST×4台は全16 PASS。WSLはPause維持、実H4 Q3の起動前。
+以下の未配置・未dry-checkの記述は公開407時点の実装検収範囲を示す。
+
 基準は4ホスト統合 `e64e377a8a27e6693231bb4cdf72f605a20965b5`。
 実装の固定SHAとfile hashは[SOURCE.json](SOURCE.json)、検査範囲は[CHECKS.json](CHECKS.json)。
 計時担当の公開81884bd39d2829294e71be6848c1a3f024d5e75cをmergeし、指定された
 19c43576c83ec9de24f6059f4cb39762458c6519、5897d26ab、1026c09b3645c1ef210def1f4678d79db2fda019を再利用した。
 今回の実H4 Q3・信号生成・価格較正・回路compile・本番queue投入は0件。
+関連57検査を一括PASSし、旧roundの暗黙1/明示2を維持する追加1検査と可変容量metricの追加1検査もPASS（計59の異なる検査）。
 既存科学run・原結果・UNKNOWN・STOPと固定科学SOURCE28dは変更していない。
 
 ## 通常開始・再開
@@ -70,6 +75,8 @@ AUTOではUNKNOWN・完了転送待ちも未解決枠を占める。
 `SLOT_STATE.json`、`RESOURCE_OFFER.json`と既存WORKER_EVENTSの
 `SLOT_CAPACITY_DECISION`へ、実枠数・段階・根拠を保存する。
 中央は`AUTO_CAPACITY`と計時のQUEUE_WAIT_STATEを記録する。
+利用率は枠数の変更履歴から利用可能slot秒を積分する。復帰中jobがあり最初の新しい容量報告がまだない区間は、起動時容量が残り得るため利用率の比較対象にしない。
+割当制御はこの集計値を使わず、未解決attemptと実際の空き枠を数える。
 
 ## 人工検収と実測範囲
 
@@ -79,11 +86,11 @@ AUTOではUNKNOWN・完了転送待ちも未解決枠を占める。
 
 | 人工4host run | server2 | server1 | local | local0-wsl |
 |---|---:|---:|---:|---:|
-| 完了・採用件数 | 2 | 6 | 7 | 3 |
-| 観測したhost枠 | 1 | 1 | 1→2（探索的trial） | 1 |
+| 完了・採用件数 | 3 | 6 | 6 | 3 |
+| 観測したhost枠 | 1 | 1 | 1 | 1→2（探索的trial） |
 
-WSL途中参加runも各hostの枠1で18結果を完了。両runとも人工bodyの同時実行peak4で、
-WSLと優先側のbodyが実際に重なった。全体枠はREADYと報告に応じて変化した。
+WSL途中参加runも各hostの枠1で18結果を完了。auto4の全体枠は1〜5、人工body同時実行peak5。途中参加runは全体枠1〜4・peak4で、
+WSLと優先側のbodyが実際に重なった。4hostだから全体4という固定値ではない。
 増枠は探索的trialであり、実H4のthroughput最適化が確立したという主張はしない。
 減枠・drainと資源制約変化は人工resource unit、実入口では増枠・Pause/Resume・途中参加を確認した。
 
@@ -124,13 +131,14 @@ rpe_q3_resources、rpe_q3_timingを古いcheckoutへ戻さない。
 新しいcomputation rootを使う場合はhelperを含むmanifestになるが、元の28d rootは元の8file manifestを維持する。
 
 [生成profileと全host配置表](next_run_profiles/DEPLOYMENT.json)を同梱した。
-各hostのrouteごとの検証済みPython・route_views・DP/cacheを保持し、
-新しいtransport/timed adapterだけを明示した。host/Pythonの毎回の手選択は不要。
+各hostのrouteごとの検証済みPython・DP/cacheと元のroute pathsを保持し、
+新しいtransport/timed adapterを明示した。27e内側SOURCEのmapは、元DFの実機fingerprintの既存pathを追加した（TIMED_PROFILE_BASE.json）。
+科学checkoutを編集したりsymlinkを作ったりしていない。host/Pythonの毎回の手選択は不要。
 同じ生成を行うコマンド：
 
 ```bash
 python3 -B scripts/prepare_rpe_auto_profiles.py \
- --profiles docs/research/rpe_q3_host_eligibility/optional_wsl/NORMAL_ENTRY/worker_profiles \
+ --profiles docs/research/rpe_q3_auto_allocation/timed_profile_base \
  --source FIXED_COMMON_SOURCE_FROM_SOURCE_JSON --run-id NEW_APPROVED_RUN_ID \
  --output /ABS/NEW_PROFILE_PACK
 ```
@@ -138,11 +146,15 @@ python3 -B scripts/prepare_rpe_auto_profiles.py \
 server2の固定checkout配置も、server1・RomuTail・WSLのremote配置も今回実行していない。
 既存許可済み経路（local0のqg2/qg1/RomuTail、WSL実行）で新しい専用directoryへ置く。
 Windows relayのworker.rootは新transport、worker.profileは生成profileを指定する。
+server2のexecutor.distributed.local_workerにも、生成server2 profileの内容を設定する。
+配置表のworker項目を使えば、transport PythonとQ3実行Pythonを取り違えない。
 WSLの明示Pauseは保ったまま配置できる。
 
 **新timed adapterへのprofile変更に、旧adapterの16 PASSを転用しない。**
 元16セルの科学入力・route/runtime確認は再利用できるが、配置後の新adapter/profileについて
 通常のcheck_rpe_q3_host_readiness.pyを実入力dry-checkし、返送READINESSを中央policyへ結合する。
+専用Python launcherを使うDFは、新しいprofile/READINESS hashに結び付いたHOST_METHOD_READINESSも更新する。
+checker最上位のPythonを実adapterのPythonへ転記せず、command[0]とadapter_result.runtimeを照合する。
 そのREQUESTでPASSしたhostから実行可能とし、1台の準備不足で他hostを止めない。
 今回は新timed adapterを用いた実H4のremote dry-check・科学Q3は未実施。
 

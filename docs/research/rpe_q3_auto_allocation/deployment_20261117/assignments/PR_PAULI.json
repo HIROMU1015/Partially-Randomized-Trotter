@@ -1,0 +1,163 @@
+{
+  "job_id": "805877c2ab6c3e03f7f1",
+  "method": "PR_PAULI",
+  "attempt_id": "READINESS_ONLY_NO_EXECUTION_DESCRIPTOR_INTAKE",
+  "request": {
+    "request_id": "805877c2ab6c3e03f7f1",
+    "method": "PR_PAULI",
+    "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012",
+    "N_X": [
+      48,
+      45,
+      42,
+      39,
+      36,
+      33,
+      29,
+      26,
+      23,
+      19,
+      16,
+      13,
+      7
+    ],
+    "N_Y": [
+      48,
+      45,
+      42,
+      39,
+      36,
+      33,
+      29,
+      26,
+      23,
+      19,
+      16,
+      13,
+      7
+    ],
+    "cost": {
+      "numerator": 4675964940,
+      "denominator": 7
+    },
+    "origin": {
+      "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+      "m": 12,
+      "axes": [
+        "X",
+        "Y"
+      ],
+      "d": 2,
+      "base_vector": [
+        48,
+        48,
+        45,
+        45,
+        42,
+        42,
+        39,
+        39,
+        36,
+        36,
+        33,
+        33,
+        29,
+        29,
+        26,
+        26,
+        23,
+        23,
+        19,
+        19,
+        16,
+        16,
+        13,
+        13,
+        9,
+        9
+      ],
+      "base_headroom": "0.621956"
+    },
+    "route": {
+      "kind": "pauli_b_common_entry",
+      "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+      "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b",
+      "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+      "configuration_ids": [
+        "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012"
+      ],
+      "configurations": {
+        "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012": {
+          "configuration": {
+            "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+            "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json"
+          },
+          "signal_packet": {
+            "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+            "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json"
+          },
+          "binding_id": "cb4f9e0d431f94cabaa07a6ecc01e2dd26a7f3c597d22b3635794612187ad55a",
+          "total_configuration_id": "5a659a71154f9bea21711c8a931ede86c74e33090c42b4fcc1ad413ebdaaa19f",
+          "label": "SAVED_READY_3b127c39973a21be33a0"
+        }
+      },
+      "contract_template": {
+        "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+        "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json"
+      },
+      "signal_entry_source": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+      "signal_intake_source": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+      "signal_packets_commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+      "existing_caller": "Existing fixed28d common adapter + published B33e descriptor intake; numerical workers unchanged"
+    },
+    "expected": {
+      "total_configuration_id": "5a659a71154f9bea21711c8a931ede86c74e33090c42b4fcc1ad413ebdaaa19f",
+      "binding_id": "cb4f9e0d431f94cabaa07a6ecc01e2dd26a7f3c597d22b3635794612187ad55a",
+      "signal_source": {
+        "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+        "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json"
+      },
+      "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012"
+    },
+    "optimizer_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+    "execution_profile": {
+      "dp_workers": 3,
+      "prefix_checkpoint_rounds": [
+        5,
+        11
+      ]
+    }
+  },
+  "request_sha256": "ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693",
+  "source_manifest": {
+    "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+    "files": {
+      "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+      "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+      "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+      "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+      "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+      "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+      "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+      "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+    }
+  },
+  "input_hashes": [
+    {
+      "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+      "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json",
+      "sha256": "31193aa1e80aab7c5801c27c42a0accec603ad1732a0a4c6a597d505acc5e8f0"
+    },
+    {
+      "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+      "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json",
+      "sha256": "a7fcd04d34815e64a28d5c5ee68c470e5b1bafebf481d005843f8551d986e2db"
+    },
+    {
+      "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+      "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json",
+      "sha256": "d141289d8c091306b8a41254a26a151f69ddb8b15633b08435387174c15f5151"
+    }
+  ],
+  "prefix_key": "cf88483267536a448645ed2e00e12262ddfc060058aa96e129e9a03b97c1a8cb"
+}

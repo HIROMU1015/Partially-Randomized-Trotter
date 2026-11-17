@@ -1,0 +1,3029 @@
+{
+  "schema": "RPE_Q3_OPERATIONAL_TIMING_V1",
+  "scope": "OPERATIONAL_LOGS_ONLY_NO_SCIENTIFIC_REANALYSIS",
+  "run_directory": "/home/AbeHiromu/projects/rpe-q3-auto-allocation-checks/e9e63be165ddc8b4d991bca567e0fe20f5007372/late_join/run",
+  "input_timeline": "/home/AbeHiromu/projects/rpe-q3-auto-allocation-checks/e9e63be165ddc8b4d991bca567e0fe20f5007372/late_join/run/PROGRESS.jsonl",
+  "attempts": 18,
+  "by_host": {
+    "local": {
+      "count": 6,
+      "metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 6,
+          "total": 0.7954080651979893,
+          "mean": 0.13256801086633155,
+          "maximum": 0.6486420505680144,
+          "minimum": 0.012805098900571465
+        },
+        "Q3_body_seconds": {
+          "count": 6,
+          "total": 2.105540081858635,
+          "mean": 0.3509233469764392,
+          "maximum": 0.35114573896862566,
+          "minimum": 0.35061027901247144
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 6,
+          "total": 3.7415300149004906,
+          "mean": 0.6235883358167484,
+          "maximum": 0.6307463680859655,
+          "minimum": 0.6095360349863768
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 6,
+          "total": 0.5895919692702591,
+          "mean": 0.09826532821170986,
+          "maximum": 0.2348081679083407,
+          "minimum": 0.037258136086165905
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 6,
+          "total": 0.6085780062712729,
+          "mean": 0.10142966771187882,
+          "maximum": 0.23626639205031097,
+          "minimum": 0.04021154320798814
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 6,
+          "total": 0.13562575331889093,
+          "mean": 0.022604292219815154,
+          "maximum": 0.028363925172016025,
+          "minimum": 0.018307708902284503
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 6,
+          "total": 0.2098087479826063,
+          "mean": 0.03496812466376772,
+          "maximum": 0.047392782056704164,
+          "minimum": 0.02456461195833981
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 6,
+          "total": 1.3159398587886244,
+          "mean": 0.21932330979810408,
+          "maximum": 0.22798357880674303,
+          "minimum": 0.2006331190932542
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 6,
+          "total": 0.06687685521319509,
+          "mean": 0.011146142535532514,
+          "maximum": 0.014096348080784082,
+          "minimum": 0.009551308117806911
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 6,
+          "total": 2.487550792051479,
+          "mean": 0.41459179867524654,
+          "maximum": 0.4217851059511304,
+          "minimum": 0.407246720045805
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "first_assignment": [
+        {
+          "job_id": "b766a93a10dbb690c6f7",
+          "attempt_id": "38b2cb36788e49c5bd4e71dadeaeca30",
+          "host": "local",
+          "method": "PR_PAULI",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.03355696820653975,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.2063979241065681
+          },
+          "Q3_body_seconds": 0.35114573896862566,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35114573896862566
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.051992371911183
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.2583902960177511,
+          "assignment_to_controller_receive_seconds": 0.6095360349863768,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.05195778212510049,
+          "D_receive_to_search_adopt_seconds": 0.05544375698082149,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.021207076963037252,
+          "worker_assignment_durable_to_body_seconds": 0.2006331190932542,
+          "body_to_worker_bundle_ready_seconds": 0.014096348080784082,
+          "worker_adapter_execute_process_seconds": 0.412535018986091,
+          "worker_upload_ACK_roundtrip_seconds": 0.031241863034665585,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.019587503978982568
+          },
+          "A_unattributed_seconds": 0.013969464227557182
+        }
+      ],
+      "initial_queue_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 1,
+          "total": 0.03355696820653975,
+          "mean": 0.03355696820653975,
+          "maximum": 0.03355696820653975,
+          "minimum": 0.03355696820653975
+        },
+        "Q3_body_seconds": {
+          "count": 1,
+          "total": 0.35114573896862566,
+          "mean": 0.35114573896862566,
+          "maximum": 0.35114573896862566,
+          "minimum": 0.35114573896862566
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 1,
+          "total": 0.6095360349863768,
+          "mean": 0.6095360349863768,
+          "maximum": 0.6095360349863768,
+          "minimum": 0.6095360349863768
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 1,
+          "total": 0.05195778212510049,
+          "mean": 0.05195778212510049,
+          "maximum": 0.05195778212510049,
+          "minimum": 0.05195778212510049
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 1,
+          "total": 0.05544375698082149,
+          "mean": 0.05544375698082149,
+          "maximum": 0.05544375698082149,
+          "minimum": 0.05544375698082149
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 1,
+          "total": 0.021207076963037252,
+          "mean": 0.021207076963037252,
+          "maximum": 0.021207076963037252,
+          "minimum": 0.021207076963037252
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 1,
+          "total": 0.031241863034665585,
+          "mean": 0.031241863034665585,
+          "maximum": 0.031241863034665585,
+          "minimum": 0.031241863034665585
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 1,
+          "total": 0.2006331190932542,
+          "mean": 0.2006331190932542,
+          "maximum": 0.2006331190932542,
+          "minimum": 0.2006331190932542
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 1,
+          "total": 0.014096348080784082,
+          "mean": 0.014096348080784082,
+          "maximum": 0.014096348080784082,
+          "minimum": 0.014096348080784082
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 1,
+          "total": 0.412535018986091,
+          "mean": 0.412535018986091,
+          "maximum": 0.412535018986091,
+          "minimum": 0.412535018986091
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "followup_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 5,
+          "total": 0.7618510969914496,
+          "mean": 0.15237021939828993,
+          "maximum": 0.6486420505680144,
+          "minimum": 0.012805098900571465
+        },
+        "Q3_body_seconds": {
+          "count": 5,
+          "total": 1.7543943428900093,
+          "mean": 0.3508788685780019,
+          "maximum": 0.35109390690922737,
+          "minimum": 0.35061027901247144
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 5,
+          "total": 3.131993979914114,
+          "mean": 0.6263987959828228,
+          "maximum": 0.6307463680859655,
+          "minimum": 0.6222305640112609
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 5,
+          "total": 0.5376341871451586,
+          "mean": 0.10752683742903173,
+          "maximum": 0.2348081679083407,
+          "minimum": 0.037258136086165905
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 5,
+          "total": 0.5531342492904514,
+          "mean": 0.11062684985809028,
+          "maximum": 0.23626639205031097,
+          "minimum": 0.04021154320798814
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 5,
+          "total": 0.11441867635585368,
+          "mean": 0.022883735271170734,
+          "maximum": 0.028363925172016025,
+          "minimum": 0.018307708902284503
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 5,
+          "total": 0.1785668849479407,
+          "mean": 0.03571337698958814,
+          "maximum": 0.047392782056704164,
+          "minimum": 0.02456461195833981
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 5,
+          "total": 1.1153067396953702,
+          "mean": 0.22306134793907403,
+          "maximum": 0.22798357880674303,
+          "minimum": 0.21466679708100855
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 5,
+          "total": 0.052780507132411,
+          "mean": 0.0105561014264822,
+          "maximum": 0.01380173908546567,
+          "minimum": 0.009551308117806911
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 5,
+          "total": 2.075015773065388,
+          "mean": 0.41500315461307763,
+          "maximum": 0.4217851059511304,
+          "minimum": 0.407246720045805
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "per_job": [
+        {
+          "job_id": "b766a93a10dbb690c6f7",
+          "attempt_id": "38b2cb36788e49c5bd4e71dadeaeca30",
+          "host": "local",
+          "method": "PR_PAULI",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.03355696820653975,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.2063979241065681
+          },
+          "Q3_body_seconds": 0.35114573896862566,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35114573896862566
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.051992371911183
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.2583902960177511,
+          "assignment_to_controller_receive_seconds": 0.6095360349863768,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.05195778212510049,
+          "D_receive_to_search_adopt_seconds": 0.05544375698082149,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.021207076963037252,
+          "worker_assignment_durable_to_body_seconds": 0.2006331190932542,
+          "body_to_worker_bundle_ready_seconds": 0.014096348080784082,
+          "worker_adapter_execute_process_seconds": 0.412535018986091,
+          "worker_upload_ACK_roundtrip_seconds": 0.031241863034665585,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.019587503978982568
+          },
+          "A_unattributed_seconds": 0.013969464227557182
+        },
+        {
+          "job_id": "e3616f2e093cac4690de",
+          "attempt_id": "1bc7aeeed62542a69a35f8ac2de7a950",
+          "host": "local",
+          "method": "PR_DF",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.01549065439030528,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.22921203402802348
+          },
+          "Q3_body_seconds": 0.35081841005012393,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35081841005012393
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.05045203794725239
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.2796640719752759,
+          "assignment_to_controller_receive_seconds": 0.6304824820253998,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.047175253042951226,
+          "D_receive_to_search_adopt_seconds": 0.05097317602485418,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.027990937000140548,
+          "worker_assignment_durable_to_body_seconds": 0.22175132692791522,
+          "body_to_worker_bundle_ready_seconds": 0.009714566869661212,
+          "worker_adapter_execute_process_seconds": 0.4174308869987726,
+          "worker_upload_ACK_roundtrip_seconds": 0.046893703984096646,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.004767959006130695
+          },
+          "A_unattributed_seconds": 0.010722695384174585
+        },
+        {
+          "job_id": "8536a8738cd2688ea009",
+          "attempt_id": "81d6facdb6fb41ae8439d7ad1f6a2361",
+          "host": "local",
+          "method": "PR_PAULI",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.012805098900571465,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.23625193280167878
+          },
+          "Q3_body_seconds": 0.3510645180940628,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.3510645180940628
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.03672166890464723
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.272973601706326,
+          "assignment_to_controller_receive_seconds": 0.6240381198003888,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.06807769113220274,
+          "D_receive_to_search_adopt_seconds": 0.07257750118151307,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.018307708902284503,
+          "worker_assignment_durable_to_body_seconds": 0.22798357880674303,
+          "body_to_worker_bundle_ready_seconds": 0.010089515941217542,
+          "worker_adapter_execute_process_seconds": 0.40830370713956654,
+          "worker_upload_ACK_roundtrip_seconds": 0.026394223794341087,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.004816639004275203
+          },
+          "A_unattributed_seconds": 0.007988459896296263
+        },
+        {
+          "job_id": "4f2935eea9e2d5861daa",
+          "attempt_id": "f8c5125b5b9c4efe857f9b069d71cc27",
+          "host": "local",
+          "method": "PR_PAULI",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.03362151421606541,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.221440747147426
+          },
+          "Q3_body_seconds": 0.35080722882412374,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35080722882412374
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.05224847001954913
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.27368921716697514,
+          "assignment_to_controller_receive_seconds": 0.6244964459910989,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.037258136086165905,
+          "D_receive_to_search_adopt_seconds": 0.04021154320798814,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.021373686147853732,
+          "worker_assignment_durable_to_body_seconds": 0.21466679708100855,
+          "body_to_worker_bundle_ready_seconds": 0.009623377118259668,
+          "worker_adapter_execute_process_seconds": 0.407246720045805,
+          "worker_upload_ACK_roundtrip_seconds": 0.033321563154459,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.026095215929672122
+          },
+          "A_unattributed_seconds": 0.007526298286393285
+        },
+        {
+          "job_id": "0ab3395aae956130280c",
+          "attempt_id": "c015d449980d48edb793bd3d789786c3",
+          "host": "local",
+          "method": "PR_DF",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.6486420505680144,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.23353105410933495
+          },
+          "Q3_body_seconds": 0.35109390690922737,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35109390690922737
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.0461214070674032
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.27965246117673814,
+          "assignment_to_controller_receive_seconds": 0.6307463680859655,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.2348081679083407,
+          "D_receive_to_search_adopt_seconds": 0.23626639205031097,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.01838241913355887,
+          "worker_assignment_durable_to_body_seconds": 0.22299587004818022,
+          "body_to_worker_bundle_ready_seconds": 0.01380173908546567,
+          "worker_adapter_execute_process_seconds": 0.4202493529301137,
+          "worker_upload_ACK_roundtrip_seconds": 0.02456461195833981,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "ALL_ELIGIBLE_SLOTS_BUSY": 0.6037866969127208,
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.022925388999283314
+          },
+          "A_unattributed_seconds": 0.02192996465601027
+        },
+        {
+          "job_id": "b4aa6fd9fbe1c311c3b3",
+          "attempt_id": "8d38bc3580ed40aab31cf98904394736",
+          "host": "local",
+          "method": "PR_DF",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.05129177891649306,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.23458837787620723
+          },
+          "Q3_body_seconds": 0.35061027901247144,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35061027901247144
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.0370319071225822
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.27162028499878943,
+          "assignment_to_controller_receive_seconds": 0.6222305640112609,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.15031493897549808,
+          "D_receive_to_search_adopt_seconds": 0.15310563682578504,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.028363925172016025,
+          "worker_assignment_durable_to_body_seconds": 0.22790916683152318,
+          "body_to_worker_bundle_ready_seconds": 0.009551308117806911,
+          "worker_adapter_execute_process_seconds": 0.4217851059511304,
+          "worker_upload_ACK_roundtrip_seconds": 0.047392782056704164,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.04471445316448808
+          },
+          "A_unattributed_seconds": 0.006577325752004981
+        }
+      ]
+    },
+    "local0-wsl": {
+      "count": 3,
+      "metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 3,
+          "total": 0.19486267073079944,
+          "mean": 0.06495422357693315,
+          "maximum": 0.14745724434033036,
+          "minimum": 0.015997812617570162
+        },
+        "Q3_body_seconds": {
+          "count": 3,
+          "total": 1.053005563793704,
+          "mean": 0.3510018545979013,
+          "maximum": 0.35109327896498144,
+          "minimum": 0.3508776978123933
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 3,
+          "total": 1.9300073310732841,
+          "mean": 0.643335777024428,
+          "maximum": 0.6723727360367775,
+          "minimum": 0.6238554110750556
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 3,
+          "total": 1.659260961925611,
+          "mean": 0.553086987308537,
+          "maximum": 0.8118272218853235,
+          "minimum": 0.05153125408105552
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 3,
+          "total": 1.6704077729955316,
+          "mean": 0.5568025909985105,
+          "maximum": 0.8159691139589995,
+          "minimum": 0.05551419616676867
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 3,
+          "total": 0.06858301884494722,
+          "mean": 0.022861006281649072,
+          "maximum": 0.025178738869726658,
+          "minimum": 0.020781249040737748
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 3,
+          "total": 0.10489829885773361,
+          "mean": 0.03496609961924454,
+          "maximum": 0.03822485194541514,
+          "minimum": 0.02983093890361488
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 3,
+          "total": 0.6821852931752801,
+          "mean": 0.22739509772509336,
+          "maximum": 0.23942595697008073,
+          "minimum": 0.21911462699063122
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 3,
+          "total": 0.039464536122977734,
+          "mean": 0.01315484537432591,
+          "maximum": 0.016886034980416298,
+          "minimum": 0.009178290143609047
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 3,
+          "total": 1.2588141600135714,
+          "mean": 0.4196047200045238,
+          "maximum": 0.4266069170553237,
+          "minimum": 0.4109792939852923
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "first_assignment": [
+        {
+          "job_id": "89eadd079aaf8d4822ba",
+          "attempt_id": "9bb1b8fad8a141c1b035633a881b3dea",
+          "host": "local0-wsl",
+          "method": "PR_PAULI",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.14745724434033036,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.23008254007436335
+          },
+          "Q3_body_seconds": 0.35109327896498144,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35109327896498144
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.04267959203571081
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.27276213211007416,
+          "assignment_to_controller_receive_seconds": 0.6238554110750556,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.7959024859592319,
+          "D_receive_to_search_adopt_seconds": 0.7989244628697634,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.022623030934482813,
+          "worker_assignment_durable_to_body_seconds": 0.22364470921456814,
+          "body_to_worker_bundle_ready_seconds": 0.016886034980416298,
+          "worker_adapter_execute_process_seconds": 0.4266069170553237,
+          "worker_upload_ACK_roundtrip_seconds": 0.03822485194541514,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.03065175609663129,
+            "ALL_ELIGIBLE_SLOTS_BUSY": 0.10780727700330317
+          },
+          "A_unattributed_seconds": 0.008998211240395904
+        }
+      ],
+      "initial_queue_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 1,
+          "total": 0.14745724434033036,
+          "mean": 0.14745724434033036,
+          "maximum": 0.14745724434033036,
+          "minimum": 0.14745724434033036
+        },
+        "Q3_body_seconds": {
+          "count": 1,
+          "total": 0.35109327896498144,
+          "mean": 0.35109327896498144,
+          "maximum": 0.35109327896498144,
+          "minimum": 0.35109327896498144
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 1,
+          "total": 0.6238554110750556,
+          "mean": 0.6238554110750556,
+          "maximum": 0.6238554110750556,
+          "minimum": 0.6238554110750556
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 1,
+          "total": 0.7959024859592319,
+          "mean": 0.7959024859592319,
+          "maximum": 0.7959024859592319,
+          "minimum": 0.7959024859592319
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 1,
+          "total": 0.7989244628697634,
+          "mean": 0.7989244628697634,
+          "maximum": 0.7989244628697634,
+          "minimum": 0.7989244628697634
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 1,
+          "total": 0.022623030934482813,
+          "mean": 0.022623030934482813,
+          "maximum": 0.022623030934482813,
+          "minimum": 0.022623030934482813
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 1,
+          "total": 0.03822485194541514,
+          "mean": 0.03822485194541514,
+          "maximum": 0.03822485194541514,
+          "minimum": 0.03822485194541514
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 1,
+          "total": 0.22364470921456814,
+          "mean": 0.22364470921456814,
+          "maximum": 0.22364470921456814,
+          "minimum": 0.22364470921456814
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 1,
+          "total": 0.016886034980416298,
+          "mean": 0.016886034980416298,
+          "maximum": 0.016886034980416298,
+          "minimum": 0.016886034980416298
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 1,
+          "total": 0.4266069170553237,
+          "mean": 0.4266069170553237,
+          "maximum": 0.4266069170553237,
+          "minimum": 0.4266069170553237
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "followup_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 2,
+          "total": 0.047405426390469074,
+          "mean": 0.023702713195234537,
+          "maximum": 0.03140761377289891,
+          "minimum": 0.015997812617570162
+        },
+        "Q3_body_seconds": {
+          "count": 2,
+          "total": 0.7019122848287225,
+          "mean": 0.35095614241436124,
+          "maximum": 0.35103458701632917,
+          "minimum": 0.3508776978123933
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 2,
+          "total": 1.3061519199982285,
+          "mean": 0.6530759599991143,
+          "maximum": 0.6723727360367775,
+          "minimum": 0.633779183961451
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 2,
+          "total": 0.863358475966379,
+          "mean": 0.4316792379831895,
+          "maximum": 0.8118272218853235,
+          "minimum": 0.05153125408105552
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 2,
+          "total": 0.8714833101257682,
+          "mean": 0.4357416550628841,
+          "maximum": 0.8159691139589995,
+          "minimum": 0.05551419616676867
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 2,
+          "total": 0.045959987910464406,
+          "mean": 0.022979993955232203,
+          "maximum": 0.025178738869726658,
+          "minimum": 0.020781249040737748
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 2,
+          "total": 0.06667344691231847,
+          "mean": 0.033336723456159234,
+          "maximum": 0.03684250800870359,
+          "minimum": 0.02983093890361488
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 2,
+          "total": 0.45854058396071196,
+          "mean": 0.22927029198035598,
+          "maximum": 0.23942595697008073,
+          "minimum": 0.21911462699063122
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 2,
+          "total": 0.022578501142561436,
+          "mean": 0.011289250571280718,
+          "maximum": 0.013400210998952389,
+          "minimum": 0.009178290143609047
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 2,
+          "total": 0.8322072429582477,
+          "mean": 0.41610362147912383,
+          "maximum": 0.42122794897295535,
+          "minimum": 0.4109792939852923
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "per_job": [
+        {
+          "job_id": "89eadd079aaf8d4822ba",
+          "attempt_id": "9bb1b8fad8a141c1b035633a881b3dea",
+          "host": "local0-wsl",
+          "method": "PR_PAULI",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.14745724434033036,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.23008254007436335
+          },
+          "Q3_body_seconds": 0.35109327896498144,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35109327896498144
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.04267959203571081
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.27276213211007416,
+          "assignment_to_controller_receive_seconds": 0.6238554110750556,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.7959024859592319,
+          "D_receive_to_search_adopt_seconds": 0.7989244628697634,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.022623030934482813,
+          "worker_assignment_durable_to_body_seconds": 0.22364470921456814,
+          "body_to_worker_bundle_ready_seconds": 0.016886034980416298,
+          "worker_adapter_execute_process_seconds": 0.4266069170553237,
+          "worker_upload_ACK_roundtrip_seconds": 0.03822485194541514,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.03065175609663129,
+            "ALL_ELIGIBLE_SLOTS_BUSY": 0.10780727700330317
+          },
+          "A_unattributed_seconds": 0.008998211240395904
+        },
+        {
+          "job_id": "7dd1626ccd708bf7f972",
+          "attempt_id": "c6f95724c7384d5fb7de7b09342558c1",
+          "host": "local0-wsl",
+          "method": "PR_DF",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.03140761377289891,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.22473315289244056
+          },
+          "Q3_body_seconds": 0.35103458701632917,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35103458701632917
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.09660499612800777
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.3213381490204483,
+          "assignment_to_controller_receive_seconds": 0.6723727360367775,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.8118272218853235,
+          "D_receive_to_search_adopt_seconds": 0.8159691139589995,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.025178738869726658,
+          "worker_assignment_durable_to_body_seconds": 0.21911462699063122,
+          "body_to_worker_bundle_ready_seconds": 0.013400210998952389,
+          "worker_adapter_execute_process_seconds": 0.4109792939852923,
+          "worker_upload_ACK_roundtrip_seconds": 0.03684250800870359,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.018270249012857676
+          },
+          "A_unattributed_seconds": 0.013137364760041237
+        },
+        {
+          "job_id": "9687bead0160bafbf899",
+          "attempt_id": "0ba00f739acf49a0be067819a10576f9",
+          "host": "local0-wsl",
+          "method": "PR_DF",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.015997812617570162,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.24654684611596167
+          },
+          "Q3_body_seconds": 0.3508776978123933,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.3508776978123933
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.036354640033096075
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.28290148614905775,
+          "assignment_to_controller_receive_seconds": 0.633779183961451,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.05153125408105552,
+          "D_receive_to_search_adopt_seconds": 0.05551419616676867,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.020781249040737748,
+          "worker_assignment_durable_to_body_seconds": 0.23942595697008073,
+          "body_to_worker_bundle_ready_seconds": 0.009178290143609047,
+          "worker_adapter_execute_process_seconds": 0.42122794897295535,
+          "worker_upload_ACK_roundtrip_seconds": 0.02983093890361488,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.005702465074136853
+          },
+          "A_unattributed_seconds": 0.010295347543433309
+        }
+      ]
+    },
+    "server1": {
+      "count": 5,
+      "metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 5,
+          "total": 0.1344927402678877,
+          "mean": 0.026898548053577543,
+          "maximum": 0.047299147583544254,
+          "minimum": 0.010440099518746138
+        },
+        "Q3_body_seconds": {
+          "count": 5,
+          "total": 1.754940550075844,
+          "mean": 0.3509881100151688,
+          "maximum": 0.3511151261627674,
+          "minimum": 0.3507565390318632
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 5,
+          "total": 3.242215227102861,
+          "mean": 0.6484430454205722,
+          "maximum": 0.6798986850772053,
+          "minimum": 0.6284561268985271
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 5,
+          "total": 0.17844582605175674,
+          "mean": 0.03568916521035135,
+          "maximum": 0.04746637097559869,
+          "minimum": 0.027029352029785514
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 5,
+          "total": 0.20030408003367484,
+          "mean": 0.040060816006734966,
+          "maximum": 0.0544259799644351,
+          "minimum": 0.03175640106201172
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 5,
+          "total": 0.09328732010908425,
+          "mean": 0.01865746402181685,
+          "maximum": 0.02189704403281212,
+          "minimum": 0.01662853709422052
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 5,
+          "total": 0.18303924589417875,
+          "mean": 0.03660784917883575,
+          "maximum": 0.047776699997484684,
+          "minimum": 0.029565739911049604
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 5,
+          "total": 1.0914132662583143,
+          "mean": 0.21828265325166285,
+          "maximum": 0.2333335040602833,
+          "minimum": 0.2118412300478667
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 5,
+          "total": 0.06531967292539775,
+          "mean": 0.01306393458507955,
+          "maximum": 0.014136167941614985,
+          "minimum": 0.010103564942255616
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 5,
+          "total": 2.0751197442878038,
+          "mean": 0.4150239488575608,
+          "maximum": 0.42177617689594626,
+          "minimum": 0.41163845313712955
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "first_assignment": [
+        {
+          "job_id": "e87dc9349021da5eabf8",
+          "attempt_id": "d67b647b873042009f5542a6d358a97a",
+          "host": "server1",
+          "method": "PR_DF",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.026934431632980704,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.22129737911745906
+          },
+          "Q3_body_seconds": 0.350956518901512,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.350956518901512
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.07395050604827702
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.2952478851657361,
+          "assignment_to_controller_receive_seconds": 0.6462044040672481,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.036579959094524384,
+          "D_receive_to_search_adopt_seconds": 0.04010095400735736,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.018326018936932087,
+          "worker_assignment_durable_to_body_seconds": 0.213520493125543,
+          "body_to_worker_bundle_ready_seconds": 0.013798939995467663,
+          "worker_adapter_execute_process_seconds": 0.41163845313712955,
+          "worker_upload_ACK_roundtrip_seconds": 0.047776699997484684,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.007339457981288433
+          },
+          "A_unattributed_seconds": 0.01959497365169227
+        }
+      ],
+      "initial_queue_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 1,
+          "total": 0.026934431632980704,
+          "mean": 0.026934431632980704,
+          "maximum": 0.026934431632980704,
+          "minimum": 0.026934431632980704
+        },
+        "Q3_body_seconds": {
+          "count": 1,
+          "total": 0.350956518901512,
+          "mean": 0.350956518901512,
+          "maximum": 0.350956518901512,
+          "minimum": 0.350956518901512
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 1,
+          "total": 0.6462044040672481,
+          "mean": 0.6462044040672481,
+          "maximum": 0.6462044040672481,
+          "minimum": 0.6462044040672481
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 1,
+          "total": 0.036579959094524384,
+          "mean": 0.036579959094524384,
+          "maximum": 0.036579959094524384,
+          "minimum": 0.036579959094524384
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 1,
+          "total": 0.04010095400735736,
+          "mean": 0.04010095400735736,
+          "maximum": 0.04010095400735736,
+          "minimum": 0.04010095400735736
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 1,
+          "total": 0.018326018936932087,
+          "mean": 0.018326018936932087,
+          "maximum": 0.018326018936932087,
+          "minimum": 0.018326018936932087
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 1,
+          "total": 0.047776699997484684,
+          "mean": 0.047776699997484684,
+          "maximum": 0.047776699997484684,
+          "minimum": 0.047776699997484684
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 1,
+          "total": 0.213520493125543,
+          "mean": 0.213520493125543,
+          "maximum": 0.213520493125543,
+          "minimum": 0.213520493125543
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 1,
+          "total": 0.013798939995467663,
+          "mean": 0.013798939995467663,
+          "maximum": 0.013798939995467663,
+          "minimum": 0.013798939995467663
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 1,
+          "total": 0.41163845313712955,
+          "mean": 0.41163845313712955,
+          "maximum": 0.41163845313712955,
+          "minimum": 0.41163845313712955
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "followup_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 4,
+          "total": 0.10755830863490701,
+          "mean": 0.026889577158726752,
+          "maximum": 0.047299147583544254,
+          "minimum": 0.010440099518746138
+        },
+        "Q3_body_seconds": {
+          "count": 4,
+          "total": 1.403984031174332,
+          "mean": 0.350996007793583,
+          "maximum": 0.3511151261627674,
+          "minimum": 0.3507565390318632
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 4,
+          "total": 2.5960108230356127,
+          "mean": 0.6490027057589032,
+          "maximum": 0.6798986850772053,
+          "minimum": 0.6284561268985271
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 4,
+          "total": 0.14186586695723236,
+          "mean": 0.03546646673930809,
+          "maximum": 0.04746637097559869,
+          "minimum": 0.027029352029785514
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 4,
+          "total": 0.16020312602631748,
+          "mean": 0.04005078150657937,
+          "maximum": 0.0544259799644351,
+          "minimum": 0.03175640106201172
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 4,
+          "total": 0.07496130117215216,
+          "mean": 0.01874032529303804,
+          "maximum": 0.02189704403281212,
+          "minimum": 0.01662853709422052
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 4,
+          "total": 0.13526254589669406,
+          "mean": 0.033815636474173516,
+          "maximum": 0.0376770650036633,
+          "minimum": 0.029565739911049604
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 4,
+          "total": 0.8778927731327713,
+          "mean": 0.2194731932831928,
+          "maximum": 0.2333335040602833,
+          "minimum": 0.2118412300478667
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 4,
+          "total": 0.05152073292993009,
+          "mean": 0.012880183232482523,
+          "maximum": 0.014136167941614985,
+          "minimum": 0.010103564942255616
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 4,
+          "total": 1.6634812911506742,
+          "mean": 0.41587032278766856,
+          "maximum": 0.42177617689594626,
+          "minimum": 0.4118410521186888
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "per_job": [
+        {
+          "job_id": "e87dc9349021da5eabf8",
+          "attempt_id": "d67b647b873042009f5542a6d358a97a",
+          "host": "server1",
+          "method": "PR_DF",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.026934431632980704,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.22129737911745906
+          },
+          "Q3_body_seconds": 0.350956518901512,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.350956518901512
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.07395050604827702
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.2952478851657361,
+          "assignment_to_controller_receive_seconds": 0.6462044040672481,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.036579959094524384,
+          "D_receive_to_search_adopt_seconds": 0.04010095400735736,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.018326018936932087,
+          "worker_assignment_durable_to_body_seconds": 0.213520493125543,
+          "body_to_worker_bundle_ready_seconds": 0.013798939995467663,
+          "worker_adapter_execute_process_seconds": 0.41163845313712955,
+          "worker_upload_ACK_roundtrip_seconds": 0.047776699997484684,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.007339457981288433
+          },
+          "A_unattributed_seconds": 0.01959497365169227
+        },
+        {
+          "job_id": "b89377dbeeea2027ac58",
+          "attempt_id": "0f87219e23b145608b74e6d02ff67566",
+          "host": "server1",
+          "method": "PR_PAULI",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.035781375132501125,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.2227498630527407
+          },
+          "Q3_body_seconds": 0.35102647892199457,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35102647892199457
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.10612234310247004
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.32887220615521073,
+          "assignment_to_controller_receive_seconds": 0.6798986850772053,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.034032140858471394,
+          "D_receive_to_search_adopt_seconds": 0.036728988867253065,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.017930511152371764,
+          "worker_assignment_durable_to_body_seconds": 0.2118412300478667,
+          "body_to_worker_bundle_ready_seconds": 0.013674539048224688,
+          "worker_adapter_execute_process_seconds": 0.4118410521186888,
+          "worker_upload_ACK_roundtrip_seconds": 0.0376770650036633,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.021073566982522607
+          },
+          "A_unattributed_seconds": 0.014707808149978518
+        },
+        {
+          "job_id": "ca297b007892fd9d93f2",
+          "attempt_id": "aa78650fc60d41b3878a02b0590439ef",
+          "host": "server1",
+          "method": "PR_DF",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.01403768640011549,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.226417904952541
+          },
+          "Q3_body_seconds": 0.3507565390318632,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.3507565390318632
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.07853160495869815
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.30494950991123915,
+          "assignment_to_controller_receive_seconds": 0.6557060489431024,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.04746637097559869,
+          "D_receive_to_search_adopt_seconds": 0.0544259799644351,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.01850520889274776,
+          "worker_assignment_durable_to_body_seconds": 0.22035284200683236,
+          "body_to_worker_bundle_ready_seconds": 0.014136167941614985,
+          "worker_adapter_execute_process_seconds": 0.42177617689594626,
+          "worker_upload_ACK_roundtrip_seconds": 0.03393344092182815,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.0051847780123353004
+          },
+          "A_unattributed_seconds": 0.00885290838778019
+        },
+        {
+          "job_id": "d6d074f60a46836a3e00",
+          "attempt_id": "914c63a8dbf44a4f958967fb8b956d96",
+          "host": "server1",
+          "method": "PR_PAULI",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.047299147583544254,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.22347556799650192
+          },
+          "Q3_body_seconds": 0.3511151261627674,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.3511151261627674
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.057359267957508564
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.2808348359540105,
+          "assignment_to_controller_receive_seconds": 0.6319499621167779,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.027029352029785514,
+          "D_receive_to_search_adopt_seconds": 0.03175640106201172,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.01662853709422052,
+          "worker_assignment_durable_to_body_seconds": 0.2123651970177889,
+          "body_to_worker_bundle_ready_seconds": 0.013606460997834802,
+          "worker_adapter_execute_process_seconds": 0.4119948090519756,
+          "worker_upload_ACK_roundtrip_seconds": 0.029565739911049604,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.012625244911760092
+          },
+          "A_unattributed_seconds": 0.03467390267178416
+        },
+        {
+          "job_id": "513d7b70bf1a4baa68e7",
+          "attempt_id": "27b42cab64394e1f9c37cf94da5695a8",
+          "host": "server1",
+          "method": "PR_PAULI",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.010440099518746138,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.23991247499361634
+          },
+          "Q3_body_seconds": 0.3510858870577067,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.3510858870577067
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.03745776484720409
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.27737023984082043,
+          "assignment_to_controller_receive_seconds": 0.6284561268985271,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.033338003093376756,
+          "D_receive_to_search_adopt_seconds": 0.03729175613261759,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.02189704403281212,
+          "worker_assignment_durable_to_body_seconds": 0.2333335040602833,
+          "body_to_worker_bundle_ready_seconds": 0.010103564942255616,
+          "worker_adapter_execute_process_seconds": 0.41786925308406353,
+          "worker_upload_ACK_roundtrip_seconds": 0.03408630006015301,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.002453828928992152
+          },
+          "A_unattributed_seconds": 0.007986270589753985
+        }
+      ]
+    },
+    "server2": {
+      "count": 4,
+      "metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 4,
+          "total": 0.20710595976561308,
+          "mean": 0.05177648994140327,
+          "maximum": 0.0937520454172045,
+          "minimum": 0.015406226506456733
+        },
+        "Q3_body_seconds": {
+          "count": 4,
+          "total": 1.40331761399284,
+          "mean": 0.35082940349821,
+          "maximum": 0.3510400771629065,
+          "minimum": 0.3505927110090852
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 4,
+          "total": 2.988613931229338,
+          "mean": 0.7471534828073345,
+          "maximum": 0.767823105910793,
+          "minimum": 0.7291074742097408
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 4,
+          "total": 1.373958614654839,
+          "mean": 0.34348965366370976,
+          "maximum": 0.6799162819515914,
+          "minimum": 0.03355291183106601
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 4,
+          "total": 1.3894285159185529,
+          "mean": 0.3473571289796382,
+          "maximum": 0.684304062044248,
+          "minimum": 0.03826937195844948
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 4,
+          "total": 0.08622452197596431,
+          "mean": 0.021556130493991077,
+          "maximum": 0.028897873125970364,
+          "minimum": 0.01718352478928864
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 4,
+          "total": 0.19360641855746508,
+          "mean": 0.04840160463936627,
+          "maximum": 0.05597100383602083,
+          "minimum": 0.03450485784560442
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 4,
+          "total": 1.2103359932079911,
+          "mean": 0.3025839983019978,
+          "maximum": 0.3158591140527278,
+          "minimum": 0.2934648690279573
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 4,
+          "total": 0.042833462124690413,
+          "mean": 0.010708365531172603,
+          "maximum": 0.014191437978297472,
+          "minimum": 0.008994400966912508
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 4,
+          "total": 1.6491839548107237,
+          "mean": 0.4122959887026809,
+          "maximum": 0.4180433750152588,
+          "minimum": 0.40759679791517556
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "first_assignment": [
+        {
+          "job_id": "610093c57ae0337aa931",
+          "attempt_id": "2b8cbcbdf99f40b7b15d5817bc68c407",
+          "host": "server2",
+          "method": "PR_DF",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.0937520454172045,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.32265065400861204
+          },
+          "Q3_body_seconds": 0.3505927110090852,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.3505927110090852
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.07334356801584363
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.39599422202445567,
+          "assignment_to_controller_receive_seconds": 0.7465869330335408,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.6114060760010034,
+          "D_receive_to_search_adopt_seconds": 0.6148146009072661,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.028897873125970364,
+          "worker_assignment_durable_to_body_seconds": 0.3158591140527278,
+          "body_to_worker_bundle_ready_seconds": 0.009237139020115137,
+          "worker_adapter_execute_process_seconds": 0.4180433750152588,
+          "worker_upload_ACK_roundtrip_seconds": 0.05471422988921404,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.023796206107363105,
+            "ALL_ELIGIBLE_SLOTS_BUSY": 0.05305516696535051
+          },
+          "A_unattributed_seconds": 0.016900672344490886
+        }
+      ],
+      "initial_queue_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 1,
+          "total": 0.0937520454172045,
+          "mean": 0.0937520454172045,
+          "maximum": 0.0937520454172045,
+          "minimum": 0.0937520454172045
+        },
+        "Q3_body_seconds": {
+          "count": 1,
+          "total": 0.3505927110090852,
+          "mean": 0.3505927110090852,
+          "maximum": 0.3505927110090852,
+          "minimum": 0.3505927110090852
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 1,
+          "total": 0.7465869330335408,
+          "mean": 0.7465869330335408,
+          "maximum": 0.7465869330335408,
+          "minimum": 0.7465869330335408
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 1,
+          "total": 0.6114060760010034,
+          "mean": 0.6114060760010034,
+          "maximum": 0.6114060760010034,
+          "minimum": 0.6114060760010034
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 1,
+          "total": 0.6148146009072661,
+          "mean": 0.6148146009072661,
+          "maximum": 0.6148146009072661,
+          "minimum": 0.6148146009072661
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 1,
+          "total": 0.028897873125970364,
+          "mean": 0.028897873125970364,
+          "maximum": 0.028897873125970364,
+          "minimum": 0.028897873125970364
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 1,
+          "total": 0.05471422988921404,
+          "mean": 0.05471422988921404,
+          "maximum": 0.05471422988921404,
+          "minimum": 0.05471422988921404
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 1,
+          "total": 0.3158591140527278,
+          "mean": 0.3158591140527278,
+          "maximum": 0.3158591140527278,
+          "minimum": 0.3158591140527278
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 1,
+          "total": 0.009237139020115137,
+          "mean": 0.009237139020115137,
+          "maximum": 0.009237139020115137,
+          "minimum": 0.009237139020115137
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 1,
+          "total": 0.4180433750152588,
+          "mean": 0.4180433750152588,
+          "maximum": 0.4180433750152588,
+          "minimum": 0.4180433750152588
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "followup_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 3,
+          "total": 0.11335391434840858,
+          "mean": 0.03778463811613619,
+          "maximum": 0.0590894496999681,
+          "minimum": 0.015406226506456733
+        },
+        "Q3_body_seconds": {
+          "count": 3,
+          "total": 1.0527249029837549,
+          "mean": 0.350908300994585,
+          "maximum": 0.3510400771629065,
+          "minimum": 0.3508321070112288
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 3,
+          "total": 2.242026998195797,
+          "mean": 0.7473423327319324,
+          "maximum": 0.767823105910793,
+          "minimum": 0.7291074742097408
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 3,
+          "total": 0.7625525386538357,
+          "mean": 0.25418417955127853,
+          "maximum": 0.6799162819515914,
+          "minimum": 0.03355291183106601
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 3,
+          "total": 0.7746139150112867,
+          "mean": 0.25820463833709556,
+          "maximum": 0.684304062044248,
+          "minimum": 0.03826937195844948
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 3,
+          "total": 0.057326648849993944,
+          "mean": 0.01910888294999798,
+          "maximum": 0.022677720990031958,
+          "minimum": 0.01718352478928864
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 3,
+          "total": 0.13889218866825104,
+          "mean": 0.046297396222750344,
+          "maximum": 0.05597100383602083,
+          "minimum": 0.03450485784560442
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 3,
+          "total": 0.8944768791552633,
+          "mean": 0.2981589597184211,
+          "maximum": 0.3051992990076542,
+          "minimum": 0.2934648690279573
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 3,
+          "total": 0.033596323104575276,
+          "mean": 0.011198774368191758,
+          "maximum": 0.014191437978297472,
+          "minimum": 0.008994400966912508
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 3,
+          "total": 1.2311405797954649,
+          "mean": 0.41038019326515496,
+          "maximum": 0.41406636079773307,
+          "minimum": 0.40759679791517556
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "per_job": [
+        {
+          "job_id": "610093c57ae0337aa931",
+          "attempt_id": "2b8cbcbdf99f40b7b15d5817bc68c407",
+          "host": "server2",
+          "method": "PR_DF",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.0937520454172045,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.32265065400861204
+          },
+          "Q3_body_seconds": 0.3505927110090852,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.3505927110090852
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.07334356801584363
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.39599422202445567,
+          "assignment_to_controller_receive_seconds": 0.7465869330335408,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.6114060760010034,
+          "D_receive_to_search_adopt_seconds": 0.6148146009072661,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.028897873125970364,
+          "worker_assignment_durable_to_body_seconds": 0.3158591140527278,
+          "body_to_worker_bundle_ready_seconds": 0.009237139020115137,
+          "worker_adapter_execute_process_seconds": 0.4180433750152588,
+          "worker_upload_ACK_roundtrip_seconds": 0.05471422988921404,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.023796206107363105,
+            "ALL_ELIGIBLE_SLOTS_BUSY": 0.05305516696535051
+          },
+          "A_unattributed_seconds": 0.016900672344490886
+        },
+        {
+          "job_id": "0cb6d061689f9dfd8e90",
+          "attempt_id": "c4d9287ee71b40f89e81438905ed1158",
+          "host": "server2",
+          "method": "PR_DF",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.015406226506456733,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.30651027406565845
+          },
+          "Q3_body_seconds": 0.35085271880961955,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.35085271880961955
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.0877334251999855
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.39424369926564395,
+          "assignment_to_controller_receive_seconds": 0.7450964180752635,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.03355291183106601,
+          "D_receive_to_search_adopt_seconds": 0.03826937195844948,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.017465403070673347,
+          "worker_assignment_durable_to_body_seconds": 0.2958127111196518,
+          "body_to_worker_bundle_ready_seconds": 0.010410484159365296,
+          "worker_adapter_execute_process_seconds": 0.40947742108255625,
+          "worker_upload_ACK_roundtrip_seconds": 0.05597100383602083,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.005063438089564443
+          },
+          "A_unattributed_seconds": 0.01034278841689229
+        },
+        {
+          "job_id": "1e889d90de500eaac5a5",
+          "attempt_id": "cbc3c46d710849cc9645669b55c14aac",
+          "host": "server2",
+          "method": "PR_PAULI",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.0590894496999681,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.3125191868748516
+          },
+          "Q3_body_seconds": 0.3510400771629065,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.3510400771629065
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.10426384187303483
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.4167830287478864,
+          "assignment_to_controller_receive_seconds": 0.767823105910793,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.6799162819515914,
+          "D_receive_to_search_adopt_seconds": 0.684304062044248,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.01718352478928864,
+          "worker_assignment_durable_to_body_seconds": 0.3051992990076542,
+          "body_to_worker_bundle_ready_seconds": 0.014191437978297472,
+          "worker_adapter_execute_process_seconds": 0.41406636079773307,
+          "worker_upload_ACK_roundtrip_seconds": 0.04841632698662579,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.0485884970985353
+          },
+          "A_unattributed_seconds": 0.0105009526014328
+        },
+        {
+          "job_id": "0aa77103516139c3fe6c",
+          "attempt_id": "f32bb4342a924004b37a26eeefa0c9b2",
+          "host": "server2",
+          "method": "PR_DF",
+          "host_phase": "FOLLOWUP_ASSIGNMENT",
+          "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 0.03885823814198375,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.3038928441237658
+          },
+          "Q3_body_seconds": 0.3508321070112288,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            0.3508321070112288
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "EXACT_SAME_CLOCK",
+            "seconds": 0.07438252307474613
+          },
+          "B_plus_C_non_body_envelope_seconds": 0.37827536719851196,
+          "assignment_to_controller_receive_seconds": 0.7291074742097408,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.04908334487117827,
+          "D_receive_to_search_adopt_seconds": 0.05204048100858927,
+          "search_join": "EXPLICIT_JOB_ATTEMPT",
+          "receive_validation_persistence_seconds": 0.022677720990031958,
+          "worker_assignment_durable_to_body_seconds": 0.2934648690279573,
+          "body_to_worker_bundle_ready_seconds": 0.008994400966912508,
+          "worker_adapter_execute_process_seconds": 0.40759679791517556,
+          "worker_upload_ACK_roundtrip_seconds": 0.03450485784560442,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 0.025988125009462237
+          },
+          "A_unattributed_seconds": 0.01287011313252151
+        }
+      ]
+    }
+  },
+  "rows": [
+    {
+      "job_id": "e87dc9349021da5eabf8",
+      "attempt_id": "d67b647b873042009f5542a6d358a97a",
+      "host": "server1",
+      "method": "PR_DF",
+      "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+      "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.026934431632980704,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.22129737911745906
+      },
+      "Q3_body_seconds": 0.350956518901512,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.350956518901512
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.07395050604827702
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.2952478851657361,
+      "assignment_to_controller_receive_seconds": 0.6462044040672481,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.036579959094524384,
+      "D_receive_to_search_adopt_seconds": 0.04010095400735736,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.018326018936932087,
+      "worker_assignment_durable_to_body_seconds": 0.213520493125543,
+      "body_to_worker_bundle_ready_seconds": 0.013798939995467663,
+      "worker_adapter_execute_process_seconds": 0.41163845313712955,
+      "worker_upload_ACK_roundtrip_seconds": 0.047776699997484684,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.007339457981288433
+      },
+      "A_unattributed_seconds": 0.01959497365169227
+    },
+    {
+      "job_id": "b766a93a10dbb690c6f7",
+      "attempt_id": "38b2cb36788e49c5bd4e71dadeaeca30",
+      "host": "local",
+      "method": "PR_PAULI",
+      "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+      "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.03355696820653975,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.2063979241065681
+      },
+      "Q3_body_seconds": 0.35114573896862566,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.35114573896862566
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.051992371911183
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.2583902960177511,
+      "assignment_to_controller_receive_seconds": 0.6095360349863768,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.05195778212510049,
+      "D_receive_to_search_adopt_seconds": 0.05544375698082149,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.021207076963037252,
+      "worker_assignment_durable_to_body_seconds": 0.2006331190932542,
+      "body_to_worker_bundle_ready_seconds": 0.014096348080784082,
+      "worker_adapter_execute_process_seconds": 0.412535018986091,
+      "worker_upload_ACK_roundtrip_seconds": 0.031241863034665585,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.019587503978982568
+      },
+      "A_unattributed_seconds": 0.013969464227557182
+    },
+    {
+      "job_id": "610093c57ae0337aa931",
+      "attempt_id": "2b8cbcbdf99f40b7b15d5817bc68c407",
+      "host": "server2",
+      "method": "PR_DF",
+      "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+      "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.0937520454172045,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.32265065400861204
+      },
+      "Q3_body_seconds": 0.3505927110090852,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.3505927110090852
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.07334356801584363
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.39599422202445567,
+      "assignment_to_controller_receive_seconds": 0.7465869330335408,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.6114060760010034,
+      "D_receive_to_search_adopt_seconds": 0.6148146009072661,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.028897873125970364,
+      "worker_assignment_durable_to_body_seconds": 0.3158591140527278,
+      "body_to_worker_bundle_ready_seconds": 0.009237139020115137,
+      "worker_adapter_execute_process_seconds": 0.4180433750152588,
+      "worker_upload_ACK_roundtrip_seconds": 0.05471422988921404,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.023796206107363105,
+        "ALL_ELIGIBLE_SLOTS_BUSY": 0.05305516696535051
+      },
+      "A_unattributed_seconds": 0.016900672344490886
+    },
+    {
+      "job_id": "89eadd079aaf8d4822ba",
+      "attempt_id": "9bb1b8fad8a141c1b035633a881b3dea",
+      "host": "local0-wsl",
+      "method": "PR_PAULI",
+      "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+      "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.14745724434033036,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.23008254007436335
+      },
+      "Q3_body_seconds": 0.35109327896498144,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.35109327896498144
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.04267959203571081
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.27276213211007416,
+      "assignment_to_controller_receive_seconds": 0.6238554110750556,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.7959024859592319,
+      "D_receive_to_search_adopt_seconds": 0.7989244628697634,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.022623030934482813,
+      "worker_assignment_durable_to_body_seconds": 0.22364470921456814,
+      "body_to_worker_bundle_ready_seconds": 0.016886034980416298,
+      "worker_adapter_execute_process_seconds": 0.4266069170553237,
+      "worker_upload_ACK_roundtrip_seconds": 0.03822485194541514,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.03065175609663129,
+        "ALL_ELIGIBLE_SLOTS_BUSY": 0.10780727700330317
+      },
+      "A_unattributed_seconds": 0.008998211240395904
+    },
+    {
+      "job_id": "e3616f2e093cac4690de",
+      "attempt_id": "1bc7aeeed62542a69a35f8ac2de7a950",
+      "host": "local",
+      "method": "PR_DF",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.01549065439030528,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.22921203402802348
+      },
+      "Q3_body_seconds": 0.35081841005012393,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.35081841005012393
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.05045203794725239
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.2796640719752759,
+      "assignment_to_controller_receive_seconds": 0.6304824820253998,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.047175253042951226,
+      "D_receive_to_search_adopt_seconds": 0.05097317602485418,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.027990937000140548,
+      "worker_assignment_durable_to_body_seconds": 0.22175132692791522,
+      "body_to_worker_bundle_ready_seconds": 0.009714566869661212,
+      "worker_adapter_execute_process_seconds": 0.4174308869987726,
+      "worker_upload_ACK_roundtrip_seconds": 0.046893703984096646,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.004767959006130695
+      },
+      "A_unattributed_seconds": 0.010722695384174585
+    },
+    {
+      "job_id": "b89377dbeeea2027ac58",
+      "attempt_id": "0f87219e23b145608b74e6d02ff67566",
+      "host": "server1",
+      "method": "PR_PAULI",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.035781375132501125,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.2227498630527407
+      },
+      "Q3_body_seconds": 0.35102647892199457,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.35102647892199457
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.10612234310247004
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.32887220615521073,
+      "assignment_to_controller_receive_seconds": 0.6798986850772053,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.034032140858471394,
+      "D_receive_to_search_adopt_seconds": 0.036728988867253065,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.017930511152371764,
+      "worker_assignment_durable_to_body_seconds": 0.2118412300478667,
+      "body_to_worker_bundle_ready_seconds": 0.013674539048224688,
+      "worker_adapter_execute_process_seconds": 0.4118410521186888,
+      "worker_upload_ACK_roundtrip_seconds": 0.0376770650036633,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.021073566982522607
+      },
+      "A_unattributed_seconds": 0.014707808149978518
+    },
+    {
+      "job_id": "0cb6d061689f9dfd8e90",
+      "attempt_id": "c4d9287ee71b40f89e81438905ed1158",
+      "host": "server2",
+      "method": "PR_DF",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.015406226506456733,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.30651027406565845
+      },
+      "Q3_body_seconds": 0.35085271880961955,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.35085271880961955
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.0877334251999855
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.39424369926564395,
+      "assignment_to_controller_receive_seconds": 0.7450964180752635,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.03355291183106601,
+      "D_receive_to_search_adopt_seconds": 0.03826937195844948,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.017465403070673347,
+      "worker_assignment_durable_to_body_seconds": 0.2958127111196518,
+      "body_to_worker_bundle_ready_seconds": 0.010410484159365296,
+      "worker_adapter_execute_process_seconds": 0.40947742108255625,
+      "worker_upload_ACK_roundtrip_seconds": 0.05597100383602083,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.005063438089564443
+      },
+      "A_unattributed_seconds": 0.01034278841689229
+    },
+    {
+      "job_id": "8536a8738cd2688ea009",
+      "attempt_id": "81d6facdb6fb41ae8439d7ad1f6a2361",
+      "host": "local",
+      "method": "PR_PAULI",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.012805098900571465,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.23625193280167878
+      },
+      "Q3_body_seconds": 0.3510645180940628,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.3510645180940628
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.03672166890464723
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.272973601706326,
+      "assignment_to_controller_receive_seconds": 0.6240381198003888,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.06807769113220274,
+      "D_receive_to_search_adopt_seconds": 0.07257750118151307,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.018307708902284503,
+      "worker_assignment_durable_to_body_seconds": 0.22798357880674303,
+      "body_to_worker_bundle_ready_seconds": 0.010089515941217542,
+      "worker_adapter_execute_process_seconds": 0.40830370713956654,
+      "worker_upload_ACK_roundtrip_seconds": 0.026394223794341087,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.004816639004275203
+      },
+      "A_unattributed_seconds": 0.007988459896296263
+    },
+    {
+      "job_id": "4f2935eea9e2d5861daa",
+      "attempt_id": "f8c5125b5b9c4efe857f9b069d71cc27",
+      "host": "local",
+      "method": "PR_PAULI",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.03362151421606541,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.221440747147426
+      },
+      "Q3_body_seconds": 0.35080722882412374,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.35080722882412374
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.05224847001954913
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.27368921716697514,
+      "assignment_to_controller_receive_seconds": 0.6244964459910989,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.037258136086165905,
+      "D_receive_to_search_adopt_seconds": 0.04021154320798814,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.021373686147853732,
+      "worker_assignment_durable_to_body_seconds": 0.21466679708100855,
+      "body_to_worker_bundle_ready_seconds": 0.009623377118259668,
+      "worker_adapter_execute_process_seconds": 0.407246720045805,
+      "worker_upload_ACK_roundtrip_seconds": 0.033321563154459,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.026095215929672122
+      },
+      "A_unattributed_seconds": 0.007526298286393285
+    },
+    {
+      "job_id": "ca297b007892fd9d93f2",
+      "attempt_id": "aa78650fc60d41b3878a02b0590439ef",
+      "host": "server1",
+      "method": "PR_DF",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.01403768640011549,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.226417904952541
+      },
+      "Q3_body_seconds": 0.3507565390318632,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.3507565390318632
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.07853160495869815
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.30494950991123915,
+      "assignment_to_controller_receive_seconds": 0.6557060489431024,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.04746637097559869,
+      "D_receive_to_search_adopt_seconds": 0.0544259799644351,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.01850520889274776,
+      "worker_assignment_durable_to_body_seconds": 0.22035284200683236,
+      "body_to_worker_bundle_ready_seconds": 0.014136167941614985,
+      "worker_adapter_execute_process_seconds": 0.42177617689594626,
+      "worker_upload_ACK_roundtrip_seconds": 0.03393344092182815,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.0051847780123353004
+      },
+      "A_unattributed_seconds": 0.00885290838778019
+    },
+    {
+      "job_id": "1e889d90de500eaac5a5",
+      "attempt_id": "cbc3c46d710849cc9645669b55c14aac",
+      "host": "server2",
+      "method": "PR_PAULI",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.0590894496999681,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.3125191868748516
+      },
+      "Q3_body_seconds": 0.3510400771629065,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.3510400771629065
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.10426384187303483
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.4167830287478864,
+      "assignment_to_controller_receive_seconds": 0.767823105910793,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.6799162819515914,
+      "D_receive_to_search_adopt_seconds": 0.684304062044248,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.01718352478928864,
+      "worker_assignment_durable_to_body_seconds": 0.3051992990076542,
+      "body_to_worker_bundle_ready_seconds": 0.014191437978297472,
+      "worker_adapter_execute_process_seconds": 0.41406636079773307,
+      "worker_upload_ACK_roundtrip_seconds": 0.04841632698662579,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.0485884970985353
+      },
+      "A_unattributed_seconds": 0.0105009526014328
+    },
+    {
+      "job_id": "7dd1626ccd708bf7f972",
+      "attempt_id": "c6f95724c7384d5fb7de7b09342558c1",
+      "host": "local0-wsl",
+      "method": "PR_DF",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.03140761377289891,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.22473315289244056
+      },
+      "Q3_body_seconds": 0.35103458701632917,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.35103458701632917
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.09660499612800777
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.3213381490204483,
+      "assignment_to_controller_receive_seconds": 0.6723727360367775,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.8118272218853235,
+      "D_receive_to_search_adopt_seconds": 0.8159691139589995,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.025178738869726658,
+      "worker_assignment_durable_to_body_seconds": 0.21911462699063122,
+      "body_to_worker_bundle_ready_seconds": 0.013400210998952389,
+      "worker_adapter_execute_process_seconds": 0.4109792939852923,
+      "worker_upload_ACK_roundtrip_seconds": 0.03684250800870359,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.018270249012857676
+      },
+      "A_unattributed_seconds": 0.013137364760041237
+    },
+    {
+      "job_id": "0ab3395aae956130280c",
+      "attempt_id": "c015d449980d48edb793bd3d789786c3",
+      "host": "local",
+      "method": "PR_DF",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.6486420505680144,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.23353105410933495
+      },
+      "Q3_body_seconds": 0.35109390690922737,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.35109390690922737
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.0461214070674032
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.27965246117673814,
+      "assignment_to_controller_receive_seconds": 0.6307463680859655,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.2348081679083407,
+      "D_receive_to_search_adopt_seconds": 0.23626639205031097,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.01838241913355887,
+      "worker_assignment_durable_to_body_seconds": 0.22299587004818022,
+      "body_to_worker_bundle_ready_seconds": 0.01380173908546567,
+      "worker_adapter_execute_process_seconds": 0.4202493529301137,
+      "worker_upload_ACK_roundtrip_seconds": 0.02456461195833981,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "ALL_ELIGIBLE_SLOTS_BUSY": 0.6037866969127208,
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.022925388999283314
+      },
+      "A_unattributed_seconds": 0.02192996465601027
+    },
+    {
+      "job_id": "d6d074f60a46836a3e00",
+      "attempt_id": "914c63a8dbf44a4f958967fb8b956d96",
+      "host": "server1",
+      "method": "PR_PAULI",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.047299147583544254,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.22347556799650192
+      },
+      "Q3_body_seconds": 0.3511151261627674,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.3511151261627674
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.057359267957508564
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.2808348359540105,
+      "assignment_to_controller_receive_seconds": 0.6319499621167779,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.027029352029785514,
+      "D_receive_to_search_adopt_seconds": 0.03175640106201172,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.01662853709422052,
+      "worker_assignment_durable_to_body_seconds": 0.2123651970177889,
+      "body_to_worker_bundle_ready_seconds": 0.013606460997834802,
+      "worker_adapter_execute_process_seconds": 0.4119948090519756,
+      "worker_upload_ACK_roundtrip_seconds": 0.029565739911049604,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.012625244911760092
+      },
+      "A_unattributed_seconds": 0.03467390267178416
+    },
+    {
+      "job_id": "9687bead0160bafbf899",
+      "attempt_id": "0ba00f739acf49a0be067819a10576f9",
+      "host": "local0-wsl",
+      "method": "PR_DF",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.015997812617570162,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.24654684611596167
+      },
+      "Q3_body_seconds": 0.3508776978123933,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.3508776978123933
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.036354640033096075
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.28290148614905775,
+      "assignment_to_controller_receive_seconds": 0.633779183961451,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.05153125408105552,
+      "D_receive_to_search_adopt_seconds": 0.05551419616676867,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.020781249040737748,
+      "worker_assignment_durable_to_body_seconds": 0.23942595697008073,
+      "body_to_worker_bundle_ready_seconds": 0.009178290143609047,
+      "worker_adapter_execute_process_seconds": 0.42122794897295535,
+      "worker_upload_ACK_roundtrip_seconds": 0.02983093890361488,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.005702465074136853
+      },
+      "A_unattributed_seconds": 0.010295347543433309
+    },
+    {
+      "job_id": "513d7b70bf1a4baa68e7",
+      "attempt_id": "27b42cab64394e1f9c37cf94da5695a8",
+      "host": "server1",
+      "method": "PR_PAULI",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.010440099518746138,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.23991247499361634
+      },
+      "Q3_body_seconds": 0.3510858870577067,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.3510858870577067
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.03745776484720409
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.27737023984082043,
+      "assignment_to_controller_receive_seconds": 0.6284561268985271,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.033338003093376756,
+      "D_receive_to_search_adopt_seconds": 0.03729175613261759,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.02189704403281212,
+      "worker_assignment_durable_to_body_seconds": 0.2333335040602833,
+      "body_to_worker_bundle_ready_seconds": 0.010103564942255616,
+      "worker_adapter_execute_process_seconds": 0.41786925308406353,
+      "worker_upload_ACK_roundtrip_seconds": 0.03408630006015301,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.002453828928992152
+      },
+      "A_unattributed_seconds": 0.007986270589753985
+    },
+    {
+      "job_id": "0aa77103516139c3fe6c",
+      "attempt_id": "f32bb4342a924004b37a26eeefa0c9b2",
+      "host": "server2",
+      "method": "PR_DF",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.03885823814198375,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.3038928441237658
+      },
+      "Q3_body_seconds": 0.3508321070112288,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.3508321070112288
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.07438252307474613
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.37827536719851196,
+      "assignment_to_controller_receive_seconds": 0.7291074742097408,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.04908334487117827,
+      "D_receive_to_search_adopt_seconds": 0.05204048100858927,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.022677720990031958,
+      "worker_assignment_durable_to_body_seconds": 0.2934648690279573,
+      "body_to_worker_bundle_ready_seconds": 0.008994400966912508,
+      "worker_adapter_execute_process_seconds": 0.40759679791517556,
+      "worker_upload_ACK_roundtrip_seconds": 0.03450485784560442,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.025988125009462237
+      },
+      "A_unattributed_seconds": 0.01287011313252151
+    },
+    {
+      "job_id": "b4aa6fd9fbe1c311c3b3",
+      "attempt_id": "8d38bc3580ed40aab31cf98904394736",
+      "host": "local",
+      "method": "PR_DF",
+      "host_phase": "FOLLOWUP_ASSIGNMENT",
+      "queue_phase": "AFTER_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 0.05129177891649306,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.23458837787620723
+      },
+      "Q3_body_seconds": 0.35061027901247144,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        0.35061027901247144
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "EXACT_SAME_CLOCK",
+        "seconds": 0.0370319071225822
+      },
+      "B_plus_C_non_body_envelope_seconds": 0.27162028499878943,
+      "assignment_to_controller_receive_seconds": 0.6222305640112609,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.15031493897549808,
+      "D_receive_to_search_adopt_seconds": 0.15310563682578504,
+      "search_join": "EXPLICIT_JOB_ATTEMPT",
+      "receive_validation_persistence_seconds": 0.028363925172016025,
+      "worker_assignment_durable_to_body_seconds": 0.22790916683152318,
+      "body_to_worker_bundle_ready_seconds": 0.009551308117806911,
+      "worker_adapter_execute_process_seconds": 0.4217851059511304,
+      "worker_upload_ACK_roundtrip_seconds": 0.047392782056704164,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 0.04471445316448808
+      },
+      "A_unattributed_seconds": 0.006577325752004981
+    }
+  ],
+  "missing_counts": {
+    "Q3_body_seconds": 0,
+    "D_receive_to_search_adopt_seconds": 0
+  },
+  "ambiguous_joins": [],
+  "queue_wait_job_seconds_sum": 1.3318694359622896,
+  "queue_wait_union_seconds": 1.0901424882467836,
+  "D_receive_to_search_job_seconds_sum": 3.868718375219032,
+  "D_receive_to_search_union_seconds": 2.0687731322832406,
+  "D_while_optimizer_waiting_union_seconds": 0.24979847413487732,
+  "D_critical_scope": "Intersection with recorded demanded-job DEPENDENCY_WAIT; not sum of speculative job latency",
+  "total_demanded_dependency_wait_union_seconds": 4.30857033492066,
+  "dependency_wait_intervals_measured": 12,
+  "pre_first_dispatch_queue_seconds": 0.026934431632980704,
+  "queue_wait_state_observations": 102,
+  "queue_wait_observed_union_by_reason": {
+    "DISPATCH_READINESS_OR_POLL_WAIT": 0.23063258733600378,
+    "ALL_ELIGIBLE_SLOTS_BUSY": 0.711593973916024
+  },
+  "queue_wait_state_scope": "Observed controller reservation/eligibility state; no attribution if snapshots absent; first host assignment is not a proof of setup completion",
+  "published_summary_reference": null,
+  "scientific_H4_calls_added": 0
+}
