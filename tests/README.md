@@ -40,3 +40,9 @@ Hadamard 1 shot全体や最終総コストの検証ではない。
 
 [収録ファイル・保存版と確認範囲](../docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## 保存Q3一件のPBS移植caller（2026-11-18）
+
+`test_rpe_pbs_saved_q3.py`は人工executorだけを使い、元REQUEST保持・予算1・既存schedule main hook・
+完了再開0・UNKNOWNからの再起動禁止・範囲を広げる設定の拒否を確認する。人工4件・6 subtests PASS。
+実H4一件のPBS実行証拠とは別であり、[実施結果](../docs/research/rpe_pbs_h4_q3_portability_20261118/REPORT.md)を参照する。

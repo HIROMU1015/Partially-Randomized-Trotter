@@ -1,0 +1,502 @@
+{
+  "schema": "RPE_Q3_OPERATIONAL_TIMING_V1",
+  "scope": "OPERATIONAL_LOGS_ONLY_NO_SCIENTIFIC_REANALYSIS",
+  "run_directory": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/state/runs/pbs-h4-q3-portability-20261118/output",
+  "input_timeline": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/state/runs/pbs-h4-q3-portability-20261118/output/PROGRESS.jsonl",
+  "attempts": 1,
+  "by_host": {
+    "pbs-0": {
+      "count": 1,
+      "metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 1,
+          "total": 7.725031007663347,
+          "mean": 7.725031007663347,
+          "maximum": 7.725031007663347,
+          "minimum": 7.725031007663347
+        },
+        "Q3_body_seconds": {
+          "count": 1,
+          "total": 49.641234965994954,
+          "mean": 49.641234965994954,
+          "maximum": 49.641234965994954,
+          "minimum": 49.641234965994954
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 1,
+          "total": 66.94367087108549,
+          "mean": 66.94367087108549,
+          "maximum": 66.94367087108549,
+          "minimum": 66.94367087108549
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 1,
+          "total": 0.1541035280097276,
+          "mean": 0.1541035280097276,
+          "maximum": 0.1541035280097276,
+          "minimum": 0.1541035280097276
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 1,
+          "total": 0.14832216105423868,
+          "mean": 0.14832216105423868,
+          "maximum": 0.14832216105423868,
+          "minimum": 0.14832216105423868
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 1,
+          "total": 7.425555701833218,
+          "mean": 7.425555701833218,
+          "maximum": 7.425555701833218,
+          "minimum": 7.425555701833218
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 1,
+          "total": 2.368639823049307,
+          "mean": 2.368639823049307,
+          "maximum": 2.368639823049307,
+          "minimum": 2.368639823049307
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 1,
+          "total": 55.650000010151416,
+          "mean": 55.650000010151416,
+          "maximum": 55.650000010151416,
+          "minimum": 55.650000010151416
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "first_assignment": [
+        {
+          "job_id": "98693b829295fc884330",
+          "attempt_id": "18c2c7bc2d7b4a5581ef2543b1359e1b",
+          "host": "pbs-0",
+          "method": "FULL_PF",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 7.725031007663347,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "BOUNDED",
+            "seconds": null,
+            "lower_seconds": 0,
+            "upper_seconds": 17.302435905090533,
+            "reason": "Absolute host clocks not subtracted; B+C shared upper envelope"
+          },
+          "Q3_body_seconds": 49.641234965994954,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            49.641234965994954
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "BOUNDED",
+            "seconds": null,
+            "lower_seconds": 0,
+            "upper_seconds": 17.302435905090533,
+            "reason": "Absolute host clocks not subtracted; B+C shared upper envelope"
+          },
+          "B_plus_C_non_body_envelope_seconds": 17.302435905090533,
+          "assignment_to_controller_receive_seconds": 66.94367087108549,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.1541035280097276,
+          "D_receive_to_search_adopt_seconds": null,
+          "search_join": "MISSING",
+          "receive_validation_persistence_seconds": 0.14832216105423868,
+          "worker_assignment_durable_to_body_seconds": 7.425555701833218,
+          "body_to_worker_bundle_ready_seconds": 2.368639823049307,
+          "worker_adapter_execute_process_seconds": 55.650000010151416,
+          "worker_upload_ACK_roundtrip_seconds": null,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 3.1259712799219415
+          },
+          "A_unattributed_seconds": 4.599059727741405
+        }
+      ],
+      "initial_queue_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 1,
+          "total": 7.725031007663347,
+          "mean": 7.725031007663347,
+          "maximum": 7.725031007663347,
+          "minimum": 7.725031007663347
+        },
+        "Q3_body_seconds": {
+          "count": 1,
+          "total": 49.641234965994954,
+          "mean": 49.641234965994954,
+          "maximum": 49.641234965994954,
+          "minimum": 49.641234965994954
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 1,
+          "total": 66.94367087108549,
+          "mean": 66.94367087108549,
+          "maximum": 66.94367087108549,
+          "minimum": 66.94367087108549
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 1,
+          "total": 0.1541035280097276,
+          "mean": 0.1541035280097276,
+          "maximum": 0.1541035280097276,
+          "minimum": 0.1541035280097276
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 1,
+          "total": 0.14832216105423868,
+          "mean": 0.14832216105423868,
+          "maximum": 0.14832216105423868,
+          "minimum": 0.14832216105423868
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 1,
+          "total": 7.425555701833218,
+          "mean": 7.425555701833218,
+          "maximum": 7.425555701833218,
+          "minimum": 7.425555701833218
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 1,
+          "total": 2.368639823049307,
+          "mean": 2.368639823049307,
+          "maximum": 2.368639823049307,
+          "minimum": 2.368639823049307
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 1,
+          "total": 55.650000010151416,
+          "mean": 55.650000010151416,
+          "maximum": 55.650000010151416,
+          "minimum": 55.650000010151416
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "followup_metrics": {
+        "A_queue_to_assignment_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "Q3_body_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "assignment_to_controller_receive_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "D_receive_to_executor_adopt_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "D_receive_to_search_adopt_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "receive_validation_persistence_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_upload_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_status_download_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_assignment_durable_to_body_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "body_to_worker_bundle_ready_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "worker_adapter_execute_process_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_delivery_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "relay_response_to_submit_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        },
+        "SSH_ACK_roundtrip_seconds": {
+          "count": 0,
+          "total": 0,
+          "mean": null,
+          "maximum": null,
+          "minimum": null
+        }
+      },
+      "per_job": [
+        {
+          "job_id": "98693b829295fc884330",
+          "attempt_id": "18c2c7bc2d7b4a5581ef2543b1359e1b",
+          "host": "pbs-0",
+          "method": "FULL_PF",
+          "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+          "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+          "artifact_attempt_matches": true,
+          "A_queue_to_assignment_seconds": 7.725031007663347,
+          "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+          "B_assignment_to_Q3_body": {
+            "kind": "BOUNDED",
+            "seconds": null,
+            "lower_seconds": 0,
+            "upper_seconds": 17.302435905090533,
+            "reason": "Absolute host clocks not subtracted; B+C shared upper envelope"
+          },
+          "Q3_body_seconds": 49.641234965994954,
+          "Q3_body_calls_measured": 1,
+          "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+          "Q3_API_call_seconds": [
+            49.641234965994954
+          ],
+          "C_Q3_body_to_controller_receive": {
+            "kind": "BOUNDED",
+            "seconds": null,
+            "lower_seconds": 0,
+            "upper_seconds": 17.302435905090533,
+            "reason": "Absolute host clocks not subtracted; B+C shared upper envelope"
+          },
+          "B_plus_C_non_body_envelope_seconds": 17.302435905090533,
+          "assignment_to_controller_receive_seconds": 66.94367087108549,
+          "receive_boundary": "RPC_BODY_RECEIVED",
+          "D_receive_to_executor_adopt_seconds": 0.1541035280097276,
+          "D_receive_to_search_adopt_seconds": null,
+          "search_join": "MISSING",
+          "receive_validation_persistence_seconds": 0.14832216105423868,
+          "worker_assignment_durable_to_body_seconds": 7.425555701833218,
+          "body_to_worker_bundle_ready_seconds": 2.368639823049307,
+          "worker_adapter_execute_process_seconds": 55.650000010151416,
+          "worker_upload_ACK_roundtrip_seconds": null,
+          "SSH_status_download_roundtrip_seconds": null,
+          "SSH_delivery_roundtrip_seconds": null,
+          "relay_response_to_submit_seconds": null,
+          "SSH_ACK_roundtrip_seconds": null,
+          "A_observed_wait_seconds_by_reason": {
+            "DISPATCH_READINESS_OR_POLL_WAIT": 3.1259712799219415
+          },
+          "A_unattributed_seconds": 4.599059727741405
+        }
+      ]
+    }
+  },
+  "rows": [
+    {
+      "job_id": "98693b829295fc884330",
+      "attempt_id": "18c2c7bc2d7b4a5581ef2543b1359e1b",
+      "host": "pbs-0",
+      "method": "FULL_PF",
+      "host_phase": "FIRST_ASSIGNMENT_TO_HOST",
+      "queue_phase": "PRE_FIRST_DISPATCH_ENQUEUE",
+      "artifact_attempt_matches": true,
+      "A_queue_to_assignment_seconds": 7.725031007663347,
+      "A_start_scope": "OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY",
+      "B_assignment_to_Q3_body": {
+        "kind": "BOUNDED",
+        "seconds": null,
+        "lower_seconds": 0,
+        "upper_seconds": 17.302435905090533,
+        "reason": "Absolute host clocks not subtracted; B+C shared upper envelope"
+      },
+      "Q3_body_seconds": 49.641234965994954,
+      "Q3_body_calls_measured": 1,
+      "Q3_body_scope": "EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY",
+      "Q3_API_call_seconds": [
+        49.641234965994954
+      ],
+      "C_Q3_body_to_controller_receive": {
+        "kind": "BOUNDED",
+        "seconds": null,
+        "lower_seconds": 0,
+        "upper_seconds": 17.302435905090533,
+        "reason": "Absolute host clocks not subtracted; B+C shared upper envelope"
+      },
+      "B_plus_C_non_body_envelope_seconds": 17.302435905090533,
+      "assignment_to_controller_receive_seconds": 66.94367087108549,
+      "receive_boundary": "RPC_BODY_RECEIVED",
+      "D_receive_to_executor_adopt_seconds": 0.1541035280097276,
+      "D_receive_to_search_adopt_seconds": null,
+      "search_join": "MISSING",
+      "receive_validation_persistence_seconds": 0.14832216105423868,
+      "worker_assignment_durable_to_body_seconds": 7.425555701833218,
+      "body_to_worker_bundle_ready_seconds": 2.368639823049307,
+      "worker_adapter_execute_process_seconds": 55.650000010151416,
+      "worker_upload_ACK_roundtrip_seconds": null,
+      "SSH_status_download_roundtrip_seconds": null,
+      "SSH_delivery_roundtrip_seconds": null,
+      "relay_response_to_submit_seconds": null,
+      "SSH_ACK_roundtrip_seconds": null,
+      "A_observed_wait_seconds_by_reason": {
+        "DISPATCH_READINESS_OR_POLL_WAIT": 3.1259712799219415
+      },
+      "A_unattributed_seconds": 4.599059727741405
+    }
+  ],
+  "preparation": {
+    "schema": "RPE_PREPARATION_OPERATIONAL_TIMING_V1",
+    "attempts": 0,
+    "rows": [],
+    "by_stage": {},
+    "by_host": {},
+    "missing_body_count": 0,
+    "ambiguous_joins": [],
+    "queue_wait_union_seconds": 0.0,
+    "clock_scope": "Same-clock deltas only; absolute timestamps from separate hosts are never subtracted",
+    "scientific_H4_calls_added": 0
+  },
+  "attempt_count_scope": "Q3_ONLY; typed preparation attempts are reported separately",
+  "missing_counts": {
+    "Q3_body_seconds": 0,
+    "D_receive_to_search_adopt_seconds": 1
+  },
+  "ambiguous_joins": [],
+  "queue_wait_job_seconds_sum": 7.725031007663347,
+  "queue_wait_union_seconds": 7.725031007663347,
+  "D_receive_to_search_job_seconds_sum": 0,
+  "D_receive_to_search_union_seconds": 0.0,
+  "D_while_optimizer_waiting_union_seconds": 0.0,
+  "D_critical_scope": "Intersection with recorded demanded-job DEPENDENCY_WAIT; not sum of speculative job latency",
+  "total_demanded_dependency_wait_union_seconds": 74.81589790794533,
+  "dependency_wait_intervals_measured": 1,
+  "pre_first_dispatch_queue_seconds": 7.725031007663347,
+  "queue_wait_state_observations": 4,
+  "queue_wait_observed_union_by_reason": {
+    "DISPATCH_READINESS_OR_POLL_WAIT": 3.1259712799219415
+  },
+  "queue_wait_state_scope": "Observed controller reservation/eligibility state; no attribution if snapshots absent; first host assignment is not a proof of setup completion",
+  "published_summary_reference": null,
+  "scientific_H4_calls_added": 0
+}

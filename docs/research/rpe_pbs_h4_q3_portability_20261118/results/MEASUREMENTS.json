@@ -1,0 +1,82 @@
+{
+  "schema": "RPE_PBS_REAL_H4_Q3_OPERATIONAL_MEASUREMENTS_V1",
+  "clock_rule": "Only same clock_id monotonic differences; cross-host phases use existing controller roundtrip minus measured body upper envelope. No cross-host epoch subtraction.",
+  "task_ready_to_pbs_intent_seconds": 1.2753951799822971,
+  "ready_boundary": "Exact original REQUEST reserved and ready for the dedicated PBS queue",
+  "pbs_intent_to_first_worker_poll_upper_seconds": 3.32062917703297,
+  "pbs_intent_to_worker_start_exact_seconds": null,
+  "scheduler_queue_wait_seconds": 0,
+  "scheduler_queue_wait_scope": "PBS manager qtime and stime equal at one-second resolution, not proof of zero subsecond delay",
+  "worker_start_to_q3_body_seconds": 13.056988129857928,
+  "q3_body_seconds": 49.641234965994954,
+  "q3_body_calls": 1,
+  "adapter_execute_seconds": 55.65036189928651,
+  "supervised_route_wall_seconds": 52.17196554969996,
+  "sampled_process_tree_peak_rss_kib": 1603456,
+  "peak_memory_scope": "Sampled summed process-tree RSS; not exact physical/cgroup peak and shared pages may be counted repeatedly",
+  "process_tree_cpu_seconds": 74.84391299400001,
+  "cpu_scope": "THROUGH_API_AND_RESULT_PERSISTENCE_CHILD_PEAK_IS_NOT_PROCESS_TREE_SUM",
+  "peak_cpu_cores": null,
+  "pbs_billing_resources_used": {
+    "cpupercent": 35,
+    "cput": "00:01:20",
+    "mem": "63608kb",
+    "ncpus": 8,
+    "vmem": "590016kb",
+    "walltime": "00:01:45"
+  },
+  "pbs_memory_caution": "PBS sampled mem covers a narrower scope and is not substituted for supervised process-tree RSS",
+  "worker_assignment_durable_to_body_seconds": 7.425555701833218,
+  "body_to_bundle_ready_seconds": 2.368639823049307,
+  "assignment_to_controller_receive_seconds": 66.94367087108549,
+  "save_to_adopt_cross_host_exact_seconds": null,
+  "save_to_adopt_upper_envelope_seconds": 17.45653943310026,
+  "save_to_adopt_upper_envelope_scope": "Conservative B+C nonbody envelope plus same-controller receive-to-executor-adopt; not a one-way transfer measurement",
+  "receive_to_executor_adopt_seconds": 0.1541035280097276,
+  "receive_validation_persistence_seconds": 0.14832216105423868,
+  "worker_upload_ack_roundtrip_seconds": 3.0370527007617056,
+  "decoded_result_artifact_bytes": 11886494,
+  "wire_bytes": null,
+  "wire_bytes_note": "JSON/base64/SSH/network overhead and protocol messages not measured; decoded payload is not wire volume",
+  "placement": {
+    "commit": "925985b4ea76a15f8a07c507179d4fa6c492eabd",
+    "destination": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/925985b4e",
+    "reused": true,
+    "remote_same_clock_seconds": 0.24235179275274277,
+    "missing_object_count": 9,
+    "transferred_bytes": 71096,
+    "local_same_clock_seconds": 4.363126390031539
+  },
+  "dp_cache_events": [
+    {
+      "UTC": "2026-11-17T18:28:04.775481+00:00",
+      "pid": 869162,
+      "event": "MISS",
+      "reused_rounds": 0,
+      "hash_seconds": 0.10536239203065634,
+      "read_seconds": 0.0003608730621635914
+    },
+    {
+      "UTC": "2026-11-17T18:28:53.138432+00:00",
+      "pid": 869162,
+      "event": "SAVE",
+      "completed": 11,
+      "key": "9fab81973a890581a8fbf46a395a95d4ec3199fd4bd0c32307e03605029d02bb",
+      "states": 8192,
+      "write_seconds": 0.7490352028980851,
+      "serialized_bytes": 48474848
+    }
+  ],
+  "dp_cache_hit_count": 0,
+  "dp_cache_reused_rounds": 0,
+  "saved_signal_and_price_inputs_reused": true,
+  "source_and_runtime_previously_placed": true,
+  "original_host_reference": {
+    "adapter_execute_seconds": 58.225289821624756,
+    "supervised_route_wall_seconds": 56.66645548911765,
+    "sampled_process_tree_peak_rss_kib": 1764976,
+    "original_q3_body_seconds": null,
+    "comparison_limits": "One saved server-host run versus one shared PBS-node run; distinct host/runtime/instrumentation/cache conditions. No speedup or optimized sizing claim."
+  },
+  "search_adopt_missing_scope": "Single saved-request driver adopts via existing executor/JobStore; no full optimizer search iteration or SEARCH_ADOPT event was fabricated."
+}

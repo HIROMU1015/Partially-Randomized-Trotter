@@ -371,3 +371,9 @@ Local0 absolute-kappa interval through the normal physical schedule entry (metad
 PBS照会と共有spoolの配送だけを担当する。`prepare_rpe_pbs_readiness.py`は固定SOURCEの不足Git object配置、
 `prepare_rpe_pbs_release.py`は新しい固定releaseの設定作成、`check_rpe_pbs.py`は人工検収用。
 実施範囲、開始・停止・再開、SOURCEとruntimeは[HANDOFF](../docs/research/rpe_pbs_worker_20261118/HANDOFF.md)。
+
+`check_rpe_pbs_saved_q3.py --service FILE --request FILE --output CENTRAL_RUN --fixed-code-root SOURCE925`
+は、採択された元REQUEST一件を通常scheduleの既存driver hookから共通queue/PBSへ渡す移植検収caller。
+固定SOURCEは変更せず、元OUTCOMEを初回回答に使わない。同じ完了runの再開は追加起動0。
+通常Windows/Gateway Startからの実H4起動検収とは区別する。
+[実H4一件の結果・運用](../docs/research/rpe_pbs_h4_q3_portability_20261118/HANDOFF.md)。

@@ -390,6 +390,11 @@ Local0 absolute-kappa interval through the normal physical schedule entry (metad
 [ローカル起点の簡易価格検証・配置と検収](research/h4_price_validation_local_controller_20261118/REPORT.md)／[起動・再開・同期](research/h4_price_validation_local_controller_20261118/HANDOFF.md)。
 # PBS計算先の実装・検収（2026-11-18）
 
+[実H4保存Q3一件の移植検収](research/rpe_pbs_h4_q3_portability_20261118/REPORT.md)／
+[HANDOFF](research/rpe_pbs_h4_q3_portability_20261118/HANDOFF.md)：
+固定925のschedule driver hook→実PBS→exact一致→中央採用1→再開追加0。信号・回路compile・fitは0。
+他方式実Q3と通常Windows/Gateway CLIによる実H4起動へ検収範囲を広げない。
+
 後続の実mergeと最終検収は[中央・価格・PBS統合HANDOFF](research/rpe_pbs_central_integration_20261118/HANDOFF.md)。
 固定925985b4eを実PBSで検収し、検証済み統合版を非アクティブ登録した。
 

@@ -1,0 +1,274 @@
+{
+  "jobs": [
+    {
+      "job_id": "98693b829295fc884330",
+      "method": "FULL_PF",
+      "request": {
+        "N_X": [
+          30,
+          28,
+          26,
+          24,
+          22,
+          20,
+          17,
+          15,
+          13,
+          11,
+          9,
+          5,
+          3
+        ],
+        "N_Y": [
+          30,
+          28,
+          26,
+          24,
+          22,
+          20,
+          17,
+          15,
+          13,
+          11,
+          9,
+          5,
+          3
+        ],
+        "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+        "cost": {
+          "denominator": 1,
+          "numerator": 497219638
+        },
+        "expected": {
+          "binding_id": "7d73dde608bbe08eb763bf025d325a4a2d717990bff1b14e8c4e79c9ec76f355",
+          "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+          "signal_source": {
+            "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+            "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_M5_16h/B_SIGNAL_INPUT.json"
+          },
+          "total_configuration_id": "a4a5e71abb763a78e70980d1cd7ccf20c2a9a33b1cadf77a52cb0bd86899d1c8"
+        },
+        "method": "FULL_PF",
+        "optimizer_source": "53bb0a1d7b1da70644da1c22552224291205af78",
+        "origin": {
+          "axes": [
+            "X",
+            "Y"
+          ],
+          "base_headroom": "0.774281",
+          "base_vector": [
+            30,
+            30,
+            28,
+            28,
+            26,
+            26,
+            24,
+            24,
+            22,
+            22,
+            20,
+            20,
+            17,
+            17,
+            15,
+            15,
+            13,
+            13,
+            11,
+            11,
+            9,
+            9,
+            7,
+            7,
+            3,
+            3
+          ],
+          "d": 2,
+          "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+          "m": 11
+        },
+        "request_id": "98693b829295fc884330",
+        "route": {
+          "configuration_ids": "*",
+          "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+          "kind": "pf_b_pf6",
+          "templates": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json"
+            },
+            {
+              "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+              "inputs_selector": [
+                "inputs"
+              ],
+              "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json"
+            }
+          ],
+          "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034"
+        }
+      },
+      "request_sha256": "a499fd8f2e1006bae4ba128261c479f310c0e24228f7dde7e5bde81bfbfd5d97",
+      "contract": {
+        "evaluation": "2e3dac22b1065151",
+        "prefix_key": "4bb241ef3ebcaa9864afdfff68606b445dbe5a5967e9e527e2846a8b60df2643"
+      },
+      "state": "ACCEPTED",
+      "host_id": "pbs-0",
+      "attempt_id": "18c2c7bc2d7b4a5581ef2543b1359e1b",
+      "enqueued_epoch": 1794940067.8842335,
+      "assigned_epoch": 1794940075.6055994,
+      "started_epoch": 1794940078.8411887,
+      "completed_epoch": 1794940142.6364777,
+      "adopted_epoch": 1794940142.7074366,
+      "updated_epoch": 1794940142.6364777,
+      "detail": {
+        "outcome_status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD"
+      },
+      "completion_sha256": "04eb65bc781fdc86075a9345c7564e32dc8d805dbd9811bcba00fe3d0b30ba88",
+      "eligibility": {
+        "decision_sha256": "d000783df6eced921f6d47370e012f31ff0218cd11088482044af3f6a6371549",
+        "eligible_host_ids": [
+          "pbs-0"
+        ],
+        "execution_profiles": {
+          "pbs-0": {
+            "adapter_manifest": {
+              "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+                "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+              }
+            },
+            "adapter_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/349558b748a82f384a4589434a63ef9b5572032c",
+            "dp_workers": 8,
+            "host_id": "pbs-0",
+            "interpreter": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+            "prefix_cache_directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/portability-h4-q3-20261118/cache/dp",
+            "root": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/28d976b99cdf8329adcc1b79327e329e947ef774",
+            "route_views": {
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/23160cc876807c0300be3de811f767b5810640a7",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/cbc471c913072de45c25a0ed22d51dff8a9b7034"
+            },
+            "runtime_checks": [
+              {
+                "function": "total_state_dp",
+                "guard_constant": "REFERENCE_DP_AST_SHA256",
+                "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+                "kind": "FIXED_FUNCTION_AST",
+                "source_path": "src/trottertracks/rpe_total_risk.py",
+                "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034"
+              }
+            ]
+          }
+        },
+        "host_decisions": {
+          "pbs-0": {
+            "reasons": [],
+            "status": "PASS"
+          }
+        },
+        "host_fingerprints": {
+          "pbs-0": "113f68c0b7f675d6cc153c927ef27f7264a63d105c185a0df931a99944f8c06a"
+        },
+        "reasons": [],
+        "request_sha256": "a499fd8f2e1006bae4ba128261c479f310c0e24228f7dde7e5bde81bfbfd5d97",
+        "source_manifest_sha256": "05b83675db765e0581c282445452e2b4db637c3d12e47568551e28362e12c0e5"
+      }
+    }
+  ],
+  "events": [
+    {
+      "sequence": 1,
+      "job_id": "98693b829295fc884330",
+      "event": "RESERVE",
+      "epoch": 1794940067.884264,
+      "detail": {
+        "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+        "epoch": 1794940067.884265,
+        "monotonic": 980056.438616383
+      }
+    },
+    {
+      "sequence": 2,
+      "job_id": "98693b829295fc884330",
+      "event": "ASSIGN",
+      "epoch": 1794940075.605628,
+      "detail": {
+        "attempt_id": "18c2c7bc2d7b4a5581ef2543b1359e1b",
+        "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+        "epoch": 1794940075.6056285,
+        "host_id": "pbs-0",
+        "monotonic": 980064.159979872
+      }
+    },
+    {
+      "sequence": 3,
+      "job_id": "98693b829295fc884330",
+      "event": "STARTING",
+      "epoch": 1794940078.841214,
+      "detail": {
+        "automatic_retry": false,
+        "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+        "epoch": 1794940078.8412144,
+        "monotonic": 980067.395565811
+      }
+    },
+    {
+      "sequence": 4,
+      "job_id": "98693b829295fc884330",
+      "event": "RUNNING",
+      "epoch": 1794940083.4851213,
+      "detail": {
+        "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+        "epoch": 1794940083.4851217,
+        "monotonic": 980072.039473098,
+        "pid": 869111,
+        "supervisor_pid": 869039
+      }
+    },
+    {
+      "sequence": 5,
+      "job_id": "98693b829295fc884330",
+      "event": "COMPLETED_PENDING_TRANSFER",
+      "epoch": 1794940139.9961119,
+      "detail": {
+        "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+        "epoch": 1794940139.996112,
+        "monotonic": 980128.550463631,
+        "outcome_status": "MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD"
+      }
+    },
+    {
+      "sequence": 6,
+      "job_id": "98693b829295fc884330",
+      "event": "ACCEPT",
+      "epoch": 1794940142.6364965,
+      "detail": {
+        "attempt_id": "18c2c7bc2d7b4a5581ef2543b1359e1b",
+        "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+        "epoch": 1794940142.6364982,
+        "host_id": "pbs-0",
+        "monotonic": 980131.190849499
+      }
+    },
+    {
+      "sequence": 7,
+      "job_id": "98693b829295fc884330",
+      "event": "ADOPT",
+      "epoch": 1794940142.7074513,
+      "detail": {
+        "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+        "epoch": 1794940142.7074518,
+        "monotonic": 980131.261803274
+      }
+    }
+  ],
+  "source_database": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/state/runs/pbs-h4-q3-portability-20261118/output/distributed/QUEUE.sqlite3"
+}

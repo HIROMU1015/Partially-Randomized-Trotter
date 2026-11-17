@@ -1,8 +1,12 @@
 # プロジェクト案内
 
+保存実H4 Q3のPBS移植検収（2026-11-18）：[REPORT/HANDOFF](docs/research/rpe_pbs_h4_q3_portability_20261118/HANDOFF.md)。
+固定925の通常schedule driver hookからFullPF一件を実計算し、exact結果一致・回収/採用1・再開追加0を確認。
+信号取得・回路compile・価格fitは0。通常Windows/Gateway CLIからの実H4開始はこの検収に含めない。
+
 中央管理・価格検証・PBSの合流版（2026-11-18）：[統合HANDOFF](docs/research/rpe_pbs_central_integration_20261118/HANDOFF.md)。
 中央674・価格8ba・PBS系列を実mergeし、固定SOURCE925985b4eで通常入口→実PBS人工task→回収・採用・再開を検収済み。
-検証済みreleaseは非アクティブ登録。共有currentの切替は中央統合担当に集約し、実H4は未実行。
+検証済みreleaseは非アクティブ登録。共有currentの切替は中央統合担当に集約。この人工検収自体には実H4を含めない。
 
 PBS計算先の追加（2026-11-18）：[運用・検収記録](docs/research/rpe_pbs_worker_20261118/HANDOFF.md)。
 RomuTailの既存DistributedExecutor/JobStoreへPBS割当内workerを接続する実装であり、
