@@ -511,3 +511,5 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 [最終報告](docs/research/track_d_cut_h4_q4_completion_20261108/REPORT.md)。提供されたC6a q4_sample00 archive全20 memberのhash一致後、固定ruleを一回適用しcut2を選択。旧raw1/compiled4 PASS・全7価格を適格再利用、新build/compile/post0、選択−中央は全7差0。前回入力STOPは履歴保全、他cut/path・q64は対象外、公開後mandatory STOP。
 
 - PR-Pauli/PR-DFの複数要求PF幅を通常探索へ接続する入口・保存/人工検収: [HANDOFF](docs/research/pr_requested_step_search_20261117/HANDOFF.md)。科学実行は未実施。
+
+- RomuTailの固定PR-DF内側SOURCE配置解決・実入力dry-check：[HANDOFF](docs/research/rpe_prdf_romutail_source_20261117/HANDOFF.md)。計画33928bf/REQUEST48494ae、Q3・compile・queue投入なし。
