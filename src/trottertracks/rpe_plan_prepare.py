@@ -178,6 +178,11 @@ def merge_host_readiness(prepared, output, code_root, descriptor=None):
     for path in (Path(prepared['output']) / 'profiles').glob('*.json'):
         profile = O.load_json(path)
         profiles[profile['host_id']] = profile
+    for host, rules in data.get('profile_overrides', {}).items():
+        if host in profiles:
+            profiles[host]['route_profiles'] = deepcopy(rules)
+    for host, profile in profiles.items():
+        write(output / 'worker_profiles' / (host + '.json'), profile)
     evidence = deepcopy(data.get('evidence_by_host', {}))
     local_host = O.load_json(prepared['server2_profile'])['host_id']
     evidence[local_host] = dict(kind='local', root=str(output / 'host_checks'),
@@ -195,7 +200,8 @@ def merge_host_readiness(prepared, output, code_root, descriptor=None):
         note='Executor fragment only. It grants no scientific execution or budget; merge into a separately approved new round. Worker profiles keep the dry-checked interpreter/routes/DP/cache; work_dir and slots may be added.'))
     prepared['host_eligibility'] = dict(path=str(policy_path), schema=policy['schema'],
                                      evidence_descriptor=str(config), jobs=policy['jobs'],
-                                     distributed_options=str(options_path))
+                                     distributed_options=str(options_path),
+                                     worker_profiles=str(output / 'worker_profiles'))
     for row in prepared['candidates']:
         decision = policy['jobs'].get(row.get('job_id'), {})
         allowed = decision.get('eligible_host_ids', [])

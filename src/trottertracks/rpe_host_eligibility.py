@@ -76,12 +76,18 @@ def _fingerprint(assignment, profile, runtime, views=None, actual=None):
                                      clean_tracked=not view.get('tracked_changes', {})))
     if not normalized_views:
         normalized_views.append(dict(path=selected, commit=route['view_commit'], clean_tracked=True))
+    runtime_identity = dict(executable=runtime['executable'], version=runtime['version'])
+    if runtime['executable'] != profile['interpreter']:
+        for key in ('interpreter_invocation', 'launcher_sha256', 'actual_executable_realpath', 'actual_binary_sha256'):
+            if not runtime.get(key):
+                raise ValueError('Launcher runtime lacks its bound actual identity: ' + key)
+            runtime_identity[key] = runtime[key]
     return dict(schema='RPE_Q3_CURRENT_HOST_FINGERPRINT_V1',
                 request_sha256=Q.digest(assignment['request']),
                 source_manifest=source, source_head=source_head, input_hashes=_inputs(inputs),
                 profile=_effective_profile(profile, assignment),
                 views=sorted(normalized_views, key=lambda view: view['path']),
-                runtime=dict(executable=runtime['executable'], version=runtime['version']))
+                runtime=runtime_identity)
 
 
 def current_host_fingerprint(assignment, profile):
@@ -92,11 +98,18 @@ def current_host_fingerprint(assignment, profile):
     invoked. Errors deliberately propagate so the caller can withhold new claims.
     """
     from .rpe_plan_readiness import dry_check_fingerprint
+    from .rpe_host_profiles import select_host_profile
     assignment, profile = _read(assignment), _read(profile)
+    profile = select_host_profile(profile, assignment)
     raw = dry_check_fingerprint(profile['root'], assignment, profile)
     # The older readiness helper labels its fixed source as 28d. Actual HEAD is
     # separate and must be used for a newly fixed worker source as well.
     raw['source'] = dict(raw['source'], commit=raw['source_head'])
+    if raw['runtime']['executable'] != profile['interpreter']:
+        binary = Path(raw['runtime']['executable']).resolve()
+        raw['runtime'].update(interpreter_invocation=profile['interpreter'],
+            launcher_sha256=_sha(profile['interpreter']), actual_executable_realpath=str(binary),
+            actual_binary_sha256=_sha(binary))
     return _fingerprint(assignment, profile, raw['runtime'], raw['views'], actual=raw)
 
 
@@ -104,6 +117,19 @@ def _receipt_check(descriptor, base):
     """Verify the existing transfer/receipt mechanism; invent no new authority."""
     if descriptor.get('kind') == 'local':
         return dict(status='MATCH', kind='DIRECT_LOCAL_OBSERVATION')
+    if descriptor.get('kind') == 'fixed_git':
+        import subprocess
+        manifest_path = _path(descriptor['manifest'], base)
+        manifest_locator = descriptor['fixed_prefix'].rstrip('/') + '/' + manifest_path.name
+        raw = subprocess.check_output(['git', 'show', descriptor['fixed_commit'] + ':' + manifest_locator],
+            cwd=Path(__file__).resolve().parents[2])
+        if manifest_path.read_bytes() != raw:
+            raise ValueError('Fixed Git evidence manifest bytes differ')
+        files = {row['path']: row['sha256'] for row in json.loads(raw)['files']}
+        return dict(status='MATCH', kind='FIXED_GIT_EVIDENCE', manifest=str(manifest_path),
+            manifest_sha256=_sha(manifest_path), fixed_commit=descriptor['fixed_commit'],
+            fixed_manifest_path=manifest_locator,
+            manifest_root=str(_path(descriptor['root'], base).resolve()), files=files)
     manifest_path = _path(descriptor['manifest'], base)
     receipt_path = _path(descriptor['receipt'], base)
     manifest, receipt = _read(manifest_path), _read(receipt_path)
@@ -149,6 +175,16 @@ def _host_evidence(descriptor, base):
     if facts_path.is_file():
         _covered(facts_path, receipt)
         facts = _read(facts_path)
+    host_method_readiness = dedicated_profile = None
+    if descriptor.get('host_method_readiness'):
+        path = _path(descriptor['host_method_readiness'], base)
+        _covered(path, receipt)
+        host_method_readiness = _read(path)
+        profile_path = _path(descriptor['profile'], base)
+        _covered(profile_path, receipt)
+        if _sha(profile_path) != host_method_readiness.get('profile_sha256'):
+            raise ValueError('Dedicated host profile bytes differ from HOST_METHOD_READINESS')
+        dedicated_profile = _read(profile_path)
     cache = {}
     if descriptor.get('runtime_cache'):
         cache = _read(_path(descriptor['runtime_cache'], base)).get('methods', {})
@@ -174,7 +210,78 @@ def _host_evidence(descriptor, base):
             records.append(dict(path=original_path, readiness=observed, runtime_item=runtime_item))
         except Exception as exc:
             records.append(dict(path=path, readiness=observed, error=str(exc)))
-    return dict(root=root, receipt=receipt, facts=facts, records=records)
+    return dict(root=root, receipt=receipt, facts=facts, records=records,
+                host_method_readiness=host_method_readiness, dedicated_profile=dedicated_profile)
+
+
+def _method_runtime(assignment, profile, evidence, observed, readiness_path):
+    """Bind a published host/method capability to the official adapter record.
+
+    A launcher and sys.executable may legitimately differ. Their profile,
+    invocation, executable and binary hashes must all be bound by the existing
+    published evidence; do not substitute the checker process's Python version.
+    """
+    capability = evidence['host_method_readiness']
+    route = assignment['request']['route']
+    expected = dict(host_id=profile['host_id'], method=assignment['method'], job_id=assignment['job_id'],
+        source_commit=assignment['source_manifest']['commit'], request_sha256=assignment['request_sha256'],
+        route_kind=route['kind'], route_commit=route['view_commit'])
+    for key, value in expected.items():
+        if capability.get(key) != value:
+            raise ValueError('HOST_METHOD_READINESS identity differs: ' + key)
+    if capability.get('readiness_sha256') != _sha(readiness_path):
+        raise ValueError('Official readiness hash differs from HOST_METHOD_READINESS')
+    if capability.get('resolved_request_sha256') != observed.get('resolved_request_sha256'):
+        raise ValueError('Resolved request identity differs from HOST_METHOD_READINESS')
+    if _effective_profile(evidence['dedicated_profile'], assignment) != _effective_profile(profile, assignment):
+        raise ValueError('Selected candidate profile differs from the published dedicated profile')
+    if capability.get('source_files_sha256') != assignment['source_manifest']['files']:
+        raise ValueError('HOST_METHOD_READINESS SOURCE files differ')
+    declared_inputs = capability.get('input_hashes', [])
+    if any(row.get('observed_sha256') != row['sha256'] for row in declared_inputs):
+        raise ValueError('HOST_METHOD_READINESS observed input hashes differ')
+    plain_inputs = [{key: row[key] for key in ('commit', 'path', 'sha256')} for row in declared_inputs]
+    if _inputs(plain_inputs) != _inputs(assignment.get('input_hashes', [])):
+        raise ValueError('HOST_METHOD_READINESS inputs differ from this candidate')
+    if capability.get('status') != observed.get('status'):
+        raise ValueError('HOST_METHOD_READINESS dry-check status differs')
+    if capability.get('scientific_evaluation_calls') != 0 or capability.get('queue_operations') != 0 or capability.get('source_and_ast_guards_modified') is not False:
+        raise ValueError('Published capability does not preserve the fixed dry-check contract')
+    runtime = deepcopy((observed.get('adapter_result') or {}).get('runtime') or {})
+    if runtime != capability.get('runtime_guard') or not runtime.get('version'):
+        raise ValueError('Official adapter runtime differs from the published runtime guard')
+    if capability.get('interpreter_invocation') != profile['interpreter'] or runtime.get('executable') != capability.get('actual_executable'):
+        raise ValueError('Published invocation/actual executable binding differs')
+    if runtime.get('guard_modified') is not False or runtime.get('constructor') != 'PASS_UNCHANGED_GUARD':
+        raise ValueError('Original runtime/AST guard did not pass unchanged')
+    identity = capability.get('version_info') or []
+    if len(identity) != 5:
+        raise ValueError('Published actual version_info is missing')
+    release = {'candidate': 'rc', 'alpha': 'a', 'beta': 'b', 'final': ''}.get(identity[3])
+    if release is None:
+        raise ValueError('Published Python release level is unknown')
+    prefix = '.'.join(str(value) for value in identity[:3]) + (release + str(identity[4]) if release else '')
+    if not runtime['version'].startswith(prefix + ' '):
+        raise ValueError('Published actual version_info contradicts adapter runtime')
+    runtime.update(interpreter_invocation=capability['interpreter_invocation'],
+        launcher_sha256=capability['interpreter_launcher_sha256'],
+        actual_executable_realpath=capability['actual_executable_realpath'],
+        actual_binary_sha256=capability['actual_binary_sha256'])
+    views = []
+    records = capability.get('route_views') or {}
+    source = records.get('source') or {}
+    selected = records.get('route') or {}
+    if source.get('path') != profile['root'] or source.get('head') != assignment['source_manifest']['commit'] or source.get('tracked_dirty') != []:
+        raise ValueError('Published SOURCE view identity/cleanliness differs')
+    if selected.get('path') != profile['route_views'][route['view_commit']] or selected.get('head') != route['view_commit']:
+        raise ValueError('Published selected route view identity differs')
+    for key, view in records.items():
+        if key == 'source':
+            continue
+        if view.get('tracked_dirty') != [] or not view.get('head'):
+            raise ValueError('Published route dependency is changed or unchecked: ' + key)
+        views.append(dict(path=view.get('realpath', view['path']), commit=view['head']))
+    return runtime, views
 
 
 def _fact_views(assignment, profile, facts):
@@ -271,12 +378,14 @@ def _cell(assignment, profile, evidence, *, current_inputs=None, current_source=
                 if _inputs(raw.get('input_hashes', [])) != _inputs(assignment.get('input_hashes', [])):
                     raise ValueError('Saved local input fingerprint differs')
                 runtime, views = raw['runtime'], raw['views']
+            elif evidence.get('host_method_readiness'):
+                runtime, views = _method_runtime(assignment, profile, evidence, observed, path)
             else:
                 if facts is None or facts.get('python') != profile['interpreter'] or facts.get('python_version') != observed.get('python_version'):
                     raise ValueError('No matching actual interpreter/runtime observation')
                 views = _fact_views(assignment, profile, facts)
                 runtime = dict(executable=facts['python'], version=facts['python_version'])
-            if runtime.get('executable') != profile['interpreter'] or not runtime.get('version'):
+            if not runtime.get('version') or (runtime.get('executable') != profile['interpreter'] and runtime.get('interpreter_invocation') != profile['interpreter']):
                 raise ValueError('Actual interpreter identity/version is missing or mismatched')
             expected_runtime = profile.get('runtime') or {}
             for key, expected in expected_runtime.items():
@@ -304,6 +413,8 @@ def _cell(assignment, profile, evidence, *, current_inputs=None, current_source=
             row.update(current_host_fingerprint=fingerprint,
                        current_host_fingerprint_sha256=Q.digest(fingerprint),
                        host_profile_sha256=Q.digest(_effective_profile(profile, assignment)))
+            from .rpe_host_profiles import profile_core
+            row['execution_profile'] = profile_core(profile)
             row['evidence'].append(dict(readiness=str(path), sha256=_sha(path), receipt=receipt.get('receipt'),
                                         manifest=receipt.get('manifest'), runtime_source='LOCAL_FINGERPRINT' if raw else 'RECEIVED_HOST_FACTS'))
         except Exception as exc:
@@ -329,6 +440,19 @@ def _items(values, field):
     return [_read(value) for value in values]
 
 
+def _select_evidence(descriptor, assignment):
+    if not descriptor:
+        raise ValueError('No saved received evidence descriptor for this host')
+    route = assignment['request']['route']
+    matches = [entry for entry in descriptor.get('route_evidence', [])
+               if entry.get('route_kind') == route['kind'] and entry.get('view_commit') == route['view_commit']]
+    if len(matches) > 1:
+        raise ValueError('Ambiguous route-specific evidence descriptors')
+    if matches:
+        return matches[0]['evidence']
+    return {key: value for key, value in descriptor.items() if key != 'route_evidence'}
+
+
 def derive_host_eligibility(assignments, profiles, evidence_by_host, *, root=None, base_directory=None):
     """Derive a fresh policy from full current requests and saved evidence only.
 
@@ -338,12 +462,8 @@ def derive_host_eligibility(assignments, profiles, evidence_by_host, *, root=Non
     """
     assignments = _items(assignments, 'request')
     profiles = {profile['host_id']: profile for profile in _items(profiles, 'host_id')}
+    from .rpe_host_profiles import select_host_profile
     prepared_evidence = {}
-    for host, descriptor in evidence_by_host.items():
-        try:
-            prepared_evidence[host] = _host_evidence(descriptor, base_directory)
-        except Exception as exc:
-            prepared_evidence[host] = dict(error=str(exc))
     jobs = {}
     for assignment in assignments:
         hosts = {}
@@ -359,8 +479,19 @@ def derive_host_eligibility(assignments, profiles, evidence_by_host, *, root=Non
                     raise ValueError('Controller computation SOURCE HEAD differs from current assignment')
             except Exception as exc:
                 current_error = str(exc)
-        for host, profile in profiles.items():
-            evidence = prepared_evidence.get(host) or dict(error='No saved received evidence descriptor for this host')
+        for host, base_profile in profiles.items():
+            try:
+                profile = select_host_profile(base_profile, assignment)
+                descriptor = _select_evidence(evidence_by_host.get(host), assignment)
+                key = host, Q.digest(descriptor)
+                if key not in prepared_evidence:
+                    try:
+                        prepared_evidence[key] = _host_evidence(descriptor, base_directory)
+                    except Exception as exc:
+                        prepared_evidence[key] = dict(error=str(exc))
+                evidence = prepared_evidence[key]
+            except Exception as exc:
+                evidence = dict(error=str(exc))
             if current_error or evidence.get('error'):
                 hosts[host] = dict(status='UNCHECKED', reasons=[current_error or evidence['error']],
                     dimensions={key: 'UNCHECKED' for key in ('request', 'source', 'input', 'route', 'runtime', 'receipt')}, evidence=[])

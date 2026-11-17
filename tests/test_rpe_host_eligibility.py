@@ -19,6 +19,45 @@ def save(path, value):
 
 
 class HostEligibilityTests(unittest.TestCase):
+    def dedicated_fixture(self):
+        profile = deepcopy(self.profile)
+        profile['interpreter'] = '/owned/runtime-acceptance/python'
+        profile['prefix_cache_directory'] = '/owned/dedicated-cache'
+        root = self.base / 'dedicated'
+        path = root / 'dry' / 'arbitrary-candidate'
+        resolved = H._resolved_request(self.assignment, profile)
+        save(path / 'RESOLVED_REQUEST.json', resolved)
+        runtime = dict(executable='/owned/runtime/bin/python3', version='3.11.0rc1 (saved build)',
+                       constructor='PASS_UNCHANGED_GUARD', guard_modified=False)
+        adapter = dict(self.adapter, runtime=runtime)
+        save(path / 'adapter/DRY_CHECK.json', adapter)
+        observed = dict(self.readiness, python='/usr/bin/python3', python_version='3.12.checker-only',
+                        route=resolved['route'], adapter_result=adapter,
+                        resolved_request_sha256=H._sha(path / 'RESOLVED_REQUEST.json'),
+                        command=[profile['interpreter'], '-B', 'adapter.py', '--mode', 'dry-check'])
+        save(path / 'READINESS.json', observed)
+        save(root / 'profile.json', profile)
+        capability = dict(host_id=self.host, method=self.assignment['method'], job_id=self.assignment['job_id'],
+            source_commit=self.assignment['source_manifest']['commit'], request_sha256=self.assignment['request_sha256'],
+            route_kind=self.assignment['request']['route']['kind'], route_commit='b' * 40,
+            profile_sha256=H._sha(root / 'profile.json'), readiness_sha256=H._sha(path / 'READINESS.json'),
+            resolved_request_sha256=observed['resolved_request_sha256'], status=observed['status'],
+            source_files_sha256=self.assignment['source_manifest']['files'],
+            input_hashes=[dict(row, observed_sha256=row['sha256']) for row in self.assignment['input_hashes']],
+            scientific_evaluation_calls=0, queue_operations=0, source_and_ast_guards_modified=False,
+            runtime_guard=runtime, interpreter_invocation=profile['interpreter'],
+            actual_executable=runtime['executable'], actual_executable_realpath='/owned/runtime/bin/python3.11',
+            interpreter_launcher_sha256='1' * 64, actual_binary_sha256='2' * 64,
+            version_info=[3, 11, 0, 'candidate', 1],
+            route_views=dict(source=dict(path=profile['root'], head='a' * 40, tracked_dirty=[]),
+                             route=dict(path='/owned/fixed-route', head='b' * 40, tracked_dirty=[])))
+        save(root / 'HOST_METHOD_READINESS.json', capability)
+        descriptor = dict(kind='fixed_git', root=str(root), host_method_readiness=str(root / 'HOST_METHOD_READINESS.json'),
+                          profile=str(root / 'profile.json'))
+        base_profile = dict(self.profile, work_dir='/owned/common-spool', slots=4,
+            route_profiles=[dict(route_kind='saved_route_kind', view_commit='b' * 40, profile=profile)])
+        return base_profile, descriptor, capability, root
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix='rpe-host-eligibility-')
         self.addCleanup(self.temporary.cleanup)
@@ -160,6 +199,45 @@ class HostEligibilityTests(unittest.TestCase):
         save(self.cell / 'READINESS.json', {'malformed': True})
         self.receive()
         self.assertEqual(self.derive()['hosts'][self.host]['status'], 'UNCHECKED')
+
+    def test_dedicated_launcher_profile_uses_adapter_runtime_and_keeps_common_profile(self):
+        base_profile, descriptor, capability, root = self.dedicated_fixture()
+        before = deepcopy(base_profile)
+        with patch.object(H, '_receipt_check', return_value=dict(status='MATCH', kind='DIRECT_LOCAL_OBSERVATION')):
+            row = self.derive(profile=base_profile, descriptor=descriptor)
+        cell = row['hosts'][self.host]
+        self.assertEqual(cell['status'], 'PASS')
+        self.assertEqual(cell['execution_profile']['interpreter'], capability['interpreter_invocation'])
+        runtime = cell['current_host_fingerprint']['runtime']
+        self.assertEqual(runtime['version'], '3.11.0rc1 (saved build)')
+        self.assertEqual(runtime['executable'], capability['actual_executable'])
+        self.assertEqual(runtime['launcher_sha256'], '1' * 64)
+        self.assertEqual(runtime['actual_binary_sha256'], '2' * 64)
+        self.assertEqual(base_profile, before)
+        from trottertracks.rpe_host_profiles import select_host_profile
+        other = deepcopy(self.assignment)
+        other['request']['route']['view_commit'] = 'unrelated-route'
+        self.assertEqual(select_host_profile(base_profile, other)['interpreter'], self.profile['interpreter'])
+
+    def test_common_runtime_fallback_or_bad_capability_hash_is_unchecked(self):
+        base_profile, descriptor, capability, root = self.dedicated_fixture()
+        with patch.object(H, '_receipt_check', return_value=dict(status='MATCH', kind='DIRECT_LOCAL_OBSERVATION')):
+            self.assertEqual(self.derive(profile=self.profile, descriptor=descriptor)['hosts'][self.host]['status'], 'UNCHECKED')
+            capability['readiness_sha256'] = '0' * 64
+            save(root / 'HOST_METHOD_READINESS.json', capability)
+            self.assertEqual(self.derive(profile=base_profile, descriptor=descriptor)['hosts'][self.host]['status'], 'UNCHECKED')
+
+    def test_actual_launcher_fingerprint_hashes_launcher_and_actual_binary(self):
+        profile = dict(self.profile, interpreter=str(self.base / 'launcher'))
+        Path(profile['interpreter']).write_text('#!/bin/sh\nexec python3 "$@"\n')
+        raw = dict(profile=profile, runtime=dict(executable=sys.executable, version=sys.version),
+            source=self.assignment['source_manifest'], source_head='a' * 40,
+            input_hashes=self.assignment['input_hashes'], request_sha256=self.assignment['request_sha256'],
+            views=[dict(path='/owned/fixed-route', head='b' * 40, tracked_changes={})])
+        with patch('trottertracks.rpe_plan_readiness.dry_check_fingerprint', return_value=raw):
+            actual = H.current_host_fingerprint(self.assignment, profile)
+        self.assertEqual(actual['runtime']['launcher_sha256'], H._sha(profile['interpreter']))
+        self.assertEqual(actual['runtime']['actual_binary_sha256'], H._sha(Path(sys.executable).resolve()))
 
 
 if __name__ == '__main__':

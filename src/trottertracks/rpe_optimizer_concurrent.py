@@ -493,6 +493,7 @@ class DistributedExecutor(ConcurrentExecutor):
             if not result['decision_sha256']: raise ValueError('NO_HOST_ELIGIBILITY_DECISION_DIGEST')
             result['host_decisions'] = {name: dict(status=cell.get('status', 'UNCHECKED'),
                 reasons=cell.get('reasons', [])) for name, cell in (record.get('hosts') or {}).items()}
+            result['execution_profiles'] = {}
             for host in record.get('eligible_host_ids', []):
                 cell = (record.get('hosts') or {}).get(host, {})
                 fingerprint = cell.get('current_host_fingerprint_sha256')
@@ -505,6 +506,8 @@ class DistributedExecutor(ConcurrentExecutor):
                         continue
                     result['eligible_host_ids'].append(host)
                     result['host_fingerprints'][host] = fingerprint
+                    if cell.get('execution_profile') is not None:
+                        result['execution_profiles'][host] = deepcopy(cell['execution_profile'])
             if not result['eligible_host_ids']: result['reasons'].append('ALL_HOSTS_FAIL_OR_UNCHECKED')
         except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
             result['reasons'].append(str(exc))
@@ -596,11 +599,21 @@ class DistributedExecutor(ConcurrentExecutor):
         row = self.store.row(self.job_dir(proposal).name)
         return (row is not None and row['state'] != 'CANCELLED') or super().has_job(proposal)
 
-    def _assignment(self, row):
-        from .rpe_q3_coordinator import input_hashes, prefix_key
-        return dict(job_id=row['job_id'], method=row['method'], attempt_id=row['attempt_id'], request=row['request'],
+    def _assignment(self, row, host_id=None):
+        from .rpe_q3_coordinator import input_hashes, prefix_key, digest
+        from .rpe_host_profiles import profile_core
+        value = dict(job_id=row['job_id'], method=row['method'], attempt_id=row['attempt_id'], request=row['request'],
             request_sha256=row['request_sha256'], source_manifest=self.source_manifest,
             input_hashes=input_hashes(self.computation_root, row['request'], self.input_hash_cache), prefix_key=prefix_key(row['request']))
+        # Eligibility can change only before claim. Assigned rows retain the
+        # selected profile for replay/recovery even after policy replacement.
+        fixed = self.store.row(row['job_id'])
+        host = host_id or row.get('host_id')
+        profile = ((fixed.get('eligibility') or {}).get('execution_profiles') or {}).get(host)
+        if profile is not None:
+            value['host_execution_profile'] = profile_core(profile)
+            value['host_execution_profile_sha256'] = digest(value['host_execution_profile'])
+        return value
 
     def rpc(self, path, value):
         from . import rpe_q3_coordinator as Q
@@ -645,7 +658,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not self.store.eligible(row['request'], decision, host, fingerprints, row['job_id']):
                         # Metadata challenge only: no attempt ID, reservation
                         # transition, LAUNCH or scientific execution occurs.
-                        challenge = self._assignment(row)
+                        challenge = self._assignment(row, host_id=host)
                         challenge.pop('attempt_id', None)
                         challenges.append(challenge)
                         skipped = True

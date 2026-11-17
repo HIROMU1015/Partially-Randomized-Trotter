@@ -7,6 +7,7 @@ old job. Output must be a new directory owned by this plan.
 import argparse
 import hashlib
 import importlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -15,6 +16,16 @@ import subprocess
 import sys
 import time
 import traceback
+
+
+def select_profile(profile, assignment):
+    # Load the transport's pure metadata helper without importing its package:
+    # validate_assignment below must still come from the fixed scientific root.
+    path = Path(__file__).resolve().parents[1] / 'src/trottertracks/rpe_host_profiles.py'
+    spec = importlib.util.spec_from_file_location('_readiness_host_profiles', path)
+    helper = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(helper)
+    return helper.select_host_profile(profile, assignment)
 
 
 def main():
@@ -36,6 +47,7 @@ def main():
             sys.set_int_max_str_digits(0)
         profile = json.loads(args.profile.read_text())
         assignment = json.loads(args.assignment.read_text())
+        profile = select_profile(profile, assignment)
         result.update(host_id=profile['host_id'], job_id=assignment['job_id'],
                       source=assignment['source_manifest']['commit'],
                       request_sha256=assignment['request_sha256'],

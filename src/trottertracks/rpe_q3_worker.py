@@ -4,6 +4,7 @@ A detached per-attempt supervisor preserves adapter exit evidence if the network
 or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 """
 from copy import deepcopy
+from .rpe_host_profiles import select_host_profile
 import base64
 import fcntl
 import hashlib
@@ -105,6 +106,7 @@ def save_state(attempt, state, **detail):
 
 def validate_assignment(profile, assignment):
     """Verify scientific content before resolving the host's execution paths."""
+    profile = select_host_profile(profile, assignment)
     root = Path(profile['root']).resolve()
     request = assignment['request']
     if digest(request) != assignment['request_sha256']:
@@ -162,6 +164,9 @@ def host_fingerprints(profile, challenges):
 
 
 def _adapter_command(profile, attempt, mode, output):
+    saved_assignment = Path(attempt) / 'ASSIGNMENT.json'
+    if saved_assignment.is_file():
+        profile = select_host_profile(profile, read(saved_assignment))
     return [profile['interpreter'], '-B', str(Path(profile['root']) / 'scripts/run_rpe_optimizer_q3_job.py'),
             '--request', str(Path(attempt) / 'RESOLVED_REQUEST.json'), '--output', str(output), '--mode', mode]
 
@@ -337,8 +342,9 @@ class Worker:
             self.records[attempt] = before
             return
         # ASSIGNMENT becomes visible only after the exact request/profile are durable.
+        selected_profile = select_host_profile(self.profile, assignment)
         atomic(attempt / 'ORIGINAL_REQUEST.json', assignment['request'])
-        atomic(attempt / 'WORKER_PROFILE.json', self.profile)
+        atomic(attempt / 'WORKER_PROFILE.json', selected_profile)
         save_state(attempt, 'ASSIGNED')
         atomic(attempt / 'ASSIGNMENT.json', assignment)
         self.records[attempt] = assignment
@@ -346,11 +352,12 @@ class Worker:
 
     def _launch(self, attempt):
         # Durable before Popen: an interrupted handoff is ambiguous, never retried.
+        profile = select_host_profile(read(attempt / 'WORKER_PROFILE.json'), read(attempt / 'ASSIGNMENT.json'))
         save_state(attempt, 'STARTING', automatic_retry=False)
-        command = [self.profile['interpreter'], '-B', str(self.root / 'scripts/run_rpe_q3_worker.py'),
+        command = [profile['interpreter'], '-B', str(Path(profile['root']) / 'scripts/run_rpe_q3_worker.py'),
                    '--supervise-attempt', str(attempt)]
         with (attempt / 'WORKER_SUPERVISOR.log').open('a') as log:
-            process = subprocess.Popen(command, cwd=self.root, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'),
+            process = subprocess.Popen(command, cwd=profile['root'], env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'),
                 stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
         exclusive(attempt / 'SUPERVISOR_LAUNCH.json', dict(pid=process.pid, epoch=time.time()))
         self.processes[attempt] = process
@@ -375,7 +382,7 @@ class Worker:
             # Without a live known supervisor or receipt there is no safe retry.
             if (attempt / 'PROCESS_RETURN.json').exists():
                 try:
-                    observed = validate_completed(self.profile, assignment, attempt)
+                    observed = validate_completed(read(attempt / 'WORKER_PROFILE.json'), assignment, attempt)
                     state = save_state(attempt, 'COMPLETED_PENDING_TRANSFER', outcome_status=observed['status'], recovered=True)
                     event(self.profile, 'RECOVER_COMPLETED', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'])
                 except Exception as error:
@@ -480,10 +487,11 @@ def mailbox(profile, action, payload=None):
     try:
         if action == 'submit':
             assignment = payload.get('assignment', payload)
-            validate_assignment(worker.profile, assignment)
             safe_id(assignment['job_id']); safe_id(assignment['attempt_id'])
             attempt = worker.work / assignment['job_id'] / assignment['attempt_id']
             duplicate = (attempt / 'ASSIGNMENT.json').exists()
+            profile = read(attempt / 'WORKER_PROFILE.json') if duplicate else worker.profile
+            validate_assignment(profile, assignment)
             active = sum(worker._reconcile(path, saved)['state'] in ('ASSIGNED', 'STARTING', 'RUNNING')
                          for path, saved in worker.records.items())
             if not duplicate and active >= worker.slots:
