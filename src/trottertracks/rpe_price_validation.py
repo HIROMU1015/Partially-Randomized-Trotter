@@ -132,7 +132,9 @@ def saved_checks(description,reader):
                 model=description['identity']['model_source']or{}
                 if ref and (ref.get('commit'),ref.get('path'))!=(model.get('commit'),model.get('path')):
                     doc=reader.read(dict(ref,selector=[]))
-                    if model not in [doc.get('model_source'),doc.get('model')]:
+                    candidates=[doc.get('model_source'),doc.get('model'),(doc.get('binding')or{}).get('model_source')]
+                    locator=lambda x:(x.get('commit'),x.get('path'),x.get('selector')or[])if isinstance(x,dict)else None
+                    if locator(model)not in [locator(x)for x in candidates]:
                         issues.append('DIFFERENT_FROZEN_PREDICTION_SOURCE');continue
                 if relative is not None and frac(relative)!=(frac(predicted)-frac(observed))/frac(observed):
                     raise ValueError('Saved comparison relative difference differs')
@@ -187,7 +189,7 @@ class ModelStore:
             resolved=resolve();checks,issues=resolved[:2];existing=resolved[2]if len(resolved)>2 else None
             status='PENDING'if existing else'INDEPENDENT_MEASURED'if checks else 'INCOMPLETE'if issues else 'CALIBRATION_ONLY'
             record={k:deepcopy(v)for k,v in desc.items()if k not in('points','configuration_id','configuration_source')}
-            record.update(status=status,label=LABELS[status],validation_points=checks,issues=issues,evidence_parser_version=2)
+            record.update(status=status,label=LABELS[status],validation_points=checks,issues=issues,evidence_parser_version=3)
             if existing:record.update(external_job=existing,pending_reason='REUSE_EQUIVALENT_ACTIVE_OR_WAITING_JOB')
             db.execute('INSERT INTO models VALUES(?,?,?)',(desc['model_id'],json.dumps(desc['identity'],sort_keys=True),json.dumps(record)))
             return record
@@ -248,9 +250,9 @@ class Service:
                     first=mid not in self.descriptions
                     old=self.store.row(mid)if first else None
                     self.store.register(desc,lambda d=desc:self.resolve(d,reader))
-                    if first and old and(old['status']!='INDEPENDENT_MEASURED'or old.get('evidence_parser_version')!=2):
+                    if first and old and(old['status']!='INDEPENDENT_MEASURED'or old.get('evidence_parser_version')!=3):
                         checks,issues,external=self.resolve(desc,reader)
-                        if checks:self.store.change(mid,lambda r:r.update(status='INDEPENDENT_MEASURED',validation_points=checks,issues=issues,evidence_parser_version=2))
+                        if checks:self.store.change(mid,lambda r:r.update(status='INDEPENDENT_MEASURED',validation_points=checks,issues=issues,evidence_parser_version=3))
                     self.descriptions[mid]=(desc,c)
                     self.applications[c['configuration_id'],mid]=dict(configuration_id=c['configuration_id'],model_id=mid,
                         points=[{k:p.get(k)for k in('m','q','R','physical_id')}for p in desc['points']],
