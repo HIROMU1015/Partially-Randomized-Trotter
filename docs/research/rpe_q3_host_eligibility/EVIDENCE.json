@@ -118,6 +118,29 @@
           }
         }
       ]
+    },
+    "local0-wsl": {
+      "kind": "fixed_git",
+      "root": "optional_wsl/evidence/de02a717f0bf/evidence",
+      "fixed_commit": "de02a717f0bf2aa4ae4424b4386f89682457cf32",
+      "fixed_prefix": "docs/research/local0_wsl_prdf_runtime_20261117/evidence",
+      "manifest": "optional_wsl/evidence/de02a717f0bf/evidence/EVIDENCE_FILES.json",
+      "runtime_cache": "optional_wsl/evidence/de02a717f0bf/evidence/DRY_CACHE.json",
+      "route_evidence": [
+        {
+          "route_kind": "prdf_d2_split",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "evidence": {
+            "kind": "fixed_git",
+            "root": "optional_wsl/evidence/de02a717f0bf/evidence",
+            "fixed_commit": "de02a717f0bf2aa4ae4424b4386f89682457cf32",
+            "fixed_prefix": "docs/research/local0_wsl_prdf_runtime_20261117/evidence",
+            "manifest": "optional_wsl/evidence/de02a717f0bf/evidence/EVIDENCE_FILES.json",
+            "host_method_readiness": "optional_wsl/evidence/de02a717f0bf/evidence/HOST_METHOD_READINESS.json",
+            "profile": "optional_wsl/evidence/de02a717f0bf/evidence/PROFILE.prdf.json"
+          }
+        }
+      ]
     }
   },
   "profile_overrides": {
@@ -531,5 +554,18 @@
         "existing_caller": "Existing fixed28d common adapter + published B33e descriptor intake; numerical workers unchanged"
       }
     }
-  ]
+  ],
+  "additional_profiles": {
+    "local0-wsl": "optional_wsl/PROFILE.json"
+  },
+  "host_admission": {
+    "schema": "RPE_Q3_HOST_ADMISSION_V1",
+    "hosts": {
+      "local0-wsl": {
+        "accepting": false,
+        "max_slots": 1,
+        "optional": true
+      }
+    }
+  }
 }

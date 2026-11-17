@@ -364,6 +364,7 @@ class DistributedExecutor(ConcurrentExecutor):
         self.distributed = deepcopy(distributed)
         self.eligibility_holds = {}
         self.eligibility_policy_cache = {}
+        self.host_admission_cache = {}
         run = Path(args[1]).resolve()
         self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
         self.hosts = {}
@@ -452,6 +453,57 @@ class DistributedExecutor(ConcurrentExecutor):
         # in _poll rather than launching controller-local adapters directly.
         with self.state.cv:
             while not self.state.closed: self.state.cv.wait(.2)
+
+    def _host_admission_policy(self):
+        """Optional participation is independent of request-specific readiness.
+
+        A configured file is replaced atomically by the operator. Failure to
+        read it stops new claims, while previously owned attempts still recover.
+        """
+        policy = self.distributed.get('host_admission')
+        if policy is None: return dict(hosts={}), None
+        try:
+            if isinstance(policy, (str, Path)):
+                path = Path(policy)
+                if not path.is_absolute(): path = self.root/path
+                st = path.stat()
+                signature = (str(path.resolve()), st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
+                if self.host_admission_cache.get('signature') != signature:
+                    loaded = json.loads(path.read_text())
+                    self.host_admission_cache.update(signature=signature, policy=loaded)
+                policy = self.host_admission_cache['policy']
+            if (not isinstance(policy, dict) or
+                    policy.get('schema', 'RPE_Q3_HOST_ADMISSION_V1') != 'RPE_Q3_HOST_ADMISSION_V1' or
+                    not isinstance(policy.get('hosts'), dict)):
+                raise ValueError('HOST_ADMISSION_POLICY_INVALID')
+            for host, rule in policy['hosts'].items():
+                if not isinstance(host, str) or not host or not isinstance(rule, dict):
+                    raise ValueError('HOST_ADMISSION_HOST_INVALID')
+                if type(rule.get('accepting')) is not bool:
+                    raise ValueError('HOST_ADMISSION_ACCEPTING_REQUIRED:' + host)
+                if 'optional' in rule and type(rule['optional']) is not bool:
+                    raise ValueError('HOST_ADMISSION_OPTIONAL_INVALID:' + host)
+                if 'max_slots' in rule and (type(rule['max_slots']) is not int or rule['max_slots'] < 0):
+                    raise ValueError('HOST_ADMISSION_MAX_SLOTS_INVALID:' + host)
+            return policy, None
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            return dict(hosts={}), str(exc)
+
+    def _host_admission(self, host, policy, error=None):
+        rule = policy['hosts'].get(host, {})
+        return dict(accepting=rule.get('accepting', True) and error is None,
+                    optional=rule.get('optional', False), max_slots=rule.get('max_slots'),
+                    error=error)
+
+    def _host_new_slots(self, host, slots, admission):
+        if not admission['accepting']: return 0
+        maximum = admission['max_slots']
+        if maximum is None: return slots
+        # UNKNOWN and completed-but-untransferred attempts still belong to this
+        # host. A communication outage must not open another execution slot.
+        owned = sum(row['host_id'] == host and row['state'] not in ('QUEUED', 'CANCELLED', 'ACCEPTED')
+                    for row in self.store.rows())
+        return min(slots, max(0, maximum-owned))
 
     def _eligibility_for(self, request, job_id):
         """Bind a prepared host decision to this exact scientific request."""
@@ -627,19 +679,27 @@ class DistributedExecutor(ConcurrentExecutor):
                 if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
                 fingerprints = value.get('host_fingerprints') or {}
                 if not isinstance(fingerprints, dict): raise ValueError('Host fingerprints must map job IDs to current facts')
-                self.hosts[host] = dict(epoch=time.time(), slots=slots, cached_prefixes=value.get('cached_prefixes', []),
+                admission_policy, admission_error = self._host_admission_policy()
+                admission = self._host_admission(host, admission_policy, admission_error)
+                new_slots = self._host_new_slots(host, slots, admission)
+                self.hosts[host] = dict(epoch=time.time(), slots=new_slots, reported_slots=slots,
+                                       host_admission=admission, cached_prefixes=value.get('cached_prefixes', []),
                                        host_fingerprints=fingerprints)
                 # A lost response is reconciled with its original owner even
                 # if current readiness changed or another host is offline.
                 assignments = [self._assignment(row) for row in self.store.rows()
                     if row['host_id'] == host and row['state'] == 'ASSIGNED'][:slots]
-                required = self.distributed.get('required_hosts', [])
+                required = [name for name in self.distributed.get('required_hosts', [])
+                            if not self._host_admission(name, admission_policy, admission_error)['optional']]
                 if any(name not in self.hosts for name in required):
-                    return dict(assignments=assignments, stop=False,
+                    return dict(assignments=assignments, stop=False, host_admission=admission,
                                 waiting_for_hosts=[name for name in required if name not in self.hosts])
+                if not new_slots:
+                    return dict(assignments=assignments, stop=False, host_admission=admission,
+                                eligibility_challenges=[])
                 queue = sorted((t for t in s.tasks.values() if t.status == 'QUEUED'),
                     key=lambda t: (not t.demand, s.owner_clock.get(t.owner, -1), t.enqueue))
-                if s.failure or s.closed: return dict(assignments=assignments, stop=False)
+                if s.failure or s.closed: return dict(assignments=assignments, stop=False, host_admission=admission)
                 eligible, challenges = [], []
                 skipped = False
                 for task in queue:
@@ -674,11 +734,13 @@ class DistributedExecutor(ConcurrentExecutor):
                     key = Q.prefix_key(first['request'])
                     if key not in value.get('cached_prefixes', []):
                         preferred = [h for h, info in self.hosts.items() if h != host and info['slots'] > 0
+                            and self._host_new_slots(h, info.get('reported_slots', info['slots']),
+                                self._host_admission(h, admission_policy, admission_error)) > 0
                             and time.time()-info['epoch'] < 2 and key in info['cached_prefixes']
                             and self.store.eligible(first['request'], first['eligibility'], h,
                                                    info.get('host_fingerprints'), first['job_id'])]
-                        if preferred: return dict(assignments=assignments, stop=False, eligibility_challenges=challenges)
-                remaining = max(0, min(slots-len(assignments), self.capacity-s.active))
+                        if preferred: return dict(assignments=assignments, stop=False, eligibility_challenges=challenges, host_admission=admission)
+                remaining = max(0, min(slots-len(assignments), new_slots, self.capacity-s.active))
                 for task in eligible:
                     if remaining <= 0: break
                     rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name],
@@ -701,7 +763,7 @@ class DistributedExecutor(ConcurrentExecutor):
                         active=s.active, demand=task.demand)
                     assignments.append(self._assignment(row))
                     remaining -= 1
-                return dict(assignments=assignments, stop=False, eligibility_challenges=challenges)
+                return dict(assignments=assignments, stop=False, eligibility_challenges=challenges, host_admission=admission)
             row = self.store.row(value['job_id'])
             if row is None or row['host_id'] != host or row['attempt_id'] != value['attempt_id']:
                 raise ValueError('Different execution host/attempt')
@@ -821,7 +883,12 @@ class DistributedExecutor(ConcurrentExecutor):
             event = json.loads(line)
             if event.get('event') == 'RESULT_REUSE' and event.get('host_id') in by_host:
                 by_host[event['host_id']]['reused'] += 1
-        result.update(distributed=True, by_host=by_host, persistent_reserved={m:self.store.counts(m) for m in self.routes},
+        admission_policy, admission_error = self._host_admission_policy()
+        admissions = {host:self._host_admission(host, admission_policy, admission_error)
+                      for host in sorted(set(self.hosts) | set(admission_policy['hosts']))}
+        result.update(distributed=True, by_host=by_host, host_admission=admissions,
+                      host_admission_error=admission_error,
+                      persistent_reserved={m:self.store.counts(m) for m in self.routes},
                       host_eligibility_holds=deepcopy(self.eligibility_holds),
                       actual_OS_host_count='recorded by integration harness; host IDs alone do not establish separate machines')
         return result

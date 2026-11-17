@@ -1,0 +1,60 @@
+{
+  "schema": "RPE_Q3_HOST_DELTA_V1",
+  "mode": "dry-check",
+  "source_files": {
+    "run_wsl_delta.py": "run_wsl_delta.py",
+    "scripts/check_rpe_q3_host_readiness.py": "../../../../../scripts/check_rpe_q3_host_readiness.py",
+    "src/trottertracks/rpe_host_profiles.py": "../../../../../src/trottertracks/rpe_host_profiles.py",
+    "profiles/local0-wsl.json": "PROFILE.runtime_guard.json",
+    "assignments/FULL_PF.json": "../../../rpe_distributed_h4_plan_20261117/assignments/FULL_PF.json",
+    "assignments/TRUNCATED_PF.json": "../../../rpe_distributed_h4_plan_20261117/assignments/TRUNCATED_PF.json",
+    "assignments/PR_PAULI.json": "../../pauli_descriptor_route/ASSIGNMENT.json"
+  },
+  "participation_file": "C:\\Users\\romuk\\Desktop\\code\\project\\Partially-Randomized-Trotter\\tools\\local0-wsl\\PARTICIPATION.json",
+  "hosts": [
+    {
+      "host_id": "local0-wsl",
+      "cell_id": "FULL_PF",
+      "transport": "wsl",
+      "distribution": "Ubuntu",
+      "transport_python": "python3",
+      "repository": "/root/projects/Partially-Randomized-Trotter-local0-wsl",
+      "run_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-guard-delta-v1/FULL_PF",
+      "profile": "profiles/local0-wsl.json",
+      "assignments": [
+        "assignments/FULL_PF.json"
+      ]
+    },
+    {
+      "host_id": "local0-wsl",
+      "cell_id": "TRUNCATED_PF",
+      "transport": "wsl",
+      "distribution": "Ubuntu",
+      "transport_python": "python3",
+      "repository": "/root/projects/Partially-Randomized-Trotter-local0-wsl",
+      "run_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-guard-delta-v1/TRUNCATED_PF",
+      "profile": "profiles/local0-wsl.json",
+      "assignments": [
+        "assignments/TRUNCATED_PF.json"
+      ]
+    },
+    {
+      "host_id": "local0-wsl",
+      "cell_id": "PR_PAULI",
+      "transport": "wsl",
+      "distribution": "Ubuntu",
+      "transport_python": "python3",
+      "repository": "/root/projects/Partially-Randomized-Trotter-local0-wsl",
+      "run_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/runtime-guard-delta-v1/PR_PAULI",
+      "profile": "profiles/local0-wsl.json",
+      "assignments": [
+        "assignments/PR_PAULI.json"
+      ]
+    }
+  ],
+  "return": {
+    "ssh_alias": "qg2",
+    "python": "python3",
+    "directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/optional_wsl/evidence/runtime_delta_v1"
+  }
+}

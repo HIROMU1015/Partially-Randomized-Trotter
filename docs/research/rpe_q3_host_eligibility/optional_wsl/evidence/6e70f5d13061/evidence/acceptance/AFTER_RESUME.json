@@ -1,0 +1,139 @@
+{
+    "READY.json":  {
+                       "controller_host":  "server2",
+                       "controller_url":  "http://127.0.0.1:44629",
+                       "job_id":  "d586dd258b6cd4173c4c",
+                       "source":  "28d976b99cdf8329adcc1b79327e329e947ef774",
+                       "worker_source":  "c84786fd4adb7ec24daa2623c738bee9cf4739f8",
+                       "artificial_only":  true,
+                       "real_H4_calls":  0,
+                       "required_hosts":  [
+                                              "server1",
+                                              "local"
+                                          ],
+                       "optional_host":  "local0-wsl"
+                   },
+    "SNAPSHOT.json":  {
+                          "hosts":  {
+                                        "server1":  {
+                                                        "epoch":  1794889197.6006005,
+                                                        "slots":  0,
+                                                        "cached_prefixes":  [
+
+                                                                            ],
+                                                        "host_fingerprints":  {
+
+                                                                              }
+                                                    },
+                                        "local":  {
+                                                      "epoch":  1794889195.8991392,
+                                                      "slots":  0,
+                                                      "cached_prefixes":  [
+
+                                                                          ],
+                                                      "host_fingerprints":  {
+
+                                                                            }
+                                                  },
+                                        "local0-wsl":  {
+                                                           "epoch":  1794889196.1204007,
+                                                           "slots":  0,
+                                                           "cached_prefixes":  [
+                                                                                   "acf00f88f8edb50ae35a1846ae7e0b99464f3f8b9e5c0cd82fc324dd2780371b"
+                                                                               ],
+                                                           "host_fingerprints":  {
+
+                                                                                 }
+                                                       }
+                                    },
+                          "counts":  {
+                                         "server1":  {
+                                                         "/v1/poll":  43
+                                                     },
+                                         "local":  {
+                                                       "/v1/poll":  42
+                                                   },
+                                         "local0-wsl":  {
+                                                            "/v1/poll":  42,
+                                                            "/v1/state":  1,
+                                                            "/v1/complete":  1,
+                                                            "/v1/transfer-metric":  1
+                                                        }
+                                     },
+                          "rows":  [
+                                       {
+                                           "job_id":  "d586dd258b6cd4173c4c",
+                                           "method":  "ARTIFICIAL_LOCAL0_WSL",
+                                           "request":  {
+                                                           "N_X":  [
+                                                                       2,
+                                                                       2
+                                                                   ],
+                                                           "N_Y":  [
+                                                                       2,
+                                                                       2
+                                                                   ],
+                                                           "configuration_id":  "ARTIFICIAL_LOCAL0_WSL_ONLY",
+                                                           "cost":  {
+                                                                        "denominator":  1,
+                                                                        "numerator":  8
+                                                                    },
+                                                           "execution_profile":  {
+                                                                                     "dp_workers":  1
+                                                                                 },
+                                                           "expected":  {
+                                                                            "binding_id":  null,
+                                                                            "configuration_id":  "ARTIFICIAL_LOCAL0_WSL_ONLY",
+                                                                            "total_configuration_id":  null
+                                                                        },
+                                                           "method":  "ARTIFICIAL_LOCAL0_WSL",
+                                                           "optimizer_source":  "28d976b99cdf8329adcc1b79327e329e947ef774",
+                                                           "origin":  {
+                                                                          "kind":  "ARTIFICIAL_OPTIONAL_HOST_ACCEPTANCE"
+                                                                      },
+                                                           "request_id":  "d586dd258b6cd4173c4c",
+                                                           "route":  {
+                                                                         "artificial":  {
+                                                                                            "scale":  "1",
+                                                                                            "sleep_seconds":  0.3,
+                                                                                            "tau":  "7",
+                                                                                            "weights":  [
+                                                                                                            1,
+                                                                                                            1
+                                                                                                        ]
+                                                                                        },
+                                                                         "configuration_ids":  "*",
+                                                                         "interpreter":  "/usr/bin/python3",
+                                                                         "kind":  "artificial",
+                                                                         "view_commit":  null
+                                                                     }
+                                                       },
+                                           "request_sha256":  "d856e1f41189f9d09dd6407d286e66f35b50a516b52d164836eb57c95d7f65a3",
+                                           "contract":  {
+                                                            "evaluation":  "475aa5e3a1a4249d",
+                                                            "prefix_key":  "acf00f88f8edb50ae35a1846ae7e0b99464f3f8b9e5c0cd82fc324dd2780371b"
+                                                        },
+                                           "state":  "ACCEPTED",
+                                           "host_id":  "local0-wsl",
+                                           "attempt_id":  "191ab88e06bf4008b118abcb70fe36b7",
+                                           "enqueued_epoch":  1794889103.0039563,
+                                           "assigned_epoch":  1794889188.8361094,
+                                           "started_epoch":  1794889191.2393293,
+                                           "completed_epoch":  1794889191.3989692,
+                                           "adopted_epoch":  null,
+                                           "updated_epoch":  1794889191.3989692,
+                                           "detail":  {
+                                                          "outcome_status":  "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+                                                      },
+                                           "completion_sha256":  "f748fd14d799793b3f40134ffab93392c5a5ec1e49333f1dccd0a3f641a40140",
+                                           "eligibility":  null
+                                       }
+                                   ],
+                          "job_id":  "d586dd258b6cd4173c4c",
+                          "controller_host":  "server2",
+                          "artificial_only":  true
+                      },
+    "outcome_hashes":  {
+                           "run/distributed/transfers/d586dd258b6cd4173c4c/191ab88e06bf4008b118abcb70fe36b7/OUTCOME.json":  "4e0b2543fe8da3bd39bc363ab482754530e935498db175c603934dfe8d2ba93f"
+                       }
+}

@@ -176,12 +176,51 @@ def host_profile_inputs(prepared, output, code_root, descriptor=None):
     for path in (Path(prepared['output']) / 'profiles').glob('*.json'):
         profile = O.load_json(path)
         profiles[profile['host_id']] = profile
+    for host, value in data.get('additional_profiles', {}).items():
+        if host in profiles:
+            raise ValueError('Additional host profile would replace an existing host: ' + host)
+        if isinstance(value, str):
+            path = Path(value)
+            profile = O.load_json(path if path.is_absolute() else config.parent / path)
+        else:
+            profile = deepcopy(value)
+        if profile.get('host_id') != host:
+            raise ValueError('Additional profile host identity differs: ' + host)
+        profiles[host] = profile
     for host, rules in data.get('profile_overrides', {}).items():
         if host in profiles:
             profiles[host]['route_profiles'] = deepcopy(rules)
     for host, profile in profiles.items():
         write(output / 'worker_profiles' / (host + '.json'), profile)
     return config, data, profiles
+
+
+def host_allocation_table(policy, admission):
+    """Keep a request's proved capability separate from new-job admission.
+
+    This is a configuration snapshot, not an assertion that a worker is online.
+    The controller rechecks admission, capacity and fingerprints at each claim.
+    """
+    rows = []
+    for job, record in policy['jobs'].items():
+        hosts = {}
+        for host, cell in record['hosts'].items():
+            rule = admission.get('hosts', {}).get(host, {})
+            accepting = rule.get('accepting', True)
+            runtime = cell.get('current_host_fingerprint', {}).get('runtime', {})
+            hosts[host] = dict(can_execute_this_request=cell['status'] == 'PASS',
+                readiness_status=cell['status'], reasons=cell.get('reasons', []),
+                accepting_new_jobs=accepting, optional=rule.get('optional', False),
+                max_slots=rule.get('max_slots'),
+                admission_observation='CONFIGURED_NOT_A_LIVE_WORKER_PROBE',
+                executable=cell.get('execution_profile', {}).get('interpreter'),
+                actual_runtime=runtime,
+                dispatchable_when_connected=cell['status'] == 'PASS' and accepting)
+        rows.append(dict(method=record['method'], job_id=job,
+                         request_sha256=record['request_sha256'], hosts=hosts))
+    return dict(schema='RPE_Q3_HOST_ALLOCATION_V1', rows=rows,
+                scope='REQUEST_CAPABILITY_AND_CONFIGURED_ADMISSION_SEPARATE',
+                scientific_evaluation_calls=0, queue_operations=0)
 
 
 def merge_host_readiness(prepared, output, code_root, descriptor=None):
@@ -197,26 +236,38 @@ def merge_host_readiness(prepared, output, code_root, descriptor=None):
         root=Path(profiles[local_host]['root']), base_directory=config.parent)
     policy_path = output / 'HOST_ELIGIBILITY.json'
     write(policy_path, policy)
+    admission = deepcopy(data.get('host_admission', dict(schema='RPE_Q3_HOST_ADMISSION_V1', hosts={})))
+    admission_path = output / 'HOST_ADMISSION.json'
+    write(admission_path, admission)
+    table_path = output / 'HOST_ALLOCATION.json'
+    write(table_path, host_allocation_table(policy, admission))
     options_path = output / 'DISTRIBUTED_OPTIONS.json'
     write(options_path, dict(routes_override=prepared.get('routes_override', {}),
         executor=dict(scheduler='concurrent', dp_workers=3,
         prefix_checkpoint_rounds=[5, 11], prefix_cache_directory=None,
         distributed=dict(host_eligibility=str(policy_path), computation_root=profiles[local_host]['root'],
                          computation_source=prepared['computation_source'],
+                         host_admission=str(admission_path),
                          required_hosts=[],
                          worker_script=str(code_root / 'scripts/run_rpe_q3_worker.py'))),
         note='Executor fragment only. It grants no scientific execution or budget; merge into a separately approved new round. Worker profiles keep the dry-checked interpreter/routes/DP/cache; work_dir and slots may be added.'))
     prepared['host_eligibility'] = dict(path=str(policy_path), schema=policy['schema'],
                                      evidence_descriptor=str(config), jobs=policy['jobs'],
+                                     host_admission=str(admission_path),
+                                     host_allocation=str(table_path),
                                      distributed_options=str(options_path),
                                      worker_profiles=str(output / 'worker_profiles'))
     for row in prepared['candidates']:
         decision = policy['jobs'].get(row.get('job_id'), {})
         allowed = decision.get('eligible_host_ids', [])
+        accepting = [host for host in allowed
+                     if admission.get('hosts', {}).get(host, {}).get('accepting', True)]
         row.update(eligible_host_ids=allowed, host_readiness=decision.get('hosts', {}),
-                   dispatchable=bool(allowed) and row.get('queue_dispatchable', False))
+                   accepting_eligible_host_ids=accepting,
+                   dispatchable=bool(accepting) and row.get('queue_dispatchable', False))
         if row.get('queue_dispatchable'):
-            row['dispatchability'] = 'DRY_CHECK_PASSED_HOSTS_ONLY' if allowed else 'HELD_NO_DRY_CHECK_PASSED_HOST'
+            row['dispatchability'] = ('DRY_CHECK_PASSED_HOSTS_ONLY' if accepting else
+                                     'WAITING_FOR_HOST_ADMISSION' if allowed else 'HELD_NO_DRY_CHECK_PASSED_HOST')
     prepared['remote_dispatchability'] = 'ONLY_MATCHING_PASS_CELLS_ELIGIBLE'
     return prepared
 

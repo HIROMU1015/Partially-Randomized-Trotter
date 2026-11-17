@@ -97,18 +97,30 @@ class Relay:
         state.pop('error', None)
 
     def remote(self, worker, action, value=None):
-        alias = worker['ssh_alias']
-        if not alias or alias.startswith('-'): raise ValueError('Invalid existing SSH alias')
         command = [worker.get('python', 'python3'), '-B', worker['root'].rstrip('/')+'/scripts/run_rpe_q3_worker.py',
                    '--profile', worker['profile'], '--mailbox', action]
+        # Reuse local0's published WSL mailbox transport (6e70f5d13061).
+        # Scientific execution still resolves the route-specific saved profile.
+        if worker.get('transport') == 'wsl':
+            command = [worker.get('wsl_executable', 'wsl.exe'), '-d', worker['distribution'], '--exec'] + command
+        else:
+            alias = worker['ssh_alias']
+            if not alias or alias.startswith('-'): raise ValueError('Invalid existing SSH alias')
+            command = self.ssh+['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, shlex.join(command)]
         started = time.monotonic()
-        process = subprocess.run(self.ssh+['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', alias, shlex.join(command)],
+        process = subprocess.run(command,
             input=json.dumps(value or {}), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
             encoding='utf-8', errors='replace',
             timeout=self.config.get('request_timeout_seconds', 60), **child_options())
         if process.returncode:
-            raise RuntimeError('SSH mailbox '+action+' failed ('+str(process.returncode)+'): '+process.stderr[-1500:])
+            raise RuntimeError('Worker mailbox '+action+' failed ('+str(process.returncode)+'): '+process.stderr[-1500:])
         result = json.loads(process.stdout)
+        if action == 'status' and worker.get('participation_file'):
+            participation = Path(worker['participation_file'])
+            enabled = participation.is_file() and json.loads(participation.read_text(encoding='utf-8-sig')).get('accepting_new_jobs') is True
+            if not enabled:
+                # Completion transfer and reconciliation above the poll continue.
+                result['slots'] = 0
         return result, time.monotonic()-started
 
     def ensure_tunnel(self):
