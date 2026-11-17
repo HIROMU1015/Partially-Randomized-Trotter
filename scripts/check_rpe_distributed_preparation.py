@@ -32,6 +32,43 @@ HOSTS=['server2','server1','local','local0-wsl']
 def read(p):return json.loads(Path(p).read_text())
 
 
+def q3_outcomes(directory):
+    values={}
+    for file in sorted((Path(directory)/'run').glob('jobs/*/*/OUTCOME.json')):
+        request=read(file.parent/'REQUEST.json');result=read(file)
+        if request['route']['kind']=='preparation':continue
+        assert request['route']['kind']=='artificial'and result.get('artificial')
+        key=json.dumps([request['method'],request['configuration_id'],request['N_X'],request['N_Y']],separators=(',',':'))
+        values[key]=[result['status'],result.get('MSE_lower'),result.get('MSE_upper')]
+    assert values,'No Q3 result'
+    return values
+
+
+def summarize(directory):
+    results={name:read(directory/name/'ACCEPTANCE.json')for name in ['first','swapped']}
+    assert q3_outcomes(directory/'first')==q3_outcomes(directory/'swapped'),'Host placement changed exact MSE bounds'
+    for name,summary in results.items():
+        root=directory/name/'run';intervals=[]
+        for path in root.glob('jobs/PREPARATION*/*/JOB_STAGES.jsonl'):
+            rows=[json.loads(s)for s in path.read_text().splitlines()]
+            starts=[r for r in rows if r['event']=='PREPARATION_BODY_START'];ends=[r for r in rows if r['event']=='PREPARATION_BODY_END']
+            assert len(starts)==len(ends)==1,'Completed scientific fixture body relaunched'
+            assert starts[0]['clock_id']==ends[0]['clock_id']
+            launch=read(path.parent/'LAUNCH.json')
+            intervals.append(dict(stage=starts[0]['stage'],host=launch['host_id'],clock=starts[0]['clock_id'],
+                start=starts[0]['monotonic'],end=ends[0]['monotonic'],end_epoch=ends[0]['epoch']))
+        overlap=any(a['stage']=='compile'and b['stage']=='signal'and a['host']!=b['host']and a['clock']==b['clock']
+            and min(a['end'],b['end'])>max(a['start'],b['start'])for a in intervals for b in intervals)
+        assert overlap,'No independent signal/compile subprocess overlap'
+        launches=[read(p)for p in root.glob('jobs/PR_*/*/LAUNCH.json')]
+        assert min(r['started']for r in launches)<max(r['end_epoch']for r in intervals),'Q3 waited for every candidate preparation'
+        summary.update(signal_compile_parallel=True,ready_candidate_q3_before_all_preparation=True,
+            completed_preparation_body_start_count=len(intervals),preparation_intervals=intervals)
+        put(directory/name/'ACCEPTANCE.json',summary)
+    out=dict(status='PASS',cases=results,host_swaps_exact_bounds_equal=True,scientific_H4_calls=0)
+    put(directory/'ACCEPTANCE.json',out);return out
+
+
 def fixture_driver():
     # Use the published fixture completion directly; production orchestration
     # is in WidthDriver, and this adapter substitutes its scientific leaves.
@@ -46,8 +83,10 @@ def fixture_driver():
             if not hasattr(self,'runtime'):raise AssertionError('Normal entry did not bind shared preparation runtime')
             cid=W.configuration(req['method'],req['design']['delta_pf'],req['design']['kappa'],req['design']['L_D'])['configuration_id']
             def submit(stage,name,hosts,deps=(),depinputs=None):
+                slow=(stage=='signal'and req['method']=='PR_PAULI'and req['design']['L_D']==2)
+                if slow:hosts=['local0-wsl']
                 command=['@PYTHON@','-B','@SOURCE@/scripts/artificial_preparation_leaf.py','--stage',stage,
-                    '--output','@WORK@/products','--sleep',str(.35 if stage in('signal','compile')else .1)]
+                    '--output','@WORK@/products','--sleep',str(4 if slow else .35 if stage in('signal','compile')else .1)]
                 if stage=='audit':command+=['--inputs','@INPUTS@']
                 request=dict(route=dict(kind='preparation'),method='ARTIFICIAL',preparation=dict(stage=stage,
                     provider='ARTIFICIAL_'+stage,artificial=True,command=command,outputs=['products'],
@@ -187,14 +226,14 @@ def run_case(directory,swapped=False):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--controller',type=Path);p.add_argument('--worker',type=Path)
-    p.add_argument('--host');p.add_argument('--output',type=Path);a=p.parse_args()
+    p.add_argument('--host');p.add_argument('--output',type=Path);p.add_argument('--summarize',type=Path);a=p.parse_args()
     if a.controller:return controller(a.controller.resolve())
     if a.worker:return worker(a.worker.resolve(),a.host)
+    if a.summarize:return summarize(a.summarize.resolve())
     if not a.output:p.error('--output required')
     a.output.mkdir(parents=True,exist_ok=False)
     results={name:run_case(a.output/name,swapped)for name,swapped in [('first',False),('swapped',True)]}
-    assert F.outcomes(a.output/'first')==F.outcomes(a.output/'swapped'),'Host placement changed exact MSE bounds'
-    put(a.output/'ACCEPTANCE.json',dict(status='PASS',cases=results,host_swaps_exact_bounds_equal=True,scientific_H4_calls=0))
+    summarize(a.output)
     print(json.dumps({'status':'PASS','cases':list(results),'scientific_H4_calls':0}),flush=True)
 
 

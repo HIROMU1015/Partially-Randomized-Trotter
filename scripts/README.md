@@ -1,5 +1,7 @@
 # scripts 索引
 
+[信号・compile・監査とQ3の共通分散実行](../docs/research/rpe_distributed_preparation/HANDOFF.md)：通常schedule入口、準備stage adapter、人工検収、local0一括配置・検査。
+
 [候補別のdry-check PASSホストへのQ3割当](../docs/research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
 
 [H4の高速な準備](../docs/research/rpe_h4_readiness_fast_20261117/README.md)：`run_rpe_schedule_search.py --plan-only --prepare-readiness --preparation-cache DIR` で保存履歴差分→選定→乾式検査→READY。既定の科学経路と旧遠隔配布物は保持する。

@@ -104,6 +104,9 @@ def run(provider,request):
     if phase=='freeze':return dict(status='MODEL_FROZEN',model=provider.freeze(value,request['prices'],out,source))
     if phase=='finish':return dict(status='PRICES_READY',prices=provider.finish(value,request['prices'],out,request['model'],source))
     if phase=='register':
+        # The central owned clone imports remote objects without switching its
+        # HEAD. Bind its newly received signal files before gitref() is used.
+        publish([out],'Bind received PF evidence before central registry publication')
         admitted=provider.register(value,out,request['prices'],ROOT/request['registry'])
         publish([out],'Publish distributed PF completed evidence')
         return dict(status='READY_FOR_SAME_OPTIMIZER',configuration_id=value['configuration']['id'],

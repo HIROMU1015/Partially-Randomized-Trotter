@@ -14,18 +14,20 @@ def check(request, profile):
     request=normalize_preparation_request(request)
     assignment=dict(job_id=request['request_id'],request=request,request_sha256=P.digest(request),
                     source_manifest=request['preparation']['source'])
-    started=time.monotonic()
+    started=time.monotonic();inspection=request['preparation'].get('dry_check_only')is True
     row=dict(schema='RPE_PREPARATION_HOST_READINESS_V1',host_id=profile['host_id'],
         request_id=request['request_id'],request_sha256=assignment['request_sha256'],stage=request['preparation']['stage'],
         provider=request['preparation'].get('provider'),method=request.get('method'),source_manifest=assignment['source_manifest'],
-        input_hashes=request['preparation'].get('input_hashes',[]),scientific_calls=0,compile_calls=0,queue_operations=0)
+        input_hashes=request['preparation'].get('input_hashes',[]),
+        execution_request_validated=not inspection,execution_readiness='UNCONFIRMED'if inspection else'CURRENT_TASK_METADATA_PENDING',
+        inspection_scope=request['preparation'].get('inspection_scope'),scientific_calls=0,compile_calls=0,queue_operations=0)
     try:
         result=P.dry_check(request,profile,assignment['source_manifest'])
         P.validate_preparation_fingerprint(assignment,profile,result['fingerprint'])
-        row.update(status='REAL_HOST_PREPARATION_DRY_CHECK_PASS',fingerprint=result['fingerprint'],
+        row.update(status='SAVED_INPUT_RUNTIME_INSPECTION_PASS'if inspection else'REAL_HOST_PREPARATION_DRY_CHECK_PASS',fingerprint=result['fingerprint'],
                    fingerprint_sha256=P.digest(result['fingerprint']),execution_profile=result['fingerprint']['profile'],reasons=[])
     except Exception as error:
-        row.update(status='REAL_HOST_PREPARATION_DRY_CHECK_HOLD',reasons=[type(error).__name__+': '+str(error)])
+        row.update(status='SAVED_INPUT_RUNTIME_INSPECTION_HOLD'if inspection else'REAL_HOST_PREPARATION_DRY_CHECK_HOLD',reasons=[type(error).__name__+': '+str(error)])
     row['wall_seconds']=time.monotonic()-started
     return row
 

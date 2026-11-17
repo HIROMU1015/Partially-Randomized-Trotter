@@ -244,6 +244,11 @@ def preparation_runtime(executor,run,spec):
     return DistributedPreparationBridge(executor,ROOT,settings,approved=spec.get('science_approved')is True)
 
 
+def preparation_budgets(spec):
+    settings=(spec.get('executor',{}).get('distributed')or{}).get('preparation')or{}
+    return {stage:settings.get('budgets',{}).get(stage,0)for stage in ('signal','compile','audit')}
+
+
 def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None, result_callback=None):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
@@ -274,13 +279,15 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
         for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
             if old.get(key) != spec.get(key):
                 raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
+        if preparation_budgets(old)!=preparation_budgets(spec):
+            raise ValueError('Preparation budget changed on resume; preserve this run and use a separately adopted new round')
     else:
         write(stored, spec)
     routes = merged_routes(problem, spec)
     from trottertracks import pf_optimizer_connection as PFConnection
     if context.get('pf_evidence_registry'):
         routes = PFConnection.registry_routes(routes, context['pf_evidence_registry'])
-    executor=None;runtime=None
+    executor=None;runtime=None;early_result=None;streamed_preparation=None;executor_initialized=False
     executor_spec=spec
     if previous_round is not None and not (run/'distributed'/'ALLOCATION_SETTINGS.json').exists():
         executor_spec=dict(spec,executor=dict(spec.get('executor',{})))
@@ -288,16 +295,27 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
     if (spec.get('executor',{}).get('distributed')or{}).get('preparation'):
         executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,executor_spec)
         runtime=preparation_runtime(executor,run,spec)
+        if executor_setup:
+            executor_setup(executor,context);executor_initialized=True
     from trottertracks import pf_candidate_selection as PFSelect
     try:
-        with round_phase(run, 'SELECT_AND_PREPARE_PF'):
-            context,routes,pf_preparation = PFSelect.prepare(ROOT,problem,context,spec,run,routes,
-                **({'stage_executor':runtime} if runtime is not None else {}))
-        if spec.get('candidate_completion'):
-            from trottertracks.pr_candidate_completion import prepare_for_search
-            with round_phase(run, 'PREPARE_SELECTED_CANDIDATES'):
-                context,routes,completion = prepare_for_search(ROOT,dict(problem,execution_routes=routes),context,spec,run,
-                    **({'stage_executor':runtime} if runtime is not None else {}))
+        if runtime is not None and spec.get('science_approved')is True:
+            from trottertracks.rpe_preparation_round import prepare_inputs
+            before={m:executor.launched(m)for m in spec['methods']}
+            with round_phase(run,'STREAM_PREPARATION_AND_READY_SEARCH'):
+                context,routes,pf_preparation,completion,early_result=prepare_inputs(
+                    ROOT,problem,context,spec,run,routes,executor,optimize,runtime,extra)
+            streamed_preparation=dict(early_methods=list(early_result or{}),launched_before=before,
+                newly_launched_q3={m:executor.launched(m)-before[m]for m in spec['methods']})
+            if early_result:write(run/'EARLY_SEARCH_RESULT.json',slim(early_result))
+            write(run/'PREPARATION_STREAM.json',streamed_preparation)
+        else:
+            with round_phase(run, 'SELECT_AND_PREPARE_PF'):
+                context,routes,pf_preparation = PFSelect.prepare(ROOT,problem,context,spec,run,routes)
+            if spec.get('candidate_completion'):
+                from trottertracks.pr_candidate_completion import prepare_for_search
+                with round_phase(run, 'PREPARE_SELECTED_CANDIDATES'):
+                    context,routes,completion = prepare_for_search(ROOT,dict(problem,execution_routes=routes),context,spec,run)
     except BaseException:
         if executor is not None:executor.finish()
         raise
@@ -311,12 +329,20 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
     if executor is None:executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,executor_spec)
     else:executor.routes=routes;executor.expected=context['expected']
     try:
-        if executor_setup:
+        if executor_setup and not executor_initialized:
             executor_setup(executor,context)
         with round_phase(run, 'SEARCH_AND_Q3'):
-            result = optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
-                              initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
-                              extra_results=extra, science_approved=approved)
+            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
+            if early_result and any(r.get('stop_reason')in fatal for r in early_result.values()):
+                result=early_result
+                missing=[m for m in spec['methods']if m not in result]
+                if missing:
+                    result.update(O.optimize(ROOT,dict(problem,search=search),context=context,methods=missing,
+                        initial=spec.get('initial','all'),max_new={m:0 for m in missing},science_approved=False))
+            else:
+                result = optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
+                                  initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
+                                  extra_results=extra, science_approved=approved)
         if spec.get('candidate_completion'):
             from trottertracks.pr_candidate_completion import continue_selected_preparation,publish_comparison_exports
             result=continue_selected_preparation(ROOT,dict(problem,search=search),context,spec,run,completion,executor,result,extra,
@@ -331,6 +357,7 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
         payload = dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
                                               optimizer_source=head(), wall_seconds=time.perf_counter() - start,
                                               pf_preparation=pf_preparation,artificial_only=bool((pf_preparation or {}).get('artificial_only')),
+                                              streamed_preparation=streamed_preparation,
                                               exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)
         write(run / 'ROUND_RESULT.json', compact_plan_result(payload, problem,
             resume_inputs=[str(p) for p in (getattr(a,'resume_from',None) or [])],

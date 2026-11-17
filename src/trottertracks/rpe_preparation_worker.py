@@ -6,6 +6,7 @@ are owned by one attempt. Dry-check probes identities, never scientific leaves.
 """
 from copy import deepcopy
 import hashlib
+import fcntl
 import importlib.metadata
 import json
 import os
@@ -36,7 +37,7 @@ def is_preparation(value):return (value.get('request',value).get('route')or{}).g
 
 
 def preparation_profile_core(profile):
-    excluded={'work_dir','slots','slot_policy','route_profiles','preparation_profiles','artifact_cache_directory'}
+    excluded={'work_dir','slots','slot_policy','route_profiles','preparation_profiles','artifact_cache_directory','preparation_metadata_cache_directory'}
     return {key:deepcopy(value) for key,value in profile.items() if key not in excluded}
 
 
@@ -113,19 +114,93 @@ def _runtime(profile, requirements):
     return runtime,tools
 
 
+def _required_path_facts(profile, requirements):
+    facts={};configured=profile.get('preparation_paths')or{}
+    for alias,required in requirements.items():
+        if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe required runtime path alias')
+        target=configured.get(alias,configured.get(required['controller_path']))
+        if isinstance(target,dict):target=target.get('path')
+        if not target:raise ValueError('Required runtime path is not mapped in this host profile: '+required['controller_path'])
+        root=Path(target).resolve();kind=required.get('kind')
+        if kind=='file':
+            if not root.is_file():raise ValueError('Required runtime file missing: '+str(root))
+            actual=hashlib.sha256(root.read_bytes()).hexdigest()
+            if actual!=required['sha256']:raise ValueError('Required runtime file hash differs: '+required['controller_path'])
+            facts[alias]=dict(path=str(root),kind=kind,sha256=actual)
+        elif kind=='directory':
+            if not root.is_dir():raise ValueError('Required runtime provider directory missing: '+str(root))
+            if not required.get('files'):raise ValueError('Required runtime provider source manifest missing: '+required['controller_path'])
+            for name,sha in required['files'].items():
+                path=root.joinpath(*artifact_path(name).parts)
+                if not path.is_file()or hashlib.sha256(path.read_bytes()).hexdigest()!=sha:
+                    raise ValueError('Required runtime provider SOURCE differs: '+name)
+            facts[alias]=dict(path=str(root),kind=kind,files=deepcopy(required['files']))
+        else:raise ValueError('Unknown required runtime path type')
+    return facts
+
+
+def metadata_bundle_hashes(assignment):
+    spec=assignment.get('request',assignment)['preparation']
+    bundles=list(spec.get('input_git_bundles',[]))
+    for workspace in spec.get('workspaces',{}).values():bundles.extend(workspace.get('input_git_bundles',[]))
+    return list(dict.fromkeys(artifact_hash(bundle['sha256'])for bundle in bundles))
+
+
+def _metadata_input_repository(profile, root, spec):
+    bundles=list(spec.get('input_git_bundles',[]))
+    for workspace in spec.get('workspaces',{}).values():bundles.extend(workspace.get('input_git_bundles',[]))
+    if not bundles:return root
+    cache=worker_cache(profile)
+    hashes=[artifact_hash(bundle['sha256'])for bundle in bundles]
+    if cache.missing(hashes):raise ValueError('Preparation metadata Git bundle missing before preflight')
+    common=Path(subprocess.check_output(['git','rev-parse','--git-common-dir'],cwd=root,text=True).strip())
+    if not common.is_absolute():common=Path(root)/common
+    directory=Path(profile.get('preparation_metadata_cache_directory')or Path(profile['work_dir']).parent/'preparation-metadata-cache')
+    directory=directory/digest(str(common.resolve()))[:16];directory.mkdir(parents=True,exist_ok=True)
+    target=directory/'objects.git';marker=directory/'IMPORTED.json'
+    with(directory/'IMPORT.lock').open('a')as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX)
+        if not target.exists():subprocess.run(['git','clone','--shared','--bare',str(root),str(target)],check=True,capture_output=True)
+        imported=read(marker)if marker.exists()else[]
+        for bundle in bundles:
+            sha=bundle['sha256']
+            if sha in imported:continue
+            path=cache.path(sha)
+            subprocess.run(['git','bundle','verify',str(path)],cwd=target,check=True,capture_output=True)
+            subprocess.run(['git','fetch',str(path),bundle.get('ref','HEAD')],cwd=target,check=True,capture_output=True)
+            heads=subprocess.check_output(['git','bundle','list-heads',str(path)],cwd=target,text=True).splitlines()
+            for index,line in enumerate(heads):
+                commit=line.split()[0]
+                subprocess.run(['git','update-ref','refs/rpe-metadata/'+sha+'/'+str(index),commit],cwd=target,check=True,capture_output=True)
+            imported.append(sha);put(marker,imported)
+    return target
+
+
 def current_preparation_fingerprint(assignment, base_profile):
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
     if spec.get('stage')not in STAGES:raise ValueError('Unknown preparation stage')
+    if spec.get('inspection_blockers'):raise ValueError('Saved inspection input dependencies unresolved: '+'; '.join(spec['inspection_blockers']))
+    requirements=spec.get('runtime_requirements',{})
+    if spec.get('stage')=='compile'and spec.get('artificial')is not True and not requirements.get('packages',{}).get('qiskit') and not requirements.get('tools'):
+        raise ValueError('Compile requires the fixed compiler version/package or tool contract')
     if request['request_id']!=assignment['job_id'] or digest(request)!=assignment['request_sha256']:raise ValueError('Preparation task identity differs')
     source=spec['source']
     if assignment.get('source_manifest')not in (None,source):raise ValueError('Preparation assignment SOURCE differs')
     root=_source(profile,source)
     views={source['commit']:str(root)}
     for alias,workspace in spec.get('workspaces',{}).items():views[alias]=str(_source(profile,workspace['source']))
+    for alias,required in spec.get('required_views',{}).items():
+        if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe required SOURCE alias')
+        views['view:'+alias]=str(_source(profile,required['source']))
+    path_facts=_required_path_facts(profile,spec.get('required_paths',{}))
+    input_root=_metadata_input_repository(profile,root,spec)
     for locator in spec.get('input_hashes',[]):
         artifact_path(locator['path'])
-        raw=subprocess.check_output(['git','show',locator['commit']+':'+locator['path']],cwd=root)
+        raw=subprocess.check_output(['git','show',locator['commit']+':'+locator['path']],cwd=input_root)
         if hashlib.sha256(raw).hexdigest()!=locator['sha256']:raise ValueError('Preparation fixed Git input differs: '+locator['path'])
+    declared=input_manifest(request)
+    for locator in spec.get('working_input_hashes',[]):
+        if declared.get(locator['path'])!=locator['sha256']:raise ValueError('Preparation WORKING input is not bound to its immutable artifact')
     adapter = profile.get('preparation_adapter_manifest')
     if spec.get('artificial') is not True and not adapter:
         raise ValueError('Fixed preparation adapter manifest missing for this stage')
@@ -142,7 +217,7 @@ def current_preparation_fingerprint(assignment, base_profile):
     if not isinstance(command,list)or not command or any(not isinstance(v,str)for v in command):raise ValueError('Preparation command must be explicit argv')
     if not spec.get('outputs'):raise ValueError('Declared preparation outputs required')
     for name in spec['outputs']:artifact_path(name)
-    return dict(schema='RPE_PREPARATION_CURRENT_HOST_FINGERPRINT_V1',stage=spec['stage'],provider=spec.get('provider'),request_sha256=assignment['request_sha256'],source_manifest=source,input_hashes=spec.get('input_hashes',[]),input_artifacts=inputs,profile=preparation_profile_core(profile),views=views,runtime=runtime,tools=tools)
+    return dict(schema='RPE_PREPARATION_CURRENT_HOST_FINGERPRINT_V1',stage=spec['stage'],provider=spec.get('provider'),request_sha256=assignment['request_sha256'],source_manifest=source,input_hashes=spec.get('input_hashes',[]),working_input_hashes=spec.get('working_input_hashes',[]),required_views=spec.get('required_views',{}),required_paths=spec.get('required_paths',{}),runtime_paths=path_facts,input_artifacts=inputs,profile=preparation_profile_core(profile),views=views,runtime=runtime,tools=tools)
 
 
 def dry_check(request, profile, source_manifest=None):
@@ -167,11 +242,17 @@ def _guard_owned_source(root, source):
             raise ValueError('Imported workspace changed fixed scientific SOURCE: '+name)
 
 
-def _clone(source, destination, bundles, cache, checkout_input_head=True):
+def _clone(source, destination, bundles, cache, checkout_input_head=True, source_files=()):
     destination=Path(destination)
     if destination.exists():raise ValueError('Preparation workspace already exists; never retry science')
     subprocess.run(['git','clone','--shared','--no-checkout',str(source),str(destination)],check=True,capture_output=True)
     commit=_head(source)
+    directories={'scripts','src','configs','schemas','references'}
+    for name in source_files:
+        relative=artifact_path(name)
+        if len(relative.parts)>1 and relative.parts[0]not in directories:
+            directories.add(relative.parent.as_posix())
+    subprocess.run(['git','sparse-checkout','set','--cone',*sorted(directories)],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','checkout','-b','preparation-owned',commit],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','remote','remove','origin'],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','config','user.name','HIROMU1015'],cwd=destination,check=True)
@@ -181,9 +262,26 @@ def _clone(source, destination, bundles, cache, checkout_input_head=True):
         if cache.missing([sha]):raise ValueError('Missing source Git bundle')
         subprocess.run(['git','bundle','verify',str(path)],cwd=destination,check=True,capture_output=True)
         subprocess.run(['git','fetch',str(path),bundle.get('ref','HEAD')],cwd=destination,check=True,capture_output=True)
-        if checkout_input_head:
+        if checkout_input_head and bundle.get('checkout_input_head',True):
             subprocess.run(['git','reset','--hard','FETCH_HEAD'],cwd=destination,check=True,capture_output=True)
     return destination
+
+
+def _include_declared_outputs(owned, directory, outputs):
+    """Permit the provider's ordinary git add only inside declared output cones."""
+    for alias,(workspace,source)in owned.items():
+        prefix=workspace.relative_to(directory);directories=set()
+        for name in outputs:
+            relative=Path(*artifact_path(name).parts)
+            try:relative=relative.relative_to(prefix)
+            except ValueError:continue
+            if not relative.parts:continue
+            target=workspace/relative
+            cone=relative if target.is_dir()or not relative.suffix else relative.parent
+            if cone.parts:directories.add(cone.as_posix())
+        if directories:
+            subprocess.run(['git','sparse-checkout','add','--cone','--skip-checks',*sorted(directories)],
+                           cwd=workspace,check=True,capture_output=True)
 
 
 def _export_bundle(root, source, output):
@@ -203,22 +301,29 @@ def execute(assignment, base_profile, directory):
     cache=worker_cache(profile);artifact_inputs=assigned_artifacts(assignment);cache.materialize(artifact_inputs,directory/'inputs')
     source=Path(fingerprint['views'][spec['source']['commit']]);owned={}
     if spec.get('source_workspace'):
-        source=_clone(source,directory/'workspace',spec.get('input_git_bundles',[]),cache);owned['source']=(source,spec['source'])
+        source=_clone(source,directory/'workspace',spec.get('input_git_bundles',[]),cache,source_files=spec['source']['files']);owned['source']=(source,spec['source'])
     replacements={'@PYTHON@':profile['interpreter'],'@SOURCE@':str(source),'@WORK@':str(directory),'@INPUTS@':str(directory/'inputs'),'@TRANSPORT@':str(Path(__file__).resolve().parents[2])}
     for alias,workspace in spec.get('workspaces',{}).items():
         if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe preparation workspace alias')
-        target=_clone(fingerprint['views'][alias],directory/'workspaces'/alias,workspace.get('input_git_bundles',[]),cache,workspace.get('checkout_input_head',True))
+        target=_clone(fingerprint['views'][alias],directory/'workspaces'/alias,workspace.get('input_git_bundles',[]),cache,workspace.get('checkout_input_head',True),workspace['source']['files'])
         replacements['@WORKSPACE:'+alias+'@']=str(target);owned[alias]=(target,workspace['source'])
+    for alias in spec.get('required_views',{}):replacements['@VIEW:'+alias+'@']=fingerprint['views']['view:'+alias]
+    for alias,facts in fingerprint.get('runtime_paths',{}).items():replacements['@PATH:'+alias+'@']=facts['path']
     for name,tool in fingerprint['tools'].items():replacements['@TOOL:'+name+'@']=tool['path']
     def resolve(value):
         for token,path in replacements.items():value=value.replace(token,path)
         return value
     bindings={str(old):resolve(value)for old,value in spec.get('path_bindings',{}).items()}
+    for alias,required in spec.get('required_views',{}).items():
+        if required.get('controller_path'):bindings[required['controller_path']]=replacements['@VIEW:'+alias+'@']
+    for alias,required in spec.get('required_paths',{}).items():
+        bindings[required['controller_path']]=replacements['@PATH:'+alias+'@']
     command=[]
     for argument in spec['command']:
         for old,new in sorted(bindings.items(),key=lambda pair:-len(pair[0])):argument=argument.replace(old,new)
         command.append(resolve(argument))
     if command[0]!=profile['interpreter'] and command[0]not in {t['path']for t in fingerprint['tools'].values()}:raise ValueError('Command does not use verified Python/compiler')
+    _include_declared_outputs(owned,directory,list(spec['outputs'])+list(spec.get('optional_outputs',[])))
     # Inputs may contain prior owned workspace outputs. Materialize after clone.
     target_inputs=spec.get('materialize_inputs')
     if target_inputs is None:
@@ -277,16 +382,40 @@ def validate_preparation_fingerprint(assignment, base_profile, fingerprint):
     selected=select_preparation_profile(base_profile,assignment)
     expected=dict(schema='RPE_PREPARATION_CURRENT_HOST_FINGERPRINT_V1',stage=spec['stage'],
         provider=spec.get('provider'),request_sha256=assignment['request_sha256'],source_manifest=spec['source'],
-        input_hashes=spec.get('input_hashes',[]),input_artifacts=input_manifest(request),profile=preparation_profile_core(selected))
+        input_hashes=spec.get('input_hashes',[]),working_input_hashes=spec.get('working_input_hashes',[]),
+        required_views=spec.get('required_views',{}),required_paths=spec.get('required_paths',{}),
+        input_artifacts=input_manifest(request),profile=preparation_profile_core(selected))
     for key,value in expected.items():
         if fingerprint.get(key)!=value:raise ValueError('Current preparation fingerprint differs: '+key)
     if digest(request)!=assignment['request_sha256']or request['request_id']!=assignment['job_id']:
         raise ValueError('Current preparation REQUEST identity differs')
-    for alias,source in [(spec['source']['commit'],spec['source'])]+[(name,item['source'])for name,item in spec.get('workspaces',{}).items()]:
+    expected_views={}
+    sources=[(spec['source']['commit'],spec['source'])]+[(name,item['source'])for name,item in spec.get('workspaces',{}).items()]
+    sources += [('view:'+name,item['source'])for name,item in spec.get('required_views',{}).items()]
+    for alias,source in sources:
         configured=(selected.get('preparation_sources')or{}).get(source['commit'],selected.get('root'))
         if isinstance(configured,dict):configured=configured.get('root')
-        if fingerprint.get('views',{}).get(alias)!=str(configured):
-            raise ValueError('Current preparation SOURCE view differs: '+alias)
+        expected_views[alias]=str(configured)
+    if fingerprint.get('views')!=expected_views:raise ValueError('Current preparation SOURCE views differ')
+    declared=input_manifest(request)
+    for locator in spec.get('working_input_hashes',[]):
+        name=str(artifact_path(locator['path']));sha=artifact_hash(locator['sha256'])
+        if declared.get(name)!=sha:raise ValueError('Current preparation WORKING input is not bound to its immutable artifact')
+    runtime_paths={};configured_paths=selected.get('preparation_paths')or{}
+    for alias,required in spec.get('required_paths',{}).items():
+        configured=configured_paths.get(alias,configured_paths.get(required['controller_path']))
+        if isinstance(configured,dict):configured=configured.get('path')
+        if not isinstance(configured,str)or not configured:raise ValueError('Required runtime path is not configured: '+alias)
+        kind=required.get('kind')
+        if kind=='file':
+            runtime_paths[alias]=dict(path=configured,kind=kind,sha256=artifact_hash(required['sha256']))
+        elif kind=='directory':
+            files=required.get('files')
+            if not isinstance(files,dict)or not files:raise ValueError('Required runtime provider SOURCE manifest missing: '+alias)
+            files={str(artifact_path(name)):artifact_hash(sha)for name,sha in files.items()}
+            runtime_paths[alias]=dict(path=configured,kind=kind,files=files)
+        else:raise ValueError('Unknown required runtime path type')
+    if fingerprint.get('runtime_paths')!=runtime_paths:raise ValueError('Current preparation runtime paths differ')
     if spec.get('artificial')is not True and not selected.get('preparation_adapter_manifest'):
         raise ValueError('Fixed preparation adapter manifest missing')
     runtime=fingerprint.get('runtime')or{}
@@ -297,6 +426,8 @@ def validate_preparation_fingerprint(assignment, base_profile, fingerprint):
         artifact_hash(runtime.get('launcher_sha256'));artifact_hash(runtime.get('actual_binary_sha256'))
     if not runtime.get('version')or not isinstance(runtime.get('version_info'),list):raise ValueError('Current preparation runtime observation missing')
     requirements=spec.get('runtime_requirements',{})
+    if spec.get('stage')=='compile'and spec.get('artificial')is not True and not requirements.get('packages',{}).get('qiskit')and not requirements.get('tools'):
+        raise ValueError('Compile requires the fixed compiler version/package or tool contract')
     prefix=requirements.get('version_info_prefix',[])
     if runtime['version_info'][:len(prefix)]!=prefix:raise ValueError('Current preparation Python version differs')
     for name,version in requirements.get('packages',{}).items():

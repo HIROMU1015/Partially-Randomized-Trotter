@@ -85,8 +85,19 @@ class ArtifactCache:
             raw = self.path(sha).read_bytes()
             if target.exists():
                 if not target.is_file() or target.read_bytes() != raw:raise ValueError('Changed immutable input artifact: ' + name)
-            else:
-                with target.open('xb') as stream:stream.write(raw)
+                continue
+            temporary=target.with_name(target.name+'.materialize-'+uuid.uuid4().hex)
+            with temporary.open('xb') as stream:
+                stream.write(raw);stream.flush();os.fsync(stream.fileno())
+            try:
+                # Publish only complete bytes. Two candidates may adopt the
+                # same accepted calibration concurrently; neither sees a
+                # partial write or needs to run that scientific task again.
+                os.link(temporary,target)
+            except FileExistsError:
+                if target.is_symlink()or not target.is_file()or target.read_bytes()!=raw:
+                    raise ValueError('Changed immutable input artifact: '+name)
+            finally:temporary.unlink()
 
     def capture(self, directory, outputs):
         directory = Path(directory).resolve();manifest = {}

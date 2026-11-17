@@ -337,6 +337,10 @@ class WidthDriver:
             requested_methods=self.methods,requested_widths=self.widths,
             round_scope={k:self.spec.get(k)for k in('method_overrides','search_overrides','width_families','new_families','kappa_families')},
             completion=completion)
+        preparation=(self.spec.get('executor',{}).get('distributed')or{}).get('preparation')
+        if preparation:
+            current['preparation_budgets']={stage:preparation.get('budgets',{}).get(stage,0)
+                for stage in ('signal','compile','audit')}
         path=self.run/'FIXED_INPUTS.json'
         if path.exists():
             if O.load_json(path)!=current:

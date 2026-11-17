@@ -5,6 +5,7 @@ and result adoption. Worker-owned checkouts and immutable artifact/Git bundles
 make the next leaf independent of the previous execution host.
 """
 import base64
+import ast
 from copy import deepcopy
 import hashlib
 import json
@@ -45,6 +46,132 @@ def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest()
 
 
+def contract_runtime(values, script, configured):
+    """Extract declared package/compiler identities without importing a provider."""
+    result=deepcopy(configured);packages=result.setdefault('packages',{});compilers=set()
+    def require(name,value):
+        if name in packages and packages[name]not in(None,value):raise ValueError('Preparation runtime version conflicts with original input: '+name)
+        packages[name]=value
+    def visit(value):
+        if isinstance(value,dict):
+            for name,item in value.items():
+                if name in('qiskit_version','numpy_version','scipy_version')and isinstance(item,str):require(name[:-8],item)
+                if name=='compiler'and isinstance(item,str)and len(item)==64:compilers.add(item)
+                visit(item)
+        elif isinstance(value,list):
+            for item in value:visit(item)
+    for value in values:visit(value)
+    # DF's existing numerical worker spells its fixed NumPy/SciPy guard as
+    # a tuple comparison. Read that fixed syntax instead of importing NumPy.
+    tree=ast.parse(script.read_text())
+    for node in ast.walk(tree):
+        if not isinstance(node,ast.Compare)or len(node.comparators)!=1:continue
+        left,right=node.left,node.comparators[0]
+        if not isinstance(left,ast.Tuple)or not isinstance(right,ast.Tuple)or len(left.elts)!=len(right.elts):continue
+        for name,version in zip(left.elts,right.elts):
+            if(isinstance(name,ast.Attribute)and name.attr=='__version__'and isinstance(name.value,ast.Name)
+               and name.value.id in('numpy','scipy','qiskit')and isinstance(version,ast.Constant)and isinstance(version.value,str)):
+                require(name.value.id,version.value)
+    return result,sorted(compilers)
+
+
+def fixed_input_hashes(root, documents, artifacts):
+    """Hash every fixed Git locator in original JSON, including nested ones."""
+    from .rpe_q3_coordinator import input_hashes
+    working=[]
+    def fixed(value):
+        if isinstance(value,list):return[fixed(item)for item in value]
+        if not isinstance(value,dict):return value
+        result={name:fixed(item)for name,item in value.items()}
+        if value.get('commit')=='WORKING'and isinstance(value.get('path'),str):
+            # Existing providers use WORKING for a raw artifact already in the
+            # owned output tree. Bind that artifact, never pretend it is Git.
+            matches=[(name,sha)for name,sha in artifacts.items()if name.endswith('/'+value['path'])]
+            if len(matches)!=1:raise ValueError('Unfrozen or ambiguous WORKING input: '+value['path'])
+            working.append(dict(path=matches[0][0],sha256=matches[0][1]));result.pop('commit')
+        return result
+    payload={'route':{'kind':'preparation_input','documents':fixed(documents)}}
+    return input_hashes(root,payload),list({row['path']:row for row in working}.values())
+
+
+def operational_source_requirements(documents):
+    """Declare original external runtime views for profile-based host resolution."""
+    found={}
+    paths={
+        'signal_view':('src/trottertracks/pr_rpe_signal_provider.py','src/trottertracks/pr_rpe_signal_plan.py','src/trottertracks/pr_rpe_rmse_s0_v2.py'),
+        'd2_view':('src/trottertracks/pr_price_rules.py',),
+    }
+    def visit(value):
+        if isinstance(value,list):
+            for item in value:visit(item)
+        elif isinstance(value,dict):
+            for name,item in value.items():
+                if name in paths and isinstance(item,str):
+                    root=Path(item).resolve()
+                    commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
+                    files={}
+                    for relative in paths[name]:
+                        raw=subprocess.check_output(['git','show',commit+':'+relative],cwd=root)
+                        if(root/relative).read_bytes()!=raw:raise ValueError('Original operational SOURCE view changed: '+str(root/relative))
+                        files[relative]=hashlib.sha256(raw).hexdigest()
+                    found[str(root)]=dict(path=str(root),field=name,source=dict(commit=commit,files=files))
+                visit(item)
+    visit(documents)
+    return list(found.values())
+
+
+def collect_fixed_inputs(root, documents, artifacts=None):
+    return fixed_input_hashes(root,documents,artifacts or{})
+
+
+def collect_required_views(documents):
+    rows=operational_source_requirements(documents)
+    return {'runtime_'+row['field']+'_'+row['source']['commit'][:10]:
+            dict(source=row['source'],controller_path=row['path'])for row in rows}
+
+
+def collect_required_paths(documents):
+    """Reuse the existing native runtime/config contract, without its approval flow.
+
+    Only runtime.provider_root and runtime.input_config are interpreted. The
+    provider manifest comes from that original config's provider/runtime seals;
+    optional caches and historical permission/ledger fields are not imported.
+    """
+    found={}
+    def visit(value):
+        if isinstance(value,list):
+            for item in value:visit(item)
+        elif isinstance(value,dict):
+            runtime=value.get('runtime')
+            if isinstance(runtime,dict)and(runtime.get('provider_root')or runtime.get('input_config')):
+                config_path=runtime.get('input_config')
+                if not isinstance(config_path,str):raise ValueError('Native provider runtime needs its original input_config')
+                config_path=Path(config_path).resolve()
+                if not config_path.is_file():raise ValueError('Native runtime input_config missing: '+str(config_path))
+                raw=config_path.read_bytes();sha=hashlib.sha256(raw).hexdigest();config=json.loads(raw)
+                found['runtime_input_config_'+sha[:12]]=dict(controller_path=str(config_path),kind='file',sha256=sha)
+                provider=runtime.get('provider_root')
+                if provider:
+                    provider=Path(provider).resolve()
+                    if not provider.is_dir():raise ValueError('Native provider_root missing: '+str(provider))
+                    files={}
+                    for row in config.get('sealed_files',[]):
+                        if row.get('role')!='provider/runtime':continue
+                        path=Path(row['path']).resolve()
+                        if not path.is_relative_to(provider):continue
+                        relative=path.relative_to(provider).as_posix();artifact_path(relative)
+                        expected=row.get('sha256')
+                        if not isinstance(expected,str)or len(expected)!=64:raise ValueError('Original provider seal lacks hash: '+str(path))
+                        if not path.is_file()or hashlib.sha256(path.read_bytes()).hexdigest()!=expected:
+                            raise ValueError('Original sealed provider/runtime file missing or changed: '+str(path))
+                        files[relative]=expected
+                    if not files:raise ValueError('Native provider_root has no original provider/runtime seals: '+str(provider))
+                    found['runtime_provider_root_'+digest(files)[:12]]=dict(controller_path=str(provider),kind='directory',files=files)
+            for item in value.values():visit(item)
+    visit(documents)
+    return found
+
+
 class DistributedPreparationBridge:
     def __init__(self, executor, root, settings=None, *, approved=False):
         self.executor = executor
@@ -64,11 +191,16 @@ class DistributedPreparationBridge:
         self.executor.artifact_cache.put({sha: base64.b64encode(raw).decode('ascii')})
         return sha
 
-    def _bundle(self, root, source):
+    def _bundle(self, root, source, required_commits=()):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         namespace='refs/rpe-preparation/' + digest(str(self.executor.run_dir))[:16]
+        for value in sorted(set(required_commits)):
+            commit=subprocess.check_output(['git','rev-parse',value+'^{commit}'],cwd=root,text=True).strip()
+            subprocess.run(['git','update-ref',namespace+'/input-'+commit,commit],cwd=root,check=True)
         imported=subprocess.check_output(['git','for-each-ref','--format=%(refname)',namespace],cwd=root,text=True).splitlines()
         if head == source and not imported:
+            return []
+        if subprocess.check_output(['git','rev-list','--count','HEAD',*imported,'^'+source],cwd=root,text=True).strip()=='0':
             return []
         # Include the original provider branch even if its publication history
         # diverged. Git bundle prerequisites are checked by the destination;
@@ -77,7 +209,10 @@ class DistributedPreparationBridge:
             path = Path(temporary) / 'input.bundle'
             subprocess.run(['git', 'bundle', 'create', str(path), 'HEAD', *imported, '^' + source], cwd=root,
                            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            return [dict(sha256=self._blob(path.read_bytes()), ref='HEAD')]
+            heads=subprocess.check_output(['git','bundle','list-heads',str(path)],cwd=root,text=True).splitlines()
+            names=[row.split(' ',1)[1]for row in heads]
+            ref='HEAD'if'HEAD'in names else names[0]
+            return [dict(sha256=self._blob(path.read_bytes()), ref=ref,checkout_input_head=ref=='HEAD')]
 
     def build_request(self, completion, command, directory, stage, output=None):
         """Freeze a portable leaf request; never invoke its scientific body."""
@@ -101,6 +236,13 @@ class DistributedPreparationBridge:
             expected = subprocess.check_output(['git', 'show', source + ':' + script_relative], cwd=root)
             if expected != script.read_bytes():
                 raise ValueError('Preparation leaf script differs from its declared SOURCE')
+            for name in ('src/trottertracks/rpe_preparation_paths.py',
+                         'scripts/run_pr_pauli_candidate_signals.py'):
+                item=root/name
+                if item.is_file():
+                    raw=subprocess.check_output(['git','show',source+':'+name],cwd=root)
+                    if raw!=item.read_bytes():raise ValueError('Preparation helper differs from fixed SOURCE: '+name)
+                    source_files[name]=hashlib.sha256(raw).hexdigest()
         else:
             # PF's source-frozen provider is invoked by the new transport
             # wrapper. The provider manifest is explicit and separately fixed.
@@ -111,10 +253,11 @@ class DistributedPreparationBridge:
         bindings = {str(root): '@SOURCE@', command[0]: '@PYTHON@'}
         if root != self.root:
             bindings[str(self.root)] = '@TRANSPORT@'
-        workspaces = {}
+        workspaces = {};runtime_inputs=[]
         # Original JSON remains byte-for-byte unchanged. Only runtime path
         # access is resolved by rpe_preparation_paths in the existing provider.
-        for arg in command:
+        for index,arg in enumerate(command):
+            if index and command[index-1]in('--output','--output-directory','--run-dir'):continue
             if not isinstance(arg, str) or not arg.endswith('.json'):
                 continue
             path = Path(arg)
@@ -123,6 +266,7 @@ class DistributedPreparationBridge:
             if path.resolve().is_relative_to(root):
                 inputs['workspace/' + path.resolve().relative_to(root).as_posix()] = self._blob(path.read_bytes())
             value = read(path)
+            runtime_inputs.append(value)
             if not isinstance(value, dict):
                 continue
             workspace = value.get('workspace')
@@ -134,6 +278,8 @@ class DistributedPreparationBridge:
                     files={}
                     for name in ('scripts/run_pauli_signal_entry.py','scripts/prepare_pauli_calibration.py',
                                  'scripts/run_pauli_split_cal.py','scripts/pauli_split_cal_audit_request.py',
+                                 'scripts/pauli_ld2_step_audit.py','scripts/pauli_ld3_cal_audit.py',
+                                 'src/trottertracks/rpe_preparation_paths.py',
                                  'src/trottertracks/pauli_signal_entry.py','src/trottertracks/pauli_calibration_request.py'):
                         item=self.root/name
                         if item.is_file():
@@ -157,16 +303,35 @@ class DistributedPreparationBridge:
                 if Path(private).exists():
                     inputs.update(self._capture(Path(private), 'private'))
         inputs.update(self._capture(directory, 'workspace/' + relative))
+        original_documents=[]
+        for name,sha in inputs.items():
+            if name.endswith('.json'):
+                try:original_documents.append(json.loads(self.executor.artifact_cache.path(sha).read_bytes()))
+                except (ValueError,UnicodeError):raise ValueError('Original preparation JSON is incomplete or invalid: '+name)
+        input_hashes,working_hashes=fixed_input_hashes(root,original_documents,inputs)
+        required_views=collect_required_views(runtime_inputs)
+        required_paths=collect_required_paths(runtime_inputs)
         with self.lock:
             for old, original in self.aliases.items():
                 if original in bindings:bindings[old]=bindings[original]
+        root_bundles=self._bundle(root,source,[row['commit']for row in input_hashes])
+        # Pauli's publication workspace has a separate object database. It
+        # reads the controller's newly committed configuration too; importing
+        # only the prior provider branch would leave that locator unavailable.
+        for workspace in workspaces.values():
+            combined=root_bundles+workspace['input_git_bundles']
+            workspace['input_git_bundles']=list({item['sha256']:item for item in combined}.values())
+        requirements,compiler_bindings=contract_runtime(runtime_inputs,script,self.settings.get('runtime_requirements', {}).get(STAGES[stage], {}))
         prep = dict(stage=STAGES[stage], provider=stage, command=list(command),
                     source=dict(commit=source, files=source_files), source_workspace=True,
                     controller_root=str(root),
-                    input_git_bundles=self._bundle(root, source), workspaces=workspaces,
+                    input_git_bundles=root_bundles, workspaces=workspaces,
                     path_bindings=bindings, inputs=inputs, outputs=list(dict.fromkeys(outputs)),
+                    input_hashes=input_hashes,working_input_hashes=working_hashes,
+                    required_views=required_views,
+                    required_paths=required_paths,
                     optional_outputs=optional_outputs,
-                    runtime_requirements=deepcopy(self.settings.get('runtime_requirements', {}).get(STAGES[stage], {})))
+                    runtime_requirements=requirements,compiler_bindings=compiler_bindings)
         return dict(schema='RPE_PREPARATION_REQUEST_V1', route=dict(kind='preparation'), preparation=prep,
                     original_contract=dict(source=source, stage=stage, automatic_retry=False))
 
@@ -183,6 +348,61 @@ class DistributedPreparationBridge:
             artifact_path(name)
             result[name] = self._blob(item.read_bytes())
         return result
+
+    def inspect_prior_owner(self, command, directory, stage):
+        """Read selected producer output markers before cloning can hide them.
+
+        This is limited to the exact original request/output roots, not a
+        global archive/process search. Existing distributed attempts are
+        reconciled by JobStore instead of this pre-submission observation.
+        """
+        directory=Path(directory).resolve();roots=[directory];observations=[]
+        def state(path):
+            try:return read(path)
+            except (OSError,ValueError):return {}  # An owner may still be publishing this terminal.
+        for argument in command:
+            if not isinstance(argument,str)or not argument.endswith('.json'):continue
+            path=Path(argument)
+            if not path.is_file():continue
+            value=read(path)
+            if isinstance(value,dict)and value.get('workspace')and value.get('directory'):
+                roots.append(Path(value['workspace']).resolve()/artifact_path(value['directory']))
+        for root in dict.fromkeys(roots):
+            if not root.exists():continue
+            # A protected STOP belongs to this exact selected producer output.
+            for path in root.rglob('STOP*.json'):
+                if not path.is_file():continue
+                observations.append(dict(path=str(path),sha256=hashlib.sha256(path.read_bytes()).hexdigest(),state='STOP'))
+            legacy=root/(stage+'.STARTED.json')
+            markers=list(root.rglob('*_STARTED.json'))
+            if legacy.is_file():markers.append(legacy)
+            started=root/'started'
+            if started.is_dir():markers.extend(started.glob('*.json'))
+            for path in dict.fromkeys(markers):
+                companion=path.with_name(path.stem+'_RETURN.json')
+                terminals=[]
+                if path.name=='SIGNALS_STARTED.json':
+                    companion=path.with_name('SIGNALS_RETURN.json');terminals=[path.parent/'run01/result.json']
+                elif path.name=='CALIBRATION_STARTED.json':
+                    terminals=list(path.parent.glob('**/run01/RESULT.json'))
+                elif path.name=='AUDIT_STARTED.json':terminals=list(path.parent.glob('**/PRICE_26AXIS.json'))
+                elif path==legacy:companion=root/(stage+'.RETURN.json')
+                elif path.parent.name=='started':terminals=[path.parent.parent/'terminal'/path.name]
+                completed=False
+                if companion.is_file():
+                    result=state(companion)
+                    if result.get('returncode')==0 and result.get('signal')is None:completed=True
+                    elif result.get('returncode')is not None or result.get('signal')is not None:
+                        observations.append(dict(path=str(companion),sha256=hashlib.sha256(companion.read_bytes()).hexdigest(),state='FAILED'))
+                for terminal in terminals:
+                    if not terminal.is_file():continue
+                    status=state(terminal).get('status','')
+                    completed=completed or status in('VALID','ENTRY_CARRIERS_COMPLETE_NOT_RPE_QUALIFIED','PRICE_RULE_SUPPORTED_MODEL_REFERENCE')or(status.startswith('FINITE_LD')and status.endswith('_CAL_PATHS_COMPLETE'))
+                observations.append(dict(path=str(path),sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+                                         state='COMPLETED_ARTIFACTS_AVAILABLE'if completed else'RUNNING_OR_UNKNOWN_ORIGINAL_OWNER'))
+        return dict(scope='EXACT_ORIGINAL_SELECTED_PRODUCER_OUTPUTS_ONLY',observations=observations,
+            failed=any(row['state']in('STOP','FAILED')for row in observations),
+            pending=any(row['state']=='RUNNING_OR_UNKNOWN_ORIGINAL_OWNER'for row in observations))
 
     def _import_result(self, result, request):
         artifacts = result.get('artifacts') or result.get('artifact_manifest') or {}
@@ -206,11 +426,15 @@ class DistributedPreparationBridge:
             if hashlib.sha256(path.read_bytes()).hexdigest() != artifacts[bundle['path']]:
                 raise ValueError('Returned scientific Git bundle changed')
             destination = workspaces[bundle.get('workspace', 'workspace')]
-            subprocess.run(['git', 'fetch', '--no-tags', str(path), bundle.get('ref', 'HEAD')], cwd=destination,
-                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            tip=subprocess.check_output(['git','rev-parse','FETCH_HEAD'],cwd=destination,text=True).strip()
-            namespace='refs/rpe-preparation/'+digest(str(self.executor.run_dir))[:16]
-            subprocess.run(['git','update-ref',namespace+'/'+artifacts[bundle['path']],tip],cwd=destination,check=True)
+            # The central optimizer's GitReader can be a different repository
+            # from an owned provider clone. Both must resolve the original
+            # returned commit; neither working HEAD is changed.
+            for repository in dict.fromkeys([destination,self.root]):
+                subprocess.run(['git', 'fetch', '--no-tags', str(path), bundle.get('ref', 'HEAD')], cwd=repository,
+                               check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+                tip=subprocess.check_output(['git','rev-parse','FETCH_HEAD'],cwd=repository,text=True).strip()
+                namespace='refs/rpe-preparation/'+digest(str(self.executor.run_dir))[:16]
+                subprocess.run(['git','update-ref',namespace+'/'+artifacts[bundle['path']],tip],cwd=repository,check=True)
         private = next((old for old,value in request['preparation'].get('path_bindings',{}).items()if value=='@WORK@/private'),None)
         if private:workspaces['private']=Path(private)
         for name, sha in artifacts.items():
@@ -239,7 +463,15 @@ class DistributedPreparationBridge:
             submitted = read(marker)
             request = submitted['request']
         else:
-            request = self.build_request(completion, command, directory, stage, output)
+            prior=self.inspect_prior_owner(command,directory,stage)
+            put(directory/(stage+'.PRIOR_OWNER.json'),prior)
+            if prior['failed']:
+                raise Held('STAGE_FAILED:'+stage+':ORIGINAL_OWNER_STOP_OR_FAILURE:NO_AUTOMATIC_RETRY:'+str(prior))
+            if prior['pending']:
+                raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':ORIGINAL_OWNER_RUNNING_OR_UNKNOWN:'+str(prior))
+            try:request = self.build_request(completion, command, directory, stage, output)
+            except (OSError,ValueError,subprocess.CalledProcessError)as error:
+                raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':INPUT_OR_SOURCE_METADATA_UNAVAILABLE:'+str(error))from error
             submitted = dict(request=request, source=completion.source, automatic_retry=False)
         # A Q3 approval/budget does not open signal/compile scope. The round
         # must separately bound preparation tasks and retain leaf input caps.
@@ -255,7 +487,12 @@ class DistributedPreparationBridge:
         put(marker, dict(submitted, job_id=job_id))
         result = self.executor.preparation_result(job_id, wait=True, adopt=True)
         if not result or result.get('status') != 'PREPARATION_COMPLETE':
-            raise Held('DISTRIBUTED_PREPARATION_HOLD:' + stage + ':' + str(result))
+            terminal=result or{}
+            while terminal.get('status')=='PREPARATION_DEPENDENCY_HOLD'and isinstance(terminal.get('predecessor'),dict):
+                terminal=terminal['predecessor']
+            if terminal.get('status')in('PREPARATION_FAILED','UNKNOWN'):
+                raise Held('STAGE_FAILED:'+stage+':DISTRIBUTED_'+terminal['status']+':NO_AUTOMATIC_RETRY:'+str(result))
+            raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:' + stage + ':' + str(result))
         self._import_result(result, request)
         receipt = dict(returncode=0, signal=None, source=completion.source, job_id=job_id,
                        transport='distributed', automatic_retry=False, preparation_calls=result.get('preparation_calls', 0))

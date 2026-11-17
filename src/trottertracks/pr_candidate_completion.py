@@ -281,10 +281,15 @@ class Completion:
                     identifier,old=matches[0];d=self.directory/'candidates'/identifier
             if old and old['status']=='READY_FOR_SEARCH':return dict(old,resumed=True)
             if old and old['status'].startswith(('HELD','STOP','WAITING')):
-                self.ingest_price_results()
-                return dict(self.refresh_price_hold(old)or old,resumed=True)
-            rec=dict(method=request['method'],selection=request.get('selection'),request=request,status='SELECTED',key=identifier,directory=rel(d))
+                if old.get('scientific_failure'):return dict(old,resumed=True)
+                if not old.get('recoverable_preparation'):
+                    self.ingest_price_results()
+                    return dict(self.refresh_price_hold(old)or old,resumed=True)
+            rec=(dict(old,previous_hold=dict(status=old['status'],reason=old.get('reason')),status='SELECTED',
+                      reason=None,recoverable_preparation=False)if old and old.get('recoverable_preparation')else
+                 dict(method=request['method'],selection=request.get('selection'),request=deepcopy(request),status='SELECTED',key=identifier,directory=rel(d)))
             self.state['records'][identifier]=rec;self.save()
+        request=deepcopy(request)  # descriptor resolution must not change the caller's stable request key
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
         physical_guard=None
         try:
@@ -365,7 +370,9 @@ class Completion:
         except Held as exc:
             text=str(exc)
             waiting=text.startswith(('PRICE_RULE_INCOMPLETE:','PRICE_EVIDENCE_REQUIRED:'))
-            rec.update(status='WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
+            operational=text.startswith('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:')
+            rec.update(status='WAITING_DISTRIBUTED_PREPARATION'if operational else'WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
+                       recoverable_preparation=operational,
                        scientific_failure=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')))
         except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),scientific_failure=True)
         finally:
@@ -806,6 +813,13 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
     put(completion.directory/'INPUTS.json',frozen);publish([completion.directory/'INPUTS.json'],'Fix finite PR preparation scope and SOURCE')
     def one(method):
         current=[r for r in completion.state['records'].values()if r['method']==method]
+        if getattr(completion,'stage_executor',None)is not None:
+            # Reconcile the original durable task before counting attempted
+            # candidates. It may have finished while this controller was down.
+            for record in current:
+                if not record.get('scientific_failure')and(record['status']=='SELECTED'or record.get('recoverable_preparation')):
+                    completion.complete(deepcopy(record['request']))
+            current=[r for r in completion.state['records'].values()if r['method']==method]
         maximum=settings.get('max_completed_per_method')
         if isinstance(maximum,dict):maximum=maximum.get(method)
         if maximum is not None and sum(r['status']=='READY_FOR_SEARCH'for r in current)>=maximum:return current
@@ -857,6 +871,10 @@ def continue_selected_preparation(root,problem,context,spec,run,completion,execu
         cycles.append(dict(ready=[r.get('configuration_id')for r in completion.state['records'].values()if r['status']=='READY_FOR_SEARCH'],
             methods={m:dict(stop=r['stop_reason'],new_calls=r['new_calls'],launched=executor.launched(m))for m,r in result.items()}))
         put(completion.directory/'SEARCH_CYCLES.json',dict(cycles=cycles,cumulative_budget=spec['max_new_q3_per_method']))
+        # Continuation shares the original search's STOP, including a fatal
+        # answer returned by an early READY candidate or a later cycle.
+        if any(r.get('stop_reason')in {'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}for r in result.values()):
+            break
         remaining=[]
         for method in spec['methods']:
             maximum=spec['max_new_q3_per_method'][method]

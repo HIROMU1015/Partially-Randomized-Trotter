@@ -44,6 +44,18 @@ class PreparationTransportTests(unittest.TestCase):
         return dict(job_id=request['request_id'],method=request['method'],attempt_id='attempt',
                     source_manifest=self.source,request=request,request_sha256=P.digest(request))
 
+    def test_concurrent_adoption_materializes_shared_large_artifact_once(self):
+        from concurrent.futures import ThreadPoolExecutor
+        import threading
+        cache=ArtifactCache(self.root/'cache');raw=b'circuit-receipt-'*500000
+        sha=hashlib.sha256(raw).hexdigest();cache.put({sha:base64.b64encode(raw).decode()})
+        start=threading.Barrier(10)
+        def adopt(_):
+            start.wait();cache.materialize({'shared/raw/circuit.json':sha},self.root/'adoption')
+        with ThreadPoolExecutor(max_workers=10)as pool:list(pool.map(adopt,range(10)))
+        self.assertEqual((self.root/'adoption/shared/raw/circuit.json').read_bytes(),raw)
+        self.assertEqual(list((self.root/'adoption').rglob('*.materialize-*')),[])
+
     def test_compile_artifacts_move_to_another_host_once(self):
         compile=self.task('compile',"from pathlib import Path;Path(r'@WORK@/result.json').write_text('{\"compiled\":7}')")
         compile_dir=self.root/'compiler-attempt'
@@ -83,6 +95,42 @@ subprocess.run(['git','commit','-qm','one synthetic receipt'],check=True)
         returned=json.loads(subprocess.check_output(['git','show',outcome['git_bundles'][0]['head']+':proof.json'],cwd=consumer))
         self.assertEqual(returned,{'receipt':'synthetic'})
 
+    def test_sparse_clone_keeps_only_declared_output_cones_for_plain_git_add(self):
+        source=self.root/'source';archive=source/'docs/archive/unneeded.json';archive.parent.mkdir(parents=True);archive.write_text('{"historical":true}')
+        subprocess.run(['git','add','docs'],cwd=source,check=True)
+        subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','historical-data'],cwd=source,check=True)
+        self.source['commit']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip()
+        code="""from pathlib import Path
+import subprocess
+assert not Path('docs/archive/unneeded.json').exists()
+p=Path('docs/provider-output/result.json');p.parent.mkdir(parents=True,exist_ok=True);p.write_text('{"done":true}')
+subprocess.run(['git','add',str(p)],check=True)
+subprocess.run(['git','commit','-qm','new result'],check=True)
+"""
+        task=self.task('audit',code,source_workspace=True,outputs=['workspace/docs/provider-output'])
+        result=P.execute(task,self.profile('server1'),self.root/'sparse-attempt')
+        self.assertEqual(result['status'],'PREPARATION_COMPLETE')
+        self.assertFalse((self.root/'sparse-attempt/workspace/docs/archive/unneeded.json').exists())
+        self.assertTrue((self.root/'sparse-attempt/workspace/docs/provider-output/result.json').is_file())
+        self.assertEqual(archive.read_text(),'{"historical":true}')
+
+    def test_input_git_bundle_cannot_replace_fixed_scientific_code(self):
+        malicious=self.root/'changed-code'
+        subprocess.run(['git','clone','-q',str(self.root/'source'),str(malicious)],check=True)
+        (malicious/'leaf.py').write_text('raise RuntimeError("different scientific source")\n')
+        subprocess.run(['git','add','leaf.py'],cwd=malicious,check=True)
+        subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','changed-code'],cwd=malicious,check=True)
+        bundle=self.root/'changed.bundle'
+        subprocess.run(['git','bundle','create',str(bundle),'HEAD','^'+self.source['commit']],cwd=malicious,check=True,capture_output=True)
+        raw=bundle.read_bytes();sha=hashlib.sha256(raw).hexdigest()
+        ArtifactCache(self.root/'server1/spool/artifacts').put({sha:base64.b64encode(raw).decode()})
+        task=self.task('audit',"from pathlib import Path;Path(r'@WORK@/result.json').write_text('must not run')",
+                       source_workspace=True,input_git_bundles=[{'sha256':sha,'ref':'HEAD'}])
+        with self.assertRaisesRegex(ValueError,'changed fixed scientific SOURCE'):
+            P.execute(task,self.profile('server1'),self.root/'blocked-attempt')
+        self.assertFalse((self.root/'blocked-attempt/result.json').exists())
+        self.assertEqual((self.root/'source/leaf.py').read_text(),'print("synthetic fixed source")\n')
+
     def test_dry_check_binds_stage_source_runtime_and_leaves_work_absent(self):
         profile=self.profile('server2');task=self.task('signal',"raise RuntimeError('must not execute')")
         first=P.current_preparation_fingerprint(task,profile)
@@ -94,6 +142,54 @@ subprocess.run(['git','commit','-qm','one synthetic receipt'],check=True)
         task['request']['preparation']['runtime_requirements']={'version_info_prefix':[99]}
         task['request_sha256']=P.digest(task['request'])
         with self.assertRaisesRegex(ValueError,'Python version'):P.current_preparation_fingerprint(task,profile)
+
+    def test_inspection_examples_cannot_be_mistaken_for_executable_tasks(self):
+        spec=importlib.util.spec_from_file_location('prep_checker',ROOT/'scripts/check_rpe_preparation_host_readiness.py')
+        checker=importlib.util.module_from_spec(spec);spec.loader.exec_module(checker)
+        task=self.task('compile',"raise RuntimeError('never execute')",dry_check_only=True)
+        task['request'].pop('request_id')
+        row=checker.check(task['request'],self.profile('server2'))
+        self.assertEqual(row['status'],'SAVED_INPUT_RUNTIME_INSPECTION_PASS')
+        self.assertFalse(row['execution_request_validated'])
+        self.assertEqual(row['execution_readiness'],'UNCONFIRMED')
+        from trottertracks.rpe_preparation_queue import normalize_preparation_request
+        request=normalize_preparation_request(task['request'])
+        assignment=dict(request=request,request_sha256=P.digest(request),job_id=request['request_id'],source_manifest=self.source)
+        with self.assertRaisesRegex(ValueError,'Inspection-only'):
+            P.execute(assignment,self.profile('server2'),self.root/'never-run')
+        self.assertFalse((self.root/'never-run/PREPARATION_STARTED.json').exists())
+
+    def test_required_readonly_source_view_is_resolved_before_body(self):
+        inner=self.root/'inner';manifest=repo(inner)
+        (inner/'leaf.py').write_text('print("inner fixed source")\n')
+        subprocess.run(['git','add','leaf.py'],cwd=inner,check=True)
+        subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','inner'],cwd=inner,check=True)
+        manifest={'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=inner,text=True).strip(),
+                  'files':{'leaf.py':hashlib.sha256((inner/'leaf.py').read_bytes()).hexdigest()}}
+        task=self.task('signal',"from pathlib import Path;import os,json;v=json.loads(os.environ['RPE_PREPARATION_PATH_MAP']);Path(r'@WORK@/result.json').write_text(next(iter(v.values())))",
+            required_views={'inner':{'source':manifest,'controller_path':'/old/server2/inner'}})
+        profile=self.profile('server1')
+        with self.assertRaisesRegex(ValueError,'SOURCE view missing'):P.current_preparation_fingerprint(task,profile)
+        profile['preparation_sources']={self.source['commit']:str(self.root/'source'),manifest['commit']:str(inner)}
+        fp=P.current_preparation_fingerprint(task,profile)
+        self.assertEqual(fp['views']['view:inner'],str(inner))
+        P.execute(task,profile,self.root/'view-attempt')
+        self.assertEqual((self.root/'view-attempt/result.json').read_text(),str(inner))
+        self.assertEqual((inner/'leaf.py').read_text(),'print("inner fixed source")\n')
+
+    def test_required_private_provider_config_needs_mapping_and_matching_bytes(self):
+        config=self.root/'private-config.json';config.write_text('{"fixed":"original-data"}')
+        provider=self.root/'private-provider';provider.mkdir();(provider/'provider.py').write_text('FIXED=1\n')
+        required={'config':{'controller_path':'/server2/config.json','kind':'file','sha256':hashlib.sha256(config.read_bytes()).hexdigest()},
+                  'provider':{'controller_path':'/server2/provider','kind':'directory','files':{'provider.py':hashlib.sha256((provider/'provider.py').read_bytes()).hexdigest()}}}
+        task=self.task('audit','pass',required_paths=required);profile=self.profile('local')
+        with self.assertRaisesRegex(ValueError,'not mapped'):P.current_preparation_fingerprint(task,profile)
+        profile['preparation_paths']={'config':str(config),'provider':str(provider)}
+        fp=P.current_preparation_fingerprint(task,profile)
+        self.assertEqual(fp['runtime_paths']['provider']['path'],str(provider))
+        config.write_text('{"fixed":"different-data"}')
+        with self.assertRaisesRegex(ValueError,'file hash differs'):P.current_preparation_fingerprint(task,profile)
+        self.assertFalse(Path(profile['work_dir']).exists())
 
     def test_missing_stage_profile_does_not_reuse_q3_pass(self):
         task=self.task('signal','pass');task['request']['preparation']['artificial']=False
@@ -107,6 +203,39 @@ subprocess.run(['git','commit','-qm','one synthetic receipt'],check=True)
         with self.assertRaises(ValueError):cache.materialize({'../outside':sha},self.root/'inputs')
         cache.path(sha).write_bytes(b'corrupt')
         with self.assertRaisesRegex(ValueError,'Corrupt'):cache.get([sha])
+
+    def test_relay_cross_host_artifact_protocol_only_transfers_missing_bytes(self):
+        spec=importlib.util.spec_from_file_location('prep_relay',ROOT/'scripts/run_rpe_q3_relay.py')
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        relay=object.__new__(module.Relay)
+        central=ArtifactCache(self.root/'central-cas');remote=ArtifactCache(self.root/'worker-cas')
+        raw=b'compiled-circuit'*100000;sha=hashlib.sha256(raw).hexdigest()
+        central.put({sha:base64.b64encode(raw).decode()});transfers=[]
+        def post(path,value):
+            if path.endswith('/missing'):return {'missing':central.missing(value['hashes'])}
+            if path.endswith('/get'):
+                transfers.append(('central-download',value['hashes']));return {'blobs':central.get(value['hashes'])}
+            if path.endswith('/put'):
+                transfers.append(('central-upload',list(value['blobs'])));return {'ok':True,**central.put(value['blobs'])}
+            raise AssertionError(path)
+        def mailbox(worker,action,value):
+            if action=='artifacts-missing':result={'missing':remote.missing(value['hashes'])}
+            elif action=='artifacts-get':
+                transfers.append(('worker-download',value['hashes']));result={'blobs':remote.get(value['hashes'])}
+            elif action=='artifacts-put':
+                transfers.append(('worker-upload',list(value['blobs'])));result={'ok':True,**remote.put(value['blobs'])}
+            else:raise AssertionError(action)
+            return result,0.0
+        relay.post=post;relay.remote=mailbox;relay.log=lambda *args,**kwargs:None
+        task=self.task('audit','pass',inputs={'circuit.json':sha});worker={'host_id':'server1'}
+        relay._deliver_artifacts(worker,task);relay._deliver_artifacts(worker,task)
+        self.assertEqual(len(transfers),2)
+        extra=b'new-audit-receipt';other=hashlib.sha256(extra).hexdigest()
+        remote.put({other:base64.b64encode(extra).decode()})
+        relay._recover_artifacts(worker,{'artifact_manifest':{'audit.json':other}})
+        relay._recover_artifacts(worker,{'artifact_manifest':{'audit.json':other}})
+        self.assertEqual(len(transfers),4)
+        self.assertEqual(base64.b64decode(central.get([other])[other]),extra)
 
     def test_preparation_result_bundle_does_not_repeat_large_output(self):
         attempt=self.root/'attempt';attempt.mkdir()

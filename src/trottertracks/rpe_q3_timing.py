@@ -107,6 +107,70 @@ def stats(values):
                 maximum=max(values) if values else None, minimum=min(values) if values else None)
 
 
+def preparation_summary(run, events):
+    """Typed preparation timing, kept separate from Q3 counts and body spans."""
+    launches={}
+    for event in events:
+        if event.get('event')=='LAUNCH'and event.get('attempt_id'):
+            key=(event.get('job')or event.get('job_id'),event['attempt_id'],event['host_id'])
+            launches.setdefault(key,event)
+    by_job=defaultdict(list)
+    for key in launches:by_job[key[0]].append(key)
+    grouped=defaultdict(lambda:defaultdict(list));ambiguous=[]
+    for event in events:
+        job=event.get('job')or event.get('job_id');attempt=event.get('attempt_id')
+        choices=[key for key in by_job.get(job,[])if attempt is None or key[1]==attempt]
+        if len(choices)!=1:
+            if event.get('event')in('ADOPT','RESULT_RECEIVED','TRANSFER_COMPLETE'):
+                ambiguous.append(dict(job_id=job,event=event.get('event'),reason='NO_UNIQUE_PREPARATION_ATTEMPT'))
+            continue
+        grouped[choices[0]][event.get('event')].append(event)
+    rows=[];queue_intervals=[]
+    for key,launch in sorted(launches.items(),key=lambda item:item[1].get('monotonic',0)):
+        job,attempt,host=key;stage=launch.get('stage')or str(launch.get('method','')).split(':',1)[-1]
+        ev=grouped[key];first=lambda name:next(iter(ev.get(name,[])),None)
+        directory=Path(run)/'jobs'/str(launch.get('method'))/job
+        marker=directory/'LAUNCH.json';artifact_ok=None
+        if marker.exists():
+            saved=json.loads(marker.read_text());artifact_ok=saved.get('attempt_id')==attempt and saved.get('host_id')==host
+        stages=read_lines(directory/'JOB_STAGES.jsonl')if artifact_ok is True else[]
+        starts=[event for event in stages if event.get('event')=='PREPARATION_BODY_START'and event.get('stage')==stage]
+        ends=[event for event in stages if event.get('event')=='PREPARATION_BODY_END'and event.get('stage')==stage]
+        pairs=[(start,end)for start,end in zip(starts,ends)if delta(start,end)is not None]
+        body=stats([delta(start,end)for start,end in pairs])['total']if pairs else None
+        received=first('RESULT_RECEIVED');persisted=first('TRANSFER_COMPLETE');adopt=first('ADOPT');end=received or persisted
+        q=launch.get('queue_wait_seconds');domain=launch.get('clock_id')or launch.get('invocation')
+        if q is not None:queue_intervals.append((domain,launch['monotonic']-q,launch['monotonic']))
+        def transfer_metric(name):return next((event[name]for event in ev.get('TRANSFER_TIMING',[])if event.get(name)is not None),None)
+        rows.append(dict(job_id=job,attempt_id=attempt,host=host,stage=stage,method=launch.get('method'),
+            artifact_attempt_matches=artifact_ok,A_queue_to_assignment_seconds=q,
+            A_start_scope='PREPARATION_TASK_ENQUEUED; declared dependency wait may be included before inputs are ready',
+            preparation_body_seconds=body,preparation_body_calls_measured=len(pairs),
+            preparation_body_scope='PREPARATION_COMMAND_PROCESS_SPAN; separate from the Q3 accelerator API',
+            assignment_to_controller_receive_seconds=delta(launch,end,True),
+            D_receive_to_executor_adopt_seconds=delta(end,adopt,True),
+            receive_validation_persistence_seconds=(persisted or{}).get('transfer_seconds'),
+            receive_boundary='RPC_BODY_RECEIVED'if received else'LEGACY_VALIDATED_PERSISTED_RESULT'if persisted else'MISSING',
+            assignment_to_body_same_clock_seconds=delta(launch,pairs[0][0])if pairs else None,
+            body_to_controller_receive_same_clock_seconds=delta(pairs[-1][1],received)if pairs else None,
+            worker_upload_ACK_roundtrip_seconds=transfer_metric('upload_roundtrip_seconds'),
+            SSH_delivery_roundtrip_seconds=transfer_metric('ssh_delivery_roundtrip_seconds'),
+            SSH_status_download_roundtrip_seconds=transfer_metric('ssh_status_download_seconds')))
+    keys=('A_queue_to_assignment_seconds','preparation_body_seconds','assignment_to_controller_receive_seconds',
+          'D_receive_to_executor_adopt_seconds','receive_validation_persistence_seconds','worker_upload_ACK_roundtrip_seconds',
+          'SSH_delivery_roundtrip_seconds','SSH_status_download_roundtrip_seconds')
+    def aggregate(selected):return dict(count=len(selected),metrics={key:stats([row[key]for row in selected])for key in keys})
+    return dict(schema='RPE_PREPARATION_OPERATIONAL_TIMING_V1',attempts=len(rows),rows=rows,
+        by_stage={stage:aggregate([row for row in rows if row['stage']==stage])for stage in sorted({row['stage']for row in rows})},
+        by_host={host:dict(aggregate([row for row in rows if row['host']==host]),
+            by_stage={stage:aggregate([row for row in rows if row['host']==host and row['stage']==stage])
+                      for stage in sorted({row['stage']for row in rows if row['host']==host})})for host in sorted({row['host']for row in rows})},
+        missing_body_count=sum(row['preparation_body_seconds']is None for row in rows),ambiguous_joins=ambiguous,
+        queue_wait_union_seconds=union_seconds(queue_intervals),
+        clock_scope='Same-clock deltas only; absolute timestamps from separate hosts are never subtracted',
+        scientific_H4_calls_added=0)
+
+
 def summarize(run, *, timeline=None, public_summary=None):
     """One normal run directory, or a historical published timeline.
 
@@ -116,7 +180,19 @@ def summarize(run, *, timeline=None, public_summary=None):
     method/configuration and explicitly labelled as a legacy inference.
     """
     run = Path(run)
-    events = read_lines(timeline or run/'PROGRESS.jsonl')
+    all_events = read_lines(timeline or run/'PROGRESS.jsonl')
+    preparation_jobs={event.get('job')or event.get('job_id')for event in all_events
+                      if str(event.get('method','')).startswith('PREPARATION:')}
+    preparation_jobs.discard(None)
+    preparation_events=[event for event in all_events if (event.get('job')or event.get('job_id'))in preparation_jobs
+                        or str(event.get('method','')).startswith('PREPARATION:')]
+    preparation=preparation_summary(run,preparation_events)
+    events=[]
+    for event in all_events:
+        if (event.get('job')or event.get('job_id'))in preparation_jobs or str(event.get('method','')).startswith('PREPARATION:'):continue
+        if event.get('event')=='QUEUE_WAIT_STATE':
+            event=dict(event,reasons={job:reason for job,reason in event.get('reasons',{}).items()if job not in preparation_jobs})
+        events.append(event)
     launches = defaultdict(list)
     for e in events:
         if e.get('event') == 'LAUNCH' and e.get('attempt_id'):
@@ -262,6 +338,7 @@ def summarize(run, *, timeline=None, public_summary=None):
         row['A_unattributed_seconds']=max(0,q-sum(parts.values()))if slots and q is not None else q
     return dict(schema='RPE_Q3_OPERATIONAL_TIMING_V1',scope='OPERATIONAL_LOGS_ONLY_NO_SCIENTIFIC_REANALYSIS',
         run_directory=str(run),input_timeline=str(timeline or run/'PROGRESS.jsonl'),attempts=len(rows),by_host=by_host,rows=rows,
+        preparation=preparation,attempt_count_scope='Q3_ONLY; typed preparation attempts are reported separately',
         missing_counts={k:sum(r[k] is None for r in rows) for k in ['Q3_body_seconds','D_receive_to_search_adopt_seconds']},
         ambiguous_joins=ambiguous,queue_wait_job_seconds_sum=sum(r['A_queue_to_assignment_seconds'] or 0 for r in rows),
         queue_wait_union_seconds=union_seconds(queue_intervals),
