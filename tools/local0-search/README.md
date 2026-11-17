@@ -4,6 +4,18 @@ Windowsの既存 `tools/local0-dry-check/Common.ps1` と結果同期を使う。
 `CLIENT.json` に固定 `code_root` や別のPlanOnly実装を置かず、RomuTailの
 `.rpe-central/SERVICE.json` → `RELEASES.json` から検証済み版を解決する。
 
+このWindows配置では `CLIENT.json` と結果同期の `CONFIG.json` の
+`ssh_executable` を既存の `C:/Program Files/Git/usr/bin/ssh.exe` に指定する。
+同じ `RomuTail` alias・既存認証を利用し、システムのSSH設定は変更しない。
+Windows標準SSHには、この入れ子接続で応答後も終了しない事例があった。
+実機の反復検査はGit付属SSHで行った。
+
+公開stdlib helperのRomuTail配置先は `CLIENT.json.remote_entry` の
+`.rpe-central/CLIENT_GATEWAY.py`（このdirectoryの `remote.py`）、結果同期の
+`CONFIG.json.remote_observer` の `.rpe-central/PUBLICATION_OBSERVER.py`
+（`../local0-result-sync/remote.py`）。配置時は公開helperを同じbytesでコピーし、
+frontendとcontrollerの版を別々に記録する。認証情報はこれらのファイルに含めない。
+
 ```powershell
 .\Invoke-RpeSearch.ps1 -Action Preview -RequestFile .\scope.json
 .\Invoke-RpeSearch.ps1 -Action PlanOnly -RequestFile .\scope.json

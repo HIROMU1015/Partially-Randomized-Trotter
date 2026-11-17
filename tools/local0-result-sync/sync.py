@@ -1,5 +1,5 @@
 """Windows-owned, read-only public result mirror and per-run monitor."""
-import argparse,base64,contextlib,hashlib,io,json,os,pathlib,subprocess,sys,tempfile,time,uuid,zipfile
+import argparse,base64,contextlib,hashlib,io,json,os,pathlib,subprocess,sys,time,uuid,zipfile
 if hasattr(sys,'set_int_max_str_digits'):sys.set_int_max_str_digits(0)
 P=pathlib.Path
 sha=lambda b:hashlib.sha256(b).hexdigest()
@@ -34,30 +34,16 @@ def lock(path):
 
 def remote(config,payload):
     encoded=base64.b64encode(json.dumps(payload).encode()).decode()
-    ssh=str(P(os.environ['SystemRoot'])/'System32/OpenSSH/ssh.exe')if os.name=='nt'else'ssh'
+    ssh=config.get('ssh_executable')or(str(P(os.environ['SystemRoot'])/'System32/OpenSSH/ssh.exe')if os.name=='nt'else'ssh')
     # Nested Windows OpenSSH can retain a redirected stdin pipe after Close.
     # The observer is public code; transport it as one quoted argument instead.
     quote=lambda value:"'"+value.replace("'","'\"'\"'")+"'"
     if not config.get('remote_observer'):raise ValueError('Installed read-only remote_observer path is required')
     remote_command='set -o pipefail; '+quote(config['remote_python'])+' -B '+quote(config['remote_observer'])+' --payload-base64 '+encoded+' | base64 -w 1024'
     command=[ssh,'-n','-o','BatchMode=yes','-o','ConnectTimeout=20','-o','ServerAliveInterval=15','-o','ServerAliveCountMax=2',config['ssh_alias'],remote_command]
-    if os.name=='nt':
-        # Win32 OpenSSH spawned through Python's redirected pipes may never
-        # close them in an incoming SSH session. PowerShell's native SSH path
-        # works; keep its response in an owned temporary file, with no pipes.
-        psquote=lambda value: "'"+str(value).replace("'","''")+"'"
-        with tempfile.TemporaryDirectory(prefix='rpe-public-sync-')as directory:
-            output=P(directory)/'response.txt';errors=P(directory)/'errors.txt'
-            script="$ErrorActionPreference='Stop';$ProgressPreference='SilentlyContinue';"+"$a=@("+','.join(psquote(x)for x in command[1:])+");$r=& "+psquote(ssh)+" @a;$code=$LASTEXITCODE;[IO.File]::WriteAllText("+psquote(output)+",($r -join [Environment]::NewLine),[Text.Encoding]::ASCII);exit $code"
-            encoded_script=base64.b64encode(script.encode('utf-16le')).decode()
-            with errors.open('wb')as error_file:
-                p=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-EncodedCommand',encoded_script],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=error_file,timeout=120)
-            raw=output.read_bytes()if output.exists()else b'';error=errors.read_bytes()
-    else:
-        p=subprocess.run(command,stdin=subprocess.DEVNULL,capture_output=True,timeout=120)
-        raw=p.stdout;error=p.stderr
-    if p.returncode:raise RuntimeError('SSH observation failed: '+error.decode(errors='replace')[-2000:]+raw.decode(errors='replace')[-1500:])
-    response=json.loads(base64.b64decode(raw))
+    p=subprocess.run(command,stdin=subprocess.DEVNULL,capture_output=True,timeout=120)
+    if p.returncode:raise RuntimeError('SSH observation failed: '+p.stderr.decode(errors='replace')[-2000:]+p.stdout.decode(errors='replace')[-1500:])
+    response=json.loads(base64.b64decode(p.stdout))
     if not response['ok']:raise RuntimeError(response.get('error'))
     return response['result']
 

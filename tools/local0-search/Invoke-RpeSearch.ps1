@@ -18,25 +18,12 @@ $transport=@{server_config=$client.server_config;request_base64=[Convert]::ToBas
 # pipe open. Use the installed public bootstrap and a small data argument.
 $transport64=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes(($transport|ConvertTo-Json -Compress -Depth 80)))
 $remote='set -o pipefail; '+(Quote-RpeShellArgument $client.python)+' -B '+(Quote-RpeShellArgument $client.remote_entry)+' --transport-base64 '+$transport64+' | base64 -w 1024'
-$sshPath=Join-Path $env:SystemRoot 'System32/OpenSSH/ssh.exe'
+$sshPath=if($client.ssh_executable){$client.ssh_executable}else{Join-Path $env:SystemRoot 'System32/OpenSSH/ssh.exe'}
+if(-not (Test-Path -LiteralPath $sshPath)){throw ('Configured SSH executable is missing: '+$sshPath)}
 $native=@('-n','-o','BatchMode=yes','-o','ConnectTimeout=20','-o','ServerAliveInterval=15','-o','ServerAliveCountMax=2',$client.ssh_alias,$remote)
-# A child with file-backed handles also works when this command itself is
-# running inside Windows OpenSSH. Avoid Python/PowerShell capture-pipe hangs.
-$temporary=Join-Path ([IO.Path]::GetTempPath()) ('rpe-search-'+[guid]::NewGuid().ToString('N'))
-[void][IO.Directory]::CreateDirectory($temporary)
-try{
-    $answer=Join-Path $temporary 'response.txt';$errors=Join-Path $temporary 'errors.txt';$stdout=Join-Path $temporary 'stdout.txt'
-    $psquote={param($v) "'"+([string]$v).Replace("'","''")+"'"}
-    $arguments=($native|ForEach-Object {& $psquote $_}) -join ','
-    $bridge='$ErrorActionPreference=''Stop'';$ProgressPreference=''SilentlyContinue'';$a=@('+$arguments+');$r=& '+(& $psquote $sshPath)+' @a;$code=$LASTEXITCODE;[IO.File]::WriteAllText('+(& $psquote $answer)+',($r -join [Environment]::NewLine),[Text.Encoding]::ASCII);exit $code'
-    $encoded=[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($bridge))
-    $process=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList @('-NoProfile','-NonInteractive','-EncodedCommand',$encoded) -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $errors
-    if($process.ExitCode -ne 0){throw ('RomuTail client transport failed, exit='+$process.ExitCode+': '+[IO.File]::ReadAllText($errors))}
-    $raw=[IO.File]::ReadAllText($answer)
-}finally{
-    if(Test-Path $temporary){Remove-Item -Recurse -Force $temporary}
-}
-$responseText=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw))
+$raw=& $sshPath @native
+if($LASTEXITCODE -ne 0){throw ('RomuTail client transport failed, exit='+$LASTEXITCODE)}
+$responseText=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -join '')))
 $response=$responseText|ConvertFrom-Json
 if(-not $response.ok){throw $response.error}
 $result=$response.result
@@ -60,5 +47,6 @@ Write-Host ('Run '+$result.run_id+' : '+$result.status)
 if($result.applied){Write-Host ('Range: '+($result.applied.requested|ConvertTo-Json -Compress -Depth 30))}
 Write-Host ('Release: '+($result.release|ConvertTo-Json -Compress -Depth 10))
 Write-Host ('Scientific SOURCE: '+$result.computation_source+'; controller SOURCE: '+$result.controller_source)
+if($result.runtime){Write-Host ('Runtime: '+($result.runtime|ConvertTo-Json -Compress -Depth 12))}
 if($result.run_directory){Write-Host ('RomuTail: '+$result.run_directory)}
 $result
