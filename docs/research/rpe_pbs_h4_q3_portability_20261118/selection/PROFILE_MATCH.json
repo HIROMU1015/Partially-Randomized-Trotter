@@ -1,0 +1,46 @@
+{
+  "schema": "RPE_PBS_Q3_SELECTION_PROFILE_MATCH_V1",
+  "profile": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-pbs-worker-20261118/docs/research/rpe_pbs_central_integration_20261118/deployment/PBS_PROFILE.json",
+  "profile_sha256": "4c38bbd1b4429897566ef744a0162948986509ba772222ef44c00125dfae252a",
+  "host_id": "pbs-0",
+  "scientific_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/28d976b99cdf8329adcc1b79327e329e947ef774",
+  "interpreter": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+  "adapter_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/349558b748a82f384a4589434a63ef9b5572032c",
+  "adapter_manifest": {
+    "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+    "files": {
+      "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+      "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+      "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+    }
+  },
+  "selected_route": "pf_b_pf6",
+  "selected_view": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+  "deployed_route_view": "/home/AbeHiromu/projects/rpe-pbs-20261118/readiness/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+  "existing_full_pf_drycheck": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-pbs-worker-20261118/docs/research/rpe_pbs_worker_20261118/readiness/checks02/FULL_PF/READINESS.json",
+  "existing_drycheck_request_id": "9b9b4b5132ff89768c5c",
+  "selected_request_id": "98693b829295fc884330",
+  "exact_selected_request_drycheck_pending": false,
+  "reason": "Saved four-method inspection covered another FullPF S2 request; same fixed route/runtime does not constitute exact M5 REQUEST metadata PASS",
+  "original_template_dp_workers": 8,
+  "original_saved_job_execution_profile": null,
+  "deployed_profile_dp_workers": 2,
+  "new_profile_and_actual_allocation_to_be_bound_by_parent": false,
+  "scientific_source_and_signals_not_regenerated": true,
+  "selected_request_pbs_readiness": {
+    "status": "REAL_HOST_DRY_CHECK_PASS",
+    "pbs_job_id": "267196.CPUcluster-PRISM",
+    "node": "CPUcluster035",
+    "evidence": "../readiness/received/dry-check/FULL_PF/READINESS.json",
+    "evidence_sha256": "ee0ab14b8ca202c39ac058be12fd85ce19062f2954c2f1903a86a66342074d74",
+    "request_canonical_sha256": "a499fd8f2e1006bae4ba128261c479f310c0e24228f7dde7e5bde81bfbfd5d97",
+    "policy": "../deployment/HOST_ELIGIBILITY.json",
+    "eligible_host_ids": [
+      "pbs-0"
+    ],
+    "actual_profile": "../deployment/PBS_PROFILE.json",
+    "dp_workers": 8,
+    "library_threads": 1,
+    "scientific_execute_calls": 0
+  }
+}

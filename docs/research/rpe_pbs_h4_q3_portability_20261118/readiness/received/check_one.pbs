@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -N rpe-h4q3-dry
+#PBS -q workq
+#PBS -l select=1:ncpus=8:mem=8gb
+#PBS -l walltime=00:03:00
+#PBS -j oe
+#PBS -r n
+set -eu
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+export NUMBA_NUM_THREADS=1 RAYON_NUM_THREADS=1 QISKIT_NUM_PROCS=1
+export PYTHONDONTWRITEBYTECODE=1
+cd /home/AbeHiromu/projects/rpe-pbs-20261118/portability-h4-q3-20261118
+/opt/pbs/bin/qstat -f -F json "$PBS_JOBID" > DRY_ALLOCATION.json
+/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python -B check_one.py

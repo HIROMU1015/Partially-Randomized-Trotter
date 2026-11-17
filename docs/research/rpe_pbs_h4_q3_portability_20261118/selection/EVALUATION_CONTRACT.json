@@ -1,0 +1,109 @@
+{
+  "original_problem_accuracy": {
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+    "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+    "epsilon_E_decimal": "0.00159360010199040",
+    "scope": "MODEL_MSE_FILTER_ONLY"
+  },
+  "original_problem_target": {
+    "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+    "energy_ha": -2.1663874486347634,
+    "source": {
+      "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+      "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+      "selector": [
+        "target"
+      ]
+    }
+  },
+  "original_problem_rpe": {
+    "M": 12
+  },
+  "statistical_contract": {
+    "id": "PF6_CURRENT_WIDTH_COST_BUDGET_3O4_TWO_SHAPES_TOTAL_Q3",
+    "claim_level": "TOTAL_RAW_MODEL_DIAGNOSTIC_ONLY",
+    "allow_conditional_unqualified": true,
+    "simulation_policy": {
+      "kind": "IID_SHOTS_INDEPENDENT_AXES_ROUNDS_AND_REPETITIONS",
+      "target_law": "deterministic",
+      "interpretation": "IID_BINOMIAL_MEASUREMENTS_OF_SAVED_DETERMINISTIC_PF_RAW_NO_RTE_OR_MC"
+    },
+    "summary_options": {
+      "unresolved_loss": {
+        "kind": "BOUNDED_INTERVAL",
+        "lower": 0,
+        "upper": {
+          "numerator": 357405153776690641596902400718249,
+          "denominator": 316912650057057350374175801344
+        }
+      }
+    }
+  },
+  "options": {
+    "probability_rule": "EXACT_AFFINE_OF_BINARY64_RAW",
+    "phase_radii": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "maximum_round_outcomes": 4225,
+    "maximum_verification_pairs": 55043173,
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "model_loss_contract": {
+      "adopted": true,
+      "scope": "PF6_CURRENT_WIDTH_TWO_SHAPES_COST_BUDGET_3O4"
+    },
+    "total_state_refinement": {
+      "maximum_frontier_states": 8192,
+      "maximum_transition_pairs": 141559036
+    },
+    "total_dp_acceleration_source": {
+      "source": {
+        "commit": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+        "path": "src/trottertracks/rpe_total_dp_parallel.py"
+      },
+      "workers_per_configuration": 8,
+      "outcome_batch": 8,
+      "selection": "Artificial benchmark: 8 and 16 workers have similar wall time; use 8 per independent configuration."
+    }
+  },
+  "adopted_evaluation": {
+    "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+    "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+    "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+    "epsilon_E_decimal": "0.00159360010199040",
+    "MSE_upper": {
+      "numerator": 15136964828156312001,
+      "denominator": 5960464477539062500000000
+    },
+    "scope": "MODEL_MSE_FILTER_ONLY",
+    "measurement_law": "SAVED_DETERMINISTIC_PF_RAW_IID_EXACT_AFFINE",
+    "minkowski": "SEPARATE_REFERENCE_NOT_COMBINED",
+    "physical_total_error_guarantee": false
+  },
+  "price_policy": "PF_FIXED_COMPILER_CLOSURE_CONDITIONAL_60_AXES_V1",
+  "cost_from_unchanged_request": {
+    "numerator": 497219638,
+    "denominator": 1
+  },
+  "price_terms_locator": {
+    "commit": "1002f1dfea34de439ca1b704a0192bca473c5387",
+    "path": "docs/research/pf6_allround_cost_20261115/AXIS_TERMS.json"
+  },
+  "signal_source": {
+    "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+    "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_M5_16h/B_SIGNAL_INPUT.json"
+  },
+  "no_new_signal_no_compile_no_price_fit": true
+}

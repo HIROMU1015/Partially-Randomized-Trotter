@@ -1,0 +1,37 @@
+{
+  "schema": "RPE_PBS_H4_Q3_PORTABILITY_RESOURCE_PLAN_V1",
+  "release": "romutail-pbs-integrated-925985b4e",
+  "implementation_source": "925985b4ea76a15f8a07c507179d4fa6c492eabd",
+  "scientific_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "run_root": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/state/runs/pbs-h4-q3-portability-20261118",
+  "resources": {
+    "queue": "workq",
+    "ncpus": 8,
+    "mem": "8gb",
+    "walltime": "00:15:00"
+  },
+  "q3_budget_total": 1,
+  "signal_budget": 0,
+  "compile_budget": 0,
+  "price_fit_budget": 0,
+  "dp_workers": 8,
+  "library_threads": 1,
+  "concurrent_q3": 1,
+  "task_seconds_q3": 480,
+  "drain_seconds": 60,
+  "original_saved": {
+    "job_id": "98693b829295fc884330",
+    "wall_seconds": 58.225289821624756,
+    "sampled_process_tree_peak_rss_kib": 1764976,
+    "dp_workers": 8
+  },
+  "resource_reason": "Reuse original 8-process DP; one task consumes all 8 CPUs with internal library threads fixed to 1. Original sampled tree peak is 1.684 GiB; reserve 6 GiB per task and request 8 GiB for worker/runtime/transfers, allowing >3x observed memory. 480 seconds admission estimate is >8x saved wall; 900 second PBS wall leaves startup, execution and 60 second drain margin. This is a portability allocation, not an optimized production sizing.",
+  "cache": {
+    "dp_directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/portability-h4-q3-20261118/cache/dp",
+    "fresh_namespace_required": true,
+    "saved_signal_and_price_inputs": true,
+    "original_dp_results_imported": false
+  },
+  "normal_entry": "fixed scripts/run_rpe_schedule_search.py main(driver_factory=one-request technical driver); existing PBS manager/queue/worker/adoption",
+  "gateway_cli_limitation": "Fixed 925 standard Windows/Gateway Start has no exact saved-request force-reevaluation option. No artificial-controller hook is used."
+}

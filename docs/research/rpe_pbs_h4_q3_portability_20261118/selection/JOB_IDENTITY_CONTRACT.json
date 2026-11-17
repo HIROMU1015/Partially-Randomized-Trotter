@@ -1,0 +1,31 @@
+{
+  "metadata_only": true,
+  "request_id": "98693b829295fc884330",
+  "reproduced_job_id": "98693b829295fc884330",
+  "job_id_matches": true,
+  "evaluation_contract_digest": "2e3dac22b1065151",
+  "contract_digest_function_source": {
+    "commit": "53bb0a1d7b1da70644da1c22552224291205af78",
+    "path": "src/trottertracks/rpe_method_optimizer.py",
+    "function": "contract_digest",
+    "ast_source": "def contract_digest(problem):\n    return hashlib.sha256(json.dumps([problem['accuracy'], problem['target']['energy_ha'], problem['rpe']], sort_keys=True).encode()).hexdigest()[:16]"
+  },
+  "contract_fields": {
+    "accuracy": {
+      "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+      "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+      "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+      "epsilon_E_decimal": "0.00159360010199040",
+      "scope": "MODEL_MSE_FILTER_ONLY"
+    },
+    "target_energy_ha": -2.1663874486347634,
+    "rpe": {
+      "M": 12
+    }
+  },
+  "original_optimizer_source": "53bb0a1d7b1da70644da1c22552224291205af78",
+  "desired_controller_source": "925985b4ea76a15f8a07c507179d4fa6c492eabd",
+  "desired_computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "original_round_is_historical_not_new_permission": true,
+  "new_scientific_executions": 0
+}
