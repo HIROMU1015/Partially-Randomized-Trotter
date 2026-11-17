@@ -17,6 +17,26 @@ import threading
 from .rpe_preparation_artifacts import artifact_path
 
 
+_DF_SIGNAL_BOOTSTRAP = """
+import json
+from pathlib import Path
+import runpy
+import sys
+
+sys.argv = sys.argv[1:]
+runner = Path(sys.argv[0]).resolve()
+sys.path.insert(0, str(runner.parents[1]/'src'))
+import trottertracks
+from trottertracks.rpe_preparation_paths import resolve
+payload = Path(sys.argv[sys.argv.index('--input')+1])
+view = Path(resolve(json.loads(payload.read_bytes())['runtime']['signal_view']))
+# The frozen runner imports the path resolver before selecting its provider.
+# Add the checked provider package directory while retaining that resolver.
+trottertracks.__path__.insert(0, str(view/'src'/'trottertracks'))
+runpy.run_path(str(runner), run_name='__main__')
+"""
+
+
 STAGES = {
     'PAULI_SIGNALS': 'signal', 'DF_SIGNALS': 'signal',
     'DF_DESCRIPTOR': 'signal', 'A_BASE_P0': 'signal', 'PF_SIGNALS': 'signal',
@@ -348,6 +368,9 @@ class DistributedPreparationBridge:
             combined=root_bundles+workspace['input_git_bundles']
             workspace['input_git_bundles']=list({item['sha256']:item for item in combined}.values())
         requirements,compiler_bindings=contract_runtime(runtime_inputs,script,self.settings.get('runtime_requirements', {}).get(STAGES[stage], {}))
+        if stage=='DF_SIGNALS' and script.name=='run_pr_df_candidate_signal_jobs.py':
+            position=next(i for i,arg in enumerate(command) if str(arg)==str(script))
+            command[position:position]=['-c',_DF_SIGNAL_BOOTSTRAP]
         prep = dict(stage=STAGES[stage], provider=stage, command=list(command),
                     source=dict(commit=source, files=source_files), source_workspace=True,
                     controller_root=str(root),

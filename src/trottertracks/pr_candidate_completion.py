@@ -22,6 +22,7 @@ PRICE='/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-ener
 D2_VIEW=ROOT.parent/'b2-route-view-d2-c1f95e080'
 B_VIEW=ROOT.parent/'d2-auto-b-intake-33e324b'
 DF_Q3_VIEW=ROOT.parent/'b2-route-view-d2-23160cc87'
+SIGNAL_VIEW=ROOT.parent/'d2-pr-df-ld7-signal-source-fefd-20261116'
 A_WORKSPACE=ROOT.parent/'d2-pauli-auto-nodrop-evidence-20261116'
 GIT_LOCK=threading.RLock()
 IDENTITY=['-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp']

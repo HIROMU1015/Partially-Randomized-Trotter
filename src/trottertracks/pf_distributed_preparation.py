@@ -39,6 +39,8 @@ def reuse_signal(root, workspace, folder, plan, saved):
             raise ValueError('Original completed signal does not match the selected PF plan')
         files=['STATUS.json','MEAN_HANDOFF.json',*(f'round_{m}.json' for m in range(13))]
         original={name:blob('signal_run01/'+name) for name in files}
+        subprocess.run(['git','fetch','--no-tags',str(root),commit],cwd=workspace,check=True,
+                       stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         output=folder/'signal_run01';output.mkdir(exist_ok=True)
         for name, raw in original.items():
             path=output/name
