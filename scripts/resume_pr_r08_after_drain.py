@@ -247,6 +247,8 @@ def execute(plan, study):
         records = [json.loads(l) for l in (old_run / 'CONTROLLER_INVOCATIONS.jsonl').read_text().splitlines()]
         if not records or records[-1].get('event') != 'CONTROLLER_RETURN':
             raise RuntimeError('No recorded old controller return; preserve and review ownership')
+        if records[-1].get('shell_returncode') not in (0, 1):
+            raise RuntimeError('Old owner ended by signal/abnormal exit; review owned children before new science')
         run = study / 'run02'
         if not (run / 'SOURCE.json').exists():
             # Append a fixed terminal metadata locator to our old branch; bytes,
