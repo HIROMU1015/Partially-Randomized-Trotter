@@ -162,7 +162,18 @@ def make_executor(root, run, routes, expected, problem, spec):
     approved=spec.get('science_approved',any(v not in(0,None)for v in budgets.values()))
     if any(v=='UNLIMITED'for v in budgets.values())and spec.get('science_approved')is not True:
         raise ValueError('UNLIMITED requires science_approved: true in the round file')
-    common=dict(optimizer_source=head(),max_concurrent=options.get('max_concurrent_jobs',1),
+    # New distributed rounds use worker offers rather than the legacy default
+    # of one global slot. Explicit limits and persisted controller settings win.
+    concurrency=options.get('max_concurrent_jobs',
+        'auto' if scheduler=='concurrent' and options.get('distributed') is not None else 1)
+    settings=run/'distributed'/'ALLOCATION_SETTINGS.json'
+    if settings.is_file():
+        concurrency=O.load_json(settings)['max_concurrent_jobs']
+    if concurrency != 'auto' and (type(concurrency) is not int or concurrency < 1):
+        raise ValueError('max_concurrent_jobs must be auto or a positive integer')
+    if concurrency == 'auto' and options.get('distributed') is None:
+        raise ValueError('Automatic global concurrency requires a distributed executor')
+    common=dict(optimizer_source=head(),max_concurrent=concurrency,
         wait_for_running=options.get('wait_for_running_jobs',False),
         prior_run_dirs=[(root/d).resolve()for d in options.get('prior_run_dirs',[])])
     if scheduler=='concurrent':
@@ -202,8 +213,9 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
             generate_configurations=not (spec.get('candidate_completion')or{}).get('bootstrap_saved_only',False))
     extra = extra + resume_input([Path(x) for x in spec.get('resume_from', [])])
     stored = run / 'ROUND.json'
-    if stored.exists():
-        old = O.load_json(stored)
+    previous_round=O.load_json(stored) if stored.exists() else None
+    if previous_round is not None:
+        old = previous_round
         if compact and old.get('plan_output') != 'compact':
             raise ValueError('Compact plan output requires a new or existing compact-plan run directory')
         for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
@@ -229,7 +241,13 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
     O.apply_published(context['candidates'], routes)
     budgets = spec['max_new_q3_per_method']
     approved = spec.get('science_approved', any(v not in (0, None) for v in budgets.values()))
-    executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,spec)
+    executor_spec=spec
+    if previous_round is not None and not (run/'distributed'/'ALLOCATION_SETTINGS.json').exists():
+        # A pre-automation run had an implicit global limit of one. Do not
+        # upgrade its running/resumed contract merely by changing the default.
+        executor_spec=dict(spec,executor=dict(spec.get('executor',{})))
+        executor_spec['executor']['max_concurrent_jobs']=previous_round.get('executor',{}).get('max_concurrent_jobs',1)
+    executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,executor_spec)
     try:
         if executor_setup:
             executor_setup(executor,context)

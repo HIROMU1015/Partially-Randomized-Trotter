@@ -353,3 +353,5 @@ artifacts/<validation_name>/
 [C7-4保存再解析runner](run_track_d_c7_4.py)／[結果projection](summarize_track_d_c7_4.py)：保存88 pathのみの探索fit/CV/bootstrapと固定人工6系列/短P0 2本。新H4 sampling/build/compileなし。既存runのmain/guardを変更しない。
 
 - `run_rpe_schedule_search.py` の `search_overrides.requested_widths` は両PR方式の要求幅を通常の準備・価格・V2 shot/Q3へ渡す。保存照合は `check_pr_requested_width_saved.py`。[SOURCEと起動方法](../docs/research/pr_requested_step_search_20261117/HANDOFF.md)。
+
+- `summarize_rpe_q3_timing.py RUN --output FILE`：通常distributed runの配送・Q3 body・受領・探索採用をhost/attempt別に集計する。SOURCEと時計domainの条件は[HANDOFF](../docs/research/rpe_q3_timing_20261117/HANDOFF.md)。

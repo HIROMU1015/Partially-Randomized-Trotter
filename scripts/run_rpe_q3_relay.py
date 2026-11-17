@@ -5,6 +5,8 @@ Only the server2 controller selects candidates and reserves/adopts evaluations.
 Stopping this relay leaves all received server1 jobs running independently.
 """
 import argparse
+from concurrent.futures import ThreadPoolExecutor, wait
+import threading
 try:
     import fcntl
 except ImportError:  # Native Windows local0; numerical workers remain Linux.
@@ -21,6 +23,7 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src'))
 from trottertracks.rpe_q3_coordinator import atomic_json
+from trottertracks.rpe_q3_timing import stamp
 
 
 def acquire_lock(stream):
@@ -66,14 +69,18 @@ class Relay:
         self.retry_max_seconds = max(self.poll_seconds, maximum)
         self.url = 'http://127.0.0.1:'+str(self.controller.get('local_port', 18763))
         self.tunnel = None
+        self.discovery_pool = None
+        self.pending_discovery = {}
+        self.log_lock = threading.Lock()
         started = time.time()
         self.state = dict(pid=os.getpid(), configuration=str(self.configuration), workers={},
                           started_epoch=started, heartbeat_epoch=started, stopped=False,
                           transport='local0 SSH controller forwarding + worker mailbox')
 
     def log(self, event, **value):
-        row = dict(epoch=time.time(), event=event, **value)
-        with (self.directory/'EVENTS.jsonl').open('a') as output: output.write(json.dumps(row)+'\n')
+        row = dict(stamp(), event=event, **value)
+        with self.log_lock:
+            with (self.directory/'EVENTS.jsonl').open('a') as output: output.write(json.dumps(row)+'\n')
 
     def post(self, path, value):
         payload = json.dumps(value).encode()
@@ -118,6 +125,7 @@ class Relay:
         if action == 'status' and worker.get('participation_file'):
             participation = Path(worker['participation_file'])
             enabled = participation.is_file() and json.loads(participation.read_text(encoding='utf-8-sig')).get('accepting_new_jobs') is True
+            result['accepting_new_jobs'] = enabled
             if not enabled:
                 # Completion transfer and reconciliation above the poll continue.
                 result['slots'] = 0
@@ -154,10 +162,44 @@ class Relay:
         self.log('TUNNEL_START', pid=self.tunnel.pid, ssh_alias=alias)
         return True
 
-    def tick(self, worker):
+    def _poll_value(self, status):
+        value = dict(host_id=status['host_id'], slots=status['slots'], capacity=status.get('capacity'),
+                     source_sha=status['source_sha'], cached_prefixes=status['cached_prefixes'])
+        if 'accepting_new_jobs' in status:
+            value['accepting_new_jobs'] = status['accepting_new_jobs']
+        if status.get('resource_report') is not None:
+            value['resource_report'] = status['resource_report']
+        return value
+
+    def _discover(self, worker):
+        # Status and current-request checks may run concurrently for independent
+        # hosts; no thread claims a job or delivers an assignment here.
+        started = stamp()
+        status, seconds = self.remote(worker, 'status')
+        if status.get('host_id') != worker['host_id']:
+            raise ValueError('Mailbox host differs from relay profile')
+        poll = self._poll_value(status)
+        observed = self.post('/v1/poll', dict(poll, observe_only=True))
+        challenges = observed.get('eligibility_challenges') or []
+        if challenges and status['slots']:
+            facts, _ = self.remote(worker, 'readiness', dict(challenges=challenges))
+            if facts.get('host_id') != status['host_id']:
+                raise ValueError('Readiness response host differs')
+            poll.update(host_fingerprints=facts.get('host_fingerprints', {}),
+                        readiness_errors=facts.get('readiness_errors', {}))
+            observed = self.post('/v1/poll', dict(poll, observe_only=True))
+        return status, seconds, started, poll, observed
+
+    def tick(self, worker, observed=None):
         info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
         info['phase'] = 'MAILBOX_STATUS'
-        status, download_seconds = self.remote(worker, 'status')
+        if observed is None:
+            status_start=stamp()
+            status, download_seconds = self.remote(worker, 'status')
+            poll = self._poll_value(status)
+        else:
+            status, download_seconds, status_start, poll, _ = observed
+        self.log('MAILBOX_STATUS_RETURN',host_id=worker['host_id'],started=status_start,seconds=download_seconds)
         host = status['host_id']
         if host != worker['host_id']: raise ValueError('Mailbox host differs from relay profile')
         for attempt in status['attempts']:
@@ -173,16 +215,16 @@ class Relay:
                 if response.get('ok') is not True: raise ValueError('Controller refused completion')
                 upload_seconds = time.monotonic()-started
                 info['phase'] = 'MAILBOX_ACK'
-                acknowledgement, _ = self.remote(worker, 'ack', owner)
+                acknowledgement, ack_seconds = self.remote(worker, 'ack', owner)
                 if acknowledgement.get('ok') is not True: raise ValueError('Worker refused completion acknowledgement')
                 timing = dict(upload_roundtrip_seconds=upload_seconds, ssh_status_download_seconds=download_seconds,
+                              ssh_ack_roundtrip_seconds=ack_seconds,
                               artificial_transport_scope='SSH status includes all pending attempts for this host')
                 self.log('RESULT_RECOVERED', **owner, duplicate=response.get('duplicate', False), **timing)
                 try: self.post('/v1/transfer-metric', dict(owner, timing=timing))
                 except Exception as error: self.log('TELEMETRY_PENDING', **owner, error=str(error))
         info['phase'] = 'CONTROLLER_POLL'
-        poll = dict(host_id=host, slots=status['slots'], source_sha=status['source_sha'],
-                    cached_prefixes=status['cached_prefixes'])
+        # Recovery above always precedes new claims, including while paused.
         response = self.post('/v1/poll', poll)
         if not response['assignments'] and response.get('eligibility_challenges'):
             current, _ = self.remote(worker, 'readiness', dict(challenges=response['eligibility_challenges']))
@@ -191,7 +233,14 @@ class Relay:
             poll.update(host_fingerprints=current.get('host_fingerprints', {}),
                         readiness_errors=current.get('readiness_errors', {}))
             response = self.post('/v1/poll', poll)
+        feedback = response.get('capacity_feedback')
+        if feedback is not None and (status.get('resource_report') or {}).get('mode') == 'AUTO':
+            try:
+                self.remote(worker, 'resources', dict(capacity_feedback=feedback))
+            except Exception as error:
+                self.log('RESOURCE_FEEDBACK_PENDING', host_id=host, error=str(error))
         assignments = response['assignments']
+        response_time=time.monotonic()
         for assignment in assignments:
             # Store delivery intent before SSH. A lost submit response is
             # reconciled with the same server2-owned job and attempt next tick.
@@ -199,26 +248,59 @@ class Relay:
             pending.mkdir(parents=True, exist_ok=True)
             atomic_json(pending/'ASSIGNMENT.json', assignment)
             info['phase'] = 'MAILBOX_SUBMIT'
+            relay_wait=time.monotonic()-response_time
+            self.log('REQUEST_DELIVERY_START',host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'])
             response, seconds = self.remote(worker, 'submit', assignment)
             if response.get('ok') is not True: raise ValueError('Worker refused assignment')
             self.log('REQUEST_DELIVERED', host_id=host, job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                      seconds=seconds, duplicate=response.get('duplicate', False))
+            try:self.post('/v1/transfer-metric',dict(host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],
+                timing=dict(ssh_delivery_roundtrip_seconds=seconds,relay_response_to_submit_seconds=relay_wait)))
+            except Exception as error:self.log('TELEMETRY_PENDING',host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],error=str(error))
         info.update(last_success_epoch=time.time(), slots=status['slots'], phase='READY',
             states={name:sum(a['state']==name for a in status['attempts']) for name in sorted({a['state'] for a in status['attempts']})})
 
     def cycle(self):
-        """Observe progress every poll; contact failing endpoints only when due."""
+        """Collect independent host offers before claims, without waiting for outages.
+
+        An outstanding status request is reused across cycles. It retains the
+        ordinary per-request timeout; the cycle waits at most one poll interval.
+        A dead preferred host therefore cannot strand a ready WSL host for 60s.
+        """
         if self.ensure_tunnel():
-            for worker in self.config['workers']:
-                if (self.directory/'STOP').exists(): break
-                info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
-                if time.time() < info.get('next_retry_epoch', 0): continue
-                try: self.tick(worker)
+            workers = self.config['workers']
+            if self.discovery_pool is None:
+                self.discovery_pool = ThreadPoolExecutor(max_workers=max(1,len(workers)), thread_name_prefix='rpe-mailbox-discovery')
+            for worker in workers:
+                host = worker['host_id']
+                info = self.state['workers'].setdefault(host, dict(failure_count=0, next_retry_epoch=0))
+                if host in self.pending_discovery or time.time() < info.get('next_retry_epoch',0):
+                    continue
+                info['phase'] = 'MAILBOX_DISCOVERY'
+                self.pending_discovery[host] = (worker, self.discovery_pool.submit(self._discover, worker))
+            budget = min(self.poll_seconds, float(self.config.get('discovery_wait_seconds',self.poll_seconds)))
+            if self.pending_discovery:
+                wait([future for _,future in self.pending_discovery.values()], timeout=max(0,budget))
+            ready = []
+            for host,(worker,future) in list(self.pending_discovery.items()):
+                if not future.done(): continue
+                del self.pending_discovery[host]
+                info = self.state['workers'][host]
+                try: ready.append((worker,future.result()))
                 except Exception as error:
-                    self.failed(info, error, 'TRANSPORT_PENDING', host_id=worker['host_id'], phase=info.get('phase'))
-                else: self.succeeded(info)
-        self.state['heartbeat_epoch'] = time.time()
-        atomic_json(self.directory/'STATUS.json', self.state)
+                    self.failed(info,error,'TRANSPORT_PENDING',host_id=host,phase=info.get('phase'))
+            # The central controller enforces request-specific priority; this
+            # order also gives equally ready ordinary SSH peers the first poll.
+            ready.sort(key=lambda row:row[0].get('priority_group',1 if row[0].get('transport')=='wsl' else 0))
+            for worker,observed in ready:
+                if (self.directory/'STOP').exists(): break
+                info=self.state['workers'][worker['host_id']]
+                try:self.tick(worker,observed)
+                except Exception as error:
+                    self.failed(info,error,'TRANSPORT_PENDING',host_id=worker['host_id'],phase=info.get('phase'))
+                else:self.succeeded(info)
+        self.state['heartbeat_epoch']=time.time()
+        atomic_json(self.directory/'STATUS.json',self.state)
 
     def run(self):
         lock = (self.directory/'RELAY.lock').open('a')
@@ -238,6 +320,8 @@ class Relay:
             self.state.update(stopped_epoch=time.time(), stopped=True)
             atomic_json(self.directory/'STATUS.json', self.state)
             self.log('RELAY_STOP')
+            if self.discovery_pool is not None:
+                self.discovery_pool.shutdown(wait=False, cancel_futures=True)
             lock.close()
 
 

@@ -4,6 +4,8 @@ A detached per-attempt supervisor preserves adapter exit evidence if the network
 or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 """
 from copy import deepcopy
+from .rpe_q3_timing import stamp, append as timing_append
+from . import rpe_q3_resources as Resources
 from .rpe_host_profiles import select_host_profile, validate_adapter_profile, check_runtime_profile
 import base64
 import fcntl
@@ -89,7 +91,7 @@ def process_alive(pid, marker):
 
 
 def event(profile, name, **detail):
-    value = dict(event=name, epoch=time.time(), monotonic=time.monotonic(), host_id=profile['host_id'], **detail)
+    value = dict(stamp(), event=name, host_id=profile['host_id'], **detail)
     path = Path(profile['work_dir']) / 'WORKER_EVENTS.jsonl'
     with path.open('a') as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
@@ -99,7 +101,7 @@ def event(profile, name, **detail):
 def save_state(attempt, state, **detail):
     if state not in STATES:
         raise ValueError('Invalid worker state')
-    value = dict(state=state, epoch=time.time(), detail=detail)
+    value = dict(stamp(), state=state, detail=detail)
     atomic(Path(attempt) / 'WORKER_STATE.json', value)
     return value
 
@@ -191,6 +193,7 @@ def _adapter_command(profile, attempt, mode, output):
 
 def _run_adapter(profile, attempt, mode, output):
     started = time.monotonic()
+    timing_append(Path(attempt)/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_START',mode=mode)
     with (Path(attempt) / ('WORKER_' + mode.upper() + '.log')).open('a') as log:
         process = subprocess.Popen(_adapter_command(profile, attempt, mode, output), cwd=profile.get('adapter_root', profile['root']),
             env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'), stdout=log, stderr=subprocess.STDOUT)
@@ -204,6 +207,7 @@ def _run_adapter(profile, attempt, mode, output):
                 # A launched adapter still needs its exit receipt on marker/log failure.
                 launch_error = error
         code = process.wait()
+    timing_append(Path(attempt)/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_END',mode=mode,returncode=code)
     receipt = dict(returncode=code if code >= 0 else None, signal=-code if code < 0 else None,
                    wall_seconds=time.monotonic() - started, automatic_retry=False)
     destination = 'PROCESS_RETURN.json' if mode == 'execute' else 'WORKER_' + mode.upper() + '_RETURN.json'
@@ -277,6 +281,7 @@ def supervise(attempt):
         _run_adapter(profile, attempt, 'execute', attempt)
         observed = validate_completed(profile, assignment, attempt)
         save_state(attempt, 'COMPLETED_PENDING_TRANSFER', outcome_status=observed['status'])
+        timing_append(attempt/'TRANSPORT_TIMING.jsonl','RESULT_BUNDLE_READY')
         event(profile, 'COMPLETE', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
               status=observed['status'], process_return=read(attempt / 'PROCESS_RETURN.json'))
         return 0
@@ -314,7 +319,7 @@ class Worker:
         self.work = Path(profile['work_dir']).resolve(); self.work.mkdir(parents=True, exist_ok=True)
         self.profile.update(root=str(self.root), work_dir=str(self.work))
         self.host_id = safe_id(profile['host_id'])
-        self.slots = profile.get('slots', 1)
+        self.slots = (profile.get('slot_policy') or {}).get('initial_slots', profile.get('slots', 1))
         if type(self.slots) is not int or self.slots < 1:
             raise ValueError('Positive integer worker slots required')
         if not Path(profile['interpreter']).is_absolute():
@@ -326,6 +331,7 @@ class Worker:
         self.source_sha = head(self.root)
         self.eligibility_challenges = []
         self.stop = threading.Event(); self.processes = {}; self.reported = {}; self.records = {}
+        self.resource_report = None
         self.lock = (self.work / 'WORKER.lock').open('a')
         try:
             fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -337,6 +343,59 @@ class Worker:
                 raise ValueError('Spool belongs to another host ID')
             self.records[path.parent] = assignment
         event(self.profile, 'WORKER_START', source_sha=self.source_sha, slots=self.slots)
+
+    def _capacity_feedback(self, response):
+        feedback = response.get('capacity_feedback')
+        if feedback is not None and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
+            atomic(self.work / 'CAPACITY_FEEDBACK.json', feedback)
+
+    def _resource_offer(self):
+        if (self.profile.get('slot_policy') or {}).get('mode') != 'auto':
+            jobs = [dict(state=read(path / 'WORKER_STATE.json')['state']) for path in self.records]
+            _, report = Resources.decide_slots(self.profile, {}, {}, jobs)
+            self.slots = report['capacity']; self.resource_report = report
+            return report
+        jobs = []
+        for attempt, assignment in self.records.items():
+            state = read(attempt / 'WORKER_STATE.json')['state']
+            saved = read(attempt / 'WORKER_PROFILE.json')
+            sample = dict(rss_bytes=0, cpu_seconds=0)
+            for name in ('SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json'):
+                marker = attempt / name
+                if marker.exists():
+                    pid = read(marker).get('pid')
+                    if process_alive(pid, attempt):
+                        sample = Resources.owned_tree_sample(pid)
+                        break
+            path = attempt / 'OWNED_RESOURCES.json'
+            previous = read(path) if path.exists() else {}
+            peak = max(previous.get('peak_rss_bytes', 0), sample['rss_bytes'])
+            observed = stamp()
+            seconds = observed['monotonic']-previous.get('monotonic', observed['monotonic'])
+            same_clock = previous.get('clock_id') == observed['clock_id']
+            cores = max(0, sample['cpu_seconds']-previous.get('cpu_seconds', 0))/seconds if same_clock and seconds > 0 else 0
+            job = dict(state=state, dp_workers=saved.get('dp_workers') or 1,
+                       peak_rss_bytes=peak, cpu_seconds=sample['cpu_seconds'],
+                       observed_cpu_cores=max(cores, previous.get('observed_cpu_cores', 0)))
+            if state in ('ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN') and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
+                atomic(path, dict(observed, **job))
+            jobs.append(job)
+        feedback_path = self.work / 'CAPACITY_FEEDBACK.json'
+        state_path = self.work / 'SLOT_STATE.json'
+        feedback = read(feedback_path) if feedback_path.exists() else {}
+        previous = read(state_path) if state_path.exists() else {}
+        resources = Resources.resource_snapshot(self.profile) if (self.profile.get('slot_policy') or {}).get('mode') == 'auto' else {}
+        state, report = Resources.decide_slots(self.profile, previous, resources, jobs, feedback)
+        self.slots = report['capacity']
+        self.resource_report = report
+        if report['mode'] == 'AUTO':
+            if previous.get('target_slots') != report['capacity'] or previous.get('stage') != report['stage']:
+                event(self.profile, 'SLOT_CAPACITY_DECISION', capacity=report['capacity'], stage=report['stage'],
+                      reasons=report['reasons'], limits=report['limits'],
+                      dp_workers_per_q3=report['dp_workers_per_q3'], feedback=report['feedback'])
+            atomic(state_path, state)
+            atomic(self.work / 'RESOURCE_OFFER.json', report)
+        return report
 
     def _http(self, endpoint, payload):
         data = json.dumps(payload, allow_nan=False).encode()
@@ -367,6 +426,8 @@ class Worker:
         atomic(attempt / 'ASSIGNMENT.json', assignment)
         self.records[attempt] = assignment
         event(self.profile, 'ASSIGNED', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'])
+        timing_append(attempt/'TRANSPORT_TIMING.jsonl','WORKER_ASSIGNMENT_DURABLE',
+            job_id=assignment['job_id'],attempt_id=assignment['attempt_id'])
 
     def _launch(self, attempt):
         # Durable before Popen: an interrupted handoff is ambiguous, never retried.
@@ -415,7 +476,7 @@ class Worker:
             state = self._reconcile(attempt, assignment)
             if state['state'] == 'ASSIGNED':
                 self._launch(attempt); state = read(attempt / 'WORKER_STATE.json')
-            if state['state'] in ('ASSIGNED', 'STARTING', 'RUNNING'):
+            if state['state'] in Resources.OCCUPIED:
                 active += 1
             payload = dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'], state=state['state'], detail=state['detail'])
             if state['state'] != 'TRANSFERRED' and self.reported.get(attempt) != state:
@@ -443,23 +504,27 @@ class Worker:
                         event(self.profile, 'TRANSFER_METRIC_OFFLINE', job_id=assignment['job_id'], reason=str(error))
                 except (OSError, ValueError, urllib.error.URLError) as error:
                     event(self.profile, 'TRANSFER_PENDING', job_id=assignment['job_id'], reason=str(error))
-        if acquire and not self.stop.is_set() and active < self.slots:
+        report = self._resource_offer()
+        active = report['occupied']
+        if acquire and not self.stop.is_set():
             cached = sorted({a.get('prefix_key') for p, a in self.records.items()
                 if a.get('prefix_key') and read(p / 'WORKER_STATE.json')['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED')
                 })
             try:
-                payload = dict(slots=self.slots-active, cached_prefixes=cached, source_sha=self.source_sha,
+                payload = dict(slots=max(0,self.slots-active), capacity=self.slots, resource_report=report, cached_prefixes=cached, source_sha=self.source_sha,
                                **host_fingerprints(self.profile, self.eligibility_challenges))
                 response = self._post('/v1/poll', payload)
+                self._capacity_feedback(response)
                 self.eligibility_challenges = response.get('eligibility_challenges', [])
                 if not response.get('assignments') and self.eligibility_challenges:
                     payload.update(host_fingerprints(self.profile, self.eligibility_challenges))
                     response = self._post('/v1/poll', payload)
+                    self._capacity_feedback(response)
                     self.eligibility_challenges = response.get('eligibility_challenges', self.eligibility_challenges)
                 assignments = response.get('assignments', [])
                 new_assignments = [a for a in assignments if
                     self.work / safe_id(a['job_id']) / safe_id(a['attempt_id']) not in self.records]
-                if len(new_assignments) > self.slots-active:
+                if len(new_assignments) > max(0,self.slots-active):
                     raise ValueError('Controller overfilled announced slots')
                 for assignment in assignments:
                     self._acquire(assignment)
@@ -503,6 +568,10 @@ def mailbox(profile, action, payload=None):
         return dict(host_id=profile['host_id'], **host_fingerprints(profile, payload.get('challenges', [])))
     worker = Worker(profile, 'http://127.0.0.1:1')
     try:
+        if action == 'resources':
+            worker._capacity_feedback(payload)
+            report = worker._resource_offer()
+            return dict(ok=True, host_id=worker.host_id, capacity=worker.slots, resource_report=report)
         if action == 'submit':
             assignment = payload.get('assignment', payload)
             safe_id(assignment['job_id']); safe_id(assignment['attempt_id'])
@@ -510,7 +579,9 @@ def mailbox(profile, action, payload=None):
             duplicate = (attempt / 'ASSIGNMENT.json').exists()
             profile = read(attempt / 'WORKER_PROFILE.json') if duplicate else worker.profile
             validate_assignment(profile, assignment)
-            active = sum(worker._reconcile(path, saved)['state'] in ('ASSIGNED', 'STARTING', 'RUNNING')
+            worker._resource_offer()
+            occupied_states = Resources.OCCUPIED if (worker.profile.get('slot_policy') or {}).get('mode') == 'auto' else ('ASSIGNED','STARTING','RUNNING')
+            active = sum(worker._reconcile(path, saved)['state'] in occupied_states
                          for path, saved in worker.records.items())
             if not duplicate and active >= worker.slots:
                 raise ValueError('No free worker slot')
@@ -540,7 +611,7 @@ def mailbox(profile, action, payload=None):
                     worker._launch(attempt)
                     threading.Thread(target=worker.processes[attempt].wait, daemon=True).start()
                     state = read(attempt / 'WORKER_STATE.json')
-                active += state['state'] in ('ASSIGNED', 'STARTING', 'RUNNING')
+                active += state['state'] in Resources.OCCUPIED
                 row = dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                     state=state['state'], detail=state['detail'], request_sha256=assignment['request_sha256'])
                 if state['state'] == 'COMPLETED_PENDING_TRANSFER':
@@ -548,7 +619,8 @@ def mailbox(profile, action, payload=None):
                 if state['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED') and assignment.get('prefix_key'):
                     cached.add(assignment['prefix_key'])
                 attempts.append(row)
-            return dict(host_id=worker.host_id, slots=max(0,worker.slots-active), source_sha=worker.source_sha,
+            report = worker._resource_offer()
+            return dict(host_id=worker.host_id, slots=report['slots'], capacity=worker.slots, resource_report=report, source_sha=worker.source_sha,
                         cached_prefixes=sorted(cached), attempts=attempts)
         raise ValueError('Unknown mailbox action')
     finally:

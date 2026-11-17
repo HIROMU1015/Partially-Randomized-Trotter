@@ -191,6 +191,11 @@ def host_profile_inputs(prepared, output, code_root, descriptor=None):
         if host in profiles:
             profiles[host]['route_profiles'] = deepcopy(rules)
     for host, profile in profiles.items():
+        if data.get('slot_policy'):
+            # Admission and pool size are operational fields. They do not alter
+            # the dry-checked route, interpreter, DP width, cache or job identity.
+            profile.setdefault('slots', data['slot_policy'].get('initial_slots', 1))
+            profile.setdefault('slot_policy', deepcopy(data['slot_policy']))
         write(output / 'worker_profiles' / (host + '.json'), profile)
     return config, data, profiles
 
@@ -243,11 +248,13 @@ def merge_host_readiness(prepared, output, code_root, descriptor=None):
     write(table_path, host_allocation_table(policy, admission))
     options_path = output / 'DISTRIBUTED_OPTIONS.json'
     write(options_path, dict(routes_override=prepared.get('routes_override', {}),
-        executor=dict(scheduler='concurrent', dp_workers=3,
+        executor=dict(scheduler='concurrent', max_concurrent_jobs='auto', dp_workers=3,
         prefix_checkpoint_rounds=[5, 11], prefix_cache_directory=None,
         distributed=dict(host_eligibility=str(policy_path), computation_root=profiles[local_host]['root'],
                          computation_source=prepared['computation_source'],
                          host_admission=str(admission_path),
+                         auto_allocation=deepcopy(data.get('auto_allocation', {})),
+                         local_worker=deepcopy(profiles[local_host]),
                          required_hosts=[],
                          worker_script=str(code_root / 'scripts/run_rpe_q3_worker.py'))),
         note='Executor fragment only. It grants no scientific execution or budget; merge into a separately approved new round. Worker profiles keep the dry-checked interpreter/routes/DP/cache; work_dir and slots may be added.'))

@@ -587,9 +587,26 @@
     "hosts": {
       "local0-wsl": {
         "accepting": false,
-        "max_slots": 1,
         "optional": true
       }
     }
+  },
+  "slot_policy": {
+    "mode": "auto",
+    "initial_slots": 1
+  },
+  "auto_allocation": {
+    "priority_groups": [
+      [
+        "server2",
+        "server1",
+        "local"
+      ],
+      [
+        "local0-wsl"
+      ]
+    ],
+    "offer_ttl_seconds": 3,
+    "discovery_grace_seconds": 1
   }
 }

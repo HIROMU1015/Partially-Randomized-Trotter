@@ -158,6 +158,7 @@ print(json.dumps(dict(limit=getattr(sys,'get_int_max_str_digits',lambda:0)(),
             attempt = Path(profile['work_dir'])/assignment['job_id']/assignment['attempt_id']
             attempt.mkdir(parents=True)
             W.atomic(attempt/'ASSIGNMENT.json', assignment)
+            W.atomic(attempt/'WORKER_PROFILE.json', profile)
             W.save_state(attempt, 'RUNNING', synthetic_saved_completion=True)
             W.atomic(attempt/'PROCESS_RETURN.json', dict(returncode=0, signal=None))
             body = ('"status":"MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",'
@@ -171,7 +172,7 @@ print(json.dumps(dict(limit=getattr(sys,'get_int_max_str_digits',lambda:0)(),
                 str(ROOT/'scripts/run_rpe_q3_worker.py'), '--profile', str(profile_path), '--mailbox', 'status'],
                 input=b'{}', cwd=ROOT))
             row = response['attempts'][0]
-            self.assertEqual(row['state'], 'COMPLETED_PENDING_TRANSFER')
+            self.assertEqual(row['state'], 'COMPLETED_PENDING_TRANSFER', row)
             self.assertEqual(W.read(attempt/'WORKER_STATE.json')['state'], 'COMPLETED_PENDING_TRANSFER')
             transferred = base64.b64decode(row['files']['OUTCOME.json'])
             self.assertEqual(hashlib.sha256(transferred).hexdigest(), original_hash)
@@ -229,7 +230,7 @@ print(json.dumps(dict(limit=getattr(sys,'get_int_max_str_digits',lambda:0)(),
                 if row['state'] == 'COMPLETED_PENDING_TRANSFER':break
                 self.assertIn(row['state'], ('STARTING', 'RUNNING'))
                 time.sleep(.02)
-            self.assertEqual(row['state'], 'COMPLETED_PENDING_TRANSFER')
+            self.assertEqual(row['state'], 'COMPLETED_PENDING_TRANSFER', row)
             self.assertEqual(status['slots'], 1)
             self.assertIn('OUTCOME.json', row['files'])
             self.assertEqual(status['cached_prefixes'], ['artificial-prefix'])

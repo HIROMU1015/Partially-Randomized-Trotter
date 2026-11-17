@@ -36,6 +36,10 @@ import sys
 import time
 from types import SimpleNamespace as NS
 
+_timing_path=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_q3_timing.py'
+_timing_spec=importlib.util.spec_from_file_location('_q3_operational_timing',_timing_path)
+TIMING=importlib.util.module_from_spec(_timing_spec);_timing_spec.loader.exec_module(TIMING)
+
 if hasattr(sys, 'set_int_max_str_digits'):
     sys.set_int_max_str_digits(0)
 PASS = 'MODEL_BOUND_MEETS_ADOPTED_THRESHOLD'
@@ -64,7 +68,7 @@ def write(path, value):
 
 def stage(out, name, **extra):
     with (Path(out) / 'JOB_STAGES.jsonl').open('a') as f:
-        f.write(json.dumps(dict(stage=name, UTC=utc(), **extra)) + '\n')
+        f.write(json.dumps(dict(TIMING.stamp(), stage=name, UTC=utc(), **extra)) + '\n')
 
 
 def git_json(view, locator):
@@ -484,7 +488,8 @@ def main():
             else:
                 write(out / 'SOURCE.json', source);write(out / 'CASE_INPUTS.json', inputs);(out / case['label']).mkdir()
                 stage(out, 'SCIENTIFIC_ROUTE_START')
-                with prefix_cache_context(request, case, inputs, out), r.installed(out):
+                with prefix_cache_context(request, case, inputs, out), TIMING.body_context(
+                        sys.modules.get('trottertracks.rpe_total_dp_parallel'),out), r.installed(out):
                     supervision = r.supervise([case], inputs, source, out)
                 stage(out, 'SCIENTIFIC_ROUTE_RETURNED')
                 outcome = outcome_from(view, request, case, inputs, r, out, source, supervision)

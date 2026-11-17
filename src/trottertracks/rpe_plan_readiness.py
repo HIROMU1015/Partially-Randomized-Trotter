@@ -204,7 +204,7 @@ def _view_fingerprint(path):
 
 def dry_check_fingerprint(root, assignment, profile):
     """Refresh source/input/route/runtime evidence before considering a cache."""
-    from .rpe_host_profiles import select_host_profile
+    from .rpe_host_profiles import select_host_profile, profile_core
     profile = select_host_profile(profile, assignment)
     root = Path(profile['root'])
     route = assignment['request']['route']
@@ -237,7 +237,7 @@ def dry_check_fingerprint(root, assignment, profile):
         views.append(_view_fingerprint(nested))
     return dict(source=Q.source_manifest(root, SOURCE), source_head=_git(root, 'rev-parse', 'HEAD').decode().strip(),
                 input_hashes=Q.input_hashes(root, assignment['request']),
-                request_sha256=Q.digest(assignment['request']), profile=profile, views=views,
+                request_sha256=Q.digest(assignment['request']), profile=profile_core(profile), views=views,
                 runtime=json.loads(runtime), interpreter_stat=dict(path=str(executable), size=stat.st_size,
                 mtime_ns=stat.st_mtime_ns, inode=stat.st_ino))
 

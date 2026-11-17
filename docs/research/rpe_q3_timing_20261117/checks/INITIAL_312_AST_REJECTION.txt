@@ -1,0 +1,198 @@
+test_adapter_context_fork_worker_disk_reuse (test_rpe_dp_prefix_reuse.PrefixTests.test_adapter_context_fork_worker_disk_reuse) ... Process ForkProcess-1:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 40, in artificial_child
+    engine=P.Accelerator(workers=1)if observed is None else observed(out,'ARTIFICIAL_PREFIX',workers=1,outcome_batch=4)
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/scripts/run_pauli_total_q3_accelerated.py", line 75, in __init__
+    super().__init__(**options)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/src/trottertracks/rpe_dp_prefix_reuse.py", line 209, in init
+    original(self,**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_total_dp_parallel.py", line 131, in __init__
+    self.kernel=self._kernel()
+                ^^^^^^^^^^^^^^
+  File "fixed_accelerator_with_prefix_hooks", line 8, in _kernel
+    from collections import namedtuple
+                ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Reference total DP SOURCE changed; do not silently adapt
+FAIL
+test_disk_reopen_signed_zero_large_exact_masses_and_provenance_only_scope (test_rpe_dp_prefix_reuse.PrefixTests.test_disk_reopen_signed_zero_large_exact_masses_and_provenance_only_scope) ... ERROR
+test_earlier_checkpoint_can_reuse_only_unchanged_prefix (test_rpe_dp_prefix_reuse.PrefixTests.test_earlier_checkpoint_can_reuse_only_unchanged_prefix) ... ERROR
+test_existing_observed_subclass_constructor_and_process_inheritance (test_rpe_dp_prefix_reuse.PrefixTests.test_existing_observed_subclass_constructor_and_process_inheritance) ... ERROR
+test_invalid_suffix_and_corrupt_checkpoint_never_yield_pass (test_rpe_dp_prefix_reuse.PrefixTests.test_invalid_suffix_and_corrupt_checkpoint_never_yield_pass) ... ERROR
+test_m12_only_change_exact_all_fields_and_12_rounds_reused (test_rpe_dp_prefix_reuse.PrefixTests.test_m12_only_change_exact_all_fields_and_12_rounds_reused) ... ERROR
+test_ordinary_full_q3_evaluate_and_intake_judgment_match (test_rpe_dp_prefix_reuse.PrefixTests.test_ordinary_full_q3_evaluate_and_intake_judgment_match) ... ERROR
+test_original_guards_stay_active (test_rpe_dp_prefix_reuse.PrefixTests.test_original_guards_stay_active) ... ok
+test_prefix_change_scope_target_h_length_and_namespace_miss (test_rpe_dp_prefix_reuse.PrefixTests.test_prefix_change_scope_target_h_length_and_namespace_miss) ... ERROR
+test_residual_and_scope_boundaries_and_no_mass_frontier (test_rpe_dp_prefix_reuse.PrefixTests.test_residual_and_scope_boundaries_and_no_mass_frontier) ... ERROR
+
+======================================================================
+ERROR: test_disk_reopen_signed_zero_large_exact_masses_and_provenance_only_scope (test_rpe_dp_prefix_reuse.PrefixTests.test_disk_reopen_signed_zero_large_exact_masses_and_provenance_only_scope)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 101, in test_disk_reopen_signed_zero_large_exact_masses_and_provenance_only_scope
+    first=self.engine(store=C.PrefixStore(d));first(tt,h=10.,target=0.,scope=scope)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 47, in engine
+    return C.accelerator_class(P)(cache_namespace={'fixture':'same_configuration_signal_contract'},workers=1,**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/src/trottertracks/rpe_dp_prefix_reuse.py", line 138, in __init__
+    super().__init__(**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_total_dp_parallel.py", line 131, in __init__
+    self.kernel=self._kernel()
+                ^^^^^^^^^^^^^^
+  File "fixed_accelerator_with_prefix_hooks", line 8, in _kernel
+    from collections import namedtuple
+                ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Reference total DP SOURCE changed; do not silently adapt
+
+======================================================================
+ERROR: test_earlier_checkpoint_can_reuse_only_unchanged_prefix (test_rpe_dp_prefix_reuse.PrefixTests.test_earlier_checkpoint_can_reuse_only_unchanged_prefix)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 89, in test_earlier_checkpoint_can_reuse_only_unchanged_prefix
+    _,tt,scope=example(n=5);engine=self.engine(checkpoint_rounds=[1,3])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 47, in engine
+    return C.accelerator_class(P)(cache_namespace={'fixture':'same_configuration_signal_contract'},workers=1,**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/src/trottertracks/rpe_dp_prefix_reuse.py", line 138, in __init__
+    super().__init__(**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_total_dp_parallel.py", line 131, in __init__
+    self.kernel=self._kernel()
+                ^^^^^^^^^^^^^^
+  File "fixed_accelerator_with_prefix_hooks", line 8, in _kernel
+    from collections import namedtuple
+                ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Reference total DP SOURCE changed; do not silently adapt
+
+======================================================================
+ERROR: test_existing_observed_subclass_constructor_and_process_inheritance (test_rpe_dp_prefix_reuse.PrefixTests.test_existing_observed_subclass_constructor_and_process_inheritance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 126, in test_existing_observed_subclass_constructor_and_process_inheritance
+    engine=Observed(workers=2,outcome_batch=2);first=engine(tt,h=10.,target=0.,scope=scope)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/src/trottertracks/rpe_dp_prefix_reuse.py", line 209, in init
+    original(self,**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_total_dp_parallel.py", line 131, in __init__
+    self.kernel=self._kernel()
+                ^^^^^^^^^^^^^^
+  File "fixed_accelerator_with_prefix_hooks", line 8, in _kernel
+    from collections import namedtuple
+                ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Reference total DP SOURCE changed; do not silently adapt
+
+======================================================================
+ERROR: test_invalid_suffix_and_corrupt_checkpoint_never_yield_pass (test_rpe_dp_prefix_reuse.PrefixTests.test_invalid_suffix_and_corrupt_checkpoint_never_yield_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 113, in test_invalid_suffix_and_corrupt_checkpoint_never_yield_pass
+    engine=self.engine(store=C.PrefixStore(d));engine(tt,h=10.,target=0.,scope=scope)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 47, in engine
+    return C.accelerator_class(P)(cache_namespace={'fixture':'same_configuration_signal_contract'},workers=1,**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/src/trottertracks/rpe_dp_prefix_reuse.py", line 138, in __init__
+    super().__init__(**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_total_dp_parallel.py", line 131, in __init__
+    self.kernel=self._kernel()
+                ^^^^^^^^^^^^^^
+  File "fixed_accelerator_with_prefix_hooks", line 8, in _kernel
+    from collections import namedtuple
+                ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Reference total DP SOURCE changed; do not silently adapt
+
+======================================================================
+ERROR: test_m12_only_change_exact_all_fields_and_12_rounds_reused (test_rpe_dp_prefix_reuse.PrefixTests.test_m12_only_change_exact_all_fields_and_12_rounds_reused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 50, in test_m12_only_change_exact_all_fields_and_12_rounds_reused
+    _,tt,scope=example();store=C.PrefixStore();engine=self.engine(store=store)
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 47, in engine
+    return C.accelerator_class(P)(cache_namespace={'fixture':'same_configuration_signal_contract'},workers=1,**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/src/trottertracks/rpe_dp_prefix_reuse.py", line 138, in __init__
+    super().__init__(**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_total_dp_parallel.py", line 131, in __init__
+    self.kernel=self._kernel()
+                ^^^^^^^^^^^^^^
+  File "fixed_accelerator_with_prefix_hooks", line 8, in _kernel
+    from collections import namedtuple
+                ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Reference total DP SOURCE changed; do not silently adapt
+
+======================================================================
+ERROR: test_ordinary_full_q3_evaluate_and_intake_judgment_match (test_rpe_dp_prefix_reuse.PrefixTests.test_ordinary_full_q3_evaluate_and_intake_judgment_match)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 63, in test_ordinary_full_q3_evaluate_and_intake_judgment_match
+    engine=P.Accelerator(workers=1)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/src/trottertracks/rpe_dp_prefix_reuse.py", line 209, in init
+    original(self,**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_total_dp_parallel.py", line 131, in __init__
+    self.kernel=self._kernel()
+                ^^^^^^^^^^^^^^
+  File "fixed_accelerator_with_prefix_hooks", line 8, in _kernel
+    from collections import namedtuple
+                ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Reference total DP SOURCE changed; do not silently adapt
+
+======================================================================
+ERROR: test_prefix_change_scope_target_h_length_and_namespace_miss (test_rpe_dp_prefix_reuse.PrefixTests.test_prefix_change_scope_target_h_length_and_namespace_miss)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 78, in test_prefix_change_scope_target_h_length_and_namespace_miss
+    _,tt,scope=example(n=4);store=C.PrefixStore();engine=self.engine(store=store)
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 47, in engine
+    return C.accelerator_class(P)(cache_namespace={'fixture':'same_configuration_signal_contract'},workers=1,**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/src/trottertracks/rpe_dp_prefix_reuse.py", line 138, in __init__
+    super().__init__(**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_total_dp_parallel.py", line 131, in __init__
+    self.kernel=self._kernel()
+                ^^^^^^^^^^^^^^
+  File "fixed_accelerator_with_prefix_hooks", line 8, in _kernel
+    from collections import namedtuple
+                ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Reference total DP SOURCE changed; do not silently adapt
+
+======================================================================
+ERROR: test_residual_and_scope_boundaries_and_no_mass_frontier (test_rpe_dp_prefix_reuse.PrefixTests.test_residual_and_scope_boundaries_and_no_mass_frontier)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 71, in test_residual_and_scope_boundaries_and_no_mass_frontier
+    _,tt,scope=example(n=4,states=states,pairs=pairs);engine=self.engine()
+                                                             ^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 47, in engine
+    return C.accelerator_class(P)(cache_namespace={'fixture':'same_configuration_signal_contract'},workers=1,**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/src/trottertracks/rpe_dp_prefix_reuse.py", line 138, in __init__
+    super().__init__(**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_total_dp_parallel.py", line 131, in __init__
+    self.kernel=self._kernel()
+                ^^^^^^^^^^^^^^
+  File "fixed_accelerator_with_prefix_hooks", line 8, in _kernel
+    from collections import namedtuple
+                ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Reference total DP SOURCE changed; do not silently adapt
+
+======================================================================
+FAIL: test_adapter_context_fork_worker_disk_reuse (test_rpe_dp_prefix_reuse.PrefixTests.test_adapter_context_fork_worker_disk_reuse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-timing-20261117/tests/test_rpe_dp_prefix_reuse.py", line 150, in test_adapter_context_fork_worker_disk_reuse
+    child.start();child.join(20);self.assertEqual(child.exitcode,0)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.633s
+
+FAILED (failures=1, errors=8)
