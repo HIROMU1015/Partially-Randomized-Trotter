@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[R08への修正版引継ぎ・状態確認](docs/research/h4_pr_r08_recovery_20261117/HANDOFF.md)：走行中stageを保全し、所有lock解放後に同じ通常探索へ戻す。待機と科学controller稼働を区別。
+
 [PR探索の例外・回収・再開修正](docs/research/pr_failure_continuity_fix_20261117/REPORT.md)：例外を回収待ち前に保存し、stage境界yield・局所UNKNOWN・request keyの二重実行防止を検証。人工92件＋native10件PASS、実H4追加0。[HANDOFF](docs/research/pr_failure_continuity_fix_20261117/HANDOFF.md)。
 
 [PR探索の候補単位保留とR08継続](docs/research/h4_pr_candidate_continuity_20261117/REPORT.md)：旧jobの照合待ちを局所化し、後着READYを共通queueへ投入。人工82件・native8件PASS、数値UNKNOWN/保存異常の停止は維持。[稼働確認・再開](docs/research/h4_pr_candidate_continuity_20261117/HANDOFF.md)。

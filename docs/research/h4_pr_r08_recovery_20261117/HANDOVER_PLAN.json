@@ -1,0 +1,73 @@
+{
+  "schema": "R08_SOURCE_HANDOVER_V1",
+  "study": "docs/research/h4_pr_r08_recovery_20261117",
+  "old_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117",
+  "old_run": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117/docs/research/h4_pr_candidate_continuity_20261117/run01",
+  "old_branch": "codex/b2-rpe-pr-candidate-isolation-20261117",
+  "old_code_source": "07b9c1ce826ba67e7e8237b1d1c781a2e1357e6d",
+  "new_code_source": "fdb4453a0fae36c8b8734a225a19316446dee62e",
+  "round_id": "H4_PR_BOTH_MULTIWIDTH_CONTINUITY_R08_20261117",
+  "original_cycle_ceiling": 200,
+  "batch": 64,
+  "controller_python": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+  "snapshot_files": [
+    "KAPPA_STATE.json",
+    "completion/STATE.json",
+    "PRICE_RULES_REGISTRY.json",
+    "completion/PRICE_RULES_REGISTRY.json",
+    "completion/STEP_PRICE_RULES.json",
+    "FIXED_INPUTS.json"
+  ],
+  "old_input_sha256": {
+    "PROBLEM.json": "8e72c2fc20492426248966087901a6fc331f82f3c8229945f932d83d5c9a387c",
+    "ROUND.json": "6d2edfbf096cd4f661744793bb14f995587a0b2cf67f378ecd5352d667f93fa4",
+    "SOURCE.json": "cf3c497dfbf7f4e39db53ffc7b03ba5a0ad7c3f2613e359bdba0b5893313d059"
+  },
+  "artificial_tests": [
+    "HANDOVER_TESTS.txt",
+    "NATIVE_HANDOVER_TESTS.txt",
+    "FAILURE_REGRESSION.txt",
+    "METADATA_SMOKE.txt"
+  ],
+  "scientific_scope": {
+    "status": "AUTHORIZED_CONTINUATION_WITH_CANDIDATE_ISOLATION",
+    "methods": [
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "L_D": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "requested_widths": {
+      "PR_PAULI": [
+        0.1,
+        0.2
+      ],
+      "PR_DF": [
+        0.1,
+        0.05
+      ]
+    },
+    "target": "Original Full DF-H solver proxy",
+    "scientific_authorization": "Explicit current user instruction; only selected H4 PR-Pauli .1/.2 and PR-DF .1/.05 L_D1..9 under the saved contract."
+  },
+  "unchanged_profile": {
+    "scheduler": "concurrent",
+    "max_concurrent_jobs": 20,
+    "dp_workers": 3,
+    "prefix_checkpoint_rounds": [
+      5,
+      11
+    ]
+  },
+  "ownership": "Wait for original wrapper CONTROLLER.lock; never signal or hotpatch live code",
+  "retry": "No automatic retry; old scientific failures and ambiguous stages remain held"
+}
