@@ -1,0 +1,717 @@
+{
+  "schema": "RPE_REQUESTED_WIDTH_FIXED_INPUTS_V1",
+  "problem": {
+    "schema": "RPE_METHOD_OPTIMIZER_PROBLEM_V1",
+    "note": "All H4-specific paths, dimensions, labels, caps and evidence locators are kept here; the optimizer code holds none of them.",
+    "problem": {
+      "system": "H4",
+      "geometry": "linear_1Angstrom",
+      "basis": "STO-3G",
+      "rank_policy": "tol_only_1e-8",
+      "hamiltonian_data": {
+        "snapshot": {
+          "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_snapshot.npz",
+          "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+        },
+        "receipt": {
+          "path": "/home/AbeHiromu/projects/h4-followup-validation/20261018/private/inputs/tol_only_receipt.json",
+          "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+        },
+        "expected": {
+          "fragment_count": 10,
+          "n_qubits": 8,
+          "sector_dimension": 36
+        }
+      }
+    },
+    "target": {
+      "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+      "energy_ha": -2.1663874486347634,
+      "source": {
+        "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+        "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+        "selector": [
+          "target"
+        ]
+      }
+    },
+    "accuracy": {
+      "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+      "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+      "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+      "epsilon_E_decimal": "0.00159360010199040",
+      "scope": "MODEL_MSE_FILTER_ONLY"
+    },
+    "rpe": {
+      "M": 12
+    },
+    "evidence": {
+      "saved_catalog_inputs": {
+        "commit": "fee61d272c3564ef393fecef5b738dbda825b658",
+        "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/INPUTS.json"
+      },
+      "pf_candidate_index": {
+        "commit": "7f27e18f06dde12127c85be898777b685d29bacc",
+        "path": "docs/research/pf_joint_width_shot_plan_20261115/WIDTH_SIGNAL_COVERAGE.json"
+      }
+    },
+    "generator": {
+      "commit": "e094b2d60c5c4468711dea244fa2f91fb587ac12",
+      "path": "scripts/run_pauli_ld2_reallocation_q3_fixed.py",
+      "function": "generate"
+    },
+    "methods": {
+      "FULL_PF": {
+        "family": "PF",
+        "index_method": "FULL_PF",
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_range": [
+          "1/2",
+          "16"
+        ],
+        "caps": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          15,
+          11
+        ]
+      },
+      "TRUNCATED_PF": {
+        "family": "PF",
+        "index_method": "B0I_P7",
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_range": [
+          "1/2",
+          "16"
+        ],
+        "caps": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          15,
+          11
+        ]
+      },
+      "PR_PAULI": {
+        "family": "PR",
+        "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body always in head; tail non-empty",
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -1
+        },
+        "caps": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          29,
+          26,
+          23,
+          19,
+          16,
+          13,
+          9
+        ],
+        "generation": {
+          "kind": "pauli_native",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+          "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-a-39a1fc7df",
+          "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+          "baseline": {
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1"
+          ],
+          "kappa_multipliers": [
+            "2/3",
+            "1",
+            "2"
+          ],
+          "mapper": "A P1 B API (B ce0517de native generate, PAPER_TOTAL_UNIFORM_OUTER_DRAFT mapper)",
+          "supported_formulas": [
+            "2nd",
+            "4th(m5_best)"
+          ],
+          "note": "q_m=ceil(T_m/delta); h stays the RPE base time",
+          "preparation": {
+            "kind": "a_pauli_candidate_preparation",
+            "request_kind": "pauli_native",
+            "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+            "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-a-6e4b6bd6a",
+            "view_commit": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+            "entry": "scripts/prepare_pauli_candidate.py",
+            "handoff": {
+              "commit": "7cf4e1f0536567df6dcf2da6c7bc63f4547aad7b",
+              "path": "docs/research/pauli_candidate_preparation_20261116/HANDOFF.md"
+            },
+            "K": 2,
+            "saved_packets": [
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+              }
+            ],
+            "note": "metadata only (no --prepare-missing): unregistered L_D of the search range and selected kappa proposals; complete configurations are registered even without price; P0 split work stays a preparation request"
+          },
+          "kappa_points_file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/KAPPA_POINTS.json"
+        },
+        "saved_configurations_only": false,
+        "L_D_values": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "requested_delta_pf_values": [
+          {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          }
+        ]
+      },
+      "PR_DF": {
+        "family": "PR",
+        "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body separate head; prefix and tail non-empty",
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -1
+        },
+        "caps": [
+          64,
+          60,
+          56,
+          52,
+          47,
+          43,
+          38,
+          34,
+          30,
+          25,
+          21,
+          17,
+          12
+        ],
+        "generation": {
+          "kind": "prdf_a_fixed_grid",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+          "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "baseline": {
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "1/2"
+          ],
+          "kappa_multipliers": [
+            "1",
+            "2"
+          ],
+          "mapper": "D2 B release 437ba4ac A_FIXED_GRID_510FBACD_V1 adapter (run_pr_df_ld7_v0.signal_modules) with the paper common-kappa mapper",
+          "supported_formulas": [
+            "2nd",
+            "4th(m5_best)"
+          ],
+          "note": "delta must make T_m/delta integral for every round (A fixed grid); h stays the RPE base time"
+        },
+        "L_D_values": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "saved_configurations_only": false,
+        "requested_delta_pf_values": [
+          {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          {
+            "numerator": 3602879701896397,
+            "denominator": 72057594037927936
+          }
+        ]
+      }
+    },
+    "search": {
+      "rule": "FINITE_LOCAL_DESCENT_V1",
+      "decrement_steps": [
+        1,
+        2
+      ],
+      "large_step_headroom": "9/10",
+      "seed_rules": [
+        "B_PRICE",
+        "A_SHAPE"
+      ],
+      "max_steps_per_method": 40,
+      "max_new_q3_per_method": 0
+    },
+    "verification": {
+      "replay_seeds": {
+        "TRUNCATED_PF": [
+          "B0I_P7_S2_16h_over_7__B_PRICE"
+        ],
+        "FULL_PF": [
+          "FULL_PF_S2_16h_over_7__B_PRICE"
+        ]
+      },
+      "own_price_vectors_from_labels": [
+        "FULL_PF__B_PRICE",
+        "PAULI_LD3_VP"
+      ]
+    },
+    "execution_routes": {
+      "FULL_PF": [
+        {
+          "kind": "pf_b_pf6",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+          "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "templates": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json"
+            },
+            {
+              "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+              "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+              "inputs_selector": [
+                "inputs"
+              ]
+            }
+          ],
+          "configuration_ids": "*",
+          "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+        }
+      ],
+      "TRUNCATED_PF": [
+        {
+          "kind": "pf_b_pf6",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+          "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "templates": [
+            {
+              "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+              "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json"
+            },
+            {
+              "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+              "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+              "inputs_selector": [
+                "inputs"
+              ]
+            }
+          ],
+          "configuration_ids": "*",
+          "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+        }
+      ],
+      "PR_PAULI": [
+        {
+          "kind": "pauli_b_ld3",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+          "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-a844ac25f",
+          "view_commit": "a844ac25f88c5cdf39e9e1837d85b6d4341774ff",
+          "configuration_ids": [
+            "dd5b881d308f6fc48d3c91d08cec22c5fbbac296f60242e9bfb433c3e0321847"
+          ],
+          "templates": [
+            {
+              "commit": "a844ac25f88c5cdf39e9e1837d85b6d4341774ff",
+              "path": "docs/research/pauli_ld3_pf_budget_q3_results_20261116/INPUTS.json"
+            }
+          ],
+          "existing_caller": "B a844ac25f scripts/run_pauli_ld3_pf_budget_q3_fixed.py (L.installed + M.supervise)"
+        },
+        {
+          "kind": "pauli_b_ld5",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+          "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-b6d4dea49",
+          "view_commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+          "configuration_ids": [
+            "4d6e2c9c4511acb0e2d7f4d488e331009504de805ad7826fdeb703907fc919eb"
+          ],
+          "templates": [
+            {
+              "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+              "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json"
+            }
+          ],
+          "existing_caller": "B b6d4dea49 scripts/run_pauli_ld5_two_vectors_q3_fixed.py (installed + M.supervise)"
+        }
+      ],
+      "PR_DF": [
+        {
+          "kind": "prdf_d2_split",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python",
+          "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "configuration_ids": "*",
+          "templates": [
+            {
+              "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+              "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+              "inputs_selector": [
+                "inputs"
+              ]
+            },
+            {
+              "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+              "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json"
+            }
+          ],
+          "existing_caller": "D2 005dc8c01 scripts/run_pr_df_ld_split_q3_resume.py (W.supervise) as used by B2 cf19fc36f"
+        }
+      ]
+    },
+    "execution_routes_note": "Each route runs from a read-only detached worktree at the commit where that existing caller last ran with its check_source passing (PF: B cbc471c91; Pauli LD3: B a844ac25f; Pauli LD5: B b6d4dea49; PR-DF: D2 23160cc87). Configurations without a rule (e.g. PR-Pauli L_D=2) emit the request as NO_ROUTE_ADAPTER for a manual caller.",
+    "q3_routes": {
+      "FULL_PF": {
+        "kind": "pf_b_pf6",
+        "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      },
+      "TRUNCATED_PF": {
+        "kind": "pf_b_pf6",
+        "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+      },
+      "PR_PAULI": {
+        "kind": "pauli_b_ld3",
+        "existing_caller": "B a844ac25f scripts/run_pauli_ld3_pf_budget_q3_fixed.py (L.installed + M.supervise)"
+      },
+      "PR_DF": {
+        "kind": "prdf_d2_split",
+        "existing_caller": "D2 005dc8c01 scripts/run_pr_df_ld_split_q3_resume.py (W.supervise) as used by B2 cf19fc36f"
+      }
+    },
+    "price_rules": {
+      "kind": "d2_pr_price_rules",
+      "interpreter": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+      "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-c1f95e080",
+      "view_commit": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+      "implementation_source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+      "handoff": {
+        "commit": "7cd8ea139d703573f0da25a9ee5951f6930f0a25",
+        "path": "docs/research/d_pr_price_rule_applicability_20261116/HANDOFF.md"
+      },
+      "policy": "MODEL",
+      "applies_to": [
+        "PR_DF",
+        "PR_PAULI"
+      ],
+      "note": "policy MODEL reproduces the saved comparison; AUTO may switch holdout axes to direct means and is never used implicitly",
+      "registry_file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/docs/research/h4_pr_r08_recovery_20261117/run02/PRICE_RULES_REGISTRY.json",
+      "source": {
+        "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+        "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/PRICE_RULES_REGISTRY.json",
+        "note": "D2 run02 registry: B2 round03 entries unchanged + PAULI_LD4 + AUTO_DF"
+      }
+    }
+  },
+  "requested_methods": [
+    "PR_PAULI",
+    "PR_DF"
+  ],
+  "requested_widths": {
+    "PR_PAULI": [
+      {
+        "raw": 0.1,
+        "exact": "3602879701896397/36028797018963968"
+      },
+      {
+        "raw": 0.2,
+        "exact": "3602879701896397/18014398509481984"
+      }
+    ],
+    "PR_DF": [
+      {
+        "raw": 0.1,
+        "exact": "3602879701896397/36028797018963968"
+      },
+      {
+        "raw": 0.05,
+        "exact": "3602879701896397/72057594037927936"
+      }
+    ]
+  },
+  "round_scope": {
+    "method_overrides": {
+      "PR_PAULI": {
+        "saved_configurations_only": false,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1"
+          ],
+          "kappa_multipliers": [
+            "2/3",
+            "1",
+            "2"
+          ],
+          "kappa_points_file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01/KAPPA_POINTS.json"
+        },
+        "L_D_values": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      "PR_DF": {
+        "L_D_values": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "saved_configurations_only": false,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ]
+        }
+      }
+    },
+    "search_overrides": {
+      "rule": "METHOD_MINIMUM_PRIORITY_V2",
+      "seed_saved_same_L_D": true,
+      "explore_every": 4,
+      "explore_window": "3/2",
+      "small_gain_fraction": "1/1000",
+      "deferral_fail_margin": "1/10000",
+      "transfer_count": 2,
+      "lookahead": 16,
+      "lookahead_mode": "HYBRID",
+      "adaptive_lookahead": false,
+      "coarse_gain_fraction": "1/100",
+      "small_and_deferred": "STOP",
+      "schedule_wide": {
+        "rule": "SCHEDULE_WIDE_V1",
+        "ladder_ratio": "4",
+        "explore_ratio": "2",
+        "refine_ratio": "33/32",
+        "exploit_per_explore": 2,
+        "window": "3/2",
+        "upper_stop_steps": 2,
+        "upper_stop_margin": "1/20",
+        "max_kappa": "65536",
+        "per_decision": 8,
+        "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family"
+      },
+      "requested_widths": {
+        "PR_PAULI": [
+          0.1,
+          0.2
+        ],
+        "PR_DF": [
+          0.1,
+          0.05
+        ]
+      },
+      "note": "Absolute requested PF widths. JSON .2 retains binary64, string 1/5 exact rational. Fixed h/M/T and evaluation contract unchanged; mapper may reject per method.",
+      "adaptive_hybrid": true,
+      "allocation_exchange": null
+    },
+    "width_families": null,
+    "new_families": {
+      "4": {
+        "configuration": {
+          "commit": "8690e962b",
+          "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/candidates/3b127c39973a21be33a0/CONFIGURATION.json"
+        }
+      },
+      "6": {
+        "configuration": {
+          "commit": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+          "path": "docs/research/rpe_split_preparation_20261116/LD6/PREPARATION.0.CONFIGURATION.json"
+        }
+      },
+      "7": {
+        "configuration": {
+          "commit": "c034dfa02",
+          "path": "docs/research/pauli_p0_no_drop_preparation_20261116/LD7/PREPARATION.0.CONFIGURATION.json"
+        }
+      },
+      "8": {
+        "configuration": {
+          "commit": "c034dfa02",
+          "path": "docs/research/pauli_p0_no_drop_preparation_20261116/LD8/PREPARATION.0.CONFIGURATION.json"
+        }
+      },
+      "9": {
+        "configuration": {
+          "commit": "c034dfa02",
+          "path": "docs/research/pauli_p0_no_drop_preparation_20261116/LD9/PREPARATION.0.CONFIGURATION.json"
+        }
+      }
+    },
+    "kappa_families": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "completion": {
+    "api": {
+      "source": "98b40e4390ec23f581eea10bdbb33f2caa2870dd",
+      "handoff": {
+        "commit": "0ef9668e997b57214eeab2f944e4bcff967b7b4d",
+        "path": "docs/research/d_pr_candidates_auto_20261116/HANDOFF.md"
+      }
+    },
+    "pauli_workspace": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-candidate-isolation-20261117",
+    "pauli_workspace_note": "Owned execution checkout; fixed public integrated SOURCE required before scientific execution.",
+    "saved_pauli_packets": [
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+      },
+      {
+        "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+      }
+    ],
+    "price_registry_source": {
+      "commit": "5820bc9390984fdec50cf304d445a135e1a88e7b",
+      "path": "docs/research/d_pr_candidates_auto_20261116/run02/completion/PRICE_RULES_REGISTRY.json"
+    },
+    "max_attempted_per_method": 0,
+    "evaluate_completed_only": false,
+    "note": "Metadata only unless a separate future science scope is explicitly approved. Existing Completion services, scoped price registry and common Q3 routes; no per-width or per-split caller.",
+    "parallel": 4,
+    "signal_epoch": "multiwidth_r08_recovery_20261117",
+    "price_registry_file": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/docs/research/h4_pr_r08_recovery_20261117/run02/PRICE_RULES_REGISTRY.json",
+    "source": "fdb4453a0fae36c8b8734a225a19316446dee62e"
+  }
+}
