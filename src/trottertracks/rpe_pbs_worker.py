@@ -205,6 +205,14 @@ class AllocationWorker(Worker):
         path = self.directory / 'CONTROL.json'
         return read(path) if path.exists() else {}
 
+    def _acquire(self, assignment):
+        deployment=self.profile['pbs'].get('deployment')
+        if deployment:
+            from .rpe_release_deployment import validate_assignment_release
+            validate_assignment_release(read(deployment['manifest']),read(deployment['layout']),
+                                        assignment,self.profile)
+        return super()._acquire(assignment)
+
     def resource_snapshot(self):
         snapshot = super().resource_snapshot()
         # This cluster does not expose a per-job cpuset/cgroup. Its qstat
@@ -307,6 +315,14 @@ class AllocationWorker(Worker):
 
 def run(profile_path, *, allocation_dir=None, poll_seconds=1.):
     profile = read(profile_path)
+    deployment=profile['pbs'].get('deployment')
+    if deployment:
+        from .rpe_release_deployment import ensure_components
+        layout=read(deployment['layout'])
+        installed=ensure_components(read(deployment['manifest']),layout,
+            components=layout.get('participation_components',['optimizer','pbs_worker','pbs_gateway']))
+        if installed['status']!='PASS':
+            raise ValueError('PBS release deployment HOLD: '+json.dumps(installed['holds']))
     if allocation_dir is not None:
         profile['pbs']['allocation_dir'] = str(Path(allocation_dir).resolve())
     identity = fixed_worker(profile)

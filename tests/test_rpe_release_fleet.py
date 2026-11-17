@@ -17,7 +17,7 @@ class FleetConfiguration(unittest.TestCase):
             base=Path(temporary);profiles=base/'old';prices=base/'price';hosts={};old={}
             q3='2'*40;worker='d'*40;price='a'*40;adapter='3'*40;provider='e'*40
             paths={}
-            for host in ['local','server1','server2','local0-wsl']:
+            for host in ['local','server1','server2','local0-wsl','pbs-0']:
                 root=base/host
                 runtime=str(root/'python')
                 rule=dict(stage='compile',provider='PRICE_MODEL_VALIDATION',source_commit=price,
@@ -27,14 +27,17 @@ class FleetConfiguration(unittest.TestCase):
                     preparation_sources={worker:str(root/'worker'),provider:str(root/'native')},
                     preparation_profiles=[rule,dict(stage='signal',provider='PF_SIGNALS',source_commit=provider,
                         profile=dict(interpreter=runtime,preparation_sources={provider:str(root/'native')}))])
+                if host=='pbs-0':profile['pbs']=dict(worker_source='9'*40,worker_root=str(root/'old-transport'),library_threads=1)
                 M.put(profiles/(host+'.json'),profile);old[host]=(profiles/(host+'.json')).read_bytes()
                 replacement=json.loads(json.dumps(profile));replacement['preparation_profiles'][0]['profile']['preparation_sources'][price]=str(root/'verified-price')
                 M.put(prices/(host+'.json'),replacement)
-                paths[host]=str(profiles/(host+'.json'))
+                if host!='pbs-0':paths[host]=str(profiles/(host+'.json'))
                 hosts[host]=dict(worker_source=worker,worker_root=str(root/'worker'),python=runtime,
                     repository=str(root/'objects.git'),seed_repository=str(root/'worker'),
                     metadata_root=str(root/'metadata'),install_root=str(root/'releases'),
                     runtime_observations={'preparation_0':dict(version_info=[3,11,0,'candidate',1],modules={'qiskit':'1.3.0'})})
+                if host=='pbs-0':hosts[host].update(base_profile=str(profiles/(host+'.json')),
+                    price_profile=str(prices/(host+'.json')),pbs=dict(gateway_python=runtime,worker_python=runtime))
             M.put(base/'ROUND.json',dict(executor=dict(distributed=dict(preparation_profiles=paths)),price_validation={'source':price}))
             M.put(base/'SERVICE.json',dict(round=str(base/'ROUND.json'),computation_source=q3,
                 migration={'candidate_completion_source':worker}))
@@ -43,6 +46,10 @@ class FleetConfiguration(unittest.TestCase):
             self.assertEqual(manifest['components']['q3']['source'],q3)
             self.assertEqual(manifest['components']['price_worker']['source'],price)
             self.assertIn('price_worker',manifest['stage_components']['compile'])
+            self.assertEqual(manifest['components']['pbs_worker']['source'],'1'*40)
+            self.assertEqual(manifest['components']['pbs_gateway']['hosts'],['pbs-0'])
+            self.assertNotIn('pbs-0',manifest['components']['worker']['hosts'])
+            self.assertEqual(manifest['participation_components_by_host']['pbs-0'],['optimizer','pbs_worker','pbs_gateway'])
             self.assertNotIn(str(base),json.dumps(manifest))
             observed=next(c for c in manifest['runtime_contracts']['local']if c['runtime']=='preparation_0')
             self.assertEqual(observed['runtime_observation']['version_info'],[3,11,0,'candidate',1])
@@ -56,6 +63,12 @@ class FleetConfiguration(unittest.TestCase):
                 self.assertEqual(layout['component_roots']['price_worker'],str(base/host/'verified-price'))
             self.assertEqual(M.read(base/'fleet/hosts/server1.json')['availability'],'DEFERRED_OFFLINE')
             self.assertEqual(M.read(base/'fleet/hosts/local0-wsl.json')['intake'],'OFF')
+            pbs_layout=M.read(base/'fleet/hosts/pbs-0.json');pbs_profile=M.read(base/'fleet/profiles/pbs-0.json')
+            self.assertEqual(pbs_layout['runtimes']['pbs_gateway']['python'],hosts['pbs-0']['pbs']['gateway_python'])
+            self.assertEqual(pbs_layout['component_roots']['pbs_worker'],pbs_layout['component_roots']['optimizer'])
+            self.assertEqual(pbs_profile['pbs']['worker_source'],'1'*40)
+            self.assertEqual(pbs_profile['pbs']['library_threads'],1)
+            self.assertEqual(pbs_profile['root'],str(base/'pbs-0/q3'))
             self.assertEqual(report['scientific_calls'],0);self.assertEqual(report['hosts_contacted'],[])
 
 

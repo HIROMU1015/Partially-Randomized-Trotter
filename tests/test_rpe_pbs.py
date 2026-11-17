@@ -7,7 +7,10 @@ from copy import deepcopy
 import getpass
 import hashlib
 import importlib.util
+import io
+import json
 from pathlib import Path
+import shlex
 import sys
 import tempfile
 import threading
@@ -197,6 +200,29 @@ class ManagerTests(unittest.TestCase):
 
 
 class GatewayTests(unittest.TestCase):
+    def test_explicit_gateway_runtime_survives_exchange_to_harvest_reconnect(self):
+        class Process:
+            def __init__(self):
+                self.stdin = io.StringIO()
+                self.stdout = io.StringIO('{"ok":true,"result":{}}\n')
+                self.alive = True
+            def poll(self): return None if self.alive else 0
+            def terminate(self): self.alive = False
+            def wait(self, timeout=None): return 0
+        config = dict(ssh_alias='existing-alias', gateway_python='/private/fixed/python',
+                      gateway_script='/fixed/rpe_pbs_gateway.py', remote_root='/owned/spool')
+        gateway = P.Gateway(config)
+        with patch.object(P.subprocess, 'Popen', side_effect=lambda *a, **k: Process()) as start:
+            gateway.call(dict(action='exchange'))
+            gateway.close()
+            gateway.call(dict(action='harvest', token='saved-original'))
+            gateway.close()
+        self.assertEqual(start.call_count, 2)
+        for call in start.call_args_list:
+            remote = shlex.split(call.args[0][-1])
+            self.assertEqual(remote[0], config['gateway_python'])
+            self.assertEqual(remote[2], config['gateway_script'])
+
     def test_json_query_avoids_pbs20_user_table_and_empty_run_does_not_query(self):
         process = SimpleNamespace(returncode=0, stdout='{"Jobs":{}}', stderr='')
         with patch.object(G.subprocess, 'run', return_value=process) as run:
@@ -236,13 +262,21 @@ class GatewayTests(unittest.TestCase):
             G.atomic(attempt/'ASSIGNMENT.json', dict(job_id='task', attempt_id='original-attempt', request=dict(route=dict(kind='artificial'))))
             G.atomic(attempt/'WORKER_STATE.json', dict(state='COMPLETED_PENDING_TRANSFER'))
             G.atomic(attempt/'PROCESS_RETURN.json', dict(returncode=0))
-            G.atomic(attempt/'OUTCOME.json', dict(status='ARTIFICIAL'))
+            # Exact DP bounds can exceed Python's default 4300-digit limit.
+            exact = 10**7167 + 4321
+            G.atomic(attempt/'OUTCOME.json', dict(status='ARTIFICIAL', exact_numerator=exact))
+            original = (attempt/'OUTCOME.json').read_bytes()
             with patch.object(G.subprocess, 'run') as process:
                 result = G.harvest(allocation)
             process.assert_not_called()
             self.assertEqual(len(result['attempts']), 1)
             self.assertEqual(result['attempts'][0]['assignment']['attempt_id'], 'original-attempt')
             self.assertIn('PROCESS_RETURN.json', result['attempts'][0]['files'])
+            recovered = base64.b64decode(result['attempts'][0]['files']['OUTCOME.json'])
+            self.assertEqual(recovered, original)
+            value = json.loads(recovered)['exact_numerator']
+            self.assertIs(type(value), int)
+            self.assertEqual(value, exact)
 
 
 if __name__ == '__main__':

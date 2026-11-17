@@ -50,6 +50,11 @@ def prepare(directory, source, settings=None, *, exercise_faults=False):
     fixture = modules(source)
     fixture.prepare(directory, port=fixture.free_port() if exercise_faults else 0,
                     total_slots='auto', sleep_seconds=2.)
+    problem=read(directory/'PROBLEM.json')
+    problem['problem']=dict(system='ARTIFICIAL_PBS_NORMAL_ENTRY_ACCEPTANCE',
+        hamiltonian_data=dict(expected=dict(fragment_count=10)))
+    for method in problem['methods'].values():method['family']='PR'
+    put(directory/'PROBLEM.json',problem)
     spec = read(directory/'ROUND.json')
     spec['search_overrides']['requested_widths'] = dict(PR_PAULI=[.1], PR_DF=[.1])
     spec['search_overrides']['lookahead'] = 1
@@ -69,7 +74,7 @@ def prepare(directory, source, settings=None, *, exercise_faults=False):
         ['git','rev-parse','HEAD'],cwd=source,text=True).strip()))
 
 
-def driver_type(fixture):
+def driver_type(fixture, *, preparation_source=None):
     from trottertracks.rpe_preparation_queue import normalize_preparation_request
     Base = fixture.fixture_driver()
 
@@ -99,7 +104,7 @@ def driver_type(fixture):
                     value=normalize_preparation_request(dict(method='ARTIFICIAL',route=dict(kind='preparation'),
                         preparation=dict(stage=stage,provider='ARTIFICIAL_'+stage,artificial=True,
                             identity=identity,command=command,outputs=['products'],
-                            source=runtime.executor.source_manifest,dependencies=list(dependencies),
+                            source=deepcopy(preparation_source or runtime.executor.source_manifest),dependencies=list(dependencies),
                             dependency_inputs=inputs or {})))
                     return runtime.executor.submit_preparation(value, approved=True,budget=100,
                         contract=dict(artificial=True))

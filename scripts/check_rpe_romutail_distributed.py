@@ -192,7 +192,12 @@ def controller(directory,*,plan_only=False,control_run=None,batch=32,max_cycles=
     command=['--problem',str(inputs/'PROBLEM.json'),'--round',str(round_path),
         '--run-dir',str(run),'--max-cycles',str(max_cycles),'--batch',str(batch)]
     if plan_only:command.append('--plan-only')
-    driver=(F.fixture_driver()if read(directory/'ROUND.json').get('artificial_mode')=='Q3_ONLY'else fixture_driver(directory))
+    fixture_spec=read(round_path)
+    if fixture_spec.get('artificial_pbs_acceptance'):
+        import check_rpe_pbs as PBS
+        driver=PBS.driver_type(F,preparation_source=fixture_spec.get('artificial_preparation_source'))
+    else:
+        driver=(F.fixture_driver()if fixture_spec.get('artificial_mode')=='Q3_ONLY'else fixture_driver(directory))
     try:E.main(command,driver_factory=driver)
     finally:
         watching.set()

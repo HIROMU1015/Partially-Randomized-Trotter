@@ -25,6 +25,18 @@ def manifest_reference(manifest):
     return dict(id=manifest['release_id'], manifest_sha256=fingerprint(manifest))
 
 
+def participation_components(manifest, host_layout):
+    """Resolve the selected host's transport roles, including PBS's worker."""
+    host=host_layout['host_id']
+    selected=manifest.get('participation_components_by_host',{}).get(host,
+        manifest.get('participation_components',['optimizer','worker']))
+    for name in selected:
+        component=manifest['components'].get(name)
+        if component is None or(component.get('hosts')and host not in component['hosts']):
+            raise ValueError('Participation component unavailable on '+host+': '+name)
+    return list(selected)
+
+
 def _git(root, *arguments):
     return subprocess.check_output(['git', *arguments], cwd=root, text=True,
                                    stderr=subprocess.PIPE).strip()

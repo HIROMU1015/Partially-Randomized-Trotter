@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Describe one selected release and map its fixed components onto four hosts.
+"""Describe one selected release and map its fixed components onto its hosts.
 
 Reads existing verified profiles and adds only the saved price-worker binding.
 It creates configuration only: no host connection, controller or scientific job.
@@ -22,6 +22,8 @@ def put(path,value):path.parent.mkdir(parents=True,exist_ok=True);path.write_tex
 
 
 def prepare(source,release_id,service_path,price_profiles,hosts,output):
+    if len(source)!=40 or any(c not in '0123456789abcdef'for c in source):
+        raise ValueError('Controller SOURCE must be a full commit')
     output=Path(output).resolve()
     if output.exists():raise ValueError('Use a new fleet output directory')
     service=read(service_path);round_value=read(service['round'])
@@ -37,18 +39,21 @@ def prepare(source,release_id,service_path,price_profiles,hosts,output):
         'q3':dict(source=service['computation_source'],required_paths=['scripts/run_rpe_optimizer_q3_job.py']),
         'price_worker':dict(source=price_source,required_paths=['scripts/run_rpe_price_validation_job.py'])}
     stage_components={stage:set()for stage in ['signal','compile','audit','q3']};stage_components['q3'].add('q3')
-    profiles={};source_roots={};bindings={};runtime_layouts={};profile_preserved={}
+    profiles={};source_roots={};bindings={};runtime_layouts={};profile_preserved={};participation={}
     for host,defaults in hosts.items():
-        profile=read(profile_paths[host]);before=profile_core(profile)
-        price=read(Path(price_profiles)/(host+'.json'))
+        base_profile=Path(defaults.get('base_profile')or profile_paths[host])
+        price_profile=Path(defaults.get('price_profile')or Path(price_profiles)/(host+'.json'))
+        profile=read(base_profile);before=profile_core(profile)
+        price=read(price_profile)
         extras=[r for r in price.get('preparation_profiles',[])if r['provider']=='PRICE_MODEL_VALIDATION'and r['source_commit']==price_source]
         if len(extras)!=1:raise ValueError('Expected one fixed price-worker rule for '+host)
-        keys={(r['stage'],r['provider'],r['source_commit'])for r in extras}
-        profile['preparation_profiles']=[r for r in profile.get('preparation_profiles',[])if(r['stage'],r['provider'],r['source_commit'])not in keys]+deepcopy(extras)
+        replacements={(r['stage'],r['provider'],r['source_commit']):r for r in extras}
+        profile['preparation_profiles']=[deepcopy(replacements.pop((r['stage'],r['provider'],r['source_commit']),r))
+            for r in profile.get('preparation_profiles',[])]+deepcopy(list(replacements.values()))
         if profile_core(profile)!=before:raise ValueError('Fleet price integration changed scientific Q3 profile')
         profile_preserved[host]=dict(q3_profile_core_unchanged=True,
-            previous_profile_sha256=hashlib.sha256(Path(profile_paths[host]).read_bytes()).hexdigest(),
-            price_profile_sha256=hashlib.sha256((Path(price_profiles)/(host+'.json')).read_bytes()).hexdigest())
+            previous_profile_sha256=hashlib.sha256(base_profile.read_bytes()).hexdigest(),
+            price_profile_sha256=hashlib.sha256(price_profile.read_bytes()).hexdigest())
         roots={service['computation_source']:profile['root'],worker_source:defaults['worker_root']}
         adapter=profile.get('adapter_manifest')
         if adapter:
@@ -56,10 +61,33 @@ def prepare(source,release_id,service_path,price_profiles,hosts,output):
                 raise ValueError('Hosts disagree about fixed Q3 adapter')
             components['q3_adapter']=dict(source=adapter['commit'],required_paths=['scripts/run_rpe_optimizer_q3_job.py'])
             roots[adapter['commit']]=profile['adapter_root']
-        contracts=[dict(stage='controller',component='optimizer',runtime='optimizer'),
-            dict(stage='worker',component='worker',runtime='worker')]
-        runtimes={'optimizer':dict(python=defaults['python'],modules={},components=['optimizer']),
-            'worker':dict(python=defaults.get('worker_python',profile['interpreter']),modules={},components=['worker'])}
+        contracts=[dict(stage='controller',component='optimizer',runtime='optimizer')]
+        runtimes={'optimizer':dict(python=defaults['python'],modules={},components=['optimizer'])}
+        if defaults.get('pbs'):
+            pbs=defaults['pbs'];transport_source=pbs.get('transport_source',source)
+            for name,path in [('pbs_gateway','scripts/rpe_pbs_gateway.py'),('pbs_worker','scripts/run_rpe_pbs_worker.py')]:
+                if name in components and components[name]['source']!=transport_source:
+                    raise ValueError('PBS hosts disagree about the fixed transport SOURCE')
+                components.setdefault(name,dict(source=transport_source,required_paths=[path]))
+            participation[host]=['optimizer','pbs_worker','pbs_gateway']
+            runtimes['pbs_worker']=dict(python=pbs.get('worker_python',profile['interpreter']),modules={},components=['pbs_worker'])
+            # A gateway runtime is explicit: system Python is not substituted
+            # during collection or after the PBS allocation has ended.
+            runtimes['pbs_gateway']=dict(python=pbs['gateway_python'],modules={},components=['pbs_gateway'])
+            contracts += [dict(stage='worker',component='pbs_worker',runtime='pbs_worker'),
+                dict(stage='gateway',component='pbs_gateway',runtime='pbs_gateway',operations=['collect','harvest'])]
+            transport_root=pbs.get('transport_root')or defaults.get('optimizer_root')or str(Path(defaults['install_root'])/source[:12])
+            def bind_transport(value):
+                if isinstance(value,dict):
+                    if isinstance(value.get('pbs'),dict):value['pbs'].update(worker_source=transport_source,worker_root=transport_root)
+                    for item in value.values():bind_transport(item)
+                elif isinstance(value,list):
+                    for item in value:bind_transport(item)
+            bind_transport(profile)
+        else:
+            participation[host]=['optimizer','worker']
+            runtimes['worker']=dict(python=defaults.get('worker_python',profile['interpreter']),modules={},components=['worker'])
+            contracts.append(dict(stage='worker',component='worker',runtime='worker'))
         def views(p):
             for key in ('route_views','preparation_sources'):
                 for commit,path in p.get(key,{}).items():roots.setdefault(commit,path)
@@ -99,14 +127,17 @@ def prepare(source,release_id,service_path,price_profiles,hosts,output):
     # The preparation wrapper and worker may intentionally share one SOURCE.
     names[preparation_source]='preparation';names[price_source]='price_worker'
     for name,specification in components.items():
-        specification['hosts']=list(hosts)if name=='optimizer'else[
-            host for host,roots in source_roots.items()if roots.get(specification['source'])]
+        if name=='optimizer':specification['hosts']=list(hosts)
+        elif name in ('pbs_worker','pbs_gateway'):specification['hosts']=[host for host,defaults in hosts.items()if defaults.get('pbs')]
+        else:specification['hosts']=[host for host,roots in source_roots.items()if roots.get(specification['source'])
+            and(name!='worker'or not hosts[host].get('pbs'))]
     for profile in profiles.values():
         for rule in profile['preparation_profiles']:
             stage_components[rule['stage']].add(names[rule['source_commit']])
     manifest=dict(schema='RPE_RELEASE_COMPONENTS_V1',release_id=release_id,controller_host='RomuTail',
         components=components,stage_components={k:sorted(v)for k,v in stage_components.items()},
-        participation_components=['optimizer','worker'],hosts=list(hosts),runtime_contracts=bindings,
+        participation_components=['optimizer','worker'],participation_components_by_host=participation,
+        hosts=list(hosts),runtime_contracts=bindings,
         scientific_execution_permission='UNCHANGED_FIXED_CONTRACTS_AND_EXPLICIT_USER_SCOPE')
     put(output/'RELEASE_COMPONENTS.json',manifest)
     layouts={}
@@ -114,6 +145,10 @@ def prepare(source,release_id,service_path,price_profiles,hosts,output):
         metadata=output if host=='local'else Path(defaults['metadata_root'])/release_id
         optimizer=defaults.get('optimizer_root')or str(Path(defaults['install_root'])/source[:12])
         roots={name:(optimizer if name=='optimizer'else source_roots[host].get(spec['source']))for name,spec in components.items()}
+        if defaults.get('pbs'):
+            transport=defaults['pbs'].get('transport_root')or optimizer
+            roots.update(pbs_worker=transport,pbs_gateway=transport)
+            roots['worker']=None
         # All host-local paths are kept out of the public component manifest.
         profile_path=output/'profiles'/f'{host}.json'if host=='local'else metadata/'PROFILE.json'
         layout_path=output/'hosts'/f'{host}.json'if host=='local'else metadata/'HOST.json'
@@ -122,6 +157,7 @@ def prepare(source,release_id,service_path,price_profiles,hosts,output):
             runtime_layouts[host]['preparation_'+str(index)]['components']=[names[rule['source_commit']]]
         layout=dict(host_id=host,repository=defaults['repository'],seed_repository=defaults['seed_repository'],
             component_roots=roots,runtimes=runtime_layouts[host],input_files={},
+            participation_components=participation[host],
             manifest_path=str(manifest_path),layout_path=str(layout_path),profile_path=str(profile_path),
             availability='DEFERRED_OFFLINE'if host=='server1'else'AVAILABLE',
             intake='OFF'if host in('server1','local0-wsl')else'UNCHANGED_EXISTING_POLICY')

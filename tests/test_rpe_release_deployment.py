@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
-from trottertracks.rpe_release_deployment import ensure_components,manifest_reference,validate_assignment_release
+from trottertracks.rpe_release_deployment import ensure_components,manifest_reference,participation_components,validate_assignment_release
 from trottertracks.rpe_q3_coordinator import digest
 
 
@@ -42,6 +42,17 @@ class ReleaseDeployment(unittest.TestCase):
             second=ensure_components(self.manifest,self.layout,install=True)
         self.assertEqual(second['status'],'PASS');self.assertEqual(second['components']['optimizer']['status'],'REUSED')
         self.assertEqual(before,(self.manifest,self.layout));self.assertFalse(first['participation_modified'])
+
+    def test_pbs_participation_uses_its_selected_transport_roles(self):
+        self.manifest['components']['worker']=dict(source=self.source,hosts=['local'])
+        self.manifest['components']['pbs_worker']=dict(source=self.source,hosts=['pbs-0'])
+        self.manifest['components']['pbs_gateway']=dict(source=self.source,hosts=['pbs-0'])
+        self.manifest['participation_components_by_host']={'pbs-0':['optimizer','pbs_worker','pbs_gateway']}
+        self.assertEqual(participation_components(self.manifest,dict(host_id='pbs-0')),['optimizer','pbs_worker','pbs_gateway'])
+        self.assertEqual(participation_components(self.manifest,self.layout),['optimizer','worker'])
+        self.manifest['participation_components_by_host']['local']=['pbs_worker']
+        with self.assertRaisesRegex(ValueError,'Participation component unavailable'):
+            participation_components(self.manifest,self.layout)
 
     def test_wrong_existing_checkout_and_input_are_held_without_overwriting(self):
         self.layout['component_roots']['optimizer']=str(self.repository)

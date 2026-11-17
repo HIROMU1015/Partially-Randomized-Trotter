@@ -232,6 +232,9 @@ class PbsManager:
         profile.setdefault('artifact_cache_directory', self.settings['remote_root']+'/cache/'+host+'/artifacts')
         profile['pbs'] = dict(profile.get('pbs') or {}, worker_source=self.settings['transport_source'],
             worker_root=self.settings['transport_root'], drain_seconds=self.settings.get('drain_seconds', 30))
+        deployment=worker.get('deployment')or self.settings.get('deployment')
+        if deployment:
+            profile['pbs']['deployment']=deepcopy(deployment)
         spec = dict(token=token, profile=profile, resources=self.settings['resources'],
             python=self.settings['python'], transport_root=self.settings['transport_root'],
             run_id=str(self.executor.run_dir), reason=demand)
