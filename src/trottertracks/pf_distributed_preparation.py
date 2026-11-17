@@ -20,6 +20,39 @@ def put(path,value):
 def git(root,*args):return subprocess.check_output(['git',*args],cwd=root,text=True).strip()
 
 
+def reuse_signal(root, workspace, folder, plan, saved):
+    """Carry the original completed signal into an explicitly scoped continuation."""
+    from .pr_candidate_completion import Held
+    relative=folder.relative_to(workspace).as_posix()
+    commit=saved['commit']
+    def blob(name):
+        return subprocess.check_output(['git','show',commit+':'+relative+'/'+name],cwd=root)
+    try:
+        prior=json.loads(blob('PLAN.json'))
+        status=json.loads(blob('signal_run01/STATUS.json'))
+        handoff=json.loads(blob('signal_run01/MEAN_HANDOFF.json'))
+        if (prior['configuration']!=plan['configuration'] or
+                prior['prepared']['pending']['requests']!=plan['prepared']['pending']['requests'] or
+                handoff['configuration_id']!=plan['configuration']['id'] or
+                handoff['target']!=plan['prepared']['target'] or
+                status['status']!='COMPLETE_THIRTEEN_ROUNDS' or len(handoff['means'])!=13):
+            raise ValueError('Original completed signal does not match the selected PF plan')
+        files=['STATUS.json','MEAN_HANDOFF.json',*(f'round_{m}.json' for m in range(13))]
+        original={name:blob('signal_run01/'+name) for name in files}
+        output=folder/'signal_run01';output.mkdir(exist_ok=True)
+        for name, raw in original.items():
+            path=output/name
+            if path.exists():
+                if path.read_bytes()!=raw:raise ValueError('Existing PF signal differs from the original artifact')
+            else:
+                with path.open('xb') as stream:stream.write(raw)
+        put(folder/'SAVED_SIGNAL_REUSE.json',dict(configuration_id=handoff['configuration_id'],
+            original_source=dict(commit=commit,path=relative+'/signal_run01/MEAN_HANDOFF.json'),
+            reused_means=13,new_means=0))
+    except (OSError,KeyError,ValueError,subprocess.CalledProcessError) as error:
+        raise Held('PF_SAVED_SIGNAL_REUSE_HOLD:'+str(error)) from error
+
+
 def complete_selected(root,spec,run,request,entry,output,runtime):
     """Original finite PF contract; no independent candidate/shot selection."""
     original=Path(entry).resolve().parents[1];run=Path(run)
@@ -109,10 +142,15 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
                 compiled=call('compile','PF_HOLDOUT_COMPILE',cohort='holdout',rounds=holdout)
                 values+=call('audit','PF_HOLDOUT_AUDIT',compiled=compiled)['prices']
             return call('finish','PF_FINISH',prices=values,model=frozen)['prices']
-        # The native PF contract has no signal -> calibration dependency.
-        with ThreadPoolExecutor(max_workers=2)as pool:
-            signal=pool.submit(call,'signal','PF_SIGNALS');price=pool.submit(prices)
-            signal.result();price_source=price.result()
+        saved_signal=spec['pf_completion'].get('saved_signal')
+        if saved_signal:
+            reuse_signal(root,workspace,folder,value,saved_signal)
+            price_source=prices()
+        else:
+            # The native PF contract has no signal -> calibration dependency.
+            with ThreadPoolExecutor(max_workers=2)as pool:
+                signal=pool.submit(call,'signal','PF_SIGNALS');price=pool.submit(prices)
+                signal.result();price_source=price.result()
         items.append(local('register',prices=price_source,
             registry=str(Path(selected['registry_file']).relative_to(workspace))))
     # The usual registry loader consumes the original producer locators. Fetch

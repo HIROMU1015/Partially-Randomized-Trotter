@@ -564,7 +564,8 @@ class Completion:
         bundles=self.saved_signal_packets('PR_DF')
         plan=self.service('df-plan',dict(configuration=config,tail_descriptor=descriptor,saved_bundles=bundles),d)
         if plan.get('unsupported_rounds')or any(r['decision']=='UNSUPPORTED'for r in plan['rounds']):raise Held('DF_PROVIDER_UNSUPPORTED:'+str(plan))
-        request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=self.source,output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(ROOT.parent/'d2-pr-df-ld7-signal-source-fefd-20261116')))
+        request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=self.source,
+                     output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(self.path('SIGNAL_VIEW'))))
         inp=d/'DF_SIGNAL_REQUEST.json';put(inp,request);input_commit=publish([d],'Fix missing DF round jobs')
         output=d/'df_signals/RESULT.json'
         result=self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/run_pr_df_candidate_signal_jobs.py'),'--input',str(inp),'--inputs-commit',input_commit,'--source',self.source],d,'DF_SIGNALS',output,science=True)

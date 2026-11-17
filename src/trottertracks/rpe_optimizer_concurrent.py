@@ -1012,7 +1012,8 @@ class DistributedExecutor(ConcurrentExecutor):
         return targets
 
     def _preparation_probe_hold(self, record):
-        targets=self._preparation_probe_targets()
+        targets={host for host in self._preparation_probe_targets()
+                 if self._host_supports_stage(host,record['request'])}
         if targets.intersection(record['decision']['eligible_host_ids']):return None
         if targets and not targets.issubset(record.get('failures',{})):return None
         return dict(status='HOST_ELIGIBILITY_HOLD',
@@ -1023,6 +1024,7 @@ class DistributedExecutor(ConcurrentExecutor):
         if host not in self._preparation_probe_targets():return []
         challenges=[]
         for job_id,record in self.preparation_pending.items():
+            if not self._host_supports_stage(host,record['request']):continue
             row=self.store.row(job_id)
             if row is not None and row['state']not in('QUEUED','CANCELLED'):continue
             try:challenges.append(self._pending_preparation_assignment(record,host))
@@ -1040,6 +1042,7 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_preparation_worker import validate_preparation_fingerprint
         if host not in self._preparation_probe_targets():return
         for job_id,record in list(self.preparation_pending.items()):
+            if not self._host_supports_stage(host,record['request']):continue
             old=self.store.row(job_id)
             if old is not None and old['state']not in('QUEUED','CANCELLED'):continue
             if job_id not in fingerprints and job_id not in errors:continue
