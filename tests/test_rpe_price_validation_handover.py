@@ -13,6 +13,23 @@ from test_rpe_price_validation_entry import description, candidate, ROOT
 
 
 class Handover(unittest.TestCase):
+    def test_normal_gateway_carries_explicit_stage_budget_without_inference_from_q3(self):
+        from test_rpe_local0_search import fixture_config,request
+        from trottertracks.rpe_local0_search import resolve,load,write,RequestError
+        with tempfile.TemporaryDirectory()as tmp:
+            config=fixture_config(Path(tmp));spec=load(config['round'])
+            spec['executor']={'distributed':{'preparation':{'budgets':{'signal':0,'compile':0,'audit':0}}}}
+            write(config['round'],spec);q=request(2,2);q['action']='preview'
+            _,resolved,_=resolve(config,q)
+            self.assertEqual(resolved['executor']['distributed']['preparation']['budgets']['compile'],0)
+            q['scope']['preparation_budgets']={'compile':1}
+            _,resolved,canonical=resolve(config,q)
+            self.assertEqual(resolved['executor']['distributed']['preparation']['budgets']['compile'],1)
+            self.assertEqual(canonical['preparation_budgets'],{'compile':1})
+            self.assertFalse(resolved['science_approved'])
+            q['scope']['preparation_budgets']={'compile':True}
+            with self.assertRaises(RequestError):resolve(config,q)
+
     def test_owner_frozen_request_partial_results_and_unknown_survive_across_runs(self):
         with tempfile.TemporaryDirectory()as tmp:
             base=Path(tmp);source=V.ModelStore(base/'old.sqlite3');desc=description()

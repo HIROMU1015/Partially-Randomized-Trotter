@@ -108,7 +108,7 @@ def resolve(config, request):
     """Translate only settings that the selected normal entry actually consumes."""
     keys(request, {'scope', 'instruction', 'action', 'release', 'run_id'}, 'request')
     scope = deepcopy(request.get('scope') or {})
-    keys(scope, {'methods', 'per_method', 'shots', 'stop'}, 'scope')
+    keys(scope, {'methods', 'per_method', 'shots', 'stop', 'preparation_budgets'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
     if config.get('plan_template'):spec.pop('plan_output',None)
     methods = scope.get('methods', spec['methods'])
@@ -196,6 +196,15 @@ def resolve(config, request):
             raise RequestError('scope.shots.max_per_round', 'positive per-round caps required')
         for method in methods: spec['method_overrides'].setdefault(method, {})['caps'] = caps
         canonical['shots'] = dict(min=1, max_per_round=caps)
+    if 'preparation_budgets' in scope:
+        budgets=scope['preparation_budgets']
+        keys(budgets,{'signal','compile','audit'},'scope.preparation_budgets')
+        if not budgets or any(v!='UNLIMITED' and(type(v)is not int or v<0)for v in budgets.values()):
+            raise RequestError('scope.preparation_budgets','nonnegative stage-task budgets or UNLIMITED required')
+        distributed=spec.get('executor',{}).get('distributed')
+        if distributed is None:raise RequestError('scope.preparation_budgets','adopted entry has no distributed preparation executor')
+        distributed.setdefault('preparation',{}).setdefault('budgets',{}).update(budgets)
+        canonical['preparation_budgets']=deepcopy(budgets)
     stop = scope.get('stop', {})
     keys(stop, {'max_new_q3_per_method', 'max_steps_per_method', 'max_cycles', 'batch'}, 'scope.stop')
     for key in stop:
