@@ -1,0 +1,979 @@
+{
+  "schema": "PR_PRICE_APPLICABILITY_V1",
+  "configuration_id": "55c1d06635b4340d0dc646324695d7acb60968bbc72432307374e0dc6dcb2846",
+  "policy": "MODEL",
+  "method": "PR_PAULI",
+  "L_D": 3,
+  "rows": [
+    {
+      "m": 0,
+      "axis": "X",
+      "physical_id": "RMSE:3c841b20b3ab997f4ea0765afeeb920155f7d67128915ca58bdd7bf744342088",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": {
+        "numerator": 3470483,
+        "denominator": 1155
+      },
+      "classification": "MODEL_REFERENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": {
+        "value": {
+          "numerator": 3470483,
+          "denominator": 1155
+        },
+        "source": {
+          "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+          "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": [
+            "rows",
+            0
+          ]
+        },
+        "rule": "PAULI_AUDIT",
+        "calibration_domain": {
+          "q": [
+            8,
+            8
+          ],
+          "R": [
+            660,
+            660
+          ]
+        },
+        "extrapolation": [
+          "q",
+          "R"
+        ],
+        "application": "SAVED_MODEL_REFERENCE_REUSE",
+        "caveats": [
+          "A S0-r1 decomposition supports this candidate and saved wrapper margins; all round prices are model applications, not cell direct observations",
+          "finite-cohort model; no all-law expectation/CI or prediction guarantee",
+          "q/R box membership is not independent validation"
+        ],
+        "event_step_changed_from_calibration": true,
+        "calibration_evidence": {
+          "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+          "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": [
+            "calibration_cell",
+            "rows"
+          ]
+        }
+      },
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "source": {
+        "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+        "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": [
+          "rows",
+          0
+        ]
+      }
+    },
+    {
+      "m": 0,
+      "axis": "Y",
+      "physical_id": "RMSE:3c841b20b3ab997f4ea0765afeeb920155f7d67128915ca58bdd7bf744342088",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": {
+        "numerator": 3470483,
+        "denominator": 1155
+      },
+      "classification": "MODEL_REFERENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": {
+        "value": {
+          "numerator": 3470483,
+          "denominator": 1155
+        },
+        "source": {
+          "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+          "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": [
+            "rows",
+            1
+          ]
+        },
+        "rule": "PAULI_AUDIT",
+        "calibration_domain": {
+          "q": [
+            8,
+            8
+          ],
+          "R": [
+            660,
+            660
+          ]
+        },
+        "extrapolation": [
+          "q",
+          "R"
+        ],
+        "application": "SAVED_MODEL_REFERENCE_REUSE",
+        "caveats": [
+          "A S0-r1 decomposition supports this candidate and saved wrapper margins; all round prices are model applications, not cell direct observations",
+          "finite-cohort model; no all-law expectation/CI or prediction guarantee",
+          "q/R box membership is not independent validation"
+        ],
+        "event_step_changed_from_calibration": true,
+        "calibration_evidence": {
+          "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+          "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": [
+            "calibration_cell",
+            "rows"
+          ]
+        }
+      },
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "source": {
+        "commit": "f25a05f8a92aab43cfbe30fc80b974054156aac1",
+        "path": "docs/research/a_pauli_ld3_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": [
+          "rows",
+          1
+        ]
+      }
+    },
+    {
+      "m": 1,
+      "axis": "X",
+      "physical_id": "RMSE:5a798d551fe1fc4c5e835d7c989cc1bd404860e4f3ccb2d1c08a1c0aedc2c203",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 1,
+      "axis": "Y",
+      "physical_id": "RMSE:5a798d551fe1fc4c5e835d7c989cc1bd404860e4f3ccb2d1c08a1c0aedc2c203",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 2,
+      "axis": "X",
+      "physical_id": "RMSE:09ee2d27fd1cfa486d4da8dde62741355ea471777ab332d8213b40d2179e8e84",
+      "q": 2,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 2,
+      "axis": "Y",
+      "physical_id": "RMSE:09ee2d27fd1cfa486d4da8dde62741355ea471777ab332d8213b40d2179e8e84",
+      "q": 2,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 3,
+      "axis": "X",
+      "physical_id": "RMSE:b80e17b8f94e9f73e7ea2785d2880883d66566f03d6fc73cf21fb18b23e6e5fc",
+      "q": 4,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 3,
+      "axis": "Y",
+      "physical_id": "RMSE:b80e17b8f94e9f73e7ea2785d2880883d66566f03d6fc73cf21fb18b23e6e5fc",
+      "q": 4,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 4,
+      "axis": "X",
+      "physical_id": "RMSE:b73f5db6b68769065e874adc71dd7d1b688b1ea6a0973e7cea4ab006363fe380",
+      "q": 8,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 4,
+      "axis": "Y",
+      "physical_id": "RMSE:b73f5db6b68769065e874adc71dd7d1b688b1ea6a0973e7cea4ab006363fe380",
+      "q": 8,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 5,
+      "axis": "X",
+      "physical_id": "RMSE:6870f3778f35e857113d35d5c381df816e2309cb3baaeeadd32b5e146f874e59",
+      "q": 16,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 5,
+      "axis": "Y",
+      "physical_id": "RMSE:6870f3778f35e857113d35d5c381df816e2309cb3baaeeadd32b5e146f874e59",
+      "q": 16,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 6,
+      "axis": "X",
+      "physical_id": "RMSE:c25237932ce22f08923fd4bf8c6b9a50d3ed25e86d6f2096db4455584ed9ee36",
+      "q": 32,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 6,
+      "axis": "Y",
+      "physical_id": "RMSE:c25237932ce22f08923fd4bf8c6b9a50d3ed25e86d6f2096db4455584ed9ee36",
+      "q": 32,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 7,
+      "axis": "X",
+      "physical_id": "RMSE:e8155210ce54e7080cec36f683c932017d2d27b0622004a6da2fb9509ed52a5d",
+      "q": 64,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 7,
+      "axis": "Y",
+      "physical_id": "RMSE:e8155210ce54e7080cec36f683c932017d2d27b0622004a6da2fb9509ed52a5d",
+      "q": 64,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 8,
+      "axis": "X",
+      "physical_id": "RMSE:9b26f685b23158ecbd696d78a10bff83c243741cad381bf5aae2a82b38a660e2",
+      "q": 128,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 8,
+      "axis": "Y",
+      "physical_id": "RMSE:9b26f685b23158ecbd696d78a10bff83c243741cad381bf5aae2a82b38a660e2",
+      "q": 128,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 9,
+      "axis": "X",
+      "physical_id": "RMSE:ae55ca73bfd59cf3844f5d0c72cc6f09a5b2a72dab9781fb8c757b0ea7366e9d",
+      "q": 256,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 9,
+      "axis": "Y",
+      "physical_id": "RMSE:ae55ca73bfd59cf3844f5d0c72cc6f09a5b2a72dab9781fb8c757b0ea7366e9d",
+      "q": 256,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 10,
+      "axis": "X",
+      "physical_id": "RMSE:334bc72241e913f86a0b565d79aca66bbd383869c109331db1aab3f65b943e88",
+      "q": 512,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 10,
+      "axis": "Y",
+      "physical_id": "RMSE:334bc72241e913f86a0b565d79aca66bbd383869c109331db1aab3f65b943e88",
+      "q": 512,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 11,
+      "axis": "X",
+      "physical_id": "RMSE:7429aed9a53c803b764c7896779cf55b07b89d215eda4a444e845aa8ae7dbea7",
+      "q": 1024,
+      "R": 2,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 11,
+      "axis": "Y",
+      "physical_id": "RMSE:7429aed9a53c803b764c7896779cf55b07b89d215eda4a444e845aa8ae7dbea7",
+      "q": 1024,
+      "R": 2,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 12,
+      "axis": "X",
+      "physical_id": "RMSE:e1370e45e56923fac9a34e5853ac701a80f1cd7270630b335285d81eb79a5546",
+      "q": 2048,
+      "R": 4,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 12,
+      "axis": "Y",
+      "physical_id": "RMSE:e1370e45e56923fac9a34e5853ac701a80f1cd7270630b335285d81eb79a5546",
+      "q": 2048,
+      "R": 4,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD3",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    }
+  ],
+  "total_RZ": null,
+  "complete": false,
+  "qualified_E_C": false,
+  "CI": null,
+  "Q3_executed": false,
+  "implementation": {
+    "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+    "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+    "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+    "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+    "contract_source": {
+      "commit": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+      "path": "scripts/run_pauli_b1_prices.py"
+    }
+  },
+  "step_registry_schema": "PR_ACTUAL_STEP_PRICE_REGISTRY_V1"
+}
