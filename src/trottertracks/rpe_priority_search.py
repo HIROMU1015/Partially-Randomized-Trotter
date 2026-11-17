@@ -452,6 +452,9 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
         selection_timing['backend_answer_seconds'] += time.perf_counter() - answer_started
         selection_timing['backend_answer_calls'] += int(backend is not None and (is_free or allow))
+        if answer is not None and answer['status']=='BUDGET_EXHAUSTED':
+            pending=dict(choice,route=(routes or {}).get(name),queue=[],job=answer.get('job'),budget_control=answer)
+            stop='Q3_BUDGET_EXHAUSTED';break
         if O.is_local_unknown(answer):
             st=states[choice['configuration_id']]
             new_calls+=answer.get('calls',0)

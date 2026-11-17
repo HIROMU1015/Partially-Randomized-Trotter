@@ -281,12 +281,19 @@ class ConcurrentExecutor(O.Executor):
             elif task is None and(job/'LAUNCH.json').exists():
                 answer=super().answer(proposal,allow_new=False)
             elif task is None and(job/'STARTING.json').exists():
-                return dict(status='STALE_JOB',job=str(job))
+                return dict(status='STALE_JOB',job=str(job),calls=0,source='EXECUTOR_CONTROL')
             else:
                 if not allow_new and task is None:return None
                 task=self._enqueue(proposal,demand=True)
-                if task is False:return dict(status='BUDGET_EXHAUSTED',job=None)
-                if task is None:return dict(status='NO_ROUTE',job=None)
+                if task is False:
+                    # A refused reservation starts no adapter/API. It is not a
+                    # Q3 outcome and must not enter MSE knowledge/adoption.
+                    self.log(event='BUDGET_WAIT',configuration=proposal['configuration_id'],
+                        limit=s.budgets.get(self.method),reserved=s.reserved[self.method],
+                        launched=self.launched(self.method))
+                    return dict(status='BUDGET_EXHAUSTED',job=None,calls=0,scientific_evaluation_calls=0,
+                        source='EXECUTOR_BUDGET',reason='NEW_RESERVATION_REFUSED')
+                if task is None:return dict(status='NO_ROUTE',job=None,calls=0,source='EXECUTOR_CONTROL')
                 self.log(event='DEPENDENCY_WAIT_START',job=job.name)
                 try:task.event.wait()
                 finally:self.log(event='DEPENDENCY_WAIT_END',job=job.name)

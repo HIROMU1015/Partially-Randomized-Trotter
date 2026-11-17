@@ -502,6 +502,9 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
             prefetch(props[:search.get('lookahead', 1) if near else 1])
         is_free = free is not None and free(choice)
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
+        if answer is not None and answer['status']=='BUDGET_EXHAUSTED':
+            pending=dict(choice,route=(routes or {}).get(name),queue=[],job=answer.get('job'),budget_control=answer)
+            stop='Q3_BUDGET_EXHAUSTED';break
         if is_local_unknown(answer):
             candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
             new_calls+=answer.get('calls',0)
@@ -835,7 +838,7 @@ class Executor:
                             source='NEW_Q3_JOB', calls=self.take_count(job), job=str(job)))
             while not (job / 'PROCESS_RETURN.json').exists() and self.alive(launch, job):
                 if not self.wait_for_running:
-                    return dict(status='IN_PROGRESS', job=str(job))
+                    return dict(status='IN_PROGRESS', job=str(job), calls=0, source='EXECUTOR_CONTROL')
                 time.sleep(self.poll_seconds)
             if (job / 'OUTCOME.json').exists():
                 return self.ingest(job, proposal, calls=0)
@@ -843,11 +846,11 @@ class Executor:
                 self.run_adapter(job, rule, 'collect').wait()
             if (job / 'OUTCOME.json').exists():
                 return self.ingest(job, proposal, calls=0)
-            return dict(status='STALE_JOB', job=str(job))
+            return dict(status='STALE_JOB', job=str(job), calls=0, source='EXECUTOR_CONTROL')
         if not allow_new:
             return None
         if rule is None:
-            return dict(status='NO_ROUTE', job=None)
+            return dict(status='NO_ROUTE', job=None, calls=0, source='EXECUTOR_CONTROL')
         job = self.launch(proposal, rule)
         return self.answer(proposal, allow_new=False)
 

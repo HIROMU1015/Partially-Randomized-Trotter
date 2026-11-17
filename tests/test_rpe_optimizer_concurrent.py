@@ -253,11 +253,18 @@ class SchedulerTests(unittest.TestCase):
     held.append(hold_candidate(candidate,choice,answer,backend))
     continue
 ''').body[0])
+        budget_control=ast.dump(ast.parse("""if answer is not None and answer['status']=='BUDGET_EXHAUSTED':
+    pending=dict(choice,route=(routes or {}).get(name),queue=[],job=answer.get('job'),budget_control=answer)
+    stop='Q3_BUDGET_EXHAUSTED';break
+""").body[0])
         class StripReadiness(ast.NodeTransformer):
             count=0
             isolated_count=0
             local_unknown_count=0
+            budget_control_count=0
             def visit_If(self,node):
+                if ast.dump(node)==budget_control:
+                    self.budget_control_count+=1;return None
                 if ast.dump(node)==local_unknown:
                     self.local_unknown_count+=1;return None
                 if ast.dump(node)==isolated:
@@ -275,6 +282,7 @@ class SchedulerTests(unittest.TestCase):
             self.assertEqual(strip.count,1 if name in('proposals','run_method')else 0,name)
             self.assertEqual(strip.isolated_count,1 if name=='run_method'else 0,name)
             self.assertEqual(strip.local_unknown_count,1 if name=='run_method'else 0,name)
+            self.assertEqual(strip.budget_control_count,1 if name=='run_method'else 0,name)
             self.assertEqual(ast.dump(a),ast.dump(b),name)
 
 
