@@ -488,6 +488,17 @@ class DistributedExecutor(ConcurrentExecutor):
             self.optimizer_source = self.computation_source
             self.worker_script = Path(distributed.get('worker_script', self.root/'scripts/run_rpe_q3_worker.py')).resolve()
             self.source_manifest = Q.source_manifest(self.computation_root, self.computation_source)
+            self.release_manifest=None
+            if distributed.get('release_manifest'):
+                from .rpe_release_deployment import read,manifest_reference,ensure_components
+                self.release_manifest=read(distributed['release_manifest'])
+                reference=manifest_reference(self.release_manifest)
+                if reference!=distributed.get('required_release'):
+                    raise ValueError('Controller release/component binding changed')
+                if distributed.get('local_worker')and distributed.get('local_deployment_layout'):
+                    report=ensure_components(self.release_manifest,read(distributed['local_deployment_layout']),
+                        components=['optimizer'])
+                    if report['status']!='PASS':raise ValueError('Local optimizer deployment HOLD: '+str(report['holds']))
             contract_path = run/'distributed'/'SOURCE.json'
             fixed = dict(source=self.source_manifest, evaluation_contract=self.contract)
             if contract_path.exists() and json.loads(contract_path.read_text()) != fixed:
@@ -1329,6 +1340,13 @@ class DistributedExecutor(ConcurrentExecutor):
                 value['host_execution_profile'] = preparation_profile_core(profile)
             else: value['host_execution_profile'] = profile_core(profile)
             value['host_execution_profile_sha256'] = digest(value['host_execution_profile'])
+        if self.distributed.get('required_release'):
+            value['required_release']=deepcopy(self.distributed['required_release'])
+            local=self.distributed.get('local_worker')or{}
+            if host==local.get('host_id')and self.distributed.get('local_deployment_layout'):
+                from .rpe_release_deployment import read,validate_assignment_release
+                validate_assignment_release(self.release_manifest,
+                    read(self.distributed['local_deployment_layout']),value,local)
         return value
 
     def _timing_queue(self):

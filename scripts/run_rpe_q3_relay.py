@@ -167,6 +167,7 @@ class Relay:
         self.pending_discovery = {}
         self.pending_ticks = {}
         self.log_lock = threading.Lock()
+        self.deployed_workers={}
         started = time.time()
         self.state = dict(pid=os.getpid(), configuration=str(self.configuration), workers={},
                           started_epoch=started, heartbeat_epoch=started, stopped=False,
@@ -199,9 +200,27 @@ class Relay:
         state.pop('error', None)
 
     def remote(self, worker, action, value=None):
-        started = time.monotonic()
+        if worker.get('deployment')and(action=='status'or action=='submit'):
+            self.ensure_worker_deployment(worker,value if action=='submit'else None)
         command = [worker.get('python', 'python3'), '-B', worker['root'].rstrip('/')+'/scripts/run_rpe_q3_worker.py',
                    '--profile', worker['profile'], '--mailbox', action]
+        return self.remote_command(worker,command,action,value)
+
+    def ensure_worker_deployment(self,worker,assignment=None):
+        """Install only missing selected code, then run existing task guards."""
+        declaration=worker['deployment'];host=worker['host_id']
+        if assignment is None and self.deployed_workers.get(host)==declaration:return
+        command=[worker.get('python','python3'),'-B',declaration['entry'],
+            '--manifest',declaration['manifest'],'--layout',declaration['layout'],
+            '--install','--components','optimizer']
+        if assignment is not None:command+=['--assignment-stdin','--profile',worker['profile']]
+        result,_=self.remote_command(worker,command,'deployment',assignment or{})
+        if result.get('status')!='PASS':raise ValueError('Worker release deployment HOLD: '+json.dumps(result))
+        self.deployed_workers[host]=dict(declaration)
+        return result
+
+    def remote_command(self,worker,command,action,value=None):
+        started = time.monotonic()
         # Reuse local0's published WSL mailbox transport (6e70f5d13061).
         # Scientific execution still resolves the route-specific saved profile.
         if worker.get('transport') == 'wsl':

@@ -110,6 +110,22 @@ def resolve(config, request):
     scope = deepcopy(request.get('scope') or {})
     keys(scope, {'methods', 'per_method', 'shots', 'stop', 'preparation_budgets'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
+    if config.get('release_manifest'):
+        from .rpe_release_deployment import manifest_reference
+        manifest=load(config['release_manifest']);reference=manifest_reference(manifest)
+        selected_id=config.get('release',{}).get('id')
+        if selected_id and reference['id']!=selected_id:
+            raise RequestError('release_manifest','component versions belong to another release')
+        distributed=spec.get('executor',{}).get('distributed')
+        if distributed is not None:
+            distributed.update(required_release=reference,release_manifest=config['release_manifest'])
+            layouts=config.get('host_layouts',{})
+            if layouts.get('local'):distributed['local_deployment_layout']=layouts['local']
+            for worker in distributed.get('relay',{}).get('workers',[]):
+                if worker.get('enabled',True)and layouts.get(worker['host_id']):
+                    layout=load(layouts[worker['host_id']])
+                    worker['deployment']=dict(entry=str(Path(layout['component_roots']['optimizer'])/'scripts/manage_rpe_release_deployment.py'),
+                        manifest=layout['manifest_path'],layout=layout['layout_path'])
     if config.get('plan_template'):spec.pop('plan_output',None)
     methods = scope.get('methods', spec['methods'])
     if not isinstance(methods, list) or not methods or any(m not in METHODS for m in methods):
@@ -486,6 +502,10 @@ def fixed_implementation(config):
     untracked=subprocess.check_output(['git','ls-files','--others','--exclude-standard','--',*paths],cwd=root,text=True).strip()
     if changed or untracked:
         raise RequestError('code_source','fixed implementation/settings changed: '+(changed or untracked))
+    for filename,expected in config.get('fixed_settings',{}).items():
+        path=Path(filename)
+        if not path.is_file()or hashlib.sha256(path.read_bytes()).hexdigest()!=expected:
+            raise RequestError('fixed_settings','fixed deployment setting changed: '+filename)
     return dict(source=config['code_source'],head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip())
 
 

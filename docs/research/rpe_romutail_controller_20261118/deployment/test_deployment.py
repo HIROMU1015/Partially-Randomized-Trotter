@@ -57,7 +57,11 @@ class DeploymentTests(unittest.TestCase):
             legacy_source = subprocess.check_output(['git', 'rev-parse', 'HEAD^'], cwd=ROOT, text=True).strip()
             legacy_worker = base / 'fixed-worker.py'
             legacy_worker.write_text('# Synthetic fixed worker path; never executed.\n')
-            layout.update(candidate_completion_source=legacy_source, worker_script=str(legacy_worker))
+            release_manifest=base/'RELEASE_COMPONENTS.json';host_layout=base/'HOST.local.json'
+            M.put(release_manifest,dict(schema='RPE_RELEASE_COMPONENTS_V1',release_id='SYNTHETIC'))
+            M.put(host_layout,dict(host_id='local',component_roots={}))
+            layout.update(candidate_completion_source=legacy_source, worker_script=str(legacy_worker),
+                release_manifest=str(release_manifest),host_layouts={'local':str(host_layout)})
             M.prepare(original, base / 'MANIFEST.json', layout, source, base / 'control-update')
             controlled = M.read(base / 'control-update/ROUND.default.json')
             self.assertEqual(controlled['candidate_completion']['source'], legacy_source)
@@ -67,6 +71,13 @@ class DeploymentTests(unittest.TestCase):
             self.assertEqual(controlled['executor']['distributed']['preparation']['budgets'],
                              round_value['executor']['distributed']['preparation']['budgets'])
             self.assertEqual(M.read(base / 'control-update/SERVICE.json')['code_source'], source)
+            deployed_service=M.read(base/'control-update/SERVICE.json')
+            self.assertEqual(deployed_service['release_manifest'],str(release_manifest))
+            self.assertEqual(deployed_service['host_layouts'],{'local':str(host_layout)})
+            for path in (release_manifest,host_layout):
+                self.assertEqual(deployed_service['fixed_settings'][str(path)],M.checksum(path))
+            self.assertEqual(controlled['price_validation']['store'],str(base/'price-validation/models.sqlite3'))
+            self.assertTrue(controlled['price_validation']['publish_shared_models'])
             self.assertEqual(M.read(base / 'control-update/ROUND.absolute-kappa.json')['candidate_completion']['source'],
                              legacy_source)
             self.assertEqual({p.name:p.read_bytes() for p in original.iterdir()}, before)

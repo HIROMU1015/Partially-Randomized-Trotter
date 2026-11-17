@@ -49,6 +49,25 @@ class RealHostFixtureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'dedicated synthetic'):
             H.synthetic_participation(worker,True)
 
+    def test_production_component_roles_and_profile_contracts_are_kept_separate(self):
+        source=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+        with tempfile.TemporaryDirectory()as temporary:
+            base=Path(temporary);profile=base/'FIXED_PROFILE.json'
+            profile.write_text(json.dumps(dict(dp_workers=4,route_views={'INNER':'/FIXED/INNER'},runtime_checks={'contract':'FIXED'})))
+            deployment=dict(source_commit=source,computation_source='FROZEN_Q3_SOURCE',
+                hosts={host:dict(root='/FIXED/'+host+'/q3',worker_root='/FIXED/'+host+'/worker',
+                    python=sys.executable,directory='/OWNED/'+host,profile_template=str(profile),ssh_alias='synthetic')for host in H.HOSTS})
+            with patch.object(H.F,'free_port',return_value=19877):H.prepare(base/'fixture',deployment)
+            distributed=H.read(base/'fixture/ROUND.json')['executor']['distributed']
+            self.assertEqual(distributed['computation_source'],'FROZEN_Q3_SOURCE')
+            self.assertEqual(distributed['worker_script'],'/FIXED/local/worker/scripts/run_rpe_q3_worker.py')
+            placed=H.read(base/'fixture/PROFILE_local.json')
+            self.assertEqual(placed['route_views'],{'INNER':'/FIXED/INNER'})
+            self.assertEqual(placed['runtime_checks'],{'contract':'FIXED'})
+            self.assertEqual(placed['dp_workers'],4)
+            workers=H.read(base/'fixture/RELAY.json')['workers']
+            self.assertEqual(workers[0]['root'],'/FIXED/server2/worker')
+
     def test_synthetic_participation_code_writes_valid_json_and_only_owned_path(self):
         with tempfile.TemporaryDirectory()as temporary:
             path=Path(temporary)/'.romutail-controller-acceptance/settings.json'

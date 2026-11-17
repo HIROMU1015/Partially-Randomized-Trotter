@@ -49,16 +49,96 @@ class Handover(unittest.TestCase):
                 self.assertEqual(service.store.row(desc['model_id']),original)
             self.assertEqual(source.row(desc['model_id']),original)
 
-    def test_conflicting_frozen_jobs_abort_atomically(self):
+    def test_conflicting_frozen_job_is_held_without_blocking_an_unrelated_import(self):
         with tempfile.TemporaryDirectory()as tmp:
             base=Path(tmp);desc=description();stores=[V.ModelStore(base/name)for name in ('old','new')]
             for store in stores:store.register(desc,lambda:([],[]))
             stores[0].change(desc['model_id'],lambda r:r.update(job_id='first'))
             stores[1].change(desc['model_id'],lambda r:r.update(job_id='different'))
             before=stores[1].row(desc['model_id'])
-            with self.assertRaisesRegex(ValueError,'Model state differs'):
-                reconcile(stores[0].path,stores[1].path)
+            other=deepcopy(desc);other['identity']['model_source']['commit']='other-fixed'
+            other['model_id']=V.digest(other['identity']);stores[0].register(other,lambda:([],[]))
+            report=reconcile(stores[0].path,stores[1].path)
+            self.assertEqual(report['status'],'HOLD')
+            self.assertEqual((report['held'],report['imported']),(1,1))
+            self.assertEqual(report['conflicts'][0]['model_id'],desc['model_id'])
+            self.assertEqual(report['conflicts'][0]['fields'],['job_id'])
             self.assertEqual(stores[1].row(desc['model_id']),before)
+            self.assertEqual(stores[1].row(other['model_id']),stores[0].row(other['model_id']))
+
+    def test_conflicting_external_attempt_is_held_and_partial_progress_is_preserved(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            base=Path(tmp);desc=description();old=V.ModelStore(base/'old');new=V.ModelStore(base/'new')
+            for store in(old,new):store.register(desc,lambda:([],[]))
+            old.change(desc['model_id'],lambda r:r.update(external_job={'job_id':'same','attempt_id':'old','state':'UNKNOWN'}))
+            new.change(desc['model_id'],lambda r:r.update(external_job={'job_id':'same','attempt_id':'current','state':'COMPLETED_PENDING_TRANSFER'},partial_results={'X':{'path0':'saved'}}))
+            before=new.row(desc['model_id']);report=reconcile(old.path,new.path)
+            self.assertEqual(report['conflicts'][0]['fields'],['external_job.attempt_id'])
+            self.assertEqual(new.row(desc['model_id']),before)
+
+    def test_bad_model_description_holds_only_that_model_and_keeps_candidate_usable(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            base=Path(tmp);bad=description();store=V.ModelStore(base/'shared')
+            store.register(bad,lambda:([],[]));before=store.row(bad['model_id'])
+            broken=deepcopy(bad);broken['identity']['model_source']['commit']='wrong-frozen-source'
+            good=deepcopy(bad);good['identity']['model_source']['commit']='another-valid-source'
+            good['model_id']=V.digest(good['identity'])
+            c=candidate(good);c['price_model_validations']=[broken,good]
+            prices=deepcopy(c['prices'])
+            service=V.Service(ROOT,base/'run',dict(price_validation={'store':str(store.path)}))
+            with patch.object(service,'resolve',return_value=([],[],None)):
+                service.observe([c])
+            self.assertEqual(store.row(bad['model_id']),before)
+            self.assertIsNotNone(store.row(good['model_id']))
+            self.assertIn(good['model_id'],service.descriptions)
+            self.assertEqual(c['price_validation_issue']['model_id'],bad['model_id'])
+            self.assertEqual(c['price_validation_issue']['status'],'INCOMPLETE')
+            self.assertIn(bad['model_id'],service.model_holds)
+            self.assertTrue(c['ready']);self.assertEqual(c['needs'],[]);self.assertEqual(c['prices'],prices)
+
+    def test_optional_saved_qr_enrichment_uses_frozen_evidence_not_current_application(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            base=Path(tmp);desc=description();evidence=dict(commit='b'*40,path='SAVED.json',selector=['rows'])
+            desc.update(evidence_sources=[dict(source=evidence)],evidence_points=[dict(m=5,q=32,R=33)])
+            desc['points'][5].update(q=999,R=999)  # Another kappa/application is not evidence.
+            point=dict(m=5,q=None,R=None,source=dict(evidence,selector=['rows',0]),
+                observations=[dict(axis=axis,compiled_RZ=123,source=dict(commit='c'*40,path='RECEIPTS.json',selector=[axis]))for axis in V.AXES])
+            preserved=dict(m=9,q=512,R=526,source={'unchanged':'accepted'},observations=[{'unchanged':'accepted'}])
+            store=V.ModelStore(base/'shared');store.register(desc,lambda:([point,preserved],[]))
+            store.change(desc['model_id'],lambda r:r.update(owner_run='/original-owner',attempt_id='same',partial_results={'X':'kept'}))
+            before=store.row(desc['model_id'])
+            class Reader:
+                def __init__(self,*args):pass
+                def read(self,source):return dict(axis=source['selector'][0],request=dict(m=5,q=32,R=33))
+            for enabled in(False,True):
+                settings=dict(store=str(store.path),enrich_saved_evidence_metadata=enabled)
+                service=V.Service(ROOT,base/str(enabled),dict(price_validation=settings))
+                with patch('trottertracks.pr_price_rules.GitReader',Reader),patch.object(service,'resolve',side_effect=AssertionError('No independent validation')):
+                    service.observe([candidate(desc)])
+                expected=deepcopy(before)
+                if enabled:expected['validation_points'][0].update(q=32,R=33)
+                self.assertEqual(store.row(desc['model_id']),expected)
+                self.assertEqual(service.model_holds,set())
+
+    def test_unproven_saved_qr_metadata_is_held_without_changing_saved_values(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            base=Path(tmp);desc=description();evidence=dict(commit='b'*40,path='SAVED.json',selector=['rows'])
+            desc.update(evidence_sources=[dict(source=evidence)],evidence_points=[dict(m=5,q=32,R=33)])
+            point=dict(m=5,q=None,R=None,source=dict(evidence,selector=['rows',0]),
+                observations=[dict(axis='X',source=dict(commit='c'*40,path='RECEIPTS.json',selector=['X']))])
+            store=V.ModelStore(base/'shared');store.register(desc,lambda:([point],[]));before=store.row(desc['model_id'])
+            class Reader:
+                def __init__(self,*args):pass
+                def read(self,source):return dict(axis='X',request=dict(m=5,q=999,R=999))
+            service=V.Service(ROOT,base/'run',dict(price_validation=dict(store=str(store.path),enrich_saved_evidence_metadata=True)))
+            c=candidate(desc)
+            with patch('trottertracks.pr_price_rules.GitReader',Reader):service.observe([c])
+            self.assertEqual(store.row(desc['model_id']),before)
+            self.assertIn('FROZEN_RECEIPT_METADATA_DIFFERS',c['price_validation_issue']['reason'])
+            self.assertTrue(c['ready']);self.assertEqual(c['needs'],[])
+            wrong=deepcopy(desc);wrong['evidence_sources']=[]
+            with self.assertRaisesRegex(ValueError,'UNMATCHED_FROZEN_EVIDENCE_SOURCE'):
+                V.saved_point_metadata_updates(before,wrong,Reader())
 
     def test_repeated_snapshot_preserves_newly_collected_metadata_and_shared_publication(self):
         with tempfile.TemporaryDirectory()as tmp:

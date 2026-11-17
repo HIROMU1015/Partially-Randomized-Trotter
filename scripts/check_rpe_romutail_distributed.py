@@ -25,6 +25,7 @@ import check_rpe_distributed_q3 as F
 import check_rpe_distributed_preparation as P
 import check_pr_width_search as W
 from trottertracks.rpe_q3_coordinator import atomic_json as put,digest
+from trottertracks import rpe_q3_coordinator as Q
 from trottertracks.rpe_q3_store import JobStore
 from trottertracks.rpe_preparation_queue import normalize_preparation_request
 from trottertracks.rpe_preparation_worker import current_preparation_fingerprint
@@ -50,11 +51,14 @@ def prepare(directory,deployment):
     profiles={}
     for host in HOSTS:
         location=deployment['hosts'][host]
-        profile=dict(host_id=host,root=location['root'],interpreter=location['python'],slots=1,dp_workers=1,
-            route_views={},work_dir=location['directory'].rstrip('/')+'/spool',
+        profile=read(location['profile_template'])if location.get('profile_template')else{}
+        profile.update(host_id=host,root=location['root'],interpreter=location['python'],slots=1,
+            work_dir=location['directory'].rstrip('/')+'/spool',
             artifact_cache_directory=location['directory'].rstrip('/')+'/artifacts',
             prefix_cache_directory=location['directory'].rstrip('/')+'/prefix',
             slot_policy=dict(mode='auto',initial_slots=1,max_slots=1))
+        profile.setdefault('dp_workers',1)
+        profile.setdefault('route_views',{})
         profiles[host]=profile
         put(directory/('PROFILE_'+host+'.json'),profile)
     round=read(directory/'ROUND.json')
@@ -69,15 +73,20 @@ def prepare(directory,deployment):
         preparation=dict(budgets=dict(signal=100,compile=100,audit=100)),
         host_admission=str(directory/'HOST_ADMISSION.json'))
     distributed.pop('required_hosts',None)
+    if deployment.get('computation_source'):
+        distributed.update(computation_source=deployment['computation_source'],
+            computation_root=deployment['hosts']['local']['root'],
+            worker_script=str(Path(deployment['hosts']['local'].get('worker_root',deployment['hosts']['local']['root']))/'scripts/run_rpe_q3_worker.py'))
     put(directory/'ROUND.json',round)
     put(directory/'HOST_ADMISSION.json',dict(hosts={'server1':dict(accepting=False,optional=True),
         'local0-wsl':dict(accepting=False,optional=True)}))
     workers=[]
     for host in ['server2','local0-wsl']:
         location=deployment['hosts'][host]
-        worker={key:deepcopy(value)for key,value in location.items()if key not in('directory','python')}
+        worker={key:deepcopy(value)for key,value in location.items()if key not in('directory','python','profile_template','worker_root')}
         worker.update(host_id=host,python=location['python'],root=location['root'],
             profile=location['directory'].rstrip('/')+'/PROFILE.json',priority_group=1 if host=='local0-wsl'else 0)
+        worker['root']=location.get('worker_root',location['root'])
         workers.append(worker)
     workers.append(dict(host_id='server1',enabled=False,disabled_reason='User reports server1 stopped; no connection attempted'))
     put(directory/'RELAY.json',dict(state_directory=str(directory/'relay-state'),external_tunnel=True,
@@ -92,6 +101,7 @@ def fixture_driver(directory):
     directory=Path(directory)
     relay=R.Relay(directory/'RELAY.json')
     workers={worker['host_id']:worker for worker in relay.config['workers'] if worker.get('enabled',True)}
+    deployment=read(directory/'DEPLOYMENT.json')
     cache={};cache_lock=threading.Lock()
 
     def fingerprint(host,assignment):
@@ -121,7 +131,9 @@ def fixture_driver(directory):
                 if stage=='audit':command+=['--inputs','@INPUTS@']
                 request=normalize_preparation_request(dict(route=dict(kind='preparation'),method='ARTIFICIAL',
                     preparation=dict(stage=stage,provider='ARTIFICIAL_'+stage,artificial=True,
-                        command=command,outputs=['products'],source=self.runtime.executor.source_manifest,
+                        command=command,outputs=['products'],source=(Q.source_manifest(
+                            Path(deployment['preparation_root']),deployment['preparation_source'])
+                            if deployment.get('preparation_source')else self.runtime.executor.source_manifest),
                         dependencies=list(deps),dependency_inputs=depinputs or{},identity=name)))
                 assignment=dict(request=request,request_sha256=digest(request),job_id=request['request_id'],source_manifest=request['preparation']['source'])
                 facts={host:fingerprint(host,assignment)for host in hosts}

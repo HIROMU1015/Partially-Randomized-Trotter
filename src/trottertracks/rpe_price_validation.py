@@ -178,6 +178,46 @@ def saved_checks(description,reader):
     return [p for p in points.values()if set(p['predicted_RZ'])==set(AXES) and p.get('independent_paths',0)>0],issues
 
 
+def saved_point_metadata_updates(record,description,reader):
+    """Recover missing q/R only from frozen evidence anchors and receipts.
+
+    Current application ``points`` may use another kappa/schedule. They are
+    deliberately excluded; measured values, status and qualification stay opaque.
+    """
+    if record.get('status')!='INDEPENDENT_MEASURED':return []
+    anchors={point['m']:point for point in description.get('evidence_points',[])}
+    sources=[group.get('source')or{}for group in description.get('evidence_sources',[])]
+    updates=[]
+    for point in record.get('validation_points',[]):
+        if all(point.get(key)is not None for key in('q','R')):continue
+        source=point.get('source')or{};selector=source.get('selector')or[]
+        commit=source.get('commit','')
+        if len(commit)!=40 or any(char not in '0123456789abcdef'for char in commit)or not any(source.get('commit')==known.get('commit')and source.get('path')==known.get('path')and
+                   selector[:len(known.get('selector')or[])]==(known.get('selector')or[])for known in sources):
+            raise ValueError('UNMATCHED_FROZEN_EVIDENCE_SOURCE:m'+str(point['m']))
+        anchor=anchors.get(point['m'])
+        if not anchor or any(type(anchor.get(key))is not int or anchor[key]<1 for key in('q','R')):
+            raise ValueError('MISSING_FROZEN_EVIDENCE_POINT:m'+str(point['m']))
+        if any(point.get(key)is not None and point[key]!=anchor[key]for key in('q','R')):
+            raise ValueError('FROZEN_EVIDENCE_METADATA_DIFFERS:m'+str(point['m']))
+        observations=point.get('observations')or[]
+        if not observations:raise ValueError('MISSING_FROZEN_RECEIPTS:m'+str(point['m']))
+        for observation in observations:
+            source=observation.get('source')or{};commit=source.get('commit','')
+            if len(commit)!=40 or any(char not in '0123456789abcdef'for char in commit)or not source.get('path'):
+                raise ValueError('UNFIXED_EVIDENCE_RECEIPT:m'+str(point['m']))
+            try:receipt=reader.read(source)
+            except (OSError,ValueError,KeyError,TypeError,subprocess.CalledProcessError)as error:
+                raise ValueError('UNAVAILABLE_FROZEN_EVIDENCE_RECEIPT:m'+str(point['m']))from error
+            request=receipt.get('request')or{}
+            if any(request.get(key)!=value for key,value in dict(m=point['m'],q=anchor['q'],R=anchor['R']).items())or receipt.get('axis')!=observation.get('axis'):
+                raise ValueError('FROZEN_RECEIPT_METADATA_DIFFERS:m'+str(point['m']))
+        updates.append(dict(m=point['m'],source=point['source'],
+            evidence=digest({key:value for key,value in point.items()if key not in('q','R')}),
+            fields={key:anchor[key]for key in('q','R')if point.get(key)is None}))
+    return updates
+
+
 class ModelStore:
     """One controller-repository namespace, shared by all runs/remote workers.
 
@@ -244,7 +284,7 @@ class Service:
         common=subprocess.check_output(['git','rev-parse','--git-common-dir'],cwd=root,text=True).strip()
         default=(self.root/common).resolve()/'rpe-price-validations.sqlite3'
         self.store=ModelStore(settings.get('store',default));self.descriptions={};self.applications={};self.lock=threading.RLock()
-        self.stopped=threading.Event();self.thread=None;self.evidence_cache={};self.issues={}
+        self.stopped=threading.Event();self.thread=None;self.evidence_cache={};self.issues={};self.model_holds=set()
         self.implementation_source=self.settings.get('source')or subprocess.check_output(['git','rev-parse','HEAD'],cwd=self.root,text=True).strip()
         self.dispatch_lock=threading.Lock()
     def observe(self,candidates):
@@ -263,12 +303,34 @@ class Service:
                     c['price_model_validations']=descriptions
                 for desc in descriptions:
                     mid=desc['model_id']
-                    first=mid not in self.descriptions
-                    old=self.store.row(mid)if first else None
-                    self.store.register(desc,lambda d=desc:self.resolve(d,reader))
-                    if first and old and(old['status']!='INDEPENDENT_MEASURED'or old.get('evidence_parser_version')!=4):
-                        checks,issues,external=self.resolve(desc,reader)
-                        if checks:self.store.change(mid,lambda r:r.update(status='INDEPENDENT_MEASURED',validation_points=checks,issues=issues,evidence_parser_version=4))
+                    try:
+                        first=mid not in self.descriptions
+                        old=self.store.row(mid)if first else None
+                        self.store.register(desc,lambda d=desc:self.resolve(d,reader))
+                        if old and self.settings.get('enrich_saved_evidence_metadata')is True:
+                            updates=saved_point_metadata_updates(old,desc,reader)
+                            if updates:
+                                def enrich(record):
+                                    if record['identity']!=desc['identity']:raise ValueError('Saved identity changed during metadata enrichment')
+                                    for update in updates:
+                                        point=next((p for p in record['validation_points']if p['m']==update['m']and p['source']==update['source']),None)
+                                        if point is None:raise ValueError('Saved evidence point changed during metadata enrichment')
+                                        if digest({key:value for key,value in point.items()if key not in('q','R')})!=update['evidence']:
+                                            raise ValueError('Saved evidence changed during metadata enrichment')
+                                        for key,value in update['fields'].items():
+                                            if point.get(key)is not None and point[key]!=value:raise ValueError('Saved q/R changed during metadata enrichment')
+                                            point[key]=value
+                                self.store.change(mid,enrich)
+                        if first and old and(old['status']!='INDEPENDENT_MEASURED'or old.get('evidence_parser_version')!=4):
+                            checks,issues,external=self.resolve(desc,reader)
+                            if checks:self.store.change(mid,lambda r:r.update(status='INDEPENDENT_MEASURED',validation_points=checks,issues=issues,evidence_parser_version=4))
+                    except (ValueError,KeyError,TypeError)as error:
+                        issue=dict(status='INCOMPLETE',label=LABELS['INCOMPLETE'],model_id=mid,
+                            reason=type(error).__name__+':'+str(error))
+                        self.issues[c['configuration_id']+':'+mid]=issue
+                        c['price_validation_issue']=issue
+                        self.model_holds.add(mid)
+                        continue
                     self.descriptions[mid]=(desc,c)
                     self.applications[c['configuration_id'],mid]=dict(configuration_id=c['configuration_id'],model_id=mid,
                         points=[{k:p.get(k)for k in('m','q','R','physical_id')}for p in desc['points']],
@@ -311,6 +373,11 @@ class Service:
         for mid,(desc,c)in pending:
             if self.stopped.is_set():break
             row=self.store.row(mid)
+            if mid in self.model_holds:
+                # A conflicting description must not trigger a new dispatch.
+                # An already frozen owner can still collect its original job.
+                if row.get('job_id')and row.get('owner_run')==str(self.run.resolve()):self._collect(mid,row)
+                continue
             if row['status']=='CALIBRATION_ONLY':
                 vector=c.get('validation_vector')or[n for cap in c.get('caps',[1]*13)for n in(cap,cap)]
                 chosen=representative(desc,vector)
