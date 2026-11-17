@@ -14,4 +14,4 @@ Windowsの通常入口は既存の `tools/local0-search/Invoke-RpeSearch.ps1`。
 
 Startは明示された範囲の通常準備を含む実行指示に基づく。既存結果の照合は§10.5に従う。Resumeは開始時に返ったrun IDを指定する。旧い異常終了runの復旧は親の固定SOURCE・残枠・STOPを維持した継続経路を使い、通常の新規Startで代用しない。
 
-server1復帰時は現行manifestを使い、保存view・runtime・提出物の指紋を確認し、人工参加・回収を検収してから受付を有効化する。[既存の配置手順](../fleet/HANDOFF.md)
+server1は停止中。復帰後は、既存の95a74e448配置を確認し、RomuTailの `.rpe-central/fleet` にある `romutail-auto-preparation-8313cea12` のworker差分、次に `romutail-auto-preparation-f03f2fcf4` のcontroller差分とserver1用manifest/profileを配置する。各差分は `CONTROLLER_DELTA.pack` と `packages/server1.json` の対応を照合する。保存view・runtime・提出物の指紋を確認し、人工参加・回収を検収してから受付を有効化する。[既存の配置手順](../fleet/HANDOFF.md)
