@@ -126,4 +126,36 @@ class PreparationRoundTests(unittest.TestCase):
                         completion,executor,result,optimizer=optimizer)
                 self.assertIs(got,result);producer.assert_not_called();optimizer.assert_not_called()
 
+    def test_normal_preparation_resume_reconciles_existing_tasks_before_attempt_limit(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            calls=[]
+            class RecoveringCompletion:
+                directory=Path(tmp);source='ARTIFICIAL_FIXED'
+                state={'records':{}}
+                def bind_stage_executor(self,runtime):self.stage_executor=runtime;return self
+                def ingest_price_results(self):pass
+                def refresh_price_hold(self,record):pass
+                def install(self,context,problem,records):
+                    context['ready']=[r['key']for r in records if r['status']=='READY_FOR_SEARCH'];return {}
+                def complete(self,request):
+                    calls.append(deepcopy(request));record=self.state['records'][request['key']]
+                    record.update(status='READY_FOR_SEARCH',configuration_id=request['key'],recoverable_preparation=False)
+                    return record
+            completion=RecoveringCompletion()
+            for key,status,extra in [('selected','SELECTED',{}),
+                    ('pending','WAITING_DISTRIBUTED_PREPARATION',{'recoverable_preparation':True}),
+                    ('failed','SELECTED',{'scientific_failure':True}),('stop','STOP_NO_RETRY',{})]:
+                completion.state['records'][key]=dict(key=key,method='PR_PAULI',status=status,
+                    request={'key':key,'method':'PR_PAULI'},**extra)
+            spec=dict(methods=['PR_PAULI'],science_approved=True,
+                candidate_completion={'source':'ARTIFICIAL_FIXED','max_attempted_per_method':4})
+            problem={'search':{},'methods':{'PR_PAULI':{}}};context={}
+            with patch.object(PR,'publish',return_value='ARTIFICIAL_FIXED'),patch('trottertracks.rpe_method_optimizer.optimize',side_effect=AssertionError('New selection after attempt cap')):
+                got,_,_=PR.prepare_for_search(ROOT,problem,context,spec,Path(tmp),completion=completion,stage_executor=object())
+                PR.prepare_for_search(ROOT,problem,context,spec,Path(tmp),completion=completion,stage_executor=object())
+            self.assertEqual([r['key']for r in calls],['selected','pending'])
+            self.assertEqual(got['ready'],['selected','pending'])
+            self.assertTrue(completion.state['records']['failed']['scientific_failure'])
+            self.assertEqual(completion.state['records']['stop']['status'],'STOP_NO_RETRY')
+
 if __name__=='__main__':unittest.main()

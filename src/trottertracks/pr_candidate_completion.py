@@ -787,6 +787,13 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
     put(completion.directory/'INPUTS.json',frozen);publish([completion.directory/'INPUTS.json'],'Fix finite PR preparation scope and SOURCE')
     def one(method):
         current=[r for r in completion.state['records'].values()if r['method']==method]
+        if getattr(completion,'stage_executor',None)is not None:
+            # Reconcile the original durable task before counting attempted
+            # candidates. It may have finished while this controller was down.
+            for record in current:
+                if not record.get('scientific_failure')and(record['status']=='SELECTED'or record.get('recoverable_preparation')):
+                    completion.complete(deepcopy(record['request']))
+            current=[r for r in completion.state['records'].values()if r['method']==method]
         maximum=settings.get('max_completed_per_method')
         if isinstance(maximum,dict):maximum=maximum.get(method)
         if maximum is not None and sum(r['status']=='READY_FOR_SEARCH'for r in current)>=maximum:return current
