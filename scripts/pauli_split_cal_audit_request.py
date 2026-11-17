@@ -31,6 +31,8 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'src'))
+from trottertracks.rpe_preparation_paths import resolve as resolve_artifact_path
 sys.path.insert(0, str(ROOT / 'scripts'))
 import pauli_ld2_step_audit as A  # noqa: E402  (S0-r1 rule functions, unchanged)
 if hasattr(sys,'set_int_max_str_digits'):
@@ -95,11 +97,11 @@ def build(spec, raw_commit):
             raise A.AuditStop('FINGERPRINT_BINDING')
         files = {}
         for f in rec['artifacts_private'] + [dict(path=rec['native_cache']['path'], sha256=rec['native_cache']['sha256'])]:
-            p = Path(f['path'])
+            p = Path(resolve_artifact_path(f['path']))
             kind = ('wrapper' if f['path'].endswith('_wrapper.qpy.gz') else 'compiled' if f['path'].endswith('_compiled.qpy.gz')
                     else 'cache_json' if f['path'].endswith(fp + '.json') else None)
             if kind:
-                files[kind] = dict(path=f['path'], sha256=f['sha256'], bytes=f.get('bytes'), exists=p.exists(),
+                files[kind] = dict(path=str(p), original_path=f['path'], sha256=f['sha256'], bytes=f.get('bytes'), exists=p.exists(),
                                    size_on_disk=p.stat().st_size if p.exists() else None)
         entry = dict(fingerprint=fp, cache_reused=fingerprints[index][axis]['cache_reused'],
                      metrics={k: int(rec['record']['metrics'][k]) for k in A.METRICS},

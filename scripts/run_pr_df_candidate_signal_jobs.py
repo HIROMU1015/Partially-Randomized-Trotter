@@ -21,6 +21,8 @@ import time
 import traceback
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'src'))
+from trottertracks.rpe_preparation_paths import resolve as resolve_runtime_path
 CALLER = 'scripts/run_pr_df_candidate_signal_jobs.py'
 PROVIDER_COMMIT = 'fefd548ecd56f60d72031b3d385f6f5e6ee95d06'
 PROVIDER_PATH = 'src/trottertracks/pr_rpe_signal_provider.py'
@@ -237,8 +239,8 @@ def main():
     request = json.loads(raw)
     if request['execution_source'] != source:
         raise ValueError('Input execution SOURCE differs')
-    provider, metadata, b = fixed_runtime(request.get('runtime', {}).get('signal_view',
-        ROOT.parent / 'd2-pr-df-ld7-signal-source-fefd-20261116'))
+    provider, metadata, b = fixed_runtime(resolve_runtime_path(str(request.get('runtime', {}).get('signal_view',
+        ROOT.parent / 'd2-pr-df-ld7-signal-source-fefd-20261116'))))
     import numpy, scipy
     if (numpy.__version__, scipy.__version__) != ('1.26.4', '1.14.1'):
         raise ValueError('Fixed NumPy1.26.4/SciPy1.14.1 runtime required')

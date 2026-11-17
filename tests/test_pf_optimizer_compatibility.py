@@ -146,8 +146,10 @@ class MetadataCompatibility(unittest.TestCase):
             with self.assertRaises(ValueError):
                 PF.complete_selected(root,dict(spec,pf_completion=dict(completion,mode='other')),root/'invalid')
 
-    def test_e839_shot_selection_functions_remain_unchanged(self):
-        original=ast.parse(subprocess.check_output(['git','show','e839b0d3f:src/trottertracks/rpe_method_optimizer.py'],cwd=ROOT))
+    def test_accepted_91fe_shot_selection_functions_remain_unchanged(self):
+        # This task starts at the accepted distributed deployment. That base
+        # already includes operational HOLD handling added after e839.
+        original=ast.parse(subprocess.check_output(['git','show','91fe799dd385bd90bc87fc91f3362eda4a3a347d:src/trottertracks/rpe_method_optimizer.py'],cwd=ROOT))
         current=ast.parse((ROOT/'src/trottertracks/rpe_method_optimizer.py').read_bytes())
         for name in ('proposals','method_state','run_method','run_by_configuration'):
             a=next(n for n in original.body if isinstance(n,ast.FunctionDef)and n.name==name)

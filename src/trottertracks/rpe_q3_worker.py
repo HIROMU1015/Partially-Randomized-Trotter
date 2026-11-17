@@ -6,7 +6,9 @@ or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 from copy import deepcopy
 from .rpe_q3_timing import stamp, append as timing_append
 from . import rpe_q3_resources as Resources
-from .rpe_host_profiles import select_host_profile, validate_adapter_profile, check_runtime_profile
+from .rpe_host_profiles import select_host_profile as _select_q3_profile, validate_adapter_profile, check_runtime_profile
+from . import rpe_preparation_worker as Preparation
+from .rpe_preparation_artifacts import worker_cache, input_manifest
 import base64
 import fcntl
 import hashlib
@@ -106,9 +108,17 @@ def save_state(attempt, state, **detail):
     return value
 
 
+def select_host_profile(profile, assignment):
+    return Preparation.select_preparation_profile(profile, assignment) if Preparation.is_preparation(assignment) else _select_q3_profile(profile, assignment)
+
+
 def validate_assignment(profile, assignment):
     """Verify scientific content before resolving the host's execution paths."""
+    base_profile = profile
     profile = select_host_profile(profile, assignment)
+    if Preparation.is_preparation(assignment):
+        Preparation.current_preparation_fingerprint(assignment, base_profile)
+        return deepcopy(assignment['request'])
     root = Path(profile['root']).resolve()
     request = assignment['request']
     if digest(request) != assignment['request_sha256']:
@@ -159,7 +169,8 @@ def host_fingerprints(profile, challenges):
     for assignment in challenges:
         job = assignment['job_id']
         try:
-            fingerprints[job] = current_host_fingerprint(assignment, profile)
+            fingerprints[job] = (Preparation.current_preparation_fingerprint(assignment, profile)
+                                 if Preparation.is_preparation(assignment) else current_host_fingerprint(assignment, profile))
         except Exception as error:
             errors[job] = type(error).__name__ + ': ' + str(error)
     return dict(host_fingerprints=fingerprints, readiness_errors=errors)
@@ -168,7 +179,13 @@ def host_fingerprints(profile, challenges):
 def _adapter_command(profile, attempt, mode, output):
     saved_assignment = Path(attempt) / 'ASSIGNMENT.json'
     if saved_assignment.is_file():
-        profile = select_host_profile(profile, read(saved_assignment))
+        assignment = read(saved_assignment)
+        profile = select_host_profile(profile, assignment)
+        if Preparation.is_preparation(assignment):
+            root = Path(profile.get('preparation_adapter_root') or Path(__file__).resolve().parents[2])
+            return [profile['interpreter'], '-B', str(root / 'scripts/run_rpe_preparation_job.py'),
+                    '--assignment', str(saved_assignment), '--profile', str(Path(attempt)/'WORKER_PROFILE.json'),
+                    '--task-root', str(attempt), '--output', str(output), '--mode', mode]
     adapter = validate_adapter_profile(profile)
     if profile.get('runtime_checks') and check_runtime_profile(profile)['status'] != 'PASS':
         raise ValueError('Fixed execution runtime AST guard did not pass')
@@ -224,6 +241,13 @@ def validate_completed(profile, assignment, attempt):
     if not (type(receipt.get('returncode')) is int or type(receipt.get('signal')) is int):
         raise ValueError('No adapter exit code/signal evidence')
     outcome = attempt / 'OUTCOME.json'
+    if Preparation.is_preparation(assignment):
+        if not (attempt / 'WORKER_COLLECT_RETURN.json').exists():
+            _run_adapter(profile, attempt, 'collect', attempt)
+        observed = Preparation.collect(assignment, profile, attempt)
+        if observed['status'] == 'PREPARATION_COMPLETE' and (receipt.get('returncode') != 0 or receipt.get('signal') is not None):
+            raise ValueError('Preparation success requires a clean adapter exit')
+        return observed
     artificial = assignment['request']['route']['kind'] == 'artificial'
     # The artificial adapter writes OUTCOME with O_EXCL even in collect mode.
     # Existing OUTCOME is instead checked directly against ARTIFICIAL_RESULT.
@@ -300,6 +324,15 @@ _TRANSFER_OMIT = {'ASSIGNMENT.json', 'WORKER_PROFILE.json', 'WORKER_STATE.json',
 
 
 def result_bundle(attempt):
+    attempt = Path(attempt)
+    assignment_path = attempt/'ASSIGNMENT.json'
+    if assignment_path.exists() and Preparation.is_preparation(read(assignment_path)):
+        names = ('OUTCOME.json', 'PROCESS_RETURN.json', 'ARTIFACT_MANIFEST.json', 'PREPARATION_RECEIPT.json',
+                 'JOB_STAGES.jsonl', 'TRANSPORT_TIMING.jsonl', 'WORKER_COLLECT_RETURN.json')
+        files = {name:base64.b64encode((attempt/name).read_bytes()).decode('ascii')
+                 for name in names if (attempt/name).is_file()}
+        if 'OUTCOME.json' not in files or 'PROCESS_RETURN.json' not in files:raise ValueError('Incomplete preparation result bundle')
+        return files
     files = {}
     for path in sorted(Path(attempt).rglob('*')):
         if path.is_symlink():
@@ -407,6 +440,19 @@ class Worker:
         return self.transport(endpoint, dict(host_id=self.host_id, **payload))
 
     def _acquire(self, assignment):
+        assignment = deepcopy(assignment)
+        incoming = assignment.pop('artifact_blobs', {})
+        if Preparation.is_preparation(assignment):
+            cache = worker_cache(self.profile)
+            cache.put(incoming)
+            hashes = list(Preparation.assigned_artifacts(assignment).values())
+            hashes += [row['sha256'] for row in assignment['request']['preparation'].get('input_git_bundles', [])]
+            for workspace in assignment['request']['preparation'].get('workspaces', {}).values():
+                hashes += [row['sha256'] for row in workspace.get('input_git_bundles', [])]
+            missing = cache.missing(hashes)
+            if missing:
+                cache.put(self._post('/v1/artifacts/get', dict(hashes=missing))['blobs'])
+            if cache.missing(hashes):raise ValueError('Preparation input artifacts not available')
         safe_id(assignment['job_id']); safe_id(assignment['attempt_id'])
         if digest(assignment['request']) != assignment['request_sha256']:
             raise ValueError('Assignment request SHA256 differs')
@@ -470,6 +516,17 @@ class Worker:
                 state = save_state(attempt, 'UNKNOWN', reason='LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT', automatic_retry=False)
         return state
 
+    def _upload_artifacts(self, attempt, assignment):
+        if not Preparation.is_preparation(assignment):return
+        manifest = read(attempt/'OUTCOME.json').get('artifacts', {})
+        hashes = list(dict.fromkeys(manifest.values()))
+        missing = self._post('/v1/artifacts/missing', dict(hashes=hashes))['missing']
+        cache = worker_cache(self.profile)
+        # Upload one missing immutable object at a time. Reconnect asks again,
+        # so completed large objects are never retransmitted with every status.
+        for sha in missing:
+            self._post('/v1/artifacts/put', dict(blobs=cache.get([sha])))
+
     def tick(self, acquire=True):
         active = 0
         for attempt, assignment in list(self.records.items()):
@@ -486,7 +543,9 @@ class Worker:
                     event(self.profile, 'STATE_OFFLINE', job_id=assignment['job_id'], reason=str(error))
             if state['state'] == 'COMPLETED_PENDING_TRANSFER':
                 try:
-                    started = time.monotonic(); files = result_bundle(attempt)
+                    started = time.monotonic()
+                    self._upload_artifacts(attempt, assignment)
+                    files = result_bundle(attempt)
                     response = self._post('/v1/complete', dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                         request_sha256=assignment['request_sha256'], files=files))
                     if response.get('ok') is not True:
@@ -511,7 +570,8 @@ class Worker:
                 if a.get('prefix_key') and read(p / 'WORKER_STATE.json')['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED')
                 })
             try:
-                payload = dict(slots=max(0,self.slots-active), capacity=self.slots, resource_report=report, cached_prefixes=cached, source_sha=self.source_sha,
+                payload = dict(slots=max(0,self.slots-active), capacity=self.slots, resource_report=report, cached_prefixes=cached,
+                               cached_artifact_sha256=worker_cache(self.profile).hashes(), source_sha=self.source_sha,
                                **host_fingerprints(self.profile, self.eligibility_challenges))
                 response = self._post('/v1/poll', payload)
                 self._capacity_feedback(response)
@@ -564,6 +624,11 @@ def mailbox(profile, action, payload=None):
     saved adapter return/outcome validation. No shared filesystem is assumed.
     """
     payload = payload or {}
+    if action in ('artifacts-missing', 'artifacts-get', 'artifacts-put'):
+        cache = worker_cache(profile)
+        if action == 'artifacts-missing':return dict(missing=cache.missing(payload.get('hashes', [])))
+        if action == 'artifacts-get':return dict(blobs=cache.get(payload.get('hashes', [])))
+        return dict(ok=True, **cache.put(payload.get('blobs', {})))
     if action == 'readiness':
         return dict(host_id=profile['host_id'], **host_fingerprints(profile, payload.get('challenges', [])))
     worker = Worker(profile, 'http://127.0.0.1:1')
@@ -616,12 +681,14 @@ def mailbox(profile, action, payload=None):
                     state=state['state'], detail=state['detail'], request_sha256=assignment['request_sha256'])
                 if state['state'] == 'COMPLETED_PENDING_TRANSFER':
                     row['files'] = result_bundle(attempt)
+                    if Preparation.is_preparation(assignment):
+                        row['artifact_manifest'] = read(attempt/'OUTCOME.json').get('artifacts', {})
                 if state['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED') and assignment.get('prefix_key'):
                     cached.add(assignment['prefix_key'])
                 attempts.append(row)
             report = worker._resource_offer()
             return dict(host_id=worker.host_id, slots=report['slots'], capacity=worker.slots, resource_report=report, source_sha=worker.source_sha,
-                        cached_prefixes=sorted(cached), attempts=attempts)
+                        cached_prefixes=sorted(cached), cached_artifact_sha256=worker_cache(profile).hashes(), attempts=attempts)
         raise ValueError('Unknown mailbox action')
     finally:
         worker.close()

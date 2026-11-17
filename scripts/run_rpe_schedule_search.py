@@ -748,6 +748,8 @@ class WidthDriver:
         active_spec['executor']=dict(options,prior_run_dirs=list(options.get('prior_run_dirs',[]))+[str(self.run)])
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
         executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
+        runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)
+        if runtime is not None:comp.bind_stage_executor(runtime)
         preparation_pool=None
         try:
             interim=None
@@ -884,7 +886,8 @@ class WidthDriver:
             self.bootstrap_families();proposals,report=self.plan();self.save()
             self.log(event='PLAN_END',wall_seconds=time.monotonic()-started,proposals=len(proposals))
             started=time.monotonic();self.log(event='INPUTS_START')
-            overlap=(self.spec.get('overlap_ready_batch')is True and not self.a.plan_only and
+            distributed_prep=bool((self.spec.get('executor',{}).get('distributed')or{}).get('preparation'))
+            overlap=((self.spec.get('overlap_ready_batch')is True or distributed_prep) and not self.a.plan_only and
                      self.spec.get('science_approved')is True)
             if not overlap:self.complete_points()
             self.save();self.log(event='INPUTS_END',wall_seconds=time.monotonic()-started,deferred_to_batch=overlap)
