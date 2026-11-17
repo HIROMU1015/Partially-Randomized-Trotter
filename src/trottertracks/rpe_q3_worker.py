@@ -382,6 +382,9 @@ class Worker:
         if feedback is not None and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
             atomic(self.work / 'CAPACITY_FEEDBACK.json', feedback)
 
+    def resource_snapshot(self):
+        return Resources.resource_snapshot(self.profile)
+
     def _resource_offer(self):
         if (self.profile.get('slot_policy') or {}).get('mode') != 'auto':
             jobs = [dict(state=read(path / 'WORKER_STATE.json')['state']) for path in self.records]
@@ -417,7 +420,7 @@ class Worker:
         state_path = self.work / 'SLOT_STATE.json'
         feedback = read(feedback_path) if feedback_path.exists() else {}
         previous = read(state_path) if state_path.exists() else {}
-        resources = Resources.resource_snapshot(self.profile) if (self.profile.get('slot_policy') or {}).get('mode') == 'auto' else {}
+        resources = self.resource_snapshot() if (self.profile.get('slot_policy') or {}).get('mode') == 'auto' else {}
         state, report = Resources.decide_slots(self.profile, previous, resources, jobs, feedback)
         self.slots = report['capacity']
         self.resource_report = report

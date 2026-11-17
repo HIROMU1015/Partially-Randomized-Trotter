@@ -37,7 +37,7 @@ def is_preparation(value):return (value.get('request',value).get('route')or{}).g
 
 
 def preparation_profile_core(profile):
-    excluded={'work_dir','slots','slot_policy','route_profiles','preparation_profiles','artifact_cache_directory','preparation_metadata_cache_directory'}
+    excluded={'work_dir','slots','slot_policy','route_profiles','preparation_profiles','artifact_cache_directory','preparation_metadata_cache_directory','pbs'}
     return {key:deepcopy(value) for key,value in profile.items() if key not in excluded}
 
 
