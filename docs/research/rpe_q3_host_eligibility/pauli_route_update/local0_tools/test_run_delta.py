@@ -17,6 +17,7 @@ SPEC = importlib.util.spec_from_file_location('_changed_cell_delta', Path(__file
 D = importlib.util.module_from_spec(SPEC);SPEC.loader.exec_module(D)
 SOURCE = '28d976b99cdf8329adcc1b79327e329e947ef774'
 ROUTE = '33e324b43690caeaa353ecdb9e3d42f3139198b6'
+PF_ROUTE = 'cbc471c913072de45c25a0ed22d51dff8a9b7034'
 
 
 class FakeSSH:
@@ -62,7 +63,7 @@ class FakeSSH:
             report = helper.check_runtime_profile(profile)
             target = Path(command[command.index('--output') + 1]);target.mkdir(parents=True)
             request = deepcopy(assignment['request']);request['route'].update(interpreter=profile['interpreter'],
-                view=profile['route_views'][ROUTE])
+                view=profile['route_views'][request['route']['view_commit']])
             resolved = D.encode(request);(target / 'RESOLVED_REQUEST.json').write_bytes(resolved)
             record = dict(status='REAL_HOST_DRY_CHECK_PASS', fixture='ARTIFICIAL_FAKE_CHECKER',
                 host_id=profile['host_id'], job_id=assignment['job_id'], source=SOURCE,
@@ -85,7 +86,8 @@ class FakeSSH:
 
 
 class ChangedCellDeltaTests(unittest.TestCase):
-    def configuration(self, root):
+    def configuration(self, root, methods=None):
+        methods = methods or ['PR_PAULI']
         assets = root / 'assets';assets.mkdir()
         (assets / 'checker.py').write_text('# ARTIFICIAL FAKE CHECKER; never executed\n')
         (assets / 'profiles.py').write_text('''def select_host_profile(profile, assignment):
@@ -113,21 +115,27 @@ def check_runtime_profile(profile):
             for i in range(8):
                 p = scientific / ('ARTIFICIAL_SOURCE_' + str(i));raw = ('ARTIFICIAL_FIXED_' + str(i)).encode()
                 p.write_bytes(raw);hashes[p.name] = D.sha(raw);original[str(p)] = raw
+            route = PF_ROUTE if methods == ['FULL_PF', 'TRUNCATED_PF'] else ROUTE
             profile = dict(host_id=host, root=str(scientific), interpreter=str(repo / 'ARTIFICIAL_PYTHON'),
-                           route_views={ROUTE: str(repo / 'new-route-view')}, dp_workers=1)
+                           route_views={route: str(repo / 'new-route-view')}, dp_workers=1)
             if host == 'server1':
                 profile['fixture_actual_interpreter'] = str(repo / 'ARTIFICIAL_ACTUAL_BINARY')
-            request = dict(request_id='ARTIFICIAL_PAULI_JOB', method='PR_PAULI', configuration_id='ARTIFICIAL_CFG',
-                route=dict(kind='pauli_b_common_entry', view_commit=ROUTE), N_X=[1], N_Y=[1])
-            assignment = dict(job_id=request['request_id'], request=request, method='PR_PAULI', request_sha256='ARTIFICIAL',
-                              source_manifest=dict(commit=SOURCE, files=hashes), input_hashes=[])
             p = assets / (host + '.json');p.write_bytes(D.encode(profile))
-            a = assets / (host + '-assignment.json');a.write_bytes(D.encode(assignment))
             sources['profiles/' + host + '.json'] = str(p.relative_to(root))
-            sources['assignments/' + host + '/PR_PAULI.json'] = str(a.relative_to(root))
+            assignment_names = []
+            for method in methods:
+                request = dict(request_id='ARTIFICIAL_' + method + '_JOB', method=method,
+                    configuration_id='ARTIFICIAL_' + method + '_CFG',
+                    route=dict(kind='pf_b_pf6' if route == PF_ROUTE else 'pauli_b_common_entry', view_commit=route),
+                    N_X=[1], N_Y=[1])
+                assignment = dict(job_id=request['request_id'], request=request, method=method, request_sha256='ARTIFICIAL',
+                                  source_manifest=dict(commit=SOURCE, files=hashes), input_hashes=[])
+                a = assets / (host + '-' + method + '-assignment.json');a.write_bytes(D.encode(assignment))
+                name = 'assignments/' + host + '/' + method + '.json';assignment_names.append(name)
+                sources[name] = str(a.relative_to(root))
             cells.append(dict(host_id=host, ssh_alias=alias, repository=str(repo), transport_python=profile['interpreter'],
                 run_directory=str(repo / 'new-owned-delta-run'), profile='profiles/' + host + '.json',
-                assignments=['assignments/' + host + '/PR_PAULI.json']))
+                assignments=assignment_names))
         config = dict(schema=D.SCHEMA, mode='dry-check', source_files=sources, hosts=cells,
                       **{'return': dict(ssh_alias='qg2', python='python3', directory=str(root / 'server2-new-return'))})
         path = root / 'config.json';path.write_bytes(D.encode(config))
@@ -189,6 +197,40 @@ def check_runtime_profile(profile):
                     D.host_action(payload)
             self.assertEqual(marker.read_text(), 'WRONG_HEAD');self.assertEqual(transport.checkers, [])
             for path, raw in original.items():self.assertEqual(Path(path).read_bytes(), raw)
+
+    def test_pf_runtime_delta_runs_four_cells_and_shares_identical_host_facts(self):
+        methods = ['FULL_PF', 'TRUNCATED_PF']
+        with tempfile.TemporaryDirectory(prefix='rpe-artificial-pf-delta-') as temporary:
+            root = Path(temporary);config, original = self.configuration(root, methods=methods)
+            bundle = root / 'PF_RUNTIME_DELTA_V3.zip';packed = D.package(config, bundle)
+            self.assertEqual(packed['changed_cells'], 4)
+            transport = FakeSSH(bundle)
+            with patch.object(D.subprocess, 'run', side_effect=transport), redirect_stdout(io.StringIO()):
+                summary, receipt = D.prepare('qg2:/ARTIFICIAL/PF_RUNTIME_DELTA_V3.zip',
+                                            packed['bundle_sha256'], root / 'local0-v3')
+                D.return_only(root / 'local0-v3')
+            self.assertTrue(receipt['ok']);self.assertEqual(len(transport.checkers), 4)
+            self.assertEqual({r['method'] for r in summary['rows']}, set(methods))
+            self.assertTrue(all(r['status'] == 'REAL_HOST_DRY_CHECK_PASS' for r in summary['rows']))
+            returned = root / 'server2-new-return'
+            manifest = json.loads((returned / 'TRANSFER_MANIFEST.json').read_text())
+            for host in ['server1', 'local']:
+                self.assertEqual(sum(r['host_id'] == host for r in summary['rows']), 2)
+                facts = json.loads((returned / host / 'HOST_FACTS.json').read_text())
+                for method in methods:
+                    observed = json.loads((returned / host / 'dry' / method / 'READINESS.json').read_text())
+                    self.assertEqual(observed['runtime_precheck']['runtime'], facts['actual_runtime'])
+                    self.assertEqual(observed['runtime_precheck']['checks'], facts['runtime_checks'])
+            self.assertFalse(any(method in path for path in manifest for method in ('PR_PAULI', 'PR_DF')))
+            self.assertTrue(all(D.sha((returned / path).read_bytes()) == expected for path, expected in manifest.items()))
+            for path, raw in original.items():self.assertEqual(Path(path).read_bytes(), raw)
+            result = dict(status='PASS', scope='FAKE_SSH_GIT_AND_CHECKER_ONLY_PF_RUNTIME_V3',
+                changed_cells=4, checker_calls=4, methods=methods, old_pass_cells_rerun=0,
+                shared_host_facts_consistent_for_both_methods=True, source_files_unchanged=16,
+                transfer_files_verified=len(manifest), return_retry_additional_checker_calls=0,
+                real_SSH_calls=0, real_dry_check_calls=0, scientific_calls=0)
+            if os.environ.get('RPE_PF_DELTA_RUNNER_ACCEPTANCE'):
+                Path(os.environ['RPE_PF_DELTA_RUNNER_ACCEPTANCE']).write_bytes(D.encode(result))
 
     def test_windows_subprocesses_use_no_window_creation_flag(self):
         with patch.object(D.os, 'name', 'nt'), patch.object(D.subprocess, 'CREATE_NO_WINDOW', 0x08000000, create=True), \

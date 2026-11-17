@@ -41,3 +41,17 @@ server1 Pauliも既存9dの3.11 launcherへ自動解決する。V1 metadata-only
 
 この段階は準備途中であり、12 PASS完了とは記録しない。remote2件の公式READINESS・受領hash・host runtimeを確認後、集計を更新する。
 実H4のQ3完了件数は0。dry-check PASSと科学計算完了を区別する。
+
+
+## PF/B0I runtime確認の追記（V3）
+
+PF/B0Iの実executeもPauliと同じ固定AST guardへ入ることを呼出し先まで確認した。
+元metadata-only dryではこのconstructorに到達しなかったため、qg1のPython3.12のPASSは実行資格として採用しない。
+PFの3host profileへCBC版のAST guardを追加し、qg1は既存9dの3.11 launcherを自動選択する。
+SOURCE28d、元PF/B0I REQUESTと配分・評価契約・DP/cacheは変えない。
+既にruntimeまで確認したDF3＋Pauli3を再検査せず、影響を受けたPF6セルだけ更新する。
+server2 PF2はこの環境で更新し、remote4はlocal0用V3で更新する。
+[PF runtime V3の手順](pauli_route_update/local0_tools/RUN_PF_RUNTIME_DELTA_V3.ps1)。
+V3のchecker/helper/runnerはV2と同じ固定bytes、元PF/B0I assignmentも339の原byte。
+必要なhost/Pythonはprofileから選択し、利用者が指定し直す項目はない。
+V2のPauli2セルの受領23hashとPASSは保持し、再実行しない。

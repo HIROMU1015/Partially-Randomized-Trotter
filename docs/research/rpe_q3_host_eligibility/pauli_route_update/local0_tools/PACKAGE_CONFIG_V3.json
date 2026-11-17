@@ -1,0 +1,44 @@
+{
+  "schema": "RPE_Q3_HOST_DELTA_V1",
+  "mode": "dry-check",
+  "source_files": {
+    "run_delta.py": "run_delta.py",
+    "scripts/check_rpe_q3_host_readiness.py": "../../../../../scripts/check_rpe_q3_host_readiness.py",
+    "src/trottertracks/rpe_host_profiles.py": "../../../../../src/trottertracks/rpe_host_profiles.py",
+    "assignments/FULL_PF.json": "../../../rpe_distributed_h4_plan_20261117/assignments/FULL_PF.json",
+    "assignments/TRUNCATED_PF.json": "../../../rpe_distributed_h4_plan_20261117/assignments/TRUNCATED_PF.json",
+    "profiles/server1.v3.json": "profiles/server1.v3.json",
+    "profiles/local.v3.json": "profiles/local.v3.json"
+  },
+  "hosts": [
+    {
+      "host_id": "server1",
+      "ssh_alias": "qg1",
+      "repository": "/home/AbeHiromu/projects/partially-randomized-trotter",
+      "transport_python": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+      "run_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-q3-pf-runtime-delta-cbc471c91-20261117-v3",
+      "profile": "profiles/server1.v3.json",
+      "assignments": [
+        "assignments/FULL_PF.json",
+        "assignments/TRUNCATED_PF.json"
+      ]
+    },
+    {
+      "host_id": "local",
+      "ssh_alias": "RomuTail",
+      "repository": "/home/abe/Project/Partially Randomized Trotter",
+      "transport_python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "run_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/pf-runtime-delta-cbc471c91-20261117-v3",
+      "profile": "profiles/local.v3.json",
+      "assignments": [
+        "assignments/FULL_PF.json",
+        "assignments/TRUNCATED_PF.json"
+      ]
+    }
+  ],
+  "return": {
+    "ssh_alias": "qg2",
+    "python": "python3",
+    "directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pf_runtime_cbc471c91_delta_v3"
+  }
+}

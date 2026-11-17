@@ -1,3 +1,5 @@
+> Pauli V2のremote2セルは受領済みです。PF/B0Iには別のruntime guard条件が必要と判明したため、[PF4セル更新V3](README_V3.md) を使います。この下の「現行10 PASS」はPauli V2準備時点の記録で、PFのruntime資格を表しません。
+
 # Pauli remote 2セルの runtime guard 付き dry-check（V2）
 
 利用する手順は [RUN_PAULI_DELTA_V2.ps1](RUN_PAULI_DELTA_V2.ps1) です。Windows PowerShell に全体をコピーして実行できます。標準 `py -3` / OpenSSH と既存 alias `qg2`、`qg1`、`RomuTail` を使い、server1 と local の Pauli だけを確認します。旧 V1 metadata 版は使いません。

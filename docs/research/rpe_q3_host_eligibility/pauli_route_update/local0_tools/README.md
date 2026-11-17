@@ -1,4 +1,4 @@
-> **現行の手順は [runtime guard付きV2](README_V2.md) です。** この下はV1 metadata検査版の保全記録です。V1 ZIP SHA `5c5273436d2fafd65c2be5294cd67313a8dc7fcafee3839398b49601d66c1a70` と旧PowerShell手順は運用に使わないでください。V1は将来executeに必要な固定accelerator AST guardを確認していません。旧bundleの実行依頼は行っていません。V1 ZIP原本は変更していません。
+> **PF/B0I runtimeの追加確認は [V3](README_V3.md)、Pauliは [V2](README_V2.md) です。** この下はV1 metadata検査版の保全記録です。V1 ZIPと旧PowerShell手順は運用に使わないでください。V1原本は変更していません。
 
 # Pauli remote 2-cell delta dry-check
 
