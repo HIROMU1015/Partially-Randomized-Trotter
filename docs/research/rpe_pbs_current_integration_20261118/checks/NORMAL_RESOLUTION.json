@@ -1,0 +1,133 @@
+{
+  "status": "PASS",
+  "controller": "RomuTail",
+  "controller_state": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/state",
+  "release": {
+    "id": "romutail-pbs-current-95a74e448",
+    "registry": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/RELEASES.json",
+    "implementation_source": "95a74e4486131a97bd5235221bf2d8ab9f99f591",
+    "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+    "components": {
+      "id": "romutail-pbs-current-95a74e448",
+      "manifest_sha256": "c6b19251980d22a5f5e317f62fa860684344bd18028ff64b90be19558f91a594"
+    }
+  },
+  "run_id": "search-6d91ba8a68b54e2377be",
+  "request": {
+    "action": "preview",
+    "scope": {
+      "methods": [
+        "PR_PAULI"
+      ],
+      "per_method": {
+        "PR_PAULI": {
+          "L_D": {
+            "min": 2,
+            "max": 3
+          },
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "value": ".1"
+            },
+            {
+              "kind": "binary64",
+              "value": ".2"
+            }
+          ],
+          "kappa": {
+            "mode": "absolute",
+            "min": "1/10",
+            "max": "1"
+          }
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_cycles": 1,
+        "max_new_q3_per_method": 0
+      },
+      "preparation_budgets": {
+        "signal": 0,
+        "compile": 0,
+        "audit": 0
+      }
+    }
+  },
+  "applied": {
+    "methods": [
+      "PR_PAULI"
+    ],
+    "per_method": {
+      "PR_PAULI": {
+        "L_D": [
+          2,
+          3
+        ],
+        "delta_pf": [
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/36028797018963968"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/18014398509481984"
+          }
+        ],
+        "kappa": {
+          "mode": "absolute",
+          "min": "1/10",
+          "max": "1"
+        }
+      }
+    },
+    "shots": "auto",
+    "stop": {
+      "max_cycles": 1,
+      "max_new_q3_per_method": 0
+    },
+    "preparation_budgets": {
+      "signal": 0,
+      "compile": 0,
+      "audit": 0
+    }
+  },
+  "scientific_q3_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "pbs": {
+    "ssh_alias": "prism",
+    "gateway_python": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+    "gateway_script": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/95a74e448-current/scripts/rpe_pbs_gateway.py",
+    "python": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+    "transport_source": "95a74e4486131a97bd5235221bf2d8ab9f99f591",
+    "transport_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/95a74e448-current",
+    "remote_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs",
+    "resources": {
+      "queue": "workq",
+      "ncpus": 96,
+      "mem": "350gb",
+      "walltime": "24:00:00"
+    },
+    "task_seconds": {},
+    "deployment": {
+      "manifest": "/home/AbeHiromu/projects/rpe-pbs-20261118/fleet/metadata/romutail-pbs-current-95a74e448/RELEASE_COMPONENTS.json",
+      "layout": "/home/AbeHiromu/projects/rpe-pbs-20261118/fleet/metadata/romutail-pbs-current-95a74e448/HOST.json"
+    }
+  },
+  "pbs_host_ids": [
+    "pbs-0"
+  ],
+  "preparation_budgets": {
+    "signal": 0,
+    "compile": 0,
+    "audit": 0
+  },
+  "q3_budgets": {
+    "PR_PAULI": 0
+  },
+  "science_approved": false,
+  "required_release": {
+    "id": "romutail-pbs-current-95a74e448",
+    "manifest_sha256": "c6b19251980d22a5f5e317f62fa860684344bd18028ff64b90be19558f91a594"
+  },
+  "new_scientific_calls": 0
+}

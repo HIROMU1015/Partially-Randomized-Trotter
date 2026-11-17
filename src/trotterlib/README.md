@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[通常運用とPBSの統合](../../docs/research/rpe_pbs_current_integration_20261118/HANDOFF.md)：既存rpe_pbs/AllocationWorkerと中央queue、公開release manifest、工程別runtime・保存exact回収を接続。科学SOURCEは保持。
+
 [価格検証統合・4環境配置](../../docs/research/rpe_price_release_integration_20261118/HANDOFF.md)：`rpe_release_deployment` が既存registry/profile/runtimeを照合し、`rpe_operation_client` が共通操作をRomuTailへ送る。共有価格storeを通常入口で再利用する。
 
 [RomuTail中央管理](../../docs/research/rpe_romutail_controller_20261118/HANDOFF.md)：`trottertracks.rpe_release_registry` と既存Gateway/DistributedExecutor/JobStore/SSH mailboxを再利用。科学kernelは固定のまま。

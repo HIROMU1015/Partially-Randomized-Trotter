@@ -1,0 +1,64 @@
+{
+  "command": [
+    "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "-B",
+    "/home/abe/Project/Partially Randomized Trotter/.rpe-central/releases/95a74e448-pbs-current/scripts/check_rpe_romutail_distributed.py",
+    "--controller",
+    "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/fixture-v2",
+    "--control-run",
+    "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/gateway-v2/state/runs/search-c9615bd24b6d44434a99",
+    "--plan-only"
+  ],
+  "returncode": 0,
+  "scientific_calls": 0,
+  "phase": "PRE_START",
+  "source": "95a74e4486131a97bd5235221bf2d8ab9f99f591",
+  "run_id": "search-c9615bd24b6d44434a99",
+  "has_controller_launch": false,
+  "has_pbs_state": false,
+  "scope": {
+    "scope": {
+      "methods": [
+        "PR_PAULI",
+        "PR_DF"
+      ],
+      "per_method": {
+        "PR_PAULI": {
+          "L_D": {
+            "min": 1,
+            "max": 1
+          },
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "value": ".1"
+            }
+          ]
+        },
+        "PR_DF": {
+          "L_D": {
+            "min": 1,
+            "max": 1
+          },
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "value": ".1"
+            }
+          ]
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_cycles": 3,
+        "batch": 32
+      },
+      "preparation_budgets": {
+        "signal": 100,
+        "compile": 100,
+        "audit": 100
+      }
+    }
+  },
+  "scope_sha256": "48a29cb8945e74251eb007868f003389836177f979bf7539abd7e65094744c2d"
+}

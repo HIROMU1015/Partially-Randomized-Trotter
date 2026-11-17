@@ -1,0 +1,153 @@
+{
+  "allocations": [
+    {
+      "token": "068d2b0cade8444bb02fe2fddc69c3be",
+      "host_id": "pbs-0",
+      "job_id": "267198.CPUcluster-PRISM",
+      "status": "F",
+      "worker": {
+        "clock_id": "CPUcluster031:c96a9ddb-d8a9-4ce2-8b29-7ec22606acba",
+        "monotonic": 2309387.179664222,
+        "epoch": 1794943790.635206,
+        "schema": "RPE_PBS_WORKER_STATE_V1",
+        "state": "EXITED",
+        "ready": false,
+        "accepting": false,
+        "host_id": "pbs-0",
+        "job_id": "267198.CPUcluster-PRISM",
+        "hostname": "CPUcluster031",
+        "pid": 869950,
+        "source_sha": "95a74e4486131a97bd5235221bf2d8ab9f99f591",
+        "resources": {
+          "actual": {
+            "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+            "exec_host": "CPUcluster031/0*2",
+            "exec_vnode": "(CPUcluster031:ncpus=2:mem=4194304kb)",
+            "job_id": "267198.CPUcluster-PRISM",
+            "memory_bytes": 4294967296,
+            "ncpus": 2,
+            "recorded_epoch": 1794943688.0379481,
+            "remaining_seconds": 240,
+            "select_nodes": 1,
+            "walltime_seconds": 240
+          },
+          "snapshot": {
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+            "clock": {
+              "clock_id": "CPUcluster031:c96a9ddb-d8a9-4ce2-8b29-7ec22606acba",
+              "monotonic": 2309285.537999386,
+              "epoch": 1794943688.9935577
+            },
+            "machine_cpu_count": 96,
+            "machine_mem_total_bytes": 404353810432,
+            "machine_mem_available_bytes": 399338164224,
+            "allowed_cpu_count": 2.0,
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 96
+              },
+              {
+                "kind": "CGROUP_V1_CPUSET",
+                "value": 96,
+                "path": "/sys/fs/cgroup/cpuset"
+              },
+              {
+                "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                "value": 2.0
+              }
+            ],
+            "allowed_memory_bytes": 4294967296,
+            "memory_bounds": [
+              {
+                "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                "value": 4294967296
+              }
+            ],
+            "remaining_group_memory_bytes": null,
+            "memory_scope": "BOUNDED_ALLOCATION",
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "cgroup_version": "v1",
+            "allocation_bounds_complete": true,
+            "boundary_detection": "OBSERVED",
+            "missing_controls": [],
+            "observational_only": true
+          },
+          "cpu_count": 2,
+          "memory_bytes": 4294967296,
+          "library_threads": 1,
+          "task_cpu_count": 2,
+          "cpu_slots": 1,
+          "maximum_slots": 1,
+          "task_memory_bytes": null,
+          "stages": [
+            "audit",
+            "compile",
+            "q3",
+            "signal"
+          ],
+          "one_shared_slot_pool": true
+        },
+        "capacity": 1,
+        "remaining_seconds": 138.35579329589382,
+        "start_clock": {
+          "clock_id": "CPUcluster031:c96a9ddb-d8a9-4ce2-8b29-7ec22606acba",
+          "monotonic": 2309287.512465193,
+          "epoch": 1794943690.968007
+        },
+        "exit_reason": "ALLOCATION_WALLTIME_END"
+      },
+      "receipt": {
+        "epoch": 1794943687.9150763,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "267198.CPUcluster-PRISM"
+      },
+      "allocation": {
+        "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+        "exec_host": "CPUcluster031/0*2",
+        "exec_vnode": "(CPUcluster031:ncpus=2:mem=4194304kb)",
+        "job_id": "267198.CPUcluster-PRISM",
+        "memory_bytes": 4294967296,
+        "ncpus": 2,
+        "recorded_epoch": 1794943688.0379481,
+        "remaining_seconds": 240,
+        "select_nodes": 1,
+        "walltime_seconds": 240
+      },
+      "exit_status": 0,
+      "scheduler": {
+        "Job_Owner": "AbeHiromu@cpucluster-prism",
+        "Job_Name": "RPE068d2b0cade8",
+        "job_state": "F",
+        "Resource_List": {
+          "mem": "4gb",
+          "ncpus": 2,
+          "nodect": 1,
+          "place": "free",
+          "select": "1:ncpus=2:mem=4gb",
+          "walltime": "00:04:00"
+        },
+        "resources_used": {
+          "cpupercent": 29,
+          "cput": "00:00:07",
+          "mem": "31228kb",
+          "ncpus": 2,
+          "vmem": "552960kb",
+          "walltime": "00:01:43"
+        },
+        "queue": "workq",
+        "ctime": "Wed Nov 18 04:28:07 2026",
+        "qtime": "Wed Nov 18 04:28:07 2026",
+        "stime": "Wed Nov 18 04:28:07 2026",
+        "etime": "Wed Nov 18 04:28:07 2026",
+        "mtime": "Wed Nov 18 04:29:51 2026",
+        "Exit_status": 0,
+        "exec_host": "CPUcluster031/0*2",
+        "exec_vnode": "(CPUcluster031:ncpus=2:mem=4194304kb)",
+        "run_count": 1
+      },
+      "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/acceptance/pbs-current-entry-20261118/478b9bb3ea34782c12cb/allocations/068d2b0cade8444bb02fe2fddc69c3be"
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "run_id": "search-c9615bd24b6d44434a99",
+  "run_directory": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/gateway-v2/state/runs/search-c9615bd24b6d44434a99",
+  "status": "STATUS",
+  "applied": {
+    "methods": [
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "requested": {
+      "methods": [
+        "PR_PAULI",
+        "PR_DF"
+      ],
+      "per_method": {
+        "PR_PAULI": {
+          "L_D": [
+            1
+          ],
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/36028797018963968"
+            }
+          ]
+        },
+        "PR_DF": {
+          "L_D": [
+            1
+          ],
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/36028797018963968"
+            }
+          ]
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_cycles": 3,
+        "batch": 32
+      },
+      "preparation_budgets": {
+        "signal": 100,
+        "compile": 100,
+        "audit": 100
+      }
+    },
+    "fixed": {
+      "problem": {
+        "system": "ARTIFICIAL_PBS_NORMAL_ENTRY_ACCEPTANCE",
+        "hamiltonian_data": {
+          "expected": {
+            "fragment_count": 10
+          }
+        }
+      },
+      "accuracy": {
+        "e": 1
+      },
+      "target": {
+        "energy_ha": 0
+      },
+      "rpe": {
+        "M": 12
+      }
+    },
+    "method_settings": {
+      "PR_PAULI": {
+        "L_D_values": [
+          1
+        ],
+        "generation": {
+          "baseline": {
+            "delta_over_h": "1",
+            "formula": "2nd",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ]
+        },
+        "family": "PR",
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -9
+        }
+      },
+      "PR_DF": {
+        "L_D_values": [
+          1
+        ],
+        "generation": {
+          "baseline": {
+            "delta_over_h": "1",
+            "formula": "2nd",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ]
+        },
+        "family": "PR",
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -9
+        }
+      }
+    },
+    "method_overrides": {
+      "PR_PAULI": {
+        "L_D_values": [
+          1
+        ],
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -9
+        }
+      },
+      "PR_DF": {
+        "L_D_values": [
+          1
+        ],
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -9
+        }
+      }
+    },
+    "search": {
+      "decrement_steps": [
+        1
+      ],
+      "large_step_headroom": "9/10",
+      "max_new_q3_per_method": 100,
+      "max_steps_per_method": 100,
+      "on_missing": "STOP",
+      "rule": "METHOD_MINIMUM_PRIORITY_V2",
+      "seed_rules": [],
+      "lookahead": 1,
+      "requested_widths": {
+        "PR_PAULI": [
+          0.1
+        ],
+        "PR_DF": [
+          0.1
+        ]
+      },
+      "schedule_wide": {
+        "max_kappa": "1",
+        "per_decision": 8
+      }
+    },
+    "max_new_q3_per_method": {
+      "PR_PAULI": 32,
+      "PR_DF": 32
+    },
+    "max_steps_per_method": 100
+  },
+  "started": true,
+  "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "release": {
+    "id": "romutail-pbs-current-95a74e448",
+    "registry": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/gateway-v2/RELEASES.json",
+    "implementation_source": "95a74e4486131a97bd5235221bf2d8ab9f99f591",
+    "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+    "components": {
+      "id": "romutail-pbs-current-95a74e448",
+      "manifest_sha256": "c6b19251980d22a5f5e317f62fa860684344bd18028ff64b90be19558f91a594"
+    }
+  },
+  "controller_source": "95a74e4486131a97bd5235221bf2d8ab9f99f591",
+  "runtime": {
+    "phase": "COMPLETE",
+    "controller_alive": false,
+    "invocation_id": "b74ae6e865b644d9a7200b2201b65177",
+    "returncode": 0,
+    "stop_reasons": {
+      "PR_PAULI": "NO_CANDIDATE_LEFT_IN_RANGE",
+      "PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE"
+    },
+    "jobs_by_state": {
+      "ACCEPTED": 8
+    },
+    "adopted_jobs": 8
+  },
+  "preflight": {
+    "status": "PASS",
+    "scientific_calls": 0,
+    "artificial_only": true,
+    "fixture": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/fixture-v2"
+  },
+  "operation_controller": "RomuTail"
+}

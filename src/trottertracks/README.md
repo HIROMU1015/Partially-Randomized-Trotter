@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[PBS通常入口統合](../../docs/research/rpe_pbs_current_integration_20261118/HANDOFF.md)：`rpe_pbs`/`rpe_pbs_worker`と既存release部署・共通操作を接続し、SOURCE95で人工PBSと保存exact成果回収を検査。
+
 [価格検証統合・4環境配置](../../docs/research/rpe_price_release_integration_20261118/HANDOFF.md)：`rpe_release_deployment` が既存registry/profile/runtimeを照合し、`rpe_operation_client` が共通操作をRomuTailへ送る。共有価格storeを通常入口で再利用する。
 
 [`saved_rpe_cost_catalog.py`](saved_rpe_cost_catalog.py)：保存SUMMARY・Q3/価格索引をmetadata照合し、指定集合内の最安適合点を選ぶ。[仕様・再実行](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。

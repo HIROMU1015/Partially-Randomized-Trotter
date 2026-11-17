@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[最新通常運用版へのPBS統合](docs/research/rpe_pbs_current_integration_20261118/HANDOFF.md)：SOURCE95、Windows通常入口→実PBS人工8task→回収・採用・追加0再開、専用Pythonによる保存exact回収、current採用。旧925の実H4/M5一件は元版の証拠として保持。
+
 [価格検証統合・4環境の固定版配置](docs/research/rpe_price_release_integration_20261118/HANDOFF.md)：共有store、公開component manifest、共通操作入口、current採用と人工検収。
 
 [RomuTailのH4中央管理](docs/research/rpe_romutail_controller_20261118/HANDOFF.md)：版を固定する通常入口、直接SSH/WSL mailbox、状態引継ぎと人工検収。科学SOURCE・原成果・STOPは保全。

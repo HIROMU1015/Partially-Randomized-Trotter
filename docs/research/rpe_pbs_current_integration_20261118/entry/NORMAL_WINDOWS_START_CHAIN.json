@@ -1,0 +1,94 @@
+{
+  "status": "PASS",
+  "source": "95a74e4486131a97bd5235221bf2d8ab9f99f591",
+  "release_id": "romutail-pbs-current-95a74e448",
+  "run_id": "search-c9615bd24b6d44434a99",
+  "normal_client": "existing tools/local0-search/Invoke-RpeSearch.ps1",
+  "pipeline": "Windows Invoke-RpeSearch.ps1 → installed central bootstrap → Gateway.normal_launch/execute_run → existing labelled artificial controller hook → ordinary run_rpe_schedule_search → shared queue → actual PBS worker → central adoption",
+  "launch": {
+    "pid": 615490,
+    "command": [
+      "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "-B",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/releases/95a74e448-pbs-current/scripts/run_rpe_local0_search.py",
+      "--config",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/gateway-v2/state/runs/search-c9615bd24b6d44434a99/CONTROLLER_CONFIG.json",
+      "--execute-run",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/gateway-v2/state/runs/search-c9615bd24b6d44434a99",
+      "--invocation",
+      "b74ae6e865b644d9a7200b2201b65177"
+    ],
+    "invocation_id": "b74ae6e865b644d9a7200b2201b65177"
+  },
+  "normal_driver": {
+    "pid": 615516,
+    "command": [
+      "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "-B",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/releases/95a74e448-pbs-current/scripts/check_rpe_romutail_distributed.py",
+      "--controller",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/fixture-v2",
+      "--control-run",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/gateway-v2/state/runs/search-c9615bd24b6d44434a99"
+    ],
+    "invocation_id": "b74ae6e865b644d9a7200b2201b65177",
+    "implementation": {
+      "source": "95a74e4486131a97bd5235221bf2d8ab9f99f591",
+      "head": "95a74e4486131a97bd5235221bf2d8ab9f99f591"
+    }
+  },
+  "exit": {
+    "returncode": 0,
+    "command": [
+      "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "-B",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/releases/95a74e448-pbs-current/scripts/check_rpe_romutail_distributed.py",
+      "--controller",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/fixture-v2",
+      "--control-run",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118/gateway-v2/state/runs/search-c9615bd24b6d44434a99"
+    ],
+    "finished_utc": 1794943775.3619976,
+    "invocation_id": "b74ae6e865b644d9a7200b2201b65177"
+  },
+  "windows_actions": {
+    "PREVIEW": "PREVIEW",
+    "PLANONLY": "PLAN_ONLY_COMPLETE",
+    "START": "STARTED",
+    "RUNNING_STATUS": "STATUS",
+    "COMPLETION_STATUS": "STATUS",
+    "RESUME": "REUSED_COMPLETED"
+  },
+  "common_actions": {
+    "PREVIEW": "PREVIEW",
+    "RUNNING_STATUS": "STATUS",
+    "REPEATED_START": "REUSED_COMPLETED",
+    "FINAL_STATUS": "STATUS"
+  },
+  "final_runtime": {
+    "phase": "COMPLETE",
+    "controller_alive": false,
+    "invocation_id": "b74ae6e865b644d9a7200b2201b65177",
+    "returncode": 0,
+    "stop_reasons": {
+      "PR_PAULI": "NO_CANDIDATE_LEFT_IN_RANGE",
+      "PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE"
+    },
+    "jobs_by_state": {
+      "ACCEPTED": 8
+    },
+    "adopted_jobs": 8
+  },
+  "result_sync_enabled": false,
+  "publication": "ISOLATED_ARTIFICIAL_NO_NORMAL_MAP_PUBLICATION",
+  "scientific_calls": {
+    "signal": 0,
+    "compile": 0,
+    "q3": 0,
+    "production_search": 0,
+    "price_refit": 0
+  },
+  "performed_by": "Codex sub-agent common_entry; author technical check, not independent scientific review",
+  "allocation_and_node_proof": "Parent /root monitors actual PBS allocation/node; see upper-level artificial acceptance records",
+  "resume_counts_proof": "Parent /root BEFORE_RESUME/AFTER_RESUME structural queue and allocation comparison"
+}

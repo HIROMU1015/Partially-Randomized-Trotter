@@ -1,5 +1,7 @@
 # scripts 索引
 
+[最新通常入口とPBSの接続](../docs/research/rpe_pbs_current_integration_20261118/HANDOFF.md)：既存Gateway/共通CLIからPBSへ人工taskを配送し、component版・保存exact回収・再開を検収。保存値だけの回収検査callerは同資料のharvest節。
+
 [価格検証統合と4環境配置](../docs/research/rpe_price_release_integration_20261118/HANDOFF.md)：`prepare_rpe_release_fleet.py`、`manage_rpe_release_deployment.py`、`run_rpe_search.py` が既存registry・workerを使って固定版を配置・照合し、操作をRomuTailへ送る。
 
 [RomuTail中央管理への移行](../docs/research/rpe_romutail_controller_20261118/HANDOFF.md)：通常schedule/Gateway、`check_rpe_romutail_distributed.py` の実3ホスト人工検収、状態移送・配置・保存結果公開の補助CLI。

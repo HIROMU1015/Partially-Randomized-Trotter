@@ -1,5 +1,7 @@
 # 文書索引
 
+[通常運用へのPBS統合](research/rpe_pbs_current_integration_20261118/HANDOFF.md)：current95、通常Windows Startの人工PBS検収、exact保存成果の回収runtime、配置・server1復帰・旧run pin。
+
 [価格検証統合・4環境配置](research/rpe_price_release_integration_20261118/HANDOFF.md)：共有store、工程別SOURCE/runtime、共通操作、保存入力・人工検収、server1復帰。
 
 [H4中央管理のRomuTail移行](research/rpe_romutail_controller_20261118/HANDOFF.md)：状態の正本、通常コマンド、固定版の登録、保存入力検査、人工検収とserver1復帰手順。

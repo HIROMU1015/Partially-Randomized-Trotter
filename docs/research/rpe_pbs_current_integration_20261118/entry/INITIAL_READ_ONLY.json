@@ -1,0 +1,51 @@
+{
+  "status": "READ_ONLY_AND_PREPARED",
+  "current": "romutail-price-fleet-e917165ba",
+  "operation_gateway": {
+    "pid": 597348,
+    "configuration": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/operation-gateway/GATEWAY.json",
+    "socket_path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/operation-gateway/central.sock",
+    "stopped": false,
+    "heartbeat_epoch": 1794942469.418859,
+    "forwards": {
+      "server2": {
+        "status": "FORWARD_PROCESS_RUNNING",
+        "pid": 597357,
+        "command": [
+          "ssh",
+          "-N",
+          "-T",
+          "-o",
+          "BatchMode=yes",
+          "-o",
+          "ConnectTimeout=10",
+          "-o",
+          "ServerAliveInterval=15",
+          "-o",
+          "ServerAliveCountMax=2",
+          "-o",
+          "ExitOnForwardFailure=yes",
+          "-o",
+          "StreamLocalBindUnlink=yes",
+          "-R",
+          "/home/AbeHiromu/projects/rpe-common-operation/control.sock:/home/abe/Project/Partially Randomized Trotter/.rpe-central/operation-gateway/central.sock",
+          "qg2"
+        ],
+        "retry_epoch": 1794940265.3516917
+      },
+      "server1": {
+        "status": "DISABLED"
+      }
+    }
+  },
+  "gateway_source": "e917165ba1f36b7627614cd25e88b5108d9b20b9",
+  "gateway_sha256": "c2637061f0d9338ffcf4bf0fb355a51582f5c6e4dc9542a8711976151c56fa64",
+  "existing_windows_client_sha256": "7ba38f1fe6d6167a4726d9ec14a26a7d2a1f61096af22654b337ba483f51bcfd",
+  "existing_windows_client_unchanged": true,
+  "prepared_namespace": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/pbs-current-entry-20261118",
+  "new_windows_client_result_sync_enabled": false,
+  "server1_contacted": false,
+  "wsl_intake_changed": false,
+  "science_calls": 0,
+  "note": "No installed code, existing configuration, daemon or current changed. Pending isolated client is not used until final SOURCE pin and fixture SERVICE are supplied."
+}
