@@ -25,11 +25,12 @@ import inspect
 import json
 from pathlib import Path
 import subprocess
+import sys
 import time
 
-from trottertracks import rpe_method_optimizer as O
-
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT/'src'))
+from trottertracks import rpe_method_optimizer as O  # noqa: E402
 
 
 def write(path, value):

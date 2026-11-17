@@ -68,6 +68,23 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         instance.plan=plan;instance.batch=batch;instance.loop()
         self.assertEqual(planned,['FAMILY_PREPARATION_PENDING','READY_METADATA'])
 
+    def test_used_q3_budget_stops_additional_preparation_waves(self):
+        with tempfile.TemporaryDirectory() as directory:
+            instance=ENTRY.WidthDriver.__new__(ENTRY.WidthDriver)
+            instance.run=Path(directory)
+            instance.state=dict(cycle=0,families={},points=[dict(status='WAITING_INPUTS')])
+            instance.a=SimpleNamespace(max_cycles=2,plan_only=False)
+            instance.spec=dict(science_approved=True,max_new_q3_per_method={'PR_DF':1})
+            instance.log=lambda **kwargs:None;instance.save=lambda:None
+            instance.bootstrap_families=lambda:None;instance.complete_points=lambda:None
+            instance.plan=lambda:([dict(fixture=True)],{})
+            def batch():
+                instance.state['q3_launched']={'PR_DF':1}
+                return {'PR_DF':dict(stop_reason='Q3_BUDGET_EXHAUSTED',new_calls=1)}
+            instance.batch=batch;instance.loop()
+            self.assertEqual(instance.state['cycle'],1)
+            self.assertEqual(instance.state['stop']['reason'],'Q3_BUDGET_EXHAUSTED')
+
     def test_loop_continues_deferred_completion_but_does_not_spin_on_waiting_inputs(self):
         for waiting in(False,True):
             with self.subTest(waiting=waiting):

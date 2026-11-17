@@ -16,6 +16,7 @@ _HOST_PROBE = r"""
 import base64
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -42,7 +43,8 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
         repositories.add(Path(view).resolve())
 
     def git(repo, *args, **kwargs):
-        return subprocess.run(['git', *args], cwd=repo, capture_output=True, **kwargs)
+        return subprocess.run(['git', *args], cwd=repo, capture_output=True,
+                              env=dict(os.environ, GIT_NO_LAZY_FETCH='1', GIT_TERMINAL_PROMPT='0'), **kwargs)
 
     # Input commits may be newer than this fixed scientific checkout.
     # Install their missing objects only; the checkout and its refs stay fixed.
@@ -72,9 +74,13 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
             objects = payload.get('input_objects', [])
             absent = []
             if objects:
-                scanned = git(repo, 'cat-file', '--batch-check', check=True,
-                              input=('\n'.join(objects)+'\n').encode()).stdout.decode()
-                absent = [row.split()[0] for row in scanned.splitlines() if row.endswith(' missing')]
+                scanned = git(repo, 'cat-file', '--batch-check', input=('\n'.join(objects)+'\n').encode())
+                if scanned.returncode:
+                    # Git may abort batch lookup for a missing promisor object.
+                    # Per-object existence checks still work in partial clones.
+                    absent = [oid for oid in objects if git(repo, 'cat-file', '-e', oid).returncode]
+                else:
+                    absent = [row.split()[0] for row in scanned.stdout.decode().splitlines() if row.endswith(' missing')]
             missing.append(dict(commits=sorted({row['commit'] for row in locators}), anchors=anchors, objects=absent))
     if missing:
         print(json.dumps(dict(status='NEEDS_Q3_INPUT_OBJECTS', repositories=missing)))

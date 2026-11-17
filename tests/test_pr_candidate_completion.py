@@ -80,6 +80,9 @@ class CompletionTests(unittest.TestCase):
         self.assertIsNone(c.saved_df_descriptor(dict(design={'L_D':5,'kappa':'3'})))
         canonical=dict(spec=dict(split=dict(lambda_source=loc)))
         self.assertEqual(c.saved_df_descriptor(dict(configuration=canonical)),loc)
+        c.settings={'saved_df_descriptors':{'8':loc}}
+        self.assertEqual(c.saved_df_descriptor(dict(design={'L_D':8,'kappa':'2'})),loc)
+        self.assertIsNone(c.saved_df_descriptor(dict(design={'L_D':7,'kappa':'2'})))
 
     def test_new_registry_recovers_price_hold_without_scientific_retry(self):
         with tempfile.TemporaryDirectory()as tmp:

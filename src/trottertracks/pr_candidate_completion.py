@@ -229,6 +229,9 @@ class Completion:
                 # The descriptor validator still checks its H/state/prefix.
                 return source
         prefix=(request.get('design')or{}).get('L_D')
+        supplied=getattr(self,'settings',{}).get('saved_df_descriptors',{}).get(str(prefix))
+        if supplied:
+            return supplied
         for record in self.state['records'].values():
             source=record.get('request',{}).get('tail_descriptor')
             if record['method']=='PR_DF'and source and (record.get('design')or record.get('request',{}).get('design',{})).get('L_D')==prefix:

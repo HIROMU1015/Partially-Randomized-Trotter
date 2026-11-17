@@ -878,9 +878,11 @@ class WidthDriver:
                 except BaseException as error:O.record_runtime_error(self.run,error,'FAILED_STATE_SAVE')
             if original_error is None and cleanup_error is not None:raise cleanup_error
         self.confirm_completed(context,executor,result)
+        launched_now={m:executor.launched(m)for m in self.methods}
+        self.state['q3_launched']=launched_now
         with(self.run/'INVOCATIONS.jsonl').open('a')as f:
             f.write(json.dumps(O.jsonable(dict(time=time.time(),requested_widths=self.widths,budget=budgets,
-                launched={m:executor.launched(m)for m in self.methods},
+                launched=launched_now,
                 stop={m:r['stop_reason']for m,r in result.items()},new_calls={m:r['new_calls']for m,r in result.items()})))+'\n')
         K.CLI.write(self.run/'ROUND_RESULT.json',K.CLI.slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1',
             round=self.spec,methods=result,optimizer_source=K.CLI.head())))
@@ -951,6 +953,12 @@ class WidthDriver:
                     ('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD')}
             if failed:
                 self.state['stop']=dict(reason='V2_RESULT_REQUIRES_REVIEW',methods=failed,UTC=K.now());self.save();return
+            caps=self.spec.get('max_new_q3_per_method',{})
+            launched=self.state.get('q3_launched',{})
+            if (any(launched.values()) and
+                    all(type(caps.get(m)) is int and launched[m] >= caps[m] for m in launched)):
+                self.state['stop']=dict(reason='Q3_BUDGET_EXHAUSTED',UTC=K.now(),launched=launched)
+                self.save();return
             waiting=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
                      any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values())or
                      any(r.get('input_requests')for r in result.values()))
