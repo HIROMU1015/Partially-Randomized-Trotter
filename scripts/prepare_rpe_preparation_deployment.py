@@ -59,12 +59,17 @@ def saved_examples(source):
                 command=['@PYTHON@','@SOURCE@/'+script,'--input','@INPUTS@/SAVED_INPUT.json','--output','@WORK@/RESULT.json']
                 name='DF_'+{'signal':'SIGNALS','compile':'CALIBRATION','audit':'MODEL_FREEZE'}[stage]
             data=raw(ROOT,commit,path)
-            from trottertracks.rpe_preparation_bridge import collect_fixed_inputs,collect_required_views,collect_required_paths
+            from trottertracks.rpe_preparation_bridge import (
+                collect_fixed_inputs, collect_required_views, collect_required_paths, pauli_calibration_view,
+            )
             documents=[json.loads(data)];nested_inputs=[];working_inputs=[];required_views={};required_paths={};blockers=[]
             try:nested_inputs,working_inputs=collect_fixed_inputs(ROOT,documents,{'SAVED_INPUT.json':sha(data)})
             except Exception as error:blockers.append('NESTED_INPUTS:'+str(error))
             try:required_views=collect_required_views(documents)
             except Exception as error:blockers.append('OPERATIONAL_SOURCE_VIEW:'+str(error))
+            if name in ('PAULI_COMPILE', 'PAULI_AUDIT'):
+                try:required_views.update(pauli_calibration_view(ROOT))
+                except Exception as error:blockers.append('PAULI_CALIBRATION_SOURCE_VIEW:'+str(error))
             try:required_paths=collect_required_paths(documents)
             except Exception as error:blockers.append('OPERATIONAL_RUNTIME_PATH:'+str(error))
             compiler_versions=set();compiler_bindings=set()
