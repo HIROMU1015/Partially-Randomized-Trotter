@@ -61,9 +61,27 @@ def runtime():
     if subprocess.check_output(['git','rev-parse','HEAD'],cwd=FIXED_VIEW,text=True).strip()!=VIEW_COMMIT:raise ValueError('DF worker view differs')
     path='scripts/run_pr_df_ld_split.py'
     if (FIXED_VIEW/path).read_bytes()!=blob(REUSED,path):raise ValueError('Reused DF path worker bytes differ')
-    sys.path[:0]=[str(FIXED_VIEW/'src'),str(FIXED_VIEW/'scripts')]
-    spec=importlib.util.spec_from_file_location('_candidate_df_price_worker',FIXED_VIEW/path)
-    R=importlib.util.module_from_spec(spec);sys.modules[spec.name]=R;spec.loader.exec_module(R)
+    # The normal controller has already imported its trottertracks package.
+    # sys.path alone cannot expose legacy-only helpers to that existing package.
+    # Add the verified provider as a temporary fallback, preserving all loaded
+    # controller modules and restoring both search paths after the import.
+    import trottertracks
+    old_path=list(sys.path);old_package_path=list(trottertracks.__path__)
+    try:
+        sys.path[:0]=[str(FIXED_VIEW/'src'),str(FIXED_VIEW/'scripts')]
+        legacy_package=str(FIXED_VIEW/'src/trottertracks')
+        if legacy_package not in trottertracks.__path__:trottertracks.__path__.append(legacy_package)
+        for helper in ('p1_efficient_zz','efficient_controlled_zz'):
+            relative='src/trottertracks/'+helper+'.py'
+            if (FIXED_VIEW/relative).read_bytes()!=blob(VIEW_COMMIT,relative):
+                raise ValueError('Fixed DF helper SOURCE differs: '+helper)
+            loaded=sys.modules.get('trottertracks.'+helper)
+            if loaded is not None and Path(loaded.__file__).read_bytes()!=blob(VIEW_COMMIT,relative):
+                raise ValueError('Already loaded DF helper SOURCE differs: '+helper)
+        spec=importlib.util.spec_from_file_location('_candidate_df_price_worker',FIXED_VIEW/path)
+        R=importlib.util.module_from_spec(spec);sys.modules[spec.name]=R;spec.loader.exec_module(R)
+    finally:
+        sys.path[:]=old_path;trottertracks.__path__[:]=old_package_path
     R.ROOT=ROOT;RUNTIME=R;return R
 
 
