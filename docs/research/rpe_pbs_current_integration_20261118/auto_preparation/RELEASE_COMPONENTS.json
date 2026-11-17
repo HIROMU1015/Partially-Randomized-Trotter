@@ -1,0 +1,4387 @@
+{
+  "schema": "RPE_RELEASE_COMPONENTS_V1",
+  "release_id": "romutail-auto-preparation-f03f2fcf4",
+  "controller_host": "RomuTail",
+  "components": {
+    "optimizer": {
+      "source": "f03f2fcf49a7b7ab726fce5085dfed933787a402",
+      "allow_metadata_commits": true,
+      "required_paths": [
+        "scripts/run_rpe_schedule_search.py",
+        "scripts/run_rpe_search.py",
+        "scripts/manage_rpe_release_deployment.py",
+        "src/trottertracks/rpe_release_deployment.py"
+      ],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "worker": {
+      "source": "8313cea128710be5c5d7b6804160cbf42b1c9187",
+      "required_paths": [
+        "scripts/run_rpe_q3_worker.py"
+      ],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1"
+      ]
+    },
+    "preparation": {
+      "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+      "required_paths": [
+        "scripts/run_rpe_preparation_job.py"
+      ],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "q3": {
+      "source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+      "required_paths": [
+        "scripts/run_rpe_optimizer_q3_job.py"
+      ],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "price_worker": {
+      "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "required_paths": [
+        "scripts/run_rpe_price_validation_job.py"
+      ],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "q3_adapter": {
+      "source": "349558b748a82f384a4589434a63ef9b5572032c",
+      "required_paths": [
+        "scripts/run_rpe_optimizer_q3_job.py"
+      ],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "pbs_gateway": {
+      "source": "95a74e4486131a97bd5235221bf2d8ab9f99f591",
+      "required_paths": [
+        "scripts/rpe_pbs_gateway.py"
+      ],
+      "hosts": [
+        "pbs-0"
+      ]
+    },
+    "pbs_worker": {
+      "source": "8313cea128710be5c5d7b6804160cbf42b1c9187",
+      "required_paths": [
+        "scripts/run_rpe_pbs_worker.py"
+      ],
+      "hosts": [
+        "pbs-0"
+      ]
+    },
+    "provider_cbc471c91307": {
+      "source": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_bd42dd1e95eb": {
+      "source": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_23160cc87680": {
+      "source": "23160cc876807c0300be3de811f767b5810640a7",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_27e70efe5338": {
+      "source": "27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_36ad751d4ebf": {
+      "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_f956f5197a5a": {
+      "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "local0-wsl",
+        "pbs-0"
+      ]
+    },
+    "provider_c1f95e0806f5": {
+      "source": "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_fefd548ecd56": {
+      "source": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_d8780090fbb7": {
+      "source": "d8780090fbb7a66d914fdd45ee9c8b8346686493",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_13ab1acfaebe": {
+      "source": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_326feadd0939": {
+      "source": "326feadd093920bbea29b498108aa4eae6f67a75",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "provider_33e324b43690": {
+      "source": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+      "required_paths": [],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    },
+    "preparation_transport": {
+      "source": "8313cea128710be5c5d7b6804160cbf42b1c9187",
+      "required_paths": [
+        "scripts/run_rpe_preparation_job.py",
+        "src/trottertracks/rpe_preparation_worker.py"
+      ],
+      "hosts": [
+        "local",
+        "server2",
+        "local0-wsl",
+        "server1",
+        "pbs-0"
+      ]
+    }
+  },
+  "stage_components": {
+    "signal": [
+      "preparation",
+      "price_worker",
+      "provider_36ad751d4ebf",
+      "provider_f956f5197a5a"
+    ],
+    "compile": [
+      "preparation",
+      "price_worker",
+      "provider_36ad751d4ebf",
+      "provider_f956f5197a5a"
+    ],
+    "audit": [
+      "preparation",
+      "price_worker",
+      "provider_36ad751d4ebf",
+      "provider_f956f5197a5a"
+    ],
+    "q3": [
+      "q3"
+    ]
+  },
+  "participation_components": [
+    "optimizer",
+    "worker"
+  ],
+  "participation_components_by_host": {
+    "local": [
+      "optimizer",
+      "worker"
+    ],
+    "server2": [
+      "optimizer",
+      "worker"
+    ],
+    "local0-wsl": [
+      "optimizer",
+      "worker"
+    ],
+    "server1": [
+      "optimizer",
+      "worker"
+    ],
+    "pbs-0": [
+      "optimizer",
+      "pbs_worker",
+      "pbs_gateway"
+    ]
+  },
+  "hosts": [
+    "local",
+    "server2",
+    "local0-wsl",
+    "server1",
+    "pbs-0"
+  ],
+  "runtime_contracts": {
+    "local": [
+      {
+        "stage": "controller",
+        "component": "optimizer",
+        "runtime": "optimizer",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {},
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "worker",
+        "component": "worker",
+        "runtime": "worker",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {},
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "runtime": "q3_route_0",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "prdf_d2_split",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "runtime": "q3_route_1",
+        "fixed_runtime_checks": [],
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pf_b_pf6",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "runtime": "q3_route_2",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+        "runtime": "q3_route_3",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "prdf_d2_common_entry",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "runtime": "q3_route_4",
+        "fixed_runtime_checks": [],
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PF_SIGNALS",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_0",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_1",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_HOLDOUT_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_2",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_3",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_MODEL_FREEZE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_4",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_FINISH",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_5",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_HOLDOUT_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_6",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_7",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_8",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_9",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_10",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_11",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_12",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_13",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_14",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_15",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_16",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_17",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_18",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_19",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_20",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_21",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_22",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_23",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_24",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_25",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_26",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_27",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_28",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_29",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_30",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_31",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_32",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_33",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_34",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_35",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_36",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_37",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_38",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          },
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ]
+        }
+      }
+    ],
+    "server2": [
+      {
+        "stage": "controller",
+        "component": "optimizer",
+        "runtime": "optimizer",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {}
+        }
+      },
+      {
+        "stage": "worker",
+        "component": "worker",
+        "runtime": "worker",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {}
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "runtime": "q3_route_0",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pf_b_pf6",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "runtime": "q3_route_1",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+        "runtime": "q3_route_2",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PF_SIGNALS",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_0",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_1",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_HOLDOUT_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_2",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_3",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_MODEL_FREEZE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_4",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_FINISH",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_5",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_HOLDOUT_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_6",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_7",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_8",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_9",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_10",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_11",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_12",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_13",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_14",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_15",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_16",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_17",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_18",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_19",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_20",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_21",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_22",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_23",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_24",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_25",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_26",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_27",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_28",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      }
+    ],
+    "local0-wsl": [
+      {
+        "stage": "controller",
+        "component": "optimizer",
+        "runtime": "optimizer",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {}
+        }
+      },
+      {
+        "stage": "worker",
+        "component": "worker",
+        "runtime": "worker",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {}
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "prdf_d2_split",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "runtime": "q3_route_0",
+        "fixed_runtime_checks": [],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pf_b_pf6",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "runtime": "q3_route_1",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "runtime": "q3_route_2",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PF_SIGNALS",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_0",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_1",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_HOLDOUT_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_2",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_3",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_MODEL_FREEZE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_4",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_FINISH",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_5",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_HOLDOUT_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_6",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_7",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_8",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_9",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_10",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_11",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_12",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_13",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_14",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_15",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_16",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_17",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_18",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_19",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_20",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_21",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_22",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_23",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_24",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_25",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_26",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_27",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_28",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_29",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_30",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_31",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_32",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_33",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_34",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_35",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_36",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_37",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_38",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            12,
+            3,
+            "final",
+            0
+          ],
+          "version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      }
+    ],
+    "server1": [
+      {
+        "stage": "controller",
+        "component": "optimizer",
+        "runtime": "optimizer",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "worker",
+        "component": "worker",
+        "runtime": "worker",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "q3",
+        "route_kind": "prdf_d2_split",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "runtime": "q3_route_0",
+        "fixed_runtime_checks": [],
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "runtime": "q3_route_1",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pf_b_pf6",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "runtime": "q3_route_2",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+        "runtime": "q3_route_3",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "q3",
+        "route_kind": "prdf_d2_common_entry",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "runtime": "q3_route_4",
+        "fixed_runtime_checks": [],
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "signal",
+        "provider": "PF_SIGNALS",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_0",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_1",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_HOLDOUT_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_2",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_3",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_MODEL_FREEZE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_4",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_FINISH",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_5",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_HOLDOUT_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_6",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_7",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_8",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_9",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_10",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_11",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_12",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_13",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_14",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_15",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_16",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_17",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_18",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_19",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_20",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_21",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_22",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_23",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_24",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_25",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_26",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_27",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_28",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation_status": "DEFERRED_OFFLINE"
+      }
+    ],
+    "pbs-0": [
+      {
+        "stage": "controller",
+        "component": "optimizer",
+        "runtime": "optimizer",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {}
+        }
+      },
+      {
+        "stage": "worker",
+        "component": "pbs_worker",
+        "runtime": "pbs_worker",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {}
+        }
+      },
+      {
+        "stage": "gateway",
+        "component": "pbs_gateway",
+        "runtime": "pbs_gateway",
+        "operations": [
+          "collect",
+          "harvest"
+        ],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {}
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "runtime": "q3_route_0",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "prdf_d2_split",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "runtime": "q3_route_1",
+        "fixed_runtime_checks": [],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pf_b_pf6",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "runtime": "q3_route_2",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+        "runtime": "q3_route_3",
+        "fixed_runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "q3",
+        "route_kind": "prdf_d2_common_entry",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "runtime": "q3_route_4",
+        "fixed_runtime_checks": [],
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PF_SIGNALS",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_0",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_1",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PF_HOLDOUT_COMPILE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_2",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_3",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_MODEL_FREEZE",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_4",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_FINISH",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_5",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PF_HOLDOUT_AUDIT",
+        "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+        "runtime": "preparation_6",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_7",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_8",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_9",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_10",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_11",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_12",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_13",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_14",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_15",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_16",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+        "runtime": "preparation_17",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_18",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_19",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_20",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_21",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_22",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_23",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_24",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_25",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_26",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "f956f5197a5acfe113fbb2ed3bfa78564e7f4eec",
+        "runtime": "preparation_27",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "PAULI_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_28",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "A_BASE_P0",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_29",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PAULI_COMPILE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_30",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "PAULI_AUDIT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_31",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_SIGNALS",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_32",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "signal",
+        "provider": "DF_DESCRIPTOR",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_33",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "numpy": "1.26.4",
+            "scipy": "1.14.1"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_CALIBRATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_34",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "DF_HOLDOUT",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_35",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_MODEL_FREEZE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_36",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "audit",
+        "provider": "DF_HOLDOUT_COMPARE",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_37",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      },
+      {
+        "stage": "compile",
+        "provider": "PRICE_MODEL_VALIDATION",
+        "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+        "runtime": "preparation_38",
+        "request_runtime_contract": "preparation.runtime_requirements",
+        "compiler_binding": "preparation.compiler_bindings",
+        "runtime_observation": {
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "version": "3.11.0rc1 (main, Nov 18 2026, 01:29:48) [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
+          "modules": {
+            "qiskit": "1.3.0"
+          }
+        }
+      }
+    ]
+  },
+  "scientific_execution_permission": "UNCHANGED_FIXED_CONTRACTS_AND_EXPLICIT_USER_SCOPE",
+  "cpu_limits": {
+    "cluster_total_cpus": 100,
+    "pbs_single_node_request_cpus": 96,
+    "server2_cpus": 30,
+    "local_cpus": null,
+    "local0-wsl_cpus": null,
+    "server1": "OFFLINE",
+    "deployment_scripts_sha256": {
+      "qg2-python.sh": "f845d9109943e65d1beb0f8c4c2f288286226dfb995dc7bcf8145ace9bf02fcc",
+      "pbs_cpu_gateway.py": "ae6c43baf35ba01fc45dc57482f1900bde2db2a2e29015067deabe5b36fa228b"
+    }
+  },
+  "local0_wsl_admission": "OPTIONAL_WHILE_REACHABLE_AND_WORKER_ACCEPTING",
+  "automatic_preparation": {
+    "signal": "UNLIMITED",
+    "compile": "UNLIMITED",
+    "audit": "UNLIMITED"
+  },
+  "pbs_preparation_estimates": [
+    {
+      "stage": "signal",
+      "provider": "PAULI_SIGNALS",
+      "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+      "seconds": 120
+    },
+    {
+      "stage": "compile",
+      "provider": "PAULI_COMPILE",
+      "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+      "seconds": 180
+    }
+  ]
+}
