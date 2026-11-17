@@ -33,6 +33,22 @@ def _source(source):
     return ('<a href="' + escape(url, quote=True) + '" target="_blank" rel="noopener">' + escape(label) + '</a>') if url else escape(label)
 
 
+def _validation_sources(index, point):
+    sources = {}; models = index.get('price_validation_models') or {}
+    def visit(value):
+        if isinstance(value, dict):
+            if source_url(value):
+                sources[json.dumps(value, sort_keys=True)] = value
+            else:
+                for item in value.values(): visit(item)
+        elif isinstance(value, list):
+            for item in value: visit(item)
+    for view in point.get('price_validations') or []:
+        visit(models.get(view.get('model_id')) or {})
+        visit(view.get('source'))
+    return sources.values()
+
+
 def render(index):
     """Render one self-contained document; the embedded index remains exact."""
     # Escape script-closing strings without altering decoded JSON strings.
@@ -44,8 +60,10 @@ def render(index):
         source = next((s for s in refs if source_url(s)), None)
         fallback.append('<tr>' + ''.join('<td>' + escape(str(v)) + '</td>' for v in (
             METHODS.get(p.get('method'), p.get('method')), p.get('row_label', ''), p.get('width_label', ''),
-            p.get('configuration_id', ''), p.get('q3_status') or p.get('status', ''), _money(p.get('conditional_cost')),
-            p.get('N_X'), p.get('N_Y'))) + '<td>' + (_source(source) if source else '未取込') + '</td></tr>')
+            p.get('configuration_id', ''), p.get('q3_status') or p.get('status', ''),
+            _money(p.get('conditional_cost')) + (' · ' + ' / '.join(v.get('label') or v.get('status') or '検証未完了' for v in p.get('price_validations', [])) if p.get('price_validations') else ''),
+            p.get('N_X'), p.get('N_Y'))) + '<td>' + (_source(source) if source else '未取込') +
+            ''.join('<br>価格検証：' + _source(value) for value in _validation_sources(index, p)) + '</td></tr>')
     return _PAGE.replace('<!--DATA-->', data).replace('<!--FALLBACK-->', ''.join(fallback))
 
 
@@ -77,6 +95,11 @@ function link(s){let n=el('span');if(!s||!s.commit||!s.path){n.textContent=fmt(s
 function jsonBlock(value){return el('pre',JSON.stringify(value,null,2))}
 function configuration(p){return(D.configuration_details||{})[p.configuration_detail_key]||{}}
 function field(parent,label,value){let p=el('p');p.append(el('strong',label+'：'),el('span',fmt(value)));parent.append(p)}
+function validationDetails(parent,p){
+ for(const view of p.price_validations||[]){const model=(D.price_validation_models||{})[view.model_id]||{};let box=el('details');box.append(el('summary','価格モデル簡易検証 · '+(view.label||view.status||'検証未完了')));field(box,'モデルID',view.model_id);box.append(el('p','簡易検証は保存した実測点での診断です。適用先の全ラウンドやlaw期待値を認定せず、係数・費用・順位へ補正を加えません。','data-note'));field(box,'今回の適用点 (m,q,R)',view.application_points);let identity=el('details');identity.append(el('summary','凍結係数・SOURCE・適用条件'),jsonBlock(model.identity||model));box.append(identity);
+ for(const point of model.validation_points||[]){let item=el('div',null,'item');field(item,'検証ラウンド / q / R',fmt(point.m)+' / '+fmt(point.q)+' / '+fmt(point.R));field(item,'独立経路数（X/Yは同じ経路を共有）',point.independent_paths);let table=el('table'),head=el('tr');for(const h of ['軸','事前予測 RZ/shot','実測平均 RZ/shot','符号付き相対差 (予測−実測)/実測'])head.append(el('th',h));table.append(head);for(const axis of ['X','Y']){let tr=el('tr');for(const val of [axis,point.predicted_RZ?.[axis],point.observed_mean_RZ?.[axis],point.signed_relative_difference?.[axis]])tr.append(el('td',exact(val)));table.append(tr)}item.append(table);let observed=el('table'),oh=el('tr');for(const h of ['経路','軸','実測 RZ/shot','元receipt'])oh.append(el('th',h));observed.append(oh);for(const row of point.observations||[]){let tr=el('tr');tr.append(el('td',row.path_id),el('td',row.axis),el('td',exact(row.compiled_RZ)));let source=el('td');source.append(link(row.source));tr.append(source);observed.append(tr)}item.append(observed);if(point.source)item.append(link(point.source));const share=(view.validation_round_contributions||[]).find(v=>v.m===point.m);if(share){field(item,'この配分での当該roundのモデル総額比 (%)',share.percent_of_model_total===null?'UNKNOWN（対応する全軸価格または配分なし）':exact(share.percent_of_model_total)+' ≈ '+fmt(share.percent_of_model_total));field(item,'実測点と今回の適用点が同じ(q,R)',share.same_application_point?'はい':'いいえ（検証点と適用点を区別）')}box.append(item)}
+ const refs=el('ul',null,'source-list'),seen=new Set();function collect(value){if(!value||typeof value!=='object')return;if(value.commit&&value.path){let k=JSON.stringify(value);if(!seen.has(k)){seen.add(k);let li=el('li');li.append(link(value));refs.append(li)}return}for(const child of Object.values(value))collect(child)}collect(model);collect(view.source);box.append(el('strong','較正・凍結・独立検証の固定参照'),refs);parent.append(box)}
+}
 function selected(){return(D.views||[]).find(v=>v.id===E('view').value)||(D.views||[])[0]||{cells:[],mode:'ALL'}}
 function passes(p,q){return !q||JSON.stringify([p.configuration_id,p.formula,p.L_D,p.p,p.kappa,p.N_X,p.N_Y,p.requested_width]).toLowerCase().includes(q)}
 function points(c){const q=E('search').value.trim().toLowerCase();return(c.point_ids||[]).map(id=>allPoints.get(id)).filter(Boolean).filter(p=>passes(p,q))}
@@ -84,7 +107,7 @@ function showCell(c){let d=E('detail');d.replaceChildren();let h=el('div',null,'
  const ps=points(c);if(!ps.length)d.append(el('p','該当する評価点はありません。以下の対象・欠測記録を確認してください。','muted'));
  const progress=el('p',null,'data-note'),articles=el('div'),more=el('button','次の50件');let shown=0;d.append(progress,articles,more);
  function appendPage(){const end=Math.min(shown+50,ps.length);
- for(const p of ps.slice(shown,end)){let wrap=el('article',null,'item');wrap.append(el('h3',(formulas[p.formula]||p.formula||'公式未同定')+' · '+(p.q3_status||p.status||'状態未同定')));field(wrap,'configuration',p.configuration_id);field(wrap,'分割',p.p!==null&&p.p!==undefined?'p='+p.p:'L_D='+p.L_D);field(wrap,'要求幅',p.requested_width);field(wrap,'κ',p.kappa);field(wrap,'条件付き総RZ',p.conditional_cost===null?'未接続':exact(p.conditional_cost)+' ≈ '+fmt(p.conditional_cost));field(wrap,'N_X',p.N_X);field(wrap,'N_Y',p.N_Y);
+ for(const p of ps.slice(shown,end)){let wrap=el('article',null,'item');wrap.append(el('h3',(formulas[p.formula]||p.formula||'公式未同定')+' · '+(p.q3_status||p.status||'状態未同定')));field(wrap,'configuration',p.configuration_id);field(wrap,'分割',p.p!==null&&p.p!==undefined?'p='+p.p:'L_D='+p.L_D);field(wrap,'要求幅',p.requested_width);field(wrap,'κ',p.kappa);field(wrap,'条件付き総RZ',p.conditional_cost===null?'未接続':exact(p.conditional_cost)+' ≈ '+fmt(p.conditional_cost));field(wrap,'N_X',p.N_X);field(wrap,'N_Y',p.N_Y);validationDetails(wrap,p);
  const cfg=configuration(p);let sections=[['実schedule・physical identity',p.schedule||cfg.schedule],['固定回路条件・law',{profile:p.profile||cfg.profile,law:p.law||cfg.law,split:p.split||cfg.split}],['保存MSE上下界・状態',{lower:p.MSE_lower,upper:p.MSE_upper,status:p.q3_status,evidence:p.evidence_level,issues:p.issues}],['価格根拠・qualification',p.price_evidence],['run別の新規評価／再利用と実行host',p.occurrences]];
  for(const [title,value]of sections){let x=el('details');x.append(el('summary',title),jsonBlock(value===undefined?null:value));wrap.append(x)}
  let refs=el('ul',null,'source-list');for(const s of [...(p.sources||[]),...(cfg.configuration_source?[cfg.configuration_source]:[])]){let li=el('li');li.append(link(s));refs.append(li)}wrap.append(el('strong','元結果への固定参照'),refs);articles.append(wrap)}
@@ -96,7 +119,7 @@ function redraw(){const v=selected(), q=E('search').value.trim().toLowerCase();l
  E('map-title').textContent=labels[method]+' · '+({FULL_PF:'公式 × 要求幅',TRUNCATED_PF:'切り捨て位置p × 要求幅',PR_PAULI:'L_D × 要求幅',PR_DF:'L_D × 要求幅'}[method]);
  let pointsIds=new Set(cells.flatMap(c=>c.point_ids||[])), ps=[...pointsIds].map(id=>allPoints.get(id)).filter(Boolean).filter(p=>passes(p,q));let configs=new Set(ps.filter(p=>p.q3_status).map(p=>p.configuration_id));let metrics=[['Q3評価済み物理構成',configs.size],['評価した配分',ps.filter(p=>p.q3_status).length],['適合配分',ps.filter(p=>p.q3_status==='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD').length],['記録未取込の対象',cells.reduce((n,c)=>n+(c.missing_count||0),0)]];E('metrics').replaceChildren(...metrics.map(([l,n])=>{let e=el('div',null,'metric');e.append(el('strong',n),el('span',l));return e}));
  E('scope').replaceChildren();let run=(D.runs||[]).find(r=>r.id===v.run_id);E('scope').append(el('strong',v.label||v.id||'全run累計'));if(run){field(E('scope'),'停止・進行状態',run.status);field(E('scope'),'実行host（保存metadata）',run.hosts);if(run.source)E('scope').append(link(run.source));if(run.missing?.length||run.issues?.length)field(E('scope'),'不足',run.missing||run.issues)}else E('scope').append(el('p','同じ構成・配分・評価契約の再検出／別runでの再利用は1件。母集合全体を網羅したとの主張ではありません。','data-note'));
- const rows=new Map(), cols=new Map();for(const c of cells){rows.set(c.row_key,c.row_label);cols.set(c.width_key,c.width_label)}let host=E('grid');host.replaceChildren();if(!cells.length){host.append(el('p','この範囲に公開対象・評価記録はありません。','empty'));return}let table=el('table',null,'map'),head=el('thead'),tr=el('tr');tr.append(el('th',method==='FULL_PF'?'公式':method==='TRUNCATED_PF'?'p':'L_D'));for(const label of cols.values())tr.append(el('th',label));head.append(tr);table.append(head);let body=el('tbody');for(const [rk,rl]of rows){let row=el('tr');row.append(el('th',rl));for(const [wk]of cols){let td=el('td'),c=cells.find(c=>c.row_key===rk&&c.width_key===wk);if(!c){td.append(el('div','対象として未確認','cell absent'))}else{let cls=c.feasible_allocations?'good':c.evaluated_allocations&&!c.missing_count?'bad':'wait',b=el('button',null,'cell '+cls);b.append(el('span',states[c.state]||c.state||'状態未同定','pill'),el('strong',c.physical_evaluated+'構成 / '+c.evaluated_allocations+'配分'),el('small','適合 '+c.feasible_allocations+'配分'));if(c.min_cost!==null&&c.min_cost!==undefined)b.append(el('div',fmt(c.min_cost)+' RZ','price'));else b.append(el('small','適合価格 '+(c.feasible_allocations?'未接続':'なし')));if(c.missing_count)b.append(el('small','記録未取込 '+c.missing_count));b.onclick=()=>showCell(c);td.append(b)}row.append(td)}body.append(row)}table.append(body);host.append(table)}
+ const rows=new Map(), cols=new Map();for(const c of cells){rows.set(c.row_key,c.row_label);cols.set(c.width_key,c.width_label)}let host=E('grid');host.replaceChildren();if(!cells.length){host.append(el('p','この範囲に公開対象・評価記録はありません。','empty'));return}let table=el('table',null,'map'),head=el('thead'),tr=el('tr');tr.append(el('th',method==='FULL_PF'?'公式':method==='TRUNCATED_PF'?'p':'L_D'));for(const label of cols.values())tr.append(el('th',label));head.append(tr);table.append(head);let body=el('tbody');for(const [rk,rl]of rows){let row=el('tr');row.append(el('th',rl));for(const [wk]of cols){let td=el('td'),c=cells.find(c=>c.row_key===rk&&c.width_key===wk);if(!c){td.append(el('div','対象として未確認','cell absent'))}else{let cls=c.feasible_allocations?'good':c.evaluated_allocations&&!c.missing_count?'bad':'wait',b=el('button',null,'cell '+cls);b.append(el('span',states[c.state]||c.state||'状態未同定','pill'),el('strong',c.physical_evaluated+'構成 / '+c.evaluated_allocations+'配分'),el('small','適合 '+c.feasible_allocations+'配分'));if(c.min_cost!==null&&c.min_cost!==undefined)b.append(el('div',fmt(c.min_cost)+' RZ','price'));else b.append(el('small','適合価格 '+(c.feasible_allocations?'未接続':'なし')));for(const label of c.price_validation_labels||[])b.append(el('span',label,'pill'));if(c.missing_count)b.append(el('small','記録未取込 '+c.missing_count));b.onclick=()=>showCell(c);td.append(b)}row.append(td)}body.append(row)}table.append(body);host.append(table)}
 for(const [m,label]of Object.entries(labels)){let b=el('button',label,m===method?'active':'');b.onclick=()=>{method=m;for(const x of E('methods').children)x.classList.toggle('active',x===b);redraw()};E('methods').append(b)}
 for(const v of D.views||[]){let option=el('option',v.label||v.id);option.value=v.id;E('view').append(option)}E('view').onchange=redraw;E('search').oninput=redraw;E('clear').onclick=()=>{E('search').value='';redraw()};E('coverage').textContent='収録 '+(D.runs||[]).length+' run / '+(D.points||[]).length+' 一意配分点 / '+(D.sources||[]).length+' 固定SOURCE。表示用の丸め値から価格・判定を再計算しません。';
 let sourceHost=E('sources');let comp=el('details');comp.append(el('summary','共通snapshot・精度・比較条件'),jsonBlock(D.comparison));sourceHost.append(comp);for(const r of D.runs||[]){let item=el('details');item.append(el('summary',(r.label||r.id)+' · '+(r.status||'状態未同定')));field(item,'run ID',r.id);field(item,'host',r.hosts);field(item,'未取込/不明',r.missing||r.issues);if(r.source)item.append(link(r.source));sourceHost.append(item)}let src=el('details');src.append(el('summary','固定SOURCE一覧'));let list=el('ul',null,'source-list');for(const s of D.sources||[]){let li=el('li');li.append(link(s));list.append(li)}src.append(list);sourceHost.append(src);let issue=el('details');issue.append(el('summary','取込み待ち・不足情報'),jsonBlock(D.issues||[]));sourceHost.append(issue);redraw();

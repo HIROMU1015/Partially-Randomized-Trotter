@@ -38,6 +38,7 @@ saved unit prices times the integer shots, validated against C's saved totals.
 """
 import ast
 from fractions import Fraction
+from copy import deepcopy
 import hashlib
 import json
 import math
@@ -336,8 +337,12 @@ def enumerate_candidates(reader, problem, facts, catalog):
         signals = [p['signal_source'] for p in ps if p.get('signal_source')] or ([c['index_signal']] if c['index_signal'] else [])
         prices, price_status = configuration_prices(reader, ps) if ps else (None, 'NO_SAVED_26_AXIS_PRICE')
         labels = sorted({p['label'] for p in ps})
+        metadata=next((p for p in ps if len(p.get('price_axes',[]))==26 and p.get('conditional_cost')is not None),ps[0]if ps else {})
         c.update(labels=labels, signal_source=signals[0] if signals else None, prices=prices, price_status=price_status,
-                 saved_points=[p['point_id'] for p in ps])
+                 saved_points=[p['point_id'] for p in ps],
+                 price_axes=deepcopy(metadata.get('price_axes',[])),
+                 price_evidence=deepcopy(metadata.get('price_evidence')),
+                 configuration_source=deepcopy(metadata.get('configuration_source')))
         needs = []
         if c['configuration_id'] is None:
             needs.append('CONFIGURATION_AND_SCHEDULE')
@@ -1172,6 +1177,7 @@ def quote_prices(root, problem, candidates, catalog, methods=None):
         missing = [dict(m=r['m'], axis=r['axis'], reasons=(r.get('needs') or {}).get('reasons'),
                         calibration=(r.get('needs') or {}).get('calibration') or (r.get('needs') or {}).get('missing_quantity'))
                    for r in rows if r['unit_price_RZ'] is None]
+        c['price_model_validations']=q.get('model_validations',[])
         c['price_quote'] = dict(policy=q.get('policy', policy), status=q['status'], complete=q['complete'], registry=q['registry'],
                                 classifications=counts, extrapolated_axes=sum(1 for r in rows if r.get('extrapolation')),
                                 reason=q.get('reason'), implementation_source=pr['implementation_source'])

@@ -40,9 +40,16 @@ class NormalMapSync(unittest.TestCase):
                         job=directory + '/jobs/PR_PAULI/J', formula='2nd', L_D=3, requested_delta_pf='1/5',
                         cost=dict(numerator=100, denominator=1))])})
                 p = put(directory + '/ROUND_RESULT.json', result)
+                validation = put(directory + '/PRICE_MODEL_VALIDATIONS.json', dict(
+                    schema='RPE_PRICE_MODEL_VALIDATIONS_V1', models=[dict(model_id='frozen-shared',
+                    identity=dict(method='PR_PAULI', L_D=3, frozen_source=dict(commit='f'*40,path='MODEL.json')),
+                    status='PENDING', label='検証待ち', validation_points=[])], applications=[dict(
+                    configuration_id='SAME_PHYSICAL', model_id='frozen-shared', points=[dict(m=0,q=1,R=2)])]))
                 put('docs/research/' + label + '/SEARCH_PUBLICATION.json', dict(schema='H4_SEARCH_PUBLICATION_V1',
                     run_id=label, role='CONTROLLER', run_directory=directory, execution_hosts=[label],
-                    files={'result': dict(path=str(p.relative_to(root)), sha256=hashlib.sha256(p.read_bytes()).hexdigest())}))
+                    files={'result': dict(path=str(p.relative_to(root)), sha256=hashlib.sha256(p.read_bytes()).hexdigest()),
+                           'PRICE_MODEL_VALIDATIONS.json': dict(path=str(validation.relative_to(root)),
+                               sha256=hashlib.sha256(validation.read_bytes()).hexdigest())}))
             sha = commit()
             # New environment's name is deliberately outside C's legacy branch patterns.
             for name in ('known-old-branch', 'independent-environment/publication'):
@@ -72,6 +79,9 @@ class NormalMapSync(unittest.TestCase):
                 self.assertIn('independent-environment/publication', index['included_public_heads'])
                 point = index['points'][0]
                 self.assertEqual(len(point['occurrences']), 2)
+                self.assertEqual(len(index['price_validation_models']), 1)
+                self.assertEqual(point['price_validations'][0]['label'], '検証待ち')
+                self.assertIn('検証待ち', (index_path.parent/'index.html').read_text())
                 self.assertEqual({o['new_evaluation'] for o in point['occurrences']}, {True, False})
                 self.assertEqual({h for o in point['occurrences'] for h in o['hosts']}, {'HOST_A', 'HOST_B'})
                 before = {p.name: p.read_bytes() for p in index_path.parent.iterdir() if p.is_file()}

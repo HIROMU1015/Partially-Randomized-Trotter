@@ -22,6 +22,7 @@ STAGES = {
     'PAULI_COMPILE': 'compile', 'DF_CALIBRATION': 'compile',
     'DF_HOLDOUT': 'compile', 'PF_COMPILE': 'compile',
     'PF_HOLDOUT_COMPILE': 'compile',
+    'PRICE_MODEL_VALIDATION': 'compile',
     'PAULI_AUDIT': 'audit', 'DF_MODEL_FREEZE': 'audit',
     'DF_HOLDOUT_COMPARE': 'audit', 'PF_AUDIT': 'audit',
     'PF_MODEL_FREEZE': 'audit', 'PF_FINISH': 'audit',

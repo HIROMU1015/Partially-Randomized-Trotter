@@ -36,12 +36,18 @@ def main():
         cfg = item.get('configuration') or t['configuration']
         try:
             q = rules.quote(dict(configuration=cfg, implementation=t['implementation'], policy=req['policy']))
+            import importlib.util
+            helper_path=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_price_validation.py'
+            helper_spec=importlib.util.spec_from_file_location('_price_validation_snapshot',helper_path)
+            helper=importlib.util.module_from_spec(helper_spec);helper_spec.loader.exec_module(helper)
+            try:q['model_validations']=helper.describe(rules,cfg,item['registry'],q)
+            except Exception as error:q['model_validations']=[];q['model_validation_issue']=type(error).__name__+':'+str(error)
             rows = [dict(m=r['m'], axis=r['axis'], q=r['q'], R=r['R'], unit_price_RZ=r['unit_price_RZ'], classification=r['classification'],
                          rule=r.get('registered_rule'), extrapolation=(r.get('model_alternative') or {}).get('extrapolation'),
                          event_step_changed=(r.get('model_alternative') or {}).get('event_step_changed_from_calibration'),
                          needs=r.get('needs')) for r in q['rows']]
             out['items'].append(dict(item_id=item['item_id'], registry=item['registry'], configuration_id=cfg['id'], status='QUOTED',
-                                     complete=q['complete'], policy=q['policy'], rows=rows, **(dict(raw=q) if a.raw else {})))
+                                     complete=q['complete'], policy=q['policy'], rows=rows, model_validations=q['model_validations'], **(dict(raw=q) if a.raw else {})))
         except Exception as exc:
             out['items'].append(dict(item_id=item['item_id'], registry=item['registry'], status='QUOTE_REJECTED',
                                      reason=type(exc).__name__ + ': ' + str(exc), complete=False))

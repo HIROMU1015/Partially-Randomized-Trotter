@@ -843,6 +843,10 @@ class WidthDriver:
         K.CLI.write(self.run/'ROUND_RESULT.json',K.CLI.slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1',
             round=self.spec,methods=result,optimizer_source=K.CLI.head())))
         K.CLI.table(result,self.run/'PER_METHOD.csv')
+        if str(self.run).startswith(str(ROOT/'docs/research')):
+            K.CLI.write(self.run/'NEEDS.json',dict(candidates=K.CLI.candidate_rows(context)))
+            from publish_h4_search_run import prepare as publish_search
+            publish_search(ROOT,self.run,self.run.parent/'SEARCH_PUBLICATION.json',run_id=self.spec['round_id'])
         for p in self.state['points']:
             if p['status']not in('REGISTERED','EVALUATED'):continue
             rows=result.get(p['method'],{}).get('by_configuration',[])

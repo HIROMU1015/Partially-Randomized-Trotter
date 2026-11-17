@@ -967,6 +967,7 @@ class DistributedExecutor(ConcurrentExecutor):
         from .rpe_preparation_queue import normalize_preparation_request
         request = normalize_preparation_request(request,source_manifest=self.source_manifest,dependencies=dependencies)
         preparation = request['preparation']
+        optional = preparation.get('optional_price_validation') is True
         job_id = request['request_id']
         method = 'PREPARATION:'+preparation['stage']
         task_contract = dict(evaluation=deepcopy(contract),dependencies=preparation['dependencies'])
@@ -991,10 +992,11 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.preparation_holds.pop(job_id, None)
                 self.eligibility_holds.pop(job_id, None)
                 self.state.metrics['preparation_submitted'] += 1
-                self.for_method(method).log(event='ENQUEUE',job=job_id,configuration=job_id,stage=preparation['stage'],demand=True)
+                self.for_method(method).log(event='ENQUEUE',job=job_id,configuration=job_id,stage=preparation['stage'],demand=not optional,
+                    optional_price_validation=optional)
             elif row['request_sha256'] != Q.digest(request) or row['contract'] != task_contract:
                 raise ValueError('Preparation identity/contract changed')
-            if row['state'] != 'ACCEPTED': self._restore_task(row, demand=True)
+            if row['state'] != 'ACCEPTED': self._restore_task(row, demand=not optional)
             self.state.cv.notify_all()
         return job_id
 
@@ -1127,6 +1129,8 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _restore_task(self, row, proposal=None, demand=False):
         request = row['request']; method = row['method']
+        optional = bool((self._preparation_request(request) or {}).get('optional_price_validation'))
+        if optional: demand = False
         job = self.run_dir/'jobs'/method/row['job_id']
         old = self.state.tasks.get(job)
         if old and old.status != 'CANCELLED':
@@ -1143,7 +1147,7 @@ class DistributedExecutor(ConcurrentExecutor):
         task = SimpleNamespace(view=self.for_method(method), job=job, proposal=deepcopy(proposal), rule=request['route'],
             owner=(method, proposal['configuration_id']), demand=demand, status='RUNNING' if running else 'QUEUED',
             event=threading.Event(), enqueue=time.monotonic()-max(0, time.time()-row['enqueued_epoch']),
-            error=None, started=running, speculative=not demand)
+            error=None, started=running, speculative=not demand, optional_price_validation=optional)
         self.state.tasks[job] = task
         if running:
             self.state.active += 1
@@ -1335,7 +1339,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     return reply(assignments=assignments, stop=False, host_admission=admission,
                                 eligibility_challenges=[])
                 queue = sorted((t for t in s.tasks.values() if t.status == 'QUEUED' and self._task_ready(t)),
-                    key=lambda t: (not t.demand, s.owner_clock.get(t.owner, -1), t.enqueue))
+                    key=lambda t: (getattr(t, 'optional_price_validation', False), not t.demand,
+                                   s.owner_clock.get(t.owner, -1), t.enqueue))
                 if s.failure or s.closed: return reply(assignments=assignments, stop=False, host_admission=admission)
                 eligible, challenges = [], []
                 skipped = False
@@ -1594,6 +1599,21 @@ class DistributedExecutor(ConcurrentExecutor):
     def finish(self):
         if self.method is not None: return super().finish()
         if self.state.driver.closed: return
+        # Optional diagnostics never extend search shutdown. The durable queue
+        # retains both queued requests and the original owner/attempt of work
+        # already assigned. Workers supervise their children independently;
+        # stopping a polling daemon below never signals scientific children.
+        # A subsequent controller reconciles the same rows, without retry.
+        with self.state.cv:
+            for job, task in list(self.state.tasks.items()):
+                if not getattr(task, 'optional_price_validation', False): continue
+                if task.status == 'RUNNING': self.state.active -= 1
+                del self.state.tasks[job]
+                self.state.external.pop(job, None)
+                self.state.pids.pop(job, None)
+                self.log(event='OPTIONAL_VALIDATION_DETACHED',job=job.name,state=task.status,
+                         owner_preserved=True,automatic_retry=False)
+            self.state.cv.notify_all()
         super().finish()
         if self.local_worker is not None:
             self.local_worker.terminate()

@@ -158,8 +158,11 @@ class Completion:
 
     def quote_with_steps(self,config,quote):
         path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
-        if not path.exists():return quote
-        return self._step_rules().quote(config,quote['implementation'],base_quote=quote)
+        if not path.exists()and not(quote.get('rows')and config.get('spec',{}).get('method')=='PR'):return quote
+        try:return self._step_rules().quote(config,quote['implementation'],base_quote=quote)
+        except Exception:
+            if path.exists():raise  # preserve actual-step application guards
+            return quote  # optional metadata cannot invalidate an existing quote
 
     def save(self):
         with self.lock:put(self.state_path,self.state)

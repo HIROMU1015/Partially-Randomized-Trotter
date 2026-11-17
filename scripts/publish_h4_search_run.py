@@ -11,7 +11,7 @@ import subprocess
 
 FILES = ('ROUND_RESULT.json', 'ROUND_RESULT_INTERRUPTED.json', 'EVALUATIONS.json',
          'NEEDS.json', 'SCOPE_METADATA.json', 'SEARCH_STATE.json', 'STATE.json',
-         'ROUND.json', 'STATUS.json', 'LIVE_START_SNAPSHOT.json')
+         'ROUND.json', 'STATUS.json', 'LIVE_START_SNAPSHOT.json', 'PRICE_MODEL_VALIDATIONS.json')
 
 
 def prepare(root, run_directory, output, *, run_id=None, execution_hosts=()):

@@ -10,6 +10,9 @@ def normalize_preparation_request(request, *, source_manifest=None, dependencies
     preparation=request.get('preparation')
     if not isinstance(preparation,dict)or preparation.get('stage')not in ('signal','compile','audit'):
         raise ValueError('Preparation stage must be signal, compile, or audit')
+    optional = preparation.get('optional_price_validation', False)
+    if type(optional) is not bool or (optional and preparation['stage'] != 'compile'):
+        raise ValueError('Optional price validation must be a compile preparation')
     if dependencies:preparation['dependencies']=list(dict.fromkeys(dependencies))
     preparation.setdefault('dependencies',[])
     preparation.setdefault('inputs',{})

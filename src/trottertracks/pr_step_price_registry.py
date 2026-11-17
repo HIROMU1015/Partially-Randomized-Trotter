@@ -355,5 +355,11 @@ class StepPriceRegistry:
                         qualification=e['qualification'],application='SOURCE_BOUND_ACTUAL_STEP_MODEL'))
                 row.pop('needs',None)
         values=sorted(rows.values(),key=lambda r:(r['m'],r['axis']))
-        return dict(base_quote,rows=values,complete=all(r.get('unit_price_RZ')is not None for r in values),
+        from .rpe_price_validation import describe,describe_steps
+        fixed=self.api['PriceRules'](self.reader,self.registry)
+        legacy=[]
+        for name in {r.get('registered_rule')for r in values if r.get('classification')=='MODEL_REFERENCE'}:
+            if name and not name.startswith('ACTUAL_STEP:'):
+                legacy+=describe(fixed,config,name,dict(base_quote,rows=values))
+        return dict(base_quote,rows=values,model_validations=legacy+describe_steps(self,config,dict(base_quote,rows=values)),complete=all(r.get('unit_price_RZ')is not None for r in values),
             qualified_E_C=False,CI=None,Q3_executed=False,step_registry_schema=SCHEMA)

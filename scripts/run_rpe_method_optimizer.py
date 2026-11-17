@@ -65,7 +65,8 @@ def candidate_rows(context):
                  ready=c['ready'], needs=c['needs'], price_status=c['price_status'], signal_source=c['signal_source'],
                  execution_needs=c.get('execution_needs'), execution_binding_hold=c.get('execution_binding_hold'),
                  labels=c['labels'], saved_points=c['saved_points'], outside_index=c.get('outside_index', False),
-                 prepared_by=c.get('prepared_by'), preparation=c.get('preparation'), price_quote=c.get('price_quote'),
+                 prepared_by=c.get('prepared_by'), preparation=c.get('preparation'), price_quote={k:v for k,v in(c.get('price_quote')or{}).items()if k!='model_validations'},
+                 price_validation=c.get('price_validation'),price_validation_issue=c.get('price_validation_issue'),
                  kappa_value=c.get('kappa_value'), kappa_base=c.get('kappa_base'), kappa_multiplier_exact=c.get('kappa_multiplier_exact'),
                  physical_aliases=[dict(configuration_id=x['configuration_id'], kappa_value=x.get('kappa_value'))
                                    for x in c.get('physical_aliases') or []])
@@ -203,7 +204,34 @@ def make_executor(root, run, routes, expected, problem, spec):
         if not hasattr(executor,'configure_preparation_graph'):
             executor.finish();raise ValueError('Preparation tasks require the shared distributed executor')
         executor.configure_preparation_graph(graph)
-    return executor,optimize
+    # Optional diagnostics share models across allocations/runs; never alter readiness.
+    from trottertracks.rpe_price_validation import Service
+    try:validation=Service(root,run,spec,executor,problem=problem)
+    except Exception as error:
+        try:write(run/'PRICE_VALIDATION_ISSUE.json',dict(status='INCOMPLETE',reason=type(error).__name__+':'+str(error)))
+        except OSError:pass
+        return executor,optimize
+    executor.price_validation_service=validation
+    base_optimize=optimize
+    def optional_validation(context,dispatch=True):
+        try:
+            validation.observe([c for c in context.get('candidates',[])if c['method']in spec['methods']])
+            if dispatch:validation.poll()
+        except Exception as error:
+            try:write(run/'PRICE_VALIDATION_ISSUE.json',dict(status='INCOMPLETE',reason=type(error).__name__+':'+str(error)))
+            except OSError:pass
+    def optimize_with_price_validation(*args,**kwargs):
+        context=kwargs.get('context')or{}
+        optional_validation(context,dispatch=False);validation.start()
+        try:return base_optimize(*args,**kwargs)
+        finally:optional_validation(context)
+    original_finish=executor.finish
+    def finish_with_price_validation():
+        try:validation.close()
+        except Exception:pass  # optional diagnostic persistence cannot poison Q3
+        return original_finish()
+    executor.finish=finish_with_price_validation
+    return executor,optimize_with_price_validation
 
 
 def preparation_runtime(executor,run,spec):
@@ -315,6 +343,9 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
         else:
             write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
                                            pending_Q3={m: r['pending_request'] for m, r in result.items()}))
+    if not compact and not payload.get('artificial_only') and str(run).startswith(str(ROOT/'docs/research')):
+        from publish_h4_search_run import prepare as publish_search
+        publish_search(ROOT,run,run.parent/'SEARCH_PUBLICATION.json',run_id=spec['round_id'])
     with (run / 'INVOCATIONS.jsonl').open('a') as f:
         f.write(json.dumps(O.jsonable(dict(time=time.time(), budget=spec['max_new_q3_per_method'],
             launched={m: executor.launched(m) for m in spec['methods']},
