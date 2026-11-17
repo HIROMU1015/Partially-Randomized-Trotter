@@ -479,9 +479,37 @@ class WidthDriver:
             if p.get('status')=='FEASIBLE' and p.get('conditional_cost')is not None:
                 cost=O.frac(p['conditional_cost'])
                 if same['best']is None or cost<O.frac(same['best']):same['best']=O.enc(cost)
+        if (self.spec.get('candidate_completion') or {}).get('resume_preparation_from'):
+            self.seed_ready_continuation()
         self.state['seeded']=dict(UTC=K.now(),mapper='METHOD_SPECIFIC_EXISTING_GENERATOR',
             old_single_width_state_untouched=True)
         self.save()
+
+    def seed_ready_continuation(self):
+        comp = self.completion_api()
+        bounds = W.kappa_bounds(self.wide)
+        for key, rec in comp.state['records'].items():
+            if rec.get('status') != 'READY_FOR_SEARCH' or rec.get('method') not in self.methods:
+                continue
+            cfg = read_loc(rec['configuration'])
+            method, spec = rec['method'], cfg['spec']
+            kappa = KS._frac(spec['kappa']['value'])
+            family = W.width_family_key(method, spec['L_D'], spec['formula'], spec['delta_pf'], spec['finite_K'])
+            if (bounds and not bounds[0] <= kappa <= bounds[1]) or self.state['families'].get(family, {}).get('status') != 'READY_METADATA':
+                continue
+            point = dict(family=family, method=method, L_D=spec['L_D'], kappa=str(kappa),
+                         status='REGISTERED', configuration_id=cfg['id'],
+                         completion=dict(status='READY_FOR_SEARCH', key=key))
+            if any(p['family'] == family and Fraction(p['kappa']) == kappa for p in self.state['points']):
+                continue
+            try:
+                self.check_completed_configuration(point, rec)
+                comp.verify_continuation_inputs(rec)
+            except (ValueError, KeyError, TypeError, OSError) as error:
+                self.log(event='CONTINUATION_INPUT_HOLD', family=family, key=key, reason=str(error))
+                continue
+            self.state['points'].append(point)
+            self.log(event='CONTINUATION_INPUT_READY', family=family, key=key, configuration_id=cfg['id'])
 
     def bootstrap_families(self):
         pending=[f for f in self.state['families'].values()if f['status']=='FAMILY_PREPARATION_PENDING']

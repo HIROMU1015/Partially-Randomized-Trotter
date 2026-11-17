@@ -1767,13 +1767,57 @@ class DistributedExecutor(ConcurrentExecutor):
         super().finish()
         if self.pbs_manager: self.pbs_manager.close()
         self.stop_controller_relay()
-        if self.local_worker is not None:
-            self.local_worker.terminate()
-            self.local_worker.wait(timeout=10)
-        elif self._local_daemon_alive(self.local_worker_pid, self.run_dir/'distributed'/'LOCAL_WORKER.json'):
-            os.kill(self.local_worker_pid, signal.SIGTERM)
+        try:
+            self._finish_local_worker()
+        finally:
+            self._close_worker_rpc()
+
+    def _close_worker_rpc(self):
         if self.rpc_server is not None:
-            self.rpc_server.shutdown(); self.rpc_server.server_close(); self.rpc_thread.join()
+            self.rpc_server.shutdown()
+            self.rpc_server.server_close()
+            self.rpc_thread.join()
+            self.rpc_server = None
+
+    def _local_attempts_settled(self, profile_path):
+        try:
+            profile = json.loads(profile_path.read_text())
+            if any(row['host_id'] == profile['host_id'] for row in self._owned_attempts()):
+                return False
+            work = Path(profile['work_dir'])
+            return work.is_dir() and all(
+                json.loads(path.with_name('WORKER_STATE.json').read_text())['state'] == 'TRANSFERRED'
+                for path in work.glob('*/*/ASSIGNMENT.json'))
+        except (OSError, ValueError, KeyError):
+            return False
+
+    def _finish_local_worker(self):
+        from . import rpe_q3_coordinator as Q
+
+        profile_path = self.run_dir/'distributed'/'LOCAL_WORKER.json'
+        if self.local_worker is None:
+            if self._local_daemon_alive(self.local_worker_pid, profile_path):
+                os.kill(self.local_worker_pid, signal.SIGTERM)
+            return
+        worker = self.local_worker
+        worker.terminate()
+        if self._local_attempts_settled(profile_path):
+            # The last poll depends on this endpoint. Once receipts are
+            # transferred, close intake before waiting for the daemon.
+            self._close_worker_rpc()
+        reason = 'GRACEFUL'
+        try:
+            worker.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            if not self._local_attempts_settled(profile_path):
+                raise
+            # Only the owned polling Popen stops here, after both ledgers
+            # confirm settlement. Scientific supervisors are detached.
+            worker.kill()
+            worker.wait(timeout=3)
+            reason = 'IDLE_POLLER_STOPPED_AFTER_RPC_CLOSE'
+        Q.atomic_json(self.run_dir/'distributed'/'LOCAL_WORKER_EXIT.json',
+                      dict(pid=worker.pid, returncode=worker.returncode, reason=reason))
 
 
 def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
