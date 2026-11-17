@@ -1,5 +1,9 @@
 # 性能対策の再利用索引
 
+## PR探索の候補分離・後着READY投入（2026-11-17）
+
+`hold_candidate`と既存`ROUND_RESULT.execution_holds`で旧job照合待ちをconfiguration単位に限定し、無検証再利用/retryを避けて他候補を継続する。CompletionのREADY snapshotを元installerへ渡し、準備wave全体を待たず同じqueueでQ3を進める。有限総予算と重大UNKNOWN停止は維持。[REPORT](research/h4_pr_candidate_continuity_20261117/REPORT.md)／[HANDOFF](research/h4_pr_candidate_continuity_20261117/HANDOFF.md)。人工82件・native8件PASS、実H4の速度倍率は未測定。R07 STOPを残す新SOURCE/R08で継続。
+
 ## PR複数幅のR06→R07継続（2026-11-17）
 
 候補自身のconfigurationで既存PriceRulesを照会し、保存総額のexact一致で省略26軸を復元する。DFは固定entryのpacket別検査を再利用して、今回のphysical keyだけをmergeする。対象keyのrecord差は従来どおりSTOP。READY入力・完了Q3・prefix cacheをコピー/元SOURCE参照で再利用し、旧STOPへ書き込まない。[REPORT](research/h4_pr_multiwidth_resume_20261117/REPORT.md)／[再開](research/h4_pr_multiwidth_resume_20261117/HANDOFF.md)。人工25件と実入力metadataで確認、科学開始後の速度倍率は未測定。
