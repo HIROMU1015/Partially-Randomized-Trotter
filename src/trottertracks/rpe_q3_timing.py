@@ -63,12 +63,13 @@ def read_lines(path):
     rows = []
     if not Path(path).exists():
         return rows
-    for number, line in enumerate(Path(path).read_text().splitlines(), 1):
+    lines=Path(path).read_text().splitlines()
+    for number, line in enumerate(lines, 1):
         try:
             rows.append(json.loads(line))
         except json.JSONDecodeError:
             # A live final append can be incomplete; never guess its timestamp.
-            if number != len(Path(path).read_text().splitlines()):
+            if number != len(lines):
                 raise
     return rows
 
@@ -245,14 +246,20 @@ def summarize(run, *, timeline=None, public_summary=None):
     # Slot observations are generated under the same controller lock as claim.
     # They classify recorded queue intervals; unobserved time stays unknown.
     slots=[e for e in events if e.get('event')=='QUEUE_WAIT_STATE']
-    slot_intervals=defaultdict(list)
+    slot_intervals=defaultdict(list);slot_job_intervals=defaultdict(list)
     for i,e in enumerate(slots):
         stop=next((x for x in slots[i+1:] if x.get('invocation')==e.get('invocation')),None)
         if stop and delta(e,stop,True) is not None:
             for job,reason in e.get('reasons',{}).items():
                 terminal=next((x for x in launches.get(job,[]) if x.get('invocation')==e.get('invocation') and e['monotonic']<=x['monotonic']<=stop['monotonic']),None)
                 z=terminal['monotonic'] if terminal else stop['monotonic']
-                slot_intervals[reason].append((e.get('clock_id') or e['invocation'],e['monotonic'],z))
+                span=(e.get('clock_id') or e['invocation'],e['monotonic'],z)
+                slot_intervals[reason].append(span);slot_job_intervals[(job,reason)].append(span)
+    for row in rows:
+        parts={reason:union_seconds(v)for (job,reason),v in slot_job_intervals.items()if job==row['job_id']}
+        row['A_observed_wait_seconds_by_reason']=parts if slots else None
+        q=row['A_queue_to_assignment_seconds']
+        row['A_unattributed_seconds']=max(0,q-sum(parts.values()))if slots and q is not None else q
     return dict(schema='RPE_Q3_OPERATIONAL_TIMING_V1',scope='OPERATIONAL_LOGS_ONLY_NO_SCIENTIFIC_REANALYSIS',
         run_directory=str(run),input_timeline=str(timeline or run/'PROGRESS.jsonl'),attempts=len(rows),by_host=by_host,rows=rows,
         missing_counts={k:sum(r[k] is None for r in rows) for k in ['Q3_body_seconds','D_receive_to_search_adopt_seconds']},
