@@ -1165,6 +1165,47 @@ def jsonable(value):
     return value
 
 
+def scope_absolute_kappa(context, problem):
+    """Apply explicit absolute bounds to saved, generated and installed candidates."""
+    if not any(v.get('absolute_kappa_bounds') is not None for v in problem['methods'].values()):
+        return context
+    from .rpe_kappa_schedule import _frac
+    saved = {p['configuration_id']: p for p in context['catalog']['candidates']}
+    kept, excluded = [], []
+    for candidate in context['candidates']:
+        setting = problem['methods'][candidate['method']]
+        bounds = setting.get('absolute_kappa_bounds')
+        if bounds is None or candidate.get('configuration_id') is None:
+            kept.append(candidate)
+            continue
+        allowed = setting.get('L_D_values')
+        ld = candidate.get('L_D', candidate.get('key', {}).get('L_D'))
+        if allowed is not None and ld not in allowed:
+            excluded.append(dict(configuration_id=candidate['configuration_id'], L_D=ld,
+                                 reason='OUTSIDE_REQUESTED_L_D_VALUES'))
+            continue
+        lo, hi = (_frac(v) for v in bounds)
+        value = candidate.get('kappa_value')
+        if value is None and candidate.get('generated_configuration'):
+            value = candidate['generated_configuration']['spec']['kappa']['value']
+        if value is None:
+            value = saved.get(candidate['configuration_id'], {}).get('kappa')
+        if isinstance(value, dict) and 'value' in value:
+            value = value['value']
+        if value is None:
+            raise ValueError('Cannot establish absolute kappa of candidate: ' + candidate['configuration_id'])
+        kappa = _frac(value)
+        if lo <= kappa <= hi:
+            candidate['kappa_value'] = str(kappa)
+            kept.append(candidate)
+        else:
+            excluded.append(dict(configuration_id=candidate['configuration_id'], kappa=str(kappa),
+                                 reason='OUTSIDE_INCLUSIVE_ABSOLUTE_KAPPA_BOUNDS'))
+    context['candidates'] = kept
+    context.setdefault('scope_excluded', []).extend(excluded)
+    return context
+
+
 def optimize(root, problem, *, context=None, methods=None, initial='all', extra_results=(), backend=None, max_new=None,
              executor=None, saved_is_free=True, science_approved=True):
     """Run the per-method search.
@@ -1176,7 +1217,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
     saved_is_free: the backend answers C's saved configuration+allocation without a new call (set False for a
     backend that does not consult the saved results, e.g. a stand-alone artificial fixture).
     """
-    context = context or prepare(root, problem)
+    context = scope_absolute_kappa(context or prepare(root, problem), problem)
     search = problem['search'];threshold = context['tau']
     max_new = search['max_new_q3_per_method'] if max_new is None else max_new
     out = {}
@@ -1337,6 +1378,8 @@ def prepare(root, problem, generate_configurations=True, methods=None, preparati
     from . import pf_optimizer_connection as PF
     PF.enumerate_prefixes(root, reader, problem, candidates, methods)
     generation = generate_variants(root, problem, reader, catalog, candidates, methods, preparation_dir) if generate_configurations else {}
+    scope = scope_absolute_kappa(dict(candidates=candidates, catalog=catalog), problem)
+    candidates = scope['candidates']
     price_rules = quote_prices(root, problem, candidates, catalog, methods) if problem.get('price_rules') else None
     artificial_pf = problem.get('artificial_pf_evidence') is True
     pf_registry = PF.load_registry(root, reader, problem.get('pf_evidence_registry'),allow_artificial=artificial_pf)
@@ -1355,4 +1398,5 @@ def prepare(root, problem, generate_configurations=True, methods=None, preparati
         expected[cid] = dict(expected.get(cid) or {}, **{k: v for k, v in entry.items() if v is not None})
     return dict(facts=facts, reader=reader, catalog=catalog, candidates=candidates, saved=saved, tau=tau(problem),
                 expected=expected, generate=pinned_function(reader, problem['generator']), generation=generation,
-                price_rules=price_rules, preparation_dir=preparation_dir, pf_evidence_registry=pf_registry)
+                price_rules=price_rules, preparation_dir=preparation_dir, pf_evidence_registry=pf_registry,
+                scope_excluded=scope.get('scope_excluded', []))

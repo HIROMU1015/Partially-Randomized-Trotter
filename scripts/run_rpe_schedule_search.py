@@ -684,10 +684,26 @@ class WidthDriver:
 
     def loop(self):
         previous=self.state.get('stop',{}).get('reason')
-        transient={'REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','MAX_CYCLES'}
+        transient={'REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY'}
         if previous and previous not in transient:
             self.log(event='PRESERVED_STOP',reason=previous);return
         if previous:self.state.pop('stop')
+        if self.a.plan_only and W.kappa_bounds(self.wide) is not None:
+            # Native physical schedule selection only. Missing family/input
+            # preparation remains explicit; no Completion, Executor or worker.
+            self.state['cycle'] += 1
+            proposals, report = self.plan()
+            self.state['scope_plan'] = dict(rule=W.RULE,
+                kappa_bounds=[str(v) for v in W.kappa_bounds(self.wide)],
+                bounds_inclusive=[True, True],
+                requested_L_D={m:self.problem['methods'][m].get('L_D_values') for m in self.methods},
+                family_status={k:dict(L_D=v['L_D'],status=v['status'],reason=v.get('reason'))
+                               for k,v in self.state['families'].items()},
+                preparation_pending=[k for k,v in self.state['families'].items() if v['status']!='READY_METADATA'],
+                scientific_calls=0, queue_operations=0, dry_check_calls=0)
+            self.state['stop'] = dict(reason='BOUNDED_SCHEDULE_PLAN_ONLY',UTC=K.now())
+            self.save()
+            return
         end=self.state['cycle']+self.a.max_cycles
         while self.state['cycle']<end:
             self.state['cycle']+=1;started=time.monotonic();self.log(event='PLAN_START')
