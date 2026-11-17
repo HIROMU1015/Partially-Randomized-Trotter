@@ -112,4 +112,18 @@ class PreparationRoundTests(unittest.TestCase):
                 R.prepare_inputs(ROOT,problem,context,spec,tmp,{},executor,lambda *a,**k:None,None,[])
         producer.assert_not_called()
 
+    def test_cli_continuation_retains_fatal_stop_when_another_method_needs_inputs(self):
+        context,spec,problem,executor=self.inputs()
+        executor.launched=lambda method:0
+        for stop in ('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'):
+            with self.subTest(stop=stop),tempfile.TemporaryDirectory()as tmp:
+                completion=Completion(tmp,{})
+                result={method:dict(stop_reason=stop if method=='FULL_PF'else'NEEDS_INPUTS',
+                    new_calls=0,input_requests=[{'ARTIFICIAL':'another missing candidate'}])for method in METHODS}
+                with patch.object(PR,'prepare_for_search')as producer:
+                    optimizer=unittest.mock.Mock(side_effect=AssertionError('Q3 after fatal STOP'))
+                    got=PR.continue_selected_preparation(ROOT,problem,context,spec,Path(tmp),
+                        completion,executor,result,optimizer=optimizer)
+                self.assertIs(got,result);producer.assert_not_called();optimizer.assert_not_called()
+
 if __name__=='__main__':unittest.main()

@@ -838,6 +838,10 @@ def continue_selected_preparation(root,problem,context,spec,run,completion,execu
         cycles.append(dict(ready=[r.get('configuration_id')for r in completion.state['records'].values()if r['status']=='READY_FOR_SEARCH'],
             methods={m:dict(stop=r['stop_reason'],new_calls=r['new_calls'],launched=executor.launched(m))for m,r in result.items()}))
         put(completion.directory/'SEARCH_CYCLES.json',dict(cycles=cycles,cumulative_budget=spec['max_new_q3_per_method']))
+        # Continuation shares the original search's STOP, including a fatal
+        # answer returned by an early READY candidate or a later cycle.
+        if any(r.get('stop_reason')in {'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}for r in result.values()):
+            break
         remaining=[]
         for method in spec['methods']:
             maximum=spec['max_new_q3_per_method'][method]
