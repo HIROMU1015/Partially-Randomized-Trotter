@@ -141,7 +141,7 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
     def inspect(value, where):
         if isinstance(value, dict):
             for key, item in value.items():
-                if key in ('local_worker', 'preparation_profiles'):
+                if key in ('local_worker', 'preparation_profiles', 'relay'):
                     continue
                 inspect(item, where + '/' + key)
         elif isinstance(value, list):
