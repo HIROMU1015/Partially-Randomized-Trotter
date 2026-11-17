@@ -1,5 +1,9 @@
 # 性能対策の再利用索引
 
+## 分散Q3の配送・body・回収・採用計時（2026-11-17）
+
+`rpe_q3_timing`と通常transportの小さいstage/eventを再利用し、`summarize_rpe_q3_timing.py RUN --output FILE`でhost/attempt別の秒数・欠測・異なる時計の包絡を出す。SOURCE19c43576c、集計5897d26ab。旧実3host18人工jobはbody欠測、初回約235秒と後続を分離。新模擬3hostは18/18 body/採用を計測、再開0起動。元native人工DP exact一致・cache HIT。実H4速度とrelay並列化効果は未測定。次の固定SOURCE・新runへ導入し、稼働SOURCEは変更しない。[一元HANDOFF](research/rpe_q3_timing_20261117/HANDOFF.md)／[実測と限界](research/rpe_q3_timing_20261117/REPORT.md)。
+
 ## 候補ごとの実入力適合ホストへ割当
 
 通常schedule入口の準備で `HOST_ELIGIBILITY.json` を作り、distributed controllerがREQUEST/SOURCE/入力とhostの現在fingerprintをclaim直前に照合する。先頭jobが非対応でも既存優先順位の独立候補へ進む。全host不足は予算予約前に保留し、busyな適合hostは待機する。方式名やjob IDの固定割当はしない。既存attemptの回収・再開は保持。新transportと固定科学adapter SOURCEを分ける。人工queueの検査であり実H4の速度測定はない。[使い方と根拠](research/rpe_q3_host_eligibility/REPORT.md)。

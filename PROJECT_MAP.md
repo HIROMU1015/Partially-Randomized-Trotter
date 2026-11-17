@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[分散Q3の運用計時](docs/research/rpe_q3_timing_20261117/HANDOFF.md)：保存18人工jobの区間計測と、通常run用1コマンド集計。別時計の片道は包絡/欠測、実H4追加0件。
+
 [候補別のdry-check PASSホストへのQ3割当](docs/research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
 
 [H4準備の1コマンド化・差分履歴・早期READY](docs/research/rpe_h4_readiness_fast_20261117/README.md)：通常入口から選定前の全履歴照合→server2乾式検査→旧遠隔REQUEST確定。固定入力の初回106.53秒、反復6.47秒でREADY、科学実行0件。[計測と限界](docs/research/rpe_h4_readiness_fast_20261117/REPORT.md)。
