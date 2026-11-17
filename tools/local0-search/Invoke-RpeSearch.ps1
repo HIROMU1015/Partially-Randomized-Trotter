@@ -20,9 +20,23 @@ $transport64=[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes(($transpor
 $remote='set -o pipefail; '+(Quote-RpeShellArgument $client.python)+' -B '+(Quote-RpeShellArgument $client.remote_entry)+' --transport-base64 '+$transport64+' | base64 -w 1024'
 $sshPath=Join-Path $env:SystemRoot 'System32/OpenSSH/ssh.exe'
 $native=@('-n','-o','BatchMode=yes','-o','ConnectTimeout=20','-o','ServerAliveInterval=15','-o','ServerAliveCountMax=2',$client.ssh_alias,$remote)
-$raw=& $sshPath @native
-if($LASTEXITCODE -ne 0){throw ('RomuTail client transport failed, exit='+$LASTEXITCODE)}
-$responseText=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -join '')))
+# A child with file-backed handles also works when this command itself is
+# running inside Windows OpenSSH. Avoid Python/PowerShell capture-pipe hangs.
+$temporary=Join-Path ([IO.Path]::GetTempPath()) ('rpe-search-'+[guid]::NewGuid().ToString('N'))
+[void][IO.Directory]::CreateDirectory($temporary)
+try{
+    $answer=Join-Path $temporary 'response.txt';$errors=Join-Path $temporary 'errors.txt';$stdout=Join-Path $temporary 'stdout.txt'
+    $psquote={param($v) "'"+([string]$v).Replace("'","''")+"'"}
+    $arguments=($native|ForEach-Object {& $psquote $_}) -join ','
+    $bridge='$ErrorActionPreference=''Stop'';$ProgressPreference=''SilentlyContinue'';$a=@('+$arguments+');$r=& '+(& $psquote $sshPath)+' @a;$code=$LASTEXITCODE;[IO.File]::WriteAllText('+(& $psquote $answer)+',($r -join [Environment]::NewLine),[Text.Encoding]::ASCII);exit $code'
+    $encoded=[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($bridge))
+    $process=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList @('-NoProfile','-NonInteractive','-EncodedCommand',$encoded) -PassThru -Wait -RedirectStandardOutput $stdout -RedirectStandardError $errors
+    if($process.ExitCode -ne 0){throw ('RomuTail client transport failed, exit='+$process.ExitCode+': '+[IO.File]::ReadAllText($errors))}
+    $raw=[IO.File]::ReadAllText($answer)
+}finally{
+    if(Test-Path $temporary){Remove-Item -Recurse -Force $temporary}
+}
+$responseText=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw))
 $response=$responseText|ConvertFrom-Json
 if(-not $response.ok){throw $response.error}
 $result=$response.result
