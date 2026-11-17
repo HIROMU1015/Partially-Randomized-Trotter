@@ -4,6 +4,7 @@ A detached per-attempt supervisor preserves adapter exit evidence if the network
 or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 """
 from copy import deepcopy
+from .rpe_q3_timing import stamp, append as timing_append
 from .rpe_host_profiles import select_host_profile, validate_adapter_profile, check_runtime_profile
 import base64
 import fcntl
@@ -89,7 +90,7 @@ def process_alive(pid, marker):
 
 
 def event(profile, name, **detail):
-    value = dict(event=name, epoch=time.time(), monotonic=time.monotonic(), host_id=profile['host_id'], **detail)
+    value = dict(stamp(), event=name, host_id=profile['host_id'], **detail)
     path = Path(profile['work_dir']) / 'WORKER_EVENTS.jsonl'
     with path.open('a') as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
@@ -99,7 +100,7 @@ def event(profile, name, **detail):
 def save_state(attempt, state, **detail):
     if state not in STATES:
         raise ValueError('Invalid worker state')
-    value = dict(state=state, epoch=time.time(), detail=detail)
+    value = dict(stamp(), state=state, detail=detail)
     atomic(Path(attempt) / 'WORKER_STATE.json', value)
     return value
 
@@ -191,6 +192,7 @@ def _adapter_command(profile, attempt, mode, output):
 
 def _run_adapter(profile, attempt, mode, output):
     started = time.monotonic()
+    timing_append(Path(attempt)/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_START',mode=mode)
     with (Path(attempt) / ('WORKER_' + mode.upper() + '.log')).open('a') as log:
         process = subprocess.Popen(_adapter_command(profile, attempt, mode, output), cwd=profile.get('adapter_root', profile['root']),
             env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'), stdout=log, stderr=subprocess.STDOUT)
@@ -204,6 +206,7 @@ def _run_adapter(profile, attempt, mode, output):
                 # A launched adapter still needs its exit receipt on marker/log failure.
                 launch_error = error
         code = process.wait()
+    timing_append(Path(attempt)/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_END',mode=mode,returncode=code)
     receipt = dict(returncode=code if code >= 0 else None, signal=-code if code < 0 else None,
                    wall_seconds=time.monotonic() - started, automatic_retry=False)
     destination = 'PROCESS_RETURN.json' if mode == 'execute' else 'WORKER_' + mode.upper() + '_RETURN.json'
@@ -277,6 +280,7 @@ def supervise(attempt):
         _run_adapter(profile, attempt, 'execute', attempt)
         observed = validate_completed(profile, assignment, attempt)
         save_state(attempt, 'COMPLETED_PENDING_TRANSFER', outcome_status=observed['status'])
+        timing_append(attempt/'TRANSPORT_TIMING.jsonl','RESULT_BUNDLE_READY')
         event(profile, 'COMPLETE', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
               status=observed['status'], process_return=read(attempt / 'PROCESS_RETURN.json'))
         return 0
@@ -367,6 +371,8 @@ class Worker:
         atomic(attempt / 'ASSIGNMENT.json', assignment)
         self.records[attempt] = assignment
         event(self.profile, 'ASSIGNED', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'])
+        timing_append(attempt/'TRANSPORT_TIMING.jsonl','WORKER_ASSIGNMENT_DURABLE',
+            job_id=assignment['job_id'],attempt_id=assignment['attempt_id'])
 
     def _launch(self, attempt):
         # Durable before Popen: an interrupted handoff is ambiguous, never retried.
@@ -448,7 +454,7 @@ class Worker:
                 if a.get('prefix_key') and read(p / 'WORKER_STATE.json')['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED')
                 })
             try:
-                payload = dict(slots=self.slots-active, cached_prefixes=cached, source_sha=self.source_sha,
+                payload = dict(slots=self.slots-active, capacity=self.slots, cached_prefixes=cached, source_sha=self.source_sha,
                                **host_fingerprints(self.profile, self.eligibility_challenges))
                 response = self._post('/v1/poll', payload)
                 self.eligibility_challenges = response.get('eligibility_challenges', [])
@@ -548,7 +554,7 @@ def mailbox(profile, action, payload=None):
                 if state['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED') and assignment.get('prefix_key'):
                     cached.add(assignment['prefix_key'])
                 attempts.append(row)
-            return dict(host_id=worker.host_id, slots=max(0,worker.slots-active), source_sha=worker.source_sha,
+            return dict(host_id=worker.host_id, slots=max(0,worker.slots-active), capacity=worker.slots, source_sha=worker.source_sha,
                         cached_prefixes=sorted(cached), attempts=attempts)
         raise ValueError('Unknown mailbox action')
     finally:

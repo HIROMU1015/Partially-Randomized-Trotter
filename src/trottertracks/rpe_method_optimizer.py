@@ -1216,7 +1216,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             log = None
             if executor is not None:
                 ex_log = executor.for_method(name)
-                log = lambda row, ex_log=ex_log: ex_log.log(event='SEARCH_ADOPT' if getattr(ex_log, 'supports_nonblocking_prefetch', False) else 'ADOPT', configuration=row['configuration_id'][:8], cls=row['cls'],
+                log = lambda row, ex_log=ex_log: ex_log.log(event='SEARCH_ADOPT' if getattr(ex_log, 'supports_nonblocking_prefetch', False) else 'ADOPT', configuration=row['configuration_id'][:8], job=row.get('job'), cls=row['cls'],
                                                            status=row['status'], cost=show(row['cost']),
                                                            method_min=row['method_min_after'] and show(row['method_min_after']))
             result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,

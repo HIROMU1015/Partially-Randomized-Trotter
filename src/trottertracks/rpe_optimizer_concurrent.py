@@ -19,6 +19,7 @@ import sys
 import signal
 
 from . import rpe_method_optimizer as O
+from .rpe_q3_timing import stamp
 
 
 def _write(path, value):
@@ -87,10 +88,18 @@ class ConcurrentExecutor(O.Executor):
         return view
 
     def log(self,**event):
+        job = event.get('job')
+        if job:
+            event['job'] = Path(str(job)).name
+            marker = self.run_dir/'jobs'/str(self.method)/event['job']/'LAUNCH.json'
+            if marker.exists():
+                owner = json.loads(marker.read_text())
+                for key in ('host_id', 'attempt_id'):
+                    if owner.get(key) is not None:event.setdefault(key, owner[key])
         with self.lock:
             with(self.run_dir/'PROGRESS.jsonl').open('a')as f:
                 f.write(json.dumps(dict(UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
-                    epoch=time.time(),monotonic=time.monotonic(),invocation=self.invocation,method=self.method,**event),default=str)+'\n')
+                    **stamp(),invocation=self.invocation,method=self.method,**event),default=str)+'\n')
 
     def request(self,proposal,job,rule):
         req=super().request(proposal,job,rule)
@@ -615,6 +624,33 @@ class DistributedExecutor(ConcurrentExecutor):
             value['host_execution_profile_sha256'] = digest(value['host_execution_profile'])
         return value
 
+    def _timing_queue(self):
+        """Observe queue causes under the existing claim lock; never reorder."""
+        s=self.state;reasons={};required=self.distributed.get('required_hosts',[])
+        # Compact operational columns only: do not deserialize every saved REQUEST.
+        with self.store._connection() as db:
+            snapshot={r['job_id']:dict(r)for r in db.execute(
+                "SELECT job_id,host_id,state,eligibility FROM jobs WHERE state NOT IN ('CANCELLED','ACCEPTED')")}
+        owned=Counter(r['host_id']for r in snapshot.values()if r['state']!='QUEUED')
+        for task in s.tasks.values():
+            if task.status!='QUEUED':continue
+            row=snapshot.get(task.job.name)
+            if row is None:continue
+            decision=json.loads(row['eligibility'])
+            allowed=decision.get('eligible_host_ids',[]) if decision else list(self.hosts)
+            if any(h not in self.hosts for h in required):reason='REQUIRED_HOST_PARTICIPATION_WAIT'
+            elif s.active>=self.capacity:reason='ALL_ELIGIBLE_SLOTS_BUSY'
+            elif allowed and all(h in self.hosts and self.hosts[h].get('capacity') is not None and
+                    owned[h]>=self.hosts[h]['capacity'] for h in allowed):reason='ALL_ELIGIBLE_SLOTS_BUSY'
+            elif not allowed or any(h not in self.hosts for h in allowed):reason='ELIGIBLE_HOST_AVAILABILITY_UNKNOWN'
+            else:reason='DISPATCH_READINESS_OR_POLL_WAIT'
+            reasons[task.job.name]=reason
+        payload=dict(reasons=reasons,active=s.active,capacity=self.capacity,
+            hosts={h:dict(capacity=v.get('capacity'),slots=v['slots'])for h,v in self.hosts.items()})
+        marker=json.dumps(payload,sort_keys=True)
+        if marker!=getattr(s,'last_timing_queue',None):
+            s.last_timing_queue=marker;self.log(event='QUEUE_WAIT_STATE',**payload)
+
     def rpc(self, path, value):
         from . import rpe_q3_coordinator as Q
         s = self.state
@@ -627,12 +663,15 @@ class DistributedExecutor(ConcurrentExecutor):
                 if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
                 fingerprints = value.get('host_fingerprints') or {}
                 if not isinstance(fingerprints, dict): raise ValueError('Host fingerprints must map job IDs to current facts')
-                self.hosts[host] = dict(epoch=time.time(), slots=slots, cached_prefixes=value.get('cached_prefixes', []),
+                if host not in self.hosts:
+                    self.log(event='HOST_FIRST_POLL',host_id=host,capacity=value.get('capacity'))
+                self.hosts[host] = dict(epoch=time.time(), slots=slots, capacity=value.get('capacity'), cached_prefixes=value.get('cached_prefixes', []),
                                        host_fingerprints=fingerprints)
                 # A lost response is reconciled with its original owner even
                 # if current readiness changed or another host is offline.
                 assignments = [self._assignment(row) for row in self.store.rows()
                     if row['host_id'] == host and row['state'] == 'ASSIGNED'][:slots]
+                self._timing_queue()
                 required = self.distributed.get('required_hosts', [])
                 if any(name not in self.hosts for name in required):
                     return dict(assignments=assignments, stop=False,
@@ -701,6 +740,7 @@ class DistributedExecutor(ConcurrentExecutor):
                         active=s.active, demand=task.demand)
                     assignments.append(self._assignment(row))
                     remaining -= 1
+                self._timing_queue()
                 return dict(assignments=assignments, stop=False, eligibility_challenges=challenges)
             row = self.store.row(value['job_id'])
             if row is None or row['host_id'] != host or row['attempt_id'] != value['attempt_id']:
@@ -709,7 +749,7 @@ class DistributedExecutor(ConcurrentExecutor):
             task = s.tasks.get(job)
             if path == '/v1/transfer-metric':
                 self.for_method(row['method']).log(event='TRANSFER_TIMING', job=row['job_id'], host_id=host,
-                    **value.get('timing', {}))
+                    attempt_id=value['attempt_id'], **value.get('timing', {}))
                 return dict(ok=True)
             if path == '/v1/state':
                 if row['state'] != 'ACCEPTED':
@@ -720,6 +760,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 return dict(ok=True)
             if path != '/v1/complete': raise ValueError('Unknown Q3 RPC endpoint')
             started = time.monotonic()
+            self.for_method(row['method']).log(event='RESULT_RECEIVED',job=row['job_id'],host_id=host,attempt_id=row['attempt_id'])
             if value['request_sha256'] != row['request_sha256']: raise ValueError('Completion request hash differs')
             transfer = self.run_dir/'distributed'/'transfers'/row['job_id']/row['attempt_id']
             transfer.mkdir(parents=True, exist_ok=True)
@@ -744,6 +785,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 task.error = None
                 if task.status == 'RUNNING': self._finished(task, receipt.get('returncode'), row['assigned_epoch'])
                 else: task.event.set()
+            self._timing_queue()
             s.cv.notify_all()
             return dict(ok=True, duplicate=duplicate)
 

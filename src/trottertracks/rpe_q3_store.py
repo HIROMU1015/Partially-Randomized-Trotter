@@ -12,6 +12,7 @@ from pathlib import Path
 import sqlite3
 import time
 import uuid
+from .rpe_q3_timing import stamp
 
 
 def canonical(value):
@@ -107,7 +108,7 @@ class JobStore:
     @staticmethod
     def _event(db, job_id, event, detail=None):
         db.execute('INSERT INTO events(job_id,event,epoch,detail) VALUES(?,?,?,?)',
-                   (job_id, event, time.time(), canonical(detail or {})))
+                   (job_id, event, time.time(), canonical(dict(stamp(), **(detail or {})))))
 
     def row(self, job_id):
         with self._connection() as db:

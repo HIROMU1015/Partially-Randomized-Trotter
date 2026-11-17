@@ -21,6 +21,7 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src'))
 from trottertracks.rpe_q3_coordinator import atomic_json
+from trottertracks.rpe_q3_timing import stamp
 
 
 def acquire_lock(stream):
@@ -72,7 +73,7 @@ class Relay:
                           transport='local0 SSH controller forwarding + worker mailbox')
 
     def log(self, event, **value):
-        row = dict(epoch=time.time(), event=event, **value)
+        row = dict(stamp(), event=event, **value)
         with (self.directory/'EVENTS.jsonl').open('a') as output: output.write(json.dumps(row)+'\n')
 
     def post(self, path, value):
@@ -145,7 +146,9 @@ class Relay:
     def tick(self, worker):
         info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
         info['phase'] = 'MAILBOX_STATUS'
+        status_start=stamp()
         status, download_seconds = self.remote(worker, 'status')
+        self.log('MAILBOX_STATUS_RETURN',host_id=worker['host_id'],started=status_start,seconds=download_seconds)
         host = status['host_id']
         if host != worker['host_id']: raise ValueError('Mailbox host differs from relay profile')
         for attempt in status['attempts']:
@@ -161,15 +164,16 @@ class Relay:
                 if response.get('ok') is not True: raise ValueError('Controller refused completion')
                 upload_seconds = time.monotonic()-started
                 info['phase'] = 'MAILBOX_ACK'
-                acknowledgement, _ = self.remote(worker, 'ack', owner)
+                acknowledgement, ack_seconds = self.remote(worker, 'ack', owner)
                 if acknowledgement.get('ok') is not True: raise ValueError('Worker refused completion acknowledgement')
                 timing = dict(upload_roundtrip_seconds=upload_seconds, ssh_status_download_seconds=download_seconds,
+                              ssh_ack_roundtrip_seconds=ack_seconds,
                               artificial_transport_scope='SSH status includes all pending attempts for this host')
                 self.log('RESULT_RECOVERED', **owner, duplicate=response.get('duplicate', False), **timing)
                 try: self.post('/v1/transfer-metric', dict(owner, timing=timing))
                 except Exception as error: self.log('TELEMETRY_PENDING', **owner, error=str(error))
         info['phase'] = 'CONTROLLER_POLL'
-        poll = dict(host_id=host, slots=status['slots'], source_sha=status['source_sha'],
+        poll = dict(host_id=host, slots=status['slots'], capacity=status.get('capacity'), source_sha=status['source_sha'],
                     cached_prefixes=status['cached_prefixes'])
         response = self.post('/v1/poll', poll)
         if not response['assignments'] and response.get('eligibility_challenges'):
@@ -180,6 +184,7 @@ class Relay:
                         readiness_errors=current.get('readiness_errors', {}))
             response = self.post('/v1/poll', poll)
         assignments = response['assignments']
+        response_time=time.monotonic()
         for assignment in assignments:
             # Store delivery intent before SSH. A lost submit response is
             # reconciled with the same server2-owned job and attempt next tick.
@@ -187,10 +192,15 @@ class Relay:
             pending.mkdir(parents=True, exist_ok=True)
             atomic_json(pending/'ASSIGNMENT.json', assignment)
             info['phase'] = 'MAILBOX_SUBMIT'
+            relay_wait=time.monotonic()-response_time
+            self.log('REQUEST_DELIVERY_START',host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'])
             response, seconds = self.remote(worker, 'submit', assignment)
             if response.get('ok') is not True: raise ValueError('Worker refused assignment')
             self.log('REQUEST_DELIVERED', host_id=host, job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                      seconds=seconds, duplicate=response.get('duplicate', False))
+            try:self.post('/v1/transfer-metric',dict(host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],
+                timing=dict(ssh_delivery_roundtrip_seconds=seconds,relay_response_to_submit_seconds=relay_wait)))
+            except Exception as error:self.log('TELEMETRY_PENDING',host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'],error=str(error))
         info.update(last_success_epoch=time.time(), slots=status['slots'], phase='READY',
             states={name:sum(a['state']==name for a in status['attempts']) for name in sorted({a['state'] for a in status['attempts']})})
 

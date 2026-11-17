@@ -214,14 +214,14 @@ class RelayTests(unittest.TestCase):
                 relay.cycle()
                 self.assertEqual(relay.state['workers'][worker['host_id']]['failure_count'], 0)
                 events = [json.loads(line) for line in (relay.directory/'EVENTS.jsonl').read_text().splitlines()]
-                self.assertEqual([e['event'] for e in events], ['RESULT_RECOVERED', 'TELEMETRY_PENDING'])
+                self.assertEqual([e['event'] for e in events if e['event']!='MAILBOX_STATUS_RETURN'], ['RESULT_RECOVERED', 'TELEMETRY_PENDING'])
                 self.assertTrue(transferred[0])
                 poll_failure[0] = True
                 relay.cycle()
                 events = [json.loads(line) for line in (relay.directory/'EVENTS.jsonl').read_text().splitlines()]
-                self.assertEqual([e['event'] for e in events], ['RESULT_RECOVERED', 'TELEMETRY_PENDING', 'TRANSPORT_PENDING'])
+                self.assertEqual([e['event'] for e in events if e['event']!='MAILBOX_STATUS_RETURN'], ['RESULT_RECOVERED', 'TELEMETRY_PENDING', 'TRANSPORT_PENDING'])
                 self.assertEqual(events[-1]['phase'], 'CONTROLLER_POLL')
-                self.assertEqual(events[0]['job_id'], 'ARTIFICIAL_JOB')
+                self.assertEqual(next(e for e in events if e['event']=='RESULT_RECOVERED')['job_id'], 'ARTIFICIAL_JOB')
                 self.assertEqual(relay.state['workers'][worker['host_id']]['failure_count'], 1)
 
     def test_startup_status_replaces_old_stopped_state_before_first_blocked_tick(self):
