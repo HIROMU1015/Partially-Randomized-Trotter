@@ -10,6 +10,7 @@ from fractions import Fraction
 import importlib.util
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -37,6 +38,17 @@ def put(p,x):
 def module(view,name,path):
     sys.path[:0]=[str(view/'scripts'),str(view/'src')]
     s=importlib.util.spec_from_file_location(name,view/path);m=importlib.util.module_from_spec(s);sys.modules[name]=m;s.loader.exec_module(m);return m
+
+
+def place_intake_inputs(view, locators):
+    """Make saved inputs visible to the fixed adapter without moving its HEAD."""
+    for locator in locators:
+        commit=locator['commit']
+        args=['git','cat-file','-e',commit+':'+locator['path']]
+        if subprocess.run(args,cwd=view,capture_output=True,
+                          env=dict(os.environ,GIT_NO_LAZY_FETCH='1',GIT_TERMINAL_PROMPT='0')).returncode:
+            subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(ROOT),
+                            commit+':refs/rpe-intake-inputs/'+commit],cwd=view,check=True,capture_output=True)
 
 
 def df_extension():
@@ -172,6 +184,7 @@ def main():
         value['implementation']=implementation
     else:
         view=Path(r['view']);sys.path[:0]=[str(view/'scripts'),str(view/'src')]
+        place_intake_inputs(view, (r['configuration'],r['packet']))
         if r['method']=='PR_PAULI':
             from trottertracks import rpe_pauli_signal_intake as A,rpe_total_binding as T
             got=A.accept_saved(view,integration=T.C.interfaces(str(view)).pipeline,handoff_source=r['packet'])

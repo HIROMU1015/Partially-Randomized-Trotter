@@ -55,6 +55,41 @@ def reuse_signal(root, workspace, folder, plan, saved):
         raise Held('PF_SAVED_SIGNAL_REUSE_HOLD:'+str(error)) from error
 
 
+def reuse_calibration(root, workspace, folder, plan, rounds, receipt):
+    from .pr_candidate_completion import Held
+    relative=(folder/'calibration/run01').relative_to(workspace).as_posix()
+    commit=receipt['raw_commit']
+    try:
+        if (receipt['status']!='COMPILE_RECEIPTS_READY' or receipt['phase']!='calibration' or
+                receipt['relative']!=relative or receipt['rounds']!=rounds):
+            raise ValueError('Collected calibration differs from the selected PF leaf')
+        def blob(path):
+            return subprocess.check_output(['git','show',commit+':'+path],cwd=root)
+        origin=json.loads(blob(folder.relative_to(workspace).as_posix()+'/PLAN.json'))
+        result=json.loads(blob(relative+'/RESULT.json'))
+        if (origin['configuration']!=plan['configuration'] or
+                origin['prepared']['pending']['requests']!=plan['prepared']['pending']['requests'] or
+                result['child_exit_code']!=0 or len(result['results'])!=len(rounds) or
+                any(not row['ok'] or len(row['wrappers'])!=2 for row in result['results'])):
+            raise ValueError('Collected native calibration does not match the selected PF plan')
+        names=git(root,'ls-tree','-r','--name-only',commit,'--',relative).splitlines()
+        subprocess.run(['git','fetch','--no-tags',str(root),commit],cwd=workspace,check=True,
+                       stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+        for name in names:
+            path=workspace/Path(name)
+            path.relative_to(folder/'calibration/run01')
+            path.parent.mkdir(parents=True,exist_ok=True)
+            raw=blob(name)
+            if path.exists():
+                if path.read_bytes()!=raw:raise ValueError('Existing calibration artifact differs')
+            else:
+                with path.open('xb') as stream:stream.write(raw)
+        put(folder/'PF_COMPILE.RESULT.json',receipt)
+    except (OSError,KeyError,ValueError,subprocess.CalledProcessError) as error:
+        raise Held('PF_SAVED_CALIBRATION_REUSE_HOLD:'+str(error)) from error
+    return receipt
+
+
 def complete_selected(root,spec,run,request,entry,output,runtime):
     """Original finite PF contract; no independent candidate/shot selection."""
     original=Path(entry).resolve().parents[1];run=Path(run)
@@ -136,7 +171,9 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
             values=deepcopy(value['direct_prices'])
             calibration=[r['m']for r in value['new_compile_cells']if r['role']!='HOLDOUT']
             if calibration:
-                compiled=call('compile','PF_COMPILE',cohort='calibration',rounds=calibration)
+                saved=spec['pf_completion'].get('saved_calibration')
+                compiled=(reuse_calibration(root,workspace,folder,value,calibration,saved) if saved else
+                          call('compile','PF_COMPILE',cohort='calibration',rounds=calibration))
                 values+=call('audit','PF_AUDIT',compiled=compiled)['prices']
             frozen=call('freeze','PF_MODEL_FREEZE',prices=values)['model']
             holdout=[r['m']for r in value['new_compile_cells']if r['role']=='HOLDOUT']

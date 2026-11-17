@@ -540,8 +540,12 @@ class Gateway:
         write(run/'STOP_REQUESTED.json',dict(reason='USER_REQUESTED_STOP',requested_epoch=time.time()))
         marker=load(run/'NORMAL_DRIVER.json')if(run/'NORMAL_DRIVER.json').exists()else{}
         pid=marker.get('pid');cmd=Path('/proc')/str(pid)/'cmdline'
-        if pid and cmd.exists()and str(run).encode()in cmd.read_bytes():
-            os.kill(pid,signal.SIGINT)
+        try:arguments=cmd.read_bytes().split(b'\0') if pid else ()
+        except FileNotFoundError:arguments=()
+        if any(os.fsencode(path) in arguments for path in (run,run.resolve())):
+            # The driver inside the mount wrapper notices the STOP marker.
+            # Interrupting the wrapper itself could publish before it drains.
+            if Path(os.fsdecode(arguments[0])).name!='bwrap':os.kill(pid,signal.SIGINT)
             return'STOP_REQUESTED_DRAINING'
         return'STOPPED_NO_ACTIVE_DRIVER'
 

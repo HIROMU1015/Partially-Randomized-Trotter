@@ -99,6 +99,15 @@ def fixed_input_hashes(root, documents, artifacts):
     """Hash every fixed Git locator in original JSON, including nested ones."""
     from .rpe_q3_coordinator import input_hashes
     working=[]
+    # PF's original audit binds these provisional sidecars to its collected
+    # raw publication. Hash the same evidence without editing the sidecars.
+    compiled={}
+    for value in documents:
+        if (isinstance(value,dict) and value.get('status')=='COMPILE_RECEIPTS_READY' and
+                isinstance(value.get('relative'),str) and isinstance(value.get('raw_commit'),str)):
+            path=value['relative']+'/IMPLEMENTATION_EVIDENCE.json'
+            previous=compiled.setdefault(path,value['raw_commit'])
+            if previous!=value['raw_commit']:raise ValueError('Conflicting PF raw publications: '+path)
     def fixed(value):
         if isinstance(value,list):return[fixed(item)for item in value]
         if not isinstance(value,dict):return value
@@ -109,6 +118,8 @@ def fixed_input_hashes(root, documents, artifacts):
             matches=[(name,sha)for name,sha in artifacts.items()if name.endswith('/'+value['path'])]
             if len(matches)!=1:raise ValueError('Unfrozen or ambiguous WORKING input: '+value['path'])
             working.append(dict(path=matches[0][0],sha256=matches[0][1]));result.pop('commit')
+        if value.get('commit')=='FILL_WITH_PUBLISHED_COMMIT' and value.get('path') in compiled:
+            result['commit']=compiled[value['path']]
         return result
     payload={'route':{'kind':'preparation_input','documents':fixed(documents)}}
     return input_hashes(root,payload),list({row['path']:row for row in working}.values())
@@ -120,6 +131,7 @@ def operational_source_requirements(documents):
     paths={
         'signal_view':('src/trottertracks/pr_rpe_signal_provider.py','src/trottertracks/pr_rpe_signal_plan.py','src/trottertracks/pr_rpe_rmse_s0_v2.py'),
         'd2_view':('src/trottertracks/pr_price_rules.py',),
+        'df_price_view':('scripts/run_pr_df_ld7_v0.py','src/trottertracks/pr_df_signal_entry.py'),
     }
     def visit(value):
         if isinstance(value,list):
@@ -290,6 +302,8 @@ class DistributedPreparationBridge:
         if root != self.root:
             bindings[str(self.root)] = '@TRANSPORT@'
         workspaces = {};runtime_inputs=[]
+        if script.name=='run_pr_df_candidate_prices.py' and '-c' in command:
+            runtime_inputs.append(dict(df_price_view=command[command.index(str(script))+1]))
         # Original JSON remains byte-for-byte unchanged. Only runtime path
         # access is resolved by rpe_preparation_paths in the existing provider.
         for index,arg in enumerate(command):

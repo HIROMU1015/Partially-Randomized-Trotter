@@ -22,10 +22,21 @@ PRICE='/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-ener
 D2_VIEW=ROOT.parent/'b2-route-view-d2-c1f95e080'
 B_VIEW=ROOT.parent/'d2-auto-b-intake-33e324b'
 DF_Q3_VIEW=ROOT.parent/'b2-route-view-d2-23160cc87'
+DF_VIEW=ROOT.parent/'d2-pr-df-ld1-m3-acquisition-20261115'
 SIGNAL_VIEW=ROOT.parent/'d2-pr-df-ld7-signal-source-fefd-20261116'
 A_WORKSPACE=ROOT.parent/'d2-pauli-auto-nodrop-evidence-20261116'
 GIT_LOCK=threading.RLock()
 IDENTITY=['-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp']
+_DF_PRICE_BOOTSTRAP="""
+import runpy, sys
+from pathlib import Path
+runner, view = sys.argv[1:3]
+sys.argv = [runner, *sys.argv[3:]]
+sys.path.insert(0, str(Path(runner).resolve().parents[1]/'src'))
+main = runpy.run_path(runner)['main']
+main.__globals__['FIXED_VIEW'] = Path(view)
+raise SystemExit(main())
+"""
 
 
 def git(*args,cwd=ROOT):return subprocess.check_output(['git',*args],cwd=cwd,text=True).strip()
@@ -565,14 +576,16 @@ class Completion:
         bundles=self.saved_signal_packets('PR_DF')
         plan=self.service('df-plan',dict(configuration=config,tail_descriptor=descriptor,saved_bundles=bundles),d)
         if plan.get('unsupported_rounds')or any(r['decision']=='UNSUPPORTED'for r in plan['rounds']):raise Held('DF_PROVIDER_UNSUPPORTED:'+str(plan))
-        request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=self.source,
-                     output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(self.path('SIGNAL_VIEW'))))
-        inp=d/'DF_SIGNAL_REQUEST.json';put(inp,request);input_commit=publish([d],'Fix missing DF round jobs')
-        output=d/'df_signals/RESULT.json'
-        result=self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/run_pr_df_candidate_signal_jobs.py'),'--input',str(inp),'--inputs-commit',input_commit,'--source',self.source],d,'DF_SIGNALS',output,science=True)
-        if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
-        raw=publish([d],'Publish missing DF round signals')
-        obtained={str(x['m']):dict(commit=raw,path=x['raw_path'])for x in result['rows']if x.get('raw_path')}
+        result=dict(rows=[],new_provider_calls=0);obtained={}
+        if any(row['decision']=='REQUEST' for row in plan['rounds']):
+            request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=self.source,
+                         output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(self.path('SIGNAL_VIEW'))))
+            inp=d/'DF_SIGNAL_REQUEST.json';put(inp,request);input_commit=publish([d],'Fix missing DF round jobs')
+            output=d/'df_signals/RESULT.json'
+            result=self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/run_pr_df_candidate_signal_jobs.py'),'--input',str(inp),'--inputs-commit',input_commit,'--source',self.source],d,'DF_SIGNALS',output,science=True)
+            if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
+            raw=publish([d],'Publish missing DF round signals')
+            obtained={str(x['m']):dict(commit=raw,path=x['raw_path'])for x in result['rows']if x.get('raw_path')}
         staged=d/'df_carrier'
         st=self.service('df-stage',dict(configuration=cref,directory=rel(staged),obtained=obtained,tail_descriptor=descriptor,saved_bundles=bundles),d)
         if st['status']!='CARRIERS_READY':raise Held('DF_CARRIER:'+str(st))
@@ -655,7 +668,8 @@ class Completion:
     def df_price_group(self,cref,quote,d,registry,group,descriptor=None):
         """One existing DF calibration/holdout campaign per exact actual step."""
         d.mkdir(parents=True,exist_ok=True);base=d/'df_prices';inp=base/'INPUTS.json'
-        args=[self.path('PRICE'),'-B',str(ROOT/'scripts/run_pr_df_candidate_prices.py')]
+        args=[self.path('PRICE'),'-B','-c',_DF_PRICE_BOOTSTRAP,
+              str(ROOT/'scripts/run_pr_df_candidate_prices.py'),str(self.path('DF_VIEW'))]
         descriptor_file=d/'DF_DESCRIPTOR_LOCATOR.json'
         if descriptor:put(descriptor_file,descriptor)
         quote_file=d/'AVAILABLE_PRICE_QUOTE.json';put(quote_file,quote)

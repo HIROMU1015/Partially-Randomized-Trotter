@@ -10,6 +10,11 @@ import zlib
 
 from . import rpe_q3_coordinator as Q
 
+_REMOTE_PROBE = (
+    'import base64,io,json,sys,zlib;v=json.load(sys.stdin);'
+    'code=zlib.decompress(base64.b64decode(v.pop("probe_code")));'
+    'sys.stdin=io.StringIO(json.dumps(v));exec(code)'
+)
 
 # Runs at the host. This only invokes the existing no-science readiness entry.
 _HOST_PROBE = r"""
@@ -168,11 +173,11 @@ def probe(executor, request, job_id, decision):
                     return json.loads(subprocess.check_output([sys.executable, '-B', '-c', _HOST_PROBE],
                                                               input=json.dumps(data), text=True, timeout=120))
             else:
-                code = base64.b64encode(zlib.compress(_HOST_PROBE.encode())).decode()
-                command = 'import base64,zlib;exec(zlib.decompress(base64.b64decode(' + repr(code) + ')))'
-                payload.update(worker_root=worker['root'], profile_path=worker['profile'])
+                # Keep Windows argv short even as the metadata checker grows.
+                payload.update(worker_root=worker['root'], profile_path=worker['profile'],
+                               probe_code=base64.b64encode(zlib.compress(_HOST_PROBE.encode())).decode())
                 def invoke(data):
-                    return bridge.remote_command(worker, [worker.get('python', 'python3'), '-B', '-c', command],
+                    return bridge.remote_command(worker, [worker.get('python', 'python3'), '-B', '-c', _REMOTE_PROBE],
                                                  'q3-readiness', data)[0]
             result = invoke(payload)
             if result['status'] == 'NEEDS_Q3_INPUT_OBJECTS':
