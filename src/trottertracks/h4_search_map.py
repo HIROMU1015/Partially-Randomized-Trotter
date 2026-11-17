@@ -98,6 +98,99 @@ def saved_schedule(value):
     return result
 
 
+def _validation_price_table(application, point):
+    """Return supplied unit prices only; never predict or dereference a producer."""
+    table = {}
+    prices = application.get('prices')
+    if isinstance(prices, list) and len(prices) == 2 * len(point.get('N_X') or []):
+        for i, value in enumerate(prices):
+            if value is not None:
+                table[i // 2, ('X', 'Y')[i % 2]] = frac(value)
+    rows = application.get('price_rows') or (point.get('price_evidence') or {}).get('price_axes') or []
+    for row in rows:
+        value = next((row[k] for k in ('unit_price_RZ', 'C_ref_exact', 'C_ref', 'unit_price_RZ_exact', 'C_RZ')
+                      if row.get(k) is not None), None)
+        if value is not None and row.get('axis') in ('X', 'Y') and type(row.get('m')) is int:
+            table[row['m'], row['axis']] = frac(value)
+    return table
+
+
+def _validation_view(model, application, point):
+    """Allocation-specific display arithmetic on the published price table.
+
+    It is a contribution diagnostic, not a new E[C], G, ranking or model fit.
+    Missing prices stay unknown. A changed (q,R) is displayed as a different
+    application point even when it uses the same frozen model.
+    """
+    result = dict(model_id=model['model_id'], status=model.get('status'), label=model.get('label'),
+                  application_points=deepcopy(application.get('points') or []),
+                  source=application.get('source'), validation_round_contributions=[])
+    x, y = point.get('N_X'), point.get('N_Y')
+    prices = _validation_price_table(application, point)
+    total = None
+    if x and y and len(x) == len(y) and all(type(n) is int and n >= 0 for n in x + y):
+        if set(prices) == {(m, a) for m in range(len(x)) for a in ('X', 'Y')} and all(v >= 0 for v in prices.values()):
+            total = sum(prices[m, a] * n for a, vector in (('X', x), ('Y', y)) for m, n in enumerate(vector))
+    for observed in model.get('validation_points') or []:
+        m = observed.get('m')
+        applied = next((v for v in application.get('points') or [] if v.get('m') == m), None)
+        share = None
+        if total and type(m) is int and 0 <= m < len(x):
+            share = 100 * (x[m] * prices[m, 'X'] + y[m] * prices[m, 'Y']) / total
+        result['validation_round_contributions'].append(dict(m=m,
+            validation_q=observed.get('q'), validation_R=observed.get('R'),
+            application_q=None if applied is None else applied.get('q'),
+            application_R=None if applied is None else applied.get('R'),
+            same_application_point=bool(applied and all(applied.get(k) == observed.get(k) for k in ('q', 'R'))),
+            percent_of_model_total=enc(share) if share is not None else None,
+            scope='SUPPLIED_PRICE_TABLE_AND_THIS_ALLOCATION_ONLY_NO_GLOBAL_RESIDUAL_CORRECTION'))
+    return result
+
+
+def _attach_price_validations(points, runs, issues):
+    models = {}; applications = {}
+    priority = {'CALIBRATION_ONLY': 0, 'PENDING': 1, 'INCOMPLETE': 2, 'INDEPENDENT_MEASURED': 3}
+    for run in runs:
+        rejected = set()
+        document = run.get('price_model_validations') or {}
+        source = run.get('price_validation_source')
+        for i, row in enumerate(document.get('models') or []):
+            mid = row.get('model_id')
+            if not mid:
+                continue
+            candidate = deepcopy(row)
+            if source:
+                candidate.setdefault('publication_source', dict(source, selector=list(source.get('selector') or []) + ['models', i]))
+            old = models.get(mid)
+            if old and old.get('identity') != row.get('identity'):
+                issues.append(dict(source=source, reason='PRICE_VALIDATION_MODEL_IDENTITY_CONFLICT:' + str(mid)))
+                rejected.add(mid)
+                continue
+            # Shared independent observations are stronger display evidence than
+            # an older pending view. This does not change price applicability.
+            score = lambda x: (bool(x.get('validation_points')), priority.get(x.get('status'), -1), len(x.get('validation_points') or []))
+            if old is None or score(candidate) > score(old):
+                models[mid] = candidate
+        for application in document.get('applications') or []:
+            cid, mid = application.get('configuration_id'), application.get('model_id')
+            if cid and mid and mid not in rejected:
+                applications.setdefault(cid, {})[mid] = application
+    for point in points:
+        views = []
+        for mid, application in sorted(applications.get(point.get('configuration_id'), {}).items()):
+            if mid not in models:
+                continue
+            try:
+                views.append(_validation_view(models[mid], application, point))
+            except (ValueError, TypeError, KeyError, ZeroDivisionError) as exc:
+                issues.append(dict(source=application.get('source'), reason='PRICE_VALIDATION_DISPLAY_UNKNOWN:' + str(exc)))
+                views.append(dict(model_id=mid, status=models[mid].get('status'), label=models[mid].get('label'),
+                    application_points=deepcopy(application.get('points') or []), validation_round_contributions=[]))
+        if views:
+            point['price_validations'] = views
+    return models
+
+
 def build_index(catalog, runs, *, sources=None, issues=None):
     comparison = catalog['comparison']; points = {}; targets = {}; problems = list(issues or [])
     accepted = {}; configurations={}
@@ -207,9 +300,11 @@ def build_index(catalog, runs, *, sources=None, issues=None):
                 source=e.get('source'), origin=e.get('origin'), job=e.get('job'),
                 outcome_sha256=e.get('outcome_sha256'), hosts=e.get('hosts') or run.get('hosts', [])))
         saved_run={k: deepcopy(v) for k,v in run.items() if k not in ('targets', 'evaluations')}
+        saved_run.pop('price_model_validations', None)  # shared once in INDEX.price_validation_models
         saved_run['missing']=run_issues
         clean_runs.append(saved_run)
     points = sorted(points.values(), key=lambda r:r['id']); targets = sorted(targets.values(), key=lambda r:r['id'])
+    price_validation_models = _attach_price_validations(points, runs, problems)
     details={}
     for p in sorted(points,key=lambda p:p['cost_admission']!='EXISTING_C_CATALOG'):
         k=p['method']+':'+str(p.get('configuration_id'))
@@ -242,6 +337,7 @@ def build_index(catalog, runs, *, sources=None, issues=None):
                 selected,rt,run_id=rid,mode=mode))
     return dict(schema='H4_SEARCH_MAP_V1', comparison=deepcopy(comparison), sources=sources or [],
         runs=clean_runs, points=points,configuration_details=details, targets=targets, views=views, issues=problems,
+        price_validation_models=price_validation_models,
         count_policy=dict(evaluation='method/configuration/decoder-contract/X-Y-vector; unknown contract marked, jobs/hosts/copies not counted',
             new='Explicit NEW_Q3_JOB or controller-owned evaluation index; SAVED/PRIOR_ROUND_JOB excluded; unknown not counted as new',
             minima='Only existing C-admitted conditional costs, no new price/RMSE evaluation',
@@ -271,6 +367,8 @@ def make_view(vid,label,points,targets,run_id=None,mode='ALL'):
         c.update(physical_evaluated=len({p['configuration_id']for p in ev}), evaluated_allocations=len(ev),
             feasible_allocations=len(feasible),min_cost=enc(cost)if cost is not None else None,
             min_point_ids=[p['id']for p in priced if frac(p['conditional_cost'])==cost],
+            price_validation_labels=sorted({v.get('label') or v.get('status') for p in ps
+                for v in p.get('price_validations', []) if v.get('label') or v.get('status')}),
             missing_count=missing,target_count=len(ts),
             state='MIXED'if missing and ev else'SOURCE_NOT_IMPORTED'if missing else
                 'EVALUATED_NO_FEASIBLE'if ev and not feasible else'EVALUATED'if ev else'TARGET_UNEVALUATED',

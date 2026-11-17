@@ -309,6 +309,30 @@ def _scope_metadata(reader, head, path, document):
     return run
 
 
+def _validation_metadata(reader, head, path, run):
+    """Read a controller-published diagnostic sidecar without changing admission.
+
+    Coefficients and observation sources remain in the producer's fixed record;
+    a display status cannot qualify a price, Q3 result or scientific comparison.
+    """
+    value = reader.document(head, path)
+    if value.get('schema') != 'RPE_PRICE_MODEL_VALIDATIONS_V1':
+        raise ValueError('Unsupported price model validation schema')
+    models = value.get('models', [])
+    if not isinstance(models, list) or any(not isinstance(m, dict) or not m.get('model_id') for m in models):
+        raise ValueError('Price validation models require explicit model IDs')
+    if len({m['model_id'] for m in models}) != len(models):
+        raise ValueError('Duplicate price validation model ID')
+    known = {m['model_id'] for m in models}
+    applications = value.get('applications', [])
+    if not isinstance(applications, list) or any(not isinstance(a, dict) or not a.get('configuration_id')
+            or a.get('model_id') not in known for a in applications):
+        raise ValueError('Price validation application lacks configuration/model binding')
+    run['price_model_validations'] = value
+    run['price_validation_source'] = _source(reader, head, path)
+    return run
+
+
 def _publication(reader, head, path, doc, paths):
     """A producer chooses the public controller files; validate bytes only."""
     if doc.get('role') != 'CONTROLLER':
@@ -316,17 +340,22 @@ def _publication(reader, head, path, doc, paths):
     declared = doc.get('files', {})
     if not isinstance(declared, dict):
         raise ValueError('Publication files must be a name to locator mapping')
-    verified = {}
+    verified = {}; optional_issues = []
     for name, item in declared.items():
         if not isinstance(item, dict) or not item.get('path') or not item.get('sha256'):
             raise ValueError('Publication file locator/hash missing: ' + name)
         p = item['path']
-        if p not in paths or not _allowed(p):
-            raise ValueError('Publication references absent or non-controller file: ' + p)
-        raw = subprocess.check_output(['git', 'show', head + ':' + p], cwd=reader.root)
-        if hashlib.sha256(raw).hexdigest() != item['sha256']:
-            raise ValueError('Publication SHA256 mismatch: ' + p)
-        verified[PurePosixPath(p).name] = p
+        try:
+            if p not in paths or not _allowed(p):
+                raise ValueError('Publication references absent or non-controller file: ' + p)
+            raw = subprocess.check_output(['git', 'show', head + ':' + p], cwd=reader.root)
+            if hashlib.sha256(raw).hexdigest() != item['sha256']:
+                raise ValueError('Publication SHA256 mismatch: ' + p)
+            verified[PurePosixPath(p).name] = p
+        except (ValueError, subprocess.CalledProcessError) as exc:
+            if PurePosixPath(p).name != 'PRICE_MODEL_VALIDATIONS.json':
+                raise
+            optional_issues.append('PRICE_VALIDATION_METADATA_INCOMPLETE:' + str(exc))
     result_path = next((verified[n] for n in RESULT_NAMES if n in verified), None)
     if result_path:
         result = reader.document(head, result_path)
@@ -338,6 +367,13 @@ def _publication(reader, head, path, doc, paths):
         run = _scope_metadata(reader, head, p, reader.document(head, p))
     else:
         raise ValueError('Publication lacks supported controller result or scope metadata')
+    if 'PRICE_MODEL_VALIDATIONS.json' in verified:
+        try:
+            _validation_metadata(reader, head, verified['PRICE_MODEL_VALIDATIONS.json'], run)
+        except (ValueError, TypeError, KeyError, subprocess.CalledProcessError) as exc:
+            optional_issues.append('PRICE_VALIDATION_METADATA_INCOMPLETE:' + str(exc))
+    if optional_issues:
+        run.setdefault('issues', []).extend(optional_issues)
     directory = doc.get('run_directory', run['directory'])
     label = doc.get('run_id', run['label'])
     run.update(id=_ident([label, directory]), label=label, directory=directory,
@@ -365,7 +401,10 @@ def _coalesce(reader, runs):
         chosen = snapshots[0]
         unordered = False
         for view in snapshots[1:]:
-            a, b = chosen['source']['commit'], view['source']['commit']
+            # A validation sidecar can advance without a new Q3 result.
+            # The common publication is the immutable snapshot boundary.
+            a = (chosen.get('publication_source') or chosen['source'])['commit']
+            b = (view.get('publication_source') or view['source'])['commit']
             if a == b:
                 continue
             if subprocess.run(['git', 'merge-base', '--is-ancestor', a, b], cwd=reader.root,
@@ -376,7 +415,8 @@ def _coalesce(reader, runs):
                 unordered = True
         run = dict(chosen)
         run['snapshot_history'] = list(_unique(dict(source=s['source'], status=s['status'],
-                                                  branches=s['branches']) for s in snapshots))
+            publication_source=s.get('publication_source'), price_validation_source=s.get('price_validation_source'),
+            branches=s['branches']) for s in snapshots))
         run['snapshot_selection'] = 'UNORDERED_BRANCH_VIEWS' if unordered else 'SOURCE_ANCESTRY_LATEST'
         run['branches'] = sorted({b for s in snapshots for b in s['branches']})
         run['hosts'] = list(_unique(h for s in snapshots for h in s.get('hosts', [])))

@@ -83,3 +83,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B scripts/build_h4_search_map.
 ## 初版の公開検収
 
 通常shell入口はUPDATED・終了0で9 controller run／4,877一意配分点を公開した。同じ公開入力での再実行はUNCHANGED・終了0で、INDEX・HTML・REPORT・SOURCES・STATUSのbytesも不変。保存consumer回帰28件＋新規技術検査10件＝38 PASS。[検収記録](SYNC_VERIFICATION.json)／[検査log](TESTS.txt)。最新の件数は自動生成REPORTとHTMLを正本とする。定刻ジョブの設定は既存の10分cronを保全しており、新規の利用者操作は不要。
+
+## 保存価格モデルの検証表示
+
+[LD2読取り・表示の接続](../h4_price_validation_consumer_20261117/REPORT.md)：通常controller公開のoptional `PRICE_MODEL_VALIDATIONS.json`を読み、配分詳細の「価格モデル簡易検証」に実測q/R・独立経路数・軸別平均・符号付き百分率・元receiptを表示する。モデルは共有索引へ1件だけ保持する。これは検証metadataの表示であり、既存Q3・条件付き費用・価格資格は変更しない。
