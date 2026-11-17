@@ -876,8 +876,35 @@ class DistributedExecutor(ConcurrentExecutor):
         assignment.update(host_execution_profile=profile,host_execution_profile_sha256=digest(profile))
         return assignment
 
+    def _preparation_probe_targets(self):
+        """Hosts whose current participation may resolve pending readiness.
+
+        Busy hosts remain targets: a free execution slot is not required for a
+        metadata probe. An optional paused, absent or stale host cannot turn
+        established failures on participating hosts into a participation wait.
+        """
+        policy,error=self._host_admission_policy()
+        targets=set()
+        for host in self.distributed.get('preparation_profiles')or{}:
+            admission=self._host_admission(host,policy,error)
+            observed=self.hosts.get(host)
+            if not admission['accepting']or admission['max_slots']==0:continue
+            if observed is not None and observed.get('accepting_new_jobs')is False:continue
+            if admission['optional'] and (observed is None or
+                    time.monotonic()-observed.get('observed_monotonic',float('-inf'))>self.allocation_config['offer_ttl_seconds']):continue
+            targets.add(host)
+        return targets
+
+    def _preparation_probe_hold(self, record):
+        targets=self._preparation_probe_targets()
+        if targets.intersection(record['decision']['eligible_host_ids']):return None
+        if targets and not targets.issubset(record.get('failures',{})):return None
+        return dict(status='HOST_ELIGIBILITY_HOLD',
+            reason='ALL_PARTICIPATING_PREPARATION_HOSTS_FAIL_OR_UNCHECKED'if targets else'NO_PARTICIPATING_PREPARATION_HOST',
+            host_reasons=deepcopy(record.get('failures',{})),probe_host_ids=sorted(targets))
+
     def _pending_preparation_challenges(self, host):
-        if host not in (self.distributed.get('preparation_profiles')or{}):return []
+        if host not in self._preparation_probe_targets():return []
         challenges=[]
         for job_id,record in self.preparation_pending.items():
             row=self.store.row(job_id)
@@ -887,15 +914,15 @@ class DistributedExecutor(ConcurrentExecutor):
                 failure=str(exc)
                 if record.setdefault('failures',{}).get(host)!=failure:
                     record['failures'][host]=failure;self._save_preparation_pending()
-                configured=set(self.distributed.get('preparation_profiles')or{})
-                if configured and configured.issubset(record['failures']) and not record['decision']['eligible_host_ids']:
-                    self.preparation_holds[job_id]=dict(status='HOST_ELIGIBILITY_HOLD',reason='ALL_PREPARATION_HOSTS_FAIL_OR_UNCHECKED',host_reasons=deepcopy(record['failures']))
+                hold=self._preparation_probe_hold(record)
+                if hold is not None:self.preparation_holds[job_id]=hold
                 continue
         return challenges
 
     def _refresh_pending_preparation(self, host, fingerprints, errors):
         from .rpe_q3_coordinator import digest
         from .rpe_preparation_worker import validate_preparation_fingerprint
+        if host not in self._preparation_probe_targets():return
         for job_id,record in list(self.preparation_pending.items()):
             old=self.store.row(job_id)
             if old is not None and old['state']not in('QUEUED','CANCELLED'):continue
@@ -934,9 +961,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     self._save_preparation_pending()
                     self.log(event='PREPARATION_HOST_READINESS',job=job_id,host_id=host,status='UNCHECKED',stage=record['request']['preparation']['stage'],reason=failure)
                 if old is not None and old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
-                configured=set(self.distributed.get('preparation_profiles')or{})
-                if configured and configured.issubset(failures)and not decision['eligible_host_ids']:
-                    self.preparation_holds[job_id]=dict(status='HOST_ELIGIBILITY_HOLD',reason='ALL_PREPARATION_HOSTS_FAIL_OR_UNCHECKED',host_reasons=deepcopy(failures))
+                hold=self._preparation_probe_hold(record)
+                if hold is not None:self.preparation_holds[job_id]=hold
         self.state.cv.notify_all()
 
     def submit_preparation(self, request, *, budget='UNLIMITED', approved=False, contract=None, eligibility=None, dependencies=()):
@@ -990,18 +1016,17 @@ class DistributedExecutor(ConcurrentExecutor):
                 with self.state.cv:
                     while row is None and not self.state.closed:
                         pending=self.preparation_pending[job_id]
-                        configured=set(self.distributed.get('preparation_profiles')or{})
-                        if configured and configured.issubset(pending.get('failures',{})) and not pending['decision']['eligible_host_ids']:break
+                        if self._preparation_probe_hold(pending)is not None:break
                         if pending['decision']['eligible_host_ids'] and job_id in self.preparation_holds and self.preparation_holds[job_id].get('status')=='PREPARATION_BUDGET_OR_PERMISSION_HOLD':break
                         self.state.cv.wait(.1);row=self.store.row(job_id)
             finally:self.log(event='DEPENDENCY_WAIT_END',job=job_id)
         if row is None:
             if job_id in self.preparation_pending:
-                pending=self.preparation_pending[job_id];configured=set(self.distributed.get('preparation_profiles')or{})
-                if not configured.issubset(pending.get('failures',{})) and self.preparation_holds.get(job_id,{}).get('status')!='PREPARATION_BUDGET_OR_PERMISSION_HOLD':return None
+                pending=self.preparation_pending[job_id]
+                if self._preparation_probe_hold(pending)is None and self.preparation_holds.get(job_id,{}).get('status')!='PREPARATION_BUDGET_OR_PERMISSION_HOLD':return None
             hold = self.preparation_holds.get(job_id)
-            if hold is None and job_id in self.preparation_pending:
-                hold=dict(status='HOST_ELIGIBILITY_HOLD',reason='ALL_PREPARATION_HOSTS_FAIL_OR_UNCHECKED',host_reasons=deepcopy(self.preparation_pending[job_id].get('failures',{})))
+            if job_id in self.preparation_pending and(hold is None or hold.get('status')=='HOST_ELIGIBILITY_HOLD'):
+                hold=self._preparation_probe_hold(self.preparation_pending[job_id])
             return None if hold is None else dict(hold,job_id=job_id,calls=0,preparation_calls=0)
         if self._preparation_request(row['request']) is None: raise ValueError('Not a preparation task')
         task = self.state.tasks.get(self.run_dir/'jobs'/row['method']/job_id)

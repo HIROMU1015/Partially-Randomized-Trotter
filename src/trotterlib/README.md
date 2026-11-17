@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[分散準備工程の実装と検査](../../docs/research/rpe_distributed_preparation/HANDOFF.md)：実装は`src/trottertracks/rpe_preparation_*`と既存distributed executor/worker。Q3と準備の枠を共用する。
+
 [候補別のdry-check PASSホストへのQ3割当](../../docs/research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
 
 [H4準備の差分cache](../../docs/research/rpe_h4_readiness_fast_20261117/README.md)：`trottertracks.rpe_plan_prepare` が既存optimizerと `rpe_plan_history_cache`・`rpe_plan_readiness` を接続する。計算SOURCE28dと数値kernelは変更せず、科学実行0の準備を速く返す。

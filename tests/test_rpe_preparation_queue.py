@@ -141,6 +141,45 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertIn('No verified preparation profile',result['host_reasons']['server1'])
         self.assertIsNone(ex.store.row(job))
 
+    def _pending_three_host_failures(self, ex, wsl_accepting):
+        hosts=['server2','server1','local','local0-wsl']
+        ex.distributed['preparation_profiles']={h:dict(host_id=h,root=str(ROOT),interpreter=sys.executable)for h in hosts}
+        ex.distributed['host_admission']={'hosts':{'local0-wsl':dict(accepting=wsl_accepting,optional=True)}}
+        request=self.request('compile','optional-probe-targets');request['preparation'].update(artificial=False,source=ex.source_manifest,provider='MISSING_PROFILE')
+        job=ex.submit_preparation(request,approved=True,budget=8)
+        for host in hosts[:3]:self.poll_host(ex,host)
+        self.assertEqual(set(ex.preparation_pending[job]['failures']),set(hosts[:3]))
+        return job
+
+    def test_paused_optional_unpolled_host_does_not_delay_three_failed_probes(self):
+        ex=self.executor(capacity=2)
+        job=self._pending_three_host_failures(ex,wsl_accepting=False)
+        self.assertNotIn('local0-wsl',ex.hosts)
+        self.assertEqual(ex._preparation_probe_targets(),{'server2','server1','local'})
+        result=ex.preparation_result(job)
+        self.assertIsNotNone(result)
+        self.assertEqual(result['status'],'HOST_ELIGIBILITY_HOLD')
+        self.assertEqual(result['reason'],'ALL_PARTICIPATING_PREPARATION_HOSTS_FAIL_OR_UNCHECKED')
+        self.assertEqual(ex.preparation_result(job,wait=True)['status'],'HOST_ELIGIBILITY_HOLD')
+        self.assertIsNone(ex.store.row(job))
+        self.assertEqual(ex.store.counts('PREPARATION:compile'),0)
+        self.assertEqual(sum(e['event']=='ASSIGN'for e in ex.store.events()),0)
+
+    def test_optional_absent_or_stale_probe_excluded_but_busy_fresh_host_retained(self):
+        import time
+        ex=self.executor(capacity=2)
+        job=self._pending_three_host_failures(ex,wsl_accepting=True)
+        self.assertEqual(ex.preparation_result(job)['status'],'HOST_ELIGIBILITY_HOLD')
+        # A participating busy host may still establish readiness. It must not
+        # be excluded merely because its current free slot count is zero.
+        ex.hosts['local0-wsl']=dict(accepting_new_jobs=True,observed_monotonic=time.monotonic(),reported_slots=0,capacity=1)
+        self.assertIn('local0-wsl',ex._preparation_probe_targets())
+        self.assertIsNone(ex.preparation_result(job))
+        ex.hosts['local0-wsl']['observed_monotonic']-=ex.allocation_config['offer_ttl_seconds']+1
+        self.assertNotIn('local0-wsl',ex._preparation_probe_targets())
+        self.assertEqual(ex.preparation_result(job,wait=True)['status'],'HOST_ELIGIBILITY_HOLD')
+        self.assertIsNone(ex.store.row(job))
+
     def test_explicit_stage_budget_does_not_consume_q3_budget(self):
         ex=self.executor(capacity=2)
         one=self.submit(ex,'compile','one',budget=1)

@@ -116,6 +116,9 @@ def _runtime(profile, requirements):
 def current_preparation_fingerprint(assignment, base_profile):
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
     if spec.get('stage')not in STAGES:raise ValueError('Unknown preparation stage')
+    requirements=spec.get('runtime_requirements',{})
+    if spec.get('stage')=='compile'and spec.get('artificial')is not True and not requirements.get('packages',{}).get('qiskit') and not requirements.get('tools'):
+        raise ValueError('Compile requires the fixed compiler version/package or tool contract')
     if request['request_id']!=assignment['job_id'] or digest(request)!=assignment['request_sha256']:raise ValueError('Preparation task identity differs')
     source=spec['source']
     if assignment.get('source_manifest')not in (None,source):raise ValueError('Preparation assignment SOURCE differs')

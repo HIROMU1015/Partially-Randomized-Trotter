@@ -258,10 +258,15 @@ class Completion:
             old=self.state['records'].get(identifier)
             if old and old['status']=='READY_FOR_SEARCH':return dict(old,resumed=True)
             if old and old['status'].startswith(('HELD','STOP','WAITING')):
-                self.ingest_price_results()
-                return dict(self.refresh_price_hold(old)or old,resumed=True)
-            rec=dict(method=request['method'],selection=request.get('selection'),request=request,status='SELECTED',key=identifier,directory=rel(d))
+                if old.get('scientific_failure'):return dict(old,resumed=True)
+                if not old.get('recoverable_preparation'):
+                    self.ingest_price_results()
+                    return dict(self.refresh_price_hold(old)or old,resumed=True)
+            rec=(dict(old,previous_hold=dict(status=old['status'],reason=old.get('reason')),status='SELECTED',
+                      reason=None,recoverable_preparation=False)if old and old.get('recoverable_preparation')else
+                 dict(method=request['method'],selection=request.get('selection'),request=deepcopy(request),status='SELECTED',key=identifier,directory=rel(d)))
             self.state['records'][identifier]=rec;self.save()
+        request=deepcopy(request)  # descriptor resolution must not change the caller's stable request key
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
         physical_guard=None
         try:
@@ -339,7 +344,9 @@ class Completion:
         except Held as exc:
             text=str(exc)
             waiting=text.startswith(('PRICE_RULE_INCOMPLETE:','PRICE_EVIDENCE_REQUIRED:'))
-            rec.update(status='WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
+            operational=text.startswith('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:')
+            rec.update(status='WAITING_DISTRIBUTED_PREPARATION'if operational else'WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
+                       recoverable_preparation=operational,
                        scientific_failure=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')))
         except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),scientific_failure=True)
         finally:
