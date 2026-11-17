@@ -1,0 +1,368 @@
+{
+  "schema": "LOCAL0_APPLIED_SEARCH_SCOPE_V1",
+  "run_id": "search-9263482821b08a34a00a",
+  "signature": "9263482821b08a34a00a28e45e748a2b297eb3f3be5761eb7362ed3614a9d5b3",
+  "evaluation_identity": "58949b602df63559ed99c327698c232e1607229d58c212a9305dac68c2e049b2",
+  "entry": "schedule",
+  "code_source": "04191fec461a3040816946bec5db2fc2fe0ed029",
+  "applied": {
+    "methods": [
+      "PR_PAULI"
+    ],
+    "requested": {
+      "methods": [
+        "PR_PAULI"
+      ],
+      "per_method": {
+        "PR_PAULI": {
+          "L_D": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/36028797018963968"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/18014398509481984"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/9007199254740992"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/4503599627370496"
+            }
+          ],
+          "kappa": {
+            "mode": "absolute",
+            "min": "2",
+            "max": "64"
+          }
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_new_q3_per_method": 32
+      },
+      "preparation_budgets": {
+        "signal": 0,
+        "compile": 0,
+        "audit": 8
+      }
+    },
+    "fixed": {
+      "problem": {
+        "system": "H4",
+        "geometry": "linear_1Angstrom",
+        "basis": "STO-3G",
+        "rank_policy": "tol_only_1e-8",
+        "hamiltonian_data": {
+          "snapshot": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_snapshot.npz",
+            "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+          },
+          "receipt": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_receipt.json",
+            "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+          },
+          "expected": {
+            "fragment_count": 10,
+            "n_qubits": 8,
+            "sector_dimension": 36
+          }
+        }
+      },
+      "accuracy": {
+        "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+        "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+        "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+        "epsilon_E_decimal": "0.00159360010199040",
+        "scope": "MODEL_MSE_FILTER_ONLY"
+      },
+      "target": {
+        "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+        "energy_ha": -2.1663874486347634,
+        "source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        }
+      },
+      "rpe": {
+        "M": 12
+      }
+    },
+    "method_settings": {
+      "PR_PAULI": {
+        "family": "PR",
+        "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body always in head; tail non-empty",
+        "L_D_range": {
+          "min": 4,
+          "max_offset_from_fragment_count": -3
+        },
+        "caps": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          29,
+          26,
+          23,
+          19,
+          16,
+          13,
+          9
+        ],
+        "generation": {
+          "kind": "pauli_native",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "view": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/views/39a1fc7dfe9b093f0e246be595e2f7938191368b",
+          "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+          "baseline": {
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "2"
+          ],
+          "kappa_multipliers": [
+            "2/3",
+            "1",
+            "2"
+          ],
+          "mapper": "A P1 B API (B ce0517de native generate, PAPER_TOTAL_UNIFORM_OUTER_DRAFT mapper)",
+          "supported_formulas": [
+            "2nd",
+            "4th(m5_best)"
+          ],
+          "note": "q_m=ceil(T_m/delta); h stays the RPE base time",
+          "preparation": {
+            "kind": "a_pauli_candidate_preparation",
+            "request_kind": "pauli_native",
+            "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+            "view": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/views/6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+            "view_commit": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+            "entry": "scripts/prepare_pauli_candidate.py",
+            "handoff": {
+              "commit": "7cf4e1f0536567df6dcf2da6c7bc63f4547aad7b",
+              "path": "docs/research/pauli_candidate_preparation_20261116/HANDOFF.md"
+            },
+            "K": 2,
+            "saved_packets": [
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+              }
+            ],
+            "note": "metadata only (no --prepare-missing): unregistered L_D of the search range and selected kappa proposals; complete configurations are registered even without price; P0 split work stays a preparation request"
+          }
+        },
+        "saved_configurations_only": false,
+        "L_D_values": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "absolute_kappa_bounds": [
+          "2",
+          "64"
+        ]
+      }
+    },
+    "method_overrides": {
+      "PR_PAULI": {
+        "saved_configurations_only": false,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "2"
+          ],
+          "kappa_multipliers": [
+            "2/3",
+            "1",
+            "2"
+          ]
+        },
+        "L_D_values": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "L_D_range": {
+          "min": 4,
+          "max_offset_from_fragment_count": -3
+        },
+        "absolute_kappa_bounds": [
+          "2",
+          "64"
+        ]
+      }
+    },
+    "search": {
+      "rule": "METHOD_MINIMUM_PRIORITY_V2",
+      "decrement_steps": [
+        1,
+        2
+      ],
+      "large_step_headroom": "9/10",
+      "seed_rules": [
+        "B_PRICE",
+        "A_SHAPE"
+      ],
+      "max_steps_per_method": 100000,
+      "max_new_q3_per_method": 0,
+      "seed_saved_same_L_D": true,
+      "explore_every": 4,
+      "explore_window": "3/2",
+      "small_gain_fraction": "1/1000",
+      "deferral_fail_margin": "1/10000",
+      "transfer_count": 2,
+      "lookahead": 16,
+      "lookahead_mode": "HYBRID",
+      "adaptive_lookahead": false,
+      "coarse_gain_fraction": "1/100",
+      "small_and_deferred": "STOP",
+      "schedule_wide": {
+        "rule": "SCHEDULE_WIDE_V1",
+        "ladder_ratio": "4",
+        "explore_ratio": "2",
+        "refine_ratio": "33/32",
+        "exploit_per_explore": 2,
+        "window": "3/2",
+        "upper_stop_steps": 2,
+        "upper_stop_margin": "1/20",
+        "max_kappa": "64",
+        "per_decision": 8,
+        "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family",
+        "kappa_bounds": [
+          "2",
+          "64"
+        ]
+      },
+      "note": "Absolute requested PF widths. JSON .2 retains binary64, string 1/5 exact rational. Fixed h/M/T and evaluation contract unchanged; mapper may reject per method.",
+      "adaptive_hybrid": true,
+      "allocation_exchange": null,
+      "kappa_neighbourhood": {
+        "outer_planner": "SCHEDULE_WIDE_V1"
+      },
+      "requested_widths": {
+        "PR_PAULI": [
+          0.1,
+          0.2,
+          0.4,
+          0.8
+        ]
+      }
+    },
+    "max_new_q3_per_method": {
+      "PR_PAULI": 32
+    },
+    "max_steps_per_method": 100000,
+    "preparation_budgets": {
+      "signal": 0,
+      "compile": 0,
+      "audit": 8
+    }
+  },
+  "problem_sha256": "992e101b4b6479ccd2710d5bf3c76ae7ee31618e5383cfd3552fe7df3161de7d",
+  "round_requested_sha256": "c2369d5b8a669543b8ae0dc8c7fa629d98d22493871deb7ab236f26d60bebea9",
+  "scope": {
+    "methods": [
+      "PR_PAULI"
+    ],
+    "per_method": {
+      "PR_PAULI": {
+        "L_D": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "delta_pf": [
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/36028797018963968"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/18014398509481984"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/9007199254740992"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/4503599627370496"
+          }
+        ],
+        "kappa": {
+          "mode": "absolute",
+          "min": "2",
+          "max": "64"
+        }
+      }
+    },
+    "shots": "auto",
+    "stop": {
+      "max_new_q3_per_method": 32
+    },
+    "preparation_budgets": {
+      "signal": 0,
+      "compile": 0,
+      "audit": 8
+    }
+  }
+}
