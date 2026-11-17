@@ -21,6 +21,15 @@ def save(path, value):
 
 
 class HostEligibilityTests(unittest.TestCase):
+    def runtime_guard_fixture(self):
+        root = Path(__file__).resolve().parents[1]
+        base = root / 'docs/research/rpe_q3_host_eligibility/pauli_descriptor_route'
+        if not (base / 'server2_runtime_ast_v2/READINESS.json').is_file():
+            self.skipTest('Saved actual-runtime guard evidence is unavailable')
+        assignment = H._read(base / 'ASSIGNMENT.json')
+        profile = H._read(base / 'PROFILE_RUNTIME_AST_V2.json')
+        return assignment, profile, base
+
     def romutail_fixture(self):
         root = Path(__file__).resolve().parents[1]
         evidence = root / 'docs/research/rpe_q3_host_eligibility/evidence/romutail_prdf_source_09efb068f'
@@ -290,6 +299,48 @@ class HostEligibilityTests(unittest.TestCase):
         save(target / 'checks/pass01/ROUTE_VIEWS.json', {'wrong-inner': '/wrong/path'})
         policy = H.derive_host_eligibility([assignment], [profile], {profile['host_id']: descriptor})
         self.assertEqual(policy['jobs'][assignment['job_id']]['hosts'][profile['host_id']]['status'], 'UNCHECKED')
+
+    def test_required_runtime_guard_rejects_older_metadata_only_pass(self):
+        assignment, profile, base = self.runtime_guard_fixture()
+        descriptor = dict(kind='local', root=str(base / 'server2_dry_check'), runtime_cache=str(base / 'SERVER2_DRY_CACHE.json'))
+        policy = H.derive_host_eligibility([assignment], [profile], {profile['host_id']: descriptor})
+        cell = policy['jobs'][assignment['job_id']]['hosts'][profile['host_id']]
+        self.assertEqual(cell['status'], 'UNCHECKED')
+        self.assertTrue(any('precheck' in reason for reason in cell['reasons']))
+
+    def test_saved_actual_runtime_guard_is_bound_to_the_poll_fingerprint(self):
+        assignment, profile, base = self.runtime_guard_fixture()
+        descriptor = dict(kind='local', root=str(base / 'server2_runtime_ast_v2'), runtime_cache=str(base / 'SERVER2_RUNTIME_AST_V2_DRY_CACHE.json'))
+        policy = H.derive_host_eligibility([assignment], [profile], {profile['host_id']: descriptor})
+        cell = policy['jobs'][assignment['job_id']]['hosts'][profile['host_id']]
+        self.assertEqual(cell['status'], 'PASS', cell['reasons'])
+        check = cell['current_host_fingerprint']['runtime_checks'][0]
+        self.assertEqual(check['actual_ast_sha256'], check['expected_ast_sha256'])
+        self.assertEqual(cell['execution_profile']['runtime_checks'], profile['runtime_checks'])
+
+    def test_resigned_readiness_with_wrong_actual_ast_is_unchecked(self):
+        assignment, profile, base = self.runtime_guard_fixture()
+        target = self.base / 'wrong-ast'
+        shutil.copytree(base / 'server2_runtime_ast_v2', target)
+        observed = H._read(target / 'READINESS.json')
+        observed['runtime_precheck']['checks'][0]['actual_ast_sha256'] = '0' * 64
+        save(target / 'READINESS.json', observed)
+        index = H._read(base / 'SERVER2_RUNTIME_AST_V2_DRY_CACHE.json')
+        for row in index['methods'].values():
+            row['result_sha256'] = H._sha(target / 'READINESS.json')
+        cache = self.base / 'wrong-ast-index.json'
+        save(cache, index)
+        descriptor = dict(kind='local', root=str(target), runtime_cache=str(cache))
+        policy = H.derive_host_eligibility([assignment], [profile], {profile['host_id']: descriptor})
+        self.assertEqual(policy['jobs'][assignment['job_id']]['hosts'][profile['host_id']]['status'], 'UNCHECKED')
+
+    def test_current_runtime_guard_failure_never_produces_a_claim_fingerprint(self):
+        assignment, profile, base = self.runtime_guard_fixture()
+        with patch('trottertracks.rpe_host_profiles.check_runtime_profile', return_value=dict(status='FAIL', checks=[])), \
+             patch('trottertracks.rpe_plan_readiness.dry_check_fingerprint') as old_metadata:
+            with self.assertRaisesRegex(ValueError, 'precheck'):
+                H.current_host_fingerprint(assignment, profile)
+            old_metadata.assert_not_called()
 
 
 if __name__ == '__main__':

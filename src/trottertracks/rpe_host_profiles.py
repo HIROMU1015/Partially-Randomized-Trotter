@@ -17,6 +17,7 @@ def digest(value):
 def profile_core(profile):
     keys = ('host_id', 'root', 'interpreter', 'route_views', 'dp_workers',
             'prefix_cache_directory', 'runtime', 'adapter_root', 'adapter_manifest')
+    keys += ('runtime_checks',)
     return {key: deepcopy(profile[key]) for key in keys if key in profile}
 
 
@@ -42,6 +43,54 @@ def validate_adapter_profile(profile):
         if hashlib.sha256((root / name).read_bytes()).hexdigest() != expected:
             raise ValueError('Adapter SOURCE hash differs: ' + name)
     return dict(root=str(root), **deepcopy(manifest))
+
+
+def check_runtime_profile(profile):
+    """Run declared source/AST checks in the actual interpreter, without imports or DP."""
+    import ast
+    jobs = []
+    for check in profile.get('runtime_checks', []):
+        if check.get('kind') != 'FIXED_FUNCTION_AST':
+            raise ValueError('Unknown runtime check')
+        view = Path(profile['route_views'][check['view_commit']]).resolve()
+        if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=view, text=True).strip() != check['view_commit']:
+            raise ValueError('Runtime check view HEAD differs')
+        hashes = {}
+        for name in (check['source_path'], check['guard_path']):
+            path = PurePosixPath(name)
+            if path.is_absolute() or '..' in path.parts:
+                raise ValueError('Unsafe runtime source path')
+            raw = subprocess.check_output(['git', 'show', check['view_commit'] + ':' + name], cwd=view)
+            if (view / name).read_bytes() != raw:
+                raise ValueError('Fixed runtime source bytes differ: ' + name)
+            hashes[name] = hashlib.sha256(raw).hexdigest()
+        guard = ast.parse((view / check['guard_path']).read_text())
+        expected = [ast.literal_eval(node.value) for node in guard.body if isinstance(node, ast.Assign)
+                    and any(isinstance(t, ast.Name) and t.id == check['guard_constant'] for t in node.targets)]
+        if len(expected) != 1:
+            raise ValueError('Runtime guard constant is not uniquely defined')
+        jobs.append(dict(check, source_file=str(view / check['source_path']),
+                         expected_ast_sha256=expected[0], source_files=hashes))
+    probe = '''import ast,hashlib,json,platform,sys
+rows=[]
+for check in json.load(sys.stdin):
+    nodes=[n for n in ast.parse(open(check.pop('source_file')).read()).body if isinstance(n,ast.FunctionDef) and n.name==check['function']]
+    if len(nodes)!=1: raise ValueError('Runtime function is not uniquely defined')
+    actual=hashlib.sha256(ast.dump(nodes[0],include_attributes=False).encode()).hexdigest()
+    rows.append(dict(check,actual_ast_sha256=actual,status='PASS' if actual==check['expected_ast_sha256'] else 'FAIL'))
+print(json.dumps(dict(status='PASS' if all(r['status']=='PASS' for r in rows) else 'FAIL',runtime=dict(executable=sys.executable,version=sys.version,version_info=list(sys.version_info),platform=platform.platform()),checks=rows)))
+'''
+    process = subprocess.run([profile['interpreter'], '-B', '-c', probe], input=json.dumps(jobs),
+                             text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+    report = json.loads(process.stdout)
+    runtime = report['runtime']
+    if runtime['executable'] != profile['interpreter']:
+        actual = Path(runtime['executable']).resolve()
+        runtime.update(interpreter_invocation=profile['interpreter'],
+                       launcher_sha256=hashlib.sha256(Path(profile['interpreter']).read_bytes()).hexdigest(),
+                       actual_executable_realpath=str(actual),
+                       actual_binary_sha256=hashlib.sha256(actual.read_bytes()).hexdigest())
+    return report
 
 
 def select_host_profile(base, assignment):

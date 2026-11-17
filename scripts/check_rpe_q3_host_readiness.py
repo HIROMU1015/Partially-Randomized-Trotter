@@ -80,6 +80,11 @@ def main():
         resolved.write_text(json.dumps(request, indent=2, ensure_ascii=False) + '\n')
         result.update(route=request['route'], execution_profile=request.get('execution_profile'),
                       resolved_request_sha256=hashlib.sha256(resolved.read_bytes()).hexdigest())
+        if profile.get('runtime_checks'):
+            stage = 'FIXED_RUNTIME_AST_PRECHECK'
+            result['runtime_precheck'] = profile_helper().check_runtime_profile(profile)
+            if result['runtime_precheck']['status'] != 'PASS':
+                raise ValueError('Fixed execution runtime AST guard did not pass')
         stage = 'EXISTING_ADAPTER_DRY_CHECK'
         adapter_output = output / 'adapter'
         adapter = profile_helper().validate_adapter_profile(profile)

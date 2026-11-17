@@ -1,0 +1,69 @@
+{
+  "schema": "ARTIFICIAL_PRDF_ADAPTER_BINDING_ACCEPTANCE_V1",
+  "status": "PASS",
+  "scope": "ARTIFICIAL_REQUESTS_AND_MOCKED_WORKER_SUPERVISOR_ADAPTER_COMMANDS",
+  "scientific_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "adapter_commit": "09efb068f242d5d6ff88296df3e50283b2f951bf",
+  "implementation_commit": "e37f6544dea3e021d3694264f7dae87add7ad30e",
+  "adapter_files": {
+    "scripts/run_rpe_optimizer_q3_job.py": "63cf463024241af20e9c6b3ca55eaf0ce2ebf4a4a7b8c9ca91a8ea74f6cb7fb6",
+    "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+  },
+  "implementation_and_official_bytes_equal": true,
+  "prefix_helper_unchanged_from_scientific_source": true,
+  "hosts": [
+    {
+      "host_id": "server1",
+      "methods": [
+        "FULL_PF",
+        "TRUNCATED_PF",
+        "PR_DF"
+      ],
+      "assignments": 3,
+      "scientific_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+      "selected_prdf_interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+      "published_adapter_root": null,
+      "adapter_fixture": null,
+      "adapter_source_separate": false,
+      "inner_route_preserved": false,
+      "policy_change_does_not_rewrite_assigned_attempt": true,
+      "duplicate_and_resume_profile_preserved": true,
+      "common_fallback_rejected": true,
+      "other_host_cannot_claim_assigned_job": true,
+      "source_and_manifest_mutation_rejected": false,
+      "recorded_supervisor_commands": 3,
+      "recorded_adapter_commands": 3
+    },
+    {
+      "host_id": "local",
+      "methods": [
+        "FULL_PF",
+        "TRUNCATED_PF",
+        "PR_DF"
+      ],
+      "assignments": 3,
+      "scientific_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+      "selected_prdf_interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "published_adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution",
+      "adapter_fixture": "Temporary two-file Git view; official HEAD and bytes checked, no remote access.",
+      "adapter_source_separate": true,
+      "inner_route_preserved": true,
+      "policy_change_does_not_rewrite_assigned_attempt": true,
+      "duplicate_and_resume_profile_preserved": true,
+      "common_fallback_rejected": true,
+      "other_host_cannot_claim_assigned_job": true,
+      "source_and_manifest_mutation_rejected": true,
+      "recorded_supervisor_commands": 3,
+      "recorded_adapter_commands": 3
+    }
+  ],
+  "published_profile_locator": "docs/research/rpe_q3_host_eligibility/HOST_ELIGIBILITY.json",
+  "recorded_supervisor_commands": 6,
+  "recorded_adapter_commands": 6,
+  "actual_worker_Popen_calls": 0,
+  "real_Q3_calls": 0,
+  "real_dry_check_calls": 0,
+  "Popen_count_scope": "Supervisor/adapter calls only; read-only Git metadata is executed.",
+  "same_scientific_job_assigned_to_two_hosts": false,
+  "fixture": "Each host uses a separate private controller/run and host-specific artificial configuration IDs."
+}

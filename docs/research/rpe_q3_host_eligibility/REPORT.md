@@ -1,5 +1,7 @@
 # 固定H4 Q3候補：ホスト別dry-check証拠の受領と割当条件
 
+最新の完了状態・使い方は [FINAL_HANDOFF](FINAL_HANDOFF.md) を参照。以下の途中checkpointは履歴として保全する。
+
 最新：[12セル準備の引渡し](TWELVE_CELL_HANDOFF.md)。現在10 PASS・Pauli remote2件未確認。下記の7 PASS表と8 PASS追記は過去checkpointで、最新状態はHOST_ELIGIBILITYを参照。
 
 返送済みのサーバー1・ローカルの8セルを受領し、転送manifestの52ファイルを全件hash照合した。

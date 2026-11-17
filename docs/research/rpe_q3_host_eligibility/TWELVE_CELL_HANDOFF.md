@@ -1,5 +1,7 @@
 # 4方式×3ホストの準備：残る変更セルの検収
 
+最新の完了状態・使い方は [FINAL_HANDOFF](FINAL_HANDOFF.md) を参照。以下の途中checkpointは履歴として保全する。
+
 現在の集計は10 PASS・2未確認。Full PF/B0I/PR-DFはserver2・server1・localで保存証拠PASS、
 PR-Pauliはserver2が新しい固定routeでPASS、server1とlocalは同routeの実機dry-check返送待ち。
 local0は中継・検査指令を担当し、計算hostに含めない。

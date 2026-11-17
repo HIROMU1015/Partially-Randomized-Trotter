@@ -39,7 +39,7 @@ def _effective_profile(profile, assignment):
                 route_view=profile['route_views'][route['view_commit']],
                 dp_workers=profile.get('dp_workers'),
                 prefix_cache_directory=profile.get('prefix_cache_directory'))
-    for key in ('adapter_root', 'adapter_manifest'):
+    for key in ('adapter_root', 'adapter_manifest', 'runtime_checks'):
         if key in profile:
             effective[key] = deepcopy(profile[key])
     return effective
@@ -65,7 +65,7 @@ def _resolved_request(assignment, profile):
     return request
 
 
-def _fingerprint(assignment, profile, runtime, views=None, actual=None):
+def _fingerprint(assignment, profile, runtime, views=None, actual=None, runtime_precheck=None):
     route = assignment['request']['route']
     selected = profile['route_views'][route['view_commit']]
     if actual is None:
@@ -81,6 +81,9 @@ def _fingerprint(assignment, profile, runtime, views=None, actual=None):
     if not normalized_views:
         normalized_views.append(dict(path=selected, commit=route['view_commit'], clean_tracked=True))
     runtime_identity = dict(executable=runtime['executable'], version=runtime['version'])
+    if profile.get('runtime_checks'):
+        _verify_runtime_precheck(profile, runtime_precheck)
+        runtime_identity = deepcopy(runtime)
     if runtime['executable'] != profile['interpreter']:
         for key in ('interpreter_invocation', 'launcher_sha256', 'actual_executable_realpath', 'actual_binary_sha256'):
             if not runtime.get(key):
@@ -94,6 +97,8 @@ def _fingerprint(assignment, profile, runtime, views=None, actual=None):
                 runtime=runtime_identity)
     if profile.get('adapter_root'):
         result['adapter_source'] = dict(root=profile['adapter_root'], **deepcopy(profile['adapter_manifest']))
+    if profile.get('runtime_checks'):
+        result['runtime_checks'] = deepcopy(runtime_precheck['checks'])
     return result
 
 
@@ -105,10 +110,13 @@ def current_host_fingerprint(assignment, profile):
     invoked. Errors deliberately propagate so the caller can withhold new claims.
     """
     from .rpe_plan_readiness import dry_check_fingerprint
-    from .rpe_host_profiles import select_host_profile, validate_adapter_profile
+    from .rpe_host_profiles import select_host_profile, validate_adapter_profile, check_runtime_profile
     assignment, profile = _read(assignment), _read(profile)
     profile = select_host_profile(profile, assignment)
     adapter_source = validate_adapter_profile(profile)
+    precheck = check_runtime_profile(profile) if profile.get('runtime_checks') else None
+    if precheck is not None:
+        _verify_runtime_precheck(profile, precheck)
     raw = dry_check_fingerprint(profile['root'], assignment, profile)
     # The older readiness helper labels its fixed source as 28d. Actual HEAD is
     # separate and must be used for a newly fixed worker source as well.
@@ -118,10 +126,49 @@ def current_host_fingerprint(assignment, profile):
         raw['runtime'].update(interpreter_invocation=profile['interpreter'],
             launcher_sha256=_sha(profile['interpreter']), actual_executable_realpath=str(binary),
             actual_binary_sha256=_sha(binary))
-    result = _fingerprint(assignment, profile, raw['runtime'], raw['views'], actual=raw)
+    if precheck is not None:
+        raw['runtime'] = deepcopy(precheck['runtime'])
+    result = _fingerprint(assignment, profile, raw['runtime'], raw['views'], actual=raw, runtime_precheck=precheck)
     if adapter_source is not None:
         result['adapter_source'] = adapter_source
     return result
+
+
+def _verify_runtime_precheck(profile, report):
+    """Verify the configured fixed AST checks without running a scientific leaf."""
+    specs = profile.get('runtime_checks', [])
+    if not specs:
+        return
+    if not report or report.get('status') != 'PASS' or len(report.get('checks', [])) != len(specs):
+        raise ValueError('Required actual-runtime precheck is absent or did not pass')
+    runtime = report.get('runtime') or {}
+    if not runtime.get('executable') or not runtime.get('version') or not runtime.get('version_info'):
+        raise ValueError('Actual-runtime precheck lacks executable/version identity')
+    import ast
+    import subprocess
+    for spec, check in zip(specs, report['checks']):
+        if any(check.get(key) != value for key, value in spec.items()):
+            raise ValueError('Runtime precheck specification differs from the current profile')
+        if spec.get('kind') != 'FIXED_FUNCTION_AST':
+            raise ValueError('Unrecognized runtime precheck kind')
+        if spec.get('view_commit') not in profile.get('route_views', {}):
+            raise ValueError('Runtime precheck has no selected fixed route view')
+        sources = {}
+        guard = None
+        for path in (spec['source_path'], spec['guard_path']):
+            raw = subprocess.check_output(['git', 'show', spec['view_commit'] + ':' + path],
+                                           cwd=Path(__file__).resolve().parents[2])
+            sources[path] = hashlib.sha256(raw).hexdigest()
+            if path == spec['guard_path']:
+                guard = raw.decode()
+        definitions = [node.value for node in ast.parse(guard).body if isinstance(node, ast.Assign)
+                       and any(isinstance(target, ast.Name) and target.id == spec['guard_constant'] for target in node.targets)]
+        if len(definitions) != 1:
+            raise ValueError('Fixed runtime guard constant is missing or ambiguous')
+        expected = ast.literal_eval(definitions[0])
+        if (check.get('status') != 'PASS' or check.get('expected_ast_sha256') != expected
+                or check.get('actual_ast_sha256') != expected or check.get('source_files') != sources):
+            raise ValueError('Actual-runtime AST or fixed source-file guard differs')
 
 
 def _receipt_check(descriptor, base):
@@ -477,6 +524,9 @@ def _cell(assignment, profile, evidence, *, current_inputs=None, current_source=
                     or any(item.startswith('--mode=') for item in command)):
                 raise ValueError('Saved adapter interpreter or explicit dry-check command differs')
             _saved_adapter(assignment, profile, evidence, observed)
+            precheck = observed.get('runtime_precheck') if profile.get('runtime_checks') else None
+            if profile.get('runtime_checks'):
+                _verify_runtime_precheck(profile, precheck)
             facts = evidence['facts']
             raw = (item['runtime_item'] or {}).get('fingerprint')
             if raw:
@@ -488,10 +538,19 @@ def _cell(assignment, profile, evidence, *, current_inputs=None, current_source=
                 if _inputs(raw.get('input_hashes', [])) != _inputs(assignment.get('input_hashes', [])):
                     raise ValueError('Saved local input fingerprint differs')
                 runtime, views = raw['runtime'], raw['views']
+                if precheck is not None:
+                    if any(runtime.get(key) != precheck['runtime'].get(key) for key in ('executable', 'version')):
+                        raise ValueError('Local runtime fingerprint differs from the actual-runtime precheck')
+                    runtime = deepcopy(precheck['runtime'])
             elif evidence.get('host_method_readiness'):
                 runtime, views = _method_runtime(assignment, profile, evidence, observed, path)
             elif evidence.get('portability_checks'):
                 runtime, views = _portable_runtime(assignment, profile, evidence, observed, path)
+            elif precheck is not None:
+                if facts is None or facts.get('actual_runtime') != precheck['runtime'] or facts.get('runtime_checks') != precheck['checks']:
+                    raise ValueError('Received actual runtime/AST evidence differs from the official precheck')
+                views = _fact_views(assignment, profile, facts)
+                runtime = deepcopy(precheck['runtime'])
             else:
                 if facts is None or facts.get('python') != profile['interpreter'] or facts.get('python_version') != observed.get('python_version'):
                     raise ValueError('No matching actual interpreter/runtime observation')
@@ -521,7 +580,7 @@ def _cell(assignment, profile, evidence, *, current_inputs=None, current_source=
                 row['reasons'].append(observed.get('error') or observed.get('error_type') or 'Existing real-input dry-check failed')
             else:
                 raise ValueError('No established real-input dry-check status')
-            fingerprint = _fingerprint(assignment, profile, runtime, views)
+            fingerprint = _fingerprint(assignment, profile, runtime, views, runtime_precheck=precheck)
             row.update(current_host_fingerprint=fingerprint,
                        current_host_fingerprint_sha256=Q.digest(fingerprint),
                        host_profile_sha256=Q.digest(_effective_profile(profile, assignment)))

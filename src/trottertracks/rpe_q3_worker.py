@@ -4,7 +4,7 @@ A detached per-attempt supervisor preserves adapter exit evidence if the network
 or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 """
 from copy import deepcopy
-from .rpe_host_profiles import select_host_profile, validate_adapter_profile
+from .rpe_host_profiles import select_host_profile, validate_adapter_profile, check_runtime_profile
 import base64
 import fcntl
 import hashlib
@@ -168,6 +168,8 @@ def _adapter_command(profile, attempt, mode, output):
     if saved_assignment.is_file():
         profile = select_host_profile(profile, read(saved_assignment))
     adapter = validate_adapter_profile(profile)
+    if profile.get('runtime_checks') and check_runtime_profile(profile)['status'] != 'PASS':
+        raise ValueError('Fixed execution runtime AST guard did not pass')
     root = Path(adapter['root'] if adapter else profile['root'])
     command = [profile['interpreter'], '-B', str(root / 'scripts/run_rpe_optimizer_q3_job.py'),
                '--request', str(Path(attempt) / 'RESOLVED_REQUEST.json'), '--output', str(output), '--mode', mode]
