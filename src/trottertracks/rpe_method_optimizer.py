@@ -399,6 +399,30 @@ HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE
         'HOST_ELIGIBILITY_HOLD': 'HOST_ELIGIBILITY_HOLD'}
 
 
+def route_supports_configuration(rule, cid, reader):
+    """A wildcard declaration cannot make an absent saved case executable.
+
+    Only inspect published metadata; the caller's cached Reader avoids reading
+    a template once per allocation. Numerical/intake guards still run in the worker.
+    """
+    allowed = rule.get('configuration_ids')
+    if allowed not in (None, '*') and cid not in allowed:
+        return False
+    if rule.get('kind') in ('pauli_b_common_entry', 'prdf_d2_common_entry'):
+        entry = (rule.get('configurations') or {}).get(cid) or {}
+        return all(entry.get(k) is not None for k in
+                   ('configuration', 'signal_packet', 'binding_id', 'total_configuration_id')) and bool(rule.get('contract_template'))
+    if rule.get('kind') in ('pf_b_pf6', 'pauli_b_ld3', 'pauli_b_ld5', 'prdf_d2_split'):
+        for loc in rule.get('templates', []):
+            source = dict(loc, selector=loc.get('inputs_selector', []))
+            inputs = reader.read(source)
+            if any((c.get('configuration_id') or c.get('original_configuration_id')) == cid for c in inputs['cases']):
+                return True
+        return False
+    return True  # artificial/custom adapters retain their own contract
+
+
+
 def run_method(name, candidates, knowledge, backend, search, threshold, generate, max_new, routes=None, spent=0, free=None,
                science_approved=True, prefetch=None):
     """Finite loop: select, ask backend, update knowledge, repeat until a stop rule fires.

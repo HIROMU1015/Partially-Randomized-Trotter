@@ -43,6 +43,9 @@ def source_manifest(root, commit):
         paths += ('src/trottertracks/rpe_q3_timing.py',)
     if (Path(root)/'src/trottertracks/rpe_q3_resources.py').exists():
         paths += ('src/trottertracks/rpe_q3_resources.py',)
+    for path in ('scripts/run_rpe_preparation_job.py', 'src/trottertracks/rpe_preparation_worker.py',
+                 'src/trottertracks/rpe_preparation_artifacts.py'):
+        if (Path(root)/path).exists():paths += (path,)
     return dict(commit=commit, files={p: hashlib.sha256((Path(root)/p).read_bytes()).hexdigest() for p in paths})
 
 

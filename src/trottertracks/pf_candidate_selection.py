@@ -74,7 +74,7 @@ def _refresh(root,problem,context,methods,registry,artificial):
     return after
 
 
-def prepare(root,problem,context,spec,run,routes):
+def prepare(root,problem,context,spec,run,routes,*,stage_executor=None):
     """One automatic finite selection, existing D request, same optimizer context.
 
     plan never starts science; complete is the existing explicitly authorized
@@ -116,7 +116,8 @@ def prepare(root,problem,context,spec,run,routes):
     completion.setdefault('output_root',str(folder/'provider_output'))
     completion.setdefault('registry_file',str(folder/'REGISTRY.json'))
     helper_spec=dict(spec,methods=sorted({item['configuration_body']['spec']['split'].get('original_PF_method')=='B0I'and'TRUNCATED_PF'or'FULL_PF'for item in selected})if not manual else [m for m in methods if m in PF.METHODS],pf_completion=completion)
-    response=PF.complete_selected(root,helper_spec,folder)
+    response=PF.complete_selected(root,helper_spec,folder,
+        **({'stage_executor':stage_executor}if stage_executor is not None else{}))
     # Keep D's original metadata plan reachable from the caller's fixed results,
     # without changing the producer plan or inventing missing scientific values.
     copied=[]

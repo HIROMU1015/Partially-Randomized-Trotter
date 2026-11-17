@@ -17,6 +17,8 @@ import sys
 import time
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'src'))
+from trottertracks.rpe_preparation_paths import runtime_request,resolve as resolve_runtime_path
 spec=importlib.util.spec_from_file_location('_pauli_owned_signal_ops',ROOT/'scripts/run_pr_pauli_candidate_signals.py')
 OPS=importlib.util.module_from_spec(spec);spec.loader.exec_module(OPS)
 A_SOURCE='02e7cc6a127954fa7c446e7383d037f0617d50d3'
@@ -73,7 +75,9 @@ def public_files(base):
     return [p for p in base.rglob('*')if p.is_file()and 'work' not in p.relative_to(base).parts]
 
 
-def _run_one(request,*,execute=False,push=True):
+def _run_one(request,*,execute=False,push=True,phase='all'):
+    if phase not in ('all','compile','audit'):raise ValueError('Unknown preparation phase')
+    request=runtime_request(request,('workspace','private_root','d2_view','registry_file','interpreter','quote_interpreter'))
     workspace=Path(request['workspace']).resolve();relative=Path(request['directory'])
     if relative.is_absolute()or'..'in relative.parts:raise ValueError('OWNED_REPOSITORY_RELATIVE_DIRECTORY_REQUIRED')
     out=(workspace/relative).resolve();out.relative_to(workspace)
@@ -107,6 +111,11 @@ def _run_one(request,*,execute=False,push=True):
         if str(state.get('status','')).startswith(('HELD','STOP')):
             return dict(state,resumed=True,reason=state.get('reason','NO_AUTOMATIC_RETRY'),
                         new_compiles_this_invocation=0,new_paths_this_invocation=0)
+        if phase=='audit'and state.get('status')!='COMPILE_READY_FOR_AUDIT':
+            return dict(result,status='HELD_AUDIT_COMPILE_DEPENDENCY_MISSING',
+                        reason='Audit never acquires missing compile artifacts',new_compiles_this_invocation=0)
+        if phase=='compile'and state.get('status')=='COMPILE_READY_FOR_AUDIT':
+            return dict(state,resumed=True,new_compiles_this_invocation=0,new_paths_this_invocation=0)
         prepare=[py,'-B','scripts/prepare_pauli_calibration.py','--preparation',str(pf),'--price-result',str(qf),'--output',str(calfile)]
         if not calfile.exists():
             if command(workspace,prepare,out/'PREPARE.log')!=0:return dict(result,status='HELD_CALIBRATION_PREPARATION_FAILED')
@@ -167,7 +176,7 @@ Path(sys.argv[6]).write_text(json.dumps(dict(schema='A_PAULI_SPLIT_CAL_REQUEST_V
             inputs_commit=OPS.commit(workspace,[cfg,pf,qf,calfile,out/'EXECUTION_OPS.json',requestfile,
                 out/'PREPARE.log',out/'PREPARE_EXECUTION.log'],'Fix selected Pauli calibration request')
             state['inputs_commit']=inputs_commit;OPS.publish(workspace,push);OPS.write(statefile,state)
-        spec=state['driver_spec'];base=workspace/spec['base'];requestfile=Path(state['request_file'])
+        spec=state['driver_spec'];base=workspace/spec['base'];requestfile=Path(resolve_runtime_path(state['request_file']))
         driver=[py,'-B','scripts/run_pauli_split_cal.py','--request',str(requestfile)]
         if not(base/'BINDING.json').exists():
             for label,args in (('METADATA',['--metadata']),('PREFLIGHT',['--input-preflight',str(Path(request['private_root'])/'preflight')]),('FREEZE',['--freeze'])):
@@ -200,6 +209,9 @@ Path(sys.argv[6]).write_text(json.dumps(dict(schema='A_PAULI_SPLIT_CAL_REQUEST_V
             OPS.publish(workspace,push);OPS.write(statefile,state)
         if raw.get('status')!='FINITE_LD%d_CAL_PATHS_COMPLETE'%prefix:
             state.update(status='HELD_CALIBRATION_GATE_OR_EXECUTION');OPS.write(statefile,state);return state
+        if phase=='compile':
+            state.update(status='COMPILE_READY_FOR_AUDIT',audit_executed=False)
+            OPS.write(statefile,state);return state
         audit=[py,'-B','scripts/pauli_split_cal_audit_request.py','--request',str(requestfile),
                '--config',state['inputs_commit']+':'+str(relative/'CONFIGURATION.json')]
         audit_result=base/'audit_run01/AUDIT_RESULT.json';pricefile=base/'PRICE_26AXIS.json'
@@ -250,14 +262,15 @@ Path(sys.argv[6]).write_text(json.dumps(dict(schema='A_PAULI_SPLIT_CAL_REQUEST_V
         OPS.write(statefile,state);return state
 
 
-def run(request,*,execute=False,push=True):
+def run(request,*,execute=False,push=True,phase='all'):
     """Selected groups use existing acquisition/audit, then caller registration.
 
     Each step has its own stage namespace. No one-step model is registered as a
     legacy 26-axis rule. Repeated completed groups return their fixed receipts.
     """
     if not request.get('scoped_registration')or request.get('group_request_id'):
-        return _run_one(request,execute=execute,push=push)
+        return (_run_one(request,execute=execute,push=push)if phase=='all'
+                else _run_one(request,execute=execute,push=push,phase=phase))
     plan=_run_one(request,execute=False,push=False)
     if plan.get('status')=='PRICES_READY'or not execute:return plan
     if plan.get('needs')or not plan.get('calibration_requests'):
@@ -267,11 +280,12 @@ def run(request,*,execute=False,push=True):
         child=dict(request,group_request_id=group['request_id'],
             directory=str(Path(request['directory'])/'step_groups'/group['request_id'].split(':')[-1][:24]),
             private_root=str(Path(request['private_root'])/'step_groups'/group['request_id'].split(':')[-1][:24]))
-        result=_run_one(child,execute=True,push=push);results.append(result)
-        if result.get('status')not in('SCOPED_STEP_MODEL_READY','PRICES_READY'):
+        result=(_run_one(child,execute=True,push=push)if phase=='all'
+                else _run_one(child,execute=True,push=push,phase=phase));results.append(result)
+        if result.get('status')not in('SCOPED_STEP_MODEL_READY','PRICES_READY','COMPILE_READY_FOR_AUDIT'):
             return dict(plan,status=result['status'],group_results=results,evidence_packages=packages)
         packages.extend(result.get('evidence_packages',[]))
-    return dict(schema='PR_PAULI_CANDIDATE_PRICES_V1',status='STEP_MODELS_READY',
+    return dict(schema='PR_PAULI_CANDIDATE_PRICES_V1',status='STEP_COMPILES_READY_FOR_AUDIT'if phase=='compile'else'STEP_MODELS_READY',
                 configuration_id=request['configuration']['id'],group_results=results,evidence_packages=packages,
                 legacy_registry_modified=False,automatic_retry=False)
 
@@ -279,12 +293,13 @@ def run(request,*,execute=False,push=True):
 def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--request',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--execute',action='store_true');p.add_argument('--no-push',action='store_true')
+    p.add_argument('--phase',choices=('all','compile','audit'),default='all')
     a=p.parse_args(argv)
-    try:result=run(OPS.read(a.request),execute=a.execute,push=not a.no_push)
+    try:result=run(OPS.read(a.request),execute=a.execute,push=not a.no_push,phase=a.phase)
     except (ValueError,OSError,KeyError,subprocess.CalledProcessError)as exc:
         result=dict(schema='PR_PAULI_CANDIDATE_PRICES_V1',status='HELD_ORCHESTRATION_FAILURE',reason=repr(exc),automatic_retry=False)
     OPS.write(a.output,result);print(json.dumps(result,ensure_ascii=False,default=str))
-    return 0 if result['status']in('PRICES_READY','CALIBRATION_PLANNED_NOT_EXECUTED','SCOPED_STEP_MODEL_READY','STEP_MODELS_READY','WAITING_PRICE_EVIDENCE')else 2
+    return 0 if result['status']in('PRICES_READY','CALIBRATION_PLANNED_NOT_EXECUTED','SCOPED_STEP_MODEL_READY','STEP_MODELS_READY','WAITING_PRICE_EVIDENCE','COMPILE_READY_FOR_AUDIT','STEP_COMPILES_READY_FOR_AUDIT')else 2
 
 
 if __name__=='__main__':raise SystemExit(main())

@@ -15,6 +15,8 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
+from trottertracks.rpe_preparation_paths import runtime_request
 
 ENTRY_SOURCE='6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb'
 ENTRY_FILES=('src/trottertracks/pauli_signal_entry.py','scripts/run_pauli_signal_entry.py',
@@ -95,6 +97,7 @@ def entry(workspace,interpreter,arguments,log,marker=None):
 
 
 def run(request,*,execute=False,push=True):
+    request=runtime_request(request,('workspace','interpreter'))
     workspace=Path(request['workspace']).resolve()
     relative=Path(request['directory'])
     if relative.is_absolute()or'..'in relative.parts:raise ValueError('REPOSITORY_RELATIVE_OWNED_DIRECTORY_REQUIRED')

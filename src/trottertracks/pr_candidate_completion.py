@@ -101,6 +101,8 @@ class Completion:
         self.lock=threading.RLock()
         self.pauli_price_lock=threading.RLock()
         self.pauli_metadata_lock=threading.RLock()
+        self.stage_executor=None
+        self.shared_preparation_locks={}
         self.registry=self.directory/'PRICE_RULES_REGISTRY.json'
         if not self.registry.exists():
             provided=settings.get('price_registry_source')or settings.get('price_registry_file')
@@ -162,12 +164,27 @@ class Completion:
         with self.lock:
             with(self.directory/'PROGRESS.jsonl').open('a')as f:f.write(json.dumps(dict(epoch=time.time(),**event),default=str)+'\n')
 
+    def bind_stage_executor(self,runtime):
+        """Use the same durable host queue as Q3; metadata remains central."""
+        self.stage_executor=runtime
+        return self
+
+    def shared_preparation_lock(self,identity):
+        """One producer for an exact physical contract or calibration group."""
+        token=key(dict(source=self.source,identity=identity))
+        with self.lock:return self.shared_preparation_locks.setdefault(token,threading.RLock())
+
     def call(self,cmd,d,stage,output=None,science=False):
         d=Path(d);d.mkdir(parents=True,exist_ok=True);done=d/(stage+'.RETURN.json');started=d/(stage+'.STARTED.json')
         if done.exists():
             r=read(done)
             if r['returncode']!=0:raise Held('PRIOR_STAGE_FAILED_NO_RETRY:'+stage)
             return read(output)if output and Path(output).exists()else r
+        runtime=getattr(self,'stage_executor',None)
+        if runtime is not None and science and runtime.handles(stage):
+            # Recovery is reconciled with the original host/attempt by the
+            # shared executor. A local STARTED marker is never a retry grant.
+            return runtime.call(self,cmd,d,stage,output,science=science)
         if started.exists():raise Held('IN_PROGRESS_OR_AMBIGUOUS_NO_DUPLICATE:'+stage)
         put(started,dict(command=cmd,source=self.source,science=science,automatic_retry=False))
         self.log(event='STAGE_START',stage=stage,science=science,directory=rel(d));t=time.time()
@@ -246,6 +263,7 @@ class Completion:
             rec=dict(method=request['method'],selection=request.get('selection'),request=request,status='SELECTED',key=identifier,directory=rel(d))
             self.state['records'][identifier]=rec;self.save()
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
+        physical_guard=None
         try:
             if request.get('selection_error'):raise Held('B2_SELECTION_NORMALIZATION:'+request['selection_error'])
             if request['method']=='PR_PAULI':config,prepared=self.pauli_configuration(request,d)
@@ -261,6 +279,8 @@ class Completion:
                     generated=self.service('df-generate',request,d,tag='DF_GENERATE_WITH_DESCRIPTOR')
                 if generated['status']!='CONFIGURATION_READY':raise Held('CONFIGURATION:'+str(generated))
                 config=generated['configuration'];prepared=None
+            physical_guard=self.shared_preparation_lock(dict(method=request['method'],physical=physical_evaluation_contract(config)))
+            physical_guard.acquire()
             if request.get('design')and dec(config['spec']['kappa']['value'])!=dec(request['design']['kappa']):raise Held('ABSOLUTE_KAPPA_MISMATCH')
             put(d/'CONFIGURATION.json',config);commit=publish([d],'Fix selected PR candidate configuration')
             cref=dict(commit=commit,path=rel(d/'CONFIGURATION.json'));rec.update(configuration=cref,configuration_id=config['id'])
@@ -277,19 +297,35 @@ class Completion:
                     design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),delta_pf=config['spec']['delta_pf']),
                     schedule=deepcopy(twin.get('schedule',[])))
                 self.save();return rec
-            initial_quote=None
-            if request['method']=='PR_PAULI':signal=self.pauli_signals(config,prepared,d)
-            else:
-                initial_quote=self.initial_quote(config,cref,d)
+            failed_twin=next((old for old in self.state['records'].values()
+                if old is not rec and old.get('method')==request['method']and old.get('scientific_failure')
+                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical_evaluation_contract(config)),None)
+            if failed_twin is not None:
+                raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
+            initial_quote=self.initial_quote(config,cref,d)
+            if request['method']=='PR_DF':
                 if not initial_quote['complete']:
                     design=self.service('df-price-design',dict(configuration=config,price_quote=initial_quote),d)
                     bad=[g for g in design.get('groups',[])if g['status']!='CALIBRATION_DESIGN_READY']
                     if bad:raise Held('DF_MODEL_DESIGN:'+str(bad))
-                signal=self.df_signals(config,cref,d,request.get('tail_descriptor'))
-            rec.update(signal=signal);self.save()
-            intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(B_VIEW if request['method']=='PR_PAULI'else DF_Q3_VIEW)),d)
-            rec['intake']=intake;self.save()
-            quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
+            def signal_work():
+                return (self.pauli_signals(config,prepared,d)if request['method']=='PR_PAULI'
+                        else self.df_signals(config,cref,d,request.get('tail_descriptor')))
+            # Both branches depend on the frozen configuration, not on each
+            # other's numerical result. They share host slots through the
+            # executor rather than independently reserving CPU resources.
+            if getattr(self,'stage_executor',None)is not None:
+                with ThreadPoolExecutor(max_workers=2)as pool:
+                    signal_future=pool.submit(signal_work)
+                    price_future=pool.submit(self.price,config,cref,prepared,request,d,initial_quote)
+                    signal=signal_future.result();rec.update(signal=signal);self.save()
+                    intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(B_VIEW if request['method']=='PR_PAULI'else DF_Q3_VIEW)),d)
+                    rec['intake']=intake;self.save();quote=price_future.result()
+            else:
+                signal=signal_work();rec.update(signal=signal);self.save()
+                intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(B_VIEW if request['method']=='PR_PAULI'else DF_Q3_VIEW)),d)
+                rec['intake']=intake;self.save()
+                quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
             if not quote['complete']:raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
             quote_commit=publish([d],'Publish completed candidate prices and receipt bindings')
             with self.lock:
@@ -306,6 +342,8 @@ class Completion:
             rec.update(status='WAITING_INPUTS'if waiting else'HELD_WITH_REASON',reason=text,
                        scientific_failure=any(t in text for t in ('STAGE_FAILED:','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')))
         except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),scientific_failure=True)
+        finally:
+            if physical_guard is not None:physical_guard.release()
         if rec['status'].startswith(('HELD','STOP','WAITING')):rec['registry_at_hold']=self.price_registry_digest()
         self.save();self.log(event='CANDIDATE_COMPLETED',method=request['method'],status=rec['status'],reason=rec.get('reason'));return rec
 
@@ -438,8 +476,15 @@ class Completion:
 
     def pauli_signals(self,config,prepared,d):
         packets=self.saved_signal_packets('PR_PAULI')
-        descriptor=dict(prefix=config['spec']['L_D'],binding=config['spec']['binding'],
-            descriptor=prepared['descriptor']['descriptor'],source=prepared['descriptor']['source'])
+        source=prepared['descriptor']['source']
+        if 'commit'in source and 'path'not in source:raise Held('PAULI_DESCRIPTOR_SOURCE_UNRESOLVED')
+        # Saved LD1/2/3/5 descriptors use A's index/context locator, not a
+        # commit/path override. Let that same fixed entry resolve its saved
+        # descriptor. Derived prefixes still require the explicit envelope.
+        descriptor=(dict(prefix=config['spec']['L_D'],binding=config['spec']['binding'],
+            descriptor=prepared['descriptor']['descriptor'],source=source)if 'commit'in source else None)
+        if descriptor is None and(config['spec']['L_D']not in(1,2,3,5)or not all(k in source for k in('index','context_sha256'))):
+            raise Held('PAULI_DESCRIPTOR_SOURCE_UNRESOLVED')
         request=dict(configuration=config,tail_descriptor=descriptor,saved_packets=packets,
             workspace=str(self.settings.get('pauli_workspace',A_WORKSPACE)),directory='docs/research/d2_automatic_pr_20261116/'+config['id'][:20]+'/'+self.settings.get('signal_epoch','descriptor_envelope_v2'),interpreter=NATIVE)
         inp=d/'PAULI_SIGNAL_REQUEST.json';out=d/'PAULI_SIGNAL_RESULT.json';put(inp,request)
@@ -494,7 +539,13 @@ class Completion:
                     directory='docs/research/d2_automatic_price_20261116/'+config['id'][:20],private_root=str(ROOT.parent/'d2-auto-private'/config['id'][:20]),d2_view=str(D2_VIEW),interpreter=PRICE,
                     scoped_registration=True,execution_source=self.source))
                 try:
-                    result=self.call([PRICE,'-B',str(ROOT/'scripts/run_pr_pauli_candidate_prices.py'),'--request',str(inp),'--output',str(out),'--execute'],d,'PAULI_PRICES',out,science=True)
+                    cmd=[PRICE,'-B',str(ROOT/'scripts/run_pr_pauli_candidate_prices.py'),'--request',str(inp),'--output',str(out),'--execute']
+                    if getattr(self,'stage_executor',None)is not None:
+                        compiled=self.call(cmd+['--phase','compile','--no-push'],d,'PAULI_COMPILE',out,science=True)
+                        if compiled.get('status')not in('COMPILE_READY_FOR_AUDIT','STEP_COMPILES_READY_FOR_AUDIT','PRICES_READY','SCOPED_STEP_MODEL_READY','STEP_MODELS_READY'):
+                            raise Held('PAULI_COMPILE:'+str(compiled))
+                        result=self.call(cmd+['--phase','audit','--no-push'],d,'PAULI_AUDIT',out,science=True)
+                    else:result=self.call(cmd,d,'PAULI_PRICES',out,science=True)
                 except Held:
                     # Valid completed groups remain useful to independent
                     # candidates even if a later group reaches its own STOP.
@@ -521,8 +572,14 @@ class Completion:
             raise Held('DF_MODEL_DESIGN:'+str(groups))
         packages=[]
         for group in groups:
-            package=self.df_price_group(cref,quote,d/'df_price_groups'/group['group_id'][:20],registry,group,descriptor)
-            self.ingest_price_results([package]);packages.append(package)
+            with self.shared_preparation_lock(dict(stage='DF_PRICE_GROUP',group_id=group['group_id'])):
+                # A different candidate may have completed this exact group
+                # while we waited. Requote from its verified registry first.
+                refreshed=self.quote_with_steps(config,quote)
+                missing={(r['m'],r['axis'])for r in refreshed['rows']if r.get('unit_price_RZ')is None}
+                if not any((r['m'],r['axis'])in missing for r in group['axis_keys']):continue
+                package=self.df_price_group(cref,refreshed,d/'df_price_groups'/group['group_id'][:20],registry,group,descriptor)
+                self.ingest_price_results([package]);packages.append(package)
         return packages
 
     def df_price_group(self,cref,quote,d,registry,group,descriptor=None):
@@ -552,6 +609,78 @@ class Completion:
         return dict(kind='PR_DF_STEP_MODEL',configuration_source=cref,implementation=imp,
             inputs_source=dict(commit=inputs,path=rel(inp)),model_source=dict(commit=frozen,path=rel(base/'FROZEN_MODELS.json')),
             price_source=dict(commit=frozen,path=rel(base/'AXIS_PRICES.json')),holdout_source=holdout)
+
+    def common_route(self,method,cid,configuration,packet,binding):
+        """The same fixed worker/contract for newly prepared and saved candidates."""
+        view=B_VIEW if method=='PR_PAULI'else DF_Q3_VIEW
+        return dict(kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=NATIVE,
+            view=str(view),view_commit=git('rev-parse','HEAD',cwd=view),configuration_ids=[cid],
+            contract_template=(dict(commit='b6d4dea49c39f364048af422bc2928ee7c169261',path='docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json')if method=='PR_PAULI'else dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json',inputs_selector=['inputs'])),
+            configurations={cid:dict(configuration=configuration,signal_packet=packet,
+                binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])})
+
+    def install_saved_routes(self,context,routes):
+        """Reconnect catalog-only PR cases through their own source-bound metadata.
+
+        Existing usable routes remain unchanged, preserving prior-job reuse.
+        Missing/conflicting metadata is a candidate-specific preparation need;
+        neither signals nor numerical results are synthesized here.
+        """
+        from . import rpe_method_optimizer as O
+        reader=context.get('reader')or O.Reader(ROOT)
+        points=context.get('catalog',{}).get('candidates',[])
+        for c in context['candidates']:
+            method=c['method'];cid=c.get('configuration_id')
+            if method not in('PR_PAULI','PR_DF')or not cid or not c.get('ready'):continue
+            usable=False
+            for rule in routes.get(method,[]):
+                try:usable=O.route_supports_configuration(rule,cid,reader)
+                except (KeyError,ValueError,TypeError,OSError,subprocess.CalledProcessError):continue
+                if usable:break
+            if usable:continue
+            saved=[p for p in points if p.get('method')==method and p.get('configuration_id')==cid]
+            try:
+                if not saved:continue
+                p=saved[0]
+                fields=('configuration_source','signal_source','binding_id','total_configuration_id')
+                if any(any(row.get(k)!=p.get(k)for k in fields)for row in saved):
+                    raise ValueError('SAVED_ROUTE_BINDINGS_CONFLICT')
+                if any(p.get(k)is None for k in fields):raise ValueError('SAVED_ROUTE_BINDING_INCOMPLETE')
+                if c.get('signal_source')!=p['signal_source']:raise ValueError('SAVED_ROUTE_CANDIDATE_SIGNAL_DIFFERS')
+                config=reader.read(p['configuration_source'])
+                if config['id']!=cid:raise ValueError('SAVED_ROUTE_CONFIGURATION_ID_DIFFERS')
+                inputs=reader.read(p['case_source'])
+                cases=[row for row in inputs['cases']if(row.get('original_configuration_id')or row.get('configuration_id'))==cid]
+                if not cases:raise ValueError('SAVED_ROUTE_CASE_MISSING')
+                rule=self.common_route(method,cid,p['configuration_source'],p['signal_source'],p)
+                loc=rule['contract_template'];contract=reader.read(dict(loc,selector=loc.get('inputs_selector',[])))
+                if inputs['adopted_evaluation']!=contract['adopted_evaluation']:
+                    raise ValueError('SAVED_ROUTE_EVALUATION_CONTRACT_DIFFERS')
+                for case in cases:
+                    if any(case.get(k)!=p[v]for k,v in [('configuration','configuration_source'),('signal_packet','signal_source'),('binding_id','binding_id'),('total_configuration_id','total_configuration_id')]):
+                        raise ValueError('SAVED_ROUTE_CASE_BINDING_DIFFERS')
+                    if case.get('evaluation_target')!=contract['cases'][0].get('evaluation_target'):
+                        raise ValueError('SAVED_ROUTE_EVALUATION_TARGET_DIFFERS')
+                expected=context['expected'].get(cid,{})
+                if any(expected.get(k)!=p[k]for k in('binding_id','total_configuration_id')):
+                    raise ValueError('SAVED_ROUTE_EXPECTED_BINDING_DIFFERS')
+                routes.setdefault(method,[]).insert(0,rule)
+                c['execution_binding_source']=p['case_source'];c.pop('execution_binding_hold',None)
+            except (KeyError,ValueError,TypeError,OSError,subprocess.CalledProcessError)as exc:
+                c['execution_binding_hold']=str(exc)
+        return routes
+
+    def install_snapshot(self,context,problem,keys):
+        """Install immutable READY rows while the producer continues elsewhere.
+
+        Do not mutate/save the producer's state from the queue thread. The
+        existing installer and all physical/binding checks remain unchanged.
+        """
+        with self.lock:
+            records=deepcopy([r for r in self.state['records'].values()if r.get('key')in keys and r['status']=='READY_FOR_SEARCH'])
+        snapshot=object.__new__(type(self));snapshot.__dict__.update(self.__dict__)
+        snapshot.state=dict(self.state,records={r['key']:r for r in records});snapshot.save=lambda:None
+        return snapshot.install(context,problem,records),records
 
     def install(self,context,problem,records):
         from . import rpe_method_optimizer as O,rpe_candidate_preparation as R
@@ -617,16 +746,14 @@ class Completion:
                 price_status='MODEL_REFERENCE',price_quote=value(rec['quote']),
                 schedule_keys=O.schedule_keys(config),prepared_by='D2_COMMON_CANDIDATE_COMPLETION')
             context['expected'][cid]=dict(configuration_id=cid,binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])
-            rule=dict(kind='pauli_b_common_entry'if method=='PR_PAULI'else'prdf_d2_common_entry',interpreter=NATIVE,
-                view=str(B_VIEW if method=='PR_PAULI'else DF_Q3_VIEW),view_commit=git('rev-parse','HEAD',cwd=B_VIEW if method=='PR_PAULI'else DF_Q3_VIEW),
-                configuration_ids=[cid],contract_template=(dict(commit='b6d4dea49c39f364048af422bc2928ee7c169261',path='docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json')if method=='PR_PAULI'else dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json',inputs_selector=['inputs'])),
-                configurations={cid:dict(configuration=signal.get('configuration_source',rec['configuration']),signal_packet=signal['packet_source'],binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])})
-            routes[method]=[rule]+routes.get(method,[])
+            rule=self.common_route(method,cid,signal.get('configuration_source',rec['configuration']),signal['packet_source'],binding)
+            routes[method]=[rule]+[old for old in routes.get(method,[])if old!=rule]
+        routes=self.install_saved_routes(context,routes)
         self.save()
         return routes
 
 
-def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,completion=None):
+def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,completion=None,stage_executor=None):
     """V2 chooses missing inputs; this callback completes them and returns ready inputs.
 
     A finite demonstration may bound completions per method; unknown/failed
@@ -641,6 +768,7 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
     old_state=Path(run)/'completion/STATE.json'
     settings.setdefault('source',read(old_state)['source']if old_state.exists()else git('rev-parse','HEAD'))
     completion=completion or Completion(Path(run)/'completion',settings)
+    if stage_executor is not None:completion.bind_stage_executor(stage_executor)
     completion.ingest_price_results()
     for record in list(completion.state['records'].values()):
         if record['status'].startswith(('HELD','STOP','WAITING')):completion.refresh_price_hold(record)

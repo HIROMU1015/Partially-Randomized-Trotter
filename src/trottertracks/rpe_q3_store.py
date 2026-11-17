@@ -135,6 +135,8 @@ class JobStore:
     @staticmethod
     def artificial(request):
         route = request.get('route') or {}
+        if route.get('kind') == 'preparation':
+            return (request.get('preparation') or {}).get('artificial') is True
         if route.get('kind') is not None:
             return route['kind'] == 'artificial'
         return request.get('artificial') is True
@@ -239,6 +241,12 @@ class JobStore:
                 if job_id not in queued:
                     continue
                 row = self._decoded(queued[job_id])
+                contract = row.get('contract')
+                dependencies = contract.get('dependencies', []) if isinstance(contract, dict) else []
+                if any((lambda value: value is None or value['state'] != 'ACCEPTED')(
+                        db.execute('SELECT state FROM jobs WHERE job_id=?', (dependency,)).fetchone())
+                        for dependency in dependencies):
+                    continue
                 if not self.eligible(row['request'], row['eligibility'], host_id, host_fingerprints, job_id):
                     continue
                 now, attempt = time.time(), uuid.uuid4().hex

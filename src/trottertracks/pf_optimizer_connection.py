@@ -263,7 +263,7 @@ def registry_routes(routes, registry):
     return routes
 
 
-def complete_selected(root, spec, run_dir):
+def complete_selected(root, spec, run_dir, *, stage_executor=None):
     """One explicitly selected finite provider call before normal O.prepare.
 
     A saved response resumes without invoking the provider again.  Missing or
@@ -294,6 +294,9 @@ def complete_selected(root, spec, run_dir):
         entry = entry if entry.is_absolute() else root / entry
         cmd = [completion.get('interpreter', sys.executable), '-B', str(entry), '--request', str(req.resolve()),
                '--output', str(out.resolve()), '--mode', mode]
-        subprocess.run(cmd, cwd=root, check=True)
+        if stage_executor is not None and mode=='complete':
+            from .pf_distributed_preparation import complete_selected as distributed_complete
+            distributed_complete(root,spec,run,request,entry,out,stage_executor)
+        else:subprocess.run(cmd, cwd=root, check=True)
     response = json.loads(out.read_text())
     return dict(registry_file=request['registry_file'], response=response, request=str(req), output=str(out),mode=mode)

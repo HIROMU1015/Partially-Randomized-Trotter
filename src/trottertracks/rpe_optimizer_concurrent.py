@@ -349,7 +349,7 @@ class ConcurrentExecutor(O.Executor):
                 elif event in('EXIT','RESUME_EXIT'):active.discard(job)
                 elif event=='RESUME_RUNNING':active.add(job)
             elapsed=events[-1]['monotonic']-events[0]['monotonic']
-            real=sum(t.rule['kind']!='artificial'and t.started for t in s.tasks.values())
+            real=sum(t.rule['kind'] not in ('artificial','preparation') and t.started for t in s.tasks.values())
             counts={k:s.metrics[k]for k in ('submitted','queued_cancelled','launched','finished','adopted','speculative_launched','speculative_adopted')}
             return dict(**counts,peak_active=s.peak_active,sampled_owned_tree_peak_RSS_KiB=s.peak_RSS_KiB,
                 completed_not_adopted=sum(Path(j).name not in adopted for j in launched),
@@ -390,6 +390,8 @@ class DistributedExecutor(ConcurrentExecutor):
         self.eligibility_holds = {}
         self.eligibility_policy_cache = {}
         self.host_admission_cache = {}
+        self.preparation_holds = {}
+        self.preparation_dependencies = {}
         run = Path(args[1]).resolve()
         requested_capacity = kwargs.get('max_concurrent', 1)
         if requested_capacity != 'auto' and (type(requested_capacity) is not int or requested_capacity < 1):
@@ -422,6 +424,13 @@ class DistributedExecutor(ConcurrentExecutor):
         self.allocation_config = config
         kwargs['max_concurrent'] = 1 if requested_capacity == 'auto' else requested_capacity
         self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
+        from .rpe_preparation_artifacts import ArtifactCache
+        self.artifact_cache = ArtifactCache(run/'distributed'/'artifacts')
+        self.preparation_pending_path = run/'distributed'/'PREPARATION_PENDING.json'
+        saved_preparation = json.loads(self.preparation_pending_path.read_text()) if self.preparation_pending_path.exists() else {}
+        if saved_preparation and saved_preparation.get('schema') != 'RPE_PENDING_PREPARATION_READINESS_V1':
+            raise ValueError('Unknown saved preparation readiness schema')
+        self.preparation_pending = saved_preparation.get('tasks', {})
         self.hosts = {}
         self.input_hash_cache = {}
         self.local_worker = None
@@ -611,7 +620,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def _refresh_capacity(self, policy, error=None):
         if not self.state.allocation_auto: return
         owned = len(self._owned_attempts())
-        queue = sorted((task for task in self.state.tasks.values() if task.status == 'QUEUED'),
+        queue = sorted((task for task in self.state.tasks.values() if task.status == 'QUEUED' and self._task_ready(task)),
                        key=lambda task:(not task.demand, self.state.owner_clock.get(task.owner,-1),task.enqueue))
         available = {host:self._offer_free(host, policy, error) for host in self.hosts}
         available = {host:min(free,len(queue)) for host,free in available.items() if free > 0}
@@ -690,7 +699,7 @@ class DistributedExecutor(ConcurrentExecutor):
         selected = [totals[row['job_id']] for row in own if row['job_id'] in totals]
         ready = 0
         for task in self.state.tasks.values():
-            if task.status != 'QUEUED': continue
+            if task.status != 'QUEUED' or not self._task_ready(task): continue
             row = self.store.row(task.job.name)
             if row is not None and self.store.eligible(row['request'], row['eligibility'], host,
                     self.hosts.get(host, {}).get('host_fingerprints'), row['job_id']):
@@ -706,6 +715,8 @@ class DistributedExecutor(ConcurrentExecutor):
     def _eligibility_for(self, request, job_id):
         """Bind a prepared host decision to this exact scientific request."""
         from . import rpe_q3_coordinator as Q
+        if request.get('route', {}).get('kind') == 'preparation':
+            return self._preparation_eligibility_for(request, job_id)
         policy = self.distributed.get('host_eligibility')
         if policy is None and self.store.artificial(request):
             return None
@@ -763,6 +774,335 @@ class DistributedExecutor(ConcurrentExecutor):
             result['reasons'].append(str(exc))
         return result
 
+    @staticmethod
+    def _preparation_request(request):
+        return request.get('preparation') if request.get('route', {}).get('kind') == 'preparation' else None
+
+    def _preparation_inputs(self, request):
+        preparation = self._preparation_request(request)
+        manifest = preparation.get('inputs', {})
+        if isinstance(manifest, list): manifest = {item['path']:item['sha256'] for item in manifest}
+        manifest = dict(manifest)
+        # Named dependency outputs are bound to the same immutable predecessor
+        # task, and resolved only after its validated completion is accepted.
+        for predecessor, paths in preparation.get('dependency_inputs', {}).items():
+            row = self.store.row(predecessor)
+            if row is None or row['state'] != 'ACCEPTED': raise ValueError('Preparation dependency is not accepted: '+predecessor)
+            outcome = json.loads((self.run_dir/'jobs'/row['method']/predecessor/'OUTCOME.json').read_text())
+            if outcome.get('status') != 'PREPARATION_COMPLETE': raise ValueError('Preparation dependency did not complete: '+predecessor)
+            for source, target in paths.items():
+                sha = outcome['artifacts'][source]
+                if target in manifest and manifest[target] != sha: raise ValueError('Dependency artifact binding conflicts: '+target)
+                manifest[target] = sha
+        return manifest
+
+    def _task_ready(self, task):
+        request = self.store.row(task.job.name)['request']
+        preparation = self._preparation_request(request)
+        if preparation is None: return True
+        for predecessor in preparation.get('dependencies', []):
+            row = self.store.row(predecessor)
+            if row is None or row['state'] != 'ACCEPTED': return False
+            outcome = self.run_dir/'jobs'/row['method']/predecessor/'OUTCOME.json'
+            if not outcome.exists() or json.loads(outcome.read_text()).get('status') != 'PREPARATION_COMPLETE': return False
+        try: return not self.artifact_cache.missing(self._preparation_inputs(request).values())
+        except (KeyError, ValueError, OSError): return False
+
+    def _preparation_eligibility_for(self, request, job_id):
+        from . import rpe_q3_coordinator as Q
+        preparation = self._preparation_request(request)
+        policy = self.distributed.get('preparation_host_eligibility')
+        pending = self.preparation_pending.get(job_id)
+        if pending is not None: return deepcopy(pending['decision'])
+        row = self.store.row(job_id)
+        # Explicit submission decisions are persisted in the same durable row;
+        # there is no implicit transfer of Q3's PASS to a different stage.
+        if policy is None and row is not None: return row['eligibility']
+        if policy is None and self.store.artificial(request): return None
+        result = dict(request_sha256=Q.digest(request), eligible_host_ids=[], host_fingerprints={},
+                      execution_profiles={}, reasons=[])
+        try:
+            if isinstance(policy, (str, Path)):
+                path = Path(policy)
+                if not path.is_absolute(): path = self.root/path
+                policy = json.loads(path.read_text())
+            if not isinstance(policy, dict) or policy.get('schema') != 'RPE_PREPARATION_HOST_ELIGIBILITY_V1':
+                raise ValueError('MISSING_PREPARATION_STAGE_READINESS')
+            record = (policy.get('jobs') or {}).get(job_id)
+            if not isinstance(record, dict): raise ValueError('NO_EXACT_PREPARATION_REQUEST_EVIDENCE')
+            if record.get('decision_sha256') != Q.digest({k:v for k,v in record.items() if k != 'decision_sha256'}):
+                raise ValueError('PREPARATION_READINESS_DECISION_CHANGED')
+            if record.get('request_sha256') != Q.digest(request): raise ValueError('PREPARATION_REQUEST_CHANGED')
+            if record.get('source_manifest') != preparation.get('source'): raise ValueError('PREPARATION_SOURCE_CHANGED')
+            if record.get('input_hashes', []) != preparation.get('input_hashes', []): raise ValueError('PREPARATION_INPUTS_CHANGED')
+            result['decision_sha256'] = record['decision_sha256']
+            result['host_decisions'] = {host:dict(status=cell.get('status', 'UNCHECKED'),reasons=cell.get('reasons', []))
+                for host,cell in (record.get('hosts') or {}).items()}
+            for host in record.get('eligible_host_ids', []):
+                cell = record.get('hosts', {}).get(host, {})
+                fp = cell.get('current_host_fingerprint_sha256')
+                if cell.get('status') != 'PASS' or not isinstance(fp, str) or not fp: continue
+                current = (self.hosts.get(host, {}).get('host_fingerprints') or {}).get(job_id)
+                if current is not None and Q.digest(current) != fp:
+                    result['reasons'].append('CURRENT_PREPARATION_FINGERPRINT_CHANGED:'+host)
+                    continue
+                result['eligible_host_ids'].append(host);result['host_fingerprints'][host] = fp
+                if cell.get('execution_profile') is not None: result['execution_profiles'][host] = deepcopy(cell['execution_profile'])
+            if not result['eligible_host_ids']: result['reasons'].append('ALL_PREPARATION_HOSTS_FAIL_OR_UNCHECKED')
+        except (OSError, KeyError, ValueError, TypeError) as exc: result['reasons'].append(str(exc))
+        return result
+
+    def _configured_preparation_profile(self, host):
+        configured = (self.distributed.get('preparation_profiles') or {}).get(host)
+        if isinstance(configured, (str, Path)):
+            path = Path(configured)
+            if not path.is_absolute(): path = self.root/path
+            configured = json.loads(path.read_text())
+        if not isinstance(configured, dict) or configured.get('host_id') != host:
+            raise ValueError('No configured preparation stage profiles for host: '+host)
+        return configured
+
+    def _save_preparation_pending(self):
+        from .rpe_q3_coordinator import atomic_json
+        atomic_json(self.preparation_pending_path,dict(schema='RPE_PENDING_PREPARATION_READINESS_V1',tasks=self.preparation_pending))
+
+    def _pending_preparation_assignment(self, record, host):
+        from .rpe_q3_coordinator import digest
+        from .rpe_preparation_worker import select_preparation_profile,preparation_profile_core
+        request=record['request'];prep=request['preparation']
+        assignment=dict(job_id=request['request_id'],request=request,request_sha256=digest(request),
+            source_manifest=prep['source'],input_hashes=prep.get('input_hashes',[]),prefix_key='preparation:'+digest(request))
+        profile=preparation_profile_core(select_preparation_profile(self._configured_preparation_profile(host),assignment))
+        assignment.update(host_execution_profile=profile,host_execution_profile_sha256=digest(profile))
+        return assignment
+
+    def _pending_preparation_challenges(self, host):
+        if host not in (self.distributed.get('preparation_profiles')or{}):return []
+        challenges=[]
+        for job_id,record in self.preparation_pending.items():
+            row=self.store.row(job_id)
+            if row is not None and row['state']not in('QUEUED','CANCELLED'):continue
+            try:challenges.append(self._pending_preparation_assignment(record,host))
+            except (OSError,KeyError,ValueError,TypeError)as exc:
+                failure=str(exc)
+                if record.setdefault('failures',{}).get(host)!=failure:
+                    record['failures'][host]=failure;self._save_preparation_pending()
+                configured=set(self.distributed.get('preparation_profiles')or{})
+                if configured and configured.issubset(record['failures']) and not record['decision']['eligible_host_ids']:
+                    self.preparation_holds[job_id]=dict(status='HOST_ELIGIBILITY_HOLD',reason='ALL_PREPARATION_HOSTS_FAIL_OR_UNCHECKED',host_reasons=deepcopy(record['failures']))
+                continue
+        return challenges
+
+    def _refresh_pending_preparation(self, host, fingerprints, errors):
+        from .rpe_q3_coordinator import digest
+        from .rpe_preparation_worker import validate_preparation_fingerprint
+        for job_id,record in list(self.preparation_pending.items()):
+            old=self.store.row(job_id)
+            if old is not None and old['state']not in('QUEUED','CANCELLED'):continue
+            if job_id not in fingerprints and job_id not in errors:continue
+            decision=deepcopy(record['decision']);changed=False
+            try:
+                assignment=self._pending_preparation_assignment(record,host)
+                if job_id in errors:raise ValueError(errors[job_id])
+                fingerprint=fingerprints[job_id]
+                selected=validate_preparation_fingerprint(assignment,self._configured_preparation_profile(host),fingerprint)
+                current=digest(fingerprint)
+                changed=decision['host_fingerprints'].get(host)!=current
+                if host not in decision['eligible_host_ids']:decision['eligible_host_ids'].append(host);changed=True
+                decision['host_fingerprints'][host]=current;decision['execution_profiles'][host]=selected
+                if host in record.setdefault('failures',{}):record['failures'].pop(host);changed=True
+                record['reports'][host]=fingerprint
+                decision['reasons']=[]
+                record['decision']=decision
+                if changed:self._save_preparation_pending()
+                self.preparation_holds.pop(job_id,None)
+                # A verified metadata report enables a normal durable reservation;
+                # readiness itself consumes no attempt or scientific budget.
+                if old is None or old['state']=='CANCELLED':
+                    self.submit_preparation(record['request'],budget=record['budget'],approved=record['approved'],
+                        contract=record['contract'],eligibility=decision)
+                elif old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
+                if changed:self.log(event='PREPARATION_HOST_READINESS',job=job_id,host_id=host,status='PASS',stage=record['request']['preparation']['stage'])
+            except (OSError,KeyError,ValueError,TypeError)as exc:
+                failure=str(exc);failures=record.setdefault('failures',{})
+                changed=failures.get(host)!=failure;failures[host]=failure
+                if host in decision['eligible_host_ids']:
+                    decision['eligible_host_ids'].remove(host);decision['host_fingerprints'].pop(host,None);decision['execution_profiles'].pop(host,None);changed=True
+                decision['reasons']=['NO_MATCHING_PREPARATION_STAGE_HOST']if not decision['eligible_host_ids']else[]
+                record['decision']=decision
+                if changed:
+                    self._save_preparation_pending()
+                    self.log(event='PREPARATION_HOST_READINESS',job=job_id,host_id=host,status='UNCHECKED',stage=record['request']['preparation']['stage'],reason=failure)
+                if old is not None and old['state']=='QUEUED':self.store.set_eligibility(job_id,decision)
+                configured=set(self.distributed.get('preparation_profiles')or{})
+                if configured and configured.issubset(failures)and not decision['eligible_host_ids']:
+                    self.preparation_holds[job_id]=dict(status='HOST_ELIGIBILITY_HOLD',reason='ALL_PREPARATION_HOSTS_FAIL_OR_UNCHECKED',host_reasons=deepcopy(failures))
+        self.state.cv.notify_all()
+
+    def submit_preparation(self, request, *, budget='UNLIMITED', approved=False, contract=None, eligibility=None, dependencies=()):
+        """Reserve one exact preparation, independent of candidate aliases/Q3 budget.
+
+        Signal and compile callers may submit together; dependency-bearing work
+        shares the queue and waits for accepted artifacts. This is an execution
+        API, not an additional permission system: callers pass their existing
+        stage contract's execution allowance and budget.
+        """
+        from . import rpe_q3_coordinator as Q
+        from .rpe_preparation_queue import normalize_preparation_request
+        request = normalize_preparation_request(request,source_manifest=self.source_manifest,dependencies=dependencies)
+        preparation = request['preparation']
+        job_id = request['request_id']
+        method = 'PREPARATION:'+preparation['stage']
+        task_contract = dict(evaluation=deepcopy(contract),dependencies=preparation['dependencies'])
+        with self.state.cv:
+            row = self.store.row(job_id)
+            if row is None or row['state'] == 'CANCELLED':
+                if eligibility is None: eligibility = self._preparation_eligibility_for(request, job_id)
+                if not self.store.eligible(request, eligibility):
+                    if (approved is True and budget not in (0,) and self.distributed.get('preparation_profiles')
+                            and not self.store.artificial(request) and job_id not in self.preparation_pending):
+                        empty=dict(request_sha256=Q.digest(request),eligible_host_ids=[],host_fingerprints={},execution_profiles={},reasons=['PREPARATION_HOST_METADATA_PENDING'])
+                        self.preparation_pending[job_id]=dict(request=request,budget=budget,approved=approved,contract=deepcopy(contract),decision=empty,reports={},failures={})
+                        self._save_preparation_pending()
+                    self.eligibility_holds[job_id] = eligibility
+                    self.preparation_holds[job_id] = dict(status='HOST_ELIGIBILITY_HOLD',reason='NO_MATCHING_PREPARATION_STAGE_HOST',host_eligibility=eligibility)
+                    self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],reason='NO_MATCHING_PREPARATION_STAGE_HOST')
+                    return job_id
+                if not self.store.reserve(method, job_id, request, budget, approved, contract=task_contract,eligibility=eligibility):
+                    self.preparation_holds[job_id] = dict(status='PREPARATION_BUDGET_OR_PERMISSION_HOLD',reason='EXISTING_STAGE_CONTRACT_DOES_NOT_ALLOW_NEW_CALL')
+                    return job_id
+                row = self.store.row(job_id)
+                self.preparation_holds.pop(job_id, None)
+                self.eligibility_holds.pop(job_id, None)
+                self.state.metrics['preparation_submitted'] += 1
+                self.for_method(method).log(event='ENQUEUE',job=job_id,configuration=job_id,stage=preparation['stage'],demand=True)
+            elif row['request_sha256'] != Q.digest(request) or row['contract'] != task_contract:
+                raise ValueError('Preparation identity/contract changed')
+            if row['state'] != 'ACCEPTED': self._restore_task(row, demand=True)
+            self.state.cv.notify_all()
+        return job_id
+
+    def preparation_result(self, job_id, *, wait=False, adopt=True):
+        row = self.store.row(job_id)
+        if wait and row is None and job_id in self.preparation_pending:
+            self.log(event='DEPENDENCY_WAIT_START',job=job_id)
+            try:
+                with self.state.cv:
+                    while row is None and not self.state.closed:
+                        pending=self.preparation_pending[job_id]
+                        configured=set(self.distributed.get('preparation_profiles')or{})
+                        if configured and configured.issubset(pending.get('failures',{})) and not pending['decision']['eligible_host_ids']:break
+                        if pending['decision']['eligible_host_ids'] and job_id in self.preparation_holds and self.preparation_holds[job_id].get('status')=='PREPARATION_BUDGET_OR_PERMISSION_HOLD':break
+                        self.state.cv.wait(.1);row=self.store.row(job_id)
+            finally:self.log(event='DEPENDENCY_WAIT_END',job=job_id)
+        if row is None:
+            if job_id in self.preparation_pending:
+                pending=self.preparation_pending[job_id];configured=set(self.distributed.get('preparation_profiles')or{})
+                if not configured.issubset(pending.get('failures',{})) and self.preparation_holds.get(job_id,{}).get('status')!='PREPARATION_BUDGET_OR_PERMISSION_HOLD':return None
+            hold = self.preparation_holds.get(job_id)
+            if hold is None and job_id in self.preparation_pending:
+                hold=dict(status='HOST_ELIGIBILITY_HOLD',reason='ALL_PREPARATION_HOSTS_FAIL_OR_UNCHECKED',host_reasons=deepcopy(self.preparation_pending[job_id].get('failures',{})))
+            return None if hold is None else dict(hold,job_id=job_id,calls=0,preparation_calls=0)
+        if self._preparation_request(row['request']) is None: raise ValueError('Not a preparation task')
+        task = self.state.tasks.get(self.run_dir/'jobs'/row['method']/job_id)
+        if wait and row['state'] != 'ACCEPTED' and task is not None and not task.event.is_set():
+            self.for_method(row['method']).log(event='DEPENDENCY_WAIT_START',job=job_id)
+            try:
+                while not task.event.wait(.1):
+                    for dependency in row['request']['preparation'].get('dependencies', []):
+                        result = self.preparation_result(dependency,adopt=False)
+                        if result is not None and result.get('status') != 'PREPARATION_COMPLETE':
+                            return dict(status='PREPARATION_DEPENDENCY_HOLD',reason='PREDECESSOR_NOT_COMPLETE',dependency=dependency,predecessor=result,job_id=job_id,calls=0,preparation_calls=0)
+            finally: self.for_method(row['method']).log(event='DEPENDENCY_WAIT_END',job=job_id)
+            row = self.store.row(job_id)
+        if row['state'] == 'ACCEPTED':
+            job = self.run_dir/'jobs'/row['method']/job_id
+            outcome = json.loads((job/'OUTCOME.json').read_text())
+            artifacts = job/'artifacts'
+            self.artifact_cache.materialize(outcome.get('artifacts', {}), artifacts)
+            if adopt and self.store.adopt(job_id):
+                self.for_method(row['method']).log(event='ADOPT',job=job_id,configuration=job_id,status=outcome['status'],stage=row['request']['preparation']['stage'])
+                self.state.metrics['preparation_adopted'] += 1
+            return dict(outcome,job_id=job_id,job=str(job),artifact_directory=str(artifacts),calls=0,preparation_calls=1)
+        if row['state'] == 'UNKNOWN' or (task and task.error):
+            return dict(status='UNKNOWN',reason=task.error if task else 'PREPARATION_STATE_UNKNOWN',job_id=job_id,calls=0,preparation_calls=1)
+        return None
+
+    def await_preparation(self, job_id, *, adopt=True):
+        return self.preparation_result(job_id,wait=True,adopt=adopt)
+
+    def configure_preparation_graph(self, settings):
+        """Submit an explicitly supplied graph; candidate selection stays outside."""
+        from . import rpe_q3_coordinator as Q
+        frozen = self.run_dir/'distributed'/'PREPARATION_GRAPH.json'
+        if frozen.exists() and json.loads(frozen.read_text()) != settings:
+            raise ValueError('Preparation graph changed on resume; use a new run')
+        if not frozen.exists(): Q.atomic_json(frozen, settings)
+        jobs, pending = {}, list(settings.get('tasks', []))
+        while pending:
+            ready = [item for item in pending if all(name in jobs for name in item.get('dependencies', []))]
+            if not ready: raise ValueError('Preparation graph has missing or cyclic dependencies')
+            for item in ready:
+                request = deepcopy(item['request'])
+                prep = request['preparation']
+                if prep.get('dependency_inputs'):
+                    prep['dependency_inputs'] = {jobs.get(name,name):paths for name,paths in prep['dependency_inputs'].items()}
+                jobs[item['name']] = self.submit_preparation(request,budget=item.get('budget',0),approved=item.get('approved') is True,
+                    contract=item.get('contract'),eligibility=item.get('eligibility'),dependencies=[jobs[name] for name in item.get('dependencies', [])])
+                pending.remove(item)
+        self.preparation_dependencies.update({configuration:[jobs[name] for name in names]
+            for configuration,names in settings.get('candidate_dependencies', {}).items()})
+        Q.atomic_json(self.run_dir/'distributed'/'PREPARATION_BINDINGS.json',dict(tasks=jobs,candidate_dependencies=self.preparation_dependencies))
+        return jobs
+
+    def _candidate_preparation_ready(self, proposal):
+        for job_id in self.preparation_dependencies.get(proposal['configuration_id'], []):
+            result = self.preparation_result(job_id,adopt=False)
+            if result is None or result.get('status') != 'PREPARATION_COMPLETE': return False
+        return True
+
+    def _wait_candidate_preparation(self, proposal):
+        for job_id in self.preparation_dependencies.get(proposal['configuration_id'], []):
+            result = self.preparation_result(job_id,wait=True)
+            if result is None or result.get('status') != 'PREPARATION_COMPLETE':
+                return dict(status='PREPARATION_HOLD',reason='CANDIDATE_PREPARATION_NOT_COMPLETE',preparation=result,job_id=job_id,calls=0,MSE_lower=None,MSE_upper=None,job=None)
+        return None
+
+    def _complete_preparation(self, row, value, transfer, receipt, outcome, task, started):
+        if outcome.get('request_id', outcome.get('task_id')) != row['job_id'] or outcome.get('request_sha256') != row['request_sha256']:
+            raise ValueError('Preparation result identity differs from its request')
+        preparation = row['request']['preparation']
+        if outcome.get('stage') != preparation['stage'] or outcome.get('source_manifest') != preparation['source']:
+            raise ValueError('Preparation result stage/SOURCE differs')
+        expected_profile = ((row.get('eligibility') or {}).get('execution_profiles') or {}).get(row['host_id'])
+        if expected_profile is not None:
+            from .rpe_preparation_worker import preparation_profile_core
+            from .rpe_q3_coordinator import digest
+            if outcome.get('execution_profile_sha256') != digest(preparation_profile_core(expected_profile)):
+                raise ValueError('Preparation result execution profile differs')
+        if outcome.get('status') not in ('PREPARATION_COMPLETE', 'PREPARATION_FAILED'):
+            raise ValueError('Preparation outcome is not a supported terminal result')
+        if outcome['status'] == 'PREPARATION_COMPLETE' and (receipt.get('returncode') != 0 or receipt.get('signal') is not None):
+            raise ValueError('Preparation result without a clean adapter exit')
+        artifacts = outcome.get('artifacts', {})
+        if not isinstance(artifacts, dict): raise ValueError('Preparation artifact manifest required')
+        if self.artifact_cache.missing(artifacts.values()): raise ValueError('Preparation result artifacts were not durably transferred')
+        # Resolve path safety before acceptance. Large payloads remain in CAS,
+        # outside the small immutable completion bundle, including on replay.
+        from .rpe_preparation_artifacts import artifact_path
+        for name in artifacts: artifact_path(name)
+        accepted, duplicate = self.store.complete(row['host_id'],row['job_id'],row['attempt_id'],value['request_sha256'],value['files'])
+        self._publish_transfer(accepted)
+        if not duplicate:
+            self.for_method(row['method']).log(event='TRANSFER_COMPLETE',job=row['job_id'],host_id=row['host_id'],stage=row['request']['preparation']['stage'],transfer_seconds=time.monotonic()-started)
+        if task:
+            task.error = None
+            if task.status == 'RUNNING': self._finished(task,receipt.get('returncode'),row['assigned_epoch'])
+            else: task.event.set()
+        self.state.cv.notify_all()
+        self._timing_queue()
+        return dict(ok=True,duplicate=duplicate)
+
     def _held_answer(self, proposal):
         job = self.job_dir(proposal)
         return dict(status='HOST_ELIGIBILITY_HOLD', reason='NO_MATCHING_ELIGIBLE_HOST',
@@ -778,12 +1118,14 @@ class DistributedExecutor(ConcurrentExecutor):
             return old
         job.mkdir(parents=True, exist_ok=True)
         if not (job/'REQUEST.json').exists(): _write(job/'REQUEST.json', request)
+        if proposal is None and self._preparation_request(request):
+            proposal = dict(configuration_id=row['job_id'], origin=dict(kind='PREPARATION'), cost=0)
         if proposal is None:
             proposal = dict(configuration_id=request['configuration_id'], vector=O.interleave(request['N_X'], request['N_Y']),
                             cost=O.frac(request['cost']), origin=request['origin'])
         running = row['state'] != 'QUEUED'
         task = SimpleNamespace(view=self.for_method(method), job=job, proposal=deepcopy(proposal), rule=request['route'],
-            owner=(method, request['configuration_id']), demand=demand, status='RUNNING' if running else 'QUEUED',
+            owner=(method, proposal['configuration_id']), demand=demand, status='RUNNING' if running else 'QUEUED',
             event=threading.Event(), enqueue=time.monotonic()-max(0, time.time()-row['enqueued_epoch']),
             error=None, started=running, speculative=not demand)
         self.state.tasks[job] = task
@@ -800,6 +1142,7 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _enqueue(self, proposal, demand=False):
         from .rpe_q3_coordinator import prefix_key
+        if not self._candidate_preparation_ready(proposal): return False
         job = self.job_dir(proposal); s = self.state
         with s.cv:
             if s.failure: raise RuntimeError('Executor persistence failure: '+s.failure)
@@ -852,16 +1195,23 @@ class DistributedExecutor(ConcurrentExecutor):
     def _assignment(self, row, host_id=None):
         from .rpe_q3_coordinator import input_hashes, prefix_key, digest
         from .rpe_host_profiles import profile_core
+        preparation = self._preparation_request(row['request'])
         value = dict(job_id=row['job_id'], method=row['method'], attempt_id=row['attempt_id'], request=row['request'],
-            request_sha256=row['request_sha256'], source_manifest=self.source_manifest,
-            input_hashes=input_hashes(self.computation_root, row['request'], self.input_hash_cache), prefix_key=prefix_key(row['request']))
+            request_sha256=row['request_sha256'], source_manifest=preparation.get('source', self.source_manifest) if preparation else self.source_manifest,
+            input_hashes=preparation.get('input_hashes', []) if preparation else input_hashes(self.computation_root, row['request'], self.input_hash_cache),
+            prefix_key=('preparation:'+digest(row['request'])) if preparation else prefix_key(row['request']))
+        if preparation:
+            value['artifact_manifest'] = self._preparation_inputs(row['request'])
         # Eligibility can change only before claim. Assigned rows retain the
         # selected profile for replay/recovery even after policy replacement.
         fixed = self.store.row(row['job_id'])
         host = host_id or row.get('host_id')
         profile = ((fixed.get('eligibility') or {}).get('execution_profiles') or {}).get(host)
         if profile is not None:
-            value['host_execution_profile'] = profile_core(profile)
+            if preparation:
+                from .rpe_preparation_worker import preparation_profile_core
+                value['host_execution_profile'] = preparation_profile_core(profile)
+            else: value['host_execution_profile'] = profile_core(profile)
             value['host_execution_profile_sha256'] = digest(value['host_execution_profile'])
         return value
 
@@ -896,7 +1246,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 value=self.hosts[h].get('capacity')
                 maximum=None if admission is None else self._host_admission(h,admission,admission_error)['max_slots']
                 return min(value,maximum)if value is not None and maximum is not None else value
-            if admission_error or(admission is not None and not allowed):reason='HOST_ADMISSION_HOLD'
+            if self._preparation_request(self.store.row(task.job.name)['request']) and not self._task_ready(task):reason='PREPARATION_DEPENDENCY_OR_ARTIFACT_WAIT'
+            elif admission_error or(admission is not None and not allowed):reason='HOST_ADMISSION_HOLD'
             elif any(h not in self.hosts for h in required):reason='REQUIRED_HOST_PARTICIPATION_WAIT'
             elif s.active>=self.capacity:reason='ALL_ELIGIBLE_SLOTS_BUSY'
             elif allowed and all(h in self.hosts and capacity(h) is not None and
@@ -916,6 +1267,11 @@ class DistributedExecutor(ConcurrentExecutor):
         with s.cv:
             host = value['host_id']
             if not isinstance(host, str) or not host: raise ValueError('Nonempty host_id required')
+            if path.startswith('/v1/artifacts/'):
+                if path == '/v1/artifacts/missing': return dict(missing=self.artifact_cache.missing(value.get('hashes', [])))
+                if path == '/v1/artifacts/get': return dict(blobs=self.artifact_cache.get(value.get('hashes', [])))
+                if path == '/v1/artifacts/put': return dict(ok=True, **self.artifact_cache.put(value.get('blobs', {})))
+                raise ValueError('Unknown artifact RPC endpoint')
             if path == '/v1/poll':
                 if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
                 slots = value['slots']
@@ -938,9 +1294,13 @@ class DistributedExecutor(ConcurrentExecutor):
                                        resource_report=value.get('resource_report'),
                                        cached_prefixes=value.get('cached_prefixes', []),
                                        host_fingerprints=fingerprints)
+                self._refresh_pending_preparation(host,fingerprints,value.get('readiness_errors')or{})
+                pending_challenges=self._pending_preparation_challenges(host)
                 self._refresh_capacity(admission_policy, admission_error)
                 new_slots = self._offer_free(host, admission_policy, admission_error)
                 def reply(**fields):
+                    existing=fields.get('eligibility_challenges',[])
+                    fields['eligibility_challenges']=list({item['job_id']:item for item in existing+pending_challenges}.values())
                     return dict(fields, capacity_feedback=self._capacity_feedback(host))
                 # A lost response is reconciled with its original owner even
                 # if current readiness changed or another host is offline.
@@ -958,7 +1318,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 if not new_slots:
                     return reply(assignments=assignments, stop=False, host_admission=admission,
                                 eligibility_challenges=[])
-                queue = sorted((t for t in s.tasks.values() if t.status == 'QUEUED'),
+                queue = sorted((t for t in s.tasks.values() if t.status == 'QUEUED' and self._task_ready(t)),
                     key=lambda t: (not t.demand, s.owner_clock.get(t.owner, -1), t.enqueue))
                 if s.failure or s.closed: return reply(assignments=assignments, stop=False, host_admission=admission)
                 eligible, challenges = [], []
@@ -1026,7 +1386,7 @@ class DistributedExecutor(ConcurrentExecutor):
                                      host_admission=admission, waiting_for_discovery=unknown)
                 # Prefix locality is considered only among eligible hosts for
                 # the same first dispatchable task, never an unsupported host.
-                if eligible and time.monotonic()-eligible[0].enqueue < self.distributed.get('affinity_wait_seconds', .2):
+                if eligible and not self._preparation_request(self.store.row(eligible[0].job.name)['request']) and time.monotonic()-eligible[0].enqueue < self.distributed.get('affinity_wait_seconds', .2):
                     first = self.store.row(eligible[0].job.name)
                     key = Q.prefix_key(first['request'])
                     if key not in value.get('cached_prefixes', []):
@@ -1092,6 +1452,9 @@ class DistributedExecutor(ConcurrentExecutor):
             if not (transfer/'REQUEST.json').exists(): _write(transfer/'REQUEST.json', row['request'])
             receipt = json.loads((transfer/'PROCESS_RETURN.json').read_text())
             outcome = json.loads((transfer/'OUTCOME.json').read_text())
+            preparation = self._preparation_request(row['request'])
+            if preparation:
+                return self._complete_preparation(row, value, transfer, receipt, outcome, task, started)
             if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and (receipt.get('returncode') != 0 or receipt.get('signal') is not None):
                 raise ValueError('Successful outcome without a clean adapter exit')
             proposal = task.proposal if task else dict(configuration_id=row['request']['configuration_id'],
@@ -1129,6 +1492,8 @@ class DistributedExecutor(ConcurrentExecutor):
         if outcome.exists(): Q.install_files(job, {'OUTCOME.json': base64.b64encode(outcome.read_bytes()).decode()})
 
     def answer(self, proposal, allow_new=True):
+        blocked = self._wait_candidate_preparation(proposal)
+        if blocked is not None: return blocked
         job = self.job_dir(proposal)
         row = self.store.row(job.name)
         # Readiness is an operational hold, not a failed scientific evaluation
@@ -1204,6 +1569,9 @@ class DistributedExecutor(ConcurrentExecutor):
                           for host, info in self.hosts.items()},
                       persistent_reserved={m:self.store.counts(m) for m in self.routes},
                       host_eligibility_holds=deepcopy(self.eligibility_holds),
+                      preparation={stage:dict(reserved=self.store.counts('PREPARATION:'+stage),
+                          launched=self.store.counts('PREPARATION:'+stage,started_only=True))for stage in ('signal','compile','audit')},
+                      preparation_readiness_pending={job:dict(stage=value['request']['preparation']['stage'],eligible_host_ids=value['decision']['eligible_host_ids'],failures=value.get('failures',{}))for job,value in self.preparation_pending.items() if self.store.row(job) is None},
                       actual_OS_host_count='recorded by integration harness; host IDs alone do not establish separate machines')
         return result
 

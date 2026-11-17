@@ -165,7 +165,8 @@ class Relay:
 
     def _poll_value(self, status):
         value = dict(host_id=status['host_id'], slots=status['slots'], capacity=status.get('capacity'),
-                     source_sha=status['source_sha'], cached_prefixes=status['cached_prefixes'])
+                     source_sha=status['source_sha'], cached_prefixes=status['cached_prefixes'],
+                     cached_artifact_sha256=status.get('cached_artifact_sha256', []))
         if 'accepting_new_jobs' in status:
             value['accepting_new_jobs'] = status['accepting_new_jobs']
         if status.get('resource_report') is not None:
@@ -191,6 +192,30 @@ class Relay:
             observed = self.post('/v1/poll', dict(poll, observe_only=True))
         return status, seconds, started, poll, observed
 
+    def _recover_artifacts(self, worker, attempt):
+        hashes = list(dict.fromkeys(attempt.get('artifact_manifest', {}).values()))
+        if not hashes:return
+        missing = self.post('/v1/artifacts/missing', dict(host_id=worker['host_id'], hashes=hashes))['missing']
+        for sha in missing:
+            response, _ = self.remote(worker, 'artifacts-get', dict(hashes=[sha]))
+            self.post('/v1/artifacts/put', dict(host_id=worker['host_id'], blobs=response['blobs']))
+            self.log('ARTIFACT_RECOVERED', host_id=worker['host_id'], sha256=sha)
+
+    def _deliver_artifacts(self, worker, assignment):
+        request=assignment.get('request', {})
+        if (request.get('route') or {}).get('kind') != 'preparation':return
+        spec=request['preparation'];inputs=assignment.get('artifact_manifest', spec.get('inputs', {}))
+        hashes=list(inputs.values()) if isinstance(inputs,dict) else [row['sha256'] for row in inputs]
+        hashes += [row['sha256'] for row in spec.get('input_git_bundles', [])]
+        for workspace in spec.get('workspaces', {}).values():
+            hashes += [row['sha256'] for row in workspace.get('input_git_bundles', [])]
+        if not hashes:return
+        response, _=self.remote(worker,'artifacts-missing',dict(hashes=list(dict.fromkeys(hashes))))
+        for sha in response['missing']:
+            result=self.post('/v1/artifacts/get',dict(host_id=worker['host_id'],hashes=[sha]))
+            self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
+            self.log('ARTIFACT_DELIVERED',host_id=worker['host_id'],sha256=sha)
+
     def tick(self, worker, observed=None):
         info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
         info['phase'] = 'MAILBOX_STATUS'
@@ -211,6 +236,8 @@ class Relay:
             self.post('/v1/state', dict(owner, state=state, detail=attempt.get('detail', {})))
             if state == 'COMPLETED_PENDING_TRANSFER':
                 started = time.monotonic()
+                info['phase'] = 'CONTROLLER_ARTIFACTS'
+                self._recover_artifacts(worker, attempt)
                 info['phase'] = 'CONTROLLER_COMPLETE'
                 response = self.post('/v1/complete', dict(owner, request_sha256=attempt['request_sha256'], files=attempt['files']))
                 if response.get('ok') is not True: raise ValueError('Controller refused completion')
@@ -250,6 +277,8 @@ class Relay:
             pending = self.directory/'deliveries'/assignment['job_id']
             pending.mkdir(parents=True, exist_ok=True)
             atomic_json(pending/'ASSIGNMENT.json', assignment)
+            info['phase'] = 'MAILBOX_ARTIFACTS'
+            self._deliver_artifacts(worker, assignment)
             info['phase'] = 'MAILBOX_SUBMIT'
             relay_wait=time.monotonic()-response_time
             self.log('REQUEST_DELIVERY_START',host_id=host,job_id=assignment['job_id'],attempt_id=assignment['attempt_id'])

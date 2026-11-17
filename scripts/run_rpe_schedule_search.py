@@ -551,12 +551,30 @@ class WidthDriver:
     def complete_points(self):
         comp=self.completion_api()
         if hasattr(comp,'ingest_price_results'):comp.ingest_price_results()
-        for p in self.state['points']:
-            if p['status']not in('COMPLETION','WAITING_INPUTS'):continue
+        pending=[p for p in self.state['points'] if p['status']in('COMPLETION','WAITING_INPUTS')]
+        def complete(p):
             started=time.monotonic();self.log(event='CANDIDATE_INPUTS_START',family=p['family'],kappa=p['kappa'])
             if self.a.plan_only or self.spec.get('science_approved')is not True:
                 record=comp.plan(p['completion_request'])
             else:record=comp.complete(p['completion_request'])
+            return record,started
+        # These threads coordinate durable tasks; they are not additional
+        # scientific slots. All heavy leaves use the one distributed worker pool.
+        distributed=bool((self.spec.get('executor',{}).get('distributed')or{}).get('preparation'))
+        if not distributed:
+            for p in pending:
+                record,started=complete(p);self._completed_point(p,record,started)
+            return
+        from concurrent.futures import ThreadPoolExecutor,as_completed
+        pool=ThreadPoolExecutor(max_workers=max(1,len(pending)))
+        try:
+            futures={pool.submit(complete,p):p for p in pending}
+            for future in as_completed(futures):
+                p=futures[future];record,started=future.result()
+                self._completed_point(p,record,started)
+        finally:pool.shutdown(wait=True)
+
+    def _completed_point(self,p,record,started):
             self.log(event='CANDIDATE_INPUTS_END',family=p['family'],kappa=p['kappa'],status=record['status'],
                 reason=record.get('reason'),wall_seconds=time.monotonic()-started)
             p['completion']=dict(status=record['status'],key=record.get('key'),reason=record.get('reason'),
@@ -566,7 +584,7 @@ class WidthDriver:
             if record['status']=='READY_FOR_SEARCH':
                 try:self.check_completed_configuration(p,record)
                 except (ValueError,KeyError,TypeError) as exc:
-                    p.update(status='HELD',reason='COMPLETED_CONFIGURATION_MISMATCH:'+str(exc));continue
+                    p.update(status='HELD',reason='COMPLETED_CONFIGURATION_MISMATCH:'+str(exc));return
                 p.update(status='REGISTERED',configuration_id=record['configuration_id'])
             elif record['status'].startswith('STOP') or 'NUMERICAL_GATE' in str(record.get('reason','')):
                 p.update(status='HELD',reason=record.get('reason',record['status']))
@@ -605,8 +623,11 @@ class WidthDriver:
         routes=K.CLI.merged_routes(problem,self.spec)
         def install_ready(current_routes):
             accepted={p.get('completion',{}).get('key')for p in self.state['points']if p['status']in('REGISTERED','EVALUATED')}
-            records=[r for r in comp.state['records'].values()if r.get('key')in accepted]
-            current_routes=comp.install(context,dict(problem,execution_routes=current_routes),records)
+            if hasattr(comp,'install_snapshot'):
+                current_routes,records=comp.install_snapshot(context,dict(problem,execution_routes=current_routes),accepted)
+            else:
+                records=[r for r in comp.state['records'].values()if r.get('key')in accepted]
+                current_routes=comp.install(context,dict(problem,execution_routes=current_routes),records)
             installed={r['key']:r.get('installed_configuration_id',r.get('configuration_id'))for r in records}
             for p in self.state['points']:
                 canonical=installed.get(p.get('completion',{}).get('key'))
@@ -631,6 +652,8 @@ class WidthDriver:
         active_spec['executor']=dict(options,prior_run_dirs=list(options.get('prior_run_dirs',[]))+[str(self.run)])
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
         executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
+        runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)
+        if runtime is not None:comp.bind_stage_executor(runtime)
         preparation_pool=None
         try:
             interim=None
@@ -640,10 +663,20 @@ class WidthDriver:
                 from concurrent.futures import ThreadPoolExecutor
                 preparation_pool=ThreadPoolExecutor(max_workers=1)
                 pending=preparation_pool.submit(self.complete_points)
-                if any(c['ready']for c in context['candidates']):
-                    with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION'):
-                        interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
-                            initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True)
+                installed=None
+                while True:
+                    ready_keys=frozenset(p.get('completion',{}).get('key') for p in self.state['points']
+                        if p['status']in('REGISTERED','EVALUATED'))
+                    if installed!=ready_keys:
+                        routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']
+                        O.apply_published(context['candidates'],routes);installed=ready_keys
+                        if any(c['ready']for c in context['candidates']):
+                            with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION'):
+                                interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
+                                    initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True)
+                            if any(r['stop_reason']in {'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER'} for r in interim.values()):break
+                    if pending.done():break
+                    time.sleep(.05)
                 pending.result()
                 # No other thread now changes Completion or its registry.
                 routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']
@@ -694,7 +727,8 @@ class WidthDriver:
             self.bootstrap_families();proposals,report=self.plan();self.save()
             self.log(event='PLAN_END',wall_seconds=time.monotonic()-started,proposals=len(proposals))
             started=time.monotonic();self.log(event='INPUTS_START')
-            overlap=(self.spec.get('overlap_ready_batch')is True and not self.a.plan_only and
+            distributed_prep=bool((self.spec.get('executor',{}).get('distributed')or{}).get('preparation'))
+            overlap=((self.spec.get('overlap_ready_batch')is True or distributed_prep) and not self.a.plan_only and
                      self.spec.get('science_approved')is True)
             if not overlap:self.complete_points()
             self.save();self.log(event='INPUTS_END',wall_seconds=time.monotonic()-started,deferred_to_batch=overlap)

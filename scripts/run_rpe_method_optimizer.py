@@ -188,7 +188,22 @@ def make_executor(root, run, routes, expected, problem, spec):
         def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
     else:
         executor=O.Executor(root,run,routes,expected,problem,**common);optimize=O.optimize
+    graph=spec.get('distributed_preparation')
+    if graph and not getattr(executor,'launch_disabled',False) and approved:
+        if not hasattr(executor,'configure_preparation_graph'):
+            executor.finish();raise ValueError('Preparation tasks require the shared distributed executor')
+        executor.configure_preparation_graph(graph)
     return executor,optimize
+
+
+def preparation_runtime(executor,run,spec):
+    """Bind heavy providers to the same queue and slots as the shot search."""
+    settings=(spec.get('executor',{}).get('distributed')or{}).get('preparation')
+    if not settings:return None
+    if not hasattr(executor,'submit_preparation'):
+        raise ValueError('Distributed preparation requires DistributedExecutor')
+    from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge
+    return DistributedPreparationBridge(executor,ROOT,settings,approved=spec.get('science_approved')is True)
 
 
 def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None, result_callback=None):
@@ -227,13 +242,27 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
     from trottertracks import pf_optimizer_connection as PFConnection
     if context.get('pf_evidence_registry'):
         routes = PFConnection.registry_routes(routes, context['pf_evidence_registry'])
+    executor=None;runtime=None
+    executor_spec=spec
+    if previous_round is not None and not (run/'distributed'/'ALLOCATION_SETTINGS.json').exists():
+        executor_spec=dict(spec,executor=dict(spec.get('executor',{})))
+        executor_spec['executor']['max_concurrent_jobs']=previous_round.get('executor',{}).get('max_concurrent_jobs',1)
+    if (spec.get('executor',{}).get('distributed')or{}).get('preparation'):
+        executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,executor_spec)
+        runtime=preparation_runtime(executor,run,spec)
     from trottertracks import pf_candidate_selection as PFSelect
-    with round_phase(run, 'SELECT_AND_PREPARE_PF'):
-        context,routes,pf_preparation = PFSelect.prepare(ROOT,problem,context,spec,run,routes)
-    if spec.get('candidate_completion'):
-        from trottertracks.pr_candidate_completion import prepare_for_search
-        with round_phase(run, 'PREPARE_SELECTED_CANDIDATES'):
-            context,routes,completion = prepare_for_search(ROOT,dict(problem,execution_routes=routes),context,spec,run)
+    try:
+        with round_phase(run, 'SELECT_AND_PREPARE_PF'):
+            context,routes,pf_preparation = PFSelect.prepare(ROOT,problem,context,spec,run,routes,
+                **({'stage_executor':runtime} if runtime is not None else {}))
+        if spec.get('candidate_completion'):
+            from trottertracks.pr_candidate_completion import prepare_for_search
+            with round_phase(run, 'PREPARE_SELECTED_CANDIDATES'):
+                context,routes,completion = prepare_for_search(ROOT,dict(problem,execution_routes=routes),context,spec,run,
+                    **({'stage_executor':runtime} if runtime is not None else {}))
+    except BaseException:
+        if executor is not None:executor.finish()
+        raise
     unlimited = any(v == 'UNLIMITED' for v in spec['max_new_q3_per_method'].values())
     steps = spec.get('max_steps_per_method', 100000 if unlimited else problem['search']['max_steps_per_method'])
     search = dict(problem['search'], max_steps_per_method=steps)  # the finite range ends an UNLIMITED round
@@ -241,13 +270,8 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
     O.apply_published(context['candidates'], routes)
     budgets = spec['max_new_q3_per_method']
     approved = spec.get('science_approved', any(v not in (0, None) for v in budgets.values()))
-    executor_spec=spec
-    if previous_round is not None and not (run/'distributed'/'ALLOCATION_SETTINGS.json').exists():
-        # A pre-automation run had an implicit global limit of one. Do not
-        # upgrade its running/resumed contract merely by changing the default.
-        executor_spec=dict(spec,executor=dict(spec.get('executor',{})))
-        executor_spec['executor']['max_concurrent_jobs']=previous_round.get('executor',{}).get('max_concurrent_jobs',1)
-    executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,executor_spec)
+    if executor is None:executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,executor_spec)
+    else:executor.routes=routes;executor.expected=context['expected']
     try:
         if executor_setup:
             executor_setup(executor,context)
