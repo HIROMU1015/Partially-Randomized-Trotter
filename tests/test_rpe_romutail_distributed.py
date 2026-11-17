@@ -52,6 +52,7 @@ class RealHostFixtureTests(unittest.TestCase):
     def test_synthetic_participation_code_writes_valid_json_and_only_owned_path(self):
         with tempfile.TemporaryDirectory()as temporary:
             path=Path(temporary)/'.romutail-controller-acceptance/settings.json'
+            path.parent.mkdir()
             worker=dict(python=sys.executable,participation_wsl_file=str(path),ssh_alias='synthetic')
             seen={}
             def remote(worker,command,action):
@@ -73,7 +74,8 @@ class RealHostFixtureTests(unittest.TestCase):
             base=Path(temporary)/'fixture'
             with patch.object(H.F,'free_port',return_value=19876):H.prepare(base,deployment)
             control=Path(temporary)/'gateway-run';control.mkdir()
-            for name in ('PROBLEM.json','ROUND.json'):(control/name).write_bytes((base/name).read_bytes())
+            (control/'PROBLEM.json').write_bytes((base/'PROBLEM.json').read_bytes())
+            (control/'ROUND.requested.json').write_bytes((base/'ROUND.json').read_bytes())
             with patch.object(H.R.Relay,'remote',side_effect=AssertionError('PlanOnly contacted remote worker')),redirect_stdout(io.StringIO()):
                 H.controller(base,plan_only=True,control_run=control,max_cycles=1)
             self.assertTrue((control/'plan-only/KAPPA_STATE.json').exists())
@@ -94,6 +96,17 @@ class RealHostFixtureTests(unittest.TestCase):
             H.clear_mirrored_stop(base,control,run,explicit_control=True)
             self.assertFalse(marker.exists())
             self.assertEqual(json.loads((run/'STOP_REQUESTED_BEFORE_GATEWAY_RESUME.json').read_text())['reason'],'USER_REQUESTED_STOP')
+
+    def test_admission_targets_the_gateway_owned_copy_without_touching_real_policy(self):
+        with tempfile.TemporaryDirectory()as temporary:
+            base=Path(temporary);run=base/'run';run.mkdir();gateway=base/'gateway/state/run';gateway.mkdir(parents=True)
+            policy=gateway/'HOST_ADMISSION.json';policy.write_text('{}')
+            (run/'ROUND.json').write_text(json.dumps(dict(executor=dict(distributed=dict(host_admission=str(policy))))))
+            H.synthetic_admission(base,True)
+            self.assertTrue(json.loads(policy.read_text())['hosts']['local0-wsl']['accepting'])
+            outside=base.parent/'REAL_WORKER.json'
+            (run/'ROUND.json').write_text(json.dumps(dict(executor=dict(distributed=dict(host_admission=str(outside))))))
+            with self.assertRaisesRegex(ValueError,'owned fixture'):H.synthetic_admission(base,False)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
