@@ -802,7 +802,12 @@ class WidthDriver:
                 executor.state.failure_callback=lambda error:stop_preparation.set()
                 comp.stop_requested=stop_preparation.is_set
                 supports_stop='stop_requested'in inspect.signature(self.complete_points).parameters
-                pending=preparation_pool.submit(self.complete_points,**({'stop_requested':stop_preparation.is_set}if supports_stop else{}))
+                def prepare():
+                    if runtime is not None and not stop_preparation.is_set():
+                        self.bootstrap_families()
+                    if not stop_preparation.is_set():
+                        self.complete_points(**({'stop_requested':stop_preparation.is_set}if supports_stop else{}))
+                pending=preparation_pool.submit(prepare)
                 def ready_keys():
                     with(getattr(comp,'lock',None)or nullcontext()):
                         return{r.get('key')for r in comp.state['records'].values()if r['status']=='READY_FOR_SEARCH'}
@@ -926,12 +931,14 @@ class WidthDriver:
             if (self.run/'STOP_REQUESTED.json').exists():
                 self.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());self.save();return
             self.state['cycle']+=1;started=time.monotonic();self.log(event='PLAN_START')
-            self.bootstrap_families();proposals,report=self.plan();self.save()
-            self.log(event='PLAN_END',wall_seconds=time.monotonic()-started,proposals=len(proposals))
-            started=time.monotonic();self.log(event='INPUTS_START')
             distributed_prep=bool((self.spec.get('executor',{}).get('distributed')or{}).get('preparation'))
             overlap=((self.spec.get('overlap_ready_batch')is True or distributed_prep) and not self.a.plan_only and
                      self.spec.get('science_approved')is True)
+            if not (distributed_prep and overlap):self.bootstrap_families()
+            ready_families=sum(f['status']=='READY_METADATA' for f in self.state['families'].values())
+            proposals,report=self.plan();self.save()
+            self.log(event='PLAN_END',wall_seconds=time.monotonic()-started,proposals=len(proposals))
+            started=time.monotonic();self.log(event='INPUTS_START')
             if not overlap:self.complete_points()
             self.save();self.log(event='INPUTS_END',wall_seconds=time.monotonic()-started,deferred_to_batch=overlap)
             if self.a.plan_only or self.spec.get('science_approved')is not True:
@@ -948,7 +955,8 @@ class WidthDriver:
                      any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values())or
                      any(r.get('input_requests')for r in result.values()))
             pending=any(p['status']in('COMPLETION','REGISTERED')or(p['status']=='EVALUATED'and p.get('promising'))for p in self.state['points'])
-            if not proposals and not pending:
+            if (not proposals and not pending and ready_families ==
+                    sum(f['status']=='READY_METADATA' for f in self.state['families'].values())):
                 self.state['stop']=dict(reason='WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED',
                     UTC=K.now(),methods={m:r['stop_reason']for m,r in result.items()});self.save();return
         self.state['stop']=dict(reason='MAX_CYCLES',UTC=K.now());self.save()

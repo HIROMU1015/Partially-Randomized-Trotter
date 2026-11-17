@@ -47,10 +47,33 @@ def proposals(instance):
 
 
 class IndependentMethodLaunchContract(unittest.TestCase):
+    def test_distributed_family_preparation_reenters_the_planner(self):
+        instance=ENTRY.WidthDriver.__new__(ENTRY.WidthDriver)
+        temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
+        instance.run=Path(temporary.name)
+        family=dict(status='FAMILY_PREPARATION_PENDING')
+        instance.state=dict(cycle=0,families={'fixture':family},points=[])
+        instance.a=SimpleNamespace(max_cycles=2,plan_only=False)
+        instance.spec=dict(science_approved=True,executor={'distributed':{'preparation':{'enabled':True}}})
+        instance.log=lambda **kwargs:None;instance.save=lambda:None
+        instance.bootstrap_families=lambda:self.fail('Descriptor preparation must wait for the shared executor')
+        planned=[]
+        def plan():
+            planned.append(family['status'])
+            return [],{}
+        def batch(prepare_during):
+            self.assertTrue(prepare_during)
+            family['status']='READY_METADATA'
+            return {'PR_DF':dict(stop_reason='NO_CANDIDATE_LEFT_IN_RANGE',new_calls=0)}
+        instance.plan=plan;instance.batch=batch;instance.loop()
+        self.assertEqual(planned,['FAMILY_PREPARATION_PENDING','READY_METADATA'])
+
     def test_loop_continues_deferred_completion_but_does_not_spin_on_waiting_inputs(self):
         for waiting in(False,True):
             with self.subTest(waiting=waiting):
                 instance=ENTRY.WidthDriver.__new__(ENTRY.WidthDriver)
+                temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
+                instance.run=Path(temporary.name)
                 instance.state=dict(cycle=0,families={},points=[dict(status='WAITING_INPUTS'if waiting else'COMPLETION')for _ in range(32)])
                 instance.a=SimpleNamespace(max_cycles=2,plan_only=False);instance.spec=dict(science_approved=True)
                 instance.log=lambda **kwargs:None;instance.save=lambda:None
