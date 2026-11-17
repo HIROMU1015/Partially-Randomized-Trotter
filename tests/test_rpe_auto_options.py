@@ -44,6 +44,33 @@ class AutoOptionsTests(unittest.TestCase):
         old = json.loads((base / 'optional_wsl/HOST_ADMISSION.json').read_text())
         self.assertFalse(old['hosts']['local0-wsl']['accepting'])
 
+    def test_old_round_without_allocation_marker_keeps_implicit_or_explicit_cap(self):
+        from types import SimpleNamespace
+        from test_rpe_optimizer_concurrent import fixture
+        from trottertracks import pf_candidate_selection as PF
+        problem, context, routes = fixture(methods=['FULL_PF'], configurations=1)
+        problem['execution_routes'] = routes
+        class Captured(Exception): pass
+        for old_cap in (None, 2):
+            with self.subTest(old_cap=old_cap), tempfile.TemporaryDirectory() as temporary:
+                base = Path(temporary);run = base / 'old-run';run.mkdir()
+                old = dict(round_id='ARTIFICIAL_OLD', methods=['FULL_PF'], initial='all',
+                    max_new_q3_per_method={'FULL_PF': 0}, science_approved=False,
+                    executor=dict(scheduler='concurrent', distributed={}))
+                if old_cap is not None:old['executor']['max_concurrent_jobs']=old_cap
+                stored=run/'ROUND.json';stored.write_text(json.dumps(old));protected=stored.read_bytes()
+                incoming=deepcopy(old);incoming['executor']['max_concurrent_jobs']='auto'
+                path=base/'new-input.json';path.write_text(json.dumps(incoming))
+                captured=[]
+                def factory(root, output, current_routes, expected, current_problem, spec):
+                    captured.append(spec);raise Captured()
+                args=SimpleNamespace(round=path,run_dir=run,plan_only=False)
+                with patch.object(PF,'prepare',return_value=(context,routes,{})), \
+                     patch.object(CLI,'make_executor',side_effect=factory), self.assertRaises(Captured):
+                    CLI.round_mode(args,problem,[],prepared_context=context)
+                self.assertEqual(captured[0]['executor']['max_concurrent_jobs'],old_cap or 1)
+                self.assertEqual(stored.read_bytes(),protected)
+
     def test_non_distributed_default_remains_one(self):
         spec = dict(max_new_q3_per_method={'ARTIFICIAL': 0}, science_approved=False,
                     executor=dict(scheduler='concurrent'))

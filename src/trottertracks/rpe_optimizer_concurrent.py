@@ -330,15 +330,18 @@ class ConcurrentExecutor(O.Executor):
                 if e.get('invocation')!=self.invocation:continue
                 events.append(e)
                 if e['event']=='ADOPT':adopted.add(e['job'])
-            active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=0.;last=events[0]['monotonic']
+            active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=available=0.;last=events[0]['monotonic']
+            interval_capacity=self.capacity
             for e in events:
                 dt=max(0,e['monotonic']-last);last=e['monotonic'];busy+=len(active)*dt
-                idle=max(0,self.capacity-len(active))*dt
+                available+=interval_capacity*dt
+                idle=max(0,interval_capacity-len(active))*dt
                 if queued:idle_ready+=idle
                 elif sum(waiting.values()):idle_dependency+=idle
                 else:idle_empty+=idle
                 event=e['event'];job=e.get('job')
-                if event=='DEPENDENCY_WAIT_START':waiting[job]+=1
+                if event in ('EXECUTOR_START','AUTO_CAPACITY'):interval_capacity=e['capacity']
+                elif event=='DEPENDENCY_WAIT_START':waiting[job]+=1
                 elif event=='DEPENDENCY_WAIT_END':waiting[job]-=1
                 elif event=='ENQUEUE':queued.add(job)
                 elif event=='LAUNCH':queued.discard(job);active.add(job)
@@ -356,7 +359,9 @@ class ConcurrentExecutor(O.Executor):
                 idle_slot_seconds_waiting_selected_result=idle_dependency,
                 idle_slot_seconds_no_queued_or_selected_result=idle_empty,
                 idle_slot_seconds_with_queued_candidate=idle_ready,
-                slot_utilization=busy/(elapsed*self.capacity)if elapsed else 0,
+                integrated_available_slot_seconds=available,
+                slot_utilization=busy/available if available else 0,
+                capacity_measurement='INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS',
                 speculative_adoption_fraction=s.metrics['speculative_adopted']/s.metrics['speculative_launched']if s.metrics['speculative_launched']else None,
                 memory_scope='sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted')
 

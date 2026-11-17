@@ -4,15 +4,53 @@ from pathlib import Path
 import sys
 import time
 import unittest
+from collections import Counter
+from types import SimpleNamespace
+import tempfile
+import threading
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'src'), str(ROOT / 'tests')]
 from trottertracks import rpe_q3_coordinator as Q
-from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+from trottertracks.rpe_optimizer_concurrent import DistributedExecutor, ConcurrentExecutor
 import test_rpe_q3_host_eligibility_queue as Base
 
 HIGH = ['server2', 'server1', 'local']
 WSL = 'local0-wsl'
+
+
+class CapacityIntegralTests(unittest.TestCase):
+    def test_dynamic_capacity_integrates_each_interval_instead_of_final_capacity(self):
+        # Pure event replay: no executor thread or job/adapter process starts.
+        events = [(0,'EXECUTOR_START',dict(capacity=1)),
+            (1,'ENQUEUE',dict(job='a')),(1,'ENQUEUE',dict(job='b')),(1,'ENQUEUE',dict(job='c')),
+            (2,'AUTO_CAPACITY',dict(capacity=3)),(3,'LAUNCH',dict(job='a')),
+            (4,'LAUNCH',dict(job='b')),(5,'LAUNCH',dict(job='c')),
+            (6,'EXIT',dict(job='a')),(7,'EXIT',dict(job='b')),(8,'EXIT',dict(job='c')),
+            (9,'AUTO_CAPACITY',dict(capacity=1)),(10,'EXECUTOR_STOP',{})]
+        with tempfile.TemporaryDirectory() as directory:
+            ex = ConcurrentExecutor.__new__(ConcurrentExecutor)
+            ex.run_dir=Path(directory);ex.invocation='ARTIFICIAL_EVENT_REPLAY';ex.capacity=1;ex.dp_workers=None
+            ex.state=SimpleNamespace(cv=threading.Condition(),tasks={},metrics=Counter(),by_method={},
+                peak_active=3,peak_RSS_KiB=0,failure=None)
+            (ex.run_dir/'PROGRESS.jsonl').write_text(''.join(json.dumps(dict(
+                monotonic=t,event=event,invocation=ex.invocation,**fields))+'\n' for t,event,fields in events))
+            result=ex.metrics()
+            self.assertEqual(result['busy_job_seconds'],9)
+            self.assertEqual(result['integrated_available_slot_seconds'],24)
+            self.assertEqual(result['idle_slot_seconds_with_queued_candidate'],7)
+            self.assertEqual(result['idle_slot_seconds_no_queued_candidate'],8)
+            self.assertEqual(result['slot_utilization'],9/24)
+            self.assertEqual(result['busy_job_seconds']+result['idle_slot_seconds_with_queued_candidate']+
+                result['idle_slot_seconds_no_queued_candidate'],24)
+            fixed=[(t,event,dict(fields,capacity=3) if event=='EXECUTOR_START' else fields)
+                   for t,event,fields in events if event!='AUTO_CAPACITY']
+            ex.capacity=3
+            (ex.run_dir/'PROGRESS.jsonl').write_text(''.join(json.dumps(dict(
+                monotonic=t,event=event,invocation=ex.invocation,**fields))+'\n' for t,event,fields in fixed))
+            result=ex.metrics()
+            self.assertEqual(result['integrated_available_slot_seconds'],30)
+            self.assertEqual(result['slot_utilization'],9/(10*3))
 
 
 class AutoAllocationTests(unittest.TestCase):
