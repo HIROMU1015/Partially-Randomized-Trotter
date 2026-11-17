@@ -132,6 +132,9 @@ class FailureContinuity(unittest.TestCase):
     def test_local_unknown_consumes_attempt_budget(self):
         for priority in (False,True):
             problem,context,_=F.fixture(methods=['PR_PAULI'],configurations=2,lookahead=0,steps=3)
+            # Both configurations retain a cheaper proposal after the first hold.
+            prices=list(context['candidates'][0]['prices'])
+            for candidate in context['candidates']:candidate['prices']=list(prices)
             calls=[]
             class Backend:
                 def answer(self,proposal):
