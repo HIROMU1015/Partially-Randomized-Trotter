@@ -1,5 +1,7 @@
 # 文書索引
 
+[信号・compile・監査とQ3の共通分散実行](research/rpe_distributed_preparation/HANDOFF.md)：工程別profile・依存成果物・共通枠・開始/再開と検査範囲。
+
 [候補別のdry-check PASSホストへのQ3割当](research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
 
 [H4準備の差分cacheと早期READY](research/rpe_h4_readiness_fast_20261117/REPORT.md)：候補・費用・乾式判定を前回と保ち、通常入口で初回/入力不変時を計測。[1コマンドと再計測](research/rpe_h4_readiness_fast_20261117/README.md)。

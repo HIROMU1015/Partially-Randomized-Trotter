@@ -1,5 +1,13 @@
 # 性能対策の再利用索引
 
+## 信号・compile・監査をQ3と同じ空き枠へ送る
+
+通常schedule入口の`DistributedExecutor`を準備工程にも使い、独立なsignal/価格枝を並行化する。
+必要なreceipt・回路・Git locatorはCAS/bundleで渡し、同じ成果物の転送と同じ較正の再計算を避ける。
+科学SOURCE・元provider契約、工程別readiness、Q3から分離した準備予算が必要。
+通常/再開の人工検収と実入力検査は[HANDOFF](research/rpe_distributed_preparation/HANDOFF.md)を参照。
+人工hostは1 OS上の模擬で、実H4の性能は未測定。同じ較正を同時採用するartifact展開は、完全なtemp fileからatomicに公開する必要があった。
+
 ## 分散Q3の配送・body・回収・採用計時（2026-11-17）
 
 `rpe_q3_timing`と通常transportの小さいstage/eventを再利用し、`summarize_rpe_q3_timing.py RUN --output FILE`でhost/attempt別の秒数・欠測・異なる時計の包絡を出す。SOURCE19c43576c、集計5897d26ab。旧実3host18人工jobはbody欠測、初回約235秒と後続を分離。新模擬3hostは18/18 body/採用を計測、再開0起動。元native人工DP exact一致・cache HIT。実H4速度とrelay並列化効果は未測定。次の固定SOURCE・新runへ導入し、稼働SOURCEは変更しない。[一元HANDOFF](research/rpe_q3_timing_20261117/HANDOFF.md)／[実測と限界](research/rpe_q3_timing_20261117/REPORT.md)。

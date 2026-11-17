@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[信号・compile・監査とQ3の共通分散実行](docs/research/rpe_distributed_preparation/HANDOFF.md)：通常入口の準備葉を工程別profileで共通queueへ送り、CAS/Git bundleで別hostへ引き継ぐ。科学SOURCE・元契約を維持し、人工検収と実入力検査の範囲を分ける。
+
 [分散Q3の自動割当・自動同時枠と計時](docs/research/rpe_q3_auto_allocation/HANDOFF.md)：通常入口で既定auto、優先3台とWSL余剰、資源/有用結果/待ちによるhost枠調整。実人工process peak5・再開0、実H4追加0。
 
 [任意の第4計算ホスト local0-wsl](docs/research/rpe_q3_host_eligibility/optional_wsl/REPORT.md)：能力と受付状態を分離し、WSL停止中は既存3台で進行。WSLは上限1・受付OFF。保存証拠と差分検査の状態は16セル表を参照。

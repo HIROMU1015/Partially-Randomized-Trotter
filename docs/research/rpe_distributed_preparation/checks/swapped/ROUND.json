@@ -1,0 +1,75 @@
+{
+  "artificial_fixture": {
+    "numerical_leaf": "EXACT_RATIONAL_ARTIFICIAL_MSE",
+    "only": true,
+    "sleep_seconds": 0.1
+  },
+  "executor": {
+    "distributed": {
+      "bind": "127.0.0.1",
+      "port": 60477,
+      "affinity_wait_seconds": 0,
+      "preparation": {
+        "budgets": {
+          "signal": 100,
+          "compile": 100,
+          "audit": 100
+        }
+      },
+      "host_admission": "/home/AbeHiromu/projects/rpe-distributed-preparation-checks/entry-f956f5197/swapped/HOST_ADMISSION.json"
+    },
+    "dp_workers": 1,
+    "scheduler": "concurrent",
+    "wait_for_running_jobs": true
+  },
+  "initial": "all",
+  "max_new_q3_per_method": {
+    "PR_DF": 32,
+    "PR_PAULI": 32
+  },
+  "methods": [
+    "PR_PAULI",
+    "PR_DF"
+  ],
+  "round_id": "ARTIFICIAL_PREPARATION_PIPELINE",
+  "science_approved": true,
+  "search_overrides": {
+    "lookahead": 1,
+    "requested_widths": {
+      "PR_PAULI": [
+        0.1
+      ],
+      "PR_DF": [
+        0.1
+      ]
+    },
+    "schedule_wide": {
+      "max_kappa": "1",
+      "per_decision": 8
+    }
+  },
+  "width_families": [
+    {
+      "L_D": 1,
+      "configuration": {
+        "commit": "ARTIFICIAL",
+        "method": "PR_PAULI",
+        "path": "ARTIFICIAL"
+      },
+      "method": "PR_PAULI"
+    },
+    {
+      "L_D": 1,
+      "configuration": {
+        "commit": "ARTIFICIAL",
+        "method": "PR_DF",
+        "path": "ARTIFICIAL"
+      },
+      "method": "PR_DF"
+    }
+  ],
+  "artificial_preparation": {
+    "compile_host": "server1",
+    "audit_host": "local"
+  }
+}
