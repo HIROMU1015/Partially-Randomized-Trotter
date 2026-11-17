@@ -41,3 +41,7 @@ wrapperが保存cycleから200までの残りを計算し、batch64、同じrun/
 lambda_source不一致5pointは個別保留。数値・SOURCE・保存障害のglobal保護は緩めない。予約拒否の `BUDGET_WAIT` は未実行要求を返すbatch制御であり、MSE判定や候補不適合ではない。実起動した先読みは採用されなくても予算へ計上する。
 
 検証は追加5＋既存32＝37人工PASS、native追加5PASS。`checks/NORMAL_ENTRY.json` は人工通常入口・同じrunの再開追加0起動。実H4の逐次比較速度倍率は未測定。C/統合担当は最終ROUND_RESULT/CONFIRMED_MINIMAができた時に、確認済み集合・条件付き価格・規則採択/先読み・未評価/UNKNOWNを分けて取り込む。今回の技術修正を全探索完了や価格保証へ拡張しない。
+
+## 今回の起動記録
+
+11/18 00:50:52 JST、PID1670540。入力commit `257732b627f70a70592ddf948ee9b8b13c6a9df3`。`RUNNING_SNAPSHOT.json` にqueue/DP round進捗/cache HITの観測と実REQUEST profileを保存。稼働中のため、最新値は固定snapshotでなく上記live logから確認する。計算はチャット終了後もtmuxで継続する。

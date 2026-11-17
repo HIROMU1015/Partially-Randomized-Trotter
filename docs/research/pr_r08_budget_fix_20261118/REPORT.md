@@ -39,3 +39,7 @@ queueの予約上限、先読みを含む実起動数の計上、`take_count()`�
 実行時資源は利用可能64 CPU、MemAvailable約426 GiB、load約12。従来の共通queue20・DP3・checkpoint m5/m11・同じprefix cacheを維持。共有設定や他processには変更しない。科学retry loopは追加していない。
 
 ロードマップ差分はR08がbatch予約到達で異常終了する技術不具合の解消と、保存結果を使った継続。新しい最安・全探索完了・価格資格の拡張は認定しない。統合担当は[HANDOFF](HANDOFF.md)の固定locatorと実run進捗を参照する。
+
+## 実再開の確認（11/18 JST）
+
+00:50:52に通常入口をtmux `h4-pr-r08-budget` で起動。controller PID1670540、固定入力commit `257732b627f70a70592ddf948ee9b8b13c6a9df3`。`RUNNING_SNAPSHOT.json` の観測時点で40 LAUNCH・22 EXIT、差分18 active、最大20枠。実Q3のround6/7の伝播完了、DP worker3、prefix cache HITによる6round再利用、MSE判定の取込を確認した。候補の価格取得も別に進行している。RUNTIME_ERRORSはない。二重入口はexit75。これは開始・実進捗の確認で、全探索完了やbatch上限到達後の実測完了を意味しない。
