@@ -87,6 +87,19 @@ class Tests(unittest.TestCase):
         self.assertEqual(spec['executor']['distributed']['preparation']['budgets'], limited['applied']['preparation_budgets'])
         self.assertEqual(spec['max_new_q3_per_method'], {'PR_PAULI': 0})
         self.assertEqual(load(self.config['round']), template)
+    def test_run_index_links_to_git_relative_evidence_without_moving_existing_runs(self):
+        checkout = self.home/'controller'
+        self.config.update(code_root=str(checkout), run_evidence_root=str(checkout/'search-evidence'))
+        q = request(4, 6)
+        q['action'] = 'prepare'
+        gateway = Gateway(self.config)
+        result = gateway.handle(q)
+        indexed = pathlib.Path(result['run_directory'])
+        self.assertEqual(indexed.parent, self.home/'state/runs')
+        self.assertTrue(indexed.is_symlink())
+        self.assertEqual(indexed.resolve().relative_to(checkout), pathlib.Path('search-evidence', indexed.name))
+        self.assertTrue((indexed/'ROUND.requested.json').is_file())
+        self.assertEqual(gateway.handle(q)['run_id'], result['run_id'])
     def test_server2_can_confirm_target_without_grant_then_bare_start(self):
         g=build(self.config);q=request(4,6);q['action']='prepare';q.pop('instruction');prepared=g.handle(q)
         run=pathlib.Path(prepared['run_directory']);self.assertFalse((run/'AUTHORIZATION.json').exists());self.assertFalse((run/'LAUNCH.json').exists())

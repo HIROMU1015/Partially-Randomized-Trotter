@@ -279,6 +279,21 @@ class Gateway:
         self.config = deepcopy(config); self.state = Path(config['state_directory'])
         self.preflight = preflight or self.normal_preflight; self.launch = launch or self.normal_launch
 
+    def create_run_directory(self, run):
+        evidence = self.config.get('run_evidence_root')
+        if not evidence:
+            run.mkdir(parents=True)
+            return
+        # The central index remains under state/runs. Preparation publishes Git
+        # locators from the run's physical directory in the controller checkout.
+        checkout = Path(self.config['code_root']).resolve()
+        target = Path(evidence).resolve() / run.name
+        if not target.resolve().is_relative_to(checkout) or target.is_symlink():
+            raise RequestError('run_evidence_root', 'run evidence must be inside the controller checkout')
+        run.parent.mkdir(parents=True, exist_ok=True)
+        target.mkdir(parents=True, exist_ok=True)
+        run.symlink_to(target, target_is_directory=True)
+
     def handle(self, request):
         from trottertracks.rpe_release_registry import select
         try:
@@ -337,7 +352,7 @@ class Gateway:
             if request['action']=='start' and not str(request.get('instruction', '')).strip(): raise RequestError('instruction', 'explicit start instruction required')
             registry_path = self.state / 'RUNS.json'; registry = load(registry_path) if registry_path.exists() else {}
             if not run.exists():
-                run.mkdir(parents=True)
+                self.create_run_directory(run)
                 prior = list(spec.get('executor', {}).get('prior_run_dirs', []))
                 prior += [v['run_directory'] for v in registry.values() if v['evaluation_identity'] == evaluation]
                 spec.setdefault('executor', {})['prior_run_dirs'] = sorted(set(str(Path(p).resolve()) for p in prior))

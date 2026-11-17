@@ -18,7 +18,6 @@ DRAFT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('_partial_df_prices',DRAFT/'scripts/run_pr_df_candidate_prices.py')
 E=importlib.util.module_from_spec(spec);sys.modules[spec.name]=E;spec.loader.exec_module(E)
 SOURCE_FILE=E.FIXED_VIEW/'scripts/run_pr_df_ld_split.py'
-FIXED_SOURCE=SOURCE_FILE.read_bytes()
 
 
 def digest(value):
@@ -101,7 +100,7 @@ def cohort_documents(c,axes=('X',)):
 
 
 class PartialReuseTests(unittest.TestCase):
-    def source(self,c,p):return FIXED_SOURCE if p=='scripts/run_pr_df_ld_split.py'else b'artificial fixed source'
+    def source(self,c,p):return SOURCE_FILE.read_bytes() if p=='scripts/run_pr_df_ld_split.py'else b'artificial fixed source'
 
     def test_only_verified_axis_reused_mean_only_or_independent_held_per_axis(self):
         c=cell();docs,witnesses=documents(c,('X',));docs['MEAN.json']={'paths':witnesses}
