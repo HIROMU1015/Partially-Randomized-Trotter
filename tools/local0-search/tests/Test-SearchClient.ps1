@@ -22,6 +22,8 @@ try { & $command -Action Preview -Config $FixtureConfig -RequestFile $invalid; t
 catch { if($_.Exception.Message -eq 'Expected invalid JSON rejection'){throw} }
 try { & $command -Action Start -Config $FixtureConfig; throw 'Expected explicit target rejection' }
 catch { if($_.Exception.Message -notmatch 'Specify one explicit target'){throw} }
+try { & $command -Action Status -Config $FixtureConfig -RunId 'fixture-unknown'; throw 'Expected central rejection' }
+catch { if($_.Exception.Message -notmatch 'RomuTail rejected the request: Unknown existing run_id'){throw} }
 
 $ordinary=& $command -Action Preview -Config $FixtureConfig -RequestFile $request
 $allZero=& $command -Action Preview -Config $FixtureConfig -RequestFile $zero
@@ -80,6 +82,7 @@ $evidence=[ordered]@{
     omitted_budget_and_explicit_zero=$true; explicit_target_required=$true
     artificial_launches=1; independent_client_exit=$true; preparation_wait_and_evaluation_completed=$true
     preparation_result_intake_and_evaluation=$true; central_continuation_reference=$true
+    central_rejection_reason_preserved=$true
     queue_compile_accepted=8; actual_compile_started=0; stale_completion_display='TECHNICAL_FAILURE'
     real_scientific_calls=0
 }

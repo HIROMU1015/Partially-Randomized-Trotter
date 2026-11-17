@@ -62,6 +62,7 @@ Windows PowerShellから使用する。利用者の明確な開始指示を実�
 信号・価格の不足判定と準備タスクの生成・分配は中央が行う。入力JSONは元のバイト列で転送する。
 `scope.preparation_budgets`の省略は中央の採択値を使い、`0`は明示した工程の新規枠0として送る。
 詳細な状態表示と停止runの引継ぎは[中央との応答契約](PROGRESS_CONTRACT.md)を参照。
+既存runが既定SERVICEと別のrun台帳を使う場合は、そのrunの `-Config` と `-RunId` を指定する。releaseの明示が必要な場合は、中央の記録にあるIDを `-Release` で渡す。中央が返した対象不明などの理由はそのまま表示する。
 
 ## 入力形式
 

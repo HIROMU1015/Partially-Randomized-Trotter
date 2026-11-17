@@ -57,6 +57,8 @@ def serve(transport):
     request = json.loads(raw)
     action = transport["action"]
     supplied = transport.get("run_id")
+    if supplied == "fixture-unknown":
+        return dict(ok=False, error="Unknown existing run_id: " + supplied)
     if supplied and not re.fullmatch(r"fixture-(?:failed|[0-9a-f]{20})", supplied):
         raise ValueError("Invalid artificial fixture run")
     if supplied == "fixture-failed":
@@ -130,4 +132,6 @@ if __name__ == "__main__":
     if arguments.work:
         step(arguments.work)
     else:
-        print(json.dumps(serve(json.loads(base64.b64decode(arguments.transport_base64)))))
+        response = serve(json.loads(base64.b64decode(arguments.transport_base64)))
+        print(json.dumps(response))
+        sys.exit(0 if response["ok"] else 1)

@@ -41,10 +41,19 @@ $sshPath=if($client.ssh_executable){$client.ssh_executable}else{Join-Path $env:S
 if(-not (Test-Path -LiteralPath $sshPath)){throw ('Configured SSH executable is missing: '+$sshPath)}
 $native=@('-n','-o','BatchMode=yes','-o','ConnectTimeout=20','-o','ServerAliveInterval=15','-o','ServerAliveCountMax=2',$client.ssh_alias,$remote)
 $raw=& $sshPath @native
-if($LASTEXITCODE -ne 0){throw ('RomuTail client transport failed, exit='+$LASTEXITCODE)}
-$responseText=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -join '')))
-$response=$responseText|ConvertFrom-Json
-if(-not $response.ok){throw $response.error}
+$transportExit=$LASTEXITCODE
+$response=$null
+if($raw){
+    try {
+        $responseText=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw -join '')))
+        $response=$responseText | ConvertFrom-Json -ErrorAction Stop
+    } catch {
+        if($transportExit -eq 0){throw 'RomuTail returned a malformed response.'}
+    }
+}
+if($response.ok -eq $false -and $response.error){throw ('RomuTail rejected the request: '+$response.error)}
+if($transportExit -ne 0){throw ('RomuTail client transport failed, exit='+$transportExit)}
+if($response.ok -ne $true -or -not $response.result){throw 'RomuTail did not return a confirmed result.'}
 $result=$response.result
 $result|Add-Member -NotePropertyName display_status -NotePropertyValue (Get-RpeSearchDisplayStatus $result) -Force
 $out=Join-Path $PSScriptRoot 'responses';[void][IO.Directory]::CreateDirectory($out)
