@@ -7,7 +7,7 @@
 - worktree：`/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117`
 - round ID：`H4_PR_BOTH_MULTIWIDTH_CONTINUITY_R08_20261117`（R08を継続）
 - 新run：`docs/research/h4_pr_r08_recovery_20261117/run02`
-- tmux：`h4-pr-r08-recovery`
+- tmux：`h4-pr-r08-recovery`（20:40 JST起動、待機PID1383390、記録 `SERVER_START.json`）
 - 固定plan：`HANDOVER_PLAN.json`。元SOURCE07b9c1ce8、入力hash、元cycle上限200、queue20/DP3を記録。
 - 実入口：`START_OR_RESUME.sh` → `scripts/resume_pr_r08_after_drain.py` → **通常** `scripts/run_rpe_schedule_search.py`。
 

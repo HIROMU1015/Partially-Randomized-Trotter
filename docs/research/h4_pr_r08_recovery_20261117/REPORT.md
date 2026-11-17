@@ -1,6 +1,6 @@
 # R08への失敗継続修正の適用
 
-R08の科学条件を変えず、修正SOURCE `fdb4453a0fae36c8b8734a225a19316446dee62e` で通常探索を再開する入口を固定した。旧controllerは例外後の準備回収中で、最後のLD4価格較正が残っている。走行中SOURCEの変更・signal送信・科学stageの強制終了は行わない。所有lockの自然解放を待つ引継ぎprocessを別tmuxで起動する。
+R08の科学条件を変えず、修正SOURCE `fdb4453a0fae36c8b8734a225a19316446dee62e` で通常探索を再開する入口を固定した。旧controllerは例外後の準備回収中で、最後のLD4価格較正が残っている。走行中SOURCEの変更・signal送信・科学stageの強制終了は行わない。所有lockの自然解放を待つ引継ぎprocessを別tmuxで起動した。
 
 **修正版の科学controllerが稼働したかは `HANDOVER_STATUS.json` と `run02/CONTROLLER_PID.json` で区別する。`WAITING_FOR_OLD_OWNER` は切替待機であり、修正版での探索再開完了を意味しない。** 旧runと旧STOPは保全する。
 
@@ -38,3 +38,7 @@ R08の科学条件を変えず、修正SOURCE `fdb4453a0fae36c8b8734a225a1931644
 元family/physical/binding guardを通して新入力をcommit/pushし、remote一致を確認した後だけ、通常CLIを一度起動する。未回収Q3・数値UNKNOWN・SOURCE不整合・保存/公開不能では `HANDOVER_STOP` になり、新規科学投入しない。自動retry loopはない。稼働後の例外は新しい `RUNTIME_ERRORS.jsonl` に回収待ち前から残る。
 
 ロードマップ差分はR08の安全なSOURCE引継ぎ入口・検証・切替待機の公開。探索完了、例外原因解消、価格資格拡張、最安更新の認定ではない。ロードマップ本体は編集しない。
+
+## サーバー側起動確認
+
+20:40 JSTにtmux `h4-pr-r08-recovery`、PID1383390で起動。`WAITING_FOR_OLD_OWNER` とkernel待機 `locks_lock_inode_wait` を確認。旧processにsignalを送っていない。同じ起動入口を再度実行するとexit75となり、追加controller/科学jobを起動しない。`SERVER_START.json` が記録。これは待機processの動作確認であり、修正版のQ3実進捗ではない。
