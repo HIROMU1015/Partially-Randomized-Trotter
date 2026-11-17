@@ -1,0 +1,4409 @@
+{
+  "schema": "RPE_OPTIMIZER_ROUND_RESULT_V1",
+  "round": {
+    "artificial_fixture": {
+      "numerical_leaf": "EXACT_RATIONAL_ARTIFICIAL_MSE",
+      "only": true,
+      "sleep_seconds": 2.0
+    },
+    "executor": {
+      "distributed": {
+        "bind": "127.0.0.1",
+        "local_worker": {
+          "host_id": "local",
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-pbs-worker-20261118/.pbs-source-925985b4e",
+          "work_dir": "/tmp/rpe-pbs-integrated-925985b4e-20261118/workers/local",
+          "interpreter": "/usr/bin/python3",
+          "slots": 1,
+          "route_views": {},
+          "prefix_cache_directory": "/tmp/rpe-pbs-integrated-925985b4e-20261118/workers/local/prefix-cache"
+        },
+        "port": 35557,
+        "affinity_wait_seconds": 0,
+        "preparation": {
+          "budgets": {
+            "signal": 100,
+            "compile": 100,
+            "audit": 100
+          }
+        },
+        "auto_allocation": {
+          "priority_groups": [
+            [
+              "local",
+              "pbs-0"
+            ]
+          ],
+          "discovery_grace_seconds": 0,
+          "offer_ttl_seconds": 5
+        },
+        "pbs": {
+          "ssh_alias": "prism",
+          "remote_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/central-integrated",
+          "gateway_script": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/925985b4e/scripts/rpe_pbs_gateway.py",
+          "gateway_python": "/usr/bin/python3",
+          "python": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+          "transport_root": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/925985b4e",
+          "transport_source": "925985b4ea76a15f8a07c507179d4fa6c492eabd",
+          "resources": {
+            "queue": "workq",
+            "ncpus": 2,
+            "mem": "4gb",
+            "walltime": "00:04:00"
+          },
+          "workers": [
+            {
+              "host_id": "pbs-0",
+              "profile": {
+                "host_id": "pbs-0",
+                "root": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/925985b4e",
+                "interpreter": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+                "route_views": {},
+                "dp_workers": 1,
+                "slot_policy": {
+                  "mode": "auto",
+                  "initial_slots": 2
+                },
+                "pbs": {
+                  "minimum_task_seconds": 3,
+                  "idle_release_seconds": 10,
+                  "library_threads": 1
+                }
+              }
+            }
+          ],
+          "drain_seconds": 10,
+          "task_seconds": {
+            "q3": 5,
+            "signal": 5,
+            "compile": 5,
+            "audit": 5
+          },
+          "poll_seconds": 0.5,
+          "request_timeout_seconds": 15
+        },
+        "host_stage_capabilities": {
+          "local": [
+            "q3",
+            "signal",
+            "audit"
+          ],
+          "pbs-0": [
+            "q3",
+            "compile"
+          ]
+        }
+      },
+      "dp_workers": 1,
+      "max_concurrent_jobs": "auto",
+      "scheduler": "concurrent",
+      "wait_for_running_jobs": true
+    },
+    "initial": "all",
+    "max_new_q3_per_method": {
+      "PR_DF": 32,
+      "PR_PAULI": 32
+    },
+    "methods": [
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "round_id": "ARTIFICIAL_DISTRIBUTED_Q3",
+    "science_approved": true,
+    "search_overrides": {
+      "lookahead": 1,
+      "requested_widths": {
+        "PR_PAULI": [
+          0.1
+        ],
+        "PR_DF": [
+          0.1
+        ]
+      },
+      "schedule_wide": {
+        "max_kappa": "1",
+        "per_decision": 8
+      }
+    },
+    "width_families": [
+      {
+        "L_D": 1,
+        "configuration": {
+          "commit": "ARTIFICIAL",
+          "method": "PR_PAULI",
+          "path": "ARTIFICIAL"
+        },
+        "method": "PR_PAULI"
+      },
+      {
+        "L_D": 1,
+        "configuration": {
+          "commit": "ARTIFICIAL",
+          "method": "PR_DF",
+          "path": "ARTIFICIAL"
+        },
+        "method": "PR_DF"
+      }
+    ],
+    "artificial_pbs_acceptance": true,
+    "artificial_pbs_fault_exercise": true
+  },
+  "methods": {
+    "PR_PAULI": {
+      "method": "PR_PAULI",
+      "best": {
+        "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "PRIOR_ROUND_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "stop_reason": "NO_CANDIDATE_LEFT_IN_RANGE",
+      "pending_request": null,
+      "trace": [
+        {
+          "step": 1,
+          "cls": "EXPLORE",
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "origin": {
+            "kind": "CAP_VECTOR_SEED"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": null,
+          "configuration_best_after": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "improved": false,
+          "improved_configuration": true
+        },
+        {
+          "step": 2,
+          "cls": "EXPLORE",
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              2
+            ],
+            "base_headroom": "0.012500"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "configuration_best_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "improved": false,
+          "improved_configuration": true
+        }
+      ],
+      "held": [],
+      "new_calls": 4,
+      "evaluated_count": 4,
+      "evaluated": [
+        {
+          "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+          "label": null
+        },
+        {
+          "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/89eadd079aaf8d4822ba",
+          "label": null
+        },
+        {
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7",
+          "label": null
+        },
+        {
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+          "label": null
+        }
+      ],
+      "not_ready_candidates": [],
+      "ready_candidates": [
+        "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83"
+      ],
+      "search_range": {
+        "candidates": [
+          "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83"
+        ],
+        "rule": "METHOD_MINIMUM_PRIORITY_V2"
+      },
+      "resume_records": [
+        {
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009"
+        },
+        {
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "source": "PRIOR_ROUND_JOB",
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/89eadd079aaf8d4822ba"
+        },
+        {
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7"
+        },
+        {
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58"
+        }
+      ],
+      "by_configuration": [
+        {
+          "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+          "key": {
+            "L_D": 1,
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1",
+            "requested_delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968,
+              "display": "0.10"
+            }
+          },
+          "picks": 0,
+          "explore_picks": 0,
+          "kappa_value": null,
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+            "label": null
+          },
+          "rule_adopted_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+            "label": null
+          },
+          "confirmed_all_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "PRIOR_ROUND_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+            "label": null
+          }
+        },
+        {
+          "candidate": "PR_PAULI:3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+          "key": {
+            "L_D": 2,
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1",
+            "requested_delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968,
+              "display": "0.10"
+            }
+          },
+          "picks": 2,
+          "explore_picks": 2,
+          "kappa_value": null,
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+            "label": null
+          },
+          "rule_adopted_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+            "label": null
+          },
+          "confirmed_all_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+            "label": null
+          }
+        }
+      ],
+      "incumbent_scope": "METHOD_PRIORITY",
+      "execution_holds": [],
+      "prior_rounds": {
+        "run_dirs": [
+          "/tmp/rpe-pbs-integrated-925985b4e-20261118/run"
+        ],
+        "loaded": 2,
+        "already_known": 0,
+        "refused": 0,
+        "refused_reasons": []
+      },
+      "unevaluated": [],
+      "input_requests": [],
+      "left": {
+        "UPDATE": 0,
+        "EXPLORE": 0,
+        "FINE": 0,
+        "SMALL": 0,
+        "DEFERRED": 0
+      },
+      "settings": {
+        "explore_every": 4,
+        "explore_window": "3/2",
+        "small_gain_fraction": "1/10000",
+        "deferral_fail_margin": "1/10000",
+        "transfer_count": 2,
+        "kappa_bounds": [
+          {
+            "numerator": 1,
+            "denominator": 4,
+            "display": "0.25"
+          },
+          {
+            "numerator": 8,
+            "denominator": 1,
+            "display": "8.00"
+          }
+        ],
+        "kappa_min_ratio": "9/8",
+        "lookahead": 1,
+        "adaptive_lookahead": false,
+        "coarse_gain_fraction": null,
+        "lookahead_mode": "CHAIN",
+        "adaptive_hybrid": false,
+        "allocation_exchange": null
+      },
+      "prefetch_policy": {
+        "decisions": 0,
+        "maximum_preview": 0,
+        "chain_proposals": 0,
+        "latest": null
+      },
+      "selection_timing": {
+        "candidate_classification_seconds": 0.00031116302125155926,
+        "candidate_classification_calls": 4,
+        "preview_order_seconds": 0.0,
+        "preview_order_calls": 0,
+        "backend_answer_seconds": 6.8508649988798425,
+        "backend_answer_calls": 2
+      },
+      "budget": {
+        "max_new_q3": 32,
+        "science_approved": true,
+        "spent_before": 2,
+        "new_calls": 4
+      },
+      "generation": null,
+      "parameter_assessment": null,
+      "adopted_new_calls": 2,
+      "executor_metrics": {
+        "submitted": 8,
+        "queued_cancelled": 0,
+        "launched": 12,
+        "finished": 13,
+        "adopted": 8,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 2,
+        "sampled_owned_tree_peak_RSS_KiB": 0,
+        "completed_not_adopted": 0,
+        "by_method": {
+          "PREPARATION:audit": {
+            "launched": 1
+          },
+          "PREPARATION:signal": {
+            "launched": 3
+          },
+          "PR_PAULI": {
+            "launched": 4,
+            "adopted": 4
+          },
+          "PR_DF": {
+            "launched": 4,
+            "adopted": 4
+          }
+        },
+        "max_concurrent_jobs": 1,
+        "dp_workers": 1,
+        "new_real_route_launches": 0,
+        "executor_failure": null,
+        "elapsed_seconds": 35.155076605966315,
+        "busy_job_seconds": 43.64534396212548,
+        "idle_slot_seconds_no_queued_candidate": 0.08308242890052497,
+        "idle_slot_seconds_waiting_selected_result": 0.03141487680841237,
+        "idle_slot_seconds_no_queued_or_selected_result": 0.0516675520921126,
+        "idle_slot_seconds_with_queued_candidate": 6.558732406934723,
+        "integrated_available_slot_seconds": 50.28715879796073,
+        "slot_utilization": 0.8679222490473136,
+        "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
+        "speculative_adoption_fraction": null,
+        "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+        "distributed": true,
+        "by_host": {
+          "local": {
+            "assigned": 11,
+            "launched": 11,
+            "completed": 11,
+            "adopted": 11,
+            "reused": 1
+          },
+          "pbs-0": {
+            "assigned": 3,
+            "launched": 3,
+            "completed": 3,
+            "adopted": 3,
+            "reused": 1
+          }
+        },
+        "host_admission": {
+          "local": {
+            "accepting": true,
+            "optional": false,
+            "max_slots": null,
+            "error": null
+          },
+          "pbs-0": {
+            "accepting": true,
+            "optional": false,
+            "max_slots": null,
+            "error": null
+          }
+        },
+        "pbs": {
+          "allocations": [
+            {
+              "token": "7692125143eb49e0800d44d9684e70a8",
+              "host_id": "pbs-0",
+              "job_id": "267195.CPUcluster-PRISM",
+              "status": "R",
+              "worker": {
+                "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                "monotonic": 402626.100821761,
+                "epoch": 1794937548.789074,
+                "schema": "RPE_PBS_WORKER_STATE_V1",
+                "state": "READY",
+                "ready": true,
+                "accepting": true,
+                "host_id": "pbs-0",
+                "job_id": "267195.CPUcluster-PRISM",
+                "hostname": "CPUcluster035",
+                "pid": 4008076,
+                "source_sha": "925985b4ea76a15f8a07c507179d4fa6c492eabd",
+                "resources": {
+                  "actual": {
+                    "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                    "exec_host": "CPUcluster035/0*2",
+                    "exec_vnode": "(CPUcluster035:ncpus=2:mem=4194304kb)",
+                    "job_id": "267195.CPUcluster-PRISM",
+                    "memory_bytes": 4294967296,
+                    "ncpus": 2,
+                    "recorded_epoch": 1794937481.3074815,
+                    "remaining_seconds": 240,
+                    "select_nodes": 1,
+                    "walltime_seconds": 240
+                  },
+                  "snapshot": {
+                    "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                    "clock": {
+                      "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                      "monotonic": 402558.818659804,
+                      "epoch": 1794937481.506912
+                    },
+                    "machine_cpu_count": 96,
+                    "machine_mem_total_bytes": 404353814528,
+                    "machine_mem_available_bytes": 399783452672,
+                    "allowed_cpu_count": 2.0,
+                    "cpu_bounds": [
+                      {
+                        "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                        "value": 96
+                      },
+                      {
+                        "kind": "CGROUP_V1_CPUSET",
+                        "value": 96,
+                        "path": "/sys/fs/cgroup/cpuset"
+                      },
+                      {
+                        "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                        "value": 2.0
+                      }
+                    ],
+                    "allowed_memory_bytes": 4294967296,
+                    "memory_bounds": [
+                      {
+                        "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                        "value": 4294967296
+                      }
+                    ],
+                    "remaining_group_memory_bytes": null,
+                    "memory_scope": "BOUNDED_ALLOCATION",
+                    "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                    "cgroup_version": "v1",
+                    "allocation_bounds_complete": true,
+                    "boundary_detection": "OBSERVED",
+                    "missing_controls": [],
+                    "observational_only": true
+                  },
+                  "cpu_count": 2,
+                  "memory_bytes": 4294967296,
+                  "library_threads": 1,
+                  "task_cpu_count": 1,
+                  "cpu_slots": 2,
+                  "maximum_slots": 2,
+                  "task_memory_bytes": null,
+                  "stages": [
+                    "q3"
+                  ],
+                  "one_shared_slot_pool": true
+                },
+                "capacity": 2,
+                "remaining_seconds": 172.71691879897844,
+                "start_clock": {
+                  "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                  "monotonic": 402558.862130871,
+                  "epoch": 1794937481.5503829
+                },
+                "exit_reason": null
+              },
+              "receipt": {
+                "epoch": 1794937481.1902754,
+                "returncode": 0,
+                "stderr": "",
+                "stdout": "267195.CPUcluster-PRISM"
+              },
+              "allocation": {
+                "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                "exec_host": "CPUcluster035/0*2",
+                "exec_vnode": "(CPUcluster035:ncpus=2:mem=4194304kb)",
+                "job_id": "267195.CPUcluster-PRISM",
+                "memory_bytes": 4294967296,
+                "ncpus": 2,
+                "recorded_epoch": 1794937481.3074815,
+                "remaining_seconds": 240,
+                "select_nodes": 1,
+                "walltime_seconds": 240
+              },
+              "exit_status": null,
+              "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/central-integrated/c648b0c4a78986aabb55/allocations/7692125143eb49e0800d44d9684e70a8"
+            }
+          ],
+          "error": null,
+          "science_budget_per_task": true
+        },
+        "host_admission_error": null,
+        "allocation_settings": {
+          "schema": "RPE_Q3_ALLOCATION_SETTINGS_V1",
+          "mode": "auto",
+          "max_concurrent_jobs": "auto",
+          "auto_allocation": {
+            "priority_groups": [
+              [
+                "local",
+                "pbs-0"
+              ]
+            ],
+            "offer_ttl_seconds": 5,
+            "discovery_grace_seconds": 0
+          }
+        },
+        "automatic_capacity": true,
+        "unresolved_owned_attempts": 0,
+        "host_offers": {
+          "local": {
+            "capacity": 1,
+            "fresh_free_slots": 0,
+            "reported_free_slots": 0,
+            "observed_age_seconds": 0.1418189980322495,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 1,
+              "slots": 0,
+              "occupied": 1,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ]
+            },
+            "capacity_feedback": {
+              "controller_invocation": "571373-1794937514784300555",
+              "measurement_seconds": 35.157097873976454,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 10,
+              "adopted_results": 10,
+              "decision_wait_seconds": 33.36306652415078,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "capacity": 1
+            }
+          },
+          "pbs-0": {
+            "capacity": 2,
+            "fresh_free_slots": 2,
+            "reported_free_slots": 2,
+            "observed_age_seconds": 0.5010910290293396,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "AUTO",
+              "capacity": 2,
+              "slots": 2,
+              "occupied": 0,
+              "stage": "MEASURED_THROUGHPUT_AND_WAIT",
+              "reasons": [
+                "Insufficient new usable completions for another slot trial"
+              ],
+              "resources": {
+                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                "clock": {
+                  "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                  "monotonic": 402626.107965104,
+                  "epoch": 1794937548.7962172
+                },
+                "machine_cpu_count": 96,
+                "machine_mem_total_bytes": 404353814528,
+                "machine_mem_available_bytes": 399782694912,
+                "allowed_cpu_count": 2.0,
+                "cpu_bounds": [
+                  {
+                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                    "value": 96
+                  },
+                  {
+                    "kind": "CGROUP_V1_CPUSET",
+                    "value": 96,
+                    "path": "/sys/fs/cgroup/cpuset"
+                  },
+                  {
+                    "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                    "value": 2.0
+                  }
+                ],
+                "allowed_memory_bytes": 4294967296,
+                "memory_bounds": [
+                  {
+                    "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                    "value": 4294967296
+                  }
+                ],
+                "remaining_group_memory_bytes": null,
+                "memory_scope": "BOUNDED_PBS_ALLOCATION",
+                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                "cgroup_version": "v1",
+                "allocation_bounds_complete": true,
+                "boundary_detection": "ACTUAL_PBS_SINGLE_NODE_CPU_AND_MEMORY_WITH_PROCESS_LIMITS",
+                "missing_controls": [],
+                "observational_only": true,
+                "pbs_allocation": {
+                  "job_id": "267195.CPUcluster-PRISM",
+                  "ncpus": 2,
+                  "memory_bytes": 4294967296
+                }
+              },
+              "limits": {
+                "cpu_slots": 2,
+                "memory_slots": 66,
+                "explicit_max_slots": 2,
+                "memory_sample_headroom_factor": 1.5
+              },
+              "dp_workers_per_q3": 1,
+              "peak_job_rss_bytes": 43126784.0,
+              "peak_job_cpu_cores": 0.0,
+              "feedback": {
+                "adopted_results": 2,
+                "capacity": 1,
+                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                "controller_invocation": "571373-1794937514784300555",
+                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+                "decision_wait_seconds": 16.69293298199773,
+                "measurement_seconds": 25.642971372930333,
+                "ready_jobs": 0,
+                "usable_results": 2
+              },
+              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+              "trial": null,
+              "running_jobs_may_exceed_reduced_capacity": false,
+              "pbs": {
+                "job_id": "267195.CPUcluster-PRISM",
+                "remaining_seconds": 172.70645690598758,
+                "minimum_task_seconds": 3.0,
+                "drain_seconds": 10.0,
+                "accepting": true
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "571373-1794937514784300555",
+              "measurement_seconds": 35.15733245597221,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 3,
+              "adopted_results": 3,
+              "decision_wait_seconds": 21.502368153072894,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "capacity": 1
+            }
+          }
+        },
+        "persistent_reserved": {
+          "PR_DF": 4,
+          "PR_PAULI": 4
+        },
+        "host_eligibility_holds": {},
+        "preparation": {
+          "signal": {
+            "reserved": 4,
+            "launched": 4
+          },
+          "compile": {
+            "reserved": 1,
+            "launched": 1
+          },
+          "audit": {
+            "reserved": 1,
+            "launched": 1
+          }
+        },
+        "preparation_readiness_pending": {},
+        "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+        "method_launched": 4,
+        "method_adopted": 4
+      },
+      "rule_adopted_best": {
+        "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "PRIOR_ROUND_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "confirmed_all_best": {
+        "candidate": "PR_PAULI:d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "PRIOR_ROUND_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "completed_ledger": {
+        "jobs_checked": 4,
+        "jobs_verified": 4,
+        "refused": [],
+        "rows": [
+          {
+            "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "request_cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": false,
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009",
+            "outcome_file": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/8536a8738cd2688ea009/OUTCOME.json",
+            "outcome_sha256": "0de8ce7b86455bfe6f0c4f645f4b16ba48c6e0045baa2f03a4a4e7f0225bc1bf",
+            "artificial": true
+          },
+          {
+            "configuration_id": "d1058c4443308e9c62dec2cfd59efb525a2eabafc998f22e4250984b9409e296",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "request_cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": false,
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/89eadd079aaf8d4822ba",
+            "outcome_file": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/89eadd079aaf8d4822ba/OUTCOME.json",
+            "outcome_sha256": "1c03d58b9534b967ea147dd9808a19e9e1a1f1fddb54a5dcb696a5bf2fcf628f",
+            "artificial": true
+          },
+          {
+            "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "request_cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7",
+            "outcome_file": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b766a93a10dbb690c6f7/OUTCOME.json",
+            "outcome_sha256": "26452f09b4530c86f8cd99abee63fc80794aec7ddb8acfa26cef021cb61cbbf2",
+            "artificial": true
+          },
+          {
+            "configuration_id": "3bf9fb4e4602abbf7fd8a16c1095b957d1f3c4bfbf5ae69925c5f5e36e8c2d83",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "request_cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58",
+            "outcome_file": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_PAULI/b89377dbeeea2027ac58/OUTCOME.json",
+            "outcome_sha256": "f9c0b8314108ef0f879332eb0c075ad84b9c01d38035b160dbc7cf9ea0fb3bc1",
+            "artificial": true
+          }
+        ],
+        "scope": "EXACT_TAU_AND_OWN_PRICE_CHECK_AFTER_EXECUTOR_FINISH"
+      }
+    },
+    "PR_DF": {
+      "method": "PR_DF",
+      "best": {
+        "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "ARTIFICIAL_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "stop_reason": "NO_CANDIDATE_LEFT_IN_RANGE",
+      "pending_request": null,
+      "trace": [
+        {
+          "step": 1,
+          "cls": "UPDATE",
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "origin": {
+            "kind": "CAP_VECTOR_SEED"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8",
+          "reason": null,
+          "method_min_before": null,
+          "method_min_after": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "configuration_best_before": null,
+          "configuration_best_after": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "improved": true,
+          "improved_configuration": true
+        },
+        {
+          "step": 2,
+          "cls": "UPDATE",
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              2
+            ],
+            "base_headroom": "0.012500"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "configuration_best_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "improved": true,
+          "improved_configuration": true
+        },
+        {
+          "step": 3,
+          "cls": "EXPLORE",
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "origin": {
+            "kind": "CAP_VECTOR_SEED"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/610093c57ae0337aa931",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": null,
+          "configuration_best_after": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "improved": false,
+          "improved_configuration": true
+        },
+        {
+          "step": 4,
+          "cls": "EXPLORE",
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "origin": {
+            "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+            "m": 12,
+            "axes": [
+              "X",
+              "Y"
+            ],
+            "d": 1,
+            "base_vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2,
+              2
+            ],
+            "base_headroom": "0.012500"
+          },
+          "answer_source": "ARTIFICIAL_JOB",
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "calls": 1,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+          "reason": null,
+          "method_min_before": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "method_min_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "configuration_best_before": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "configuration_best_after": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "improved": false,
+          "improved_configuration": true
+        }
+      ],
+      "held": [],
+      "new_calls": 4,
+      "evaluated_count": 4,
+      "evaluated": [
+        {
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8",
+          "label": null
+        },
+        {
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+          "label": null
+        },
+        {
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 56,
+            "denominator": 1,
+            "display": "56.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/610093c57ae0337aa931",
+          "label": null
+        },
+        {
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "vector": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "cost": {
+            "numerator": 52,
+            "denominator": 1,
+            "display": "52.00"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "result_sources": null,
+          "point_id": null,
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+          "label": null
+        }
+      ],
+      "not_ready_candidates": [],
+      "ready_candidates": [
+        "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d"
+      ],
+      "search_range": {
+        "candidates": [
+          "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d"
+        ],
+        "rule": "METHOD_MINIMUM_PRIORITY_V2"
+      },
+      "resume_records": [
+        {
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8"
+        },
+        {
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e3616f2e093cac4690de"
+        },
+        {
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 1,
+            "denominator": 80,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/610093c57ae0337aa931"
+        },
+        {
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "N_X": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "N_Y": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+          "MSE_lower": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "MSE_upper": {
+            "numerator": 13,
+            "denominator": 1000,
+            "display": "0.01"
+          },
+          "source": "ARTIFICIAL_JOB",
+          "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90"
+        }
+      ],
+      "by_configuration": [
+        {
+          "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+          "key": {
+            "L_D": 1,
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1",
+            "requested_delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968,
+              "display": "0.10"
+            }
+          },
+          "picks": 2,
+          "explore_picks": 2,
+          "kappa_value": null,
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+            "label": null
+          },
+          "rule_adopted_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+            "label": null
+          },
+          "confirmed_all_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+            "label": null
+          }
+        },
+        {
+          "candidate": "PR_DF:54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+          "key": {
+            "L_D": 2,
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1",
+            "requested_delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968,
+              "display": "0.10"
+            }
+          },
+          "picks": 2,
+          "explore_picks": 0,
+          "kappa_value": null,
+          "promising": 0,
+          "left": {
+            "UPDATE": 0,
+            "EXPLORE": 0,
+            "FINE": 0,
+            "SMALL": 0,
+            "DEFERRED": 0
+          },
+          "best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+            "label": null
+          },
+          "rule_adopted_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+            "label": null
+          },
+          "confirmed_all_best": {
+            "vector": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "cost_display": "52.00",
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "MSE_lower": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "MSE_upper": {
+              "numerator": 13,
+              "denominator": 1000,
+              "display": "0.01"
+            },
+            "source": "ARTIFICIAL_JOB",
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+            "label": null
+          }
+        }
+      ],
+      "incumbent_scope": "METHOD_PRIORITY",
+      "execution_holds": [],
+      "prior_rounds": {
+        "run_dirs": [
+          "/tmp/rpe-pbs-integrated-925985b4e-20261118/run"
+        ],
+        "loaded": 0,
+        "already_known": 0,
+        "refused": 0,
+        "refused_reasons": []
+      },
+      "unevaluated": [],
+      "input_requests": [],
+      "left": {
+        "UPDATE": 0,
+        "EXPLORE": 0,
+        "FINE": 0,
+        "SMALL": 0,
+        "DEFERRED": 0
+      },
+      "settings": {
+        "explore_every": 4,
+        "explore_window": "3/2",
+        "small_gain_fraction": "1/10000",
+        "deferral_fail_margin": "1/10000",
+        "transfer_count": 2,
+        "kappa_bounds": [
+          {
+            "numerator": 1,
+            "denominator": 4,
+            "display": "0.25"
+          },
+          {
+            "numerator": 8,
+            "denominator": 1,
+            "display": "8.00"
+          }
+        ],
+        "kappa_min_ratio": "9/8",
+        "lookahead": 1,
+        "adaptive_lookahead": false,
+        "coarse_gain_fraction": null,
+        "lookahead_mode": "CHAIN",
+        "adaptive_hybrid": false,
+        "allocation_exchange": null
+      },
+      "prefetch_policy": {
+        "decisions": 0,
+        "maximum_preview": 0,
+        "chain_proposals": 0,
+        "latest": null
+      },
+      "selection_timing": {
+        "candidate_classification_seconds": 0.0007225808221846819,
+        "candidate_classification_calls": 6,
+        "preview_order_seconds": 0.0,
+        "preview_order_calls": 0,
+        "backend_answer_seconds": 17.317754930933006,
+        "backend_answer_calls": 4
+      },
+      "budget": {
+        "max_new_q3": 32,
+        "science_approved": true,
+        "spent_before": 0,
+        "new_calls": 4
+      },
+      "generation": null,
+      "parameter_assessment": null,
+      "adopted_new_calls": 4,
+      "executor_metrics": {
+        "submitted": 8,
+        "queued_cancelled": 0,
+        "launched": 12,
+        "finished": 13,
+        "adopted": 8,
+        "speculative_launched": 0,
+        "speculative_adopted": 0,
+        "peak_active": 2,
+        "sampled_owned_tree_peak_RSS_KiB": 0,
+        "completed_not_adopted": 0,
+        "by_method": {
+          "PREPARATION:audit": {
+            "launched": 1
+          },
+          "PREPARATION:signal": {
+            "launched": 3
+          },
+          "PR_PAULI": {
+            "launched": 4,
+            "adopted": 4
+          },
+          "PR_DF": {
+            "launched": 4,
+            "adopted": 4
+          }
+        },
+        "max_concurrent_jobs": 1,
+        "dp_workers": 1,
+        "new_real_route_launches": 0,
+        "executor_failure": null,
+        "elapsed_seconds": 35.155076605966315,
+        "busy_job_seconds": 43.64534396212548,
+        "idle_slot_seconds_no_queued_candidate": 0.08308242890052497,
+        "idle_slot_seconds_waiting_selected_result": 0.03141487680841237,
+        "idle_slot_seconds_no_queued_or_selected_result": 0.0516675520921126,
+        "idle_slot_seconds_with_queued_candidate": 6.558732406934723,
+        "integrated_available_slot_seconds": 50.28715879796073,
+        "slot_utilization": 0.8679222490473136,
+        "capacity_measurement": "INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS",
+        "speculative_adoption_fraction": null,
+        "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+        "distributed": true,
+        "by_host": {
+          "local": {
+            "assigned": 11,
+            "launched": 11,
+            "completed": 11,
+            "adopted": 11,
+            "reused": 1
+          },
+          "pbs-0": {
+            "assigned": 3,
+            "launched": 3,
+            "completed": 3,
+            "adopted": 3,
+            "reused": 1
+          }
+        },
+        "host_admission": {
+          "local": {
+            "accepting": true,
+            "optional": false,
+            "max_slots": null,
+            "error": null
+          },
+          "pbs-0": {
+            "accepting": true,
+            "optional": false,
+            "max_slots": null,
+            "error": null
+          }
+        },
+        "pbs": {
+          "allocations": [
+            {
+              "token": "7692125143eb49e0800d44d9684e70a8",
+              "host_id": "pbs-0",
+              "job_id": "267195.CPUcluster-PRISM",
+              "status": "R",
+              "worker": {
+                "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                "monotonic": 402626.100821761,
+                "epoch": 1794937548.789074,
+                "schema": "RPE_PBS_WORKER_STATE_V1",
+                "state": "READY",
+                "ready": true,
+                "accepting": true,
+                "host_id": "pbs-0",
+                "job_id": "267195.CPUcluster-PRISM",
+                "hostname": "CPUcluster035",
+                "pid": 4008076,
+                "source_sha": "925985b4ea76a15f8a07c507179d4fa6c492eabd",
+                "resources": {
+                  "actual": {
+                    "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                    "exec_host": "CPUcluster035/0*2",
+                    "exec_vnode": "(CPUcluster035:ncpus=2:mem=4194304kb)",
+                    "job_id": "267195.CPUcluster-PRISM",
+                    "memory_bytes": 4294967296,
+                    "ncpus": 2,
+                    "recorded_epoch": 1794937481.3074815,
+                    "remaining_seconds": 240,
+                    "select_nodes": 1,
+                    "walltime_seconds": 240
+                  },
+                  "snapshot": {
+                    "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                    "clock": {
+                      "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                      "monotonic": 402558.818659804,
+                      "epoch": 1794937481.506912
+                    },
+                    "machine_cpu_count": 96,
+                    "machine_mem_total_bytes": 404353814528,
+                    "machine_mem_available_bytes": 399783452672,
+                    "allowed_cpu_count": 2.0,
+                    "cpu_bounds": [
+                      {
+                        "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                        "value": 96
+                      },
+                      {
+                        "kind": "CGROUP_V1_CPUSET",
+                        "value": 96,
+                        "path": "/sys/fs/cgroup/cpuset"
+                      },
+                      {
+                        "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                        "value": 2.0
+                      }
+                    ],
+                    "allowed_memory_bytes": 4294967296,
+                    "memory_bounds": [
+                      {
+                        "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                        "value": 4294967296
+                      }
+                    ],
+                    "remaining_group_memory_bytes": null,
+                    "memory_scope": "BOUNDED_ALLOCATION",
+                    "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                    "cgroup_version": "v1",
+                    "allocation_bounds_complete": true,
+                    "boundary_detection": "OBSERVED",
+                    "missing_controls": [],
+                    "observational_only": true
+                  },
+                  "cpu_count": 2,
+                  "memory_bytes": 4294967296,
+                  "library_threads": 1,
+                  "task_cpu_count": 1,
+                  "cpu_slots": 2,
+                  "maximum_slots": 2,
+                  "task_memory_bytes": null,
+                  "stages": [
+                    "q3"
+                  ],
+                  "one_shared_slot_pool": true
+                },
+                "capacity": 2,
+                "remaining_seconds": 172.71691879897844,
+                "start_clock": {
+                  "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                  "monotonic": 402558.862130871,
+                  "epoch": 1794937481.5503829
+                },
+                "exit_reason": null
+              },
+              "receipt": {
+                "epoch": 1794937481.1902754,
+                "returncode": 0,
+                "stderr": "",
+                "stdout": "267195.CPUcluster-PRISM"
+              },
+              "allocation": {
+                "allocation_source": "PBS_QSTAT_RESOURCE_LIST",
+                "exec_host": "CPUcluster035/0*2",
+                "exec_vnode": "(CPUcluster035:ncpus=2:mem=4194304kb)",
+                "job_id": "267195.CPUcluster-PRISM",
+                "memory_bytes": 4294967296,
+                "ncpus": 2,
+                "recorded_epoch": 1794937481.3074815,
+                "remaining_seconds": 240,
+                "select_nodes": 1,
+                "walltime_seconds": 240
+              },
+              "exit_status": null,
+              "directory": "/home/AbeHiromu/projects/rpe-pbs-20261118/runs/central-integrated/c648b0c4a78986aabb55/allocations/7692125143eb49e0800d44d9684e70a8"
+            }
+          ],
+          "error": null,
+          "science_budget_per_task": true
+        },
+        "host_admission_error": null,
+        "allocation_settings": {
+          "schema": "RPE_Q3_ALLOCATION_SETTINGS_V1",
+          "mode": "auto",
+          "max_concurrent_jobs": "auto",
+          "auto_allocation": {
+            "priority_groups": [
+              [
+                "local",
+                "pbs-0"
+              ]
+            ],
+            "offer_ttl_seconds": 5,
+            "discovery_grace_seconds": 0
+          }
+        },
+        "automatic_capacity": true,
+        "unresolved_owned_attempts": 0,
+        "host_offers": {
+          "local": {
+            "capacity": 1,
+            "fresh_free_slots": 0,
+            "reported_free_slots": 0,
+            "observed_age_seconds": 0.1418189980322495,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "FIXED",
+              "capacity": 1,
+              "slots": 0,
+              "occupied": 1,
+              "stage": "EXPLICIT_FIXED_PROFILE",
+              "reasons": [
+                "Legacy/explicit worker slots retained"
+              ]
+            },
+            "capacity_feedback": {
+              "controller_invocation": "571373-1794937514784300555",
+              "measurement_seconds": 35.157097873976454,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 10,
+              "adopted_results": 10,
+              "decision_wait_seconds": 33.36306652415078,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "capacity": 1
+            }
+          },
+          "pbs-0": {
+            "capacity": 2,
+            "fresh_free_slots": 2,
+            "reported_free_slots": 2,
+            "observed_age_seconds": 0.5010910290293396,
+            "priority_group": 0,
+            "resource_report": {
+              "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+              "mode": "AUTO",
+              "capacity": 2,
+              "slots": 2,
+              "occupied": 0,
+              "stage": "MEASURED_THROUGHPUT_AND_WAIT",
+              "reasons": [
+                "Insufficient new usable completions for another slot trial"
+              ],
+              "resources": {
+                "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+                "clock": {
+                  "clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+                  "monotonic": 402626.107965104,
+                  "epoch": 1794937548.7962172
+                },
+                "machine_cpu_count": 96,
+                "machine_mem_total_bytes": 404353814528,
+                "machine_mem_available_bytes": 399782694912,
+                "allowed_cpu_count": 2.0,
+                "cpu_bounds": [
+                  {
+                    "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                    "value": 96
+                  },
+                  {
+                    "kind": "CGROUP_V1_CPUSET",
+                    "value": 96,
+                    "path": "/sys/fs/cgroup/cpuset"
+                  },
+                  {
+                    "kind": "DECLARED_RESEARCH_CPU_BOUND",
+                    "value": 2.0
+                  }
+                ],
+                "allowed_memory_bytes": 4294967296,
+                "memory_bounds": [
+                  {
+                    "kind": "DECLARED_RESEARCH_MEMORY_BOUND",
+                    "value": 4294967296
+                  }
+                ],
+                "remaining_group_memory_bytes": null,
+                "memory_scope": "BOUNDED_PBS_ALLOCATION",
+                "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+                "cgroup_version": "v1",
+                "allocation_bounds_complete": true,
+                "boundary_detection": "ACTUAL_PBS_SINGLE_NODE_CPU_AND_MEMORY_WITH_PROCESS_LIMITS",
+                "missing_controls": [],
+                "observational_only": true,
+                "pbs_allocation": {
+                  "job_id": "267195.CPUcluster-PRISM",
+                  "ncpus": 2,
+                  "memory_bytes": 4294967296
+                }
+              },
+              "limits": {
+                "cpu_slots": 2,
+                "memory_slots": 66,
+                "explicit_max_slots": 2,
+                "memory_sample_headroom_factor": 1.5
+              },
+              "dp_workers_per_q3": 1,
+              "peak_job_rss_bytes": 43126784.0,
+              "peak_job_cpu_cores": 0.0,
+              "feedback": {
+                "adopted_results": 2,
+                "capacity": 1,
+                "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+                "controller_invocation": "571373-1794937514784300555",
+                "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+                "decision_wait_seconds": 16.69293298199773,
+                "measurement_seconds": 25.642971372930333,
+                "ready_jobs": 0,
+                "usable_results": 2
+              },
+              "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+              "trial": null,
+              "running_jobs_may_exceed_reduced_capacity": false,
+              "pbs": {
+                "job_id": "267195.CPUcluster-PRISM",
+                "remaining_seconds": 172.70645690598758,
+                "minimum_task_seconds": 3.0,
+                "drain_seconds": 10.0,
+                "accepting": true
+              }
+            },
+            "capacity_feedback": {
+              "controller_invocation": "571373-1794937514784300555",
+              "measurement_seconds": 35.15733245597221,
+              "controller_clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+              "usable_results": 3,
+              "adopted_results": 3,
+              "decision_wait_seconds": 21.502368153072894,
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "ready_jobs": 0,
+              "capacity": 1
+            }
+          }
+        },
+        "persistent_reserved": {
+          "PR_DF": 4,
+          "PR_PAULI": 4
+        },
+        "host_eligibility_holds": {},
+        "preparation": {
+          "signal": {
+            "reserved": 4,
+            "launched": 4
+          },
+          "compile": {
+            "reserved": 1,
+            "launched": 1
+          },
+          "audit": {
+            "reserved": 1,
+            "launched": 1
+          }
+        },
+        "preparation_readiness_pending": {},
+        "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+        "method_launched": 4,
+        "method_adopted": 4
+      },
+      "rule_adopted_best": {
+        "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "ARTIFICIAL_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "confirmed_all_best": {
+        "candidate": "PR_DF:6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+        "configuration": {
+          "L_D": 1,
+          "formula": "2nd",
+          "delta_over_h": "1",
+          "kappa_multiplier": "1",
+          "requested_delta_pf": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968,
+            "display": "0.10"
+          }
+        },
+        "labels": [],
+        "N_X": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "N_Y": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "MSE_lower": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "MSE_upper": {
+          "numerator": 13,
+          "denominator": 1000,
+          "display": "0.01"
+        },
+        "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+        "cost": {
+          "numerator": 52,
+          "denominator": 1,
+          "display": "52.00"
+        },
+        "cost_display": "52.00",
+        "evidence": "ARTIFICIAL_JOB",
+        "point_id": null,
+        "result_sources": null
+      },
+      "completed_ledger": {
+        "jobs_checked": 4,
+        "jobs_verified": 4,
+        "refused": [],
+        "rows": [
+          {
+            "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "request_cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90",
+            "outcome_file": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/0cb6d061689f9dfd8e90/OUTCOME.json",
+            "outcome_sha256": "f45e01cadf0f69387dc036073a5e274f92283cdd058deb3c796195e0bc64cfd9",
+            "artificial": true
+          },
+          {
+            "configuration_id": "6b072f43d262c20c38e8379bf09dd77bd4bf51f3ea4fa05b4a0aadc1cb9f386d",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "request_cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/610093c57ae0337aa931",
+            "outcome_file": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/610093c57ae0337aa931/OUTCOME.json",
+            "outcome_sha256": "4d4456d7976a1358c88fc01a1a426d8ff0e9d4e32e64cce26ae891942513f673",
+            "artificial": true
+          },
+          {
+            "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "request_cost": {
+              "numerator": 52,
+              "denominator": 1,
+              "display": "52.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e3616f2e093cac4690de",
+            "outcome_file": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e3616f2e093cac4690de/OUTCOME.json",
+            "outcome_sha256": "f6863e04f104359da45f9029816b7eedbd877a049565fb3eff227635bea8b03b",
+            "artificial": true
+          },
+          {
+            "configuration_id": "54afd4fbd8f36502859936d0c54f9c77beb4e2de49d90301d84bede61d82ab8d",
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              2
+            ],
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD",
+            "cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "request_cost": {
+              "numerator": 56,
+              "denominator": 1,
+              "display": "56.00"
+            },
+            "price_match": true,
+            "status_consistent": true,
+            "identity": "EXECUTOR_PRIOR_RECORD_CHECK_PASSED",
+            "verified": true,
+            "adopted_by_rule": true,
+            "job": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8",
+            "outcome_file": "/tmp/rpe-pbs-integrated-925985b4e-20261118/run/jobs/PR_DF/e87dc9349021da5eabf8/OUTCOME.json",
+            "outcome_sha256": "040397dc0a3feee121791c663dfd62515fdf2fa259ee12687329161cd8df44db",
+            "artificial": true
+          }
+        ],
+        "scope": "EXACT_TAU_AND_OWN_PRICE_CHECK_AFTER_EXECUTOR_FINISH"
+      }
+    }
+  },
+  "optimizer_source": "925985b4ea76a15f8a07c507179d4fa6c492eabd"
+}

@@ -1,5 +1,8 @@
 # H4 RPE方式別最適化：PBS計算先追加（2026-11-18 JST）
 
+後続の[中央・価格・PBS実統合REPORT](../rpe_pbs_central_integration_20261118/REPORT.md)で、
+合流SOURCE925985b4eの実PBS検収・検証済み登録を完了した。以下の単独版22の原結果は保持する。
+
 実装・利用者専用環境配置・保存実入力dry-check・実PBS人工通し検収を完了した。
 実H4の信号取得・回路compile・Q3本体は0件であり、科学的性能や優劣を追加認定しない。
 人工compileは文字列の回路artifactを作るテストで、量子回路のcompileではない。

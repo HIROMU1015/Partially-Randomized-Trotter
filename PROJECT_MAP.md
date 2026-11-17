@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+中央管理・価格検証・PBSの合流版（2026-11-18）：[統合HANDOFF](docs/research/rpe_pbs_central_integration_20261118/HANDOFF.md)。
+中央674・価格8ba・PBS系列を実mergeし、固定SOURCE925985b4eで通常入口→実PBS人工task→回収・採用・再開を検収済み。
+検証済みreleaseは非アクティブ登録。共有currentの切替は中央統合担当に集約し、実H4は未実行。
+
 PBS計算先の追加（2026-11-18）：[運用・検収記録](docs/research/rpe_pbs_worker_20261118/HANDOFF.md)。
 RomuTailの既存DistributedExecutor/JobStoreへPBS割当内workerを接続する実装であり、
 保存実入力metadataと人工PBS検収だけを行った。実H4信号・compile・Q3の追加実行は0件。

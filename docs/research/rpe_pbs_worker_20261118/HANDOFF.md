@@ -1,5 +1,8 @@
 # PBS計算先：運用引継ぎ（2026-11-18 JST）
 
+後続：中央・価格branchを実mergeした[合流版HANDOFF](../rpe_pbs_central_integration_20261118/HANDOFF.md)。
+最終合流SOURCE925985b4eの実PBS検収・登録はそちらを参照する。以下は旧PBS単独版22の記録である。
+
 実装・配置・保存実入力dry-check・短時間の実PBS人工検収を完了した。
 結果は[REPORT](REPORT.md)。実H4信号・回路compile・Q3本体は未実行。
 別途採択された探索指示を次の科学実行条件とする。
