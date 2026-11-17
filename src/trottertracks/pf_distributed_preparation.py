@@ -90,6 +90,18 @@ def reuse_calibration(root, workspace, folder, plan, rounds, receipt):
     return receipt
 
 
+def track_collected_prices(workspace, compiled):
+    """Make the worker's byte-identical collected files tracked for the C guard."""
+    relative=Path(compiled['relative'])
+    if relative.is_absolute() or '..' in relative.parts:
+        raise ValueError('Collected PF price path leaves its workspace')
+    git(workspace,'add','--sparse','--',str(relative))
+    if git(workspace,'diff','--cached','--name-only','--',str(relative)):
+        git(workspace,'-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp',
+            'commit','-m','Track recovered PF raw price inputs without replacing their original SOURCE',
+            '--',str(relative))
+
+
 def complete_selected(root,spec,run,request,entry,output,runtime):
     """Original finite PF contract; no independent candidate/shot selection."""
     original=Path(entry).resolve().parents[1];run=Path(run)
@@ -174,11 +186,13 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
                 saved=spec['pf_completion'].get('saved_calibration')
                 compiled=(reuse_calibration(root,workspace,folder,value,calibration,saved) if saved else
                           call('compile','PF_COMPILE',cohort='calibration',rounds=calibration))
+                track_collected_prices(workspace,compiled)
                 values+=call('audit','PF_AUDIT',compiled=compiled)['prices']
             frozen=call('freeze','PF_MODEL_FREEZE',prices=values)['model']
             holdout=[r['m']for r in value['new_compile_cells']if r['role']=='HOLDOUT']
             if holdout:
                 compiled=call('compile','PF_HOLDOUT_COMPILE',cohort='holdout',rounds=holdout)
+                track_collected_prices(workspace,compiled)
                 values+=call('audit','PF_HOLDOUT_AUDIT',compiled=compiled)['prices']
             return call('finish','PF_FINISH',prices=values,model=frozen)['prices']
         saved_signal=spec['pf_completion'].get('saved_signal')

@@ -46,6 +46,10 @@ with tempfile.TemporaryDirectory(prefix='rpe-q3-live-') as directory:
     view = effective.get('route_views', {}).get(route.get('view_commit'))
     if view:
         repositories.add(Path(view).resolve())
+    if route['kind'] in ('prdf_d2_split','prdf_d2_common_entry'):
+        inner = effective.get('route_views', {}).get('27e70efe533862f38f4080aabb9cdd3ad1749fe9')
+        if inner:
+            repositories.add(Path(inner).resolve())
 
     def git(repo, *args, **kwargs):
         return subprocess.run(['git', *args], cwd=repo, capture_output=True,

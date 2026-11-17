@@ -192,6 +192,7 @@ def main():
         else:
             adapter=module(ROOT,'_portable_prdf_intake','scripts/run_rpe_optimizer_q3_job.py')
             W,_=adapter.load_prdf_route(view,r.get('controller_paths',{}).get('route_views',{}))
+            place_intake_inputs(Path(W.U.ROOT), (r['configuration'],r['packet']))
             config=read(r['configuration']);binding,_=W.U.T.create(view,config,original_source=r['configuration']),None
             case=dict(configuration=r['configuration'],original_configuration_id=config['id'],signal_packet=r['packet'],
                 signal_packet_kind='A_BUNDLE_REQUIRES_EXISTING_K_ACCEPT_SAVED',binding_id=binding['id'],total_configuration_id=binding['total_configuration']['id'])
