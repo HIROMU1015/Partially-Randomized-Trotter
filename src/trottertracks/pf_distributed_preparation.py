@@ -187,7 +187,23 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
                 compiled=(reuse_calibration(root,workspace,folder,value,calibration,saved) if saved else
                           call('compile','PF_COMPILE',cohort='calibration',rounds=calibration))
                 track_collected_prices(workspace,compiled)
-                values+=call('audit','PF_AUDIT',compiled=compiled)['prices']
+                saved_audit=spec['pf_completion'].get('saved_calibration_audit')
+                if saved_audit:
+                    prices=saved_audit['prices']
+                    expected={(m,axis) for m in calibration for axis in ('X','Y')}
+                    if (saved_audit['status']!='AUDIT_PASS' or len(prices)!=len(expected) or
+                            {(p['m'],p['axis']) for p in prices}!=expected or
+                            any(p['gate']!='C_IMPLEMENTATION_GUARD_PASS' or
+                                p['price_evidence']['source']['path']!=compiled['relative']+'/PRICES.json'
+                                for p in prices)):
+                        raise ValueError('Collected audit does not match the selected calibration')
+                    commits=sorted({p['price_evidence']['source']['commit'] for p in prices})
+                    subprocess.run(['git','fetch','--no-tags',str(root),*commits],cwd=workspace,
+                                   check=True,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+                    put(folder/'SAVED_CALIBRATION_AUDIT_REUSE.json',saved_audit)
+                else:
+                    prices=call('audit','PF_AUDIT',compiled=compiled)['prices']
+                values+=prices
             frozen=call('freeze','PF_MODEL_FREEZE',prices=values)['model']
             holdout=[r['m']for r in value['new_compile_cells']if r['role']=='HOLDOUT']
             if holdout:

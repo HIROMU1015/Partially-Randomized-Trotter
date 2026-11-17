@@ -9,6 +9,7 @@ import ast
 from copy import deepcopy
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -236,7 +237,7 @@ class DistributedPreparationBridge:
         self.executor.artifact_cache.put({sha: base64.b64encode(raw).decode('ascii')})
         return sha
 
-    def _bundle(self, root, source, required_commits=()):
+    def _bundle(self, root, source, required_commits=(), *, tracked_workspace=False):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         namespace='refs/rpe-preparation/' + digest(str(self.executor.run_dir))[:16]
         for value in sorted(set(required_commits)):
@@ -247,17 +248,33 @@ class DistributedPreparationBridge:
             return []
         if subprocess.check_output(['git','rev-list','--count','HEAD',*imported,'^'+source],cwd=root,text=True).strip()=='0':
             return []
+        heads=['HEAD', *imported]
+        if tracked_workspace and imported:
+            # The worker fetches one advertised endpoint. A metadata merge
+            # retains the exact workspace tree and also reaches the returned
+            # producer commits even when they are on separate branches.
+            parents=sorted(set(subprocess.check_output(['git','rev-parse',*imported],cwd=root,text=True).split())-{head})
+            tree,date=subprocess.check_output(['git','show','-s','--format=%T %aI',head],cwd=root,text=True).split()
+            if parents:
+                args=['git','-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp',
+                      'commit-tree',tree,'-p',head]
+                for parent in parents:args+=['-p',parent]
+                tip=subprocess.check_output(args+['-m','Make fixed preparation inputs reachable from the tracked workspace'],
+                    cwd=root,text=True,env=dict(os.environ,GIT_AUTHOR_DATE=date,GIT_COMMITTER_DATE=date)).strip()
+                endpoint=namespace+'/workspace-'+tip
+                subprocess.run(['git','update-ref',endpoint,tip],cwd=root,check=True)
+                heads=[endpoint]
         # Include the original provider branch even if its publication history
         # diverged. Git bundle prerequisites are checked by the destination;
         # no scientific checkout or branch HEAD is replaced here.
         with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
             path = Path(temporary) / 'input.bundle'
-            subprocess.run(['git', 'bundle', 'create', str(path), 'HEAD', *imported, '^' + source], cwd=root,
+            subprocess.run(['git', 'bundle', 'create', str(path), *heads, '^' + source], cwd=root,
                            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
             heads=subprocess.check_output(['git','bundle','list-heads',str(path)],cwd=root,text=True).splitlines()
             names=[row.split(' ',1)[1]for row in heads]
             ref='HEAD'if'HEAD'in names else names[0]
-            return [dict(sha256=self._blob(path.read_bytes()), ref=ref,checkout_input_head=ref=='HEAD')]
+            return [dict(sha256=self._blob(path.read_bytes()), ref=ref,checkout_input_head=tracked_workspace or ref=='HEAD')]
 
     def build_request(self, completion, command, directory, stage, output=None):
         """Freeze a portable leaf request; never invoke its scientific body."""
@@ -370,7 +387,8 @@ class DistributedPreparationBridge:
         with self.lock:
             for old, original in self.aliases.items():
                 if original in bindings:bindings[old]=bindings[original]
-        root_bundles=self._bundle(root,source,[row['commit']for row in input_hashes])
+        root_bundles=self._bundle(root,source,[row['commit']for row in input_hashes],
+                                 tracked_workspace=not script.is_relative_to(root))
         if script.is_relative_to(root):
             # This bundle supplies locators for frozen inputs. Checking out
             # its HEAD would substitute controller code for the provider.

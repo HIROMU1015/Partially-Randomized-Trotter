@@ -33,6 +33,8 @@ from pathlib import Path
 runner, view = sys.argv[1:3]
 sys.argv = [runner, *sys.argv[3:]]
 sys.path.insert(0, str(Path(runner).resolve().parents[1]/'src'))
+import trottertracks
+trottertracks.__path__.insert(0, str(Path(view)/'src'/'trottertracks'))
 main = runpy.run_path(runner)['main']
 main.__globals__['FIXED_VIEW'] = Path(view)
 raise SystemExit(main())
