@@ -55,8 +55,14 @@ def export(service_pointer, output):
     state=Path(service['state_directory']);roots[str(state)]='state'
     rounds=[Path(service['round'])]
     if service.get('absolute_kappa_route'):rounds.append(Path(service['absolute_kappa_route']['round']))
+    model_stores=set()
+    if (Path(service['code_root'])/'.git').exists():
+        common=subprocess.check_output(['git','rev-parse','--git-common-dir'],cwd=service['code_root'],text=True).strip()
+        model_stores.add((Path(service['code_root'])/common/'rpe-price-validations.sqlite3').resolve())
     for round_path in rounds:
         spec=json.loads(round_path.read_text())
+        if spec.get('price_validation',{}).get('store'):
+            model_stores.add(Path(spec['price_validation']['store']).resolve())
         for value in spec.get('executor',{}).get('prior_run_dirs',[]):
             path=Path(value)
             if not path.is_absolute():path=Path(service['code_root'])/path
@@ -92,9 +98,20 @@ def export(service_pointer, output):
             original_total_bytes=raw_bytes,jobs=jobs,completed_outcomes=outcomes,unresolved_started_jobs=unresolved))
         if raw_bytes>copied:deferred.append(dict(original_host='server2',original_root=original,
             bytes_not_copied=raw_bytes-copied,reason='Raw scientific artifacts stay protected at original location; retrieve exact needed files by hash before reuse requiring raw'))
+    stores=[]
+    for path in sorted(model_stores):
+        if not path.is_file():
+            stores.append(dict(original=str(path),exists=False));continue
+        dest=output/'model-stores'/hashlib.sha256(str(path).encode()).hexdigest()[:12]/path.name
+        dest.parent.mkdir(parents=True,exist_ok=True)
+        source=sqlite3.connect(path.as_uri()+'?mode=ro',uri=True);target=sqlite3.connect(dest)
+        try:source.backup(target)
+        finally:target.close();source.close()
+        row=dict(original=str(path),path=str(dest.relative_to(output)),sha256=sha(dest),bytes=dest.stat().st_size)
+        inventory.append(row);stores.append(dict(row,exists=True))
     manifest=dict(schema='RPE_CONTROLLER_METADATA_TRANSFER_V1',service_pointer=str(service_pointer),
         service=service,active_controllers_at_snapshot=active,roots=runs,files=inventory,
-        missing_roots=missing,deferred_raw=deferred,scientific_calls=0,old_controller_started=False)
+        missing_roots=missing,deferred_raw=deferred,model_stores=stores,scientific_calls=0,old_controller_started=False)
     put(output/'MANIFEST.json',manifest)
     return dict(files=len(inventory),bytes=sum(r['bytes']for r in inventory),roots=runs,missing=missing)
 

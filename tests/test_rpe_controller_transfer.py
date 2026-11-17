@@ -21,7 +21,10 @@ class TransferTests(unittest.TestCase):
             T.put(prior/'jobs/PR_DF/job/REQUEST.json',{'request_id':'job','fixed_source':'FIXED'})
             T.put(prior/'jobs/PR_DF/job/OUTCOME.json',{'status':'UNKNOWN','MSE_upper':None})
             T.put(prior/'jobs/PR_DF/job/raw/LARGE_RAW.json',{'not_needed_for_index':True})
-            T.put(service/'ROUND.json',{'max_new_q3_per_method':{'PR_DF':3},'executor':{'prior_run_dirs':[str(prior)]}})
+            models=base/'external-models.sqlite3'
+            model_db=sqlite3.connect(models);model_db.execute('CREATE TABLE models(id TEXT,record TEXT)')
+            model_db.execute("INSERT INTO models VALUES('saved-model','FROZEN_OWNER_AND_PARTIAL')");model_db.commit();model_db.close()
+            T.put(service/'ROUND.json',{'price_validation':{'store':str(models)},'max_new_q3_per_method':{'PR_DF':3},'executor':{'prior_run_dirs':[str(prior)]}})
             T.put(service/'SERVICE.json',{'state_directory':str(state),'round':str(service/'ROUND.json'),'code_root':str(base)})
             T.put(service/'CURRENT_SERVICE.json',{'service_config':str(service/'SERVICE.json')})
             db=sqlite3.connect(state/'QUEUE.sqlite3')
@@ -31,6 +34,8 @@ class TransferTests(unittest.TestCase):
             self.assertEqual(T.verify(base/'snapshot')['status'],'PASS')
             manifest=json.loads((base/'snapshot/MANIFEST.json').read_text())
             copied={r['original']:base/'snapshot'/r['path']for r in manifest['files']}
+            self.assertEqual(len(manifest['model_stores']),1)
+            self.assertEqual(sqlite3.connect(copied[str(models)]).execute('SELECT * FROM models').fetchall(),[('saved-model','FROZEN_OWNER_AND_PARTIAL')])
             for p in [prior/'STOP.json',prior/'jobs/PR_DF/job/OUTCOME.json',service/'ROUND.json']:
                 self.assertEqual(p.read_bytes(),copied[str(p)].read_bytes())
             new=sqlite3.connect(copied[str(state/'QUEUE.sqlite3')])

@@ -360,3 +360,5 @@ artifacts/<validation_name>/
 
 Local0 absolute-kappa interval through the normal physical schedule entry (metadata-only acceptance): `docs/research/rpe_local0_absolute_kappa/README.md`.
 - 分散Q3の自動割当・自動同時枠と計時：[HANDOFF](../docs/research/rpe_q3_auto_allocation/HANDOFF.md)。新run既定auto、保存runの上限保全。実H4起動0。
+
+ローカル起点の簡易価格検証：`reconcile_rpe_price_validation_store.py` は既存ModelStoreを原要求・所有者ごと引き継ぐ。`prepare_romutail_controller_deployment.py` が全release/run共通storeを通常入口へ設定する。[配置・検収](../docs/research/h4_price_validation_local_controller_20261118/REPORT.md)。

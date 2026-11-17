@@ -134,7 +134,20 @@ def saved_checks(description,reader):
                     doc=reader.read(dict(ref,selector=[]))
                     candidates=[doc.get('model_source'),doc.get('model'),(doc.get('binding')or{}).get('model_source')]
                     locator=lambda x:(x.get('commit'),x.get('path'),x.get('selector')or[])if isinstance(x,dict)else None
-                    if locator(model)not in [locator(x)for x in candidates]:
+                    # Some saved DF comparisons reference an AXIS_PRICES row
+                    # at the frozen model commit instead of a model locator.
+                    # Accept only its explicit model_commit and exact saved
+                    # prediction/circuit/axis binding; never infer from a filename.
+                    bound=False
+                    if container.get('model_commit')==model.get('commit')==ref.get('commit'):
+                        frozen=reader.read(dict(model,selector=[]));axis_price=reader.read(ref)
+                        expected=description['identity']['coefficients']
+                        bound=(bool(frozen.get('source')) and doc.get('source')==frozen['source'] and
+                            canonical(_coefficients(frozen))==canonical(expected) and
+                            axis_price.get('model_axis')==axis and
+                            all(axis_price.get(k)==r.get(k) for k in ('m','q','R','configuration_id','physical_id')) and
+                            axis_price.get('C_ref') is not None and frac(axis_price['C_ref'])==frac(predicted))
+                    if locator(model)not in [locator(x)for x in candidates] and not bound:
                         issues.append('DIFFERENT_FROZEN_PREDICTION_SOURCE');continue
                 if relative is not None and frac(relative)!=(frac(predicted)-frac(observed))/frac(observed):
                     raise ValueError('Saved comparison relative difference differs')

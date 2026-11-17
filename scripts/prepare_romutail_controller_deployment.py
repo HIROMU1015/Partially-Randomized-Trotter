@@ -95,6 +95,10 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
         original = read(source_directory / name)
         original_rounds[name] = original
         round_value = remap(original, paths)
+        # One controller-owned store across releases and all run queues.
+        # Its saved state must be reconciled before activating this deployment.
+        round_value.setdefault('price_validation', {})['store'] = str(
+            Path(layout['state_directory']).parent/'price-validation'/'models.sqlite3')
         distributed = round_value['executor']['distributed']
         distributed.update(computation_root=profiles['local']['root'],
             local_worker=deepcopy(profiles['local']), worker_script=str(code_root / 'scripts/run_rpe_q3_worker.py'),
