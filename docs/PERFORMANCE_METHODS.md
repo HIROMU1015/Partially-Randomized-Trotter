@@ -146,3 +146,5 @@
 各hostは資源境界・所有RSS/CPU・有効結果rate/判断待ちを使い1枠ずつ試す。減枠はdrain、旧run上限は保存。
 計時81884bd39のhelper/CLIを再利用。実人工process・1OS4模擬hostでpeak5/18結果exact一致、実H4性能は未測定。
 旧adapterのPASSを新timed adapterへ転用せず、配置後の実入力dry-checkが必要。
+
+- [次回local0の簡易価格検証配置](research/h4_price_validation_deployment_20261118/REPORT.md)（2026-11-18）：同じqueueのoptional低優先取得を配置。SOURCE pinでcontroller公開後のprofile不一致を避け、DFの同名module衝突は固定worker同様の分離processで防ぐ。人工／metadata検収のみ、実compileは未確認。

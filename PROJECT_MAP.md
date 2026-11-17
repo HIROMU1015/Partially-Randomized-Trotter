@@ -530,3 +530,5 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 - PR-Pauli/PR-DFの複数要求PF幅を通常探索へ接続する入口・保存/人工検収: [HANDOFF](docs/research/pr_requested_step_search_20261117/HANDOFF.md)。科学実行は未実施。
 
 Local0 absolute-kappa interval through the normal physical schedule entry (metadata-only acceptance): `docs/research/rpe_local0_absolute_kappa/README.md`.
+
+[次回local0の簡易価格検証配置](docs/research/h4_price_validation_deployment_20261118/REPORT.md)（2026-11-18）：固定SOURCE・PR compile profile・shared queue・fresh PF MODULEのmetadata／人工検収。実取得0。

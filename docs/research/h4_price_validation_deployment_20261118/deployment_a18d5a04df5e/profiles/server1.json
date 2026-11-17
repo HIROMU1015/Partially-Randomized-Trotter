@@ -1,0 +1,1113 @@
+{
+  "host_id": "server1",
+  "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+  "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+  "route_views": {
+    "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+    "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+    "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+    "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+  },
+  "dp_workers": 1,
+  "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+  "route_profiles": [
+    {
+      "route_kind": "prdf_d2_split",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+        "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+        "adapter_manifest": {
+          "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+            "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+          }
+        }
+      }
+    },
+    {
+      "route_kind": "pauli_b_common_entry",
+      "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime": {
+          "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+          "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+          "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+          "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+        },
+        "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+        "adapter_manifest": {
+          "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+            "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+          }
+        }
+      }
+    },
+    {
+      "route_kind": "pf_b_pf6",
+      "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime": {
+          "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+          "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+          "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+          "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+        },
+        "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+        "adapter_manifest": {
+          "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+            "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+          }
+        }
+      }
+    },
+    {
+      "route_kind": "pauli_b_common_entry",
+      "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "runtime_checks": [
+          {
+            "kind": "FIXED_FUNCTION_AST",
+            "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "source_path": "src/trottertracks/rpe_total_risk.py",
+            "function": "total_state_dp",
+            "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+            "guard_constant": "REFERENCE_DP_AST_SHA256"
+          }
+        ],
+        "runtime": {
+          "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+          "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+          "version_info": [
+            3,
+            11,
+            0,
+            "candidate",
+            1
+          ],
+          "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+          "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+          "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+          "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+        },
+        "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+        "adapter_manifest": {
+          "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+            "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+          }
+        }
+      }
+    },
+    {
+      "route_kind": "prdf_d2_common_entry",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+        "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+        "adapter_manifest": {
+          "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+            "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+          }
+        }
+      }
+    }
+  ],
+  "adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+  "adapter_manifest": {
+    "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+    "files": {
+      "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+      "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+      "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5"
+    }
+  },
+  "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/spool",
+  "slots": 1,
+  "slot_policy": {
+    "mode": "auto",
+    "initial_slots": 1
+  },
+  "preparation_profiles": [
+    {
+      "stage": "signal",
+      "provider": "PF_SIGNALS",
+      "source_commit": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "compile",
+      "provider": "PF_COMPILE",
+      "source_commit": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "compile",
+      "provider": "PF_HOLDOUT_COMPILE",
+      "source_commit": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "audit",
+      "provider": "PF_AUDIT",
+      "source_commit": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "audit",
+      "provider": "PF_MODEL_FREEZE",
+      "source_commit": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "audit",
+      "provider": "PF_FINISH",
+      "source_commit": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "audit",
+      "provider": "PF_HOLDOUT_AUDIT",
+      "source_commit": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "signal",
+      "provider": "PAULI_SIGNALS",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "signal",
+      "provider": "A_BASE_P0",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "compile",
+      "provider": "PAULI_COMPILE",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "audit",
+      "provider": "PAULI_AUDIT",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "signal",
+      "provider": "DF_SIGNALS",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "signal",
+      "provider": "DF_DESCRIPTOR",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "route_views": {
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "compile",
+      "provider": "DF_CALIBRATION",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "compile",
+      "provider": "DF_HOLDOUT",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "audit",
+      "provider": "DF_MODEL_FREEZE",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "audit",
+      "provider": "DF_HOLDOUT_COMPARE",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    },
+    {
+      "stage": "compile",
+      "provider": "PRICE_MODEL_VALIDATION",
+      "source_commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+      "profile": {
+        "host_id": "server1",
+        "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+        "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+        "route_views": {
+          "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+          "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+          "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+          "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/routes/prdf-kernel-27e70efe5"
+        },
+        "dp_workers": 1,
+        "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+        "work_dir": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/spool",
+        "slots": 1,
+        "slot_policy": {
+          "mode": "auto",
+          "initial_slots": 1
+        },
+        "preparation_sources": {
+          "36ad751d4ebf0ec160532615da6425b268a0c18a": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "a18d5a04df5ec8c789f274730bff87a2c0a7cc89": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+          "c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa",
+          "fefd548ecd56f60d72031b3d385f6f5e6ee95d06": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+          "13ab1acfaebe5f33958e1db67862f5c45725ab91": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/13ab1acfaebe5f33958e1db67862f5c45725ab91",
+          "326feadd093920bbea29b498108aa4eae6f67a75": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/326feadd093920bbea29b498108aa4eae6f67a75",
+          "d8780090fbb7a66d914fdd45ee9c8b8346686493": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/views/d8780090fbb7a66d914fdd45ee9c8b8346686493"
+        },
+        "preparation_adapter_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+        "preparation_adapter_manifest": {
+          "commit": "a18d5a04df5ec8c789f274730bff87a2c0a7cc89",
+          "files": {
+            "scripts/run_rpe_preparation_job.py": "8631696ecd41d8e2814a0daa50e74bd6ad563b8aa3a97df6c1f5c3571a90799d",
+            "src/trottertracks/rpe_preparation_worker.py": "f8857c2ea96a93b31eee624e6461f0e8a8f553e3d530612f64a1ebb099f08554",
+            "src/trottertracks/rpe_preparation_artifacts.py": "89e1cf7b181d956c9f8f12cf5c8e4b15d09b1fad95b8aa7f6eca21d401308121",
+            "src/trottertracks/rpe_q3_timing.py": "30d05c490f9c682e97a0f431425afecd2a1e4f1d6584b23f342b31ae6c404c2b",
+            "src/trottertracks/rpe_preparation_queue.py": "2610c39d60488d9afa4c8f29c4f0381fda00b5f75e181c47091625afa19dc463",
+            "src/trottertracks/rpe_preparation_paths.py": "b24df6fd11ccfdbcb3c904edae5efb6550357c43a72fb5f0918f6e7b1359f698",
+            "scripts/run_pf_preparation_stage.py": "ed17b30b1308e337b5a7ad3897e4963e67b107d4a72d940ec2e36fbd4ada7794",
+            "scripts/pauli_split_cal_audit_request.py": "9d394ff3adf7f32df4d9849efb874d2fe9c65d6ed23f19cc94fcd21196f1933e",
+            "scripts/run_pr_pauli_candidate_signals.py": "dc45ecbbaa1182ef65290ad370d342b63a83e392cddd57312fe4128a2116b425",
+            "scripts/run_pr_pauli_candidate_prices.py": "19a9cd805d43ca4c0f143ff1a54793fd1674bb2be14670aebdc94ce7a4d517b3",
+            "scripts/run_pr_df_candidate_signal_jobs.py": "f460097972bb7171b1257abad154d3a51f9f5f22c448a947d250b0d9fc4c2ae9",
+            "scripts/run_pr_df_candidate_prices.py": "d1b29f51205dd1be9794681bba3ca487d203415785b43bbdab0f92c5af858fa1",
+            "scripts/derive_pr_df_candidate_descriptor.py": "de0da755f1e4c72fd0772beeb42a27b8c951ff34968e23ac51c2452933823d68",
+            "scripts/run_rpe_price_validation_job.py": "a1707cb73e56e346a6ab1bf93e558302295052b520f37d2029a57934e20f43f2"
+          }
+        }
+      }
+    }
+  ]
+}

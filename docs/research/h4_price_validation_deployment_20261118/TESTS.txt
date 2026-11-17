@@ -1,0 +1,40 @@
+Technical deployment tests, 2026-11-18
+Fixed implementation SOURCE: a18d5a04df5ec8c789f274730bff87a2c0a7cc89
+
+1. Clean deployed controller regression suite: PASS, 103 tests, 26.414 s.
+   Worktree: /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/local0-price-validation-controller-20261118
+   PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:scripts:tests python3 -B (unittest TextTestRunner)
+   Suites: test_pf_preparation_module_binding, test_rpe_price_validation_entry,
+   test_rpe_optional_price_validation_queue, test_rpe_preparation_completion_bridge,
+   test_rpe_preparation_queue, test_rpe_failure_continuity,
+   test_rpe_price_validation_deployment_profiles, test_rpe_price_validation_worker,
+   test_rpe_price_validation_map, test_rpe_pf_price_validation, test_local0_absolute_kappa,
+   test_rpe_local0_price_validation_deployment, test_pr_df_metadata_runtime_import,
+   test_pr_df_candidate_prices, test_rpe_local0_search.
+   test_rpe_local0_search.OUTPUT was set to a temporary directory as required by its existing harness.
+   This includes saved LD2 model reuse, independent allocations, optional queue priority,
+   once-only concurrent claims/resume, non-blocking pending/failed validation, and map receipt links.
+
+2. Added manifest regression on report branch (implementation unchanged from fixed SOURCE): PASS, 1 test, 0.018 s.
+   python3 -B -m unittest test_rpe_price_validation_entry.Entry.test_df_legacy_manifest_pins_existing_fixed_worker_not_modern_entry
+   Asserts DF workspace hashes original legacy files, not the modern generic entry absent from that view.
+
+3. Actual next-service preview: PASS, method default and absolute-kappa schedule.
+   New CLI and preserved old local0 bootstrap returned identical applied scopes/run IDs.
+   See NORMAL_ENTRY_PREVIEW.json and the two saved request/response pairs.
+   No current target, run, job, worker or normal launch was created.
+
+4. Server2 metadata: PASS 14/14 (12 saved inspection-only examples + 2 actual PR request forms).
+   Service._submit factories used saved prices/SOURCE and a capture-only executor, not production queue/store.
+   Actual runtime: Python3.12.3 / qiskit1.3.0 / numpy1.26.4 / scipy1.14.1.
+   Preserved initial operational dry-check HOLD for missing unstaged CAS; second inspection used saved CAS.
+   Execution profile cores match operational PROFILE; operational PROFILE remained unchanged.
+   Existing artificial cross-host queue/artifact tests cover protocol; real queue transfer and compile not exercised.
+   Remote hosts: profiles/package generated only, not contacted or placed.
+
+5. Protected state: old fixed files11/11 unchanged; old CURRENT_TARGET/RUNS/runs remain absent.
+   New child fixed SOURCE includes92b3e617a and latest f956 distributed preparation fixes.
+   Q3 computation SOURCE28d976b99 and base/3 route execution profile cores preserved.
+
+Real signal/compile/Q3/science/production queue operations: 0 each.
+Mandatory STOP after publication. First real acquisition only on next explicitly compile-enabled normal search.

@@ -65,6 +65,40 @@ class Entry(unittest.TestCase):
             service=V.Service(ROOT,d,dict(price_validation=dict(source=fixed,store=str(Path(d)/'db'))))
             self.assertEqual(service.implementation_source,fixed)
 
+    def test_df_legacy_manifest_pins_existing_fixed_worker_not_modern_entry(self):
+        # The generic acquisition script is in the modern transport; the
+        # legacy view owns run_pr_df_ld_split and its original helper modules.
+        names=('scripts/run_pr_df_ld_split.py','src/trottertracks/p1_efficient_zz.py',
+               'src/trottertracks/efficient_controlled_zz.py','src/trottertracks/pr_rpe_rmse_controller.py',
+               'src/trottertracks/h4_df10_rpe_connection.py')
+        with tempfile.TemporaryDirectory()as temp:
+            root=Path(temp);legacy=root/'legacy';(root/'scripts').mkdir()
+            for name in names:
+                path=legacy/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('# synthetic fixed provider\n')
+            (root/'scripts/run_rpe_price_validation_job.py').write_text(
+                'DF_SOURCE="synthetic-fixed-legacy"\n'
+                'def build_df_acquisition(request,**kwargs):\n'
+                ' return dict(kind="PR_DF",backend="BUILTIN_DF_NORMAL_PATH",legacy_view=kwargs["legacy_view"])\n')
+            class Executor:
+                source_manifest=dict(commit='synthetic-modern',files={})
+                def submit_preparation(self,request,**kwargs):self.request=request;return request['request_id']
+                def preparation_result(self,job,wait=False):return None
+            executor=Executor();executor.run_dir=root/'run'
+            desc=description();desc['identity']['family']['method']='PR_DF';desc['model_id']=V.digest(desc['identity'])
+            spec=dict(price_validation=dict(store=str(root/'metadata.sqlite3'),providers=dict(PR_DF=dict(kind='PR_DF',backend='BUILTIN_DF_NORMAL_PATH',legacy_view=str(legacy),interpreter='synthetic-python'))))
+            with patch.object(V.subprocess,'check_output',return_value='.git\n'):
+                service=V.Service(root,executor.run_dir,spec,executor)
+            service.store.register(desc,lambda:([],[]))
+            row=dict(selected_round=desc['points'][1],selected_configuration={'id':'artificial'},selected_configuration_source={'fixture':'configuration'})
+            task=dict(route=dict(kind='preparation'),preparation=dict(stage='compile',provider='PRICE_MODEL_VALIDATION',
+                source=executor.source_manifest,command=['synthetic.py'],inputs={},outputs=[],workspaces={},path_bindings={}))
+            with patch('trottertracks.rpe_preparation_bridge.DistributedPreparationBridge.build_request',return_value=task):
+                service._submit(desc['model_id'],row,desc,dict(method='PR_DF',configuration_id='artificial'))
+            manifest=executor.request['preparation']['workspaces']['validation_legacy']['source']
+            self.assertEqual(manifest['commit'],'synthetic-fixed-legacy')
+            self.assertEqual(set(manifest['files']),set(names))
+            self.assertNotIn('scripts/run_pr_df_candidate_prices.py',manifest['files'])
+
     def test_identity_and_source_changes_are_not_shared(self):
         a=description();b=deepcopy(a);b['identity']['model_source']['commit']='new'
         self.assertNotEqual(V.digest(a['identity']),V.digest(b['identity']))

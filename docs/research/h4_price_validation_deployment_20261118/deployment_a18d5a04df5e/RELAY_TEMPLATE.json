@@ -1,0 +1,40 @@
+{
+  "template_only": true,
+  "note": "Copy for a separately adopted new run. Fill the controller ports from that run ENDPOINT; never use an old artificial controller. This package starts no relay.",
+  "state_directory": "__SET_NEW_LOCAL0_RELAY_STATE_DIRECTORY__",
+  "controller": {
+    "ssh_alias": "qg2",
+    "local_port": "__SET_NEW_LOCAL_FORWARD_PORT__",
+    "remote_port": "__FROM_ADOPTED_RUN_ENDPOINT__"
+  },
+  "workers": [
+    {
+      "host_id": "server1",
+      "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/transport",
+      "profile": "/home/AbeHiromu/projects/partially-randomized-trotter/.preparation-distributed/a18d5a04df5e/PROFILE.json",
+      "python": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+      "priority_group": 0,
+      "ssh_alias": "qg1"
+    },
+    {
+      "host_id": "local",
+      "root": "/home/abe/Project/Partially Randomized Trotter/.preparation-distributed/a18d5a04df5e/transport",
+      "profile": "/home/abe/Project/Partially Randomized Trotter/.preparation-distributed/a18d5a04df5e/PROFILE.json",
+      "python": "python3",
+      "priority_group": 0,
+      "ssh_alias": "RomuTail"
+    },
+    {
+      "host_id": "local0-wsl",
+      "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.preparation-distributed/a18d5a04df5e/transport",
+      "profile": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.preparation-distributed/a18d5a04df5e/PROFILE.json",
+      "python": "/root/myproject/Evaluation_numGate_highorder_DF/venv/bin/python",
+      "priority_group": 1,
+      "transport": "wsl",
+      "distribution": "Ubuntu",
+      "participation_file": "C:\\Users\\romuk\\Desktop\\code\\project\\Partially-Randomized-Trotter\\tools\\local0-wsl\\PARTICIPATION.json"
+    }
+  ],
+  "poll_seconds": 1,
+  "retry_backoff_max_seconds": 30
+}
