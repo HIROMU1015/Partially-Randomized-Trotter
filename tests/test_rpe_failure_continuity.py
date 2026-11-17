@@ -129,6 +129,24 @@ class FailureContinuity(unittest.TestCase):
             execute(ctx)
             self.assertEqual(len(hits),1);self.assertEqual(before,{str(p):p.read_bytes()for p in run.glob('jobs/*/*/LAUNCH.json')})
 
+    def test_local_unknown_consumes_attempt_budget(self):
+        for priority in (False,True):
+            problem,context,_=F.fixture(methods=['PR_PAULI'],configurations=2,lookahead=0,steps=3)
+            calls=[]
+            class Backend:
+                def answer(self,proposal):
+                    calls.append(proposal)
+                    return dict(status='UNKNOWN',failure_scope='CONFIGURATION',reason='COUNT_ONLY_SCOPE_EXCEEDED',
+                        scientific_evaluation_calls=0,calls=1,job=None,source='ARTIFICIAL',MSE_lower=None,MSE_upper=None)
+            if priority:
+                problem['search'].update(rule='METHOD_MINIMUM_PRIORITY_V2',kappa_neighbourhood={'outer':'ARTIFICIAL'})
+                result=O.optimize(ROOT,problem,context=context,backend=Backend(),max_new=1)['PR_PAULI']
+            else:
+                known=O.initial_knowledge(context['saved'],context['candidates'])
+                result=O.run_method('PR_PAULI',context['candidates'],known,Backend(),problem['search'],context['tau'],context['generate'],1)
+            self.assertEqual(len(calls),1);self.assertEqual(result['new_calls'],1)
+            self.assertEqual(result['stop_reason'],'Q3_BUDGET_EXHAUSTED')
+
     def test_stage_boundary_yield_reuses_success_and_never_retries_failure(self):
         with tempfile.TemporaryDirectory()as tmp:
             root=pathlib.Path(tmp);comp=C.Completion.__new__(C.Completion);comp.source='ARTIFICIAL';events=[]
@@ -184,6 +202,12 @@ class FailureContinuity(unittest.TestCase):
                 comp.ingest_price_results=lambda:None;comp.refresh_price_hold=lambda record:None
                 held=comp.complete(historical)
                 self.assertEqual(held['reason'],'PRIOR_STAGE_FAILED_NO_RETRY:ARTIFICIAL')
+                # Python equality merges signed zeros; request serialization must not.
+                comp.state['records'][key]['request']['boundary_time']=-0.0
+                changed=dict(historical,boundary_time=0.0)
+                other=comp.complete(changed)
+                self.assertNotEqual(other['key'],key)
+                self.assertEqual(comp.state['records'][key]['reason'],'PRIOR_STAGE_FAILED_NO_RETRY:ARTIFICIAL')
 
     def test_normal_cli_exception_notifies_active_preparation_and_preserves_stop(self):
         active=threading.Event();seen=[]

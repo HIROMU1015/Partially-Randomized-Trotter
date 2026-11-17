@@ -251,7 +251,9 @@ class Completion:
                 # Historical callers could persist a request after descriptor
                 # injection under its original key. Keep that record/STOP and
                 # directory; never turn the changed key into a fresh attempt.
-                matches=[(k,r)for k,r in self.state['records'].items()if r.get('request')==request]
+                fixed_request=json.dumps(request,sort_keys=True,default=str)
+                matches=[(k,r)for k,r in self.state['records'].items()
+                    if json.dumps(r.get('request'),sort_keys=True,default=str)==fixed_request]
                 if len(matches)>1:
                     return dict(status='HELD_WITH_REASON',method=request['method'],
                         reason='AMBIGUOUS_EXISTING_COMPLETION_REQUEST_NO_DUPLICATE',key=None)
