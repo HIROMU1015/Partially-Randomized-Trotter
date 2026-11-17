@@ -56,6 +56,10 @@ class FakeSSH:
             self.checkers.append(list(command))
             assignment = json.loads(Path(command[command.index('--assignment') + 1]).read_text())
             profile = json.loads(Path(command[command.index('--profile') + 1]).read_text())
+            helper_path = Path(command[2]).parents[1] / D.PROFILE_HELPER
+            spec = importlib.util.spec_from_file_location('_artificial_runtime_helper', helper_path)
+            helper = importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+            report = helper.check_runtime_profile(profile)
             target = Path(command[command.index('--output') + 1]);target.mkdir(parents=True)
             request = deepcopy(assignment['request']);request['route'].update(interpreter=profile['interpreter'],
                 view=profile['route_views'][ROUTE])
@@ -63,6 +67,7 @@ class FakeSSH:
             record = dict(status='REAL_HOST_DRY_CHECK_PASS', fixture='ARTIFICIAL_FAKE_CHECKER',
                 host_id=profile['host_id'], job_id=assignment['job_id'], source=SOURCE,
                 python=profile['interpreter'], python_version='ARTIFICIAL PYTHON VERSION',
+                runtime_precheck=report,
                 request_sha256=assignment['request_sha256'], input_hashes=assignment['input_hashes'],
                 route=request['route'], command=[command[0], '-B', '/ARTIFICIAL/adapter', '--mode', 'dry-check'],
                 resolved_request_sha256=D.sha(resolved), scientific_evaluation_calls=0, queue_operations=0)
@@ -83,7 +88,21 @@ class ChangedCellDeltaTests(unittest.TestCase):
     def configuration(self, root):
         assets = root / 'assets';assets.mkdir()
         (assets / 'checker.py').write_text('# ARTIFICIAL FAKE CHECKER; never executed\n')
-        (assets / 'profiles.py').write_text('def select_host_profile(profile, assignment):\n    return profile\n')
+        (assets / 'profiles.py').write_text('''def select_host_profile(profile, assignment):
+    return profile
+
+def check_runtime_profile(profile):
+    status = profile.get('fixture_runtime_status', 'PASS')
+    runtime = dict(executable=profile.get('fixture_actual_interpreter', profile['interpreter']),
+                   version='ARTIFICIAL PYTHON VERSION', version_info=[3, 11, 0, 'candidate', 1],
+                   platform='ARTIFICIAL')
+    if runtime['executable'] != profile['interpreter']:
+        runtime.update(interpreter_invocation=profile['interpreter'], launcher_sha256='a' * 64,
+                       actual_executable_realpath=runtime['executable'], actual_binary_sha256='b' * 64)
+    return dict(status=status, runtime=runtime, checks=[dict(kind='FIXED_FUNCTION_AST',
+        status=status, expected_ast_sha256='c' * 64,
+        actual_ast_sha256=('c' if status == 'PASS' else 'd') * 64)])
+''')
         sources = {D.CHECKER: 'assets/checker.py', D.PROFILE_HELPER: 'assets/profiles.py'}
         cells = []
         original = {}
@@ -96,6 +115,8 @@ class ChangedCellDeltaTests(unittest.TestCase):
                 p.write_bytes(raw);hashes[p.name] = D.sha(raw);original[str(p)] = raw
             profile = dict(host_id=host, root=str(scientific), interpreter=str(repo / 'ARTIFICIAL_PYTHON'),
                            route_views={ROUTE: str(repo / 'new-route-view')}, dp_workers=1)
+            if host == 'server1':
+                profile['fixture_actual_interpreter'] = str(repo / 'ARTIFICIAL_ACTUAL_BINARY')
             request = dict(request_id='ARTIFICIAL_PAULI_JOB', method='PR_PAULI', configuration_id='ARTIFICIAL_CFG',
                 route=dict(kind='pauli_b_common_entry', view_commit=ROUTE), N_X=[1], N_Y=[1])
             assignment = dict(job_id=request['request_id'], request=request, method='PR_PAULI', request_sha256='ARTIFICIAL',
@@ -133,12 +154,24 @@ class ChangedCellDeltaTests(unittest.TestCase):
             self.assertEqual(ack['transfer_manifest_sha256'], D.sha((returned / 'TRANSFER_MANIFEST.json').read_bytes()))
             self.assertEqual(ack['verified_transferred_files'], len(manifest))
             self.assertTrue(all(D.sha((returned / path).read_bytes()) == expected for path, expected in manifest.items()))
+            facts = json.loads((returned / 'server1/HOST_FACTS.json').read_text())
+            runtime = facts['actual_runtime']
+            self.assertNotEqual(runtime['executable'], facts['python'])
+            self.assertEqual(runtime['interpreter_invocation'], facts['python'])
+            self.assertEqual(runtime['launcher_sha256'], 'a' * 64)
+            self.assertEqual(runtime['actual_binary_sha256'], 'b' * 64)
+            self.assertEqual(facts['runtime_checks'][0]['status'], 'PASS')
+            self.assertEqual(json.loads((returned / 'server1/RUNTIME_CHECKS.json').read_text())['runtime'], runtime)
+            readiness = json.loads((returned / 'server1/dry/PR_PAULI/READINESS.json').read_text())
+            self.assertEqual(readiness['runtime_precheck']['runtime'], runtime)
+            self.assertEqual(readiness['runtime_precheck']['checks'], facts['runtime_checks'])
             self.assertFalse(any(method in path for path in manifest for method in ('FULL_PF', 'TRUNCATED_PF', 'PR_DF')))
             for path, raw in original.items():self.assertEqual(Path(path).read_bytes(), raw)
             result = dict(status='PASS', scope='FAKE_SSH_GIT_AND_CHECKER_ONLY', changed_cells=2,
                 checker_calls=2, methods=['PR_PAULI'], old_pass_cells_rerun=0, source_files_unchanged=16,
                 transfer_files_verified=len(manifest), return_retry_additional_checker_calls=0,
-                SSH_aliases=sorted(set(transport.ssh_aliases)), real_SSH_calls=0, scientific_calls=0)
+                SSH_aliases=sorted(set(transport.ssh_aliases)), runtime_checks='ARTIFICIAL_AST_ONLY_PASS',
+                launcher_and_actual_binary_bound=True, real_SSH_calls=0, scientific_calls=0)
             if os.environ.get('RPE_DELTA_RUNNER_ACCEPTANCE'):
                 Path(os.environ['RPE_DELTA_RUNNER_ACCEPTANCE']).write_bytes(D.encode(result))
 
@@ -162,6 +195,27 @@ class ChangedCellDeltaTests(unittest.TestCase):
              patch.object(D.subprocess, 'run', return_value=subprocess.CompletedProcess(['ssh'], 0, b'', b'')) as call:
             D.run(['ssh'], capture_output=True)
         self.assertEqual(call.call_args.kwargs['creationflags'], 0x08000000)
+
+    def test_runtime_ast_mismatch_preserves_facts_without_checker(self):
+        with tempfile.TemporaryDirectory(prefix='rpe-artificial-delta-') as temporary:
+            root = Path(temporary);config, _ = self.configuration(root)
+            path = root / 'assets/server1.json';profile = json.loads(path.read_text())
+            profile['fixture_runtime_status'] = 'FAIL';path.write_bytes(D.encode(profile))
+            bundle = root / 'delta.zip';D.package(config, bundle)
+            manifest, files = D.unpack(bundle.read_bytes());host = manifest['hosts'][0]
+            needed = [D.CHECKER, D.PROFILE_HELPER, host['profile']] + host['assignments']
+            payload = dict(action='host', host=host, files={p: base64.b64encode(files[p]).decode() for p in needed},
+                           hashes={p: manifest['files'][p] for p in needed})
+            transport = FakeSSH(bundle)
+            with patch.object(D.subprocess, 'run', side_effect=transport):
+                result = D.host_action(payload)
+            self.assertEqual(transport.checkers, [])
+            self.assertEqual(result['result']['rows'][0]['status'], 'RUNTIME_PRECHECK_FAIL')
+            self.assertEqual(result['result']['rows'][0]['checker_started'], False)
+            raw = base64.b64decode(result['files']['server1/RUNTIME_CHECKS.json'])
+            self.assertEqual(json.loads(raw)['checks'][0]['status'], 'FAIL')
+            self.assertIn('server1/HOST_FACTS.json', result['files'])
+            self.assertNotIn('server1/dry/PR_PAULI/READINESS.json', result['files'])
 
 
 if __name__ == '__main__':

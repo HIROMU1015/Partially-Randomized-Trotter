@@ -10,7 +10,7 @@ local0は中継・検査指令を担当し、計算hostに含めない。
 - [Pauli route変更の科学条件・source](pauli_descriptor_route/ROUTE_CHANGE.json)
 - [Pauli server2の公式dry-check](pauli_descriptor_route/server2_dry_check/READINESS.json)
 - [SOURCE・辞書・評価契約の拒否検査](pauli_descriptor_route/NEGATIVE_CHECKS.json)
-- [local0の変更2セル検査と返送](pauli_route_update/local0_tools/README.md)
+- [local0の変更2セル検査と返送](pauli_route_update/local0_tools/README_V2.md)
 
 今回のPauli科学job IDは805877c2ab6c3e03f7f1のまま、REQUEST全体hashは新routeにより
 ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693へ変わった。
@@ -32,10 +32,11 @@ server1 DFの専用Python、他2hostの元adapter、PF/B0Iのprofileは保存さ
 
 ## local0へ依頼する操作
 
-[RUN_PAULI_DELTA.ps1](pauli_route_update/local0_tools/RUN_PAULI_DELTA.ps1)は既存alias qg1・RomuTail・qg2を使い、
+[RUN_PAULI_DELTA_V2.ps1](pauli_route_update/local0_tools/RUN_PAULI_DELTA_V2.ps1)は既存alias qg1・RomuTail・qg2を使い、
 新しい専用directoryへ検査用ファイルと必要なroute viewを置く。
 実行対象はPR-Pauliのremote2セルだけ。既存10 PASSの再dry-check、worker/relay起動、実Q3、signal、価格較正、compile、queue操作は0件。
-現在のZIP SHA256は5c5273436d2fafd65c2be5294cd67313a8dc7fcafee3839398b49601d66c1a70。
+現行は固定runtime AST guard付きV2。ZIP SHA256はd095f0750a6e03be26b9e37d005527c3cd238cc3b9a220873aead9c5d55b3641。
+server1 Pauliも既存9dの3.11 launcherへ自動解決する。V1 metadata-only bundleは運用しない。
 返送失敗時の--return-onlyは同じ保存結果の転送だけを行い、dry-checkを繰り返さない。
 
 この段階は準備途中であり、12 PASS完了とは記録しない。remote2件の公式READINESS・受領hash・host runtimeを確認後、集計を更新する。

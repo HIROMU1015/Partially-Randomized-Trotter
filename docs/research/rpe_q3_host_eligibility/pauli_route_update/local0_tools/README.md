@@ -1,3 +1,5 @@
+> **現行の手順は [runtime guard付きV2](README_V2.md) です。** この下はV1 metadata検査版の保全記録です。V1 ZIP SHA `5c5273436d2fafd65c2be5294cd67313a8dc7fcafee3839398b49601d66c1a70` と旧PowerShell手順は運用に使わないでください。V1は将来executeに必要な固定accelerator AST guardを確認していません。旧bundleの実行依頼は行っていません。V1 ZIP原本は変更していません。
+
 # Pauli remote 2-cell delta dry-check
 
 PR-Pauli の server1 (`qg1`) と local (`RomuTail`) だけを更新します。現行の 10 PASS は再実行せず、SOURCE `28d976b99cdf8329adcc1b79327e329e947ef774`、job `805877c2ab6c3e03f7f1`、REQUEST `ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693`、Pauli route `33e324b43690caeaa353ecdb9e3d42f3139198b6` を使います。

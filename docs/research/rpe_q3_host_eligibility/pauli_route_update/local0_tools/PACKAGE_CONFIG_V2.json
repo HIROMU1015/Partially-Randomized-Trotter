@@ -1,0 +1,41 @@
+{
+  "schema": "RPE_Q3_HOST_DELTA_V1",
+  "mode": "dry-check",
+  "source_files": {
+    "run_delta.py": "run_delta.py",
+    "scripts/check_rpe_q3_host_readiness.py": "../../../../../scripts/check_rpe_q3_host_readiness.py",
+    "src/trottertracks/rpe_host_profiles.py": "../../../../../src/trottertracks/rpe_host_profiles.py",
+    "assignments/PR_PAULI.json": "../../pauli_descriptor_route/ASSIGNMENT.json",
+    "profiles/server1.v2.json": "profiles/server1.v2.json",
+    "profiles/local.v2.json": "profiles/local.v2.json"
+  },
+  "hosts": [
+    {
+      "host_id": "server1",
+      "ssh_alias": "qg1",
+      "repository": "/home/AbeHiromu/projects/partially-randomized-trotter",
+      "transport_python": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+      "run_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-q3-pauli-delta-33e324b-20261117-v2",
+      "profile": "profiles/server1.v2.json",
+      "assignments": [
+        "assignments/PR_PAULI.json"
+      ]
+    },
+    {
+      "host_id": "local",
+      "ssh_alias": "RomuTail",
+      "repository": "/home/abe/Project/Partially Randomized Trotter",
+      "transport_python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "run_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/pauli-delta-33e324b-20261117-v2",
+      "profile": "profiles/local.v2.json",
+      "assignments": [
+        "assignments/PR_PAULI.json"
+      ]
+    }
+  ],
+  "return": {
+    "ssh_alias": "qg2",
+    "python": "python3",
+    "directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pauli_route_33e324b_delta_v2"
+  }
+}

@@ -166,14 +166,24 @@ def host_action(payload):
         route = assignment['request']['route'];commit = route['view_commit']
         view = profile['route_views'][commit]
         view_fact = ensure_route(host['repository'], view, commit)
-        probe = 'import json,sys,platform;print(json.dumps(dict(executable=sys.executable,version=sys.version,platform=platform.platform())))'
-        runtime = json.loads(run([profile['interpreter'], '-c', probe], capture_output=True).stdout)
+        # Use the same published interpreter and AST-only runtime contract as the
+        # checker. In particular, preserve a launcher's invocation separately
+        # from the actual Python binary; never substitute another interpreter.
+        report = helper.check_runtime_profile(profile)
+        runtime = report['runtime']
         facts = dict(host_id=host['host_id'], python=profile['interpreter'], python_version=runtime['version'],
-            actual_runtime=runtime, source_head=dict(returncode=0, stdout=assignment['source_manifest']['commit'] + '\n', stderr=''),
+            actual_runtime=runtime, runtime_checks=report['checks'],
+            source_head=dict(returncode=0, stdout=assignment['source_manifest']['commit'] + '\n', stderr=''),
             source_files=source_files, route_views={commit: view_fact})
         put(directory / 'HOST_FACTS.json', encode(facts))
         put(directory / 'RUNTIME.json', encode(runtime))
+        put(directory / 'RUNTIME_CHECKS.json', encode(report))
         put(directory / 'PROFILE.json', encode(profile))
+        if report.get('status') != 'PASS':
+            rows.append(dict(host_id=host['host_id'], method=method, job_id=assignment['job_id'],
+                status='RUNTIME_PRECHECK_FAIL', reason='Published interpreter failed its AST-only runtime contract',
+                runtime_checks=report['checks'], checker_started=False))
+            continue
         target = directory / 'dry' / relative(method)
         command = [profile['interpreter'], '-B', str(stage / CHECKER), '--assignment', str(stage / assignment_name),
                    '--profile', str(stage / host['profile']), '--output', str(target)]
