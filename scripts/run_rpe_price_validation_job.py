@@ -227,13 +227,13 @@ def build_df_acquisition(request, *, root, configuration, configuration_source,
         raise ValueError('Original DF physical round differs')
     if s['formula'] != '2nd' or s['finite_K'] != 2 or row['structure']['signed_weights'] != [1.]:
         raise ValueError('Existing DF compile worker supports S2/K2/one signed piece')
-    constant = git_read(root, C.SCALAR_CONSTANT)
-    if constant['source']['hamiltonian_hash'] != s['binding']['hamiltonian']:
-        raise ValueError('Saved Hamiltonian scalar SOURCE differs')
-    scalar = constant['value'] + s['split']['scalar']
+    tail = s['split']['lambda_source']
+    descriptor = tail if isinstance(tail, dict) and tail.get('commit') and tail.get('path') else None
+    resolved = C.scalar_metadata(configuration, descriptor)
+    scalar, tail_source = resolved['scalar'], resolved['tail_source']
     physical = R.D.from_b(configuration, m, row['physical_candidate'],
-        input_source=dict(configuration=configuration_source, tail=s['split']['lambda_source'],
-            scalar=dict(hamiltonian_constant=C.SCALAR_CONSTANT, tail=s['split']['lambda_source'])),
+        input_source=dict(configuration=configuration_source, tail=tail_source,
+            scalar=dict(hamiltonian_constant=C.SCALAR_CONSTANT, tail=tail_source)),
         execution_source=deepcopy(execution_source), expected_scalar=scalar)
     candidate = physical['physical_context']['physical_candidate']
     cohort = 'RPE_SIMPLE_VALIDATION_'+request['model_id']+'_V1'

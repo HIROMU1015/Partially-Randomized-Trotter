@@ -104,13 +104,14 @@ class ValidationWorkerTests(unittest.TestCase):
         req['selected_round'].update(m=0, q=2, R=1)
         cfg = dict(id='ARTIFICIAL_DF', spec=dict(method='PR', L_D=2, formula='2nd', finite_K=2,
             binding=dict(hamiltonian='ARTIFICIAL_H'),
-            split=dict(scalar=2.0, lambda_source=dict(commit='df', path='tail.json'))),
+            split=dict(lambda_source=dict(commit='df', path='tail.json'))),
             rounds=[dict(m=0, candidate=dict(id='ARTIFICIAL_ROUND'), physical_candidate=dict(id='ARTIFICIAL_DF_ROUND',q=2),
                          q_PF=2, R_outer=1, structure=dict(signed_weights=[1.]))])
         from_b = mock.Mock(return_value=dict(physical_context=dict(physical_candidate=dict(id='ARTIFICIAL_DF_ROUND',q=2))))
         runtime = SimpleNamespace(D=SimpleNamespace(from_b=from_b),
             P=SimpleNamespace(trial_seed_function=lambda root: lambda c, cohort, i, outer, piece:100+i*10+outer))
-        provider = SimpleNamespace(runtime=lambda: runtime, FIXED_VIEW=Path('/ARTIFICIAL'),
+        scalar_metadata = mock.Mock(return_value=dict(scalar=3.0,tail_source=cfg['spec']['split']['lambda_source']))
+        provider = SimpleNamespace(runtime=lambda: runtime, FIXED_VIEW=Path('/ARTIFICIAL'),scalar_metadata=scalar_metadata,
             SCALAR_CONSTANT=dict(commit='constant', path='constant.json'), BASE_INPUTS=dict(commit='inputs',path='inputs.json'))
         def git_value(root, loc):
             if loc == provider.SCALAR_CONSTANT:
@@ -130,6 +131,7 @@ class ValidationWorkerTests(unittest.TestCase):
             self.assertEqual(acquisition['cell']['indices'],[0,1])
             self.assertEqual(acquisition['cell']['seeds'],[[100,101],[110,111]])
             self.assertEqual(from_b.call_args.kwargs['expected_scalar'],3.0)
+            scalar_metadata.assert_called_once_with(cfg,cfg['spec']['split']['lambda_source'])
             self.assertFalse((Path(temp)/'out').exists())
 
     def test_exact_paired_mean_sign_and_source(self):

@@ -2,7 +2,10 @@
 
 Synthetic legacy modules only: no physics, sampling, compiler or worker body.
 """
+from copy import deepcopy
+import hashlib
 import importlib.util
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -65,6 +68,32 @@ class RuntimeImport(unittest.TestCase):
             self.run_import()
         self.assertEqual(list(trottertracks.__path__),self.original_path)
         self.assertEqual(sys.path,self.original_sys_path)
+
+
+class SavedScalarMetadata(unittest.TestCase):
+    def test_old_configuration_uses_original_descriptor_without_relabeling(self):
+        spec=importlib.util.spec_from_file_location('_scalar_df_prices',ROOT/'scripts/run_pr_df_candidate_prices.py')
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory()as temp:
+            path=Path(temp)/'saved.json'
+            path.write_text(json.dumps(dict(prefixes={'2':dict(lambda_R=2.5,scalar=.125)})))
+            sha=hashlib.sha256(path.read_bytes()).hexdigest()
+            source=dict(index=module.INDEX,context_sha256=sha,selector=['prefixes','2'])
+            config=dict(spec=dict(L_D=2,split=dict(lambda_R=2.5,lambda_source=source),binding=dict(hamiltonian='synthetic H')))
+            original=deepcopy(config)
+            def read(locator):
+                if locator==module.INDEX:return dict(T20_reference_files=dict(H4=dict(path=str(path),sha256=sha)))
+                if locator==module.SCALAR_CONSTANT:return dict(value=1.,source=dict(hamiltonian_hash='synthetic H'))
+                raise AssertionError('Unexpected metadata SOURCE')
+            with patch.object(module,'read',side_effect=read),\
+                 patch.object(module,'runtime',side_effect=AssertionError('scalar metadata must not prepare a native context')):
+                resolved=module.scalar_metadata(config)
+                self.assertEqual(resolved['scalar'],1.125)
+                self.assertEqual(resolved['tail_source'],source)
+                self.assertEqual(resolved['record']['application'],'ONCE_AT_TOTAL_T')
+                self.assertEqual(config,original)
+                bad=deepcopy(config);bad['spec']['split']['lambda_R']=3.
+                with self.assertRaisesRegex(ValueError,'Candidate tail binding differs'):module.scalar_metadata(bad)
 
 
 if __name__=='__main__':unittest.main()

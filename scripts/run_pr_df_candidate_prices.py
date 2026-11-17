@@ -339,15 +339,13 @@ def adopt_saved_calibration_cohorts(cells,quote,reader=None,source_reader=None):
         else:decisions.append(dict(m=cell['m'],status='KEEP_NEW_FIXED_COHORT',cohort=cell['cohort'],rejected=rejected))
     return decisions
 
-def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=None,covered_rounds=None):
-    fixed(source);config=read(config_source);output=ROOT/output;output.mkdir(parents=True,exist_ok=True)
-    selected=design(config,covered_rounds)
-    if price_quote is not None:
-        if price_quote.get('configuration_id')!=config['id']:raise ValueError('Price quote belongs to another configuration')
-        write(output/'PRICE_QUOTE.json',price_quote)
-    if selected['reasons']:
-        write(output/'NEEDS.json',{k:v for k,v in selected.items()if k!='matrix'});return
-    R=runtime();index=read(INDEX);descriptor=index['T20_reference_files']['H4'];data=Path(descriptor['path']).read_bytes()
+def scalar_metadata(config,tail_descriptor=None):
+    """Resolve the original saved tail/scalar contract; no native preparation.
+
+    Both calibration and optional validation use this same fixed input mapping.
+    Historical canonical configurations intentionally need not embed scalar.
+    """
+    index=read(INDEX);descriptor=index['T20_reference_files']['H4'];data=Path(descriptor['path']).read_bytes()
     if hashlib.sha256(data).hexdigest()!=descriptor['sha256']:raise ValueError('Saved tail descriptor bytes differ')
     context=json.loads(data);ld=config['spec']['L_D']
     if tail_descriptor is None:
@@ -361,6 +359,19 @@ def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=
     constant=read(SCALAR_CONSTANT)
     if constant['source']['hamiltonian_hash']!=config['spec']['binding']['hamiltonian']:raise ValueError('Hamiltonian constant binding differs')
     scalar=constant['value']+tail['scalar'];scalar_record=dict(hamiltonian_constant=constant,tail_identity=dict(value=tail['scalar'],source=tail_source),total=scalar,total_hex=scalar.hex(),application='ONCE_AT_TOTAL_T')
+    return dict(tail_source=tail_source,scalar=scalar,record=scalar_record)
+
+
+def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=None,covered_rounds=None):
+    fixed(source);config=read(config_source);output=ROOT/output;output.mkdir(parents=True,exist_ok=True)
+    selected=design(config,covered_rounds)
+    if price_quote is not None:
+        if price_quote.get('configuration_id')!=config['id']:raise ValueError('Price quote belongs to another configuration')
+        write(output/'PRICE_QUOTE.json',price_quote)
+    if selected['reasons']:
+        write(output/'NEEDS.json',{k:v for k,v in selected.items()if k!='matrix'});return
+    R=runtime();resolved=scalar_metadata(config,tail_descriptor)
+    scalar=resolved['scalar'];tail_source=resolved['tail_source'];scalar_record=resolved['record']
     write(output/'SCALAR.json',scalar_record)
     seed=R.P.trial_seed_function(ROOT);cells=[]
     for m,n,role in [(m,4,'CALIBRATION')for m in selected['calibration_rounds']]+([]if selected['holdout_round']is None else[(selected['holdout_round'],2,'HOLDOUT')]):
