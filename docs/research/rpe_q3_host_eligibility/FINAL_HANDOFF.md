@@ -1,5 +1,8 @@
 # 実H4：4方式×3計算ホストの準備完了
 
+共通controller/worker実装の固定SHA：`181d14052b0d4db1815bcb9060a2020cafb5f1cf`。
+[code hashとSOURCEの区別](FINAL_CODE_SOURCE.json)。
+
 今回の4候補は12セルすべて実入力dry-check PASS。実H4 Q3完了は0件。
 [割当policy](HOST_ELIGIBILITY.json)と[全セルの証拠照合](checks/FINAL_TWELVE_CELL_EVIDENCE.json)を参照。
 local0はSSH中継・検査指令を担当し、計算hostではない。
