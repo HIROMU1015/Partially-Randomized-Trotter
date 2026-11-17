@@ -118,3 +118,12 @@
   - 次roundではHYBRIDを使う。多数のscheduleを同時に評価する実runでの効果は未検証。
 - **全完了Q3の照合と再利用**（`build_rpe_q3_ledger.py`）：4,783件を照合し、拒否は0件。2種類の最安を分けて出す。
 - 根拠：[kappa_wide_round05/REPORT](research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/REPORT.md) §1・§3。
+
+## 分散Q3の自動枠と優先group（2026-11-17）
+
+[実装・検収・適用条件](research/rpe_q3_auto_allocation/HANDOFF.md)。
+固定code e9e63be165ddc8b4d991bca567e0fe20f5007372、rpe_optimizer_concurrent/rpe_q3_resourcesと通常factory。
+新distributed runは省略時auto、READY×照合済み空き枠の対応で全体枠を決め、優先3台の余剰をWSLへ渡す。
+各hostは資源境界・所有RSS/CPU・有効結果rate/判断待ちを使い1枠ずつ試す。減枠はdrain、旧run上限は保存。
+計時81884bd39のhelper/CLIを再利用。実人工process・1OS4模擬hostでpeak5/18結果exact一致、実H4性能は未測定。
+旧adapterのPASSを新timed adapterへ転用せず、配置後の実入力dry-checkが必要。

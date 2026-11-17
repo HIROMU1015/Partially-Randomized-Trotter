@@ -355,3 +355,5 @@ artifacts/<validation_name>/
 - `run_rpe_schedule_search.py` の `search_overrides.requested_widths` は両PR方式の要求幅を通常の準備・価格・V2 shot/Q3へ渡す。保存照合は `check_pr_requested_width_saved.py`。[SOURCEと起動方法](../docs/research/pr_requested_step_search_20261117/HANDOFF.md)。
 
 - `summarize_rpe_q3_timing.py RUN --output FILE`：通常distributed runの配送・Q3 body・受領・探索採用をhost/attempt別に集計する。SOURCEと時計domainの条件は[HANDOFF](../docs/research/rpe_q3_timing_20261117/HANDOFF.md)。
+
+- 分散Q3の自動割当・自動同時枠と計時：[HANDOFF](../docs/research/rpe_q3_auto_allocation/HANDOFF.md)。新run既定auto、保存runの上限保全。実H4起動0。

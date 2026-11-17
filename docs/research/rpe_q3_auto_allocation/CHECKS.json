@@ -1,0 +1,89 @@
+{
+  "schema": "RPE_AUTO_Q3_ACCEPTANCE_V1",
+  "status": "PASS",
+  "code_source": "349558b748a82f384a4589434a63ef9b5572032c",
+  "unit_tests": {
+    "integrated_passed": 57,
+    "integrated_seconds": 14.189280787017196,
+    "extra_old_round_settings_regression_passed": 1,
+    "extra_regression_subcases": [
+      "IMPLICIT_OLD_ONE",
+      "EXPLICIT_OLD_TWO"
+    ],
+    "unique_tests_passed": 59,
+    "extra_variable_capacity_metric_regression_passed": 1,
+    "integrated_suite_source": "e9e63be165ddc8b4d991bca567e0fe20f5007372",
+    "additional_variable_capacity_metric_source": "349558b748a82f384a4589434a63ef9b5572032c"
+  },
+  "conditions": {
+    "1_preferred_small_queue_and_wsl_surplus": {
+      "status": "PASS",
+      "evidence": "test_rpe_auto_allocation.two_preferred_free_slots/small_queue; real artificial entry overlaps"
+    },
+    "2_busy_or_unresponsive_preferred_wsl_progress": {
+      "status": "PASS",
+      "evidence": "controller bounded discovery/stale/busy tests; parallel relay blocked status/ACK tests"
+    },
+    "3_pause_missing_late_join": {
+      "status": "PASS",
+      "evidence": "checks/entry/ACCEPTANCE.json late_join and Pause/Resume"
+    },
+    "4_overlap_growth_drain_and_resume": {
+      "status": "PASS",
+      "actual_artificial_peak": 5,
+      "global_capacities": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "growth_scope": "Actual artificial WSL worker 1 to 2, exploratory trial",
+      "reduction_scope": "Artificial resource/controller unit tests; no forced termination",
+      "resume_new_launches": 0,
+      "duplicate_adoptions": 0
+    },
+    "5_search_identity_runtime_limits": {
+      "status": "PASS",
+      "exact_bounds_and_decisions": true,
+      "method_minima": true,
+      "original_real_input_cells_reused": 16,
+      "old_round_settings_unchanged": true
+    }
+  },
+  "body_timing": {
+    "cli": "python3 -B scripts/summarize_rpe_q3_timing.py RUN_DIR --output TIMING.json",
+    "same_run_artifacts": [
+      "checks/entry/AUTO_FOUR_TIMING.json",
+      "checks/entry/LATE_JOIN_TIMING.json"
+    ],
+    "body_rows_per_run": 18,
+    "scope": "Actual synthetic bodies, one OS with simulated host names; not new real H4 timing"
+  },
+  "real_host_deployment": {
+    "updated": false,
+    "hosts_requiring_new_transport_timed_adapter_profile": [
+      "server2",
+      "server1",
+      "local",
+      "local0-wsl"
+    ],
+    "new_timed_adapter_real_input_readiness": "REQUIRES_FRESH_DRY_CHECK_AFTER_PLACEMENT; OLD16PASS_NOT_TRANSFERRED"
+  },
+  "new_H4_Q3": 0,
+  "signal_generation": 0,
+  "price_calibration": 0,
+  "circuit_compile": 0,
+  "production_queue_submissions": 0,
+  "existing_scientific_runs_modified": 0,
+  "measurement_limits": [
+    "Resumed in-flight utilization before the first fresh capacity offer can retain the startup admission capacity; exclude that initial interval from comparisons. Actual job ownership and claim limits include unresolved attempts.",
+    "Real H4 capacity/body timing and physical four-host deployment are not measured here."
+  ],
+  "variable_capacity_metrics": {
+    "status": "PASS",
+    "available_slot_integral_used": true,
+    "fresh_run_utilization_not_above_one": true,
+    "source": "checks/entry/ACCEPTANCE.json controller metrics + synthetic interval replay"
+  }
+}

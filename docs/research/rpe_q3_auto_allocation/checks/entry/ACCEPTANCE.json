@@ -1,0 +1,2777 @@
+{
+  "comparison_limits": "Single-host reference omits artificial sleep; wall times are not a speedup comparison. Host names are simulated on one OS.",
+  "compile_calls": 0,
+  "exact_MSE_bounds_and_decisions_match_reference": true,
+  "method_minima_match_reference": true,
+  "production_queue_submissions": 0,
+  "schema": "RPE_AUTO_ALLOCATION_ARTIFICIAL_ENTRY_V1",
+  "scientific_H4_calls": 0,
+  "scope": "ORDINARY_ENTRY_ACTUAL_ARTIFICIAL_PROCESSES_SIMULATED_HOSTS_ONE_OS",
+  "signal_generation_calls": 0,
+  "status": "PASS",
+  "cases": {
+    "auto_four": {
+      "outcomes": 18,
+      "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+      "launch_markers": 18,
+      "event_counts": {
+        "ADOPT": 18,
+        "AUTO_CAPACITY": 25,
+        "DEPENDENCY_WAIT_END": 13,
+        "DEPENDENCY_WAIT_START": 13,
+        "DISTRIBUTED_START": 2,
+        "ENQUEUE": 18,
+        "EXECUTOR_START": 2,
+        "EXECUTOR_STOP": 2,
+        "EXIT": 18,
+        "HOST_FIRST_POLL": 8,
+        "LAUNCH": 18,
+        "PRIOR_INGEST_END": 4,
+        "PRIOR_INGEST_START": 4,
+        "QUEUE_WAIT_STATE": 97,
+        "RESULT_RECEIVED": 18,
+        "RESULT_REUSE": 8,
+        "SEARCH_ADOPT": 18,
+        "TRANSFER_COMPLETE": 18,
+        "TRANSFER_TIMING": 18
+      },
+      "full_wall_seconds": 6.256253469968215,
+      "resume_new_launches": 0,
+      "actual_OS_host_count": 1,
+      "host_names_are_simulated": true,
+      "transport": "LOOPBACK_HTTP_WITH_SEPARATE_DURABLE_WORKER_SPOOLS",
+      "actions": [
+        {
+          "action": "START_ARTIFICIAL_WORKER",
+          "host": "local0-wsl",
+          "since_start": 0.0005770369898527861
+        },
+        {
+          "action": "START_ARTIFICIAL_WORKER",
+          "host": "server1",
+          "since_start": 0.0012624028604477644
+        },
+        {
+          "action": "START_ARTIFICIAL_WORKER",
+          "host": "local",
+          "since_start": 0.002178467810153961
+        },
+        {
+          "action": "PAUSE_WITH_OWNED_ARTIFICIAL_ATTEMPT",
+          "since_start": 0.327323785983026
+        },
+        {
+          "action": "RESUME_DRAINED_OR_RUNNING_ARTIFICIAL_ATTEMPT",
+          "since_start": 0.4921864829957485
+        }
+      ],
+      "artificial_overlap": {
+        "body_intervals": [
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937670.042276079,
+            "host_id": "server1",
+            "job_id": "8536a8738cd2688ea009",
+            "start": 1937669.691295537
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937668.508891876,
+            "host_id": "local",
+            "job_id": "b766a93a10dbb690c6f7",
+            "start": 1937668.157913713
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937671.83220694,
+            "host_id": "local",
+            "job_id": "d6d074f60a46836a3e00",
+            "start": 1937671.481183877
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937672.563181333,
+            "host_id": "local",
+            "job_id": "513d7b70bf1a4baa68e7",
+            "start": 1937672.21224083
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937671.151350234,
+            "host_id": "local",
+            "job_id": "4f2935eea9e2d5861daa",
+            "start": 1937670.80058458
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937668.561909528,
+            "host_id": "local0-wsl",
+            "job_id": "89eadd079aaf8d4822ba",
+            "start": 1937668.210903406
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937671.234791137,
+            "host_id": "local0-wsl",
+            "job_id": "1e889d90de500eaac5a5",
+            "start": 1937670.883585336
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937669.265615745,
+            "host_id": "local",
+            "job_id": "b89377dbeeea2027ac58",
+            "start": 1937668.914557973
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937671.193205365,
+            "host_id": "server1",
+            "job_id": "ca297b007892fd9d93f2",
+            "start": 1937670.842175262
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937671.309623485,
+            "host_id": "server2",
+            "job_id": "0ab3395aae956130280c",
+            "start": 1937670.958549163
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937671.217335368,
+            "host_id": "local0-wsl",
+            "job_id": "7dd1626ccd708bf7f972",
+            "start": 1937670.866316106
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937672.853474003,
+            "host_id": "server2",
+            "job_id": "b4aa6fd9fbe1c311c3b3",
+            "start": 1937672.502353291
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937668.540354761,
+            "host_id": "server1",
+            "job_id": "e87dc9349021da5eabf8",
+            "start": 1937668.189491948
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937671.954980677,
+            "host_id": "server1",
+            "job_id": "9687bead0160bafbf899",
+            "start": 1937671.604036834
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937668.66470442,
+            "host_id": "server2",
+            "job_id": "610093c57ae0337aa931",
+            "start": 1937668.313669638
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937669.304234143,
+            "host_id": "server1",
+            "job_id": "e3616f2e093cac4690de",
+            "start": 1937668.953380849
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937670.109703926,
+            "host_id": "local",
+            "job_id": "0cb6d061689f9dfd8e90",
+            "start": 1937669.758671524
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937672.685610122,
+            "host_id": "server1",
+            "job_id": "0aa77103516139c3fe6c",
+            "start": 1937672.334695849
+          }
+        ],
+        "peak_concurrent_artificial_bodies": 5,
+        "scope": "ACTUAL_ARTIFICIAL_ADAPTER_SUBPROCESSES_ON_ONE_OS",
+        "wsl_overlaps_preferred_artificial_body": true
+      },
+      "by_host": {
+        "local": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "prefix_reuse_HITs": 0
+        },
+        "local0-wsl": {
+          "adopted": 3,
+          "assigned": 3,
+          "completed": 3,
+          "launched": 3,
+          "prefix_reuse_HITs": 0
+        },
+        "server1": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "prefix_reuse_HITs": 0
+        },
+        "server2": {
+          "adopted": 3,
+          "assigned": 3,
+          "completed": 3,
+          "launched": 3,
+          "prefix_reuse_HITs": 0
+        }
+      },
+      "duplicate_assignments": 0,
+      "duplicate_completions": 0,
+      "duplicate_adoptions": 0,
+      "allocation_settings": {
+        "auto_allocation": {
+          "discovery_grace_seconds": 0.1,
+          "offer_ttl_seconds": 1,
+          "priority_groups": [
+            [
+              "server2",
+              "server1",
+              "local"
+            ],
+            [
+              "local0-wsl"
+            ]
+          ]
+        },
+        "max_concurrent_jobs": "auto",
+        "mode": "auto",
+        "schema": "RPE_Q3_ALLOCATION_SETTINGS_V1"
+      },
+      "source_manifest": {
+        "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+        "files": {
+          "scripts/run_rpe_method_optimizer.py": "d072995e7b5b097c51cad993abdce65439f88d7566d099d86f12e7937cb14e14",
+          "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+          "scripts/run_rpe_q3_worker.py": "735d2275871e3e0f1ed0b24757a4b956cbda949ae01aee4252a6e08d5396bf6f",
+          "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+          "src/trottertracks/rpe_optimizer_concurrent.py": "b85f23cb7c42059212abb481e5d2d2973d2e168b5dee29fbba5d986df6eb4314",
+          "src/trottertracks/rpe_q3_coordinator.py": "c63b37494d41f84fce71ac4a2e0ad410585e5a71278583c34a927a2fa19d439b",
+          "src/trottertracks/rpe_q3_resources.py": "c27ddce386f60d85b78abf8e56490ae8b6fc94f705bb3b1ee5ac663671ccac3f",
+          "src/trottertracks/rpe_q3_store.py": "5cc3b316855a7f251b72b50a8caec719ddd26cb0b0964547f7611f1a973eab4e",
+          "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5",
+          "src/trottertracks/rpe_q3_worker.py": "9d34278734f57074d9f6af9131b44f0fd546f98f182f3deec619cb5b5656aa53"
+        }
+      },
+      "global_capacity_decisions": [
+        {
+          "UTC": "2026-11-17T07:15:13Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899713.5009048,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 2,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937667.92922872,
+          "ready_jobs": 4,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 2,
+          "unresolved_owned": 0
+        },
+        {
+          "UTC": "2026-11-17T07:15:13Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899713.5173774,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 2,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937667.945701104,
+          "ready_jobs": 3,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 2,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:13Z",
+          "capacity": 4,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899713.5836086,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 1,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937668.011932497,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 3
+        },
+        {
+          "UTC": "2026-11-17T07:15:14Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899714.1959145,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937668.624238012,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:14Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899714.2374046,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937668.665728135,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:14Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899714.2541733,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 2,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937668.682496357,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:14Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899714.2724216,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 2,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937668.700745512,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:14Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899714.3487098,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937668.777033722,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:14Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899714.9043312,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937669.332655034,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:15Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899715.0881772,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 3,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937669.516501012,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:15Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899715.696459,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899713465929414",
+          "method": null,
+          "monotonic": 1937670.124782648,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:16Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899716.1356008,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 4,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937670.563924369,
+          "ready_jobs": 2,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 2,
+          "unresolved_owned": 0
+        },
+        {
+          "UTC": "2026-11-17T07:15:16Z",
+          "capacity": 4,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899716.1643796,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 3,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937670.592703228,
+          "ready_jobs": 4,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 3,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:16Z",
+          "capacity": 5,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899716.2235346,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 1,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937670.651858159,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 4
+        },
+        {
+          "UTC": "2026-11-17T07:15:16Z",
+          "capacity": 4,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899716.7994747,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937671.227798244,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 4
+        },
+        {
+          "UTC": "2026-11-17T07:15:16Z",
+          "capacity": 5,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899716.820596,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 1,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937671.248919623,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 4
+        },
+        {
+          "UTC": "2026-11-17T07:15:16Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899716.8965,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937671.324824136,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 3
+        },
+        {
+          "UTC": "2026-11-17T07:15:16Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899716.998912,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937671.42723568,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:17Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899717.483091,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937671.911414775,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:17Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899717.524723,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 2,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937671.953046587,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:17Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899717.6048489,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937672.033172288,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:17Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899717.682137,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 3,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937672.110460933,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:17Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899717.7350247,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 2,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937672.163348526,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:18Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899718.2360654,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937672.664389153,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:18Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899718.3553157,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1085668-1794899716034912687",
+          "method": null,
+          "monotonic": 1937672.783638799,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        }
+      ],
+      "worker_slot_decisions": {
+        "local": [
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899713.307781,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {},
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 1
+            },
+            "monotonic": 1937667.736104821,
+            "reasons": [
+              "Cold start: per-job memory and useful throughput not measured"
+            ],
+            "stage": "COLD_START_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899714.2389572,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 1,
+              "capacity": 2,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899713465929414",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.6053032020572573,
+              "measurement_seconds": 0.748452183092013,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 55,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6695
+            },
+            "monotonic": 1937668.667281007,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899714.958918,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 2,
+              "capacity": 1,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899713465929414",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.2092310811858624,
+              "measurement_seconds": 1.4672968701925129,
+              "ready_jobs": 0,
+              "usable_results": 2
+            },
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 55,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6610
+            },
+            "monotonic": 1937669.387242028,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_AND_WAIT"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899716.8918245,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 1,
+              "capacity": 5,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899716034912687",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.6559728470165282,
+              "measurement_seconds": 0.7942018730100244,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 55,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6601
+            },
+            "monotonic": 1937671.32014805,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899717.602675,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 2,
+              "capacity": 2,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899716034912687",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.3011666389647871,
+              "measurement_seconds": 1.5072561600245535,
+              "ready_jobs": 0,
+              "usable_results": 2
+            },
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 55,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6607
+            },
+            "monotonic": 1937672.030999089,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_AND_WAIT"
+          }
+        ],
+        "local0-wsl": [
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899713.3069224,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {},
+            "host_id": "local0-wsl",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 1
+            },
+            "monotonic": 1937667.735246575,
+            "reasons": [
+              "Cold start: per-job memory and useful throughput not measured"
+            ],
+            "stage": "COLD_START_UNMEASURED"
+          },
+          {
+            "capacity": 2,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899714.3021557,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 0,
+              "capacity": 3,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899713465929414",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": null,
+              "measurement_seconds": 0.8110147851984948,
+              "ready_jobs": 1,
+              "usable_results": 1
+            },
+            "host_id": "local0-wsl",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6616
+            },
+            "monotonic": 1937668.730479656,
+            "reasons": [
+              "One extra slot trial after usable completion with resource headroom and READY work"
+            ],
+            "stage": "RESOURCE_BOUNDED_EXPLORATORY_TRIAL"
+          },
+          {
+            "capacity": 2,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899716.9927077,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 0,
+              "capacity": 3,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899716034912687",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": null,
+              "measurement_seconds": 0.9330561459064484,
+              "ready_jobs": 0,
+              "usable_results": 2
+            },
+            "host_id": "local0-wsl",
+            "limits": {
+              "cpu_slots": 45,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6600
+            },
+            "monotonic": 1937671.421031742,
+            "reasons": [
+              "Trial retained using new usable results; latency missing is recorded"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          }
+        ],
+        "server1": [
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899713.3058174,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {},
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 1
+            },
+            "monotonic": 1937667.734141431,
+            "reasons": [
+              "Cold start: per-job memory and useful throughput not measured"
+            ],
+            "stage": "COLD_START_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899714.2645347,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 1,
+              "capacity": 1,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899713465929414",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.6301653210539371,
+              "measurement_seconds": 0.7738444600254297,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 53,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6616
+            },
+            "monotonic": 1937668.692858633,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899715.083165,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 2,
+              "capacity": 1,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899713465929414",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.2956066778860986,
+              "measurement_seconds": 1.5757550220005214,
+              "ready_jobs": 0,
+              "usable_results": 2
+            },
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 53,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6611
+            },
+            "monotonic": 1937669.511488868,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_AND_WAIT"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899716.9230137,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 1,
+              "capacity": 3,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899716034912687",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.6249620991293341,
+              "measurement_seconds": 0.8637254489585757,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 53,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6600
+            },
+            "monotonic": 1937671.351337687,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899717.674287,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 2,
+              "capacity": 1,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899716034912687",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.2287411282304674,
+              "measurement_seconds": 1.611627453006804,
+              "ready_jobs": 0,
+              "usable_results": 2
+            },
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 53,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6606
+            },
+            "monotonic": 1937672.102611054,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_AND_WAIT"
+          }
+        ],
+        "server2": [
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899713.5510418,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {},
+            "host_id": "server2",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 1
+            },
+            "monotonic": 1937667.979365718,
+            "reasons": [
+              "Cold start: per-job memory and useful throughput not measured"
+            ],
+            "stage": "COLD_START_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899714.4871447,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 0,
+              "capacity": 2,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1085668-1794899713465929414",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": null,
+              "measurement_seconds": 0.9160261161159724,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "server2",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6616
+            },
+            "monotonic": 1937668.915468578,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          }
+        ]
+      },
+      "final_wsl_accepting": false,
+      "timing_body_rows": 18,
+      "timing_missing_counts": {
+        "D_receive_to_search_adopt_seconds": 0,
+        "Q3_body_seconds": 0
+      },
+      "worker_capacity_summary": {
+        "local": {
+          "final_capacity": 1,
+          "observed_capacities": [
+            1
+          ],
+          "stage": "MEASURED_THROUGHPUT_AND_WAIT",
+          "reasons": [
+            "Insufficient new usable completions for another slot trial"
+          ],
+          "allowed_resources": {
+            "allocation_bounds_complete": true,
+            "allowed_cpu_count": 64,
+            "allowed_memory_bytes": 540802801664,
+            "boundary_detection": "OBSERVED",
+            "cgroup_version": "v2",
+            "clock": {
+              "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "epoch": 1794899719.4841566,
+              "monotonic": 1937673.912480269
+            },
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice/ssh.service",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup",
+                "value": 64
+              }
+            ],
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "machine_cpu_count": 64,
+            "machine_mem_available_bytes": 436656795648,
+            "machine_mem_total_bytes": 540802801664,
+            "memory_bounds": [],
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "missing_controls": [],
+            "observational_only": true,
+            "remaining_group_memory_bytes": null,
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1"
+          },
+          "limits": {
+            "cpu_slots": 55,
+            "explicit_max_slots": 2,
+            "memory_sample_headroom_factor": 1.5,
+            "memory_slots": 6609
+          },
+          "dp_workers": 1
+        },
+        "local0-wsl": {
+          "final_capacity": 2,
+          "observed_capacities": [
+            1,
+            2
+          ],
+          "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED",
+          "reasons": [
+            "Insufficient new usable completions for another slot trial"
+          ],
+          "allowed_resources": {
+            "allocation_bounds_complete": true,
+            "allowed_cpu_count": 64,
+            "allowed_memory_bytes": 540802801664,
+            "boundary_detection": "OBSERVED",
+            "cgroup_version": "v2",
+            "clock": {
+              "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "epoch": 1794899719.4867609,
+              "monotonic": 1937673.915084846
+            },
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice/ssh.service",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup",
+                "value": 64
+              }
+            ],
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "machine_cpu_count": 64,
+            "machine_mem_available_bytes": 436656795648,
+            "machine_mem_total_bytes": 540802801664,
+            "memory_bounds": [],
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "missing_controls": [],
+            "observational_only": true,
+            "remaining_group_memory_bytes": null,
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1"
+          },
+          "limits": {
+            "cpu_slots": 45,
+            "explicit_max_slots": 2,
+            "memory_sample_headroom_factor": 1.5,
+            "memory_slots": 6609
+          },
+          "dp_workers": 1
+        },
+        "server1": {
+          "final_capacity": 1,
+          "observed_capacities": [
+            1
+          ],
+          "stage": "MEASURED_THROUGHPUT_AND_WAIT",
+          "reasons": [
+            "Insufficient new usable completions for another slot trial"
+          ],
+          "allowed_resources": {
+            "allocation_bounds_complete": true,
+            "allowed_cpu_count": 64,
+            "allowed_memory_bytes": 540802801664,
+            "boundary_detection": "OBSERVED",
+            "cgroup_version": "v2",
+            "clock": {
+              "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "epoch": 1794899719.4694438,
+              "monotonic": 1937673.897767666
+            },
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice/ssh.service",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup",
+                "value": 64
+              }
+            ],
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "machine_cpu_count": 64,
+            "machine_mem_available_bytes": 436656791552,
+            "machine_mem_total_bytes": 540802801664,
+            "memory_bounds": [],
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "missing_controls": [],
+            "observational_only": true,
+            "remaining_group_memory_bytes": null,
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1"
+          },
+          "limits": {
+            "cpu_slots": 53,
+            "explicit_max_slots": 2,
+            "memory_sample_headroom_factor": 1.5,
+            "memory_slots": 6609
+          },
+          "dp_workers": 1
+        },
+        "server2": {
+          "final_capacity": 1,
+          "observed_capacities": [
+            1
+          ],
+          "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED",
+          "reasons": [
+            "Insufficient new usable completions for another slot trial"
+          ],
+          "allowed_resources": {
+            "allocation_bounds_complete": true,
+            "allowed_cpu_count": 64,
+            "allowed_memory_bytes": 540802801664,
+            "boundary_detection": "OBSERVED",
+            "cgroup_version": "v2",
+            "clock": {
+              "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "epoch": 1794899719.302116,
+              "monotonic": 1937673.730439642
+            },
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice/ssh.service",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup",
+                "value": 64
+              }
+            ],
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "machine_cpu_count": 64,
+            "machine_mem_available_bytes": 436608315392,
+            "machine_mem_total_bytes": 540802801664,
+            "memory_bounds": [],
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "missing_controls": [],
+            "observational_only": true,
+            "remaining_group_memory_bytes": null,
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1"
+          },
+          "limits": {
+            "cpu_slots": 64,
+            "explicit_max_slots": 2,
+            "memory_sample_headroom_factor": 1.5,
+            "memory_slots": 6609
+          },
+          "dp_workers": 1
+        }
+      }
+    },
+    "late_join": {
+      "outcomes": 18,
+      "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+      "launch_markers": 18,
+      "event_counts": {
+        "ADOPT": 18,
+        "AUTO_CAPACITY": 25,
+        "DEPENDENCY_WAIT_END": 13,
+        "DEPENDENCY_WAIT_START": 13,
+        "DISTRIBUTED_START": 2,
+        "ENQUEUE": 18,
+        "EXECUTOR_START": 2,
+        "EXECUTOR_STOP": 2,
+        "EXIT": 18,
+        "HOST_FIRST_POLL": 8,
+        "LAUNCH": 18,
+        "PRIOR_INGEST_END": 4,
+        "PRIOR_INGEST_START": 4,
+        "QUEUE_WAIT_STATE": 100,
+        "RESULT_RECEIVED": 18,
+        "RESULT_REUSE": 8,
+        "SEARCH_ADOPT": 18,
+        "TRANSFER_COMPLETE": 18,
+        "TRANSFER_TIMING": 18
+      },
+      "full_wall_seconds": 6.029250123072416,
+      "resume_new_launches": 0,
+      "actual_OS_host_count": 1,
+      "host_names_are_simulated": true,
+      "transport": "LOOPBACK_HTTP_WITH_SEPARATE_DURABLE_WORKER_SPOOLS",
+      "actions": [
+        {
+          "action": "START_ARTIFICIAL_WORKER",
+          "host": "server1",
+          "since_start": 0.0007090959697961807
+        },
+        {
+          "action": "START_ARTIFICIAL_WORKER",
+          "host": "local",
+          "since_start": 0.0014558520633727312
+        },
+        {
+          "action": "START_ARTIFICIAL_WORKER",
+          "host": "local0-wsl",
+          "since_start": 0.32725896686315536
+        },
+        {
+          "action": "JOIN_AFTER_EXISTING_HOSTS_PROGRESS",
+          "since_start": 0.327261826954782
+        }
+      ],
+      "artificial_overlap": {
+        "body_intervals": [
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937676.504089721,
+            "host_id": "local",
+            "job_id": "8536a8738cd2688ea009",
+            "start": 1937676.153013369
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937674.955385589,
+            "host_id": "local",
+            "job_id": "b766a93a10dbb690c6f7",
+            "start": 1937674.604608916
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937678.249415303,
+            "host_id": "local",
+            "job_id": "d6d074f60a46836a3e00",
+            "start": 1937677.898325231
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937679.06736106,
+            "host_id": "server2",
+            "job_id": "513d7b70bf1a4baa68e7",
+            "start": 1937678.71595106
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937677.500908162,
+            "host_id": "server1",
+            "job_id": "4f2935eea9e2d5861daa",
+            "start": 1937677.14995794
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937675.067332733,
+            "host_id": "local0-wsl",
+            "job_id": "89eadd079aaf8d4822ba",
+            "start": 1937674.71657587
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937677.490305308,
+            "host_id": "local0-wsl",
+            "job_id": "1e889d90de500eaac5a5",
+            "start": 1937677.139208246
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937675.722412274,
+            "host_id": "local",
+            "job_id": "b89377dbeeea2027ac58",
+            "start": 1937675.37161717
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937677.518080402,
+            "host_id": "local",
+            "job_id": "ca297b007892fd9d93f2",
+            "start": 1937677.166941631
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937678.209185814,
+            "host_id": "local0-wsl",
+            "job_id": "0ab3395aae956130280c",
+            "start": 1937677.858244771
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937677.613520113,
+            "host_id": "server2",
+            "job_id": "7dd1626ccd708bf7f972",
+            "start": 1937677.26250754
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937679.200343494,
+            "host_id": "server1",
+            "job_id": "b4aa6fd9fbe1c311c3b3",
+            "start": 1937678.849420101
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937674.938694517,
+            "host_id": "server1",
+            "job_id": "e87dc9349021da5eabf8",
+            "start": 1937674.587431236
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937678.310186435,
+            "host_id": "server1",
+            "job_id": "9687bead0160bafbf899",
+            "start": 1937677.959291352
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937675.056821468,
+            "host_id": "server2",
+            "job_id": "610093c57ae0337aa931",
+            "start": 1937674.706080215
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937675.660446928,
+            "host_id": "server1",
+            "job_id": "e3616f2e093cac4690de",
+            "start": 1937675.309180007
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937676.367955194,
+            "host_id": "server1",
+            "job_id": "0cb6d061689f9dfd8e90",
+            "start": 1937676.016957682
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937679.129320926,
+            "host_id": "local",
+            "job_id": "0aa77103516139c3fe6c",
+            "start": 1937678.778599672
+          }
+        ],
+        "peak_concurrent_artificial_bodies": 4,
+        "scope": "ACTUAL_ARTIFICIAL_ADAPTER_SUBPROCESSES_ON_ONE_OS",
+        "wsl_overlaps_preferred_artificial_body": true
+      },
+      "by_host": {
+        "local": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "prefix_reuse_HITs": 0
+        },
+        "local0-wsl": {
+          "adopted": 3,
+          "assigned": 3,
+          "completed": 3,
+          "launched": 3,
+          "prefix_reuse_HITs": 0
+        },
+        "server1": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "prefix_reuse_HITs": 0
+        },
+        "server2": {
+          "adopted": 3,
+          "assigned": 3,
+          "completed": 3,
+          "launched": 3,
+          "prefix_reuse_HITs": 0
+        }
+      },
+      "duplicate_assignments": 0,
+      "duplicate_completions": 0,
+      "duplicate_adoptions": 0,
+      "allocation_settings": {
+        "auto_allocation": {
+          "discovery_grace_seconds": 0.1,
+          "offer_ttl_seconds": 1,
+          "priority_groups": [
+            [
+              "server2",
+              "server1",
+              "local"
+            ],
+            [
+              "local0-wsl"
+            ]
+          ]
+        },
+        "max_concurrent_jobs": "auto",
+        "mode": "auto",
+        "schema": "RPE_Q3_ALLOCATION_SETTINGS_V1"
+      },
+      "source_manifest": {
+        "commit": "349558b748a82f384a4589434a63ef9b5572032c",
+        "files": {
+          "scripts/run_rpe_method_optimizer.py": "d072995e7b5b097c51cad993abdce65439f88d7566d099d86f12e7937cb14e14",
+          "scripts/run_rpe_optimizer_q3_job.py": "f0656492beed41bf96a46050d8746786172c7f55fd76b69580ec0819bfadb18c",
+          "scripts/run_rpe_q3_worker.py": "735d2275871e3e0f1ed0b24757a4b956cbda949ae01aee4252a6e08d5396bf6f",
+          "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2",
+          "src/trottertracks/rpe_optimizer_concurrent.py": "b85f23cb7c42059212abb481e5d2d2973d2e168b5dee29fbba5d986df6eb4314",
+          "src/trottertracks/rpe_q3_coordinator.py": "c63b37494d41f84fce71ac4a2e0ad410585e5a71278583c34a927a2fa19d439b",
+          "src/trottertracks/rpe_q3_resources.py": "c27ddce386f60d85b78abf8e56490ae8b6fc94f705bb3b1ee5ac663671ccac3f",
+          "src/trottertracks/rpe_q3_store.py": "5cc3b316855a7f251b72b50a8caec719ddd26cb0b0964547f7611f1a973eab4e",
+          "src/trottertracks/rpe_q3_timing.py": "b06f03d13d9124d766124cdd5ec52750c3b00a4901ac1b4ebb99242c2fa8e8e5",
+          "src/trottertracks/rpe_q3_worker.py": "9d34278734f57074d9f6af9131b44f0fd546f98f182f3deec619cb5b5656aa53"
+        }
+      },
+      "global_capacity_decisions": [
+        {
+          "UTC": "2026-11-17T07:15:19Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899719.9158878,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 2,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937674.344211509,
+          "ready_jobs": 4,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 2,
+          "unresolved_owned": 0
+        },
+        {
+          "UTC": "2026-11-17T07:15:19Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899719.9724748,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 1,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937674.400798523,
+          "ready_jobs": 2,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:20Z",
+          "capacity": 4,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899720.070057,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 1,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937674.498380742,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 3
+        },
+        {
+          "UTC": "2026-11-17T07:15:20Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899720.5707333,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937674.999056911,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 3
+        },
+        {
+          "UTC": "2026-11-17T07:15:20Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899720.7757397,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937675.204062948,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:21Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899721.285408,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937675.713731579,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:21Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899721.3634007,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 3,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937675.791724531,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:21Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899721.4079194,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937675.836243168,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:21Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899721.479815,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 3,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937675.908138491,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:22Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899722.0057983,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899719862487840",
+          "method": null,
+          "monotonic": 1937676.434122007,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:22Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899722.4830523,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 3,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937676.911376299,
+          "ready_jobs": 4,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 3,
+          "unresolved_owned": 0
+        },
+        {
+          "UTC": "2026-11-17T07:15:22Z",
+          "capacity": 4,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899722.538023,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 1,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937676.966346631,
+          "ready_jobs": 2,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 3
+        },
+        {
+          "UTC": "2026-11-17T07:15:23Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899723.1916263,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937677.619949709,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:23Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899723.202754,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 1,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937677.631077041,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:23Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899723.229505,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 1,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937677.657828851,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:23Z",
+          "capacity": 4,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899723.2644825,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 1,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937677.692806187,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 3
+        },
+        {
+          "UTC": "2026-11-17T07:15:23Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899723.3467486,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937677.775072317,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 3
+        },
+        {
+          "UTC": "2026-11-17T07:15:23Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899723.8396933,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937678.268016986,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:23Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899723.9208908,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937678.349214351,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:23Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899723.9712715,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 3,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937678.399594927,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:24Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899724.0219364,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937678.450259951,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:24Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899724.1079648,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 3,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937678.536288361,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 1
+        },
+        {
+          "UTC": "2026-11-17T07:15:24Z",
+          "capacity": 3,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899724.1734676,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 2,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937678.601791398,
+          "ready_jobs": 1,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 1,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:24Z",
+          "capacity": 2,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899724.7517526,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937679.18007627,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 2
+        },
+        {
+          "UTC": "2026-11-17T07:15:24Z",
+          "capacity": 1,
+          "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+          "epoch": 1794899724.7983806,
+          "event": "AUTO_CAPACITY",
+          "fresh_free_slots": 0,
+          "invocation": "1086284-1794899722387217742",
+          "method": null,
+          "monotonic": 1937679.226704506,
+          "ready_jobs": 0,
+          "reason": "MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS",
+          "request_compatible_slots": 0,
+          "unresolved_owned": 1
+        }
+      ],
+      "worker_slot_decisions": {
+        "local": [
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899719.7079613,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {},
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 1
+            },
+            "monotonic": 1937674.136285368,
+            "reasons": [
+              "Cold start: per-job memory and useful throughput not measured"
+            ],
+            "stage": "COLD_START_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899720.6993833,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 1,
+              "capacity": 3,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899719862487840",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.6722768200561404,
+              "measurement_seconds": 0.8116122209466994,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 54,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6610
+            },
+            "monotonic": 1937675.127707107,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899721.4791877,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 2,
+              "capacity": 1,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899719862487840",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.3581061691511422,
+              "measurement_seconds": 1.5914753880351782,
+              "ready_jobs": 0,
+              "usable_results": 2
+            },
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 52,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6611
+            },
+            "monotonic": 1937675.907511525,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_AND_WAIT"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899723.2750702,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 1,
+              "capacity": 3,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899722387217742",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.6284491389524192,
+              "measurement_seconds": 0.8491704040206969,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 46,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6612
+            },
+            "monotonic": 1937677.703394112,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899723.982207,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 2,
+              "capacity": 1,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899722387217742",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.2842888049781322,
+              "measurement_seconds": 1.5690836750436574,
+              "ready_jobs": 0,
+              "usable_results": 2
+            },
+            "host_id": "local",
+            "limits": {
+              "cpu_slots": 46,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6612
+            },
+            "monotonic": 1937678.410530949,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_AND_WAIT"
+          }
+        ],
+        "local0-wsl": [
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899720.0352752,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {},
+            "host_id": "local0-wsl",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 1
+            },
+            "monotonic": 1937674.463599414,
+            "reasons": [
+              "Cold start: per-job memory and useful throughput not measured"
+            ],
+            "stage": "COLD_START_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899720.7543175,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 0,
+              "capacity": 3,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899719862487840",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": null,
+              "measurement_seconds": 0.8679447560571134,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "local0-wsl",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6610
+            },
+            "monotonic": 1937675.18264144,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          }
+        ],
+        "server1": [
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899719.7060492,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {},
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 1
+            },
+            "monotonic": 1937674.134373348,
+            "reasons": [
+              "Cold start: per-job memory and useful throughput not measured"
+            ],
+            "stage": "COLD_START_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899720.619274,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 1,
+              "capacity": 3,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899719862487840",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.6323908891063184,
+              "measurement_seconds": 0.7319530081003904,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6610
+            },
+            "monotonic": 1937675.047597757,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899721.3559773,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 2,
+              "capacity": 1,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899719862487840",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.2509343209676445,
+              "measurement_seconds": 1.4688238000962883,
+              "ready_jobs": 0,
+              "usable_results": 2
+            },
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6611
+            },
+            "monotonic": 1937675.78430112,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_AND_WAIT"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899723.2751095,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 1,
+              "capacity": 3,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899722387217742",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 0.6816677108872682,
+              "measurement_seconds": 0.8618911481462419,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 59,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6611
+            },
+            "monotonic": 1937677.703433672,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899724.078975,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 2,
+              "capacity": 1,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899722387217742",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": 1.4375012828968465,
+              "measurement_seconds": 1.66557192010805,
+              "ready_jobs": 0,
+              "usable_results": 2
+            },
+            "host_id": "server1",
+            "limits": {
+              "cpu_slots": 55,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6612
+            },
+            "monotonic": 1937678.507298993,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_AND_WAIT"
+          }
+        ],
+        "server2": [
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899719.9385011,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {},
+            "host_id": "server2",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 1
+            },
+            "monotonic": 1937674.366825071,
+            "reasons": [
+              "Cold start: per-job memory and useful throughput not measured"
+            ],
+            "stage": "COLD_START_UNMEASURED"
+          },
+          {
+            "capacity": 1,
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "dp_workers_per_q3": 1,
+            "epoch": 1794899720.9190888,
+            "event": "SLOT_CAPACITY_DECISION",
+            "feedback": {
+              "adopted_results": 0,
+              "capacity": 2,
+              "controller_clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "controller_invocation": "1086284-1794899719862487840",
+              "decision_wait_scope": "SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK",
+              "decision_wait_seconds": null,
+              "measurement_seconds": 0.9517752169631422,
+              "ready_jobs": 0,
+              "usable_results": 1
+            },
+            "host_id": "server2",
+            "limits": {
+              "cpu_slots": 64,
+              "explicit_max_slots": 2,
+              "memory_sample_headroom_factor": 1.5,
+              "memory_slots": 6610
+            },
+            "monotonic": 1937675.347412737,
+            "reasons": [
+              "Insufficient new usable completions for another slot trial"
+            ],
+            "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED"
+          }
+        ]
+      },
+      "final_wsl_accepting": false,
+      "timing_body_rows": 18,
+      "timing_missing_counts": {
+        "D_receive_to_search_adopt_seconds": 0,
+        "Q3_body_seconds": 0
+      },
+      "worker_capacity_summary": {
+        "local": {
+          "final_capacity": 1,
+          "observed_capacities": [
+            1
+          ],
+          "stage": "MEASURED_THROUGHPUT_AND_WAIT",
+          "reasons": [
+            "Insufficient new usable completions for another slot trial"
+          ],
+          "allowed_resources": {
+            "allocation_bounds_complete": true,
+            "allowed_cpu_count": 64,
+            "allowed_memory_bytes": 540802801664,
+            "boundary_detection": "OBSERVED",
+            "cgroup_version": "v2",
+            "clock": {
+              "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "epoch": 1794899725.6470342,
+              "monotonic": 1937680.075357842
+            },
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice/ssh.service",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup",
+                "value": 64
+              }
+            ],
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "machine_cpu_count": 64,
+            "machine_mem_available_bytes": 436984582144,
+            "machine_mem_total_bytes": 540802801664,
+            "memory_bounds": [],
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "missing_controls": [],
+            "observational_only": true,
+            "remaining_group_memory_bytes": null,
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1"
+          },
+          "limits": {
+            "cpu_slots": 46,
+            "explicit_max_slots": 2,
+            "memory_sample_headroom_factor": 1.5,
+            "memory_slots": 6537
+          },
+          "dp_workers": 1
+        },
+        "local0-wsl": {
+          "final_capacity": 1,
+          "observed_capacities": [
+            1
+          ],
+          "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED",
+          "reasons": [
+            "Insufficient new usable completions for another slot trial"
+          ],
+          "allowed_resources": {
+            "allocation_bounds_complete": true,
+            "allowed_cpu_count": 64,
+            "allowed_memory_bytes": 540802801664,
+            "boundary_detection": "OBSERVED",
+            "cgroup_version": "v2",
+            "clock": {
+              "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "epoch": 1794899725.6603847,
+              "monotonic": 1937680.088708612
+            },
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice/ssh.service",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup",
+                "value": 64
+              }
+            ],
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "machine_cpu_count": 64,
+            "machine_mem_available_bytes": 436984823808,
+            "machine_mem_total_bytes": 540802801664,
+            "memory_bounds": [],
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "missing_controls": [],
+            "observational_only": true,
+            "remaining_group_memory_bytes": null,
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1"
+          },
+          "limits": {
+            "cpu_slots": 55,
+            "explicit_max_slots": 2,
+            "memory_sample_headroom_factor": 1.5,
+            "memory_slots": 6614
+          },
+          "dp_workers": 1
+        },
+        "server1": {
+          "final_capacity": 1,
+          "observed_capacities": [
+            1
+          ],
+          "stage": "MEASURED_THROUGHPUT_AND_WAIT",
+          "reasons": [
+            "Insufficient new usable completions for another slot trial"
+          ],
+          "allowed_resources": {
+            "allocation_bounds_complete": true,
+            "allowed_cpu_count": 64,
+            "allowed_memory_bytes": 540802801664,
+            "boundary_detection": "OBSERVED",
+            "cgroup_version": "v2",
+            "clock": {
+              "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "epoch": 1794899725.6541529,
+              "monotonic": 1937680.082476715
+            },
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice/ssh.service",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup",
+                "value": 64
+              }
+            ],
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "machine_cpu_count": 64,
+            "machine_mem_available_bytes": 436984582144,
+            "machine_mem_total_bytes": 540802801664,
+            "memory_bounds": [],
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "missing_controls": [],
+            "observational_only": true,
+            "remaining_group_memory_bytes": null,
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1"
+          },
+          "limits": {
+            "cpu_slots": 55,
+            "explicit_max_slots": 2,
+            "memory_sample_headroom_factor": 1.5,
+            "memory_slots": 6614
+          },
+          "dp_workers": 1
+        },
+        "server2": {
+          "final_capacity": 1,
+          "observed_capacities": [
+            1
+          ],
+          "stage": "MEASURED_THROUGHPUT_WAIT_UNMEASURED",
+          "reasons": [
+            "Insufficient new usable completions for another slot trial"
+          ],
+          "allowed_resources": {
+            "allocation_bounds_complete": true,
+            "allowed_cpu_count": 64,
+            "allowed_memory_bytes": 540802801664,
+            "boundary_detection": "OBSERVED",
+            "cgroup_version": "v2",
+            "clock": {
+              "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "epoch": 1794899724.9620867,
+              "monotonic": 1937679.390410529
+            },
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice/ssh.service",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup/system.slice",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "path": "/sys/fs/cgroup",
+                "value": 64
+              }
+            ],
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "machine_cpu_count": 64,
+            "machine_mem_available_bytes": 436896276480,
+            "machine_mem_total_bytes": 540802801664,
+            "memory_bounds": [],
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "missing_controls": [],
+            "observational_only": true,
+            "remaining_group_memory_bytes": null,
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1"
+          },
+          "limits": {
+            "cpu_slots": 64,
+            "explicit_max_slots": 2,
+            "memory_sample_headroom_factor": 1.5,
+            "memory_slots": 6613
+          },
+          "dp_workers": 1
+        }
+      }
+    },
+    "reference": {
+      "outcomes": 18,
+      "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+      "launch_markers": 18,
+      "event_counts": {
+        "ADOPT": 18,
+        "EXIT": 18,
+        "LAUNCH": 18,
+        "PRIOR_INGEST_END": 4,
+        "PRIOR_INGEST_START": 4
+      },
+      "full_wall_seconds": 1.8378670311067253,
+      "resume_new_launches": 0,
+      "actual_OS_host_count": 1,
+      "host_names_are_simulated": true,
+      "transport": "LOOPBACK_HTTP_WITH_SEPARATE_DURABLE_WORKER_SPOOLS",
+      "actions": [],
+      "artificial_overlap": {
+        "body_intervals": [
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.516395615,
+            "host_id": null,
+            "job_id": "8536a8738cd2688ea009",
+            "start": 1937666.515933937
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.344251606,
+            "host_id": null,
+            "job_id": "b766a93a10dbb690c6f7",
+            "start": 1937666.343765819
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937667.18040388,
+            "host_id": null,
+            "job_id": "d6d074f60a46836a3e00",
+            "start": 1937667.179960192
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937667.240223366,
+            "host_id": null,
+            "job_id": "513d7b70bf1a4baa68e7",
+            "start": 1937667.239730499
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937667.058611557,
+            "host_id": null,
+            "job_id": "4f2935eea9e2d5861daa",
+            "start": 1937667.058149019
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.400354002,
+            "host_id": null,
+            "job_id": "89eadd079aaf8d4822ba",
+            "start": 1937666.399907735
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937667.114654174,
+            "host_id": null,
+            "job_id": "1e889d90de500eaac5a5",
+            "start": 1937667.113961557
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.456791897,
+            "host_id": null,
+            "job_id": "b89377dbeeea2027ac58",
+            "start": 1937666.456335169
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.68932266,
+            "host_id": null,
+            "job_id": "ca297b007892fd9d93f2",
+            "start": 1937666.688844812
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.801805631,
+            "host_id": null,
+            "job_id": "0ab3395aae956130280c",
+            "start": 1937666.801333704
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.745502866,
+            "host_id": null,
+            "job_id": "7dd1626ccd708bf7f972",
+            "start": 1937666.745038548
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.994554992,
+            "host_id": null,
+            "job_id": "b4aa6fd9fbe1c311c3b3",
+            "start": 1937666.994091985
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.069358665,
+            "host_id": null,
+            "job_id": "e87dc9349021da5eabf8",
+            "start": 1937666.068886857
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.868790861,
+            "host_id": null,
+            "job_id": "9687bead0160bafbf899",
+            "start": 1937666.868328463
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.136139975,
+            "host_id": null,
+            "job_id": "610093c57ae0337aa931",
+            "start": 1937666.135665138
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.204404248,
+            "host_id": null,
+            "job_id": "e3616f2e093cac4690de",
+            "start": 1937666.20393109
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.275056298,
+            "host_id": null,
+            "job_id": "0cb6d061689f9dfd8e90",
+            "start": 1937666.274586221
+          },
+          {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "end": 1937666.938150917,
+            "host_id": null,
+            "job_id": "0aa77103516139c3fe6c",
+            "start": 1937666.93767488
+          }
+        ],
+        "peak_concurrent_artificial_bodies": 1,
+        "scope": "ACTUAL_ARTIFICIAL_ADAPTER_SUBPROCESSES_ON_ONE_OS",
+        "wsl_overlaps_preferred_artificial_body": false
+      }
+    }
+  },
+  "fixed_implementation_commit": "349558b748a82f384a4589434a63ef9b5572032c",
+  "raw_fixture_locator": "/home/AbeHiromu/projects/rpe-q3-auto-allocation-checks/349558b748a82f384a4589434a63ef9b5572032c",
+  "raw_aggregate_sha256": "8f44813b4804f4ae533673f9c17d3be025afeaa2a317c681cf3d323dc32bd23b",
+  "record_scope": "Three real artificial-process runs on one OS; no fresh remote-host science/readiness measurement",
+  "earlier_checkpoints": [
+    "entry_initial_9a90701fe",
+    "entry_initial_e9e63be16"
+  ],
+  "repeat_reason": "New SOURCE fixes dynamic-capacity utilization denominator",
+  "utilization_checks": [
+    {
+      "case": "auto_four",
+      "method": "PR_DF",
+      "slot_utilization": 0.9410005072768849,
+      "busy_job_seconds": 6.926054851850495,
+      "integrated_available_slot_seconds": 7.360309371026233,
+      "status": "PASS"
+    },
+    {
+      "case": "auto_four",
+      "method": "PR_PAULI",
+      "slot_utilization": 0.9410005072768849,
+      "busy_job_seconds": 6.926054851850495,
+      "integrated_available_slot_seconds": 7.360309371026233,
+      "status": "PASS"
+    },
+    {
+      "case": "late_join",
+      "method": "PR_DF",
+      "slot_utilization": 0.9406820147166997,
+      "busy_job_seconds": 6.878310505999252,
+      "integrated_available_slot_seconds": 7.312046364648268,
+      "status": "PASS"
+    },
+    {
+      "case": "late_join",
+      "method": "PR_PAULI",
+      "slot_utilization": 0.9406820147166997,
+      "busy_job_seconds": 6.878310505999252,
+      "integrated_available_slot_seconds": 7.312046364648268,
+      "status": "PASS"
+    }
+  ]
+}
