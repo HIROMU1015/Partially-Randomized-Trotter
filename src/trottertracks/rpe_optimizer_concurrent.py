@@ -499,6 +499,7 @@ class DistributedExecutor(ConcurrentExecutor):
             address = self.rpc_server.server_address
             self.controller_url = 'http://127.0.0.1:'+str(address[1])
             Q.atomic_json(run/'distributed'/'ENDPOINT.json', dict(url=self.controller_url, pid=os.getpid(), source=self.optimizer_source))
+            self.start_controller_relay(address[1])
             profile = distributed.get('local_worker')
             if profile and profile.get('slots', 0) > 0:
                 profile = dict(profile)
@@ -527,6 +528,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.state.cv.notify_all()
                 self.state.monitor_stop.set()
             self.dispatcher.join(); self.monitor.join()
+            self.stop_controller_relay()
             if self.rpc_server: self.rpc_server.shutdown(); self.rpc_server.server_close()
             fcntl.flock(self.state.driver, fcntl.LOCK_UN); self.state.driver.close()
             raise
@@ -546,6 +548,46 @@ class DistributedExecutor(ConcurrentExecutor):
                         elapsed = time.monotonic()-starts.pop()
                         state.allocation_wait_totals[job] = state.allocation_wait_totals.get(job, 0)+elapsed
         return super().log(**event)
+
+    def start_controller_relay(self, port):
+        """The ordinary controller owns its direct SSH mailbox polling too."""
+        settings=self.distributed.get('relay')
+        if not settings:return
+        from .rpe_q3_coordinator import atomic_json
+        directory=self.run_dir/'distributed'/'relay';directory.mkdir(parents=True,exist_ok=True)
+        path=directory/'CONFIG.json'
+        config=dict(deepcopy(settings),state_directory=str(directory),external_tunnel=True,controller=dict(local_port=port))
+        # A crashed controller can leave its polling relay alive. Reuse only
+        # that exact endpoint/configuration; never create a second poller.
+        with (directory/'RELAY.lock').open('a')as lock:
+            try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            except BlockingIOError:
+                if not path.exists()or json.loads(path.read_text())!=config:
+                    raise ValueError('Existing run relay configuration differs; reconcile its owner before resume')
+                if (directory/'STOP').exists():
+                    raise ValueError('Existing run relay is still draining; resume after its mailbox transfer finishes')
+                self.state.controller_relay_directory=directory
+                self.log(event='CONTROLLER_RELAY_REUSED',configuration=str(path));return
+            atomic_json(path,config);(directory/'STOP').unlink(missing_ok=True)
+        command=[sys.executable,'-B',str(self.root/'scripts/run_rpe_q3_relay.py'),'--config',str(path),'--run']
+        with (directory/'RELAY.log').open('a')as log:
+            process=subprocess.Popen(command,cwd=self.root,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,
+                start_new_session=True,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
+        self.state.controller_relay_directory=directory
+        self.state.controller_relay_process=process
+        atomic_json(directory/'LAUNCH.json',dict(pid=process.pid,command=command))
+        self.log(event='CONTROLLER_RELAY_STARTED',configuration=str(path),pid=process.pid)
+
+    def stop_controller_relay(self):
+        directory=getattr(self.state,'controller_relay_directory',None)
+        if directory:
+            (directory/'STOP').touch()
+            self.log(event='CONTROLLER_RELAY_STOP_REQUESTED',received_worker_jobs_preserved=True)
+            process=getattr(self.state,'controller_relay_process',None)
+            if process is not None:
+                try:process.wait(timeout=self.distributed['relay'].get('request_timeout_seconds',30)+2)
+                except subprocess.TimeoutExpired:
+                    self.log(event='CONTROLLER_RELAY_DRAIN_PENDING',received_worker_jobs_preserved=True)
 
     def for_method(self, method):
         view = DistributedExecutor.__new__(DistributedExecutor)
@@ -1671,6 +1713,7 @@ class DistributedExecutor(ConcurrentExecutor):
                          owner_preserved=True,automatic_retry=False)
             self.state.cv.notify_all()
         super().finish()
+        self.stop_controller_relay()
         if self.local_worker is not None:
             self.local_worker.terminate()
             self.local_worker.wait(timeout=10)

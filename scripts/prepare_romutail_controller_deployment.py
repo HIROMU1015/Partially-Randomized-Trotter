@@ -107,6 +107,8 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
         distributed['affinity_wait_seconds'] = 0
         distributed.setdefault('auto_allocation', {}).update(
             priority_groups=[['server2', 'local', 'server1'], ['local0-wsl']], discovery_grace_seconds=0)
+        if layout.get('relay_workers'):
+            distributed['relay']=dict(workers=deepcopy(layout['relay_workers']),poll_seconds=1,request_timeout_seconds=30)
         distributed.setdefault('preparation', {}).setdefault('budgets', dict(signal=0, compile=0, audit=0))
         completion = round_value.setdefault('candidate_completion', {})
         completion.update(source=resolved_source, controller_paths=deepcopy(layout['controller_paths']))

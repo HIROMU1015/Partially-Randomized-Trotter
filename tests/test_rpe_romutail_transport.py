@@ -17,6 +17,32 @@ spec.loader.exec_module(R)
 
 
 class DirectRelayTests(unittest.TestCase):
+    def test_normal_executor_owns_relay_endpoint_and_preserves_received_jobs_on_stop(self):
+        from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+        with tempfile.TemporaryDirectory()as temporary:
+            executor=DistributedExecutor.__new__(DistributedExecutor)
+            executor.run_dir=Path(temporary);executor.root=ROOT;executor.state=SimpleNamespace()
+            executor.distributed={'relay':{'workers':[{'host_id':'server2','ssh_alias':'qg2'}]}}
+            executor.log=lambda **event:None
+            child=SimpleNamespace(pid=999999,wait=lambda **kwargs:0)
+            with patch('trottertracks.rpe_optimizer_concurrent.subprocess.Popen',return_value=child)as launch:
+                executor.start_controller_relay(12345)
+            path=executor.run_dir/'distributed/relay/CONFIG.json'
+            config=json.loads(path.read_text())
+            self.assertEqual(config['controller'],{'local_port':12345})
+            self.assertTrue(config['external_tunnel']);self.assertEqual(launch.call_count,1)
+            self.assertNotIn('--start',launch.call_args.args[0])
+            # The actual relay's lock stands in for a survivor after controller loss.
+            import fcntl
+            with (path.parent/'RELAY.lock').open('a')as lock:
+                fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                with patch('trottertracks.rpe_optimizer_concurrent.subprocess.Popen',side_effect=AssertionError('duplicate relay')):
+                    executor.start_controller_relay(12345)
+                    with self.assertRaisesRegex(ValueError,'configuration differs'):
+                        executor.start_controller_relay(54321)
+            executor.stop_controller_relay()
+            self.assertTrue((path.parent/'STOP').exists())
+
     def relay(self, directory, workers=()):
         path = Path(directory)/'relay.json'
         path.write_text(json.dumps(dict(state_directory=str(Path(directory)/'state'),
