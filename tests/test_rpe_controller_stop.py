@@ -8,10 +8,23 @@ import unittest
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'tests')]
 from test_rpe_optimizer_concurrent import fixture
-from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+from trottertracks.rpe_optimizer_concurrent import DistributedExecutor,optimize
 
 
 class StopTests(unittest.TestCase):
+    def test_stopped_priority_search_does_not_treat_refusal_as_numerical_answer(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            problem,context,routes=fixture(['PR_PAULI'],1)
+            run=Path(tmp)
+            ex=DistributedExecutor(ROOT,run,routes,{},problem,max_concurrent=2,
+                budgets={'PR_PAULI':4},science_approved=True,distributed={'port':0})
+            (run/'STOP_REQUESTED.json').write_text('{}')
+            result=optimize(ROOT,problem,context=context,executor=ex,
+                methods=['PR_PAULI'],initial='all',max_new={'PR_PAULI':4},science_approved=True)
+            self.assertEqual(result['PR_PAULI']['new_calls'],0)
+            self.assertEqual(ex.store.rows(),[])
+            self.assertEqual(result['PR_PAULI']['stop_reason'],'NEW_Q3_REQUIRED_NO_EXECUTOR')
+
     def test_stop_keeps_owner_and_original_attempt_and_blocks_new_reservations(self):
         from fractions import Fraction
         with tempfile.TemporaryDirectory() as tmp:

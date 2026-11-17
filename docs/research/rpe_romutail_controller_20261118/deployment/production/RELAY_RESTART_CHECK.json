@@ -1,0 +1,41 @@
+{
+  "schema": "ROMUTAIL_IDLE_RELAY_RESTART_CHECK_V1",
+  "old_pid": 492624,
+  "old_stopped": {
+    "pid": 492624,
+    "configuration": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/RELAY.json",
+    "workers": {
+      "server1": {
+        "phase": "DISABLED",
+        "accepting_new_jobs": false,
+        "reason": "User reports server1 stopped; deferred until host return"
+      },
+      "server2": {
+        "failure_count": 10,
+        "next_retry_epoch": 1794932057.920647,
+        "phase": "MAILBOX_DISCOVERY",
+        "error": "<urlopen error [Errno 111] Connection refused>",
+        "last_error_epoch": 1794932027.920647,
+        "retry_seconds": 30.0
+      },
+      "local0-wsl": {
+        "failure_count": 9,
+        "next_retry_epoch": 1794932038.3296015,
+        "phase": "MAILBOX_DISCOVERY",
+        "error": "<urlopen error [Errno 111] Connection refused>",
+        "last_error_epoch": 1794932008.3296015,
+        "retry_seconds": 30.0
+      }
+    },
+    "started_epoch": 1794931867.1663952,
+    "heartbeat_epoch": 1794932030.929351,
+    "stopped": true,
+    "transport": "controller-local or SSH forwarding + independent worker mailboxes",
+    "stopped_epoch": 1794932031.9321518
+  },
+  "new_pid": 494840,
+  "new_alive": true,
+  "scientific_calls": 0,
+  "new_jobs_submitted": 0,
+  "stop_affects": "relay only; host-owned jobs continue"
+}

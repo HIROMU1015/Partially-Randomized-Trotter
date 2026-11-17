@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "artificial_only": true,
+  "fixture": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/active-stop-v3-d887abdca",
+  "run_id": "search-ab35a5f1b5171fe038e1",
+  "control_source": "6da8554e0040f98578667973e8802c680f87982e",
+  "worker_source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+  "scientific_H4_calls": 0,
+  "checks": {
+    "stop_received_while_owned_job_running": true,
+    "owned_jobs_completed_after_stop": true,
+    "original_attempts_unchanged": true,
+    "original_completed_results_unchanged": true,
+    "original_launch_markers_unchanged": true,
+    "no_additional_job_assignment_after_stop": true,
+    "normal_stop_exit_zero": true,
+    "only_controlled_user_stop_interrupts": true,
+    "normal_driver_reports_user_stop": true,
+    "all_jobs_adopted_once": true,
+    "resume_new_launches_zero": true,
+    "resume_assignment_acceptance_adoption_counts_unchanged": true,
+    "resume_original_attempts_results_and_adoption_times_unchanged": true,
+    "resume_exit_zero": true,
+    "resume_no_new_runtime_error_records": true,
+    "explicit_user_stop_archived": true
+  },
+  "total_jobs": 2,
+  "event_counts": {
+    "ASSIGN": 2,
+    "ACCEPT": 2,
+    "ADOPT": 2
+  },
+  "jobs": [
+    {
+      "job_id": "89eadd079aaf8d4822ba",
+      "host_id": "local",
+      "state": "ACCEPTED",
+      "attempt_id": "0a779f6af7c54b1fb7978e80d57a5061",
+      "completion_sha256": "2c631d087beb274653d5f6730087fbd0fbb6cf4e08e830af96f9df96474ab68c",
+      "adopted_epoch": 1794934713.5731313,
+      "started_epoch": 1794934668.3980782,
+      "completed_epoch": 1794934713.5585465
+    },
+    {
+      "job_id": "8536a8738cd2688ea009",
+      "host_id": "local",
+      "state": "ACCEPTED",
+      "attempt_id": "4d8967b78e86488c9bd62291002b3e78",
+      "completion_sha256": "7eb7ce13f065edbbd233a35a2a8f4f6d92b5031ff2d41c2ad9ba83dd5d06a173",
+      "adopted_epoch": 1794934758.9354627,
+      "started_epoch": 1794934713.6988344,
+      "completed_epoch": 1794934758.9229958
+    }
+  ],
+  "launch_sha256": {
+    "run/jobs/PR_PAULI/89eadd079aaf8d4822ba/LAUNCH.json": "59ae47653185867be0887fb7698f4ccd35ef23ecc31e8a0ffa227f5f5c19fada",
+    "run/jobs/PR_PAULI/8536a8738cd2688ea009/LAUNCH.json": "ebe905b50e15bdc0f157def6e42cd906924419d9a31993d21bf7ec647cb806b5"
+  },
+  "normal_controller_exit_codes": [
+    0,
+    0
+  ],
+  "recorded_controlled_interrupts": [
+    {
+      "phase": "WIDTH_SEARCH_AND_Q3",
+      "error_type": "KeyboardInterrupt",
+      "epoch": 1794934758.9391289
+    },
+    {
+      "phase": "WIDTH_BATCH",
+      "error_type": "KeyboardInterrupt",
+      "epoch": 1794934758.9399097
+    }
+  ],
+  "resume_additional_scientific_jobs": 0,
+  "test_performed_by": "Codex direct_transport agent inspected ledger/artifact identities; root agent issued normal Windows Start/Stop/Resume; local0_client agent inspected live monitor"
+}

@@ -358,7 +358,34 @@ class Gateway:
         a = load(run/'APPLIED_SCOPE.json')
         return dict(run_id=a['run_id'],run_directory=str(run),status=status,applied=a['applied'],started=(run/'LAUNCH.json').exists(),
                     computation_source=self.config['computation_source'],release=self.config.get('release'),controller_source=self.config['code_source'],
+                    runtime=self.runtime_status(run),
                     preflight=load(run/'DUPLICATE_PREFLIGHT.json') if (run/'DUPLICATE_PREFLIGHT.json').exists() else None)
+
+    def runtime_status(self,run):
+        launch=load(run/'LAUNCH.json')if(run/'LAUNCH.json').exists()else{}
+        finished=load(run/'EXIT.json')if(run/'EXIT.json').exists()else{}
+        complete=bool(launch)and finished.get('invocation_id')==launch.get('invocation_id')
+        pid=launch.get('pid');command=Path('/proc')/str(pid)/'cmdline'
+        try:alive=bool(pid)and str(run).encode()in command.read_bytes()
+        except OSError:alive=False
+        phase='PREPARED'
+        if complete:phase='COMPLETE'if finished.get('returncode')==0 else'FAILED'
+        elif launch:phase='RUNNING'if alive else'RECONCILIATION_REQUIRED'
+        if(run/'STOP_REQUESTED.json').exists():phase='STOP_REQUESTED_DRAINING'if alive else'STOPPED'
+        actual=Path(self.config['artificial_controller_directory'])/'run'if self.config.get('artificial_controller_directory')else run
+        result=run/'ROUND_RESULT.json'
+        reasons={method:value.get('stop_reason')for method,value in load(result).get('methods',{}).items()}if result.exists()else{}
+        value=dict(phase=phase,controller_alive=alive,invocation_id=launch.get('invocation_id'),
+            returncode=finished.get('returncode')if complete else None,stop_reasons=reasons)
+        database=actual/'distributed/QUEUE.sqlite3'
+        if database.exists():
+            import sqlite3
+            try:
+                with sqlite3.connect(database.as_uri()+'?mode=ro',uri=True,timeout=1)as connection:
+                    value['jobs_by_state']=dict(connection.execute('SELECT state,count(*) FROM jobs GROUP BY state'))
+                    value['adopted_jobs']=connection.execute('SELECT count(*) FROM jobs WHERE adopted_epoch IS NOT NULL').fetchone()[0]
+            except sqlite3.Error as error:value['queue_status_error']=str(error)
+        return value
 
     def normal_preflight(self, run, problem, spec):
         if self.config.get('artificial_controller_directory'):

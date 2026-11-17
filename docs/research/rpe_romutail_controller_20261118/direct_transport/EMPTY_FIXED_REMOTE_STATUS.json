@@ -1,0 +1,149 @@
+{
+  "server2": {
+    "status": {
+      "host_id": "server2",
+      "slots": 1,
+      "capacity": 1,
+      "resource_report": {
+        "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+        "mode": "AUTO",
+        "capacity": 1,
+        "slots": 1,
+        "occupied": 0,
+        "stage": "COLD_START_UNMEASURED",
+        "reasons": [
+          "Cold start: per-job memory and useful throughput not measured"
+        ],
+        "resources": {
+          "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+          "clock": {
+            "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+            "monotonic": 1969133.947953095,
+            "epoch": 1794931179.5196292
+          },
+          "machine_cpu_count": 64,
+          "machine_mem_total_bytes": 540802801664,
+          "machine_mem_available_bytes": 450162708480,
+          "allowed_cpu_count": 64,
+          "cpu_bounds": [
+            {
+              "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+              "value": 64
+            },
+            {
+              "kind": "CGROUP_CPUSET",
+              "value": 64,
+              "path": "/sys/fs/cgroup/system.slice/ssh.service"
+            },
+            {
+              "kind": "CGROUP_CPUSET",
+              "value": 64,
+              "path": "/sys/fs/cgroup/system.slice"
+            },
+            {
+              "kind": "CGROUP_CPUSET",
+              "value": 64,
+              "path": "/sys/fs/cgroup"
+            }
+          ],
+          "allowed_memory_bytes": 540802801664,
+          "memory_bounds": [],
+          "remaining_group_memory_bytes": null,
+          "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+          "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+          "cgroup_version": "v2",
+          "allocation_bounds_complete": true,
+          "boundary_detection": "OBSERVED",
+          "missing_controls": [],
+          "observational_only": true
+        },
+        "limits": {
+          "cpu_slots": 64,
+          "memory_slots": 1,
+          "explicit_max_slots": 1,
+          "memory_sample_headroom_factor": 1.5
+        },
+        "dp_workers_per_q3": 1,
+        "peak_job_rss_bytes": 0.0,
+        "peak_job_cpu_cores": 0.0,
+        "feedback": {},
+        "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+        "trial": null,
+        "running_jobs_may_exceed_reduced_capacity": false
+      },
+      "source_sha": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+      "cached_prefixes": [],
+      "cached_artifact_sha256": [],
+      "attempts": []
+    },
+    "seconds": 0.5286775360582396
+  },
+  "local0-wsl": {
+    "status": {
+      "host_id": "local0-wsl",
+      "slots": 0,
+      "capacity": 1,
+      "resource_report": {
+        "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+        "mode": "AUTO",
+        "capacity": 1,
+        "slots": 1,
+        "occupied": 0,
+        "stage": "COLD_START_UNMEASURED",
+        "reasons": [
+          "Allocation boundary detection incomplete; do not grow above the initial offer"
+        ],
+        "resources": {
+          "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+          "clock": {
+            "clock_id": "abe:904772c8-143d-48f9-b096-16611dcc9861",
+            "monotonic": 2.988464186,
+            "epoch": 1794931183.9116426
+          },
+          "machine_cpu_count": 16,
+          "machine_mem_total_bytes": 16486051840,
+          "machine_mem_available_bytes": 15784144896,
+          "allowed_cpu_count": 16,
+          "cpu_bounds": [
+            {
+              "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+              "value": 16
+            }
+          ],
+          "allowed_memory_bytes": 16486051840,
+          "memory_bounds": [],
+          "remaining_group_memory_bytes": null,
+          "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+          "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+          "cgroup_version": "v2",
+          "allocation_bounds_complete": false,
+          "boundary_detection": "PARTIAL_OR_UNREADABLE",
+          "missing_controls": [
+            "cpu",
+            "memory"
+          ],
+          "observational_only": true
+        },
+        "limits": {
+          "cpu_slots": 16,
+          "memory_slots": 1,
+          "explicit_max_slots": 1,
+          "memory_sample_headroom_factor": 1.5
+        },
+        "dp_workers_per_q3": 1,
+        "peak_job_rss_bytes": 0.0,
+        "peak_job_cpu_cores": 0.0,
+        "feedback": {},
+        "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+        "trial": null,
+        "running_jobs_may_exceed_reduced_capacity": false
+      },
+      "source_sha": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+      "cached_prefixes": [],
+      "cached_artifact_sha256": [],
+      "attempts": [],
+      "accepting_new_jobs": false
+    },
+    "seconds": 0.8405338539741933
+  }
+}

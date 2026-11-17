@@ -94,6 +94,16 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(result['status'],'STOPPED_NO_ACTIVE_DRIVER')
         self.assertEqual(load(run/'STOP_REQUESTED.json')['reason'],'USER_REQUESTED_STOP')
 
+    def test_status_reports_completed_exit_and_preserves_scientific_stop_reason(self):
+        started=self.gateway().handle(request(4,6));run=Path(started['run_directory'])
+        write(run/'ROUND_RESULT.json',dict(methods=dict(PR_PAULI=dict(stop_reason='UNKNOWN_RESULT'))))
+        status=self.gateway().handle(dict(action='status',run_id=started['run_id']))
+        self.assertEqual(status['runtime']['phase'],'COMPLETE')
+        self.assertFalse(status['runtime']['controller_alive'])
+        self.assertEqual(status['runtime']['stop_reasons'],{'PR_PAULI':'UNKNOWN_RESULT'})
+        with self.assertRaisesRegex(RequestError,'scientific hold'):
+            self.gateway().handle(dict(action='resume',run_id=started['run_id'],instruction='Artificial resume'))
+
     def test_migrated_controller_cannot_start_new_work(self):
         self.state.mkdir(parents=True,exist_ok=True)
         write(self.state/'MIGRATED_TO.json',dict(controller='RomuTail'))

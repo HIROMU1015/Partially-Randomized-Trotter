@@ -8,6 +8,7 @@ workerは`src/trottertracks/rpe_pbs_worker.py`。固定科学SOURCE・既存run�
 
 [ローカルcontrollerへの簡易価格検証統合](docs/research/h4_price_validation_local_controller_20261118/REPORT.md)：共通モデルstore引継ぎ、保存DF holdout照合、metadata公開後の同一run再開。[通常運用](docs/research/h4_price_validation_local_controller_20261118/HANDOFF.md)。実compile・新探索は未実施。
 
+[RomuTailのH4中央管理](docs/research/rpe_romutail_controller_20261118/HANDOFF.md)：版を固定する通常入口、直接SSH/WSL mailbox、状態引継ぎと人工検収。科学SOURCE・原成果・STOPは保全。
 
 [通常探索の価格モデル簡易検証](docs/research/h4_price_validation_integration_20261117/REPORT.md)：モデル単位の独立実測再利用、代表1点の低優先分散要求、再開・C通常同期・探索マップへの接続。[運用](docs/research/h4_price_validation_integration_20261117/HANDOFF.md)。科学資格・価格係数・Q3順位は変更しない。
 

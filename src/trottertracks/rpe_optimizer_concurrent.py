@@ -85,8 +85,10 @@ class ConcurrentExecutor(O.Executor):
 
     def for_method(self,method):
         view=ConcurrentExecutor.__new__(ConcurrentExecutor);view.__dict__.update(self.__dict__);view.method=method
-        # A controller-local finish wrapper may capture the main executor.
-        # Method views must use their own class drain without closing it.
+        # The normal factory decorates the owning executor's finish() to close
+        # its optional price-validation service. A method view must use its
+        # class finish(), which drains only that method and keeps the shared
+        # queue alive for preparation continuations and subsequent batches.
         view.__dict__.pop('finish',None)
         return view
 
@@ -312,7 +314,12 @@ class ConcurrentExecutor(O.Executor):
             else:
                 if not allow_new and task is None:return None
                 task=self._enqueue(proposal,demand=True)
-                if task is False:return dict(status='BUDGET_EXHAUSTED',job=None)
+                if task is False:
+                    # A user stop declines new work; it is not a numerical
+                    # answer. Keep the priority search out of its MSE/call
+                    # accounting and let the outer driver persist the stop.
+                    if self._user_stop_requested():return None
+                    return dict(status='BUDGET_EXHAUSTED',job=None)
                 if task is None:return dict(status='NO_ROUTE',job=None)
                 self.log(event='DEPENDENCY_WAIT_START',job=job.name)
                 try:task.event.wait()
@@ -601,6 +608,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def for_method(self, method):
         view = DistributedExecutor.__new__(DistributedExecutor)
         view.__dict__.update(self.__dict__)
+        view.__dict__.pop('finish', None)
         view.method = method
         view.__dict__.pop('finish', None)
         return view

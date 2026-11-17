@@ -1,0 +1,48 @@
+{
+  "schema": "RPE_ROMUTAIL_DIRECT_RELAY_V1",
+  "state_directory": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/relay-state",
+  "external_tunnel": true,
+  "controller": {
+    "local_port": 8763
+  },
+  "workers": [
+    {
+      "host_id": "server2",
+      "ssh_alias": "qg2",
+      "python": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+      "root": "/home/AbeHiromu/projects/rpe-romutail-acceptance/source-d887abdca",
+      "profile": "/home/AbeHiromu/projects/rpe-romutail-worker/server2/profiles/d887abdca-r2.json",
+      "priority_group": 0
+    },
+    {
+      "host_id": "local0-wsl",
+      "transport": "ssh-wsl",
+      "distribution": "Ubuntu",
+      "ssh_alias": "Romulaptop",
+      "ssh_command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "IdentitiesOnly=yes",
+        "-i",
+        "/home/abe/.ssh/id_ed25519_romuwindows",
+        "-l",
+        "romuk"
+      ],
+      "python": "/root/myproject/Evaluation_numGate_highorder_DF/venv/bin/python",
+      "root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.romutail-controller-acceptance/source-d887abdca",
+      "profile": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.romutail-controller/worker/profiles/d887abdca-r2.json",
+      "participation_wsl_file": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/SETTINGS.json",
+      "priority_group": 1
+    },
+    {
+      "host_id": "server1",
+      "enabled": false,
+      "disabled_reason": "User reports server1 stopped; deferred until host return"
+    }
+  ],
+  "poll_seconds": 1,
+  "request_timeout_seconds": 30,
+  "retry_backoff_max_seconds": 30
+}

@@ -49,6 +49,9 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
     resolved_source = subprocess.check_output(['git', 'rev-parse', source + '^{commit}'], cwd=code_root, text=True).strip()
     if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=code_root, text=True).strip() != resolved_source:
         raise ValueError('Deployment code_root must be checked out at the selected integrated source')
+    completion_source = subprocess.check_output(['git', 'rev-parse',
+        layout.get('candidate_completion_source', resolved_source) + '^{commit}'], cwd=code_root, text=True).strip()
+    worker_script = str(Path(layout.get('worker_script', code_root / 'scripts/run_rpe_q3_worker.py')).resolve())
     original_service = read(source_directory / 'SERVICE.json')
     output.mkdir(parents=True)
     profiles = {}
@@ -102,7 +105,7 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
         round_value['price_validation']['publish_shared_models']=True
         distributed = round_value['executor']['distributed']
         distributed.update(computation_root=profiles['local']['root'],
-            local_worker=deepcopy(profiles['local']), worker_script=str(code_root / 'scripts/run_rpe_q3_worker.py'),
+            local_worker=deepcopy(profiles['local']), worker_script=worker_script,
             host_admission=str(output / 'HOST_ADMISSION.json'), required_hosts=[],
             preparation_profiles={host: str(output / 'profiles' / (host + '.json')) for host in profiles})
         distributed['affinity_wait_seconds'] = 0
@@ -112,7 +115,7 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
             distributed['relay']=dict(workers=deepcopy(layout['relay_workers']),poll_seconds=1,request_timeout_seconds=30)
         distributed.setdefault('preparation', {}).setdefault('budgets', dict(signal=0, compile=0, audit=0))
         completion = round_value.setdefault('candidate_completion', {})
-        completion.update(source=resolved_source, controller_paths=deepcopy(layout['controller_paths']))
+        completion.update(source=completion_source, controller_paths=deepcopy(layout['controller_paths']))
         if round_value.get('price_rules_overrides', {}).get('registry_file'):
             completion['price_registry_file'] = round_value['price_rules_overrides']['registry_file']
         # Explicitly preserve all finite budgets and the original unapproved
@@ -136,6 +139,7 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
     service['migration'] = dict(original_service=str(source_directory / 'SERVICE.json'),
         original_service_sha256=checksum(source_directory / 'SERVICE.json'), original_code_source=original_service['code_source'],
         scientific_computation_source=original_service['computation_source'], snapshot_manifest=str(manifest_path),
+        candidate_completion_source=completion_source, worker_script=worker_script,
         snapshot_manifest_sha256=checksum(manifest_path), archived_source_inputs_modified=False)
     put(output / 'SERVICE.json', service)
 
@@ -158,6 +162,7 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
         if isinstance(value, str) and not Path(value).exists():
             holds.append(dict(field='controller_paths/' + key, path=value, reason='CONTROLLER_LOCAL_PATH_MISSING'))
     report = dict(schema='ROMUTAIL_CONTROLLER_OPERATIONAL_DEPLOYMENT_V1', source=resolved_source,
+        candidate_completion_source=completion_source, worker_script=worker_script,
         service=str(output / 'SERVICE.json'), state_directory=layout['state_directory'],
         computation_source=original_service['computation_source'], prior_run_dirs=read(output / 'ROUND.default.json')['executor']['prior_run_dirs'],
         controller_path_map=paths, controller_paths=layout['controller_paths'],

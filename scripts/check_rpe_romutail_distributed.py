@@ -117,7 +117,7 @@ def fixture_driver(directory):
             cid=W.configuration(req['method'],req['design']['delta_pf'],req['design']['kappa'],req['design']['L_D'])['configuration_id']
             def submit(stage,name,hosts,deps=(),depinputs=None):
                 command=['@PYTHON@','-B','@SOURCE@/scripts/artificial_preparation_leaf.py','--stage',stage,
-                    '--output','@WORK@/products','--sleep',str(25 if stage=='signal'else 3)]
+                    '--output','@WORK@/products','--sleep',str(45 if stage=='signal'else 3)]
                 if stage=='audit':command+=['--inputs','@INPUTS@']
                 request=normalize_preparation_request(dict(route=dict(kind='preparation'),method='ARTIFICIAL',
                     preparation=dict(stage=stage,provider='ARTIFICIAL_'+stage,artificial=True,
@@ -164,6 +164,8 @@ def controller(directory,*,plan_only=False,control_run=None,batch=32,max_cycles=
     if read(round_path).get('artificial_fixture',{}).get('only')is not True:
         raise ValueError('Gateway round must preserve artificial-only declaration')
     run=(inputs/'plan-only')if plan_only else(directory/'run')
+    if not plan_only:
+        put(directory/'CONTROL_INPUTS.json',dict(directory=str(inputs),round=str(round_path)))
     clear_mirrored_stop(directory,inputs,run,explicit_control=control_run is not None,plan_only=plan_only)
     signal.signal(signal.SIGTERM,lambda *_:(_ for _ in()).throw(KeyboardInterrupt()))
     watching=threading.Event()
@@ -253,8 +255,11 @@ def synthetic_admission(directory,enabled):
     policy=dict(hosts={'server1':dict(accepting=False,optional=True),
         'local0-wsl':dict(accepting=enabled,optional=True)})
     paths={directory/'HOST_ADMISSION.json'}
-    round_path=directory/'run/ROUND.json'
+    locator=directory/'CONTROL_INPUTS.json'
+    round_path=Path(read(locator)['round']).resolve()if locator.exists()else directory/'run/ROUND.json'
     if round_path.exists():
+        if not round_path.is_relative_to(directory):
+            raise ValueError('Synthetic control inputs must stay in their owned fixture directory')
         current=read(round_path)['executor']['distributed'].get('host_admission')
         if isinstance(current,str):
             current=Path(current).resolve()

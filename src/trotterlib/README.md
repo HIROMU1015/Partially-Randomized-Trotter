@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[RomuTail中央管理](../../docs/research/rpe_romutail_controller_20261118/HANDOFF.md)：`trottertracks.rpe_release_registry` と既存Gateway/DistributedExecutor/JobStore/SSH mailboxを再利用。科学kernelは固定のまま。
+
 [分散準備工程の実装と検査](../../docs/research/rpe_distributed_preparation/HANDOFF.md)：実装は`src/trottertracks/rpe_preparation_*`と既存distributed executor/worker。Q3と準備の枠を共用する。
 
 [候補別のdry-check PASSホストへのQ3割当](../../docs/research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
