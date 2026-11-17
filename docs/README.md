@@ -386,3 +386,5 @@
 
 Local0 absolute-kappa interval through the normal physical schedule entry (metadata-only acceptance): `docs/research/rpe_local0_absolute_kappa/README.md`.
 - 分散Q3の自動割当・自動同時枠と計時：[HANDOFF](research/rpe_q3_auto_allocation/HANDOFF.md)。新run既定auto、保存runの上限保全。実H4起動0。
+
+[ローカル起点の簡易価格検証・配置と検収](research/h4_price_validation_local_controller_20261118/REPORT.md)／[起動・再開・同期](research/h4_price_validation_local_controller_20261118/HANDOFF.md)。

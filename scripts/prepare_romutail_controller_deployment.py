@@ -98,6 +98,11 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
         original = read(source_directory / name)
         original_rounds[name] = original
         round_value = remap(original, paths)
+        # One controller-owned store across releases and all run queues.
+        # Its saved state must be reconciled before activating this deployment.
+        round_value.setdefault('price_validation', {})['store'] = str(
+            Path(layout['state_directory']).parent/'price-validation'/'models.sqlite3')
+        round_value['price_validation']['publish_shared_models']=True
         distributed = round_value['executor']['distributed']
         distributed.update(computation_root=profiles['local']['root'],
             local_worker=deepcopy(profiles['local']), worker_script=worker_script,
@@ -106,6 +111,8 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
         distributed['affinity_wait_seconds'] = 0
         distributed.setdefault('auto_allocation', {}).update(
             priority_groups=[['server2', 'local', 'server1'], ['local0-wsl']], discovery_grace_seconds=0)
+        if layout.get('relay_workers'):
+            distributed['relay']=dict(workers=deepcopy(layout['relay_workers']),poll_seconds=1,request_timeout_seconds=30)
         distributed.setdefault('preparation', {}).setdefault('budgets', dict(signal=0, compile=0, audit=0))
         completion = round_value.setdefault('candidate_completion', {})
         completion.update(source=completion_source, controller_paths=deepcopy(layout['controller_paths']))
@@ -127,8 +134,15 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
     service['absolute_kappa_route'].update(problem=service['problem'], round=str(output / 'ROUND.absolute-kappa.json'))
     if layout.get('publication'):
         service['publication'] = deepcopy(layout['publication'])
+    if layout.get('release_manifest'):
+        service['release_manifest'] = str(Path(layout['release_manifest']).resolve())
+    if layout.get('host_layouts'):
+        service['host_layouts'] = {host:str(Path(path).resolve()) for host,path in layout['host_layouts'].items()}
     service.pop('previous_service', None)
     service['fixed_settings'] = {str(path): checksum(path) for path in output.rglob('*.json')}
+    for path in [service.get('release_manifest'),*service.get('host_layouts',{}).values()]:
+        if path:
+            service['fixed_settings'][path]=checksum(path)
     service['migration'] = dict(original_service=str(source_directory / 'SERVICE.json'),
         original_service_sha256=checksum(source_directory / 'SERVICE.json'), original_code_source=original_service['code_source'],
         scientific_computation_source=original_service['computation_source'], snapshot_manifest=str(manifest_path),
@@ -139,7 +153,7 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
     def inspect(value, where):
         if isinstance(value, dict):
             for key, item in value.items():
-                if key in ('local_worker', 'preparation_profiles'):
+                if key in ('local_worker', 'preparation_profiles', 'relay'):
                     continue
                 inspect(item, where + '/' + key)
         elif isinstance(value, list):

@@ -115,9 +115,7 @@ print(json.dumps(dict(imported_gateway=str(api.__file__),next_child=commands[0],
             self.assertFalse((state/'CURRENT_TARGET.json').exists())
             self.assertFalse(list(state.glob('**/REQUEST.json')))
 
-    def test_current_strict_guard_rejects_metadata_only_head_advance_before_child(self):
-        # This documents the existing fixed-HEAD contract; deployment does not
-        # silently loosen it. A later design change needs an explicit decision.
+    def test_metadata_publication_allows_same_run_but_scientific_changes_do_not(self):
         spec=importlib.util.spec_from_file_location('_local0_deployment_fixed_guard',ROOT/'src/trottertracks/rpe_local0_search.py')
         api=importlib.util.module_from_spec(spec);spec.loader.exec_module(api)
         with tempfile.TemporaryDirectory()as temporary:
@@ -132,19 +130,26 @@ print(json.dumps(dict(imported_gateway=str(api.__file__),next_child=commands[0],
             dump(run/'DUPLICATE_PREFLIGHT.json',dict(status='PASS'));dump(run/'AUTHORIZATION.json',dict(scope_signature='ARTIFICIAL',kind='EXPLICIT_USER_START'))
             (root/'docs/metadata.txt').write_text('Synthetic data publication only')
             git('add','docs/metadata.txt');git('commit','-qm','metadata-only publication')
-            self.assertFalse(git('diff',config['code_source'],'HEAD','--','src','scripts'))
-            with patch.object(api.subprocess,'run')as child:
-                # check_output internally uses subprocess.run, so preserve the
-                # real metadata-only Git calls while intercepting child entry.
-                original=subprocess.check_output
-                def checked(command,**kwargs):
-                    if command[0]=='git':
-                        with patch.object(subprocess,'run',subprocess_run):return original(command,**kwargs)
-                    raise AssertionError('No normal entry may run')
-                with patch.object(api.subprocess,'check_output',side_effect=checked):
-                    with self.assertRaisesRegex(api.RequestError,'fixed server2 implementation changed'):
-                        api.execute_run(config,run,'ARTIFICIAL_INVOCATION')
-                child.assert_not_called()
+            self.assertNotEqual(git('rev-parse','HEAD'),config['code_source'])
+            class Child:
+                pid=123456789
+                def wait(self):return 0
+            checked=api.fixed_implementation(config)
+            with patch.object(api,'fixed_implementation',return_value=checked),patch.object(api.subprocess,'Popen',return_value=Child())as child:
+                api.execute_run(config,run,'ARTIFICIAL_METADATA_RESUME')
+                child.assert_called_once()
+            self.assertEqual(api.load(run/'NORMAL_DRIVER.json')['implementation']['source'],config['code_source'])
+            original=(root/'scripts/run_rpe_method_optimizer.py').read_text()
+            (root/'scripts/run_rpe_method_optimizer.py').write_text(original+'# changed scientific code\n')
+            with self.assertRaisesRegex(api.RequestError,'fixed implementation/settings changed'):
+                api.fixed_implementation(config)
+            git('add','scripts');git('commit','-qm','changed scientific code')
+            with self.assertRaisesRegex(api.RequestError,'fixed implementation/settings changed'):
+                api.fixed_implementation(config)
+            git('restore','--source',config['code_source'],'--','scripts')
+            (root/'src/extra.py').write_text('# untracked imported code\n')
+            with self.assertRaisesRegex(api.RequestError,'fixed implementation/settings changed'):
+                api.fixed_implementation(config)
 
 
 subprocess_run=subprocess.run

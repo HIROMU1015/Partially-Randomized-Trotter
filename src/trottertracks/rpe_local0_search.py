@@ -108,7 +108,7 @@ def resolve(config, request):
     """Translate only settings that the selected normal entry actually consumes."""
     keys(request, {'scope', 'instruction', 'action', 'release', 'run_id'}, 'request')
     scope = deepcopy(request.get('scope') or {})
-    keys(scope, {'methods', 'per_method', 'shots', 'stop'}, 'scope')
+    keys(scope, {'methods', 'per_method', 'shots', 'stop', 'preparation_budgets'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
     if config.get('plan_template'):spec.pop('plan_output',None)
     methods = scope.get('methods', spec['methods'])
@@ -196,6 +196,15 @@ def resolve(config, request):
             raise RequestError('scope.shots.max_per_round', 'positive per-round caps required')
         for method in methods: spec['method_overrides'].setdefault(method, {})['caps'] = caps
         canonical['shots'] = dict(min=1, max_per_round=caps)
+    if 'preparation_budgets' in scope:
+        budgets=scope['preparation_budgets']
+        keys(budgets,{'signal','compile','audit'},'scope.preparation_budgets')
+        if not budgets or any(v!='UNLIMITED' and(type(v)is not int or v<0)for v in budgets.values()):
+            raise RequestError('scope.preparation_budgets','nonnegative stage-task budgets or UNLIMITED required')
+        distributed=spec.get('executor',{}).get('distributed')
+        if distributed is None:raise RequestError('scope.preparation_budgets','adopted entry has no distributed preparation executor')
+        distributed.setdefault('preparation',{}).setdefault('budgets',{}).update(budgets)
+        canonical['preparation_budgets']=deepcopy(budgets)
     stop = scope.get('stop', {})
     keys(stop, {'max_new_q3_per_method', 'max_steps_per_method', 'max_cycles', 'batch'}, 'scope.stop')
     for key in stop:
@@ -399,10 +408,7 @@ class Gateway:
         sys.path.insert(0,str(Path(self.config['code_root'])/'scripts'))
         import run_rpe_method_optimizer as CLI
         root=Path(self.config['code_root'])
-        if subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()!=self.config['code_source']:
-            raise RequestError('code_source','server2 checkout differs from the fixed deployment')
-        if subprocess.check_output(['git','diff','HEAD','--name-only','--','src','scripts'],cwd=root,text=True).strip():
-            raise RequestError('code_source','tracked implementation changed')
+        fixed_implementation(self.config)
         scoped = CLI.price_overrides(CLI.scoped(problem,spec.get('method_overrides')),spec)
         context = O.prepare(Path(self.config['code_root']),scoped,methods=spec['methods'],generate_configurations=False,preparation_dir=run/'preflight-inputs')
         routes = CLI.merged_routes(scoped,spec)
@@ -467,11 +473,26 @@ class Gateway:
             return'STOP_REQUESTED_DRAINING'
         return'STOPPED_NO_ACTIVE_DRIVER'
 
+def fixed_implementation(config):
+    """Compare executable code/settings with SOURCE, allowing saved metadata commits.
+
+    Includes staged and working changes, additions and dependency declarations.
+    Run inputs retain their separate immutable scope and fingerprint checks.
+    """
+    root=Path(config['code_root'])
+    paths=['src','scripts','tools','configs','schemas','pyproject.toml',
+           'requirements.txt','requirements-gpu.txt','setup.py','setup.cfg']
+    changed=subprocess.check_output(['git','diff','--name-only',config['code_source'],'--',*paths],cwd=root,text=True).strip()
+    untracked=subprocess.check_output(['git','ls-files','--others','--exclude-standard','--',*paths],cwd=root,text=True).strip()
+    if changed or untracked:
+        raise RequestError('code_source','fixed implementation/settings changed: '+(changed or untracked))
+    return dict(source=config['code_source'],head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip())
+
+
 def execute_run(config, run, invocation):
     run=Path(run);scope=load(run/'APPLIED_SCOPE.json');spec=load(run/'ROUND.json')
     root=Path(config['code_root'])
-    if subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()!=config['code_source'] or subprocess.check_output(['git','diff','HEAD','--name-only','--','src','scripts'],cwd=root,text=True).strip():
-        raise RequestError('code_source','fixed server2 implementation changed before normal launch')
+    implementation=fixed_implementation(config)
     if load(run/'DUPLICATE_PREFLIGHT.json')['status']!='PASS':raise RequestError('preflight','no matching successful §10.5 preflight')
     auth=load(run/'AUTHORIZATION.json')
     if auth['scope_signature']!=scope['signature'] or auth['kind']!='EXPLICIT_USER_START':raise RequestError('authorization','scope binding differs')
@@ -493,7 +514,7 @@ def execute_run(config, run, invocation):
             if key in stop:command+=['--'+key.replace('_','-'),str(stop[key])]
     try:
         process=subprocess.Popen(command,cwd=config['code_root'],env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
-        write(run/'NORMAL_DRIVER.json',dict(pid=process.pid,command=command,invocation_id=invocation))
+        write(run/'NORMAL_DRIVER.json',dict(pid=process.pid,command=command,invocation_id=invocation,implementation=implementation))
         code=process.wait()
         if config.get('artificial_controller_directory'):
             result_path=Path(config['artificial_controller_directory'])/'run/ROUND_RESULT.json'

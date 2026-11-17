@@ -134,7 +134,20 @@ def saved_checks(description,reader):
                     doc=reader.read(dict(ref,selector=[]))
                     candidates=[doc.get('model_source'),doc.get('model'),(doc.get('binding')or{}).get('model_source')]
                     locator=lambda x:(x.get('commit'),x.get('path'),x.get('selector')or[])if isinstance(x,dict)else None
-                    if locator(model)not in [locator(x)for x in candidates]:
+                    # Some saved DF comparisons reference an AXIS_PRICES row
+                    # at the frozen model commit instead of a model locator.
+                    # Accept only its explicit model_commit and exact saved
+                    # prediction/circuit/axis binding; never infer from a filename.
+                    bound=False
+                    if container.get('model_commit')==model.get('commit')==ref.get('commit'):
+                        frozen=reader.read(dict(model,selector=[]));axis_price=reader.read(ref)
+                        expected=description['identity']['coefficients']
+                        bound=(bool(frozen.get('source')) and doc.get('source')==frozen['source'] and
+                            canonical(_coefficients(frozen))==canonical(expected) and
+                            axis_price.get('model_axis')==axis and
+                            all(axis_price.get(k)==r.get(k) for k in ('m','q','R','configuration_id','physical_id')) and
+                            axis_price.get('C_ref') is not None and frac(axis_price['C_ref'])==frac(predicted))
+                    if locator(model)not in [locator(x)for x in candidates] and not bound:
                         issues.append('DIFFERENT_FROZEN_PREDICTION_SOURCE');continue
                 if relative is not None and frac(relative)!=(frac(predicted)-frac(observed))/frac(observed):
                     raise ValueError('Saved comparison relative difference differs')
@@ -189,7 +202,7 @@ class ModelStore:
             resolved=resolve();checks,issues=resolved[:2];existing=resolved[2]if len(resolved)>2 else None
             status='PENDING'if existing else'INDEPENDENT_MEASURED'if checks else 'INCOMPLETE'if issues else 'CALIBRATION_ONLY'
             record={k:deepcopy(v)for k,v in desc.items()if k not in('points','configuration_id','configuration_source')}
-            record.update(status=status,label=LABELS[status],validation_points=checks,issues=issues,evidence_parser_version=3)
+            record.update(status=status,label=LABELS[status],validation_points=checks,issues=issues,evidence_parser_version=4)
             if existing:record.update(external_job=existing,pending_reason='REUSE_EQUIVALENT_ACTIVE_OR_WAITING_JOB')
             db.execute('INSERT INTO models VALUES(?,?,?)',(desc['model_id'],json.dumps(desc['identity'],sort_keys=True),json.dumps(record)))
             return record
@@ -197,6 +210,9 @@ class ModelStore:
         with self.connect()as db:
             row=db.execute('SELECT record FROM models WHERE id=?',(mid,)).fetchone()
             return None if row is None else json.loads(row[0])
+    def rows(self):
+        with self.connect()as db:
+            return [json.loads(row[0])for row in db.execute('SELECT record FROM models ORDER BY id')]
     def change(self,mid,fn):
         with self.connect()as db:
             db.execute('BEGIN IMMEDIATE');record=json.loads(db.execute('SELECT record FROM models WHERE id=?',(mid,)).fetchone()[0])
@@ -250,9 +266,9 @@ class Service:
                     first=mid not in self.descriptions
                     old=self.store.row(mid)if first else None
                     self.store.register(desc,lambda d=desc:self.resolve(d,reader))
-                    if first and old and(old['status']!='INDEPENDENT_MEASURED'or old.get('evidence_parser_version')!=3):
+                    if first and old and(old['status']!='INDEPENDENT_MEASURED'or old.get('evidence_parser_version')!=4):
                         checks,issues,external=self.resolve(desc,reader)
-                        if checks:self.store.change(mid,lambda r:r.update(status='INDEPENDENT_MEASURED',validation_points=checks,issues=issues,evidence_parser_version=3))
+                        if checks:self.store.change(mid,lambda r:r.update(status='INDEPENDENT_MEASURED',validation_points=checks,issues=issues,evidence_parser_version=4))
                     self.descriptions[mid]=(desc,c)
                     self.applications[c['configuration_id'],mid]=dict(configuration_id=c['configuration_id'],model_id=mid,
                         points=[{k:p.get(k)for k in('m','q','R','physical_id')}for p in desc['points']],
@@ -431,7 +447,9 @@ class Service:
         path.parent.mkdir(parents=True,exist_ok=True);tmp=path.with_name(path.name+'.tmp-'+str(threading.get_ident()));tmp.write_text(raw);tmp.replace(path)
     def export(self):
         self._write(self.run/'PRICE_MODEL_VALIDATIONS.json',dict(schema='RPE_PRICE_MODEL_VALIDATIONS_V1',
-            models=[self.store.row(mid)for mid in sorted(self.descriptions)],applications=list(self.applications.values()),issues=self.issues,
+            models=self.store.rows()if self.settings.get('publish_shared_models')else[self.store.row(mid)for mid in sorted(self.descriptions)],
+            model_scope='CONTROLLER_SHARED_MODEL_STORE'if self.settings.get('publish_shared_models')else'CURRENT_RUN_USED_MODELS',
+            applications=list(self.applications.values()),issues=self.issues,
             alters_model_coefficients=False,alters_qualification=False,alters_cost_or_ranking=False))
     def start(self):
         if self.thread is not None:return
