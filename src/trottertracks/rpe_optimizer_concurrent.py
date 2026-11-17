@@ -981,6 +981,10 @@ class DistributedExecutor(ConcurrentExecutor):
         method = 'PREPARATION:'+preparation['stage']
         task_contract = dict(evaluation=deepcopy(contract),dependencies=preparation['dependencies'])
         with self.state.cv:
+            if preparation.get('dry_check_only')is True:
+                self.preparation_holds[job_id]=dict(status='PREPARATION_HOLD',reason='INSPECTION_ONLY_REQUEST_NOT_EXECUTABLE')
+                self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],reason='INSPECTION_ONLY_REQUEST_NOT_EXECUTABLE')
+                return job_id
             row = self.store.row(job_id)
             if row is None or row['state'] == 'CANCELLED':
                 if eligibility is None: eligibility = self._preparation_eligibility_for(request, job_id)
@@ -1090,7 +1094,7 @@ class DistributedExecutor(ConcurrentExecutor):
         for job_id in self.preparation_dependencies.get(proposal['configuration_id'], []):
             result = self.preparation_result(job_id,wait=True)
             if result is None or result.get('status') != 'PREPARATION_COMPLETE':
-                return dict(status='PREPARATION_HOLD',reason='CANDIDATE_PREPARATION_NOT_COMPLETE',preparation=result,job_id=job_id,calls=0,MSE_lower=None,MSE_upper=None,job=None)
+                return dict(status='HOST_ELIGIBILITY_HOLD',reason='CANDIDATE_PREPARATION_NOT_COMPLETE',preparation=result,host_eligibility=dict(preparation_task=job_id,result=result),job_id=job_id,calls=0,MSE_lower=None,MSE_upper=None,job=None)
         return None
 
     def _complete_preparation(self, row, value, transfer, receipt, outcome, task, started):
@@ -1564,6 +1568,13 @@ class DistributedExecutor(ConcurrentExecutor):
         return answer
 
     def metrics(self):
+        # RPC updates hosts/tasks/preflight state under this same reentrant
+        # condition. Early candidate completion may request metrics while an
+        # optional host joins; observe one consistent controller snapshot.
+        with self.state.cv:
+            return self._metrics_locked()
+
+    def _metrics_locked(self):
         result = super().metrics()
         rows = self.store.rows(); by_host = {}
         for row in rows:
@@ -1573,7 +1584,9 @@ class DistributedExecutor(ConcurrentExecutor):
             counts['launched'] += row['started_epoch'] is not None
             counts['completed'] += row['state'] == 'ACCEPTED'
             counts['adopted'] += row['adopted_epoch'] is not None
-        for line in (self.run_dir/'PROGRESS.jsonl').read_text().splitlines():
+        with self.lock:
+            progress_lines=(self.run_dir/'PROGRESS.jsonl').read_text().splitlines()
+        for line in progress_lines:
             event = json.loads(line)
             if event.get('event') == 'RESULT_REUSE' and event.get('host_id') in by_host:
                 by_host[event['host_id']]['reused'] += 1

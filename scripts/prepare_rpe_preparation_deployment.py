@@ -85,7 +85,13 @@ def create(tasks,source,output):
     output=Path(output).resolve();output.mkdir(parents=True,exist_ok=False)
     old=ROOT/'docs/research/rpe_q3_auto_allocation/deployment_20261117'
     config=read(old/'local0_tools/PACKAGE_CONFIG.json')
-    adapter_files=['scripts/run_rpe_preparation_job.py','src/trottertracks/rpe_preparation_worker.py','src/trottertracks/rpe_preparation_artifacts.py','src/trottertracks/rpe_q3_timing.py','src/trottertracks/rpe_preparation_queue.py']
+    adapter_files=['scripts/run_rpe_preparation_job.py','src/trottertracks/rpe_preparation_worker.py',
+        'src/trottertracks/rpe_preparation_artifacts.py','src/trottertracks/rpe_q3_timing.py',
+        'src/trottertracks/rpe_preparation_queue.py','src/trottertracks/rpe_preparation_paths.py',
+        'scripts/run_pf_preparation_stage.py','scripts/pauli_split_cal_audit_request.py',
+        'scripts/run_pr_pauli_candidate_signals.py','scripts/run_pr_pauli_candidate_prices.py',
+        'scripts/run_pr_df_candidate_signal_jobs.py','scripts/run_pr_df_candidate_prices.py',
+        'scripts/derive_pr_df_candidate_descriptor.py']
     adapter=source_manifest(source,adapter_files)
     all_sources={}
     for task in tasks:
@@ -121,8 +127,13 @@ def create(tasks,source,output):
                 if host_id=='server2':
                     profile['interpreter']='/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python'
             profile.update(preparation_sources=views,preparation_adapter_root=str(transport),preparation_adapter_manifest=adapter)
-            rule=dict(stage=spec['stage'],provider=spec['provider'],source_commit=spec['source']['commit'],profile=profile)
-            if rule not in base['preparation_profiles']:base['preparation_profiles'].append(rule)
+            from trottertracks.rpe_preparation_bridge import STAGES
+            prefix='PF_'if method in ('FULL_PF','TRUNCATED_PF')else'PAULI_'if method=='PR_PAULI'else'DF_'
+            providers=[name for name,value in STAGES.items()if name.startswith(prefix)and value==spec['stage']]
+            if method=='PR_PAULI'and spec['stage']=='signal':providers.append('A_BASE_P0')
+            for provider in providers:
+                rule=dict(stage=spec['stage'],provider=provider,source_commit=spec['source']['commit'],profile=profile)
+                if rule not in base['preparation_profiles']:base['preparation_profiles'].append(rule)
         profiles[host_id]=base
         h.update(transport_root=str(transport),worker_profile=str(owner/'PROFILE.json'),profile='profiles/'+host_id+'.json',
             run_directory=str(owner/'metadata-dry'),source_views=views,input_commits=input_commits)
@@ -133,6 +144,31 @@ def create(tasks,source,output):
         'run_rpe_preparation_deployment.py':(ROOT/'scripts/run_rpe_preparation_deployment.py').read_bytes(),
         'legacy_auto_deployment.py':(old/'local0_tools/run_auto_deployment.py').read_bytes()}
     files.update({'profiles/'+host+'.json':encode(profile)for host,profile in profiles.items()})
+    relay_files=['scripts/run_rpe_q3_relay.py','src/trottertracks/__init__.py',
+                 'src/trottertracks/rpe_q3_coordinator.py','src/trottertracks/rpe_q3_timing.py']
+    for name in relay_files:files['relay_payload/'+name]=raw(ROOT,source,name)
+    relay_workers=[]
+    for host in hosts:
+        if host['host_id']=='server2':continue
+        worker=dict(host_id=host['host_id'],root=host['transport_root'],profile=host['worker_profile'],
+                    python=host['transport_python'],priority_group=1 if host['host_id']=='local0-wsl' else 0)
+        if host.get('transport')=='wsl':
+            worker.update(transport='wsl',distribution=host['distribution'],participation_file=config['participation_file'])
+        else:worker['ssh_alias']=host['ssh_alias']
+        relay_workers.append(worker)
+    relay_template=dict(template_only=True,note='Copy for a separately adopted new run. Fill the controller ports from that run ENDPOINT; never use an old artificial controller. This package starts no relay.',
+        state_directory='__SET_NEW_LOCAL0_RELAY_STATE_DIRECTORY__',controller=dict(ssh_alias='qg2',local_port='__SET_NEW_LOCAL_FORWARD_PORT__',remote_port='__FROM_ADOPTED_RUN_ENDPOINT__'),
+        workers=relay_workers,poll_seconds=1,retry_backoff_max_seconds=30)
+    options=dict(template_only=True,implementation=source,note='Settings only; adopt a new scientific round and bind its exact Q3 readiness policy, source, budget and limits before starting.',
+        executor=dict(scheduler='concurrent',max_concurrent_jobs='auto',distributed=dict(
+            bind='127.0.0.1',port=0,computation_root=profiles['server2']['root'],computation_source='28d976b99cdf8329adcc1b79327e329e947ef774',
+            local_worker=profiles['server2'],preparation_profiles={host:str(output/'profiles'/f'{host}.json')for host in profiles},
+            host_eligibility='__GENERATED_FOR_THE_ADOPTED_ROUND__',required_hosts=[],
+            worker_script=next(h['transport_root']for h in hosts if h['host_id']=='server2')+'/scripts/run_rpe_q3_worker.py',
+            auto_allocation=dict(priority_groups=[['server2','server1','local'],['local0-wsl']],offer_ttl_seconds=3,discovery_grace_seconds=1),
+            host_admission=dict(schema='RPE_Q3_HOST_ADMISSION_V1',hosts={'local0-wsl':dict(accepting=True,optional=True)}))))
+    put(output/'RELAY_TEMPLATE.json',relay_template);put(output/'DISTRIBUTED_OPTIONS.json',options)
+    files['RELAY_TEMPLATE.json']=encode(relay_template);files['DISTRIBUTED_OPTIONS.json']=encode(options)
     manifest=dict(schema='RPE_PREPARATION_DEPLOYMENT_PACKAGE_V1',mode='dry-check',source=source,hosts=[h for h in hosts if h['host_id']!='server2'],
         server2=next(h for h in hosts if h['host_id']=='server2'),participation_file=config['participation_file'],
         return_directory=str(ROOT/'docs/research/rpe_distributed_preparation/remote_results'),

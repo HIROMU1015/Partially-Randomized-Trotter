@@ -170,11 +170,17 @@ def _guard_owned_source(root, source):
             raise ValueError('Imported workspace changed fixed scientific SOURCE: '+name)
 
 
-def _clone(source, destination, bundles, cache, checkout_input_head=True):
+def _clone(source, destination, bundles, cache, checkout_input_head=True, source_files=()):
     destination=Path(destination)
     if destination.exists():raise ValueError('Preparation workspace already exists; never retry science')
     subprocess.run(['git','clone','--shared','--no-checkout',str(source),str(destination)],check=True,capture_output=True)
     commit=_head(source)
+    directories={'scripts','src','configs','schemas','references'}
+    for name in source_files:
+        relative=artifact_path(name)
+        if len(relative.parts)>1 and relative.parts[0]not in directories:
+            directories.add(relative.parent.as_posix())
+    subprocess.run(['git','sparse-checkout','set','--cone',*sorted(directories)],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','checkout','-b','preparation-owned',commit],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','remote','remove','origin'],cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','config','user.name','HIROMU1015'],cwd=destination,check=True)
@@ -206,11 +212,11 @@ def execute(assignment, base_profile, directory):
     cache=worker_cache(profile);artifact_inputs=assigned_artifacts(assignment);cache.materialize(artifact_inputs,directory/'inputs')
     source=Path(fingerprint['views'][spec['source']['commit']]);owned={}
     if spec.get('source_workspace'):
-        source=_clone(source,directory/'workspace',spec.get('input_git_bundles',[]),cache);owned['source']=(source,spec['source'])
+        source=_clone(source,directory/'workspace',spec.get('input_git_bundles',[]),cache,source_files=spec['source']['files']);owned['source']=(source,spec['source'])
     replacements={'@PYTHON@':profile['interpreter'],'@SOURCE@':str(source),'@WORK@':str(directory),'@INPUTS@':str(directory/'inputs'),'@TRANSPORT@':str(Path(__file__).resolve().parents[2])}
     for alias,workspace in spec.get('workspaces',{}).items():
         if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe preparation workspace alias')
-        target=_clone(fingerprint['views'][alias],directory/'workspaces'/alias,workspace.get('input_git_bundles',[]),cache,workspace.get('checkout_input_head',True))
+        target=_clone(fingerprint['views'][alias],directory/'workspaces'/alias,workspace.get('input_git_bundles',[]),cache,workspace.get('checkout_input_head',True),workspace['source']['files'])
         replacements['@WORKSPACE:'+alias+'@']=str(target);owned[alias]=(target,workspace['source'])
     for name,tool in fingerprint['tools'].items():replacements['@TOOL:'+name+'@']=tool['path']
     def resolve(value):

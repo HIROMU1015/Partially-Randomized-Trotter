@@ -180,6 +180,73 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(ex.preparation_result(job,wait=True)['status'],'HOST_ELIGIBILITY_HOLD')
         self.assertIsNone(ex.store.row(job))
 
+    def test_joining_optional_host_during_metrics_uses_consistent_snapshot(self):
+        import threading
+        ex=self.executor(capacity=2)
+        self.poll_host(ex,'server1')
+        inspecting=threading.Event();release=threading.Event();joining=threading.Event();joined=threading.Event()
+        original=ex._offer_free;results=[];errors=[]
+        def offer(host,policy,error=None):
+            if threading.current_thread().name=='PREPARATION_METRICS_FIXTURE':
+                inspecting.set()
+                if not release.wait(3):raise AssertionError('Fixture did not release metrics')
+            return original(host,policy,error)
+        ex._offer_free=offer
+        def measure():
+            try:results.append(ex.metrics())
+            except Exception as error:errors.append(error)
+        def join():
+            joining.set()
+            try:self.poll_host(ex,'local0-wsl')
+            except Exception as error:errors.append(error)
+            finally:joined.set()
+        measuring=threading.Thread(target=measure,name='PREPARATION_METRICS_FIXTURE')
+        new_host=threading.Thread(target=join)
+        try:
+            measuring.start();self.assertTrue(inspecting.wait(2))
+            new_host.start();self.assertTrue(joining.wait(2))
+            # Without the controller condition lock, joining mutates the live
+            # host iterator at this exact point and raises RuntimeError.
+            joined.wait(.1)
+        finally:
+            release.set();measuring.join(3)
+            if new_host.ident is not None:new_host.join(3)
+        self.assertFalse(measuring.is_alive());self.assertFalse(new_host.is_alive())
+        self.assertEqual(errors,[])
+        self.assertEqual(set(results[0]['host_offers']),{'server1'})
+        self.assertIn('local0-wsl',ex.hosts)
+
+    def test_inspection_only_request_never_reserves_or_launches(self):
+        ex=self.executor(capacity=2)
+        request=self.request('compile','inspection-only')
+        request['preparation']['dry_check_only']=True
+        job=ex.submit_preparation(request,approved=True,budget=8)
+        result=ex.preparation_result(job,wait=True)
+        self.assertEqual(result['reason'],'INSPECTION_ONLY_REQUEST_NOT_EXECUTABLE')
+        self.assertEqual(result['calls'],0);self.assertEqual(result['preparation_calls'],0)
+        self.assertIsNone(ex.store.row(job))
+        self.assertEqual(ex.store.counts('PREPARATION:compile'),0)
+        self.assertEqual(self.poll_host(ex,'server1')['assignments'],[])
+        self.assertEqual(sum(e['event']=='ASSIGN'for e in ex.store.events()),0)
+
+    def test_normal_shot_search_returns_existing_hold_for_failed_preparation(self):
+        from fractions import Fraction
+        from trottertracks import rpe_method_optimizer as O
+        ex=self.executor(capacity=2)
+        blocked=self.submit(ex,'compile','outside-stage-budget',budget=0)
+        ex.preparation_dependencies['not-prepared']=[blocked]
+        candidate=dict(method='PR_PAULI',configuration_id='not-prepared',name='ARTIFICIAL_NOT_PREPARED',ready=True,caps=[1]*13,prices=[Fraction(1)]*26)
+        knowledge={}
+        result=O.run_method('PR_PAULI',[candidate],knowledge,ex.for_method('PR_PAULI'),
+            dict(large_step_headroom='9/10',decrement_steps=[1],seed_rules=[],max_steps_per_method=2),
+            Fraction(1),lambda *args:None,1,science_approved=True)
+        self.assertEqual(result['stop_reason'],'HOST_ELIGIBILITY_HOLD')
+        self.assertEqual(result['new_calls'],0);self.assertEqual(result['trace'],[])
+        self.assertEqual(knowledge,{})
+        self.assertEqual(result['pending_request']['hold_reason'],'CANDIDATE_PREPARATION_NOT_COMPLETE')
+        self.assertEqual(ex.store.counts('PR_PAULI'),0)
+        self.assertEqual(sum(e['event']in('ASSIGN','ACCEPT','ADOPT')for e in ex.store.events()),0)
+
     def test_explicit_stage_budget_does_not_consume_q3_budget(self):
         ex=self.executor(capacity=2)
         one=self.submit(ex,'compile','one',budget=1)

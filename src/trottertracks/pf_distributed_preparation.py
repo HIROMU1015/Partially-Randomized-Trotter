@@ -23,6 +23,25 @@ def git(root,*args):return subprocess.check_output(['git',*args],cwd=root,text=T
 def complete_selected(root,spec,run,request,entry,output,runtime):
     """Original finite PF contract; no independent candidate/shot selection."""
     original=Path(entry).resolve().parents[1];run=Path(run)
+    owner_input=run/'ORIGINAL_OWNER_REQUEST.json';owner_output=run/'ORIGINAL_OWNER_CHECK.json'
+    put(owner_input,request)
+    subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
+        str(Path(root)/'scripts/check_pf_preparation_owner.py'),'--provider-root',str(original),
+        '--request',str(owner_input),'--output',str(owner_output)],check=True)
+    owner=read(owner_output)
+    held=[row for row in owner['rows']if row['status']=='PRIOR_OWNER_HOLD']
+    if held:
+        if not Path(request['registry_file']).exists():put(request['registry_file'],dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={}))
+        put(output,dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=held,registry_file=request['registry_file']))
+        return
+    reused=[row for row in owner['rows']if row['status']=='REUSE_COMPLETE_ORIGINAL_OWNER']
+    if len(reused)==len(owner['rows']):
+        registry=read(request['registry_file'])if Path(request['registry_file']).exists()else dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={})
+        for row in reused:registry['configurations'][row['configuration_id']]=row['entry']
+        subprocess.run(['git','fetch','--no-tags',str(original),'HEAD'],cwd=root,check=True,
+            stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+        put(request['registry_file'],registry);put(output,dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=reused,registry_file=request['registry_file']))
+        return
     workspace=run/'provider_workspace';marker=run/'PROVIDER_SOURCE.json'
     if not marker.exists():
         source=git(original,'rev-parse','HEAD')

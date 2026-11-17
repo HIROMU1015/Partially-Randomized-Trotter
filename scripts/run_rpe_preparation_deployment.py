@@ -89,8 +89,11 @@ def remote(host,payload,U,utility):
 
 def return_only(output,U,utility):
     payload=json.loads((output/'RETURN_PAYLOAD.json').read_text());host=payload.pop('return_transport')
-    result=remote(host,payload,U,utility);U.put(output/'RETURN_RECEIPT.json',U.encode(result))
-    if not result.get('ok'):raise ValueError('Return incomplete; use --return-only without redry-check')
+    result=remote(host,payload,U,utility)
+    if not result.get('ok'):
+        U.put(output/('RETURN_ERROR-'+str(time.time_ns())+'.json'),U.encode(result))
+        raise ValueError('Return incomplete; use --return-only without redry-check')
+    U.put(output/'RETURN_RECEIPT.json',U.encode(result))
     return result
 
 

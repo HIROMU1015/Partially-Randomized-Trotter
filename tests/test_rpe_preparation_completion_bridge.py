@@ -25,6 +25,27 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_prior_owner_markers_are_checked_at_original_path_before_submission(self):
+        with tempfile.TemporaryDirectory()as tmp:
+            root=Path(tmp);owner=root/'original-owner';output=owner/'docs/selected';output.mkdir(parents=True)
+            directory=root/'new-controller';directory.mkdir()
+            input_file=directory/'REQUEST.json';C.put(input_file,{'workspace':str(owner),'directory':'docs/selected'})
+            marker=output/'SIGNALS_STARTED.json';C.put(marker,{'pid':123,'automatic_retry':False})
+            engine=type('Engine',(),{'run_dir':root/'run'})()
+            bridge=B.DistributedPreparationBridge(engine,root)
+            completion=type('Completion',(),{'source':'fixed'})()
+            with patch.object(bridge,'build_request',side_effect=AssertionError('must not clone/submit')):
+                with self.assertRaisesRegex(C.Held,'ORIGINAL_OWNER_RUNNING_OR_UNKNOWN'):
+                    bridge.call(completion,['fixed','--request',str(input_file)],directory,'PAULI_SIGNALS')
+            self.assertFalse((directory/'PAULI_SIGNALS.DISTRIBUTED.json').exists())
+            terminal=output/'run01/result.json';C.put(terminal,{'status':'ENTRY_CARRIERS_COMPLETE_NOT_RPE_QUALIFIED'})
+            observation=bridge.inspect_prior_owner(['fixed',str(input_file)],directory,'PAULI_SIGNALS')
+            self.assertFalse(observation['pending']);self.assertFalse(observation['failed'])
+            C.put(output/'STOP.json',{'status':'PRESERVED_STOP'})
+            observation=bridge.inspect_prior_owner(['fixed',str(input_file)],directory,'PAULI_SIGNALS')
+            self.assertTrue(observation['failed'])
+            self.assertTrue(marker.is_file());self.assertEqual(json.loads(input_file.read_text())['workspace'],str(owner))
+
     def test_operational_hold_reconciles_same_attempt_but_failed_science_does_not_retry(self):
         for first_status in ('HOST_ELIGIBILITY_HOLD','PREPARATION_FAILED','UNKNOWN'):
             with self.subTest(first_status=first_status),tempfile.TemporaryDirectory()as tmp:

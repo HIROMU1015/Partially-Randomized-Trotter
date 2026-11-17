@@ -229,6 +229,61 @@ class DistributedPreparationBridge:
             result[name] = self._blob(item.read_bytes())
         return result
 
+    def inspect_prior_owner(self, command, directory, stage):
+        """Read selected producer output markers before cloning can hide them.
+
+        This is limited to the exact original request/output roots, not a
+        global archive/process search. Existing distributed attempts are
+        reconciled by JobStore instead of this pre-submission observation.
+        """
+        directory=Path(directory).resolve();roots=[directory];observations=[]
+        def state(path):
+            try:return read(path)
+            except (OSError,ValueError):return {}  # An owner may still be publishing this terminal.
+        for argument in command:
+            if not isinstance(argument,str)or not argument.endswith('.json'):continue
+            path=Path(argument)
+            if not path.is_file():continue
+            value=read(path)
+            if isinstance(value,dict)and value.get('workspace')and value.get('directory'):
+                roots.append(Path(value['workspace']).resolve()/artifact_path(value['directory']))
+        for root in dict.fromkeys(roots):
+            if not root.exists():continue
+            # A protected STOP belongs to this exact selected producer output.
+            for path in root.rglob('STOP*.json'):
+                if not path.is_file():continue
+                observations.append(dict(path=str(path),sha256=hashlib.sha256(path.read_bytes()).hexdigest(),state='STOP'))
+            legacy=root/(stage+'.STARTED.json')
+            markers=list(root.rglob('*_STARTED.json'))
+            if legacy.is_file():markers.append(legacy)
+            started=root/'started'
+            if started.is_dir():markers.extend(started.glob('*.json'))
+            for path in dict.fromkeys(markers):
+                companion=path.with_name(path.stem+'_RETURN.json')
+                terminals=[]
+                if path.name=='SIGNALS_STARTED.json':
+                    companion=path.with_name('SIGNALS_RETURN.json');terminals=[path.parent/'run01/result.json']
+                elif path.name=='CALIBRATION_STARTED.json':
+                    terminals=list(path.parent.glob('**/run01/RESULT.json'))
+                elif path.name=='AUDIT_STARTED.json':terminals=list(path.parent.glob('**/PRICE_26AXIS.json'))
+                elif path==legacy:companion=root/(stage+'.RETURN.json')
+                elif path.parent.name=='started':terminals=[path.parent.parent/'terminal'/path.name]
+                completed=False
+                if companion.is_file():
+                    result=state(companion)
+                    if result.get('returncode')==0 and result.get('signal')is None:completed=True
+                    elif result.get('returncode')is not None or result.get('signal')is not None:
+                        observations.append(dict(path=str(companion),sha256=hashlib.sha256(companion.read_bytes()).hexdigest(),state='FAILED'))
+                for terminal in terminals:
+                    if not terminal.is_file():continue
+                    status=state(terminal).get('status','')
+                    completed=completed or status in('VALID','ENTRY_CARRIERS_COMPLETE_NOT_RPE_QUALIFIED','PRICE_RULE_SUPPORTED_MODEL_REFERENCE')or(status.startswith('FINITE_LD')and status.endswith('_CAL_PATHS_COMPLETE'))
+                observations.append(dict(path=str(path),sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+                                         state='COMPLETED_ARTIFACTS_AVAILABLE'if completed else'RUNNING_OR_UNKNOWN_ORIGINAL_OWNER'))
+        return dict(scope='EXACT_ORIGINAL_SELECTED_PRODUCER_OUTPUTS_ONLY',observations=observations,
+            failed=any(row['state']in('STOP','FAILED')for row in observations),
+            pending=any(row['state']=='RUNNING_OR_UNKNOWN_ORIGINAL_OWNER'for row in observations))
+
     def _import_result(self, result, request):
         artifacts = result.get('artifacts') or result.get('artifact_manifest') or {}
         directory = Path(result['artifact_directory'])
@@ -288,6 +343,12 @@ class DistributedPreparationBridge:
             submitted = read(marker)
             request = submitted['request']
         else:
+            prior=self.inspect_prior_owner(command,directory,stage)
+            put(directory/(stage+'.PRIOR_OWNER.json'),prior)
+            if prior['failed']:
+                raise Held('STAGE_FAILED:'+stage+':ORIGINAL_OWNER_STOP_OR_FAILURE:NO_AUTOMATIC_RETRY:'+str(prior))
+            if prior['pending']:
+                raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':ORIGINAL_OWNER_RUNNING_OR_UNKNOWN:'+str(prior))
             request = self.build_request(completion, command, directory, stage, output)
             submitted = dict(request=request, source=completion.source, automatic_retry=False)
         # A Q3 approval/budget does not open signal/compile scope. The round
