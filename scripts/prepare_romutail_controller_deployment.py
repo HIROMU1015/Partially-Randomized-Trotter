@@ -112,7 +112,8 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
             distributed['relay']=dict(workers=deepcopy(layout['relay_workers']),poll_seconds=1,request_timeout_seconds=30)
         distributed.setdefault('preparation', {}).setdefault('budgets', dict(signal=0, compile=0, audit=0))
         completion = round_value.setdefault('candidate_completion', {})
-        completion.update(source=resolved_source, controller_paths=deepcopy(layout['controller_paths']))
+        completion.update(source=layout.get('candidate_completion_source', resolved_source),
+                          controller_paths=deepcopy(layout['controller_paths']))
         if round_value.get('price_rules_overrides', {}).get('registry_file'):
             completion['price_registry_file'] = round_value['price_rules_overrides']['registry_file']
         # Explicitly preserve all finite budgets and the original unapproved
