@@ -1,0 +1,17 @@
+Optimizer library unchanged from base: True cfe26d7adfdd928320084d510df3a006869dd40aaf390dd470ef90b6dd30d4c8
+test_fixed_selection_except_explicit_execution_readiness_guard (baseline_optimizer_test.SchedulerTests) ... FAIL
+
+======================================================================
+FAIL: test_fixed_selection_except_explicit_execution_readiness_guard (baseline_optimizer_test.SchedulerTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.rpe-central/releases/14a6102d4/tests/test_rpe_optimizer_concurrent.py", line 278, in test_fixed_selection_except_explicit_execution_readiness_guard
+    self.assertEqual(ast.dump(a),ast.dump(b),name)
+AssertionError: 'Func[9233 chars]d()))], orelse=[If(test=BoolOp(op=And(), value[8514 chars]=[])' != 'Func[9233 chars]d())), If(test=Compare(left=Subscript(value=Na[9259 chars]=[])'
+Diff is 53723 characters long. Set self.maxDiff to None to see it. : run_method
+
+----------------------------------------------------------------------
+Ran 1 test in 0.084s
+
+FAILED (failures=1)
+Baseline existing static AST check success: False

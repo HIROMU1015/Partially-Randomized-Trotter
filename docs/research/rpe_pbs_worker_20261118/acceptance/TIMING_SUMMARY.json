@@ -1,0 +1,181 @@
+{
+  "scope": "ARTIFICIAL_PBS_TECHNICAL_ACCEPTANCE_ONLY",
+  "scientific_H4_calls": 0,
+  "real_H4_timing": "UNMEASURED",
+  "clock_policy": "Monotonic intervals require equal clock_id; scheduler creation/start use one PBS scheduler clock; distinct host epochs are never subtracted.",
+  "cases": {
+    "cluster": {
+      "pbs_job_id": "267193.CPUcluster-PRISM",
+      "pbs_final_state": "F",
+      "pbs_exit_status": 0,
+      "pbs_run_count": 1,
+      "worker_final_state": "EXITED",
+      "pbs_assigned_cpus": 2,
+      "pbs_assigned_memory_bytes": 4294967296,
+      "ready_compile_enqueue_to_pbs_submission_intent_seconds": 1.2141776310745627,
+      "pbs_scheduler_creation_to_execution_seconds": 99.0,
+      "pbs_wait_scope": "Includes intentional held-job acceptance test; not normal queue latency or worker startup duration.",
+      "submission_intent_to_first_observed_worker_offer_seconds": 99.26601717399899,
+      "exact_pbs_submission_to_worker_process_start_seconds": null,
+      "worker_start_missing_reason": "PBS scheduler and compute worker have separate clocks; first-offer controller envelope and scheduler wait are recorded separately.",
+      "worker_tasks": [
+        {
+          "job_id": "prep-926302fcf50959fd6cbe3dd4",
+          "attempt_id": "dba9266a63ee47dd8288ee079a771a1f",
+          "stage": "compile",
+          "worker_clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+          "worker_assignment_durable_to_body_seconds": 1.6356355500174686,
+          "body_seconds": 0.2501435310114175
+        },
+        {
+          "job_id": "b766a93a10dbb690c6f7",
+          "attempt_id": "a105bb48e02640d48b4c7324b5df82d8",
+          "stage": "q3",
+          "worker_clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+          "worker_assignment_durable_to_body_seconds": 1.27850929700071,
+          "body_seconds": 2.002036447986029
+        }
+      ],
+      "pbs_q3_receive_to_search_adopt_seconds": {
+        "count": 1,
+        "total": 0.026674087974242866,
+        "mean": 0.026674087974242866,
+        "maximum": 0.026674087974242866,
+        "minimum": 0.026674087974242866
+      },
+      "pbs_q3_result_upload_ack_roundtrip_seconds": {
+        "count": 1,
+        "total": 2.015971479995642,
+        "mean": 2.015971479995642,
+        "maximum": 2.015971479995642,
+        "minimum": 2.015971479995642
+      },
+      "pbs_q3_non_body_transfer_envelopes_seconds": [
+        6.20481640601065
+      ],
+      "one_way_result_save_to_central_adopt_seconds": null,
+      "one_way_missing_reason": "Different host clocks; same-worker save spans, controller receive/adopt spans and transfer envelope retained.",
+      "setup_first_placement_seconds": null,
+      "setup_reuse_seconds": null,
+      "setup_scope": "See environment/deployment evidence; not derived from these acceptance runs."
+    },
+    "faults": {
+      "pbs_job_id": "267194.CPUcluster-PRISM",
+      "pbs_final_state": "F",
+      "pbs_exit_status": 0,
+      "pbs_run_count": 1,
+      "worker_final_state": "EXITED",
+      "pbs_assigned_cpus": 2,
+      "pbs_assigned_memory_bytes": 4294967296,
+      "ready_compile_enqueue_to_pbs_submission_intent_seconds": 1.3075749569106847,
+      "pbs_scheduler_creation_to_execution_seconds": 55.0,
+      "pbs_wait_scope": "Includes intentional held-job acceptance test; not normal queue latency or worker startup duration.",
+      "submission_intent_to_first_observed_worker_offer_seconds": 55.74464934808202,
+      "exact_pbs_submission_to_worker_process_start_seconds": null,
+      "worker_start_missing_reason": "PBS scheduler and compute worker have separate clocks; first-offer controller envelope and scheduler wait are recorded separately.",
+      "worker_tasks": [
+        {
+          "job_id": "prep-926302fcf50959fd6cbe3dd4",
+          "attempt_id": "caead9df73e9423e9979b423e49e98be",
+          "stage": "compile",
+          "worker_clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+          "worker_assignment_durable_to_body_seconds": 1.6716709090396762,
+          "body_seconds": 0.24253093695733696
+        },
+        {
+          "job_id": "8536a8738cd2688ea009",
+          "attempt_id": "865b68aca3294ca59d3e51508f21f457",
+          "stage": "q3",
+          "worker_clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+          "worker_assignment_durable_to_body_seconds": 1.2944445770117454,
+          "body_seconds": 2.0023853619932197
+        },
+        {
+          "job_id": "e3616f2e093cac4690de",
+          "attempt_id": "89ca7ec9f78842bf8386c3935725f631",
+          "stage": "q3",
+          "worker_clock_id": "CPUcluster035:e281872c-a1c1-4d64-83bd-5b9e51ecc21c",
+          "worker_assignment_durable_to_body_seconds": 1.317645625967998,
+          "body_seconds": 2.0020551460329443
+        }
+      ],
+      "pbs_q3_receive_to_search_adopt_seconds": {
+        "count": 2,
+        "total": 0.05377260304521769,
+        "mean": 0.026886301522608846,
+        "maximum": 0.027174364076927304,
+        "minimum": 0.02659823896829039
+      },
+      "pbs_q3_result_upload_ack_roundtrip_seconds": {
+        "count": 2,
+        "total": 4.033823588048108,
+        "mean": 2.016911794024054,
+        "maximum": 2.017269499017857,
+        "minimum": 2.016554089030251
+      },
+      "pbs_q3_non_body_transfer_envelopes_seconds": [
+        5.267885753011797,
+        8.118564705946483
+      ],
+      "one_way_result_save_to_central_adopt_seconds": null,
+      "one_way_missing_reason": "Different host clocks; same-worker save spans, controller receive/adopt spans and transfer envelope retained.",
+      "setup_first_placement_seconds": null,
+      "setup_reuse_seconds": null,
+      "setup_scope": "See environment/deployment evidence; not derived from these acceptance runs.",
+      "local_progress_while_pbs_held": {
+        "status": "PASS",
+        "held_controller_clock": {
+          "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+          "monotonic": 974776.964682296,
+          "epoch": 1794934788.4103308,
+          "event": "PBS_ALLOCATION_STATE",
+          "pid": 555138,
+          "token": "eebeb11dd9bb41dbba9c239e31915c5c",
+          "job_id": "267194.CPUcluster-PRISM",
+          "status": "H",
+          "worker": null
+        },
+        "local_adopt": {
+          "UTC": "2026-11-17T16:59:48Z",
+          "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d",
+          "monotonic": 974777.168344001,
+          "epoch": 1794934788.6139927,
+          "invocation": "555138-1794934785040833556",
+          "method": "PREPARATION:signal",
+          "event": "ADOPT",
+          "job": "prep-256db6d26c376f4b153f3a42",
+          "configuration": "prep-256db6d26c376f4b153f3a42",
+          "status": "PREPARATION_COMPLETE",
+          "stage": "signal",
+          "host_id": "local",
+          "attempt_id": "8fe911e424124d218d9a3f0f31597ad2"
+        },
+        "next_running_controller_monotonic": 974830.668819701,
+        "held_observation_to_local_adopt_seconds": 0.20366170501802117
+      }
+    }
+  },
+  "placement": {
+    "initial_saved_input_unpack_and_views_remote_seconds": 15.12531109713018,
+    "initial_archive_transfer_seconds": null,
+    "final_transport_first_missing_object_stage": {
+      "commit": "22a428bd34cbc3705b90ca6f4407053a6d996f05",
+      "destination": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/22a428bd3",
+      "reused": false,
+      "remote_same_clock_seconds": 1.058205058798194,
+      "missing_object_count": 5,
+      "transferred_bytes": 58193,
+      "local_same_clock_seconds": 7.344626116100699
+    },
+    "final_transport_reuse_stage": {
+      "commit": "22a428bd34cbc3705b90ca6f4407053a6d996f05",
+      "destination": "/home/AbeHiromu/projects/rpe-pbs-20261118/releases/22a428bd3",
+      "reused": true,
+      "remote_same_clock_seconds": 0.29459761269390583,
+      "missing_object_count": 0,
+      "transferred_bytes": 0,
+      "local_same_clock_seconds": 5.435335882008076
+    },
+    "scope": "Private fixed source placement, separate from per-task CAS transfer; durations use one host clock"
+  }
+}

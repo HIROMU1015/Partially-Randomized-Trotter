@@ -366,3 +366,10 @@ Local0 absolute-kappa interval through the normal physical schedule entry (metad
 - 分散Q3の自動割当・自動同時枠と計時：[HANDOFF](../docs/research/rpe_q3_auto_allocation/HANDOFF.md)。新run既定auto、保存runの上限保全。実H4起動0。
 
 ローカル起点の簡易価格検証：`reconcile_rpe_price_validation_store.py` は既存ModelStoreを原要求・所有者ごと引き継ぐ。`prepare_romutail_controller_deployment.py` が全release/run共通storeを通常入口へ設定する。[配置・検収](../docs/research/h4_price_validation_local_controller_20261118/REPORT.md)。
+# PBS計算先（2026-11-18）
+
+通常探索は引き続き`run_rpe_schedule_search.py`。PBS割当はcontrollerが自動投入・回収し、
+計算ノードで`run_rpe_pbs_worker.py`を実行する。管理ホストの`rpe_pbs_gateway.py`は
+PBS照会と共有spoolの配送だけを担当する。`prepare_rpe_pbs_readiness.py`は固定SOURCEの不足Git object配置、
+`prepare_rpe_pbs_release.py`は新しい固定releaseの設定作成、`check_rpe_pbs.py`は人工検収用。
+実施範囲、開始・停止・再開、SOURCEとruntimeは[HANDOFF](../docs/research/rpe_pbs_worker_20261118/HANDOFF.md)。

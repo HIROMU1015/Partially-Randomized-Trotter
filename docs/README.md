@@ -390,3 +390,11 @@ Local0 absolute-kappa interval through the normal physical schedule entry (metad
 - 分散Q3の自動割当・自動同時枠と計時：[HANDOFF](research/rpe_q3_auto_allocation/HANDOFF.md)。新run既定auto、保存runの上限保全。実H4起動0。
 
 [ローカル起点の簡易価格検証・配置と検収](research/h4_price_validation_local_controller_20261118/REPORT.md)／[起動・再開・同期](research/h4_price_validation_local_controller_20261118/HANDOFF.md)。
+# PBS計算先の実装・検収（2026-11-18）
+
+後続の実mergeと最終検収は[中央・価格・PBS統合HANDOFF](research/rpe_pbs_central_integration_20261118/HANDOFF.md)。
+固定925985b4eを実PBSで検収し、検証済み統合版を非アクティブ登録した。
+
+[HANDOFF](research/rpe_pbs_worker_20261118/HANDOFF.md)／[REPORT](research/rpe_pbs_worker_20261118/REPORT.md)：
+RomuTail中央管理からPBS計算ノードworkerへ通常queueを接続した運用記録。
+保存実入力metadataと人工PBS検収の証拠を含む。実H4信号・回路compile・Q3本体は未実施。

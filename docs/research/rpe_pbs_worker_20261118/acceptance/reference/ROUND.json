@@ -1,0 +1,91 @@
+{
+  "artificial_fixture": {
+    "numerical_leaf": "EXACT_RATIONAL_ARTIFICIAL_MSE",
+    "only": true,
+    "sleep_seconds": 2.0
+  },
+  "executor": {
+    "distributed": {
+      "bind": "127.0.0.1",
+      "local_worker": {
+        "host_id": "local",
+        "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-pbs-worker-20261118/.pbs-source-22a428bd3",
+        "work_dir": "/tmp/rpe-pbs-reference-22a428bd3-20261118/workers/local",
+        "interpreter": "/usr/bin/python3",
+        "slots": 1,
+        "route_views": {},
+        "prefix_cache_directory": "/tmp/rpe-pbs-reference-22a428bd3-20261118/workers/local/prefix-cache"
+      },
+      "port": 0,
+      "affinity_wait_seconds": 0,
+      "preparation": {
+        "budgets": {
+          "signal": 100,
+          "compile": 100,
+          "audit": 100
+        }
+      },
+      "auto_allocation": {
+        "priority_groups": [
+          [
+            "local",
+            "pbs-0"
+          ]
+        ],
+        "discovery_grace_seconds": 0,
+        "offer_ttl_seconds": 5
+      }
+    },
+    "dp_workers": 1,
+    "max_concurrent_jobs": "auto",
+    "scheduler": "concurrent",
+    "wait_for_running_jobs": true
+  },
+  "initial": "all",
+  "max_new_q3_per_method": {
+    "PR_DF": 32,
+    "PR_PAULI": 32
+  },
+  "methods": [
+    "PR_PAULI",
+    "PR_DF"
+  ],
+  "round_id": "ARTIFICIAL_DISTRIBUTED_Q3",
+  "science_approved": true,
+  "search_overrides": {
+    "lookahead": 1,
+    "requested_widths": {
+      "PR_PAULI": [
+        0.1
+      ],
+      "PR_DF": [
+        0.1
+      ]
+    },
+    "schedule_wide": {
+      "max_kappa": "1",
+      "per_decision": 8
+    }
+  },
+  "width_families": [
+    {
+      "L_D": 1,
+      "configuration": {
+        "commit": "ARTIFICIAL",
+        "method": "PR_PAULI",
+        "path": "ARTIFICIAL"
+      },
+      "method": "PR_PAULI"
+    },
+    {
+      "L_D": 1,
+      "configuration": {
+        "commit": "ARTIFICIAL",
+        "method": "PR_DF",
+        "path": "ARTIFICIAL"
+      },
+      "method": "PR_DF"
+    }
+  ],
+  "artificial_pbs_acceptance": true
+}

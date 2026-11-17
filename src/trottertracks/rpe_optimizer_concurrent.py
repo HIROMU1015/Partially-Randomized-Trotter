@@ -471,6 +471,7 @@ class DistributedExecutor(ConcurrentExecutor):
         self.input_hash_cache = {}
         self.local_worker = None
         self.local_worker_pid = None
+        self.pbs_manager = None
         self.rpc_server = None
         super().__init__(*args, **kwargs)
         try:
@@ -521,6 +522,10 @@ class DistributedExecutor(ConcurrentExecutor):
             self.controller_url = 'http://127.0.0.1:'+str(address[1])
             Q.atomic_json(run/'distributed'/'ENDPOINT.json', dict(url=self.controller_url, pid=os.getpid(), source=self.optimizer_source))
             self.start_controller_relay(address[1])
+            if distributed.get('pbs'):
+                from .rpe_pbs import PbsManager
+                self.pbs_manager = PbsManager(self, distributed['pbs'])
+                self.pbs_manager.start()
             profile = distributed.get('local_worker')
             if profile and profile.get('slots', 0) > 0:
                 profile = dict(profile)
@@ -550,6 +555,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.state.monitor_stop.set()
             self.dispatcher.join(); self.monitor.join()
             self.stop_controller_relay()
+            if self.pbs_manager: self.pbs_manager.close()
             if self.rpc_server: self.rpc_server.shutdown(); self.rpc_server.server_close()
             fcntl.flock(self.state.driver, fcntl.LOCK_UN); self.state.driver.close()
             raise
@@ -750,6 +756,9 @@ class DistributedExecutor(ConcurrentExecutor):
             row = self.store.row(task.job.name)
             compatible[task.job.name] = []
             for h in available:
+                if not self._host_supports_stage(h, row['request']):
+                    skipped[h] = True
+                    continue
                 if not self.store.eligible(row['request'], row['eligibility'], h,
                         self.hosts[h].get('host_fingerprints'), row['job_id']):
                     skipped[h] = True
@@ -776,6 +785,11 @@ class DistributedExecutor(ConcurrentExecutor):
             if assign(task.job.name, set()): matched.add(task.job.name)
         return matched
 
+    def _host_supports_stage(self, host, request):
+        capabilities = (self.distributed.get('host_stage_capabilities') or {}).get(host)
+        stage = (request.get('preparation') or {}).get('stage', 'q3')
+        return capabilities is None or stage in capabilities
+
     def _capacity_feedback(self, host):
         with self.store._connection() as database:
             own = [dict(row) for row in database.execute(
@@ -791,7 +805,7 @@ class DistributedExecutor(ConcurrentExecutor):
         for task in self.state.tasks.values():
             if task.status != 'QUEUED' or not self._task_ready(task): continue
             row = self.store.row(task.job.name)
-            if row is not None and self.store.eligible(row['request'], row['eligibility'], host,
+            if row is not None and self._host_supports_stage(host, row['request']) and self.store.eligible(row['request'], row['eligibility'], host,
                     self.hosts.get(host, {}).get('host_fingerprints'), row['job_id']):
                 ready += 1
         return dict(controller_invocation=self.invocation, measurement_seconds=now-self.state.allocation_start,
@@ -1464,6 +1478,14 @@ class DistributedExecutor(ConcurrentExecutor):
                 skipped = False
                 for task in queue:
                     row = self.store.row(task.job.name)
+                    if not self._host_supports_stage(host, row['request']):
+                        skipped = True
+                        continue
+                    if (value.get('resource_report') or {}).get('pbs'):
+                        from .rpe_pbs import fits_request
+                        if not fits_request(row['request'], value['resource_report'], self.distributed.get('pbs') or {}):
+                            skipped = True
+                            continue
                     decision = self._eligibility_for(row['request'], row['job_id'])
                     if not self.store.set_eligibility(row['job_id'], decision):
                         self.eligibility_holds[row['job_id']] = decision
@@ -1704,6 +1726,7 @@ class DistributedExecutor(ConcurrentExecutor):
         admissions = {host:self._host_admission(host, admission_policy, admission_error)
                       for host in sorted(set(self.hosts) | set(admission_policy['hosts']))}
         result.update(distributed=True, by_host=by_host, host_admission=admissions,
+                      pbs=self.pbs_manager.metrics() if self.pbs_manager else None,
                       host_admission_error=admission_error,
                       allocation_settings=deepcopy(self.allocation_settings),
                       automatic_capacity=self.state.allocation_auto,
@@ -1742,6 +1765,7 @@ class DistributedExecutor(ConcurrentExecutor):
                          owner_preserved=True,automatic_retry=False)
             self.state.cv.notify_all()
         super().finish()
+        if self.pbs_manager: self.pbs_manager.close()
         self.stop_controller_relay()
         if self.local_worker is not None:
             self.local_worker.terminate()

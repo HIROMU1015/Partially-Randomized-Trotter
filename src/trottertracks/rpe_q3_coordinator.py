@@ -46,6 +46,9 @@ def source_manifest(root, commit):
     for path in ('scripts/run_rpe_preparation_job.py', 'src/trottertracks/rpe_preparation_worker.py',
                  'src/trottertracks/rpe_preparation_artifacts.py'):
         if (Path(root)/path).exists():paths += (path,)
+    for path in ('src/trottertracks/rpe_pbs.py', 'src/trottertracks/rpe_pbs_worker.py',
+                 'scripts/run_rpe_pbs_worker.py', 'scripts/rpe_pbs_gateway.py'):
+        if (Path(root)/path).exists():paths += (path,)
     return dict(commit=commit, files={p: hashlib.sha256((Path(root)/p).read_bytes()).hexdigest() for p in paths})
 
 

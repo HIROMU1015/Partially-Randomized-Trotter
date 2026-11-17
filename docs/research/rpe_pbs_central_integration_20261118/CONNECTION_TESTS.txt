@@ -1,0 +1,189 @@
+test_pbs_metadata_does_not_change_preparation_scientific_binding (test_rpe_pbs.AdmissionTests) ... ok
+test_scientific_stage_requires_estimate_and_respects_remaining_time (test_rpe_pbs.AdmissionTests) ... ok
+test_json_query_avoids_pbs20_user_table_and_empty_run_does_not_query (test_rpe_pbs.GatewayTests) ... ok
+test_lost_qsub_reply_recovers_original_scheduler_job_without_resubmit (test_rpe_pbs.GatewayTests) ... ok
+test_saved_artifact_harvest_never_calls_a_worker_or_subprocess (test_rpe_pbs.GatewayTests) ... ok
+test_allocation_submission_preserves_task_scientific_budget (test_rpe_pbs.ManagerTests) ... ok
+test_missing_history_holds_running_attempt_until_worker_exit (test_rpe_pbs.ManagerTests) ... ok
+test_queued_held_and_exited_allocations_cannot_offer_new_slots (test_rpe_pbs.ManagerTests) ... ok
+test_response_replay_does_not_repeat_rpc_and_changed_request_is_rejected (test_rpe_pbs.ManagerTests) ... ok
+test_restart_keeps_submission_token_and_rejects_changed_settings (test_rpe_pbs.ManagerTests) ... ok
+test_saved_cas_harvest_reuses_original_attempt_once (test_rpe_pbs.ManagerTests) ... ok
+test_authoritative_pbs_bounds_allow_auto_slots_without_job_cgroup (test_rpe_pbs_worker.AdmissionTests) ... ok
+test_delayed_assignment_never_launches_past_admission_cutoff (test_rpe_pbs_worker.AdmissionTests) ... ok
+test_idle_release_writes_exit_without_waiting_for_walltime (test_rpe_pbs_worker.AdmissionTests) ... ok
+test_actual_pbs_bound_wins_over_machine_cpu_and_nodefile (test_rpe_pbs_worker.AllocationTests) ... ok
+test_cpu_memory_and_compiler_footprint_share_one_bound (test_rpe_pbs_worker.AllocationTests) ... ok
+test_job_identity_single_node_and_oversized_dp_rejected (test_rpe_pbs_worker.AllocationTests) ... ok
+test_response_roundtrip_cleans_only_consumed_message (test_rpe_pbs_worker.SpoolTests) ... ok
+test_timeout_restart_reuses_the_one_acquisition_before_next_poll (test_rpe_pbs_worker.SpoolTests) ... ok
+test_timeout_retains_request_for_controller_recovery (test_rpe_pbs_worker.SpoolTests) ... ok
+test_method_drains_leave_controller_open_then_main_closes_service_once (test_rpe_executor_price_validation_lifecycle.PriceValidationLifecycleTests) ... ok
+test_concurrent_method_drain_does_not_close_owner (test_rpe_executor_method_lifecycle.MethodLifecycle) ... ok
+test_distributed_method_drain_does_not_close_queue_or_preparation (test_rpe_executor_method_lifecycle.MethodLifecycle) ... ok
+test_stop_keeps_owner_and_original_attempt_and_blocks_new_reservations (test_rpe_controller_stop.StopTests) ... ok
+test_stopped_priority_search_does_not_treat_refusal_as_numerical_answer (test_rpe_controller_stop.StopTests) ... ok
+test_disabled_server_is_never_contacted (test_rpe_romutail_transport.DirectRelayTests) ... ok
+test_large_wsl_request_is_transferred_intact_without_console_stdin (test_rpe_romutail_transport.DirectRelayTests) ... ok
+test_normal_executor_owns_relay_endpoint_and_preserves_received_jobs_on_stop (test_rpe_romutail_transport.DirectRelayTests) ... ok
+test_per_worker_ssh_command_keeps_linux_mailbox_arguments (test_rpe_romutail_transport.DirectRelayTests) ... ok
+test_remote_windows_wsl_reads_remote_pause_without_local_file_access (test_rpe_romutail_transport.DirectRelayTests) ... ok
+test_remote_wsl_participation_file_is_read_in_its_own_distribution (test_rpe_romutail_transport.DirectRelayTests) ... ok
+test_absolute_kappa_route_inputs_share_registered_version (test_rpe_release_registry.ReleaseTests) ... ok
+test_artificial_planonly_and_real_input_rejection (test_rpe_release_registry.ReleaseTests) ... ok
+test_artificial_publication_skips_and_publication_failure_is_pending (test_rpe_release_registry.ReleaseTests) ... ok
+test_client_bootstrap_ignores_stale_code_root_and_planonly_pointer (test_rpe_release_registry.ReleaseTests) ... ok
+test_explicit_release_and_registered_input_change_rejection (test_rpe_release_registry.ReleaseTests) ... ok
+test_explicit_resume_archives_transient_stop_marker (test_rpe_release_registry.ReleaseTests) ... ok
+test_migrated_controller_cannot_start_new_work (test_rpe_release_registry.ReleaseTests) ... ok
+test_new_preview_prepare_start_pin_the_same_release_and_inputs (test_rpe_release_registry.ReleaseTests) ... ok
+test_planonly_uses_pinned_normal_entry_same_version (test_rpe_release_registry.ReleaseTests) ... ok
+test_repeated_completed_start_has_no_extra_launch (test_rpe_release_registry.ReleaseTests) ... ok
+test_resume_and_status_keep_run_source_after_current_switch (test_rpe_release_registry.ReleaseTests) ... ok
+test_status_reports_completed_exit_and_preserves_scientific_stop_reason (test_rpe_release_registry.ReleaseTests) ... ok
+test_stop_marks_run_without_signalling_unknown_pid (test_rpe_release_registry.ReleaseTests) ... ok
+test_unknown_action_is_rejected_before_run_creation (test_rpe_release_registry.ReleaseTests) ... ok
+test_contract_change_does_not_import_prior_answers (test_rpe_local0_search.Tests) ... ok
+test_corrupt_same_q3_receipt_holds_before_start (test_rpe_local0_search.Tests) ... ok
+test_exact_fraction_and_binary64_are_different (test_rpe_local0_search.Tests) ... ok
+test_existing_launched_unknown_job_is_not_restarted (test_rpe_local0_search.Tests) ... ok
+test_missing_confirmed_target_is_not_guessed (test_rpe_local0_search.Tests) ... ok
+test_missing_prior_directory_is_not_treated_as_unseen (test_rpe_local0_search.Tests) ... ok
+test_omitted_settings_and_explicit_scope_start_grant (test_rpe_local0_search.Tests) ... ok
+test_partial_overlap_uses_normal_entry_and_retains_unseen_point (test_rpe_local0_search.Tests) ... ok
+test_preview_and_start_have_same_effective_run_id (test_rpe_local0_search.Tests) ... ok
+test_server2_can_confirm_target_without_grant_then_bare_start (test_rpe_local0_search.Tests) ... ok
+test_unknown_fields_do_not_silently_shrink_scope (test_rpe_local0_search.Tests) ... ok
+test_unsupported_kappa_modes_report_specific_field_and_create_no_run (test_rpe_local0_search.Tests) ... ok
+test_metadata_publication_allows_same_run_but_scientific_changes_do_not (test_rpe_local0_price_validation_deployment.Local0PriceValidationDeployment) ... ok
+test_new_normal_cli_preview_creates_no_run_or_scientific_job (test_rpe_local0_price_validation_deployment.Local0PriceValidationDeployment) ... ok
+test_preserved_old_bootstrap_uses_new_current_service_for_next_child (test_rpe_local0_price_validation_deployment.Local0PriceValidationDeployment) ... skipped 'Preserved local0 deployment is not available on this host'
+test_conflicting_frozen_jobs_abort_atomically (test_rpe_price_validation_handover.Handover) ... ok
+test_normal_gateway_carries_explicit_stage_budget_without_inference_from_q3 (test_rpe_price_validation_handover.Handover) ... ok
+test_owner_frozen_request_partial_results_and_unknown_survive_across_runs (test_rpe_price_validation_handover.Handover) ... ok
+test_repeated_snapshot_preserves_newly_collected_metadata_and_shared_publication (test_rpe_price_validation_handover.Handover) ... ok
+test_saved_df7_holdout_matches_exact_frozen_axis_price_source (test_rpe_price_validation_handover.Handover) ... ok
+test_snapshot_retains_unknown_attempt_budget_stop_and_result_hash (test_rpe_controller_transfer.TransferTests) ... ok
+test_all_ready_host_offers_precede_claims_even_when_wsl_listed_first (test_rpe_q3_resources.DiscoveryTests) ... ok
+test_slow_preferred_ack_does_not_block_wsl_delivery_or_repeat_host_status (test_rpe_q3_resources.DiscoveryTests) ... ok
+test_unresponsive_preferred_host_does_not_block_wsl_or_duplicate_status (test_rpe_q3_resources.DiscoveryTests) ... ok
+test_cold_trial_measured_improvement_revert_and_drain (test_rpe_q3_resources.ResourceTests) ... ok
+test_equal_trial_is_not_improvement_and_polling_does_not_inflate_rate (test_rpe_q3_resources.ResourceTests) ... ok
+test_mailbox_feedback_persists_and_resume_keeps_slot_state (test_rpe_q3_resources.ResourceTests) ... ok
+test_owned_tree_reads_only_explicit_supervisor_and_children (test_rpe_q3_resources.ResourceTests) ... ok
+test_process_cgroup_allocation_bounds_are_not_machine_idle_resources (test_rpe_q3_resources.ResourceTests) ... ok
+test_unknown_and_untransferred_completion_hold_slots_fixed_mode_unchanged (test_rpe_q3_resources.ResourceTests) ... ok
+test_v1_cpu_cpuset_and_memory_ancestors_are_honoured (test_rpe_q3_resources.ResourceTests) ... ok
+test_assignment_never_expires_after_disconnect (test_rpe_q3_store.StoreTests) ... ok
+test_claim_enforces_membership_and_current_facts_and_keeps_priority (test_rpe_q3_store.StoreTests) ... ok
+test_completion_retransmit_and_adoption_are_exactly_once (test_rpe_q3_store.StoreTests) ... ok
+test_concurrent_budget_reservations_are_atomic (test_rpe_q3_store.StoreTests) ... ok
+test_controller_order_survives_prefix_hints (test_rpe_q3_store.StoreTests) ... ok
+test_hash_owner_and_state_regression_rejected (test_rpe_q3_store.StoreTests) ... ok
+test_only_unassigned_queue_can_release_reservation (test_rpe_q3_store.StoreTests) ... ok
+test_queued_hold_releases_budget_but_assigned_owner_cannot_change (test_rpe_q3_store.StoreTests) ... ok
+test_real_job_without_any_eligible_host_never_reserves (test_rpe_q3_store.StoreTests) ... ok
+test_reservation_survives_reopen_and_budget_is_per_method (test_rpe_q3_store.StoreTests) ... ok
+test_scientific_identity_cannot_change_under_same_job (test_rpe_q3_store.StoreTests) ... ok
+test_two_hosts_cannot_claim_same_scientific_job (test_rpe_q3_store.StoreTests) ... ok
+
+----------------------------------------------------------------------
+Ran 88 tests in 2.814s
+
+OK (skipped=1)
+{
+ "PR_PAULI": {
+  "stop": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+  "best": null,
+  "new_calls": 0,
+  "spent_before": 0,
+  "next": [
+   "ARTIFICIAL_LD6",
+   "104.00"
+  ]
+ }
+}
+{
+ "PR_PAULI": {
+  "stop": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+  "best": null,
+  "new_calls": 0,
+  "spent_before": 0,
+  "next": [
+   "ARTIFICIAL_LD6",
+   "104.00"
+  ]
+ }
+}
+{
+ "PR_PAULI": {
+  "stop": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+  "best": null,
+  "new_calls": 0,
+  "spent_before": 0,
+  "next": [
+   "ARTIFICIAL_LD6",
+   "104.00"
+  ]
+ }
+}
+{
+ "PR_PAULI": {
+  "stop": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+  "best": null,
+  "new_calls": 0,
+  "spent_before": 0,
+  "next": [
+   "ARTIFICIAL_LD6",
+   "104.00"
+  ]
+ }
+}
+{
+ "PR_PAULI": {
+  "stop": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+  "best": null,
+  "new_calls": 0,
+  "spent_before": 0,
+  "next": [
+   "ARTIFICIAL_LD6",
+   "104.00"
+  ]
+ }
+}
+{
+ "PR_PAULI": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "104.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "ARTIFICIAL_LD7",
+   "97.50"
+  ]
+ }
+}
+{
+ "PR_PAULI": {
+  "stop": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+  "best": null,
+  "new_calls": 0,
+  "spent_before": 0,
+  "next": [
+   "ARTIFICIAL_LD6",
+   "104.00"
+  ]
+ }
+}
+{
+ "PR_PAULI": {
+  "stop": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET",
+  "best": null,
+  "new_calls": 0,
+  "spent_before": 0,
+  "next": [
+   "ARTIFICIAL_LD6",
+   "104.00"
+  ]
+ }
+}

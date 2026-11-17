@@ -1,0 +1,22 @@
+{
+  "schema": "RPE_PBS_RUNTIME_BUILD_SOURCE_V1",
+  "source_url": "https://www.python.org/ftp/python/3.11.0/Python-3.11.0rc1.tgz",
+  "source_sha256": "456f32a8d66e7cae226478a74c3ebb358bae09eba0b8537f47d7b2790f65a1f0",
+  "build_job_id": "267190.CPUcluster-PRISM",
+  "scope": "user-private environment build only; no research circuit compile or evaluation",
+  "requested_resources": {
+    "queue": "workq",
+    "select": "1:ncpus=8:mem=4gb",
+    "walltime": "00:15:00"
+  },
+  "build_prefix": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/python311rc1",
+  "venv": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1",
+  "allocation_concurrency_adjustment": {
+    "generated_Makefile_compileall": "-j0 replaced with -j8 before install",
+    "count": 6,
+    "reason": "host exposes96 CPUs despite PBS allocation8; CPython default compileall uses visible CPUs",
+    "execution_note": "Job submitted with original build script. Generated Makefile adjusted from manager while make body ran, before install. Saved build-runtime.pbs includes equivalent adjustment for future reproducibility."
+  },
+  "scientific_source_modified": false,
+  "system_runtime_modified": false
+}

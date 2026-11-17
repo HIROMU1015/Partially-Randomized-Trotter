@@ -1,0 +1,79 @@
+{
+  "schema": "RPE_PBS_ENVIRONMENT_FINDINGS_V1",
+  "scope": "technical_environment_only_no_scientific_execution",
+  "ssh_alias": "prism",
+  "ssh_proxy": "akeno",
+  "manager": "CPUcluster-PRISM",
+  "user": "AbeHiromu",
+  "persistent_root": "/home/AbeHiromu/projects/rpe-pbs-20261118",
+  "probe_job": "267189.CPUcluster-PRISM",
+  "probe_exit_status": 0,
+  "probe_compute_node": "CPUcluster035",
+  "home_same_path_read_write": true,
+  "transport": "shared_home_file_spool_via_manager_ssh",
+  "outbound_romutail": {
+    "100.103.127.48:22": "OSError: [Errno 113] No route to host",
+    "100.103.127.48:8763": "OSError: [Errno 113] No route to host"
+  },
+  "temporary_directory": "/var/tmp/pbs.267189.CPUcluster-PRISM",
+  "temporary_directory_lifecycle": "PBS allocation scoped; persistent artifacts must use shared home",
+  "allocation_source": "qstat -f/-F json Resource_List and exec_vnode, intersect OS/cgroup limits if narrower",
+  "allocation_caveat": "affinity/cpu_count exposed96 for2CPU allocation; PBS_NODEFILE1 line; neither establishes allocated CPU budget",
+  "probe_allocation": {
+    "mem": "2gb",
+    "ncpus": 2,
+    "nodect": 1,
+    "place": "free",
+    "select": "1:ncpus=2:mem=2gb",
+    "walltime": "00:03:00"
+  },
+  "probe_body_monotonic_seconds": 2.048720688035246,
+  "limits": {
+    "workq_default_mem": "350gb",
+    "large_default_mem": "1516gb",
+    "job_history_duration": "168:00:00",
+    "scheduler_iteration_seconds": 600,
+    "explicit_queue_walltime_limit": "not advertised in readable qmgr output",
+    "explicit_user_concurrency_limit": "not advertised in readable qmgr output"
+  },
+  "system_python": "3.6.8, insufficient for existing worker runtime",
+  "private_python_target": "/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python",
+  "private_python_required_version_info": [
+    3,
+    11,
+    0,
+    "candidate",
+    1
+  ],
+  "private_runtime_build_job": "267190.CPUcluster-PRISM",
+  "private_runtime_build_allocation": {
+    "select": "1:ncpus=8:mem=4gb",
+    "walltime": "00:15:00"
+  },
+  "shared_environment_modifications": [],
+  "other_users_jobs_modified": [],
+  "new_H4_signal_calls": 0,
+  "new_H4_circuit_build_or_compile_calls": 0,
+  "new_H4_Q3_calls": 0,
+  "limits_observation": "No admin scheduler configuration or global setting was changed; unreadable/unexposed policy is not claimed unlimited.",
+  "private_runtime_build_status": {
+    "job_state": "F",
+    "Exit_status": 0,
+    "resources_used": {
+      "cpupercent": 116,
+      "cput": "00:04:14",
+      "mem": "154832kb",
+      "ncpus": 8,
+      "vmem": "1136520kb",
+      "walltime": "00:02:28"
+    },
+    "exec_vnode": "(CPUcluster035:ncpus=8:mem=4194304kb)",
+    "run_count": 1,
+    "ctime": "Wed Nov 18 01:29:10 2026",
+    "stime": "Wed Nov 18 01:29:10 2026",
+    "obittime": "Wed Nov 18 01:31:39 2026",
+    "package_import_check": "RUNTIME_BUILD_PASS"
+  },
+  "remaining_environment_jobs": [],
+  "remaining_environment_jobs_observation": "qstat -u AbeHiromu returned no active jobs after both probe267189 and runtime build267190 ended."
+}

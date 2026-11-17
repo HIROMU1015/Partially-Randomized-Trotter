@@ -6,6 +6,17 @@
 
 [ローカルcontrollerへの簡易価格検証統合](docs/research/h4_price_validation_local_controller_20261118/REPORT.md)：共通モデルstore引継ぎ、保存DF holdout照合、metadata公開後の同一run再開。[通常運用](docs/research/h4_price_validation_local_controller_20261118/HANDOFF.md)。実compile・新探索は未実施。
 
+中央管理・価格検証・PBSの合流版（2026-11-18）：[統合HANDOFF](docs/research/rpe_pbs_central_integration_20261118/HANDOFF.md)。
+中央674・価格8ba・PBS系列を実mergeし、固定SOURCE925985b4eで通常入口→実PBS人工task→回収・採用・再開を検収済み。
+検証済みreleaseは非アクティブ登録。共有currentの切替は中央統合担当に集約し、実H4は未実行。
+
+PBS計算先の追加（2026-11-18）：[運用・検収記録](docs/research/rpe_pbs_worker_20261118/HANDOFF.md)。
+RomuTailの既存DistributedExecutor/JobStoreへPBS割当内workerを接続する実装であり、
+保存実入力metadataと人工PBS検収だけを行った。実H4信号・compile・Q3の追加実行は0件。
+入口は`scripts/run_rpe_schedule_search.py`、接続は`src/trottertracks/rpe_pbs.py`、
+workerは`src/trottertracks/rpe_pbs_worker.py`。固定科学SOURCE・既存run・STOPは維持する。
+
+
 [通常探索の価格モデル簡易検証](docs/research/h4_price_validation_integration_20261117/REPORT.md)：モデル単位の独立実測再利用、代表1点の低優先分散要求、再開・C通常同期・探索マップへの接続。[運用](docs/research/h4_price_validation_integration_20261117/HANDOFF.md)。科学資格・価格係数・Q3順位は変更しない。
 
 [PR探索の候補単位保留とR08継続](docs/research/h4_pr_candidate_continuity_20261117/REPORT.md)：旧jobの照合待ちを局所化し、後着READYを共通queueへ投入。人工82件・native8件PASS、数値UNKNOWN/保存異常の停止は維持。[稼働確認・再開](docs/research/h4_pr_candidate_continuity_20261117/HANDOFF.md)。

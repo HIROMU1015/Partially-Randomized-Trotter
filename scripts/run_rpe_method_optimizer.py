@@ -226,9 +226,13 @@ def make_executor(root, run, routes, expected, problem, spec):
         try:return base_optimize(*args,**kwargs)
         finally:optional_validation(context)
     original_finish=executor.finish
+    validation_closed=False
     def finish_with_price_validation():
-        try:validation.close()
-        except Exception:pass  # optional diagnostic persistence cannot poison Q3
+        nonlocal validation_closed
+        if not validation_closed:
+            validation_closed=True
+            try:validation.close()
+            except Exception:pass  # optional diagnostic persistence cannot poison Q3
         return original_finish()
     executor.finish=finish_with_price_validation
     return executor,optimize_with_price_validation

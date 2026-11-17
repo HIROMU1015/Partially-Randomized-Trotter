@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -N rpe-dry-input
+#PBS -q workq
+#PBS -l select=1:ncpus=2:mem=4gb
+#PBS -l walltime=00:05:00
+#PBS -j oe
+#PBS -r n
+set -eu
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+export PYTHONDONTWRITEBYTECODE=1
+cd /home/AbeHiromu/projects/rpe-pbs-20261118/readiness
+qstat -f -F json "$PBS_JOBID" > ALLOCATION_READINESS.json
+/home/AbeHiromu/projects/rpe-pbs-20261118/runtime/venv311rc1/bin/python -B check_saved.py
