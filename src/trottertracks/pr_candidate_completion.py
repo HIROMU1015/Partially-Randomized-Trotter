@@ -490,6 +490,8 @@ class Completion:
                     generated=self.service('df-generate',selected,d,tag='DF_GENERATE_WITH_DESCRIPTOR')
                 if generated.get('status')!='CONFIGURATION_READY':
                     out.update(reason=generated.get('reason',generated.get('status')),needs=[generated])
+                    if generated.get('status') == 'UNSUPPORTED':
+                        out['status'] = 'UNSUPPORTED_MAPPER'
                     put(d/'FAMILY.json',out);return out
                 out.update(configuration=generated['configuration'],configuration_source=generated.get('configuration_source'),
                            tail_descriptor=selected.get('tail_descriptor'))

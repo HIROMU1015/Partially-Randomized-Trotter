@@ -525,7 +525,10 @@ class WidthDriver:
                 reason=result.get('reason'),wall_seconds=time.monotonic()-started)
             if config and 'commit'in config and 'path'in config:config=read_loc(config)
             if not config:
-                f['reason']=result.get('reason',result['status']);continue
+                f['reason']=result.get('reason',result['status'])
+                if result['status'] == 'UNSUPPORTED_MAPPER':
+                    f['status'] = 'UNSUPPORTED_MAPPER'
+                continue
             config=config.get('configuration',config);s=config['spec'];template=f['template']['spec']
             try:
                 if (KS._frac(s['delta_pf'])!=KS._frac(f['requested_delta_pf'])or

@@ -48,6 +48,21 @@ class PreparationRoundTests(unittest.TestCase):
         executor=SimpleNamespace(log=lambda **event:None,routes=None,expected=None)
         return context,spec,problem,executor
 
+    def test_truncated_pf_stage_hold_leaves_ready_context_usable(self):
+        routes = {'FULL_PF': [{'kind': 'artificial'}]}
+        context, spec, problem, _ = self.inputs()
+        spec['pf_completion'] = dict(mode='complete', entry='synthetic-entry',
+                                     selected=[dict(configuration_body={})])
+        with tempfile.TemporaryDirectory() as tmp, patch.object(
+                PF.PF, 'complete_selected', side_effect=PR.Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:PF_COMPILE')):
+            current, unchanged_routes, status = PF.prepare(ROOT, problem, context, spec, tmp, routes,
+                                                            stage_executor=object())
+            self.assertFalse((Path(tmp)/'pf_auto/pf_completion/RESPONSE.json').exists())
+        self.assertIs(current, context)
+        self.assertIs(unchanged_routes, routes)
+        self.assertEqual(status['status'], 'PREPARATION_INCOMPLETE')
+        self.assertIn('PF_COMPILE', status['reason'])
+
     def test_pf_and_pr_prepare_independently_and_each_ready_method_searches_early(self):
         context,spec,problem,executor=self.inputs();runtime=object()
         first_pr=threading.Event();pf_done=threading.Event();pf_searched=threading.Event();pr_done=threading.Event()

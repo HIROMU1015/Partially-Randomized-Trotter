@@ -372,7 +372,10 @@ class Gateway:
             if pid and Path('/proc/%d/cmdline' % pid).exists() and str(run) in Path('/proc/%d/cmdline' % pid).read_bytes().decode(errors='replace'):
                 return 'ALREADY_RUNNING'
             raise RequestError('run', 'previous launch has no completion receipt; existing STOP/UNKNOWN is preserved')
-        if completed and completed.get('returncode') != 0:
+        stop_request = run/'STOP_REQUESTED.json'
+        user_interrupted = (request.get('action') == 'resume' and completed.get('returncode') == -signal.SIGINT
+                            and stop_request.is_file() and load(stop_request).get('reason') == 'USER_REQUESTED_STOP')
+        if completed and completed.get('returncode') != 0 and not user_interrupted:
             stop_path = run/'KAPPA_STATE.json'
             stop = (load(stop_path).get('stop') or {}).get('reason') if stop_path.exists() else None
             raise RequestError('run', 'failed invocation requires reconciliation: '+str(stop or completed.get('returncode')))
@@ -381,7 +384,7 @@ class Gateway:
             reasons={v['stop_reason'] for v in outcomes.values()}
             holds={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
             if reasons & holds:raise RequestError('run','existing scientific hold/STOP is preserved: '+','.join(sorted(reasons & holds)))
-            if reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED'}:
+            if not user_interrupted and reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED'}:
                 return 'REUSED_COMPLETED'
         spec = load(run/'ROUND.requested.json'); problem = load(run/'PROBLEM.json')
         applied = load(run/'APPLIED_SCOPE.json')

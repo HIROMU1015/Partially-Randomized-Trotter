@@ -116,8 +116,15 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None):
     completion.setdefault('output_root',str(folder/'provider_output'))
     completion.setdefault('registry_file',str(folder/'REGISTRY.json'))
     helper_spec=dict(spec,methods=sorted({item['configuration_body']['spec']['split'].get('original_PF_method')=='B0I'and'TRUNCATED_PF'or'FULL_PF'for item in selected})if not manual else [m for m in methods if m in PF.METHODS],pf_completion=completion)
-    response=PF.complete_selected(root,helper_spec,folder,
-        **({'stage_executor':stage_executor}if stage_executor is not None else{}))
+    from .pr_candidate_completion import Held
+    try:
+        response=PF.complete_selected(root,helper_spec,folder,
+            **({'stage_executor':stage_executor}if stage_executor is not None else{}))
+    except Held as error:
+        # The fixed selector and stage markers retain the owner and request.
+        # A candidate lacking an eligible host/receipt must not cancel PR or
+        # already READY PF work using the same distributed executor.
+        return context,routes,dict(status='PREPARATION_INCOMPLETE',selection=selection,reason=str(error))
     # Keep D's original metadata plan reachable from the caller's fixed results,
     # without changing the producer plan or inventing missing scientific values.
     copied=[]
