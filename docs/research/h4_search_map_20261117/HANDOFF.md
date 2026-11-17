@@ -79,3 +79,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B scripts/build_h4_search_map.
 既存Cの定期同期を継続し、原run05・他担当の稼働run・科学SOURCE・旧STOPは保全。本作業の完了後、新しい科学計算へは進まない。
 
 検査分担は、rootが通常同期・索引会計・公開、別担当sub-agentが保存run parserとHTMLを担当した。これらは実装の技術確認であり、独立した科学レビューではない。初回の技術回帰で、旧版をimportしたprocessが大型scheduleを配分ごとに複製していたため、その自分のtestだけを中断した。元logはlocal_h4_catalog_sync内へ保全し、immutable metadata共有・schedule索引化・phase間cache解放後の固定コードで再検査した。科学runや他担当processは停止していない。
+
+## 初版の公開検収
+
+通常shell入口はUPDATED・終了0で9 controller run／4,877一意配分点を公開した。同じ公開入力での再実行はUNCHANGED・終了0で、INDEX・HTML・REPORT・SOURCES・STATUSのbytesも不変。保存consumer回帰28件＋新規技術検査10件＝38 PASS。[検収記録](SYNC_VERIFICATION.json)／[検査log](TESTS.txt)。最新の件数は自動生成REPORTとHTMLを正本とする。定刻ジョブの設定は既存の10分cronを保全しており、新規の利用者操作は不要。
