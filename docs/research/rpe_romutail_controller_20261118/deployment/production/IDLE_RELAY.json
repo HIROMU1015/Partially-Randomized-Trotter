@@ -1,0 +1,45 @@
+{
+  "schema": "ROMUTAIL_PRODUCTION_IDLE_RELAY_V1",
+  "observed_at": "2026-11-17T16:16:25.390199+00:00",
+  "pid": 494840,
+  "command": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python -B /home/abe/Project/Partially Randomized Trotter/.rpe-central/releases/d887abdca/scripts/run_rpe_q3_relay.py --config /home/abe/Project/Partially Randomized Trotter/.rpe-central/RELAY.json --run ",
+  "daemon_status": {
+    "pid": 494840,
+    "configuration": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/RELAY.json",
+    "workers": {
+      "server1": {
+        "phase": "DISABLED",
+        "accepting_new_jobs": false,
+        "reason": "User reports server1 stopped; deferred until host return"
+      },
+      "server2": {
+        "failure_count": 9,
+        "next_retry_epoch": 1794932190.9616032,
+        "phase": "MAILBOX_DISCOVERY",
+        "error": "<urlopen error [Errno 111] Connection refused>",
+        "last_error_epoch": 1794932160.9616032,
+        "retry_seconds": 30.0
+      },
+      "local0-wsl": {
+        "failure_count": 9,
+        "next_retry_epoch": 1794932196.864065,
+        "phase": "MAILBOX_DISCOVERY",
+        "error": "<urlopen error [Errno 111] Connection refused>",
+        "last_error_epoch": 1794932166.864065,
+        "retry_seconds": 30.0
+      }
+    },
+    "started_epoch": 1794932032.397767,
+    "heartbeat_epoch": 1794932184.9186425,
+    "stopped": false,
+    "transport": "controller-local or SSH forwarding + independent worker mailboxes"
+  },
+  "endpoint": {
+    "url": "http://127.0.0.1:8763",
+    "listening": false
+  },
+  "new_jobs_submitted": 0,
+  "science_calls": 0,
+  "server1_contacted": false,
+  "local0_acceptance_changed": false
+}

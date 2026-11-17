@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "control_source": "6da8554e0040f98578667973e8802c680f87982e",
+  "worker_source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+  "run_id": "search-ab35a5f1b5171fe038e1",
+  "scientific_H4_calls": 0,
+  "stop_requested_epoch": 1794934751.6369975,
+  "checks": {
+    "stop_received_while_owned_job_running": true,
+    "owned_jobs_completed_after_stop": true,
+    "original_attempts_unchanged": true,
+    "original_completed_results_unchanged": true,
+    "original_launch_markers_unchanged": true,
+    "no_additional_job_assignment_after_stop": true,
+    "normal_stop_exit_zero": true,
+    "only_controlled_user_stop_interrupts": true,
+    "normal_driver_reports_user_stop": true,
+    "all_jobs_adopted_once": true
+  },
+  "jobs": [
+    {
+      "job_id": "89eadd079aaf8d4822ba",
+      "host_id": "local",
+      "state": "ACCEPTED",
+      "attempt_id": "0a779f6af7c54b1fb7978e80d57a5061",
+      "completion_sha256": "2c631d087beb274653d5f6730087fbd0fbb6cf4e08e830af96f9df96474ab68c",
+      "adopted_epoch": 1794934713.5731313,
+      "started_epoch": 1794934668.3980782,
+      "completed_epoch": 1794934713.5585465
+    },
+    {
+      "job_id": "8536a8738cd2688ea009",
+      "host_id": "local",
+      "state": "ACCEPTED",
+      "attempt_id": "4d8967b78e86488c9bd62291002b3e78",
+      "completion_sha256": "7eb7ce13f065edbbd233a35a2a8f4f6d92b5031ff2d41c2ad9ba83dd5d06a173",
+      "adopted_epoch": 1794934758.9354627,
+      "started_epoch": 1794934713.6988344,
+      "completed_epoch": 1794934758.9229958
+    }
+  ],
+  "event_counts": {
+    "ASSIGN": 2,
+    "ACCEPT": 2,
+    "ADOPT": 2
+  },
+  "launch_sha256": {
+    "run/jobs/PR_PAULI/89eadd079aaf8d4822ba/LAUNCH.json": "59ae47653185867be0887fb7698f4ccd35ef23ecc31e8a0ffa227f5f5c19fada",
+    "run/jobs/PR_PAULI/8536a8738cd2688ea009/LAUNCH.json": "ebe905b50e15bdc0f157def6e42cd906924419d9a31993d21bf7ec647cb806b5"
+  },
+  "normal_controller_exit": {
+    "returncode": 0,
+    "command": [
+      "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "-B",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/releases/6da8554e0/scripts/check_rpe_romutail_distributed.py",
+      "--controller",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/active-stop-v3-d887abdca",
+      "--control-run",
+      "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/active-stop-v3-d887abdca/gateway/state/runs/search-ab35a5f1b5171fe038e1"
+    ],
+    "finished_utc": 1794934759.0916831,
+    "invocation_id": "e911d0b7ad714d2792385f4412a64878"
+  },
+  "recorded_controlled_interrupts": [
+    {
+      "phase": "WIDTH_SEARCH_AND_Q3",
+      "error_type": "KeyboardInterrupt",
+      "epoch": 1794934758.9391289
+    },
+    {
+      "phase": "WIDTH_BATCH",
+      "error_type": "KeyboardInterrupt",
+      "epoch": 1794934758.9399097
+    }
+  ]
+}

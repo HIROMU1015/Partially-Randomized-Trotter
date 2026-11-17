@@ -1,0 +1,36 @@
+{
+  "action": "preview",
+  "scope": {
+    "methods": [
+      "PR_PAULI"
+    ],
+    "per_method": {
+      "PR_PAULI": {
+        "L_D": {
+          "min": 2,
+          "max": 3
+        },
+        "kappa": {
+          "mode": "absolute",
+          "min": "1/10",
+          "max": "1"
+        },
+        "delta_pf": [
+          {
+            "kind": "binary64",
+            "value": 0.1
+          },
+          {
+            "kind": "binary64",
+            "value": 0.2
+          }
+        ]
+      }
+    },
+    "shots": "auto",
+    "stop": {
+      "max_cycles": 1,
+      "max_new_q3_per_method": 0
+    }
+  }
+}

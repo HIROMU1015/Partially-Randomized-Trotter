@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4中央管理のRomuTail移行](research/rpe_romutail_controller_20261118/HANDOFF.md)：状態の正本、通常コマンド、固定版の登録、保存入力検査、人工検収とserver1復帰手順。
+
 [候補別のdry-check PASSホストへのQ3割当](research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
 
 [H4準備の差分cacheと早期READY](research/rpe_h4_readiness_fast_20261117/REPORT.md)：候補・費用・乾式判定を前回と保ち、通常入口で初回/入力不変時を計測。[1コマンドと再計測](research/rpe_h4_readiness_fast_20261117/README.md)。

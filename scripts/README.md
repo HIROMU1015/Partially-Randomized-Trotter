@@ -1,5 +1,7 @@
 # scripts 索引
 
+[RomuTail中央管理への移行](../docs/research/rpe_romutail_controller_20261118/HANDOFF.md)：通常schedule/Gateway、`check_rpe_romutail_distributed.py` の実3ホスト人工検収、状態移送・配置・保存結果公開の補助CLI。
+
 [信号・compile・監査とQ3の共通分散実行](../docs/research/rpe_distributed_preparation/HANDOFF.md)：通常schedule入口、準備stage adapter、人工検収、local0一括配置・検査。
 
 [候補別のdry-check PASSホストへのQ3割当](../docs/research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。

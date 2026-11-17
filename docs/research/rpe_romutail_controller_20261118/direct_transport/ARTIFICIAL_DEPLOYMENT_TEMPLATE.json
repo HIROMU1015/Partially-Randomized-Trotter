@@ -1,0 +1,36 @@
+{
+  "source_commit": "REPLACE_WITH_FIXED_INTEGRATED_SOURCE",
+  "hosts": {
+    "local": {
+      "root": "REPLACE_WITH_ROMUTAIL_FIXED_CHECKOUT",
+      "python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "directory": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/real-three/local"
+    },
+    "server2": {
+      "root": "REPLACE_WITH_SERVER2_FIXED_CHECKOUT",
+      "python": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+      "directory": "/home/AbeHiromu/projects/rpe-romutail-acceptance/real-three",
+      "ssh_alias": "qg2"
+    },
+    "local0-wsl": {
+      "root": "REPLACE_WITH_WSL_FIXED_CHECKOUT",
+      "python": "/root/myproject/Evaluation_numGate_highorder_DF/venv/bin/python",
+      "directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.romutail-controller-acceptance/real-three",
+      "transport": "ssh-wsl",
+      "distribution": "Ubuntu",
+      "ssh_alias": "Romulaptop",
+      "ssh_command": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "IdentitiesOnly=yes",
+        "-i",
+        "/home/abe/.ssh/id_ed25519_romuwindows",
+        "-l",
+        "romuk"
+      ],
+      "participation_wsl_file": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.romutail-controller-acceptance/real-three/SETTINGS.json"
+    }
+  }
+}

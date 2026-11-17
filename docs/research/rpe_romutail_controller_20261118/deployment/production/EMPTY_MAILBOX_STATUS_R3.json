@@ -1,0 +1,169 @@
+{
+  "schema": "ROMUTAIL_PRODUCTION_MAILBOX_STATUS_ONLY_V1",
+  "observed_at": "2026-11-17T16:36:49.175289+00:00",
+  "relay_local_source": "89b3da81a0905b41238dea06b0f4f993d28c86d6",
+  "rows": [
+    {
+      "host_id": "server2",
+      "seconds": 0.5117985870456323,
+      "status": {
+        "host_id": "server2",
+        "slots": 1,
+        "capacity": 1,
+        "resource_report": {
+          "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+          "mode": "AUTO",
+          "capacity": 1,
+          "slots": 1,
+          "occupied": 0,
+          "stage": "COLD_START_UNMEASURED",
+          "reasons": [
+            "Cold start: per-job memory and useful throughput not measured"
+          ],
+          "resources": {
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+            "clock": {
+              "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a",
+              "monotonic": 1971362.221957451,
+              "epoch": 1794933407.7936335
+            },
+            "machine_cpu_count": 64,
+            "machine_mem_total_bytes": 540802801664,
+            "machine_mem_available_bytes": 484651933696,
+            "allowed_cpu_count": 64,
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 64
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "value": 64,
+                "path": "/sys/fs/cgroup/system.slice/ssh.service"
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "value": 64,
+                "path": "/sys/fs/cgroup/system.slice"
+              },
+              {
+                "kind": "CGROUP_CPUSET",
+                "value": 64,
+                "path": "/sys/fs/cgroup"
+              }
+            ],
+            "allowed_memory_bytes": 540802801664,
+            "memory_bounds": [],
+            "remaining_group_memory_bytes": null,
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "cgroup_version": "v2",
+            "allocation_bounds_complete": true,
+            "boundary_detection": "OBSERVED",
+            "missing_controls": [],
+            "observational_only": true
+          },
+          "limits": {
+            "cpu_slots": 21,
+            "memory_slots": 1,
+            "explicit_max_slots": null,
+            "memory_sample_headroom_factor": 1.5
+          },
+          "dp_workers_per_q3": 3,
+          "peak_job_rss_bytes": 0.0,
+          "peak_job_cpu_cores": 0.0,
+          "feedback": {},
+          "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+          "trial": null,
+          "running_jobs_may_exceed_reduced_capacity": false
+        },
+        "source_sha": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "cached_prefixes": [],
+        "cached_artifact_sha256": [
+          "44a71a2962d0c593bb22c1721c8e185cb440c95b38bbd1567b3bb834c3c1b041",
+          "8096e3e8cf4b24d47c22f9992468b04fc6b015b286ca22ff516c1f218250a44b",
+          "c9b4d4ef3b2a9ff523bbca4f0c74d212d68c4f53184e1067920695f837750af3",
+          "e1fb24e4b019ec090c57e4dbe3608bc7351e602d5bca41d7d81e97caf95449a1"
+        ],
+        "attempts": []
+      }
+    },
+    {
+      "host_id": "local0-wsl",
+      "seconds": 1.3591097120661288,
+      "status": {
+        "host_id": "local0-wsl",
+        "slots": 0,
+        "capacity": 1,
+        "resource_report": {
+          "schema": "RPE_Q3_RESOURCE_OFFER_V1",
+          "mode": "AUTO",
+          "capacity": 1,
+          "slots": 1,
+          "occupied": 0,
+          "stage": "COLD_START_UNMEASURED",
+          "reasons": [
+            "Allocation boundary detection incomplete; do not grow above the initial offer"
+          ],
+          "resources": {
+            "schema": "RPE_Q3_RESOURCE_SNAPSHOT_V1",
+            "clock": {
+              "clock_id": "abe:ac3e9a2f-88e3-47ef-b8e6-3382592729e1",
+              "monotonic": 1896.48599512,
+              "epoch": 1794933409.2383385
+            },
+            "machine_cpu_count": 16,
+            "machine_mem_total_bytes": 16486055936,
+            "machine_mem_available_bytes": 15765200896,
+            "allowed_cpu_count": 16,
+            "cpu_bounds": [
+              {
+                "kind": "PROCESS_AFFINITY_NONEXCLUSIVE",
+                "value": 16
+              }
+            ],
+            "allowed_memory_bytes": 16486055936,
+            "memory_bounds": [],
+            "remaining_group_memory_bytes": null,
+            "memory_scope": "HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION",
+            "cpu_scope": "PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS",
+            "cgroup_version": "v2",
+            "allocation_bounds_complete": false,
+            "boundary_detection": "PARTIAL_OR_UNREADABLE",
+            "missing_controls": [
+              "cpu",
+              "memory"
+            ],
+            "observational_only": true
+          },
+          "limits": {
+            "cpu_slots": 1,
+            "memory_slots": 1,
+            "explicit_max_slots": null,
+            "memory_sample_headroom_factor": 1.5
+          },
+          "dp_workers_per_q3": 16,
+          "peak_job_rss_bytes": 0.0,
+          "peak_job_cpu_cores": 0.0,
+          "feedback": {},
+          "memory_estimate_scope": "SAMPLED_OWNED_RSS_HEURISTIC_NOT_A_PEAK_MEMORY_GUARANTEE",
+          "trial": null,
+          "running_jobs_may_exceed_reduced_capacity": false
+        },
+        "source_sha": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "cached_prefixes": [],
+        "cached_artifact_sha256": [
+          "44a71a2962d0c593bb22c1721c8e185cb440c95b38bbd1567b3bb834c3c1b041",
+          "8096e3e8cf4b24d47c22f9992468b04fc6b015b286ca22ff516c1f218250a44b",
+          "c9b4d4ef3b2a9ff523bbca4f0c74d212d68c4f53184e1067920695f837750af3",
+          "e1fb24e4b019ec090c57e4dbe3608bc7351e602d5bca41d7d81e97caf95449a1"
+        ],
+        "attempts": [],
+        "accepting_new_jobs": false
+      }
+    }
+  ],
+  "assignments_sent": 0,
+  "scientific_calls": 0,
+  "server1_contacted": false
+}
