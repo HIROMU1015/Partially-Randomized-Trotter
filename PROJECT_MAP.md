@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[R08のcalls例外修正・予算継続](docs/research/pr_r08_budget_fix_20261118/HANDOFF.md)：予約拒否を通常batch制御へ分離、元128結果/STOPと科学条件を保全。
+
 [R08への修正版引継ぎ・状態確認](docs/research/h4_pr_r08_recovery_20261117/HANDOFF.md)：走行中stageを保全し、所有lock解放後に同じ通常探索へ戻す。待機と科学controller稼働を区別。
 
 [PR探索の例外・回収・再開修正](docs/research/pr_failure_continuity_fix_20261117/REPORT.md)：例外を回収待ち前に保存し、stage境界yield・局所UNKNOWN・request keyの二重実行防止を検証。人工92件＋native10件PASS、実H4追加0。[HANDOFF](docs/research/pr_failure_continuity_fix_20261117/HANDOFF.md)。

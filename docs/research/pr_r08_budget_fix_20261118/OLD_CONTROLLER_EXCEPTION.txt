@@ -1,0 +1,36 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/scripts/run_rpe_schedule_search.py", line 928, in <module>
+    main()
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/scripts/run_rpe_schedule_search.py", line 914, in main
+    try:d.loop()
+        ^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/scripts/run_rpe_schedule_search.py", line 878, in loop
+    result=self.batch(prepare_during=True)if overlap else self.batch()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/scripts/run_rpe_schedule_search.py", line 807, in batch
+    result=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/scripts/run_rpe_method_optimizer.py", line 183, in optimize
+    def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/src/trottertracks/rpe_optimizer_concurrent.py", line 387, in optimize
+    if primary is not None:raise primary
+                           ^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/src/trottertracks/rpe_optimizer_concurrent.py", line 384, in optimize
+    out={m:futures[m].result()[m]for m in methods}
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/src/trottertracks/rpe_method_optimizer.py", line 1386, in optimize
+    result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/src/trottertracks/rpe_priority_search.py", line 480, in run_priority
+    step += 1;new_calls += answer['calls']
+                           ~~~~~~^^^^^^^^^
+KeyError: 'calls'

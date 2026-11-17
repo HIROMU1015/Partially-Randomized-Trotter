@@ -1,0 +1,62 @@
+test_actual_cli_round_path_with_artificial_context (test_rpe_optimizer_concurrent.SchedulerTests.test_actual_cli_round_path_with_artificial_context) ... ok
+test_completed_resume_no_duplicate_launch (test_rpe_optimizer_concurrent.SchedulerTests.test_completed_resume_no_duplicate_launch) ... ok
+test_duplicate_demands_share_one_job (test_rpe_optimizer_concurrent.SchedulerTests.test_duplicate_demands_share_one_job) ... ok
+test_execution_profile_changes_only_acceleration (test_rpe_optimizer_concurrent.SchedulerTests.test_execution_profile_changes_only_acceleration) ... ok
+test_finite_budget_reserved_before_launch (test_rpe_optimizer_concurrent.SchedulerTests.test_finite_budget_reserved_before_launch) ... ok
+test_fixed_selection_except_explicit_execution_readiness_guard (test_rpe_optimizer_concurrent.SchedulerTests.test_fixed_selection_except_explicit_execution_readiness_guard) ... ok
+test_four_methods_same_adoption_order_best_and_stop (test_rpe_optimizer_concurrent.SchedulerTests.test_four_methods_same_adoption_order_best_and_stop) ... ok
+test_launch_persistence_failure_stops_queue_and_waits_started_child (test_rpe_optimizer_concurrent.SchedulerTests.test_launch_persistence_failure_stops_queue_and_waits_started_child) ... ok
+test_method_scope_trajectory_is_unchanged (test_rpe_optimizer_concurrent.SchedulerTests.test_method_scope_trajectory_is_unchanged) ... ok
+test_pending_and_crash_claim_not_retried (test_rpe_optimizer_concurrent.SchedulerTests.test_pending_and_crash_claim_not_retried) ... ok
+test_queued_prefetch_budget_includes_every_reservation (test_rpe_optimizer_concurrent.SchedulerTests.test_queued_prefetch_budget_includes_every_reservation) ... ok
+test_resumed_live_jobs_occupy_capacity_without_relaunch (test_rpe_optimizer_concurrent.SchedulerTests.test_resumed_live_jobs_occupy_capacity_without_relaunch) ... ok
+test_speculation_is_recorded_and_adopted_in_demand_order (test_rpe_optimizer_concurrent.SchedulerTests.test_speculation_is_recorded_and_adopted_in_demand_order) ... ok
+test_two_drivers_cannot_own_same_directory (test_rpe_optimizer_concurrent.SchedulerTests.test_two_drivers_cannot_own_same_directory) ... ok
+test_unknown_keeps_same_stop_as_legacy (test_rpe_optimizer_concurrent.SchedulerTests.test_unknown_keeps_same_stop_as_legacy) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 12.537s
+
+OK
+{
+ "FULL_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "FULL_PF:ARTIFICIAL_FULL_PF_0",
+   "890.00"
+  ]
+ },
+ "TRUNCATED_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "TRUNCATED_PF:ARTIFICIAL_TRUNCATED_PF_0",
+   "890.00"
+  ]
+ },
+ "PR_PAULI": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_PAULI:ARTIFICIAL_PR_PAULI_0",
+   "890.00"
+  ]
+ },
+ "PR_DF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_DF:ARTIFICIAL_PR_DF_0",
+   "890.00"
+  ]
+ }
+}

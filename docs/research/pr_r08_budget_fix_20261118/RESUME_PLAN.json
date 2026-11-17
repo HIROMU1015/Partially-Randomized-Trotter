@@ -1,0 +1,75 @@
+{
+  "schema": "R08_SOURCE_HANDOVER_V1",
+  "study": "docs/research/pr_r08_budget_fix_20261118",
+  "old_root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117",
+  "old_run": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-failure-continuity-20261117/docs/research/h4_pr_r08_recovery_20261117/run02",
+  "old_branch": "codex/b2-rpe-pr-failure-continuity-20261117",
+  "old_code_source": "fdb4453a0fae36c8b8734a225a19316446dee62e",
+  "new_code_source": "2c2196bee51589b6765039691c1e7509169ef6af",
+  "round_id": "H4_PR_BOTH_MULTIWIDTH_CONTINUITY_R08_20261117",
+  "original_cycle_ceiling": 200,
+  "batch": 64,
+  "controller_python": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+  "snapshot_files": [
+    "KAPPA_STATE.json",
+    "completion/STATE.json",
+    "PRICE_RULES_REGISTRY.json",
+    "completion/PRICE_RULES_REGISTRY.json",
+    "completion/STEP_PRICE_RULES.json",
+    "FIXED_INPUTS.json"
+  ],
+  "old_input_sha256": {
+    "PROBLEM.json": "8e72c2fc20492426248966087901a6fc331f82f3c8229945f932d83d5c9a387c",
+    "ROUND.json": "d6b36a6ab5f66dc0a517397430e72757d0d39edc2deff7ca653d863828ea53c6",
+    "run02/SOURCE.json": "9a620b013c9b7cbcf42f909edd11d31691b51562b6fa10f1ce8d83d41bc07f20",
+    "HANDOVER_STATUS.json": "de396562e8275fb87b95f09d593d6621ba87a5ca61a90a49aa823f7a62255cef"
+  },
+  "artificial_tests": [
+    "checks/AFTER_FIX.txt",
+    "checks/CONCURRENT_REGRESSION.txt",
+    "checks/CONTINUITY_REGRESSION.txt",
+    "checks/NATIVE_TESTS.txt"
+  ],
+  "scientific_scope": {
+    "status": "AUTHORIZED_CONTINUATION_WITH_CANDIDATE_ISOLATION",
+    "methods": [
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "L_D": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "requested_widths": {
+      "PR_PAULI": [
+        0.1,
+        0.2
+      ],
+      "PR_DF": [
+        0.1,
+        0.05
+      ]
+    },
+    "target": "Original Full DF-H solver proxy",
+    "scientific_authorization": "Explicit current user instruction; only selected H4 PR-Pauli .1/.2 and PR-DF .1/.05 L_D1..9 under the saved contract."
+  },
+  "unchanged_profile": {
+    "scheduler": "concurrent",
+    "max_concurrent_jobs": 20,
+    "dp_workers": 3,
+    "prefix_checkpoint_rounds": [
+      5,
+      11
+    ]
+  },
+  "ownership": "Previous controller has exited, all 128 receipts complete; new run owns its own CONTROLLER.lock",
+  "retry": "No automatic retry; old scientific failures and ambiguous stages remain held",
+  "signal_epoch": "multiwidth_r08_budget_20261118"
+}

@@ -1,5 +1,9 @@
 # 性能対策の再利用索引
 
+## 並列queueのbatch予約到達を通常制御で返す（2026-11-18）
+
+SOURCE `2c2196bee` は `BUDGET_EXHAUSTED` を数値Q3回答から分離し、予約拒否の新規0件会計と、実起動した先読みの累計計上を維持する。queue予約が先に埋まりselector側が `calls` を読む失敗を、通常幅入口・同じqueueの次batch・同じrun再開で検証。追加5＋既存32 PASS、native5 PASS。キャンセルで戻った枠は準備完了前にQ3へ戻す。順位・数値kernel・compilerは変更せず、実H4速度倍率は未測定。[REPORT/継続](research/pr_r08_budget_fix_20261118/HANDOFF.md)。
+
 ## PR探索の失敗を回収待ち前に可視化する（2026-11-17）
 
 SOURCE314524a91は既存concurrent queue/Completionを保ち、method/phase例外を即時保存、producerへ先に協調停止を通知し、走行中stageだけ回収する。未開始stageはyieldし、descriptor補完でcaller request/keyを変えない。失敗例は通知前loggingによるnativeの競合と、別methodの二次例外による一次原因の隠蔽。人工92・native10 PASS、実H4の修正適用/速度は未測定。旧R08はread-onlyでSOURCEを途中変更しない。[REPORT・引継ぎ](research/pr_failure_continuity_fix_20261117/HANDOFF.md)。

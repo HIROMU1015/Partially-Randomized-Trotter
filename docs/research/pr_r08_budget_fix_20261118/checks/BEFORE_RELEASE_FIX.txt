@@ -1,0 +1,40 @@
+test_released_reservations_resume_q3_before_preparation_finishes (test_rpe_queue_budget_control.BudgetControlTests.test_released_reservations_resume_q3_before_preparation_finishes) ... FAIL
+
+======================================================================
+FAIL: test_released_reservations_resume_q3_before_preparation_finishes (test_rpe_queue_budget_control.BudgetControlTests.test_released_reservations_resume_q3_before_preparation_finishes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/tests/test_rpe_queue_budget_control.py", line 145, in test_released_reservations_resume_q3_before_preparation_finishes
+    driver = W.call(args, Driver)
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/tests/test_pr_width_overlap.py", line 79, in call
+    with redirect_stdout(io.StringIO()):return E.main(args,driver_factory=Driver)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/scripts/run_rpe_schedule_search.py", line 914, in main
+    try:d.loop()
+        ^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/scripts/run_rpe_schedule_search.py", line 878, in loop
+    result=self.batch(prepare_during=True)if overlap else self.batch()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/scripts/run_rpe_schedule_search.py", line 799, in batch
+    try:pending.result(timeout=1)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/scripts/run_rpe_schedule_search.py", line 612, in complete_points
+    else:record=comp.complete(p['completion_request'])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/tests/test_rpe_queue_budget_control.py", line 131, in complete
+    raise AssertionError('Released batch slots left Q3 waiting for preparation')
+AssertionError: Released batch slots left Q3 waiting for preparation
+
+----------------------------------------------------------------------
+Ran 1 test in 5.060s
+
+FAILED (failures=1)
