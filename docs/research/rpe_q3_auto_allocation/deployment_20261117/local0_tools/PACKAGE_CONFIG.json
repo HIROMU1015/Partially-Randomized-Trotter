@@ -1,0 +1,73 @@
+{
+  "schema": "RPE_Q3_AUTO_DEPLOYMENT_V1",
+  "mode": "dry-check",
+  "source": "349558b748a82f384a4589434a63ef9b5572032c",
+  "hosts": [
+    {
+      "host_id": "local",
+      "repository": "/home/abe/Project/Partially Randomized Trotter",
+      "transport_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto-349558b74",
+      "worker_profile": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto/next-h4-auto/local.json",
+      "profile": "profiles/local.json",
+      "assignments": [
+        "assignments/FULL_PF.json",
+        "assignments/TRUNCATED_PF.json",
+        "assignments/PR_PAULI.json",
+        "assignments/PR_DF.json"
+      ],
+      "transport_python": "python3",
+      "run_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/auto/next-h4-auto/deployment-dry-20261117-349558b74",
+      "ssh_alias": "RomuTail"
+    },
+    {
+      "host_id": "local0-wsl",
+      "repository": "/root/projects/Partially-Randomized-Trotter-local0-wsl",
+      "transport_root": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/transports/349558b748a82f384a4589434a63ef9b5572032c",
+      "worker_profile": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/auto/next-h4-auto/local0-wsl.json",
+      "profile": "profiles/local0-wsl.json",
+      "assignments": [
+        "assignments/FULL_PF.json",
+        "assignments/TRUNCATED_PF.json",
+        "assignments/PR_PAULI.json",
+        "assignments/PR_DF.json"
+      ],
+      "transport_python": "/root/myproject/Evaluation_numGate_highorder_DF/venv/bin/python",
+      "run_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/auto/next-h4-auto/deployment-dry-20261117-349558b74",
+      "transport": "wsl",
+      "distribution": "Ubuntu"
+    },
+    {
+      "host_id": "server1",
+      "repository": "/home/AbeHiromu/projects/partially-randomized-trotter",
+      "transport_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-auto-349558b74",
+      "worker_profile": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/server1.json",
+      "profile": "profiles/server1.json",
+      "assignments": [
+        "assignments/FULL_PF.json",
+        "assignments/TRUNCATED_PF.json",
+        "assignments/PR_PAULI.json",
+        "assignments/PR_DF.json"
+      ],
+      "transport_python": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+      "run_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/auto/next-h4-auto/deployment-dry-20261117-349558b74",
+      "ssh_alias": "qg1"
+    }
+  ],
+  "participation_file": "C:\\Users\\romuk\\Desktop\\code\\project\\Partially-Randomized-Trotter\\tools\\local0-wsl\\PARTICIPATION.json",
+  "source_files": {
+    "scripts/collect_rpe_q3_deployment_readiness.py": "../../../../../scripts/collect_rpe_q3_deployment_readiness.py",
+    "run_auto_deployment.py": "run_auto_deployment.py",
+    "assignments/FULL_PF.json": "../assignments/FULL_PF.json",
+    "assignments/TRUNCATED_PF.json": "../assignments/TRUNCATED_PF.json",
+    "assignments/PR_PAULI.json": "../assignments/PR_PAULI.json",
+    "assignments/PR_DF.json": "../assignments/PR_DF.json",
+    "profiles/local.json": "../profiles/local.json",
+    "profiles/local0-wsl.json": "../profiles/local0-wsl.json",
+    "profiles/server1.json": "../profiles/server1.json"
+  },
+  "return": {
+    "ssh_alias": "qg2",
+    "python": "python3",
+    "directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-auto-allocation/docs/research/rpe_q3_auto_allocation/deployment_20261117/remote_results"
+  }
+}
