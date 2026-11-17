@@ -39,10 +39,11 @@ def validate(document,locator,configuration):
     return deepcopy(value)
 
 
-def entry(root,locator,base_class):
+def entry(root,locator,base_class,*,runtime=None):
     """Extend one entry instance; saved prefix descriptors keep original rules."""
     document=read(root,locator)
-    base=base_class(root);prefix=document['prefix']
+    base=base_class(root)if runtime is None else base_class(root,runtime=runtime)
+    prefix=document['prefix']
     if str(prefix)in base.info['prefixes']:
         if document['descriptor']!=base.info['prefixes'][str(prefix)]:raise ValueError('New descriptor differs from saved prefix descriptor')
     class Extended(base_class):

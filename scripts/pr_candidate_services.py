@@ -70,8 +70,10 @@ def scope_df_saved_index(entry,configuration):
 def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None):
     # Same fixed entry as326fe; no source edits to its canonical/provider contracts.
     sys.path.insert(0,str(DF_VIEW/'src'))
-    from trottertracks.pr_df_signal_entry import DFSignalEntry
-    entry=DFSignalEntry(ROOT)if tail_descriptor is None else df_extension().entry(ROOT,tail_descriptor,DFSignalEntry)
+    from trottertracks.pr_df_signal_entry import DFSignalEntry,FixedRuntime
+    runtime=FixedRuntime(ROOT,SIGNAL_VIEW)
+    entry=(DFSignalEntry(ROOT,runtime=runtime)if tail_descriptor is None else
+           df_extension().entry(ROOT,tail_descriptor,DFSignalEntry,runtime=runtime))
     entry.saved.extend(x for x in saved_bundles if x not in entry.saved)
     if configuration is not None and not entry._support(configuration):scope_df_saved_index(entry,configuration)
     return entry
