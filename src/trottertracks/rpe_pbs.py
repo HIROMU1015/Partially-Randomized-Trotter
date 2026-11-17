@@ -173,13 +173,14 @@ class PbsManager:
             self.executor.rpc('/v1/complete', dict(host_id=data['host_id'],
                 job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                 request_sha256=assignment['request_sha256'], files=item['files']))
-        for item in data.get('incomplete', []):
+        ended = allocation['status'] in TERMINAL or (allocation.get('worker') or {}).get('state') == 'EXITED'
+        for item in data.get('incomplete', []) if ended else []:
             assignment = item['assignment']; row = self.executor.store.row(assignment['job_id'])
             if row is not None and row['state'] not in ('ACCEPTED','UNKNOWN','CANCELLED'):
                 self.executor.rpc('/v1/state', dict(host_id=data['host_id'], job_id=assignment['job_id'],
                     attempt_id=assignment['attempt_id'], state='UNKNOWN',
                     detail=dict(reason='PBS_ENDED_WITHOUT_TASK_EXIT_RECEIPT', automatic_retry=False)))
-        self.state['allocations'][token]['harvested'] = True
+        self.state['allocations'][token]['harvested'] = ended
         self.log('PBS_SAVED_ARTIFACTS_RECONCILED', token=token, attempts=len(data['attempts']))
 
     def _demand(self):
