@@ -1,0 +1,682 @@
+"""Derive per-request host eligibility from saved, received dry-check evidence.
+
+This module does not start a controller or a scientific process. Saved PASS is
+useful only for the same full request and a matching current host fingerprint.
+Incomplete or inconsistent evidence is UNCHECKED; a bound dry-check failure
+remains FAIL. There are no method names or candidate IDs in this policy.
+"""
+from copy import deepcopy
+import hashlib
+import json
+from pathlib import Path, PurePosixPath
+
+from . import rpe_q3_coordinator as Q
+
+
+SCHEMA = 'RPE_Q3_HOST_ELIGIBILITY_V1'
+
+
+def _read(value):
+    return json.loads(Path(value).read_text()) if isinstance(value, (str, Path)) else deepcopy(value)
+
+
+def _sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def _path(value, base=None):
+    value = Path(value)
+    return value if value.is_absolute() else Path(base or '.') / value
+
+
+def _inputs(rows):
+    return sorted(rows, key=lambda row: (row['commit'], row['path'], row['sha256']))
+
+
+def _effective_profile(profile, assignment):
+    route = assignment['request']['route']
+    effective = dict(host_id=profile['host_id'], root=profile['root'], interpreter=profile['interpreter'],
+                route_view=profile['route_views'][route['view_commit']],
+                dp_workers=profile.get('dp_workers'),
+                prefix_cache_directory=profile.get('prefix_cache_directory'))
+    for key in ('adapter_root', 'adapter_manifest', 'runtime_checks'):
+        if key in profile:
+            effective[key] = deepcopy(profile[key])
+    return effective
+
+
+def _resolved_request(assignment, profile):
+    """The path-only transformation in the existing worker validator.
+
+    We cannot call validate_assignment on the controller for a remote filesystem.
+    Its fixed-source/input checks are instead bound by saved evidence and the
+    worker's current_host_fingerprint at each poll.
+    """
+    request = deepcopy(assignment['request'])
+    request['route']['interpreter'] = profile['interpreter']
+    request['route']['view'] = profile['route_views'][request['route']['view_commit']]
+    execution = request.setdefault('execution_profile', {})
+    if profile.get('dp_workers') is not None:
+        execution['dp_workers'] = profile['dp_workers']
+    if profile.get('prefix_cache_directory') is not None:
+        execution['prefix_cache_directory'] = profile['prefix_cache_directory']
+    else:
+        execution.pop('prefix_cache_directory', None)
+    return request
+
+
+def _fingerprint(assignment, profile, runtime, views=None, actual=None, runtime_precheck=None):
+    route = assignment['request']['route']
+    selected = profile['route_views'][route['view_commit']]
+    if actual is None:
+        source = assignment['source_manifest']
+        source_head = source['commit']
+        inputs = assignment.get('input_hashes', [])
+    else:
+        source, source_head, inputs = actual['source'], actual['source_head'], actual['input_hashes']
+    normalized_views = []
+    for view in views or []:
+        normalized_views.append(dict(path=view['path'], commit=view.get('head', view.get('commit')),
+                                     clean_tracked=not view.get('tracked_changes', {})))
+    if not normalized_views:
+        normalized_views.append(dict(path=selected, commit=route['view_commit'], clean_tracked=True))
+    runtime_identity = dict(executable=runtime['executable'], version=runtime['version'])
+    if profile.get('runtime_checks'):
+        _verify_runtime_precheck(profile, runtime_precheck)
+        runtime_identity = deepcopy(runtime)
+    if runtime['executable'] != profile['interpreter']:
+        for key in ('interpreter_invocation', 'launcher_sha256', 'actual_executable_realpath', 'actual_binary_sha256'):
+            if not runtime.get(key):
+                raise ValueError('Launcher runtime lacks its bound actual identity: ' + key)
+            runtime_identity[key] = runtime[key]
+    result = dict(schema='RPE_Q3_CURRENT_HOST_FINGERPRINT_V1',
+                request_sha256=Q.digest(assignment['request']),
+                source_manifest=source, source_head=source_head, input_hashes=_inputs(inputs),
+                profile=_effective_profile(profile, assignment),
+                views=sorted(normalized_views, key=lambda view: view['path']),
+                runtime=runtime_identity)
+    if profile.get('adapter_root'):
+        result['adapter_source'] = dict(root=profile['adapter_root'], **deepcopy(profile['adapter_manifest']))
+    if profile.get('runtime_checks'):
+        result['runtime_checks'] = deepcopy(runtime_precheck['checks'])
+    return result
+
+
+def current_host_fingerprint(assignment, profile):
+    """Read actual source, input, route and interpreter metadata for a poll.
+
+    Reuse the existing readiness fingerprint, including its known nested route
+    checks. The subprocess only reads Python/runtime metadata; no adapter/Q3 is
+    invoked. Errors deliberately propagate so the caller can withhold new claims.
+    """
+    from .rpe_plan_readiness import dry_check_fingerprint
+    from .rpe_host_profiles import select_host_profile, validate_adapter_profile, check_runtime_profile
+    assignment, profile = _read(assignment), _read(profile)
+    profile = select_host_profile(profile, assignment)
+    adapter_source = validate_adapter_profile(profile)
+    precheck = check_runtime_profile(profile) if profile.get('runtime_checks') else None
+    if precheck is not None:
+        _verify_runtime_precheck(profile, precheck)
+    raw = dry_check_fingerprint(profile['root'], assignment, profile)
+    # The older readiness helper labels its fixed source as 28d. Actual HEAD is
+    # separate and must be used for a newly fixed worker source as well.
+    raw['source'] = dict(raw['source'], commit=raw['source_head'])
+    if raw['runtime']['executable'] != profile['interpreter']:
+        binary = Path(raw['runtime']['executable']).resolve()
+        raw['runtime'].update(interpreter_invocation=profile['interpreter'],
+            launcher_sha256=_sha(profile['interpreter']), actual_executable_realpath=str(binary),
+            actual_binary_sha256=_sha(binary))
+    if precheck is not None:
+        raw['runtime'] = deepcopy(precheck['runtime'])
+    result = _fingerprint(assignment, profile, raw['runtime'], raw['views'], actual=raw, runtime_precheck=precheck)
+    if adapter_source is not None:
+        result['adapter_source'] = adapter_source
+    return result
+
+
+def _verify_runtime_precheck(profile, report):
+    """Verify the configured fixed AST checks without running a scientific leaf."""
+    specs = profile.get('runtime_checks', [])
+    if not specs:
+        return
+    if not report or report.get('status') != 'PASS' or len(report.get('checks', [])) != len(specs):
+        raise ValueError('Required actual-runtime precheck is absent or did not pass')
+    runtime = report.get('runtime') or {}
+    if not runtime.get('executable') or not runtime.get('version') or not runtime.get('version_info'):
+        raise ValueError('Actual-runtime precheck lacks executable/version identity')
+    import ast
+    import subprocess
+    for spec, check in zip(specs, report['checks']):
+        if any(check.get(key) != value for key, value in spec.items()):
+            raise ValueError('Runtime precheck specification differs from the current profile')
+        if spec.get('kind') != 'FIXED_FUNCTION_AST':
+            raise ValueError('Unrecognized runtime precheck kind')
+        if spec.get('view_commit') not in profile.get('route_views', {}):
+            raise ValueError('Runtime precheck has no selected fixed route view')
+        sources = {}
+        guard = None
+        for path in (spec['source_path'], spec['guard_path']):
+            raw = subprocess.check_output(['git', 'show', spec['view_commit'] + ':' + path],
+                                           cwd=Path(__file__).resolve().parents[2])
+            sources[path] = hashlib.sha256(raw).hexdigest()
+            if path == spec['guard_path']:
+                guard = raw.decode()
+        definitions = [node.value for node in ast.parse(guard).body if isinstance(node, ast.Assign)
+                       and any(isinstance(target, ast.Name) and target.id == spec['guard_constant'] for target in node.targets)]
+        if len(definitions) != 1:
+            raise ValueError('Fixed runtime guard constant is missing or ambiguous')
+        expected = ast.literal_eval(definitions[0])
+        if (check.get('status') != 'PASS' or check.get('expected_ast_sha256') != expected
+                or check.get('actual_ast_sha256') != expected or check.get('source_files') != sources):
+            raise ValueError('Actual-runtime AST or fixed source-file guard differs')
+
+
+def _receipt_check(descriptor, base):
+    """Verify the existing transfer/receipt mechanism; invent no new authority."""
+    if descriptor.get('kind') == 'local':
+        return dict(status='MATCH', kind='DIRECT_LOCAL_OBSERVATION')
+    if descriptor.get('kind') == 'fixed_git':
+        import subprocess
+        if not descriptor.get('manifest'):
+            import io
+            import tarfile
+            archive = subprocess.check_output(['git', 'archive', '--format=tar', descriptor['fixed_commit'], descriptor['fixed_prefix']],
+                cwd=Path(__file__).resolve().parents[2])
+            files = {}
+            with tarfile.open(fileobj=io.BytesIO(archive)) as tree:
+                for member in tree.getmembers():
+                    if member.isfile():
+                        name = Path(member.name).relative_to(descriptor['fixed_prefix']).as_posix()
+                        files[name] = hashlib.sha256(tree.extractfile(member).read()).hexdigest()
+            if not files:
+                raise ValueError('Fixed Git evidence tree is empty')
+            return dict(status='MATCH', kind='FIXED_GIT_EVIDENCE_TREE', fixed_commit=descriptor['fixed_commit'],
+                        fixed_prefix=descriptor['fixed_prefix'],
+                        manifest_root=str(_path(descriptor['root'], base).resolve()), files=files)
+        manifest_path = _path(descriptor['manifest'], base)
+        manifest_locator = descriptor['fixed_prefix'].rstrip('/') + '/' + manifest_path.name
+        raw = subprocess.check_output(['git', 'show', descriptor['fixed_commit'] + ':' + manifest_locator],
+            cwd=Path(__file__).resolve().parents[2])
+        if manifest_path.read_bytes() != raw:
+            raise ValueError('Fixed Git evidence manifest bytes differ')
+        files = {row['path']: row['sha256'] for row in json.loads(raw)['files']}
+        return dict(status='MATCH', kind='FIXED_GIT_EVIDENCE', manifest=str(manifest_path),
+            manifest_sha256=_sha(manifest_path), fixed_commit=descriptor['fixed_commit'],
+            fixed_manifest_path=manifest_locator,
+            manifest_root=str(_path(descriptor['root'], base).resolve()), files=files)
+    manifest_path = _path(descriptor['manifest'], base)
+    receipt_path = _path(descriptor['receipt'], base)
+    manifest, receipt = _read(manifest_path), _read(receipt_path)
+    manifest_root = _path(descriptor.get('manifest_root', descriptor['root']), base).resolve()
+    if 'transfer_manifest_sha256' in receipt:
+        if receipt['transfer_manifest_sha256'] != _sha(manifest_path):
+            raise ValueError('Received transfer manifest hash differs')
+        if receipt.get('verified_transferred_files') != len(manifest):
+            raise ValueError('Received file count differs from transfer manifest')
+    elif receipt.get('received') is True and descriptor.get('archive'):
+        if receipt.get('archive_sha256') != _sha(_path(descriptor['archive'], base)):
+            raise ValueError('Received evidence archive hash differs')
+        if receipt.get('verified_files') != len(manifest):
+            raise ValueError('Received evidence file count differs')
+    else:
+        raise ValueError('No matching existing receipt for this manifest')
+    for name, expected in manifest.items():
+        part = PurePosixPath(name)
+        if part.is_absolute() or '..' in part.parts:
+            raise ValueError('Unsafe received evidence path')
+        # Verify the files used by each cell below. A missing unrelated log must
+        # not erase another candidate's independently hash-bound dry-check.
+    return dict(status='MATCH', kind='HASH_VERIFIED_RECEIVED_EVIDENCE',
+                manifest=str(manifest_path), manifest_sha256=_sha(manifest_path),
+                receipt=str(receipt_path), receipt_sha256=_sha(receipt_path),
+                manifest_root=str(manifest_root), files=manifest)
+
+
+def _covered(path, receipt):
+    if receipt['kind'] == 'DIRECT_LOCAL_OBSERVATION':
+        return
+    relative = Path(path).resolve().relative_to(Path(receipt['manifest_root'])).as_posix()
+    if relative not in receipt['files'] or _sha(path) != receipt['files'][relative]:
+        raise ValueError('Evidence is not covered by the received manifest: ' + relative)
+
+
+def _host_evidence(descriptor, base):
+    descriptor = deepcopy(descriptor)
+    root = _path(descriptor['root'], base)
+    receipt = _receipt_check(descriptor, base)
+    facts = None
+    facts_path = _path(descriptor.get('host_facts', str(root / 'HOST_FACTS.json')), base)
+    if facts_path.is_file():
+        _covered(facts_path, receipt)
+        facts = _read(facts_path)
+    host_method_readiness = dedicated_profile = portability_checks = published_profile = None
+    if descriptor.get('host_method_readiness'):
+        path = _path(descriptor['host_method_readiness'], base)
+        _covered(path, receipt)
+        host_method_readiness = _read(path)
+        profile_path = _path(descriptor['profile'], base)
+        _covered(profile_path, receipt)
+        if _sha(profile_path) != host_method_readiness.get('profile_sha256'):
+            raise ValueError('Dedicated host profile bytes differ from HOST_METHOD_READINESS')
+        dedicated_profile = _read(profile_path)
+    if descriptor.get('portability_checks'):
+        checks_path = _path(descriptor['portability_checks'], base)
+        profile_path = _path(descriptor['published_profile'], base)
+        _covered(checks_path, receipt)
+        _covered(profile_path, receipt)
+        portability_checks, published_profile = _read(checks_path), _read(profile_path)
+    cache = {}
+    if descriptor.get('runtime_cache'):
+        cache = _read(_path(descriptor['runtime_cache'], base)).get('methods', {})
+    records = []
+    for path in sorted(root.rglob('READINESS.json')):
+        observed = {}
+        try:
+            observed = _read(path)
+            _covered(path, receipt)
+            original_path = path
+            runtime_item = next((item for item in cache.values()
+                                 if item.get('result_sha256') == _sha(path)), None)
+            if observed.get('status') == 'CACHED_RESULT_REUSED':
+                if runtime_item is None:
+                    raise ValueError('Cached dry-check wrapper is not hash-bound by the index')
+                original_path = Path(observed['original_result'])
+                if observed.get('original_result_sha256') != _sha(original_path):
+                    raise ValueError('Cached dry-check original hash differs or is missing')
+                _covered(original_path, receipt)
+                observed = _read(original_path)
+            elif runtime_item is None and descriptor.get('kind') == 'local':
+                raise ValueError('Local dry-check record is not hash-bound by the runtime index')
+            records.append(dict(path=original_path, readiness=observed, runtime_item=runtime_item))
+        except Exception as exc:
+            records.append(dict(path=path, readiness=observed, error=str(exc)))
+    return dict(root=root, receipt=receipt, facts=facts, records=records,
+                host_method_readiness=host_method_readiness, dedicated_profile=dedicated_profile,
+                portability_checks=portability_checks, published_profile=published_profile)
+
+
+def _portable_runtime(assignment, profile, evidence, observed, path):
+    checks = evidence['portability_checks']
+    route = assignment['request']['route']
+    expected = dict(request_id=assignment['job_id'], request_sha256=assignment['request_sha256'],
+        original_computation_source=assignment['source_manifest']['commit'],
+        adapter_implementation=profile['adapter_manifest'].get('implementation_commit', profile['adapter_manifest']['commit']),
+        pass_route=route['kind'], outer_route_commit=route['view_commit'])
+    for key, value in expected.items():
+        if checks.get(key) != value:
+            raise ValueError('Published portability checks differ: ' + key)
+    for key in ('original_request_preserved', 'original_assignment_manifest_preserved',
+                'input_blob_hashes_verified', 'frozen_outer_and_inner_tracked_sources_unchanged'):
+        if checks.get(key) is not True:
+            raise ValueError('Published portability check is incomplete: ' + key)
+    for key in ('scientific_Q3_calls', 'compile_calls', 'production_queue_operations'):
+        if checks.get(key) != 0:
+            raise ValueError('Published portability evidence exceeds dry-check scope: ' + key)
+    if checks.get('positive') != observed.get('status'):
+        raise ValueError('Published portability observation differs from this dry-check')
+    raw_profile = deepcopy(profile)
+    raw_profile.pop('adapter_root', None)
+    raw_profile.pop('adapter_manifest', None)
+    if _effective_profile(raw_profile, assignment) != _effective_profile(evidence['published_profile'], assignment):
+        raise ValueError('Selected host profile differs from the published portability profile')
+    mapping_path = path.parent / 'ROUTE_VIEWS.json'
+    _covered(mapping_path, evidence['receipt'])
+    if _read(mapping_path) != profile['route_views']:
+        raise ValueError('Published external route mapping differs from the selected host profile')
+    command = observed.get('command') or []
+    if command.count('--route-views') != 1 or command.index('--route-views') + 1 >= len(command):
+        raise ValueError('Portability dry-check lacks the explicit route mapping flag')
+    if Path(command[command.index('--route-views') + 1]).name != mapping_path.name:
+        raise ValueError('Portability command references another mapping file')
+    runtime = (observed.get('adapter_result') or {}).get('runtime') or {}
+    if runtime != checks.get('original_AST_guard') or runtime.get('guard_modified') is not False or runtime.get('constructor') != 'PASS_UNCHANGED_GUARD':
+        raise ValueError('Portability runtime did not preserve the original AST guard')
+    inner = (observed.get('adapter_result') or {}).get('source_resolution') or {}
+    if inner != checks.get('inner_source'):
+        raise ValueError('Published inner SOURCE resolution differs')
+    if inner.get('frozen_sources_modified') is not False or profile['route_views'].get(inner.get('commit')) != inner.get('view'):
+        raise ValueError('Published inner SOURCE mapping is not preserved')
+    return runtime, [dict(path=profile['route_views'][route['view_commit']], commit=route['view_commit']),
+                     dict(path=inner['view'], commit=inner['commit'])]
+
+
+def _saved_adapter(assignment, profile, evidence, observed):
+    manifest = profile.get('adapter_manifest')
+    if not manifest and not profile.get('adapter_root'):
+        return
+    if not manifest or not profile.get('adapter_root'):
+        raise ValueError('Selected adapter root/manifest binding is incomplete')
+    adapter = observed.get('adapter_source') or {}
+    implementation = manifest.get('implementation_commit', manifest['commit'])
+    if adapter.get('root') != profile['adapter_root'] or adapter.get('commit') not in {manifest['commit'], implementation}:
+        raise ValueError('Saved adapter implementation root/commit differs')
+    entry = 'scripts/run_rpe_optimizer_q3_job.py'
+    if adapter.get('sha256') != manifest['files'].get(entry) or adapter.get('original_assignment_manifest_rewritten') is not False:
+        raise ValueError('Saved adapter hash differs or original manifest was rewritten')
+    command = observed.get('command') or []
+    if len(command) < 3 or command[2] != str(Path(profile['adapter_root']) / entry):
+        raise ValueError('Dry-check command did not use the selected adapter')
+    # The portability implementation is a separate fixed source, not an edit to
+    # the original computation manifest. Verify its published entry/helper bytes.
+    import subprocess
+    for commit in {manifest['commit'], implementation}:
+        for name, expected in manifest['files'].items():
+            raw = subprocess.check_output(['git', 'show', commit + ':' + name],
+                                          cwd=Path(__file__).resolve().parents[2])
+            if hashlib.sha256(raw).hexdigest() != expected:
+                raise ValueError('Selected adapter manifest differs from its fixed Git source: ' + name)
+
+
+def _method_runtime(assignment, profile, evidence, observed, readiness_path):
+    """Bind a published host/method capability to the official adapter record.
+
+    A launcher and sys.executable may legitimately differ. Their profile,
+    invocation, executable and binary hashes must all be bound by the existing
+    published evidence; do not substitute the checker process's Python version.
+    """
+    capability = evidence['host_method_readiness']
+    route = assignment['request']['route']
+    expected = dict(host_id=profile['host_id'], method=assignment['method'], job_id=assignment['job_id'],
+        source_commit=assignment['source_manifest']['commit'], request_sha256=assignment['request_sha256'],
+        route_kind=route['kind'], route_commit=route['view_commit'])
+    for key, value in expected.items():
+        if capability.get(key) != value:
+            raise ValueError('HOST_METHOD_READINESS identity differs: ' + key)
+    if capability.get('readiness_sha256') != _sha(readiness_path):
+        raise ValueError('Official readiness hash differs from HOST_METHOD_READINESS')
+    if capability.get('resolved_request_sha256') != observed.get('resolved_request_sha256'):
+        raise ValueError('Resolved request identity differs from HOST_METHOD_READINESS')
+    if _effective_profile(evidence['dedicated_profile'], assignment) != _effective_profile(profile, assignment):
+        raise ValueError('Selected candidate profile differs from the published dedicated profile')
+    if capability.get('source_files_sha256') != assignment['source_manifest']['files']:
+        raise ValueError('HOST_METHOD_READINESS SOURCE files differ')
+    declared_inputs = capability.get('input_hashes', [])
+    if any(row.get('observed_sha256') != row['sha256'] for row in declared_inputs):
+        raise ValueError('HOST_METHOD_READINESS observed input hashes differ')
+    plain_inputs = [{key: row[key] for key in ('commit', 'path', 'sha256')} for row in declared_inputs]
+    if _inputs(plain_inputs) != _inputs(assignment.get('input_hashes', [])):
+        raise ValueError('HOST_METHOD_READINESS inputs differ from this candidate')
+    if capability.get('status') != observed.get('status'):
+        raise ValueError('HOST_METHOD_READINESS dry-check status differs')
+    if capability.get('scientific_evaluation_calls') != 0 or capability.get('queue_operations') != 0 or capability.get('source_and_ast_guards_modified') is not False:
+        raise ValueError('Published capability does not preserve the fixed dry-check contract')
+    runtime = deepcopy((observed.get('adapter_result') or {}).get('runtime') or {})
+    if runtime != capability.get('runtime_guard') or not runtime.get('version'):
+        raise ValueError('Official adapter runtime differs from the published runtime guard')
+    if capability.get('interpreter_invocation') != profile['interpreter'] or runtime.get('executable') != capability.get('actual_executable'):
+        raise ValueError('Published invocation/actual executable binding differs')
+    if runtime.get('guard_modified') is not False or runtime.get('constructor') != 'PASS_UNCHANGED_GUARD':
+        raise ValueError('Original runtime/AST guard did not pass unchanged')
+    identity = capability.get('version_info') or []
+    if len(identity) != 5:
+        raise ValueError('Published actual version_info is missing')
+    release = {'candidate': 'rc', 'alpha': 'a', 'beta': 'b', 'final': ''}.get(identity[3])
+    if release is None:
+        raise ValueError('Published Python release level is unknown')
+    prefix = '.'.join(str(value) for value in identity[:3]) + (release + str(identity[4]) if release else '')
+    if not runtime['version'].startswith(prefix + ' '):
+        raise ValueError('Published actual version_info contradicts adapter runtime')
+    runtime.update(interpreter_invocation=capability['interpreter_invocation'],
+        launcher_sha256=capability['interpreter_launcher_sha256'],
+        actual_executable_realpath=capability['actual_executable_realpath'],
+        actual_binary_sha256=capability['actual_binary_sha256'])
+    views = []
+    records = capability.get('route_views') or {}
+    source = records.get('source') or {}
+    selected = records.get('route') or {}
+    if source.get('path') != profile['root'] or source.get('head') != assignment['source_manifest']['commit'] or source.get('tracked_dirty') != []:
+        raise ValueError('Published SOURCE view identity/cleanliness differs')
+    if selected.get('path') != profile['route_views'][route['view_commit']] or selected.get('head') != route['view_commit']:
+        raise ValueError('Published selected route view identity differs')
+    for key, view in records.items():
+        if key == 'source':
+            continue
+        if view.get('tracked_dirty') != [] or not view.get('head'):
+            raise ValueError('Published route dependency is changed or unchecked: ' + key)
+        views.append(dict(path=view.get('realpath', view['path']), commit=view['head']))
+    return runtime, views
+
+
+def _fact_views(assignment, profile, facts):
+    """Read both already published HOST_FACTS schemas."""
+    route = assignment['request']['route']
+    selected = profile['route_views'][route['view_commit']]
+    if 'source_files' in facts:
+        head = facts.get('source_head') or {}
+        if head.get('returncode') != 0 or head.get('stdout', '').strip() != assignment['source_manifest']['commit']:
+            raise ValueError('Received SOURCE HEAD differs')
+        for name, expected in assignment['source_manifest']['files'].items():
+            check = facts['source_files'].get(name) or {}
+            if check.get('expected') != expected or check.get('actual') != expected or check.get('match') is not True:
+                raise ValueError('Received SOURCE file verification differs: ' + name)
+        saved = facts.get('route_views', {}).get(route['view_commit']) or {}
+        head, diff = saved.get('head', {}), saved.get('tracked_source_diff', {})
+        if saved.get('path') != selected or head.get('returncode') != 0 or head.get('stdout', '').strip() != route['view_commit']:
+            raise ValueError('Received route view HEAD/path differs')
+        if diff.get('returncode') != 0 or diff.get('stdout', '').strip():
+            raise ValueError('Received route view has unknown or changed tracked SOURCE')
+        views = [dict(path=saved.get('realpath', selected), commit=route['view_commit'])]
+        if route['kind'].startswith('prdf_d2'):
+            inner = facts.get('pr_df_inner_source') or {}
+            if inner.get('exists') and inner.get('head', {}).get('returncode') == 0 and inner.get('tracked_source_diff', {}).get('returncode') == 0:
+                views.append(dict(path=inner.get('realpath', inner['required_path']),
+                                  commit=inner['head']['stdout'].strip(),
+                                  tracked_changes={} if not inner['tracked_source_diff'].get('stdout', '').strip() else {'UNKNOWN': True}))
+        return views
+    source_view = facts.get('views', {}).get(profile['root']) or {}
+    route_view = facts.get('views', {}).get(selected) or {}
+    if source_view.get('commit') != assignment['source_manifest']['commit'] or source_view.get('checked_files', 0) < len(assignment['source_manifest']['files']):
+        raise ValueError('No received matching SOURCE file verification')
+    if route_view.get('commit') != route['view_commit'] or route_view.get('checked_files', 0) < 1:
+        raise ValueError('No received matching route file verification')
+    return [dict(path=route_view.get('realpath', selected), commit=route_view['commit'])]
+
+
+def _cell(assignment, profile, evidence, *, current_inputs=None, current_source=None):
+    dimensions = {name: 'UNCHECKED' for name in ('request', 'source', 'input', 'route', 'runtime', 'receipt')}
+    result = dict(status='UNCHECKED', dimensions=dimensions, reasons=[], evidence=[])
+    receipt = evidence['receipt']
+    dimensions['receipt'] = 'MATCH'
+    matching = [item for item in evidence['records'] if
+                item['readiness'].get('job_id') == assignment['job_id'] and
+                item['readiness'].get('request_sha256') == assignment['request_sha256']]
+    if not matching:
+        result['reasons'].append('No received dry-check for this full current request/job identity')
+        return result
+    checked = []
+    for item in matching:
+        row = deepcopy(result)
+        dims = row['dimensions']
+        observed, path = item['readiness'], item['path']
+        try:
+            if item.get('error'):
+                raise ValueError(item['error'])
+            if Q.digest(assignment['request']) != assignment['request_sha256']:
+                raise ValueError('Current request hash differs from its assignment')
+            if observed.get('host_id') != profile['host_id']:
+                raise ValueError('Saved host ID differs from the current host profile')
+            if observed.get('scientific_evaluation_calls') != 0 or observed.get('queue_operations') != 0:
+                raise ValueError('Saved result does not establish a dry-check-only observation')
+            dims['request'] = 'MATCH'
+            if observed.get('source') != assignment['source_manifest']['commit']:
+                raise ValueError('Saved SOURCE commit differs from the current assignment')
+            if current_source is not None and current_source != assignment['source_manifest']:
+                raise ValueError('Current computation SOURCE files differ from the assignment')
+            dims['source'] = 'MATCH'
+            if _inputs(observed.get('input_hashes', [])) != _inputs(assignment.get('input_hashes', [])):
+                raise ValueError('Saved input hashes differ from current request inputs')
+            if current_inputs is not None and _inputs(current_inputs) != _inputs(assignment.get('input_hashes', [])):
+                raise ValueError('Current fixed input blobs differ from the assignment')
+            dims['input'] = 'MATCH'
+            resolved_path = path.parent / 'RESOLVED_REQUEST.json'
+            _covered(resolved_path, receipt)
+            resolved = _read(resolved_path)
+            if _sha(resolved_path) != observed.get('resolved_request_sha256'):
+                raise ValueError('Saved resolved request bytes differ from the dry-check record')
+            expected_resolved = _resolved_request(assignment, profile)
+            if resolved != expected_resolved or observed.get('route') != expected_resolved['route']:
+                raise ValueError('Saved resolved route/profile/request differs from the current host contract')
+            dims['route'] = 'MATCH'
+            command = observed.get('command') or []
+            if (not command or command[0] != profile['interpreter'] or command.count('--mode') != 1
+                    or command.index('--mode') + 1 >= len(command)
+                    or command[command.index('--mode') + 1] != 'dry-check'
+                    or any(item.startswith('--mode=') for item in command)):
+                raise ValueError('Saved adapter interpreter or explicit dry-check command differs')
+            _saved_adapter(assignment, profile, evidence, observed)
+            precheck = observed.get('runtime_precheck') if profile.get('runtime_checks') else None
+            if profile.get('runtime_checks'):
+                _verify_runtime_precheck(profile, precheck)
+            facts = evidence['facts']
+            raw = (item['runtime_item'] or {}).get('fingerprint')
+            if raw:
+                if (raw.get('request_sha256') != assignment['request_sha256'] or
+                        _effective_profile(raw.get('profile', {}), assignment) != _effective_profile(profile, assignment)):
+                    raise ValueError('Saved local runtime fingerprint is for another request/profile')
+                if raw.get('source') != assignment['source_manifest'] or raw.get('source_head') != assignment['source_manifest']['commit']:
+                    raise ValueError('Saved local SOURCE fingerprint differs')
+                if _inputs(raw.get('input_hashes', [])) != _inputs(assignment.get('input_hashes', [])):
+                    raise ValueError('Saved local input fingerprint differs')
+                runtime, views = raw['runtime'], raw['views']
+                if precheck is not None:
+                    if any(runtime.get(key) != precheck['runtime'].get(key) for key in ('executable', 'version')):
+                        raise ValueError('Local runtime fingerprint differs from the actual-runtime precheck')
+                    runtime = deepcopy(precheck['runtime'])
+            elif evidence.get('host_method_readiness'):
+                runtime, views = _method_runtime(assignment, profile, evidence, observed, path)
+            elif evidence.get('portability_checks'):
+                runtime, views = _portable_runtime(assignment, profile, evidence, observed, path)
+            elif precheck is not None:
+                if facts is None or facts.get('actual_runtime') != precheck['runtime'] or facts.get('runtime_checks') != precheck['checks']:
+                    raise ValueError('Received actual runtime/AST evidence differs from the official precheck')
+                views = _fact_views(assignment, profile, facts)
+                runtime = deepcopy(precheck['runtime'])
+            else:
+                if facts is None or facts.get('python') != profile['interpreter'] or facts.get('python_version') != observed.get('python_version'):
+                    raise ValueError('No matching actual interpreter/runtime observation')
+                views = _fact_views(assignment, profile, facts)
+                runtime = dict(executable=facts['python'], version=facts['python_version'])
+            if not runtime.get('version') or (runtime.get('executable') != profile['interpreter'] and runtime.get('interpreter_invocation') != profile['interpreter']):
+                raise ValueError('Actual interpreter identity/version is missing or mismatched')
+            expected_runtime = profile.get('runtime') or {}
+            for key, expected in expected_runtime.items():
+                if runtime.get(key) != expected:
+                    raise ValueError('Saved runtime differs from the current host runtime requirement: ' + key)
+            if any(view.get('tracked_changes') for view in views):
+                raise ValueError('Saved route had tracked SOURCE changes')
+            dims['runtime'] = 'MATCH'
+            status = observed.get('status')
+            if status == 'REAL_HOST_DRY_CHECK_PASS':
+                adapter_path = path.parent / 'adapter/DRY_CHECK.json'
+                _covered(adapter_path, receipt)
+                adapter = _read(adapter_path)
+                if (adapter != observed.get('adapter_result') or adapter.get('status') != 'DRY_CHECK_PASS'
+                        or adapter.get('mode') != 'dry-check' or adapter.get('request_id') != assignment['job_id']
+                        or adapter.get('route') != assignment['request']['route']['kind']):
+                    raise ValueError('Saved adapter PASS evidence differs or is incomplete')
+                row['status'] = 'PASS'
+            elif status == 'REAL_HOST_DRY_CHECK_MISSING_OR_INVALID_INPUT':
+                row['status'] = 'FAIL'
+                row['reasons'].append(observed.get('error') or observed.get('error_type') or 'Existing real-input dry-check failed')
+            else:
+                raise ValueError('No established real-input dry-check status')
+            fingerprint = _fingerprint(assignment, profile, runtime, views, runtime_precheck=precheck)
+            row.update(current_host_fingerprint=fingerprint,
+                       current_host_fingerprint_sha256=Q.digest(fingerprint),
+                       host_profile_sha256=Q.digest(_effective_profile(profile, assignment)))
+            from .rpe_host_profiles import profile_core
+            row['execution_profile'] = profile_core(profile)
+            row['evidence'].append(dict(readiness=str(path), sha256=_sha(path), receipt=receipt.get('receipt'),
+                                        manifest=receipt.get('manifest'), runtime_source='LOCAL_FINGERPRINT' if raw else 'RECEIVED_HOST_FACTS'))
+        except Exception as exc:
+            row['status'] = 'UNCHECKED'
+            row['reasons'].append(str(exc))
+        checked.append(row)
+    # Do not turn an established failure into PASS because another stale record exists.
+    return next((row for row in checked if row['status'] == 'FAIL'),
+                next((row for row in checked if row['status'] == 'PASS'), checked[-1]))
+
+
+def _items(values, field):
+    if isinstance(values, (str, Path)):
+        path = Path(values)
+        if path.is_dir():
+            values = list(path.glob('*.json'))
+        else:
+            values = _read(path)
+    if isinstance(values, dict):
+        if field in values:
+            return [values]
+        values = values.values()
+    return [_read(value) for value in values]
+
+
+def _select_evidence(descriptor, assignment):
+    if not descriptor:
+        raise ValueError('No saved received evidence descriptor for this host')
+    route = assignment['request']['route']
+    matches = [entry for entry in descriptor.get('route_evidence', [])
+               if entry.get('route_kind') == route['kind'] and entry.get('view_commit') == route['view_commit']]
+    if len(matches) > 1:
+        raise ValueError('Ambiguous route-specific evidence descriptors')
+    if matches:
+        return matches[0]['evidence']
+    return {key: value for key, value in descriptor.items() if key != 'route_evidence'}
+
+
+def derive_host_eligibility(assignments, profiles, evidence_by_host, *, root=None, base_directory=None):
+    """Derive a fresh policy from full current requests and saved evidence only.
+
+    Descriptors use root, kind=local/received, optional runtime_cache, and for
+    received evidence manifest/receipt/manifest_root. Relative descriptor paths
+    are resolved against base_directory. No evidence file is modified.
+    """
+    assignments = _items(assignments, 'request')
+    profiles = {profile['host_id']: profile for profile in _items(profiles, 'host_id')}
+    from .rpe_host_profiles import select_host_profile
+    prepared_evidence = {}
+    jobs = {}
+    for assignment in assignments:
+        hosts = {}
+        current_inputs = current_source = None
+        current_error = None
+        if root is not None:
+            try:
+                current_inputs = Q.input_hashes(root, assignment['request'])
+                current_source = Q.source_manifest(root, assignment['source_manifest']['commit'])
+                import subprocess
+                current_head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+                if current_head != assignment['source_manifest']['commit']:
+                    raise ValueError('Controller computation SOURCE HEAD differs from current assignment')
+            except Exception as exc:
+                current_error = str(exc)
+        for host, base_profile in profiles.items():
+            try:
+                profile = select_host_profile(base_profile, assignment)
+                descriptor = _select_evidence(evidence_by_host.get(host), assignment)
+                key = host, Q.digest(descriptor)
+                if key not in prepared_evidence:
+                    try:
+                        prepared_evidence[key] = _host_evidence(descriptor, base_directory)
+                    except Exception as exc:
+                        prepared_evidence[key] = dict(error=str(exc))
+                evidence = prepared_evidence[key]
+            except Exception as exc:
+                evidence = dict(error=str(exc))
+            if current_error or evidence.get('error'):
+                hosts[host] = dict(status='UNCHECKED', reasons=[current_error or evidence['error']],
+                    dimensions={key: 'UNCHECKED' for key in ('request', 'source', 'input', 'route', 'runtime', 'receipt')}, evidence=[])
+            else:
+                try:
+                    hosts[host] = _cell(assignment, profile, evidence, current_inputs=current_inputs, current_source=current_source)
+                except Exception as exc:
+                    hosts[host] = dict(status='UNCHECKED', reasons=[str(exc)],
+                        dimensions={key: 'UNCHECKED' for key in ('request', 'source', 'input', 'route', 'runtime', 'receipt')}, evidence=[])
+        row = dict(method=assignment['method'], request_sha256=assignment['request_sha256'],
+                   source_manifest=assignment['source_manifest'], source_manifest_sha256=Q.digest(assignment['source_manifest']),
+                   input_hashes=assignment.get('input_hashes', []), hosts=hosts,
+                   eligible_host_ids=sorted(host for host, status in hosts.items() if status['status'] == 'PASS'))
+        row['decision_sha256'] = Q.digest(row)
+        jobs[assignment['job_id']] = row
+    return dict(schema=SCHEMA, scope='SAVED_DRY_CHECK_EVIDENCE_REQUIRES_CURRENT_POLL_FINGERPRINT',
+                jobs=jobs, scientific_evaluation_calls=0, queue_operations=0)

@@ -1,5 +1,15 @@
 # scripts 索引
 
+[候補別のdry-check PASSホストへのQ3割当](../docs/research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
+
+[H4の高速な準備](../docs/research/rpe_h4_readiness_fast_20261117/README.md)：`run_rpe_schedule_search.py --plan-only --prepare-readiness --preparation-cache DIR` で保存履歴差分→選定→乾式検査→READY。既定の科学経路と旧遠隔配布物は保持する。
+
+[実H4分散runの事前検査](../docs/research/rpe_distributed_h4_plan_20261117/REPORT.md)：`check_rpe_q3_host_readiness.py` は固定workerのSOURCE/入力照合と既存adapterの明示dry-checkだけを呼ぶ。queue/worker/execute/collectは起動しない。[local0運用](../docs/research/rpe_distributed_h4_plan_20261117/LOCAL0_DRY_CHECK.md)。
+
+[分散Q3運用](../docs/research/rpe_distributed_q3/HANDOFF.md)：`run_rpe_q3_worker.py` はHTTP pull/SSH mailbox、`run_rpe_q3_relay.py` はローカル0のqg1/qg2中継、`check_rpe_distributed_q3.py` は通常schedule入口の人工検収。中央探索・予算はserver2のみ。
+
+`check_rpe_distributed_prefix.py`：固定SOURCEを指定し、分散worker経由の既存guarded DPを人工表で検査。host別cacheのHIT・逐次exact一致・再開0を確認する。実H4を評価しない。
+
 [run_rpe_schedule_search.py](run_rpe_schedule_search.py)：PR複数要求幅と共通queue/DP cache、PF/B0Iの元method CLIへのdispatch。[統合HANDOFF](../docs/research/pr_width_throughput_integration_20261117/HANDOFF.md)。
 
 `collect_saved_rpe_costs.py`：[固定入力と同一commandによるH4保存比較](../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。INPUTS.sourcesに固定SHA/pathを追加して再実行。出力は候補CATALOG/方式別最安/REPORT。Q3/価格の計算、solverや探索は起動しない。
@@ -343,3 +353,7 @@ artifacts/<validation_name>/
 [C7-4保存再解析runner](run_track_d_c7_4.py)／[結果projection](summarize_track_d_c7_4.py)：保存88 pathのみの探索fit/CV/bootstrapと固定人工6系列/短P0 2本。新H4 sampling/build/compileなし。既存runのmain/guardを変更しない。
 
 - `run_rpe_schedule_search.py` の `search_overrides.requested_widths` は両PR方式の要求幅を通常の準備・価格・V2 shot/Q3へ渡す。保存照合は `check_pr_requested_width_saved.py`。[SOURCEと起動方法](../docs/research/pr_requested_step_search_20261117/HANDOFF.md)。
+
+- `summarize_rpe_q3_timing.py RUN --output FILE`：通常distributed runの配送・Q3 body・受領・探索採用をhost/attempt別に集計する。SOURCEと時計domainの条件は[HANDOFF](../docs/research/rpe_q3_timing_20261117/HANDOFF.md)。
+
+Local0 absolute-kappa interval through the normal physical schedule entry (metadata-only acceptance): `docs/research/rpe_local0_absolute_kappa/README.md`.

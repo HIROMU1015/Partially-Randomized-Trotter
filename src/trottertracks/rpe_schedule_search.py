@@ -80,6 +80,18 @@ def settings(s):
     return out
 
 
+def kappa_bounds(s):
+    raw = (s or {}).get('kappa_bounds')
+    if raw is None:
+        return None
+    if not isinstance(raw, (list, tuple)) or len(raw) != 2:
+        raise ValueError('kappa_bounds requires inclusive absolute lower/upper bounds')
+    lo, hi = (KS._frac(v) for v in raw)
+    if not 0 < lo <= hi:
+        raise ValueError('Invalid positive inclusive absolute kappa bounds')
+    return lo, hi
+
+
 def family_rows(lambda_R, h, delta, M=12, J=1):
     """Mapper constants without a configuration: T_m = 2^m h, q_m = ceil(T_m / delta), c_m = lambda_R^2 T_m^2 (exact)."""
     lam, h, delta = Fraction(lambda_R), Fraction(h), Fraction(delta)
@@ -132,6 +144,35 @@ class Family:
         return n is not None and n < b and self.R(n) != self.R(b)
 
 
+class BoundedFamily(Family):
+    """The same physical schedule mapper, restricted to a closed kappa domain."""
+    def __init__(self, original, bounds):
+        self.key, self.rows = original.key, original.rows
+        self.lower, self.upper = bounds
+        self.floor_R = self.R(self.lower)
+        self.floor_end = min([self.upper] + [Fraction(n * r['q']) / r['c']
+            for n, r in zip(self.floor_R, self.rows) if r['c'] > 0])
+
+    def floor_rep(self):
+        return self.lower
+
+    def rep(self, k):
+        representative = max(self.lower, min(self.upper, super().rep(k)))
+        if self.R(representative) != self.R(k):
+            raise ValueError('Bounded representative changed the physical schedule')
+        return representative
+
+    def next(self, k, direction):
+        row = KS.next_distinct(self.rows, k, direction, [self.lower, self.upper])
+        if row is None or not self.lower <= row['kappa'] <= self.upper:
+            return None
+        return row['kappa']
+
+    def snap(self, k, toward, have_R, stop_at=None):
+        k = max(self.lower, min(self.upper, k))
+        return super().snap(k, toward, have_R, stop_at)
+
+
 def _log(x):
     return math.log(float(x))
 
@@ -139,7 +180,14 @@ def _log(x):
 def plan_wide(families, points, s=None, price_floor=None):
     """families: {key: Family}; points: dicts(family, kappa (Fraction), status, best (Fraction|None), min_lower_over_tau).
     Returns (proposals, decisions, report)."""
-    s = settings(s);per_family = {k: [] for k in families}
+    bounds = kappa_bounds(s)
+    if bounds is not None:
+        families = {k: BoundedFamily(f, bounds) for k, f in families.items()}
+        points = [p for p in points if bounds[0] <= p['kappa'] <= bounds[1]]
+    s = settings(s)
+    if bounds is not None:
+        s['max_kappa'] = bounds[1]
+    per_family = {k: [] for k in families}
     for p in points:
         if p['family'] in per_family:
             per_family[p['family']].append(p)
@@ -184,13 +232,17 @@ def plan_wide(families, points, s=None, price_floor=None):
                 if all(b >= a for a, b in zip(last, last[1:])) and tail[-1]['kappa'] < hi:
                     hi, basis = tail[-1]['kappa'], 'NO_FEASIBILITY_PROGRESS'
         rep.update(upper_limit=hi, upper_basis=basis)
+        if bounds is not None:
+            rep.update(requested_kappa_bounds=list(bounds), bounds_inclusive=[True, True])
         # INIT
         mine = []
         fr = f.floor_rep()
         if f.floor_R not in have_R:
             mine.append((fr, 'INIT_FLOOR_SCHEDULE'))
+        if bounds is not None and f.R(bounds[1]) not in have_R and f.R(bounds[1]) != f.floor_R and bounds[1] <= hi:
+            mine.append((bounds[1], 'INIT_UPPER_BOUND_SCHEDULE'))
         k = f.floor_end or Fraction(1);half = math.log(float(s['ladder_ratio'])) / 2
-        taken = [p['kappa'] for p in ps] + [fr]
+        taken = [p['kappa'] for p in ps] + [v for v, _ in mine] + [fr]
         while True:
             k = k * s['ladder_ratio']
             if k > hi:
@@ -262,6 +314,8 @@ def plan_wide(families, points, s=None, price_floor=None):
             seen.add(k);out.append(p)
     for p in out:
         p['kappa'] = families[p['family']].rep(p['kappa'])
+        if bounds is not None and not bounds[0] <= p['kappa'] <= bounds[1]:
+            raise ValueError('Physical schedule proposal escaped the requested absolute domain')
         if p['reason'] not in ('INIT_FLOOR_SCHEDULE', 'INIT_FAR_SCHEDULE'):
             decisions.append(dict(family=p['family'], decision=p['reason'], kappa=str(p['kappa'])))
     pending = [p for p in points if p['status'] in ('PENDING', 'IN_PROGRESS')]

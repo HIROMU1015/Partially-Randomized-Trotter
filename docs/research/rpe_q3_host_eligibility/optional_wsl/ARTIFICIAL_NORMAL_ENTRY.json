@@ -1,0 +1,43 @@
+{
+  "schema": "RPE_OPTIONAL_HOST_ARTIFICIAL_ENTRY_V1",
+  "status": "PASS",
+  "entry": "scripts/run_rpe_schedule_search.py",
+  "driver_factory_used": false,
+  "scope": "ARTIFICIAL_QUEUE_ONLY_NO_WORKER_OR_ADAPTER_PROCESS",
+  "off_existing_hosts": [
+    "server2",
+    "server1",
+    "local"
+  ],
+  "off_wsl_claims": 0,
+  "join_wsl_claims": 1,
+  "wsl_max_slots": 1,
+  "claims": [
+    {
+      "host_id": "server2",
+      "method": "TRUNCATED_PF",
+      "job_id": "f4fc1afc13efe4830d0f"
+    },
+    {
+      "host_id": "server1",
+      "method": "FULL_PF",
+      "job_id": "123d0e9e3f3799806817"
+    },
+    {
+      "host_id": "local",
+      "method": "PR_PAULI",
+      "job_id": "56b7768e5b36f7f6bf71"
+    },
+    {
+      "host_id": "local0-wsl",
+      "method": "PR_DF",
+      "job_id": "4dba63c7ae974cf45126"
+    }
+  ],
+  "completed_artificial_jobs": 4,
+  "resume_new_launches": 0,
+  "duplicate_adoptions": 0,
+  "final_wsl_accepting": false,
+  "scientific_adapter_calls": 0,
+  "production_queue_submissions": 0
+}

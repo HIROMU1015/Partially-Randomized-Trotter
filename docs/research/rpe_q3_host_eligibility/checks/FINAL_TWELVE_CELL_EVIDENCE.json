@@ -1,0 +1,789 @@
+{
+  "status": "PASS",
+  "scope": "TWELVE_CANDIDATE_HOST_REAL_INPUT_RUNTIME_GUARDED_DRY_CHECK_EVIDENCE",
+  "pass_count": 12,
+  "fail_count": 0,
+  "unchecked_count": 0,
+  "hold_count": 0,
+  "returned_manifests": [
+    {
+      "directory": "evidence/pf_runtime_cbc471c91_delta_v3",
+      "manifest_sha256": "a00844ef2d3b0ede9b4a4b57e2cecea0c207c2e0d33c964738178fb91f3794b4",
+      "verified_files": 35,
+      "all_member_hashes_match": true,
+      "receipt_sha256": "a31974d1fa5d993c30007989a953bf16bb730cfcc73cbb2514d4753a011c156e"
+    },
+    {
+      "directory": "evidence/pauli_route_33e324b_delta_v2",
+      "manifest_sha256": "f548a040d388ea167ddeb4bd59bf0bc84eeff197425d2dc843ff100e23931f99",
+      "verified_files": 23,
+      "all_member_hashes_match": true,
+      "receipt_sha256": "c02793449d9aef0882144ebff7b9349821f80101dd8ab3a107882428cae683fd"
+    }
+  ],
+  "rows": [
+    {
+      "method": "FULL_PF",
+      "job_id": "9b9b4b5132ff89768c5c",
+      "request_sha256": "a41996a69b95198c11808fef721075f7ad719215c1c3ff43f4ce0f0f8294bea3",
+      "eligible_host_ids": [
+        "local",
+        "server1",
+        "server2"
+      ],
+      "source": {
+        "computation_manifest": {
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+            "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+            "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+            "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+            "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+            "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+            "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+          }
+        },
+        "optimizer_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route_kind": "pf_b_pf6",
+        "route_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "input_hashes": [
+          {
+            "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+            "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+            "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+          },
+          {
+            "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+            "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+            "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+          }
+        ]
+      },
+      "assignment": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_h4_readiness_fast_20261117/benchmarks/first/readiness/assignments/FULL_PF.json"
+    },
+    {
+      "method": "PR_DF",
+      "job_id": "48494ae31276a64c46ce",
+      "request_sha256": "2906eeafee0f39909ef2db9c169924bcb74d48354995ab443e9231f94c0d2e2a",
+      "eligible_host_ids": [
+        "local",
+        "server1",
+        "server2"
+      ],
+      "source": {
+        "computation_manifest": {
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+            "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+            "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+            "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+            "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+            "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+            "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+          }
+        },
+        "optimizer_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route_kind": "prdf_d2_split",
+        "route_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "input_hashes": [
+          {
+            "commit": "0defa286c53a1b9acf513be453907bcad83102b3",
+            "path": "docs/research/d_pr_df_ld7_v0_results_20261116/Q3_INPUTS.json",
+            "sha256": "bad7f828ab46757c9ec724e189b038c47edec751b2ac6878041cbacfd742c063"
+          },
+          {
+            "commit": "4d3aa8a666e153188addfb3a4f2b8ef10733a3dd",
+            "path": "docs/research/d_pr_df_ld_split_results_20261115/Q3_CALL_INPUTS.json",
+            "sha256": "671d7f0d2e3286111355cdc0d33f7fae7e46da32107be0337a53b0991e5c8fc1"
+          }
+        ]
+      },
+      "assignment": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_h4_readiness_fast_20261117/benchmarks/first/readiness/assignments/PR_DF.json"
+    },
+    {
+      "method": "TRUNCATED_PF",
+      "job_id": "72864f6cf968d3b514b1",
+      "request_sha256": "1a61be630a5cc44bceb5680d7c1c232fce3b13dc3a6316f4c99fd26aa8400931",
+      "eligible_host_ids": [
+        "local",
+        "server1",
+        "server2"
+      ],
+      "source": {
+        "computation_manifest": {
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+            "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+            "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+            "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+            "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+            "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+            "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+          }
+        },
+        "optimizer_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route_kind": "pf_b_pf6",
+        "route_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "input_hashes": [
+          {
+            "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+            "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+            "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+          },
+          {
+            "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+            "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+            "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+          }
+        ]
+      },
+      "assignment": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_h4_readiness_fast_20261117/benchmarks/first/readiness/assignments/TRUNCATED_PF.json"
+    },
+    {
+      "method": "PR_PAULI",
+      "job_id": "805877c2ab6c3e03f7f1",
+      "request_sha256": "ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693",
+      "eligible_host_ids": [
+        "local",
+        "server1",
+        "server2"
+      ],
+      "source": {
+        "computation_manifest": {
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
+            "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
+            "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
+            "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
+            "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
+            "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
+            "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+          }
+        },
+        "optimizer_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route_kind": "pauli_b_common_entry",
+        "route_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "input_hashes": [
+          {
+            "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+            "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json",
+            "sha256": "31193aa1e80aab7c5801c27c42a0accec603ad1732a0a4c6a597d505acc5e8f0"
+          },
+          {
+            "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+            "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json",
+            "sha256": "a7fcd04d34815e64a28d5c5ee68c470e5b1bafebf481d005843f8551d986e2db"
+          },
+          {
+            "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+            "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json",
+            "sha256": "d141289d8c091306b8a41254a26a151f69ddb8b15633b08435387174c15f5151"
+          }
+        ]
+      },
+      "assignment": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/pauli_descriptor_route/ASSIGNMENT.json"
+    }
+  ],
+  "cells": [
+    {
+      "method": "FULL_PF",
+      "job_id": "9b9b4b5132ff89768c5c",
+      "host_id": "server1",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pf_runtime_cbc471c91_delta_v3/server1/dry/FULL_PF/READINESS.json",
+      "readiness_sha256": "e0b6db9d0a2693a4e2863931a29ce820e6fec30cb4a77d8d7709b4352ce7860e",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "75f2f2495cdf9a150c2d6f6cd2f09701b7f535bb976621862abcfb697bc18549",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "adapter": {
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ACTUAL_INTERPRETER_FUNCTION_AST",
+      "runtime": {
+        "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+        "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+        "version_info": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "platform": "Linux-6.8.0-49-generic-x86_64-with-glibc2.39",
+        "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+        "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+        "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+      },
+      "runtime_checks": [
+        {
+          "kind": "FIXED_FUNCTION_AST",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "source_path": "src/trottertracks/rpe_total_risk.py",
+          "function": "total_state_dp",
+          "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+          "guard_constant": "REFERENCE_DP_AST_SHA256",
+          "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "source_files": {
+            "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+            "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+          },
+          "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "method": "FULL_PF",
+      "job_id": "9b9b4b5132ff89768c5c",
+      "host_id": "server2",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/pf_runtime_guard/server2_dry/FULL_PF/READINESS.json",
+      "readiness_sha256": "5a19cbca168bbd77e552030fd1c0d6c83ee840d20635505175a0c61e8bdae6a6",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "ebc8ebc81398d5e163efe6f9a95129a129f372db6d93ddaa0e6cad0c2915ad61",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "adapter": {
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ACTUAL_INTERPRETER_FUNCTION_AST",
+      "runtime": {
+        "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+        "version_info": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39"
+      },
+      "runtime_checks": [
+        {
+          "kind": "FIXED_FUNCTION_AST",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "source_path": "src/trottertracks/rpe_total_risk.py",
+          "function": "total_state_dp",
+          "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+          "guard_constant": "REFERENCE_DP_AST_SHA256",
+          "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "source_files": {
+            "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+            "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+          },
+          "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "method": "FULL_PF",
+      "job_id": "9b9b4b5132ff89768c5c",
+      "host_id": "local",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pf_runtime_cbc471c91_delta_v3/local/dry/FULL_PF/READINESS.json",
+      "readiness_sha256": "07bccfcf85a9be4387518f9359cb725fcf4b3a3598ecc7b9a9bca10c8c511a41",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "80524370e31380648b6a44c25b383a2896ef7c49e10e8567c25358537037cbb3",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "adapter": {
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ACTUAL_INTERPRETER_FUNCTION_AST",
+      "runtime": {
+        "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+        "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+        "version_info": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35"
+      },
+      "runtime_checks": [
+        {
+          "kind": "FIXED_FUNCTION_AST",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "source_path": "src/trottertracks/rpe_total_risk.py",
+          "function": "total_state_dp",
+          "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+          "guard_constant": "REFERENCE_DP_AST_SHA256",
+          "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "source_files": {
+            "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+            "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+          },
+          "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "method": "PR_DF",
+      "job_id": "48494ae31276a64c46ce",
+      "host_id": "server1",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/server1_prdf_runtime_9d022a0f7/dry/PR_DF/READINESS.json",
+      "readiness_sha256": "16578b7b4a79f9e40044b679fc531e6f0f627810d1ee0423a2ca1d52b820432d",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "cf7424a1ea3a00de08c1d4b8fc79bbf2188c994e60c9e5ad5e753ba402d1287b",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "23160cc876807c0300be3de811f767b5810640a7",
+        "adapter": {
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ORIGINAL_FIXED_AST_CONSTRUCTOR",
+      "runtime": {
+        "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+        "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+        "platform": "Linux-6.8.0-49-generic-x86_64-with-glibc2.39",
+        "precedent": {
+          "commit": "738df226232e539cc084dfad2aed2feae82f3073",
+          "path": "docs/research/pauli_ld2_reallocation_q3_results_20261115/TESTS.txt"
+        },
+        "expected_AST_hash": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+        "constructor": "PASS_UNCHANGED_GUARD",
+        "kernel_source": "710aa69b663ef3313439762d25c80a652a03948f",
+        "accelerator_source": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+        "guard_modified": false
+      }
+    },
+    {
+      "method": "PR_DF",
+      "job_id": "48494ae31276a64c46ce",
+      "host_id": "server2",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/server2/dry/PR_DF/READINESS.json",
+      "readiness_sha256": "4dd72d38aab0e09a31602a5e9ee9053bad757417a03bb4927ef4ae3b5ac33662",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "418bb1482ef831e2543c92de5d8b5d0afd77de37ddb6efdd1df83a7bfb342bcf",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "23160cc876807c0300be3de811f767b5810640a7",
+        "adapter": {
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ORIGINAL_FIXED_AST_CONSTRUCTOR",
+      "runtime": {
+        "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+        "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39",
+        "precedent": {
+          "commit": "738df226232e539cc084dfad2aed2feae82f3073",
+          "path": "docs/research/pauli_ld2_reallocation_q3_results_20261115/TESTS.txt"
+        },
+        "expected_AST_hash": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+        "constructor": "PASS_UNCHANGED_GUARD",
+        "kernel_source": "710aa69b663ef3313439762d25c80a652a03948f",
+        "accelerator_source": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+        "guard_modified": false
+      }
+    },
+    {
+      "method": "PR_DF",
+      "job_id": "48494ae31276a64c46ce",
+      "host_id": "local",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/romutail_prdf_source_09efb068f/checks/pass01/READINESS.json",
+      "readiness_sha256": "bc8ee9ec8410de5eb45cc3e02530a170df888009d0c9f0dcde24e4dacf8a71f4",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "436116c3e7c44b504480c860706ca46705c4e0b1578a595e9aa429c7d97842a1",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "23160cc876807c0300be3de811f767b5810640a7",
+        "adapter": {
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution",
+          "commit": "09efb068f242d5d6ff88296df3e50283b2f951bf",
+          "implementation_commit": "e37f6544dea3e021d3694264f7dae87add7ad30e",
+          "files": {
+            "scripts/run_rpe_optimizer_q3_job.py": "63cf463024241af20e9c6b3ca55eaf0ce2ebf4a4a7b8c9ca91a8ea74f6cb7fb6",
+            "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+          }
+        }
+      },
+      "runtime_guard_source": "ORIGINAL_FIXED_AST_CONSTRUCTOR",
+      "runtime": {
+        "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+        "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+        "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+        "precedent": {
+          "commit": "738df226232e539cc084dfad2aed2feae82f3073",
+          "path": "docs/research/pauli_ld2_reallocation_q3_results_20261115/TESTS.txt"
+        },
+        "expected_AST_hash": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+        "constructor": "PASS_UNCHANGED_GUARD",
+        "kernel_source": "710aa69b663ef3313439762d25c80a652a03948f",
+        "accelerator_source": "9e294778266c9c867a8b1b98e040c2e94b1cb635",
+        "guard_modified": false
+      }
+    },
+    {
+      "method": "TRUNCATED_PF",
+      "job_id": "72864f6cf968d3b514b1",
+      "host_id": "server1",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pf_runtime_cbc471c91_delta_v3/server1/dry/TRUNCATED_PF/READINESS.json",
+      "readiness_sha256": "457314a0771c4acc7a5bd44ea75c9fc0b322731791e7ad144e11f15d50de848e",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "b37e4ad8f70b981bee1e0001cf4ac546dff06c1733f579c7eb7e71908834a75e",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "adapter": {
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ACTUAL_INTERPRETER_FUNCTION_AST",
+      "runtime": {
+        "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+        "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+        "version_info": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "platform": "Linux-6.8.0-49-generic-x86_64-with-glibc2.39",
+        "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+        "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+        "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+      },
+      "runtime_checks": [
+        {
+          "kind": "FIXED_FUNCTION_AST",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "source_path": "src/trottertracks/rpe_total_risk.py",
+          "function": "total_state_dp",
+          "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+          "guard_constant": "REFERENCE_DP_AST_SHA256",
+          "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "source_files": {
+            "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+            "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+          },
+          "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "method": "TRUNCATED_PF",
+      "job_id": "72864f6cf968d3b514b1",
+      "host_id": "server2",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/pf_runtime_guard/server2_dry/TRUNCATED_PF/READINESS.json",
+      "readiness_sha256": "a5aab8db82bf8074c7b916b7f875fdfa1397362ce0f6bcf45beafccba5a12606",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "86d6ca14ce65dc9a89e8aba82dc2ee96306898585018fd90b8364b0b215026cd",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "adapter": {
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ACTUAL_INTERPRETER_FUNCTION_AST",
+      "runtime": {
+        "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+        "version_info": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39"
+      },
+      "runtime_checks": [
+        {
+          "kind": "FIXED_FUNCTION_AST",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "source_path": "src/trottertracks/rpe_total_risk.py",
+          "function": "total_state_dp",
+          "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+          "guard_constant": "REFERENCE_DP_AST_SHA256",
+          "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "source_files": {
+            "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+            "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+          },
+          "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "method": "TRUNCATED_PF",
+      "job_id": "72864f6cf968d3b514b1",
+      "host_id": "local",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pf_runtime_cbc471c91_delta_v3/local/dry/TRUNCATED_PF/READINESS.json",
+      "readiness_sha256": "1c630c1d9c2cb71c5ee011cc9eaf56d7dcb85b0a877e9e6d4db2a87b99642aa5",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "0c456333230006c9f96abd8c0bac6a39bcc3e8f8811e39be8f86bc955fe6500d",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "adapter": {
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ACTUAL_INTERPRETER_FUNCTION_AST",
+      "runtime": {
+        "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+        "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+        "version_info": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35"
+      },
+      "runtime_checks": [
+        {
+          "kind": "FIXED_FUNCTION_AST",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "source_path": "src/trottertracks/rpe_total_risk.py",
+          "function": "total_state_dp",
+          "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+          "guard_constant": "REFERENCE_DP_AST_SHA256",
+          "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "source_files": {
+            "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+            "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+          },
+          "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "method": "PR_PAULI",
+      "job_id": "805877c2ab6c3e03f7f1",
+      "host_id": "server1",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pauli_route_33e324b_delta_v2/server1/dry/PR_PAULI/READINESS.json",
+      "readiness_sha256": "303191e7542e671d1ae2bad93e4c062ef5e918ceeb062b38001f7dc3c5e263b9",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "c4ac06f262d969aa0fe6006799c8b4f796c5ca4415047b2a35a23f22cafd80bb",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "adapter": {
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ACTUAL_INTERPRETER_FUNCTION_AST",
+      "runtime": {
+        "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+        "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+        "version_info": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "platform": "Linux-6.8.0-49-generic-x86_64-with-glibc2.39",
+        "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+        "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+        "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+        "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+      },
+      "runtime_checks": [
+        {
+          "kind": "FIXED_FUNCTION_AST",
+          "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+          "source_path": "src/trottertracks/rpe_total_risk.py",
+          "function": "total_state_dp",
+          "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+          "guard_constant": "REFERENCE_DP_AST_SHA256",
+          "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "source_files": {
+            "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+            "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+          },
+          "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "method": "PR_PAULI",
+      "job_id": "805877c2ab6c3e03f7f1",
+      "host_id": "server2",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/pauli_descriptor_route/server2_runtime_ast_v2/READINESS.json",
+      "readiness_sha256": "48d47b8a819c3ebfbff4b427ec32fead92ea044933f9695ff012982e77772560",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "c20708bf14fa1601969e75c7d10cf6d3bb0e017f4c22e3b75a40d6eb5514482f",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "adapter": {
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ACTUAL_INTERPRETER_FUNCTION_AST",
+      "runtime": {
+        "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+        "version_info": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39"
+      },
+      "runtime_checks": [
+        {
+          "kind": "FIXED_FUNCTION_AST",
+          "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+          "source_path": "src/trottertracks/rpe_total_risk.py",
+          "function": "total_state_dp",
+          "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+          "guard_constant": "REFERENCE_DP_AST_SHA256",
+          "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "source_files": {
+            "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+            "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+          },
+          "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "method": "PR_PAULI",
+      "job_id": "805877c2ab6c3e03f7f1",
+      "host_id": "local",
+      "status": "PASS",
+      "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pauli_route_33e324b_delta_v2/local/dry/PR_PAULI/READINESS.json",
+      "readiness_sha256": "5831ccc0e1a8f14494a32e65b49b2cb4e0c369c21162da4c21b2931d7e6b45e4",
+      "selected_profile_core_exact": true,
+      "protocol_mode": "dry-check",
+      "scientific_evaluation_calls": 0,
+      "queue_operations": 0,
+      "current_host_fingerprint_sha256": "fa64ba49dfd8e2ce321288cd1d69828c942177a983cf0d436d032a3f0f00423b",
+      "source": {
+        "computation": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "route": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "adapter": {
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+          "commit": "28d976b99cdf8329adcc1b79327e329e947ef774"
+        }
+      },
+      "runtime_guard_source": "ACTUAL_INTERPRETER_FUNCTION_AST",
+      "runtime": {
+        "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+        "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+        "version_info": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35"
+      },
+      "runtime_checks": [
+        {
+          "kind": "FIXED_FUNCTION_AST",
+          "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+          "source_path": "src/trottertracks/rpe_total_risk.py",
+          "function": "total_state_dp",
+          "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+          "guard_constant": "REFERENCE_DP_AST_SHA256",
+          "expected_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "source_files": {
+            "src/trottertracks/rpe_total_risk.py": "852bc11ce4f4ed3cea38eade561243781e1f732e925ba5326da026c063727001",
+            "src/trottertracks/rpe_total_dp_parallel.py": "a1404fe5dacefdccb142b6431e406cb08991a9837ac8961232b751d790ee2674"
+          },
+          "actual_ast_sha256": "3d043e716246e57a8b05784b0d5c0f6777aaf43410fed8c4dd8b68df6dd590b8",
+          "status": "PASS"
+        }
+      ]
+    }
+  ],
+  "policy_sha256": "8b6d36dc8b121b540f7f67f5cefe9d051d0ecb58b4b30f1c40caffec039656d5",
+  "evidence_config_sha256": "5d9e2cfbe06e1a3c7ce00403b5d9c8b3343853d55bf3a4c3143899b946fc45ac",
+  "metadata_seconds": 0.8568514289800078,
+  "new_scientific_evaluations": 0,
+  "new_dry_checks_by_this_validation": 0,
+  "remote_reexecution_requests": 0,
+  "receipt_or_file_hash_corrections": 0,
+  "previous_checkpoints_preserved": true
+}

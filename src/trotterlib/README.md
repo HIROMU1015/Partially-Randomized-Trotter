@@ -1,5 +1,13 @@
 # trotterlib モジュール索引
 
+[候補別のdry-check PASSホストへのQ3割当](../../docs/research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
+
+[H4準備の差分cache](../../docs/research/rpe_h4_readiness_fast_20261117/README.md)：`trottertracks.rpe_plan_prepare` が既存optimizerと `rpe_plan_history_cache`・`rpe_plan_readiness` を接続する。計算SOURCE28dと数値kernelは変更せず、科学実行0の準備を速く返す。
+
+[実H4分散runの事前検査](../../docs/research/rpe_distributed_h4_plan_20261117/REPORT.md)：既存workerの入力照合と既存adapterの明示dry-checkを、新しい専用directoryで直接利用する。数値kernelや固定28dの計算SOURCEは変更しない。
+
+[分散Q3](../../docs/research/rpe_distributed_q3/HANDOFF.md)：実装はtrottertracksの既存concurrent executor拡張、`rpe_q3_store`、`rpe_q3_worker`、`rpe_q3_coordinator`。数値kernelは変更せず、固定route adapterを各hostで再利用する。
+
 [PR複数幅/queue/DPとB0I選択の統合](../../docs/research/pr_width_throughput_integration_20261117/HANDOFF.md)：研究別`pr_candidate_completion`、`rpe_optimizer_concurrent`、`rpe_dp_prefix_reuse`、PF metadata helperを通常入口から再利用。新科学0。
 
 [H4保存結果の自動比較](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)：実装はtrottertracks/CLI。物理library・数値solverを変更せず、保存判定と費用を照合する。
@@ -287,3 +295,5 @@ DF部分ランダム化研究と混同しない。
 C7-4の[保存モデル再解析](../trottertracks/track_d_c7_4_models.py)と[人工native比較](../trottertracks/track_d_c7_4_stability.py)は明示runnerだけから利用する。q≥64分子計算を含まず、[技術報告](../../docs/research/track_d_c7_4_model_stability_20261107/REPORT.md)を参照する。
 
 - PR要求PF幅の技術経路は `trottertracks.rpe_schedule_search` / `pr_candidate_completion` / `pr_step_price_registry` を利用する。[両方式のAPI・検収範囲](../../docs/research/pr_requested_step_search_20261117/HANDOFF.md)。
+
+Local0 absolute-kappa interval through the normal physical schedule entry (metadata-only acceptance): `docs/research/rpe_local0_absolute_kappa/README.md`.

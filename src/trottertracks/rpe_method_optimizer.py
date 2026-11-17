@@ -426,7 +426,8 @@ def proposals(candidates, knowledge, threshold, search, generate):
     return ordered, incumbent
 
 
-HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW'}
+HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW',
+        'HOST_ELIGIBILITY_HOLD': 'HOST_ELIGIBILITY_HOLD'}
 
 
 def hold_candidate(candidate, proposal, answer, backend):
@@ -517,6 +518,9 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
                 vector=list(p['vector']), origin=p['origin']) for p in props[:5]], job=None if answer is None else answer.get('job'))
             if hold:
                 stop = hold
+                if answer['status'] == 'HOST_ELIGIBILITY_HOLD':
+                    pending['host_eligibility'] = answer.get('host_eligibility')
+                    pending['hold_reason'] = answer.get('reason')
             elif not science_approved and not is_free:
                 stop = 'NEW_SCIENCE_NOT_APPROVED'
             elif limit == 0 and not is_free:
@@ -730,6 +734,9 @@ class Executor:
     def prior_records(self, candidates):
         """Every completed prior-round job of this method for a ready candidate, validated like a new job (same key,
         same route, identity checks).  Returns ({(cid, vector): record}, refused rows)."""
+        cache = getattr(self, 'preparation_history_cache', None)
+        if cache is not None:
+            return cache.prior_records(self, candidates)[:2]
         ready = {c['configuration_id']: c for c in candidates if c['ready'] and c['configuration_id']}
         known, refused = {}, []
         for base in self.prior_run_dirs:
@@ -1319,6 +1326,47 @@ def jsonable(value):
     return value
 
 
+def scope_absolute_kappa(context, problem):
+    """Apply explicit absolute bounds to saved, generated and installed candidates."""
+    if not any(v.get('absolute_kappa_bounds') is not None for v in problem['methods'].values()):
+        return context
+    from .rpe_kappa_schedule import _frac
+    saved = {p['configuration_id']: p for p in context['catalog']['candidates']}
+    kept, excluded = [], []
+    for candidate in context['candidates']:
+        setting = problem['methods'][candidate['method']]
+        bounds = setting.get('absolute_kappa_bounds')
+        if bounds is None or candidate.get('configuration_id') is None:
+            kept.append(candidate)
+            continue
+        allowed = setting.get('L_D_values')
+        ld = candidate.get('L_D', candidate.get('key', {}).get('L_D'))
+        if allowed is not None and ld not in allowed:
+            excluded.append(dict(configuration_id=candidate['configuration_id'], L_D=ld,
+                                 reason='OUTSIDE_REQUESTED_L_D_VALUES'))
+            continue
+        lo, hi = (_frac(v) for v in bounds)
+        value = candidate.get('kappa_value')
+        if value is None and candidate.get('generated_configuration'):
+            value = candidate['generated_configuration']['spec']['kappa']['value']
+        if value is None:
+            value = saved.get(candidate['configuration_id'], {}).get('kappa')
+        if isinstance(value, dict) and 'value' in value:
+            value = value['value']
+        if value is None:
+            raise ValueError('Cannot establish absolute kappa of candidate: ' + candidate['configuration_id'])
+        kappa = _frac(value)
+        if lo <= kappa <= hi:
+            candidate['kappa_value'] = str(kappa)
+            kept.append(candidate)
+        else:
+            excluded.append(dict(configuration_id=candidate['configuration_id'], kappa=str(kappa),
+                                 reason='OUTSIDE_INCLUSIVE_ABSOLUTE_KAPPA_BOUNDS'))
+    context['candidates'] = kept
+    context.setdefault('scope_excluded', []).extend(excluded)
+    return context
+
+
 def optimize(root, problem, *, context=None, methods=None, initial='all', extra_results=(), backend=None, max_new=None,
              executor=None, saved_is_free=True, science_approved=True):
     """Run the per-method search.
@@ -1330,7 +1378,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
     saved_is_free: the backend answers C's saved configuration+allocation without a new call (set False for a
     backend that does not consult the saved results, e.g. a stand-alone artificial fixture).
     """
-    context = context or prepare(root, problem)
+    context = scope_absolute_kappa(context or prepare(root, problem), problem)
     search = problem['search'];threshold = context['tau']
     max_new = search['max_new_q3_per_method'] if max_new is None else max_new
     out = {}
@@ -1380,7 +1428,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             log = None
             if executor is not None:
                 ex_log = executor.for_method(name)
-                log = lambda row, ex_log=ex_log: ex_log.log(event='SEARCH_ADOPT' if getattr(ex_log, 'supports_nonblocking_prefetch', False) else 'ADOPT', configuration=row['configuration_id'][:8], cls=row['cls'],
+                log = lambda row, ex_log=ex_log: ex_log.log(event='SEARCH_ADOPT' if getattr(ex_log, 'supports_nonblocking_prefetch', False) else 'ADOPT', configuration=row['configuration_id'][:8], job=row.get('job'), cls=row['cls'],
                                                            status=row['status'], cost=show(row['cost']),
                                                            method_min=row['method_min_after'] and show(row['method_min_after']))
             result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
@@ -1445,7 +1493,7 @@ def prepare_kappa_requests(root, problem, context, name, prep, requests):
 
 
 EXHAUSTED = ('NO_IMPROVING_PROPOSAL', 'NO_FEASIBLE_POINT_IN_RANGE')
-STOP_PRIORITY = ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'JOB_IN_PROGRESS', 'Q3_BUDGET_EXHAUSTED',
+STOP_PRIORITY = ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'HOST_ELIGIBILITY_HOLD', 'JOB_IN_PROGRESS', 'Q3_BUDGET_EXHAUSTED',
                  'NEW_SCIENCE_NOT_APPROVED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET', 'NEW_Q3_REQUIRED_NO_EXECUTOR', 'STEP_LIMIT')
 
 
@@ -1503,6 +1551,8 @@ def prepare(root, problem, generate_configurations=True, methods=None, preparati
     from . import pf_optimizer_connection as PF
     PF.enumerate_prefixes(root, reader, problem, candidates, methods)
     generation = generate_variants(root, problem, reader, catalog, candidates, methods, preparation_dir) if generate_configurations else {}
+    scope = scope_absolute_kappa(dict(candidates=candidates, catalog=catalog), problem)
+    candidates = scope['candidates']
     price_rules = quote_prices(root, problem, candidates, catalog, methods) if problem.get('price_rules') else None
     artificial_pf = problem.get('artificial_pf_evidence') is True
     pf_registry = PF.load_registry(root, reader, problem.get('pf_evidence_registry'),allow_artificial=artificial_pf)
@@ -1521,4 +1571,5 @@ def prepare(root, problem, generate_configurations=True, methods=None, preparati
         expected[cid] = dict(expected.get(cid) or {}, **{k: v for k, v in entry.items() if v is not None})
     return dict(facts=facts, reader=reader, catalog=catalog, candidates=candidates, saved=saved, tau=tau(problem),
                 expected=expected, generate=pinned_function(reader, problem['generator']), generation=generation,
-                price_rules=price_rules, preparation_dir=preparation_dir, pf_evidence_registry=pf_registry)
+                price_rules=price_rules, preparation_dir=preparation_dir, pf_evidence_registry=pf_registry,
+                scope_excluded=scope.get('scope_excluded', []))

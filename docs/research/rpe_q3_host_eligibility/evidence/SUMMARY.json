@@ -1,0 +1,160 @@
+{
+    "scope":  "REAL_INPUT_DRY_CHECK_ONLY",
+    "distribution_commit":  "33928bf80cca18ce3f1fa3ddde88d27d7e2b7e5b",
+    "computation_source":  "28d976b99cdf8329adcc1b79327e329e947ef774",
+    "bundle_sha256":  "5589dbf00cd4e04d8a6325cf5e33a82091f6952dc201872de45c8b8faa1f4534",
+    "pass_count":  4,
+    "missing_count":  4,
+    "unconfirmed_cells":  0,
+    "scientific_evaluation_calls":  0,
+    "signal_generation_calls":  0,
+    "circuit_compile_calls":  0,
+    "production_queue_submissions":  0,
+    "artificial_controller_relay_spool_resumed":  false,
+    "assignable_hosts":  {
+                             "FULL_PF":  [
+                                             "qg1",
+                                             "RomuTail"
+                                         ],
+                             "TRUNCATED_PF":  [
+                                                  "qg1",
+                                                  "RomuTail"
+                                              ],
+                             "PR_PAULI":  [
+
+                                          ],
+                             "PR_DF":  [
+
+                                       ]
+                         },
+    "candidate_hosts":  [
+                            {
+                                "host_id":  "server1",
+                                "ssh_alias":  "qg1",
+                                "method":  "FULL_PF",
+                                "job_id":  "9b9b4b5132ff89768c5c",
+                                "classification":  "PASS",
+                                "status":  "REAL_HOST_DRY_CHECK_PASS",
+                                "stage":  "EXISTING_ADAPTER_DRY_CHECK",
+                                "adapter_returncode":  0,
+                                "error":  null,
+                                "python_version":  "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+                                "readiness":  "server1/dry/FULL_PF/READINESS.json",
+                                "adapter_log":  "server1/dry/FULL_PF/ADAPTER.log",
+                                "scientific_evaluation_calls":  0,
+                                "queue_operations":  0
+                            },
+                            {
+                                "host_id":  "server1",
+                                "ssh_alias":  "qg1",
+                                "method":  "TRUNCATED_PF",
+                                "job_id":  "72864f6cf968d3b514b1",
+                                "classification":  "PASS",
+                                "status":  "REAL_HOST_DRY_CHECK_PASS",
+                                "stage":  "EXISTING_ADAPTER_DRY_CHECK",
+                                "adapter_returncode":  0,
+                                "error":  null,
+                                "python_version":  "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+                                "readiness":  "server1/dry/TRUNCATED_PF/READINESS.json",
+                                "adapter_log":  "server1/dry/TRUNCATED_PF/ADAPTER.log",
+                                "scientific_evaluation_calls":  0,
+                                "queue_operations":  0
+                            },
+                            {
+                                "host_id":  "server1",
+                                "ssh_alias":  "qg1",
+                                "method":  "PR_PAULI",
+                                "job_id":  "805877c2ab6c3e03f7f1",
+                                "classification":  "MISSING",
+                                "status":  "REAL_HOST_DRY_CHECK_MISSING_OR_INVALID_INPUT",
+                                "stage":  "EXISTING_ADAPTER_DRY_CHECK",
+                                "adapter_returncode":  1,
+                                "error":  "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in \u003cmodule\u003e\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 406, in main\n    r.metadata(case);stage(out, \u0027METADATA_PASS\u0027, bounds=bounds)\n    ^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 156, in common_metadata\n    accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case[\u0027signal_packet\u0027])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9/src/trottertracks/rpe_pauli_signal_intake.py\", line 207, in accept_saved\n    _entry_assembly_source(root, assembly)\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9/src/trottertracks/rpe_pauli_signal_intake.py\", line 183, in _entry_assembly_source\n    raise ValueError(\u0027Unsupported saved Pauli assembly SOURCE: entry code differs: \u0027 + path)\nValueError: Unsupported saved Pauli assembly SOURCE: entry code differs: src/trottertracks/pauli_signal_entry.py\n",
+                                "python_version":  "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+                                "readiness":  "server1/dry/PR_PAULI/READINESS.json",
+                                "adapter_log":  "server1/dry/PR_PAULI/ADAPTER.log",
+                                "scientific_evaluation_calls":  0,
+                                "queue_operations":  0
+                            },
+                            {
+                                "host_id":  "server1",
+                                "ssh_alias":  "qg1",
+                                "method":  "PR_DF",
+                                "job_id":  "48494ae31276a64c46ce",
+                                "classification":  "MISSING",
+                                "status":  "REAL_HOST_DRY_CHECK_MISSING_OR_INVALID_INPUT",
+                                "stage":  "EXISTING_ADAPTER_DRY_CHECK",
+                                "adapter_returncode":  1,
+                                "error":  "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in \u003cmodule\u003e\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 405, in main\n    runtime = r.runtime() if r.runtime is not None else None\n              ^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87/scripts/run_pr_df_ld_split_q3_resume.py\", line 42, in runtime_check\n    if sys.version_info[:3]!=(3,11,0)or sys.version_info.releaselevel!=\u0027candidate\u0027 or sys.version_info.serial!=1:raise ValueError(\u0027Use successful fixed-AST Python3.11.0rc1 environment\u0027)\n                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: Use successful fixed-AST Python3.11.0rc1 environment\n",
+                                "python_version":  "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+                                "readiness":  "server1/dry/PR_DF/READINESS.json",
+                                "adapter_log":  "server1/dry/PR_DF/ADAPTER.log",
+                                "scientific_evaluation_calls":  0,
+                                "queue_operations":  0
+                            },
+                            {
+                                "host_id":  "local",
+                                "ssh_alias":  "RomuTail",
+                                "method":  "FULL_PF",
+                                "job_id":  "9b9b4b5132ff89768c5c",
+                                "classification":  "PASS",
+                                "status":  "REAL_HOST_DRY_CHECK_PASS",
+                                "stage":  "EXISTING_ADAPTER_DRY_CHECK",
+                                "adapter_returncode":  0,
+                                "error":  null,
+                                "python_version":  "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+                                "readiness":  "local/dry/FULL_PF/READINESS.json",
+                                "adapter_log":  "local/dry/FULL_PF/ADAPTER.log",
+                                "scientific_evaluation_calls":  0,
+                                "queue_operations":  0
+                            },
+                            {
+                                "host_id":  "local",
+                                "ssh_alias":  "RomuTail",
+                                "method":  "TRUNCATED_PF",
+                                "job_id":  "72864f6cf968d3b514b1",
+                                "classification":  "PASS",
+                                "status":  "REAL_HOST_DRY_CHECK_PASS",
+                                "stage":  "EXISTING_ADAPTER_DRY_CHECK",
+                                "adapter_returncode":  0,
+                                "error":  null,
+                                "python_version":  "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+                                "readiness":  "local/dry/TRUNCATED_PF/READINESS.json",
+                                "adapter_log":  "local/dry/TRUNCATED_PF/ADAPTER.log",
+                                "scientific_evaluation_calls":  0,
+                                "queue_operations":  0
+                            },
+                            {
+                                "host_id":  "local",
+                                "ssh_alias":  "RomuTail",
+                                "method":  "PR_PAULI",
+                                "job_id":  "805877c2ab6c3e03f7f1",
+                                "classification":  "MISSING",
+                                "status":  "REAL_HOST_DRY_CHECK_MISSING_OR_INVALID_INPUT",
+                                "stage":  "EXISTING_ADAPTER_DRY_CHECK",
+                                "adapter_returncode":  1,
+                                "error":  "Traceback (most recent call last):\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in \u003cmodule\u003e\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 406, in main\n    r.metadata(case);stage(out, \u0027METADATA_PASS\u0027, bounds=bounds)\n    ^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 156, in common_metadata\n    accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case[\u0027signal_packet\u0027])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c/src/trottertracks/rpe_pauli_signal_intake.py\", line 207, in accept_saved\n    _entry_assembly_source(root, assembly)\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c/src/trottertracks/rpe_pauli_signal_intake.py\", line 183, in _entry_assembly_source\n    raise ValueError(\u0027Unsupported saved Pauli assembly SOURCE: entry code differs: \u0027 + path)\nValueError: Unsupported saved Pauli assembly SOURCE: entry code differs: src/trottertracks/pauli_signal_entry.py\n",
+                                "python_version":  "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+                                "readiness":  "local/dry/PR_PAULI/READINESS.json",
+                                "adapter_log":  "local/dry/PR_PAULI/ADAPTER.log",
+                                "scientific_evaluation_calls":  0,
+                                "queue_operations":  0
+                            },
+                            {
+                                "host_id":  "local",
+                                "ssh_alias":  "RomuTail",
+                                "method":  "PR_DF",
+                                "job_id":  "48494ae31276a64c46ce",
+                                "classification":  "MISSING",
+                                "status":  "REAL_HOST_DRY_CHECK_MISSING_OR_INVALID_INPUT",
+                                "stage":  "EXISTING_ADAPTER_DRY_CHECK",
+                                "adapter_returncode":  1,
+                                "error":  "Traceback (most recent call last):\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in \u003cmodule\u003e\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 398, in main\n    case, inputs = build(view, request);inputs = execution_profile(inputs, request);r = route(view, kind)\n                                                                                        ^^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 207, in route\n    W = load(view, \u0027run_pr_df_ld_split_q3_resume\u0027, \u0027scripts/run_pr_df_ld_split_q3_resume.py\u0027)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 138, in load\n    spec.loader.exec_module(module)\n  File \"\u003cfrozen importlib._bootstrap_external\u003e\", line 940, in exec_module\n  File \"\u003cfrozen importlib._bootstrap\u003e\", line 241, in _call_with_frames_removed\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7/scripts/run_pr_df_ld_split_q3_resume.py\", line 38, in \u003cmodule\u003e\n    exec(compile(blob(OLD,\u0027scripts/run_pr_df_ld_split_q3.py\u0027),Q.__file__+\u0027@\u0027+OLD,\u0027exec\u0027),Q.__dict__)\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7/scripts/run_pr_df_ld_split_q3.py@e0b3cad2a024070389f757160f3a20d7da02c5ff\", line 20, in \u003cmodule\u003e\n  File \"\u003cfrozen importlib._bootstrap_external\u003e\", line 936, in exec_module\n  File \"\u003cfrozen importlib._bootstrap_external\u003e\", line 1073, in get_code\n  File \"\u003cfrozen importlib._bootstrap_external\u003e\", line 1130, in get_data\nFileNotFoundError: [Errno 2] No such file or directory: \u0027/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115/scripts/run_pr_df_fullh_total_q3_fixed.py\u0027\n",
+                                "python_version":  "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+                                "readiness":  "local/dry/PR_DF/READINESS.json",
+                                "adapter_log":  "local/dry/PR_DF/ADAPTER.log",
+                                "scientific_evaluation_calls":  0,
+                                "queue_operations":  0
+                            }
+                        ]
+}

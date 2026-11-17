@@ -1,0 +1,20 @@
+{
+  "state_directory": "~/rpe-q3-relay-state-1ffdf610a-fault",
+  "controller": {
+    "ssh_alias": "qg2",
+    "remote_port": 8763,
+    "local_port": 18765
+  },
+  "workers": [
+    {
+      "host_id": "server1-fault",
+      "ssh_alias": "qg1",
+      "python": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+      "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-worker-1ffdf610a",
+      "profile": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/PROFILE_server1_1ffdf610a_fault.json"
+    }
+  ],
+  "poll_seconds": 1,
+  "request_timeout_seconds": 60,
+  "retry_backoff_max_seconds": 30
+}

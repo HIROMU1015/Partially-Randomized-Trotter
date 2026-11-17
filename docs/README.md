@@ -1,5 +1,13 @@
 # 文書索引
 
+[候補別のdry-check PASSホストへのQ3割当](research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。
+
+[H4準備の差分cacheと早期READY](research/rpe_h4_readiness_fast_20261117/REPORT.md)：候補・費用・乾式判定を前回と保ち、通常入口で初回/入力不変時を計測。[1コマンドと再計測](research/rpe_h4_readiness_fast_20261117/README.md)。
+
+[次の実H4分散runの計画・実入力dry-check](research/rpe_distributed_h4_plan_20261117/REPORT.md)：最新保存履歴・科学job keyを照合、server2の実経路3候補PASSとPauli不足、遠隔未確認を区別。新科学0件。[開始/再開案](research/rpe_distributed_h4_plan_20261117/START_RESUME.md)。
+
+[分散Q3とローカル0中継](research/rpe_distributed_q3/REPORT.md)／[固定SHA・ホスト別運用](research/rpe_distributed_q3/HANDOFF.md)：永続割当と再開回収を人工検証。実機間検収・人工速度倍率・実H4性能を区別する。
+
 [PR複数幅＋並列/DP再利用＋B0I自動pの統合](research/pr_width_throughput_integration_20261117/REPORT.md)／[通常コマンド・再開・設定](research/pr_width_throughput_integration_20261117/HANDOFF.md)。
 
 [p7粗幅Yoshida4の価格接続と最安更新](research/h4_saved_rpe_cost_catalog_20261116/run01/REPORT.md)：p7・標準Yoshida4・要求幅32h/5 A_SHAPEの既存Q3適合点へ26軸価格を接続し、p7保存集合内最安を372035410 RZへ更新。直接16軸56433222、モデル10軸315602188 RZ。モデル全体84.831223%と総額中q>80外挿75.400727%を区別。旧S2適合395962678と当時のPR探索予算・SOURCEを保全。粗幅B_PRICEは別配分の不適合/nullのまま。固定20入力49点（適合35/不適合13/価格待ち1）、回帰12 PASS、新科学call0、公開後STOP。
@@ -373,3 +381,5 @@
 [O5実H4 q4最終結果](research/track_d_cut_h4_q4_completion_20261108/REPORT.md)：原本回収後に中央cut2を選択し追加差0。旧4 P0適格再利用、重複compile0。
 
 - [PR要求PF幅の探索接続（保存metadata・人工検収）](research/pr_requested_step_search_20261117/REPORT.md) / [通常入口と再開](research/pr_requested_step_search_20261117/HANDOFF.md)。
+
+Local0 absolute-kappa interval through the normal physical schedule entry (metadata-only acceptance): `docs/research/rpe_local0_absolute_kappa/README.md`.

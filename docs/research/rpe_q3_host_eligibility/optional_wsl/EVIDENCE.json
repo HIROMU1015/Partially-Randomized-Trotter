@@ -1,0 +1,595 @@
+{
+  "schema": "RPE_SAVED_HOST_READINESS_INPUTS_V1",
+  "evidence_by_host": {
+    "server2": {
+      "kind": "local",
+      "root": "../evidence/server2",
+      "runtime_cache": "../evidence/server2/DRY_CACHE.json",
+      "route_evidence": [
+        {
+          "route_kind": "pauli_b_common_entry",
+          "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+          "evidence": {
+            "kind": "local",
+            "root": "../pauli_descriptor_route/server2_runtime_ast_v2",
+            "runtime_cache": "../pauli_descriptor_route/SERVER2_RUNTIME_AST_V2_DRY_CACHE.json"
+          }
+        },
+        {
+          "route_kind": "pf_b_pf6",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "evidence": {
+            "kind": "local",
+            "root": "../pf_runtime_guard/server2_dry",
+            "runtime_cache": "../pf_runtime_guard/SERVER2_DRY_CACHE.json"
+          }
+        }
+      ]
+    },
+    "server1": {
+      "kind": "received",
+      "root": "../evidence/server1",
+      "host_facts": "../evidence/server1/HOST_FACTS.json",
+      "manifest": "../evidence/remote_return/TRANSFER_MANIFEST.json",
+      "receipt": "../evidence/remote_return/RETURN_RECEIPT.json",
+      "manifest_root": "../evidence",
+      "route_evidence": [
+        {
+          "route_kind": "prdf_d2_split",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "evidence": {
+            "kind": "fixed_git",
+            "root": "../evidence/server1_prdf_runtime_9d022a0f7",
+            "fixed_commit": "9d022a0f7cc953ba3c1dac0b5e514e295c429fbe",
+            "fixed_prefix": "docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime",
+            "manifest": "../evidence/server1_prdf_runtime_9d022a0f7/EVIDENCE_FILES.json",
+            "host_method_readiness": "../evidence/server1_prdf_runtime_9d022a0f7/HOST_METHOD_READINESS.json",
+            "profile": "../evidence/server1_prdf_runtime_9d022a0f7/profiles/server1.prdf.python311rc1.json"
+          }
+        },
+        {
+          "route_kind": "pauli_b_common_entry",
+          "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+          "evidence": {
+            "kind": "received",
+            "root": "../evidence/pauli_route_33e324b_delta_v2/server1",
+            "host_facts": "../evidence/pauli_route_33e324b_delta_v2/server1/HOST_FACTS.json",
+            "manifest": "../evidence/pauli_route_33e324b_delta_v2/TRANSFER_MANIFEST.json",
+            "receipt": "../evidence/pauli_route_33e324b_delta_v2/RETURN_RECEIPT.json",
+            "manifest_root": "../evidence/pauli_route_33e324b_delta_v2"
+          }
+        },
+        {
+          "route_kind": "pf_b_pf6",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "evidence": {
+            "kind": "received",
+            "root": "../evidence/pf_runtime_cbc471c91_delta_v3/server1",
+            "host_facts": "../evidence/pf_runtime_cbc471c91_delta_v3/server1/HOST_FACTS.json",
+            "manifest": "../evidence/pf_runtime_cbc471c91_delta_v3/TRANSFER_MANIFEST.json",
+            "receipt": "../evidence/pf_runtime_cbc471c91_delta_v3/RETURN_RECEIPT.json",
+            "manifest_root": "../evidence/pf_runtime_cbc471c91_delta_v3"
+          }
+        }
+      ]
+    },
+    "local": {
+      "kind": "received",
+      "root": "../evidence/local",
+      "host_facts": "../evidence/local/HOST_FACTS.json",
+      "manifest": "../evidence/remote_return/TRANSFER_MANIFEST.json",
+      "receipt": "../evidence/remote_return/RETURN_RECEIPT.json",
+      "manifest_root": "../evidence",
+      "route_evidence": [
+        {
+          "route_kind": "pauli_b_common_entry",
+          "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+          "evidence": {
+            "kind": "received",
+            "root": "../evidence/pauli_route_33e324b_delta_v2/local",
+            "host_facts": "../evidence/pauli_route_33e324b_delta_v2/local/HOST_FACTS.json",
+            "manifest": "../evidence/pauli_route_33e324b_delta_v2/TRANSFER_MANIFEST.json",
+            "receipt": "../evidence/pauli_route_33e324b_delta_v2/RETURN_RECEIPT.json",
+            "manifest_root": "../evidence/pauli_route_33e324b_delta_v2"
+          }
+        },
+        {
+          "route_kind": "prdf_d2_split",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "evidence": {
+            "kind": "fixed_git",
+            "root": "../evidence/romutail_prdf_source_09efb068f",
+            "fixed_commit": "09efb068f242d5d6ff88296df3e50283b2f951bf",
+            "fixed_prefix": "docs/research/rpe_prdf_romutail_source_20261117",
+            "portability_checks": "../evidence/romutail_prdf_source_09efb068f/CHECKS.json",
+            "published_profile": "../evidence/romutail_prdf_source_09efb068f/PROFILE.json"
+          }
+        },
+        {
+          "route_kind": "pf_b_pf6",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "evidence": {
+            "kind": "received",
+            "root": "../evidence/pf_runtime_cbc471c91_delta_v3/local",
+            "host_facts": "../evidence/pf_runtime_cbc471c91_delta_v3/local/HOST_FACTS.json",
+            "manifest": "../evidence/pf_runtime_cbc471c91_delta_v3/TRANSFER_MANIFEST.json",
+            "receipt": "../evidence/pf_runtime_cbc471c91_delta_v3/RETURN_RECEIPT.json",
+            "manifest_root": "../evidence/pf_runtime_cbc471c91_delta_v3"
+          }
+        }
+      ]
+    },
+    "local0-wsl": {
+      "kind": "fixed_git",
+      "root": "evidence/de02a717f0bf/evidence",
+      "fixed_commit": "de02a717f0bf2aa4ae4424b4386f89682457cf32",
+      "fixed_prefix": "docs/research/local0_wsl_prdf_runtime_20261117/evidence",
+      "manifest": "evidence/de02a717f0bf/evidence/EVIDENCE_FILES.json",
+      "runtime_cache": "evidence/de02a717f0bf/evidence/DRY_CACHE.json",
+      "route_evidence": [
+        {
+          "route_kind": "prdf_d2_split",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "evidence": {
+            "kind": "fixed_git",
+            "root": "evidence/de02a717f0bf/evidence",
+            "fixed_commit": "de02a717f0bf2aa4ae4424b4386f89682457cf32",
+            "fixed_prefix": "docs/research/local0_wsl_prdf_runtime_20261117/evidence",
+            "manifest": "evidence/de02a717f0bf/evidence/EVIDENCE_FILES.json",
+            "host_method_readiness": "evidence/de02a717f0bf/evidence/HOST_METHOD_READINESS.json",
+            "profile": "evidence/de02a717f0bf/evidence/PROFILE.prdf.json"
+          }
+        },
+        {
+          "route_kind": "pf_b_pf6",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "evidence": {
+            "kind": "received",
+            "root": "evidence/runtime_delta_v1/local0-wsl",
+            "host_facts": "evidence/runtime_delta_v1/local0-wsl/FULL_PF/HOST_FACTS.json",
+            "manifest": "evidence/runtime_delta_v1/TRANSFER_MANIFEST.json",
+            "receipt": "evidence/runtime_delta_v1/RETURN_RECEIPT.json",
+            "manifest_root": "evidence/runtime_delta_v1"
+          }
+        },
+        {
+          "route_kind": "pauli_b_common_entry",
+          "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+          "evidence": {
+            "kind": "received",
+            "root": "evidence/runtime_delta_v1/local0-wsl",
+            "host_facts": "evidence/runtime_delta_v1/local0-wsl/PR_PAULI/HOST_FACTS.json",
+            "manifest": "evidence/runtime_delta_v1/TRANSFER_MANIFEST.json",
+            "receipt": "evidence/runtime_delta_v1/RETURN_RECEIPT.json",
+            "manifest_root": "evidence/runtime_delta_v1"
+          }
+        }
+      ]
+    }
+  },
+  "profile_overrides": {
+    "server1": [
+      {
+        "route_kind": "prdf_d2_split",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "profile": {
+          "host_id": "server1",
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+          "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+          "route_views": {
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87"
+          },
+          "dp_workers": 1,
+          "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only"
+        }
+      },
+      {
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "profile": {
+          "host_id": "server1",
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+          "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+            "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43"
+          },
+          "dp_workers": 1,
+          "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+          "runtime_checks": [
+            {
+              "kind": "FIXED_FUNCTION_AST",
+              "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+              "source_path": "src/trottertracks/rpe_total_risk.py",
+              "function": "total_state_dp",
+              "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+              "guard_constant": "REFERENCE_DP_AST_SHA256"
+            }
+          ],
+          "runtime": {
+            "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+            "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+            "version_info": [
+              3,
+              11,
+              0,
+              "candidate",
+              1
+            ],
+            "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+            "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+            "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+            "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+          }
+        }
+      },
+      {
+        "route_kind": "pf_b_pf6",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "profile": {
+          "host_id": "server1",
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+          "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87"
+          },
+          "dp_workers": 1,
+          "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+          "runtime_checks": [
+            {
+              "kind": "FIXED_FUNCTION_AST",
+              "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "source_path": "src/trottertracks/rpe_total_risk.py",
+              "function": "total_state_dp",
+              "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+              "guard_constant": "REFERENCE_DP_AST_SHA256"
+            }
+          ],
+          "runtime": {
+            "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+            "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+            "version_info": [
+              3,
+              11,
+              0,
+              "candidate",
+              1
+            ],
+            "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+            "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+            "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+            "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+          }
+        }
+      },
+      {
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+        "profile": {
+          "host_id": "server1",
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+          "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87",
+            "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-33e324b43"
+          },
+          "dp_workers": 1,
+          "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache",
+          "runtime_checks": [
+            {
+              "kind": "FIXED_FUNCTION_AST",
+              "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "source_path": "src/trottertracks/rpe_total_risk.py",
+              "function": "total_state_dp",
+              "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+              "guard_constant": "REFERENCE_DP_AST_SHA256"
+            }
+          ],
+          "runtime": {
+            "executable": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3",
+            "version": "3.11.0rc1 (main, Nov 17 2026, 02:40:18) [GCC 13.3.0]",
+            "version_info": [
+              3,
+              11,
+              0,
+              "candidate",
+              1
+            ],
+            "interpreter_invocation": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+            "launcher_sha256": "1393f387a169e5e664ee839094de48528b46d52b3e6f98b9fea6bbf899c27f21",
+            "actual_executable_realpath": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime/python311rc1/bin/python3.11",
+            "actual_binary_sha256": "5374e2d1d711fd9cc01fb15c48e3915718765b8200fb315f719d9d0017fa6331"
+          }
+        }
+      },
+      {
+        "route_kind": "prdf_d2_common_entry",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "profile": {
+          "host_id": "server1",
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
+          "interpreter": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-q3/runtime-acceptance/bin/python3",
+          "route_views": {
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87"
+          },
+          "dp_workers": 1,
+          "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/server1-prdf-fixed-runtime-readiness-20261117/docs/research/rpe_distributed_h4_plan_20261117/server1_prdf_runtime/cache-unused-dry-only"
+        }
+      }
+    ],
+    "server2": [
+      {
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "profile": {
+          "host_id": "server2",
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+            "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b"
+          },
+          "dp_workers": 3,
+          "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+          "runtime_checks": [
+            {
+              "kind": "FIXED_FUNCTION_AST",
+              "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+              "source_path": "src/trottertracks/rpe_total_risk.py",
+              "function": "total_state_dp",
+              "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+              "guard_constant": "REFERENCE_DP_AST_SHA256"
+            }
+          ]
+        }
+      },
+      {
+        "route_kind": "pf_b_pf6",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "profile": {
+          "host_id": "server2",
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87"
+          },
+          "dp_workers": 3,
+          "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+          "runtime_checks": [
+            {
+              "kind": "FIXED_FUNCTION_AST",
+              "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "source_path": "src/trottertracks/rpe_total_risk.py",
+              "function": "total_state_dp",
+              "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+              "guard_constant": "REFERENCE_DP_AST_SHA256"
+            }
+          ]
+        }
+      },
+      {
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+        "profile": {
+          "host_id": "server2",
+          "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
+          "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+            "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b"
+          },
+          "dp_workers": 3,
+          "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache",
+          "runtime_checks": [
+            {
+              "kind": "FIXED_FUNCTION_AST",
+              "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "source_path": "src/trottertracks/rpe_total_risk.py",
+              "function": "total_state_dp",
+              "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+              "guard_constant": "REFERENCE_DP_AST_SHA256"
+            }
+          ]
+        }
+      }
+    ],
+    "local": [
+      {
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "profile": {
+          "host_id": "local",
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+            "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/33e324b43690caeaa353ecdb9e3d42f3139198b6"
+          },
+          "dp_workers": 2,
+          "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+          "runtime_checks": [
+            {
+              "kind": "FIXED_FUNCTION_AST",
+              "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+              "source_path": "src/trottertracks/rpe_total_risk.py",
+              "function": "total_state_dp",
+              "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+              "guard_constant": "REFERENCE_DP_AST_SHA256"
+            }
+          ]
+        }
+      },
+      {
+        "route_kind": "prdf_d2_split",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "profile": {
+          "host_id": "local",
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+            "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution/.local-prdf-inner"
+          },
+          "dp_workers": 2,
+          "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+          "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution",
+          "adapter_manifest": {
+            "commit": "09efb068f242d5d6ff88296df3e50283b2f951bf",
+            "implementation_commit": "e37f6544dea3e021d3694264f7dae87add7ad30e",
+            "files": {
+              "scripts/run_rpe_optimizer_q3_job.py": "63cf463024241af20e9c6b3ca55eaf0ce2ebf4a4a7b8c9ca91a8ea74f6cb7fb6",
+              "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+            }
+          }
+        }
+      },
+      {
+        "route_kind": "pf_b_pf6",
+        "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+        "profile": {
+          "host_id": "local",
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7"
+          },
+          "dp_workers": 2,
+          "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+          "runtime_checks": [
+            {
+              "kind": "FIXED_FUNCTION_AST",
+              "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+              "source_path": "src/trottertracks/rpe_total_risk.py",
+              "function": "total_state_dp",
+              "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+              "guard_constant": "REFERENCE_DP_AST_SHA256"
+            }
+          ]
+        }
+      },
+      {
+        "route_kind": "pauli_b_common_entry",
+        "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+        "profile": {
+          "host_id": "local",
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+            "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/33e324b43690caeaa353ecdb9e3d42f3139198b6"
+          },
+          "dp_workers": 2,
+          "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+          "runtime_checks": [
+            {
+              "kind": "FIXED_FUNCTION_AST",
+              "view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+              "source_path": "src/trottertracks/rpe_total_risk.py",
+              "function": "total_state_dp",
+              "guard_path": "src/trottertracks/rpe_total_dp_parallel.py",
+              "guard_constant": "REFERENCE_DP_AST_SHA256"
+            }
+          ]
+        }
+      },
+      {
+        "route_kind": "prdf_d2_common_entry",
+        "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+        "profile": {
+          "host_id": "local",
+          "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "route_views": {
+            "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+            "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+            "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+            "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution/.local-prdf-inner"
+          },
+          "dp_workers": 2,
+          "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+          "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution",
+          "adapter_manifest": {
+            "commit": "09efb068f242d5d6ff88296df3e50283b2f951bf",
+            "implementation_commit": "e37f6544dea3e021d3694264f7dae87add7ad30e",
+            "files": {
+              "scripts/run_rpe_optimizer_q3_job.py": "63cf463024241af20e9c6b3ca55eaf0ce2ebf4a4a7b8c9ca91a8ea74f6cb7fb6",
+              "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "execution_route_updates": [
+    {
+      "method": "PR_PAULI",
+      "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012",
+      "from_view_commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+      "route": {
+        "kind": "pauli_b_common_entry",
+        "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+        "view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b",
+        "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "configuration_ids": [
+          "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012"
+        ],
+        "configurations": {
+          "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012": {
+            "configuration": {
+              "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+              "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json"
+            },
+            "signal_packet": {
+              "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+              "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json"
+            },
+            "binding_id": "cb4f9e0d431f94cabaa07a6ecc01e2dd26a7f3c597d22b3635794612187ad55a",
+            "total_configuration_id": "5a659a71154f9bea21711c8a931ede86c74e33090c42b4fcc1ad413ebdaaa19f",
+            "label": "SAVED_READY_3b127c39973a21be33a0"
+          }
+        },
+        "contract_template": {
+          "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
+          "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json"
+        },
+        "signal_entry_source": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+        "signal_intake_source": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+        "signal_packets_commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+        "existing_caller": "Existing fixed28d common adapter + published B33e descriptor intake; numerical workers unchanged"
+      }
+    }
+  ],
+  "additional_profiles": {
+    "local0-wsl": "PROFILE.json"
+  },
+  "host_admission": {
+    "schema": "RPE_Q3_HOST_ADMISSION_V1",
+    "hosts": {
+      "local0-wsl": {
+        "accepting": false,
+        "max_slots": 1,
+        "optional": true
+      }
+    }
+  }
+}

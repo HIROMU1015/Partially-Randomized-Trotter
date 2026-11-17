@@ -1,0 +1,89 @@
+{
+  "status": "REAL_HOST_DRY_CHECK_PASS",
+  "scientific_evaluation_calls": 0,
+  "queue_operations": 0,
+  "output": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dry/wsl-dry-c9088c11/TRUNCATED_PF",
+  "host": "abe",
+  "python": "/root/myproject/Evaluation_numGate_highorder_DF/venv/bin/python",
+  "python_version": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+  "host_id": "local0-wsl",
+  "job_id": "72864f6cf968d3b514b1",
+  "source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "request_sha256": "1a61be630a5cc44bceb5680d7c1c232fce3b13dc3a6316f4c99fd26aa8400931",
+  "input_hashes": [
+    {
+      "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+      "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json",
+      "sha256": "fcb40368ac22374c61816eb79ffd4fed68e54d50a634558472031887e4a91ad8"
+    },
+    {
+      "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+      "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+      "sha256": "44171988806ff75ef2b5380d5d6b3cc3cc635836215186a21f624ebdfb3f9df6"
+    }
+  ],
+  "route": {
+    "kind": "pf_b_pf6",
+    "interpreter": "/root/myproject/Evaluation_numGate_highorder_DF/venv/bin/python",
+    "view": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
+    "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+    "templates": [
+      {
+        "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+        "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json"
+      },
+      {
+        "commit": "8855f420a9fe2577efc77f099c5a39ab0cb9b7e6",
+        "path": "docs/research/d_p7_y4_coarse_a_shape_q3_20261116/INPUTS.json",
+        "inputs_selector": [
+          "inputs"
+        ]
+      }
+    ],
+    "configuration_ids": "*",
+    "existing_caller": "B 06f4210e1 scripts/run_pf6_cost_budget_q3_fixed.py (worker/supervisor) + validate_result cbc471c91"
+  },
+  "execution_profile": {
+    "dp_workers": 16,
+    "prefix_checkpoint_rounds": [
+      5,
+      11
+    ],
+    "prefix_cache_directory": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dp-cache"
+  },
+  "resolved_request_sha256": "9b2ee0887249117d996cffd28d690453881aac3052f77337de6d3a9159a35621",
+  "command": [
+    "/root/myproject/Evaluation_numGate_highorder_DF/venv/bin/python",
+    "-B",
+    "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/sources/28d976b99cdf8329adcc1b79327e329e947ef774/scripts/run_rpe_optimizer_q3_job.py",
+    "--request",
+    "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dry/wsl-dry-c9088c11/TRUNCATED_PF/RESOLVED_REQUEST.json",
+    "--output",
+    "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/dry/wsl-dry-c9088c11/TRUNCATED_PF/adapter",
+    "--mode",
+    "dry-check"
+  ],
+  "adapter_returncode": 0,
+  "adapter_result": {
+    "status": "DRY_CHECK_PASS",
+    "bounds": {
+      "maximum_round_outcomes": 3600,
+      "verification_pairs_upper": 38512129,
+      "transition_pairs_upper": 116167184,
+      "rule": "FULL_COUNT_SUPPORT_AND_FRONTIER_UPPER_BOUND_NO_PROBABILITY_EVALUATION"
+    },
+    "case_label": "72864f6cf968d3b514b1",
+    "template": {
+      "commit": "b4296b110b129d226dbef2743c14f725a27c3bf6",
+      "path": "docs/research/pf6_cost_budget_q3_results_20261115/INPUTS.json"
+    },
+    "metadata": "PASS",
+    "runtime": null,
+    "request_id": "72864f6cf968d3b514b1",
+    "route": "pf_b_pf6",
+    "mode": "dry-check",
+    "finished_UTC": "2026-11-17T03:55:36.291664+00:00"
+  },
+  "stage": "EXISTING_ADAPTER_DRY_CHECK",
+  "wall_seconds": 1.2421083540000026
+}

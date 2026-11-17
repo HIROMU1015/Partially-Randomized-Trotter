@@ -1,0 +1,102 @@
+['/usr/bin/python3', '-B', '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-4ae47cf48/tests/test_rpe_optimizer_concurrent.py']
+test_actual_cli_round_path_with_artificial_context (__main__.SchedulerTests.test_actual_cli_round_path_with_artificial_context) ... ok
+test_completed_resume_no_duplicate_launch (__main__.SchedulerTests.test_completed_resume_no_duplicate_launch) ... ok
+test_duplicate_demands_share_one_job (__main__.SchedulerTests.test_duplicate_demands_share_one_job) ... ok
+test_execution_profile_changes_only_acceleration (__main__.SchedulerTests.test_execution_profile_changes_only_acceleration) ... ok
+test_finite_budget_reserved_before_launch (__main__.SchedulerTests.test_finite_budget_reserved_before_launch) ... ok
+test_four_methods_same_adoption_order_best_and_stop (__main__.SchedulerTests.test_four_methods_same_adoption_order_best_and_stop) ... ok
+test_launch_persistence_failure_stops_queue_and_waits_started_child (__main__.SchedulerTests.test_launch_persistence_failure_stops_queue_and_waits_started_child) ... ok
+test_method_scope_trajectory_is_unchanged (__main__.SchedulerTests.test_method_scope_trajectory_is_unchanged) ... ok
+test_pending_and_crash_claim_not_retried (__main__.SchedulerTests.test_pending_and_crash_claim_not_retried) ... ok
+test_queued_prefetch_budget_includes_every_reservation (__main__.SchedulerTests.test_queued_prefetch_budget_includes_every_reservation) ... ok
+test_resumed_live_jobs_occupy_capacity_without_relaunch (__main__.SchedulerTests.test_resumed_live_jobs_occupy_capacity_without_relaunch) ... ok
+test_selection_functions_are_exactly_the_fixed_source (__main__.SchedulerTests.test_selection_functions_are_exactly_the_fixed_source) ... ok
+test_speculation_is_recorded_and_adopted_in_demand_order (__main__.SchedulerTests.test_speculation_is_recorded_and_adopted_in_demand_order) ... ok
+test_two_drivers_cannot_own_same_directory (__main__.SchedulerTests.test_two_drivers_cannot_own_same_directory) ... ok
+test_unknown_keeps_same_stop_as_legacy (__main__.SchedulerTests.test_unknown_keeps_same_stop_as_legacy) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 12.218s
+
+OK
+{
+ "FULL_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "FULL_PF:ARTIFICIAL_FULL_PF_0",
+   "890.00"
+  ]
+ },
+ "TRUNCATED_PF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "TRUNCATED_PF:ARTIFICIAL_TRUNCATED_PF_0",
+   "890.00"
+  ]
+ },
+ "PR_PAULI": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_PAULI:ARTIFICIAL_PR_PAULI_0",
+   "890.00"
+  ]
+ },
+ "PR_DF": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_DF:ARTIFICIAL_PR_DF_0",
+   "890.00"
+  ]
+ }
+}
+['/usr/bin/python3', '-B', '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-4ae47cf48/tests/test_rpe_throughput_entry.py']
+test_completion_wait_runs_ready_work_and_absorbs_in_selection_order (__main__.EntryTests.test_completion_wait_runs_ready_work_and_absorbs_in_selection_order) ... ok
+test_concurrent_executor_stays_open_through_preparation_continuation (__main__.EntryTests.test_concurrent_executor_stays_open_through_preparation_continuation) ... ok
+test_example_copies_fixed_price_registry_before_normal_entry (__main__.EntryTests.test_example_copies_fixed_price_registry_before_normal_entry) ... ok
+test_finish_waits_for_unselected_resumed_worker (__main__.EntryTests.test_finish_waits_for_unselected_resumed_worker)
+A resumed lookahead may never be demanded, but its return gate stays. ... ok
+test_interim_batch_failure_is_persisted_before_any_second_batch (__main__.EntryTests.test_interim_batch_failure_is_persisted_before_any_second_batch) ... ok
+test_method_preview_releases_stale_other_configuration_reservation (__main__.EntryTests.test_method_preview_releases_stale_other_configuration_reservation) ... ok
+test_new_run_carries_family_constants_and_preserves_scientific_hold (__main__.EntryTests.test_new_run_carries_family_constants_and_preserves_scientific_hold) ... ok
+test_persisted_mandatory_stop_prevents_prefetch_and_preparation (__main__.EntryTests.test_persisted_mandatory_stop_prevents_prefetch_and_preparation) ... ok
+test_plan_only_cannot_start_preparation_or_ready_science (__main__.EntryTests.test_plan_only_cannot_start_preparation_or_ready_science) ... ok
+test_prior_complete_job_is_reused_even_for_direct_executor_demand (__main__.EntryTests.test_prior_complete_job_is_reused_even_for_direct_executor_demand) ... ok
+test_restart_reuses_completed_speculation_and_resets_observation_window (__main__.EntryTests.test_restart_reuses_completed_speculation_and_resets_observation_window) ... ok
+test_wide_batch_preserves_profile_caps_total_budget_and_freezes_preparation (__main__.EntryTests.test_wide_batch_preserves_profile_caps_total_budget_and_freezes_preparation) ... ok
+test_wide_overlap_calls_normal_cli_while_completion_is_waiting (__main__.EntryTests.test_wide_overlap_calls_normal_cli_while_completion_is_waiting) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 1.272s
+
+OK
+{
+ "PR_PAULI": {
+  "stop": "Q3_BUDGET_EXHAUSTED",
+  "best": "938.00",
+  "new_calls": 1,
+  "spent_before": 0,
+  "next": [
+   "PR_PAULI:ARTIFICIAL_PR_PAULI_0",
+   "890.00"
+  ]
+ }
+}
+['/usr/bin/python3', '-B', '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-4ae47cf48/tests/test_pr_width_throughput_integration.py']
+test_normal_cli_ready_and_audited_late_ready_use_one_queue_and_resume_zero (__main__.WidthThroughput.test_normal_cli_ready_and_audited_late_ready_use_one_queue_and_resume_zero) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.516s
+
+OK

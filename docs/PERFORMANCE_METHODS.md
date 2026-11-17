@@ -11,6 +11,27 @@
 ## PR複数幅：保存候補のQ3 routeとtemplate適合性（2026-11-17）
 
 `Completion.install_saved_routes/common_route`と`Executor.route`は保存候補のSOURCE/bindingを既存common workerへ結び、Reader cacheでtemplate照合を共有する。有効な旧route/job keyは保持し、未接続候補のみ保留して他のqueueを進める。R06ではcatalog-only候補のroute登録漏れと、DFのwildcardに未対応templateを使う失敗があった。人工72件・停止2候補の元worker metadataで確認、実科学call0・実H4速度倍率未測定。[REPORT](research/pr_multiwidth_route_fix_20261117/REPORT.md)／[HANDOFF](research/pr_multiwidth_route_fix_20261117/HANDOFF.md)。旧STOP、数値UNKNOWN、保存値の競合は解除しない。
+## 分散Q3の配送・body・回収・採用計時（2026-11-17）
+
+`rpe_q3_timing`と通常transportの小さいstage/eventを再利用し、`summarize_rpe_q3_timing.py RUN --output FILE`でhost/attempt別の秒数・欠測・異なる時計の包絡を出す。SOURCE19c43576c、集計5897d26ab。旧実3host18人工jobはbody欠測、初回約235秒と後続を分離。新模擬3hostは18/18 body/採用を計測、再開0起動。元native人工DP exact一致・cache HIT。実H4速度とrelay並列化効果は未測定。次の固定SOURCE・新runへ導入し、稼働SOURCEは変更しない。[一元HANDOFF](research/rpe_q3_timing_20261117/HANDOFF.md)／[実測と限界](research/rpe_q3_timing_20261117/REPORT.md)。
+
+## 候補ごとの実入力適合ホストへ割当
+
+通常schedule入口の準備で `HOST_ELIGIBILITY.json` を作り、distributed controllerがREQUEST/SOURCE/入力とhostの現在fingerprintをclaim直前に照合する。先頭jobが非対応でも既存優先順位の独立候補へ進む。全host不足は予算予約前に保留し、busyな適合hostは待機する。方式名やjob IDの固定割当はしない。既存attemptの回収・再開は保持。新transportと固定科学adapter SOURCEを分ける。人工queueの検査であり実H4の速度測定はない。[使い方と根拠](research/rpe_q3_host_eligibility/REPORT.md)。
+
+## H4計画の差分取込・小さい出力・早期READY（2026-11-17）
+
+`run_rpe_schedule_search.py --plan-only --prepare-readiness --preparation-cache DIR` は既存method optimizerへ、context再利用と `rpe_plan_history_cache` のexact履歴差分readerを接続する。適合/不適合を候補選択前に取込み、未確定job/queueは毎回観測する。巨大な評価配列を繰返しdecimal化せず原OUTCOME/私物cacheへ参照し、明示dry-check後のREADYをREPORT保存より先に返す。準備実装b5a8a60c5、計算SOURCE28d、旧339の遠隔配布物はbyte不変。
+
+固定H4 metadata/dry-checkの実測は初回READY106.53秒・入力不変6.47秒、REPORT保存107.30秒/6.97秒。これは科学Q3性能や利用者実測50分との倍率ではない。変更したjobは既存identity/route検査へ戻す。保存追加による選択更新を人工検査。失敗例：巨大Fractionのcache復元でもGCD再計算が残り、既存cache互換の正規化済み復元で除いた。cacheは自分生成のlocalだけ、入力/科学条件変更では無条件再利用しない。[実測・限界](research/rpe_h4_readiness_fast_20261117/REPORT.md)／[1コマンド](research/rpe_h4_readiness_fast_20261117/README.md)。
+
+## 複数ホストQ3・SSH mailbox中継（2026-11-17）
+
+次回固定版`28d976b99`の`rpe_optimizer_concurrent.DistributedExecutor`と`rpe_q3_store/worker/coordinator`は通常schedule入口の同じ候補順/予算/後着READYを保ち、独立Q3をhostの空きslotへ割り当てる。local0 relayはWindows PowerShellから既存qg1/qg2/RomuTailを使い、科学選択は中央だけが行う。SOURCE/route/input/評価契約を照合し、DP並列化とcacheは既存adapter/helperをhost内で使用する。選択routeの固定blob hashをprocess内で再利用し、無関係configurationの入力を要求しない。DP worker数はhostごとに解決し、元の科学REQUEST/job IDを変えない。
+
+実2台と実3台の各18人工jobは単一host参照とMSE上下界/判定/方式別最安がexact一致し、完了run再開は追加起動0件。別の実2台fault検収で、relay停止中の完了、controller中断後の同attempt回収、重複完了での予算・採用不変を確認した。最終計算SOURCE`1ffdf610a`の模擬2/3host人工速度は分散1host比2.10/2.89倍だがlegacy参照比0.68/0.94倍で、実H4性能は未測定。人工DPでは逐次exact一致、4 HIT各12round、同host donorと別host cacheを確認。28dの計算8ファイルは1ffとbyte一致。
+
+失敗例のlost-poll枠超過、ACCEPT後公開中断での待機解除漏れ、保存結果読取時の再利用件数漏れ、別processでの長いexact整数JSONの読取を修正・回帰検証した。Windows SSH子processのウィンドウ発生を抑止し、切断時のSSH再試行は最大30秒へbackoffする。結果受領記録は任意の転送計測失敗に隠れないようにした。[適用条件・証拠・運用](research/rpe_distributed_q3/HANDOFF.md)／[REPORT](research/rpe_distributed_q3/REPORT.md)。
 
 ## PR複数幅と共通queue/DP・B0Iの通常入口統合（2026-11-17）
 

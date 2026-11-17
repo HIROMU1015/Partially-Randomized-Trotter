@@ -1,0 +1,148 @@
+{
+  "actual_OS_host_count": 1,
+  "artificial_only": true,
+  "cases": {
+    "1": {
+      "MSE_bounds_and_status_exact_match_count": 18,
+      "all_18_reference_job_ids_equal": true,
+      "artificial_speedup_vs_legacy": 0.33057776492585067,
+      "artificial_speedup_vs_single_distributed": 1.0,
+      "by_host": {
+        "simulated-server2": {
+          "adopted": 18,
+          "assigned": 18,
+          "completed": 18,
+          "launched": 18,
+          "reused": 26
+        }
+      },
+      "common_queue_wait_seconds": {
+        "count": 18,
+        "maximum": 2.9153332710266113,
+        "mean": 1.084502273135715,
+        "total": 19.52104091644287
+      },
+      "controller_receive_validate_persist_seconds": 0.4374662840273231,
+      "method_minima_exact_match": true,
+      "prefix_reuse_HITs": 0,
+      "resume_new_launches": 0,
+      "scientific_job_ids": 18,
+      "simulated_hosts": 1,
+      "wall_seconds": 10.587565158028156,
+      "worker_complete_upload_ACK_roundtrip_seconds": 0.6054653069004416
+    },
+    "2": {
+      "MSE_bounds_and_status_exact_match_count": 18,
+      "all_18_reference_job_ids_equal": true,
+      "artificial_speedup_vs_legacy": 0.6890771618754663,
+      "artificial_speedup_vs_single_distributed": 2.0844631278514085,
+      "by_host": {
+        "simulated-server1": {
+          "adopted": 10,
+          "assigned": 10,
+          "completed": 10,
+          "launched": 10,
+          "reused": 14
+        },
+        "simulated-server2": {
+          "adopted": 8,
+          "assigned": 8,
+          "completed": 8,
+          "launched": 8,
+          "reused": 12
+        }
+      },
+      "common_queue_wait_seconds": {
+        "count": 18,
+        "maximum": 1.1798110008239746,
+        "mean": 0.36790763007269967,
+        "total": 6.622337341308594
+      },
+      "controller_receive_validate_persist_seconds": 0.4362754912581295,
+      "method_minima_exact_match": true,
+      "prefix_reuse_HITs": 0,
+      "resume_new_launches": 0,
+      "scientific_job_ids": 18,
+      "simulated_hosts": 2,
+      "wall_seconds": 5.079276777105406,
+      "worker_complete_upload_ACK_roundtrip_seconds": 0.625870126998052
+    },
+    "3": {
+      "MSE_bounds_and_status_exact_match_count": 18,
+      "all_18_reference_job_ids_equal": true,
+      "artificial_speedup_vs_legacy": 0.8804843425069977,
+      "artificial_speedup_vs_single_distributed": 2.6634711584564448,
+      "by_host": {
+        "simulated-local": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "reused": 8
+        },
+        "simulated-server1": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "reused": 9
+        },
+        "simulated-server2": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "reused": 9
+        }
+      },
+      "common_queue_wait_seconds": {
+        "count": 18,
+        "maximum": 0.5178127288818359,
+        "mean": 0.15758466720581055,
+        "total": 2.83652400970459
+      },
+      "controller_receive_validate_persist_seconds": 0.43185559404082596,
+      "method_minima_exact_match": true,
+      "prefix_reuse_HITs": 0,
+      "resume_new_launches": 0,
+      "scientific_job_ids": 18,
+      "simulated_hosts": 3,
+      "wall_seconds": 3.9751003589481115,
+      "worker_complete_upload_ACK_roundtrip_seconds": 0.6291556810028851
+    }
+  },
+  "evidence_files": [
+    "SUMMARY.json",
+    "single-reference/CHECKS.json",
+    "simulated-1-hosts/ACCEPTANCE.json",
+    "simulated-2-hosts/ACCEPTANCE.json",
+    "simulated-3-hosts/ACCEPTANCE.json",
+    "simulated-recovery/RECOVERY.json"
+  ],
+  "fixture_sha256": "e8891ffd4f391b74b891eefbcf1ee9a8e6f16405fe18ac793ae8a3ae5376be8b",
+  "real_multi_machine_acceptance": false,
+  "recovery": {
+    "completed_resume_new_launches": 0,
+    "disconnected_completed_pending_transfer": true,
+    "duplicate_accepted_idempotently": true,
+    "duplicate_completion_acknowledgments": 1,
+    "intentional_controller_returncode": -9,
+    "new_distinct_candidate_launches_on_resume": 10,
+    "recovered_job_execute_count": 1,
+    "reference_minima_exact_match": true,
+    "same_attempt_recovered": true,
+    "status": "PASS",
+    "wall_seconds": 14.000021473038942
+  },
+  "reference": {
+    "hosts": 1,
+    "results": 18,
+    "scheduler": "legacy",
+    "wall_seconds": 3.5000136259477586
+  },
+  "reuse_metric": "Cumulative RESULT_REUSE events; a scientific job is counted at most once per executor invocation. Counts include width continuations and the final resume. Distinct jobs/launches are separate fields.",
+  "schema": "RPE_DISTRIBUTED_Q3_PUBLIC_ARTIFICIAL_ACCEPTANCE_V1",
+  "scientific_H4_calls": 0,
+  "source_commit": "71667549e16c77c53c8b5c02cdfcf98b468aacf1",
+  "status": "PASS"
+}

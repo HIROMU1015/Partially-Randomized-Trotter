@@ -1,0 +1,2829 @@
+{
+  "schema": "RPE_DISTRIBUTED_REAL_H4_PLAN_V1",
+  "date_jst": "2026-11-17",
+  "scope": "PLAN_ONLY_AND_REAL_INPUT_DRY_CHECK_NO_SCIENTIFIC_EXECUTION",
+  "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "normal_entry": "scripts/run_rpe_schedule_search.py",
+  "problem": "inputs/PROBLEM.json",
+  "round": "inputs/FULL_HISTORY_PLAN_ROUND.json",
+  "plan_timing": {
+    "first_stage_to_last_stage_seconds": 254.1797432899475,
+    "before_SAVE_RESULTS_seconds": 91.05741599109024,
+    "SAVE_RESULTS_seconds": 163.1295404129196,
+    "scientific_Q3_time_measured": false
+  },
+  "catalog": {
+    "commit": "e665e9ee60f35bdc40a69894c9cbbc861efa467a",
+    "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+    "git_blob": "6add55fea352cb5e465761942720766f9d233df5"
+  },
+  "input_comparison": {
+    "binding": {
+      "system": "H4",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "basis": "STO-3G",
+      "geometry": "linear_1Angstrom",
+      "rank_policy": "tol_only_1e-8"
+    },
+    "accuracy": {
+      "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+      "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+      "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+      "epsilon_E_decimal": "0.00159360010199040",
+      "MSE_upper": {
+        "numerator": 15136964828156312001,
+        "denominator": 5960464477539062500000000
+      },
+      "scope": "MODEL_MSE_FILTER_ONLY"
+    },
+    "h": {
+      "numerator": 3602879701896397,
+      "denominator": 36028797018963968
+    },
+    "M": 12,
+    "P": 0,
+    "price_quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+    "interpretation": "CONDITIONAL_RAW_IID_MODEL_MSE_AND_SAVED_PRICE_SCENARIOS_NOT_FORMAL_G",
+    "compiler_profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "P": 0,
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    },
+    "energy_prior_ha": [
+      -4.994249624417489,
+      -2.0985459369977186
+    ],
+    "target": {
+      "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+      "energy_ha": -2.1663874486347634
+    }
+  },
+  "current_best_saved": {
+    "FULL_PF": {
+      "cost": {
+        "numerator": 480258064,
+        "denominator": 1,
+        "display": "480,258,064.00"
+      },
+      "configuration_id": "70f7b31744ecd87fe277511bad7d1fc7dace9b1a097c315729c566f706c75edd",
+      "N_X": [
+        20,
+        25,
+        26,
+        24,
+        16,
+        20,
+        17,
+        15,
+        12,
+        11,
+        8,
+        7,
+        2
+      ],
+      "N_Y": [
+        20,
+        25,
+        26,
+        24,
+        16,
+        20,
+        17,
+        15,
+        12,
+        11,
+        8,
+        7,
+        2
+      ],
+      "configuration_source": {
+        "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+        "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_M5_16h/PLAN.json",
+        "selector": [
+          "configuration"
+        ]
+      },
+      "evidence": {
+        "commit": "4b28d35da197c7a8dcde0a8d60a6a0f9ed917d75",
+        "path": "docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF/jobs/FULL_PF/b3bd4d37f0dda9feca21/b3bd4d37f0dda9feca21/API_RETURN.json"
+      },
+      "status": "SAVED_FEASIBLE",
+      "catalog_record": {
+        "commit": "e665e9ee60f35bdc40a69894c9cbbc861efa467a",
+        "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+        "selector": [
+          "candidates",
+          49
+        ]
+      },
+      "normal_entry_evidence_kind": "SAVED",
+      "verified_by": "fixed existing Executor.prior_records + own candidate prices + exact saved MSE gate"
+    },
+    "TRUNCATED_PF": {
+      "cost": {
+        "numerator": 299307862,
+        "denominator": 1,
+        "display": "299,307,862.00"
+      },
+      "configuration_id": "dd8bfc248fdc67d42a6ae75df7eb0fbfcf34edc5e6ab3f3632e8784b47a7dbe0",
+      "N_X": [
+        22,
+        34,
+        32,
+        26,
+        18,
+        24,
+        19,
+        19,
+        16,
+        14,
+        10,
+        7,
+        4
+      ],
+      "N_Y": [
+        22,
+        34,
+        32,
+        26,
+        18,
+        24,
+        19,
+        19,
+        16,
+        14,
+        10,
+        7,
+        4
+      ],
+      "configuration_source": {
+        "commit": "3179680ed9b4cff251b3401cabea2f6100cf47fb",
+        "path": "docs/research/d_p7_y4_coarse_signal_q3_20261116/SIGNAL_INPUTS.json",
+        "selector": [
+          "configuration"
+        ]
+      },
+      "evidence": "inputs/pf_snapshot/TRUNCATED_PF/2f8a9c696808106e594f/OUTCOME.json",
+      "status": "SAVED_FEASIBLE",
+      "normal_entry_evidence_kind": "PRIOR_ROUND_JOB",
+      "verified_by": "fixed existing Executor.prior_records + own candidate prices + exact saved MSE gate",
+      "snapshot_evidence": "inputs/pf_snapshot/TRUNCATED_PF/2f8a9c696808106e594f/",
+      "previous_catalog_point": {
+        "commit": "e665e9ee60f35bdc40a69894c9cbbc861efa467a",
+        "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+        "selector": [
+          "candidates",
+          37
+        ]
+      },
+      "latest_allocation_not_in_fixed_C_catalog": true
+    },
+    "PR_PAULI": {
+      "cost": {
+        "numerator": 410199237,
+        "denominator": 1
+      },
+      "configuration_id": "cb1aa7487fbfb938c629961014ea5911cc5f3e29b9fc45e16b872ac8fb60c052",
+      "N_X": [
+        48,
+        45,
+        42,
+        39,
+        22,
+        27,
+        14,
+        20,
+        16,
+        16,
+        8,
+        7,
+        2
+      ],
+      "N_Y": [
+        48,
+        45,
+        42,
+        39,
+        22,
+        27,
+        14,
+        20,
+        16,
+        16,
+        8,
+        7,
+        2
+      ],
+      "configuration_source": {
+        "commit": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81",
+        "path": "docs/research/b2_pauli_kappa_signals_20261116/configurations/LD5_S2_delta_h_kappa_x2.json"
+      },
+      "evidence": {
+        "commit": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+        "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/best_points/LD5_kappa_x2_edd63e0befd3af591809/OUTCOME.json",
+        "selector": []
+      },
+      "status": "SAVED_FEASIBLE",
+      "catalog_record": {
+        "commit": "e665e9ee60f35bdc40a69894c9cbbc861efa467a",
+        "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+        "selector": [
+          "candidates",
+          51
+        ]
+      },
+      "normal_entry_price_binding_missing": true
+    },
+    "PR_DF": {
+      "cost": {
+        "numerator": 117575550907,
+        "denominator": 126,
+        "display": "933,139,292.91"
+      },
+      "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+      "N_X": [
+        48,
+        45,
+        42,
+        39,
+        35,
+        32,
+        29,
+        25,
+        22,
+        19,
+        16,
+        12,
+        3
+      ],
+      "N_Y": [
+        48,
+        45,
+        42,
+        39,
+        35,
+        32,
+        29,
+        25,
+        22,
+        19,
+        16,
+        12,
+        3
+      ],
+      "configuration_source": {
+        "commit": "12efc9dca2737c5d930877050817f3aae8186742",
+        "path": "docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json"
+      },
+      "evidence": "inputs/pr_snapshot/PR_DF/99ecbaa68b07b0a9ab47/OUTCOME.json",
+      "status": "SAVED_FEASIBLE",
+      "normal_entry_evidence_kind": "PRIOR_ROUND_JOB",
+      "verified_by": "fixed existing Executor.prior_records + own candidate prices + exact saved MSE gate",
+      "snapshot_evidence": "inputs/pr_snapshot/PR_DF/99ecbaa68b07b0a9ab47/",
+      "previous_catalog_point": {
+        "commit": "e665e9ee60f35bdc40a69894c9cbbc861efa467a",
+        "path": "docs/research/h4_saved_rpe_cost_catalog_20261116/run01/CATALOG.json",
+        "selector": [
+          "candidates",
+          35
+        ]
+      },
+      "latest_allocation_not_in_fixed_C_catalog": true
+    }
+  },
+  "first_independent_Q3_candidates": [
+    {
+      "method": "FULL_PF",
+      "job_id": "9b9b4b5132ff89768c5c",
+      "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d",
+      "configuration_source": {
+        "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+        "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/PLAN.json",
+        "selector": [
+          "configuration"
+        ]
+      },
+      "formula": "2nd",
+      "L_D": 10,
+      "p": 10,
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 15762598695796736
+      },
+      "h": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "kappa": null,
+      "q": [
+        1,
+        1,
+        2,
+        4,
+        7,
+        14,
+        28,
+        56,
+        112,
+        224,
+        448,
+        896,
+        1792
+      ],
+      "R": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "actual_delta_pf": [
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        }
+      ],
+      "N_X": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        12,
+        2
+      ],
+      "N_Y": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        12,
+        2
+      ],
+      "classification": "EXPLORE",
+      "origin": {
+        "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+        "m": 11,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "d": 1,
+        "base_vector": [
+          59,
+          59,
+          55,
+          55,
+          51,
+          51,
+          47,
+          47,
+          43,
+          43,
+          39,
+          39,
+          35,
+          35,
+          31,
+          31,
+          27,
+          27,
+          23,
+          23,
+          19,
+          19,
+          13,
+          13,
+          2,
+          2
+        ],
+        "base_headroom": "0.946018"
+      },
+      "conditional_cost_if_Q3_passes": {
+        "numerator": 545495300,
+        "denominator": 1,
+        "decimal_display": 545495300.0
+      },
+      "decrease_RZ_if_passes": {
+        "numerator": -65237236,
+        "denominator": 1,
+        "decimal_display": -65237236.0
+      },
+      "decrease_percent_if_passes": {
+        "numerator": -407732725,
+        "denominator": 30016129,
+        "decimal_display": -13.583787736253399
+      },
+      "immediately_beats_current_minimum_if_passes": false,
+      "status": "UNEVALUATED",
+      "MSE_lower": null,
+      "MSE_upper": null,
+      "evaluation_contract": {
+        "problem_accuracy": {
+          "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+          "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+          "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+          "epsilon_E_decimal": "0.00159360010199040",
+          "scope": "MODEL_MSE_FILTER_ONLY"
+        },
+        "target": {
+          "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+          "energy_ha": -2.1663874486347634,
+          "source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          }
+        },
+        "route_kind": "pf_b_pf6",
+        "expected": {
+          "total_configuration_id": "af18d37da2ffa763739fe6f01631c85516c210b8ce8e30fd949fbfaabf4755f5",
+          "binding_id": "69cc82b4dfc0d3f35020e5678f8202da2e5fcbb628a52646a0271c4fbe00dca0",
+          "signal_source": {
+            "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+            "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/FULL_PF_S2_16h_over_7/B_SIGNAL_INPUT.json"
+          },
+          "configuration_id": "11cf8ca6677a7ce651a00d827d0948e758510f95876acd24bf4d826c2bb6ca5d"
+        }
+      },
+      "existing_evaluation_match_in_validated_context": false,
+      "request": "requests/FULL_PF.json",
+      "assignment": "assignments/FULL_PF.json",
+      "independent_of_other_first_Q3_results": true,
+      "reason": "EXPLORE: existing METHOD_MINIMUM_PRIORITY_V2 grants another configuration an opportunity; this allocation does not yet beat the method minimum",
+      "first_wave_scientific_execution_ready": true,
+      "production_dispatch_performed": false,
+      "host_checks": {
+        "server2": {
+          "classification": "実機dry-check PASS",
+          "result": "dry-check/server2/FULL_PF/READINESS.json",
+          "status": "REAL_HOST_DRY_CHECK_PASS",
+          "missing": null
+        },
+        "server1": {
+          "classification": "今回は実機未確認",
+          "saved_scope": "Artificial mailbox PASS only; known Python 3.12.3 differs from the real route requirement; fixed 28d and route/input placement not checked on this host for this candidate",
+          "instructions": "LOCAL0_DRY_CHECK.md"
+        },
+        "local": {
+          "classification": "今回は実機未確認",
+          "saved_scope": "Artificial mailbox PASS and older PF/Pauli metadata checks; PR-DF nested server path was missing. This candidate at SOURCE28d has not been checked on RomuTail",
+          "instructions": "LOCAL0_DRY_CHECK.md"
+        }
+      }
+    },
+    {
+      "method": "TRUNCATED_PF",
+      "job_id": "72864f6cf968d3b514b1",
+      "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84",
+      "configuration_source": {
+        "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+        "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/B0I_P7_S2_16h_over_7/PLAN.json",
+        "selector": [
+          "configuration"
+        ]
+      },
+      "formula": "2nd",
+      "L_D": 7,
+      "p": 7,
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 15762598695796736
+      },
+      "h": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "kappa": null,
+      "q": [
+        1,
+        1,
+        2,
+        4,
+        7,
+        14,
+        28,
+        56,
+        112,
+        224,
+        448,
+        896,
+        1792
+      ],
+      "R": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "actual_delta_pf": [
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 15762598695796736
+        }
+      ],
+      "N_X": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        12,
+        2
+      ],
+      "N_Y": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        12,
+        2
+      ],
+      "classification": "EXPLORE",
+      "origin": {
+        "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+        "m": 11,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "d": 1,
+        "base_vector": [
+          59,
+          59,
+          55,
+          55,
+          51,
+          51,
+          47,
+          47,
+          43,
+          43,
+          39,
+          39,
+          35,
+          35,
+          31,
+          31,
+          27,
+          27,
+          23,
+          23,
+          19,
+          19,
+          13,
+          13,
+          2,
+          2
+        ],
+        "base_headroom": "0.951220"
+      },
+      "conditional_cost_if_Q3_passes": {
+        "numerator": 386082768,
+        "denominator": 1,
+        "decimal_display": 386082768.0
+      },
+      "decrease_RZ_if_passes": {
+        "numerator": -86774906,
+        "denominator": 1,
+        "decimal_display": -86774906.0
+      },
+      "decrease_percent_if_passes": {
+        "numerator": -4338745300,
+        "denominator": 149653931,
+        "decimal_display": -28.99185655203404
+      },
+      "immediately_beats_current_minimum_if_passes": false,
+      "status": "UNEVALUATED",
+      "MSE_lower": null,
+      "MSE_upper": null,
+      "evaluation_contract": {
+        "problem_accuracy": {
+          "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+          "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+          "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+          "epsilon_E_decimal": "0.00159360010199040",
+          "scope": "MODEL_MSE_FILTER_ONLY"
+        },
+        "target": {
+          "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+          "energy_ha": -2.1663874486347634,
+          "source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          }
+        },
+        "route_kind": "pf_b_pf6",
+        "expected": {
+          "total_configuration_id": "e496358b012be53878305a83a3bfed42ae4d444d3c0b6fe6dee061d2f44a7abc",
+          "binding_id": "d54a41b4520e36c02b306ad35715f4a731fef0fd17754a4d5c828badb756faad",
+          "signal_source": {
+            "commit": "06a15ee45beb177c018f6260ea4a5ac8cf66cfe6",
+            "path": "docs/research/pf_shortlist_mean_completion_20261115/run01/B0I_P7_S2_16h_over_7/B_SIGNAL_INPUT.json"
+          },
+          "configuration_id": "a6e557770a2e4d96585ad5ca5903c4626ae47dda9775e9a9babc756149c38d84"
+        }
+      },
+      "existing_evaluation_match_in_validated_context": false,
+      "request": "requests/TRUNCATED_PF.json",
+      "assignment": "assignments/TRUNCATED_PF.json",
+      "independent_of_other_first_Q3_results": true,
+      "reason": "EXPLORE: existing METHOD_MINIMUM_PRIORITY_V2 grants another configuration an opportunity; this allocation does not yet beat the method minimum",
+      "first_wave_scientific_execution_ready": true,
+      "production_dispatch_performed": false,
+      "host_checks": {
+        "server2": {
+          "classification": "実機dry-check PASS",
+          "result": "dry-check/server2/TRUNCATED_PF/READINESS.json",
+          "status": "REAL_HOST_DRY_CHECK_PASS",
+          "missing": null
+        },
+        "server1": {
+          "classification": "今回は実機未確認",
+          "saved_scope": "Artificial mailbox PASS only; known Python 3.12.3 differs from the real route requirement; fixed 28d and route/input placement not checked on this host for this candidate",
+          "instructions": "LOCAL0_DRY_CHECK.md"
+        },
+        "local": {
+          "classification": "今回は実機未確認",
+          "saved_scope": "Artificial mailbox PASS and older PF/Pauli metadata checks; PR-DF nested server path was missing. This candidate at SOURCE28d has not been checked on RomuTail",
+          "instructions": "LOCAL0_DRY_CHECK.md"
+        }
+      }
+    },
+    {
+      "method": "PR_PAULI",
+      "job_id": "805877c2ab6c3e03f7f1",
+      "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012",
+      "configuration_source": {
+        "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
+        "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json"
+      },
+      "formula": "2nd",
+      "L_D": 4,
+      "p": null,
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "h": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "kappa": {
+        "kind": "PAPER_TOTAL_ROTATIONS",
+        "value": {
+          "numerator": 2,
+          "denominator": 1
+        },
+        "definition_source": {
+          "url": "https://arxiv.org/pdf/2503.05647v2",
+          "sections": [
+            "B.2",
+            "E.1",
+            "E.3"
+          ],
+          "equations": [
+            "A38",
+            "B30",
+            "E1",
+            "E2",
+            "E21",
+            "E22"
+          ]
+        },
+        "A_definition_name": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED"
+      },
+      "q": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096
+      ],
+      "R": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "actual_delta_pf": [
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        }
+      ],
+      "N_X": [
+        48,
+        45,
+        42,
+        39,
+        36,
+        33,
+        29,
+        26,
+        23,
+        19,
+        16,
+        13,
+        7
+      ],
+      "N_Y": [
+        48,
+        45,
+        42,
+        39,
+        36,
+        33,
+        29,
+        26,
+        23,
+        19,
+        16,
+        13,
+        7
+      ],
+      "classification": "EXPLORE",
+      "origin": {
+        "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+        "m": 12,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "d": 2,
+        "base_vector": [
+          48,
+          48,
+          45,
+          45,
+          42,
+          42,
+          39,
+          39,
+          36,
+          36,
+          33,
+          33,
+          29,
+          29,
+          26,
+          26,
+          23,
+          23,
+          19,
+          19,
+          16,
+          16,
+          13,
+          13,
+          9,
+          9
+        ],
+        "base_headroom": "0.621956"
+      },
+      "conditional_cost_if_Q3_passes": {
+        "numerator": 4675964940,
+        "denominator": 7,
+        "decimal_display": 667994991.4285715
+      },
+      "decrease_RZ_if_passes": {
+        "numerator": -1804570281,
+        "denominator": 7,
+        "decimal_display": -257795754.42857143
+      },
+      "decrease_percent_if_passes": {
+        "numerator": -20050780900,
+        "denominator": 319043851,
+        "decimal_display": -62.846473414715646
+      },
+      "immediately_beats_current_minimum_if_passes": false,
+      "status": "UNEVALUATED",
+      "MSE_lower": null,
+      "MSE_upper": null,
+      "evaluation_contract": {
+        "problem_accuracy": {
+          "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+          "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+          "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+          "epsilon_E_decimal": "0.00159360010199040",
+          "scope": "MODEL_MSE_FILTER_ONLY"
+        },
+        "target": {
+          "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+          "energy_ha": -2.1663874486347634,
+          "source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          }
+        },
+        "route_kind": "pauli_b_common_entry",
+        "expected": {
+          "total_configuration_id": "5a659a71154f9bea21711c8a931ede86c74e33090c42b4fcc1ad413ebdaaa19f",
+          "binding_id": "cb4f9e0d431f94cabaa07a6ecc01e2dd26a7f3c597d22b3635794612187ad55a",
+          "signal_source": {
+            "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+            "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json"
+          },
+          "configuration_id": "8bf6eb88c735daf2499c0ecffd07cf66e86d66630c0cbba4db252ee704918012"
+        }
+      },
+      "existing_evaluation_match_in_validated_context": false,
+      "request": "requests/PR_PAULI.json",
+      "assignment": "assignments/PR_PAULI.json",
+      "independent_of_other_first_Q3_results": true,
+      "reason": "EXPLORE: existing METHOD_MINIMUM_PRIORITY_V2 grants another configuration an opportunity; this allocation does not yet beat the method minimum",
+      "first_wave_scientific_execution_ready": false,
+      "production_dispatch_performed": false,
+      "host_checks": {
+        "server2": {
+          "classification": "実機dry-checkで不足を確認",
+          "result": "dry-check/server2/PR_PAULI/READINESS.json",
+          "status": "REAL_HOST_DRY_CHECK_MISSING_OR_INVALID_INPUT",
+          "missing": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 406, in main\n    r.metadata(case);stage(out, 'METADATA_PASS', bounds=bounds)\n    ^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 156, in common_metadata\n    accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case['signal_packet'])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_pauli_signal_intake.py\", line 207, in accept_saved\n    _entry_assembly_source(root, assembly)\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_pauli_signal_intake.py\", line 183, in _entry_assembly_source\n    raise ValueError('Unsupported saved Pauli assembly SOURCE: entry code differs: ' + path)\nValueError: Unsupported saved Pauli assembly SOURCE: entry code differs: src/trottertracks/pauli_signal_entry.py\n"
+        },
+        "server1": {
+          "classification": "今回は実機未確認",
+          "saved_scope": "Artificial mailbox PASS only; known Python 3.12.3 differs from the real route requirement; fixed 28d and route/input placement not checked on this host for this candidate",
+          "instructions": "LOCAL0_DRY_CHECK.md"
+        },
+        "local": {
+          "classification": "今回は実機未確認",
+          "saved_scope": "Artificial mailbox PASS and older PF/Pauli metadata checks; PR-DF nested server path was missing. This candidate at SOURCE28d has not been checked on RomuTail",
+          "instructions": "LOCAL0_DRY_CHECK.md"
+        }
+      },
+      "plan_qualification": "PROVISIONAL: fixed entry excludes latest 410199237 total-only catalog point for PRICE_26AXIS; its internal 437758513 baseline must not replace the global saved minimum"
+    },
+    {
+      "method": "PR_DF",
+      "job_id": "48494ae31276a64c46ce",
+      "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1",
+      "configuration_source": {
+        "commit": "12efc9dca2737c5d930877050817f3aae8186742",
+        "path": "docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json"
+      },
+      "formula": "2nd",
+      "L_D": 7,
+      "p": null,
+      "requested_delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "h": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "kappa": {
+        "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+        "value": {
+          "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+          "denominator": 539496659426909122096437389293855970805348475396548904610992201
+        },
+        "definition_source": {
+          "url": "https://arxiv.org/pdf/2503.05647v2",
+          "sections": [
+            "B.2",
+            "E.1",
+            "E.3"
+          ],
+          "equations": [
+            "A38",
+            "B30",
+            "E1",
+            "E2",
+            "E21",
+            "E22"
+          ]
+        }
+      },
+      "q": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096
+      ],
+      "R": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "actual_delta_pf": [
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        }
+      ],
+      "N_X": [
+        48,
+        45,
+        42,
+        39,
+        35,
+        32,
+        29,
+        25,
+        22,
+        19,
+        16,
+        10,
+        3
+      ],
+      "N_Y": [
+        48,
+        45,
+        42,
+        39,
+        35,
+        32,
+        29,
+        25,
+        22,
+        19,
+        16,
+        10,
+        3
+      ],
+      "classification": "UPDATE",
+      "origin": {
+        "kind": "DECREMENT_FROM_CONFIGURATION_INCUMBENT",
+        "m": 11,
+        "axes": [
+          "X",
+          "Y"
+        ],
+        "d": 2,
+        "base_vector": [
+          48,
+          48,
+          45,
+          45,
+          42,
+          42,
+          39,
+          39,
+          35,
+          35,
+          32,
+          32,
+          29,
+          29,
+          25,
+          25,
+          22,
+          22,
+          19,
+          19,
+          16,
+          16,
+          12,
+          12,
+          3,
+          3
+        ],
+        "base_headroom": "0.565039"
+      },
+      "conditional_cost_if_Q3_passes": {
+        "numerator": 111229232165,
+        "denominator": 126,
+        "decimal_display": 882771683.8492063
+      },
+      "decrease_RZ_if_passes": {
+        "numerator": 3173159371,
+        "denominator": 63,
+        "decimal_display": 50367609.06349207
+      },
+      "decrease_percent_if_passes": {
+        "numerator": 634631874200,
+        "denominator": 117575550907,
+        "decimal_display": 5.3976517167415325
+      },
+      "immediately_beats_current_minimum_if_passes": true,
+      "status": "UNEVALUATED",
+      "MSE_lower": null,
+      "MSE_upper": null,
+      "evaluation_contract": {
+        "problem_accuracy": {
+          "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+          "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+          "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+          "epsilon_E_decimal": "0.00159360010199040",
+          "scope": "MODEL_MSE_FILTER_ONLY"
+        },
+        "target": {
+          "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+          "energy_ha": -2.1663874486347634,
+          "source": {
+            "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+            "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+            "selector": [
+              "target"
+            ]
+          }
+        },
+        "route_kind": "prdf_d2_split",
+        "expected": {
+          "total_configuration_id": "f00769918f264994d62080929bced34a3ac576e2aa47a1d783abd32360a7a9f4",
+          "binding_id": "a122e536aabe6f84b8d6e2eac6e342051676477e7a4f26d743582c540adcb9b8",
+          "signal_source": {
+            "commit": "1cbc24cfc0fb0972f75cdef81db6bf62c51141e4",
+            "path": "docs/research/d_pr_df_ld7_v0_results_20261116/B_MEANS_LD7.json"
+          },
+          "configuration_id": "ce9c7f08234089f0b50fd786c20403fe02c5de9073e89d6d35a12ee9d966c5e1"
+        }
+      },
+      "existing_evaluation_match_in_validated_context": false,
+      "request": "requests/PR_DF.json",
+      "assignment": "assignments/PR_DF.json",
+      "independent_of_other_first_Q3_results": true,
+      "reason": "UPDATE: decrease own saved incumbent and method minimum",
+      "first_wave_scientific_execution_ready": true,
+      "production_dispatch_performed": false,
+      "host_checks": {
+        "server2": {
+          "classification": "実機dry-check PASS",
+          "result": "dry-check/server2/PR_DF/READINESS.json",
+          "status": "REAL_HOST_DRY_CHECK_PASS",
+          "missing": null
+        },
+        "server1": {
+          "classification": "今回は実機未確認",
+          "saved_scope": "Artificial mailbox PASS only; known Python 3.12.3 differs from the real route requirement; fixed 28d and route/input placement not checked on this host for this candidate",
+          "instructions": "LOCAL0_DRY_CHECK.md"
+        },
+        "local": {
+          "classification": "今回は実機未確認",
+          "saved_scope": "Artificial mailbox PASS and older PF/Pauli metadata checks; PR-DF nested server path was missing. This candidate at SOURCE28d has not been checked on RomuTail",
+          "instructions": "LOCAL0_DRY_CHECK.md"
+        }
+      }
+    }
+  ],
+  "conditional_following_candidates": [
+    {
+      "method": "FULL_PF",
+      "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=16/7:11cf8ca6",
+      "N_X": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        11,
+        2
+      ],
+      "N_Y": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        11,
+        2
+      ],
+      "cost": {
+        "numerator": 531533214,
+        "denominator": 1,
+        "display": "531,533,214.00"
+      },
+      "origin": {
+        "kind": "CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES",
+        "base_vector": [
+          59,
+          59,
+          55,
+          55,
+          51,
+          51,
+          47,
+          47,
+          43,
+          43,
+          39,
+          39,
+          35,
+          35,
+          31,
+          31,
+          27,
+          27,
+          23,
+          23,
+          19,
+          19,
+          12,
+          12,
+          2,
+          2
+        ]
+      },
+      "status": "CONDITIONAL_PROPOSAL_NOT_FIRST_WAVE",
+      "required": "Earlier Q3 result must pass before this becomes the rule-selected next candidate; HYBRID speculation is not independent work"
+    },
+    {
+      "method": "FULL_PF",
+      "candidate": "FULL_PF:p=10,formula=2nd,delta_over_h=2:9e96ed75",
+      "N_X": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        15,
+        7
+      ],
+      "N_Y": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        15,
+        7
+      ],
+      "cost": {
+        "numerator": 829073018,
+        "denominator": 1,
+        "display": "829,073,018.00"
+      },
+      "origin": {
+        "kind": "CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES",
+        "base_vector": [
+          59,
+          59,
+          55,
+          55,
+          51,
+          51,
+          47,
+          47,
+          43,
+          43,
+          39,
+          39,
+          35,
+          35,
+          31,
+          31,
+          27,
+          27,
+          23,
+          23,
+          19,
+          19,
+          15,
+          15,
+          9,
+          9
+        ]
+      },
+      "status": "CONDITIONAL_PROPOSAL_NOT_FIRST_WAVE",
+      "required": "Earlier Q3 result must pass before this becomes the rule-selected next candidate; HYBRID speculation is not independent work"
+    },
+    {
+      "method": "TRUNCATED_PF",
+      "candidate": "TRUNCATED_PF:p=7,formula=2nd,delta_over_h=16/7:a6e55777",
+      "N_X": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        11,
+        2
+      ],
+      "N_Y": [
+        59,
+        55,
+        51,
+        47,
+        43,
+        39,
+        35,
+        31,
+        27,
+        23,
+        19,
+        11,
+        2
+      ],
+      "cost": {
+        "numerator": 376202858,
+        "denominator": 1,
+        "display": "376,202,858.00"
+      },
+      "origin": {
+        "kind": "CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES",
+        "base_vector": [
+          59,
+          59,
+          55,
+          55,
+          51,
+          51,
+          47,
+          47,
+          43,
+          43,
+          39,
+          39,
+          35,
+          35,
+          31,
+          31,
+          27,
+          27,
+          23,
+          23,
+          19,
+          19,
+          12,
+          12,
+          2,
+          2
+        ]
+      },
+      "status": "CONDITIONAL_PROPOSAL_NOT_FIRST_WAVE",
+      "required": "Earlier Q3 result must pass before this becomes the rule-selected next candidate; HYBRID speculation is not independent work"
+    },
+    {
+      "method": "PR_DF",
+      "candidate": "PR_DF:L_D=7:ce9c7f08",
+      "N_X": [
+        48,
+        45,
+        42,
+        39,
+        35,
+        32,
+        29,
+        25,
+        22,
+        19,
+        16,
+        8,
+        3
+      ],
+      "N_Y": [
+        48,
+        45,
+        42,
+        39,
+        35,
+        32,
+        29,
+        25,
+        22,
+        19,
+        16,
+        8,
+        3
+      ],
+      "cost": {
+        "numerator": 11653657047,
+        "denominator": 14,
+        "display": "832,404,074.79"
+      },
+      "origin": {
+        "kind": "CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES",
+        "base_vector": [
+          48,
+          48,
+          45,
+          45,
+          42,
+          42,
+          39,
+          39,
+          35,
+          35,
+          32,
+          32,
+          29,
+          29,
+          25,
+          25,
+          22,
+          22,
+          19,
+          19,
+          16,
+          16,
+          10,
+          10,
+          3,
+          3
+        ]
+      },
+      "status": "CONDITIONAL_PROPOSAL_NOT_FIRST_WAVE",
+      "required": "Earlier Q3 result must pass before this becomes the rule-selected next candidate; HYBRID speculation is not independent work"
+    }
+  ],
+  "additional_automatic_B0I_preparation": {
+    "selection": {
+      "configuration_id": "9a495a223e254747a34f6b31f2457bf7b0498578f1dc49053f915652a92494f2",
+      "method": "TRUNCATED_PF",
+      "key": {
+        "p": 9,
+        "formula": "4th",
+        "delta_over_h": "32/5"
+      },
+      "ready": false,
+      "needs": [
+        "SIGNAL_13ROUND_PACKET",
+        "PRICE_26AXIS",
+        "Q3_ROUTE_TEMPLATE_FOR_NEW_CONFIGURATION"
+      ],
+      "prefix_has_saved_Q3": false,
+      "priority": {
+        "unseen_prefix_first": 0,
+        "saved_T2_step_descriptors": 5,
+        "saved_abs_T1_shift": 2.9457696726353788e-08,
+        "signed_piece_count": 3,
+        "coarser_requested_width_tiebreak": "32/5"
+      },
+      "evidence": {
+        "usage": "PRIORITY_ONLY_NOT_Q3_ACCEPTANCE_OR_REJECTION",
+        "T1": {
+          "source": {
+            "commit": "5e6f9fd214631f7ce92fad0e9c0d273dfb479533",
+            "path": "docs/research/truncated_pf_t1_results_20261114/run01/prefix_9.json"
+          },
+          "status": "TRUNCATION_SHIFT_AVAILABLE",
+          "delta_E_trunc_B0I_ha": -2.9457696726353788e-08,
+          "tail_identity_scalar": 5.193351122457893e-08,
+          "lambda_R": 1.5605698403540042e-07,
+          "scalar_selector": [
+            "tail_coefficients",
+            "used_c_tail"
+          ]
+        },
+        "T2": [
+          {
+            "actual_delta_over_h": {
+              "numerator": 1,
+              "denominator": 1
+            },
+            "status": "HEFF_CELL_AVAILABLE",
+            "scope_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_1/CELL_SCOPE.json"
+            },
+            "result_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_1/result.json"
+            },
+            "operator_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_1/OPERATORS.npz",
+              "field": "PF_step_without_global_scalars"
+            },
+            "first_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_1/round_first_check.json"
+            },
+            "m12_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_1/round_m12_check.json"
+            }
+          },
+          {
+            "actual_delta_over_h": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "status": "HEFF_CELL_AVAILABLE",
+            "scope_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_2/CELL_SCOPE.json"
+            },
+            "result_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_2/result.json"
+            },
+            "operator_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_2/OPERATORS.npz",
+              "field": "PF_step_without_global_scalars"
+            },
+            "first_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_2/round_first_check.json"
+            },
+            "m12_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_2/round_m12_check.json"
+            }
+          },
+          {
+            "actual_delta_over_h": {
+              "numerator": 4,
+              "denominator": 1
+            },
+            "status": "HEFF_CELL_AVAILABLE",
+            "scope_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_4/CELL_SCOPE.json"
+            },
+            "result_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_4/result.json"
+            },
+            "operator_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_4/OPERATORS.npz",
+              "field": "PF_step_without_global_scalars"
+            },
+            "first_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_4/round_first_check.json"
+            },
+            "m12_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_4/round_m12_check.json"
+            }
+          },
+          {
+            "actual_delta_over_h": {
+              "numerator": 16,
+              "denominator": 3
+            },
+            "status": "HEFF_CELL_AVAILABLE",
+            "scope_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_16o3/CELL_SCOPE.json"
+            },
+            "result_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_16o3/result.json"
+            },
+            "operator_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_16o3/OPERATORS.npz",
+              "field": "PF_step_without_global_scalars"
+            },
+            "first_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_16o3/round_first_check.json"
+            },
+            "m12_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_16o3/round_m12_check.json"
+            }
+          },
+          {
+            "actual_delta_over_h": {
+              "numerator": 32,
+              "denominator": 5
+            },
+            "status": "HEFF_CELL_AVAILABLE",
+            "scope_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_32o5/CELL_SCOPE.json"
+            },
+            "result_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_32o5/result.json"
+            },
+            "operator_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_32o5/OPERATORS.npz",
+              "field": "PF_step_without_global_scalars"
+            },
+            "first_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_32o5/round_first_check.json"
+            },
+            "m12_mean_source": {
+              "commit": "5fb2c32e39e63267ea1748861269c362a93a1b86",
+              "path": "docs/research/truncated_pf_t2_results_20261114/run01/cell_p9_4th_32o5/round_m12_check.json"
+            }
+          }
+        ]
+      }
+    },
+    "rule": "UNSEEN_PREFIX_SAVED_EVIDENCE_V1",
+    "reason": "UNSEEN_PREFIX_THEN_SAVED_STEP_REUSE_THEN_T1_SOFT_PRIORITY_THEN_SIGNED_PIECES_AND_WIDTH; ALL_OTHER_CANDIDATES_REMAIN_ELIGIBLE",
+    "status": "INPUTS_AND_26_PRICES_REQUIRED_NO_SHOT_VECTOR_SELECTED",
+    "conditional_cost": null,
+    "expected_MSE": null,
+    "Q3_request_created": false
+  },
+  "prior_reuse": {
+    "FULL_PF": {
+      "run_dirs": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-candidate-autoprepare-20261116/docs/research/d_pr_candidates_auto_20261116/run02",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/TRUNCATED_PF"
+      ],
+      "loaded": 243,
+      "already_known": 1,
+      "refused": 0,
+      "refused_reasons": []
+    },
+    "TRUNCATED_PF": {
+      "run_dirs": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-candidate-autoprepare-20261116/docs/research/d_pr_candidates_auto_20261116/run02",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/TRUNCATED_PF"
+      ],
+      "loaded": 312,
+      "already_known": 0,
+      "refused": 0,
+      "refused_reasons": []
+    },
+    "PR_PAULI": {
+      "run_dirs": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-candidate-autoprepare-20261116/docs/research/d_pr_candidates_auto_20261116/run02",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/TRUNCATED_PF"
+      ],
+      "loaded": 3787,
+      "already_known": 0,
+      "refused": 999,
+      "refused_reasons": [
+        "CONFIGURATION_NOT_IN_THIS_ROUND",
+        "DIFFERENT_JOB_KEY_OR_ROUTE"
+      ]
+    },
+    "PR_DF": {
+      "run_dirs": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_round01/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-method-optimizer-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round02/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round04/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-candidate-autoprepare-20261116/docs/research/d_pr_candidates_auto_20261116/run02",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-rpe-split-preparation-20261116/docs/research/rpe_method_optimizer_h4_20261116/kappa_wide_round05/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-multiwidth-optimize-20261117/docs/research/h4_pr_multiwidth_optimization_20261117/run01",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/FULL_PF",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-total-dp-acceleration-20261114/docs/research/h4_pf_optimizer_search_20261116/run01/TRUNCATED_PF"
+      ],
+      "loaded": 15,
+      "already_known": 0,
+      "refused": 1,
+      "refused_reasons": [
+        "DIFFERENT_JOB_KEY_OR_ROUTE"
+      ]
+    }
+  },
+  "prior_reused_fresh_total": 4357,
+  "prior_already_known_total": 1,
+  "unresolved_scientific_jobs_never_requeue": [
+    {
+      "job_id": "58a493ba9c8a8acfe72b",
+      "method": "PR_DF",
+      "reason": "R06_API_PRESTART_FAILURE_UNKNOWN_NO_AUTOMATIC_RETRY"
+    },
+    {
+      "job_id": "8c5d1e61fcd61ed8e5d5",
+      "method": "PR_DF",
+      "reason": "R06_API_PRESTART_FAILURE_UNKNOWN_NO_AUTOMATIC_RETRY"
+    },
+    {
+      "job_id": "d5d9b81aa27e0d8995ec",
+      "method": "PR_DF",
+      "reason": "R06_API_PRESTART_FAILURE_UNKNOWN_NO_AUTOMATIC_RETRY"
+    },
+    {
+      "job_id": "dabcbd4e3ed004589aab",
+      "method": "PR_DF",
+      "reason": "R06_API_PRESTART_FAILURE_UNKNOWN_NO_AUTOMATIC_RETRY"
+    },
+    {
+      "job_id": "f999a51b2e1fd9e317e8",
+      "method": "TRUNCATED_PF",
+      "reason": "STARTED_OUTCOME_UNKNOWN_PARTIAL_M6_NO_FINAL_RETURN",
+      "inspection": "checks/B0I_UNKNOWN_INSPECTION.json"
+    }
+  ],
+  "pauli_saved_unit_price_binding": {
+    "fixed_entry_best": {
+      "numerator": 437758513,
+      "denominator": 1,
+      "display": "437,758,513.00"
+    },
+    "authoritative_saved_minimum": {
+      "numerator": 410199237,
+      "denominator": 1
+    },
+    "passive_existing_MODEL_quote": {
+      "purpose": "Restore the missing numeric axis columns for this saved physical configuration with the existing frozen rule; the C catalog is not modified.",
+      "kind": "EXISTING_SAVED_PRICE_LOOKUP_AND_EXACT_FROZEN_MODEL_ARITHMETIC",
+      "implementation_source": {
+        "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "path": "src/trottertracks/pr_price_rules.py"
+      },
+      "wrapper_source": {
+        "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
+        "path": "scripts/run_rpe_optimizer_price_quotes.py"
+      },
+      "api": "PriceRules(GitReader(repo), registry).quote(dict(configuration=fixed_configuration, implementation=rules.template(\"PAULI_LD5\")[\"implementation\"], policy=\"MODEL\", shots={\"X\":N_X,\"Y\":N_Y}))",
+      "registry_source": {
+        "commit": "d7a976a629a6db68197b24f8f86734e109c8bf5d",
+        "path": "docs/research/rpe_method_optimizer_h4_20261116/kappa_abs_round03/PRICE_RULES_REGISTRY.json"
+      },
+      "registry_entry_name": "PAULI_LD5",
+      "model_source": {
+        "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+        "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": []
+      },
+      "model_mode": "PAULI_AUDIT",
+      "formula": "A5 + H5*q + E5*q*R",
+      "coefficients": {
+        "A5": 311,
+        "H5": 4215,
+        "E5": {
+          "numerator": 255,
+          "denominator": 28
+        }
+      },
+      "calibration_domain": {
+        "q": [
+          8,
+          8
+        ],
+        "R": [
+          4,
+          4
+        ]
+      },
+      "policy": "MODEL",
+      "complete": true,
+      "total_RZ": {
+        "numerator": 410199237,
+        "denominator": 1
+      },
+      "matches_saved_catalog_total": true,
+      "qualified_E_C": false,
+      "CI": null,
+      "Q3_executed": false,
+      "new_fit": false,
+      "new_compile": false,
+      "rows": [
+        {
+          "m": 0,
+          "axis": "X",
+          "q": 1,
+          "R": 1,
+          "physical_id": "RMSE:4b7c1defbfa7cec0f352ddefafb7df08cbe3c67380accc2baa01d9da0a3ed20b",
+          "unit_price_RZ": {
+            "numerator": 126983,
+            "denominator": 28
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              0
+            ]
+          },
+          "shots": 48,
+          "weighted_RZ": {
+            "numerator": 1523796,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 0,
+          "axis": "Y",
+          "q": 1,
+          "R": 1,
+          "physical_id": "RMSE:4b7c1defbfa7cec0f352ddefafb7df08cbe3c67380accc2baa01d9da0a3ed20b",
+          "unit_price_RZ": {
+            "numerator": 126983,
+            "denominator": 28
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              1
+            ]
+          },
+          "shots": 48,
+          "weighted_RZ": {
+            "numerator": 1523796,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 1,
+          "axis": "X",
+          "q": 2,
+          "R": 1,
+          "physical_id": "RMSE:c08e774343219c54b54877b1e843b5a3477514711ca3cfa8b38500c75a8f5bf0",
+          "unit_price_RZ": {
+            "numerator": 122629,
+            "denominator": 14
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              2
+            ]
+          },
+          "shots": 45,
+          "weighted_RZ": {
+            "numerator": 5518305,
+            "denominator": 14
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 1,
+          "axis": "Y",
+          "q": 2,
+          "R": 1,
+          "physical_id": "RMSE:c08e774343219c54b54877b1e843b5a3477514711ca3cfa8b38500c75a8f5bf0",
+          "unit_price_RZ": {
+            "numerator": 122629,
+            "denominator": 14
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              3
+            ]
+          },
+          "shots": 45,
+          "weighted_RZ": {
+            "numerator": 5518305,
+            "denominator": 14
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 2,
+          "axis": "X",
+          "q": 4,
+          "R": 1,
+          "physical_id": "RMSE:aa767861589b34fb35c1f04f7bd6e673b1b6779c153810f853be8d3c65e6a4bc",
+          "unit_price_RZ": {
+            "numerator": 120452,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              4
+            ]
+          },
+          "shots": 42,
+          "weighted_RZ": {
+            "numerator": 722712,
+            "denominator": 1
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 2,
+          "axis": "Y",
+          "q": 4,
+          "R": 1,
+          "physical_id": "RMSE:aa767861589b34fb35c1f04f7bd6e673b1b6779c153810f853be8d3c65e6a4bc",
+          "unit_price_RZ": {
+            "numerator": 120452,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              5
+            ]
+          },
+          "shots": 42,
+          "weighted_RZ": {
+            "numerator": 722712,
+            "denominator": 1
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 3,
+          "axis": "X",
+          "q": 8,
+          "R": 1,
+          "physical_id": "RMSE:511b0b13b833f8d2f6eb13ad8c311dd84b419bd06fefc21eba1b4074ea49bc2f",
+          "unit_price_RZ": {
+            "numerator": 238727,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              6
+            ]
+          },
+          "shots": 39,
+          "weighted_RZ": {
+            "numerator": 9310353,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 3,
+          "axis": "Y",
+          "q": 8,
+          "R": 1,
+          "physical_id": "RMSE:511b0b13b833f8d2f6eb13ad8c311dd84b419bd06fefc21eba1b4074ea49bc2f",
+          "unit_price_RZ": {
+            "numerator": 238727,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              7
+            ]
+          },
+          "shots": 39,
+          "weighted_RZ": {
+            "numerator": 9310353,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 4,
+          "axis": "X",
+          "q": 16,
+          "R": 1,
+          "physical_id": "RMSE:8290b44208cdcba70b816acb8dee2f705f505b901bc524d892645c8c513b3c44",
+          "unit_price_RZ": {
+            "numerator": 475277,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              8
+            ]
+          },
+          "shots": 22,
+          "weighted_RZ": {
+            "numerator": 10456094,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 4,
+          "axis": "Y",
+          "q": 16,
+          "R": 1,
+          "physical_id": "RMSE:8290b44208cdcba70b816acb8dee2f705f505b901bc524d892645c8c513b3c44",
+          "unit_price_RZ": {
+            "numerator": 475277,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              9
+            ]
+          },
+          "shots": 22,
+          "weighted_RZ": {
+            "numerator": 10456094,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 5,
+          "axis": "X",
+          "q": 32,
+          "R": 1,
+          "physical_id": "RMSE:2c6f1acfe12c8d540602a8ba84bd86ff7038353ecacce154d232ad754b44317c",
+          "unit_price_RZ": {
+            "numerator": 948377,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              10
+            ]
+          },
+          "shots": 27,
+          "weighted_RZ": {
+            "numerator": 25606179,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 5,
+          "axis": "Y",
+          "q": 32,
+          "R": 1,
+          "physical_id": "RMSE:2c6f1acfe12c8d540602a8ba84bd86ff7038353ecacce154d232ad754b44317c",
+          "unit_price_RZ": {
+            "numerator": 948377,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              11
+            ]
+          },
+          "shots": 27,
+          "weighted_RZ": {
+            "numerator": 25606179,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 6,
+          "axis": "X",
+          "q": 64,
+          "R": 1,
+          "physical_id": "RMSE:8f8e8e0f9c65e93fbf4ba30aa5d5f6518455a9a9011628a17260303e4b208674",
+          "unit_price_RZ": {
+            "numerator": 1894577,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              12
+            ]
+          },
+          "shots": 14,
+          "weighted_RZ": {
+            "numerator": 3789154,
+            "denominator": 1
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 6,
+          "axis": "Y",
+          "q": 64,
+          "R": 1,
+          "physical_id": "RMSE:8f8e8e0f9c65e93fbf4ba30aa5d5f6518455a9a9011628a17260303e4b208674",
+          "unit_price_RZ": {
+            "numerator": 1894577,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              13
+            ]
+          },
+          "shots": 14,
+          "weighted_RZ": {
+            "numerator": 3789154,
+            "denominator": 1
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 7,
+          "axis": "X",
+          "q": 128,
+          "R": 1,
+          "physical_id": "RMSE:d5ee58d209b1e856d9c75ac09bd1b6c9ed2ca61a42e941147b98a9daebabe6c1",
+          "unit_price_RZ": {
+            "numerator": 3786977,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              14
+            ]
+          },
+          "shots": 20,
+          "weighted_RZ": {
+            "numerator": 75739540,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 7,
+          "axis": "Y",
+          "q": 128,
+          "R": 1,
+          "physical_id": "RMSE:d5ee58d209b1e856d9c75ac09bd1b6c9ed2ca61a42e941147b98a9daebabe6c1",
+          "unit_price_RZ": {
+            "numerator": 3786977,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              15
+            ]
+          },
+          "shots": 20,
+          "weighted_RZ": {
+            "numerator": 75739540,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 8,
+          "axis": "X",
+          "q": 256,
+          "R": 1,
+          "physical_id": "RMSE:c8ce01814514f5dd813a62340ec25f62a23d092c75a1eb7ccb33ab60e60d3105",
+          "unit_price_RZ": {
+            "numerator": 7571777,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              16
+            ]
+          },
+          "shots": 16,
+          "weighted_RZ": {
+            "numerator": 121148432,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 8,
+          "axis": "Y",
+          "q": 256,
+          "R": 1,
+          "physical_id": "RMSE:c8ce01814514f5dd813a62340ec25f62a23d092c75a1eb7ccb33ab60e60d3105",
+          "unit_price_RZ": {
+            "numerator": 7571777,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              17
+            ]
+          },
+          "shots": 16,
+          "weighted_RZ": {
+            "numerator": 121148432,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 9,
+          "axis": "X",
+          "q": 512,
+          "R": 1,
+          "physical_id": "RMSE:edf8ec7d15e9b6be723e61401e8f3c9f618d0f6adf0a49a2c6551f2deae51987",
+          "unit_price_RZ": {
+            "numerator": 15141377,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              18
+            ]
+          },
+          "shots": 16,
+          "weighted_RZ": {
+            "numerator": 242262032,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 9,
+          "axis": "Y",
+          "q": 512,
+          "R": 1,
+          "physical_id": "RMSE:edf8ec7d15e9b6be723e61401e8f3c9f618d0f6adf0a49a2c6551f2deae51987",
+          "unit_price_RZ": {
+            "numerator": 15141377,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "rows",
+              19
+            ]
+          },
+          "shots": 16,
+          "weighted_RZ": {
+            "numerator": 242262032,
+            "denominator": 7
+          },
+          "application": "SAVED_MODEL_REFERENCE_REUSE",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 10,
+          "axis": "X",
+          "q": 1024,
+          "R": 2,
+          "physical_id": "RMSE:bd69a3242a013953d145b532c11b1b8f201cca253ab21d82facb5071f84d3ed8",
+          "unit_price_RZ": {
+            "numerator": 30345857,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": []
+          },
+          "shots": 8,
+          "weighted_RZ": {
+            "numerator": 242766856,
+            "denominator": 7
+          },
+          "application": "EXISTING_RULE_APPLICATION",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 10,
+          "axis": "Y",
+          "q": 1024,
+          "R": 2,
+          "physical_id": "RMSE:bd69a3242a013953d145b532c11b1b8f201cca253ab21d82facb5071f84d3ed8",
+          "unit_price_RZ": {
+            "numerator": 30345857,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": []
+          },
+          "shots": 8,
+          "weighted_RZ": {
+            "numerator": 242766856,
+            "denominator": 7
+          },
+          "application": "EXISTING_RULE_APPLICATION",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 11,
+          "axis": "X",
+          "q": 2048,
+          "R": 4,
+          "physical_id": "RMSE:5a81b3195bc1dc81e120f9312eabb75990b48bdc7ebb1bba2b26a067b7b0bc51",
+          "unit_price_RZ": {
+            "numerator": 60950657,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": []
+          },
+          "shots": 7,
+          "weighted_RZ": {
+            "numerator": 60950657,
+            "denominator": 1
+          },
+          "application": "EXISTING_RULE_APPLICATION",
+          "extrapolation": [
+            "q"
+          ],
+          "event_step_changed_from_calibration": false
+        },
+        {
+          "m": 11,
+          "axis": "Y",
+          "q": 2048,
+          "R": 4,
+          "physical_id": "RMSE:5a81b3195bc1dc81e120f9312eabb75990b48bdc7ebb1bba2b26a067b7b0bc51",
+          "unit_price_RZ": {
+            "numerator": 60950657,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": []
+          },
+          "shots": 7,
+          "weighted_RZ": {
+            "numerator": 60950657,
+            "denominator": 1
+          },
+          "application": "EXISTING_RULE_APPLICATION",
+          "extrapolation": [
+            "q"
+          ],
+          "event_step_changed_from_calibration": false
+        },
+        {
+          "m": 12,
+          "axis": "X",
+          "q": 4096,
+          "R": 8,
+          "physical_id": "RMSE:2cab5bb2758d8c7c03465b90db37d3ed9cbdaebd637e3befcfc71a401fd63e0e",
+          "unit_price_RZ": {
+            "numerator": 122943617,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": []
+          },
+          "shots": 2,
+          "weighted_RZ": {
+            "numerator": 245887234,
+            "denominator": 7
+          },
+          "application": "EXISTING_RULE_APPLICATION",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        },
+        {
+          "m": 12,
+          "axis": "Y",
+          "q": 4096,
+          "R": 8,
+          "physical_id": "RMSE:2cab5bb2758d8c7c03465b90db37d3ed9cbdaebd637e3befcfc71a401fd63e0e",
+          "unit_price_RZ": {
+            "numerator": 122943617,
+            "denominator": 7
+          },
+          "classification": "MODEL_REFERENCE",
+          "registered_rule": "PAULI_LD5",
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": []
+          },
+          "shots": 2,
+          "weighted_RZ": {
+            "numerator": 245887234,
+            "denominator": 7
+          },
+          "application": "EXISTING_RULE_APPLICATION",
+          "extrapolation": [
+            "q",
+            "R"
+          ],
+          "event_step_changed_from_calibration": true
+        }
+      ],
+      "note": "m0..9 use matching saved prices; m10..12 apply the existing frozen rule to the supplied saved q/R schedule. All are MODEL_REFERENCE, not direct measurements or E[C] qualifications."
+    },
+    "needed": "Bind the recovered configuration-specific 26-axis saved MODEL prices to the normal optimizer input before a production Pauli search; do not relabel the fixed entry as latest-global complete"
+  },
+  "supplementary_schedule_plan": "checks/WIDTH_FRONTIER.json",
+  "source_bound_input_snapshots": "inputs/SNAPSHOT_LOCATORS.json",
+  "future_round_draft": "inputs/NEXT_RUN_ROUND_DRAFT.json",
+  "commands": "START_RESUME.md",
+  "local0_remote_checks": "LOCAL0_DRY_CHECK.md",
+  "new_Q3": 0,
+  "new_signals": 0,
+  "new_calibrations": 0,
+  "new_compiles": 0,
+  "production_queue_submissions": 0,
+  "old_acceptance_reruns": 0,
+  "claim_scope": "Conditional RAW IID model MSE and accepted saved/model price scenarios; not formal E[C], CI, or final G/winner"
+}

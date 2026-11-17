@@ -113,6 +113,8 @@ def resume_input(paths):
         if isinstance(value, list):
             records += value
         else:
+            if value.get('resume_records_exported') is False:
+                raise ValueError('Compact plan output is not a resume-record export; reload original OUTCOME/catalog/resume inputs')
             for r in value.get('methods', {}).values():
                 records += r.get('resume_records', [])
     return records
@@ -170,14 +172,27 @@ def make_executor(root, run, routes, expected, problem, spec):
     approved=spec.get('science_approved',any(v not in(0,None)for v in budgets.values()))
     if any(v=='UNLIMITED'for v in budgets.values())and spec.get('science_approved')is not True:
         raise ValueError('UNLIMITED requires science_approved: true in the round file')
-    common=dict(optimizer_source=head(),max_concurrent=options.get('max_concurrent_jobs',1),
+    # New distributed rounds use worker offers rather than the legacy default
+    # of one global slot. Explicit limits and persisted controller settings win.
+    concurrency=options.get('max_concurrent_jobs',
+        'auto' if scheduler=='concurrent' and options.get('distributed') is not None else 1)
+    settings=run/'distributed'/'ALLOCATION_SETTINGS.json'
+    if settings.is_file():
+        concurrency=O.load_json(settings)['max_concurrent_jobs']
+    if concurrency != 'auto' and (type(concurrency) is not int or concurrency < 1):
+        raise ValueError('max_concurrent_jobs must be auto or a positive integer')
+    if concurrency == 'auto' and options.get('distributed') is None:
+        raise ValueError('Automatic global concurrency requires a distributed executor')
+    common=dict(optimizer_source=head(),max_concurrent=concurrency,
         wait_for_running=options.get('wait_for_running_jobs',False),
         prior_run_dirs=[(root/d).resolve()for d in options.get('prior_run_dirs',[])])
     if scheduler=='concurrent':
         from trottertracks import rpe_optimizer_concurrent as C
         cache=options.get('prefix_cache_directory')
         if cache is not None and not Path(cache).is_absolute():cache=str(run/cache)
-        executor=C.ConcurrentExecutor(root,run,routes,expected,problem,**common,budgets=budgets,
+        executor_class=C.DistributedExecutor if options.get('distributed') is not None else C.ConcurrentExecutor
+        extra={} if executor_class is C.ConcurrentExecutor else dict(distributed=options['distributed'])
+        executor=executor_class(root,run,routes,expected,problem,**common,**extra,budgets=budgets,
             science_approved=approved,dp_workers=options.get('dp_workers'),prefix_cache_directory=cache,
             prefix_checkpoint_rounds=options.get('prefix_checkpoint_rounds'))
         def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
@@ -186,24 +201,33 @@ def make_executor(root, run, routes, expected, problem, spec):
     return executor,optimize
 
 
-def round_mode(a, problem, extra):
+def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None, result_callback=None):
     """Approved search round: execute requests on existing routes within the round budget; resumable."""
     spec = O.load_json(a.round);run = a.run_dir.resolve();run.mkdir(parents=True, exist_ok=True);start = time.perf_counter()
     if getattr(a,'plan_only',False):
         spec=dict(spec,science_approved=False,max_new_q3_per_method={m:0 for m in spec['methods']})
         if spec.get('pf_completion'):spec['pf_completion']=dict(spec['pf_completion'],mode='plan')
+    compact = spec.get('plan_output') == 'compact'
+    if spec.get('plan_output') not in (None, 'full', 'compact'):
+        raise ValueError('Unknown plan_output')
+    if compact:
+        compact_plan_scope(spec)
     problem = price_overrides(scoped(problem, spec.get('method_overrides')), spec)
     for m in spec['methods']:
         g = problem['methods'][m].get('generation') or {}
         if g.get('kappa_points_file') and not Path(g['kappa_points_file']).is_absolute():
             g['kappa_points_file'] = str(ROOT / g['kappa_points_file'])
     with round_phase(run, 'PREPARE_INPUTS_AND_PRICES'):
-        context = O.prepare(ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation',
-                            generate_configurations=not (spec.get('candidate_completion')or{}).get('bootstrap_saved_only',False))
+        context = prepared_context if prepared_context is not None else O.prepare(
+            ROOT, problem, methods=spec['methods'], preparation_dir=run / 'preparation',
+            generate_configurations=not (spec.get('candidate_completion')or{}).get('bootstrap_saved_only',False))
     extra = extra + resume_input([Path(x) for x in spec.get('resume_from', [])])
     stored = run / 'ROUND.json'
-    if stored.exists():
-        old = O.load_json(stored)
+    previous_round=O.load_json(stored) if stored.exists() else None
+    if previous_round is not None:
+        old = previous_round
+        if compact and old.get('plan_output') != 'compact':
+            raise ValueError('Compact plan output requires a new or existing compact-plan run directory')
         for key in ('round_id', 'methods', 'initial', 'routes_override', 'method_overrides', 'search_overrides', 'pf_completion', 'pf_evidence_registry'):
             if old.get(key) != spec.get(key):
                 raise SystemExit('Run directory belongs to a different approved round (' + key + ')')
@@ -227,8 +251,16 @@ def round_mode(a, problem, extra):
     O.apply_published(context['candidates'], routes)
     budgets = spec['max_new_q3_per_method']
     approved = spec.get('science_approved', any(v not in (0, None) for v in budgets.values()))
-    executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,spec)
+    executor_spec=spec
+    if previous_round is not None and not (run/'distributed'/'ALLOCATION_SETTINGS.json').exists():
+        # A pre-automation run had an implicit global limit of one. Do not
+        # upgrade its running/resumed contract merely by changing the default.
+        executor_spec=dict(spec,executor=dict(spec.get('executor',{})))
+        executor_spec['executor']['max_concurrent_jobs']=previous_round.get('executor',{}).get('max_concurrent_jobs',1)
+    executor,optimize=make_executor(ROOT,run,routes,context['expected'],problem,executor_spec)
     try:
+        if executor_setup:
+            executor_setup(executor,context)
         with round_phase(run, 'SEARCH_AND_Q3'):
             result = optimize(ROOT, dict(problem, search=search), context=context, methods=spec['methods'],
                               initial=spec.get('initial', 'all'), max_new=budgets, executor=executor,
@@ -241,14 +273,24 @@ def round_mode(a, problem, extra):
                 publish_comparison_exports(completion,run,context)
     finally:
         executor.finish()
+    if result_callback:
+        result_callback(result,context,routes)
     with round_phase(run, 'SAVE_RESULTS'):
-        write(run / 'ROUND_RESULT.json', slim(dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
+        payload = dict(schema='RPE_OPTIMIZER_ROUND_RESULT_V1', round=spec, methods=result,
                                               optimizer_source=head(), wall_seconds=time.perf_counter() - start,
                                               pf_preparation=pf_preparation,artificial_only=bool((pf_preparation or {}).get('artificial_only')),
-                                              exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)))
+                                              exact_bounds='MSE bounds with more than %d digits: outward 30-digit intervals; exact in job OUTCOME.json / C' % EXACT_DIGITS)
+        write(run / 'ROUND_RESULT.json', compact_plan_result(payload, problem,
+            resume_inputs=[str(p) for p in (getattr(a,'resume_from',None) or [])],
+            ingest_input=str(a.ingest) if getattr(a,'ingest',None) else None) if compact else slim(payload))
         table(result, run / 'PER_METHOD.csv')
-        write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
-                                       pending_Q3={m: r['pending_request'] for m, r in result.items()}))
+        if compact:
+            write(run / 'NEEDS.json', dict(schema='RPE_OPTIMIZER_COMPACT_PLAN_NEEDS_V1', round_result='ROUND_RESULT.json',
+                methods={m: dict(candidates=['methods',m,'not_ready_candidates'], pending_Q3=['methods',m,'pending_request'],
+                                 input_requests=['methods',m,'input_requests']) for m in result}))
+        else:
+            write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
+                                           pending_Q3={m: r['pending_request'] for m, r in result.items()}))
     with (run / 'INVOCATIONS.jsonl').open('a') as f:
         f.write(json.dumps(O.jsonable(dict(time=time.time(), budget=spec['max_new_q3_per_method'],
             launched={m: executor.launched(m) for m in spec['methods']},
@@ -258,6 +300,7 @@ def round_mode(a, problem, extra):
         new_calls=r['new_calls'], spent_before=r['budget']['spent_before'],
         next=r['pending_request'] and (r['pending_request']['candidate'], O.show(r['pending_request']['cost'])))
         for m, r in result.items()}), ensure_ascii=False, indent=1))
+    return result
 
 
 INTERRUPTED = 'INTERRUPTED_SEARCH_POLICY_CHANGE'
@@ -294,6 +337,68 @@ def slim(value):
     if isinstance(value, (list, tuple)):
         return [slim(v) for v in value]
     return value
+
+
+def compact_plan_scope(spec):
+    """Compact output is a presentation-only option for explicitly unapproved zero-budget plans."""
+    budgets = spec.get('max_new_q3_per_method')
+    if (spec.get('science_approved') is not False or not isinstance(budgets, dict)
+            or any(m not in budgets for m in spec['methods'])
+            or any(type(v) is not int or v != 0 for v in budgets.values())):
+        raise ValueError('plan_output: compact requires science_approved: false and explicit zero budgets')
+
+
+def compact_plan_result(payload, problem, *, resume_inputs=(), ingest_input=None):
+    """Project a zero-call plan before walking thousands of repeated exact MSE bounds.
+
+    Selection is complete before this function is called. Full evaluations remain
+    in the original OUTCOME/catalog or supplied resume inputs; this output is not
+    an exact resume-record export. Reload those inputs for another plan.
+    """
+    compact_plan_scope(payload['round'])
+    keep = ('method', 'best', 'stop_reason', 'pending_request', 'new_calls', 'evaluated_count',
+            'ready_candidates', 'search_range', 'incumbent_scope', 'prior_rounds', 'budget',
+            'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing', 'parameter_assessment',
+            'executor_metrics')
+    missing_keep = ('candidate', 'configuration', 'configuration_id', 'needs', 'price_status',
+                    'price_needs', 'signal_source', 'reusable', 'next')
+    methods = {}
+    for name, result in payload['methods'].items():
+        item = {k: result[k] for k in keep if k in result}
+        evaluated = result.get('evaluated') or []
+        statuses, sources = {}, {}
+        for row in evaluated:
+            status, source = row.get('status'), row.get('source')
+            statuses[status] = statuses.get(status, 0) + 1
+            sources[source] = sources.get(source, 0) + 1
+        item['evaluation_summary'] = dict(count=len(evaluated), by_status=statuses, by_source=sources,
+            resume_records=len(result.get('resume_records') or []), trace=len(result.get('trace') or []),
+            held=len(result.get('held') or []))
+        item['exact_evaluation_sources'] = dict(
+            prior_run_dirs=(result.get('prior_rounds') or {}).get('run_dirs', []),
+            run_jobs='jobs/<method>/<job_id>/OUTCOME.json',
+            saved_catalog=problem.get('evidence', {}).get('saved_catalog_inputs'),
+            resume_from=list(payload['round'].get('resume_from', [])) + list(resume_inputs), ingest=ingest_input,
+            note='Reload original identity-checked OUTCOME/catalog/resume inputs; compact output omits evaluation and resume-record arrays.')
+        item['not_ready_candidates'] = [{k: row[k] for k in missing_keep if k in row}
+                                        for row in result.get('not_ready_candidates') or []]
+        by_configuration = result.get('by_configuration')
+        if by_configuration is not None:
+            item['by_configuration'] = by_configuration
+        generation = result.get('generation')
+        if generation is not None:
+            item['generation_summary'] = dict(variants=len(generation.get('variants') or []),
+                                              baseline=generation.get('baseline'))
+        methods[name] = item
+    projected = dict(payload, schema='RPE_OPTIMIZER_COMPACT_PLAN_V1', methods=methods,
+                     plan_output='compact', resume_records_exported=False)
+    preparation = payload.get('pf_preparation')
+    if preparation and isinstance(preparation.get('selection'), dict):
+        selection = preparation['selection']
+        projected['pf_preparation'] = dict(preparation, selection=dict(selection,
+            candidates=(selection.get('candidates') or [])[:1],
+            remaining_candidates='Omitted from compact output; first preparation candidate and original count retained.'))
+    return slim(projected)
 
 
 def interrupted_mode(a, problem, extra):

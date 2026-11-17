@@ -1,0 +1,1762 @@
+{
+  "actual_OS_host_count": 1,
+  "artificial_only": true,
+  "real_multi_machine_acceptance": false,
+  "recovery": {
+    "actual_OS_host_count": 1,
+    "artificial_only": true,
+    "completed_resume_new_launches": 0,
+    "disconnected_completed_pending_transfer": true,
+    "duplicate_completion": [
+      {
+        "event": "DUPLICATE_COMPLETION",
+        "job_id": "e87dc9349021da5eabf8",
+        "response": {
+          "duplicate": true,
+          "ok": true
+        }
+      }
+    ],
+    "existing_launch_marker_sha256": {
+      "run/jobs/PR_DF/0cb6d061689f9dfd8e90/LAUNCH.json": "870ccdc9f94118b565d30b607a3bbe64600320a2b50dc27349d4f9ca5ab199d2",
+      "run/jobs/PR_DF/610093c57ae0337aa931/LAUNCH.json": "ce858f112e3a257f859bdcd5f38337c7c57f5a845672b6f910fda57843bfb615",
+      "run/jobs/PR_DF/e3616f2e093cac4690de/LAUNCH.json": "9a2ce389354acf49a1c4905ece0ab93e0b3f1fd5a24695ce5bef560c1e3190bf",
+      "run/jobs/PR_DF/e87dc9349021da5eabf8/LAUNCH.json": "36515674f5acac1e0bfaaa2d2ec82dfb4d9ab7972476687102cb688cb65490a2",
+      "run/jobs/PR_PAULI/8536a8738cd2688ea009/LAUNCH.json": "4696efb2899f71e70366c8cd436a70f84037632eab7e01ac4fc9afc7d3efa316",
+      "run/jobs/PR_PAULI/89eadd079aaf8d4822ba/LAUNCH.json": "13967b2b856863cf22c7de968f62661c5099e6739355333985ec3de65e68f307",
+      "run/jobs/PR_PAULI/b766a93a10dbb690c6f7/LAUNCH.json": "38c345121b5a59ae2a8be5fd37ddace1cc9b5773b6c9ce1459674ad5f864ef50",
+      "run/jobs/PR_PAULI/b89377dbeeea2027ac58/LAUNCH.json": "90d48c44fa57278d44718d60b6b7cad185b3c77bc79dbc55bc31de8c4534bfbc"
+    },
+    "intentional_controller_returncode": -9,
+    "new_distinct_candidate_launches_on_resume": 10,
+    "recovered_job_execute_count": 1,
+    "recovered_job_id": "e87dc9349021da5eabf8",
+    "reference_minima_exact_match": true,
+    "same_attempt_recovered": true,
+    "status": "PASS",
+    "summary": {
+      "artificial_only": true,
+      "by_host": {
+        "simulated-recovery-worker": {
+          "adopted": 18,
+          "assigned": 18,
+          "completed": 18,
+          "launched": 18,
+          "prefix_reuse_HITs": 0
+        }
+      },
+      "common_queue_wait_seconds": {
+        "count": 18,
+        "maximum": 4.289178371429443,
+        "mean": 1.6433676216337416,
+        "total": 29.58061718940735
+      },
+      "controller_transfer_bytes": 127341,
+      "controller_transfer_seconds": {
+        "count": 18,
+        "scope": "CONTROLLER_RECEIVE_VALIDATION_AND_PERSISTENCE; excludes network round trip",
+        "total": 0.32150754309259355
+      },
+      "controller_wall": {
+        "artificial_only": true,
+        "stop": {
+          "UTC": "2026-11-17T05:57:21Z",
+          "methods": {
+            "PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE",
+            "PR_PAULI": "NO_CANDIDATE_LEFT_IN_RANGE"
+          },
+          "reason": "WAITING_FOR_INPUTS"
+        },
+        "wall_seconds": 0.24424151913262904
+      },
+      "event_counts": {
+        "ADOPT": 18,
+        "DEPENDENCY_WAIT_END": 18,
+        "DEPENDENCY_WAIT_START": 20,
+        "DISTRIBUTED_START": 4,
+        "ENQUEUE": 18,
+        "EXECUTOR_START": 4,
+        "EXECUTOR_STOP": 3,
+        "EXIT": 18,
+        "HOST_FIRST_POLL": 4,
+        "LAUNCH": 18,
+        "PRIOR_INGEST_END": 8,
+        "PRIOR_INGEST_START": 8,
+        "QUEUE_WAIT_STATE": 49,
+        "RESULT_RECEIVED": 19,
+        "RESULT_REUSE": 27,
+        "RESUME_RUNNING": 1,
+        "SEARCH_ADOPT": 18,
+        "TRANSFER_COMPLETE": 18,
+        "TRANSFER_TIMING": 18
+      },
+      "launch_markers": 18,
+      "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+      "outcomes": 18,
+      "per_method": {
+        "PR_DF": {
+          "best": {
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "candidate": "PR_DF:d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "configuration": {
+              "L_D": 1,
+              "delta_over_h": "1/2",
+              "formula": "2nd",
+              "kappa_multiplier": "1",
+              "requested_delta_pf": {
+                "denominator": 72057594037927936,
+                "display": "0.05",
+                "numerator": 3602879701896397
+              }
+            },
+            "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            },
+            "cost_display": "26.00",
+            "evidence": "PRIOR_ROUND_JOB",
+            "labels": [],
+            "point_id": null,
+            "result_sources": null,
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+          },
+          "executor_metrics": {
+            "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+            "adopted": 0,
+            "busy_job_seconds": 0.0,
+            "by_host": {
+              "simulated-recovery-worker": {
+                "adopted": 18,
+                "assigned": 18,
+                "completed": 18,
+                "launched": 18,
+                "reused": 27
+              }
+            },
+            "by_method": {},
+            "completed_not_adopted": 0,
+            "distributed": true,
+            "dp_workers": 1,
+            "elapsed_seconds": 0.10619566985405982,
+            "executor_failure": null,
+            "finished": 0,
+            "host_eligibility_holds": {},
+            "idle_slot_seconds_no_queued_candidate": 0.10619566985405982,
+            "idle_slot_seconds_no_queued_or_selected_result": 0.10619566985405982,
+            "idle_slot_seconds_waiting_selected_result": 0.0,
+            "idle_slot_seconds_with_queued_candidate": 0.0,
+            "launched": 0,
+            "max_concurrent_jobs": 1,
+            "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+            "method_adopted": 0,
+            "method_launched": 0,
+            "new_real_route_launches": 0,
+            "peak_active": 0,
+            "persistent_reserved": {
+              "PR_DF": 10,
+              "PR_PAULI": 8
+            },
+            "queued_cancelled": 0,
+            "sampled_owned_tree_peak_RSS_KiB": 0,
+            "slot_utilization": 0.0,
+            "speculative_adopted": 0,
+            "speculative_adoption_fraction": null,
+            "speculative_launched": 0,
+            "submitted": 0
+          },
+          "new_calls": 0,
+          "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+        },
+        "PR_PAULI": {
+          "best": {
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "candidate": "PR_PAULI:92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "configuration": {
+              "L_D": 1,
+              "delta_over_h": "2",
+              "formula": "2nd",
+              "kappa_multiplier": "1",
+              "requested_delta_pf": {
+                "denominator": 18014398509481984,
+                "display": "0.20",
+                "numerator": 3602879701896397
+              }
+            },
+            "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            },
+            "cost_display": "26.00",
+            "evidence": "PRIOR_ROUND_JOB",
+            "labels": [],
+            "point_id": null,
+            "result_sources": null,
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+          },
+          "executor_metrics": {
+            "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+            "adopted": 0,
+            "busy_job_seconds": 0.0,
+            "by_host": {
+              "simulated-recovery-worker": {
+                "adopted": 18,
+                "assigned": 18,
+                "completed": 18,
+                "launched": 18,
+                "reused": 27
+              }
+            },
+            "by_method": {},
+            "completed_not_adopted": 0,
+            "distributed": true,
+            "dp_workers": 1,
+            "elapsed_seconds": 0.10619566985405982,
+            "executor_failure": null,
+            "finished": 0,
+            "host_eligibility_holds": {},
+            "idle_slot_seconds_no_queued_candidate": 0.10619566985405982,
+            "idle_slot_seconds_no_queued_or_selected_result": 0.10619566985405982,
+            "idle_slot_seconds_waiting_selected_result": 0.0,
+            "idle_slot_seconds_with_queued_candidate": 0.0,
+            "launched": 0,
+            "max_concurrent_jobs": 1,
+            "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+            "method_adopted": 0,
+            "method_launched": 0,
+            "new_real_route_launches": 0,
+            "peak_active": 0,
+            "persistent_reserved": {
+              "PR_DF": 10,
+              "PR_PAULI": 8
+            },
+            "queued_cancelled": 0,
+            "sampled_owned_tree_peak_RSS_KiB": 0,
+            "slot_utilization": 0.0,
+            "speculative_adopted": 0,
+            "speculative_adoption_fraction": null,
+            "speculative_launched": 0,
+            "submitted": 0
+          },
+          "new_calls": 0,
+          "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+        }
+      },
+      "persistent_scientific_jobs": 18,
+      "scientific_H4_calls": 0,
+      "worker_transfer_roundtrip_seconds": {
+        "count": 18,
+        "scope": "WORKER_MEASURED_COMPLETE_UPLOAD_AND_ACK_ROUND_TRIP",
+        "total": 0.5407269767019898
+      }
+    },
+    "transport_events": [
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/state",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/complete",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/state",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/complete",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/state",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/complete",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/state",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/complete",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/state",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/complete",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/state",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/complete",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/state",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/complete",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/state",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/complete",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "DUPLICATE_COMPLETION",
+        "job_id": "e87dc9349021da5eabf8",
+        "response": {
+          "duplicate": true,
+          "ok": true
+        }
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "[Errno 104] Connection reset by peer"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "[Errno 104] Connection reset by peer"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "[Errno 104] Connection reset by peer"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      },
+      {
+        "event": "BACKEND_OFFLINE",
+        "path": "/v1/poll",
+        "reason": "<urlopen error [Errno 111] Connection refused>"
+      }
+    ],
+    "wall_seconds": 14.48838042281568
+  },
+  "schema": "RPE_DISTRIBUTED_Q3_SIMULATED_ACCEPTANCE_V1",
+  "scientific_H4_calls": 0,
+  "simulated_cases": {
+    "1": {
+      "actual_OS_host_count": 1,
+      "artificial_only": true,
+      "artificial_speedup_reference": "SINGLE_HOST_LEGACY_EXECUTOR",
+      "artificial_speedup_vs_single_distributed": 1.0,
+      "artificial_wall_speedup": 0.30987284365907164,
+      "by_host": {
+        "simulated-server2": {
+          "adopted": 18,
+          "assigned": 18,
+          "completed": 18,
+          "launched": 18,
+          "prefix_reuse_HITs": 0
+        }
+      },
+      "common_queue_wait_seconds": {
+        "count": 18,
+        "maximum": 4.130438566207886,
+        "mean": 1.2646000120374892,
+        "total": 22.762800216674805
+      },
+      "controller_transfer_bytes": 127055,
+      "controller_transfer_seconds": {
+        "count": 18,
+        "scope": "CONTROLLER_RECEIVE_VALIDATION_AND_PERSISTENCE; excludes network round trip",
+        "total": 0.3706144231837243
+      },
+      "controller_wall": {
+        "artificial_only": true,
+        "stop": {
+          "UTC": "2026-11-17T05:56:54Z",
+          "methods": {
+            "PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE",
+            "PR_PAULI": "NO_CANDIDATE_LEFT_IN_RANGE"
+          },
+          "reason": "WAITING_FOR_INPUTS"
+        },
+        "wall_seconds": 11.8925974778831
+      },
+      "event_counts": {
+        "ADOPT": 18,
+        "DEPENDENCY_WAIT_END": 18,
+        "DEPENDENCY_WAIT_START": 18,
+        "DISTRIBUTED_START": 2,
+        "ENQUEUE": 18,
+        "EXECUTOR_START": 2,
+        "EXECUTOR_STOP": 2,
+        "EXIT": 18,
+        "HOST_FIRST_POLL": 2,
+        "LAUNCH": 18,
+        "PRIOR_INGEST_END": 4,
+        "PRIOR_INGEST_START": 4,
+        "QUEUE_WAIT_STATE": 41,
+        "RESULT_RECEIVED": 18,
+        "RESULT_REUSE": 8,
+        "SEARCH_ADOPT": 18,
+        "TRANSFER_COMPLETE": 18,
+        "TRANSFER_TIMING": 18
+      },
+      "full_wall_seconds": 13.146327316993847,
+      "launch_markers": 18,
+      "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+      "outcomes": 18,
+      "per_method": {
+        "PR_DF": {
+          "best": {
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "candidate": "PR_DF:d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "configuration": {
+              "L_D": 1,
+              "delta_over_h": "1/2",
+              "formula": "2nd",
+              "kappa_multiplier": "1",
+              "requested_delta_pf": {
+                "denominator": 72057594037927936,
+                "display": "0.05",
+                "numerator": 3602879701896397
+              }
+            },
+            "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            },
+            "cost_display": "26.00",
+            "evidence": "ARTIFICIAL_JOB",
+            "labels": [],
+            "point_id": null,
+            "result_sources": null,
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+          },
+          "executor_metrics": {
+            "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+            "adopted": 10,
+            "busy_job_seconds": 5.594938583439216,
+            "by_host": {
+              "simulated-server2": {
+                "adopted": 18,
+                "assigned": 18,
+                "completed": 18,
+                "launched": 18,
+                "reused": 8
+              }
+            },
+            "by_method": {
+              "PR_DF": {
+                "adopted": 6,
+                "launched": 6
+              },
+              "PR_PAULI": {
+                "adopted": 4,
+                "launched": 4
+              }
+            },
+            "completed_not_adopted": 0,
+            "distributed": true,
+            "dp_workers": 1,
+            "elapsed_seconds": 5.918316588038579,
+            "executor_failure": null,
+            "finished": 10,
+            "host_eligibility_holds": {},
+            "idle_slot_seconds_no_queued_candidate": 0.0547424559481442,
+            "idle_slot_seconds_no_queued_or_selected_result": 0.054281128104776144,
+            "idle_slot_seconds_waiting_selected_result": 0.00046132784336805344,
+            "idle_slot_seconds_with_queued_candidate": 0.2686355486512184,
+            "launched": 10,
+            "max_concurrent_jobs": 1,
+            "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+            "method_adopted": 6,
+            "method_launched": 6,
+            "new_real_route_launches": 0,
+            "peak_active": 1,
+            "persistent_reserved": {
+              "PR_DF": 10,
+              "PR_PAULI": 8
+            },
+            "queued_cancelled": 0,
+            "sampled_owned_tree_peak_RSS_KiB": 0,
+            "slot_utilization": 0.9453597995664955,
+            "speculative_adopted": 1,
+            "speculative_adoption_fraction": 1.0,
+            "speculative_launched": 1,
+            "submitted": 10
+          },
+          "new_calls": 6,
+          "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+        },
+        "PR_PAULI": {
+          "best": {
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "candidate": "PR_PAULI:92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "configuration": {
+              "L_D": 1,
+              "delta_over_h": "2",
+              "formula": "2nd",
+              "kappa_multiplier": "1",
+              "requested_delta_pf": {
+                "denominator": 18014398509481984,
+                "display": "0.20",
+                "numerator": 3602879701896397
+              }
+            },
+            "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            },
+            "cost_display": "26.00",
+            "evidence": "ARTIFICIAL_JOB",
+            "labels": [],
+            "point_id": null,
+            "result_sources": null,
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+          },
+          "executor_metrics": {
+            "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+            "adopted": 10,
+            "busy_job_seconds": 5.594938583439216,
+            "by_host": {
+              "simulated-server2": {
+                "adopted": 18,
+                "assigned": 18,
+                "completed": 18,
+                "launched": 18,
+                "reused": 8
+              }
+            },
+            "by_method": {
+              "PR_DF": {
+                "adopted": 6,
+                "launched": 6
+              },
+              "PR_PAULI": {
+                "adopted": 4,
+                "launched": 4
+              }
+            },
+            "completed_not_adopted": 0,
+            "distributed": true,
+            "dp_workers": 1,
+            "elapsed_seconds": 5.918316588038579,
+            "executor_failure": null,
+            "finished": 10,
+            "host_eligibility_holds": {},
+            "idle_slot_seconds_no_queued_candidate": 0.0547424559481442,
+            "idle_slot_seconds_no_queued_or_selected_result": 0.054281128104776144,
+            "idle_slot_seconds_waiting_selected_result": 0.00046132784336805344,
+            "idle_slot_seconds_with_queued_candidate": 0.2686355486512184,
+            "launched": 10,
+            "max_concurrent_jobs": 1,
+            "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+            "method_adopted": 4,
+            "method_launched": 4,
+            "new_real_route_launches": 0,
+            "peak_active": 1,
+            "persistent_reserved": {
+              "PR_DF": 10,
+              "PR_PAULI": 8
+            },
+            "queued_cancelled": 0,
+            "sampled_owned_tree_peak_RSS_KiB": 0,
+            "slot_utilization": 0.9453597995664955,
+            "speculative_adopted": 1,
+            "speculative_adoption_fraction": 1.0,
+            "speculative_launched": 1,
+            "submitted": 10
+          },
+          "new_calls": 4,
+          "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+        }
+      },
+      "persistent_scientific_jobs": 18,
+      "reference_common_results_exact_match": 18,
+      "reference_entire_result_set_equal": true,
+      "reference_minima_exact_match": true,
+      "reference_result_count": 18,
+      "result_count": 18,
+      "resume_new_launches": 0,
+      "scientific_H4_calls": 0,
+      "simulated_host_count": 1,
+      "transport": "LOOPBACK_HTTP_WITH_SEPARATE_WORKER_SPOOLS",
+      "worker_transfer_roundtrip_seconds": {
+        "count": 18,
+        "scope": "WORKER_MEASURED_COMPLETE_UPLOAD_AND_ACK_ROUND_TRIP",
+        "total": 0.5981711554341018
+      }
+    },
+    "2": {
+      "actual_OS_host_count": 1,
+      "artificial_only": true,
+      "artificial_speedup_reference": "SINGLE_HOST_LEGACY_EXECUTOR",
+      "artificial_speedup_vs_single_distributed": 2.1162963999118727,
+      "artificial_wall_speedup": 0.6557827834661478,
+      "by_host": {
+        "simulated-server1": {
+          "adopted": 10,
+          "assigned": 10,
+          "completed": 10,
+          "launched": 10,
+          "prefix_reuse_HITs": 0
+        },
+        "simulated-server2": {
+          "adopted": 8,
+          "assigned": 8,
+          "completed": 8,
+          "launched": 8,
+          "prefix_reuse_HITs": 0
+        }
+      },
+      "common_queue_wait_seconds": {
+        "count": 18,
+        "maximum": 1.744128942489624,
+        "mean": 0.36579933431413436,
+        "total": 6.584388017654419
+      },
+      "controller_transfer_bytes": 127173,
+      "controller_transfer_seconds": {
+        "count": 18,
+        "scope": "CONTROLLER_RECEIVE_VALIDATION_AND_PERSISTENCE; excludes network round trip",
+        "total": 0.3763680486008525
+      },
+      "controller_wall": {
+        "artificial_only": true,
+        "stop": {
+          "UTC": "2026-11-17T05:57:01Z",
+          "methods": {
+            "PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE",
+            "PR_PAULI": "NO_CANDIDATE_LEFT_IN_RANGE"
+          },
+          "reason": "WAITING_FOR_INPUTS"
+        },
+        "wall_seconds": 5.619533009827137
+      },
+      "event_counts": {
+        "ADOPT": 18,
+        "DEPENDENCY_WAIT_END": 16,
+        "DEPENDENCY_WAIT_START": 16,
+        "DISTRIBUTED_START": 2,
+        "ENQUEUE": 18,
+        "EXECUTOR_START": 2,
+        "EXECUTOR_STOP": 2,
+        "EXIT": 18,
+        "HOST_FIRST_POLL": 4,
+        "LAUNCH": 18,
+        "PRIOR_INGEST_END": 4,
+        "PRIOR_INGEST_START": 4,
+        "QUEUE_WAIT_STATE": 45,
+        "RESULT_RECEIVED": 18,
+        "RESULT_REUSE": 8,
+        "SEARCH_ADOPT": 18,
+        "TRANSFER_COMPLETE": 18,
+        "TRANSFER_TIMING": 18
+      },
+      "full_wall_seconds": 6.420841637998819,
+      "launch_markers": 18,
+      "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+      "outcomes": 18,
+      "per_method": {
+        "PR_DF": {
+          "best": {
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "candidate": "PR_DF:d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "configuration": {
+              "L_D": 1,
+              "delta_over_h": "1/2",
+              "formula": "2nd",
+              "kappa_multiplier": "1",
+              "requested_delta_pf": {
+                "denominator": 72057594037927936,
+                "display": "0.05",
+                "numerator": 3602879701896397
+              }
+            },
+            "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            },
+            "cost_display": "26.00",
+            "evidence": "ARTIFICIAL_JOB",
+            "labels": [],
+            "point_id": null,
+            "result_sources": null,
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+          },
+          "executor_metrics": {
+            "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+            "adopted": 10,
+            "busy_job_seconds": 4.80814878619276,
+            "by_host": {
+              "simulated-server1": {
+                "adopted": 10,
+                "assigned": 10,
+                "completed": 10,
+                "launched": 10,
+                "reused": 4
+              },
+              "simulated-server2": {
+                "adopted": 8,
+                "assigned": 8,
+                "completed": 8,
+                "launched": 8,
+                "reused": 4
+              }
+            },
+            "by_method": {
+              "PR_DF": {
+                "adopted": 6,
+                "launched": 6
+              },
+              "PR_PAULI": {
+                "adopted": 4,
+                "launched": 4
+              }
+            },
+            "completed_not_adopted": 0,
+            "distributed": true,
+            "dp_workers": 1,
+            "elapsed_seconds": 2.7104962959419936,
+            "executor_failure": null,
+            "finished": 10,
+            "host_eligibility_holds": {},
+            "idle_slot_seconds_no_queued_candidate": 0.35136102442629635,
+            "idle_slot_seconds_no_queued_or_selected_result": 0.15546438470482826,
+            "idle_slot_seconds_waiting_selected_result": 0.1958966397214681,
+            "idle_slot_seconds_with_queued_candidate": 0.26148278126493096,
+            "launched": 10,
+            "max_concurrent_jobs": 2,
+            "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+            "method_adopted": 6,
+            "method_launched": 6,
+            "new_real_route_launches": 0,
+            "peak_active": 2,
+            "persistent_reserved": {
+              "PR_DF": 10,
+              "PR_PAULI": 8
+            },
+            "queued_cancelled": 0,
+            "sampled_owned_tree_peak_RSS_KiB": 0,
+            "slot_utilization": 0.8869498905774666,
+            "speculative_adopted": 5,
+            "speculative_adoption_fraction": 1.0,
+            "speculative_launched": 5,
+            "submitted": 10
+          },
+          "new_calls": 6,
+          "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+        },
+        "PR_PAULI": {
+          "best": {
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "candidate": "PR_PAULI:92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "configuration": {
+              "L_D": 1,
+              "delta_over_h": "2",
+              "formula": "2nd",
+              "kappa_multiplier": "1",
+              "requested_delta_pf": {
+                "denominator": 18014398509481984,
+                "display": "0.20",
+                "numerator": 3602879701896397
+              }
+            },
+            "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            },
+            "cost_display": "26.00",
+            "evidence": "ARTIFICIAL_JOB",
+            "labels": [],
+            "point_id": null,
+            "result_sources": null,
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+          },
+          "executor_metrics": {
+            "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+            "adopted": 10,
+            "busy_job_seconds": 4.80814878619276,
+            "by_host": {
+              "simulated-server1": {
+                "adopted": 10,
+                "assigned": 10,
+                "completed": 10,
+                "launched": 10,
+                "reused": 4
+              },
+              "simulated-server2": {
+                "adopted": 8,
+                "assigned": 8,
+                "completed": 8,
+                "launched": 8,
+                "reused": 4
+              }
+            },
+            "by_method": {
+              "PR_DF": {
+                "adopted": 6,
+                "launched": 6
+              },
+              "PR_PAULI": {
+                "adopted": 4,
+                "launched": 4
+              }
+            },
+            "completed_not_adopted": 0,
+            "distributed": true,
+            "dp_workers": 1,
+            "elapsed_seconds": 2.7104962959419936,
+            "executor_failure": null,
+            "finished": 10,
+            "host_eligibility_holds": {},
+            "idle_slot_seconds_no_queued_candidate": 0.35136102442629635,
+            "idle_slot_seconds_no_queued_or_selected_result": 0.15546438470482826,
+            "idle_slot_seconds_waiting_selected_result": 0.1958966397214681,
+            "idle_slot_seconds_with_queued_candidate": 0.26148278126493096,
+            "launched": 10,
+            "max_concurrent_jobs": 2,
+            "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+            "method_adopted": 4,
+            "method_launched": 4,
+            "new_real_route_launches": 0,
+            "peak_active": 2,
+            "persistent_reserved": {
+              "PR_DF": 10,
+              "PR_PAULI": 8
+            },
+            "queued_cancelled": 0,
+            "sampled_owned_tree_peak_RSS_KiB": 0,
+            "slot_utilization": 0.8869498905774666,
+            "speculative_adopted": 5,
+            "speculative_adoption_fraction": 1.0,
+            "speculative_launched": 5,
+            "submitted": 10
+          },
+          "new_calls": 4,
+          "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+        }
+      },
+      "persistent_scientific_jobs": 18,
+      "reference_common_results_exact_match": 18,
+      "reference_entire_result_set_equal": true,
+      "reference_minima_exact_match": true,
+      "reference_result_count": 18,
+      "result_count": 18,
+      "resume_new_launches": 0,
+      "scientific_H4_calls": 0,
+      "simulated_host_count": 2,
+      "transport": "LOOPBACK_HTTP_WITH_SEPARATE_WORKER_SPOOLS",
+      "worker_transfer_roundtrip_seconds": {
+        "count": 18,
+        "scope": "WORKER_MEASURED_COMPLETE_UPLOAD_AND_ACK_ROUND_TRIP",
+        "total": 0.6038916374091059
+      }
+    },
+    "3": {
+      "actual_OS_host_count": 1,
+      "artificial_only": true,
+      "artificial_speedup_reference": "SINGLE_HOST_LEGACY_EXECUTOR",
+      "artificial_speedup_vs_single_distributed": 2.6593885082850233,
+      "artificial_wall_speedup": 0.8240722794565367,
+      "by_host": {
+        "simulated-local": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "prefix_reuse_HITs": 0
+        },
+        "simulated-server1": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "prefix_reuse_HITs": 0
+        },
+        "simulated-server2": {
+          "adopted": 6,
+          "assigned": 6,
+          "completed": 6,
+          "launched": 6,
+          "prefix_reuse_HITs": 0
+        }
+      },
+      "common_queue_wait_seconds": {
+        "count": 18,
+        "maximum": 0.47373414039611816,
+        "mean": 0.1570266087849935,
+        "total": 2.826478958129883
+      },
+      "controller_transfer_bytes": 127160,
+      "controller_transfer_seconds": {
+        "count": 18,
+        "scope": "CONTROLLER_RECEIVE_VALIDATION_AND_PERSISTENCE; excludes network round trip",
+        "total": 0.34087540628388524
+      },
+      "controller_wall": {
+        "artificial_only": true,
+        "stop": {
+          "UTC": "2026-11-17T05:57:06Z",
+          "methods": {
+            "PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE",
+            "PR_PAULI": "NO_CANDIDATE_LEFT_IN_RANGE"
+          },
+          "reason": "WAITING_FOR_INPUTS"
+        },
+        "wall_seconds": 4.471929332939908
+      },
+      "event_counts": {
+        "ADOPT": 18,
+        "DEPENDENCY_WAIT_END": 13,
+        "DEPENDENCY_WAIT_START": 13,
+        "DISTRIBUTED_START": 2,
+        "ENQUEUE": 18,
+        "EXECUTOR_START": 2,
+        "EXECUTOR_STOP": 2,
+        "EXIT": 18,
+        "HOST_FIRST_POLL": 6,
+        "LAUNCH": 18,
+        "PRIOR_INGEST_END": 4,
+        "PRIOR_INGEST_START": 4,
+        "QUEUE_WAIT_STATE": 49,
+        "RESULT_RECEIVED": 18,
+        "RESULT_REUSE": 8,
+        "SEARCH_ADOPT": 18,
+        "TRANSFER_COMPLETE": 18,
+        "TRANSFER_TIMING": 18
+      },
+      "full_wall_seconds": 5.21808429597877,
+      "launch_markers": 18,
+      "outcome_sha256": "17afcc63c71955f9cac1a36095551a477d681fea2936da142764fbe26ce6c382",
+      "outcomes": 18,
+      "per_method": {
+        "PR_DF": {
+          "best": {
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "candidate": "PR_DF:d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "configuration": {
+              "L_D": 1,
+              "delta_over_h": "1/2",
+              "formula": "2nd",
+              "kappa_multiplier": "1",
+              "requested_delta_pf": {
+                "denominator": 72057594037927936,
+                "display": "0.05",
+                "numerator": 3602879701896397
+              }
+            },
+            "configuration_id": "d35d62b47de15eea4db831885b272e9c306d925e37d3e81eb1bb68dce4b094bd",
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            },
+            "cost_display": "26.00",
+            "evidence": "ARTIFICIAL_JOB",
+            "labels": [],
+            "point_id": null,
+            "result_sources": null,
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+          },
+          "executor_metrics": {
+            "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+            "adopted": 10,
+            "busy_job_seconds": 4.6158472371753305,
+            "by_host": {
+              "simulated-local": {
+                "adopted": 6,
+                "assigned": 6,
+                "completed": 6,
+                "launched": 6,
+                "reused": 2
+              },
+              "simulated-server1": {
+                "adopted": 6,
+                "assigned": 6,
+                "completed": 6,
+                "launched": 6,
+                "reused": 3
+              },
+              "simulated-server2": {
+                "adopted": 6,
+                "assigned": 6,
+                "completed": 6,
+                "launched": 6,
+                "reused": 3
+              }
+            },
+            "by_method": {
+              "PR_DF": {
+                "adopted": 6,
+                "launched": 6
+              },
+              "PR_PAULI": {
+                "adopted": 4,
+                "launched": 4
+              }
+            },
+            "completed_not_adopted": 0,
+            "distributed": true,
+            "dp_workers": 1,
+            "elapsed_seconds": 2.1313975360244513,
+            "executor_failure": null,
+            "finished": 10,
+            "host_eligibility_holds": {},
+            "idle_slot_seconds_no_queued_candidate": 1.2547188769094646,
+            "idle_slot_seconds_no_queued_or_selected_result": 0.27135943179018795,
+            "idle_slot_seconds_waiting_selected_result": 0.9833594451192766,
+            "idle_slot_seconds_with_queued_candidate": 0.5236264939885587,
+            "launched": 10,
+            "max_concurrent_jobs": 3,
+            "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+            "method_adopted": 6,
+            "method_launched": 6,
+            "new_real_route_launches": 0,
+            "peak_active": 3,
+            "persistent_reserved": {
+              "PR_DF": 10,
+              "PR_PAULI": 8
+            },
+            "queued_cancelled": 0,
+            "sampled_owned_tree_peak_RSS_KiB": 0,
+            "slot_utilization": 0.7218811693828754,
+            "speculative_adopted": 4,
+            "speculative_adoption_fraction": 1.0,
+            "speculative_launched": 4,
+            "submitted": 10
+          },
+          "new_calls": 6,
+          "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+        },
+        "PR_PAULI": {
+          "best": {
+            "MSE_lower": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "MSE_upper": {
+              "denominator": 1000,
+              "display": "0.01",
+              "numerator": 13
+            },
+            "N_X": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "N_Y": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "candidate": "PR_PAULI:92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "configuration": {
+              "L_D": 1,
+              "delta_over_h": "2",
+              "formula": "2nd",
+              "kappa_multiplier": "1",
+              "requested_delta_pf": {
+                "denominator": 18014398509481984,
+                "display": "0.20",
+                "numerator": 3602879701896397
+              }
+            },
+            "configuration_id": "92a4b65fa3b8fc72122dd89d27d65371f57edb8a57212984a814b98daaa39661",
+            "cost": {
+              "denominator": 1,
+              "display": "26.00",
+              "numerator": 26
+            },
+            "cost_display": "26.00",
+            "evidence": "ARTIFICIAL_JOB",
+            "labels": [],
+            "point_id": null,
+            "result_sources": null,
+            "status": "MODEL_BOUND_MEETS_ADOPTED_THRESHOLD"
+          },
+          "executor_metrics": {
+            "actual_OS_host_count": "recorded by integration harness; host IDs alone do not establish separate machines",
+            "adopted": 10,
+            "busy_job_seconds": 4.6158472371753305,
+            "by_host": {
+              "simulated-local": {
+                "adopted": 6,
+                "assigned": 6,
+                "completed": 6,
+                "launched": 6,
+                "reused": 2
+              },
+              "simulated-server1": {
+                "adopted": 6,
+                "assigned": 6,
+                "completed": 6,
+                "launched": 6,
+                "reused": 3
+              },
+              "simulated-server2": {
+                "adopted": 6,
+                "assigned": 6,
+                "completed": 6,
+                "launched": 6,
+                "reused": 3
+              }
+            },
+            "by_method": {
+              "PR_DF": {
+                "adopted": 6,
+                "launched": 6
+              },
+              "PR_PAULI": {
+                "adopted": 4,
+                "launched": 4
+              }
+            },
+            "completed_not_adopted": 0,
+            "distributed": true,
+            "dp_workers": 1,
+            "elapsed_seconds": 2.1313975360244513,
+            "executor_failure": null,
+            "finished": 10,
+            "host_eligibility_holds": {},
+            "idle_slot_seconds_no_queued_candidate": 1.2547188769094646,
+            "idle_slot_seconds_no_queued_or_selected_result": 0.27135943179018795,
+            "idle_slot_seconds_waiting_selected_result": 0.9833594451192766,
+            "idle_slot_seconds_with_queued_candidate": 0.5236264939885587,
+            "launched": 10,
+            "max_concurrent_jobs": 3,
+            "memory_scope": "sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted",
+            "method_adopted": 4,
+            "method_launched": 4,
+            "new_real_route_launches": 0,
+            "peak_active": 3,
+            "persistent_reserved": {
+              "PR_DF": 10,
+              "PR_PAULI": 8
+            },
+            "queued_cancelled": 0,
+            "sampled_owned_tree_peak_RSS_KiB": 0,
+            "slot_utilization": 0.7218811693828754,
+            "speculative_adopted": 4,
+            "speculative_adoption_fraction": 1.0,
+            "speculative_launched": 4,
+            "submitted": 10
+          },
+          "new_calls": 4,
+          "stop": "NO_CANDIDATE_LEFT_IN_RANGE"
+        }
+      },
+      "persistent_scientific_jobs": 18,
+      "reference_common_results_exact_match": 18,
+      "reference_entire_result_set_equal": true,
+      "reference_minima_exact_match": true,
+      "reference_result_count": 18,
+      "result_count": 18,
+      "resume_new_launches": 0,
+      "scientific_H4_calls": 0,
+      "simulated_host_count": 3,
+      "transport": "LOOPBACK_HTTP_WITH_SEPARATE_WORKER_SPOOLS",
+      "worker_transfer_roundtrip_seconds": {
+        "count": 18,
+        "scope": "WORKER_MEASURED_COMPLETE_UPLOAD_AND_ACK_ROUND_TRIP",
+        "total": 0.5889243346173316
+      }
+    }
+  },
+  "source_commit": "19c43576c83ec9de24f6059f4cb39762458c6519",
+  "source_sha256": "e8891ffd4f391b74b891eefbcf1ee9a8e6f16405fe18ac793ae8a3ae5376be8b",
+  "status": "PASS"
+}

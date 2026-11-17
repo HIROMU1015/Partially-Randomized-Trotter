@@ -14,8 +14,12 @@ from pathlib import Path
 import threading
 import time
 from types import SimpleNamespace
+import subprocess
+import sys
+import signal
 
 from . import rpe_method_optimizer as O
+from .rpe_q3_timing import stamp
 
 
 def _write(path, value):
@@ -84,10 +88,18 @@ class ConcurrentExecutor(O.Executor):
         return view
 
     def log(self,**event):
+        job = event.get('job')
+        if job:
+            event['job'] = Path(str(job)).name
+            marker = self.run_dir/'jobs'/str(self.method)/event['job']/'LAUNCH.json'
+            if marker.exists():
+                owner = json.loads(marker.read_text())
+                for key in ('host_id', 'attempt_id'):
+                    if owner.get(key) is not None:event.setdefault(key, owner[key])
         with self.lock:
             with(self.run_dir/'PROGRESS.jsonl').open('a')as f:
                 f.write(json.dumps(dict(UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
-                    epoch=time.time(),monotonic=time.monotonic(),invocation=self.invocation,method=self.method,**event),default=str)+'\n')
+                    **stamp(),invocation=self.invocation,method=self.method,**event),default=str)+'\n')
 
     def request(self,proposal,job,rule):
         req=super().request(proposal,job,rule)
@@ -268,6 +280,8 @@ class ConcurrentExecutor(O.Executor):
             self.log(event='DEPENDENCY_WAIT_START',job=job.name)
             try:task.event.wait()  # retain parent-exit gate even if OUTCOME appeared first
             finally:self.log(event='DEPENDENCY_WAIT_END',job=job.name)
+        if task and task.error == 'HOST_ELIGIBILITY_HOLD':
+            return self._held_answer(proposal)
         if task and task.error:
             return dict(status='UNKNOWN',reason=task.error,source='EXECUTOR_FAILURE',calls=self.take_count(job),
                         MSE_lower=None,MSE_upper=None,job=str(job))
@@ -290,6 +304,8 @@ class ConcurrentExecutor(O.Executor):
                 self.log(event='DEPENDENCY_WAIT_START',job=job.name)
                 try:task.event.wait()
                 finally:self.log(event='DEPENDENCY_WAIT_END',job=job.name)
+                if task.error == 'HOST_ELIGIBILITY_HOLD':
+                    return self._held_answer(proposal)
                 if(job/'OUTCOME.json').exists():answer=self.ingest(job,proposal,calls=self.take_count(job))
                 else:answer=dict(status='UNKNOWN',reason=task.error or'ADAPTER_EXIT_WITHOUT_OUTCOME',
                     source='NEW_Q3_JOB',calls=self.take_count(job),MSE_lower=None,MSE_upper=None,job=str(job))
@@ -330,15 +346,18 @@ class ConcurrentExecutor(O.Executor):
                 if e.get('invocation')!=self.invocation:continue
                 events.append(e)
                 if e['event']=='ADOPT':adopted.add(e['job'])
-            active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=0.;last=events[0]['monotonic']
+            active=set();queued=set();waiting=Counter();busy=idle_ready=idle_empty=idle_dependency=available=0.;last=events[0]['monotonic']
+            interval_capacity=self.capacity
             for e in events:
                 dt=max(0,e['monotonic']-last);last=e['monotonic'];busy+=len(active)*dt
-                idle=max(0,self.capacity-len(active))*dt
+                available+=interval_capacity*dt
+                idle=max(0,interval_capacity-len(active))*dt
                 if queued:idle_ready+=idle
                 elif sum(waiting.values()):idle_dependency+=idle
                 else:idle_empty+=idle
                 event=e['event'];job=e.get('job')
-                if event=='DEPENDENCY_WAIT_START':waiting[job]+=1
+                if event in ('EXECUTOR_START','AUTO_CAPACITY'):interval_capacity=e['capacity']
+                elif event=='DEPENDENCY_WAIT_START':waiting[job]+=1
                 elif event=='DEPENDENCY_WAIT_END':waiting[job]-=1
                 elif event=='ENQUEUE':queued.add(job)
                 elif event=='LAUNCH':queued.discard(job);active.add(job)
@@ -356,9 +375,865 @@ class ConcurrentExecutor(O.Executor):
                 idle_slot_seconds_waiting_selected_result=idle_dependency,
                 idle_slot_seconds_no_queued_or_selected_result=idle_empty,
                 idle_slot_seconds_with_queued_candidate=idle_ready,
-                slot_utilization=busy/(elapsed*self.capacity)if elapsed else 0,
+                integrated_available_slot_seconds=available,
+                slot_utilization=busy/available if available else 0,
+                capacity_measurement='INTEGRATED_EXECUTOR_START_AND_AUTO_CAPACITY_INTERVALS',
                 speculative_adoption_fraction=s.metrics['speculative_adopted']/s.metrics['speculative_launched']if s.metrics['speculative_launched']else None,
                 memory_scope='sampled sum of owned job process RSS, .1s interval; shared pages may be double-counted')
+
+
+class DistributedExecutor(ConcurrentExecutor):
+    """The existing queue/adoption order, with persistent host-owned attempts.
+
+    Every host, including this controller's local slots, uses the same adapter
+    worker. Assignment never expires merely because transport is unavailable.
+    """
+    @property
+    def capacity(self):
+        # Method views copy __dict__, but share the controller state. Dynamic
+        # capacity must therefore live there, not in a copied scalar.
+        state = getattr(self, 'state', None)
+        return getattr(state, 'allocation_capacity', getattr(self, '_capacity', 1))
+
+    @capacity.setter
+    def capacity(self, value):
+        self._capacity = value
+
+    def __init__(self, *args, distributed, **kwargs):
+        from .rpe_q3_store import JobStore
+        from . import rpe_q3_coordinator as Q
+        self.distributed = deepcopy(distributed)
+        self.eligibility_holds = {}
+        self.eligibility_policy_cache = {}
+        self.host_admission_cache = {}
+        run = Path(args[1]).resolve()
+        requested_capacity = kwargs.get('max_concurrent', 1)
+        if requested_capacity != 'auto' and (type(requested_capacity) is not int or requested_capacity < 1):
+            raise ValueError('Positive max_concurrent_jobs or auto required')
+        settings_path = run/'distributed'/'ALLOCATION_SETTINGS.json'
+        default_allocation = dict(priority_groups=[['server2', 'server1', 'local'], ['local0-wsl']],
+                                  offer_ttl_seconds=2.0, discovery_grace_seconds=1.0)
+        config = dict(default_allocation, **(distributed.get('auto_allocation') or {}))
+        if config.get('offer_ttl_seconds', 0) <= 0 or config.get('discovery_grace_seconds', -1) < 0:
+            raise ValueError('Positive offer lifetime and nonnegative discovery grace required')
+        if settings_path.exists():
+            settings = json.loads(settings_path.read_text())
+            if settings.get('schema') != 'RPE_Q3_ALLOCATION_SETTINGS_V1':
+                raise ValueError('Unknown saved allocation settings')
+            saved = settings['max_concurrent_jobs']
+            if requested_capacity != 'auto' and requested_capacity != saved:
+                raise ValueError('Saved run concurrency cannot change on resume')
+            requested_capacity = saved
+            config = settings['auto_allocation']
+        else:
+            if requested_capacity == 'auto' and (run/'distributed'/'QUEUE.sqlite3').exists():
+                old_round = json.loads((run/'ROUND.json').read_text()) if (run/'ROUND.json').exists() else {}
+                requested_capacity = old_round.get('executor', {}).get('max_concurrent_jobs', 1)
+                if requested_capacity == 'auto': requested_capacity = 1
+            settings = dict(schema='RPE_Q3_ALLOCATION_SETTINGS_V1',
+                mode='auto' if requested_capacity == 'auto' else 'fixed',
+                max_concurrent_jobs=requested_capacity, auto_allocation=config)
+        self.allocation_settings = settings
+        self.allocation_settings_path = settings_path
+        self.allocation_config = config
+        kwargs['max_concurrent'] = 1 if requested_capacity == 'auto' else requested_capacity
+        self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
+        self.hosts = {}
+        self.input_hash_cache = {}
+        self.local_worker = None
+        self.local_worker_pid = None
+        self.rpc_server = None
+        super().__init__(*args, **kwargs)
+        try:
+            self.state.allocation_auto = requested_capacity == 'auto'
+            self.state.allocation_capacity = kwargs['max_concurrent']
+            self.state.allocation_start = time.monotonic()
+            self.state.allocation_epoch = time.time()
+            self.state.allocation_waits = {}
+            self.state.allocation_wait_totals = {}
+            self.state.allocation_discovery = {}
+            if not settings_path.exists(): Q.atomic_json(settings_path, settings)
+            self.controller_source = self.optimizer_source
+            self.computation_root = Path(distributed.get('computation_root', self.root)).resolve()
+            self.computation_source = distributed.get('computation_source', self.optimizer_source)
+            self.optimizer_source = self.computation_source
+            self.worker_script = Path(distributed.get('worker_script', self.root/'scripts/run_rpe_q3_worker.py')).resolve()
+            self.source_manifest = Q.source_manifest(self.computation_root, self.computation_source)
+            contract_path = run/'distributed'/'SOURCE.json'
+            fixed = dict(source=self.source_manifest, evaluation_contract=self.contract)
+            if contract_path.exists() and json.loads(contract_path.read_text()) != fixed:
+                raise ValueError('Distributed run SOURCE/evaluation contract changed; use a new run')
+            if not contract_path.exists(): Q.atomic_json(contract_path, fixed)
+            with self.state.cv:
+                for row in self.store.rows():
+                    if row['state'] == 'QUEUED':
+                        decision = self._eligibility_for(row['request'], row['job_id'])
+                        if not self.store.set_eligibility(row['job_id'], decision):
+                            self.eligibility_holds[row['job_id']] = decision
+                            continue
+                        row = self.store.row(row['job_id'])
+                    if row['state'] not in ('CANCELLED', 'ACCEPTED'):
+                        self._restore_task(row)
+                    elif row['state'] == 'ACCEPTED':
+                        self._publish_transfer(row)
+            self.rpc_server, self.rpc_thread = Q.serve(self, distributed.get('bind', '127.0.0.1'), distributed.get('port', 8763))
+            address = self.rpc_server.server_address
+            self.controller_url = 'http://127.0.0.1:'+str(address[1])
+            Q.atomic_json(run/'distributed'/'ENDPOINT.json', dict(url=self.controller_url, pid=os.getpid(), source=self.optimizer_source))
+            profile = distributed.get('local_worker')
+            if profile and profile.get('slots', 0) > 0:
+                profile = dict(profile)
+                profile.setdefault('root', str(self.computation_root))
+                profile.setdefault('work_dir', str(run/'distributed'/'server2-worker'))
+                profile_path = run/'distributed'/'LOCAL_WORKER.json'
+                Q.atomic_json(profile_path, profile)
+                daemon_path = run/'distributed'/'LOCAL_DAEMON.json'
+                previous = json.loads(daemon_path.read_text()) if daemon_path.exists() else {}
+                if self._local_daemon_alive(previous.get('pid'), profile_path):
+                    self.local_worker_pid = previous['pid']
+                else:
+                    with (run/'distributed'/'LOCAL_WORKER.log').open('a') as log:
+                        self.local_worker = subprocess.Popen([sys.executable, '-B', str(self.worker_script),
+                            '--profile', str(profile_path), '--controller', self.controller_url, '--poll-seconds', '.1'],
+                            cwd=self.root, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
+                            start_new_session=True, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+                    self.local_worker_pid = self.local_worker.pid
+                    Q.atomic_json(daemon_path, dict(pid=self.local_worker_pid, profile=str(profile_path)))
+            self.log(event='DISTRIBUTED_START', url=self.controller_url, controller_source=self.controller_source,
+                computation_source=self.computation_source, computation_root=str(self.computation_root),
+                allocation_settings=settings)
+        except BaseException:
+            with self.state.cv:
+                self.state.closed = True
+                self.state.cv.notify_all()
+                self.state.monitor_stop.set()
+            self.dispatcher.join(); self.monitor.join()
+            if self.rpc_server: self.rpc_server.shutdown(); self.rpc_server.server_close()
+            fcntl.flock(self.state.driver, fcntl.LOCK_UN); self.state.driver.close()
+            raise
+
+    def log(self, **event):
+        # Reuse the existing dependency-wait boundaries emitted by the normal
+        # answer path. These durations share the controller's monotonic clock.
+        state = getattr(self, 'state', None)
+        if state is not None and hasattr(state, 'allocation_waits') and event.get('job'):
+            job = Path(str(event['job'])).name
+            with self.lock:
+                if event.get('event') == 'DEPENDENCY_WAIT_START':
+                    state.allocation_waits.setdefault(job, []).append(time.monotonic())
+                elif event.get('event') == 'DEPENDENCY_WAIT_END':
+                    starts = state.allocation_waits.get(job, [])
+                    if starts:
+                        elapsed = time.monotonic()-starts.pop()
+                        state.allocation_wait_totals[job] = state.allocation_wait_totals.get(job, 0)+elapsed
+        return super().log(**event)
+
+    def for_method(self, method):
+        view = DistributedExecutor.__new__(DistributedExecutor)
+        view.__dict__.update(self.__dict__)
+        view.method = method
+        return view
+
+    def alive(self, launch, job):
+        if launch.get('attempt_id'): return False  # a remote PID has no controller-local meaning
+        return super().alive(launch, job)
+
+    def _local_daemon_alive(self, pid, profile_path):
+        if type(pid) is not int: return False
+        try:
+            command = Path('/proc/%s/cmdline' % pid).read_bytes().decode(errors='replace')
+            return str(profile_path) in command and str(self.worker_script) in command
+        except OSError: return False
+
+    def _dispatch(self):
+        # RPC claims supply host slots; the original dispatcher order is used
+        # in _poll rather than launching controller-local adapters directly.
+        with self.state.cv:
+            while not self.state.closed: self.state.cv.wait(.2)
+
+    def _host_admission_policy(self):
+        """Optional participation is independent of request-specific readiness.
+
+        A configured file is replaced atomically by the operator. Failure to
+        read it stops new claims, while previously owned attempts still recover.
+        """
+        policy = self.distributed.get('host_admission')
+        if policy is None: return dict(hosts={}), None
+        try:
+            if isinstance(policy, (str, Path)):
+                path = Path(policy)
+                if not path.is_absolute(): path = self.root/path
+                st = path.stat()
+                signature = (str(path.resolve()), st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
+                if self.host_admission_cache.get('signature') != signature:
+                    loaded = json.loads(path.read_text())
+                    self.host_admission_cache.update(signature=signature, policy=loaded)
+                policy = self.host_admission_cache['policy']
+            if (not isinstance(policy, dict) or
+                    policy.get('schema', 'RPE_Q3_HOST_ADMISSION_V1') != 'RPE_Q3_HOST_ADMISSION_V1' or
+                    not isinstance(policy.get('hosts'), dict)):
+                raise ValueError('HOST_ADMISSION_POLICY_INVALID')
+            for host, rule in policy['hosts'].items():
+                if not isinstance(host, str) or not host or not isinstance(rule, dict):
+                    raise ValueError('HOST_ADMISSION_HOST_INVALID')
+                if type(rule.get('accepting')) is not bool:
+                    raise ValueError('HOST_ADMISSION_ACCEPTING_REQUIRED:' + host)
+                if 'optional' in rule and type(rule['optional']) is not bool:
+                    raise ValueError('HOST_ADMISSION_OPTIONAL_INVALID:' + host)
+                if 'max_slots' in rule and (type(rule['max_slots']) is not int or rule['max_slots'] < 0):
+                    raise ValueError('HOST_ADMISSION_MAX_SLOTS_INVALID:' + host)
+            return policy, None
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            return dict(hosts={}), str(exc)
+
+    def _host_admission(self, host, policy, error=None):
+        rule = policy['hosts'].get(host, {})
+        return dict(accepting=rule.get('accepting', True) and error is None,
+                    optional=rule.get('optional', False), max_slots=rule.get('max_slots'),
+                    error=error)
+
+    def _host_new_slots(self, host, slots, admission):
+        if not admission['accepting']: return 0
+        maximum = admission['max_slots']
+        if maximum is None: return slots
+        # UNKNOWN and completed-but-untransferred attempts still belong to this
+        # host. A communication outage must not open another execution slot.
+        owned = sum(row['host_id'] == host for row in self._owned_attempts())
+        return min(slots, max(0, maximum-owned))
+
+    def _owned_attempts(self):
+        with self.store._connection() as database:
+            return [dict(row) for row in database.execute(
+                "SELECT job_id,host_id,attempt_id,state FROM jobs WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")]
+
+    def _offer_free(self, host, policy, error=None):
+        """Fresh unused capacity, never a lease on an assigned evaluation."""
+        info = self.hosts.get(host)
+        if not info or time.monotonic()-info.get('observed_monotonic', float('-inf')) > self.allocation_config['offer_ttl_seconds']:
+            return 0
+        if info.get('accepting_new_jobs') is False: return 0
+        admission = self._host_admission(host, policy, error)
+        free = self._host_new_slots(host, info['reported_slots'], admission)
+        owned = self._owned_attempts()
+        current = {row['attempt_id'] for row in owned if row['host_id'] == host}
+        # An offer cannot be reused by another poll after its free slot has
+        # already been committed to an attempt by this controller.
+        free = max(0, free-len(current-set(info.get('owned_at_offer', []))))
+        capacity = info.get('capacity')
+        if type(capacity) is int and capacity >= 0:
+            free = min(free, max(0, capacity-len(current)))
+        return free
+
+    def _refresh_capacity(self, policy, error=None):
+        if not self.state.allocation_auto: return
+        owned = len(self._owned_attempts())
+        queue = sorted((task for task in self.state.tasks.values() if task.status == 'QUEUED'),
+                       key=lambda task:(not task.demand, self.state.owner_clock.get(task.owner,-1),task.enqueue))
+        available = {host:self._offer_free(host, policy, error) for host in self.hosts}
+        available = {host:min(free,len(queue)) for host,free in available.items() if free > 0}
+        usable = len(self._match_ready_jobs(queue, available))
+        capacity = max(1, owned+usable)
+        if capacity != self.state.allocation_capacity:
+            self.state.allocation_capacity = capacity
+            self.log(event='AUTO_CAPACITY', capacity=capacity, unresolved_owned=owned,
+                     ready_jobs=len(queue), fresh_free_slots=sum(available.values()),
+                     request_compatible_slots=usable,
+                     reason='MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS')
+
+    def _host_rank(self, host):
+        groups = self.allocation_config['priority_groups']
+        return next((index for index, group in enumerate(groups) if host in group), 0)
+
+    def _preferred_ready_jobs(self, host, queue, policy, error=None):
+        """Match existing READY jobs to immediately usable higher-priority slots.
+
+        This is only a choice among free execution slots. It creates no job
+        ownership, budget reservation or attempt ID. Augmenting paths preserve
+        the original candidate order while avoiding a flexible job consuming
+        the sole compatible slot of another independent job.
+        """
+        rank = self._host_rank(host)
+        if rank == 0: return set()
+        available = {h:self._offer_free(h, policy, error) for h in self.hosts
+                     if self._host_rank(h) < rank}
+        available = {h:min(count, len(queue)) for h,count in available.items() if count > 0}
+        return self._match_ready_jobs(queue, available)
+
+    def _match_ready_jobs(self, queue, available):
+        """One request per usable host slot, preserving candidate order."""
+        owners = {h:[] for h in available}
+        compatible = {};skipped = {h:False for h in available}
+        for task in queue:
+            row = self.store.row(task.job.name)
+            compatible[task.job.name] = []
+            for h in available:
+                if not self.store.eligible(row['request'], row['eligibility'], h,
+                        self.hosts[h].get('host_fingerprints'), row['job_id']):
+                    skipped[h] = True
+                    continue
+                conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
+                if not (conditional and skipped[h] and not task.demand):
+                    compatible[task.job.name].append(h)
+
+        def assign(job, seen):
+            for preferred in compatible[job]:
+                if preferred in seen: continue
+                seen.add(preferred)
+                if len(owners[preferred]) < available[preferred]:
+                    owners[preferred].append(job)
+                    return True
+                for offset, other in enumerate(list(owners[preferred])):
+                    if assign(other, seen):
+                        owners[preferred][offset] = job
+                        return True
+            return False
+
+        matched = set()
+        for task in queue:
+            if assign(task.job.name, set()): matched.add(task.job.name)
+        return matched
+
+    def _capacity_feedback(self, host):
+        with self.store._connection() as database:
+            own = [dict(row) for row in database.execute(
+                'SELECT job_id,state,completed_epoch,adopted_epoch FROM jobs WHERE host_id=?', (host,))]
+        epoch = self.state.allocation_epoch
+        now = time.monotonic()
+        with self.lock:
+            totals = dict(self.state.allocation_wait_totals)
+            for job, starts in self.state.allocation_waits.items():
+                if starts: totals[job] = totals.get(job, 0)+sum(now-start for start in starts)
+        selected = [totals[row['job_id']] for row in own if row['job_id'] in totals]
+        ready = 0
+        for task in self.state.tasks.values():
+            if task.status != 'QUEUED': continue
+            row = self.store.row(task.job.name)
+            if row is not None and self.store.eligible(row['request'], row['eligibility'], host,
+                    self.hosts.get(host, {}).get('host_fingerprints'), row['job_id']):
+                ready += 1
+        return dict(controller_invocation=self.invocation, measurement_seconds=now-self.state.allocation_start,
+            controller_clock_id=stamp()['clock_id'],
+            usable_results=sum(row['state'] == 'ACCEPTED' and (row['completed_epoch'] or 0) >= epoch for row in own),
+            adopted_results=sum((row['adopted_epoch'] or 0) >= epoch for row in own),
+            decision_wait_seconds=sum(selected) if selected else None,
+            decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
+            ready_jobs=ready, capacity=self.capacity)
+
+    def _eligibility_for(self, request, job_id):
+        """Bind a prepared host decision to this exact scientific request."""
+        from . import rpe_q3_coordinator as Q
+        policy = self.distributed.get('host_eligibility')
+        if policy is None and self.store.artificial(request):
+            return None
+        result = dict(request_sha256=Q.digest(request), source_manifest_sha256=Q.digest(self.source_manifest),
+                      eligible_host_ids=[], host_fingerprints={}, reasons=[])
+        try:
+            if isinstance(policy, (str, Path)):
+                path = Path(policy)
+                if not path.is_absolute(): path = self.root/path
+                st = path.stat();signature = (str(path.resolve()), st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
+                if self.eligibility_policy_cache.get('signature') != signature:
+                    self.eligibility_policy_cache.update(signature=signature, policy=json.loads(path.read_text()))
+                policy = self.eligibility_policy_cache['policy']
+            if not isinstance(policy, dict) or policy.get('schema') != 'RPE_Q3_HOST_ELIGIBILITY_V1':
+                raise ValueError('MISSING_HOST_ELIGIBILITY_POLICY')
+            record = (policy.get('jobs') or {}).get(job_id)
+            if not isinstance(record, dict): raise ValueError('NO_REQUEST_SPECIFIC_HOST_EVIDENCE')
+            if record.get('decision_sha256') != Q.digest({k:v for k,v in record.items() if k != 'decision_sha256'}):
+                raise ValueError('HOST_ELIGIBILITY_DECISION_CONTENT_CHANGED')
+            current_source = Q.source_manifest(self.computation_root, self.computation_source)
+            head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=self.computation_root, text=True).strip()
+            if current_source != self.source_manifest or head != self.computation_source:
+                raise ValueError('COMPUTATION_SOURCE_CHANGED')
+            for key, expected in (('request_sha256', result['request_sha256']),
+                                  ('source_manifest_sha256', result['source_manifest_sha256']),
+                                  ('method', request['method'])):
+                if record.get(key) != expected: raise ValueError('HOST_ELIGIBILITY_CHANGED_' + key.upper())
+            if record.get('source_manifest') != self.source_manifest:
+                raise ValueError('HOST_ELIGIBILITY_CHANGED_SOURCE_MANIFEST')
+            by_input = lambda rows: sorted(rows, key=lambda r:(r['commit'], r['path'], r['sha256']))
+            actual_inputs = Q.input_hashes(self.computation_root, request, self.input_hash_cache)
+            if by_input(record.get('input_hashes', [])) != by_input(actual_inputs):
+                raise ValueError('HOST_ELIGIBILITY_CHANGED_INPUT_HASHES')
+            result['decision_sha256'] = record.get('decision_sha256')
+            if not result['decision_sha256']: raise ValueError('NO_HOST_ELIGIBILITY_DECISION_DIGEST')
+            result['host_decisions'] = {name: dict(status=cell.get('status', 'UNCHECKED'),
+                reasons=cell.get('reasons', [])) for name, cell in (record.get('hosts') or {}).items()}
+            result['execution_profiles'] = {}
+            for host in record.get('eligible_host_ids', []):
+                cell = (record.get('hosts') or {}).get(host, {})
+                fingerprint = cell.get('current_host_fingerprint_sha256')
+                if cell.get('status') == 'PASS' and isinstance(fingerprint, str) and fingerprint:
+                    current = (self.hosts.get(host, {}).get('host_fingerprints') or {}).get(job_id)
+                    if isinstance(current, dict) and Q.digest(current) != fingerprint:
+                        result['reasons'].append('CURRENT_HOST_FINGERPRINT_CHANGED:' + host)
+                        result['host_decisions'][host] = dict(status='UNCHECKED',
+                            reasons=['CURRENT_HOST_FINGERPRINT_CHANGED'])
+                        continue
+                    result['eligible_host_ids'].append(host)
+                    result['host_fingerprints'][host] = fingerprint
+                    if cell.get('execution_profile') is not None:
+                        result['execution_profiles'][host] = deepcopy(cell['execution_profile'])
+            if not result['eligible_host_ids']: result['reasons'].append('ALL_HOSTS_FAIL_OR_UNCHECKED')
+        except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
+            result['reasons'].append(str(exc))
+        return result
+
+    def _held_answer(self, proposal):
+        job = self.job_dir(proposal)
+        return dict(status='HOST_ELIGIBILITY_HOLD', reason='NO_MATCHING_ELIGIBLE_HOST',
+                    host_eligibility=self.eligibility_holds.get(job.name), source='HOST_READINESS',
+                    calls=0, MSE_lower=None, MSE_upper=None, job=None)
+
+    def _restore_task(self, row, proposal=None, demand=False):
+        request = row['request']; method = row['method']
+        job = self.run_dir/'jobs'/method/row['job_id']
+        old = self.state.tasks.get(job)
+        if old and old.status != 'CANCELLED':
+            old.demand |= demand
+            return old
+        job.mkdir(parents=True, exist_ok=True)
+        if not (job/'REQUEST.json').exists(): _write(job/'REQUEST.json', request)
+        if proposal is None:
+            proposal = dict(configuration_id=request['configuration_id'], vector=O.interleave(request['N_X'], request['N_Y']),
+                            cost=O.frac(request['cost']), origin=request['origin'])
+        running = row['state'] != 'QUEUED'
+        task = SimpleNamespace(view=self.for_method(method), job=job, proposal=deepcopy(proposal), rule=request['route'],
+            owner=(method, request['configuration_id']), demand=demand, status='RUNNING' if running else 'QUEUED',
+            event=threading.Event(), enqueue=time.monotonic()-max(0, time.time()-row['enqueued_epoch']),
+            error=None, started=running, speculative=not demand)
+        self.state.tasks[job] = task
+        if running:
+            self.state.active += 1
+            task.view.log(event='RESUME_RUNNING', job=job.name, host_id=row['host_id'], attempt_id=row['attempt_id'])
+        else:
+            self.state.reserved[method] += 1
+        if row['state'] == 'UNKNOWN':
+            task.error = 'WORKER_STATE_UNKNOWN_RECONCILIATION_REQUIRED'
+            task.status = 'DONE'; task.event.set(); self.state.active -= 1
+        self.state.peak_active = max(self.state.peak_active, self.state.active)
+        return task
+
+    def _enqueue(self, proposal, demand=False):
+        from .rpe_q3_coordinator import prefix_key
+        job = self.job_dir(proposal); s = self.state
+        with s.cv:
+            if s.failure: raise RuntimeError('Executor persistence failure: '+s.failure)
+            task = s.tasks.get(job)
+            if task and task.status != 'CANCELLED':
+                task.demand |= demand
+                return task
+            row = self.store.row(job.name)
+            if row and row['state'] == 'ACCEPTED': return None
+            if row and row['state'] != 'CANCELLED':
+                if row['state'] == 'QUEUED':
+                    decision = self._eligibility_for(row['request'], row['job_id'])
+                    if not self.store.set_eligibility(row['job_id'], decision):
+                        self.eligibility_holds[job.name] = decision
+                        return False
+                    row = self.store.row(job.name)
+                return self._restore_task(row, proposal, demand)
+            if (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists() or self.prior_job(proposal) is not None: return None
+            rule = self.route(proposal['configuration_id'])
+            if rule is None: return None
+            if s.closed: raise RuntimeError('Executor is closed')
+            request = self.request(proposal, job, rule)
+            if row is not None: request = row['request']  # same cancelled scientific job; origin may have changed
+            eligibility = self._eligibility_for(request, job.name)
+            if not self.store.eligible(request, eligibility):
+                self.eligibility_holds[job.name] = eligibility
+                self.log(event='HOST_ELIGIBILITY_HOLD', job=job.name, eligibility=eligibility)
+                return False
+            self.eligibility_holds.pop(job.name, None)
+            if not self.store.reserve(self.method, job.name, request, s.budgets.get(self.method), s.approved,
+                                      contract=dict(evaluation=self.contract, prefix_key=prefix_key(request)),
+                                      eligibility=eligibility): return False
+            task = self._restore_task(self.store.row(job.name), proposal, demand)
+            s.metrics['submitted'] += 1
+            self.log(event='ENQUEUE', job=job.name, configuration=proposal['configuration_id'], demand=demand,
+                     origin=proposal.get('origin', {}).get('kind'))
+            s.cv.notify_all()
+            return task
+
+    def _cancel(self, task):
+        if self.store.cancel(task.view.method, task.job.name): super()._cancel(task)
+
+    def launched(self, method):
+        return self.store.counts(method, started_only=True)
+
+    def has_job(self, proposal):
+        row = self.store.row(self.job_dir(proposal).name)
+        return (row is not None and row['state'] != 'CANCELLED') or super().has_job(proposal)
+
+    def _assignment(self, row, host_id=None):
+        from .rpe_q3_coordinator import input_hashes, prefix_key, digest
+        from .rpe_host_profiles import profile_core
+        value = dict(job_id=row['job_id'], method=row['method'], attempt_id=row['attempt_id'], request=row['request'],
+            request_sha256=row['request_sha256'], source_manifest=self.source_manifest,
+            input_hashes=input_hashes(self.computation_root, row['request'], self.input_hash_cache), prefix_key=prefix_key(row['request']))
+        # Eligibility can change only before claim. Assigned rows retain the
+        # selected profile for replay/recovery even after policy replacement.
+        fixed = self.store.row(row['job_id'])
+        host = host_id or row.get('host_id')
+        profile = ((fixed.get('eligibility') or {}).get('execution_profiles') or {}).get(host)
+        if profile is not None:
+            value['host_execution_profile'] = profile_core(profile)
+            value['host_execution_profile_sha256'] = digest(value['host_execution_profile'])
+        return value
+
+    def _timing_queue(self):
+        """Observe queue causes under the existing claim lock; never reorder."""
+        s=self.state;reasons={};required=self.distributed.get('required_hosts',[])
+        admission=None;admission_error=None
+        # Use the newer optional-host policy when supplied by the integration;
+        # do not copy or change its dispatch/admission implementation here.
+        if hasattr(self,'_host_admission_policy'):
+            admission,admission_error=self._host_admission_policy()
+            required=[h for h in required if not self._host_admission(h,admission,admission_error)['optional']]
+        # Compact operational columns only: do not deserialize every saved REQUEST.
+        with self.store._connection() as db:
+            snapshot={r['job_id']:dict(r)for r in db.execute(
+                "SELECT job_id,host_id,state,eligibility FROM jobs WHERE state NOT IN ('CANCELLED','ACCEPTED')")}
+        owned=Counter(r['host_id']for r in snapshot.values()if r['state']!='QUEUED')
+        for task in s.tasks.values():
+            if task.status!='QUEUED':continue
+            row=snapshot.get(task.job.name)
+            if row is None:continue
+            decision=json.loads(row['eligibility'])
+            allowed=decision.get('eligible_host_ids',[]) if decision else list(self.hosts)
+            if admission is not None:
+                allowed=[h for h in allowed if self._host_admission(h,admission,admission_error)['accepting']
+                    and self._host_admission(h,admission,admission_error)['max_slots']!=0
+                    and self.hosts.get(h,{}).get('accepting_new_jobs') is not False
+                    and (not self._host_admission(h,admission,admission_error)['optional'] or
+                         (h in self.hosts and time.monotonic()-self.hosts[h].get('observed_monotonic',float('-inf'))
+                          <= self.allocation_config['offer_ttl_seconds']))]
+            def capacity(h):
+                value=self.hosts[h].get('capacity')
+                maximum=None if admission is None else self._host_admission(h,admission,admission_error)['max_slots']
+                return min(value,maximum)if value is not None and maximum is not None else value
+            if admission_error or(admission is not None and not allowed):reason='HOST_ADMISSION_HOLD'
+            elif any(h not in self.hosts for h in required):reason='REQUIRED_HOST_PARTICIPATION_WAIT'
+            elif s.active>=self.capacity:reason='ALL_ELIGIBLE_SLOTS_BUSY'
+            elif allowed and all(h in self.hosts and capacity(h) is not None and
+                    owned[h]>=capacity(h) for h in allowed):reason='ALL_ELIGIBLE_SLOTS_BUSY'
+            elif not allowed or any(h not in self.hosts for h in allowed):reason='ELIGIBLE_HOST_AVAILABILITY_UNKNOWN'
+            else:reason='DISPATCH_READINESS_OR_POLL_WAIT'
+            reasons[task.job.name]=reason
+        payload=dict(reasons=reasons,active=s.active,capacity=self.capacity,
+            hosts={h:dict(capacity=v.get('capacity'),slots=v['slots'])for h,v in self.hosts.items()})
+        marker=json.dumps(payload,sort_keys=True)
+        if marker!=getattr(s,'last_timing_queue',None):
+            s.last_timing_queue=marker;self.log(event='QUEUE_WAIT_STATE',**payload)
+
+    def rpc(self, path, value):
+        from . import rpe_q3_coordinator as Q
+        s = self.state
+        with s.cv:
+            host = value['host_id']
+            if not isinstance(host, str) or not host: raise ValueError('Nonempty host_id required')
+            if path == '/v1/poll':
+                if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
+                slots = value['slots']
+                if type(slots) is not int or slots < 0: raise ValueError('Nonnegative free slots required')
+                fingerprints = value.get('host_fingerprints') or {}
+                if not isinstance(fingerprints, dict): raise ValueError('Host fingerprints must map job IDs to current facts')
+                admission_policy, admission_error = self._host_admission_policy()
+                admission = self._host_admission(host, admission_policy, admission_error)
+                new_slots = self._host_new_slots(host, slots, admission)
+                host_capacity = value.get('capacity')
+                if host_capacity is not None and (type(host_capacity) is not int or host_capacity < 0):
+                    raise ValueError('Nonnegative host capacity required')
+                if host not in self.hosts:
+                    self.log(event='HOST_FIRST_POLL',host_id=host,capacity=value.get('capacity'))
+                self.hosts[host] = dict(epoch=time.time(), slots=new_slots, reported_slots=slots,
+                                       capacity=host_capacity, host_admission=admission,
+                                       accepting_new_jobs=value.get('accepting_new_jobs', True),
+                                       observed_monotonic=time.monotonic(),
+                                       owned_at_offer=[row['attempt_id'] for row in self._owned_attempts() if row['host_id'] == host],
+                                       resource_report=value.get('resource_report'),
+                                       cached_prefixes=value.get('cached_prefixes', []),
+                                       host_fingerprints=fingerprints)
+                self._refresh_capacity(admission_policy, admission_error)
+                new_slots = self._offer_free(host, admission_policy, admission_error)
+                def reply(**fields):
+                    return dict(fields, capacity_feedback=self._capacity_feedback(host))
+                # A lost response is reconciled with its original owner even
+                # if current readiness changed or another host is offline.
+                with self.store._connection() as database:
+                    replay_ids = [row['job_id'] for row in database.execute(
+                        "SELECT job_id FROM jobs WHERE host_id=? AND state='ASSIGNED' ORDER BY enqueued_epoch,job_id LIMIT ?",
+                        (host, slots))]
+                assignments = [self._assignment(self.store.row(job)) for job in replay_ids]
+                self._timing_queue()
+                required = [name for name in self.distributed.get('required_hosts', [])
+                            if not self._host_admission(name, admission_policy, admission_error)['optional']]
+                if any(name not in self.hosts for name in required):
+                    return reply(assignments=assignments, stop=False, host_admission=admission,
+                                waiting_for_hosts=[name for name in required if name not in self.hosts])
+                if not new_slots:
+                    return reply(assignments=assignments, stop=False, host_admission=admission,
+                                eligibility_challenges=[])
+                queue = sorted((t for t in s.tasks.values() if t.status == 'QUEUED'),
+                    key=lambda t: (not t.demand, s.owner_clock.get(t.owner, -1), t.enqueue))
+                if s.failure or s.closed: return reply(assignments=assignments, stop=False, host_admission=admission)
+                eligible, challenges = [], []
+                skipped = False
+                for task in queue:
+                    row = self.store.row(task.job.name)
+                    decision = self._eligibility_for(row['request'], row['job_id'])
+                    if not self.store.set_eligibility(row['job_id'], decision):
+                        self.eligibility_holds[row['job_id']] = decision
+                        task.error = 'HOST_ELIGIBILITY_HOLD'
+                        ConcurrentExecutor._cancel(self, task)
+                        skipped = True
+                        continue
+                    self.eligibility_holds.pop(row['job_id'], None)
+                    if decision is not None and host not in decision['eligible_host_ids']:
+                        skipped = True
+                        continue
+                    if not self.store.eligible(row['request'], decision, host, fingerprints, row['job_id']):
+                        # Metadata challenge only: no attempt ID, reservation
+                        # transition, LAUNCH or scientific execution occurs.
+                        challenge = self._assignment(row, host_id=host)
+                        challenge.pop('attempt_id', None)
+                        challenges.append(challenge)
+                        skipped = True
+                        continue
+                    conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'
+                    if skipped and conditional and not task.demand:
+                        continue
+                    eligible.append(task)
+                if value.get('observe_only') is True:
+                    self._timing_queue()
+                    return reply(assignments=[], stop=False, eligibility_challenges=challenges, host_admission=admission)
+                reserved_for_preferred = self._preferred_ready_jobs(host, queue, admission_policy, admission_error)
+                if reserved_for_preferred:
+                    skipped_preferred = False
+                    remaining_tasks = []
+                    for task in eligible:
+                        if task.job.name in reserved_for_preferred:
+                            skipped_preferred = True
+                            continue
+                        if (skipped_preferred and not task.demand and
+                                task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'):
+                            continue
+                        remaining_tasks.append(task)
+                    eligible = remaining_tasks
+                # Direct workers may poll before the other hosts are observed.
+                # One bounded discovery interval allows simultaneous free
+                # offers to arrive; it never waits for a busy host to finish.
+                rank = self._host_rank(host)
+                if s.allocation_auto and rank > 0 and eligible:
+                    higher = [h for group in self.allocation_config['priority_groups'][:rank] for h in group]
+                    unknown = [h for h in higher if h not in self.hosts]
+                    relevant = any((self.store.row(task.job.name)['eligibility'] is None or
+                        h in self.store.row(task.job.name)['eligibility']['eligible_host_ids'])
+                        for h in unknown for task in eligible)
+                    # Start once at this host's first eligible poll, rather
+                    # than at controller startup (planning/placement can be
+                    # slow). Any higher-group observation ends discovery:
+                    # an absent third host cannot delay known surplus work.
+                    now = time.monotonic()
+                    since = s.allocation_discovery.setdefault(host, now)
+                    if (relevant and not any(h in self.hosts for h in higher) and
+                            now-since < self.allocation_config['discovery_grace_seconds']):
+                        return reply(assignments=assignments, stop=False, eligibility_challenges=challenges,
+                                     host_admission=admission, waiting_for_discovery=unknown)
+                # Prefix locality is considered only among eligible hosts for
+                # the same first dispatchable task, never an unsupported host.
+                if eligible and time.monotonic()-eligible[0].enqueue < self.distributed.get('affinity_wait_seconds', .2):
+                    first = self.store.row(eligible[0].job.name)
+                    key = Q.prefix_key(first['request'])
+                    if key not in value.get('cached_prefixes', []):
+                        preferred = [h for h, info in self.hosts.items() if h != host and info['slots'] > 0
+                            and self._host_rank(h) <= self._host_rank(host)
+                            and self._host_new_slots(h, info.get('reported_slots', info['slots']),
+                                self._host_admission(h, admission_policy, admission_error)) > 0
+                            and time.time()-info['epoch'] < 2 and key in info['cached_prefixes']
+                            and self.store.eligible(first['request'], first['eligibility'], h,
+                                                   info.get('host_fingerprints'), first['job_id'])]
+                        if preferred: return reply(assignments=assignments, stop=False, eligibility_challenges=challenges, host_admission=admission)
+                unresolved = len(self._owned_attempts())
+                remaining = max(0, min(slots-len(assignments), new_slots,
+                    self.capacity-max(s.active, unresolved)-len(reserved_for_preferred)))
+                for task in eligible:
+                    if remaining <= 0: break
+                    rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name],
+                                            host_fingerprints=fingerprints)
+                    if not rows: continue
+                    row = rows[0]
+                    # Assignment and reservation are committed before a worker
+                    # receives anything. A lost HTTP response retains ownership.
+                    Q.atomic_json(task.job/'LAUNCH.json', dict(host_id=host, attempt_id=row['attempt_id'],
+                        pid=None, started=row['assigned_epoch'], kind=task.rule['kind'], transport='distributed'))
+                    task.status = 'RUNNING'; task.started = True; task.speculative = not task.demand
+                    s.clock += 1; s.owner_clock[task.owner] = s.clock; s.active += 1
+                    s.peak_active = max(s.peak_active, s.active)
+                    self.uncounted.add(task.job)
+                    s.metrics['launched'] += 1
+                    s.by_method.setdefault(row['method'], Counter())['launched'] += 1
+                    if task.speculative: s.metrics['speculative_launched'] += 1
+                    task.view.log(event='LAUNCH', job=row['job_id'], host_id=host, attempt_id=row['attempt_id'],
+                        configuration=task.proposal['configuration_id'], queue_wait_seconds=time.monotonic()-task.enqueue,
+                        active=s.active, demand=task.demand)
+                    assignments.append(self._assignment(row))
+                    remaining -= 1
+                self._timing_queue()
+                self._refresh_capacity(admission_policy, admission_error)
+                return reply(assignments=assignments, stop=False, eligibility_challenges=challenges, host_admission=admission)
+            row = self.store.row(value['job_id'])
+            if row is None or row['host_id'] != host or row['attempt_id'] != value['attempt_id']:
+                raise ValueError('Different execution host/attempt')
+            job = self.run_dir/'jobs'/row['method']/row['job_id']
+            task = s.tasks.get(job)
+            if path == '/v1/transfer-metric':
+                self.for_method(row['method']).log(event='TRANSFER_TIMING', job=row['job_id'], host_id=host,
+                    attempt_id=value['attempt_id'], **value.get('timing', {}))
+                return dict(ok=True)
+            if path == '/v1/state':
+                if row['state'] != 'ACCEPTED':
+                    self.store.update(host, row['job_id'], value['attempt_id'], value['state'], value.get('detail'))
+                    if value['state'] == 'UNKNOWN' and task and task.status == 'RUNNING':
+                        task.error = 'WORKER_UNKNOWN:'+str(value.get('detail'))
+                        self._finished(task, None, row['assigned_epoch'])
+                return dict(ok=True)
+            if path != '/v1/complete': raise ValueError('Unknown Q3 RPC endpoint')
+            started = time.monotonic()
+            self.for_method(row['method']).log(event='RESULT_RECEIVED',job=row['job_id'],host_id=host,attempt_id=row['attempt_id'])
+            if value['request_sha256'] != row['request_sha256']: raise ValueError('Completion request hash differs')
+            transfer = self.run_dir/'distributed'/'transfers'/row['job_id']/row['attempt_id']
+            transfer.mkdir(parents=True, exist_ok=True)
+            Q.install_files(transfer, value['files'])
+            if not (transfer/'REQUEST.json').exists(): _write(transfer/'REQUEST.json', row['request'])
+            receipt = json.loads((transfer/'PROCESS_RETURN.json').read_text())
+            outcome = json.loads((transfer/'OUTCOME.json').read_text())
+            if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and (receipt.get('returncode') != 0 or receipt.get('signal') is not None):
+                raise ValueError('Successful outcome without a clean adapter exit')
+            proposal = task.proposal if task else dict(configuration_id=row['request']['configuration_id'],
+                vector=O.interleave(row['request']['N_X'], row['request']['N_Y']))
+            validation = self.for_method(row['method']).ingest(transfer, proposal, calls=0)
+            if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and validation['status'] == 'UNKNOWN':
+                raise ValueError('Transferred outcome identity mismatch: '+str(validation.get('reason')))
+            accepted, duplicate = self.store.complete(host, row['job_id'], row['attempt_id'], value['request_sha256'], value['files'])
+            self._publish_transfer(accepted)
+            if not duplicate:
+                self.for_method(row['method']).log(event='TRANSFER_COMPLETE', job=row['job_id'], host_id=host,
+                    transfer_seconds=time.monotonic()-started, transfer_bytes=sum(len(x)*3//4-x.count('=') for x in value['files'].values()),
+                    worker_transfer_seconds=value.get('transfer_seconds'))
+            if task:
+                task.error = None
+                if task.status == 'RUNNING': self._finished(task, receipt.get('returncode'), row['assigned_epoch'])
+                else: task.event.set()
+            self._timing_queue()
+            s.cv.notify_all()
+            return dict(ok=True, duplicate=duplicate)
+
+    def _publish_transfer(self, row):
+        from . import rpe_q3_coordinator as Q
+        import base64
+        job = self.run_dir/'jobs'/row['method']/row['job_id']
+        stage = self.run_dir/'distributed'/'transfers'/row['job_id']/row['attempt_id']
+        if not stage.exists():
+            if (job/'OUTCOME.json').exists(): return
+            raise ValueError('Accepted completion is missing its transfer directory')
+        job.mkdir(parents=True, exist_ok=True)
+        files = {str(p.relative_to(stage)): base64.b64encode(p.read_bytes()).decode() for p in stage.rglob('*')
+                 if p.is_file() and str(p.relative_to(stage)) not in ('REQUEST.json', 'OUTCOME.json')}
+        Q.install_files(job, files)
+        outcome = stage/'OUTCOME.json'
+        if outcome.exists(): Q.install_files(job, {'OUTCOME.json': base64.b64encode(outcome.read_bytes()).decode()})
+
+    def answer(self, proposal, allow_new=True):
+        job = self.job_dir(proposal)
+        row = self.store.row(job.name)
+        # Readiness is an operational hold, not a failed scientific evaluation
+        # or an exhausted budget. Already owned/complete jobs retain recovery.
+        if (allow_new and (row is None or row['state'] in ('CANCELLED', 'QUEUED')) and
+                not (job/'OUTCOME.json').exists() and not (job/'LAUNCH.json').exists() and self.prior_job(proposal) is None):
+            rule = self.route(proposal['configuration_id'])
+            if rule is not None:
+                request = row['request'] if row is not None else self.request(proposal, job, rule)
+                decision = self._eligibility_for(request, job.name)
+                if not self.store.eligible(request, decision):
+                    with self.state.cv:
+                        self.eligibility_holds[job.name] = decision
+                        if row is not None: self.store.set_eligibility(job.name, decision)
+                        task = self.state.tasks.get(job)
+                        if task and task.status == 'QUEUED':
+                            task.error = 'HOST_ELIGIBILITY_HOLD'
+                            ConcurrentExecutor._cancel(self, task)
+                    return self._held_answer(proposal)
+                self.eligibility_holds.pop(job.name, None)
+        if row and row['state'] not in ('ACCEPTED', 'CANCELLED'):
+            with self.state.cv: self._restore_task(row, proposal, demand=True)
+        answer = super().answer(proposal, allow_new)
+        if answer and answer.get('status') == 'BUDGET_EXHAUSTED' and job.name in self.eligibility_holds:
+            return self._held_answer(proposal)
+        if answer and row is not None and self.store.row(row['job_id'])['state'] == 'ACCEPTED':
+            self.store.adopt(row['job_id'])
+        elif answer:
+            current = self.store.row(self.job_dir(proposal).name)
+            if current and current['state'] == 'ACCEPTED': self.store.adopt(current['job_id'])
+        return answer
+
+    def ingest(self, job, proposal, calls):
+        answer = super().ingest(job, proposal, calls)
+        current = self.store.row(Path(job).name)
+        own = current is not None and Path(job) == self.run_dir/'jobs'/current['method']/current['job_id']
+        if calls == 0 and own and current['state'] == 'ACCEPTED':
+            with self.state.cv:
+                reused = getattr(self.state, 'reused_jobs', set())
+                if current['job_id'] not in reused:
+                    reused.add(current['job_id']); self.state.reused_jobs = reused
+                    self.log(event='RESULT_REUSE', job=current['job_id'], host_id=current['host_id'])
+        return answer
+
+    def metrics(self):
+        result = super().metrics()
+        rows = self.store.rows(); by_host = {}
+        for row in rows:
+            if row['host_id'] is None: continue
+            counts = by_host.setdefault(row['host_id'], dict(assigned=0, launched=0, completed=0, adopted=0, reused=0))
+            counts['assigned'] += 1
+            counts['launched'] += row['started_epoch'] is not None
+            counts['completed'] += row['state'] == 'ACCEPTED'
+            counts['adopted'] += row['adopted_epoch'] is not None
+        for line in (self.run_dir/'PROGRESS.jsonl').read_text().splitlines():
+            event = json.loads(line)
+            if event.get('event') == 'RESULT_REUSE' and event.get('host_id') in by_host:
+                by_host[event['host_id']]['reused'] += 1
+        admission_policy, admission_error = self._host_admission_policy()
+        admissions = {host:self._host_admission(host, admission_policy, admission_error)
+                      for host in sorted(set(self.hosts) | set(admission_policy['hosts']))}
+        result.update(distributed=True, by_host=by_host, host_admission=admissions,
+                      host_admission_error=admission_error,
+                      allocation_settings=deepcopy(self.allocation_settings),
+                      automatic_capacity=self.state.allocation_auto,
+                      unresolved_owned_attempts=len(self._owned_attempts()),
+                      host_offers={host:dict(capacity=info.get('capacity'),
+                          fresh_free_slots=self._offer_free(host, admission_policy, admission_error),
+                          reported_free_slots=info['reported_slots'],
+                          observed_age_seconds=time.monotonic()-info.get('observed_monotonic', time.monotonic()),
+                          priority_group=self._host_rank(host), resource_report=info.get('resource_report'),
+                          capacity_feedback=self._capacity_feedback(host))
+                          for host, info in self.hosts.items()},
+                      persistent_reserved={m:self.store.counts(m) for m in self.routes},
+                      host_eligibility_holds=deepcopy(self.eligibility_holds),
+                      actual_OS_host_count='recorded by integration harness; host IDs alone do not establish separate machines')
+        return result
+
+    def finish(self):
+        if self.method is not None: return super().finish()
+        if self.state.driver.closed: return
+        super().finish()
+        if self.local_worker is not None:
+            self.local_worker.terminate()
+            self.local_worker.wait(timeout=10)
+        elif self._local_daemon_alive(self.local_worker_pid, self.run_dir/'distributed'/'LOCAL_WORKER.json'):
+            os.kill(self.local_worker_pid, signal.SIGTERM)
+        if self.rpc_server is not None:
+            self.rpc_server.shutdown(); self.rpc_server.server_close(); self.rpc_thread.join()
 
 
 def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):

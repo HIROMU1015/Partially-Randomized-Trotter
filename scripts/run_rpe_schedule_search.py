@@ -258,7 +258,7 @@ class WideDriver(K.Driver):
             if interim and interim[-1]['stop_reason'] == 'INVOCATION_FAILED':
                 self.state['stop'] = dict(reason='V2_INVOCATION_FAILED', returncode=interim[-1]['returncode'], UTC=K.now())
                 self.save();return
-            fatal = {'UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER',
+            fatal = {'UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'HOST_ELIGIBILITY_HOLD',
                      'Q3_BUDGET_EXHAUSTED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'}
             if interim and interim[-1]['stop_reason'] in fatal:
                 self.state['stop'] = dict(reason='V2_' + interim[-1]['stop_reason'], UTC=K.now())
@@ -282,7 +282,7 @@ class WideDriver(K.Driver):
                      plan_stop=report['stop'])
             if res['stop_reason'] in ('Q3_BUDGET_EXHAUSTED', 'NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET'):
                 self.state['stop'] = dict(reason=res['stop_reason'], UTC=K.now());self.save();return
-            if res['stop_reason'] in ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER'):
+            if res['stop_reason'] in ('UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'HOST_ELIGIBILITY_HOLD'):
                 self.state['stop'] = dict(reason='V2_' + res['stop_reason'], UTC=K.now());self.save();return
             if not proposals and not pending and res['stop_reason'] in ('ONLY_SMALL_OR_DEFERRED_LEFT', 'NO_CANDIDATE_LEFT_IN_RANGE'):
                 self.state['stop'] = dict(reason='SCHEDULE_WIDE_RULE_EXHAUSTED', UTC=K.now(), v2_stop=res['stop_reason'],
@@ -751,7 +751,7 @@ class WidthDriver:
         preparation_pool=None
         try:
             interim=None
-            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER'}
+            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
             if prepare_during:
                 # Snapshot/install happens before starting preparation. While
                 # it owns Completion state, Q3 only reads this frozen context.
@@ -858,10 +858,26 @@ class WidthDriver:
 
     def loop(self):
         previous=self.state.get('stop',{}).get('reason')
-        transient={'REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','MAX_CYCLES'}
+        transient={'REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY'}
         if previous and previous not in transient:
             self.log(event='PRESERVED_STOP',reason=previous);return
         if previous:self.state.pop('stop')
+        if self.a.plan_only and W.kappa_bounds(self.wide) is not None:
+            # Native physical schedule selection only. Missing family/input
+            # preparation remains explicit; no Completion, Executor or worker.
+            self.state['cycle'] += 1
+            proposals, report = self.plan()
+            self.state['scope_plan'] = dict(rule=W.RULE,
+                kappa_bounds=[str(v) for v in W.kappa_bounds(self.wide)],
+                bounds_inclusive=[True, True],
+                requested_L_D={m:self.problem['methods'][m].get('L_D_values') for m in self.methods},
+                family_status={k:dict(L_D=v['L_D'],status=v['status'],reason=v.get('reason'))
+                               for k,v in self.state['families'].items()},
+                preparation_pending=[k for k,v in self.state['families'].items() if v['status']!='READY_METADATA'],
+                scientific_calls=0, queue_operations=0, dry_check_calls=0)
+            self.state['stop'] = dict(reason='BOUNDED_SCHEDULE_PLAN_ONLY',UTC=K.now())
+            self.save()
+            return
         end=self.state['cycle']+self.a.max_cycles
         while self.state['cycle']<end:
             self.state['cycle']+=1;started=time.monotonic();self.log(event='PLAN_START')
@@ -879,7 +895,7 @@ class WidthDriver:
             self.save();self.log(event='V2_BATCH_END',wall_seconds=time.monotonic()-started,
                 methods={m:dict(stop=r['stop_reason'],new_calls=r['new_calls'])for m,r in result.items()})
             failed={m:r['stop_reason']for m,r in result.items()if r['stop_reason']in
-                    ('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER')}
+                    ('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD')}
             if failed:
                 self.state['stop']=dict(reason='V2_RESULT_REQUIRES_REVIEW',methods=failed,UTC=K.now());self.save();return
             waiting=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
@@ -897,7 +913,13 @@ def main(argv=None, *, driver_factory=None):
     ap.add_argument('--problem', type=Path, required=True);ap.add_argument('--round', type=Path, required=True)
     ap.add_argument('--run-dir', type=Path, required=True);ap.add_argument('--batch', type=int, default=64)
     ap.add_argument('--max-cycles', type=int, default=200);ap.add_argument('--plan-only', action='store_true')
+    ap.add_argument('--prepare-readiness', action='store_true', help='plan-only: delta saved history, chosen requests, server2 dry-check and immutable remote delivery')
+    ap.add_argument('--preparation-cache', type=Path, help='local disposable cache for --prepare-readiness')
+    ap.add_argument('--host-readiness', type=Path, help='saved host READINESS descriptors to join during --prepare-readiness')
     a = ap.parse_args(argv);a.problem = a.problem.resolve()
+    if a.prepare_readiness:
+        from trottertracks.rpe_plan_prepare import prepare
+        return prepare(a, code_root=ROOT, cli=K.CLI)
     problem=O.load_json(a.problem);spec=O.load_json(a.round)
     declared=W.requested_widths(problem,spec)
     if driver_factory is None and declared is None and any(m in('FULL_PF','TRUNCATED_PF')for m in spec.get('methods',[])):

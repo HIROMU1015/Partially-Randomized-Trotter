@@ -1,0 +1,78 @@
+{
+  "schema": "H4_READINESS_END_TO_END_TIMING_V1",
+  "implementation_commit": "b5a8a60c57457e6888159031cfba719558aaf169",
+  "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "baseline_artifacts_commit": "33928bf80cca18ce3f1fa3ddde88d27d7e2b7e5b",
+  "measurement": "Parent monotonic clock before Popen, READY/REPORT stdout receipt; startup included",
+  "runs": {
+    "first": {
+      "command_to_candidates_and_remote_inputs_seconds": 106.52976721990854,
+      "command_to_local_report_seconds": 107.30184702808037,
+      "command_to_process_exit_seconds": 107.9567413770128,
+      "returncode": 0,
+      "phases_seconds": {
+        "CONTEXT_INPUTS_AND_CACHE": 68.74629980581813,
+        "REQUEST_AND_REMOTE_DELIVERY": 0.20516353379935026,
+        "SERVER2_DRY_CHECKS": 2.689354077912867,
+        "COMPACT_REPORT": 0.0005210659001022577,
+        "NORMAL_PREPARE_INPUTS_AND_PRICES": 6.847013719379902e-05,
+        "NORMAL_SELECT_AND_PREPARE_PF": 0.0351117099635303,
+        "NORMAL_SEARCH_AND_Q3": 34.63249037694186,
+        "NORMAL_SAVE_RESULTS": 0.7592624570243061
+      },
+      "context_cache_hit": false,
+      "history_parsed_jobs": 5358,
+      "history_validated_jobs": 4358,
+      "history_cache_hits": 0,
+      "prior_reused_fresh": 4357,
+      "unknown_jobs_currently_refreshed": 5,
+      "request_only_jobs_currently_refreshed": 9,
+      "live_dry_checks": 4,
+      "cached_dry_results": 0,
+      "old_remote_delivery_unchanged": true,
+      "command_to_primary_report_publication_seconds": 750.0815353393555
+    },
+    "second": {
+      "command_to_candidates_and_remote_inputs_seconds": 6.473348213126883,
+      "command_to_local_report_seconds": 6.970233966130763,
+      "command_to_process_exit_seconds": 7.035015078028664,
+      "returncode": 0,
+      "phases_seconds": {
+        "CONTEXT_INPUTS_AND_CACHE": 1.8732101898640394,
+        "REQUEST_AND_REMOTE_DELIVERY": 0.201587141957134,
+        "SERVER2_DRY_CHECKS": 0.20972432917915285,
+        "COMPACT_REPORT": 0.00048325606621801853,
+        "NORMAL_PREPARE_INPUTS_AND_PRICES": 7.224921137094498e-05,
+        "NORMAL_SELECT_AND_PREPARE_PF": 0.03540732804685831,
+        "NORMAL_SEARCH_AND_Q3": 3.9285552019719034,
+        "NORMAL_SAVE_RESULTS": 0.4939469660166651
+      },
+      "context_cache_hit": true,
+      "history_parsed_jobs": 0,
+      "history_validated_jobs": 0,
+      "history_cache_hits": 4358,
+      "prior_reused_fresh": 4357,
+      "unknown_jobs_currently_refreshed": 5,
+      "request_only_jobs_currently_refreshed": 9,
+      "live_dry_checks": 0,
+      "cached_dry_results": 4,
+      "old_remote_delivery_unchanged": true,
+      "command_to_primary_report_publication_seconds": 642.1240010261536
+    }
+  },
+  "previous": {
+    "user_reported_instruction_to_final_minutes": 50,
+    "final_plan_stage_seconds": 254.1797432899475,
+    "SAVE_RESULTS_seconds": 163.1295404129196,
+    "four_dry_check_sum_seconds_approx": 5.2
+  },
+  "comparison_limit": "No speedup factor calculated between user-observed 50 minutes and CLI times; scopes differ. Git publication is recorded separately in PUBLICATION_TIMING.json.",
+  "scientific_calls": 0,
+  "production_queue_submissions": 0,
+  "report_publication": {
+    "commit": "1c9c248be24ebee55cd5524cab31c119349aef0b",
+    "observed_utc": "2026-11-16T21:09:33.213316+00:00",
+    "both_reports_published_in_one_batch": true,
+    "includes": "Post-CLI report formatting, verification, commit and push; separate from READY/local report latency"
+  }
+}

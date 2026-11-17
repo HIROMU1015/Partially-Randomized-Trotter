@@ -1,0 +1,97 @@
+{
+  "artificial_only": true,
+  "by_host": {
+    "server1": {
+      "adopted": 5,
+      "completed": 5,
+      "distinct_reused_jobs": 5,
+      "launched": 5,
+      "reused_events": 7
+    },
+    "server2": {
+      "adopted": 13,
+      "completed": 13,
+      "distinct_reused_jobs": 13,
+      "launched": 13,
+      "reused_events": 19
+    }
+  },
+  "completed_resume_new_launches": 0,
+  "computation_source": "4ae47cf4844638647c83ea898ee53588675b0d75",
+  "controller_start_to_last_exit_seconds": 1107.5080840587616,
+  "controller_transfer_seconds": {
+    "count": 18,
+    "scope": "CONTROLLER_RECEIVE_VALIDATION_AND_PERSISTENCE; excludes network round trip",
+    "total": 0.34286738419905305
+  },
+  "evidence": [
+    "REAL_TWO_HOST_ACCEPTANCE.json",
+    "REAL_TWO_HOST_TIMELINE.jsonl"
+  ],
+  "first_launch_to_last_exit_seconds": 21.262136936187744,
+  "initial_controller_process": {
+    "pid": 97835,
+    "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-4ae47cf48",
+    "run": "/home/AbeHiromu/projects/rpe-distributed-q3-integration-4ae47cf48/two_host",
+    "source": "4ae47cf4844638647c83ea898ee53588675b0d75"
+  },
+  "per_method_minima_exact": true,
+  "performance_speed_ratio": null,
+  "performance_speed_ratio_reason": "No speed ratio calculated for the physical two-host run.",
+  "queue_wait_seconds": {
+    "count": 18,
+    "maximum": 1090.4763901233673,
+    "mean": 243.10886569817862,
+    "total": 4375.959582567215
+  },
+  "real_compute_host_count": 2,
+  "reference_all_18_MSE_bounds_status_exact": true,
+  "relay_disconnect_recovery_on_real_hosts": "NOT_YET_TESTED",
+  "relay_host": "Separate Windows local0 using qg2 forwarding and qg1 SSH mailbox",
+  "relay_source": "25575ce0f3b43396144c768e9f7dab7dc193beab",
+  "resume_controller_returncode": 0,
+  "resume_wall_seconds": 0.9251017139758915,
+  "reuse_definition": "RESULT_REUSE cumulative through completed resume; one event per job per executor invocation. Distinct jobs are counted separately.",
+  "scientific_H4_calls": 0,
+  "scope": "REAL_SERVER2_PLUS_SERVER1_VIA_WINDOWS_LOCAL0_SSH_MAILBOX",
+  "status": "PASS",
+  "successive_server1_assignments": [
+    {
+      "epoch": 1794853487.9177253,
+      "job_id": "e87dc9349021da5eabf8",
+      "method": "PR_DF"
+    },
+    {
+      "epoch": 1794853492.1729918,
+      "job_id": "89eadd079aaf8d4822ba",
+      "method": "PR_PAULI"
+    },
+    {
+      "epoch": 1794853498.1485183,
+      "job_id": "4f2935eea9e2d5861daa",
+      "method": "PR_PAULI"
+    },
+    {
+      "epoch": 1794853502.1732047,
+      "job_id": "d6d074f60a46836a3e00",
+      "method": "PR_PAULI"
+    },
+    {
+      "epoch": 1794853506.35538,
+      "job_id": "513d7b70bf1a4baa68e7",
+      "method": "PR_PAULI"
+    }
+  ],
+  "timing_definition": {
+    "active": "first LAUNCH to last EXIT, includes artificial execution and transport",
+    "controller_wall": "first EXECUTOR_START to last EXIT, includes local0 setup and required-host registration wait",
+    "queue": "sum of 18 assignment times minus enqueue times; concurrent waits accumulate"
+  },
+  "worker_upload_ACK_seconds": {
+    "count": 17,
+    "missing_count": 1,
+    "missing_reason": "One final transfer timing notification was not collected; reported total covers 17 of 18 accepted completions.",
+    "scope": "WORKER_MEASURED_COMPLETE_UPLOAD_AND_ACK_ROUND_TRIP",
+    "total": 1.2298271759500494
+  }
+}
