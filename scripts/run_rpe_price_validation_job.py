@@ -27,6 +27,16 @@ import traceback
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src'))
+# A DF path is already a separate worker process. Load its fixed provider
+# package before the transport helper, as the existing signal worker does.
+_df_view = os.environ.get('RPE_PRICE_VALIDATION_DF_VIEW')
+if _df_view:
+    _df_view = Path(_df_view).resolve()
+    if subprocess.check_output(['git','rev-parse','HEAD'],cwd=_df_view,text=True).strip() != '326feadd093920bbea29b498108aa4eae6f67a75':
+        raise ValueError('Fixed DF path provider SOURCE differs')
+    sys.path[:0] = [str(_df_view/'src'),str(_df_view/'scripts')]
+    import trottertracks
+    trottertracks.__path__.append(str(ROOT/'src/trottertracks'))
 from trottertracks.rpe_preparation_paths import resolve, runtime_request
 
 
@@ -205,7 +215,45 @@ def _df_provider(root, legacy_view=None):
     return C
 
 
+_DF_METADATA_BOOTSTRAP = r'''
+import importlib.util,json,subprocess,sys
+from pathlib import Path
+payload=json.load(sys.stdin);root=Path(payload['root']);legacy=Path(payload['legacy_view'])
+if subprocess.check_output(['git','rev-parse','HEAD'],cwd=legacy,text=True).strip()!=payload.pop('legacy_source'):
+ raise ValueError('Fixed DF metadata provider SOURCE differs')
+sys.path[:0]=[str(legacy/'src'),str(legacy/'scripts')]
+import trottertracks
+trottertracks.__path__.append(str(root/'src/trottertracks'))
+spec=importlib.util.spec_from_file_location('_isolated_df_validation',root/'scripts/run_rpe_price_validation_job.py')
+worker=importlib.util.module_from_spec(spec);spec.loader.exec_module(worker)
+request=payload.pop('request')
+print(json.dumps(worker._build_df_acquisition_local(request,**payload),allow_nan=False))
+'''
+
+
 def build_df_acquisition(request, *, root, configuration, configuration_source,
+                         interpreter, execution_source, output_dir, legacy_view=None,
+                         calibration_seed_sources=(), runtime=None):
+    """Build original metadata in a fresh fixed-provider import context.
+
+    The controller may already own a newer package with the same module names.
+    No native preparation, sampler, compiler or scientific subprocess is run.
+    """
+    root=Path(root).resolve()
+    payload=dict(request=request,root=str(root),configuration=configuration,
+        configuration_source=configuration_source,interpreter=str(interpreter),
+        execution_source=execution_source,output_dir=str(Path(output_dir).resolve()),
+        legacy_view=str(Path(legacy_view or root.parent/'d2-pr-df-ld1-m3-acquisition-20261115').resolve()),
+        legacy_source=DF_SOURCE,calibration_seed_sources=list(calibration_seed_sources),runtime=runtime)
+    result=subprocess.run([str(interpreter),'-B','-c',_DF_METADATA_BOOTSTRAP],
+        input=json.dumps(payload),text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
+        env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
+    if result.returncode:
+        raise ValueError('DF metadata isolation failed: '+result.stderr[-3000:])
+    return json.loads(result.stdout)
+
+
+def _build_df_acquisition_local(request, *, root, configuration, configuration_source,
                          interpreter, execution_source, output_dir, legacy_view=None,
                          calibration_seed_sources=(), runtime=None):
     """Prepare exactly one DF HOLDOUT cell; never call calibration ``prepare``.
@@ -536,7 +584,8 @@ def acquire_pauli_paths(request, output, *, mode='pauli'):
         with (folder/'CONSOLE.log').open('x') as log:
             child = subprocess.Popen([acquisition['interpreter'], '-B', str(script), '--'+mode+'-path', str(job_path)],
                 cwd=root, stdout=log, stderr=subprocess.STDOUT,
-                env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+                env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1',
+                    **({'RPE_PRICE_VALIDATION_DF_VIEW':acquisition['legacy_view']}if mode=='df'else{})))
             put(folder/'STARTED.json', dict(pid=child.pid, automatic_retry=False))
             code = child.wait()
         put(folder/'RETURN.json', dict(returncode=code if code >= 0 else None,

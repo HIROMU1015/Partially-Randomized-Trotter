@@ -122,7 +122,7 @@ class ValidationWorkerTests(unittest.TestCase):
         original = deepcopy(cfg)
         with tempfile.TemporaryDirectory() as temp:
             with mock.patch.object(W,'_df_provider',return_value=provider), mock.patch.object(W,'git_read',side_effect=git_value):
-                acquisition = W.build_df_acquisition(req, root=temp, configuration=cfg,
+                acquisition = W._build_df_acquisition_local(req, root=temp, configuration=cfg,
                     configuration_source=dict(commit='config',path='config.json'), interpreter=sys.executable,
                     execution_source=dict(commit='fixed',path=W.SCRIPT), output_dir=Path(temp)/'out')
             self.assertEqual(cfg, original)

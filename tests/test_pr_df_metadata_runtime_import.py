@@ -7,6 +7,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import types
@@ -94,6 +95,35 @@ class SavedScalarMetadata(unittest.TestCase):
                 self.assertEqual(config,original)
                 bad=deepcopy(config);bad['spec']['split']['lambda_R']=3.
                 with self.assertRaisesRegex(ValueError,'Candidate tail binding differs'):module.scalar_metadata(bad)
+
+
+class MetadataProcessIsolation(unittest.TestCase):
+    def test_fresh_fixed_package_avoids_parent_cached_controller_modules(self):
+        spec=importlib.util.spec_from_file_location('_isolated_metadata_wrapper',ROOT/'scripts/run_rpe_price_validation_job.py')
+        worker=importlib.util.module_from_spec(spec);spec.loader.exec_module(worker)
+        # A synthetic nested view inherits only its parent's Git HEAD. Its
+        # modules are fixtures and are never registered as real input signals.
+        with tempfile.TemporaryDirectory(dir=ROOT,prefix='.df-metadata-isolation-')as temp:
+            fake=Path(temp);legacy=fake/'legacy';package=legacy/'src/trottertracks';package.mkdir(parents=True)
+            (package/'__init__.py').write_text('marker="fixed fixture package"\n')
+            (package/'accounting.py').write_text('marker="fixed fixture accounting"\n')
+            (fake/'scripts').mkdir()
+            (fake/'scripts/run_rpe_price_validation_job.py').write_text(
+                'def _build_df_acquisition_local(request,**kwargs):\n'
+                ' import trottertracks\n'
+                ' from trottertracks import accounting\n'
+                ' return dict(package=trottertracks.marker,accounting=accounting.marker,request=request)\n')
+            source=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+            original_path=list(trottertracks.__path__)
+            args=dict(root=fake,configuration={'fixture':'configuration'},configuration_source={'fixture':'source'},
+                interpreter=sys.executable,execution_source={'fixture':'worker'},output_dir=fake/'out',legacy_view=legacy)
+            with patch.object(worker,'DF_SOURCE',source):result=worker.build_df_acquisition({'fixture':'request'},**args)
+            self.assertEqual(result,dict(package='fixed fixture package',accounting='fixed fixture accounting',request={'fixture':'request'}))
+            self.assertEqual(list(trottertracks.__path__),original_path)
+            self.assertFalse((fake/'out').exists())
+            with patch.object(worker,'DF_SOURCE','not-the-fixture-source'):
+                with self.assertRaisesRegex(ValueError,'Fixed DF metadata provider SOURCE differs'):
+                    worker.build_df_acquisition({'fixture':'request'},**args)
 
 
 if __name__=='__main__':unittest.main()
