@@ -195,8 +195,12 @@ class FailureContinuity(unittest.TestCase):
                 one=comp.complete(request);two=comp.complete(request)
                 self.assertEqual(request,original);self.assertEqual(one['key'],key);self.assertEqual(two['key'],key)
                 self.assertEqual(len(comp.state['records']),1)
-                historical=json.loads(json.dumps(comp.state['records'][key]['request']))
-                # This is the old post-resolution request under the old key.
+                self.assertEqual(comp.state['records'][key]['request'],original)
+                historical=json.loads(json.dumps(original))
+                historical['tail_descriptor']={'fixture':'ARTIFICIAL_DESCRIPTOR'}
+                # Emulate old persisted post-resolution data explicitly; new
+                # records remain immutable under the original stable key.
+                comp.state['records'][key]['request']=json.loads(json.dumps(historical))
                 self.assertNotEqual(C.key(historical),key)
                 preserved=comp.complete(historical)
                 self.assertEqual(preserved['key'],key);self.assertEqual(len(comp.state['records']),1)

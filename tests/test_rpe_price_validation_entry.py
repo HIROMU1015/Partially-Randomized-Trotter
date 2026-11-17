@@ -59,6 +59,12 @@ class Entry(unittest.TestCase):
             row=service.store.row(desc['model_id']);self.assertEqual(row['status'],'PENDING')
             self.assertEqual(row['external_job']['job_id'],'previous-host-job');self.assertNotIn('selected_round',row)
 
+    def test_deployed_worker_source_is_pinned_across_controller_publications(self):
+        with tempfile.TemporaryDirectory()as d:
+            fixed='92b3e617a0a0ede94d90ac2582b058f5bf9f67a3'
+            service=V.Service(ROOT,d,dict(price_validation=dict(source=fixed,store=str(Path(d)/'db'))))
+            self.assertEqual(service.implementation_source,fixed)
+
     def test_identity_and_source_changes_are_not_shared(self):
         a=description();b=deepcopy(a);b['identity']['model_source']['commit']='new'
         self.assertNotEqual(V.digest(a['identity']),V.digest(b['identity']))

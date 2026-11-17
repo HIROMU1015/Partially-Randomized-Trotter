@@ -229,7 +229,7 @@ class Service:
         default=(self.root/common).resolve()/'rpe-price-validations.sqlite3'
         self.store=ModelStore(settings.get('store',default));self.descriptions={};self.applications={};self.lock=threading.RLock()
         self.stopped=threading.Event();self.thread=None;self.evidence_cache={};self.issues={}
-        self.implementation_source=subprocess.check_output(['git','rev-parse','HEAD'],cwd=self.root,text=True).strip()
+        self.implementation_source=self.settings.get('source')or subprocess.check_output(['git','rev-parse','HEAD'],cwd=self.root,text=True).strip()
         self.dispatch_lock=threading.Lock()
     def observe(self,candidates):
         from .pr_price_rules import GitReader

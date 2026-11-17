@@ -22,7 +22,7 @@ def load_provider(root):
     spec=importlib.util.spec_from_file_location('fixed_pf_provider',root/'scripts/prepare_pf_candidate.py')
     provider=importlib.util.module_from_spec(spec);spec.loader.exec_module(provider)
     # Function globals resolve to the same fixed provider modules and helpers.
-    globals().update(ROOT=root,native_row=provider.native_row,comparison_method=provider.comparison_method,
+    globals().update(ROOT=root,MODULE=provider.MODULE,native_row=provider.native_row,comparison_method=provider.comparison_method,
         write=provider.write,load=provider.load,publish=provider.publish,head=provider.head)
     return provider
 

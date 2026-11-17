@@ -100,7 +100,7 @@ def create(tasks,source,output):
         'scripts/run_pf_preparation_stage.py','scripts/pauli_split_cal_audit_request.py',
         'scripts/run_pr_pauli_candidate_signals.py','scripts/run_pr_pauli_candidate_prices.py',
         'scripts/run_pr_df_candidate_signal_jobs.py','scripts/run_pr_df_candidate_prices.py',
-        'scripts/derive_pr_df_candidate_descriptor.py']
+        'scripts/derive_pr_df_candidate_descriptor.py','scripts/run_rpe_price_validation_job.py']
     adapter=source_manifest(source,adapter_files)
     all_sources={}
     for task in tasks:
@@ -126,10 +126,16 @@ def create(tasks,source,output):
         for task in tasks:
             method=task.get('method');spec=task['preparation']
             # Reuse the actual verified execution Python, not the checker launcher.
-            q3=read(old/'assignments'/f'{method}.json')
-            from trottertracks.rpe_host_profiles import select_host_profile
-            selected=select_host_profile(read(old/'profiles'/f'{host_id}.json'),q3)
-            profile={k:deepcopy(v)for k,v in selected.items()if k not in ('route_profiles','runtime_checks','adapter_root','adapter_manifest','runtime')}
+            if spec.get('provider')=='PRICE_MODEL_VALIDATION':
+                # The same frozen model validation can be requested by either
+                # PR route. It uses the common compile runtime, not one Q3
+                # route's narrowed view map or AST interpreter.
+                selected=read(old/'profiles'/f'{host_id}.json')
+            else:
+                q3=read(old/'assignments'/f'{method}.json')
+                from trottertracks.rpe_host_profiles import select_host_profile
+                selected=select_host_profile(read(old/'profiles'/f'{host_id}.json'),q3)
+            profile={k:deepcopy(v)for k,v in selected.items()if k not in ('route_profiles','preparation_profiles','runtime_checks','adapter_root','adapter_manifest','runtime')}
             if spec['stage'] in ('compile','audit'):
                 # Compiler tooling uses the existing project environment;
                 # the special Q3 AST interpreter is a separate route contract.
@@ -141,7 +147,8 @@ def create(tasks,source,output):
                 profile['preparation_paths']={alias:required['controller_path'] for example in tasks for alias,required in example['preparation'].get('required_paths',{}).items()}
             from trottertracks.rpe_preparation_bridge import STAGES
             prefix='PF_'if method in ('FULL_PF','TRUNCATED_PF')else'PAULI_'if method=='PR_PAULI'else'DF_'
-            providers=[name for name,value in STAGES.items()if name.startswith(prefix)and value==spec['stage']]
+            providers=([spec['provider']]if spec.get('provider')=='PRICE_MODEL_VALIDATION'else
+                [name for name,value in STAGES.items()if name.startswith(prefix)and value==spec['stage']])
             if method=='PR_PAULI'and spec['stage']=='signal':providers.append('A_BASE_P0')
             for provider in providers:
                 rule=dict(stage=spec['stage'],provider=provider,source_commit=spec['source']['commit'],profile=profile)
