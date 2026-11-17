@@ -7,11 +7,13 @@ import sys
 import tempfile
 import shutil
 import subprocess
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from trottertracks import rpe_host_eligibility as H
+from trottertracks.rpe_live_q3_readiness import _HOST_PROBE, _supply_inputs
 from trottertracks.rpe_q3_coordinator import digest
 
 
@@ -21,6 +23,50 @@ def save(path, value):
 
 
 class HostEligibilityTests(unittest.TestCase):
+    def test_live_readiness_supplies_saved_input_objects_without_changing_head(self):
+        with tempfile.TemporaryDirectory() as directory:
+            top=Path(directory);controller=top/'controller';worker=top/'worker'
+            controller.mkdir()
+            def git(root,*arguments):
+                return subprocess.check_output(['git',*arguments],cwd=root,stderr=subprocess.PIPE,text=True).strip()
+            git(controller,'init')
+            git(controller,'config','user.name','Synthetic fixture')
+            git(controller,'config','user.email','fixture@example.invalid')
+            (controller/'fixed.txt').write_text('fixed implementation fixture')
+            git(controller,'add','.');git(controller,'commit','-m','fixed')
+            base=git(controller,'rev-parse','HEAD')
+            view=top/'frozen-route';git(top,'clone','--no-local',str(controller),str(view))
+            raw=b'{"fixture":true}\n';(controller/'input.json').write_bytes(raw)
+            git(controller,'add','input.json');git(controller,'commit','-m','new saved input')
+            revision=git(controller,'rev-parse','HEAD')
+            modules=worker/'src'/'trottertracks';modules.mkdir(parents=True)
+            (modules/'__init__.py').touch()
+            (modules/'rpe_host_profiles.py').write_text('select_host_profile=lambda profile, assignment:profile\nprofile_core=lambda profile:profile\n')
+            (modules/'rpe_host_eligibility.py').write_text('current_host_fingerprint=lambda assignment, profile:{}\n')
+            scripts=worker/'scripts';scripts.mkdir()
+            (scripts/'check_rpe_q3_host_readiness.py').write_text('''import json,sys
+from pathlib import Path
+a=json.loads(Path(sys.argv[sys.argv.index('--assignment')+1]).read_text())
+p=Path(sys.argv[sys.argv.index('--output')+1]);p.mkdir()
+(p/'READINESS.json').write_text(json.dumps(dict(status='REAL_HOST_DRY_CHECK_PASS',
+    scientific_evaluation_calls=0,request_sha256=a['request_sha256'])))
+''')
+            payload=dict(worker_root=str(worker),profile=dict(root=str(view)),input_anchors=[base],
+                assignment=dict(request={'route':{'kind':'fixture'}},request_sha256='fixture',
+                    input_hashes=[dict(commit=revision,path='input.json',sha256=hashlib.sha256(raw).hexdigest())]))
+            def invoke(data):
+                return json.loads(subprocess.check_output([sys.executable,'-B','-c',_HOST_PROBE],
+                    input=json.dumps(data),text=True))
+            first=invoke(payload)
+            self.assertEqual(first['status'],'NEEDS_Q3_INPUT_OBJECTS')
+            result=_supply_inputs(SimpleNamespace(computation_root=controller),payload,invoke,first)
+            self.assertEqual(result['status'],'PASS')
+            self.assertEqual(result['input_transfer']['objects'],3)
+            self.assertEqual(git(view,'show',revision+':input.json'),raw.decode().strip())
+            self.assertEqual(git(view,'rev-parse','HEAD'),base)
+            self.assertFalse((view/'input.json').exists())
+            self.assertEqual(invoke(payload)['status'],'PASS')
+
     def runtime_guard_fixture(self):
         root = Path(__file__).resolve().parents[1]
         base = root / 'docs/research/rpe_q3_host_eligibility/pauli_descriptor_route'

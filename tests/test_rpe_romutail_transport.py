@@ -86,7 +86,8 @@ class DirectRelayTests(unittest.TestCase):
             self.assertIn(worker['participation_file'],script)
             self.assertIn('if(-not $enabled){$value.slots=0}',script)
             self.assertNotIn('[Console]::In.ReadToEnd()',script)
-            self.assertIn('$proc.StandardInput.Close()',script)
+            self.assertIn('wslpath -u',script)
+            self.assertNotIn('RedirectStandardInput',script)
             self.assertIn('finally{Remove-Item',script)
             transfer=call.call_args_list[0].args[0]
             self.assertEqual(transfer[:3],['scp','-i','owned windows key'])

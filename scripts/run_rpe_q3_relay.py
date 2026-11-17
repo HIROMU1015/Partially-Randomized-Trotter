@@ -82,23 +82,23 @@ def ssh_wsl_command(worker, command, action, *, input_file=None):
             "$value=($lines -join [Environment]::NewLine)|ConvertFrom-Json;"
         )
     else:
-        # Windows SSH Console stdin can truncate/block JSON larger than a
-        # console buffer. SCP writes an owned input file; WSL gets ordinary
-        # redirected handles and an explicit stdin close, with no console pipe.
+        # SCP already placed the payload on a mounted Windows drive. Open it
+        # inside WSL, avoiding a second bounded Windows -> WSL stdin pipe.
         filename="'"+input_file.replace("'","''")+"'"
-        arguments="'"+subprocess.list2cmdline(argv[1:]).replace("'","''")+"'"
+        launch=['/bin/sh','-c','path=$(wslpath -u "$0") || exit; exec "$@" < "$path"',
+                '__RPE_INPUT_FILE__',*command]
+        arguments="'"+subprocess.list2cmdline(argv[1:4]+launch).replace("'","''")+"'"
         script += (
             "$inputPath=Join-Path $env:USERPROFILE "+filename+";try{"
-            "$raw=[IO.File]::ReadAllText($inputPath);"
             "$si=New-Object Diagnostics.ProcessStartInfo;"
-            "$si.FileName="+executable+";$si.Arguments="+arguments+";"
+            "$si.FileName="+executable+";$si.Arguments=("+arguments+").Replace('__RPE_INPUT_FILE__',('\"'+$inputPath+'\"'));"
             "$si.UseShellExecute=$false;$si.CreateNoWindow=$true;"
-            "$si.RedirectStandardInput=$true;$si.RedirectStandardOutput=$true;$si.RedirectStandardError=$true;"
+            "$si.RedirectStandardOutput=$true;$si.RedirectStandardError=$true;"
             "$utf8=New-Object System.Text.UTF8Encoding($false);"
             "$si.StandardOutputEncoding=$utf8;$si.StandardErrorEncoding=$utf8;"
             "$proc=[Diagnostics.Process]::Start($si);"
             "$stdout=$proc.StandardOutput.ReadToEndAsync();$stderr=$proc.StandardError.ReadToEndAsync();"
-            "$proc.StandardInput.Write($raw);$proc.StandardInput.Close();$proc.WaitForExit();"
+            "$proc.WaitForExit();"
             "$text=$stdout.GetAwaiter().GetResult();$errorText=$stderr.GetAwaiter().GetResult();"
             "if($proc.ExitCode -ne 0){[Console]::Error.Write($errorText);exit $proc.ExitCode};"
             "$value=$text|ConvertFrom-Json;"
