@@ -627,6 +627,12 @@ class DistributedExecutor(ConcurrentExecutor):
     def _timing_queue(self):
         """Observe queue causes under the existing claim lock; never reorder."""
         s=self.state;reasons={};required=self.distributed.get('required_hosts',[])
+        admission=None;admission_error=None
+        # Use the newer optional-host policy when supplied by the integration;
+        # do not copy or change its dispatch/admission implementation here.
+        if hasattr(self,'_host_admission_policy'):
+            admission,admission_error=self._host_admission_policy()
+            required=[h for h in required if not self._host_admission(h,admission,admission_error)['optional']]
         # Compact operational columns only: do not deserialize every saved REQUEST.
         with self.store._connection() as db:
             snapshot={r['job_id']:dict(r)for r in db.execute(
@@ -638,10 +644,18 @@ class DistributedExecutor(ConcurrentExecutor):
             if row is None:continue
             decision=json.loads(row['eligibility'])
             allowed=decision.get('eligible_host_ids',[]) if decision else list(self.hosts)
-            if any(h not in self.hosts for h in required):reason='REQUIRED_HOST_PARTICIPATION_WAIT'
+            if admission is not None:
+                allowed=[h for h in allowed if self._host_admission(h,admission,admission_error)['accepting']
+                    and self._host_admission(h,admission,admission_error)['max_slots']!=0]
+            def capacity(h):
+                value=self.hosts[h].get('capacity')
+                maximum=None if admission is None else self._host_admission(h,admission,admission_error)['max_slots']
+                return min(value,maximum)if value is not None and maximum is not None else value
+            if admission_error or(admission is not None and not allowed):reason='HOST_ADMISSION_HOLD'
+            elif any(h not in self.hosts for h in required):reason='REQUIRED_HOST_PARTICIPATION_WAIT'
             elif s.active>=self.capacity:reason='ALL_ELIGIBLE_SLOTS_BUSY'
-            elif allowed and all(h in self.hosts and self.hosts[h].get('capacity') is not None and
-                    owned[h]>=self.hosts[h]['capacity'] for h in allowed):reason='ALL_ELIGIBLE_SLOTS_BUSY'
+            elif allowed and all(h in self.hosts and capacity(h) is not None and
+                    owned[h]>=capacity(h) for h in allowed):reason='ALL_ELIGIBLE_SLOTS_BUSY'
             elif not allowed or any(h not in self.hosts for h in allowed):reason='ELIGIBLE_HOST_AVAILABILITY_UNKNOWN'
             else:reason='DISPATCH_READINESS_OR_POLL_WAIT'
             reasons[task.job.name]=reason
