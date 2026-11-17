@@ -1,5 +1,7 @@
 # 実H4：4方式×3計算ホストの準備完了
 
+任意の第4計算host WSLの追加は[optional_wsl/REPORT](optional_wsl/REPORT.md)を参照。以下は固定3台の基準記録。
+
 共通controller/worker実装の固定SHA：`181d14052b0d4db1815bcb9060a2020cafb5f1cf`。
 [code hashとSOURCEの区別](FINAL_CODE_SOURCE.json)。
 

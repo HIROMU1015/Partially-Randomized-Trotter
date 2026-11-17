@@ -1,0 +1,57 @@
+{
+  "schema": "RPE_OPTIONAL_WSL_FINAL_CHECKS_V1",
+  "status": "PASS",
+  "synthetic_suites": [
+    {
+      "name": "test_rpe_optional_host_admission",
+      "passed": 5,
+      "seconds": 3.69
+    },
+    {
+      "name": "test_rpe_optional_host_preparation",
+      "passed": 3,
+      "seconds": 0.004
+    },
+    {
+      "name": "local0_tools/test_wsl_delta",
+      "passed": 4,
+      "seconds": 0.005
+    },
+    {
+      "name": "test_rpe_wsl_profile_assignments",
+      "passed": 1,
+      "verified_cells": 4,
+      "seconds": 4.198
+    }
+  ],
+  "normal_entry": {
+    "source": "NORMAL_ENTRY",
+    "seconds_to_ready": 7.541426252108067,
+    "host_cells": 16,
+    "passed_cells": 16,
+    "dry_cache_reused": 4,
+    "new_server2_dry_checks": 0,
+    "profiles_and_current_fingerprints_match_static_policy": true
+  },
+  "remote_delta": {
+    "new_wsl_dry_check_cells": 3,
+    "previous_wsl_df_reused": 1,
+    "baseline_cells_reused": 12,
+    "manifest_sha256": "6074c8949c540508b3979684556778e42bd123ceb44ab2909ff758c911d5d11a",
+    "verified_files": 34
+  },
+  "wsl_admission": {
+    "accepting": false,
+    "max_slots": 1,
+    "optional": true
+  },
+  "new_scientific_evaluations": 0,
+  "production_queue_operations": 0,
+  "review": {
+    "scope": "Other agent read-only review of controller/prepare/relay; delta tool author reviewed these other implementations",
+    "blockers_found": 0,
+    "deployment_condition": "Install new fixed common transport and use checked generated profile before future Join; old operational profile preserved"
+  },
+  "actual_q3_execute_processes": 0,
+  "new_real_input_dry_check_adapter_processes": 3
+}
