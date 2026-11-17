@@ -225,11 +225,19 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
             d=root/'docs/candidate';d.mkdir()
             request=d/'REQUEST.json';request.write_text(json.dumps({'workspace':str(provider),'directory':'docs/provider-output',
                 'configuration':{'commit':config_commit,'path':'docs/CONFIGURATION.json'}})+'\n')
+            pinned_helper=hashlib.sha256(helper.read_bytes()).hexdigest()
+            helper.write_bytes(helper.read_bytes()+b'\n# New controller transport declaration.\n')
             git('add','.');git('commit','-qm','frozen task input')
             executor=type('Executor',(),{'run_dir':top/'run','artifact_cache':ArtifactCache(top/'controller-cas')})()
             bridge=B.DistributedPreparationBridge(executor,root)
             completion=type('Completion',(),{'source':source})()
             task=bridge.build_request(completion,[sys.executable,'-B',str(script),str(request),str(d/'RESULT.json')],d,'PAULI_SIGNALS')
+            self.assertEqual(task['preparation']['workspaces']['provider']['source']['files'][
+                'src/trottertracks/rpe_preparation_paths.py'],pinned_helper)
+            fixed_provider.write_text('# changed provider body\n')
+            with self.assertRaisesRegex(ValueError,'Provider workspace SOURCE differs'):
+                bridge.build_request(completion,[sys.executable,'-B',str(script),str(request),str(d/'RESULT.json')],d,'PAULI_SIGNALS')
+            fixed_provider.write_text('# artificial source guard only\n')
             root_hashes={v['sha256']for v in task['preparation']['input_git_bundles']}
             provider_hashes={v['sha256']for v in task['preparation']['workspaces']['provider']['input_git_bundles']}
             self.assertTrue(root_hashes<=provider_hashes)

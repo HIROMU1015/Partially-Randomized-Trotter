@@ -300,7 +300,11 @@ class DistributedPreparationBridge:
                         item=self.root/name
                         if item.is_file():
                             raw=subprocess.check_output(['git','show',commit+':'+name],cwd=self.root)
-                            if raw!=item.read_bytes():raise ValueError('Provider workspace SOURCE differs: '+name)
+                            # This checkout is the controller. The provider
+                            # workspace is cloned from the fixed worker view,
+                            # which checks the pinned helper hash below.
+                            if name!='src/trottertracks/rpe_preparation_paths.py' and raw!=item.read_bytes():
+                                raise ValueError('Provider workspace SOURCE differs: '+name)
                             files[name]=hashlib.sha256(raw).hexdigest()
                     if not files:raise ValueError('Preparation workspace has no fixed provider source')
                     workspaces[alias] = dict(source=dict(commit=commit, files=files), input_git_bundles=self._bundle(workspace,commit),checkout_input_head=False)

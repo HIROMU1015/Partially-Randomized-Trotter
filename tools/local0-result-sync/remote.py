@@ -11,7 +11,8 @@ def sha(raw):return hashlib.sha256(raw).hexdigest()
 def canonical(value):return sha(json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode())
 def read(path):return json.loads(pathlib.Path(path).read_text())
 def observe(config):
-    run=pathlib.Path(config['run_directory']).resolve()
+    indexed_run=pathlib.Path(config['run_directory'])
+    run=indexed_run.resolve()
     applied=read(run/'APPLIED_SCOPE.json')
     if applied.get('run_id')!=config['run_id']:raise ValueError('Controller run identity differs')
     launch=read(run/'LAUNCH.json')if(run/'LAUNCH.json').exists()else{}
@@ -26,7 +27,9 @@ def observe(config):
         state='TERMINAL';reason='EXIT_RECEIPT';code=exit_.get('returncode')
     else:
         pid=launch.get('pid');cmd=pathlib.Path('/proc')/str(pid)/'cmdline'
-        live=bool(pid and cmd.exists()and str(run).encode()in cmd.read_bytes())
+        try:arguments=cmd.read_bytes().split(b'\0') if pid else ()
+        except FileNotFoundError:arguments=()
+        live=any(os.fsencode(path) in arguments for path in (indexed_run,run))
         state='RUNNING'if live else'TERMINAL'
         reason='OWNED_PROCESS_ALIVE'if live else'STOPPED_WITHOUT_EXIT_RECEIPT'
         code=None
