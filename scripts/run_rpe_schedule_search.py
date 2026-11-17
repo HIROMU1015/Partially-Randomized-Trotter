@@ -785,7 +785,7 @@ class WidthDriver:
                     if interim:
                         for method,r in interim.items():
                             spent=executor.launched(method);maximum=self.spec.get('max_new_q3_per_method',{}).get(method)
-                            if r['stop_reason']=='STEP_LIMIT'and spent<budgets[method]:remaining_ready_work=True
+                            if r['stop_reason']in('STEP_LIMIT','Q3_BUDGET_EXHAUSTED')and spent<budgets[method]:remaining_ready_work=True
                             if spent>=budgets[method]and(changed or r['stop_reason']in('Q3_BUDGET_EXHAUSTED','STEP_LIMIT')):
                                 target=spent+self.a.batch
                                 if maximum not in(None,'UNLIMITED'):target=min(target,maximum)

@@ -21,7 +21,7 @@ import test_rpe_optimizer_concurrent as F
 import test_pr_width_overlap as W
 
 
-def reserve_other_jobs(count, prices=None):
+def reserve_other_jobs(count, prices=None, wait_all_started=True):
     """Reproduce a finite batch filled by independent speculative jobs."""
     original = C.ConcurrentExecutor.prefetch
     def prefetch(view, proposals, scope='CONFIGURATION'):
@@ -40,7 +40,7 @@ def reserve_other_jobs(count, prices=None):
             # Both fake hosts can reach their reservation before selection
             # resumes; make cancellation/dispatch timing irrelevant to counts.
             deadline = time.monotonic() + 8
-            while any(view.state.tasks[view.job_dir(p)].status == 'QUEUED' for p in extras):
+            while wait_all_started and any(view.state.tasks[view.job_dir(p)].status == 'QUEUED' for p in extras):
                 if time.monotonic() > deadline:
                     raise AssertionError('Artificial reserved workers never started')
                 time.sleep(.005)
@@ -107,6 +107,48 @@ class BudgetControlTests(unittest.TestCase):
         self.assertEqual(result['new_calls'], 0)
         self.assertEqual(result['trace'], [])
         self.assertEqual(known, before)
+
+    def test_released_reservations_resume_q3_before_preparation_finishes(self):
+        with tempfile.TemporaryDirectory(prefix='queue-released-budget-') as tmp:
+            args, BaseDriver, _ = W.setup(tmp, True)
+            path = Path(tmp) / 'ROUND.json'
+            spec = json.loads(path.read_text())
+            spec['search_overrides']['lookahead'] = 3
+            spec['executor']['max_concurrent_jobs'] = 1
+            path.write_text(json.dumps(spec))
+            class Completion(W.F.ArtificialCompletion):
+                def complete(self, request):
+                    if W.F.KS._frac(request['design']['delta_pf']) != Fraction(.1):
+                        deadline = time.monotonic() + 5
+                        while True:
+                            done = []
+                            for req in self.root.glob('jobs/*/*/REQUEST.json'):
+                                row = json.loads(req.read_text())
+                                if row['N_X'] == row['N_Y'] == [1] * 13 and (req.parent / 'OUTCOME.json').exists():
+                                    done.append(req)
+                            if done:break
+                            if time.monotonic() > deadline:
+                                raise AssertionError('Released batch slots left Q3 waiting for preparation')
+                            time.sleep(.005)
+                        self.state['price_received'] = True
+                    return super().complete(request)
+                def install(self, context, problem, records):
+                    routes = super().install(context, problem, records)
+                    for rules in routes.values():
+                        for rule in rules:rule['artificial']['sleep_seconds'] = .15
+                    return routes
+            class Driver(BaseDriver):
+                def completion_api(self):
+                    if self.completion is None:self.completion = Completion(self.run)
+                    return self.completion
+            with patch.object(C.ConcurrentExecutor, 'prefetch', reserve_other_jobs(2, wait_all_started=False)):
+                driver = W.call(args, Driver)
+            events = W.records(driver.run / 'PROGRESS.jsonl')
+            self.assertTrue(any(e['event'] == 'CANCEL_QUEUED' for e in events))
+            self.assertTrue(any(e['event'] == 'BUDGET_WAIT' for e in events))
+            self.assertNotEqual(driver.state.get('stop', {}).get('reason'), 'RUNTIME_EXCEPTION')
+            for method in ('PR_PAULI', 'PR_DF'):
+                self.assertLessEqual(len(list((driver.run / 'jobs' / method).glob('*/LAUNCH.json'))), 2)
 
     def test_normal_width_entry_and_same_run_resume_do_not_relaunch(self):
         with tempfile.TemporaryDirectory(prefix='queue-budget-width-') as tmp:
