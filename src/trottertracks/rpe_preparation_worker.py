@@ -178,6 +178,7 @@ def _metadata_input_repository(profile, root, spec):
 
 def current_preparation_fingerprint(assignment, base_profile):
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
+    pauli_calibration_manifest(spec)
     if spec.get('stage')not in STAGES:raise ValueError('Unknown preparation stage')
     if spec.get('inspection_blockers'):raise ValueError('Saved inspection input dependencies unresolved: '+'; '.join(spec['inspection_blockers']))
     requirements=spec.get('runtime_requirements',{})
@@ -291,6 +292,34 @@ def _export_bundle(root, source, output):
     return dict(path=output.name,ref='HEAD',head=_head(root),base=source['commit'])
 
 
+def pauli_calibration_manifest(spec):
+    from .rpe_preparation_paths import (
+        PAULI_CALIBRATION_FILES, PAULI_CALIBRATION_SOURCE, PAULI_CALIBRATION_VIEW,
+    )
+    if spec.get('artificial') is True or spec.get('provider') not in ('PAULI_COMPILE', 'PAULI_AUDIT'):
+        return None
+    manifest = spec.get('required_views', {}).get(PAULI_CALIBRATION_VIEW, {}).get('source', {})
+    if (manifest.get('commit') != PAULI_CALIBRATION_SOURCE
+            or set(manifest.get('files', {})) != set(PAULI_CALIBRATION_FILES)
+            or (not spec.get('dry_check_only') and 'provider' not in spec.get('workspaces', {}))):
+        raise ValueError('Fixed Pauli calibration SOURCE view declaration missing')
+    return manifest
+
+
+def materialize_pauli_calibration_view(spec, fingerprint, directory):
+    from .rpe_preparation_paths import PAULI_CALIBRATION_VIEW
+
+    manifest = pauli_calibration_manifest(spec)
+    if manifest is None:
+        return
+    expected = Path(fingerprint['views']['view:' + PAULI_CALIBRATION_VIEW]).resolve(strict=True)
+    _guard_owned_source(expected, manifest)
+    if not (directory/'workspaces'/'provider').is_dir():
+        raise ValueError('Fixed Pauli calibration requires an owned provider workspace')
+    alias = directory/'workspaces'/PAULI_CALIBRATION_VIEW
+    alias.symlink_to(expected, target_is_directory=True)
+
+
 def execute(assignment, base_profile, directory):
     directory=Path(directory).resolve();directory.mkdir(parents=True,exist_ok=True)
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
@@ -307,6 +336,7 @@ def execute(assignment, base_profile, directory):
         if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe preparation workspace alias')
         target=_clone(fingerprint['views'][alias],directory/'workspaces'/alias,workspace.get('input_git_bundles',[]),cache,workspace.get('checkout_input_head',True),workspace['source']['files'])
         replacements['@WORKSPACE:'+alias+'@']=str(target);owned[alias]=(target,workspace['source'])
+    materialize_pauli_calibration_view(spec, fingerprint, directory)
     for alias in spec.get('required_views',{}):replacements['@VIEW:'+alias+'@']=fingerprint['views']['view:'+alias]
     for alias,facts in fingerprint.get('runtime_paths',{}).items():replacements['@PATH:'+alias+'@']=facts['path']
     for name,tool in fingerprint['tools'].items():replacements['@TOOL:'+name+'@']=tool['path']

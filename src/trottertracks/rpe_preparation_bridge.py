@@ -130,6 +130,19 @@ def collect_required_views(documents):
             dict(source=row['source'],controller_path=row['path'])for row in rows}
 
 
+def pauli_calibration_view(repository):
+    from .rpe_preparation_paths import (
+        PAULI_CALIBRATION_FILES, PAULI_CALIBRATION_SOURCE, PAULI_CALIBRATION_VIEW,
+    )
+    files = {}
+    for relative in PAULI_CALIBRATION_FILES:
+        raw = subprocess.check_output(
+            ['git', 'show', PAULI_CALIBRATION_SOURCE + ':' + relative], cwd=repository)
+        files[relative] = hashlib.sha256(raw).hexdigest()
+    return {PAULI_CALIBRATION_VIEW: dict(
+        source=dict(commit=PAULI_CALIBRATION_SOURCE, files=files))}
+
+
 def collect_required_paths(documents):
     """Reuse the existing native runtime/config contract, without its approval flow.
 
@@ -310,6 +323,8 @@ class DistributedPreparationBridge:
                 except (ValueError,UnicodeError):raise ValueError('Original preparation JSON is incomplete or invalid: '+name)
         input_hashes,working_hashes=fixed_input_hashes(root,original_documents,inputs)
         required_views=collect_required_views(runtime_inputs)
+        if stage in ('PAULI_COMPILE', 'PAULI_AUDIT') and script.name=='run_pr_pauli_candidate_prices.py':
+            required_views.update(pauli_calibration_view(root))
         required_paths=collect_required_paths(runtime_inputs)
         with self.lock:
             for old, original in self.aliases.items():

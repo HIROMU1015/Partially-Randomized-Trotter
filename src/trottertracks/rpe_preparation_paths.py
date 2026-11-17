@@ -6,6 +6,19 @@ Only explicitly named runtime/output paths are resolved by their caller.
 import json
 import os
 
+# The legacy price adapter requires this checked-out view next to its provider
+# workspace. Keep the original adapter and all of its SOURCE checks unchanged.
+PAULI_CALIBRATION_VIEW = 'a-pauli-ld3-cal-source-13ab'
+PAULI_CALIBRATION_SOURCE = '13ab1acfaebe5f33958e1db67862f5c45725ab91'
+PAULI_CALIBRATION_FILES = (
+    'scripts/run_pauli_b1_prices.py',
+    'scripts/run_pauli_ld1_m0_pilot.py',
+    'src/trottertracks/pauli_tail_price_connection.py',
+    'src/trottertracks/pauli_b1_receipts.py',
+    'scripts/h46_same_event.py',
+    'src/trottertracks/finite_price_design.py',
+)
+
 
 def resolve(value):
     if not isinstance(value, str):
