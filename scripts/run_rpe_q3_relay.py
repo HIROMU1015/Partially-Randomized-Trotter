@@ -71,6 +71,7 @@ class Relay:
         self.tunnel = None
         self.discovery_pool = None
         self.pending_discovery = {}
+        self.pending_ticks = {}
         self.log_lock = threading.Lock()
         started = time.time()
         self.state = dict(pid=os.getpid(), configuration=str(self.configuration), workers={},
@@ -223,6 +224,8 @@ class Relay:
                 self.log('RESULT_RECOVERED', **owner, duplicate=response.get('duplicate', False), **timing)
                 try: self.post('/v1/transfer-metric', dict(owner, timing=timing))
                 except Exception as error: self.log('TELEMETRY_PENDING', **owner, error=str(error))
+        if (self.directory/'STOP').exists():
+            return
         info['phase'] = 'CONTROLLER_POLL'
         # Recovery above always precedes new claims, including while paused.
         response = self.post('/v1/poll', poll)
@@ -260,47 +263,64 @@ class Relay:
         info.update(last_success_epoch=time.time(), slots=status['slots'], phase='READY',
             states={name:sum(a['state']==name for a in status['attempts']) for name in sorted({a['state'] for a in status['attempts']})})
 
-    def cycle(self):
-        """Collect independent host offers before claims, without waiting for outages.
+    def _collect_ticks(self):
+        for host,(worker,future) in list(self.pending_ticks.items()):
+            if not future.done(): continue
+            del self.pending_ticks[host]
+            info=self.state['workers'][host]
+            try:future.result()
+            except Exception as error:
+                self.failed(info,error,'TRANSPORT_PENDING',host_id=host,phase=info.get('phase'))
+            else:self.succeeded(info)
 
-        An outstanding status request is reused across cycles. It retains the
-        ordinary per-request timeout; the cycle waits at most one poll interval.
-        A dead preferred host therefore cannot strand a ready WSL host for 60s.
+    def _state_snapshot(self):
+        # Per-host tick tasks mutate only their own existing info dictionary.
+        # dict.copy is atomic under Python's GIL; serialize detached snapshots.
+        return dict(self.state,workers={host:info.copy() for host,info in list(self.state['workers'].items())})
+
+    def cycle(self):
+        """Observe and deliver independent hosts without serial transport waits.
+
+        Each host has at most one discovery or delivery in flight. A blocking
+        submit/ACK retains that host's future and cannot strand another host.
+        The cycle waits at most one poll interval, not every SSH timeout.
         """
+        self._collect_ticks()
+        budget=max(0,min(self.poll_seconds,float(self.config.get('discovery_wait_seconds',self.poll_seconds))))
+        deadline=time.monotonic()+budget
         if self.ensure_tunnel():
-            workers = self.config['workers']
+            workers=self.config['workers']
             if self.discovery_pool is None:
-                self.discovery_pool = ThreadPoolExecutor(max_workers=max(1,len(workers)), thread_name_prefix='rpe-mailbox-discovery')
+                self.discovery_pool=ThreadPoolExecutor(max_workers=max(1,len(workers)),thread_name_prefix='rpe-mailbox')
             for worker in workers:
-                host = worker['host_id']
-                info = self.state['workers'].setdefault(host, dict(failure_count=0, next_retry_epoch=0))
-                if host in self.pending_discovery or time.time() < info.get('next_retry_epoch',0):
+                host=worker['host_id']
+                info=self.state['workers'].setdefault(host,dict(failure_count=0,next_retry_epoch=0))
+                if host in self.pending_ticks or host in self.pending_discovery or time.time()<info.get('next_retry_epoch',0):
                     continue
-                info['phase'] = 'MAILBOX_DISCOVERY'
-                self.pending_discovery[host] = (worker, self.discovery_pool.submit(self._discover, worker))
-            budget = min(self.poll_seconds, float(self.config.get('discovery_wait_seconds',self.poll_seconds)))
+                info['phase']='MAILBOX_DISCOVERY'
+                self.pending_discovery[host]=(worker,self.discovery_pool.submit(self._discover,worker))
             if self.pending_discovery:
-                wait([future for _,future in self.pending_discovery.values()], timeout=max(0,budget))
-            ready = []
+                wait([future for _,future in self.pending_discovery.values()],timeout=max(0,deadline-time.monotonic()))
+            ready=[]
             for host,(worker,future) in list(self.pending_discovery.items()):
-                if not future.done(): continue
+                if not future.done():continue
                 del self.pending_discovery[host]
-                info = self.state['workers'][host]
-                try: ready.append((worker,future.result()))
+                info=self.state['workers'][host]
+                try:ready.append((worker,future.result()))
                 except Exception as error:
                     self.failed(info,error,'TRANSPORT_PENDING',host_id=host,phase=info.get('phase'))
-            # The central controller enforces request-specific priority; this
-            # order also gives equally ready ordinary SSH peers the first poll.
+            # All ready hosts have published metadata-only offers already. The
+            # central matcher enforces per-REQUEST priority and available slots.
             ready.sort(key=lambda row:row[0].get('priority_group',1 if row[0].get('transport')=='wsl' else 0))
             for worker,observed in ready:
-                if (self.directory/'STOP').exists(): break
-                info=self.state['workers'][worker['host_id']]
-                try:self.tick(worker,observed)
-                except Exception as error:
-                    self.failed(info,error,'TRANSPORT_PENDING',host_id=worker['host_id'],phase=info.get('phase'))
-                else:self.succeeded(info)
+                if (self.directory/'STOP').exists():break
+                host=worker['host_id']
+                self.pending_ticks[host]=(worker,self.discovery_pool.submit(self.tick,worker,observed))
+            if self.pending_ticks:
+                wait([future for _,future in self.pending_ticks.values()],timeout=max(0,deadline-time.monotonic()))
+            self._collect_ticks()
         self.state['heartbeat_epoch']=time.time()
-        atomic_json(self.directory/'STATUS.json',self.state)
+        atomic_json(self.directory/'STATUS.json',self._state_snapshot())
 
     def run(self):
         lock = (self.directory/'RELAY.lock').open('a')
@@ -309,7 +329,7 @@ class Relay:
         self.log('RELAY_START', pid=os.getpid())
         # Reuse RomuTail's startup-state fix (4058b48d5): a previous daemon's
         # stopped=True must not satisfy this new daemon's status/stop checks.
-        atomic_json(self.directory/'STATUS.json', self.state)
+        atomic_json(self.directory/'STATUS.json', self._state_snapshot())
         try:
             while not (self.directory/'STOP').exists():
                 self.cycle()
@@ -318,7 +338,7 @@ class Relay:
             if self.tunnel is not None and self.tunnel.poll() is None:
                 self.tunnel.terminate(); self.tunnel.wait(timeout=10)
             self.state.update(stopped_epoch=time.time(), stopped=True)
-            atomic_json(self.directory/'STATUS.json', self.state)
+            atomic_json(self.directory/'STATUS.json', self._state_snapshot())
             self.log('RELAY_STOP')
             if self.discovery_pool is not None:
                 self.discovery_pool.shutdown(wait=False, cancel_futures=True)

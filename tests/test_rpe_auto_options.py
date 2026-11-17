@@ -33,6 +33,17 @@ class AutoOptionsTests(unittest.TestCase):
             self.assertEqual(invoke(spec)['max_concurrent'], 3)
             self.assertEqual(invoke(explicit)['max_concurrent'], 3)
 
+    def test_new_defaults_allow_optional_wsl_without_changing_saved_paused_baseline(self):
+        base = ROOT / 'docs/research/rpe_q3_host_eligibility'
+        current = json.loads((base / 'EVIDENCE.json').read_text())
+        optional = current['host_admission']['hosts']['local0-wsl']
+        self.assertTrue(optional['accepting'])
+        self.assertTrue(optional['optional'])
+        self.assertNotIn('max_slots', optional)
+        self.assertEqual(current['slot_policy']['initial_slots'], 1)
+        old = json.loads((base / 'optional_wsl/HOST_ADMISSION.json').read_text())
+        self.assertFalse(old['hosts']['local0-wsl']['accepting'])
+
     def test_non_distributed_default_remains_one(self):
         spec = dict(max_new_q3_per_method={'ARTIFICIAL': 0}, science_approved=False,
                     executor=dict(scheduler='concurrent'))

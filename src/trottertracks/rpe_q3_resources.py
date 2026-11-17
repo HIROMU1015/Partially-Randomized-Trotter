@@ -59,9 +59,18 @@ def resource_snapshot(profile, *, proc_root='/proc', cgroup_root='/sys/fs/cgroup
     if affinity:
         cpu_bounds.append(dict(kind='PROCESS_AFFINITY_NONEXCLUSIVE', value=len(affinity)))
     group_path = ''
-    for line in (_read(proc/'self/cgroup') or '').splitlines():
+    memberships = (_read(proc/'self/cgroup') or '').splitlines()
+    v1 = []
+    for line in memberships:
+        parts = line.split(':',2)
+        if len(parts) != 3:continue
         if line.startswith('0::'):
-            group_path = line[3:].lstrip('/')
+            group_path = parts[2].lstrip('/')
+        elif parts[1]:
+            v1.append((parts[1].split(','),parts[2].lstrip('/')))
+    version = 'v1' if v1 and not any(line.startswith('0::') for line in memberships) else 'v2'
+    boundary_reads = dict(cpu=False,memory=False)
+    missing_controls = []
     selected = groups/group_path
     # cgroup v2 limits can be imposed by any ancestor of this process's group.
     ancestors = []
@@ -76,15 +85,61 @@ def resource_snapshot(profile, *, proc_root='/proc', cgroup_root='/sys/fs/cgroup
                 if count: cpu_bounds.append(dict(kind='CGROUP_CPUSET', value=count, path=str(directory)))
             except ValueError:
                 pass
-        quota = (_read(directory/'cpu.max') or '').split()
+        cpu_raw = _read(directory/'cpu.max')
+        if cpu_raw is not None:boundary_reads['cpu']=True
+        quota = (cpu_raw or '').split()
         if len(quota) == 2 and quota[0] != 'max':
             q, period = _positive(quota[0]), _positive(quota[1])
             if q and period: cpu_bounds.append(dict(kind='CGROUP_CPU_QUOTA', value=q/period, path=str(directory)))
-        maximum = _positive(_read(directory/'memory.max'))
+        memory_raw = _read(directory/'memory.max')
+        if memory_raw is not None:boundary_reads['memory']=True
+        maximum = _positive(memory_raw)
         if maximum:
             memory_bounds.append(dict(kind='CGROUP_MEMORY_MAX', value=int(maximum), path=str(directory)))
-            used = _positive(_read(directory/'memory.current')) or 0
+            used_raw = _read(directory/'memory.current')
+            if used_raw is None:missing_controls.append('memory_usage')
+            used = _positive(used_raw) or 0
             memory_remaining.append(max(0, int(maximum-used)))
+    if version == 'v1':
+        boundary_reads = dict(cpu=False,memory=False)
+        for controllers,relative in v1:
+            for controller in ('cpu','cpuset','memory'):
+                if controller not in controllers:continue
+                candidates=[groups/','.join(controllers),groups/controller]
+                mount=next((candidate for candidate in candidates if candidate.is_dir()),candidates[0])
+                current=mount/relative
+                chain=([current]+[p for p in current.parents if p.is_relative_to(mount)]) if current.is_relative_to(mount) else []
+                observed=False
+                for directory in chain:
+                    if controller=='cpu':
+                        quota_raw=_read(directory/'cpu.cfs_quota_us')
+                        period_raw=_read(directory/'cpu.cfs_period_us')
+                        if quota_raw is not None and _positive(period_raw):
+                            observed=True;boundary_reads['cpu']=True
+                            quota,period=_positive(quota_raw),_positive(period_raw)
+                            if quota:cpu_bounds.append(dict(kind='CGROUP_V1_CPU_QUOTA',value=quota/period,path=str(directory)))
+                    elif controller=='cpuset':
+                        text=_read(directory/'cpuset.cpus')
+                        if text is not None:
+                            observed=True
+                            try:
+                                count=len(_cpus(text))
+                                if count:cpu_bounds.append(dict(kind='CGROUP_V1_CPUSET',value=count,path=str(directory)))
+                            except ValueError:pass
+                    else:
+                        text=_read(directory/'memory.limit_in_bytes')
+                        if text is not None:
+                            observed=True;boundary_reads['memory']=True
+                            maximum=_positive(text)
+                            # Linux uses huge sentinel values for an unlimited v1 group.
+                            if maximum and maximum<2**60:
+                                memory_bounds.append(dict(kind='CGROUP_V1_MEMORY_MAX',value=int(maximum),path=str(directory)))
+                                used_raw=_read(directory/'memory.usage_in_bytes')
+                                if used_raw is None:missing_controls.append('memory_usage')
+                                used=_positive(used_raw) or 0
+                                memory_remaining.append(max(0,int(maximum-used)))
+                if not observed:missing_controls.append(controller)
+    complete = all(boundary_reads.values()) and not missing_controls
     for name in ('SLURM_CPUS_PER_TASK', 'PBS_NP', 'NSLOTS'):
         amount = _positive(env.get(name))
         if amount: cpu_bounds.append(dict(kind='ALLOCATION_ENV_'+name, value=amount))
@@ -113,6 +168,9 @@ def resource_snapshot(profile, *, proc_root='/proc', cgroup_root='/sys/fs/cgroup
         remaining_group_memory_bytes=min(memory_remaining, default=None),
         memory_scope='BOUNDED_ALLOCATION' if memory_bounds else 'HOST_PHYSICAL_NONEXCLUSIVE_NO_RESERVATION',
         cpu_scope='PROCESS_ALLOWANCE_NONEXCLUSIVE_NOT_MACHINE_IDLE_CPUS',
+        cgroup_version=version, allocation_bounds_complete=complete,
+        boundary_detection='OBSERVED' if complete else 'PARTIAL_OR_UNREADABLE',
+        missing_controls=sorted(set(missing_controls+[name for name,seen in boundary_reads.items() if not seen])),
         observational_only=True)
 
 
@@ -172,6 +230,8 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         if type(explicit) is not int or explicit < 1: raise ValueError('Positive max_slots required')
         limits.append(explicit)
     ceiling = min(limits)
+    if resources.get('allocation_bounds_complete') is False:
+        ceiling = min(ceiling, initial)
     reasons = []; stage = state.get('stage', 'COLD_START_UNMEASURED')
     if ceiling < target:
         target = ceiling; state.pop('trial', None); stage = 'RESOURCE_REDUCTION_DRAIN'
@@ -216,6 +276,8 @@ def decide_slots(profile, previous, resources, jobs, feedback=None, *, now=None)
         state['baseline']=dict(rate=rate, decision_wait_per_result=latency, slots=target)
     if not same_domain or progress:
         state['rate_anchor'] = deepcopy(feedback)
+    if resources.get('allocation_bounds_complete') is False:
+        reasons.append('Allocation boundary detection incomplete; do not grow above the initial offer')
     if not reasons:
         reasons.append('Insufficient new usable completions for another slot trial' if peak else 'Cold start: per-job memory and useful throughput not measured')
     state.update(schema='RPE_Q3_SLOT_STATE_V1', target_slots=target, peak_job_rss_bytes=peak, peak_job_cpu_cores=observed_cpu,

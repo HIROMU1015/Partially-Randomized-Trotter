@@ -57,6 +57,32 @@ class ResourceTests(unittest.TestCase):
             self.assertIn('NONEXCLUSIVE',got['cpu_scope'])
             self.assertTrue(got['observational_only'])
 
+    def test_v1_cpu_cpuset_and_memory_ancestors_are_honoured(self):
+        with tempfile.TemporaryDirectory()as temporary:
+            base=Path(temporary);proc=base/'proc';group=base/'cgroup'
+            write(proc/'self/cgroup','2:cpu,cpuacct:/scope\n3:cpuset:/scope\n4:memory:/scope\n')
+            write(proc/'meminfo','MemTotal: 1000000 kB\nMemAvailable: 900000 kB\n')
+            write(group/'cpu,cpuacct/cpu.cfs_quota_us','200000')
+            write(group/'cpu,cpuacct/cpu.cfs_period_us','100000')
+            write(group/'cpuset/cpuset.cpus','0-3')
+            write(group/'memory/memory.limit_in_bytes','128000000')
+            write(group/'memory/memory.usage_in_bytes','28000000')
+            got=R.resource_snapshot(profile(),proc_root=proc,cgroup_root=group,affinity=set(range(16)),environ={})
+            self.assertEqual(got['cgroup_version'],'v1')
+            self.assertTrue(got['allocation_bounds_complete'])
+            self.assertEqual(got['allowed_cpu_count'],2)
+            self.assertEqual(got['allowed_memory_bytes'],128000000)
+            self.assertEqual(got['remaining_group_memory_bytes'],100000000)
+            (group/'cpu,cpuacct/cpu.cfs_period_us').unlink()
+            partial=R.resource_snapshot(profile(),proc_root=proc,cgroup_root=group,affinity=set(range(16)),environ={})
+            self.assertFalse(partial['allocation_bounds_complete'])
+            self.assertIn('cpu',partial['missing_controls'])
+            jobs=[dict(state='TRANSFERRED',peak_rss_bytes=1000000)]
+            state,_=R.decide_slots(profile(),{},partial,jobs,feedback(0,0),now=0)
+            state,offer=R.decide_slots(profile(),state,partial,jobs,feedback(1,10,2),now=10)
+            self.assertEqual(offer['capacity'],1)
+            self.assertIn('Allocation boundary detection incomplete',' '.join(offer['reasons']))
+
     def test_owned_tree_reads_only_explicit_supervisor_and_children(self):
         with tempfile.TemporaryDirectory()as temporary:
             base=Path(temporary)
@@ -169,6 +195,40 @@ class DiscoveryTests(unittest.TestCase):
             finally:
                 gate.set()
                 relay.discovery_pool.shutdown(wait=True)
+
+    def test_slow_preferred_ack_does_not_block_wsl_delivery_or_repeat_host_status(self):
+        with tempfile.TemporaryDirectory()as temporary:
+            workers=[dict(host_id='preferred'),dict(host_id='wsl',transport='wsl')]
+            relay=self.relay(Path(temporary),workers)
+            gate=threading.Event();ack_started=threading.Event();wsl_polled=threading.Event();statuses=[]
+            def remote(worker,action,value=None):
+                if action=='ack':
+                    self.assertEqual(worker['host_id'],'preferred')
+                    ack_started.set();gate.wait(2)
+                    return dict(ok=True),0
+                self.assertEqual(action,'status')
+                statuses.append(worker['host_id'])
+                attempts=[]
+                if worker['host_id']=='preferred':
+                    attempts=[dict(job_id='ARTIFICIAL',attempt_id='attempt',state='COMPLETED_PENDING_TRANSFER',request_sha256='hash',files={})]
+                return dict(host_id=worker['host_id'],slots=1,capacity=1,source_sha='ARTIFICIAL',attempts=attempts,cached_prefixes=[]),0
+            def post(path,value):
+                if path=='/v1/poll':
+                    if value['host_id']=='wsl' and not value.get('observe_only'):wsl_polled.set()
+                    return dict(assignments=[])
+                return dict(ok=True)
+            try:
+                with patch.object(relay,'remote',side_effect=remote),patch.object(relay,'post',side_effect=post):
+                    started=time.monotonic();relay.cycle()
+                    self.assertLess(time.monotonic()-started,.3)
+                    self.assertTrue(ack_started.wait(.3))
+                    self.assertTrue(wsl_polled.wait(.3),'Blocked preferred ACK prevented independent WSL poll')
+                    relay.cycle()
+                    self.assertEqual(statuses.count('preferred'),1)
+                    self.assertIn('preferred',relay.pending_ticks)
+                    gate.set();relay.discovery_pool.shutdown(wait=True)
+            finally:
+                gate.set();relay.discovery_pool.shutdown(wait=True)
 
 
 if __name__=='__main__':unittest.main()
