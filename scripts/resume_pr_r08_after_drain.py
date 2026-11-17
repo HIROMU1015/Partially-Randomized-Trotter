@@ -100,6 +100,22 @@ def reconcile(saved, completed, provenance):
     return state, imported, unresolved
 
 
+def validate_ready_points(driver, records):
+    """Use the driver's existing per-candidate metadata hold policy unchanged."""
+    held = []
+    for point in driver.state['points']:
+        record = records.get(point.get('completion', {}).get('key'))
+        if record is None or record['status'] != 'READY_FOR_SEARCH':
+            continue
+        try:
+            driver.check_completed_configuration(point, record)
+        except (ValueError, KeyError, TypeError) as error:
+            point.update(status='HELD', reason='COMPLETED_CONFIGURATION_MISMATCH:' + str(error))
+            held.append(dict(key=record['key'], family=point['family'], kappa=point['kappa'],
+                             reason=point['reason']))
+    return held
+
+
 def q3_preflight(old_run):
     """Receipt/status inspection only. Do not evaluate MSE or re-fit prices."""
     counts = Counter()
@@ -136,6 +152,9 @@ def import_inputs(plan, old_run, study):
         raise RuntimeError('An epoch already exists: use its published resume command, never reimport over it')
     old_root = Path(plan['old_root'])
     old_study = old_run.parent
+    for filename, expected in plan.get('old_input_sha256', {}).items():
+        if digest(old_study / filename) != expected:
+            raise RuntimeError('Old fixed input changed: ' + filename)
     git('diff', '--exit-code', plan['old_code_source'], '--', 'src', 'scripts', cwd=old_root)
     git('diff', '--exit-code', plan['new_code_source'], '--', 'src', 'scripts')
     original = {f: digest(old_run / f) for f in plan['snapshot_files']}
@@ -194,15 +213,15 @@ def import_inputs(plan, old_run, study):
                            run_dir=run, batch=plan['batch'], max_cycles=remaining, plan_only=True)
     driver = WidthDriver(args)
     driver.verify_metadata_inputs()
-    for point in driver.state['points']:
-        record = completion['records'].get(point.get('completion', {}).get('key'))
-        if record and record['status'] == 'READY_FOR_SEARCH':
-            driver.check_completed_configuration(point, record)
+    configuration_holds = validate_ready_points(driver, completion['records'])
+    state = driver.state
+    write(run / 'KAPPA_STATE.json', state)
     if any(digest(old_run / f) != h for f, h in original.items()):
         raise RuntimeError('Old state changed after ownership release; no launch')
     source = dict(scientific_code_source=plan['new_code_source'], previous_epoch=provenance,
                   remaining_cycles=remaining, original_cycle_ceiling=plan['original_cycle_ceiling'],
-                  preserved_held_keys=held, prior_Q3=q3, old_exception='OLD_CONTROLLER_EXCEPTION.txt',
+                  preserved_held_keys=held, configuration_holds=configuration_holds,
+                  prior_Q3=q3, old_exception='OLD_CONTROLLER_EXCEPTION.txt',
                   artificial_tests=plan['artificial_tests'], new_scientific_calls_before_launch=0,
                   scientific_retry=False, new_scientific_conditions=False,
                   fixed_input_sha256={f: digest(study / f) for f in ('PROBLEM.json', 'ROUND.json')})
@@ -210,7 +229,8 @@ def import_inputs(plan, old_run, study):
     write(study / 'PRELAUNCH_ACCEPTANCE.json', dict(source,
           imported_completion_counts=dict(Counter(r['status'] for r in completion['records'].values())),
           cached_families=len(state['families']), points=len(state['points']),
-          fixed_metadata_gate='PASS', old_metadata_unchanged=True))
+          fixed_metadata_gate='PASS_WITH_CONFIGURATION_HOLDS' if configuration_holds else 'PASS',
+          old_metadata_unchanged=True))
     return run, remaining
 
 

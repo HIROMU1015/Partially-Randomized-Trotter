@@ -41,6 +41,21 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual(result['points'][0]['completion']['key'], 'historical')
         self.assertEqual(result['points'][1]['status'], 'COMPLETION')
 
+    def test_existing_configuration_guard_holds_only_affected_point(self):
+        from types import SimpleNamespace
+        def check(point, record):
+            if record['key'] == 'bad':
+                raise ValueError('DIFFERENT_SPLIT_LAMBDA_SOURCE')
+        driver = SimpleNamespace(state=dict(points=[
+            dict(family='f', kappa='1', status='REGISTERED', completion=dict(key='bad')),
+            dict(family='g', kappa='2', status='REGISTERED', completion=dict(key='good'))]),
+            check_completed_configuration=check)
+        records = {key:dict(key=key, status='READY_FOR_SEARCH') for key in ('bad', 'good')}
+        held = H.validate_ready_points(driver, records)
+        self.assertEqual([p['status'] for p in driver.state['points']], ['HELD', 'REGISTERED'])
+        self.assertEqual(held[0]['reason'], 'COMPLETED_CONFIGURATION_MISMATCH:DIFFERENT_SPLIT_LAMBDA_SOURCE')
+        self.assertEqual(records['bad']['status'], 'READY_FOR_SEARCH')
+
     def test_q3_missing_or_failed_return_is_not_automatic_retry(self):
         with tempfile.TemporaryDirectory() as t:
             run = Path(t)
