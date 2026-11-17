@@ -62,7 +62,7 @@ def baseline_delivery(root, commit=BASELINE, prefix=BASE):
 
 
 def build_readiness(root, context, problem, round_, result, output, *,
-                    baseline_commit=BASELINE, baseline_prefix=BASE):
+                    baseline_commit=BASELINE, baseline_prefix=BASE, execution_route_updates=()):
     """Build requests from a normal entry result, then write early READY.json.
 
     ``context['routes']`` may contain the already prepared effective routes;
@@ -78,6 +78,25 @@ def build_readiness(root, context, problem, round_, result, output, *,
     routes = deepcopy(context.get('routes') or problem['execution_routes'])
     if 'routes' not in context:
         routes.update(deepcopy(round_.get('routes_override', {})))
+    changed_routes = {}
+    for update in execution_route_updates:
+        method, cid = update['method'], update['configuration_id']
+        replacement = deepcopy(update['route'])
+        if replacement.get('configuration_ids') != [cid]:
+            raise ValueError('Execution route update must be limited to its declared configuration')
+        rules = routes.get(method, [])
+        current = next((rule for rule in rules if rule.get('configuration_ids') in (None, '*')
+                        or cid in rule['configuration_ids']), None)
+        if current is None:
+            continue
+        if current == replacement:
+            changed_routes[method] = rules
+            continue
+        if (current.get('view_commit') != update['from_view_commit']
+                or current.get('kind') != replacement.get('kind')):
+            raise ValueError('Execution route upgrade does not match the existing route')
+        routes[method] = [replacement] + rules
+        changed_routes[method] = routes[method]
     executor = O.Executor(root, output / 'unsubmitted', routes, context['expected'], problem,
                           optimizer_source=SOURCE, launch_disabled=True)
     manifest = Q.source_manifest(root, SOURCE)
@@ -159,6 +178,7 @@ def build_readiness(root, context, problem, round_, result, output, *,
                    dispatchability=('HELD_QUEUE_STATE_UNCONFIRMED' if queue_unconfirmed else
                                     'HELD_EXISTING_OWNER' if owners else 'DRY_CHECK_PENDING'))
     ready = dict(schema='RPE_PLAN_READINESS_V1', status='PREPARED_NOT_DRY_CHECKED',
+                 routes_override=changed_routes,
                  computation_source=SOURCE, candidates=rows, assignments=assignments,
                  server2_profile=str(output / 'profiles/server2.json'),
                  old_remote_delivery_unchanged=unchanged, baseline=str(output / 'BASELINE_DELIVERY.json'),
@@ -184,7 +204,9 @@ def _view_fingerprint(path):
 
 def dry_check_fingerprint(root, assignment, profile):
     """Refresh source/input/route/runtime evidence before considering a cache."""
-    root = Path(root)
+    from .rpe_host_profiles import select_host_profile
+    profile = select_host_profile(profile, assignment)
+    root = Path(profile['root'])
     route = assignment['request']['route']
     view = profile['route_views'].get(route['view_commit'], '')
     runtime_code = ('import sys,json,platform,importlib.metadata as m; '
@@ -199,7 +221,19 @@ def dry_check_fingerprint(root, assignment, profile):
     views = [_view_fingerprint(view)]
     # The pinned PR-DF caller loads this nested absolute view before runtime_check.
     if route['kind'].startswith('prdf_d2'):
-        nested = Path('/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115')
+        if profile.get('adapter_root'):
+            import ast
+            def constant(source, name):
+                for node in ast.parse(source).body:
+                    if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == name for t in node.targets):
+                        return ast.literal_eval(node.value)
+                raise ValueError('Missing fixed PR-DF dependency declaration: ' + name)
+            old = constant((Path(view) / 'scripts/run_pr_df_ld_split_q3_resume.py').read_text(), 'OLD')
+            caller = _git(view, 'show', old + ':scripts/run_pr_df_ld_split_q3.py').decode()
+            inner_commit = constant(caller, 'Q3_SOURCE')
+            nested = Path(profile['route_views'][inner_commit])
+        else:
+            nested = Path('/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115')
         views.append(_view_fingerprint(nested))
     return dict(source=Q.source_manifest(root, SOURCE), source_head=_git(root, 'rev-parse', 'HEAD').decode().strip(),
                 input_hashes=Q.input_hashes(root, assignment['request']),

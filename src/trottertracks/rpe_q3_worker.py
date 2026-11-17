@@ -4,7 +4,7 @@ A detached per-attempt supervisor preserves adapter exit evidence if the network
 or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 """
 from copy import deepcopy
-from .rpe_host_profiles import select_host_profile
+from .rpe_host_profiles import select_host_profile, validate_adapter_profile
 import base64
 import fcntl
 import hashlib
@@ -167,14 +167,30 @@ def _adapter_command(profile, attempt, mode, output):
     saved_assignment = Path(attempt) / 'ASSIGNMENT.json'
     if saved_assignment.is_file():
         profile = select_host_profile(profile, read(saved_assignment))
-    return [profile['interpreter'], '-B', str(Path(profile['root']) / 'scripts/run_rpe_optimizer_q3_job.py'),
-            '--request', str(Path(attempt) / 'RESOLVED_REQUEST.json'), '--output', str(output), '--mode', mode]
+    adapter = validate_adapter_profile(profile)
+    root = Path(adapter['root'] if adapter else profile['root'])
+    command = [profile['interpreter'], '-B', str(root / 'scripts/run_rpe_optimizer_q3_job.py'),
+               '--request', str(Path(attempt) / 'RESOLVED_REQUEST.json'), '--output', str(output), '--mode', mode]
+    if adapter:
+        paths = Path(attempt) / 'ROUTE_VIEWS.json'
+        if paths.exists():
+            if read(paths) != profile['route_views']:
+                raise ValueError('Assigned adapter route views changed')
+        else:
+            atomic(paths, profile['route_views'])
+        command += ['--route-views', str(paths)]
+        record = Path(attempt) / 'ADAPTER_SOURCE.json'
+        if record.exists() and read(record) != adapter:
+            raise ValueError('Assigned adapter manifest changed')
+        if not record.exists():
+            atomic(record, adapter)
+    return command
 
 
 def _run_adapter(profile, attempt, mode, output):
     started = time.monotonic()
     with (Path(attempt) / ('WORKER_' + mode.upper() + '.log')).open('a') as log:
-        process = subprocess.Popen(_adapter_command(profile, attempt, mode, output), cwd=profile['root'],
+        process = subprocess.Popen(_adapter_command(profile, attempt, mode, output), cwd=profile.get('adapter_root', profile['root']),
             env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'), stdout=log, stderr=subprocess.STDOUT)
         launch_error = None
         if mode == 'execute':
@@ -354,7 +370,7 @@ class Worker:
         # Durable before Popen: an interrupted handoff is ambiguous, never retried.
         profile = select_host_profile(read(attempt / 'WORKER_PROFILE.json'), read(attempt / 'ASSIGNMENT.json'))
         save_state(attempt, 'STARTING', automatic_retry=False)
-        command = [profile['interpreter'], '-B', str(Path(profile['root']) / 'scripts/run_rpe_q3_worker.py'),
+        command = [profile['interpreter'], '-B', str(Path(__file__).resolve().parents[2] / 'scripts/run_rpe_q3_worker.py'),
                    '--supervise-attempt', str(attempt)]
         with (attempt / 'WORKER_SUPERVISOR.log').open('a') as log:
             process = subprocess.Popen(command, cwd=profile['root'], env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'),

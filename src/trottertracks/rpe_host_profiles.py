@@ -6,6 +6,8 @@ bound to the controller's assignment and preserved for its whole attempt.
 from copy import deepcopy
 import hashlib
 import json
+from pathlib import Path, PurePosixPath
+import subprocess
 
 
 def digest(value):
@@ -14,7 +16,7 @@ def digest(value):
 
 def profile_core(profile):
     keys = ('host_id', 'root', 'interpreter', 'route_views', 'dp_workers',
-            'prefix_cache_directory', 'runtime')
+            'prefix_cache_directory', 'runtime', 'adapter_root', 'adapter_manifest')
     return {key: deepcopy(profile[key]) for key in keys if key in profile}
 
 
@@ -22,6 +24,24 @@ def route_matches(rule, assignment):
     route = assignment['request']['route']
     return (rule.get('route_kind') == route.get('kind')
             and rule.get('view_commit') == route.get('view_commit'))
+
+
+def validate_adapter_profile(profile):
+    root, manifest = profile.get('adapter_root'), profile.get('adapter_manifest')
+    if root is None and manifest is None:
+        return None
+    if not root or not manifest or not manifest.get('files'):
+        raise ValueError('Explicit adapter root and fixed manifest are required together')
+    root = Path(root).resolve()
+    if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip() != manifest['commit']:
+        raise ValueError('Adapter HEAD differs from fixed manifest')
+    for name, expected in manifest['files'].items():
+        relative = PurePosixPath(name)
+        if relative.is_absolute() or '..' in relative.parts:
+            raise ValueError('Unsafe adapter manifest path')
+        if hashlib.sha256((root / name).read_bytes()).hexdigest() != expected:
+            raise ValueError('Adapter SOURCE hash differs: ' + name)
+    return dict(root=str(root), **deepcopy(manifest))
 
 
 def select_host_profile(base, assignment):

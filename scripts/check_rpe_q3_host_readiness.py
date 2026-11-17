@@ -18,14 +18,18 @@ import time
 import traceback
 
 
-def select_profile(profile, assignment):
+def profile_helper():
     # Load the transport's pure metadata helper without importing its package:
     # validate_assignment below must still come from the fixed scientific root.
     path = Path(__file__).resolve().parents[1] / 'src/trottertracks/rpe_host_profiles.py'
     spec = importlib.util.spec_from_file_location('_readiness_host_profiles', path)
     helper = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(helper)
-    return helper.select_host_profile(profile, assignment)
+    return helper
+
+
+def select_profile(profile, assignment):
+    return profile_helper().select_host_profile(profile, assignment)
 
 
 def main():
@@ -33,6 +37,7 @@ def main():
     parser.add_argument('--assignment', required=True, type=Path)
     parser.add_argument('--profile', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--adapter-root', type=Path, help='Separately fixed adapter checkout; original assignment SOURCE is preserved')
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -48,6 +53,16 @@ def main():
         profile = json.loads(args.profile.read_text())
         assignment = json.loads(args.assignment.read_text())
         profile = select_profile(profile, assignment)
+        if args.adapter_root:
+            adapter_root = args.adapter_root.resolve()
+            if profile.get('adapter_root') and Path(profile['adapter_root']).resolve() != adapter_root:
+                raise ValueError('Adapter root differs from the selected published profile')
+            profile['adapter_root'] = str(adapter_root)
+            if not profile.get('adapter_manifest'):
+                paths = ('scripts/run_rpe_optimizer_q3_job.py', 'src/trottertracks/rpe_dp_prefix_reuse.py')
+                profile['adapter_manifest'] = dict(commit=subprocess.check_output(
+                    ['git', 'rev-parse', 'HEAD'], cwd=adapter_root, text=True).strip(),
+                    files={name: hashlib.sha256((adapter_root / name).read_bytes()).hexdigest() for name in paths})
         result.update(host_id=profile['host_id'], job_id=assignment['job_id'],
                       source=assignment['source_manifest']['commit'],
                       request_sha256=assignment['request_sha256'],
@@ -67,13 +82,22 @@ def main():
                       resolved_request_sha256=hashlib.sha256(resolved.read_bytes()).hexdigest())
         stage = 'EXISTING_ADAPTER_DRY_CHECK'
         adapter_output = output / 'adapter'
+        adapter = profile_helper().validate_adapter_profile(profile)
+        adapter_root = Path(adapter['root']) if adapter else root
         command = [profile['interpreter'], '-B',
-                   str(root / 'scripts/run_rpe_optimizer_q3_job.py'),
+                   str(adapter_root / 'scripts/run_rpe_optimizer_q3_job.py'),
                    '--request', str(resolved), '--output', str(adapter_output),
                    '--mode', 'dry-check']
+        if adapter:
+            paths = output / 'ROUTE_VIEWS.json'
+            paths.write_text(json.dumps(profile['route_views'], indent=2) + '\n')
+            command += ['--route-views', str(paths)]
+            result['adapter_source'] = dict(root=adapter['root'], commit=adapter['commit'],
+                sha256=adapter['files']['scripts/run_rpe_optimizer_q3_job.py'], manifest=adapter,
+                original_assignment_manifest_rewritten=False)
         result['command'] = command
         with (output / 'ADAPTER.log').open('w') as log:
-            process = subprocess.run(command, cwd=root,
+            process = subprocess.run(command, cwd=adapter_root,
                                      env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'),
                                      stdout=log, stderr=subprocess.STDOUT)
         result['adapter_returncode'] = process.returncode

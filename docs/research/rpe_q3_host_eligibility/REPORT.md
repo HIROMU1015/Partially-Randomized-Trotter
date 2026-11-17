@@ -1,6 +1,6 @@
 # 固定H4 Q3候補：ホスト別dry-check証拠の受領と割当条件
 
-追記：server1 PR-DF専用profileを固定9dから取り込み、[割当・実行profile検収](SERVER1_PRDF_IMPORT.md)まで確認。現checkpointは8 PASS・4不足。下記の7 PASS表は初回受領時の履歴。最終目標の12 PASSへ整備を継続中。
+最新：[12セル準備の引渡し](TWELVE_CELL_HANDOFF.md)。現在10 PASS・Pauli remote2件未確認。下記の7 PASS表と8 PASS追記は過去checkpointで、最新状態はHOST_ELIGIBILITYを参照。
 
 返送済みのサーバー1・ローカルの8セルを受領し、転送manifestの52ファイルを全件hash照合した。
 遠隔は4 PASS・4不足・未確認0。サーバー2の保存済み4セルと合わせ、

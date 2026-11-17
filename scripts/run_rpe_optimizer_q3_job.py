@@ -181,7 +181,63 @@ def common_installed(output):
         yield
 
 
-def route(view, kind):
+def load_prdf_route(view, route_views):
+    """Relocate only the saved caller's inner import; keep its bytes/guards intact."""
+    def constant(source, name):
+        node = next(n.value for n in ast.parse(source).body if isinstance(n, ast.Assign)
+                    and any(isinstance(t, ast.Name) and t.id == name for t in n.targets))
+        return node
+
+    caller = 'scripts/run_pr_df_ld_split_q3_resume.py'
+    old = ast.literal_eval(constant((view / caller).read_text(), 'OLD'))
+    saved_path = 'scripts/run_pr_df_ld_split_q3.py'
+    saved = subprocess.check_output(['git', 'show', old + ':' + saved_path], cwd=view).decode()
+    commit = ast.literal_eval(constant(saved, 'Q3_SOURCE'))
+    if commit not in route_views:
+        # Existing server installations retain their original path behavior.
+        return load(view, 'run_pr_df_ld_split_q3_resume', caller), None
+    inner = Path(route_views[commit]).resolve()
+    if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=inner, text=True).strip() != commit:
+        raise ValueError('PR-DF inner SOURCE HEAD differs: ' + str(inner))
+    for checkout in (view, inner):
+        if subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', 'scripts', 'src'], cwd=checkout).returncode:
+            raise ValueError('PR-DF fixed SOURCE has tracked changes: ' + str(checkout))
+    declaration = constant(saved, 'VIEW')
+    if not (isinstance(declaration, ast.Call) and isinstance(declaration.func, ast.Name)
+            and declaration.func.id == 'Path' and len(declaration.args) == 1):
+        raise ValueError('Unsupported PR-DF inner VIEW declaration')
+    original_view = Path(ast.literal_eval(declaration.args[0]))
+    entry = 'scripts/run_pr_df_fullh_total_q3_fixed.py'
+    expected = subprocess.check_output(['git', 'show', commit + ':' + entry], cwd=inner)
+    if (inner / entry).read_bytes() != expected:
+        raise ValueError('PR-DF inner entry SOURCE bytes differ')
+    original_spec = importlib.util.spec_from_file_location
+    redirected = []
+
+    def inner_spec(name, location, *args, **kwargs):
+        if name == '_split_fixed_q3_route':
+            if Path(location) != original_view / entry:
+                raise ValueError('Unexpected PR-DF inner import location')
+            redirected.append(str(location))
+            location = inner / entry
+        return original_spec(name, location, *args, **kwargs)
+
+    from unittest.mock import patch
+    with patch.object(importlib.util, 'spec_from_file_location', inner_spec):
+        module = load(view, 'run_pr_df_ld_split_q3_resume', caller)
+    if len(redirected) != 1 or module.Q.Q3_SOURCE != commit or module.U.ROOT != inner:
+        raise ValueError('PR-DF inner SOURCE resolution differs')
+    # runtime_check checks this binding against Q3_SOURCE. No function, AST,
+    # scientific input or frozen on-disk caller is rewritten.
+    module.Q.VIEW = inner
+    replacements = {str(original_view / part): str(inner / part) for part in ('src', 'scripts')}
+    sys.path[:] = [replacements.get(p, p) for p in sys.path]
+    return module, dict(commit=commit, view=str(inner), entry=entry,
+                        entry_sha256=hashlib.sha256(expected).hexdigest(),
+                        saved_caller=dict(commit=old, path=saved_path), frozen_sources_modified=False)
+
+
+def route(view, kind, route_views=None):
     """(metadata, installed-context, supervise, validate, bounds) of an existing route, loaded unchanged."""
     if kind == 'pf_b_pf6':
         F = load(view, '_rpe_opt_pf6', 'scripts/run_pf6_cost_budget_q3_fixed.py');F.check_source()
@@ -204,10 +260,10 @@ def route(view, kind):
                   validate=pinned_validator(view, X.L.H, X.L.T.Q.a.exact_scalar),
                   bounds=lambda s: X.L.H.finite_bounds([r['N_X'] for r in s]), runtime=None)
     if kind in ('prdf_d2_split','prdf_d2_common_entry'):
-        W = load(view, 'run_pr_df_ld_split_q3_resume', 'scripts/run_pr_df_ld_split_q3_resume.py')
+        W, resolution = load_prdf_route(view, route_views or {})
         return NS(metadata=W.U.metadata, installed=lambda out: nullcontext(), supervise=W.supervise,
                   validate=pinned_validator(view, W.U.H, W.U.T.Q.a.exact_scalar), bounds=lambda s: W.Q.bounds(dict(allocation=dict(shots=s))),
-                  runtime=W.runtime_check)
+                  runtime=W.runtime_check, source_resolution=resolution)
     raise ValueError('Unknown route kind: ' + kind)
 
 
@@ -387,6 +443,7 @@ def main():
     p.add_argument('--request', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--mode', choices=('execute', 'collect', 'dry-check'), default='execute')
+    p.add_argument('--route-views', type=Path, help='Optional host commit-to-checkout JSON; original REQUEST stays unchanged')
     a = p.parse_args()
     request = json.loads(a.request.read_text());out = a.output.resolve();out.mkdir(parents=True, exist_ok=True)
     kind = request['route']['kind'];stage(out, 'JOB_START', mode=a.mode, kind=kind, pid=os.getpid())
@@ -395,7 +452,8 @@ def main():
         outcome = artificial(request, out, a.mode)
     else:
         view = Path(request['route']['view'])
-        case, inputs = build(view, request);inputs = execution_profile(inputs, request);r = route(view, kind)
+        route_views = json.loads(a.route_views.read_text()) if a.route_views else request['route'].get('route_views', {})
+        case, inputs = build(view, request);inputs = execution_profile(inputs, request);r = route(view, kind, route_views)
         stage(out, 'CASE_BUILT', template=inputs['template_source'])
         bounds = r.bounds(case['allocation']['shots'])
         if not in_scope(bounds, inputs['options']):
@@ -409,6 +467,8 @@ def main():
             if a.mode == 'dry-check':
                 outcome = dict(status='DRY_CHECK_PASS', bounds=bounds, case_label=case['label'], template=inputs['template_source'],
                                metadata='PASS', runtime=runtime)
+                if getattr(r, 'source_resolution', None) is not None:
+                    outcome['source_resolution'] = r.source_resolution
             elif a.mode == 'collect':
                 if not (out / case['label'] / 'RESULT.json').exists() or not (out / 'SOURCE.json').exists():
                     outcome = dict(status='UNKNOWN', reason='NO_WORKER_ARTIFACT_TO_COLLECT', MSE_lower=None, MSE_upper=None,

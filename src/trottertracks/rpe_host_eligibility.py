@@ -35,10 +35,14 @@ def _inputs(rows):
 
 def _effective_profile(profile, assignment):
     route = assignment['request']['route']
-    return dict(host_id=profile['host_id'], root=profile['root'], interpreter=profile['interpreter'],
+    effective = dict(host_id=profile['host_id'], root=profile['root'], interpreter=profile['interpreter'],
                 route_view=profile['route_views'][route['view_commit']],
                 dp_workers=profile.get('dp_workers'),
                 prefix_cache_directory=profile.get('prefix_cache_directory'))
+    for key in ('adapter_root', 'adapter_manifest'):
+        if key in profile:
+            effective[key] = deepcopy(profile[key])
+    return effective
 
 
 def _resolved_request(assignment, profile):
@@ -82,12 +86,15 @@ def _fingerprint(assignment, profile, runtime, views=None, actual=None):
             if not runtime.get(key):
                 raise ValueError('Launcher runtime lacks its bound actual identity: ' + key)
             runtime_identity[key] = runtime[key]
-    return dict(schema='RPE_Q3_CURRENT_HOST_FINGERPRINT_V1',
+    result = dict(schema='RPE_Q3_CURRENT_HOST_FINGERPRINT_V1',
                 request_sha256=Q.digest(assignment['request']),
                 source_manifest=source, source_head=source_head, input_hashes=_inputs(inputs),
                 profile=_effective_profile(profile, assignment),
                 views=sorted(normalized_views, key=lambda view: view['path']),
                 runtime=runtime_identity)
+    if profile.get('adapter_root'):
+        result['adapter_source'] = dict(root=profile['adapter_root'], **deepcopy(profile['adapter_manifest']))
+    return result
 
 
 def current_host_fingerprint(assignment, profile):
@@ -98,9 +105,10 @@ def current_host_fingerprint(assignment, profile):
     invoked. Errors deliberately propagate so the caller can withhold new claims.
     """
     from .rpe_plan_readiness import dry_check_fingerprint
-    from .rpe_host_profiles import select_host_profile
+    from .rpe_host_profiles import select_host_profile, validate_adapter_profile
     assignment, profile = _read(assignment), _read(profile)
     profile = select_host_profile(profile, assignment)
+    adapter_source = validate_adapter_profile(profile)
     raw = dry_check_fingerprint(profile['root'], assignment, profile)
     # The older readiness helper labels its fixed source as 28d. Actual HEAD is
     # separate and must be used for a newly fixed worker source as well.
@@ -110,7 +118,10 @@ def current_host_fingerprint(assignment, profile):
         raw['runtime'].update(interpreter_invocation=profile['interpreter'],
             launcher_sha256=_sha(profile['interpreter']), actual_executable_realpath=str(binary),
             actual_binary_sha256=_sha(binary))
-    return _fingerprint(assignment, profile, raw['runtime'], raw['views'], actual=raw)
+    result = _fingerprint(assignment, profile, raw['runtime'], raw['views'], actual=raw)
+    if adapter_source is not None:
+        result['adapter_source'] = adapter_source
+    return result
 
 
 def _receipt_check(descriptor, base):
@@ -119,6 +130,22 @@ def _receipt_check(descriptor, base):
         return dict(status='MATCH', kind='DIRECT_LOCAL_OBSERVATION')
     if descriptor.get('kind') == 'fixed_git':
         import subprocess
+        if not descriptor.get('manifest'):
+            import io
+            import tarfile
+            archive = subprocess.check_output(['git', 'archive', '--format=tar', descriptor['fixed_commit'], descriptor['fixed_prefix']],
+                cwd=Path(__file__).resolve().parents[2])
+            files = {}
+            with tarfile.open(fileobj=io.BytesIO(archive)) as tree:
+                for member in tree.getmembers():
+                    if member.isfile():
+                        name = Path(member.name).relative_to(descriptor['fixed_prefix']).as_posix()
+                        files[name] = hashlib.sha256(tree.extractfile(member).read()).hexdigest()
+            if not files:
+                raise ValueError('Fixed Git evidence tree is empty')
+            return dict(status='MATCH', kind='FIXED_GIT_EVIDENCE_TREE', fixed_commit=descriptor['fixed_commit'],
+                        fixed_prefix=descriptor['fixed_prefix'],
+                        manifest_root=str(_path(descriptor['root'], base).resolve()), files=files)
         manifest_path = _path(descriptor['manifest'], base)
         manifest_locator = descriptor['fixed_prefix'].rstrip('/') + '/' + manifest_path.name
         raw = subprocess.check_output(['git', 'show', descriptor['fixed_commit'] + ':' + manifest_locator],
@@ -175,7 +202,7 @@ def _host_evidence(descriptor, base):
     if facts_path.is_file():
         _covered(facts_path, receipt)
         facts = _read(facts_path)
-    host_method_readiness = dedicated_profile = None
+    host_method_readiness = dedicated_profile = portability_checks = published_profile = None
     if descriptor.get('host_method_readiness'):
         path = _path(descriptor['host_method_readiness'], base)
         _covered(path, receipt)
@@ -185,6 +212,12 @@ def _host_evidence(descriptor, base):
         if _sha(profile_path) != host_method_readiness.get('profile_sha256'):
             raise ValueError('Dedicated host profile bytes differ from HOST_METHOD_READINESS')
         dedicated_profile = _read(profile_path)
+    if descriptor.get('portability_checks'):
+        checks_path = _path(descriptor['portability_checks'], base)
+        profile_path = _path(descriptor['published_profile'], base)
+        _covered(checks_path, receipt)
+        _covered(profile_path, receipt)
+        portability_checks, published_profile = _read(checks_path), _read(profile_path)
     cache = {}
     if descriptor.get('runtime_cache'):
         cache = _read(_path(descriptor['runtime_cache'], base)).get('methods', {})
@@ -211,7 +244,80 @@ def _host_evidence(descriptor, base):
         except Exception as exc:
             records.append(dict(path=path, readiness=observed, error=str(exc)))
     return dict(root=root, receipt=receipt, facts=facts, records=records,
-                host_method_readiness=host_method_readiness, dedicated_profile=dedicated_profile)
+                host_method_readiness=host_method_readiness, dedicated_profile=dedicated_profile,
+                portability_checks=portability_checks, published_profile=published_profile)
+
+
+def _portable_runtime(assignment, profile, evidence, observed, path):
+    checks = evidence['portability_checks']
+    route = assignment['request']['route']
+    expected = dict(request_id=assignment['job_id'], request_sha256=assignment['request_sha256'],
+        original_computation_source=assignment['source_manifest']['commit'],
+        adapter_implementation=profile['adapter_manifest'].get('implementation_commit', profile['adapter_manifest']['commit']),
+        pass_route=route['kind'], outer_route_commit=route['view_commit'])
+    for key, value in expected.items():
+        if checks.get(key) != value:
+            raise ValueError('Published portability checks differ: ' + key)
+    for key in ('original_request_preserved', 'original_assignment_manifest_preserved',
+                'input_blob_hashes_verified', 'frozen_outer_and_inner_tracked_sources_unchanged'):
+        if checks.get(key) is not True:
+            raise ValueError('Published portability check is incomplete: ' + key)
+    for key in ('scientific_Q3_calls', 'compile_calls', 'production_queue_operations'):
+        if checks.get(key) != 0:
+            raise ValueError('Published portability evidence exceeds dry-check scope: ' + key)
+    if checks.get('positive') != observed.get('status'):
+        raise ValueError('Published portability observation differs from this dry-check')
+    raw_profile = deepcopy(profile)
+    raw_profile.pop('adapter_root', None)
+    raw_profile.pop('adapter_manifest', None)
+    if _effective_profile(raw_profile, assignment) != _effective_profile(evidence['published_profile'], assignment):
+        raise ValueError('Selected host profile differs from the published portability profile')
+    mapping_path = path.parent / 'ROUTE_VIEWS.json'
+    _covered(mapping_path, evidence['receipt'])
+    if _read(mapping_path) != profile['route_views']:
+        raise ValueError('Published external route mapping differs from the selected host profile')
+    command = observed.get('command') or []
+    if command.count('--route-views') != 1 or command.index('--route-views') + 1 >= len(command):
+        raise ValueError('Portability dry-check lacks the explicit route mapping flag')
+    if Path(command[command.index('--route-views') + 1]).name != mapping_path.name:
+        raise ValueError('Portability command references another mapping file')
+    runtime = (observed.get('adapter_result') or {}).get('runtime') or {}
+    if runtime != checks.get('original_AST_guard') or runtime.get('guard_modified') is not False or runtime.get('constructor') != 'PASS_UNCHANGED_GUARD':
+        raise ValueError('Portability runtime did not preserve the original AST guard')
+    inner = (observed.get('adapter_result') or {}).get('source_resolution') or {}
+    if inner != checks.get('inner_source'):
+        raise ValueError('Published inner SOURCE resolution differs')
+    if inner.get('frozen_sources_modified') is not False or profile['route_views'].get(inner.get('commit')) != inner.get('view'):
+        raise ValueError('Published inner SOURCE mapping is not preserved')
+    return runtime, [dict(path=profile['route_views'][route['view_commit']], commit=route['view_commit']),
+                     dict(path=inner['view'], commit=inner['commit'])]
+
+
+def _saved_adapter(assignment, profile, evidence, observed):
+    manifest = profile.get('adapter_manifest')
+    if not manifest and not profile.get('adapter_root'):
+        return
+    if not manifest or not profile.get('adapter_root'):
+        raise ValueError('Selected adapter root/manifest binding is incomplete')
+    adapter = observed.get('adapter_source') or {}
+    implementation = manifest.get('implementation_commit', manifest['commit'])
+    if adapter.get('root') != profile['adapter_root'] or adapter.get('commit') not in {manifest['commit'], implementation}:
+        raise ValueError('Saved adapter implementation root/commit differs')
+    entry = 'scripts/run_rpe_optimizer_q3_job.py'
+    if adapter.get('sha256') != manifest['files'].get(entry) or adapter.get('original_assignment_manifest_rewritten') is not False:
+        raise ValueError('Saved adapter hash differs or original manifest was rewritten')
+    command = observed.get('command') or []
+    if len(command) < 3 or command[2] != str(Path(profile['adapter_root']) / entry):
+        raise ValueError('Dry-check command did not use the selected adapter')
+    # The portability implementation is a separate fixed source, not an edit to
+    # the original computation manifest. Verify its published entry/helper bytes.
+    import subprocess
+    for commit in {manifest['commit'], implementation}:
+        for name, expected in manifest['files'].items():
+            raw = subprocess.check_output(['git', 'show', commit + ':' + name],
+                                          cwd=Path(__file__).resolve().parents[2])
+            if hashlib.sha256(raw).hexdigest() != expected:
+                raise ValueError('Selected adapter manifest differs from its fixed Git source: ' + name)
 
 
 def _method_runtime(assignment, profile, evidence, observed, readiness_path):
@@ -365,8 +471,12 @@ def _cell(assignment, profile, evidence, *, current_inputs=None, current_source=
                 raise ValueError('Saved resolved route/profile/request differs from the current host contract')
             dims['route'] = 'MATCH'
             command = observed.get('command') or []
-            if not command or command[0] != profile['interpreter'] or command[-2:] != ['--mode', 'dry-check']:
+            if (not command or command[0] != profile['interpreter'] or command.count('--mode') != 1
+                    or command.index('--mode') + 1 >= len(command)
+                    or command[command.index('--mode') + 1] != 'dry-check'
+                    or any(item.startswith('--mode=') for item in command)):
                 raise ValueError('Saved adapter interpreter or explicit dry-check command differs')
+            _saved_adapter(assignment, profile, evidence, observed)
             facts = evidence['facts']
             raw = (item['runtime_item'] or {}).get('fingerprint')
             if raw:
@@ -380,6 +490,8 @@ def _cell(assignment, profile, evidence, *, current_inputs=None, current_source=
                 runtime, views = raw['runtime'], raw['views']
             elif evidence.get('host_method_readiness'):
                 runtime, views = _method_runtime(assignment, profile, evidence, observed, path)
+            elif evidence.get('portability_checks'):
+                runtime, views = _portable_runtime(assignment, profile, evidence, observed, path)
             else:
                 if facts is None or facts.get('python') != profile['interpreter'] or facts.get('python_version') != observed.get('python_version'):
                     raise ValueError('No matching actual interpreter/runtime observation')

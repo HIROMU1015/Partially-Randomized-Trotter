@@ -503,7 +503,7 @@
           }
         },
         "local": {
-          "status": "FAIL",
+          "status": "PASS",
           "dimensions": {
             "request": "MATCH",
             "source": "MATCH",
@@ -512,15 +512,13 @@
             "runtime": "MATCH",
             "receipt": "MATCH"
           },
-          "reasons": [
-            "Traceback (most recent call last):\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 398, in main\n    case, inputs = build(view, request);inputs = execution_profile(inputs, request);r = route(view, kind)\n                                                                                        ^^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 207, in route\n    W = load(view, 'run_pr_df_ld_split_q3_resume', 'scripts/run_pr_df_ld_split_q3_resume.py')\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 138, in load\n    spec.loader.exec_module(module)\n  File \"<frozen importlib._bootstrap_external>\", line 940, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 241, in _call_with_frames_removed\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7/scripts/run_pr_df_ld_split_q3_resume.py\", line 38, in <module>\n    exec(compile(blob(OLD,'scripts/run_pr_df_ld_split_q3.py'),Q.__file__+'@'+OLD,'exec'),Q.__dict__)\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7/scripts/run_pr_df_ld_split_q3.py@e0b3cad2a024070389f757160f3a20d7da02c5ff\", line 20, in <module>\n  File \"<frozen importlib._bootstrap_external>\", line 936, in exec_module\n  File \"<frozen importlib._bootstrap_external>\", line 1073, in get_code\n  File \"<frozen importlib._bootstrap_external>\", line 1130, in get_data\nFileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-pr-df-ld-split-q3-source-20261115/scripts/run_pr_df_fullh_total_q3_fixed.py'\n"
-          ],
+          "reasons": [],
           "evidence": [
             {
-              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/local/dry/PR_DF/READINESS.json",
-              "sha256": "65187ddd388f01a6740ca329250dd76919fe149d30ada2c7db6ed49c49b6823b",
-              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/remote_return/RETURN_RECEIPT.json",
-              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/remote_return/TRANSFER_MANIFEST.json",
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/romutail_prdf_source_09efb068f/checks/pass01/READINESS.json",
+              "sha256": "bc8ee9ec8410de5eb45cc3e02530a170df888009d0c9f0dcde24e4dacf8a71f4",
+              "receipt": null,
+              "manifest": null,
               "runtime_source": "RECEIVED_HOST_FACTS"
             }
           ],
@@ -559,22 +557,45 @@
               "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
               "route_view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
               "dp_workers": 2,
-              "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache"
+              "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+              "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution",
+              "adapter_manifest": {
+                "commit": "09efb068f242d5d6ff88296df3e50283b2f951bf",
+                "implementation_commit": "e37f6544dea3e021d3694264f7dae87add7ad30e",
+                "files": {
+                  "scripts/run_rpe_optimizer_q3_job.py": "63cf463024241af20e9c6b3ca55eaf0ce2ebf4a4a7b8c9ca91a8ea74f6cb7fb6",
+                  "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+                }
+              }
             },
             "views": [
               {
                 "path": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
                 "commit": "23160cc876807c0300be3de811f767b5810640a7",
                 "clean_tracked": true
+              },
+              {
+                "path": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution/.local-prdf-inner",
+                "commit": "27e70efe533862f38f4080aabb9cdd3ad1749fe9",
+                "clean_tracked": true
               }
             ],
             "runtime": {
               "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
               "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]"
+            },
+            "adapter_source": {
+              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution",
+              "commit": "09efb068f242d5d6ff88296df3e50283b2f951bf",
+              "implementation_commit": "e37f6544dea3e021d3694264f7dae87add7ad30e",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "63cf463024241af20e9c6b3ca55eaf0ce2ebf4a4a7b8c9ca91a8ea74f6cb7fb6",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
             }
           },
-          "current_host_fingerprint_sha256": "46a3112800cad4d2d56fb15387bd18391e95e50af7975f81a1e1b27f385ee6ea",
-          "host_profile_sha256": "f079ca4af3dc1db600299242c3bd900170d62d8826665145673e872f2060bb52",
+          "current_host_fingerprint_sha256": "436116c3e7c44b504480c860706ca46705c4e0b1578a595e9aa429c7d97842a1",
+          "host_profile_sha256": "03a1149d403cb255977325e5b43b635340a463f1051e9e523a5df7feb48359e6",
           "execution_profile": {
             "host_id": "local",
             "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
@@ -582,18 +603,29 @@
             "route_views": {
               "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
               "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
-              "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7"
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+              "27e70efe533862f38f4080aabb9cdd3ad1749fe9": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution/.local-prdf-inner"
             },
             "dp_workers": 2,
-            "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache"
+            "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache",
+            "adapter_root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-prdf-romutail-source-resolution",
+            "adapter_manifest": {
+              "commit": "09efb068f242d5d6ff88296df3e50283b2f951bf",
+              "implementation_commit": "e37f6544dea3e021d3694264f7dae87add7ad30e",
+              "files": {
+                "scripts/run_rpe_optimizer_q3_job.py": "63cf463024241af20e9c6b3ca55eaf0ce2ebf4a4a7b8c9ca91a8ea74f6cb7fb6",
+                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
+              }
+            }
           }
         }
       },
       "eligible_host_ids": [
+        "local",
         "server1",
         "server2"
       ],
-      "decision_sha256": "6656eaa2eaafff2e8f0d4636f794d4710a6a885b03566beefd312b0299b076a8"
+      "decision_sha256": "2ab1cb18cc3c4810d0acb6107876432751bbf9bde322bd8430f22bf62fdcf04b"
     },
     "72864f6cf968d3b514b1": {
       "method": "TRUNCATED_PF",
@@ -887,7 +919,7 @@
     },
     "805877c2ab6c3e03f7f1": {
       "method": "PR_PAULI",
-      "request_sha256": "2ee58c074591ad08542333121942c41ff74770705b311aa6e36523d3a1e8820a",
+      "request_sha256": "ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693",
       "source_manifest": {
         "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
         "files": {
@@ -921,98 +953,22 @@
       ],
       "hosts": {
         "server1": {
-          "status": "FAIL",
-          "dimensions": {
-            "request": "MATCH",
-            "source": "MATCH",
-            "input": "MATCH",
-            "route": "MATCH",
-            "runtime": "MATCH",
-            "receipt": "MATCH"
-          },
+          "status": "UNCHECKED",
           "reasons": [
-            "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 406, in main\n    r.metadata(case);stage(out, 'METADATA_PASS', bounds=bounds)\n    ^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 156, in common_metadata\n    accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case['signal_packet'])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9/src/trottertracks/rpe_pauli_signal_intake.py\", line 207, in accept_saved\n    _entry_assembly_source(root, assembly)\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9/src/trottertracks/rpe_pauli_signal_intake.py\", line 183, in _entry_assembly_source\n    raise ValueError('Unsupported saved Pauli assembly SOURCE: entry code differs: ' + path)\nValueError: Unsupported saved Pauli assembly SOURCE: entry code differs: src/trottertracks/pauli_signal_entry.py\n"
+            "[Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pauli_route_33e324b_delta/TRANSFER_MANIFEST.json'"
           ],
-          "evidence": [
-            {
-              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/server1/dry/PR_PAULI/READINESS.json",
-              "sha256": "e88139b3555836503183a3e7c6cd2fe06da61f7228ea5bc4eebe98bfd679ed0c",
-              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/remote_return/RETURN_RECEIPT.json",
-              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/remote_return/TRANSFER_MANIFEST.json",
-              "runtime_source": "RECEIVED_HOST_FACTS"
-            }
-          ],
-          "current_host_fingerprint": {
-            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
-            "request_sha256": "2ee58c074591ad08542333121942c41ff74770705b311aa6e36523d3a1e8820a",
-            "source_manifest": {
-              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
-              "files": {
-                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
-                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
-                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
-                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
-                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
-                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
-                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
-                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
-              }
-            },
-            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
-            "input_hashes": [
-              {
-                "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
-                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json",
-                "sha256": "31193aa1e80aab7c5801c27c42a0accec603ad1732a0a4c6a597d505acc5e8f0"
-              },
-              {
-                "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
-                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json",
-                "sha256": "a7fcd04d34815e64a28d5c5ee68c470e5b1bafebf481d005843f8551d986e2db"
-              },
-              {
-                "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
-                "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json",
-                "sha256": "d141289d8c091306b8a41254a26a151f69ddb8b15633b08435387174c15f5151"
-              }
-            ],
-            "profile": {
-              "host_id": "server1",
-              "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
-              "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
-              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
-              "dp_workers": 1,
-              "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache"
-            },
-            "views": [
-              {
-                "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
-                "commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
-                "clean_tracked": true
-              }
-            ],
-            "runtime": {
-              "executable": "/home/AbeHiromu/venvs/trotter-common/bin/python",
-              "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
-            }
+          "dimensions": {
+            "request": "UNCHECKED",
+            "source": "UNCHECKED",
+            "input": "UNCHECKED",
+            "route": "UNCHECKED",
+            "runtime": "UNCHECKED",
+            "receipt": "UNCHECKED"
           },
-          "current_host_fingerprint_sha256": "9babd10d733315ee86934415515eff707a3b87210583911018dc6c6858798bb3",
-          "host_profile_sha256": "79bb6a7cea83545dd582b5d050b551b95fa19e7054007956466911077bb57d24",
-          "execution_profile": {
-            "host_id": "server1",
-            "root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-distributed-q3-source-28d976b99",
-            "interpreter": "/home/AbeHiromu/venvs/trotter-common/bin/python",
-            "route_views": {
-              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-cbc471c91",
-              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-bd42dd1e9",
-              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/rpe-q3-route-23160cc87"
-            },
-            "dp_workers": 1,
-            "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/rpe-distributed-h4-plan-20261117/cache"
-          }
+          "evidence": []
         },
         "server2": {
-          "status": "FAIL",
+          "status": "PASS",
           "dimensions": {
             "request": "MATCH",
             "source": "MATCH",
@@ -1021,13 +977,11 @@
             "runtime": "MATCH",
             "receipt": "MATCH"
           },
-          "reasons": [
-            "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 406, in main\n    r.metadata(case);stage(out, 'METADATA_PASS', bounds=bounds)\n    ^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 156, in common_metadata\n    accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case['signal_packet'])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_pauli_signal_intake.py\", line 207, in accept_saved\n    _entry_assembly_source(root, assembly)\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9/src/trottertracks/rpe_pauli_signal_intake.py\", line 183, in _entry_assembly_source\n    raise ValueError('Unsupported saved Pauli assembly SOURCE: entry code differs: ' + path)\nValueError: Unsupported saved Pauli assembly SOURCE: entry code differs: src/trottertracks/pauli_signal_entry.py\n"
-          ],
+          "reasons": [],
           "evidence": [
             {
-              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/server2/dry/PR_PAULI/READINESS.json",
-              "sha256": "c7690496076388d3ab72a79e191b759a1dd4956436b253adb8bea36d46c4c7cb",
+              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/pauli_descriptor_route/server2_dry_check/READINESS.json",
+              "sha256": "1ad71c5c3f8accb9e4e47ddef8083ba60af35e4ba8991cbfcd624c4acd449a53",
               "receipt": null,
               "manifest": null,
               "runtime_source": "LOCAL_FINGERPRINT"
@@ -1035,7 +989,7 @@
           ],
           "current_host_fingerprint": {
             "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
-            "request_sha256": "2ee58c074591ad08542333121942c41ff74770705b311aa6e36523d3a1e8820a",
+            "request_sha256": "ed04775d03240eee59d639fd039842652f28eaf4472f59cf4f12f9192a35f693",
             "source_manifest": {
               "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
               "files": {
@@ -1071,14 +1025,14 @@
               "host_id": "server2",
               "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
               "interpreter": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
-              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
+              "route_view": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b",
               "dp_workers": 3,
               "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache"
             },
             "views": [
               {
-                "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
-                "commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
+                "path": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b",
+                "commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
                 "clean_tracked": true
               }
             ],
@@ -1087,8 +1041,8 @@
               "version": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]"
             }
           },
-          "current_host_fingerprint_sha256": "02a23dfb1fccfb1e1eda528975144277d141ae92ac04987d30c87b16add6264a",
-          "host_profile_sha256": "1d150f5be52d0b96dc9fcb546beced88c80c68e45b13d5a4fcfed0096e2bfb46",
+          "current_host_fingerprint_sha256": "7ea33fa8278e5c5c9d8c4199fb32a0a342e589727c73ab4c3bfc24dcc3a02faf",
+          "host_profile_sha256": "2aa8f82f1989dfa010bae3057267c4e166bc4cf9a6e5dc7a2ca89e539393e2cc",
           "execution_profile": {
             "host_id": "server2",
             "root": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-q3-source-28d976b99",
@@ -1096,106 +1050,33 @@
             "route_views": {
               "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-cbc471c91",
               "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-b-bd42dd1e9",
-              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87"
+              "23160cc876807c0300be3de811f767b5810640a7": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/b2-route-view-d2-23160cc87",
+              "33e324b43690caeaa353ecdb9e3d42f3139198b6": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d2-auto-b-intake-33e324b"
             },
             "dp_workers": 3,
             "prefix_cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-h4-plan-20261117/docs/research/rpe_distributed_h4_plan_20261117/dry-check/server2/cache"
           }
         },
         "local": {
-          "status": "FAIL",
-          "dimensions": {
-            "request": "MATCH",
-            "source": "MATCH",
-            "input": "MATCH",
-            "route": "MATCH",
-            "runtime": "MATCH",
-            "receipt": "MATCH"
-          },
+          "status": "UNCHECKED",
           "reasons": [
-            "Traceback (most recent call last):\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 442, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 406, in main\n    r.metadata(case);stage(out, 'METADATA_PASS', bounds=bounds)\n    ^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99/scripts/run_rpe_optimizer_q3_job.py\", line 156, in common_metadata\n    accepted = A.accept_saved(view, integration=T.C.interfaces(str(view)).pipeline, handoff_source=case['signal_packet'])\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c/src/trottertracks/rpe_pauli_signal_intake.py\", line 207, in accept_saved\n    _entry_assembly_source(root, assembly)\n  File \"/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c/src/trottertracks/rpe_pauli_signal_intake.py\", line 183, in _entry_assembly_source\n    raise ValueError('Unsupported saved Pauli assembly SOURCE: entry code differs: ' + path)\nValueError: Unsupported saved Pauli assembly SOURCE: entry code differs: src/trottertracks/pauli_signal_entry.py\n"
+            "[Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/pauli_route_33e324b_delta/TRANSFER_MANIFEST.json'"
           ],
-          "evidence": [
-            {
-              "readiness": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/local/dry/PR_PAULI/READINESS.json",
-              "sha256": "d84d9b5e870fc2ad5e2ee3cb67a5321ed3c075403826819db30b33c00b8536b3",
-              "receipt": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/remote_return/RETURN_RECEIPT.json",
-              "manifest": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-q3-host-eligibility/docs/research/rpe_q3_host_eligibility/evidence/remote_return/TRANSFER_MANIFEST.json",
-              "runtime_source": "RECEIVED_HOST_FACTS"
-            }
-          ],
-          "current_host_fingerprint": {
-            "schema": "RPE_Q3_CURRENT_HOST_FINGERPRINT_V1",
-            "request_sha256": "2ee58c074591ad08542333121942c41ff74770705b311aa6e36523d3a1e8820a",
-            "source_manifest": {
-              "commit": "28d976b99cdf8329adcc1b79327e329e947ef774",
-              "files": {
-                "scripts/run_rpe_optimizer_q3_job.py": "945e81b3795918e36c0ba2b222a82901d1d85481407efb4f57e6e9abcbbfe1ab",
-                "scripts/run_rpe_q3_worker.py": "46e947751d5e6652a376ed36ef22241b37763fcb76fcd3de3c75fa52b2d19f55",
-                "scripts/run_rpe_method_optimizer.py": "94baac4a3797d715b250dce26a99ba8a9fa139ba930f1904ccd2272a5e54554e",
-                "src/trottertracks/rpe_optimizer_concurrent.py": "8910d25266c3fa463cbfdd8307dd43a750edd23d54be2cafdf4b8af143616d9b",
-                "src/trottertracks/rpe_q3_coordinator.py": "b196e9e19e1019938e46574c6fda978faf98186de8bf8b927eb58d700ca811d4",
-                "src/trottertracks/rpe_q3_store.py": "4472b7cb9debee69268164adc2e013a5f9987e39e2f57ffd2d059b716d068b92",
-                "src/trottertracks/rpe_q3_worker.py": "924aa7ae1336271badbf585b38f36ea2362056601bc39719b69341cc68a851ae",
-                "src/trottertracks/rpe_dp_prefix_reuse.py": "554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2"
-              }
-            },
-            "source_head": "28d976b99cdf8329adcc1b79327e329e947ef774",
-            "input_hashes": [
-              {
-                "commit": "243abf38c4375504762ec80c1e945995fa5877c6",
-                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/CONFIGURATION.json",
-                "sha256": "31193aa1e80aab7c5801c27c42a0accec603ad1732a0a4c6a597d505acc5e8f0"
-              },
-              {
-                "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
-                "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json",
-                "sha256": "a7fcd04d34815e64a28d5c5ee68c470e5b1bafebf481d005843f8551d986e2db"
-              },
-              {
-                "commit": "b6d4dea49c39f364048af422bc2928ee7c169261",
-                "path": "docs/research/pauli_ld5_two_vectors_q3_results_20261116/INPUTS.json",
-                "sha256": "d141289d8c091306b8a41254a26a151f69ddb8b15633b08435387174c15f5151"
-              }
-            ],
-            "profile": {
-              "host_id": "local",
-              "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
-              "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
-              "route_view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
-              "dp_workers": 2,
-              "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache"
-            },
-            "views": [
-              {
-                "path": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
-                "commit": "bd42dd1e95eb1d4152216d62792ad3421b803f7c",
-                "clean_tracked": true
-              }
-            ],
-            "runtime": {
-              "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
-              "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]"
-            }
+          "dimensions": {
+            "request": "UNCHECKED",
+            "source": "UNCHECKED",
+            "input": "UNCHECKED",
+            "route": "UNCHECKED",
+            "runtime": "UNCHECKED",
+            "receipt": "UNCHECKED"
           },
-          "current_host_fingerprint_sha256": "d01332ea21c6a66650a3395d83ae16a2afbcfbc4cceda28b11718e94ba016091",
-          "host_profile_sha256": "0908e06f2e11fcea78044867b56667dfab52719e842001534c9fb2aa41c67007",
-          "execution_profile": {
-            "host_id": "local",
-            "root": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/common-28d976b99",
-            "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
-            "route_views": {
-              "cbc471c913072de45c25a0ed22d51dff8a9b7034": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/cbc471c913072de45c25a0ed22d51dff8a9b7034",
-              "bd42dd1e95eb1d4152216d62792ad3421b803f7c": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/bd42dd1e95eb1d4152216d62792ad3421b803f7c",
-              "23160cc876807c0300be3de811f767b5810640a7": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7"
-            },
-            "dp_workers": 2,
-            "prefix_cache_directory": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/h4-plan-20261117/cache"
-          }
+          "evidence": []
         }
       },
-      "eligible_host_ids": [],
-      "decision_sha256": "c19c95f874e21f1fbe43a4acdab54b663125fda34b9933355825dd4cb7d63de7"
+      "eligible_host_ids": [
+        "server2"
+      ],
+      "decision_sha256": "6a4cb87a5121d741f1f05319ba7f630b0b96477879574c265819c53657f42175"
     }
   },
   "scientific_evaluation_calls": 0,

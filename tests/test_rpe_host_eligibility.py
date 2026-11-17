@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+import shutil
+import subprocess
 import unittest
 from unittest.mock import patch
 
@@ -19,6 +21,27 @@ def save(path, value):
 
 
 class HostEligibilityTests(unittest.TestCase):
+    def romutail_fixture(self):
+        root = Path(__file__).resolve().parents[1]
+        evidence = root / 'docs/research/rpe_q3_host_eligibility/evidence/romutail_prdf_source_09efb068f'
+        commit = '09efb068f242d5d6ff88296df3e50283b2f951bf'
+        if not evidence.is_dir() or subprocess.run(['git', 'cat-file', '-e', commit], cwd=root,
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
+            self.skipTest('Pinned RomuTail publication is unavailable')
+        target = self.base / 'romutail-evidence'
+        shutil.copytree(evidence, target)
+        assignment = H._read(target / 'ASSIGNMENT.json')
+        profile = H._read(target / 'PROFILE.json')
+        observed = H._read(target / 'checks/pass01/READINESS.json')
+        profile.update(adapter_root=observed['adapter_source']['root'],
+            adapter_manifest=dict(commit=commit, implementation_commit=observed['adapter_source']['commit'],
+                files={'scripts/run_rpe_optimizer_q3_job.py': observed['adapter_source']['sha256'],
+                       'src/trottertracks/rpe_dp_prefix_reuse.py': '554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2'}))
+        descriptor = dict(kind='fixed_git', root=str(target), fixed_commit=commit,
+            fixed_prefix='docs/research/rpe_prdf_romutail_source_20261117',
+            portability_checks=str(target / 'CHECKS.json'), published_profile=str(target / 'PROFILE.json'))
+        return assignment, profile, descriptor, target
+
     def dedicated_fixture(self):
         profile = deepcopy(self.profile)
         profile['interpreter'] = '/owned/runtime-acceptance/python'
@@ -238,6 +261,35 @@ class HostEligibilityTests(unittest.TestCase):
             actual = H.current_host_fingerprint(self.assignment, profile)
         self.assertEqual(actual['runtime']['launcher_sha256'], H._sha(profile['interpreter']))
         self.assertEqual(actual['runtime']['actual_binary_sha256'], H._sha(Path(sys.executable).resolve()))
+
+    def test_published_portability_adapter_keeps_original_source_request_and_resolved_copy(self):
+        assignment, profile, descriptor, target = self.romutail_fixture()
+        original = H._read(target / 'ORIGINAL_REQUEST.json')
+        resolved = H._read(target / 'checks/pass01/RESOLVED_REQUEST.json')
+        self.assertEqual(assignment['request'], original)
+        self.assertEqual(H._resolved_request(assignment, profile), resolved)
+        policy = H.derive_host_eligibility([assignment], [profile], {profile['host_id']: descriptor})
+        cell = policy['jobs'][assignment['job_id']]['hosts'][profile['host_id']]
+        self.assertEqual(cell['status'], 'PASS', cell['reasons'])
+        self.assertEqual(cell['execution_profile']['adapter_manifest']['implementation_commit'],
+                         'e37f6544dea3e021d3694264f7dae87add7ad30e')
+        self.assertEqual(cell['current_host_fingerprint']['adapter_source']['commit'],
+                         '09efb068f242d5d6ff88296df3e50283b2f951bf')
+        self.assertEqual(cell['current_host_fingerprint']['source_manifest'], assignment['source_manifest'])
+
+    def test_portability_adapter_mismatch_or_unbound_fallback_is_unchecked(self):
+        assignment, profile, descriptor, target = self.romutail_fixture()
+        for changed in (deepcopy(profile), H._read(target / 'PROFILE.json')):
+            if changed.get('adapter_manifest'):
+                changed['adapter_manifest']['files']['scripts/run_rpe_optimizer_q3_job.py'] = '0' * 64
+            policy = H.derive_host_eligibility([assignment], [changed], {changed['host_id']: descriptor})
+            self.assertEqual(policy['jobs'][assignment['job_id']]['hosts'][changed['host_id']]['status'], 'UNCHECKED')
+
+    def test_tampered_portability_external_mapping_is_unchecked(self):
+        assignment, profile, descriptor, target = self.romutail_fixture()
+        save(target / 'checks/pass01/ROUTE_VIEWS.json', {'wrong-inner': '/wrong/path'})
+        policy = H.derive_host_eligibility([assignment], [profile], {profile['host_id']: descriptor})
+        self.assertEqual(policy['jobs'][assignment['job_id']]['hosts'][profile['host_id']]['status'], 'UNCHECKED')
 
 
 if __name__ == '__main__':

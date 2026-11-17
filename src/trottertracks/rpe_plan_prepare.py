@@ -167,9 +167,7 @@ def _known_minima(context, methods):
     return minimum
 
 
-def merge_host_readiness(prepared, output, code_root, descriptor=None):
-    """Join saved remote evidence with this run's local checks before READY."""
-    from .rpe_host_eligibility import derive_host_eligibility
+def host_profile_inputs(prepared, output, code_root, descriptor=None):
     output, code_root = Path(output), Path(code_root)
     config = Path(descriptor) if descriptor else code_root / 'docs/research/rpe_q3_host_eligibility/EVIDENCE.json'
     config = config.resolve()
@@ -183,6 +181,14 @@ def merge_host_readiness(prepared, output, code_root, descriptor=None):
             profiles[host]['route_profiles'] = deepcopy(rules)
     for host, profile in profiles.items():
         write(output / 'worker_profiles' / (host + '.json'), profile)
+    return config, data, profiles
+
+
+def merge_host_readiness(prepared, output, code_root, descriptor=None):
+    """Join saved remote evidence with this run's local checks before READY."""
+    from .rpe_host_eligibility import derive_host_eligibility
+    output, code_root = Path(output), Path(code_root)
+    config, data, profiles = host_profile_inputs(prepared, output, code_root, descriptor)
     evidence = deepcopy(data.get('evidence_by_host', {}))
     local_host = O.load_json(prepared['server2_profile'])['host_id']
     evidence[local_host] = dict(kind='local', root=str(output / 'host_checks'),
@@ -192,10 +198,12 @@ def merge_host_readiness(prepared, output, code_root, descriptor=None):
     policy_path = output / 'HOST_ELIGIBILITY.json'
     write(policy_path, policy)
     options_path = output / 'DISTRIBUTED_OPTIONS.json'
-    write(options_path, dict(executor=dict(scheduler='concurrent', dp_workers=3,
+    write(options_path, dict(routes_override=prepared.get('routes_override', {}),
+        executor=dict(scheduler='concurrent', dp_workers=3,
         prefix_checkpoint_rounds=[5, 11], prefix_cache_directory=None,
         distributed=dict(host_eligibility=str(policy_path), computation_root=profiles[local_host]['root'],
                          computation_source=prepared['computation_source'],
+                         required_hosts=[],
                          worker_script=str(code_root / 'scripts/run_rpe_q3_worker.py'))),
         note='Executor fragment only. It grants no scientific execution or budget; merge into a separately approved new round. Worker profiles keep the dry-checked interpreter/routes/DP/cache; work_dir and slots may be added.'))
     prepared['host_eligibility'] = dict(path=str(policy_path), schema=policy['schema'],
@@ -248,11 +256,17 @@ def prepare(a, *, code_root, cli):
                 executor.launch_disabled = True
 
             def ready(result, current, routes):
+                descriptor = getattr(a, 'host_readiness', None)
+                configuration = Path(descriptor) if descriptor else code_root / 'docs/research/rpe_q3_host_eligibility/EVIDENCE.json'
+                host_settings = O.load_json(configuration) if configuration.is_file() else {}
                 with stages.phase('REQUEST_AND_REMOTE_DELIVERY'):
                     prepared = build_readiness(computation_root, dict(current, routes=routes), problem, spec,
-                                               dict(methods=result), output / 'readiness')
+                        dict(methods=result), output / 'readiness',
+                        execution_route_updates=host_settings.get('execution_route_updates', ()))
+                    _, _, profiles = host_profile_inputs(prepared, output, code_root, descriptor)
+                    host = O.load_json(prepared['server2_profile'])['host_id']
                 with stages.phase('SERVER2_DRY_CHECKS'):
-                    dry = run_server2_dry_checks(computation_root, prepared, prepared['server2_profile'],
+                    dry = run_server2_dry_checks(computation_root, prepared, output / 'worker_profiles' / (host + '.json'),
                         output / 'host_checks', cache=cache / 'DRY_CACHE.json',
                         checker=code_root / 'scripts/check_rpe_q3_host_readiness.py')
                     write(cache / 'DRY_CACHE.json', dry)
