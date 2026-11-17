@@ -1,0 +1,92 @@
+test_collect_saved_only_contacts_qg2_and_preserves_original_results (test_rpe_preparation_deployment.DeploymentRecovery.test_collect_saved_only_contacts_qg2_and_preserves_original_results) ... {
+  "schema": "RPE_PREPARATION_DEPLOYMENT_RETURN_V1",
+  "source": "FIXED_ARTIFICIAL",
+  "rows": [
+    {
+      "host_id": "server1",
+      "status": "PREPARATION_OR_TRANSPORT_HOLD",
+      "reasons": [
+        "No saved host result after interrupted collection; no reconnect or retry attempted"
+      ]
+    },
+    {
+      "host_id": "local",
+      "stage": "signal",
+      "status": "SAVED_INPUT_RUNTIME_INSPECTION_PASS"
+    },
+    {
+      "host_id": "local0-wsl",
+      "stage": "signal",
+      "status": "SAVED_INPUT_RUNTIME_INSPECTION_PASS"
+    }
+  ],
+  "collection_scope": "SAVED_LOCAL_RESULTS_NO_HOST_RECONNECT",
+  "wsl_paused_unchanged": null,
+  "wsl_accepting_new_jobs": false,
+  "scientific_calls": 0,
+  "compile_calls": 0,
+  "queue_operations": 0
+}
+{
+  "ok": true,
+  "receipt": {
+    "transfer_manifest_sha256": "2801f8656e5b858ed7126b2fe9f8a195acac1794f4a5a6373b3647d11adeda01",
+    "verified_transferred_files": 4,
+    "destination": "/tmp/tmphnzbj2sj/returned",
+    "scientific_evaluation_calls": 0,
+    "production_queue_submissions": 0
+  }
+}
+ok
+test_collect_saved_rejects_different_source_before_return (test_rpe_preparation_deployment.DeploymentRecovery.test_collect_saved_rejects_different_source_before_return) ... ok
+test_transport_exception_returns_successful_hosts_and_saves_failure (test_rpe_preparation_deployment.DeploymentRecovery.test_transport_exception_returns_successful_hosts_and_saves_failure) ... {"event": "HOST_PREPARATION_DRY_CHECK_START", "host_id": "server1"}
+{"event": "HOST_PREPARATION_DRY_CHECK_RETURN", "host_id": "server1", "ok": false}
+{"event": "HOST_PREPARATION_DRY_CHECK_START", "host_id": "local"}
+{"event": "HOST_PREPARATION_DRY_CHECK_RETURN", "host_id": "local", "ok": true}
+{"event": "HOST_PREPARATION_DRY_CHECK_START", "host_id": "local0-wsl"}
+{"event": "HOST_PREPARATION_DRY_CHECK_RETURN", "host_id": "local0-wsl", "ok": true}
+{
+  "schema": "RPE_PREPARATION_DEPLOYMENT_RETURN_V1",
+  "source": "FIXED_ARTIFICIAL",
+  "rows": [
+    {
+      "host_id": "server1",
+      "status": "PREPARATION_OR_TRANSPORT_HOLD",
+      "reasons": [
+        "No route to host"
+      ]
+    },
+    {
+      "host_id": "local",
+      "stage": "signal",
+      "status": "SAVED_INPUT_RUNTIME_INSPECTION_PASS"
+    },
+    {
+      "host_id": "local0-wsl",
+      "stage": "signal",
+      "status": "SAVED_INPUT_RUNTIME_INSPECTION_PASS"
+    }
+  ],
+  "collection_scope": "PLACEMENT_AND_INSPECTION",
+  "wsl_paused_unchanged": true,
+  "wsl_accepting_new_jobs": false,
+  "scientific_calls": 0,
+  "compile_calls": 0,
+  "queue_operations": 0
+}
+{
+  "ok": true,
+  "receipt": {
+    "transfer_manifest_sha256": "daaa21c603b837abb8bcfcdcba707714264f5afd7337f8b5dcedeee1c1e6252b",
+    "verified_transferred_files": 4,
+    "destination": "/tmp/tmppclx4ec8/returned",
+    "scientific_evaluation_calls": 0,
+    "production_queue_submissions": 0
+  }
+}
+ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.024s
+
+OK

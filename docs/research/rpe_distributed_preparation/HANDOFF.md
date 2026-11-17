@@ -7,6 +7,27 @@
 server1・server2・RomuTail・local0-wslのどれにも工程別profileを持てる。方式ごとの専任hostは作らない。
 今回の新規実H4信号・回路compile・Q3は0件。既存の科学run・SOURCE・原結果・UNKNOWN・STOPを変更しない。
 
+## 今回の遠隔検査の返送障害
+
+local0からの初回実行は、server1へのSSHが`No route to host`で失敗した。
+この接続ではserver1のremote programは開始されていない。利用者からもserver1停止中の申告がある。
+RomuTailとWSLのrunnerは終了したが、旧runnerが1台の接続例外で全体の返送前に終了した。
+`ok=true`は検査runnerが終了した意味であり、各セルのPASSは返送後にREADINESSで照合する。
+
+初回配置を繰り返さず、[回収専用手順](recovery_transport_v1/RUN_COLLECT_SAVED.ps1)を使う。
+この手順はlocal0の既存ZIP・`results/local.json`・`results/local0-wsl.json`だけを読み、qg2へ返す。
+server1・RomuTail・WSLへ接続せず、配置・検査・科学処理を再実行しない。
+server1は未確認/HOLDとして残し、復旧まで追加接続・自動再試行しない。
+旧bundleと工程実装f956は変更せず、修正したcollectorだけを別ファイルで配布する。
+通常runnerにもhostごとの例外保存を追加し、1台の接続失敗で他hostの保存結果を失わないようにした。
+
+```powershell
+$P = Join-Path $env:USERPROFILE 'rpe-preparation-deploy-f956f5197a5a'
+scp 'qg2:/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-distributed-preparation/docs/research/rpe_distributed_preparation/recovery_transport_v1/RUN_COLLECT_SAVED.ps1' (Join-Path $P 'COLLECT_SAVED.ps1')
+if ($LASTEXITCODE -ne 0) { throw 'Recovery script download failed' }
+& (Join-Path $P 'COLLECT_SAVED.ps1')
+```
+
 ## 通常入口と再開
 
 別途採択した**新しい**科学roundに、配置packのprofile/settingsを使う。

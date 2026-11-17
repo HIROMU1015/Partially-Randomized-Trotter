@@ -102,8 +102,14 @@ DF compile/auditのnative provider/configが遠隔hostにない場合は具体�
 
 ## 次の実行に残ること
 
-local0の[一括配置・検査](HANDOFF.md)から、遠隔3台の新工程検査を返送する。
-返送後はSOURCE・入力・profile・hashと照合して上表を更新する。
+local0の初回実行ではRomuTailとWSLのrunnerが終了し、server1へのSSHは`No route to host`で失敗した。
+利用者はserver1停止中と申告している。この接続ではserver1上の配置programは開始していない。
+旧collectorの未処理例外で2台分の返送まで中断したため、hostごとの例外保存と、
+既存のlocal0結果だけをqg2へ返す`--collect-saved`を追加した。
+[修正の人工検査3件](recovery_transport_v1/TESTS.json)では、1台の接続失敗でも2台分を保持・返送し、
+保存結果の回収時はqg2以外へ接続しないことを通常CLIで確認した。
+旧bundle・工程実装・既存の実入力検査を再実行せず、[回収専用手順](HANDOFF.md)から返送する。
+返送後はSOURCE・入力・profile・hashと照合して上表を更新する。server1は復旧まで未確認/HOLDを維持する。
 WSLは受付停止で引き渡し、検査時もPauseを解除しない。
 新しい科学roundは、準備範囲・工程別予算・Q3予算・exact readiness policyを採択してから通常入口で開始する。
 controllerは可変の専用worktree、worker adapterとsource viewは固定の別領域とする。

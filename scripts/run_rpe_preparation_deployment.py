@@ -82,7 +82,7 @@ def remote(host,payload,U,utility):
     bootstrap="import base64,sys;exec(base64.b64decode(sys.stdin.buffer.readline()),{'__name__':'_rpe_preparation_deployment'})"
     args=[host['transport_python'],'-c',bootstrap]
     if host.get('transport')=='wsl':command=['wsl.exe','-d',host['distribution'],'--exec',*args]
-    else:command=['ssh','-T','-o','BatchMode=yes',host['ssh_alias'],shlex.join(args)]
+    else:command=['ssh','-T','-o','BatchMode=yes','-o','ConnectTimeout=10','-o','ConnectionAttempts=1',host['ssh_alias'],shlex.join(args)]
     data=base64.b64encode(Path(__file__).read_bytes())+b'\n'+U.encode(payload)
     return json.loads(U.run(command,input=data,capture_output=True).stdout)
 
@@ -97,10 +97,42 @@ def return_only(output,U,utility):
     return result
 
 
+def finish_return(output,manifest,results,U,utility,*,recovered=False,wsl_paused_unchanged=None):
+    """Return completed hosts even when a different transport is unavailable."""
+    rows=[];returned={}
+    for host in manifest['hosts']:
+        identity=host['host_id'];result=results[identity]
+        if result.get('ok'):
+            facts=result['result']
+            if facts.get('host_id')!=identity or facts.get('source')!=manifest['source']:
+                raise ValueError('Saved host result identity/SOURCE differs: '+identity)
+            for name,encoded in result['files'].items():
+                U.relative(name)
+                if not name.startswith(identity+'/'):raise ValueError('Saved file belongs to another host: '+name)
+                base64.b64decode(encoded,validate=True)
+            rows.extend(facts['rows']);returned.update(result['files'])
+        else:
+            rows.append(dict(host_id=identity,status='PREPARATION_OR_TRANSPORT_HOLD',reasons=[result.get('error')]))
+            returned[identity+'/ERROR.json']=base64.b64encode(U.encode(result)).decode()
+    flag=json.loads(Path(manifest['participation_file']).read_text(encoding='utf-8-sig'))
+    summary=dict(schema='RPE_PREPARATION_DEPLOYMENT_RETURN_V1',source=manifest['source'],rows=rows,
+        collection_scope='SAVED_LOCAL_RESULTS_NO_HOST_RECONNECT'if recovered else'PLACEMENT_AND_INSPECTION',
+        wsl_paused_unchanged=wsl_paused_unchanged,wsl_accepting_new_jobs=flag.get('accepting_new_jobs'),
+        scientific_calls=0,compile_calls=0,queue_operations=0)
+    U.put(output/'SUMMARY.json',U.encode(summary));returned['SUMMARY.json']=base64.b64encode(U.encode(summary)).decode()
+    payload=dict(action='receive',directory=manifest['return_directory'],files=returned,
+        manifest={n:U.sha(base64.b64decode(v))for n,v in returned.items()},return_transport=manifest['return_transport'])
+    U.put(output/'RETURN_PAYLOAD.json',U.encode(payload));receipt=return_only(output,U,utility)
+    print(json.dumps(summary,indent=2,ensure_ascii=False));print(json.dumps(receipt,indent=2))
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--bundle',type=Path,required=True)
     parser.add_argument('--bundle-sha256',required=True);parser.add_argument('--output',type=Path)
-    parser.add_argument('--return-only',type=Path);args=parser.parse_args()
+    recovery=parser.add_mutually_exclusive_group()
+    recovery.add_argument('--return-only',type=Path)
+    recovery.add_argument('--collect-saved',type=Path,help='Collect existing host JSON files; connect only to the return host, without inspection or deployment')
+    args=parser.parse_args()
     raw=args.bundle.read_bytes()
     if hashlib.sha256(raw).hexdigest()!=args.bundle_sha256:raise ValueError('Published package SHA256 differs')
     with zipfile.ZipFile(io.BytesIO(raw))as archive:files={name:archive.read(name)for name in archive.namelist()}
@@ -110,6 +142,15 @@ def main():
         if U.sha(files[name])!=sha:raise ValueError('Package member hash differs: '+name)
     if args.return_only:
         return_only(args.return_only,U,utility);return
+    if args.collect_saved:
+        output=args.collect_saved
+        if not output.is_dir():raise ValueError('Existing saved output directory required')
+        results={}
+        for host in manifest['hosts']:
+            path=output/(host['host_id']+'.json')
+            results[host['host_id']]=(json.loads(path.read_text())if path.is_file()else
+                dict(ok=False,error_type='SAVED_RESULT_MISSING',error='No saved host result after interrupted collection; no reconnect or retry attempted'))
+        finish_return(output,manifest,results,U,utility,recovered=True);return
     output=args.output
     if output is None:parser.error('--output required')
     output.mkdir(parents=True,exist_ok=False)
@@ -118,22 +159,15 @@ def main():
     def inspect(host):
         print(json.dumps(dict(event='HOST_PREPARATION_DRY_CHECK_START',host_id=host['host_id'])),flush=True)
         required=['TASKS.json',host['profile']]
-        result=remote(host,dict(action='host',source=manifest['source'],host=host,files={n:base64.b64encode(files[n]).decode()for n in required},hashes={n:manifest['files'][n]for n in required}),U,utility)
+        try:
+            result=remote(host,dict(action='host',source=manifest['source'],host=host,files={n:base64.b64encode(files[n]).decode()for n in required},hashes={n:manifest['files'][n]for n in required}),U,utility)
+        except Exception as error:
+            result=dict(ok=False,error_type=type(error).__name__,error=str(error),automatic_retry=False)
         print(json.dumps(dict(event='HOST_PREPARATION_DRY_CHECK_RETURN',host_id=host['host_id'],ok=result.get('ok'))),flush=True)
         U.put(output/(host['host_id']+'.json'),U.encode(result));return host['host_id'],result
     with ThreadPoolExecutor(max_workers=3)as pool:results=dict(pool.map(inspect,manifest['hosts']))
     if participation.read_bytes()!=before:raise ValueError('WSL participation changed during inspection')
-    rows=[];returned={}
-    for host,result in results.items():
-        if result.get('ok'):rows.extend(result['result']['rows']);returned.update(result['files'])
-        else:
-            rows.append(dict(host_id=host,status='PREPARATION_OR_TRANSPORT_HOLD',reasons=[result.get('error')]))
-            returned[host+'/ERROR.json']=base64.b64encode(U.encode(result)).decode()
-    summary=dict(schema='RPE_PREPARATION_DEPLOYMENT_RETURN_V1',source=manifest['source'],rows=rows,wsl_paused_unchanged=True,scientific_calls=0,compile_calls=0,queue_operations=0)
-    U.put(output/'SUMMARY.json',U.encode(summary));returned['SUMMARY.json']=base64.b64encode(U.encode(summary)).decode()
-    payload=dict(action='receive',directory=manifest['return_directory'],files=returned,manifest={n:U.sha(base64.b64decode(v))for n,v in returned.items()},return_transport=manifest['return_transport'])
-    U.put(output/'RETURN_PAYLOAD.json',U.encode(payload));receipt=return_only(output,U,utility)
-    print(json.dumps(summary,indent=2,ensure_ascii=False));print(json.dumps(receipt,indent=2))
+    finish_return(output,manifest,results,U,utility,wsl_paused_unchanged=True)
 
 
 if __name__=='_rpe_preparation_deployment':remote_main()
