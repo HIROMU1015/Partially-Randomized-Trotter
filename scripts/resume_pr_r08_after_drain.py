@@ -260,12 +260,12 @@ def execute(plan, study):
                           ('CONTROLLER.log', 'CONTROLLER_INVOCATIONS.jsonl', 'ROUND_STAGES.jsonl',
                            'DRIVER_PROGRESS.jsonl', 'PROGRESS.jsonl', 'completion/PROGRESS.jsonl')]
             git(*IDENTITY, 'add', '--', *old_paths, cwd=old_root)
-            if git('diff', '--cached', '--name-only', cwd=old_root):
-                git(*IDENTITY, 'commit', '-m', 'Preserve terminal R08 metadata before technical source handover', cwd=old_root)
+            if git('diff', 'HEAD', '--name-only', '--', *old_paths, cwd=old_root):
+                git(*IDENTITY, 'commit', '--only', '-m', 'Preserve terminal R08 metadata before technical source handover', '--', *old_paths, cwd=old_root)
                 git('push', 'origin', plan['old_branch'], cwd=old_root)
             run, remaining = import_inputs(plan, old_run, study)
             git(*IDENTITY, 'add', '--', str(study.relative_to(ROOT)))
-            git(*IDENTITY, 'commit', '-m', 'Fix R08 recovery inputs after old owner drain; preserve scientific evidence')
+            git(*IDENTITY, 'commit', '--only', '-m', 'Fix R08 recovery inputs after old owner drain; preserve scientific evidence', '--', str(study.relative_to(ROOT)))
             git('push', 'origin', git('branch', '--show-current'))
         else:
             source = read(run / 'SOURCE.json')
