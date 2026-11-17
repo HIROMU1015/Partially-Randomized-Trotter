@@ -44,7 +44,7 @@ class Tests(unittest.TestCase):
             reused_at_preflight=current['preflight']['reused'],reused_at_normal_start=result['prior_rounds']['loaded'],same_q3_relaunches=0,
             artificial_new_calls=len(calls),unseen_candidate='ARTIFICIAL_LD7',unseen_remains=True,old_config_and_receipt_unchanged=True,
             same_scope_reuses_run=True,real_scientific_calls=0)
-        write(OUTPUT/'OVERLAP_ACCEPTANCE.json',evidence)
+        write(pathlib.Path(self.config['state_directory'])/'OVERLAP_ACCEPTANCE.json',evidence)
     def test_exact_fraction_and_binary64_are_different(self):
         exact=number(dict(kind='exact',value='1/5'),'width');binary=number(dict(kind='binary64',value='0.2'),'width')
         self.assertNotEqual(exact[1]['exact'],binary[1]['exact']);self.assertEqual(exact[1]['exact'],'1/5')

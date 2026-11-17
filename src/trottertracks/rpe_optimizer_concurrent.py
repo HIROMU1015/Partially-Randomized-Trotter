@@ -610,7 +610,6 @@ class DistributedExecutor(ConcurrentExecutor):
         view.__dict__.update(self.__dict__)
         view.__dict__.pop('finish', None)
         view.method = method
-        view.__dict__.pop('finish', None)
         return view
 
     def alive(self, launch, job):
