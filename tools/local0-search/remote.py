@@ -8,6 +8,13 @@ import json
 import pathlib
 import sys
 
+if 'CONFIG' not in globals():
+    import argparse
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--transport-base64',required=True)
+    arguments=parser.parse_args()
+    CONFIG=json.loads(base64.b64decode(arguments.transport_base64))
+
 try:
     path = pathlib.Path(CONFIG['server_config'])
     config = json.loads(path.read_text())
