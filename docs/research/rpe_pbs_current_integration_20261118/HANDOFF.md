@@ -1,5 +1,7 @@
 # 通常運用へのPBS統合HANDOFF（2026-11-18 JST）
 
+新規探索のCPU配分と採用済み設定は [CPU上限のHANDOFF](cpu_limits/HANDOFF.md) を参照。
+
 採用current：`romutail-pbs-current-95a74e448`。controller/PBS transport SOURCE：
 `95a74e4486131a97bd5235221bf2d8ab9f99f591`。
 [REPORT](REPORT.md)、[採用記録](checks/ADOPTION.json)、[通常入口の実機検収](entry/FINAL_ACCEPTANCE.json)。
