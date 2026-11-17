@@ -314,7 +314,12 @@ class ConcurrentExecutor(O.Executor):
             else:
                 if not allow_new and task is None:return None
                 task=self._enqueue(proposal,demand=True)
-                if task is False:return dict(status='BUDGET_EXHAUSTED',job=None)
+                if task is False:
+                    # A user stop declines new work; it is not a numerical
+                    # answer. Keep the priority search out of its MSE/call
+                    # accounting and let the outer driver persist the stop.
+                    if self._user_stop_requested():return None
+                    return dict(status='BUDGET_EXHAUSTED',job=None)
                 if task is None:return dict(status='NO_ROUTE',job=None)
                 self.log(event='DEPENDENCY_WAIT_START',job=job.name)
                 try:task.event.wait()
