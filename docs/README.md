@@ -1,5 +1,7 @@
 # 文書索引
 
+[価格検証統合・4環境配置](research/rpe_price_release_integration_20261118/HANDOFF.md)：共有store、工程別SOURCE/runtime、共通操作、保存入力・人工検収、server1復帰。
+
 [H4中央管理のRomuTail移行](research/rpe_romutail_controller_20261118/HANDOFF.md)：状態の正本、通常コマンド、固定版の登録、保存入力検査、人工検収とserver1復帰手順。
 
 [候補別のdry-check PASSホストへのQ3割当](research/rpe_q3_host_eligibility/REPORT.md)：保存READINESSを通常準備へ結合し、新規claim直前に現在の実行環境も照合。実H4起動0、人工queueで検査。

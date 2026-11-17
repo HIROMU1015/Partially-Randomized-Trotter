@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[価格検証統合・4環境配置](../../docs/research/rpe_price_release_integration_20261118/HANDOFF.md)：`rpe_release_deployment` が既存registry/profile/runtimeを照合し、`rpe_operation_client` が共通操作をRomuTailへ送る。共有価格storeを通常入口で再利用する。
+
 [`saved_rpe_cost_catalog.py`](saved_rpe_cost_catalog.py)：保存SUMMARY・Q3/価格索引をmetadata照合し、指定集合内の最安適合点を選ぶ。[仕様・再実行](../../docs/research/h4_saved_rpe_cost_catalog_20261116/HANDOFF.md)。
 
 [price_implementation_guard](price_implementation_guard.py)：既存C/B価格算術前のnative/lowering検査。[SOURCE・51人工/回帰結果](../../docs/research/full_pf_latest_price_guard_20261114/REPORT.md)。

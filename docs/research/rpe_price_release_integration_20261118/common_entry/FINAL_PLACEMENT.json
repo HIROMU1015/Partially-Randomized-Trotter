@@ -1,0 +1,158 @@
+{
+  "status": "PASS",
+  "controller_source": "e917165ba1f36b7627614cd25e88b5108d9b20b9",
+  "release_id": "romutail-price-fleet-e917165ba",
+  "current": "romutail-price-fleet-e917165ba",
+  "operation_gateway": {
+    "pid": 597348,
+    "configuration": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/operation-gateway/GATEWAY.json",
+    "socket_path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/operation-gateway/central.sock",
+    "stopped": false,
+    "heartbeat_epoch": 1794940589.7089503,
+    "forwards": {
+      "server2": {
+        "status": "FORWARD_PROCESS_RUNNING",
+        "pid": 597357,
+        "command": [
+          "ssh",
+          "-N",
+          "-T",
+          "-o",
+          "BatchMode=yes",
+          "-o",
+          "ConnectTimeout=10",
+          "-o",
+          "ServerAliveInterval=15",
+          "-o",
+          "ServerAliveCountMax=2",
+          "-o",
+          "ExitOnForwardFailure=yes",
+          "-o",
+          "StreamLocalBindUnlink=yes",
+          "-R",
+          "/home/AbeHiromu/projects/rpe-common-operation/control.sock:/home/abe/Project/Partially Randomized Trotter/.rpe-central/operation-gateway/central.sock",
+          "qg2"
+        ],
+        "retry_epoch": 1794940265.3516917
+      },
+      "server1": {
+        "status": "DISABLED"
+      }
+    }
+  },
+  "isolated_operation_gateway": {
+    "pid": 598537,
+    "configuration": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/operation-acceptance/GATEWAY.json",
+    "stopped": true,
+    "heartbeat_epoch": 1794940414.3908002,
+    "forwards": {
+      "server2": {
+        "status": "FORWARD_PROCESS_RUNNING",
+        "pid": 598554,
+        "command": [
+          "ssh",
+          "-N",
+          "-T",
+          "-o",
+          "BatchMode=yes",
+          "-o",
+          "ConnectTimeout=10",
+          "-o",
+          "ServerAliveInterval=15",
+          "-o",
+          "ServerAliveCountMax=2",
+          "-o",
+          "ExitOnForwardFailure=yes",
+          "-o",
+          "StreamLocalBindUnlink=yes",
+          "-R",
+          "/home/AbeHiromu/projects/rpe-common-operation/control-acceptance.sock:/home/abe/Project/Partially Randomized Trotter/.rpe-central/operation-acceptance/central.sock",
+          "qg2"
+        ],
+        "retry_epoch": 1794940411.3335454
+      }
+    }
+  },
+  "bootstrap_sha256": "c2637061f0d9338ffcf4bf0fb355a51582f5c6e4dc9542a8711976151c56fa64",
+  "science_relay_status": {
+    "pid": 595234,
+    "configuration": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/RELAY.json",
+    "workers": {
+      "server1": {
+        "phase": "DISABLED",
+        "accepting_new_jobs": false,
+        "reason": "User reports server1 stopped; deferred until host return"
+      },
+      "server2": {
+        "failure_count": 22,
+        "next_retry_epoch": 1794940557.8823283,
+        "phase": "MAILBOX_DISCOVERY",
+        "error": "<urlopen error [Errno 111] Connection refused>",
+        "last_error_epoch": 1794940527.8823283,
+        "retry_seconds": 30.0
+      },
+      "local0-wsl": {
+        "failure_count": 21,
+        "next_retry_epoch": 1794940569.7659583,
+        "phase": "MAILBOX_DISCOVERY",
+        "error": "<urlopen error [Errno 111] Connection refused>",
+        "last_error_epoch": 1794940539.7659583,
+        "retry_seconds": 30.0
+      }
+    },
+    "started_epoch": 1794939994.4393032,
+    "heartbeat_epoch": 1794940556.814943,
+    "stopped": true,
+    "transport": "controller-local or SSH forwarding + independent worker mailboxes",
+    "stopped_epoch": 1794940557.817548
+  },
+  "clients": {
+    "local": {
+      "config_path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/fleet/romutail-price-fleet-e917165ba/clients/local.json",
+      "transport": "local",
+      "host_id": "local",
+      "config_sha256": "2dddd35ccd1aa3d61e5f23fe4b204445873c7ea24fa45c2f9c6f521f13f15949"
+    },
+    "server2": {
+      "config_path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/fleet/romutail-price-fleet-e917165ba/clients/server2.json",
+      "transport": "unix",
+      "host_id": "server2",
+      "config_sha256": "9a9bb6bcbb5ca31c1d4cb0c937c353af2b1ab145e152a92a78a1649ad32ab7a4"
+    },
+    "local0-wsl": {
+      "config_path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/fleet/romutail-price-fleet-e917165ba/clients/local0-wsl.json",
+      "transport": "windows-ssh",
+      "host_id": "local0-wsl",
+      "config_sha256": "8d878cec5f887ccbe9bbd5396b5d5f13899d2ce2144bdfecbad91c9faf00d981"
+    },
+    "server1": {
+      "status": "OFF_PENDING_NO_CONNECTION",
+      "prepared_config": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/fleet/romutail-price-fleet-e917165ba/clients/server1.pending.json",
+      "forward_enabled": false
+    }
+  },
+  "scientific_calls": 0,
+  "wsl_intake_preservation": {
+    "old_service_sha256": "1dad63f9d6e89fb931144e01c887265355cf3a0f34a0e4d0c8d7a02c3812022e",
+    "old_service_sha256_expected": "1dad63f9d6e89fb931144e01c887265355cf3a0f34a0e4d0c8d7a02c3812022e",
+    "final_service_sha256": "b18eb9397530f6aad320ecb87b6fb3f9c870e53e8eb3c46dd6eb8fd5e38c496a",
+    "fixed_settings_match": true,
+    "fixed_implementation": {
+      "source": "e917165ba1f36b7627614cd25e88b5108d9b20b9",
+      "head": "e917165ba1f36b7627614cd25e88b5108d9b20b9"
+    },
+    "current_observed": "romutail-6da8554e0-r4",
+    "server1_contacted": false,
+    "scientific_calls": 0,
+    "old_service_preserved": true,
+    "local0_wsl_participation": {
+      "path": "/root/projects/Partially-Randomized-Trotter-local0-wsl/.local0-wsl/SETTINGS.json",
+      "sha256": "c534d859465c86dac7fb89dd6759deebd26c4f3c6b1f780ab06dbea26f4dabfd",
+      "accepting_new_jobs": false,
+      "scientific_calls": 0
+    },
+    "status": "PASS",
+    "current_observed_note": "Read before adoption; the primary controller agent owns the final current change."
+  },
+  "legacy_idle_relay_probe_note": "A live idempotent legacy-hook probe started an idle legacy relay after the previous relay had been stopped; final read-only check detected PID595234. Parent /root stopped it via its own --stop. This added no scientific execution; final stopped=true. No further live start probes."
+}

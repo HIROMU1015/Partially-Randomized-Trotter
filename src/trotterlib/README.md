@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[価格検証統合・4環境配置](../../docs/research/rpe_price_release_integration_20261118/HANDOFF.md)：`rpe_release_deployment` が既存registry/profile/runtimeを照合し、`rpe_operation_client` が共通操作をRomuTailへ送る。共有価格storeを通常入口で再利用する。
+
 [RomuTail中央管理](../../docs/research/rpe_romutail_controller_20261118/HANDOFF.md)：`trottertracks.rpe_release_registry` と既存Gateway/DistributedExecutor/JobStore/SSH mailboxを再利用。科学kernelは固定のまま。
 
 [分散準備工程の実装と検査](../../docs/research/rpe_distributed_preparation/HANDOFF.md)：実装は`src/trottertracks/rpe_preparation_*`と既存distributed executor/worker。Q3と準備の枠を共用する。

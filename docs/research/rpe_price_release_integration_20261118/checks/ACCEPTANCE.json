@@ -1,0 +1,119 @@
+{
+  "status": "PASS",
+  "actual_OS_host_count": 3,
+  "host_names_are_simulated": false,
+  "scientific_H4_calls": 0,
+  "source_commit": "e917165ba1f36b7627614cd25e88b5108d9b20b9",
+  "checks": {
+    "all_three_actual_hosts_adopted": true,
+    "all_jobs_accepted_and_adopted": true,
+    "shared_compile_once": true,
+    "shared_audit_once": true,
+    "different_compile_audit_hosts": true,
+    "no_duplicate_assignment_acceptance_adoption": true,
+    "server1_never_assigned": true,
+    "remote_job_completed_while_local0_disconnected": true,
+    "primary_hosts_progressed_during_local0_disconnect": true,
+    "saved_outcome_recovered_unchanged": true,
+    "recovered_attempt_unchanged": true,
+    "paused_wsl_offers_zero_and_still_transfers": true,
+    "synthetic_pause_resumed": true,
+    "signal_compile_parallel_observed_by_controller": true,
+    "completed_resume_new_launches_zero": true,
+    "completed_resume_assignment_acceptance_adoption_unchanged": true,
+    "completed_resume_attempts_and_artifacts_unchanged": true
+  },
+  "by_host": {
+    "local": {
+      "assigned": 4,
+      "accepted": 4,
+      "adopted": 4
+    },
+    "server2": {
+      "assigned": 2,
+      "accepted": 2,
+      "adopted": 2
+    },
+    "local0-wsl": {
+      "assigned": 1,
+      "accepted": 1,
+      "adopted": 1
+    }
+  },
+  "preparation_count": 4,
+  "q3_count": 3,
+  "preparation_intervals": [
+    {
+      "stage": "signal",
+      "host": "local",
+      "start_epoch": 1794939389.374073,
+      "end_epoch": 1794939434.3895447,
+      "clock_id": "abe-Precision-3260:97fc03c6-7fdc-4377-a811-9ff2ab1e605d"
+    },
+    {
+      "stage": "signal",
+      "host": "server2",
+      "start_epoch": 1794939443.108098,
+      "end_epoch": 1794939488.1429844,
+      "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a"
+    },
+    {
+      "stage": "compile",
+      "host": "server2",
+      "start_epoch": 1794939392.8543587,
+      "end_epoch": 1794939395.898068,
+      "clock_id": "GPUA100-gleap02:4f959666-4c75-4cfe-be79-e30afdac6c0a"
+    },
+    {
+      "stage": "audit",
+      "host": "local0-wsl",
+      "start_epoch": 1794939408.3221076,
+      "end_epoch": 1794939411.3891664,
+      "clock_id": "abe:ac3e9a2f-88e3-47ef-b8e6-3382592729e1"
+    }
+  ],
+  "tasks": [
+    {
+      "job_id": "prep-0691dfb8e571d4e7f542b754",
+      "method": "PREPARATION:signal",
+      "host_id": "local",
+      "attempt_id": "50d9213562fe472fbff3c0c821ed5ab0"
+    },
+    {
+      "job_id": "prep-ed7b34925c700d3918e4e280",
+      "method": "PREPARATION:compile",
+      "host_id": "server2",
+      "attempt_id": "0fc4a474b226426fa1e4fcdcf23a053f"
+    },
+    {
+      "job_id": "prep-73a799214beb5b60803f0c33",
+      "method": "PREPARATION:audit",
+      "host_id": "local0-wsl",
+      "attempt_id": "56ed0775c84a448581aa6e0ebe1e87b6"
+    },
+    {
+      "job_id": "prep-029500e79563dc4d816d533b",
+      "method": "PREPARATION:signal",
+      "host_id": "server2",
+      "attempt_id": "c655cd4d701b4be19dd58f263045a25c"
+    },
+    {
+      "job_id": "89eadd079aaf8d4822ba",
+      "method": "PR_PAULI",
+      "host_id": "local",
+      "attempt_id": "0d83443e6b7542daa8dfd3ea59fa408d"
+    },
+    {
+      "job_id": "8536a8738cd2688ea009",
+      "method": "PR_PAULI",
+      "host_id": "local",
+      "attempt_id": "bcc70ea6e51e47aa87c9f4c0d1ab808a"
+    },
+    {
+      "job_id": "0cb6d061689f9dfd8e90",
+      "method": "PR_DF",
+      "host_id": "local",
+      "attempt_id": "36889564141a4d68b2ccb2f587a62480"
+    }
+  ]
+}

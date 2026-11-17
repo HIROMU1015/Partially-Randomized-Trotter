@@ -1,0 +1,164 @@
+{
+  "status": "PASS",
+  "release": {
+    "id": "romutail-price-fleet-e917165ba",
+    "registry": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/RELEASES.json",
+    "implementation_source": "e917165ba1f36b7627614cd25e88b5108d9b20b9",
+    "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+    "components": {
+      "id": "romutail-price-fleet-e917165ba",
+      "manifest_sha256": "bdf2af4dca81d1f315bb3ecc9e44a49a8428b91077fbcd0ee8aec5e4df3b9182"
+    }
+  },
+  "run_id": "search-66adcb5cf75e3f621ced",
+  "request": {
+    "action": "preview",
+    "scope": {
+      "methods": [
+        "PR_PAULI"
+      ],
+      "per_method": {
+        "PR_PAULI": {
+          "L_D": {
+            "min": 2,
+            "max": 3
+          },
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "value": ".1"
+            },
+            {
+              "kind": "binary64",
+              "value": ".2"
+            }
+          ],
+          "kappa": {
+            "mode": "absolute",
+            "min": "1/10",
+            "max": "1"
+          }
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_cycles": 1,
+        "max_new_q3_per_method": 0
+      },
+      "preparation_budgets": {
+        "signal": 0,
+        "compile": 0,
+        "audit": 0
+      }
+    }
+  },
+  "optimizer_consumed_settings": {
+    "method_overrides": {
+      "PR_PAULI": {
+        "saved_configurations_only": false,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "2"
+          ],
+          "kappa_multipliers": [
+            "2/3",
+            "1",
+            "2"
+          ]
+        },
+        "L_D_values": [
+          2,
+          3
+        ],
+        "L_D_range": {
+          "min": 2,
+          "max_offset_from_fragment_count": -7
+        },
+        "absolute_kappa_bounds": [
+          "1/10",
+          "1"
+        ]
+      }
+    },
+    "schedule_wide": {
+      "rule": "SCHEDULE_WIDE_V1",
+      "ladder_ratio": "4",
+      "explore_ratio": "2",
+      "refine_ratio": "33/32",
+      "exploit_per_explore": 2,
+      "window": "3/2",
+      "upper_stop_steps": 2,
+      "upper_stop_margin": "1/20",
+      "max_kappa": "1",
+      "per_decision": 8,
+      "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family",
+      "kappa_bounds": [
+        "1/10",
+        "1"
+      ]
+    },
+    "requested_widths": {
+      "PR_PAULI": [
+        0.1,
+        0.2
+      ]
+    },
+    "preparation_budgets": {
+      "signal": 0,
+      "compile": 0,
+      "audit": 0
+    },
+    "q3_budgets": {
+      "PR_PAULI": 0
+    },
+    "science_approved": false,
+    "required_release": {
+      "id": "romutail-price-fleet-e917165ba",
+      "manifest_sha256": "bdf2af4dca81d1f315bb3ecc9e44a49a8428b91077fbcd0ee8aec5e4df3b9182"
+    }
+  },
+  "canonical": {
+    "methods": [
+      "PR_PAULI"
+    ],
+    "per_method": {
+      "PR_PAULI": {
+        "L_D": [
+          2,
+          3
+        ],
+        "delta_pf": [
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/36028797018963968"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/18014398509481984"
+          }
+        ],
+        "kappa": {
+          "mode": "absolute",
+          "min": "1/10",
+          "max": "1"
+        }
+      }
+    },
+    "shots": "auto",
+    "stop": {
+      "max_cycles": 1,
+      "max_new_q3_per_method": 0
+    },
+    "preparation_budgets": {
+      "signal": 0,
+      "compile": 0,
+      "audit": 0
+    }
+  },
+  "new_scientific_calls": 0,
+  "controllers_started": 0
+}

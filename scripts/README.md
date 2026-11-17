@@ -1,5 +1,7 @@
 # scripts 索引
 
+[価格検証統合と4環境配置](../docs/research/rpe_price_release_integration_20261118/HANDOFF.md)：`prepare_rpe_release_fleet.py`、`manage_rpe_release_deployment.py`、`run_rpe_search.py` が既存registry・workerを使って固定版を配置・照合し、操作をRomuTailへ送る。
+
 [RomuTail中央管理への移行](../docs/research/rpe_romutail_controller_20261118/HANDOFF.md)：通常schedule/Gateway、`check_rpe_romutail_distributed.py` の実3ホスト人工検収、状態移送・配置・保存結果公開の補助CLI。
 
 [信号・compile・監査とQ3の共通分散実行](../docs/research/rpe_distributed_preparation/HANDOFF.md)：通常schedule入口、準備stage adapter、人工検収、local0一括配置・検査。

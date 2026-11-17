@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[価格検証統合・4環境の固定版配置](docs/research/rpe_price_release_integration_20261118/HANDOFF.md)：共有store、公開component manifest、共通操作入口、current採用と人工検収。
+
 [RomuTailのH4中央管理](docs/research/rpe_romutail_controller_20261118/HANDOFF.md)：版を固定する通常入口、直接SSH/WSL mailbox、状態引継ぎと人工検収。科学SOURCE・原成果・STOPは保全。
 
 [ローカルcontrollerへの簡易価格検証統合](docs/research/h4_price_validation_local_controller_20261118/REPORT.md)：共通モデルstore引継ぎ、保存DF holdout照合、metadata公開後の同一run再開。[通常運用](docs/research/h4_price_validation_local_controller_20261118/HANDOFF.md)。実compile・新探索は未実施。

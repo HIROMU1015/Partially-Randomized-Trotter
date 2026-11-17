@@ -1,0 +1,218 @@
+{
+  "run_id": "search-82402585dc7a60cc255c",
+  "run_directory": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/price-fleet-v2-e917165ba/gateway/state/runs/search-82402585dc7a60cc255c",
+  "status": "STARTED",
+  "applied": {
+    "methods": [
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "requested": {
+      "methods": [
+        "PR_PAULI",
+        "PR_DF"
+      ],
+      "per_method": {
+        "PR_PAULI": {
+          "L_D": [
+            1
+          ],
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/36028797018963968"
+            }
+          ]
+        },
+        "PR_DF": {
+          "L_D": [
+            1
+          ],
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/36028797018963968"
+            }
+          ]
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_cycles": 3,
+        "batch": 32
+      }
+    },
+    "fixed": {
+      "problem": {
+        "system": "ARTIFICIAL_ROMUTAIL_THREE_HOSTS",
+        "hamiltonian_data": {
+          "expected": {
+            "fragment_count": 10
+          }
+        }
+      },
+      "accuracy": {
+        "e": 1
+      },
+      "target": {
+        "energy_ha": 0
+      },
+      "rpe": {
+        "M": 12
+      }
+    },
+    "method_settings": {
+      "PR_PAULI": {
+        "L_D_values": [
+          1
+        ],
+        "generation": {
+          "baseline": {
+            "delta_over_h": "1",
+            "formula": "2nd",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ]
+        },
+        "family": "PR",
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -9
+        }
+      },
+      "PR_DF": {
+        "L_D_values": [
+          1
+        ],
+        "generation": {
+          "baseline": {
+            "delta_over_h": "1",
+            "formula": "2nd",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ]
+        },
+        "family": "PR",
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -9
+        }
+      }
+    },
+    "method_overrides": {
+      "PR_PAULI": {
+        "L_D_values": [
+          1
+        ],
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -9
+        }
+      },
+      "PR_DF": {
+        "L_D_values": [
+          1
+        ],
+        "L_D_range": {
+          "min": 1,
+          "max_offset_from_fragment_count": -9
+        }
+      }
+    },
+    "search": {
+      "decrement_steps": [
+        1
+      ],
+      "large_step_headroom": "9/10",
+      "max_new_q3_per_method": 100,
+      "max_steps_per_method": 100,
+      "on_missing": "STOP",
+      "rule": "METHOD_MINIMUM_PRIORITY_V2",
+      "seed_rules": [],
+      "lookahead": 1,
+      "requested_widths": {
+        "PR_PAULI": [
+          0.1
+        ],
+        "PR_DF": [
+          0.1
+        ]
+      },
+      "schedule_wide": {
+        "max_kappa": "1",
+        "per_decision": 8
+      }
+    },
+    "max_new_q3_per_method": {
+      "PR_PAULI": 32,
+      "PR_DF": 32
+    },
+    "max_steps_per_method": 100
+  },
+  "started": true,
+  "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "release": {
+    "id": "romutail-price-fleet-e917165ba",
+    "registry": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/price-fleet-v2-e917165ba/gateway/RELEASES.json",
+    "implementation_source": "e917165ba1f36b7627614cd25e88b5108d9b20b9",
+    "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+    "components": {
+      "id": "romutail-price-fleet-e917165ba",
+      "manifest_sha256": "bdf2af4dca81d1f315bb3ecc9e44a49a8428b91077fbcd0ee8aec5e4df3b9182"
+    }
+  },
+  "controller_source": "e917165ba1f36b7627614cd25e88b5108d9b20b9",
+  "runtime": {
+    "phase": "RUNNING",
+    "controller_alive": true,
+    "invocation_id": "3615ee22e706493ca87c70c9b209f28d",
+    "returncode": null,
+    "stop_reasons": {}
+  },
+  "preflight": {
+    "status": "PASS",
+    "scientific_calls": 0,
+    "artificial_only": true,
+    "fixture": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/acceptance/price-fleet-v2-e917165ba"
+  },
+  "client_deployment": {
+    "status": "PASS",
+    "release_id": "romutail-price-fleet-e917165ba",
+    "manifest_sha256": "bdf2af4dca81d1f315bb3ecc9e44a49a8428b91077fbcd0ee8aec5e4df3b9182",
+    "host_id": "local",
+    "components": {
+      "optimizer": {
+        "source": "e917165ba1f36b7627614cd25e88b5108d9b20b9",
+        "root": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/releases/e917165ba-price-fleet",
+        "status": "REUSED",
+        "observed_head": "e917165ba1f36b7627614cd25e88b5108d9b20b9"
+      }
+    },
+    "runtimes": {
+      "optimizer": {
+        "status": "REUSED",
+        "python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+        "version": [
+          3,
+          11,
+          0,
+          "candidate",
+          1
+        ],
+        "version_string": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+        "modules": {},
+        "missing": []
+      }
+    },
+    "inputs": {},
+    "holds": [],
+    "scientific_calls": 0,
+    "participation_modified": false,
+    "not_applicable_components": []
+  },
+  "operation_controller": "RomuTail"
+}
