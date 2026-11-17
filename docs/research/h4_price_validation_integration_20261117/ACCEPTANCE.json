@@ -1,0 +1,117 @@
+{
+  "schema": "H4_PRICE_VALIDATION_TECHNICAL_ACCEPTANCE_V1",
+  "implementation_source": "c00064c7736e65b82eb519469b9f455fc8a9d7fc",
+  "normal_entry": "scripts/run_rpe_method_optimizer.py --problem configs/rpe_method_optimizer/h4_df10_problem.json --round artifacts/local_price_validation_acceptance/ROUND.json --run-dir artifacts/local_price_validation_acceptance/final_run01",
+  "run_spec": {
+    "schema": "RPE_OPTIMIZER_SEARCH_ROUND_V1",
+    "round_id": "PRICE_VALIDATION_SAVED_LD2_ZERO_SCIENCE",
+    "methods": [
+      "PR_PAULI"
+    ],
+    "science_approved": false,
+    "max_new_q3_per_method": {
+      "PR_PAULI": 0
+    },
+    "max_steps_per_method": 1,
+    "method_overrides": {
+      "PR_PAULI": {
+        "L_D_values": [
+          2
+        ],
+        "saved_configurations_only": true,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1"
+          ],
+          "kappa_multipliers": [
+            "1"
+          ]
+        }
+      }
+    },
+    "price_validation": {
+      "store": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-price-validation-normal-entry-20261117/artifacts/local_price_validation_acceptance/models.sqlite"
+    }
+  },
+  "saved_ld2": {
+    "model_id": "adea2e8879081acbeff2484876d57dfaef6e37d3340cc83ae612429f38c9e4ab",
+    "status": "INDEPENDENT_MEASURED",
+    "measurement_points": [
+      {
+        "m": 5,
+        "q": 32,
+        "R": 33,
+        "independent_paths": 2,
+        "source": {
+          "commit": "705f59ea863e1b9fe90e023f1cb1057d00366b16",
+          "path": "docs/research/d_pauli_ld2_b1_holdout_results_20261115/COMPARISON.json",
+          "selector": [
+            "rows",
+            0
+          ]
+        }
+      },
+      {
+        "m": 6,
+        "q": 64,
+        "R": 66,
+        "independent_paths": 1,
+        "source": {
+          "commit": "705f59ea863e1b9fe90e023f1cb1057d00366b16",
+          "path": "docs/research/d_pauli_ld2_b1_holdout_results_20261115/COMPARISON.json",
+          "selector": [
+            "rows",
+            2
+          ]
+        }
+      },
+      {
+        "m": 9,
+        "q": 512,
+        "R": 526,
+        "independent_paths": 2,
+        "source": {
+          "commit": "adeae8f831b0cf7ffbf3448ad39b3c0ea259a655",
+          "path": "docs/research/d_pauli_ld2_m9_longpoint_results_20261115/COMPARISON.json",
+          "selector": [
+            "rows",
+            0
+          ]
+        }
+      }
+    ],
+    "result": "SAVED_LD2_VALIDATION.json",
+    "new_real_compile_calls": 0,
+    "new_real_Q3_calls": 0
+  },
+  "resume": {
+    "same_methods": true,
+    "sidecar_bytes_identical": true,
+    "new_job_requests": 0
+  },
+  "tests": {
+    "release_unittests": 96,
+    "release_result": "PASS",
+    "legacy_executor_checks": {
+      "passed": 19,
+      "failed_stale_stop_label_assertions": [
+        "running_job_not_launched_twice",
+        "dead_job_reported_then_collected"
+      ],
+      "explanation": "These two older checks require global JOB_IN_PROGRESS/STALE_JOB_NEEDS_REVIEW stop labels; current 314524a91 isolates the candidate and continues. Its modern failure-continuity tests PASS. No decoder/kernel or hold policy was changed to satisfy old labels."
+    }
+  },
+  "scopes": {
+    "real_signal": 0,
+    "real_sampling": 0,
+    "real_compile": 0,
+    "real_Q3": 0,
+    "new_fit": 0,
+    "raw_edited": false,
+    "scientific_qualification_changed": false
+  },
+  "mandatory_stop": true
+}

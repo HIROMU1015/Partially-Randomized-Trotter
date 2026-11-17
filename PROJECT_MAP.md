@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[通常探索の価格モデル簡易検証](docs/research/h4_price_validation_integration_20261117/REPORT.md)：モデル単位の独立実測再利用、代表1点の低優先分散要求、再開・C通常同期・探索マップへの接続。[運用](docs/research/h4_price_validation_integration_20261117/HANDOFF.md)。科学資格・価格係数・Q3順位は変更しない。
+
 [PR探索の候補単位保留とR08継続](docs/research/h4_pr_candidate_continuity_20261117/REPORT.md)：旧jobの照合待ちを局所化し、後着READYを共通queueへ投入。人工82件・native8件PASS、数値UNKNOWN/保存異常の停止は維持。[稼働確認・再開](docs/research/h4_pr_candidate_continuity_20261117/HANDOFF.md)。
 
 [PR複数幅探索のQ3接続修正](docs/research/pr_multiwidth_route_fix_20261117/REPORT.md)：保存Pauli LD4/DF LD6の候補専用route、template適合性、descriptor形式を修正。人工72件と元worker metadata 2件PASS、実科学call0。R06はSTOP保全。[HANDOFF](docs/research/pr_multiwidth_route_fix_20261117/HANDOFF.md)。

@@ -1,5 +1,9 @@
 # 性能対策の再利用索引
 
+## 探索を止めない共有モデル診断（2026-11-17）
+
+`rpe_price_validation.Service/ModelStore`と既存分散preparation queueを再利用し、凍結モデル＋物理domain単位の初回照合を全配分・run・workerから共有する。固定requestをqueue投入前に保存し、optional compileを通常Q3/準備より後にclaimする。checkpoint再開・同時要求・失敗時の探索継続・通常C同期は人工検査、LD2/PFの独立実測再利用は保存資料で確認。新規実compileの速度・実host配置は未検証。単一controllerの共通namespaceを使用し、別cloneの独立storeを共有とみなさない。[REPORT](research/h4_price_validation_integration_20261117/REPORT.md)／[HANDOFF](research/h4_price_validation_integration_20261117/HANDOFF.md)。
+
 ## PR探索の候補分離・後着READY投入（2026-11-17）
 
 `hold_candidate`と既存`ROUND_RESULT.execution_holds`で旧job照合待ちをconfiguration単位に限定し、無検証再利用/retryを避けて他候補を継続する。CompletionのREADY snapshotを元installerへ渡し、準備wave全体を待たず同じqueueでQ3を進める。有限総予算と重大UNKNOWN停止は維持。[REPORT](research/h4_pr_candidate_continuity_20261117/REPORT.md)／[HANDOFF](research/h4_pr_candidate_continuity_20261117/HANDOFF.md)。人工82件・native8件PASS、実H4の速度倍率は未測定。R07 STOPを残す新SOURCE/R08で継続。

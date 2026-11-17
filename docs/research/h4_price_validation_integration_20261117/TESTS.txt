@@ -1,0 +1,64 @@
+Fixed implementation SOURCE: c00064c7736e65b82eb519469b9f455fc8a9d7fc
+
+Release command:
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:scripts:tests python3 -B -m unittest -q test_rpe_price_validation_entry test_rpe_pf_price_validation test_rpe_price_validation_worker test_rpe_optional_price_validation_queue test_rpe_price_validation_map test_rpe_preparation_queue test_rpe_preparation_transport test_rpe_distributed_controller test_pr_step_price_registry test_pr_candidate_completion test_local0_absolute_kappa check_h4_search_map test_h4_search_run_evidence check_h4_search_map_html check_h4_search_map_sync test_rpe_failure_continuity
+
+SYNC FETCH_START
+SYNC DISCOVERY_START
+SYNC RECONCILED 0
+SYNC SEARCH_MAP_START
+SYNC SEARCH_MAP_END {"status": "CURRENT", "runs": 2, "unique_points": 1, "issues": 0, "path": "docs/research/map/index.html"}
+SYNC WRITTEN 13
+SYNC FETCH_START
+----------------------------------------------------------------------
+Ran 96 tests in 29.738s
+
+OK
+
+Normal CLI, fixed SOURCE, zero new Q3:
+{
+ "PR_PAULI": {
+  "stop": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING",
+  "best": "2,442,845,584.51",
+  "new_calls": 0,
+  "spent_before": 0,
+  "next": null
+ }
+}
+
+Same command resume:
+{
+ "PR_PAULI": {
+  "stop": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING",
+  "best": "2,442,845,584.51",
+  "new_calls": 0,
+  "spent_before": 0,
+  "next": null
+ }
+}
+
+Supplementary legacy executor script (not an all-PASS release gate):
+budget0_real_routes_launch_nothing            PASS
+saved_results_reused_without_budget           PASS
+request_execute_ingest_next                   PASS
+budget_exhausted_stop                         PASS
+scope_kept_to_final_request                   PASS
+resume_after_budget_end_without_relaunch      PASS
+idempotent_rerun_launches_nothing             PASS
+running_job_not_launched_twice                FAIL
+dead_job_reported_then_collected              FAIL
+unknown_distinct_from_model_failure           PASS
+configuration_scope_dearer_configuration_descends_to_its_own_end PASS
+lookahead_concurrency_same_trajectory_as_one_at_a_time PASS
+configuration_scope_rerun_reuses_all_jobs     PASS
+interrupted_record_labels_lists_and_launches_nothing PASS
+resume_reuses_request_only_directory          PASS
+next_round_loads_prior_jobs_and_launches_nothing PASS
+prior_jobs_reused_when_route_names_a_registry_file PASS
+prior_job_of_a_different_route_is_refused     PASS
+v2_round_runs_to_end_and_rerun_launches_nothing PASS
+v2_finite_budget_lookahead_same_trajectory_and_resume PASS
+v2_chain_lookahead_same_trajectory_and_faster PASS
+{"PASS": 19, "FAIL": 2}
+
+The 2 old assertions require whole-run stops; the adopted candidate-isolation behavior in 314524a91 continues other candidates. test_rpe_failure_continuity covers the current rule; 10/10 PASS. The supplementary test uses artificial workers and does not execute scientific Q3. Its original local outputs are preserved.
