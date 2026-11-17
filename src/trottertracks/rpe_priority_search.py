@@ -453,6 +453,10 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         selection_timing['backend_answer_seconds'] += time.perf_counter() - answer_started
         selection_timing['backend_answer_calls'] += int(backend is not None and (is_free or allow))
         hold = None if answer is None else O.HOLD.get(answer['status'])
+        if hold:
+            st=states[choice['configuration_id']]
+            held.append(O.hold_candidate(st.c,choice,answer,backend));st.dirty=True
+            continue
         if answer is None and on_missing == 'SKIP':
             skipped.add((choice['configuration_id'], choice['vector']));states[choice['configuration_id']].dirty = True
             unevaluated.append(dict(step_index=len(trace), cls=choice['cls'], candidate=choice['candidate'],
@@ -571,9 +575,11 @@ def new_ld_requests(candidates, states, M, facts, baseline):
             continue
         ld = c['key'].get('L_D')
         prep = c.get('preparation') or {}
-        out.append(dict(kind='NEW_L_D' if c['configuration_id'] is None else 'CONFIGURATION_INPUTS_MISSING', candidate=c['name'],
+        out.append(dict(kind=('SAVED_JOB_REVIEW_REQUIRED'if c.get('execution_hold')else
+                             'NEW_L_D' if c['configuration_id'] is None else 'CONFIGURATION_INPUTS_MISSING'), candidate=c['name'],
                         configuration=c['key'], configuration_id=c['configuration_id'], needs=c['needs'] + c.get('execution_needs', []),
                         execution_binding_hold=c.get('execution_binding_hold'),
+                        execution_hold=c.get('execution_hold'),
                         price_needs=c.get('price_needs'), distance_to_leading_L_D=None if lead is None or ld is None else abs(ld - lead),
                         preparation=prep and dict(status=prep.get('status'), preparation_status=prep.get('preparation_status'),
                                                   next_actions=prep.get('next_actions'), readiness=prep.get('readiness'),

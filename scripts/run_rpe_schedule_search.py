@@ -561,7 +561,7 @@ class WidthDriver:
             self.completion=Completion(self.run/'completion',settings)
         return self.completion
 
-    def complete_points(self):
+    def complete_points(self, stop_requested=None):
         comp=self.completion_api()
         if hasattr(comp,'ingest_price_results'):comp.ingest_price_results()
         # INIT may expose a whole far-kappa ladder at once. Transfer only the
@@ -603,6 +603,8 @@ class WidthDriver:
             selected_by_method=counts,pending_before=len(pending),deferred=len(pending)-len(selected),
             selected=[dict(method=p['method'],family=p['family'],kappa=p['kappa'])for p in selected])
         for p in selected:
+            if stop_requested is not None and stop_requested():
+                self.log(event='PREPARATION_YIELD_AFTER_FATAL');break
             p['input_dispatches']=p.get('input_dispatches',0)+1
             started=time.monotonic();self.log(event='CANDIDATE_INPUTS_START',family=p['family'],kappa=p['kappa'])
             if self.a.plan_only or self.spec.get('science_approved')is not True:
@@ -711,10 +713,13 @@ class WidthDriver:
             problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
         context=self.context(problem);comp=self.completion_api()
         routes=K.CLI.merged_routes(problem,self.spec)
-        def install_ready(current_routes):
+        def install_ready(current_routes, snapshot=False):
             accepted={p.get('completion',{}).get('key')for p in self.state['points']if p['status']in('REGISTERED','EVALUATED')}
-            records=[r for r in comp.state['records'].values()if r.get('key')in accepted]
-            current_routes=comp.install(context,dict(problem,execution_routes=current_routes),records)
+            if snapshot and hasattr(comp,'install_snapshot'):
+                current_routes,records=comp.install_snapshot(context,dict(problem,execution_routes=current_routes),accepted)
+            else:
+                records=[r for r in comp.state['records'].values()if r.get('key')in accepted]
+                current_routes=comp.install(context,dict(problem,execution_routes=current_routes),records)
             installed={r['key']:r.get('installed_configuration_id',r.get('configuration_id'))for r in records}
             for p in self.state['points']:
                 canonical=installed.get(p.get('completion',{}).get('key'))
@@ -742,21 +747,54 @@ class WidthDriver:
         preparation_pool=None
         try:
             interim=None
+            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER'}
             if prepare_during:
                 # Snapshot/install happens before starting preparation. While
                 # it owns Completion state, Q3 only reads this frozen context.
-                from concurrent.futures import ThreadPoolExecutor
+                from concurrent.futures import ThreadPoolExecutor,TimeoutError
+                from contextlib import nullcontext
+                import inspect,threading
                 preparation_pool=ThreadPoolExecutor(max_workers=1)
-                pending=preparation_pool.submit(self.complete_points)
-                if any(c['ready']for c in context['candidates']):
-                    with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION'):
-                        interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
-                            initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True)
-                pending.result()
+                stop_preparation=threading.Event()
+                supports_stop='stop_requested'in inspect.signature(self.complete_points).parameters
+                pending=preparation_pool.submit(self.complete_points,**({'stop_requested':stop_preparation.is_set}if supports_stop else{}))
+                def ready_keys():
+                    with(getattr(comp,'lock',None)or nullcontext()):
+                        return{r.get('key')for r in comp.state['records'].values()if r['status']=='READY_FOR_SEARCH'}
+                installed=ready_keys()
+                can_search=any(c['ready']for c in context['candidates'])
+                while True:
+                    if can_search:
+                        with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION'):
+                            interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
+                                initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True)
+                        if any(r['stop_reason']in fatal for r in interim.values()):
+                            stop_preparation.set();pending.result();break
+                    if pending.done():pending.result();break
+                    ready=ready_keys()
+                    changed=ready-installed
+                    # Extend an internal batch only inside the same adopted
+                    # overall per-method budget. Finite budgets stay hard caps.
+                    replenished=False;remaining_ready_work=False
+                    if interim:
+                        for method,r in interim.items():
+                            spent=executor.launched(method);maximum=self.spec.get('max_new_q3_per_method',{}).get(method)
+                            if r['stop_reason']=='STEP_LIMIT'and spent<budgets[method]:remaining_ready_work=True
+                            if spent>=budgets[method]and(changed or r['stop_reason']in('Q3_BUDGET_EXHAUSTED','STEP_LIMIT')):
+                                target=spent+self.a.batch
+                                if maximum not in(None,'UNLIMITED'):target=min(target,maximum)
+                                if target>budgets[method]:budgets[method]=target;replenished=True
+                    if changed:
+                        routes=install_ready(routes,snapshot=True);executor.routes=routes;executor.expected=context['expected']
+                        O.apply_published(context['candidates'],routes);installed=ready
+                        self.log(event='LATE_READY_INSTALLED_DURING_PREPARATION',keys=sorted(changed))
+                    can_search=bool(changed or replenished or remaining_ready_work)
+                    if not can_search:
+                        try:pending.result(timeout=1)
+                        except TimeoutError:pass
                 # No other thread now changes Completion or its registry.
                 routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']
                 O.apply_published(context['candidates'],routes)
-            fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER'}
             if interim and any(r['stop_reason']in fatal for r in interim.values()):result=interim
             else:
                 with K.CLI.round_phase(self.run,'WIDTH_SEARCH_AND_Q3'):

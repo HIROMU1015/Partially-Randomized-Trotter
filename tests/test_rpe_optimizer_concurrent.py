@@ -242,8 +242,18 @@ class SchedulerTests(unittest.TestCase):
         # The route repair adds only a pre-proposal availability gate. Retain
         # the strict AST comparison for every ranking, price and update rule.
         guard=ast.dump(ast.parse("not c['ready'] or c.get('execution_needs')",mode='eval').body)
+        isolated=ast.dump(ast.parse("""if hold:
+    candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
+    held.append(hold_candidate(candidate,choice,answer,backend))
+    continue
+""").body[0])
         class StripReadiness(ast.NodeTransformer):
             count=0
+            isolated_count=0
+            def visit_If(self,node):
+                if ast.dump(node)==isolated:
+                    self.isolated_count+=1;return None
+                return self.generic_visit(node)
             def visit_BoolOp(self,node):
                 if ast.dump(node)==guard:
                     self.count+=1
@@ -254,6 +264,7 @@ class SchedulerTests(unittest.TestCase):
             b=next(n for n in new.body if isinstance(n,ast.FunctionDef)and n.name==name)
             strip=StripReadiness();b=strip.visit(b)
             self.assertEqual(strip.count,1 if name in('proposals','run_method')else 0,name)
+            self.assertEqual(strip.isolated_count,1 if name=='run_method'else 0,name)
             self.assertEqual(ast.dump(a),ast.dump(b),name)
 
 

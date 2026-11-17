@@ -242,6 +242,11 @@ class ChainBackend:
                 return hit
         return None
 
+    def hold_configuration(self, proposal, answer):
+        for backend in self.backends:
+            if hasattr(backend, 'hold_configuration'):
+                backend.hold_configuration(proposal, answer)
+
 
 # ---------------------------------------------------------------- candidate space
 def delta_ok(value, bounds):
@@ -398,6 +403,21 @@ def proposals(candidates, knowledge, threshold, search, generate):
 HOLD = {'IN_PROGRESS': 'JOB_IN_PROGRESS', 'NO_ROUTE': 'NO_ROUTE_ADAPTER', 'STALE_JOB': 'STALE_JOB_NEEDS_REVIEW'}
 
 
+def hold_candidate(candidate, proposal, answer, backend):
+    """No reuse/retry of an unresolved job; isolate its canonical candidate.
+
+    Saved feasible evidence remains usable. Numerical UNKNOWN is deliberately
+    outside this path and keeps the existing fatal handling.
+    """
+    row=dict(scope='CONFIGURATION',candidate=candidate['name'],configuration_id=candidate['configuration_id'],
+             method=candidate['method'],status=answer['status'],reason=answer.get('reason')or HOLD[answer['status']],
+             job=answer.get('job'),vector=list(proposal['vector']),new_scientific_calls=0)
+    candidate['execution_hold']=row
+    candidate['execution_needs']=list(dict.fromkeys(candidate.get('execution_needs',[])+['SAVED_JOB_REVIEW_REQUIRED']))
+    if hasattr(backend,'hold_configuration'):backend.hold_configuration(proposal,answer)
+    return row
+
+
 def route_supports_configuration(rule, cid, reader):
     """A wildcard declaration cannot make an absent saved case executable.
 
@@ -455,6 +475,10 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
         is_free = free is not None and free(choice)
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
         hold = None if answer is None else HOLD.get(answer['status'])
+        if hold:
+            candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])
+            held.append(hold_candidate(candidate,choice,answer,backend))
+            continue
         if answer is None or hold:
             pending = dict(choice, route=(routes or {}).get(name), queue=[dict(candidate=p['candidate'], cost=p['cost'],
                 vector=list(p['vector']), origin=p['origin']) for p in props[:5]], job=None if answer is None else answer.get('job'))
@@ -539,6 +563,9 @@ class Executor:
         # Completed jobs of earlier rounds (same job key, same route for the configuration) answer without a new Q3.
         self.prior_run_dirs, self.launch_disabled = [Path(d) for d in prior_run_dirs], launch_disabled
         self.pf_template_reader, self.pf_template_cache = Reader(self.root), {}
+        previous=self.run_dir/'ROUND_RESULT.json'
+        saved=load_json(previous).get('methods',{})if previous.exists()else {}
+        self.execution_holds={m:{r['configuration_id']:r for r in v.get('execution_holds',[])}for m,v in saved.items()}
 
     def log(self, **event):
         with self.lock:
@@ -551,6 +578,32 @@ class Executor:
         view.__dict__.update(self.__dict__)  # shares lock, slots, events and counters; only the method differs
         view.method = method
         return view
+
+    def hold_configuration(self,proposal,answer):
+        row=dict(scope='CONFIGURATION',configuration_id=proposal['configuration_id'],method=self.method,
+                 status=answer['status'],reason=answer.get('reason')or HOLD[answer['status']],job=answer.get('job'))
+        with self.lock:self.execution_holds.setdefault(self.method,{})[proposal['configuration_id']]=row
+        self.log(event='CANDIDATE_HELD',**{k:v for k,v in row.items()if k!='method'})
+
+    def refresh_execution_hold(self,cid):
+        """Release only evidence the existing reuse/identity guards now accept."""
+        row=self.execution_holds.get(self.method,{}).get(cid)
+        if row is None:return None
+        release=row['status']=='NO_ROUTE'and not row.get('job')and self.route(cid)is not None
+        if not release and row.get('job'):
+            job=Path(row['job']);job=job if job.is_absolute()else self.root/job
+            try:
+                request=load_json(job/'REQUEST.json');done=load_json(job/'PROCESS_RETURN.json')
+                proposal=dict(configuration_id=cid,vector=interleave(request['N_X'],request['N_Y']))
+                if(done['returncode']==0 and not done.get('signal')and self.job_dir(proposal).name==job.name
+                        and self.same_route(job,cid)and(job/'OUTCOME.json').exists()):
+                    release=self.ingest(job,proposal,calls=0)['status']in(PASS,FAIL,'INCONCLUSIVE')
+            except(OSError,ValueError,KeyError,TypeError):pass
+        if release:
+            with self.lock:self.execution_holds[self.method].pop(cid,None)
+            self.log(event='CANDIDATE_HOLD_RESOLVED',configuration=cid,source='EXISTING_REUSE_GUARDS',new_calls=0)
+            return None
+        return row
 
     def route(self, cid):
         for rule in self.routes.get(self.method, []):
@@ -1229,6 +1282,10 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 if c['ready']:
                     c['execution_needs'] = ([] if ex.route(c['configuration_id']) is not None
                                             else ['Q3_ROUTE_CONFIGURATION_OR_TEMPLATE'])
+                    hold=ex.refresh_execution_hold(c['configuration_id'])
+                    if hold:
+                        c['execution_hold']=hold;c['execution_needs'].append('SAVED_JOB_REVIEW_REQUIRED')
+                    else:c.pop('execution_hold',None)
         start = initial if isinstance(initial, str) else initial.get(name, [])
         knowledge = ingest(initial_knowledge(context['saved'], cands, start), cands, extra_results)
         budget = max_new.get(name, 0) if isinstance(max_new, dict) else max_new
@@ -1281,6 +1338,8 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             result = run_method(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                 problem.get('q3_routes'), spent, free, science_approved)
         out[name] = summarize_method(name, cands, result, knowledge, threshold)
+        if executor is not None:
+            out[name]['execution_holds']=list(executor.execution_holds.get(name,{}).values())
         out[name]['prior_rounds'] = prior
         for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing'):
             if key in result:

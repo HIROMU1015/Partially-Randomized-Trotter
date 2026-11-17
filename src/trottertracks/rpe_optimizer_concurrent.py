@@ -123,6 +123,7 @@ class ConcurrentExecutor(O.Executor):
         job=self.job_dir(proposal);s=self.state
         with s.cv:
             if s.failure:raise RuntimeError('Executor persistence/start failure; no new launches: '+s.failure)
+            if proposal['configuration_id']in self.execution_holds.get(self.method,{}):return None
             old=s.tasks.get(job)
             if old and old.status!='CANCELLED':
                 if demand:old.demand=True;s.cv.notify_all()
@@ -159,6 +160,13 @@ class ConcurrentExecutor(O.Executor):
         t.status='CANCELLED';self.state.reserved[t.view.method]-=1
         self.state.metrics['queued_cancelled']+=1;t.event.set()
         t.view.log(event='CANCEL_QUEUED',job=t.job.name)
+
+    def hold_configuration(self,proposal,answer):
+        super().hold_configuration(proposal,answer)
+        with self.state.cv:
+            for task in self.state.tasks.values():
+                if task.status=='QUEUED'and task.owner==(self.method,proposal['configuration_id']):self._cancel(task)
+            self.state.cv.notify_all()  # running workers finish and preserve their outcomes
 
     def _dispatch(self):
         s=self.state

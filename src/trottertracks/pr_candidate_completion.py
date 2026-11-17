@@ -620,6 +620,18 @@ class Completion:
                 c['execution_binding_hold']=str(exc)
         return routes
 
+    def install_snapshot(self,context,problem,keys):
+        """Install immutable READY rows while the producer continues elsewhere.
+
+        Do not mutate/save the producer's state from the queue thread. The
+        existing installer and all physical/binding checks remain unchanged.
+        """
+        with self.lock:
+            records=deepcopy([r for r in self.state['records'].values()if r.get('key')in keys and r['status']=='READY_FOR_SEARCH'])
+        snapshot=object.__new__(type(self));snapshot.__dict__.update(self.__dict__)
+        snapshot.state=dict(self.state,records={r['key']:r for r in records});snapshot.save=lambda:None
+        return snapshot.install(context,problem,records),records
+
     def install(self,context,problem,records):
         from . import rpe_method_optimizer as O,rpe_candidate_preparation as R
         routes=deepcopy(problem['execution_routes'])
@@ -685,7 +697,7 @@ class Completion:
                 schedule_keys=O.schedule_keys(config),prepared_by='D2_COMMON_CANDIDATE_COMPLETION')
             context['expected'][cid]=dict(configuration_id=cid,binding_id=binding['binding_id'],total_configuration_id=binding['total_configuration_id'])
             rule=self.common_route(method,cid,signal.get('configuration_source',rec['configuration']),signal['packet_source'],binding)
-            routes[method]=[rule]+routes.get(method,[])
+            routes[method]=[rule]+[old for old in routes.get(method,[])if old!=rule]
         routes=self.install_saved_routes(context,routes)
         self.save()
         return routes
