@@ -78,3 +78,15 @@ Windowsの `Invoke-RpeSearch.ps1 -Action Preview` と共通CLIの `scripts/run_r
 固定SOURCEで人工・回帰165件がPASS。Q3実行中の準備キュー利用と補充、遅い照会先を待たない割当、PBS側の照会・資源会計を確認した。RomuTail、server2、Romulaptop WSL、PBS gatewayに配置した。PBS gatewayでは保存Q3 REQUEST `391c6ca338b629730109` と `6ef331c3b66ff27924da` のdry-check、およびDF信号の固定SOURCE・運用profile・専用runtime照合がPASS。新規の実信号・compile・Q3・PBS投入は各0件。新releaseのPBS計算ノードでの実行時間は未測定。
 
 Windowsと共通CLIは、明示版・currentのPreviewで同じ版を選ぶ。通常のStartは新current、既存runのStatus・Resumeはそのrunの固定版を使う。旧run `search-8b10307fd1b9fc375b6b` は `STOPPED`。server1は復帰後に新releaseのmanifestで不足分を配置し、固定入力を照合してから参加する。
+
+## Q3中間状態の選択保存と空き枠の先読み（2026-11-19）
+
+新規runのcurrentは `romutail-selective-q3-ed4d7855b`。controller、PR Q3 adapter、SSH mailbox worker、PBS workerを `ed4d7855bc3c71ef057be6a23092e6addf33fb6d` に固定した。上流最適化器は `6479a79e7e25830486e1259fad0c93345f0960c1`。直前の `romutail-pipeline-926bdd226` の準備補充と最初の適格枠への割当を継承した。科学SOURCEは `28d976b99cdf8329adcc1b79327e329e947ef774`。
+
+通常・絶対κの両ROUNDで、保存先ごとの上限を40 GiBにし、m5を通常保存、m8/m11を600秒内に同じ厳密キーが再照会された場合に保存する。各hostの既存cacheを参照する。空き枠の先読みは、評価条件が揃った配分から処理する。本命の選択規則は従来どおり。DP残差のバッチと親プロセスの合算時間は `DP_PREFIX_EVENTS.jsonl` の `RESIDUAL_TIMING` に記録する。
+
+対応ルートは既存host profileの `pauli_b_common_entry`、`prdf_d2_common_entry`、`prdf_d2_split`。PR-DF splitは個別ファイルの証跡を維持し、SQLite拡張を持たないWSLの固定Pythonで動作する。PF系は既存adapterとprofileを使う。PBSの適用ルート・CPU・メモリ・walltimeは従来の設定を引き継ぎ、対応PRルートのadapter登録を更新した。
+
+固定SOURCEで人工・回帰186件がPASS。人工DPで厳密一致、m8からの再開、容量、残差計時、既存raw証跡の回収を確認した。RomuTail、server2、Romulaptop WSL、PBS gatewayに配置し、保存入力を用いたhostとルートの組合せ12件で、元入力と新adapterのDPガードを照合した。PBSの別の旧Pauli入力 `3b58bd604a40222989a6` は、前版でも再現する辞書identityの不一致で保留した。旧adapterの固定版専用テスト2件は前版でも同様に失敗した。
+
+WindowsとCLIの明示版・currentの通常Previewで新設定を確認した。旧run `search-8b10307fd1b9fc375b6b` は元の固定版で `STOPPED`。新規の実信号・compile・Q3・PBS投入は各0件。新releaseでの実H4短縮率は未計測。server1の復帰後は新releaseのmanifestで配置し、保存入力を照合してから参加する。
