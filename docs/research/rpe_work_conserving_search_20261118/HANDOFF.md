@@ -112,3 +112,7 @@ RomuTail・Romulaptop WSL・server2・PBS・server1に各50 GiB（53,687,091,200
 PR-Pauliの信号では保存平均のカーネル照合に使う固定Gitファイルを、価格準備では既存adapterが照合する較正・監査SOURCEのファイルを、準備REQUESTの入力に含める。workerはbundleのhash・前提・宣言refを照合して専用キャッシュに直接取り込み、REQUESTの固定Git入力を再照合する。
 
 準備の適格性照会はホストごとに4件ずつ順送りする。成果物のハッシュ照合・転送は割当のロック外で処理し、jobとattemptの予約・採用には既存のロックを使う。これらは稼働中の固定コントローラーへ適用するには版の切替が必要。
+
+2026-11-19の継続では、SOURCE `39efb5ad191b180fba84174bef54a1d025c5d9dd` をRomuTail、Romulaptop WSL、server2、PBSに配置した。旧run `search-d7b7c5848d3b46f445b3` にWSLの終了済み3件を元のattemptで回収し、各1回の受付とackを確認してから通常Stopで終了した。継続run `search-2029d134639349cb5961` は `romutail-prep-recovery-39efb5ad1` を明示指定し、旧runの準備台帳15件と元の探索範囲・予算を継承した。
+
+通常Startのクライアント応答は時間切れだった。同じIDを通常Statusで照会し、起動・稼働と§10.5 PASSを確認した。RomuTailの `prep-06b0565d847ea43c7188b7fc` と `prep-1b04d50e54d6437d1e05d80b` は通常キューでPR-Pauli信号を完了し、各1回回収・採用された。新規信号は計12ラウンド、保存信号の再利用は計14ラウンド。RomuTailの `.rpe-central/deployment/romutail-prep-recovery-39efb5ad1/LIVE_ACCEPTANCE.json` にreceipt照合を保存した。PR-Pauli compileの受付条件は旧runから継承した。
