@@ -29,10 +29,12 @@ def evaluated_prefixes(context):
         if p['method']=='TRUNCATED_PF' and p.get('q3_status') in ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD','MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD','INCONCLUSIVE') and type(p.get('L_D'))is int})
 
 
-def inspect(context,methods):
+def inspect(context,methods,*,include_full=False):
     evaluated=evaluated_prefixes(context);rows=[]
     for c in context['candidates']:
-        if c['method'] not in methods or c['method']!='TRUNCATED_PF':continue
+        if c['method'] not in methods:continue
+        if c['method']!='TRUNCATED_PF' and not (include_full and c['method']=='FULL_PF'
+                                               and c.get('configuration_body')):continue
         k=c['key'];e=c.get('priority_evidence')or{};t1=e.get('T1')or{}
         p=k.get('p');width=Fraction(k['delta_over_h']);shift=t1.get('delta_E_trunc_B0I_ha')
         score=(0 if p not in evaluated else 1,-len(e.get('T2')or[]),abs(float(shift))if shift is not None else float('inf'),PIECES.get(k['formula'],999),-width,c['configuration_id'])
@@ -44,8 +46,8 @@ def inspect(context,methods):
     return rows,evaluated
 
 
-def select(context,methods,excluded=()):
-    rows,evaluated=inspect(context,methods)
+def select(context,methods,excluded=(),*,include_full=False):
+    rows,evaluated=inspect(context,methods,include_full=include_full)
     eligible=[r for r in rows if not r['ready'] and r['needs'] and r['configuration_id'] not in excluded]
     chosen=deepcopy(eligible[0])if eligible else None
     incumbents=[p for p in context['catalog']['candidates']if p['method']=='TRUNCATED_PF'and p['status']=='FEASIBLE'and p.get('conditional_cost')is not None]
@@ -74,7 +76,7 @@ def _refresh(root,problem,context,methods,registry,artificial):
     return after
 
 
-def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=()):
+def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=(),selection=None):
     """One automatic finite selection, existing D request, same optimizer context.
 
     plan never starts science; complete is the existing explicitly authorized
@@ -97,7 +99,9 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
         write(selection_path,selection);selected=deepcopy(settings['selected']);chosen_id=None
     else:
         if selection_path.exists():selection=json.loads(selection_path.read_text())
-        else:selection=select(context,methods,excluded);write(selection_path,selection)
+        else:
+            selection=selection or select(context,methods,excluded,include_full='TRUNCATED_PF' not in methods)
+            write(selection_path,selection)
         chosen=selection['selected']
         if chosen is None:return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',selection=selection)
         matches=[c for c in context['candidates']if c['configuration_id']==chosen['configuration_id']]
@@ -151,40 +155,87 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
             ready=returned['ready'];needs=returned['needs']
         else:ready=True;needs=[]
         status=dict(status='READY_RETURNED_TO_SAME_OPTIMIZER'if ready else'PREPARATION_INCOMPLETE',selection=selection,response=response,artificial_only=artificial,remaining_needs=needs)
+    price_holds=[row for row in response['response'].get('items',[]) if row.get('status')=='PRICE_EVIDENCE_REQUIRED']
+    if price_holds and mode!='plan':
+        status.update(status='PRICE_EVIDENCE_REQUIRED',reason=price_holds[0]['reason'])
     write(status_path,status)
     return context,routes,status
 
 
-def prepare_next(root,problem,context,spec,run,routes,stage_executor):
-    """One durable PF candidate per wave, with evidence from every prior wave."""
+def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None):
+    """A durable PF wave, with each candidate and native owner in its own directory."""
+    from concurrent.futures import ThreadPoolExecutor,as_completed
+    from .rpe_preparation_round import snapshot_context
+    from .rpe_release_registry import write as atomic_write
+
     run=Path(run)
+    settings=spec.get('pf_completion') or problem.get('pf_completion') or {}
+    limit=settings.get('max_candidates',1)
+    if type(limit) is not int or limit<1:raise ValueError('PF max_candidates must be a positive integer')
+    if settings.get('selected'):
+        return prepare(root,problem,context,spec,run,routes,stage_executor=stage_executor)
     index=run/'pf_auto'/'WAVES.json'
     if index.exists():
         records=json.loads(index.read_text())
     else:
         from .pf_optimizer_connection import read_source
-        previous=spec.get('pf_completion',{}).get('prior_waves_from')
+        previous=settings.get('prior_waves_from')
         records=read_source(root,context['reader'],previous) if previous else {}
+        for row in records.values():
+            if row.get('status')=='PREPARATION_SCHEDULED':
+                row.update(status='PRIOR_OWNER_HOLD',reason='Reconcile the scheduled wave in its original run',
+                           original_wave=previous)
     registry=deepcopy(context['pf_evidence_registry'])
     for record in records.values():
         registry['configurations'].update(record.get('configurations',{}))
     if records:
         context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
         routes=PF.registry_routes(routes,registry)
-    chosen=select(context,spec['methods'],records)['selected']
-    if chosen is None:
+    pending={cid for cid,row in records.items() if row.get('status')=='PREPARATION_SCHEDULED'}
+    selection=select(context,spec['methods'],records.keys()-pending,
+                     include_full=limit>1 or 'TRUNCATED_PF' not in spec['methods'])
+    if selection['selected'] is None and not pending:
         return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
-    cid=chosen['configuration_id']
-    after,after_routes,status=prepare(root,problem,context,spec,run/'pf_auto'/'candidates'/cid,routes,
-                                    stage_executor=stage_executor,excluded=records)
-    entry=after['pf_evidence_registry']['configurations'].get(cid)
-    records[cid]=dict(status=status['status'],reason=status.get('reason'),key=chosen['key'],
-                      configurations={cid:entry} if entry is not None else {})
-    index.parent.mkdir(parents=True,exist_ok=True)
-    from .rpe_release_registry import write as atomic_write
-    atomic_write(index,records)
-    if entry is not None:
-        registry['configurations'][cid]=entry
-        after=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
-        after_routes=PF.registry_routes(after_routes,registry)
-    return after,after_routes,dict(status='PREPARATION_WAVE_PROCESSED',records=records)
+    workers=limit if stage_executor is not None else 1
+    if pending:
+        wave=[row for row in selection['candidates'] if row['configuration_id'] in pending]
+        if len(wave)!=len(pending) or any(row['key']!=records[row['configuration_id']]['key'] for row in wave):
+            raise ValueError('Previously selected PF wave no longer matches its configurations')
+    else:
+        wave=[];families=set()
+        # Widths of the same prefix/formula can share early physical rounds.
+        for row in selection['candidates']:
+            family=(row['method'],row['key'].get('p'),row['key']['formula'])
+            cid=row['configuration_id']
+            if row['ready'] or not row['needs'] or cid in records or family in families:
+                continue
+            wave.append(row);families.add(family)
+            records[cid]=dict(status='PREPARATION_SCHEDULED',key=row['key'],configurations={})
+            if len(wave)==workers:break
+        atomic_write(index,records)
+
+    one_spec=dict(spec,pf_completion=dict(settings,max_candidates=1))
+    def acquire(chosen):
+        if stop_requested is not None and stop_requested():return None
+        cid=chosen['configuration_id']
+        after,_,status=prepare(root,problem,snapshot_context(context),one_spec,run/'pf_auto'/'candidates'/cid,
+                              deepcopy(routes),stage_executor=stage_executor,selection=dict(selection,selected=chosen))
+        return chosen,status,after['pf_evidence_registry']['configurations'].get(cid)
+
+    updated=False;processed=False
+    with ThreadPoolExecutor(max_workers=min(workers,len(wave))) as pool:
+        for task in as_completed([pool.submit(acquire,row) for row in wave]):
+            result=task.result()
+            if result is None:continue
+            chosen,status,entry=result;cid=chosen['configuration_id']
+            records[cid]=dict(status=status['status'],reason=status.get('reason'),key=chosen['key'],
+                              configurations={cid:entry} if entry is not None else {})
+            if entry is not None:
+                registry['configurations'][cid]=entry;updated=True
+            processed=True
+            atomic_write(index,records)
+    if updated:
+        context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
+        routes=PF.registry_routes(routes,registry)
+    return context,routes,dict(status='PREPARATION_WAVE_PROCESSED' if processed else 'PREPARATION_WAVE_YIELDED',
+                              records=records)

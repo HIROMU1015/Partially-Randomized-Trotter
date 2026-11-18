@@ -8,9 +8,16 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+from run_pf_preparation_stage import cache_mean_pool
 
 
-def inspect(root,request,observations):
+PRICE_PLAN_HOLDS = {
+    'At least two distinct-q calibration cells and one later holdout required',
+    'One saved axis only: resolve per-axis native execution before compiling',
+}
+
+
+def inspect(root,request,observations,signal_index=None):
     root=Path(root).resolve();sys.path[:0]=[str(root/'scripts'),str(root/'src')]
     spec=importlib.util.spec_from_file_location('original_pf_provider',root/'scripts/prepare_pf_candidate.py')
     provider=importlib.util.module_from_spec(spec);spec.loader.exec_module(provider)
@@ -47,7 +54,17 @@ def inspect(root,request,observations):
         # Preserve D's exact selected-cell duplicate check at the ORIGINAL
         # root, where its live/private owner markers can still be observed.
         from trottertracks import pf_evidence_preparation as E
-        plan=E.make_plan(root,configuration,source)
+        if signal_index is not None:
+            cache_mean_pool(root,signal_index)
+            signal_index=None
+        try:
+            plan=E.make_plan(root,configuration,source)
+        except ValueError as error:
+            if str(error) not in PRICE_PLAN_HOLDS:
+                raise
+            rows.append(dict(configuration_id=cid,status='PRICE_EVIDENCE_REQUIRED',
+                             reason=str(error),signal_deferred_for_price=True))
+            continue
         destination=Path(observations)/cid;destination.mkdir(parents=True,exist_ok=True)
         try:
             provider.preflight(plan,destination)
@@ -60,8 +77,9 @@ def inspect(root,request,observations):
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--provider-root',type=Path,required=True)
     parser.add_argument('--request',type=Path,required=True);parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--signal-index',type=Path)
     args=parser.parse_args();request=json.loads(args.request.read_text())
-    result=inspect(args.provider_root,request,args.output.parent/'original_preflight')
+    result=inspect(args.provider_root,request,args.output.parent/'original_preflight',args.signal_index)
     args.output.write_text(json.dumps(result,indent=2)+'\n')
 
 

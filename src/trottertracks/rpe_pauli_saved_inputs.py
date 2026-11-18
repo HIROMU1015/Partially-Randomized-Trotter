@@ -39,13 +39,11 @@ def saved_inputs(workspace, paths):
     return expected
 
 
-def main():
-    encoded, entry, *arguments = sys.argv[1:]
+def configure(entry, paths):
     entry = Path(entry).resolve()
     workspace = entry.parents[1]
     if entry.parent.name != 'scripts' or entry.name not in ENTRY_POINTS:
         raise ValueError('Unknown fixed Pauli entry point')
-    paths = json.loads(encoded)
     files = provider_files(entry.name)
     for relative in files:
         if (workspace / relative).read_bytes() != fixed_blob(workspace, PROVIDER_SOURCE, relative):
@@ -62,6 +60,12 @@ def main():
         if Path(module.__file__).resolve() != workspace / relative:
             raise ValueError(f'Unexpected Pauli provider import: {name}')
         module.Path = mapped_path
+
+
+def main():
+    encoded, entry, *arguments = sys.argv[1:]
+    configure(entry, json.loads(encoded))
+    entry = Path(entry).resolve()
     sys.argv = [str(entry), *arguments]
     runpy.run_path(str(entry), run_name='__main__')
 

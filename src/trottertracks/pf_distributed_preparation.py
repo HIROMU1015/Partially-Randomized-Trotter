@@ -39,7 +39,7 @@ def reuse_signal(root, workspace, folder, plan, saved):
             raise ValueError('Original completed signal does not match the selected PF plan')
         files=['STATUS.json','MEAN_HANDOFF.json',*(f'round_{m}.json' for m in range(13))]
         original={name:blob('signal_run01/'+name) for name in files}
-        subprocess.run(['git','fetch','--no-tags',str(root),commit],cwd=workspace,check=True,
+        subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(root),commit],cwd=workspace,check=True,
                        stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         output=folder/'signal_run01';output.mkdir(exist_ok=True)
         for name, raw in original.items():
@@ -73,7 +73,7 @@ def reuse_calibration(root, workspace, folder, plan, rounds, receipt):
                 any(not row['ok'] or len(row['wrappers'])!=2 for row in result['results'])):
             raise ValueError('Collected native calibration does not match the selected PF plan')
         names=git(root,'ls-tree','-r','--name-only',commit,'--',relative).splitlines()
-        subprocess.run(['git','fetch','--no-tags',str(root),commit],cwd=workspace,check=True,
+        subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(root),commit],cwd=workspace,check=True,
                        stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         for name in names:
             path=workspace/Path(name)
@@ -106,12 +106,14 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     """Original finite PF contract; no independent candidate/shot selection."""
     original=Path(entry).resolve().parents[1];run=Path(run)
     owner_input=run/'ORIGINAL_OWNER_REQUEST.json';owner_output=run/'ORIGINAL_OWNER_CHECK.json'
+    outer=next((p for p in run.parents if p.name=='pf_auto'),run)
+    signal_index=outer/'cache'/'pf-saved-signal-index'
     put(owner_input,request)
     subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
         str(Path(root)/'scripts/check_pf_preparation_owner.py'),'--provider-root',str(original),
-        '--request',str(owner_input),'--output',str(owner_output)],check=True)
+        '--request',str(owner_input),'--output',str(owner_output),'--signal-index',str(signal_index)],check=True)
     owner=read(owner_output)
-    held=[row for row in owner['rows']if row['status']=='PRIOR_OWNER_HOLD']
+    held=[row for row in owner['rows']if row['status'] in ('PRIOR_OWNER_HOLD','PRICE_EVIDENCE_REQUIRED')]
     if held:
         if not Path(request['registry_file']).exists():put(request['registry_file'],dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={}))
         put(output,dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=held,registry_file=request['registry_file']))
@@ -120,7 +122,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     if len(reused)==len(owner['rows']):
         registry=read(request['registry_file'])if Path(request['registry_file']).exists()else dict(schema='D_PF_EVIDENCE_REGISTRY_V1',configurations={})
         for row in reused:registry['configurations'][row['configuration_id']]=row['entry']
-        subprocess.run(['git','fetch','--no-tags',str(original),'HEAD'],cwd=root,check=True,
+        subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(original),'HEAD'],cwd=root,check=True,
             stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         put(request['registry_file'],registry);put(output,dict(schema='D_PF_EVIDENCE_COMPLETION_V1',items=reused,registry_file=request['registry_file']))
         return
@@ -145,8 +147,8 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
     elif read(inp)!=selected:raise ValueError('PF selected contract changed')
     if not plan_output.exists():
         subprocess.run([spec['pf_completion'].get('interpreter',sys.executable),'-B',
-            str(workspace/'scripts/prepare_pf_candidate.py'),'--request',str(inp),'--output',str(plan_output),
-            '--mode','plan'],cwd=workspace,check=True)
+            str(Path(root)/'scripts/run_pf_preparation_stage.py'),'--provider-root',str(workspace),
+            '--input',str(inp),'--output',str(plan_output),'--plan-signal-index',str(signal_index)],cwd=workspace,check=True)
     response=read(plan_output);items=[]
     for item in response['items']:
         if item['status']=='REUSED_COMPLETED_REGISTRY':items.append(item);continue
@@ -198,7 +200,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
                                 for p in prices)):
                         raise ValueError('Collected audit does not match the selected calibration')
                     commits=sorted({p['price_evidence']['source']['commit'] for p in prices})
-                    subprocess.run(['git','fetch','--no-tags',str(root),*commits],cwd=workspace,
+                    subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(root),*commits],cwd=workspace,
                                    check=True,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
                     put(folder/'SAVED_CALIBRATION_AUDIT_REUSE.json',saved_audit)
                 else:
@@ -225,7 +227,7 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
             binding_view=selected.get('binding_view')))
     # The usual registry loader consumes the original producer locators. Fetch
     # the owned clone's objects, without changing the controller's HEAD.
-    subprocess.run(['git','fetch','--no-tags',str(workspace),'HEAD'],cwd=root,check=True,
+    subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(workspace),'HEAD'],cwd=root,check=True,
                    stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
     put(request['registry_file'],read(selected['registry_file']))
     put(output,dict(response,items=items,registry_file=request['registry_file']))

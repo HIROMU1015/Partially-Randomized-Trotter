@@ -255,7 +255,8 @@ class DistributedPreparationBridge:
             ['git', 'rev-list', '-1', head, '^' + source], cwd=root, text=True,
         ).strip():
             ref = namespace + 'base-' + head
-            subprocess.run(['git', 'update-ref', ref, head], cwd=root, check=True)
+            with self.lock:
+                subprocess.run(['git', 'update-ref', ref, head], cwd=root, check=True)
             bundles.append(self._pack_bundle(root, ref, [source], (), not input_hashes))
         if not input_hashes:
             return bundles
@@ -277,7 +278,8 @@ class DistributedPreparationBridge:
             cwd=root, text=True, env=dict(os.environ, GIT_AUTHOR_DATE=date, GIT_COMMITTER_DATE=date),
         ).strip()
         ref = namespace + 'inputs-' + tip
-        subprocess.run(['git', 'update-ref', ref, tip], cwd=root, check=True)
+        with self.lock:
+            subprocess.run(['git', 'update-ref', ref, tip], cwd=root, check=True)
         prerequisites = list(dict.fromkeys([source, head]))
         bundles.append(self._pack_bundle(root, ref, prerequisites, input_hashes, tracked_workspace))
         return bundles
@@ -391,7 +393,9 @@ class DistributedPreparationBridge:
             if expected != script.read_bytes():
                 raise ValueError('Preparation leaf script differs from its declared SOURCE')
             for name in ('src/trottertracks/rpe_preparation_paths.py',
-                         'scripts/run_pr_pauli_candidate_signals.py'):
+                         'scripts/run_pr_pauli_candidate_signals.py',
+                         *(['src/trottertracks/rpe_saved_signal_index.py']
+                           if script.name=='run_pr_pauli_candidate_signals.py' else [])):
                 item=root/name
                 if item.is_file():
                     raw=subprocess.check_output(['git','show',source+':'+name],cwd=root)
@@ -664,26 +668,34 @@ class DistributedPreparationBridge:
             # The central optimizer's GitReader can be a different repository
             # from an owned provider clone. Both must resolve the original
             # returned commit; neither working HEAD is changed.
-            def import_tip(repository):
-                if path is None:
-                    return subprocess.run(['git','rev-parse','--verify',bundle['input_head']+'^{commit}'],
-                                          cwd=repository,capture_output=True,text=True)
-                process = subprocess.run(['git','fetch','--no-tags',str(path),bundle.get('ref','HEAD')],
-                                         cwd=repository,capture_output=True,text=True)
-                if process.returncode:return process
-                return subprocess.run(['git','rev-parse','FETCH_HEAD'],cwd=repository,capture_output=True,text=True)
+            namespace = 'refs/rpe-preparation/' + digest(str(self.executor.run_dir))[:16]
+            result_ref = namespace + '/' + key
+            source_ref = bundle.get('ref', 'HEAD')
+            if path is not None:
+                heads = subprocess.check_output(['git','bundle','list-heads',str(path),source_ref],text=True).splitlines()
+                if len(heads) != 1 or heads[0].split()[0] != bundle['head']:
+                    raise ValueError('Returned Git bundle HEAD differs')
 
-            for repository in dict.fromkeys([destination,self.root]):
-                fetched = import_tip(repository)
-                if fetched.returncode and inputs:
-                    for file,ref in inputs:
-                        subprocess.run(['git','fetch','--no-tags',str(file),ref],cwd=repository,check=True,capture_output=True)
+            def import_tip(repository):
+                command = (['rev-parse','--verify',bundle['input_head']+'^{commit}'] if path is None
+                           else ['fetch','--no-tags','--no-write-fetch-head',str(path),source_ref+':'+result_ref])
+                return subprocess.run(['git',*command],cwd=repository,capture_output=True,text=True)
+
+            with self.lock:
+                for repository in dict.fromkeys([destination,self.root]):
                     fetched = import_tip(repository)
-                fetched.check_returncode()
-                tip = fetched.stdout.strip()
-                if tip!=bundle['head']:raise ValueError('Returned Git bundle HEAD differs')
-                namespace='refs/rpe-preparation/'+digest(str(self.executor.run_dir))[:16]
-                subprocess.run(['git','update-ref',namespace+'/'+key,tip],cwd=repository,check=True)
+                    if fetched.returncode and inputs:
+                        for file, ref in inputs:
+                            subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(file),
+                                            ref+':'+namespace+'/input/'+file.name],
+                                           cwd=repository,check=True,capture_output=True)
+                        fetched = import_tip(repository)
+                    fetched.check_returncode()
+                    if path is None:
+                        tip = fetched.stdout.strip()
+                        if tip != bundle['head']:
+                            raise ValueError('Returned Git bundle HEAD differs')
+                        subprocess.run(['git','update-ref',result_ref,tip],cwd=repository,check=True)
         private = next((old for old,value in request['preparation'].get('path_bindings',{}).items()if value=='@WORK@/private'),None)
         if private:workspaces['private']=Path(private)
         for name, sha in artifacts.items():

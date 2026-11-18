@@ -84,13 +84,40 @@ def live(marker,run):
     except OSError:return False
 
 
+_CACHED_ENTRY = '''
+from functools import partial
+import json
+from pathlib import Path
+import runpy
+import sys
+from types import SimpleNamespace
+
+helper, directory, source, input_helper, bindings, runner, *arguments = sys.argv[1:]
+root = Path(runner).resolve().parents[1]
+if bindings:
+    runpy.run_path(input_helper)['configure'](runner, json.loads(bindings))
+else:
+    sys.path[:0] = [str(root/'src'), str(root/'scripts')]
+from trottertracks import pauli_signal_entry as entry
+index = runpy.run_path(helper)['pauli_index']
+fixed = SimpleNamespace(saved_index=entry.saved_index, read_ref=entry.read_ref)
+entry.saved_index = partial(index, fixed, directory, [source, entry.S3.P1_KERNEL, entry.KERNEL_FILES])
+sys.argv = [runner, *arguments]
+runpy.run_path(runner, run_name='__main__')
+'''
+
+
 def entry(workspace,interpreter,arguments,log,marker=None,*,saved_inputs=None):
-    cmd=[interpreter,'-B',str(workspace/'scripts/run_pauli_signal_entry.py'),*arguments]
+    helpers = Path(__file__).resolve().parents[1]/'src/trottertracks'
+    cache = Path(git(workspace,'rev-parse','--git-path','rpe-pauli-signal-index'))
+    if not cache.is_absolute():
+        cache = workspace/cache
+    bindings = ''
     if saved_inputs:
-        runner=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_pauli_saved_inputs.py'
-        bindings={original:(resolved if (resolved:=resolve(original))!=original else location)
-                  for original, location in saved_inputs.items()}
-        cmd[2:2]=[str(runner),json.dumps(bindings)]
+        bindings = json.dumps({original:(resolved if (resolved:=resolve(original))!=original else location)
+                               for original, location in saved_inputs.items()})
+    cmd=[interpreter,'-B','-c',_CACHED_ENTRY,str(helpers/'rpe_saved_signal_index.py'),str(cache),ENTRY_SOURCE,
+         str(helpers/'rpe_pauli_saved_inputs.py'),bindings,str(workspace/'scripts/run_pauli_signal_entry.py'),*arguments]
     if marker is not None:write(marker,dict(status='STARTING',UTC=utc(),command=cmd,automatic_retry=False))
     start=time.monotonic()
     with log.open('a')as stream:

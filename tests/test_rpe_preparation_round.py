@@ -141,6 +141,54 @@ class PreparationRoundTests(unittest.TestCase):
                         completion,executor,result,optimizer=optimizer)
                 self.assertIs(got,result);producer.assert_not_called();optimizer.assert_not_called()
 
+    def test_pf_wave_runs_distinct_families_and_preserves_price_hold(self):
+        from trottertracks import pf_candidate_selection as selection
+
+        def point(cid, method, prefix, width):
+            return dict(configuration_id=cid,method=method,key=dict(p=prefix,formula='2nd',delta_over_h=width),
+                        ready=False,needs=['PRICE_26AXIS','SIGNAL_13ROUND_PACKET'],
+                        configuration_body=dict(id=cid,spec=dict(split=dict(original_PF_method='B0I' if prefix!=10 else 'FULL'))))
+
+        points=[point('full','FULL_PF',10,'2'),point('hold','TRUNCATED_PF',7,'2'),
+                point('same_family','TRUNCATED_PF',7,'1')]
+        methods=['FULL_PF','TRUNCATED_PF']
+        context=dict(candidates=points,catalog=dict(candidates=[]),pf_evidence_registry=dict(configurations={}))
+        spec=dict(methods=methods,science_approved=True,pf_completion=dict(mode='complete',max_candidates=2,entry='fixture'))
+        entered=threading.Barrier(2)
+        calls=[]
+        def complete(root,spec,run,*,stage_executor):
+            cfg=spec['pf_completion']['selected'][0]['configuration_body']['id']
+            calls.append(cfg)
+            self.assertIn(cfg,str(run))
+            if cfg!='same_family':entered.wait(timeout=5)
+            item=({'status':'PRICE_EVIDENCE_REQUIRED','reason':'fixed price plan has no admissible axes'}
+                  if cfg=='hold' else {'status':'READY_FOR_SAME_OPTIMIZER'})
+            registry=dict(configurations={} if cfg=='hold' else {cfg:dict(artificial=True)})
+            return dict(registry_file=registry,response=dict(items=[item]))
+
+        def refresh(root,problem,context,methods,registry,artificial):
+            after=deepcopy(context);after['pf_evidence_registry']=registry
+            for c in after['candidates']:
+                if c['configuration_id'] in registry['configurations']:c.update(ready=True,needs=[])
+            return after
+
+        with tempfile.TemporaryDirectory() as tmp, patch.object(selection.PF,'complete_selected',side_effect=complete), \
+             patch.object(selection,'_refresh',side_effect=refresh):
+            run=Path(tmp)
+            _,_,yielded=selection.prepare_next(ROOT,{},context,spec,run,{},object(),stop_requested=lambda:True)
+            self.assertEqual(yielded['status'],'PREPARATION_WAVE_YIELDED')
+            self.assertEqual(calls,[])
+            after,_,first=selection.prepare_next(ROOT,{},context,spec,run,{},object())
+            self.assertCountEqual(calls,['full','hold'])
+            self.assertEqual(first['records']['hold']['status'],'PRICE_EVIDENCE_REQUIRED')
+            self.assertEqual(set(after['pf_evidence_registry']['configurations']),{'full'})
+            after,_,_=selection.prepare_next(ROOT,{},context,spec,run,{},object())
+            self.assertEqual(calls[-1],'same_family')
+            self.assertEqual(set(after['pf_evidence_registry']['configurations']),{'full','same_family'})
+            _,_,done=selection.prepare_next(ROOT,{},context,spec,run,{},object())
+            self.assertEqual(done['status'],'NO_INCOMPLETE_PF_CANDIDATE')
+            self.assertEqual(len(calls),3)
+
     def test_normal_preparation_resume_reconciles_existing_tasks_before_attempt_limit(self):
         with tempfile.TemporaryDirectory()as tmp:
             calls=[]

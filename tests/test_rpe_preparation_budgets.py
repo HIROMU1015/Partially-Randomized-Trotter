@@ -16,12 +16,16 @@ class PreparationBudgets(unittest.TestCase):
         with tempfile.TemporaryDirectory()as temp:
             driver=object.__new__(S.WidthDriver);driver.run=Path(temp)
             driver.problem={};driver.widths={};driver.methods=[];driver.state={'families':{}}
+            driver.live_ready_refill=False
             driver.spec={'executor':{'distributed':{'preparation':{'budgets':{'signal':1}}}}}
             driver.check_fixed_inputs();before=(driver.run/'FIXED_INPUTS.json').read_bytes()
             driver.check_fixed_inputs()
             driver.spec['executor']['distributed']['preparation']['budgets']['signal']=2
             with self.assertRaisesRegex(ValueError,'FIXED_INPUTS_CHANGED'):driver.check_fixed_inputs()
             self.assertEqual(before,(driver.run/'FIXED_INPUTS.json').read_bytes())
+            driver.spec['executor']['distributed']['preparation']['budgets']['signal']=1
+            driver.spec['pf_completion']={'max_candidates':2}
+            with self.assertRaisesRegex(ValueError,'FIXED_INPUTS_CHANGED'):driver.check_fixed_inputs()
 
     def test_standard_round_resolves_stage_caps_separately_from_q3(self):
         self.assertEqual(M.preparation_budgets({'max_new_q3_per_method':{'PR_DF':'UNLIMITED'}}),
