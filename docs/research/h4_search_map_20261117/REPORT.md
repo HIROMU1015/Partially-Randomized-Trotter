@@ -50,6 +50,7 @@ summary由来の表示と元SOURCEを残し、最安価格の選択には昇格�
 |search-928ebf252fc941eef7fe|{"PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[013ddc675](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/013ddc6756ef308316617dabccde6e411e76c099/docs/research/romutail_controller_runs/search-928ebf252fc941eef7fe/ROUND_RESULT.json)|
 |search-a8c8ce3e5d57f171cb97|{"PR_PAULI": "NO_CANDIDATE_LEFT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[9097536d0](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9097536d03975d9e4d7ca4ce2121fc8637ab8b4e/docs/research/romutail_controller_runs/search-a8c8ce3e5d57f171cb97/ROUND_RESULT.json)|
 |search-b1a74e00581b89ea42db|{"PR_PAULI": "NO_CANDIDATE_LEFT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[ead74ed07](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ead74ed07b7d5d3ab7b5f725a2aa214ed21c05ff/docs/research/romutail_controller_runs/search-b1a74e00581b89ea42db/ROUND_RESULT.json)|
+|search-be59f46fceee86257816|"RUNNING"|0|local, server2|[1b504b44a](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/1b504b44a2937eebfbcb29ad649eaf7920d8e7e5/docs/research/romutail_controller_runs/search-be59f46fceee86257816/SCOPE_METADATA.json)|
 |search-ce8fdd465eeef9dc1336|{"TRUNCATED_PF": "NO_FEASIBLE_POINT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[01ac38ad3](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/01ac38ad379395388ccef10ed3cf7b28e73dcbe1/docs/research/romutail_controller_runs/search-ce8fdd465eeef9dc1336/ROUND_RESULT.json)|
 |search-d5b51459fa7c28605687|{"TRUNCATED_PF": "NO_FEASIBLE_POINT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[4752b17d3](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4752b17d36626958047ccce8695ba15956275b6e/docs/research/romutail_controller_runs/search-d5b51459fa7c28605687/ROUND_RESULT.json)|
 |search-e3288a841e437a13ab6a|{"PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[69e5b60f9](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/69e5b60f9d7e0bc2d272f9830fe1df41fb0e0016/docs/research/romutail_controller_runs/search-e3288a841e437a13ab6a/ROUND_RESULT.json)|
@@ -59,9 +60,10 @@ summary由来の表示と元SOURCEを残し、最安価格の選択には昇格�
 
 ## 未取込・未確認の範囲
 
-- ValueError: Publication lacks supported controller result or scope metadata：`{'commit': '9f86f209aff04bd5b9960968ce1a2c0597072106', 'path': 'docs/research/romutail_controller_runs/search-62da44b27f99dc95511b/SEARCH_PUBLICATION.json', 'selector': []}`
-- ValueError: Publication lacks supported controller result or scope metadata：`{'commit': '9f86f209aff04bd5b9960968ce1a2c0597072106', 'path': 'docs/research/romutail_controller_runs/search-e06830397e0d65aee227/SEARCH_PUBLICATION.json', 'selector': []}`
+- ValueError: Publication lacks supported controller result or scope metadata：`{'commit': '1b504b44a2937eebfbcb29ad649eaf7920d8e7e5', 'path': 'docs/research/romutail_controller_runs/search-62da44b27f99dc95511b/SEARCH_PUBLICATION.json', 'selector': []}`
+- ValueError: Publication lacks supported controller result or scope metadata：`{'commit': '1b504b44a2937eebfbcb29ad649eaf7920d8e7e5', 'path': 'docs/research/romutail_controller_runs/search-e06830397e0d65aee227/SEARCH_PUBLICATION.json', 'selector': []}`
 - STATUS_REPORTS_OUTCOMES_BUT_PER_ALLOCATION_CONTROLLER_RESULT_NOT_PUBLISHED：`{'commit': 'b0257d78026ade89bb3ba61dc88634570039dae8', 'path': 'docs/research/h4_pr_multiwidth_optimization_20261117/SCOPE_METADATA.json', 'selector': []}`
+- STATUS_REPORTS_OUTCOMES_BUT_PER_ALLOCATION_CONTROLLER_RESULT_NOT_PUBLISHED：`{'commit': '1b504b44a2937eebfbcb29ad649eaf7920d8e7e5', 'path': 'docs/research/romutail_controller_runs/search-be59f46fceee86257816/SCOPE_METADATA.json', 'selector': []}`
 
 最新公開scopeの進捗件数だけからshot配分やQ3点を捏造しない。各マスで「対象・未評価」「評価済み適合0」「元記録未取込」を区別。
 新規信号・sampling・compile・fit・Q3は全0件。既存の10分同期で更新する。検査と公開方法はHANDOFFを参照。
