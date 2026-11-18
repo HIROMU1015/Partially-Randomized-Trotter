@@ -34,3 +34,13 @@ WindowsとRomuTailは、明示版とcurrentのPreviewで同じrun IDを解決し
 - RomuTail、server2、Romulaptop WSL、PBS gatewayの固定配置を検証した。server1は停止扱い。今回の人工投入はRomuTailとserver2で行った。通常SERVICEのPBS実Q3見積りは従来の未設定。PBSで実Q3を選択するには対象runの時間見積りとrequest別適格性が必要。
 
 実H4信号・実compile・実Q3・価格fit・本番探索の新規起動は各0件。元runの科学結果、未確定attemptとSTOPを保全した。[検収データ](ACCEPTANCE.json)
+
+## PR-Pauliの保存入力と信号準備
+
+`romutail-pauli-inputs-8d03cd254-r2` は、旧 `romutail-pbs-sizing-48ebf75d5` を基点に、PR-Pauliの候補構成と信号計画が固定の保存入力を各hostで解決できるようにしたrelease。controllerと信号wrapperは `8d03cd254db4ae5f7b4d786f54e4fc66f0fcb4a8`。Pauli providerは `8478b8200286815ad7ba2652e535d4756ca3c330`、Q3の計算SOURCEは `28d976b99cdf8329adcc1b79327e329e947ef774` を使用する。
+
+通常の2つのROUNDで `candidate_completion.pauli_saved_inputs` に、固定 `SOURCE_INDEX.json` の3つの元パスとRomuTailの保存場所を設定する。信号workerには既存の内容ハッシュによる配布経路を使い、receipt、snapshot、H4 contextの計26,861バイトを割当の作業ディレクトリに置く。controllerとworkerの両方で固定indexのSHA-256を照合する。PBSは同じ信号処理に既存の120秒見積りを引き継ぎ、専用Git保管先で不足した履歴オブジェクトを補完した。CPU・メモリと同時実行の設定は従来どおり。
+
+保存候補32件で構成生成を確認した。RomuTail、server2、Romulaptop WSL、PBS gatewayで同一の保存REQUESTを検証用作業ディレクトリに展開し、13ラウンドの信号計画生成と3ファイルのSHA照合を確認した。PBS計算ノードへの投入は0件。関連回帰36件がPASS。別の準備回帰で失敗した5ケースは旧releaseでも同じ箇所で再現した。[保存入力の検収](PAULI_SAVED_INPUTS_ACCEPTANCE.json)
+
+新規runの通常Previewは、Windowsと共通CLIの両方から同じreleaseを選ぶ。旧 `search-8b10307fd1b9fc375b6b` は、そのrunが記録したreleaseで照会する。停止理由は `V2_RESULT_REQUIRES_REVIEW` で、終了receiptがないWSLのattemptが4件残る。継続時はCodexが旧台帳・元host・receiptを照合し、既存の継続手順を使う。server1は停止扱いで、復帰時は同じmanifestで不足分を配置し、保存入力の照合後に参加する。
