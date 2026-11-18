@@ -1,0 +1,57 @@
+[   0.00s] START sources
+[  14.13s] PLAN {'REUSE': 1, 'REQUEST': 12} request=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] rebind=[0] unsupported=[]
+[  14.52s] START LD2 context-builder control
+[  17.68s] START LD1 context
+[  17.88s] START m1 (q=2, R=2)
+[  17.91s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m1
+[  17.91s] START m2 (q=4, R=4)
+[  17.92s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m2
+[  17.92s] START m3 (q=8, R=8)
+[  17.92s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m3
+[  17.93s] START m4 (q=16, R=16)
+[  17.93s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m4
+[  17.94s] START m5 (q=32, R=32)
+[  17.94s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m5
+[  17.95s] START m6 (q=64, R=64)
+[  17.95s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m6
+[  17.96s] START m7 (q=128, R=128)
+[  17.97s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m7
+[  17.98s] START m8 (q=256, R=256)
+[  17.98s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m8
+[  17.99s] START m9 (q=512, R=512)
+[  18.00s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m9
+[  18.01s] START m10 (q=1024, R=1024)
+[  18.01s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m10
+[  18.03s] START m11 (q=2048, R=2048)
+[  18.03s] LOCAL_FINITE_MEAN_NOT_RMSE_QUALIFIED m11
+[  18.05s] START m12 (q=4096, R=4096)
+[  18.05s] NUMERICAL_FAILURE m12
+[  18.09s] END STOP_NUMERICAL_FAILURE
+{
+  "status": "STOP_NUMERICAL_FAILURE",
+  "rebound": [
+    0
+  ],
+  "scope": {
+    "new_mean_calls": 12,
+    "new_complex_outputs": 36,
+    "new_unique_normalizers": 12,
+    "rebound_records": 1,
+    "new_references": 0,
+    "operator_dictionary_recomputations": 0,
+    "eigensolves": 0,
+    "path_sampling": 0,
+    "build_compile": 0,
+    "price": 0,
+    "N_MSE_C_G": 0,
+    "Q3": 0,
+    "shot_allocation": 0
+  },
+  "pending": null,
+  "error": {
+    "m": 12,
+    "reason": [
+      "RAW_CORRECTED_CLOSURE_GATE"
+    ]
+  }
+}
