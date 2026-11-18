@@ -56,3 +56,13 @@ WindowsとRomuTailは、明示版とcurrentのPreviewで同じrun IDを解決し
 人工・回帰155件で候補並行、保存索引再利用、停止後の回収、重複防止を確認した。RomuTail、server2、Romulaptop WSL、PBS gatewayで同じ保存入力を新規workspaceへ配布し、固定入力3件、生成した索引3件、13ラウンドの信号計画を確認した。実信号・compile・Q3・PBS投入は各0件。server1は停止扱い。戻った際はこのreleaseのmanifestで配置し、検証後に参加できる。
 
 Windowsと共通CLIで明示版・currentのPreviewが同じ版を解決した。旧run `search-8b10307fd1b9fc375b6b` のStatusは元の固定版を解決し、記録済みのSTOPを確認した。[検収記録](PREPARATION_THROUGHPUT_ACCEPTANCE.json)
+
+## 適格性照会とSSH空き枠通知（2026-11-19）
+
+新規runのcurrentは `romutail-dispatch-b3a90060f`。controllerとSSH mailbox workerは `b3a90060fd8ff30fddbfb89e965b82481db4c8c6`、計算SOURCEは `28d976b99cdf8329adcc1b79327e329e947ef774`。切替前のcurrentは `romutail-prep-throughput-8cc86e60a`。
+
+- Q3の遠隔dry-checkを中央の割当・回収用ロックの外で実施する。同一REQUESTの照会を共有し、新たに参加したhostの適格性をバックグラウンドで更新する。不成立の照会は、同じREQUESTが再び選ばれた際に再確認できる。予約の直前にSTOP、予算、既存jobの所有を再確認し、割当時にはworkerの現行fingerprintを照合する。
+- SSH中継は空き枠と未転送attemptの識別情報を先に通知し、中央が所有するattemptの結果本体を個別に取得する。回収のack後に空き枠を更新する。SSH中継の空き枠通知は15秒、ローカルとPBSは3秒で失効する。
+- 人工・回帰124件がPASS。遅い照会と並行した結果採用、照会中にSTOPされた候補の新規予約防止、host参加後の適格性更新、ack欠落後の同一attempt回収を確認した。RomuTail、server2、Romulaptop WSLで人工mailboxを確認した。PBSはgatewayへの配置と回帰テストで確認した。実信号、実compile、実Q3、PBS投入は各0件。
+
+Windowsの `Invoke-RpeSearch.ps1 -Action Preview` と共通CLIの `scripts/run_rpe_search.py --action preview` で、release明示・省略の両方が新releaseを解決した。旧run `search-8b10307fd1b9fc375b6b` は元の固定releaseで `STOPPED`。server1は復帰後に新releaseのmanifestで配置し、人工mailboxと保存入力の照合後に参加する。
