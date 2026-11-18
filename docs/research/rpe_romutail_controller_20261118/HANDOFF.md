@@ -112,3 +112,31 @@ RomuTailの `results-publication` checkoutから専用結果branchへ保存metad
 Windowsの実行中同期monitorを確認した。新規実科学計算は0。
 次段階は、利用者がserver1を復帰した後にCodexが上記配置・保存入力検査・人工参加検収を行う。
 新規の実探索は利用者の別の実行指示で範囲と科学予算を確定してから開始する。
+
+## Romulaptopからの通常Startと初回起動の短縮
+
+2026-11-18 JST。currentは `romutail-startup-e97575eb0`、固定controller SOURCEは
+`e97575eb0916ae6e75333e750fd7305f98145a7b`。前版の容量対策、worker通信SOURCE、各科学SOURCE、
+PBS・WSLの受付と資源設定を引き継いだ。RomuTail、Romulaptop WSL、server2、PBSゲートウェイの専用配置を照合した。
+
+RomulaptopのCodexは、利用者の探索範囲を通常のscopeファイルに保存し、開始指示を受けたら
+`Invoke-RpeSearch.ps1 -Action Start -RequestFile .\scope.json` を1回送る。RomuTailが§10.5の照合、
+候補準備と適格workerへの割当を行う。受け取ったrun IDで `-Action Status -RunId <run_id>` を使う。
+個別のPreviewやPrepareの送信は、利用者が確認を求めた場合に使う。
+
+保存run `search-be59f46fceee86257816` では中央起動から初回Q3本体開始まで56.5秒、
+JobStoreの初回RUNNING記録まで118.9秒だった。新しいStatusは、中央の割当とjob ID・attempt・要求SHAが
+一致するRomuTailのローカルworkerについて、転送前でも本体開始記録があれば実行状況に反映する。
+重複照合の全明細は `DUPLICATE_PREFLIGHT.json` に保存し、通常応答には照合時間、件数、明細の所在と抜粋を返す。
+保存runの照合部分で約1.15 MBから約11 kBになった。
+
+同じ保存H4 DF10入力で、幅ごとの初期計画と初回候補照合を科学処理なしで比較した。
+既存mapperの起動を方式単位にまとめ、固定カタログを同じ起動内で再利用した結果、
+計画は19.18秒から10.15秒、初回候補照合は8.07秒から2.90秒になった。
+28構成群の固定値・保留理由・計画と66候補のID・準備可否・価格が一致した。
+この比較は保存入力のメタデータ処理であり、実Q3本体までの所要時間は次の実行時に観測する。
+
+人工回帰83件を通過した。Windows通常入口とRomuTailの共通入口で明示版とcurrentのPreviewが一致し、
+既存runは元の固定版と状態を返した。既存設定等35ファイルのハッシュも一致した。
+配置・比較・current採用の記録は中央の `.rpe-central/deployment/romutail-startup-e97575eb0/`。
+実信号・実compile・実Q3・本番探索の新規起動は各0件。
