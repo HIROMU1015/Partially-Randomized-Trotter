@@ -10,13 +10,22 @@ RomuTail、server2、local0-wsl、PBSゲートウェイへoptimizerを配置し�
 
 ## PBSの共通所要時間ポリシー
 
-新規runの `current` は `romutail-pbs-walltime-976c26c17`。controller SOURCEは `976c26c17d04540b79fcdc7c69c1a34b85ccd542`。RomuTail、server2、local0-wsl、PBSゲートウェイへの配置を確認した。共通ポリシーを更新する際は、対応する固定SOURCEとプロファイルを照合し、新releaseとして通常のregistryへ登録する。 [ポリシー設定](../../../configs/rpe_method_optimizer/pbs_walltime_h4.json)
+PBSの共通ポリシーを最初に採用したreleaseは `romutail-pbs-walltime-976c26c17`。controller SOURCEは `976c26c17d04540b79fcdc7c69c1a34b85ccd542`。RomuTail、server2、local0-wsl、PBSゲートウェイへの配置を確認した。共通ポリシーを更新する際は、対応する固定SOURCEとプロファイルを照合し、新releaseとして通常のregistryへ登録する。 [ポリシー設定](../../../configs/rpe_method_optimizer/pbs_walltime_h4.json)
 
 - 通常のPreviewとStartはreleaseからポリシーを解決する。StartでポリシーID・ハッシュ・適用した秒数をrunのPBS設定に固定し、StatusとResumeでも表示する。
 - Q3の4時間見積りは、固定プロファイルに合うPR-Pauliの `pauli_b_common_entry` とB0Iの `pf_b_pf6` に適用する。準備は工程・provider・SOURCEが一致する9ルールを使う。PBSは見積りにdrainの猶予を加えた時間を確保できる枠を使う。PR-DFなど見積りが未登録のQ3はPBSで `PBS_WALLTIME_ESTIMATE_UNAVAILABLE` となり、他の適格workerは利用できる。
 - 個別runで見積りを変更する場合のみ、開始要求の `scope.pbs_walltime_overrides` にルールIDと秒数を指定する。例は `{"pauli-common": 18000}`。`0` はそのルールのPBS割当を無効にする。既存runは記録済み設定でStatusとResumeを行う。
 - 回帰72件がPASS。WindowsとCLIの通常Previewは明示指定とrelease無指定の両方で新releaseを解決した。B0IのCLI Previewと、個別上書き `0` のCLI Previewも確認した。PBSゲートウェイの保存入力照合はPR-PauliとB0IがPASS、PR-DFは見積り未登録でHOLD。実信号・実compile・実Q3・PBS投入は各0件。
 - `search-6be05579540d7ed291b7` は切替前後で同じcontrollerと固定release `romutail-reviewed-pr-9187e39b5-h4-continuation` を使用している。このrunのPBS所要時間設定は未設定のまま継続する。ローカルの検収記録は `.rpe-central/deployment/romutail-pbs-walltime-976c26c17` に保存した。
+
+## PR-DF信号workerの修正
+
+新規runの `current` は `romutail-df-signal-9ed5fcc98`。controllerとPR-DF信号runnerは `9ed5fcc98d38c328c447f4270eabc73090fcaa02`。上流 `4d4fc04a10fb07a5561bebc0ecf7333c69b808f8` の固定provider読込と並行登録時の旧失敗照合を取り込んだ。候補の一覧をlock内で取得し、固定Git入力をlock外で読む。同一物理候補の失敗記録と自動再試行禁止を引き継ぐ。上流の後続 `438af4c3f` はR08専用の固定入力と引継ぎ記録。 [上流修正](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/4d4fc04a10fb07a5561bebc0ecf7333c69b808f8)
+
+- 通常入口で `applied.df_signal_source` を確認できる。分散REQUESTの `DF_SIGNALS` だけをmanifestの `df_signal_runner` へ固定し、workerは従来の計算provider `fefd548ecd56f60d72031b3d385f6f5e6ee95d06` を自身と子プロセスの両方で読み込む。NumPy 1.26.4、SciPy 1.14.1、科学Q3 SOURCE、価格provider、共同キューと受付設定を引き継いだ。PBSのPR-Pauli・B0IのQ3見積りは各4時間。PR-DF信号とQ3のPBS見積りは未登録。
+- RomuTail・server2・Romulaptop WSL・PBSゲートウェイのrelease/profileと固定providerの子プロセス読み込みを確認した。PBSの新release専用ストアには不足していた固定参照を補った。server1が復帰したら同じmanifestで配置し、固定参照が不足する場合は `DF_SIGNAL_FIXED_REFERENCES.pack` を当該releaseの `objects.git` に `git index-pack --stdin` で取り込んでから入力照合を行う。
+- server2のR08保存REQUESTを8候補・39ラウンド照合した。人工・回帰は84テスト中82件PASS。残る2テストの計4エラーは既存モックの準備REQUESTに必須フィールドが不足するもので、旧SOURCEでも再現した。WindowsとCLIの明示・無指定Previewで、信号runnerとPBS設定を確認した。検収記録は `.rpe-central/deployment/romutail-df-signal-9ed5fcc98` と同名のfleetディレクトリに保存した。
+- 既存の中央runは固定releaseで継続し、今回の切替でR08の起動・切替は行っていない。価格未確定の6候補は上流の残件。新規の実信号・実compile・fit・実Q3・PBS投入は各0件で、実信号からQ3までの通しは将来の承認済み探索で確認する。
 
 ## 通常入口
 
