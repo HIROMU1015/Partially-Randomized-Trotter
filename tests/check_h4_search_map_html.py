@@ -7,6 +7,20 @@ from trottertracks.h4_search_map_html import render, source_url
 
 
 class SearchMapHTML(unittest.TestCase):
+    def test_overview_links_the_exact_admitted_minimum_inside_the_all_runs_view(self):
+        def cell(point, cost):
+            return {'method':'PR_PAULI', 'row_label':'L_D=5', 'width_label':'1h',
+                    'min_point_ids':[point], 'min_cost':{'numerator':cost, 'denominator':1}}
+        cost = 2**54
+        page = render({'views':[
+            {'mode':'RUN', 'cells':[cell('other-run', 1)]},
+            {'mode':'ALL', 'cells':[cell('more-expensive', cost + 1), cell('least', cost)]}],
+            'points':[]})
+        cards = page.split('<div class="results" id="overview">', 1)[1].split('</section>', 1)[0]
+        self.assertEqual(re.findall(r'data-point="([^"]+)"', cards), ['least'])
+        self.assertEqual(cards.count('価格未確定'), 3)
+        self.assertIn(f'{cost:,}.00', cards)
+
     def test_offline_exact_data_source_trace_and_untrusted_labels(self):
         source={'commit':'a'*40,'path':'docs/research/space name/RESULT.json','selector':['rows',0]}
         index={'schema':'H4_SEARCH_MAP_V1','comparison':{'snapshot':'SYNTHETIC'},'runs':[],
