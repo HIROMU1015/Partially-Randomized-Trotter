@@ -7,7 +7,6 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import nullcontext
 from copy import deepcopy
 from fractions import Fraction
-from . import pr_candidate_selection as Selection
 import hashlib
 import json
 import os
@@ -15,6 +14,9 @@ from pathlib import Path
 import subprocess
 import threading
 import time
+
+from . import pr_candidate_selection as Selection
+from .pr_step_price_registry import PRICE_SOURCE_CONFLICT, PRICE_EXTRAPOLATION_HOLD, QUOTE_POLICY_REVISION
 
 ROOT=Path(__file__).resolve().parents[2]
 NATIVE='/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python'
@@ -113,13 +115,37 @@ class PreparationYield(Exception):
 
 
 
-PRICE_SOURCE_CONFLICT = 'MULTIPLE_SCOPED_MODELS_CHOOSE_SOURCE_NO_POOLING'
+PRICE_HOLD_FIELDS = {
+    PRICE_SOURCE_CONFLICT: 'conflicting_price_axes',
+    PRICE_EXTRAPOLATION_HOLD: 'extrapolated_price_axes',
+}
 
 
-def conflicting_price_axes(quote):
-    return [dict(m=row['m'],axis=row['axis'],entry_ids=row['needs'].get('entry_ids',[]))
-            for row in quote.get('rows',[]) if row.get('unit_price_RZ') is None
-            and PRICE_SOURCE_CONFLICT in (row.get('needs') or {}).get('reasons',[])]
+def price_source_holds(quote):
+    holds = {}
+    for row in quote.get('rows', []):
+        if row.get('unit_price_RZ') is not None:
+            continue
+        needs = row.get('needs') or {}
+        for reason in needs.get('reasons', []):
+            if reason in PRICE_HOLD_FIELDS:
+                item = dict(m=row['m'], axis=row['axis'], entry_ids=needs.get('entry_ids', []))
+                if 'extrapolation' in needs:
+                    item['extrapolation'] = needs['extrapolation']
+                holds.setdefault(reason, []).append(item)
+    return holds
+
+
+def price_hold_reason(holds):
+    return 'PRICE_EVIDENCE_REQUIRED:' + ','.join(sorted(holds))
+
+
+def record_price_holds(record, holds):
+    for reason, field in PRICE_HOLD_FIELDS.items():
+        if reason in holds:
+            record[field] = holds[reason]
+        else:
+            record.pop(field, None)
 
 
 class Completion:
@@ -213,7 +239,8 @@ class Completion:
 
     def price_registry_digest(self):
         path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
-        return key(dict(legacy=read(self.registry),steps=read(path)if path.exists()else None))
+        return key(dict(legacy=read(self.registry),steps=read(path)if path.exists()else None,
+                        quote_policy_revision=QUOTE_POLICY_REVISION))
 
     def quote_with_steps(self,config,quote):
         path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
@@ -321,7 +348,7 @@ class Completion:
             raise ValueError('CONTINUATION_PRICE_EVIDENCE_DIFFERS')
 
     def refresh_price_hold(self,record):
-        """Requery newly registered evidence, never retry a scientific leaf."""
+        """Requery after a registry or quote policy update, without scientific retry."""
         reason=str(record.get('reason',''))
         if record.get('scientific_failure')or record.get('status','').startswith('STOP')or any(
                 token in reason for token in ('STAGE_FAILED:','PRIOR_STAGE_FAILED','NUMERICAL_GATE','NO_AUTOMATIC_RETRY')):
@@ -335,6 +362,14 @@ class Completion:
             registry_file=str(registry),policy='MODEL'),d,tag='AVAILABLE_EVIDENCE_QUOTE',python=self.path('PRICE'))
         quote=self.quote_with_steps(value(record['configuration']),quote)
         put(d/'AVAILABLE_EVIDENCE_QUOTE.json',quote)
+        if record.get('method') == 'PR_DF':
+            holds = price_source_holds(quote)
+            record_price_holds(record, holds)
+            if not quote.get('complete') and reason.startswith(('PRICE_EVIDENCE_REQUIRED:', 'PRICE_RULE_INCOMPLETE:')):
+                updated = price_hold_reason(holds) if holds else 'PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications'))
+                if updated != reason:
+                    record['previous_hold'] = dict(status=record['status'], reason=reason)
+                    record['reason'] = updated
         if not quote.get('complete'):
             record['registry_at_hold']=digest;self.save();return None
         fixed=publish([d],'Reuse newly available candidate prices without scientific retry')
@@ -433,7 +468,7 @@ class Completion:
                     raise Held('DF_SAVED_SIGNAL_CONFLICT:rounds='+rounds)
                 if df_plan.get('unsupported_rounds') or any(row['decision']=='UNSUPPORTED' for row in df_plan['rounds']):
                     raise Held('DF_PROVIDER_UNSUPPORTED:'+str(df_plan))
-                if not initial_quote['complete'] and not conflicting_price_axes(initial_quote):
+                if not initial_quote['complete'] and not price_source_holds(initial_quote):
                     design=self.service('df-price-design',dict(configuration=config,price_quote=initial_quote),d)
                     bad=[g for g in design.get('groups',[])if g['status']!='CALIBRATION_DESIGN_READY']
                     if bad:raise Held('DF_MODEL_DESIGN:'+str(bad))
@@ -456,10 +491,11 @@ class Completion:
                 rec['intake']=intake;self.save()
                 quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
             if not quote['complete']:
-                conflict=conflicting_price_axes(quote) if request['method']=='PR_DF' else []
-                if conflict:
-                    rec['conflicting_price_axes']=conflict
-                    raise Held('PRICE_EVIDENCE_REQUIRED:'+PRICE_SOURCE_CONFLICT)
+                if request['method']=='PR_DF':
+                    holds = price_source_holds(quote)
+                    record_price_holds(rec, holds)
+                    if holds:
+                        raise Held(price_hold_reason(holds))
                 raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
             quote_commit=publish([d],'Publish completed candidate prices and receipt bindings')
             with self.lock:
@@ -518,9 +554,14 @@ class Completion:
                 signals=self.service('df-plan',dict(configuration=config,tail_descriptor=selected.get('tail_descriptor'),
                     saved_bundles=self.saved_signal_packets('PR_DF')),d)
             quote=self.initial_quote(config,config,d)
+            holds = price_source_holds(quote) if request['method']=='PR_DF' else {}
             if request['method']=='PR_PAULI':
                 cal=self.service('pauli-price-plan',dict(configuration=config,prepared_item=prepared,price_quote=quote,
                     workspace=str(self.settings.get('pauli_workspace',self.path('A_WORKSPACE')))),d)
+            elif holds:
+                out['reason'] = price_hold_reason(holds)
+                record_price_holds(out, holds)
+                cal = dict(status='WAITING_PRICE_EVIDENCE', groups=[])
             else:
                 cal=self.service('df-price-design',dict(configuration=config,price_quote=quote),d)
             signal_rows={r['m']:r for r in signals.get('rounds',[])}
@@ -674,7 +715,7 @@ class Completion:
         req=dict(configuration=cref,view=str(self.path('D2_VIEW')),registry_file=str(registry),policy='MODEL')
         quote=self.initial_quote(config,cref,d)if initial_quote is None else initial_quote
         quote=self.quote_with_steps(config,quote)
-        if r['method']=='PR_DF' and conflicting_price_axes(quote):
+        if r['method']=='PR_DF' and price_source_holds(quote):
             put(d/'FINAL_QUOTE.json',quote)
             return quote
         if not quote['complete']:
@@ -721,9 +762,10 @@ class Completion:
                 # A different candidate may have completed this exact group
                 # while we waited. Requote from its verified registry first.
                 refreshed=self.quote_with_steps(config,quote)
-                if conflicting_price_axes(refreshed):
+                holds = price_source_holds(refreshed)
+                if holds:
                     put(d/'FINAL_QUOTE.json',refreshed)
-                    raise Held('PRICE_EVIDENCE_REQUIRED:'+PRICE_SOURCE_CONFLICT)
+                    raise Held(price_hold_reason(holds))
                 missing={(r['m'],r['axis'])for r in refreshed['rows']if r.get('unit_price_RZ')is None}
                 if not any((r['m'],r['axis'])in missing for r in group['axis_keys']):continue
                 package=self.df_price_group(cref,refreshed,d/'df_price_groups'/group['group_id'][:20],registry,group,descriptor)

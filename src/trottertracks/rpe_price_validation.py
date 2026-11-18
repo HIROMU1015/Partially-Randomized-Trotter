@@ -89,7 +89,8 @@ def describe_steps(registry,configuration,quote):
     result=[]
     for e in registry.state['entries']:
         if e['mode']=='DIRECT_FINITE_COHORT':continue
-        used=[r for r in quote['rows']if r.get('registered_rule')=='ACTUAL_STEP:'+e['id'] and r.get('classification')=='MODEL_REFERENCE']
+        used={(r['m'],r['axis']):r['unit_price_RZ'] for r in quote['rows']
+              if r.get('registered_rule')=='ACTUAL_STEP:'+e['id'] and r.get('classification')=='MODEL_REFERENCE'}
         if not used:continue
         domain=e['domain'];identity=dict(family=domain['family'],actual_step=domain['actual_step'],
             piece_pattern=domain['piece_pattern'],event_recipe=domain['event_recipe'],mode=e['mode'],
@@ -102,8 +103,8 @@ def describe_steps(registry,configuration,quote):
             configuration_id=configuration['id'],configuration_source=None,calibration_domain=e.get('calibration_domain'),
             points=[dict(m=m,q=configuration['rounds'][m]['q_PF'],R=configuration['rounds'][m]['R_outer'],
                 physical_id=configuration['rounds'][m]['candidate']['id'],round=deepcopy(configuration['rounds'][m]),
-                predicted_RZ={a:next(r['unit_price_RZ']for r in quote['rows']if r['m']==m and r['axis']==a)for a in AXES})
-                for m in sorted({r['m']for r in used})],qualified_for_candidate=False))
+                predicted_RZ={a:used.get((m,a))for a in AXES})
+                for m in sorted({m for m,_ in used})],qualified_for_candidate=False))
     return result
 
 

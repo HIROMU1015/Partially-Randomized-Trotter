@@ -17,6 +17,9 @@ PRICE_SOURCE = 'c1f95e0806f5478a1ee5ce9ecb148ce9d10461aa'
 PRICE_MODULE = 'src/trottertracks/pr_price_rules.py'
 SCHEMA = 'PR_ACTUAL_STEP_PRICE_REGISTRY_V1'
 AXES = ('X', 'Y')
+PRICE_SOURCE_CONFLICT = 'MULTIPLE_SCOPED_MODELS_CHOOSE_SOURCE_NO_POOLING'
+PRICE_EXTRAPOLATION_HOLD = 'SCOPED_MODEL_EXTRAPOLATION_REQUIRES_EVIDENCE'
+QUOTE_POLICY_REVISION = 2
 
 
 def frac(value):
@@ -353,6 +356,58 @@ class StepPriceRegistry:
             terms.append((one,slope))
         return tuple(terms) if len(terms)==26 else None
 
+    def _scoped_price(self, row, point, matching, family):
+        axis = row['axis']
+        direct = []
+        models = []
+        rejected = []
+        for entry in matching:
+            if entry['mode'] == 'DIRECT_FINITE_COHORT':
+                direct.extend((entry, observed) for observed in entry['direct_prices']
+                              if observed['axis'] == axis and same(observed['point'], self.api['physical'](point)))
+                continue
+            value, missing = self.api['PriceRules']._model(None, dict(entry, family=family), point, axis)
+            if missing or value is None or value <= 0:
+                rejected.extend(missing or ['SCOPED_MODEL_NONPOSITIVE_NO_CLAMP'])
+                continue
+            extrapolation = [k for k in ('q', 'R') if not
+                             entry['calibration_domain'][k][0] <= point[k] <= entry['calibration_domain'][k][1]]
+            models.append((entry, value, extrapolation))
+
+        if direct:
+            if len(direct) > 1:
+                row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[entry['id'] for entry, _ in direct])
+                return
+            entry, observed = direct[0]
+            row.update(unit_price_RZ=observed['value'], classification='DIRECT_FINITE_COHORT',
+                       source=deepcopy(entry['provenance']), registered_rule='ACTUAL_STEP:'+entry['id'],
+                       qualified_E_C=False, CI=None, direct_alternatives=[deepcopy(observed)])
+        elif models:
+            # A previously ambiguous scope may only be resolved with
+            # in-range evidence. Keep the existing single-entry policy.
+            choices = [model for model in models if not model[2]] if len(matching) > 1 else models
+            if not choices:
+                row['needs'] = dict(reasons=[PRICE_EXTRAPOLATION_HOLD],
+                    entry_ids=[entry['id'] for entry, _, _ in models],
+                    extrapolation={entry['id']: axes for entry, _, axes in models})
+                return
+            if len(choices) > 1:
+                row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[entry['id'] for entry, _, _ in choices])
+                return
+            entry, value, extrapolation = choices[0]
+            row.update(unit_price_RZ=exact(value), classification='MODEL_REFERENCE', source=deepcopy(entry['provenance']),
+                       registered_rule='ACTUAL_STEP:'+entry['id'], qualified_E_C=False, CI=None,
+                       model_alternative=dict(value=exact(value), rule=entry['mode'], source=deepcopy(entry['provenance']),
+                           actual_step=entry['domain']['actual_step'], covered_rounds=entry['domain']['covered_rounds'],
+                           calibration_domain=entry['calibration_domain'], extrapolation=extrapolation,
+                           event_step_changed_from_calibration=point['R'] not in entry['calibration_R'],
+                           qualification=entry['qualification'], application='SOURCE_BOUND_ACTUAL_STEP_MODEL'))
+        else:
+            if rejected:
+                row['needs'] = dict(reasons=list(dict.fromkeys(rejected)))
+            return
+        row.pop('needs', None)
+
     def quote(self, configuration, implementation, base_quote=None):
         config=configuration;family=self.api['family'](config,implementation)
         if base_quote is None:
@@ -371,30 +426,11 @@ class StepPriceRegistry:
                 row=rows[round_row['m'],axis]
                 require(row.get('physical_id')==round_row['candidate']['id'] and row.get('q')==p['q'] and row.get('R')==p['R'],
                         'BASE_QUOTE_PHYSICAL_AXIS_DIFFERS')
-                if row.get('unit_price_RZ') is not None:continue
-                if len(matching)>1:
-                    row['needs']=dict(reasons=['MULTIPLE_SCOPED_MODELS_CHOOSE_SOURCE_NO_POOLING'],entry_ids=[e['id']for e in matching]);continue
-                if not matching:continue
-                e=matching[0]
-                if e['mode']=='DIRECT_FINITE_COHORT':
-                    observed=[v for v in e['direct_prices']if v['axis']==axis and same(v['point'],self.api['physical'](p))]
-                    if len(observed)!=1:continue
-                    row.update(unit_price_RZ=observed[0]['value'],classification='DIRECT_FINITE_COHORT',
-                        source=deepcopy(e['provenance']),registered_rule='ACTUAL_STEP:'+e['id'],
-                        qualified_E_C=False,CI=None,direct_alternatives=deepcopy(observed))
-                    row.pop('needs',None);continue
-                value,missing=self.api['PriceRules']._model(None,dict(e,family=family),p,axis)
-                if missing or value is None or value<=0:
-                    row['needs']=dict(reasons=missing or ['SCOPED_MODEL_NONPOSITIVE_NO_CLAMP']);continue
-                extrap=[key for key in ('q','R')if not e['calibration_domain'][key][0]<=p[key]<=e['calibration_domain'][key][1]]
-                row.update(unit_price_RZ=exact(value),classification='MODEL_REFERENCE',source=deepcopy(e['provenance']),
-                    registered_rule='ACTUAL_STEP:'+e['id'],qualified_E_C=False,CI=None,
-                    model_alternative=dict(value=exact(value),rule=e['mode'],source=deepcopy(e['provenance']),
-                        actual_step=e['domain']['actual_step'],covered_rounds=e['domain']['covered_rounds'],
-                        calibration_domain=e['calibration_domain'],extrapolation=extrap,
-                        event_step_changed_from_calibration=p['R']not in e['calibration_R'],
-                        qualification=e['qualification'],application='SOURCE_BOUND_ACTUAL_STEP_MODEL'))
-                row.pop('needs',None)
+                if row.get('unit_price_RZ') is not None or not matching:continue
+                if family['method'] != 'PR_DF' and len(matching) > 1:
+                    row['needs'] = dict(reasons=[PRICE_SOURCE_CONFLICT], entry_ids=[e['id'] for e in matching])
+                    continue
+                self._scoped_price(row, p, matching, family)
         values=sorted(rows.values(),key=lambda r:(r['m'],r['axis']))
         from .rpe_price_validation import describe,describe_steps
         fixed=self.api['PriceRules'](self.reader,self.registry)

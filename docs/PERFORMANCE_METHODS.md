@@ -157,6 +157,11 @@ R08で過去に `df-plan` が保留した3件の保存入力を、従来の固�
 - [候補準備](../src/trottertracks/pr_candidate_completion.py) は、別候補を登録できる間も同一物理候補のREADY・旧失敗を同じ候補一覧で照合する。重いGit読込みは一覧取得用のlock外で行う。同一物理候補の準備lockと失敗後の自動retry禁止を維持する。
 - R08で旧`DF_SIGNALS`の8候補がprovider import時に停止した。この8候補が要求した延べ39 roundについて、保存設定と固定referenceを照合した。`bc3d1625c731cc58bf79`ではfork先の依存モジュールのimport元も照合した。人工検査は[workerの起動・fork・保存・再開](../tests/test_pr_df_candidate_signal_jobs.py)と[並行登録中の旧失敗照合](../tests/test_pr_candidate_completion.py)を含む。実H4信号の追加計算は0件。実信号からQ3までの完走と速度はこの修正では未測定。
 
+### PR-DFの較正範囲が重なる場合の価格照会
+
+- [価格照会](../src/trottertracks/pr_step_price_registry.py) は元の物理条件検査の後、round・軸ごとに適用可能なモデルを調べる。受入済みの単価が空欄なら、同一物理点の一意な直接観測を優先する。重複登録では較正範囲内のモデルが一つなら使い、複数なら出所選択待ち、外挿しか残らなければ追加根拠待ちとする。較正範囲は保存済みの `q/R` の最小値・最大値であり、適用した値は従来どおり条件付き参照価格として残す。単独登録の既存外挿とその表示は従来のまま。
+- [候補準備](../src/trottertracks/pr_candidate_completion.py) はこの2種の保留で較正を再投入せず、照会規則または登録表が変わったときに保存情報だけで再照会する。[軸別照会](../tests/test_pr_step_price_registry.py)と[通常入口・再開](../tests/test_pr_width_completion.py)を人工検証。新しい実H4価格、信号、Q3は取得していない。
+
 ## PR-Pauli広域schedule探索：粗い探索の優先・HYBRID並列・価格下界による打ち切り（B2、2026-11-16）
 
 - **価格下界による打ち切り**（`run_rpe_schedule_search.py` の `prune`、`rpe_schedule_search.plan_wide(price_floor=)`）
