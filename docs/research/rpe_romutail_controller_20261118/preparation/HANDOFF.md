@@ -119,3 +119,15 @@ server1復帰時は、既存の固定f956 transportと工程SOURCE・Python/comp
 候補が変わっても共通履歴を再利用できることと、旧bundleを読み込めることを確認した。
 初回の容量は入力の履歴に依存する。表の較正と信号では、外部デルタ参照を使わないpackの容量が増えた。
 実workerへの配置とcurrent採用は次のreleaseで行う。
+
+## workerの実行ディレクトリ容量
+
+準備jobは実行ごとに独立した作業領域を作る。事前照合で固定したGitオブジェクトは、worker内の
+`preparation-metadata-cache` を各作業領域から参照する。展開済みの作業ファイルと新しい成果commitは
+各attemptに保存する。共有Gitキャッシュは、参照する作業領域が残っている間は保持する。
+
+保存PR-DF descriptor `prep-e30f836cc9686b7c646df3ba` の入力で、独立した固定SOURCEから新規作業領域を
+作成して比較した。従来は作業領域ごとにGit packを47,521,081バイト作成した。変更後は2つの
+作業領域のどちらにも入力packの複製がなく、同量をworkerの共有キャッシュに1回保持した。
+両方で固定SOURCEと入力が一致した。人工jobでは別のprovider作業領域からの成果公開・回収も確認した。
+対象は新規attemptの準備Git pack。既存attemptの容量削減には、回収済み成果と参照の別途照合が必要。
