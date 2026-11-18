@@ -100,12 +100,15 @@ subprocess.run(['git','commit','-qm','one synthetic receipt'],check=True)
         subprocess.run(['git','add','docs'],cwd=source,check=True)
         subprocess.run(['git','-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','historical-data'],cwd=source,check=True)
         self.source['commit']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip()
+        blob=subprocess.check_output(['git','rev-parse','HEAD:docs/archive/unneeded.json'],cwd=source,text=True).strip()
+        # Model a metadata-only worker seed with no historical artifact blob.
+        (source/'.git/objects'/blob[:2]/blob[2:]).unlink()
         code="""from pathlib import Path
 import subprocess
 assert not Path('docs/archive/unneeded.json').exists()
 p=Path('docs/provider-output/result.json');p.parent.mkdir(parents=True,exist_ok=True);p.write_text('{"done":true}')
 subprocess.run(['git','add',str(p)],check=True)
-subprocess.run(['git','commit','-qm','new result'],check=True)
+subprocess.run(['git','commit','--only','-qm','new result','--',str(p)],check=True)
 """
         task=self.task('audit',code,source_workspace=True,outputs=['workspace/docs/provider-output'])
         result=P.execute(task,self.profile('server1'),self.root/'sparse-attempt')

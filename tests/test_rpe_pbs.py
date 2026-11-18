@@ -230,6 +230,30 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual((pending, queued, covered), ([], 2, 1))
             manager.close()
 
+    def test_only_idle_undersized_allocation_drains_for_later_demand(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            token = self.submit(manager)
+            manager.settings['allocation_sizing'] = {'q3_startup_memory_bytes_per_task': 1024**3}
+            manager.settings['resources']['ncpus'] = 96
+            ready = dict(route={'kind': 'artificial'})
+            manager._demand = lambda: ([(['pbs-0'], ready)] * 4, [], 4, 0)
+            observed = dict(token=token, status='R', host_id='pbs-0', job_id='artificial',
+                            worker={'accepting': True})
+            gateway.call = lambda _: dict(allocations=[observed], requests={})
+            executor._owned_attempts = lambda: [dict(host_id='pbs-0')]
+            manager.cycle()
+            self.assertFalse(manager.controls[token]['stop'])
+            executor._owned_attempts = lambda: []
+            manager.cycle()
+            self.assertTrue(manager.controls[token]['stop'])
+            self.assertTrue(manager.state['allocations'][token]['resize_requested'])
+            self.assertEqual(len(manager.state['allocations']), 1)
+            response = manager._dispatch(token, dict(endpoint='/v1/poll', request_id='late',
+                payload=dict(host_id='pbs-0', slots=1, capacity=1)))
+            self.assertTrue(response['ok'])
+            self.assertEqual(executor.calls[-1][1]['slots'], 0)
+
     def test_preparation_reserved_with_local_readiness_can_wake_pbs(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, _ = self.manager(directory)

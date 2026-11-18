@@ -259,7 +259,8 @@ class PbsManager:
                     admission['remaining_seconds'] = min(admission.get('remaining_seconds',0), current.get('remaining_seconds',0))
                     admission['accepting'] = admission.get('accepting',False) and current.get('accepting',False)
             if request['endpoint'] == '/v1/poll' and (allocation is None or allocation['status'] != 'R' or
-                    not (allocation.get('worker') or {}).get('accepting', False)):
+                    not (allocation.get('worker') or {}).get('accepting', False) or
+                    self.state['allocations'][token].get('resize_requested')):
                 # A delayed file survives worker/PBS termination; it cannot
                 # constitute a current free-slot offer.
                 payload.update(slots=0, capacity=0, accepting_new_jobs=False)
@@ -421,7 +422,23 @@ class PbsManager:
         stopping = self.stop.is_set() or self.executor._user_stop_requested() or self.executor.state.closed
         for allocation in self.allocations:
             if allocation['status'] not in TERMINAL:
-                self.controls[allocation['token']] = dict(stop=stopping, release_when_idle=queued == 0)
+                token, host = allocation['token'], allocation['host_id']
+                record = self.state['allocations'][token]
+                spec = record['spec']
+                current_cpus = spec['resources']['ncpus']
+                requested_slots = sum(host in usable for usable, _ in outstanding)
+                cpu_per_task = task_cpu_footprint(spec['profile'])
+                # Releasing the old idle allocation is required before another
+                # allocation can take ownership under this PBS host identity.
+                if (not stopping and self.settings.get('allocation_sizing') and allocation['status'] == 'R'
+                        and (allocation.get('worker') or {}).get('accepting') and not record.get('resize_requested')
+                        and min(self.settings['resources']['ncpus'], requested_slots * cpu_per_task) >= 2 * current_cpus
+                        and not any(row['host_id'] == host for row in self.executor._owned_attempts())):
+                    record['resize_requested'] = True
+                    self.log('PBS_IDLE_ALLOCATION_RESIZE_DRAIN', token=token, host_id=host,
+                             previous_cpus=current_cpus, compatible_ready_jobs=requested_slots)
+                self.controls[token] = dict(stop=stopping or record.get('resize_requested', False),
+                                            release_when_idle=queued == 0)
                 if stopping and allocation['status'] in ('Q','H','W') and allocation.get('job_id') and not any(
                         row['host_id'] == allocation['host_id'] for row in self.executor._owned_attempts()):
                     result = self.gateway.call(dict(action='delete', token=allocation['token']))

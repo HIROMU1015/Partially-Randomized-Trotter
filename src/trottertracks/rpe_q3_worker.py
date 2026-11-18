@@ -22,6 +22,7 @@ import threading
 import time
 import urllib.error
 import urllib.request
+from uuid import UUID
 
 
 # Match the existing adapter: exact DP bounds may contain very long integers.
@@ -91,6 +92,33 @@ def process_alive(pid, marker):
         return str(marker) in command
     except (OSError, ProcessLookupError):
         return False
+
+
+def resource_state(attempt, state):
+    """Keep recovery ownership separate from CPU occupancy with exit evidence."""
+    if state != 'UNKNOWN':
+        return state
+    for name in ('SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json', 'WORKER_LAUNCH.json'):
+        marker = attempt / name
+        if marker.is_file() and process_alive(read(marker).get('pid'), attempt):
+            return state
+    exit_receipt = attempt / 'PROCESS_RETURN.json'
+    if exit_receipt.is_file():
+        receipt = read(exit_receipt)
+        if type(receipt.get('returncode')) is int or type(receipt.get('signal')) is int:
+            return 'EXITED'
+    timing = attempt / 'TRANSPORT_TIMING.jsonl'
+    if timing.is_file():
+        try:
+            with timing.open() as stream:
+                original = json.loads(stream.readline()).get('clock_id', '')
+            host, _, boot = original.partition(':')
+            current_host, _, current_boot = stamp()['clock_id'].partition(':')
+            if host == current_host and UUID(boot) != UUID(current_boot):
+                return 'EXITED'
+        except (ValueError, AttributeError):
+            pass
+    return state
 
 
 def event(profile, name, **detail):
@@ -183,7 +211,9 @@ def _adapter_command(profile, attempt, mode, output):
         assignment = read(saved_assignment)
         profile = select_host_profile(profile, assignment)
         if Preparation.is_preparation(assignment):
-            root = Path(profile.get('preparation_adapter_root') or Path(__file__).resolve().parents[2])
+            # The worker release supplies the transport. The profile still
+            # binds the provider wrapper, fixed sources and runtime inputs.
+            root = Path(__file__).resolve().parents[2]
             return [profile['interpreter'], '-B', str(root / 'scripts/run_rpe_preparation_job.py'),
                     '--assignment', str(saved_assignment), '--profile', str(Path(attempt)/'WORKER_PROFILE.json'),
                     '--task-root', str(attempt), '--output', str(output), '--mode', mode]
@@ -420,7 +450,7 @@ class Worker:
             seconds = observed['monotonic']-previous.get('monotonic', observed['monotonic'])
             same_clock = previous.get('clock_id') == observed['clock_id']
             cores = max(0, sample['cpu_seconds']-previous.get('cpu_seconds', 0))/seconds if same_clock and seconds > 0 else 0
-            job = dict(state=state, dp_workers=max(saved.get('dp_workers') or 1,
+            job = dict(state=resource_state(attempt, state), dp_workers=max(saved.get('dp_workers') or 1,
                                                  saved.get('task_cpu_count') or 1),
                        peak_rss_bytes=peak, cpu_seconds=sample['cpu_seconds'],
                        observed_cpu_cores=max(cores, previous.get('observed_cpu_cores', 0)))
@@ -690,7 +720,7 @@ def mailbox(profile, action, payload=None):
             if not duplicate and not offer.get('storage', {}).get('accepting_new_jobs', True):
                 raise ValueError(offer['storage']['reason'])
             occupied_states = Resources.OCCUPIED if (worker.profile.get('slot_policy') or {}).get('mode') == 'auto' else ('ASSIGNED','STARTING','RUNNING')
-            active = sum(worker._reconcile(path, saved)['state'] in occupied_states
+            active = sum(resource_state(path, worker._reconcile(path, saved)['state']) in occupied_states
                          for path, saved in worker.records.items())
             if not duplicate and active >= worker.slots:
                 raise ValueError('No free worker slot')

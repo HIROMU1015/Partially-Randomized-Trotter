@@ -287,7 +287,10 @@ def _clone(source, destination, bundles, cache, checkout_input_head=True, source
         if len(relative.parts)>1 and relative.parts[0]not in directories:
             directories.add(relative.parent.as_posix())
     # Older supported Git versions interpret --cone after set as a path.
-    subprocess.run(['git','sparse-checkout','init','--cone'],cwd=destination,check=True,capture_output=True)
+    # Keep untouched directories as sparse tree entries. A preparation commit
+    # should not require the blobs beneath every unrelated archive subtree.
+    subprocess.run(['git','sparse-checkout','init','--cone','--sparse-index'],
+                   cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','sparse-checkout','set','--stdin'],input='\n'.join(sorted(directories))+'\n',
                    text=True,cwd=destination,check=True,capture_output=True)
     subprocess.run(['git','checkout','-b','preparation-owned',commit],cwd=destination,check=True,capture_output=True)

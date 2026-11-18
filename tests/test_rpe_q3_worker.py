@@ -66,6 +66,29 @@ def finish(worker, timeout=8):
 
 
 class WorkerTests(unittest.TestCase):
+    def test_unknown_attempt_only_releases_capacity_with_exit_evidence(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            attempt = Path(temporary)
+            current = 'worker-test:4e765e4d-eda5-4ab3-a055-3dd044269f59'
+            with patch.object(W, 'stamp', return_value={'clock_id': current}):
+                self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'UNKNOWN')
+                timing = attempt / 'TRANSPORT_TIMING.jsonl'
+                timing.write_text(json.dumps({'clock_id': current}))
+                self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'UNKNOWN')
+                old_boot = '93477fd0-0fe1-4542-80a1-8bffdea6d1ce'
+                timing.write_text(json.dumps({'clock_id': 'elsewhere:' + old_boot}))
+                self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'UNKNOWN')
+                timing.write_text(json.dumps({'clock_id': 'worker-test:' + old_boot}))
+                self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'EXITED')
+                self.assertEqual(W.resource_state(attempt, 'COMPLETED_PENDING_TRANSFER'),
+                                 'COMPLETED_PENDING_TRANSFER')
+                timing.unlink()
+                W.atomic(attempt / 'PROCESS_RETURN.json', {'returncode': 1})
+                self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'EXITED')
+                W.atomic(attempt / 'WORKER_LAUNCH.json', {'pid': 99})
+                with patch.object(W, 'process_alive', return_value=True):
+                    self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'UNKNOWN')
+
     def test_storage_limit_stops_new_offers_and_preserves_completion(self):
         with tempfile.TemporaryDirectory() as temporary, patch.object(W.Storage, 'SAMPLE_SECONDS', 0):
             base = Path(temporary)
