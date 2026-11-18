@@ -21,12 +21,17 @@ def main():
     parser.add_argument('--once', action='store_true', help='One acquisition poll, then finish/recover and transfer')
     parser.add_argument('--drain', action='store_true', help='Recover owned attempts; acquire no new jobs')
     parser.add_argument('--storage-limit-report', action='store_true', help='Read a storage policy from stdin without starting a worker')
+    parser.add_argument('--storage-spool', action='append', default=[], help='Worker spool eligible for reclaiming acknowledged copies')
+    parser.add_argument('--storage-pbs-runs', help='Shared PBS run namespaces with workers/JOB_HOST spools')
+    parser.add_argument('--storage-refresh', action='store_true', help='Measure now instead of reusing the last storage sample')
     parser.add_argument('--supervise-attempt', type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.supervise_attempt:
         return supervise(args.supervise_attempt)
     if args.storage_limit_report:
-        print(json.dumps(storage_report(json.load(sys.stdin)), allow_nan=False), flush=True)
+        print(json.dumps(storage_report(json.load(sys.stdin), spools=args.storage_spool,
+                                        pbs_runs=args.storage_pbs_runs, refresh=args.storage_refresh),
+                         allow_nan=False), flush=True)
         return 0
     if args.mailbox:
         if not args.profile:

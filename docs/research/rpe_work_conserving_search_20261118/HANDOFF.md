@@ -100,3 +100,15 @@ RomuTail・Romulaptop WSL・server2・PBS・server1に各50 GiB（53,687,091,200
 測定値が50 GiB以上、または使用量が取得できない環境は、新規受付を停止する。PBSでは新規allocationを要求する前にも確認する。実行中jobと結果回収は続き、使用量が減ると再計測で受付を再開する。この受付制限では実行中の書き込みで一時的に50 GiBを超え得る。通常Previewの `applied.worker_storage_limits_bytes` と稼働中のキュー計時 `QUEUE_WAIT_STATE` に、設定値と受付の状態が出る。
 
 人工・回帰128件が通過した。RomuTail（31.8 GiB）、Romulaptop WSL（20.4 GiB）、server2（9.6 GiB）、PBS（1.6 GiB）で50 GiB設定と現在使用量を確認した。PBS gatewayの新規投入前の照会も通過した。server1の設定は新releaseに固定し、復帰後にworkerを配置して容量照会を確認する。旧runは元の固定版でSTOPを維持。新規の実科学計算とPBS投入は各0件。
+
+### 回収済み作業コピーの自動整理
+
+50 GiB到達時は、転送ack済みのdry-check一時領域、正常完了した準備の展開コピー、回収済みbundleの作業コピーの順で整理する。45 GiBを目安に再計測し、50 GiB未満で受付を再開する。保持対象は中央成果、attemptのreceiptと所有、実行中・未回収・未確定・失敗した準備の作業成果、固定入力とキャッシュ。
+
+固定版で稼働中のrunには `scripts/reclaim_rpe_worker_storage.py RUN_DIR --watch` をRomuTailで実行する。既存のmailbox接続とPBS gatewayの専用Pythonを利用し、停止中のWSLを起動せず、run終了まで1分ごとに点検する。ログはrun内の `distributed/STORAGE_RECLAIM.log` に残す。容量上限の照会、転送ack後の整理、転送前・実行中・未確定の作業コピーの保持を人工回帰で確認した。
+
+### 準備の固定Git入力と割当照会
+
+PR-Pauliの信号では保存平均のカーネル照合に使う固定Gitファイルを、価格準備では既存adapterが照合する較正・監査SOURCEのファイルを、準備REQUESTの入力に含める。workerはbundleのhash・前提・宣言refを照合して専用キャッシュに直接取り込み、REQUESTの固定Git入力を再照合する。
+
+準備の適格性照会はホストごとに4件ずつ順送りする。成果物のハッシュ照合・転送は割当のロック外で処理し、jobとattemptの予約・採用には既存のロックを使う。これらは稼働中の固定コントローラーへ適用するには版の切替が必要。

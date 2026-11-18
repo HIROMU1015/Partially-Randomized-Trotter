@@ -184,8 +184,14 @@ def _metadata_input_repository(profile, root, spec):
             if sha in imported:continue
             path=cache.path(sha)
             subprocess.run(['git','bundle','verify',str(path)],cwd=target,check=True,capture_output=True)
-            subprocess.run(['git','fetch',str(path),bundle.get('ref','HEAD')],cwd=target,check=True,capture_output=True)
+            ref = bundle.get('ref','HEAD')
             heads=subprocess.check_output(['git','bundle','list-heads',str(path)],cwd=target,text=True).splitlines()
+            if not any(line.split(maxsplit=1)[1] == ref for line in heads):
+                raise ValueError('Preparation metadata bundle lacks its declared ref: '+ref)
+            # Import this verified local bundle directly. A fetch checks the
+            # connectivity of unrelated history, which can be sparse locally.
+            # The fingerprint below still reads and hashes every declared input.
+            subprocess.run(['git','bundle','unbundle',str(path),ref],cwd=target,check=True,capture_output=True)
             for index,line in enumerate(heads):
                 commit=line.split()[0]
                 subprocess.run(['git','update-ref','refs/rpe-metadata/'+sha+'/'+str(index),commit],cwd=target,check=True,capture_output=True)

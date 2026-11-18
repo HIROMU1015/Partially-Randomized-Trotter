@@ -387,7 +387,7 @@ class Worker:
         return Resources.resource_snapshot(self.profile)
 
     def _storage_offer(self, report):
-        storage = Storage.report(self.profile.get('storage_limit'))
+        storage = Storage.report(self.profile.get('storage_limit'), spools=(str(self.work),))
         if storage is not None:
             report['storage'] = storage
             if not storage['accepting_new_jobs']:
@@ -686,7 +686,9 @@ def mailbox(profile, action, payload=None):
             duplicate = (attempt / 'ASSIGNMENT.json').exists()
             profile = read(attempt / 'WORKER_PROFILE.json') if duplicate else worker.profile
             validate_assignment(profile, assignment)
-            worker._resource_offer()
+            offer = worker._resource_offer()
+            if not duplicate and not offer.get('storage', {}).get('accepting_new_jobs', True):
+                raise ValueError(offer['storage']['reason'])
             occupied_states = Resources.OCCUPIED if (worker.profile.get('slot_policy') or {}).get('mode') == 'auto' else ('ASSIGNED','STARTING','RUNNING')
             active = sum(worker._reconcile(path, saved)['state'] in occupied_states
                          for path, saved in worker.records.items())

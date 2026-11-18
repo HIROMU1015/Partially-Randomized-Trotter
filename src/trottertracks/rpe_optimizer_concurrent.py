@@ -22,6 +22,7 @@ from . import rpe_method_optimizer as O
 from .rpe_q3_timing import stamp
 
 LIVE_READINESS_RETRY_SECONDS = 10
+PREPARATION_PROBE_BATCH = 4
 
 
 def _write(path, value):
@@ -635,6 +636,7 @@ class DistributedExecutor(ConcurrentExecutor):
         if saved_preparation and saved_preparation.get('schema') != 'RPE_PENDING_PREPARATION_READINESS_V1':
             raise ValueError('Unknown saved preparation readiness schema')
         self.preparation_pending = saved_preparation.get('tasks', {})
+        self.preparation_probe_offsets = {}
         self.hosts = {}
         self.input_hash_cache = {}
         self.local_worker = None
@@ -1358,11 +1360,22 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _pending_preparation_challenges(self, host):
         if host not in self._preparation_probe_targets():return []
-        challenges=[]
-        for job_id,record in self.preparation_pending.items():
+        candidates = []
+        for job_id, record in self.preparation_pending.items():
             if not self._host_supports_stage(host,record['request']):continue
             row=self.store.row(job_id)
             if row is not None and row['state']not in('QUEUED','CANCELLED'):continue
+            candidates.append((job_id, record))
+        if not candidates:
+            self.preparation_probe_offsets.pop(host, None)
+            return []
+        start = self.preparation_probe_offsets.get(host, 0) % len(candidates)
+        batch = (candidates[start:]+candidates[:start])[:PREPARATION_PROBE_BATCH]
+        # Each preparation may verify many Git locators. Rotate on each poll
+        # so requests that still HOLD cannot block later requests on this host.
+        self.preparation_probe_offsets[host] = (start + len(batch)) % len(candidates)
+        challenges = []
+        for job_id, record in batch:
             try:challenges.append(self._pending_preparation_assignment(record,host))
             except (OSError,KeyError,ValueError,TypeError)as exc:
                 failure=str(exc)
@@ -1857,14 +1870,16 @@ class DistributedExecutor(ConcurrentExecutor):
     def rpc(self, path, value):
         from . import rpe_q3_coordinator as Q
         s = self.state
+        host = value['host_id']
+        if not isinstance(host, str) or not host: raise ValueError('Nonempty host_id required')
+        # The content-addressed cache installs only complete hash-checked
+        # files. Hashing and encoding large bundles need no queue lock.
+        if path.startswith('/v1/artifacts/'):
+            if path == '/v1/artifacts/missing': return dict(missing=self.artifact_cache.missing(value.get('hashes', [])))
+            if path == '/v1/artifacts/get': return dict(blobs=self.artifact_cache.get(value.get('hashes', [])))
+            if path == '/v1/artifacts/put': return dict(ok=True, **self.artifact_cache.put(value.get('blobs', {})))
+            raise ValueError('Unknown artifact RPC endpoint')
         with s.cv:
-            host = value['host_id']
-            if not isinstance(host, str) or not host: raise ValueError('Nonempty host_id required')
-            if path.startswith('/v1/artifacts/'):
-                if path == '/v1/artifacts/missing': return dict(missing=self.artifact_cache.missing(value.get('hashes', [])))
-                if path == '/v1/artifacts/get': return dict(blobs=self.artifact_cache.get(value.get('hashes', [])))
-                if path == '/v1/artifacts/put': return dict(ok=True, **self.artifact_cache.put(value.get('blobs', {})))
-                raise ValueError('Unknown artifact RPC endpoint')
             if path == '/v1/poll':
                 if value.get('source_sha') != self.optimizer_source: raise ValueError('Worker fixed SOURCE differs')
                 stopping = self._user_stop_requested()
@@ -1943,9 +1958,10 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not self.store.eligible(row['request'], decision, host, fingerprints, row['job_id']):
                         # Metadata challenge only: no attempt ID, reservation
                         # transition, LAUNCH or scientific execution occurs.
-                        challenge = self._assignment(row, host_id=host)
-                        challenge.pop('attempt_id', None)
-                        challenges.append(challenge)
+                        if row['job_id'] not in self.preparation_pending:
+                            challenge = self._assignment(row, host_id=host)
+                            challenge.pop('attempt_id', None)
+                            challenges.append(challenge)
                         skipped = True
                         continue
                     conditional = task.proposal.get('origin', {}).get('kind') == 'CHAIN_LOOKAHEAD_IF_PREVIOUS_PASSES'

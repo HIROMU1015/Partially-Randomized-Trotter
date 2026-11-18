@@ -175,6 +175,38 @@ def pauli_calibration_view(repository):
         source=dict(commit=PAULI_CALIBRATION_SOURCE, files=files))}
 
 
+def pauli_saved_kernel_inputs(root, packets):
+    """Bind the Git blobs read by the fixed saved-signal fingerprint check."""
+    from .pauli_signal_entry import KERNEL_FILES, LOCAL, S3, read_ref
+
+    commits = {S3.P1_KERNEL}
+    for ref in packets:
+        for packet in read_ref(root, ref)['packets']:
+            for round_value in packet['rounds']:
+                record = round_value.get('mean_record') or {}
+                if (round_value.get('mean_source') and record.get('status') == LOCAL
+                        and record.get('numerical', {}).get('gate_pass') is True):
+                    commits.add(record['source']['commit'])
+    return [dict(commit=commit, path=path) for commit in sorted(commits) for path in KERNEL_FILES]
+
+
+def pauli_price_guard_inputs(request):
+    # The fixed adapter checks these Git files in its owned workspace before
+    # any compile/audit body. Include them even when absent from the JSON.
+    groups = {
+        '02e7cc6a127954fa7c446e7383d037f0617d50d3': (
+            'src/trottertracks/pauli_calibration_request.py',
+            'scripts/prepare_pauli_calibration.py', 'scripts/run_pauli_split_cal.py'),
+        '54b4353b9826a00b1e6226290bf92db2b15ef9f6': (
+            'scripts/pauli_ld2_step_audit.py', 'scripts/pauli_ld3_cal_audit.py'),
+    }
+    paths = [dict(commit=commit, path=path) for commit, names in groups.items() for path in names]
+    commit = request.get('execution_source') if request.get('scoped_registration') else next(reversed(groups))
+    if commit:
+        paths.append(dict(commit=commit, path='scripts/pauli_split_cal_audit_request.py'))
+    return paths
+
+
 def collect_required_paths(documents, controller_paths=None):
     """Reuse the existing native runtime/config contract, without its approval flow.
 
@@ -454,6 +486,10 @@ class DistributedPreparationBridge:
                     inputs[name] = sha
                     bindings[original] = '@WORK@/' + name
                     pauli_inputs.append(dict(path=name, sha256=sha))
+            if script.name == 'run_pr_pauli_candidate_signals.py' and value.get('workspace') and 'saved_packets' in value:
+                pauli_locators.extend(pauli_saved_kernel_inputs(root, value['saved_packets']))
+            if script.name == 'run_pr_pauli_candidate_prices.py' and value.get('workspace'):
+                pauli_locators.extend(pauli_price_guard_inputs(value))
             if workspace:
                 workspace = Path(workspace).resolve()
                 if workspace != root:
@@ -475,7 +511,7 @@ class DistributedPreparationBridge:
                                 raise ValueError('Provider workspace SOURCE differs: '+name)
                             files[name]=hashlib.sha256(raw).hexdigest()
                     if not files:raise ValueError('Preparation workspace has no fixed provider source')
-                    if pauli_locators:
+                    if pauli_inputs:
                         for name in provider_files('run_pauli_signal_entry.py'):
                             raw = subprocess.check_output(['git','show',commit+':'+name],cwd=root)
                             files[name] = hashlib.sha256(raw).hexdigest()

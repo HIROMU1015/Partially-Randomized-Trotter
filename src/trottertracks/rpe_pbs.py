@@ -73,6 +73,11 @@ class Gateway:
         config = self.settings
         remote = [config.get('gateway_python', '/usr/bin/python3'), '-B',
                   str(Path(config['transport_root'])/'scripts/run_rpe_q3_worker.py'), '--storage-limit-report']
+        root = Path(config['remote_root'])
+        for worker in config['workers']:
+            remote.extend(('--storage-spool', str(root/'workers'/worker['host_id'])))
+        if config.get('namespace_by_run', True):
+            remote.extend(('--storage-pbs-runs', str(root.parent)))
         output = subprocess.check_output(
             ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
              config['ssh_alias'], shlex.join(remote)], input=json.dumps(policy), text=True, timeout=15)

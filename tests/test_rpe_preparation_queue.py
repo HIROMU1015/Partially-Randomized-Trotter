@@ -141,6 +141,27 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertIn('No verified preparation profile',result['host_reasons']['server1'])
         self.assertIsNone(ex.store.row(job))
 
+    def test_pending_probe_rotates_without_reserving_or_launching(self):
+        from trottertracks.rpe_optimizer_concurrent import PREPARATION_PROBE_BATCH
+
+        ex=self.executor(capacity=2)
+        provider='ARTIFICIAL_PROBE_BATCH'
+        ex.distributed['preparation_profiles']={
+            'server1':dict(host_id='server1',root=str(ROOT),interpreter=sys.executable,
+                           preparation_stage='signal',preparation_provider=provider)}
+        jobs=[]
+        for index in range(PREPARATION_PROBE_BATCH+2):
+            request=self.request('signal',str(index))
+            request['preparation'].update(artificial=False,source=ex.source_manifest,provider=provider)
+            jobs.append(ex.submit_preparation(request,approved=True,budget=8))
+        first=self.poll_host(ex,'server1')
+        second=self.poll_host(ex,'server1')
+        self.assertEqual([a['job_id'] for a in first['eligibility_challenges']],jobs[:PREPARATION_PROBE_BATCH])
+        observed={a['job_id'] for reply in (first,second) for a in reply['eligibility_challenges']}
+        self.assertEqual(observed,set(jobs))
+        self.assertFalse(first['assignments'] or second['assignments'])
+        self.assertEqual(ex.store.counts('PREPARATION:signal'),0)
+
     def _pending_three_host_failures(self, ex, wsl_accepting):
         hosts=['server2','server1','local','local0-wsl']
         ex.distributed['preparation_profiles']={h:dict(host_id=h,root=str(ROOT),interpreter=sys.executable)for h in hosts}

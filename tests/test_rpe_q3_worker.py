@@ -116,6 +116,52 @@ class WorkerTests(unittest.TestCase):
                  patch.object(W.Storage, 'SAMPLE_SECONDS', 0):
                 self.assertEqual(W.Storage.report(policy)['reason'], 'STORAGE_USAGE_UNAVAILABLE')
 
+    def test_storage_reclaims_only_acknowledged_worker_copies(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            runs = base/'runs'
+            spool = runs/'run-a'/'workers'/'pbs-0'
+
+            def make(job, state, status='PREPARATION_COMPLETE'):
+                attempt = spool/job/'attempt-1'
+                workspace = attempt/'workspaces'
+                workspace.mkdir(parents=True)
+                (workspace/'expanded-input').write_bytes(b'0'*131072)
+                (attempt/'WORKER_PROCESS.lock').touch()
+                W.atomic(attempt/'WORKER_PROFILE.json', dict(work_dir=str(spool)))
+                W.atomic(attempt/'ASSIGNMENT.json', dict(job_id=job, attempt_id=attempt.name,
+                    request_sha256='fixed-request', request=dict(route=dict(kind='preparation'))))
+                W.atomic(attempt/'OUTCOME.json', dict(status=status,
+                    request_id=job, request_sha256='fixed-request', artifacts={}))
+                W.atomic(attempt/'PROCESS_RETURN.json', dict(returncode=0))
+                W.save_state(attempt, state)
+                return attempt
+
+            acknowledged = make('acknowledged', 'TRANSFERRED')
+            pending = make('pending', 'COMPLETED_PENDING_TRANSFER')
+            unknown = make('unknown', 'UNKNOWN')
+            running = make('running', 'RUNNING')
+            failed = make('failed', 'TRANSFERRED', 'PREPARATION_FAILED')
+            dry_check = acknowledged/'_dry_check'
+            dry_check.mkdir()
+            (dry_check/'input').write_bytes(b'1'*131072)
+            limit = W.Storage._used_bytes([runs])
+            policy = dict(limit_bytes=limit, roots=[str(runs)], sample_path=str(base/'usage.json'))
+            first = W.Storage.report(policy, pbs_runs=str(runs), refresh=True)
+            self.assertTrue(first['accepting_new_jobs'])
+            self.assertEqual(first['reclaimed_copies'], 1)
+            self.assertFalse(dry_check.exists())
+            self.assertTrue((acknowledged/'workspaces').is_dir())
+
+            policy['limit_bytes'] = first['used_bytes']
+            second = W.Storage.report(policy, spools=(str(spool),), refresh=True)
+            self.assertTrue(second['accepting_new_jobs'])
+            self.assertFalse((acknowledged/'workspaces').exists())
+            self.assertEqual(W.read(acknowledged/'WORKER_STATE.json')['state'], 'TRANSFERRED')
+            self.assertTrue((acknowledged/'OUTCOME.json').is_file())
+            for attempt in (pending, unknown, running, failed):
+                self.assertTrue((attempt/'workspaces'/'expanded-input').is_file())
+
     def test_artificial_execute_transfer_duplicate_ack_and_resume(self):
         with tempfile.TemporaryDirectory() as temporary:
             profile, assignment = fixture(temporary); remote = FakeController(assignment, lose_ack=True)
