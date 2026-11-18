@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
@@ -94,6 +95,18 @@ subprocess.run(['git','commit','-qm','one synthetic receipt'],check=True)
         subprocess.run(['git','fetch','-q',str(bundle),'HEAD'],cwd=consumer,check=True)
         returned=json.loads(subprocess.check_output(['git','show',outcome['git_bundles'][0]['head']+':proof.json'],cwd=consumer))
         self.assertEqual(returned,{'receipt':'synthetic'})
+
+    def test_failed_output_checkout_is_collectable_without_starting_provider(self):
+        task=self.task('signal',"raise AssertionError('provider must not run')",source_workspace=True)
+        attempt=self.root/'missing-output-workspace'
+        failure=subprocess.CalledProcessError(254,['git','sparse-checkout','add'],stderr='missing object')
+        with patch.object(P,'_include_declared_outputs',side_effect=failure):
+            outcome=P.execute(task,self.profile('server1'),attempt)
+        self.assertEqual(outcome['status'],'PREPARATION_FAILED')
+        self.assertEqual(outcome['workspace_error'],dict(step='git sparse-checkout add',
+            returncode=254,scientific_body_started=False))
+        self.assertFalse((attempt/'JOB_STAGES.jsonl').exists())
+        self.assertEqual(P.collect(task,self.profile('server1'),attempt),outcome)
 
     def test_sparse_clone_keeps_only_declared_output_cones_for_plain_git_add(self):
         source=self.root/'source';archive=source/'docs/archive/unneeded.json';archive.parent.mkdir(parents=True);archive.write_text('{"historical":true}')

@@ -426,7 +426,22 @@ def execute(assignment, base_profile, directory):
     if spec.get('provider') == 'DF_SIGNALS' and profile.get('task_cpu_count') is not None:
         command = bind_df_signal_workers(command, profile['task_cpu_count'])
     if command[0]!=profile['interpreter'] and command[0]not in {t['path']for t in fingerprint['tools'].values()}:raise ValueError('Command does not use verified Python/compiler')
-    _include_declared_outputs(owned,directory,list(spec['outputs'])+list(spec.get('optional_outputs',[])))
+    outcome=dict(route='preparation',request_id=request['request_id'],task_id=request['request_id'],
+                 request_sha256=assignment['request_sha256'],stage=spec['stage'],source=spec['source'],
+                 source_manifest=spec['source'],execution_profile_sha256=digest(preparation_profile_core(profile)),
+                 resolved_path_bindings=bindings,automatic_retry=False)
+    try:
+        _include_declared_outputs(owned,directory,list(spec['outputs'])+list(spec.get('optional_outputs',[])))
+    except subprocess.CalledProcessError as error:
+        # Git has already exited and the provider has not started. Return the
+        # failure with the original attempt so recovery need not infer it.
+        outcome.update(status='PREPARATION_FAILED',artifacts={},git_bundles=[],
+                       workspace_error=dict(step='git sparse-checkout add',returncode=error.returncode,
+                                            scientific_body_started=False))
+        print(str(error),error.stderr or '',file=sys.stderr)
+        put(directory/'ARTIFACT_MANIFEST.json',{})
+        put(directory/'OUTCOME.json',outcome)
+        return outcome
     # Inputs may contain prior owned workspace outputs. Materialize after clone.
     target_inputs=spec.get('materialize_inputs')
     if target_inputs is None:
@@ -469,7 +484,8 @@ def execute(assignment, base_profile, directory):
                 bundles.append(bundle)
         artifacts=cache.capture(directory,outputs)
     else:artifacts={}
-    outcome=dict(status='PREPARATION_COMPLETE'if process.returncode==0 else'PREPARATION_FAILED',route='preparation',request_id=request['request_id'],task_id=request['request_id'],request_sha256=assignment['request_sha256'],stage=spec['stage'],artifacts=artifacts,git_bundles=bundles,source=spec['source'],source_manifest=spec['source'],execution_profile_sha256=digest(preparation_profile_core(profile)),resolved_path_bindings=bindings,automatic_retry=False)
+    outcome.update(status='PREPARATION_COMPLETE'if process.returncode==0 else'PREPARATION_FAILED',
+                   artifacts=artifacts,git_bundles=bundles)
     put(directory/'ARTIFACT_MANIFEST.json',artifacts);put(directory/'OUTCOME.json',outcome)
     return outcome
 

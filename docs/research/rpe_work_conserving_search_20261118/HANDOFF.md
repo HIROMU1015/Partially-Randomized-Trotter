@@ -131,4 +131,6 @@ PBS実機の人工検収は先行版 `b62f0353d6b49445da0eaedfb6f10871cf687d17` 
 
 引継ぎ先の実探索で、PBSが2 CPUの割当 `267298.CPUcluster-PRISM` を終了し、8 CPUの割当 `267299.CPUcluster-PRISM` へ切り替えた。RomuTailの中央台帳でPBSおよびRomulaptop WSLへのQ3実行開始を確認した。server2では、旧未確定attempt `a68a78ab458e0a0d0987` の0バイト終了ファイルで受付照会が停止した。空ファイルを同じattempt内の `PROCESS_RETURN.interrupted-empty` に保全し、`INTERRUPTED_RECEIPT_LOCATION.json` に出所とSHA-256を記録した。コードにも中断書き込みの例外処理を追加した。元の状態は `UNKNOWN` のまま再実行を禁止する。
 
+PBSの信号準備 `prep-7eedb01dbec53998d13aca2b` は、初回の作業領域でGit objectが不足し、信号本体に入る前に終了した。専用の準備キャッシュに必要な1,252 object（pack 8,602,065 bytes）を追加し、同じ保存入力で出力先の展開まで通った。元attemptは既存の終了コードとログを伴う準備失敗として通常の結果入口で一度回収した。実行結果への再分類や再実行は行っていない。記録は `PBS_GIT_OUTPUT_CONES_REPAIR.json` と `PBS_WORKSPACE_FAILURE_RECOVERY.json`。PBSとWSLでは実Q3の完了を確認した。WSLの終了記録が欠けた評価は保留し、同じ評価の再投入を避ける。
+
 PR-Pauliの価格較正は、元の固定設定のホスト別参照と、科学実行器が確認する公開済みGit束縛を準備するまで保留する。通常の信号生成および評価可能なQ3は独立して割り当てる。
