@@ -159,6 +159,11 @@ body{background:#f5f7f5}main{max-width:1440px;padding-top:32px}header{margin:0 0
 <p class="data-note" id="joint-guide"></p><div id="joint-tree"></div>
 <details id="axis-summary"><summary>各パラメータの指定範囲と評価値</summary><p id="subset-note" class="data-note"></p><div id="parameter-table" class="scroll"></div><details><summary>ラウンド別の実評価範囲（q、R、X/Yショット）</summary><div id="round-ranges" class="scroll"></div></details></details>
 </section><div id="metrics" class="metrics"></div>
+<section class="card"><h2>探索の継続・停止と費用の方向</h2>
+<details><summary>探索の継続・停止と次の候補</summary><div id="search-progress"></div></details>
+<details><summary>一つのパラメータを変えたときの費用差</summary>
+<p class="data-note">保存点の比較。差額は変更後 − 変更前の条件付き総RZ。適合済みの最安配分を各点から使い、未評価の途中の値は推定しません。</p>
+<div id="search-directions" class="scroll"></div></details></section>
 <details class="card" id="coverage-matrix"><summary id="map-title">組合せごとの評価記録</summary><p class="data-note">「対象登録あり・評価記録なし」は対象の記録だけがある組合せ。「—」は対象登録も評価記録も見つからない組合せです。「元結果未取込」は、対応する結果が索引に揃っていないことを表します。</p><div id="grid" class="scroll"></div></details>
 <section id="detail" tabindex="-1" class="card" aria-live="polite"><h2>評価記録の詳細</h2><p class="muted">公式・κ・実schedule・X/Y配分・価格根拠・固定commitへたどれます。</p></section>
 <details class="card"><summary>収録run・比較条件・取り込み待ちの記録</summary><div id="sources"></div></details>
@@ -377,6 +382,86 @@ function showCell(c, topPoint){let d=E('detail');d.replaceChildren();let h=el('d
  more.onclick=appendPage;appendPage();
  const ts=(c.target_ids||[]).map(id=>allTargets.get(id)).filter(t=>t&&passes(t,E('search').value.trim().toLowerCase()));if(ts.length){let x=el('details');x.open=!ps.length;x.append(el('summary','探索対象・選択・不足記録 ('+ts.length+')'));for(const t of ts){let item=el('div',null,'item');field(item,'状態',t.status);field(item,'構成',t.configuration_id);field(item,'不足',t.missing);if(t.source)item.append(link(t.source));x.append(item)}d.append(x)}
 }
+const parameterNames={M:'最終ラウンド M',formula:'PF公式',width:'要求PF幅 Δ',p:'保持数 p',L_D:'決定論側 L_D',kappa:'κ'};
+const boundaryReasons={RANGE_LIMIT:'設定した探索上限',PROVEN_COST_FLOOR:'価格下限で改善不能',
+ EMPIRICAL_UPPER_STOP:'観測傾向で打ち切り',NO_FEASIBILITY_PROGRESS:'適合への進展が見られず保留'};
+const controllerStops={USER_REQUESTED_STOP:'手動停止・途中',Q3_BUDGET_EXHAUSTED:'予算上限・途中',
+ WAITING_FOR_INPUTS:'入力待ち',SCOPE_HELD_INPUTS:'入力保留',REQUESTED_WIDTH_RULE_EXHAUSTED:'今回の探索規則で終了',
+ MAX_CYCLES:'サイクル上限・途中',RULE_EXHAUSTED:'今回の探索規則で終了',WAIT_FOR_PENDING:'候補処理待ち'};
+const candidateStates={WAITING_INPUTS:'入力待ち',HELD:'保留',EVALUATED:'評価済み',COMPLETION:'準備候補',
+ PREPARED:'準備済み',REGISTERED:'登録済み',PRUNED:'探索対象外に移動',READY_METADATA:'条件の登録済み'};
+const differenceLabels={COST_DOWN:'費用低下',COST_UP:'費用上昇',EQUAL:'同額',UNRESOLVED:'費用差は未確定'};
+const endpointLabels={FEASIBLE:'適合',PRICE_WAITING:'Q3適合・価格待ち',INFEASIBLE:'試した配分は基準超過',
+ PENDING:'判定保留',Q3_WAITING:'Q3未評価',MISMATCH:'条件不一致'};
+function tableHeader(titles){const table=el('table'),row=el('tr');for(const title of titles)row.append(el('th',title));table.append(row);return table}
+function progressView(run){
+ const host=E('search-progress');host.replaceChildren();
+ const p=run?.search_progress;
+ if(!p){host.append(el('p',run?'このrunには方向別の探索判断が未収録です。':'表示範囲からrunを選ぶと、その時点の探索判断を確認できます。'));return}
+ if(p.status!=='RECORDED'){field(host,'取得状況',p.status);return}
+ const reason=p.controller_stop?.reason;
+ field(host,'runの状態',controllerStops[reason]||reason||'停止記録なし');
+ field(host,'記録したcycle / 最終計画cycle',fmt(p.controller_cycle)+' / '+fmt(p.planner_cycle));
+ if(p.planner_stop)field(host,'最終計画の状態',controllerStops[p.planner_stop]||p.planner_stop);
+ const rows=(p.families||[]).filter(f=>!f.method||f.method===method);
+ if(!rows.length)host.append(el('p','この方式には方向別の探索判断が未収録です。'));
+ else{
+  const table=tableHeader(['候補群','κの評価済み範囲','下側の境界','上側の境界と根拠','候補の状態','次の候補・判断']);
+  for(const f of rows){
+   const title=f.method&&f.L_D!=null?'L_D='+f.L_D+' · '+(formulas[f.formula]||f.formula)+' · Δ='+exact(f.requested_delta_pf):f.family;
+   const tr=el('tr');tr.append(el('th',title));
+   const range=(f.kappa_range_evaluated||[]).map(v=>v==null?'未評価':exact(v)).join(' ～ ');
+   const coverage=el('td',range||'未収録');
+   if(f.requested_kappa_bounds?.length)coverage.append(el('div','指定範囲 '+f.requested_kappa_bounds.map(exact).join(' ～ '),'muted'));
+   tr.append(coverage,
+    el('td',f.floor_end==null?'判断未収録':'最小スケジュール区間の端 '+exact(f.floor_end)),
+    el('td',f.upper_basis?(boundaryReasons[f.upper_basis]||f.upper_basis)+' · '+exact(f.upper_limit):'判断未収録'));
+   const status=Object.entries(f.point_status||{}).map(([k,v])=>(candidateStates[k]||k)+' '+v+'件').join(' / ');
+   tr.append(el('td',[candidateStates[f.status]||f.status,status,f.open_gaps==null?'':'未精査の間隔 '+f.open_gaps].filter(Boolean).join(' · ')||'未収録'));
+   const next=el('td');
+   const proposals=(f.next_candidates||[]).map(v=>[v.direction==='UP'?'κ↑':v.direction==='DOWN'?'κ↓':'κ',exact(v.kappa),candidateStates[v.status]||v.status,v.reason].filter(Boolean).join(' '));
+   next.append(el('span',proposals.join(' / ')||'候補の記録なし'));
+   if(f.decisions?.length){const decisions=el('details');decisions.append(el('summary','計画の判定根拠'),jsonBlock(f.decisions));next.append(decisions)}
+   tr.append(next);table.append(tr);
+  }
+  host.append(table);
+ }
+ if(p.source)host.append(link(p.source));
+}
+function directionView(view,q){
+ const host=E('search-directions');host.replaceChildren();
+ const inView=new Set((view.cells||[]).filter(c=>c.method===method).flatMap(c=>c.point_ids||[]));
+ const rows=(D.direction_records||[]).filter(row=>row.method===method
+  && inView.has(row.from_point)&&inView.has(row.to_point)
+  && [row.from_point,row.to_point].some(id=>passes(allPoints.get(id)||{},q)));
+ if(!rows.length){host.append(el('p','この表示範囲には、条件を揃えて比較できる保存点の組がありません。'));return}
+ const table=tableHeader(['変えたパラメータ','比較前','比較後','費用差','固定したパラメータ・配分']);
+ const more=el('button','次の50件');host.append(table,more);let shown=0;
+ function endpoint(p){
+  const box=el('td');const status=endpointLabels[p.status]||p.status;
+  box.append(el('div',status+(p.conditional_cost!=null&&p.status==='FEASIBLE'?' · '+fmt(p.conditional_cost)+' RZ':'')));
+  const detail=el('details');detail.append(el('summary','配分と元記録'));
+  field(detail,'configuration',p.configuration_id);field(detail,'N_X',p.N_X);field(detail,'N_Y',p.N_Y);
+  if(p.price_evidence?.scenario)field(detail,'価格の条件',p.price_evidence.scenario);
+  for(const ref of p.sources||[])detail.append(link(ref));box.append(detail);return box;
+ }
+ function nextPage(){
+  for(const row of rows.slice(shown,shown+50)){
+   const tr=el('tr'),label=parameterNames[row.parameter]||row.parameter;
+   const val=x=>row.parameter==='formula'?(formulas[x]||x):x;
+   const diff=el('td',differenceLabels[row.direction]||row.direction);
+   if(row.delta_RZ!=null){const sign=row.direction==='COST_UP'?'+':'';diff.append(el('div',sign+fmt(row.delta_RZ)+' RZ'));
+    diff.title=sign+exact(row.delta_RZ)+' RZ'}
+   const fixed=Object.entries(row.fixed||{}).map(([k,v])=>(parameterNames[k]||k)+'='+v).join(' · ');
+   tr.append(el('th',label+' '+val(row.from_value)+' → '+val(row.to_value)),
+    endpoint(allPoints.get(row.from_point)),endpoint(allPoints.get(row.to_point)),diff,
+    el('td',fixed+(row.same_allocation?' · 同じ配分':' · 各点の保存配分')));
+   table.append(tr);
+  }
+  shown+=50;more.hidden=shown>=rows.length;
+ }
+ more.onclick=nextPage;nextPage();
+}
 function redraw(){E('detail').replaceChildren(el('h2','評価点の詳細'),el('p','組み合わせから配分を選び、「元記録を見る」を開いてください。','detail-note'));const v=selected(), q=E('search').value.trim().toLowerCase();let sourceCells=(v.cells||[]).filter(c=>c.method===method);
  E('dimension-label').textContent=method==='FULL_PF'?'公式':method==='TRUNCATED_PF'?'p':'L_D';
  selectOptions('dimension-filter',sourceCells.map(c=>[c.row_key,c.row_label]));
@@ -392,6 +477,7 @@ function redraw(){E('detail').replaceChildren(el('h2','評価点の詳細'),el('
  E('map-title').textContent='組合せごとの評価記録を開く · '+labels[method]+' · '+({FULL_PF:'公式 × 要求幅',TRUNCATED_PF:'切り捨て位置p × 要求幅',PR_PAULI:'L_D × 要求幅',PR_DF:'L_D × 要求幅'}[method]);
  let pointsIds=new Set(cells.flatMap(c=>c.point_ids||[])), ps=[...pointsIds].map(id=>allPoints.get(id)).filter(Boolean).filter(p=>passes(p,q));let configs=new Set(ps.filter(p=>p.q3_status).map(p=>p.configuration_id));let metrics=[['Q3評価済み物理構成',configs.size],['評価した配分',ps.filter(p=>p.q3_status).length],['適合配分',ps.filter(p=>p.q3_status==='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD').length],['記録未取込の対象',cells.reduce((n,c)=>n+(c.missing_count||0),0)]];E('metrics').replaceChildren(...metrics.map(([l,n])=>{let e=el('div',null,'metric');e.append(el('strong',n),el('span',l));return e}));
  E('scope').replaceChildren();let run=(D.runs||[]).find(r=>r.id===v.run_id);E('scope').append(el('strong',v.label||v.id||'全run累計'));if(run){field(E('scope'),'停止・進行状態',run.status);field(E('scope'),'実行host（保存metadata）',run.hosts);if(run.source)E('scope').append(link(run.source));if(run.missing?.length||run.issues?.length)field(E('scope'),'不足',run.missing||run.issues)}else E('scope').append(el('p','同じ構成・配分・評価契約の再検出／別runでの再利用は1件。母集合全体を網羅したとの主張ではありません。','data-note'));
+ progressView(run);directionView(v,q);
  const rows=new Map(), cols=new Map();for(const c of cells){rows.set(c.row_key,c.row_label);cols.set(c.width_key,c.width_label)}let host=E('grid');host.replaceChildren();if(!cells.length){host.append(el('p','この範囲に公開対象・評価記録はありません。','empty'));return}let table=el('table',null,'map'),head=el('thead'),tr=el('tr');tr.append(el('th',method==='FULL_PF'?'公式':method==='TRUNCATED_PF'?'p':'L_D'));const widthOrder=label=>{const m=/^(\d+)(?:\/(\d+))?h/.exec(label);return m?Number(m[1])/Number(m[2]||1):Infinity};const sortedCols=[...cols].sort((a,b)=>widthOrder(a[1])-widthOrder(b[1])||a[1].localeCompare(b[1],'ja'));for(const [,label]of sortedCols){const th=el('th'),parts=label.split(' [');th.append(el('span',parts[0]));if(parts[1])th.append(el('small',parts[1].replace(/\]$/,'')));tr.append(th)}head.append(tr);table.append(head);let body=el('tbody');for(const [rk,rl]of rows){let row=el('tr');row.append(el('th',rl));for(const [wk]of sortedCols){let td=el('td'),c=cells.find(c=>c.row_key===rk&&c.width_key===wk);if(!c){const blank=el('span','—','cell absent');blank.title='対象登録も評価記録も見つかりません';td.append(blank)}else{const count=getRecords(c.point_ids,allPoints).filter(r=>r.q3_evaluated).length;
  const cls=count?'good':c.missing_count?'absent':'wait',b=el('button',null,'cell '+cls);
  b.append(el('strong',count?'Q3評価 '+count+'配分':c.missing_count?'元結果未取込':'対象登録あり'),el('small',count?'配分の記録を見る':c.missing_count?'評価の有無を判定できず':v.mode==='NEW'?'このrunの新規評価記録なし':'Q3評価記録なし'));

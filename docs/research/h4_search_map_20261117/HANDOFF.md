@@ -87,3 +87,10 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -B scripts/build_h4_search_map.
 ## 保存価格モデルの検証表示
 
 [LD2読取り・表示の接続](../h4_price_validation_consumer_20261117/REPORT.md)：通常controller公開のoptional `PRICE_MODEL_VALIDATIONS.json`を読み、配分詳細の「価格モデル簡易検証」に実測q/R・独立経路数・軸別平均・符号付き百分率・元receiptを表示する。モデルは共有索引へ1件だけ保持する。これは検証metadataの表示であり、既存Q3・条件付き費用・価格資格は変更しない。
+
+## 探索の継続・停止と費用の方向
+
+- controller側の[公開コマンド](../../../scripts/publish_h4_search_run.py)は、同じround IDの `KAPPA_STATE.json` があるとき、`SEARCH_PUBLICATION.json.search_progress` に最新計画と候補群別の進捗を記録する。指定・評価済みのκ範囲、上限を置いた根拠、候補の状態、次の提案、停止理由、元stateのハッシュを保持する。古い公開や元state不明の場合は判断の未収録を表示する。
+- HTMLでrunを選ぶと、手動停止や予算上限、入力待ち、探索規則での終了を確認できる。κの上側は、設定値・観測による打ち切り・条件付き価格下限を区別する。記録はそのcycleの探索器の判断であり、探索範囲を広げた場合の費用や適合を保証しない。
+- `INDEX.json.direction_records` には、保存カタログ上で回路条件・評価契約・価格条件を照合できる組から、一つのパラメータを変えたときの両端の点IDとexact差額を記録する。両端にQ3適合の受入価格が揃ったときだけ、変更後−変更前を表示する。κは全roundの物理IDが同じ点を同じscheduleと扱う。表示範囲は両端を含むものに限る。別配分の場合は各点の保存配分での比較と表示する。
+- 今回の変更はマップの記録・表示を拡張する。新しい探索ルール、(M) を変える実行、定期同期の切替、既存地図の再生成はこの変更に含まれない。C側はこの版のreaderとrendererを、controller側は公開コマンドを使う。

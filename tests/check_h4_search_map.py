@@ -56,6 +56,55 @@ class MetadataMap(unittest.TestCase):
         self.assertNotEqual(dimensions(dict(base,requested_width=0.2))['width_key'],
                             dimensions(dict(base,requested_width='1/5'))['width_key'])
 
+    def test_one_parameter_delta_uses_admitted_points_and_marks_missing_cost(self):
+        c = catalog()
+        base = dict(c['candidates'][1], M=12, profile={'compiler':'profile'}, law={'model':'deterministic'})
+        lower = dict(base, configuration_id='p6', L_D=6, split={'L_D':6},
+                     conditional_cost={'numerator':130,'denominator':1})
+        wider = dict(base, configuration_id='p7-wide', delta_pf='1/4',
+                     conditional_cost={'numerator':115,'denominator':1}, N_X=[3]*13)
+        waiting = dict(wider, configuration_id='p7-far', delta_pf='1/3',
+                       status='PRICE_WAITING', conditional_cost=None)
+        mismatched = dict(wider, configuration_id='p7-other-profile', delta_pf='2/5',
+                          profile={'compiler':'different'})
+        summary = run()
+        summary['evaluations'][0].update(configuration_id='summary-price', delta_pf='1/6')
+        c['candidates'] = [base, lower, wider, waiting, mismatched]
+        records = build_index(c, [summary])['direction_records']
+        p_edge, *unused = [edge for edge in records if edge['parameter']=='p']
+        self.assertEqual((p_edge['from_value'],p_edge['to_value'],p_edge['delta_RZ']),
+                         ('6','7',{'numerator':'-10','denominator':'1'}))
+        self.assertFalse(unused)
+        width_edges = [edge for edge in records if edge['parameter']=='width']
+        self.assertEqual([(edge['direction'],edge['delta_RZ']) for edge in width_edges],
+                         [('COST_DOWN',{'numerator':'-5','denominator':'1'}),('UNRESOLVED',None)])
+        self.assertFalse(width_edges[0]['same_allocation'])
+
+    def test_horizon_direction_and_different_price_conditions(self):
+        base = dict(catalog()['candidates'][1], M=12, profile={'compiler':'same'},
+                    price_scenario='FIXED_CONDITIONAL_PRICE')
+        lower = dict(base, configuration_id='short', M=11, N_X=[2]*12, N_Y=[2]*12)
+        other = dict(base, configuration_id='long', M=13, N_X=[2]*14, N_Y=[2]*14,
+                     price_scenario='DIFFERENT_PRICE_CONDITION')
+        records = build_index(dict(catalog(), candidates=[base, lower, other]), [])['direction_records']
+        self.assertEqual(len(records), 1)
+        self.assertEqual((records[0]['parameter'], records[0]['from_value'], records[0]['to_value'],
+                          records[0]['direction']), ('M', '11', '12', 'EQUAL'))
+        self.assertFalse(records[0]['same_allocation'])
+
+    def test_kappa_aliases_with_exactly_equal_round_identities_are_one_schedule(self):
+        base = dict(catalog()['candidates'][1], method='PR_PAULI', M=12, L_D=7, finite_K=2,
+                    profile={'compiler':'profile'}, law={'model':'PR'})
+        def row(cid, k, tag, cost):
+            return dict(base, configuration_id=cid, kappa={'kind':'PAPER','value':k},
+                        schedule=[{'m':m,'physical_id':tag+str(m)} for m in range(13)],
+                        conditional_cost={'numerator':cost,'denominator':1})
+        data = dict(catalog(), candidates=[row('one',1,'A',100),row('alias',2,'A',100),row('new',3,'B',110)])
+        records=build_index(data,[])['direction_records']
+        self.assertEqual(len(records),1)
+        self.assertEqual((records[0]['parameter'],records[0]['from_value'],records[0]['to_value'],
+                          records[0]['direction']),('kappa','1','3','COST_UP'))
+
     def test_other_snapshot_publication_is_not_joined_to_h4_map(self):
         c=catalog();c['comparison']['binding']={'system':'H4','snapshot':'A'}
         r=run();r['evaluations'][0]['physical_binding']={'system':'H4','snapshot':'B'}

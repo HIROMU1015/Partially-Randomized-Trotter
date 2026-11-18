@@ -389,6 +389,9 @@ def _publication(reader, head, path, doc, paths):
     run.update(id=_ident([label, directory]), label=label, directory=directory,
                publication_source=_source(reader, head, path),
                hosts=doc.get('execution_hosts', []), producer_role='CONTROLLER')
+    progress = doc.get('search_progress')
+    if isinstance(progress, dict) and progress.get('schema') == 'H4_SEARCH_PROGRESS_V1':
+        run['search_progress'] = dict(progress, source=dict(run['publication_source'], selector=['search_progress']))
     return run
 
 
