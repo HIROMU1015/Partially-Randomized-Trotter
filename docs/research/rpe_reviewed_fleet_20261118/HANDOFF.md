@@ -37,11 +37,21 @@ PR-DF信号workerの修正を採用したreleaseは `romutail-df-signal-9ed5fcc9
 
 ## 稼働中のH4探索へPBSを追加
 
-2026-11-19 JSTに `search-6be05579540d7ed291b7` を通常Stopでdrainし、同じ探索条件とチェックポイントから継続run `search-f0ba946f506fd1e8e386` を通常Startで起動した。固定releaseは `romutail-pbs-h4-442bef4b0`、controller SOURCEは `442bef4b04903023104e08c93478d7c5162cb105`。範囲、shot規則、累計Q3上限なし、準備予算、科学Q3 SOURCE、既存host受付を引き継いだ。新規run用の共通currentは `romutail-owned-relay-0fc8268cf`。
+2026-11-19 JSTに `search-6be05579540d7ed291b7` を通常Stopでdrainし、同じ探索条件とチェックポイントから継続run `search-f0ba946f506fd1e8e386` を通常Startで起動した。固定releaseは `romutail-pbs-h4-442bef4b0`、controller SOURCEは `442bef4b04903023104e08c93478d7c5162cb105`。範囲、shot規則、累計Q3上限なし、準備予算、科学Q3 SOURCE、既存host受付を引き継いだ。
 
 - 元runのQ3台帳は受理98件、配分前の取消26件で、所有中のattemptは0件。元runのSTOPを保持した。継続時に同じ配分の再試行を防ぐため、旧未確定2件と、実Q3開始前に終了して受理されたUNKNOWN 1件を個別に保留した。§10.5でB0I 53、PR-Pauli 148、PR-DF 64件を照合した。
 - PR-PauliとB0Iの既存の4時間見積りを適用し、PBSの `267266.CPUcluster-PRISM` を `CPUcluster011` の96 CPUで確保した。最初のPR-Pauli Q3 `e2b92bf64e9c918f6d59` はworkerの `SCIENTIFIC_ROUTE_START` まで確認した。実行可能なPBS割当は、固定SOURCE・入力照合と空き枠・残りwalltimeを満たすタスクに限る。
 - 回帰39件がPASS。新runは通常 `Status`・`Stop`・`Resume` でrun IDを明示する。運用記録は `.rpe-central/deployment/romutail-pbs-h4-442bef4b0`。
+
+## PBSのCPU要求を実行待ち需要に合わせる
+
+`h4-pbs-walltime-v2` は、固定workerが実行でき、他ホストの空き枠で処理しきれないREADYタスクからPBSへのCPU要求を決める。現在の固定プロファイルでは1件あたり2 CPU。1件なら2 CPU、3件なら6 CPUを要求する。新規枠の単一ノード上限96 CPUとプロジェクトの合計上限100 CPUを適用する。メタデータ照合待ちの準備工程だけの場合は、1件分の枠で照合を進める。
+
+すぐに実行できる見積り登録済みQ3がそろっていれば、初期同時実行数もその需要に合わせる。PBSで保存したQ3の所有プロセスのピークRSSは最大約1.8 GiB。初期枠の算出には1件あたり8 GiBの余裕を見込み、以後は既存のCPU・メモリ・計時による自動調整を使う。準備工程のための350 GiBのメモリ要求と固定の所要時間・実行プロファイルを継承する。 [共通設定](../../../configs/rpe_method_optimizer/pbs_walltime_h4.json)
+
+新規run用の `current` は `romutail-pbs-sizing-48ebf75d5`。固定SOURCEは `48ebf75d5b20459b66fb3e39ace96c8fc54ab345`。通常Windows・CLIの明示指定および指定なしPreviewと、回帰55件がPASS。
+
+稼働中のH4探索は `search-f0ba946f506fd1e8e386` から `search-8b10307fd1b9fc375b6b` へ引き継いだ。旧PBSの3枠は終了し、旧PBSで受理したattemptは10件。§10.5でB0I 81、PR-Pauli 181、PR-DF 64件を照合した。最初のPBS枠 `267269.CPUcluster-PRISM` は `CPUcluster011` 上の4 CPUで、PR-PauliとB0IのQ3を各1件並行起動した。実測ピークが1件あたり2.06 CPU相当に達したため、既存の自動資源制御は稼働中の2件を継続させながら追加受付の上限を1件に下げた。運用記録は `.rpe-central/deployment/romutail-pbs-sizing-48ebf75d5-h4-continuation`。
 
 ## 通常入口
 
