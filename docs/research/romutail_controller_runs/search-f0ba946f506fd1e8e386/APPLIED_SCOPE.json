@@ -1,0 +1,800 @@
+{
+  "schema": "LOCAL0_APPLIED_SEARCH_SCOPE_V1",
+  "run_id": "search-f0ba946f506fd1e8e386",
+  "signature": "f0ba946f506fd1e8e386896f620f302f82868f9d4717f8c5eb67df6848901aba",
+  "evaluation_identity": "e6d6e48e6bcda9df3cdf6d5bd04bceeba6be414ecc643a21d11d48d789d881bc",
+  "entry": "schedule",
+  "code_source": "442bef4b04903023104e08c93478d7c5162cb105",
+  "applied": {
+    "methods": [
+      "TRUNCATED_PF",
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "requested": {
+      "methods": [
+        "TRUNCATED_PF",
+        "PR_PAULI",
+        "PR_DF"
+      ],
+      "per_method": {
+        "PR_PAULI": {
+          "L_D": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/36028797018963968"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/18014398509481984"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/9007199254740992"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/4503599627370496"
+            }
+          ],
+          "kappa": {
+            "mode": "absolute",
+            "min": "2",
+            "max": "64"
+          }
+        },
+        "TRUNCATED_PF": {
+          "p": [
+            6,
+            7,
+            8
+          ],
+          "formulas": [
+            "2nd",
+            "4th",
+            "4th(m5_best)"
+          ],
+          "delta_over_h": [
+            "1",
+            "8"
+          ]
+        },
+        "PR_DF": {
+          "L_D": [
+            7,
+            8,
+            9
+          ],
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/36028797018963968"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/18014398509481984"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/9007199254740992"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/4503599627370496"
+            }
+          ]
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_new_q3_per_method": "UNLIMITED"
+      },
+      "preparation_budgets": {
+        "signal": "UNLIMITED",
+        "compile": "UNLIMITED",
+        "audit": "UNLIMITED"
+      }
+    },
+    "fixed": {
+      "problem": {
+        "system": "H4",
+        "geometry": "linear_1Angstrom",
+        "basis": "STO-3G",
+        "rank_policy": "tol_only_1e-8",
+        "hamiltonian_data": {
+          "snapshot": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_snapshot.npz",
+            "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+          },
+          "receipt": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_receipt.json",
+            "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+          },
+          "expected": {
+            "fragment_count": 10,
+            "n_qubits": 8,
+            "sector_dimension": 36
+          }
+        }
+      },
+      "accuracy": {
+        "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+        "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+        "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+        "epsilon_E_decimal": "0.00159360010199040",
+        "scope": "MODEL_MSE_FILTER_ONLY"
+      },
+      "target": {
+        "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+        "energy_ha": -2.1663874486347634,
+        "source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        }
+      },
+      "rpe": {
+        "M": 12
+      }
+    },
+    "method_settings": {
+      "TRUNCATED_PF": {
+        "family": "PF",
+        "index_method": "B0I_P7",
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_range": [
+          "1",
+          "8"
+        ],
+        "caps": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          15,
+          11
+        ],
+        "p_values": [
+          6,
+          7,
+          8
+        ],
+        "configuration_ids": [
+          "05d246cb4c6a75fb634a4821484f41e61fefc514b5acae9d89eaf01b7c6b96d5",
+          "068195b5d829df195425b1730490c58e314fb327655d9e66ef6c5a47b36eb3fb",
+          "09b316fef60db87e9289bb5f382ee2bcf799075c5182fe167bf842baf55306a7",
+          "10b42d4af7764782163d67f23b4155770b177cbe21ae0367c58e59fbb95d8f24",
+          "14401cf639c4d2722336ea4dad70efa0941750792e231c0605f30490c6ebbe9b",
+          "155a3a2e86ff9cde5ab580379050c915bbfee40edb2cd70ab33c1773363a4d14",
+          "195bdb6861ef4974c2ee0d6956ce861738424dd85f9e12c90782de83c7978ae0",
+          "1cbcb2dfc541a615709252d39b1f8b66b17a6707017276e629482ddef5265de9",
+          "2065948de404cd8cb58e144e0faca661b23f8ad837857b8e450741ffb01c121d",
+          "252f9beb4b8f380d453926a9f638a73314a67293d247fabfa145eadd185d9bbe",
+          "3718c7b2502365c7801b7d621c1c2d8b57faafa3a2cd4f348d679910c09699b4",
+          "464a9bd86eedeac01f5717aba14c06bbdd848635900fc597933f5048387a5b79",
+          "48ae3b0d5e75df0689ec6dc50c4558989587e1d31053254113d84897e94734f6",
+          "4d14d4f51ea44890083c58ced1220fe396d25a9ca8c57fdae0bcb67a77438548",
+          "5295016fa6d0ef9cd062efca06541a841b47ee09d9059550d8ec763e11e9b3de",
+          "545e8ba898a201a9e0d628e0bc7ae3c93cf00a994d6361084da9ae1c381e2c27",
+          "5539b6a181078695452ff0f2dabfee47aceab1630a25d02795aa8fdc16937147",
+          "55512189df4ba2e20d5cc6c44b2b23a994094b52fee207d911da63f509ca6763",
+          "6892c26a2b64c34dc98ce3dcd1a5bbb817f1dd91cba22dbe2544c8265c47fba5",
+          "7367a520d73c59255ec9b594d2df6303cd54156430e2ac1e5fa98a220004046a",
+          "740359cbe09ccf12001143b822f061af19df19d8d48550e173471dc914ec3205",
+          "7faf7a991090cfe796782bb920c877f9013a755a286bd6d1c4302d67630347cc",
+          "83d0726e6bea3d8d4a65e79fc4aac94f55ec8d95d11fa88c615dd1d045427723",
+          "86e9842aa5487205084f8e26fc4ddbcda27763e3068879f8a7a87bd807828b72",
+          "8b51f3da469ea01065e96259af15190a36942efbc66bd86ebc83894a8037c25e",
+          "95b0902bf8281abceadf9a38ba7548c195f82b14d75f4dc0a5ecf702eb8e3035",
+          "a62d4ab0ead5c5891774f9c07d82a7f1a01bbf9f824ba14626e0bd0e0e7003c0",
+          "a83a375bf00edfb952232f1193e79e5d31666a29ab71335e25f3f18ae9f79e59",
+          "b0cb2261aee348365046fd3aa692da120c9aede180b8ec83028a4f542ec31208",
+          "b3430ea5eb978ab4fbaf22e83c3c112fc0609cb8d00f06419e56f9d2b9164d6d",
+          "c5bbd5f9db06a7ad1ad66dd04fc53da593bbb209647d48338f1dbbec530a906d",
+          "d001ec4dfa5606fbd4c52abba8256192f4612288b2ceac2eb5966a45f94a59fe",
+          "d887f0eed65d973be217645f1089879632d3a90e5303696d841ce05f751a5ead",
+          "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "ed05ebceadf55be84b362477921a85951f10ae01fb42d9a00359f19415d64882",
+          "ee807a3cca4e02ce167e6641e5477d88190ac5e9efd257b39932e038344fb4eb"
+        ]
+      },
+      "PR_PAULI": {
+        "family": "PR",
+        "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body always in head; tail non-empty",
+        "L_D_range": {
+          "min": 4,
+          "max_offset_from_fragment_count": -3
+        },
+        "caps": [
+          48,
+          45,
+          42,
+          39,
+          36,
+          33,
+          29,
+          26,
+          23,
+          19,
+          16,
+          13,
+          9
+        ],
+        "generation": {
+          "kind": "pauli_native",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "view": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/views/39a1fc7dfe9b093f0e246be595e2f7938191368b",
+          "view_commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+          "baseline": {
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "2"
+          ],
+          "kappa_multipliers": [
+            "2/3",
+            "1",
+            "2"
+          ],
+          "mapper": "A P1 B API (B ce0517de native generate, PAPER_TOTAL_UNIFORM_OUTER_DRAFT mapper)",
+          "supported_formulas": [
+            "2nd",
+            "4th(m5_best)"
+          ],
+          "note": "q_m=ceil(T_m/delta); h stays the RPE base time",
+          "preparation": {
+            "kind": "a_pauli_candidate_preparation",
+            "request_kind": "pauli_native",
+            "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+            "view": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/views/6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+            "view_commit": "6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb",
+            "entry": "scripts/prepare_pauli_candidate.py",
+            "handoff": {
+              "commit": "7cf4e1f0536567df6dcf2da6c7bc63f4547aad7b",
+              "path": "docs/research/pauli_candidate_preparation_20261116/HANDOFF.md"
+            },
+            "K": 2,
+            "saved_packets": [
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+              },
+              {
+                "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+                "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+              }
+            ],
+            "note": "metadata only (no --prepare-missing): unregistered L_D of the search range and selected kappa proposals; complete configurations are registered even without price; P0 split work stays a preparation request"
+          }
+        },
+        "saved_configurations_only": false,
+        "L_D_values": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "absolute_kappa_bounds": [
+          "2",
+          "64"
+        ]
+      },
+      "PR_DF": {
+        "family": "PR",
+        "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body separate head; prefix and tail non-empty",
+        "L_D_range": {
+          "min": 7,
+          "max_offset_from_fragment_count": -1
+        },
+        "caps": [
+          64,
+          60,
+          56,
+          52,
+          47,
+          43,
+          38,
+          34,
+          30,
+          25,
+          21,
+          17,
+          12
+        ],
+        "generation": {
+          "kind": "prdf_a_fixed_grid",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "baseline": {
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "1/2"
+          ],
+          "kappa_multipliers": [
+            "1",
+            "2"
+          ],
+          "mapper": "D2 B release 437ba4ac A_FIXED_GRID_510FBACD_V1 adapter (run_pr_df_ld7_v0.signal_modules) with the paper common-kappa mapper",
+          "supported_formulas": [
+            "2nd",
+            "4th(m5_best)"
+          ],
+          "note": "delta must make T_m/delta integral for every round (A fixed grid); h stays the RPE base time"
+        },
+        "L_D_values": [
+          7,
+          8,
+          9
+        ],
+        "saved_configurations_only": false
+      }
+    },
+    "method_overrides": {
+      "PR_PAULI": {
+        "saved_configurations_only": false,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "2"
+          ],
+          "kappa_multipliers": [
+            "2/3",
+            "1",
+            "2"
+          ]
+        },
+        "L_D_values": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "L_D_range": {
+          "min": 4,
+          "max_offset_from_fragment_count": -3
+        },
+        "absolute_kappa_bounds": [
+          "2",
+          "64"
+        ]
+      },
+      "TRUNCATED_PF": {
+        "p_values": [
+          6,
+          7,
+          8
+        ],
+        "configuration_ids": [
+          "05d246cb4c6a75fb634a4821484f41e61fefc514b5acae9d89eaf01b7c6b96d5",
+          "068195b5d829df195425b1730490c58e314fb327655d9e66ef6c5a47b36eb3fb",
+          "09b316fef60db87e9289bb5f382ee2bcf799075c5182fe167bf842baf55306a7",
+          "10b42d4af7764782163d67f23b4155770b177cbe21ae0367c58e59fbb95d8f24",
+          "14401cf639c4d2722336ea4dad70efa0941750792e231c0605f30490c6ebbe9b",
+          "155a3a2e86ff9cde5ab580379050c915bbfee40edb2cd70ab33c1773363a4d14",
+          "195bdb6861ef4974c2ee0d6956ce861738424dd85f9e12c90782de83c7978ae0",
+          "1cbcb2dfc541a615709252d39b1f8b66b17a6707017276e629482ddef5265de9",
+          "2065948de404cd8cb58e144e0faca661b23f8ad837857b8e450741ffb01c121d",
+          "252f9beb4b8f380d453926a9f638a73314a67293d247fabfa145eadd185d9bbe",
+          "3718c7b2502365c7801b7d621c1c2d8b57faafa3a2cd4f348d679910c09699b4",
+          "464a9bd86eedeac01f5717aba14c06bbdd848635900fc597933f5048387a5b79",
+          "48ae3b0d5e75df0689ec6dc50c4558989587e1d31053254113d84897e94734f6",
+          "4d14d4f51ea44890083c58ced1220fe396d25a9ca8c57fdae0bcb67a77438548",
+          "5295016fa6d0ef9cd062efca06541a841b47ee09d9059550d8ec763e11e9b3de",
+          "545e8ba898a201a9e0d628e0bc7ae3c93cf00a994d6361084da9ae1c381e2c27",
+          "5539b6a181078695452ff0f2dabfee47aceab1630a25d02795aa8fdc16937147",
+          "55512189df4ba2e20d5cc6c44b2b23a994094b52fee207d911da63f509ca6763",
+          "6892c26a2b64c34dc98ce3dcd1a5bbb817f1dd91cba22dbe2544c8265c47fba5",
+          "7367a520d73c59255ec9b594d2df6303cd54156430e2ac1e5fa98a220004046a",
+          "740359cbe09ccf12001143b822f061af19df19d8d48550e173471dc914ec3205",
+          "7faf7a991090cfe796782bb920c877f9013a755a286bd6d1c4302d67630347cc",
+          "83d0726e6bea3d8d4a65e79fc4aac94f55ec8d95d11fa88c615dd1d045427723",
+          "86e9842aa5487205084f8e26fc4ddbcda27763e3068879f8a7a87bd807828b72",
+          "8b51f3da469ea01065e96259af15190a36942efbc66bd86ebc83894a8037c25e",
+          "95b0902bf8281abceadf9a38ba7548c195f82b14d75f4dc0a5ecf702eb8e3035",
+          "a62d4ab0ead5c5891774f9c07d82a7f1a01bbf9f824ba14626e0bd0e0e7003c0",
+          "a83a375bf00edfb952232f1193e79e5d31666a29ab71335e25f3f18ae9f79e59",
+          "b0cb2261aee348365046fd3aa692da120c9aede180b8ec83028a4f542ec31208",
+          "b3430ea5eb978ab4fbaf22e83c3c112fc0609cb8d00f06419e56f9d2b9164d6d",
+          "c5bbd5f9db06a7ad1ad66dd04fc53da593bbb209647d48338f1dbbec530a906d",
+          "d001ec4dfa5606fbd4c52abba8256192f4612288b2ceac2eb5966a45f94a59fe",
+          "d887f0eed65d973be217645f1089879632d3a90e5303696d841ce05f751a5ead",
+          "e6754564a42fc59a7f7088708da23ee861ec193e18f50641eeafd1096dfef7bc",
+          "ed05ebceadf55be84b362477921a85951f10ae01fb42d9a00359f19415d64882",
+          "ee807a3cca4e02ce167e6641e5477d88190ac5e9efd257b39932e038344fb4eb"
+        ],
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h_range": [
+          "1",
+          "8"
+        ]
+      },
+      "PR_DF": {
+        "L_D_values": [
+          7,
+          8,
+          9
+        ],
+        "saved_configurations_only": false,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "1/2"
+          ]
+        },
+        "L_D_range": {
+          "min": 7,
+          "max_offset_from_fragment_count": -1
+        }
+      }
+    },
+    "search": {
+      "rule": "METHOD_MINIMUM_PRIORITY_V2",
+      "decrement_steps": [
+        1,
+        2
+      ],
+      "large_step_headroom": "9/10",
+      "seed_rules": [
+        "B_PRICE",
+        "A_SHAPE"
+      ],
+      "max_steps_per_method": 40,
+      "max_new_q3_per_method": 0,
+      "seed_saved_same_L_D": true,
+      "explore_every": 4,
+      "explore_window": "3/2",
+      "small_gain_fraction": "1/1000",
+      "deferral_fail_margin": "1/10000",
+      "transfer_count": 2,
+      "lookahead": 16,
+      "lookahead_mode": "HYBRID",
+      "adaptive_lookahead": false,
+      "coarse_gain_fraction": "1/100",
+      "small_and_deferred": "STOP",
+      "schedule_wide": {
+        "rule": "SCHEDULE_WIDE_V1",
+        "ladder_ratio": "4",
+        "explore_ratio": "2",
+        "refine_ratio": "33/32",
+        "exploit_per_explore": 2,
+        "window": "3/2",
+        "upper_stop_steps": 2,
+        "upper_stop_margin": "1/20",
+        "max_kappa": "65536",
+        "per_decision": 8,
+        "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family"
+      },
+      "note": "Absolute requested PF widths. JSON .2 retains binary64, string 1/5 exact rational. Fixed h/M/T and evaluation contract unchanged; mapper may reject per method.",
+      "adaptive_hybrid": true,
+      "allocation_exchange": {
+        "enabled": true
+      },
+      "kappa_neighbourhood": {
+        "outer_planner": "SCHEDULE_WIDE_V1"
+      },
+      "requested_widths": {
+        "PR_PAULI": [
+          0.1,
+          0.2,
+          0.4,
+          0.8
+        ],
+        "PR_DF": [
+          0.1,
+          0.2,
+          0.4,
+          0.8
+        ]
+      },
+      "self_price_floor": true,
+      "review_search_order": true,
+      "common_pauli_price_floor": true,
+      "schedule_wide_by_method": {
+        "PR_PAULI": {
+          "rule": "SCHEDULE_WIDE_V1",
+          "ladder_ratio": "4",
+          "explore_ratio": "2",
+          "refine_ratio": "33/32",
+          "exploit_per_explore": 2,
+          "window": "3/2",
+          "upper_stop_steps": 2,
+          "upper_stop_margin": "1/20",
+          "max_kappa": "64",
+          "per_decision": 8,
+          "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family",
+          "kappa_bounds": [
+            "2",
+            "64"
+          ]
+        }
+      },
+      "work_conserving_search": true
+    },
+    "max_new_q3_per_method": {
+      "TRUNCATED_PF": "UNLIMITED",
+      "PR_PAULI": "UNLIMITED",
+      "PR_DF": "UNLIMITED"
+    },
+    "max_steps_per_method": null,
+    "preparation_budgets": {
+      "signal": "UNLIMITED",
+      "compile": "UNLIMITED",
+      "audit": "UNLIMITED"
+    },
+    "live_ready_refill": true,
+    "work_conserving_search": true,
+    "reviewed_pr_q3": {
+      "compact_q3_evidence": true,
+      "parallel_dp_residual": true,
+      "prefix_cache_max_bytes": 42949672960,
+      "prefix_checkpoint_rounds": [
+        5,
+        11
+      ]
+    },
+    "parallel_df_price_axes": true,
+    "df_signal_source": "9ed5fcc98d38c328c447f4270eabc73090fcaa02",
+    "pbs_walltime": {
+      "policy": {
+        "id": "h4-pbs-walltime-v1",
+        "sha256": "6b3d8bb7f35aa4309e28df6cd24f058d8166db82e86f5f2a7d6708db4e675bda"
+      },
+      "q3": [
+        {
+          "id": "pauli-common",
+          "method": "PR_PAULI",
+          "route_kind": "pauli_b_common_entry",
+          "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+          "adapter_source": "3b38e4af67f6b673303cff9f963ac1381627c4d0",
+          "seconds": 14400,
+          "hosts": [
+            "pbs-0"
+          ]
+        },
+        {
+          "id": "b0i-pf6",
+          "method": "TRUNCATED_PF",
+          "route_kind": "pf_b_pf6",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "adapter_source": "349558b748a82f384a4589434a63ef9b5572032c",
+          "seconds": 14400,
+          "hosts": [
+            "pbs-0"
+          ]
+        }
+      ],
+      "preparation": [
+        {
+          "id": "pauli_signals",
+          "stage": "signal",
+          "provider": "PAULI_SIGNALS",
+          "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+          "seconds": 120
+        },
+        {
+          "id": "pauli_compile",
+          "stage": "compile",
+          "provider": "PAULI_COMPILE",
+          "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+          "seconds": 180
+        },
+        {
+          "id": "pf_audit",
+          "stage": "audit",
+          "provider": "PF_AUDIT",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_finish",
+          "stage": "audit",
+          "provider": "PF_FINISH",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_holdout_audit",
+          "stage": "audit",
+          "provider": "PF_HOLDOUT_AUDIT",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_model_freeze",
+          "stage": "audit",
+          "provider": "PF_MODEL_FREEZE",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_compile",
+          "stage": "compile",
+          "provider": "PF_COMPILE",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 3600
+        },
+        {
+          "id": "pf_holdout_compile",
+          "stage": "compile",
+          "provider": "PF_HOLDOUT_COMPILE",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 3600
+        },
+        {
+          "id": "pf_signals",
+          "stage": "signal",
+          "provider": "PF_SIGNALS",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        }
+      ],
+      "drain_seconds": 30,
+      "unconfigured_q3_methods": {
+        "PR_DF": "PBS_WALLTIME_ESTIMATE_UNAVAILABLE"
+      }
+    }
+  },
+  "problem_sha256": "f588d4ce3a1f913b950aafe56eb1f48555d1d1d3b0eb1ab0ca58f399b491859c",
+  "round_requested_sha256": "d50f0e9c787be5e67a43a4f3d9029897fcbc8e15c88badeaf8c8c33f5bbeb2ad",
+  "scope": {
+    "methods": [
+      "TRUNCATED_PF",
+      "PR_PAULI",
+      "PR_DF"
+    ],
+    "per_method": {
+      "PR_PAULI": {
+        "L_D": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "delta_pf": [
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/36028797018963968"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/18014398509481984"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/9007199254740992"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/4503599627370496"
+          }
+        ],
+        "kappa": {
+          "mode": "absolute",
+          "min": "2",
+          "max": "64"
+        }
+      },
+      "TRUNCATED_PF": {
+        "p": [
+          6,
+          7,
+          8
+        ],
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "delta_over_h": [
+          "1",
+          "8"
+        ]
+      },
+      "PR_DF": {
+        "L_D": [
+          7,
+          8,
+          9
+        ],
+        "delta_pf": [
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/36028797018963968"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/18014398509481984"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/9007199254740992"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/4503599627370496"
+          }
+        ]
+      }
+    },
+    "shots": "auto",
+    "stop": {
+      "max_new_q3_per_method": "UNLIMITED"
+    },
+    "preparation_budgets": {
+      "signal": "UNLIMITED",
+      "compile": "UNLIMITED",
+      "audit": "UNLIMITED"
+    }
+  }
+}
