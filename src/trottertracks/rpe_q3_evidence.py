@@ -5,7 +5,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import sqlite3
 from unittest.mock import patch
 import zlib
 
@@ -38,6 +37,8 @@ def source_sidecars(result):
 @contextmanager
 def capture(writer, folder):
     """Use one durable transaction per early write in the existing forked worker."""
+    import sqlite3
+
     original = writer.write_new
     checkpoint = folder / CHECKPOINTS
 
@@ -58,17 +59,22 @@ def capture(writer, folder):
 
 
 def checkpoints(folder):
+    import sqlite3
+
     result = {}
     path = folder / CHECKPOINTS
-    with closing(sqlite3.connect(path.as_uri() + '?mode=rw', uri=True)) as db:
-        for name, digest, compressed in db.execute('SELECT name, sha, gzip FROM artifacts'):
-            try:
-                data = gzip.decompress(compressed)
-            except (EOFError, zlib.error) as exc:
-                raise ValueError('Q3 checkpoint compression is corrupt') from exc
-            if name not in SIDECARS or sha(data) != digest:
-                raise ValueError('Q3 checkpoint contents differ')
-            result[name] = data
+    try:
+        with closing(sqlite3.connect(path.as_uri() + '?mode=rw', uri=True)) as db:
+            for name, digest, compressed in db.execute('SELECT name, sha, gzip FROM artifacts'):
+                try:
+                    data = gzip.decompress(compressed)
+                except (EOFError, zlib.error) as exc:
+                    raise ValueError('Q3 checkpoint compression is corrupt') from exc
+                if name not in SIDECARS or sha(data) != digest:
+                    raise ValueError('Q3 checkpoint contents differ')
+                result[name] = data
+    except sqlite3.Error as exc:
+        raise ValueError('Q3 checkpoint database cannot be read: ' + str(exc)) from exc
     return result
 
 

@@ -89,6 +89,15 @@ class EvidenceTests(unittest.TestCase):
         path=output/('COLLECTED_OUTCOME.json' if mode=='collect' else 'OUTCOME.json')
         return code,json.loads(path.read_bytes()) if path.is_file() else None
 
+    def test_existing_raw_df_route_can_execute_and_collect_without_sqlite(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(sys.modules, {'sqlite3':None}):
+            output = Path(tmp)/'raw'
+            code, answer = self.exercise(output, 'prdf_d2_split', False)
+            self.assertEqual((code, answer['status']), (0, A.PASS))
+            code, recovered = self.exercise(output, 'prdf_d2_split', False, mode='collect')
+            self.assertEqual((code, recovered['status']), (0, A.PASS))
+            self.assertEqual(answer['MSE_upper'], recovered['MSE_upper'])
+
     def test_pinned_gate_and_complete_collect_and_export_on_both_routes(self):
         for kind in ('pauli_b_common_entry','prdf_d2_common_entry'):
             with self.subTest(kind=kind),tempfile.TemporaryDirectory() as tmp:

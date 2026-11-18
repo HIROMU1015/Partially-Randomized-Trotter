@@ -497,6 +497,9 @@ def main():
                     # route's actual runtime without running its evaluation.
                     with prefix_cache_context(request, case, inputs, out):
                         outcome['prefix_runtime_check'] = 'PASS'
+                    if profile.get('compact_q3_evidence') is True and getattr(r, 'evidence_writer', None) is not None:
+                        with EVIDENCE.capture(r.evidence_writer, out / case['label']):
+                            outcome['compact_runtime_check'] = 'PASS'
                 if getattr(r, 'source_resolution', None) is not None:
                     outcome['source_resolution'] = r.source_resolution
             elif a.mode == 'collect':
@@ -533,7 +536,7 @@ def main():
         try:
             if EVIDENCE.compact(out / case['label'], out / name):
                 stage(out, 'Q3_SIDECARS_COMPACTED')
-        except (OSError, ValueError, KeyError, EVIDENCE.sqlite3.Error) as exc:
+        except (OSError, ImportError, ValueError, KeyError) as exc:
             stage(out, 'Q3_CHECKPOINTS_RETAINED', reason=str(exc))
     stage(out, 'JOB_END', status=outcome['status'])
     print(outcome['status'], flush=True)
