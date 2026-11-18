@@ -127,6 +127,7 @@ def ssh_wsl_command(worker, command, action, *, input_file=None):
                 "$enabled=($flag.accepting_new_jobs -eq $true)};"
             )
         script += (
+            "if($value.accepting_new_jobs -eq $false){$enabled=$false};"
             "$value|Add-Member -Force -NotePropertyName accepting_new_jobs -NotePropertyValue $enabled;"
             "if(-not $enabled){$value.slots=0};"
         )
@@ -248,7 +249,8 @@ class Relay:
         result = json.loads(process.stdout)
         if action == 'status' and worker.get('participation_file') and worker.get('transport') != 'ssh-wsl':
             participation = Path(worker['participation_file'])
-            enabled = participation.is_file() and json.loads(participation.read_text(encoding='utf-8-sig')).get('accepting_new_jobs') is True
+            enabled = (result.get('accepting_new_jobs', True) and participation.is_file()
+                       and json.loads(participation.read_text(encoding='utf-8-sig')).get('accepting_new_jobs') is True)
             result['accepting_new_jobs'] = enabled
             if not enabled:
                 # Completion transfer and reconciliation above the poll continue.

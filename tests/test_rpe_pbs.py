@@ -168,6 +168,24 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(gateway.calls[0]['spec']['token'], token)
             self.assertEqual(P.read(manager.path)['allocations'][token]['status'], 'INTENT')
 
+    def test_storage_hold_prevents_new_pbs_allocation_and_reopens(self):
+        with tempfile.TemporaryDirectory() as directory, patch.object(P, 'SAMPLE_SECONDS', 0):
+            manager, executor, gateway = self.manager(directory)
+            worker = manager.configured['pbs-0']
+            worker['profile']['storage_limit'] = dict(limit_bytes=50*2**30)
+            ready = dict(route=dict(kind='artificial'))
+            manager._demand = lambda: ([(['pbs-0'],ready)], [], 1, 0)
+            gateway.storage_report = lambda p: dict(limit_bytes=p['limit_bytes'], used_bytes=p['limit_bytes'],
+                                                  accepting_new_jobs=False, reason='STORAGE_LIMIT_REACHED')
+            manager.cycle()
+            self.assertEqual(manager.state['allocations'], {})
+            self.assertFalse(any(call['action']=='ensure' for call in gateway.calls))
+            gateway.storage_report = lambda p: dict(limit_bytes=p['limit_bytes'], used_bytes=0,
+                                                  accepting_new_jobs=True, reason=None)
+            manager.cycle()
+            self.assertEqual(len(manager.state['allocations']), 1)
+            self.assertEqual(sum(call['action']=='ensure' for call in gateway.calls), 1)
+
     def test_ready_q3_sizing_uses_fixed_cpu_footprint_and_pins_the_intent(self):
         with tempfile.TemporaryDirectory() as directory:
             executor = FakeExecutor(directory)

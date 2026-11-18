@@ -6,6 +6,7 @@ or polling daemon disappears. An ambiguous launch is never retried elsewhere.
 from copy import deepcopy
 from .rpe_q3_timing import stamp, append as timing_append
 from . import rpe_q3_resources as Resources
+from . import rpe_worker_storage as Storage
 from .rpe_host_profiles import select_host_profile as _select_q3_profile, validate_adapter_profile, check_runtime_profile
 from . import rpe_preparation_worker as Preparation
 from .rpe_preparation_artifacts import worker_cache, input_manifest
@@ -385,12 +386,21 @@ class Worker:
     def resource_snapshot(self):
         return Resources.resource_snapshot(self.profile)
 
+    def _storage_offer(self, report):
+        storage = Storage.report(self.profile.get('storage_limit'))
+        if storage is not None:
+            report['storage'] = storage
+            if not storage['accepting_new_jobs']:
+                report['slots'] = 0
+        self.resource_report = report
+        return report
+
     def _resource_offer(self):
         if (self.profile.get('slot_policy') or {}).get('mode') != 'auto':
             jobs = [dict(state=read(path / 'WORKER_STATE.json')['state']) for path in self.records]
             _, report = Resources.decide_slots(self.profile, {}, {}, jobs)
-            self.slots = report['capacity']; self.resource_report = report
-            return report
+            self.slots = report['capacity']
+            return self._storage_offer(report)
         jobs = []
         for attempt, assignment in self.records.items():
             state = read(attempt / 'WORKER_STATE.json')['state']
@@ -424,7 +434,7 @@ class Worker:
         resources = self.resource_snapshot() if (self.profile.get('slot_policy') or {}).get('mode') == 'auto' else {}
         state, report = Resources.decide_slots(self.profile, previous, resources, jobs, feedback)
         self.slots = report['capacity']
-        self.resource_report = report
+        self._storage_offer(report)
         if report['mode'] == 'AUTO':
             if previous.get('target_slots') != report['capacity'] or previous.get('stage') != report['stage']:
                 event(self.profile, 'SLOT_CAPACITY_DECISION', capacity=report['capacity'], stage=report['stage'],
@@ -583,14 +593,16 @@ class Worker:
                 if a.get('prefix_key') and read(p / 'WORKER_STATE.json')['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED')
                 })
             try:
-                self._prepare_challenge_artifacts(self.eligibility_challenges)
-                payload = dict(slots=max(0,self.slots-active), capacity=self.slots, resource_report=report, cached_prefixes=cached,
+                storage_accepting = report.get('storage', {}).get('accepting_new_jobs', True)
+                challenges = self.eligibility_challenges if storage_accepting else []
+                self._prepare_challenge_artifacts(challenges)
+                payload = dict(slots=report['slots'], capacity=self.slots, resource_report=report, cached_prefixes=cached,
                                cached_artifact_sha256=worker_cache(self.profile).hashes(), source_sha=self.source_sha,
-                               **host_fingerprints(self.profile, self.eligibility_challenges))
+                               accepting_new_jobs=storage_accepting, **host_fingerprints(self.profile, challenges))
                 response = self._post('/v1/poll', payload)
                 self._capacity_feedback(response)
                 self.eligibility_challenges = response.get('eligibility_challenges', [])
-                if not response.get('assignments') and self.eligibility_challenges:
+                if storage_accepting and not response.get('assignments') and self.eligibility_challenges:
                     self._prepare_challenge_artifacts(self.eligibility_challenges)
                     payload.update(host_fingerprints(self.profile, self.eligibility_challenges))
                     response = self._post('/v1/poll', payload)
@@ -599,7 +611,7 @@ class Worker:
                 assignments = response.get('assignments', [])
                 new_assignments = [a for a in assignments if
                     self.work / safe_id(a['job_id']) / safe_id(a['attempt_id']) not in self.records]
-                if len(new_assignments) > max(0,self.slots-active):
+                if len(new_assignments) > report['slots']:
                     raise ValueError('Controller overfilled announced slots')
                 for assignment in assignments:
                     self._acquire(assignment)
@@ -720,6 +732,7 @@ def mailbox(profile, action, payload=None):
                 attempts.append(row)
             report = worker._resource_offer()
             return dict(host_id=worker.host_id, slots=report['slots'], capacity=worker.slots, resource_report=report, source_sha=worker.source_sha,
+                        accepting_new_jobs=report.get('storage', {}).get('accepting_new_jobs', True),
                         cached_prefixes=sorted(cached), cached_artifact_sha256=worker_cache(profile).hashes(),
                         attempts=attempts, metadata_only=metadata_only)
         raise ValueError('Unknown mailbox action')

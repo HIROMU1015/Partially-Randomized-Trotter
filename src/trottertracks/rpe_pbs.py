@@ -18,6 +18,7 @@ import uuid
 from .rpe_q3_timing import stamp, append
 from .rpe_q3_worker import atomic, digest, read
 from .rpe_pbs_worker import task_cpu_footprint
+from .rpe_worker_storage import SAMPLE_SECONDS
 
 
 TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED'}
@@ -67,6 +68,15 @@ class Gateway:
         except (OSError, ValueError, queue.Empty):
             self.close()
             raise
+
+    def storage_report(self, policy):
+        config = self.settings
+        remote = [config.get('gateway_python', '/usr/bin/python3'), '-B',
+                  str(Path(config['transport_root'])/'scripts/run_rpe_q3_worker.py'), '--storage-limit-report']
+        output = subprocess.check_output(
+            ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
+             config['ssh_alias'], shlex.join(remote)], input=json.dumps(policy), text=True, timeout=15)
+        return json.loads(output)
 
     def close(self):
         if self.process is not None:
@@ -182,6 +192,7 @@ class PbsManager:
         self.allocations = []
         self.responses = {}
         self.controls = {}
+        self.storage_checks = {}
         self.last_error = None
         self.configured = {worker['host_id']:worker for worker in settings['workers']}
         if len(self.configured) != len(settings['workers']):
@@ -192,6 +203,31 @@ class PbsManager:
 
     def save(self):
         atomic(self.path, self.state)
+
+    def _storage_accepting(self, worker):
+        policy = worker['profile'].get('storage_limit')
+        if policy is None:
+            return True
+        host = worker['host_id']
+        sampled, report = self.storage_checks.get(host, (float('-inf'), None))
+        if time.monotonic() - sampled >= SAMPLE_SECONDS:
+            try:
+                new = self.gateway.storage_report(policy)
+                if (new['limit_bytes'] != policy['limit_bytes']
+                        or type(new['accepting_new_jobs']) is not bool
+                        or new['accepting_new_jobs'] != (
+                            type(new['used_bytes']) is int and 0 <= new['used_bytes'] < new['limit_bytes'])
+                        or new['reason'] not in (None, 'STORAGE_LIMIT_REACHED', 'STORAGE_USAGE_UNAVAILABLE')):
+                    raise ValueError('PBS storage report differs from selected limit')
+            except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
+                new = dict(limit_bytes=policy['limit_bytes'], used_bytes=None,
+                           accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')
+            if report is None or (report['accepting_new_jobs'], report['reason']) != (new['accepting_new_jobs'], new['reason']):
+                self.log('PBS_STORAGE_ADMISSION', host_id=host, **new)
+            report = new
+            self.storage_checks[host] = (time.monotonic(), report)
+            self.state.setdefault('storage', {})[host] = report
+        return report['accepting_new_jobs']
 
     def _dispatch(self, token, request):
         host = self.state['allocations'][token]['spec']['profile']['host_id']
@@ -403,6 +439,7 @@ class PbsManager:
                 if any(row['host_id'] == host for row in self.executor._owned_attempts()): continue
                 requests = [request for usable, request in outstanding if host in usable]
                 if not requests and not any(host in usable for usable, _ in pending): continue
+                if not self._storage_accepting(worker): continue
                 spec = self._submit(host, worker, dict(ready_tasks=queued, existing_host_free_slots=free,
                     prospective_pbs_task_slots=covered, shortage=shortage), requests[:shortage-covered])
                 covered += max(1, spec['resources']['ncpus']//task_cpu_footprint(spec['profile']))

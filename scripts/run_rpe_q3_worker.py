@@ -9,6 +9,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from trottertracks.rpe_q3_worker import Worker, read, supervise, mailbox
+from trottertracks.rpe_worker_storage import report as storage_report
 
 
 def main():
@@ -19,10 +20,14 @@ def main():
     parser.add_argument('--mailbox', choices=('status', 'submit', 'ack', 'result', 'readiness', 'resources', 'artifacts-missing', 'artifacts-get', 'artifacts-put'), help='One SSH mailbox RPC; input/output are JSON')
     parser.add_argument('--once', action='store_true', help='One acquisition poll, then finish/recover and transfer')
     parser.add_argument('--drain', action='store_true', help='Recover owned attempts; acquire no new jobs')
+    parser.add_argument('--storage-limit-report', action='store_true', help='Read a storage policy from stdin without starting a worker')
     parser.add_argument('--supervise-attempt', type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.supervise_attempt:
         return supervise(args.supervise_attempt)
+    if args.storage_limit_report:
+        print(json.dumps(storage_report(json.load(sys.stdin)), allow_nan=False), flush=True)
+        return 0
     if args.mailbox:
         if not args.profile:
             parser.error('--profile is required for mailbox RPC')

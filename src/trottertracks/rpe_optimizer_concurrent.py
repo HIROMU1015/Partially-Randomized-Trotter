@@ -1794,6 +1794,11 @@ class DistributedExecutor(ConcurrentExecutor):
             for host, observation in payload['hosts'].items():
                 free = self._offer_free(host, admission, admission_error)
                 observation.update(owned=owned[host], fresh_free_slots=free)
+                storage = (self.hosts[host].get('resource_report') or {}).get('storage')
+                if storage is not None:
+                    observation['storage'] = storage
+                    if not storage['accepting_new_jobs']:
+                        observation['idle_reason'] = storage['reason']
                 if free:
                     compatible = self._match_ready_jobs(ready, {host: free})
                     if work_conserving:

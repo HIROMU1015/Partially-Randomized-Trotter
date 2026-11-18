@@ -311,6 +311,9 @@ def summarize(problem, spec, canonical):
     if spec.get('search_overrides', {}).get('work_conserving_search') is True:
         result['work_conserving_search'] = True
     execution = spec.get('executor', {})
+    worker_limits = (execution.get('distributed') or {}).get('worker_storage_limits_bytes')
+    if worker_limits:
+        result['worker_storage_limits_bytes'] = worker_limits
     if set(spec['methods']) & {'PR_PAULI', 'PR_DF'} and any(
             execution.get(key) is True for key in ('compact_q3_evidence', 'parallel_dp_residual')):
         result['reviewed_pr_q3'] = {key: execution[key] for key in

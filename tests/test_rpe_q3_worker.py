@@ -9,6 +9,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
@@ -65,6 +66,56 @@ def finish(worker, timeout=8):
 
 
 class WorkerTests(unittest.TestCase):
+    def test_storage_limit_stops_new_offers_and_preserves_completion(self):
+        with tempfile.TemporaryDirectory() as temporary, patch.object(W.Storage, 'SAMPLE_SECONDS', 0):
+            base = Path(temporary)
+            files = base/'files'; files.mkdir()
+            profile, assignment = fixture(temporary)
+            profile['storage_limit'] = dict(limit_bytes=8192, roots=[str(files)], sample_path=str(base/'usage.json'))
+            remote = FakeController(assignment)
+            worker = W.Worker(profile, 'http://127.0.0.1:1', transport=remote)
+            try:
+                worker.tick()
+                self.assertEqual(len(worker.records), 1)
+                large = files/'fixture.data'
+                large.write_bytes(b'x'*32768)
+                worker.tick()
+                held = [value for path, value in remote.messages if path=='/v1/poll'][-1]
+                self.assertEqual(held['slots'], 0)
+                self.assertFalse(held['accepting_new_jobs'])
+                self.assertEqual(held['resource_report']['storage']['reason'], 'STORAGE_LIMIT_REACHED')
+                finish(worker)
+                self.assertEqual(remote.complete_calls, 1)
+                self.assertEqual(large.stat().st_size, 32768)
+            finally:
+                for process in worker.processes.values():
+                    process.wait(timeout=8)
+                worker.close()
+            status = W.mailbox(profile, 'status', {'metadata_only':True})
+            self.assertFalse(status['accepting_new_jobs'])
+            self.assertEqual(status['slots'], 0)
+            large.unlink()
+            reopened = W.mailbox(profile, 'status', {'metadata_only':True})
+            self.assertTrue(reopened['accepting_new_jobs'])
+            self.assertEqual(reopened['slots'], 1)
+
+    def test_storage_counts_unique_blocks_and_fails_closed_on_unreadable_usage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            root = base/'worker'; root.mkdir()
+            nested = root/'spool'; nested.mkdir()
+            second = base/'cache'; second.mkdir()
+            original = nested/'file'; original.write_bytes(b'a'*32768)
+            (second/'link').hardlink_to(original)
+            policy = dict(limit_bytes=2**20, roots=[str(root),str(nested),str(second)],
+                          sample_path=str(base/'report.json'))
+            report = W.Storage.report(policy)
+            self.assertEqual(report['used_bytes'], W.Storage._used_bytes([root, second]))
+            self.assertLess(report['used_bytes'], 65536)
+            with patch.object(W.Storage, '_used_bytes', side_effect=OSError('fixture unreadable')), \
+                 patch.object(W.Storage, 'SAMPLE_SECONDS', 0):
+                self.assertEqual(W.Storage.report(policy)['reason'], 'STORAGE_USAGE_UNAVAILABLE')
+
     def test_artificial_execute_transfer_duplicate_ack_and_resume(self):
         with tempfile.TemporaryDirectory() as temporary:
             profile, assignment = fixture(temporary); remote = FakeController(assignment, lose_ack=True)
