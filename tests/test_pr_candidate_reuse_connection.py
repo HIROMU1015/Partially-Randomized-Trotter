@@ -21,7 +21,7 @@ def config(cid,kappa=2):
 
 def completion(tmp):
     c=C.Completion.__new__(C.Completion);c.directory=tmp/'completion';c.directory.mkdir()
-    c.state={'records':{}};c.state_path=c.directory/'STATE.json';c.lock=threading.RLock();c.settings={};c.source='SOURCE'
+    c.state={'records':{}};c.state_path=c.directory/'STATE.json';c.lock=threading.RLock();c.shared_preparation_locks={};c.settings={};c.source='SOURCE'
     c.registry=c.directory/'REGISTRY.json';C.put(c.registry,{'entries':[]});return c
 
 
@@ -33,6 +33,7 @@ class ReuseTests(unittest.TestCase):
             def service(mode,request,path,**kwargs):
                 events.append(mode)
                 if mode=='df-generate':return dict(status='CONFIGURATION_READY',configuration=cfg)
+                if mode=='df-plan':return dict(rounds=[dict(m=0,decision='REUSE')])
                 if mode=='intake':return dict(binding_id='b',total_configuration_id='t')
                 raise AssertionError('Unneeded new science/design: '+mode)
             signal=dict(packet_source={'commit':'PACKET','path':'packet.json'})
@@ -41,8 +42,35 @@ class ReuseTests(unittest.TestCase):
                  patch.object(c,'df_signals',return_value=signal),patch.object(c,'price',return_value=quote)as price:
                 result=c.complete(dict(method='PR_DF',configuration=cfg,selection={'kind':'CONFIGURATION_INPUTS_MISSING'}))
             self.assertEqual(result['status'],'READY_FOR_SEARCH')
-            self.assertEqual(events,['df-generate','intake']);self.assertEqual(iq.call_count,1)
+            self.assertEqual(events,['df-generate','df-plan','intake']);self.assertEqual(iq.call_count,1)
             self.assertIs(price.call_args.kwargs['initial_quote'],quote)
+
+    def test_df_conflict_holds_before_any_local_or_distributed_science(self):
+        for distributed in (False,True):
+            with self.subTest(distributed=distributed), tempfile.TemporaryDirectory() as d:
+                tmp=Path(d);c=completion(tmp);cfg=config('DF');events=[]
+                if distributed:c.stage_executor=object()
+                conflict=dict(m=4,physical_key='toy',sources=[{'source':'A'},{'source':'B'}],
+                              differing_fields=['signal'])
+                def service(mode,request,path,**kwargs):
+                    events.append(mode)
+                    if mode=='df-generate':return dict(status='CONFIGURATION_READY',configuration=cfg)
+                    if mode=='df-plan':return dict(rounds=[dict(m=4,decision='UNSUPPORTED')],
+                                                   saved_signal_conflicts=[conflict])
+                    raise AssertionError('Unexpected service '+mode)
+                request=dict(method='PR_DF',configuration=cfg)
+                with patch.object(C,'ROOT',tmp),patch.object(C,'publish',return_value='COMMIT'), \
+                     patch.object(c,'service',side_effect=service),patch.object(c,'initial_quote',return_value={'complete':False}), \
+                     patch.object(c,'df_signals') as signal,patch.object(c,'price') as price:
+                    result=c.complete(request)
+                    self.assertEqual(result['status'],'HELD_WITH_REASON')
+                    self.assertEqual(result['reason'],'DF_SAVED_SIGNAL_CONFLICT:rounds=4')
+                    self.assertEqual(result['conflicting_signal_rounds'],[conflict])
+                    self.assertFalse(result['scientific_failure'])
+                    self.assertTrue(c.complete(request)['resumed'])
+                self.assertEqual(events,['df-generate','df-plan'])
+                signal.assert_not_called()
+                price.assert_not_called()
 
     def test_original_b2_register_reuses_ready_physical_twin_without_new_route(self):
         with tempfile.TemporaryDirectory()as d:

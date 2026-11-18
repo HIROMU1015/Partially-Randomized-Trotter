@@ -56,27 +56,79 @@ def df_extension():
     helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper);return helper
 
 
-def scope_df_saved_index(entry,configuration):
-    """Validate with the fixed entry; unrelated rounds cannot conflict here.
+# The fixed stage() rebinds these canonical labels after matching the physical
+# key and checking each record against its original job. 'reuse' is lineage
+# for that rebind. Numerical values, recipe and input/reference evidence
+# remain in the comparison.
+DF_DECLARATION_FIELDS = frozenset({
+    'B_configuration_id', 'B_candidate_id', 'B_identity', 'B_law_binding', 'reuse',
+})
 
-    Every packet is indexed by the original implementation in isolation. Only
-    the requested physical keys are merged; a conflict on a requested key
-    retains the original strict record-equality STOP. No raw value is replaced.
-    """
-    wanted={entry.physical_key(job)for job in entry.runtime.jobs(configuration)}
-    inventory=list(entry.saved);selected={}
+
+def df_record_differences(left, right):
+    fields = (left.keys() | right.keys()) - DF_DECLARATION_FIELDS
+
+    def exact(value):
+        return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False)
+
+    return {key for key in fields if key not in left or key not in right
+            or exact(left[key]) != exact(right[key])}
+
+
+def scope_df_saved_index(entry, configuration):
+    """Use the fixed validator for every packet before comparing duplicates."""
+    wanted = {entry.physical_key(job): job['m'] for job in entry.runtime.jobs(configuration)}
+    inventory = list(entry.saved)
+    selected, alternatives, differences, first_records = {}, {}, {}, {}
     try:
         for source in inventory:
-            entry.saved=[source];entry._index=None
-            for key,item in entry.saved_index().items():
-                if key not in wanted:continue
-                if key in selected and entry.reader.read(selected[key]['source'])!=entry.reader.read(item['source']):
-                    raise ValueError('Conflicting saved means: select explicit saved inventory')
-                selected.setdefault(key,item)
+            entry.saved = [source]
+            entry._index = None
+            for key, item in entry.saved_index().items():
+                if key not in wanted:
+                    continue
+                first = selected.setdefault(key, item)
+                evidence = alternatives.setdefault(key, [])
+                if item in evidence:
+                    continue
+                evidence.append(item)
+                if first['source'] != item['source']:
+                    if key not in first_records:
+                        first_records[key] = entry.reader.read(first['source'])
+                    fields = df_record_differences(first_records[key], entry.reader.read(item['source']))
+                    if fields:
+                        differences.setdefault(key, set()).update(fields)
     finally:
-        entry.saved=inventory;entry._index=None
-    entry._index=selected
-    return entry
+        entry.saved = inventory
+        entry._index = None
+    entry._index = {key: item for key, item in selected.items() if key not in differences}
+    return {wanted[key]: dict(m=wanted[key], physical_key=key, differing_fields=sorted(fields),
+                              sources=alternatives[key])
+            for key, fields in differences.items()}
+
+
+def bind_df_conflicts(entry, conflicts):
+    # The fixed stage and bundle paths also consult self.plan(). Pass the
+    # affected rounds through their existing UNSUPPORTED guard.
+    original_plan = entry.plan
+
+    def plan(configuration):
+        result = original_plan(configuration)
+        for row in result['rounds']:
+            if row['m'] not in conflicts:
+                continue
+            row.pop('request', None)
+            row.pop('saved', None)
+            row['decision'] = 'UNSUPPORTED'
+            row['reasons'] = [*row.get('reasons', []), 'DF_SAVED_SIGNAL_CONFLICT']
+        result['counts'] = {name: sum(row['decision'] == name for row in result['rounds'])
+                            for name in result['counts']}
+        result['unsupported_rounds'] = [row['m'] for row in result['rounds']
+                                        if row['decision'] == 'UNSUPPORTED']
+        result['saved_signal_conflicts'] = [conflicts[m] for m in sorted(conflicts)]
+        return result
+
+    entry.plan = plan
 
 
 def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None):
@@ -87,7 +139,10 @@ def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None):
     entry=(DFSignalEntry(ROOT,runtime=runtime)if tail_descriptor is None else
            df_extension().entry(ROOT,tail_descriptor,DFSignalEntry,runtime=runtime))
     entry.saved.extend(x for x in saved_bundles if x not in entry.saved)
-    if configuration is not None and not entry._support(configuration):scope_df_saved_index(entry,configuration)
+    if configuration is not None and not entry._support(configuration):
+        conflicts = scope_df_saved_index(entry, configuration)
+        if conflicts:
+            bind_df_conflicts(entry, conflicts)
     return entry
 
 
