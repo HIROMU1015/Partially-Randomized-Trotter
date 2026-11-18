@@ -284,6 +284,113 @@ def summarize(problem, spec, canonical):
                                          for stage in ('signal', 'compile', 'audit')}
     return result
 
+
+def local0_progress(applied, spec, run=None):
+    """Report central acceptance separately from transferred execution receipts."""
+    effective = {key: applied[key] for key in ('preparation_budgets', 'max_new_q3_per_method') if key in applied}
+    executor = spec.get('executor', {})
+    effective['resources'] = dict(max_concurrent_jobs=executor.get('max_concurrent_jobs'))
+    progress = dict(schema='RPE_LOCAL0_PROGRESS_V1', effective=effective, candidates=[], stages=[])
+    parents = spec.get('q3_budget_parents', [])
+    parent = (spec.get('continuation') or {}).get('parent_run_id')
+    if parent or len(parents) == 1:
+        progress['continuation'] = dict(parent_run_id=parent or Path(parents[0]['path']).name)
+    elif parents:
+        progress['continuation'] = dict(parent_run_ids=[Path(row['path']).name for row in parents])
+    if run is None:
+        return progress
+    preflight = run/'DUPLICATE_PREFLIGHT.json'
+    if preflight.is_file():
+        progress['saved_evaluations'] = load(preflight).get('reused', {})
+    inherited_budget = run/'Q3_BUDGET_CONTINUATION.json'
+    if inherited_budget.is_file():
+        effective['inherited_q3'] = load(inherited_budget)
+    observations = {}
+    width_state = run/'KAPPA_STATE.json'
+    if width_state.is_file():
+        state = load(width_state)
+        pending = {'UNSUPPORTED_MAPPER': 'UNSUPPORTED_GENERATION', 'WAITING_INPUTS': 'PREPARATION_WAITING',
+                   'NEEDS_FAMILY_CONFIGURATION_SOURCE': 'MISSING_FIXED_INPUT', 'HELD': 'TECHNICAL_FAILURE'}
+        for key, point in state.get('families', {}).items():
+            if point.get('status') in pending:
+                observations[key] = dict(candidate_id=key, method=point['method'],
+                                         state=pending[point['status']], reason=point.get('reason'))
+        for point in state.get('points', []):
+            key = point.get('configuration_id') or point.get('family')
+            status = pending.get(point.get('status'))
+            if point.get('status') == 'EVALUATED' and point.get('saved_point_ids'):
+                status = 'REUSED_SAVED_RESULT'
+            if key and status:
+                observations[key] = dict(candidate_id=key, method=point['method'], state=status, reason=point.get('reason'))
+    database = run/'distributed/QUEUE.sqlite3'
+    if not database.exists():
+        progress['candidates'] = list(observations.values())
+        return progress
+    import sqlite3
+    identified = {}
+    try:
+        with sqlite3.connect(database.resolve().as_uri()+'?mode=ro', uri=True, timeout=1) as db:
+            rows = db.execute('SELECT job_id,method,request,state,adopted_epoch,detail FROM jobs ORDER BY rowid').fetchall()
+        stages = {}
+        for job, method, raw, state, adopted, detail in rows:
+            request = json.loads(raw, parse_int=str)
+            prep = request.get('preparation', {})
+            stage = prep.get('stage', 'q3')
+            count = stages.setdefault(stage, dict(stage=stage, queue_accepted=0, execution_started=0,
+                execution_completed=0, execution_unit='evaluation' if stage == 'q3' else 'stage_task',
+                active_receipts_pending=0))
+            count['queue_accepted'] += 1
+            directory = run/'jobs'/method/job
+            timing = directory/'JOB_STAGES.jsonl'
+            events = set()
+            if timing.is_file():
+                for line in timing.read_bytes().splitlines(keepends=True):
+                    if line.endswith(b'\n'):
+                        events.add(json.loads(line).get('event'))
+            receipt = 'Q3_BODY' if stage == 'q3' else 'PREPARATION_BODY'
+            native_start = receipt+'_START' in events or receipt+'_END' in events
+            native_end = receipt+'_END' in events
+            # Older routes may have final receipts without the timing markers.
+            terminal = (directory/'PREPARATION_RECEIPT.json').is_file() if prep else adopted is not None
+            count['execution_started'] += int(native_start or terminal)
+            count['execution_completed'] += int(native_end or terminal)
+            active = state in ('STARTING', 'RUNNING', 'COMPLETED_PENDING_TRANSFER')
+            count['active_receipts_pending'] += int(active and not (native_start or terminal))
+            if prep:
+                if str(prep.get('provider', '')).startswith('PF_'):
+                    candidate = next(iter(prep.get('outputs', [])), '').rsplit('/', 1)[-1]
+                    method = 'TRUNCATED_PF' if 'TRUNCATED_PF' in applied.get('methods', []) else 'FULL_PF'
+                else:
+                    candidate = ''
+                code = 'PREPARATION_RUNNING' if active else 'PREPARATION_WAITING'
+                if terminal:
+                    preparation_result = load(directory/'PREPARATION_RECEIPT.json')
+                    if preparation_result.get('returncode') != 0:
+                        code = 'TECHNICAL_FAILURE'
+                    elif prep.get('provider') == 'PF_FINISH':
+                        code = 'EVALUATION_WAITING'
+            else:
+                candidate = request.get('configuration_id')
+                code = 'EVALUATION_COMPLETED' if adopted is not None else 'EVALUATION_RUNNING' if active else 'EVALUATION_WAITING'
+            if candidate and state != 'CANCELLED':
+                metadata = json.loads(detail)
+                if state in ('FAILED', 'UNKNOWN') or (state == 'ACCEPTED' and not prep and adopted is None):
+                    code = 'TECHNICAL_FAILURE' if state != 'ACCEPTED' else 'EVALUATION_WAITING'
+                key = (candidate, stage)
+                priority = 3 if active else 2 if state in ('QUEUED', 'ASSIGNED') else 1
+                if key not in identified or priority >= identified[key][0]:
+                    identified[key] = (priority, dict(candidate_id=candidate, method=method, state=code,
+                                                     reason=metadata.get('reason'), stage=stage))
+        for (candidate, stage), (_, row) in identified.items():
+            if stage == 'q3' or candidate not in observations:
+                observations[candidate] = row
+        progress['stages'] = list(stages.values())
+    except (sqlite3.Error, OSError, ValueError) as error:
+        progress['receipt_status'] = str(error)
+    progress['candidates'] = list(observations.values())
+    return progress
+
+
 class Gateway:
     def __init__(self, config, *, preflight=None, launch=None):
         self.config = deepcopy(config); self.state = Path(config['state_directory'])
@@ -356,6 +463,7 @@ class Gateway:
                                controller_source=self.config['code_source'])
                 if run.is_dir():
                     preview['runtime'] = self.runtime_status(run)
+                preview['progress'] = local0_progress(summary, spec, run if run.is_dir() else None)
                 return preview
             if request['action'] in ('stop','resume','status'):
                 raise RequestError('scope','use the existing run_id or confirmed target for status/stop/resume')
@@ -441,10 +549,16 @@ class Gateway:
 
     def result(self, run, status):
         a = load(run/'APPLIED_SCOPE.json')
-        return dict(run_id=a['run_id'],run_directory=str(run),status=status,applied=a['applied'],started=(run/'LAUNCH.json').exists(),
+        actual = Path(self.config['artificial_controller_directory'])/'run' if self.config.get('artificial_controller_directory') else run
+        requested = run/'ROUND.requested.json'
+        progress = local0_progress(a['applied'], load(requested) if requested.is_file() else {}, actual)
+        result = dict(run_id=a['run_id'],run_directory=str(run),status=status,applied=a['applied'],started=(run/'LAUNCH.json').exists(),
                     computation_source=self.config['computation_source'],release=self.config.get('release'),controller_source=self.config['code_source'],
-                    runtime=self.runtime_status(run),
+                    runtime=self.runtime_status(run),progress=progress,
                     preflight=load(run/'DUPLICATE_PREFLIGHT.json') if (run/'DUPLICATE_PREFLIGHT.json').exists() else None)
+        if 'continuation' in progress:
+            result['continuation'] = progress.pop('continuation')
+        return result
 
     def runtime_status(self,run):
         launch=load(run/'LAUNCH.json')if(run/'LAUNCH.json').exists()else{}

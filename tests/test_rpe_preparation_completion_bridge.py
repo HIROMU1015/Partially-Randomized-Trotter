@@ -215,21 +215,30 @@ subprocess.run(['git','commit','-qm','artificial provider receipt'],cwd=workspac
 publication=subprocess.check_output(['git','rev-parse','HEAD'],cwd=workspace,text=True).strip()
 Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':hashlib.sha256(raw).hexdigest(),'workspace':str(workspace),'publication':publication}))
 ''')
+            historic=root/'old'/'CONFIGURATION.json';historic.parent.mkdir()
+            historic.write_text('{"previous_proof": 17}\n')
+            git('add','.');git('commit','-qm','historical fixed input');historic_commit=git('rev-parse','HEAD')
+            historic_blob=git('rev-parse',historic_commit+':old/CONFIGURATION.json')
+            historic.unlink()
             git('add','.');git('commit','-qm','fixed artificial provider');source=git('rev-parse','HEAD')
             provider=top/'original-provider';git('clone','-q',str(root),str(provider))
             # A real remote host has a separate Git object database. Clone
             # before the controller creates its unpublished input commits.
             view=top/'fixed-view';git('clone','-q',str(root),str(view))
+            # A source checkout can resolve the historical commit and lack the
+            # particular historical object. The new bundle must supply it.
+            (view/'.git'/'objects'/historic_blob[:2]/historic_blob[2:]).unlink()
             config=root/'docs/CONFIGURATION.json';config.parent.mkdir();config.write_text('{"scientific_fixture": "immutable"}\n')
             git('add','.');git('commit','-qm','new controller input');config_commit=git('rev-parse','HEAD')
             d=root/'docs/candidate';d.mkdir()
             request=d/'REQUEST.json';request.write_text(json.dumps({'workspace':str(provider),'directory':'docs/provider-output',
-                'configuration':{'commit':config_commit,'path':'docs/CONFIGURATION.json'}})+'\n')
+                'configuration':{'commit':config_commit,'path':'docs/CONFIGURATION.json'},
+                'historical':{'commit':historic_commit,'path':'old/CONFIGURATION.json'}})+'\n')
             pinned_helper=hashlib.sha256(helper.read_bytes()).hexdigest()
             helper.write_bytes(helper.read_bytes()+b'\n# New controller transport declaration.\n')
             git('add','.');git('commit','-qm','frozen task input')
             executor=type('Executor',(),{'run_dir':top/'run','artifact_cache':ArtifactCache(top/'controller-cas')})()
-            bridge=B.DistributedPreparationBridge(executor,root)
+            bridge=B.DistributedPreparationBridge(executor,root,{'bundle_validation_sources':{source:str(view)}})
             completion=type('Completion',(),{'source':source})()
             task=bridge.build_request(completion,[sys.executable,'-B',str(script),str(request),str(d/'RESULT.json')],d,'PAULI_SIGNALS')
             self.assertEqual(task['preparation']['workspaces']['provider']['source']['files'][
@@ -255,6 +264,7 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
             result=json.loads((attempt/'workspace/docs/candidate/RESULT.json').read_text())
             self.assertEqual(result['configuration'],{'scientific_fixture':'immutable'})
             self.assertEqual(result['input_sha256'],hashlib.sha256(request.read_bytes()).hexdigest())
+            self.assertEqual(git('show',historic_commit+':old/CONFIGURATION.json',cwd=attempt/'workspace'),'{"previous_proof": 17}')
             self.assertNotEqual(result['workspace'],str(provider))
             self.assertEqual(git('rev-parse','HEAD',cwd=view),source)
             self.assertFalse((provider/'docs/provider-output').exists())

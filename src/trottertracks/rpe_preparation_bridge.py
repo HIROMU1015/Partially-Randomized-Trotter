@@ -245,10 +245,10 @@ class DistributedPreparationBridge:
         self.executor.artifact_cache.put({sha: base64.b64encode(raw).decode('ascii')})
         return sha
 
-    def _bundle(self, root, source, required_commits=(), *, tracked_workspace=False):
+    def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         namespace='refs/rpe-preparation/' + digest(str(self.executor.run_dir))[:16]
-        for value in sorted(set(required_commits)):
+        for value in sorted({row['commit'] for row in input_hashes}):
             commit=subprocess.check_output(['git','rev-parse',value+'^{commit}'],cwd=root,text=True).strip()
             subprocess.run(['git','update-ref',namespace+'/input-'+commit,commit],cwd=root,check=True)
         imported=subprocess.check_output(['git','for-each-ref','--format=%(refname)',namespace],cwd=root,text=True).splitlines()
@@ -277,12 +277,68 @@ class DistributedPreparationBridge:
         # no scientific checkout or branch HEAD is replaced here.
         with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
             path = Path(temporary) / 'input.bundle'
-            subprocess.run(['git', 'bundle', 'create', str(path), *heads, '^' + source], cwd=root,
+            # Git's bundle command emits thin packs. Keep the increment, but
+            # require a pack whose deltas never depend on omitted Git objects.
+            subprocess.run(['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false',
+                            '-c', 'pack.reuseObjects=false', 'bundle', 'create', str(path), *heads, '^' + source], cwd=root,
                            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            heads=subprocess.check_output(['git','bundle','list-heads',str(path)],cwd=root,text=True).splitlines()
-            names=[row.split(' ',1)[1]for row in heads]
+            listed=subprocess.check_output(['git','bundle','list-heads',str(path)],cwd=root,text=True).splitlines()
+            names=[row.split(' ',1)[1]for row in listed]
             ref='HEAD'if'HEAD'in names else names[0]
+            if input_hashes:
+                # Sparse worker views can lack blobs from earlier commits, even
+                # when the commit itself is advertised as a prerequisite.
+                expressions = set()
+                for row in input_hashes:
+                    commit = row['commit']
+                    parts = artifact_path(row['path']).parts
+                    expressions.update((commit, commit+'^{tree}'))
+                    expressions.update(commit+':'+('/'.join(parts[:depth])) for depth in range(1, len(parts)+1))
+                objects = subprocess.check_output(['git','rev-parse',*sorted(expressions)],cwd=root).splitlines()
+                changed = subprocess.check_output(['git','rev-list','--objects','--no-object-names',*heads,'^'+source],cwd=root).splitlines()
+                with path.open('rb') as original:
+                    header = bytearray()
+                    for line in original:
+                        header.extend(line)
+                        if line == b'\n':
+                            break
+                with path.open('wb') as enriched:
+                    enriched.write(header)
+                    subprocess.run(['git','pack-objects','--stdout','--no-reuse-delta','--no-reuse-object'],cwd=root,
+                        input=b'\n'.join(sorted(set(changed+objects)))+b'\n',stdout=enriched,check=True,stderr=subprocess.PIPE)
             return [dict(sha256=self._blob(path.read_bytes()), ref=ref,checkout_input_head=tracked_workspace or ref=='HEAD')]
+
+    def _validate_bundle_inputs(self, spec):
+        sources = self.settings.get('bundle_validation_sources')
+        if not sources or not (spec['input_git_bundles'] or spec['workspaces']):
+            return
+        from .rpe_preparation_worker import _clone, _guard_owned_source, _include_declared_outputs
+
+        cache = self.executor.artifact_cache
+        with tempfile.TemporaryDirectory(prefix='rpe-owned-preparation-check-') as temporary:
+            directory = Path(temporary)
+            owned = {}
+            views = dict(source=spec, **spec['workspaces'])
+            for alias, view in views.items():
+                manifest = view['source']
+                baseline = sources.get(manifest['commit'])
+                if not baseline:
+                    raise ValueError('Fixed bundle validation view missing: '+manifest['commit'])
+                baseline = Path(baseline)
+                if subprocess.check_output(['git','rev-parse','HEAD'],cwd=baseline,text=True).strip() != manifest['commit']:
+                    raise ValueError('Fixed bundle validation view SOURCE differs: '+manifest['commit'])
+                target = directory/('workspace' if alias == 'source' else 'workspaces/'+alias)
+                owned[alias] = (_clone(baseline,target,view.get('input_git_bundles',[]),cache,
+                    view.get('checkout_input_head',True),manifest['files']),manifest)
+            _include_declared_outputs(owned,directory,spec['outputs']+spec.get('optional_outputs',[]))
+            _include_declared_outputs(owned,directory,spec['inputs'])
+            cache.materialize(spec['inputs'],directory)
+            for workspace, manifest in owned.values():
+                _guard_owned_source(workspace,manifest)
+            for locator in spec['input_hashes']:
+                raw = subprocess.check_output(['git','show',locator['commit']+':'+locator['path']],cwd=owned['source'][0])
+                if hashlib.sha256(raw).hexdigest() != locator['sha256']:
+                    raise ValueError('Fresh preparation workspace fixed input differs: '+locator['path'])
 
     def build_request(self, completion, command, directory, stage, output=None):
         """Freeze a portable leaf request; never invoke its scientific body."""
@@ -395,7 +451,7 @@ class DistributedPreparationBridge:
         with self.lock:
             for old, original in self.aliases.items():
                 if original in bindings:bindings[old]=bindings[original]
-        root_bundles=self._bundle(root,source,[row['commit']for row in input_hashes],
+        root_bundles=self._bundle(root,source,input_hashes,
                                  tracked_workspace=not script.is_relative_to(root))
         if script.is_relative_to(root):
             # This bundle supplies locators for frozen inputs. Checking out
@@ -421,6 +477,7 @@ class DistributedPreparationBridge:
                     required_paths=required_paths,
                     optional_outputs=optional_outputs,
                     runtime_requirements=requirements,compiler_bindings=compiler_bindings)
+        self._validate_bundle_inputs(prep)
         return dict(schema='RPE_PREPARATION_REQUEST_V1', route=dict(kind='preparation'), preparation=prep,
                     original_contract=dict(source=source, stage=stage, automatic_retry=False))
 
