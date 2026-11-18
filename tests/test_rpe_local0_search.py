@@ -80,6 +80,10 @@ class Tests(unittest.TestCase):
         self.assertTrue(with_refill['applied']['live_ready_refill'])
         self.assertTrue(spec['overlap_ready_batch'])
         self.assertNotEqual(without['run_id'], with_refill['run_id'])
+        self.config['work_conserving_search'] = True
+        work = Gateway(self.config).handle(scope)
+        self.assertTrue(work['applied']['work_conserving_search'])
+        self.assertNotEqual(work['run_id'], with_refill['run_id'])
 
     def test_unsupported_kappa_modes_report_specific_field_and_create_no_run(self):
         for mode in ('absolute','multiplier'):

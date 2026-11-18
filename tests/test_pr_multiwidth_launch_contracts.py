@@ -176,6 +176,34 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         self.assertEqual(starts[0]['selected_by_method'],{m:8 for m in methods})
         self.assertEqual(starts[0]['deferred'],206)
 
+    def test_preparation_supplies_both_widths_within_the_existing_wave_budget(self):
+        for enabled in (False, True):
+            with self.subTest(work_conserving_search=enabled):
+                d = ENTRY.WidthDriver.__new__(ENTRY.WidthDriver)
+                d.work_conserving_search = enabled
+                d.methods = ['PR_DF']
+                d.wide = dict(per_decision=2)
+                d.a = SimpleNamespace(plan_only=True)
+                d.spec = {}
+                d.log = lambda **event: None
+                d.check_completed_configuration = lambda *args: None
+                widths = dict(A=.1, B=.1, C=.05)
+                d.state = dict(cycle=1, families={f: dict(requested_delta_pf=w) for f, w in widths.items()},
+                               points=[dict(method='PR_DF', family=f, kappa='1', status='COMPLETION',
+                                            completion_request=dict(key=f)) for f in widths])
+                selected = []
+
+                class Completion:
+                    def plan(self, request):
+                        key = request['key']
+                        selected.append(key)
+                        return dict(status='READY_FOR_SEARCH', key=key, configuration_id=key)
+
+                d.completion_api = Completion
+                d.complete_points()
+                d.complete_points()
+                self.assertEqual(selected, ['A', 'C'] if enabled else ['A', 'B'])
+
     def test_joint_method_planning_matches_independent_method_refinements(self):
         methods=('PR_PAULI','PR_DF')
         independent=[]

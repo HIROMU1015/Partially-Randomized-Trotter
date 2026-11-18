@@ -9,6 +9,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from unittest.mock import patch
 
@@ -87,6 +88,37 @@ class ControllerFailures(unittest.TestCase):
         self.assertTrue(first_task.event.is_set())
         next_assignment = self.poll(executor)['assignments']
         self.assertEqual(next_assignment[0]['job_id'], second_task.job.name)
+
+    def test_standby_refills_after_another_polling_host_joins_and_finishes(self):
+        executor = DistributedExecutor(ROOT, self.run, self.routes, {}, self.problem,
+            optimizer_source=self.source, max_concurrent='auto', budgets={'PR_PAULI': 4},
+            distributed=dict(port=0, affinity_wait_seconds=0, work_conserving_search=True))
+        self.executors.append(executor)
+        view = executor.for_method('PR_PAULI')
+        proposals = [self.proposal(name) for name in ('demand', 'ready-one', 'ready-two', 'ready-three', 'outside-budget')]
+        view.prefetch_standby(proposals[0], proposals[1:])
+        first = self.poll(executor)['assignments'][0]
+        self.assertEqual(first['request']['configuration_id'], 'demand')
+        answers = []
+        waiter = threading.Thread(target=lambda: answers.append(view.answer(proposals[0])))
+        waiter.start()
+        try:
+            for proposal in proposals[1:-1]:
+                reply = executor.rpc('/v1/poll', dict(host_id='joined', source_sha=self.source, slots=1, capacity=1))
+                assignment = reply['assignments'][0]
+                self.assertEqual(assignment['request']['configuration_id'], proposal['configuration_id'])
+                self.assertEqual(executor.store.row(first['job_id'])['state'], 'ASSIGNED')
+                executor.rpc('/v1/complete', dict(self.completion(assignment), host_id='joined'))
+                with executor.state.cv:
+                    executor.state.cv.wait_for(lambda: executor.store.counts('PR_PAULI') == 4 or
+                        any(t.status == 'QUEUED' for t in executor.state.tasks.values()), timeout=3)
+            self.assertEqual(executor.store.counts('PR_PAULI', started_only=True), 4)
+            self.assertEqual(executor.rpc('/v1/poll', dict(host_id='joined', source_sha=self.source,
+                                                         slots=1, capacity=1))['assignments'], [])
+        finally:
+            executor.rpc('/v1/complete', self.completion(first))
+            waiter.join(timeout=3)
+        self.assertEqual(answers[0]['status'], O.PASS)
 
     def test_retransmit_after_accept_before_publish_releases_waiter_once(self):
         executor = self.executor()

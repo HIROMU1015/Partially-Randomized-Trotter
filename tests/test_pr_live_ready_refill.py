@@ -161,7 +161,7 @@ os.execv(sys.executable, [sys.executable, '-B', *sys.argv[3:]])
 
     def test_inflight_attempt_is_recovered_after_controller_restart(self):
         with tempfile.TemporaryDirectory(prefix='pr-live-refill-restart-') as temporary:
-            result = distributed.fault_acceptance(Path(temporary), live_ready_refill=True)
+            result = distributed.fault_acceptance(Path(temporary), work_conserving_search=True)
             self.assertTrue(result['same_attempt_recovered'])
             self.assertEqual(result['recovered_job_execute_count'], 1)
             self.assertEqual(result['completed_resume_new_launches'], 0)
@@ -176,6 +176,7 @@ os.execv(sys.executable, [sys.executable, '-B', *sys.argv[3:]])
         spec = overlap.E.O.load_json(directory/'ROUND.json')
         spec.update(live_ready_refill=True)
         spec['search_overrides']['lookahead'] = 2
+        spec['search_overrides']['work_conserving_search'] = True
         spec['executor'].update(max_concurrent_jobs='auto', distributed=dict(
             local_worker=local, port=port, affinity_wait_seconds=0,
             preparation={'budgets': {'signal': 1, 'compile': 1}},
@@ -293,7 +294,11 @@ os.execv(sys.executable, [sys.executable, '-B', *sys.argv[3:]])
             metric = next(r for r in timing['rows'] if r['job_id'] == row['job_id'])
             self.assertIsNotNone(metric['A_candidate_ready_to_first_assignment_seconds'])
             self.assertIsNotNone(metric['D_receive_to_search_adopt_seconds'])
-            self.assertGreater(timing['idle_slot_observations'].get('NO_READY_TASK', 0), 0)
+            self.assertGreater(timing['idle_slot_observations'].get('CANDIDATE_SHORTAGE', 0), 0)
+            self.assertLessEqual(sum(row['assigned_epoch'] is not None and row['method']=='PR_DF' for row in rows),2)
+            self.assertLessEqual(sum(row['assigned_epoch'] is not None and row['method']=='PR_PAULI' for row in rows),2)
+            for stage in ('signal', 'compile'):
+                self.assertEqual(queue.counts('PREPARATION:'+stage, started_only=True), 1)
             overlap.call(args, Driver)
             self.assertEqual(before, distributed.launch_markers(directory))
             self.assertEqual(queue.rows(), rows)

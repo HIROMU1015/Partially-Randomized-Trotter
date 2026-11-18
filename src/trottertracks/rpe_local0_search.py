@@ -262,6 +262,8 @@ def resolve(config, request):
     if (config.get('live_ready_refill') is True and config.get('entry') == 'schedule'
             and any(widths.get(method) for method in methods if method.startswith('PR_'))):
         spec.update(live_ready_refill=True, overlap_ready_batch=True)
+        if config.get('work_conserving_search') is True:
+            spec.setdefault('search_overrides', {})['work_conserving_search'] = True
     if request['action'] in ('start','prepare'):
         spec['science_approved'] = True
     return problem, spec, canonical
@@ -288,6 +290,8 @@ def summarize(problem, spec, canonical):
                                          for stage in ('signal', 'compile', 'audit')}
     if spec.get('live_ready_refill') is True:
         result['live_ready_refill'] = True
+    if spec.get('search_overrides', {}).get('work_conserving_search') is True:
+        result['work_conserving_search'] = True
     return result
 
 

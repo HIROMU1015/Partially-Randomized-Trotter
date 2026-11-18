@@ -85,6 +85,23 @@ def delta(start, end, legacy=False):
     return value if value >= 0 else None
 
 
+def q3_body_spans(directory):
+    body = read_lines(directory/'Q3_BODY_TIMING.jsonl')
+    if not body:
+        labels = {'ARTIFICIAL_EVALUATION_START': 'Q3_BODY_START', 'ARTIFICIAL_EVALUATION_RETURNED': 'Q3_BODY_END'}
+        body = [dict(row, event=labels[row['stage']], call_id='artificial')
+                for row in read_lines(directory/'JOB_STAGES.jsonl') if row.get('stage') in labels]
+    starts = {row['call_id']: row for row in body if row.get('event') == 'Q3_BODY_START' and 'call_id' in row}
+    ends = {row['call_id']: row for row in body if row.get('event') == 'Q3_BODY_END'
+            and 'call_id' in row and row.get('completed', True)}
+    pairs = [(start, ends[key]) for key, start in starts.items() if key in ends and delta(start, ends[key]) is not None]
+    if not pairs or len({start['clock_id'] for start, _ in pairs}) != 1:
+        return None, None, []
+    return (min((start for start, _ in pairs), key=lambda row: row['monotonic']),
+            max((end for _, end in pairs), key=lambda row: row['monotonic']),
+            [delta(start, end) for start, end in pairs])
+
+
 def union_seconds(intervals):
     total = 0.
     for domain in {d for d, _, _ in intervals}:
@@ -256,20 +273,7 @@ def summarize(run, *, timeline=None, public_summary=None):
         if assignment.exists():
             saved=json.loads(assignment.read_text())
             artifact_ok=saved.get('attempt_id')==attempt and saved.get('host_id')==host
-        body=read_lines(directory/'Q3_BODY_TIMING.jsonl') if artifact_ok is True else []
-        stages=read_lines(directory/'JOB_STAGES.jsonl') if artifact_ok is True else []
-        if not body:
-            # Historical artificial stage names are a real body boundary only
-            # for labelled artificial work, never the scientific route envelope.
-            body=[dict(x,event={'ARTIFICIAL_EVALUATION_START':'Q3_BODY_START','ARTIFICIAL_EVALUATION_RETURNED':'Q3_BODY_END'}[x['stage']],call_id='artificial')
-                  for x in stages if x.get('stage') in ('ARTIFICIAL_EVALUATION_START','ARTIFICIAL_EVALUATION_RETURNED')]
-        starts={x.get('call_id'):x for x in body if x.get('event')=='Q3_BODY_START'}
-        ends={x.get('call_id'):x for x in body if x.get('event')=='Q3_BODY_END' and x.get('completed',True)}
-        pairs=[(x,ends[k]) for k,x in starts.items() if k in ends and delta(x,ends[k]) is not None]
-        if pairs and len({a['clock_id']for a,z in pairs})==1:
-            bs=min((a for a,z in pairs),key=lambda x:x['monotonic'])
-            be=max((z for a,z in pairs),key=lambda x:x['monotonic'])
-        else:bs,be=None,None
+        bs, be, spans = q3_body_spans(directory) if artifact_ok is True else (None, None, [])
         body_seconds=delta(bs,be)
         transport=read_lines(directory/'TRANSPORT_TIMING.jsonl') if artifact_ok is True else []
         def transport_event(name,mode=None):return next((x for x in transport if x.get('event')==name and (mode is None or x.get('mode')==mode)),None)
@@ -302,8 +306,8 @@ def summarize(run, *, timeline=None, public_summary=None):
             dp_prefix_hits=sum(e.get('event')=='HIT' for e in prefix_events) if prefix_events else None,
             A_queue_to_assignment_seconds=q,A_start_scope='OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY',
             B_assignment_to_Q3_body=bounded(b),Q3_body_seconds=body_seconds,
-            Q3_body_calls_measured=len(pairs),Q3_body_scope='EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY',
-            Q3_API_call_seconds=[delta(a,z)for a,z in pairs],C_Q3_body_to_controller_receive=bounded(c),
+            Q3_body_calls_measured=len(spans),Q3_body_scope='EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY',
+            Q3_API_call_seconds=spans,C_Q3_body_to_controller_receive=bounded(c),
             B_plus_C_non_body_envelope_seconds=overhead,assignment_to_controller_receive_seconds=roundtrip,
             receive_boundary='RPC_BODY_RECEIVED' if received else 'LEGACY_VALIDATED_PERSISTED_RESULT' if persisted else 'MISSING',
             D_receive_to_executor_adopt_seconds=d,D_receive_to_search_adopt_seconds=ds,

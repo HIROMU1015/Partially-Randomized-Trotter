@@ -299,6 +299,8 @@ class WidthDriver:
     requested_widths declaration.  This path never invents q/R from a width:
     family constants come from the method's existing canonical generator.
     """
+    work_conserving_search = False
+
     def __init__(self, a):
         self.a = a; self.run = a.run_dir.resolve(); self.run.mkdir(parents=True, exist_ok=True)
         self.spec = O.load_json(a.round)
@@ -318,6 +320,9 @@ class WidthDriver:
                 != 'METHOD_MINIMUM_PRIORITY_V2'
         ):
             raise ValueError('live_ready_refill requires overlapping preparation and concurrent V2 search')
+        self.work_conserving_search = self.spec.get('search_overrides', {}).get('work_conserving_search') is True
+        if self.work_conserving_search and not self.live_ready_refill:
+            raise ValueError('work_conserving_search requires live_ready_refill')
         for method,widths in self.widths.items():
             self.problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
         self.state_file = self.run/'KAPPA_STATE.json'
@@ -648,13 +653,23 @@ class WidthDriver:
                 if i<len(unknown):order.append(unknown[i])
             # Fairness is only a dispatch order, not a price estimate or veto.
             order.sort(key=lambda f:loads[f])
+            if self.work_conserving_search:
+                # Diversify the next READY supply across requested widths, while
+                # keeping the existing family and kappa order within each width.
+                by_width = {}
+                for family in order:
+                    delta = KS._frac(self.state['families'][family]['requested_delta_pf'])
+                    by_width.setdefault(delta, []).append(family)
+                from itertools import zip_longest
+                order = [family for level in zip_longest(*by_width.values()) for family in level if family is not None]
             available=max(0,limit-wave['dispatched'].get(method,0));chosen=[]
             while len(chosen)<available and any(queues.values()):
                 for family in order:
                     if queues[family]and len(chosen)<available:chosen.append(queues[family].pop(0))
             selected.extend(chosen);counts[method]=len(chosen)
             wave['dispatched'][method]=wave['dispatched'].get(method,0)+len(chosen)
-        reason='EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN'
+        reason = ('PER_DECISION_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if self.work_conserving_search
+                  else 'EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN')
         self.log(event='PREPARATION_WAVE_START',dispatch_reason=reason,per_method_limit=limit,
             selected_by_method=counts,pending_before=len(pending),deferred=len(pending)-len(selected),
             selected=[dict(method=p['method'],family=p['family'],kappa=p['kappa'])for p in selected])
@@ -799,7 +814,7 @@ class WidthDriver:
             # CPU use is unnecessary. Once started, a preparation may finish.
             with condition:
                 while not (stop_preparation.is_set() or state.failure or executor._user_stop_requested()):
-                    if executor.has_spare_slot():
+                    if executor.has_spare_slot(allow_queued_speculation=self.work_conserving_search):
                         return True
                     condition.wait(.5)  # also observes STOP written outside the executor
                 return False
@@ -915,7 +930,8 @@ class WidthDriver:
         active_spec=deepcopy(self.spec);active_spec['max_new_q3_per_method']=budgets
         active_spec['executor']=dict(options,prior_run_dirs=list(options.get('prior_run_dirs',[]))+[str(self.run)])
         if self.live_ready_refill and active_spec['executor'].get('distributed'):
-            active_spec['executor']['distributed'] = dict(active_spec['executor']['distributed'], live_ready_refill=True)
+            active_spec['executor']['distributed'] = dict(active_spec['executor']['distributed'], live_ready_refill=True,
+                work_conserving_search=self.work_conserving_search)
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
         executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
         runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)

@@ -99,6 +99,117 @@ class SchedulerTests(unittest.TestCase):
             self.assertEqual(ex.answer(props[2])['status'],'BUDGET_EXHAUSTED')
             root.finish();self.assertLessEqual(root.metrics()['launched'],2)
 
+    def test_standby_replenishes_after_worker_exit_even_while_demand_is_blocked(self):
+        problem, context, routes = fixture(['PR_DF'], configurations=4)
+        proposals = [dict(configuration_id=c['configuration_id'], vector=(1,) * 26,
+                          cost=Fraction(1), origin={}) for c in context['candidates']]
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            root = C.ConcurrentExecutor(ROOT, directory, routes, {}, problem,
+                                        max_concurrent=2, budgets={'PR_DF': 4})
+            ex = root.for_method('PR_DF')
+            demand, last = ex.job_dir(proposals[0]), ex.job_dir(proposals[-1])
+            run_adapter = O.Executor.run_adapter
+
+            def gated(view, job, rule, mode):
+                if job != demand or mode != 'execute':
+                    return run_adapter(view, job, rule, mode)
+                # Even the last standby job must launch before demand completes.
+                gate = (
+                    "from pathlib import Path; import os,sys,time\n"
+                    "end=time.monotonic()+8\n"
+                    "while not Path(sys.argv[1]).exists():\n"
+                    "    if time.monotonic()>end: sys.exit(71)\n"
+                    "    time.sleep(.01)\n"
+                    "os.execv(sys.executable,[sys.executable,'-B',*sys.argv[2:]])\n"
+                )
+                with (job / 'EXECUTE.log').open('a') as log:
+                    return subprocess.Popen([sys.executable, '-B', '-c', gate, str(last / 'LAUNCH.json'),
+                          str(view.adapter), '--request', str(job / 'REQUEST.json'), '--output', str(job), '--mode', mode],
+                          cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+
+            try:
+                with patch.object(O.Executor, 'run_adapter', gated):
+                    ex.prefetch_standby(proposals[0], proposals[1:])
+                    response = ex.answer(proposals[0])
+            finally:
+                root.finish()
+            self.assertIn(response['status'], (O.PASS, O.FAIL))
+            events = [json.loads(l) for l in (directory / 'PROGRESS.jsonl').read_text().splitlines()]
+            launched = {e['job']: e['monotonic'] for e in events if e['event'] == 'LAUNCH'}
+            exits = {e['job']: e['monotonic'] for e in events if e['event'] == 'EXIT'}
+            self.assertEqual(len(launched), 4)
+            self.assertLess(launched[last.name], exits[demand.name])
+            self.assertGreater(launched[last.name], min(exits.values()))
+            self.assertEqual(root.metrics()['peak_active'], 2)
+            self.assertGreaterEqual(sum(e['event'] == 'Q3_STANDBY_REFILL' for e in events), 2)
+            self.assertEqual(set(launched), set(exits))
+
+            resume = C.ConcurrentExecutor(ROOT, directory, routes, {}, problem,
+                                          max_concurrent=2, budgets={'PR_DF': 4})
+            try:
+                view = resume.for_method('PR_DF')
+                view.prefetch_standby(proposals[0], proposals[1:])
+                self.assertEqual(view.answer(proposals[0])['MSE_upper'], response['MSE_upper'])
+            finally:
+                resume.finish()
+            self.assertEqual(resume.metrics()['launched'], 0)
+
+    def test_ready_configuration_order_uses_measured_q3_time(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for enabled in (False, True):
+                problem, context, routes = fixture(['PR_DF'], configurations=2, steps=1)
+                problem['search'].update(rule='METHOD_MINIMUM_PRIORITY_V2', work_conserving_search=enabled)
+                slow, fast = context['candidates']
+                slow['prices'] = [Fraction(3)] * 26
+                fast['prices'] = [Fraction(4)] * 2 + [Fraction(3)] * 24
+                root = C.ConcurrentExecutor(ROOT, Path(tmp) / str(enabled), routes, {}, problem,
+                                            max_concurrent=1, budgets={'PR_DF': 1})
+                view = root.for_method('PR_DF')
+                root.state.observations['PR_DF'].extend(
+                    dict(id='receipt-' + c['configuration_id'], method='PR_DF', configuration_id=c['configuration_id'],
+                         kind='SHOT_Q3', profile=view.search_profile(c['configuration_id']), status=O.PASS,
+                         finished_at=time.monotonic() - 10, seconds=seconds)
+                    for c, seconds in ((slow, 100), (fast, 10)))
+                r = C.optimize(ROOT, problem, context=context, executor=root, max_new={'PR_DF': 1})
+                first = r['PR_DF']['trace'][0]
+                self.assertEqual(first['configuration_id'], (fast if enabled else slow)['configuration_id'])
+                self.assertEqual('order_reason' in first, enabled)
+                self.assertEqual(root.metrics()['launched'], 1)
+
+    def test_distributed_order_uses_real_artificial_worker_receipts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            problem, context, routes = fixture(['PR_DF'], configurations=2, steps=1)
+            problem['search'].update(rule='METHOD_MINIMUM_PRIORITY_V2', work_conserving_search=True)
+            slow, fast = context['candidates']
+            slow['prices'] = [Fraction(3)] * 26
+            fast['prices'] = [Fraction(4)] * 2 + [Fraction(3)] * 24
+            template = routes['PR_DF'][0]
+            routes['PR_DF'] = [dict(template, configuration_ids=[c['configuration_id']],
+                artificial=dict(template['artificial'], sleep_seconds=seconds))
+                for c, seconds in ((slow, 1), (fast, .02))]
+            profile = dict(host_id='fixture-observed', root=str(ROOT), interpreter=sys.executable,
+                           slots=1, route_views={}, work_dir=str(Path(tmp)/'worker'))
+            root = C.DistributedExecutor(ROOT, tmp, routes, {}, problem, max_concurrent='auto', budgets={'PR_DF': 3},
+                optimizer_source=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+                distributed=dict(port=0, work_conserving_search=True, local_worker=profile))
+            view = root.for_method('PR_DF')
+            try:
+                for candidate in (slow, fast):
+                    vector = (2,) * 26
+                    seed = dict(configuration_id=candidate['configuration_id'], vector=vector,
+                                cost=O.cost(vector, candidate['prices']), origin=dict(kind='ARTIFICIAL_SEED'))
+                    self.assertEqual(view.answer(seed)['status'], O.PASS)
+                self.assertEqual(len(view.search_observations()), 2)
+                result = C.optimize(ROOT, problem, context=context, executor=root, max_new={'PR_DF': 3})['PR_DF']
+                first = result['trace'][0]
+                self.assertEqual(first['configuration_id'], fast['configuration_id'])
+                self.assertEqual(first['order_baseline'], slow['configuration_id'])
+                self.assertEqual(first['order_reason'], 'IMMEDIATE_SAVING_X_EMPIRICAL_PASS_PER_ESTIMATED_TIME')
+                self.assertEqual(root.store.counts('PR_DF', started_only=True), 3)
+            finally:
+                root.finish()
+
     def test_completed_resume_no_duplicate_launch(self):
         with tempfile.TemporaryDirectory()as tmp:
             path=Path(tmp);first,_=run_fixture(path,True,methods=['PR_DF'],budget=2)
@@ -237,7 +348,7 @@ class SchedulerTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'no new launches'):ex.answer(props[1])
 
     def test_fixed_selection_except_explicit_execution_readiness_guard(self):
-        old=ast.parse(subprocess.check_output(['git','show','1e88cd85c:src/trottertracks/rpe_method_optimizer.py'],cwd=ROOT))
+        old=ast.parse(subprocess.check_output(['git','show','5b48aabbc:src/trottertracks/rpe_method_optimizer.py'],cwd=ROOT))
         new=ast.parse((ROOT/'src/trottertracks/rpe_method_optimizer.py').read_bytes())
         # The route repair adds only a pre-proposal availability gate. Retain
         # the strict AST comparison for every ranking, price and update rule.
@@ -271,11 +382,11 @@ class SchedulerTests(unittest.TestCase):
         for name in ('proposals','method_state','run_method','run_by_configuration'):
             a=next(n for n in old.body if isinstance(n,ast.FunctionDef)and n.name==name)
             b=next(n for n in new.body if isinstance(n,ast.FunctionDef)and n.name==name)
+            self.assertEqual(ast.dump(a),ast.dump(b),name)
             strip=StripReadiness();b=strip.visit(b)
             self.assertEqual(strip.count,1 if name in('proposals','run_method')else 0,name)
             self.assertEqual(strip.isolated_count,1 if name=='run_method'else 0,name)
             self.assertEqual(strip.local_unknown_count,1 if name=='run_method'else 0,name)
-            self.assertEqual(ast.dump(a),ast.dump(b),name)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
