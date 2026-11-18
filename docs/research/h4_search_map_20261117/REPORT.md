@@ -8,9 +8,9 @@ Full PF・B0I・PR-Pauli・PR-DFについて、公開した探索対象と実評
 |方式|Q3評価済み構成|評価配分（重複なし）|保存判定が適合|価格接続済み適合点の最安RZ|
 |---|---:|---:|---:|---:|
 |FULL_PF|4|256|33|480,258,064.00|
-|TRUNCATED_PF|5|30|24|372,035,410.00|
-|PR_PAULI|31|4624|1591|410,199,237.00|
-|PR_DF|5|38|27|1,235,340,731.91|
+|TRUNCATED_PF|5|38|31|372,035,410.00|
+|PR_PAULI|31|4632|1597|410,199,237.00|
+|PR_DF|5|46|34|1,235,340,731.91|
 
 公開controller summaryで評価された配分を数える。exact原本や価格のC側受入が不足する点は、
 summary由来の表示と元SOURCEを残し、最安価格の選択には昇格しない。共通snapshot・比較条件はINDEX.comparison。
@@ -32,6 +32,7 @@ summary由来の表示と元SOURCEを残し、最安価格の選択には昇格�
 |PRICE_VALIDATION_SAVED_LD2_ZERO_SCIENCE|{"PR_PAULI": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING"}|0||[8ba82646e](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8ba82646eae8a013b58a956bb10995c3c9451f86/docs/research/h4_price_validation_local_controller_20261118/saved_ld2_entry/ROUND_RESULT.json)|
 |normal_saved_entry|{"PR_PAULI": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING"}|0|local, local0-wsl, server1, server2|[187c1b088](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/187c1b088638d9d4cf0a298b56d64e8a91c59105/docs/research/romutail_controller_runs/normal_saved_entry/ROUND_RESULT.json)|
 |search-0071392407117fd5e51d|{"PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[139304c17](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/139304c1783adeea68fb472b01784598d3b494bd/docs/research/romutail_controller_runs/search-0071392407117fd5e51d/ROUND_RESULT.json)|
+|search-0edbfa5f4df9cb2257f5|{"TRUNCATED_PF": "UNKNOWN_RESULT", "PR_PAULI": "WORK_SLICE_YIELDED", "PR_DF": "WORK_SLICE_YIELDED"}|0|local, local0-wsl, server1, server2|[9f86f209a](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9f86f209aff04bd5b9960968ce1a2c0597072106/docs/research/romutail_controller_runs/search-0edbfa5f4df9cb2257f5/ROUND_RESULT.json)|
 |search-11e6ecb4a620079684f1|{"TRUNCATED_PF": "NO_FEASIBLE_POINT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[b7c31564c](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/b7c31564c291b5f0072a0346a154a2a618fe79e5/docs/research/romutail_controller_runs/search-11e6ecb4a620079684f1/ROUND_RESULT.json)|
 |search-27f14bf124f4be8f2526|{"PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[5a4722eca](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5a4722ecab7a209f5b54f192d7415a570297730d/docs/research/romutail_controller_runs/search-27f14bf124f4be8f2526/ROUND_RESULT.json)|
 |search-294e5d1e0f1525733d9a|{"PR_DF": "NO_CANDIDATE_LEFT_IN_RANGE"}|0|local, local0-wsl, server1, server2|[b9a6ab1fe](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/b9a6ab1fed3a02bc8b38b9c0de9f95e5b3c38f7c/docs/research/romutail_controller_runs/search-294e5d1e0f1525733d9a/ROUND_RESULT.json)|
@@ -57,8 +58,8 @@ summary由来の表示と元SOURCEを残し、最安価格の選択には昇格�
 
 ## 未取込・未確認の範囲
 
-- ValueError: Publication lacks supported controller result or scope metadata：`{'commit': '390a7b6206d89a8e52889df52aadda4e1dcf792a', 'path': 'docs/research/romutail_controller_runs/search-62da44b27f99dc95511b/SEARCH_PUBLICATION.json', 'selector': []}`
-- ValueError: Publication lacks supported controller result or scope metadata：`{'commit': '390a7b6206d89a8e52889df52aadda4e1dcf792a', 'path': 'docs/research/romutail_controller_runs/search-e06830397e0d65aee227/SEARCH_PUBLICATION.json', 'selector': []}`
+- ValueError: Publication lacks supported controller result or scope metadata：`{'commit': '9f86f209aff04bd5b9960968ce1a2c0597072106', 'path': 'docs/research/romutail_controller_runs/search-62da44b27f99dc95511b/SEARCH_PUBLICATION.json', 'selector': []}`
+- ValueError: Publication lacks supported controller result or scope metadata：`{'commit': '9f86f209aff04bd5b9960968ce1a2c0597072106', 'path': 'docs/research/romutail_controller_runs/search-e06830397e0d65aee227/SEARCH_PUBLICATION.json', 'selector': []}`
 - STATUS_REPORTS_OUTCOMES_BUT_PER_ALLOCATION_CONTROLLER_RESULT_NOT_PUBLISHED：`{'commit': 'b0257d78026ade89bb3ba61dc88634570039dae8', 'path': 'docs/research/h4_pr_multiwidth_optimization_20261117/SCOPE_METADATA.json', 'selector': []}`
 
 最新公開scopeの進捗件数だけからshot配分やQ3点を捏造しない。各マスで「対象・未評価」「評価済み適合0」「元記録未取込」を区別。
