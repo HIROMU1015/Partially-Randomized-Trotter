@@ -4,9 +4,19 @@
 
 ## PR-DF保存信号照合の追加採用
 
-新規runの `current` は `romutail-reviewed-pr-9187e39b5`。optimizer SOURCEは `9187e39b5af87bfca4132875a59ce40a756e4cb6`。保存信号照合の上流は `f79708a7126ecbd827747bd261289d93496d9fa4`。同一物理キーで数値・検査・参照入力が一致した保存信号を使う。差があればラウンド・出所・相違項目を残し、該当候補の信号・価格準備を投入前に保留する。
+PR-DF保存信号照合を採用したreleaseは `romutail-reviewed-pr-9187e39b5`。optimizer SOURCEは `9187e39b5af87bfca4132875a59ce40a756e4cb6`。保存信号照合の上流は `f79708a7126ecbd827747bd261289d93496d9fa4`。同一物理キーで数値・検査・参照入力が一致した保存信号を使う。差があればラウンド・出所・相違項目を残し、該当候補の信号・価格準備を投入前に保留する。
 
 RomuTail、server2、local0-wsl、PBSゲートウェイへoptimizerを配置した。worker・adapter・runtime/profileの固定版と工程別の受付条件は前の検収を継承する。Windows/CLIは明示指定とrelease無指定の両方でPreview通過。回帰32件中30件が通過し、ルート登録の残り2件は旧採用版でも同じ失敗を確認した。server2の旧R08はユーザー停止で終了しており、旧runの固定版とSTOPを保全した。新規信号・compile・fit・Q3は各0件。[追加検収](PR_DF_RECONCILIATION.json)
+
+## PBSの共通所要時間ポリシー
+
+新規runの `current` は `romutail-pbs-walltime-976c26c17`。controller SOURCEは `976c26c17d04540b79fcdc7c69c1a34b85ccd542`。RomuTail、server2、local0-wsl、PBSゲートウェイへの配置を確認した。共通ポリシーを更新する際は、対応する固定SOURCEとプロファイルを照合し、新releaseとして通常のregistryへ登録する。 [ポリシー設定](../../../configs/rpe_method_optimizer/pbs_walltime_h4.json)
+
+- 通常のPreviewとStartはreleaseからポリシーを解決する。StartでポリシーID・ハッシュ・適用した秒数をrunのPBS設定に固定し、StatusとResumeでも表示する。
+- Q3の4時間見積りは、固定プロファイルに合うPR-Pauliの `pauli_b_common_entry` とB0Iの `pf_b_pf6` に適用する。準備は工程・provider・SOURCEが一致する9ルールを使う。PBSは見積りにdrainの猶予を加えた時間を確保できる枠を使う。PR-DFなど見積りが未登録のQ3はPBSで `PBS_WALLTIME_ESTIMATE_UNAVAILABLE` となり、他の適格workerは利用できる。
+- 個別runで見積りを変更する場合のみ、開始要求の `scope.pbs_walltime_overrides` にルールIDと秒数を指定する。例は `{"pauli-common": 18000}`。`0` はそのルールのPBS割当を無効にする。既存runは記録済み設定でStatusとResumeを行う。
+- 回帰72件がPASS。WindowsとCLIの通常Previewは明示指定とrelease無指定の両方で新releaseを解決した。B0IのCLI Previewと、個別上書き `0` のCLI Previewも確認した。PBSゲートウェイの保存入力照合はPR-PauliとB0IがPASS、PR-DFは見積り未登録でHOLD。実信号・実compile・実Q3・PBS投入は各0件。
+- `search-6be05579540d7ed291b7` は切替前後で同じcontrollerと固定release `romutail-reviewed-pr-9187e39b5-h4-continuation` を使用している。このrunのPBS所要時間設定は未設定のまま継続する。ローカルの検収記録は `.rpe-central/deployment/romutail-pbs-walltime-976c26c17` に保存した。
 
 ## 通常入口
 
