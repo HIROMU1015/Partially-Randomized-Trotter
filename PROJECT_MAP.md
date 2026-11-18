@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR分散探索の空き枠補充と評価順](docs/research/rpe_work_conserving_search_20261118/HANDOFF.md) — 採用current、既存キューでの連続補充、Q3実測に基づく評価順と2実機での人工検収。
+
 [PR後着READYの分散割当](docs/research/rpe_distributed_live_ready_20261118/HANDOFF.md) — 通常入口と既存キューで準備済み候補を空き適格枠へ投入し、RomuTail・server2の人工検収と切断後の同一attempt回収を確認。
 
 [最新通常運用版へのPBS統合](docs/research/rpe_pbs_current_integration_20261118/HANDOFF.md)：SOURCE95、Windows通常入口→実PBS人工8task→回収・採用・追加0再開、専用Pythonによる保存exact回収、current採用。旧925の実H4/M5一件は元版の証拠として保持。
