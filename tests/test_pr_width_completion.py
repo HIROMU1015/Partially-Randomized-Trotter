@@ -20,7 +20,9 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'scripts'),str(ROOT/'tests')]
 from trottertracks import pr_candidate_completion as C,rpe_method_optimizer as O
 from trottertracks.pr_step_price_registry import StepPriceRegistry
-from test_pr_step_price_registry import pauli_fixture,df_direct_fixture,missing_quote,config,exact
+from test_pr_step_price_registry import (
+    Documents, config, df_direct_fixture, df_model, exact, implementation, missing_quote, pauli_fixture,
+)
 
 
 def load_script(name):
@@ -99,6 +101,52 @@ class WidthCompletionTests(unittest.TestCase):
                 self.assertEqual(c.complete(request)['status'],'READY_FOR_SEARCH')
                 self.assertEqual(service.call_count,2)
                 self.assertEqual(c.complete(request)['status'],'READY_FOR_SEARCH');self.assertEqual(service.call_count,2)
+
+    def test_df_overlap_is_requoted_once_and_extrapolation_does_not_start_calibration(self):
+        reader=Documents();cfg=enrich(config(.1,pauli=False));imp=implementation(False)
+        reg=StepPriceRegistry(reader)
+        df_model(reg,cfg,imp,'R1',varying=False,q_max=64)
+        df_model(reg,cfg,imp,'QR',varying=True,q_max=4096)
+        cfg['rounds'][-1]['R_outer']=31
+        cfg['rounds'][-1]['structure'].update(allocation=[31],event_count=31*4096)
+        for key in ('candidate','physical_candidate'):cfg['rounds'][-1][key]['R_outer']=31
+        cfg['rounds'][-1]['candidate']['event_count']=31*4096
+        cref=reader.add('CONFIG.json',cfg)
+        request=dict(method='PR_DF',design=dict(L_D=8,delta_pf=.1))
+        ident=C.key(request)
+        quote=missing_quote(cfg,'PR_DF');quote['implementation']=imp
+        with tempfile.TemporaryDirectory() as tmp, patch.object(C,'ROOT',Path(tmp)), \
+             patch('trottertracks.pr_price_rules.GitReader',return_value=reader):
+            c,_=self.setup_completion(Path(tmp),reader)
+            C.put(c.step_registry_path,reg.state)
+            old_reason='PRICE_EVIDENCE_REQUIRED:'+C.PRICE_SOURCE_CONFLICT
+            old_digest=C.key(dict(legacy=C.read(c.registry),steps=reg.state))
+            record=dict(key=ident,method='PR_DF',request=request,status='WAITING_INPUTS',reason=old_reason,
+                        configuration=cref,signal={'packet_source':'FIXED'},intake={'binding_id':'B'},
+                        registry_at_hold=old_digest)
+            c.state['records'][ident]=record;c.save()
+
+            def service(mode,*_args,**_kwargs):
+                if mode=='df-generate':return dict(status='CONFIGURATION_READY',configuration=cfg)
+                if mode=='df-plan':return dict(rounds=[],reuse_rounds=list(range(13)))
+                if mode=='quote':return deepcopy(quote)
+                self.fail('Unexpected metadata service '+mode)
+
+            with patch.object(C,'value',side_effect=reader.read),patch.object(c,'service',side_effect=service) as run, \
+                 patch.object(c,'call',side_effect=AssertionError('No scientific acquisition')), \
+                 patch.object(c,'df_price',side_effect=AssertionError('No duplicate calibration')):
+                plan=c.plan(request)
+                self.assertEqual(plan['calibration_requests'],[])
+                self.assertEqual(plan['calibration_plan']['status'],'WAITING_PRICE_EVIDENCE')
+                self.assertIn(C.PRICE_EXTRAPOLATION_HOLD,plan['reason'])
+                run.reset_mock()
+                held=c.complete(request)
+                self.assertEqual(held['status'],'WAITING_INPUTS')
+                self.assertEqual(held['previous_hold']['reason'],old_reason)
+                self.assertEqual({a['m'] for a in held['extrapolated_price_axes']},{12})
+                self.assertEqual({a['m'] for a in held['conflicting_price_axes']},set(range(7)))
+                self.assertEqual(c.complete(request),held)
+                self.assertEqual(run.call_count,1)
 
     def test_df_direct_group_does_not_expand_to_other_rounds(self):
         reader,cfg,imp,package=df_direct_fixture();enrich(cfg)

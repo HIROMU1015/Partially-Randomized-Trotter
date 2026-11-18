@@ -13,7 +13,9 @@ import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'scripts')]
-from trottertracks.pr_step_price_registry import StepPriceRegistry, exact, frac, digest
+from trottertracks.pr_step_price_registry import (
+    PRICE_EXTRAPOLATION_HOLD, PRICE_SOURCE_CONFLICT, StepPriceRegistry, exact, frac, digest,
+)
 from trottertracks.pr_price_rules import GitReader
 
 
@@ -58,6 +60,17 @@ def missing_quote(cfg,method='PR_PAULI'):
     return dict(schema='PR_PRICE_APPLICABILITY_V1',configuration_id=cfg['id'],policy='MODEL',method=method,
         L_D=cfg['spec']['L_D'],rows=[dict(m=r['m'],axis=a,physical_id=r['candidate']['id'],q=r['q_PF'],R=r['R_outer'],
             unit_price_RZ=None,classification='NEEDS_PRICE_EVIDENCE')for r in cfg['rounds']for a in('X','Y')],complete=False)
+
+
+def df_model(reg, cfg, imp, name, *, varying, q_max, rounds=range(13), axes=('X','Y')):
+    covered = list(rounds)
+    mode = 'FULL_AFFINE_QR' if varying else 'FULL_AFFINE_Q_R1'
+    terms = dict(coefficients=dict(one=10,q=20,qR=3)) if varying else dict(alpha=30,beta=100)
+    return reg._save(dict(domain=reg._domain(cfg, covered, imp), mode=mode,
+        model=dict(models={a:terms for a in axes}), wrapper_times=[cfg['rounds'][m]['T'] for m in covered],
+        calibration_domain=dict(q=[1,q_max],R=[1,2 if varying else 1]), calibration_R=[1,2] if varying else [1],
+        provenance=dict(model_source=dict(commit='ARTIFICIAL',path=name)), direct_prices=[],
+        qualification='DESCRIPTIVE_HOLDOUT_FINITE_COHORT_NOT_EXPECTATION_OR_CI'))['entry_id']
 
 
 def pauli_fixture():
@@ -168,6 +181,48 @@ class ScopedPriceTests(unittest.TestCase):
         self.assertTrue(all(r['unit_price_RZ']is None for r in q['rows'][2:]))
         reader.docs['ARTIFICIAL','cosine.json']['fingerprint']='WRONG'
         with self.assertRaises(ValueError):StepPriceRegistry(reader).ingest(p)
+
+    def test_df_model_overlap_distinguishes_axis_applicability_range_and_extrapolation(self):
+        cfg=config(.1,pauli=False);imp=implementation(False);reg=StepPriceRegistry(Documents())
+        r1=df_model(reg,cfg,imp,'R1',varying=False,q_max=2)
+        qr=df_model(reg,cfg,imp,'QR',varying=True,q_max=8)
+        for m,R in ((1,2),(3,31)):
+            row=cfg['rounds'][m]
+            row['R_outer']=R;row['structure'].update(allocation=[R],event_count=row['q_PF']*R)
+            for k in ('candidate','physical_candidate'):row[k]['R_outer']=R
+            row['candidate']['event_count']=row['q_PF']*R
+        base=missing_quote(cfg,'PR_DF')
+        rows={(r['m'],r['axis']):r for r in reg.quote(cfg,imp,base)['rows']}
+        for axis in ('X','Y'):
+            self.assertEqual(rows[0,axis]['needs'],dict(reasons=[PRICE_SOURCE_CONFLICT],entry_ids=[r1,qr]))
+            for m,value in ((1,62),(2,102)):
+                self.assertEqual(rows[m,axis]['unit_price_RZ'],exact(value))
+                self.assertEqual(rows[m,axis]['registered_rule'],'ACTUAL_STEP:'+qr)
+                self.assertFalse(rows[m,axis]['qualified_E_C'])
+            self.assertIsNone(rows[3,axis]['unit_price_RZ'])
+            self.assertEqual(rows[3,axis]['needs'],dict(reasons=[PRICE_EXTRAPOLATION_HOLD],entry_ids=[qr],extrapolation={qr:['R']}))
+            self.assertEqual(rows[4,axis]['needs']['extrapolation'],{r1:['q'],qr:['q']})
+        # Previous single-entry quotes still carry their explicit extrapolation.
+        single=StepPriceRegistry(Documents(),state=dict(reg.state,entries=reg.state['entries'][1:]))
+        row=single.quote(cfg,imp,base)['rows'][6]
+        self.assertEqual(row['classification'],'MODEL_REFERENCE')
+        self.assertEqual(row['model_alternative']['extrapolation'],['R'])
+
+    def test_df_exact_direct_and_already_accepted_axes_keep_provenance(self):
+        reader,cfg,imp,package=df_direct_fixture();reg=StepPriceRegistry(reader);reg.ingest(package)
+        model=df_model(reg,cfg,imp,'R1',varying=False,q_max=2,rounds=[0])
+        base=missing_quote(cfg,'PR_DF')
+        base['rows'][1].update(unit_price_RZ=exact(60),classification='MODEL_REFERENCE')
+        q=reg.quote(cfg,imp,base)
+        self.assertEqual(q['rows'][0]['classification'],'DIRECT_FINITE_COHORT')
+        self.assertEqual(q['rows'][0]['unit_price_RZ'],exact(31))
+        self.assertEqual(q['rows'][1],base['rows'][1])
+        # If the saved verification of an exact point only covers X, the Y
+        # model must never be described as the source of the X observation.
+        reg.state['entries'][0]['direct_prices']=[reg.state['entries'][0]['direct_prices'][0]]
+        q=reg.quote(cfg,imp,missing_quote(cfg,'PR_DF'))
+        self.assertEqual(q['rows'][1]['registered_rule'],'ACTUAL_STEP:'+model)
+        self.assertEqual(q['model_validations'][0]['points'][0]['predicted_RZ'],dict(X=None,Y=exact(130)))
 
     def test_real_saved_pauli_and_df_adapters_read_only_metadata(self):
         r=GitReader(ROOT);loc=lambda path,commit='97413fc1218beb20c70744ca183bfd4f3dfa2437':dict(commit=commit,path=path)
