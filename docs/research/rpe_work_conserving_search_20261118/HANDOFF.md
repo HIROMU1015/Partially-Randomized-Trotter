@@ -66,3 +66,15 @@ Windowsと共通CLIで明示版・currentのPreviewが同じ版を解決した�
 - 人工・回帰124件がPASS。遅い照会と並行した結果採用、照会中にSTOPされた候補の新規予約防止、host参加後の適格性更新、ack欠落後の同一attempt回収を確認した。RomuTail、server2、Romulaptop WSLで人工mailboxを確認した。PBSはgatewayへの配置と回帰テストで確認した。実信号、実compile、実Q3、PBS投入は各0件。
 
 Windowsの `Invoke-RpeSearch.ps1 -Action Preview` と共通CLIの `scripts/run_rpe_search.py --action preview` で、release明示・省略の両方が新releaseを解決した。旧run `search-8b10307fd1b9fc375b6b` は元の固定releaseで `STOPPED`。server1は復帰後に新releaseのmanifestで配置し、人工mailboxと保存入力の照合後に参加する。
+
+## PR準備の継続補充とPBSのPR-DF対応（2026-11-19）
+
+新規runのcurrentは `romutail-pipeline-926bdd226`。controllerとPBSのDF信号用準備adapterは `926bdd2265a4849fab0dc90e6f14c776b3889afe`。前currentは `romutail-dispatch-b3a90060f`。計算SOURCEは `28d976b99cdf8329adcc1b79327e329e947ef774`。
+
+- 通常の分散探索は、方式ごとの準備並列数の範囲で、候補が終わるたびに同じ探索サイクルの次の独立候補を補充する。Q3が実行枠を使用中でも準備を共通キューへ入れられる。実行時には探索判断が待つQ3の優先順位と資源会計を適用する。同じ `L_D` の準備は順番を保ち、要求幅の交互選択と準備工程別予算を引き継ぐ。
+- Q3のhost別dry-checkを完了順に受け取る。最初のPASSを保存し、同じREQUESTで中央予約と割当に進める。後から確認が済んだhostも、同じREQUESTの適格先に加えられる。割当時には現在のfingerprint、受付状態、空き枠を確認する。
+- [PBS walltime設定](../../../configs/rpe_method_optimizer/pbs_walltime_h4.json) に、PR-DFの `prdf_d2_split`（view `23160cc876807c0300be3de811f767b5810640a7`、adapter `349558b748a82f384a4589434a63ef9b5572032c`）を3600秒、`DF_SIGNALS`（runner `9ed5fcc98d38c328c447f4270eabc73090fcaa02`、provider `fefd548ecd56f60d72031b3d385f6f5e6ee95d06`）を120秒で登録した。Q3は同じルートとadapterの保存計時53件（1.29〜152.39秒）、信号はrunnerが同一のserver2保存receipt 27件（4.94〜6.44秒）を根拠に余裕を持たせた見積り。PBSの信号worker数をタスクあたりの予約CPU数2に合わせ、他hostの信号worker設定を引き継いだ。PBS側に空きが必要で他hostに空きがない場合、他hostが先に適格性を確認した待機中の準備でもPBS側の確認を開始できる。PR-DFの価格較正・監査には新しいPBS見積りを設定していない。
+
+固定SOURCEで人工・回帰165件がPASS。Q3実行中の準備キュー利用と補充、遅い照会先を待たない割当、PBS側の照会・資源会計を確認した。RomuTail、server2、Romulaptop WSL、PBS gatewayに配置した。PBS gatewayでは保存Q3 REQUEST `391c6ca338b629730109` と `6ef331c3b66ff27924da` のdry-check、およびDF信号の固定SOURCE・運用profile・専用runtime照合がPASS。新規の実信号・compile・Q3・PBS投入は各0件。新releaseのPBS計算ノードでの実行時間は未測定。
+
+Windowsと共通CLIは、明示版・currentのPreviewで同じ版を選ぶ。通常のStartは新current、既存runのStatus・Resumeはそのrunの固定版を使う。旧run `search-8b10307fd1b9fc375b6b` は `STOPPED`。server1は復帰後に新releaseのmanifestで不足分を配置し、固定入力を照合してから参加する。
