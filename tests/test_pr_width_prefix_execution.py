@@ -239,6 +239,39 @@ class IntegratedPrefix(unittest.TestCase):
                     different_configuration='MISS',different_signal='MISS',
                     artificial_Q3_calls=3,scientific_H4_calls=0))
 
+    def test_selective_m8_profile_through_normal_executor_and_adapter(self):
+        import run_rpe_method_optimizer as CLI
+        import test_rpe_optimizer_concurrent as F
+        from trottertracks import rpe_method_optimizer as O
+        with self.directory('selective') as tmp:
+            root=Path(tmp)
+            problem,context,routes=F.fixture(methods=['PR_PAULI'],configurations=1)
+            routes['PR_PAULI'][0].update(interpreter=interpreter(root/'DP_INTERPRETER'),
+                                        view_commit='ARTIFICIAL_FIXED_SOURCE')
+            routes['PR_PAULI'][0]['artificial'].update(tau='100',signal_token='SAME_ARTIFICIAL_SIGNAL')
+            opts=dict(scheduler='concurrent',max_concurrent_jobs=1,dp_workers=1,
+                prefix_cache_directory='cache',prefix_checkpoint_rounds=[5,8,11],
+                prefix_selective_checkpoint_rounds=[8,11],prefix_selective_window_seconds=600,
+                parallel_dp_residual=True,profile_dp_residual=True)
+            runner,_=CLI.make_executor(ROOT,root,routes,context['expected'],problem,
+                                      dict(executor=opts,max_new_q3_per_method={'PR_PAULI':3}))
+            cid=context['candidates'][0]['configuration_id']
+            try:
+                for shots in (1,2,3):
+                    proposal=dict(configuration_id=cid,vector=tuple([1]*18+[shots,shots]+[1]*6),
+                                  cost=Fraction(1),origin={})
+                    answer=runner.for_method('PR_PAULI').answer(proposal)
+                    self.assertEqual(answer['status'],O.PASS)
+                    self.assertEqual(answer['calls'],1)
+            finally:runner.finish()
+            logs=events(root)
+            self.assertCountEqual([x['completed'] for x in logs if x['event']=='HIT'],[5,8])
+            self.assertCountEqual([x['completed'] for x in logs if x['event']=='SAVE'],[5,8])
+            for p in (root/'jobs').glob('*/*/REQUEST.json'):
+                execution=json.loads(p.read_text())['execution_profile']
+                self.assertEqual(execution['prefix_selective_checkpoint_rounds'],[8,11])
+                self.assertTrue(execution['profile_dp_residual'])
+
 
 def acceptance(output):
     output=Path(output);output.mkdir(parents=True,exist_ok=False)

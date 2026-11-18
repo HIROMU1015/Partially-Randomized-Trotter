@@ -32,6 +32,23 @@
 
 人工テストで通常選択・空き枠補充・再価格付け、並列DPの正確な上下界、圧縮cacheの再開、軸別receiptと共有イベントを検証した。32,768件の人工省略項の厳密加算は3回中央値で、元の積算0.900秒、分母別1 worker 0.300秒、分母別4 worker 0.112秒。測定対象は人工入力の積算部。実H4の速度・探索短縮は未測定。並列残差を有効にしたcacheは残差SOURCEを識別するため、新しいkeyで蓄積する。`prefix_checkpoint_rounds` は既存設定を使う。例えば `[5,8,11]` は明示設定できるが、既定の境界は今回変更していない。
 
+## Q3中間状態の選択保存と空き枠の先読み順（2026-11-19）
+
+通常の `scripts/run_rpe_schedule_search.py` で、既存のcache保存先とlive-ready補充を使うroundに次を追加できる。分散版はcontrollerとQ3 worker adapterを同じ版にそろえる。
+
+| ROUND.json の設定 | 適用 |
+| --- | --- |
+| `executor.prefix_cache_max_bytes: 42949672960` | 既定と同じ40 GiBを保存先ごとに使用する。gzip状態と再利用頻度の記録を同じ上限に含める。 |
+| `executor.prefix_checkpoint_rounds: [5, 8, 11]`、`executor.prefix_selective_checkpoint_rounds: [8, 11]`、`executor.prefix_selective_window_seconds: 600` | m5は従来どおり保存し、m8/m11は同じ厳密cache keyへの検索が繰り返されたときだけ新規保存する。繰り返しの判定間隔は600秒。既存状態の読込・LRU解放と評価条件の完全照合を維持する。 |
+| `search_overrides.eligible_first_prefetch: true` | live-ready補充で、すでに選択可能な配分を、前の予測結果に依存する連鎖先読みより先に渡す。本命の選択と候補集合は維持する。 |
+| `executor.parallel_dp_residual: true`、`executor.profile_dp_residual: true` | 既存の厳密並列積算を使い、`DP_PREFIX_EVENTS.jsonl` の `RESIDUAL_TIMING` にバッチ時間、親の合算時間、全体時間を記録する。 |
+
+[通常入口の人工回帰](../tests/test_pr_width_prefix_execution.py)は、2件目でのm8保存と3件目からの再開、元出力との完全一致を確認した。[cache単体の人工回帰](../tests/test_rpe_dp_prefix_reuse.py)は一回限りの高い境界の保存省略、容量・再利用時間枠、並列積算の数値を検査した。[探索の人工回帰](../tests/test_rpe_review_search.py)は先読み順と本命の不変性を検査した。
+
+既存の人工13 round fixtureでm8の配分を一部共有する8件を順次評価した。従来のm5/m11保存は123,389 B・8.96秒、m5/m8/m11の全保存は169,702 B・7.10秒、選択保存は32,528 B・8.02秒だった。容量には共通の管理ファイルを含む。DP出力は全件で一致し、選択保存では2件がm8から再開した。各条件1回の測定。
+
+R08の停止済み4 runで、REQUESTの配分、m5のkey、既存の段階時刻を使った運用ログ再生では、解析可能な992件のうち297件がm8の追加HIT候補だった。推定条件は共通保存先、保存3秒、保持600秒で、実LRUや他境界との競合の影響は含まない。該当区間は合計約2.55ジョブ時間。Q3の評価結果は再解析しておらず、実H4の経過時間・cache削減率・先読み採用率の改善は未測定。
+
 ## 同一PR-DF保存信号の再利用（2026-11-18）
 
 [通常のdf-plan](../scripts/pr_candidate_services.py)は、固定validatorを通過した同一物理キーの保存レコードを照合する。固定stageが再結合するBの宣言（候補・構成IDとcanonical identity/law binding）とその再利用履歴を除き、信号、入力・reference、数値gate、allowance等を完全一致で比較する。一致すれば元の保存SOURCEから再利用する。差が残るroundは `saved_signal_conflicts` に両出所と相違項目を記録して保留する。Completionはこの確認を信号・較正workerへの投入前に行い、他候補を通常キューで処理する。

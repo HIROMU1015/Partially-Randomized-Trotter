@@ -187,6 +187,43 @@ class PrefixTests(unittest.TestCase):
             self.assertIn('SAVE_SKIPPED', [e['event'] for e in engine.cache_events])
             self.assertFalse((Path(d)/'cache').exists())
 
+    def test_selective_boundary_reuses_exact_prefix_across_fresh_workers(self):
+        _,tt,scope=example()
+        trials=[tt,tt[:10]+changed_tail(tt[:11],3)[-1:]+tt[11:],
+                tt[:10]+changed_tail(tt[:11],4)[-1:]+tt[11:]]
+        with tempfile.TemporaryDirectory() as d:
+            limit=400_000
+            for i,trial in enumerate(trials):
+                events=[]
+                with C.installed(P,directory=d,cache_namespace={'fixture':'selective'},
+                                 checkpoint_rounds=[5,8,11],selective_rounds=[8,11],
+                                 max_bytes=limit,event_sink=events.append):
+                    got=P.Accelerator(workers=1)(trial,h=10.,target=0.,scope=scope)
+                self.assertEqual(got,P.Accelerator(workers=1)(trial,h=10.,target=0.,scope=scope))
+                saved=[x['completed'] for x in events if x['event']=='SAVE']
+                reused=[x['completed'] for x in events if x['event']=='HIT']
+                skipped=[x['completed'] for x in events if x['event']=='SAVE_NOT_ADMITTED']
+                self.assertEqual(saved,([5],[8],[])[i])
+                self.assertEqual(reused,([],[5],[8])[i])
+                self.assertEqual(skipped,([8,11],[11],[11])[i])
+            self.assertEqual(len(list(Path(d).glob('*.json.gz'))),2)
+            self.assertLessEqual(sum(p.stat().st_size for p in Path(d).iterdir()),limit)
+
+    def test_selective_observation_expires_and_small_budget_counts_metadata(self):
+        key='1'*64
+        with tempfile.TemporaryDirectory() as d:
+            store=C.PrefixStore(d,max_bytes=500)
+            with patch.object(C.time,'time',return_value=1.):
+                store.observe([key],5)
+            with patch.object(C.time,'time',return_value=7.):
+                store.observe([key],5)
+                self.assertFalse(store.admit(key,5))
+                store.observe([key],5)
+                self.assertTrue(store.admit(key,5))
+                for n in range(5):
+                    store.put(format(n,'064x'),{'fixture':2**4096+n})
+                self.assertLessEqual(sum(p.stat().st_size for p in Path(d).iterdir()),store.max_bytes)
+
     def test_existing_observed_subclass_constructor_and_process_inheritance(self):
         _,tt,scope=example(n=4);events=[]
         class Observed(P.Accelerator):pass
@@ -233,9 +270,13 @@ class PrefixTests(unittest.TestCase):
         with patch.object(C,'ProcessPoolExecutor',wraps=C.ProcessPoolExecutor) as pool, \
              patch.object(C,'MIN_DROPS_PER_WORKER',32):
             engine=C.accelerator_class(P,parallel_residual=True)(workers=3,
-                cache_namespace={'fixture':'grouped_residual'},checkpoint_rounds=[1,3])
+                cache_namespace={'fixture':'grouped_residual'},checkpoint_rounds=[1,3],profile_residual=True)
             self.assertEqual(engine(tt,h=10.,target=0.,scope=scope),reference)
             self.assertGreater(pool.call_count,0)
+            profiles=[e for e in engine.cache_events if e['event']=='RESIDUAL_TIMING']
+            self.assertTrue(any(e['workers']>1 for e in profiles))
+            self.assertTrue(all(0 <= e['parent_merge_seconds'] <= e['wall_seconds'] for e in profiles))
+            self.assertTrue(all(0 <= e['worker_max_seconds'] <= e['worker_sum_seconds'] for e in profiles))
         trial=changed_tail(tt)
         self.assertEqual(engine(trial,h=10.,target=0.,scope=scope),
                          P.Accelerator(workers=1)(trial,h=10.,target=0.,scope=scope))

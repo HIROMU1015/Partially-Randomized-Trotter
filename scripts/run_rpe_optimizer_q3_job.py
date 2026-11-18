@@ -445,7 +445,9 @@ def prefix_cache_context(request,case,inputs,out):
     with C.installed(module,directory=directory,cache_namespace=namespace,
                      checkpoint_rounds=profile.get('prefix_checkpoint_rounds') if directory is not None else [],
                      event_sink=event,max_bytes=profile.get('prefix_cache_max_bytes', C.DEFAULT_CACHE_MAX_BYTES),
-                     parallel_residual=parallel_residual):
+                     parallel_residual=parallel_residual,profile_residual=profile.get('profile_dp_residual') is True,
+                     selective_rounds=profile.get('prefix_selective_checkpoint_rounds',()) if directory is not None else (),
+                     selective_window_seconds=profile.get('prefix_selective_window_seconds',C.DEFAULT_SELECTIVE_WINDOW_SECONDS)):
         yield
 
 

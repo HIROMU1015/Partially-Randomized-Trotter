@@ -200,8 +200,11 @@ def make_executor(root, run, routes, expected, problem, spec):
             science_approved=approved,dp_workers=options.get('dp_workers'),prefix_cache_directory=cache,
             prefix_checkpoint_rounds=options.get('prefix_checkpoint_rounds'),
             prefix_cache_max_bytes=options.get('prefix_cache_max_bytes'),
+            prefix_selective_checkpoint_rounds=options.get('prefix_selective_checkpoint_rounds',()),
+            prefix_selective_window_seconds=options.get('prefix_selective_window_seconds'),
             compact_q3_evidence=options.get('compact_q3_evidence',False),
-            parallel_dp_residual=options.get('parallel_dp_residual',False))
+            parallel_dp_residual=options.get('parallel_dp_residual',False),
+            profile_dp_residual=options.get('profile_dp_residual',False))
         def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
     else:
         executor=O.Executor(root,run,routes,expected,problem,**common);optimize=O.optimize

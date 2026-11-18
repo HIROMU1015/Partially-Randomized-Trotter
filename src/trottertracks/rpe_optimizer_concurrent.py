@@ -43,7 +43,10 @@ def _tree_rss(pid):
 
 class ConcurrentExecutor(O.Executor):
     supports_nonblocking_prefetch=True
-    def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,prefix_cache_directory=None,prefix_checkpoint_rounds=None,prefix_cache_max_bytes=None,compact_q3_evidence=False,parallel_dp_residual=False,**kwargs):
+    def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,prefix_cache_directory=None,
+                 prefix_checkpoint_rounds=None,prefix_cache_max_bytes=None,prefix_selective_checkpoint_rounds=(),
+                 prefix_selective_window_seconds=None,compact_q3_evidence=False,parallel_dp_residual=False,
+                 profile_dp_residual=False,**kwargs):
         super().__init__(*args,**kwargs)
         if dp_workers is not None and (type(dp_workers)is not int or dp_workers<1):
             raise ValueError('Positive integer dp_workers required')
@@ -53,6 +56,15 @@ class ConcurrentExecutor(O.Executor):
             raise ValueError('compact_q3_evidence must be a boolean')
         if type(parallel_dp_residual) is not bool:
             raise ValueError('parallel_dp_residual must be a boolean')
+        if type(profile_dp_residual) is not bool or (profile_dp_residual and not parallel_dp_residual):
+            raise ValueError('profile_dp_residual requires parallel_dp_residual')
+        if not isinstance(prefix_selective_checkpoint_rounds,(list,tuple)) or any(
+                type(m) is not int or m not in (prefix_checkpoint_rounds or ())
+                for m in prefix_selective_checkpoint_rounds):
+            raise ValueError('Selective prefix rounds must occur in prefix_checkpoint_rounds')
+        if prefix_selective_window_seconds is not None and (
+                type(prefix_selective_window_seconds) is not int or prefix_selective_window_seconds < 1):
+            raise ValueError('Positive integer prefix_selective_window_seconds required')
         self.run_dir.mkdir(parents=True,exist_ok=True)
         driver=(self.run_dir/'FAST_DRIVER.lock').open('a')
         try:fcntl.flock(driver,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -62,8 +74,11 @@ class ConcurrentExecutor(O.Executor):
         self.prefix_cache_directory=None if prefix_cache_directory is None else str(Path(prefix_cache_directory).resolve())
         self.prefix_checkpoint_rounds=prefix_checkpoint_rounds
         self.prefix_cache_max_bytes=prefix_cache_max_bytes
+        self.prefix_selective_checkpoint_rounds=list(prefix_selective_checkpoint_rounds)
+        self.prefix_selective_window_seconds=prefix_selective_window_seconds
         self.compact_q3_evidence=compact_q3_evidence
         self.parallel_dp_residual=parallel_dp_residual
+        self.profile_dp_residual=profile_dp_residual
         existing={}
         for method in self.routes:
             base=self.run_dir/'jobs'/method
@@ -121,6 +136,13 @@ class ConcurrentExecutor(O.Executor):
         if self.prefix_cache_directory is not None:
             req['execution_profile'].update(prefix_cache_directory=self.prefix_cache_directory,
                 prefix_checkpoint_rounds=self.prefix_checkpoint_rounds)
+        elif self.prefix_selective_checkpoint_rounds:
+            # A distributed worker resolves the cache path from its host profile.
+            req['execution_profile']['prefix_checkpoint_rounds']=self.prefix_checkpoint_rounds
+        if self.prefix_selective_checkpoint_rounds:
+            req['execution_profile']['prefix_selective_checkpoint_rounds']=self.prefix_selective_checkpoint_rounds
+            if self.prefix_selective_window_seconds is not None:
+                req['execution_profile']['prefix_selective_window_seconds']=self.prefix_selective_window_seconds
         # A distributed host can enable its own cache without a controller path.
         if self.prefix_cache_max_bytes is not None:
             req['execution_profile']['prefix_cache_max_bytes']=self.prefix_cache_max_bytes
@@ -128,6 +150,8 @@ class ConcurrentExecutor(O.Executor):
             req['execution_profile']['compact_q3_evidence']=True
         if self.parallel_dp_residual:
             req['execution_profile']['parallel_dp_residual']=True
+        if self.profile_dp_residual:
+            req['execution_profile']['profile_dp_residual']=True
         return req
 
     def prefetch_state(self):
