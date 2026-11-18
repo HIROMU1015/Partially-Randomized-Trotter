@@ -3,6 +3,12 @@ function Get-RpeSearchDisplayStatus($Result) {
         $Result.runtime.stop_reason -eq 'RUNTIME_EXCEPTION') {
         return 'TECHNICAL_FAILURE'
     }
+    if ($Result.runtime.phase -eq 'COMPLETE' -and $Result.runtime.stop_reasons) {
+        $holds = @('UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD')
+        foreach ($reason in $Result.runtime.stop_reasons.PSObject.Properties) {
+            if ($reason.Value -in $holds) { return 'TECHNICAL_FAILURE' }
+        }
+    }
     return $Result.status
 }
 

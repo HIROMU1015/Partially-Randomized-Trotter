@@ -304,6 +304,7 @@ class DistributedPreparationBridge:
                             break
                 with path.open('wb') as enriched:
                     enriched.write(header)
+                    enriched.flush()
                     subprocess.run(['git','pack-objects','--stdout','--no-reuse-delta','--no-reuse-object'],cwd=root,
                         input=b'\n'.join(sorted(set(changed+objects)))+b'\n',stdout=enriched,check=True,stderr=subprocess.PIPE)
             return [dict(sha256=self._blob(path.read_bytes()), ref=ref,checkout_input_head=tracked_workspace or ref=='HEAD')]

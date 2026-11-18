@@ -574,6 +574,9 @@ class Gateway:
         actual=Path(self.config['artificial_controller_directory'])/'run'if self.config.get('artificial_controller_directory')else run
         result=run/'ROUND_RESULT.json'
         reasons={method:value.get('stop_reason')for method,value in load(result).get('methods',{}).items()}if result.exists()else{}
+        if phase == 'COMPLETE' and reasons and any(reason in {'UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW',
+                'NO_ROUTE_ADAPTER', 'HOST_ELIGIBILITY_HOLD'} for reason in reasons.values()):
+            phase = 'RECONCILIATION_REQUIRED'
         value=dict(phase=phase,controller_alive=alive,invocation_id=launch.get('invocation_id'),
             returncode=finished.get('returncode')if complete else None,stop_reasons=reasons)
         width_state = actual/'KAPPA_STATE.json'
