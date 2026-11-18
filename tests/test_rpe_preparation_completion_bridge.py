@@ -265,6 +265,29 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
             self.assertTrue(tracked['checkout_input_head'])
             tracked_view = W._clone(view, top/'tracked-view', [tracked_base, tracked], executor.artifact_cache)
             self.assertEqual(git('rev-parse', 'HEAD^{tree}', cwd=tracked_view), git('rev-parse', 'HEAD^{tree}'))
+            start = git('rev-parse', 'HEAD', cwd=tracked_view)
+            return_path = top/'delta.bundle'
+            fixed_view = dict(source=dict(commit=source), input_git_bundles=[tracked_base, tracked])
+            receiver = top/'clean-receiver'
+            git('clone', '--shared', '-q', str(view), str(receiver))
+            returning = dict(preparation=dict(fixed_view,controller_root=str(receiver)))
+            unchanged = W._export_bundle(tracked_view, fixed_view['source'], return_path, start)
+            self.assertNotIn('path', unchanged)
+            bridge._import_result(dict(git_bundles=[unchanged],artifact_directory=str(top)), returning)
+            self.assertEqual(git('cat-file', '-t', start, cwd=receiver), 'commit')
+            self.assertEqual(git('rev-parse', 'HEAD', cwd=receiver), source)
+            (tracked_view/'new-result.json').write_text('{"fixture":42}\n')
+            git('add', 'new-result.json', cwd=tracked_view)
+            git('commit', '-qm', 'one new result', cwd=tracked_view)
+            delta = W._export_bundle(tracked_view, fixed_view['source'], return_path, start)
+            self.assertLess(return_path.stat().st_size, 64*1024)
+            outcome = dict(git_bundles=[delta],artifact_directory=str(top),
+                           artifacts={return_path.name:hashlib.sha256(return_path.read_bytes()).hexdigest()})
+            bridge._import_result(outcome, returning)
+            bridge._import_result(outcome, returning)
+            self.assertEqual(git('show', delta['head']+':new-result.json', cwd=receiver), '{"fixture":42}')
+            with self.assertRaisesRegex(ValueError, 'assigned input HEAD'):
+                bridge._import_result(dict(outcome,git_bundles=[dict(delta,input_head=source)]), returning)
             self.assertEqual(task['preparation']['workspaces']['provider']['source']['files'][
                 'src/trottertracks/rpe_preparation_paths.py'],pinned_helper)
             fixed_provider.write_text('# changed provider body\n')
@@ -291,6 +314,7 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
             self.assertGreater(sum(path.stat().st_size for path in legacy_packs), 1024 * 1024)
             attempt=top/'worker-attempt';outcome=W.execute(assignment,profile,attempt)
             self.assertEqual(outcome['status'],'PREPARATION_COMPLETE')
+            self.assertFalse((attempt/'inputs').exists())
             self.assertEqual(W.collect(assignment,profile,attempt), outcome)
             shared = W._metadata_repository_path(profile, view)/'objects'
             for workspace in (attempt/'workspace', attempt/'workspaces/provider'):

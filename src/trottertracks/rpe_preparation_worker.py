@@ -307,11 +307,21 @@ def _include_declared_outputs(owned, directory, outputs):
                            text=True,cwd=workspace,check=True,capture_output=True)
 
 
-def _export_bundle(root, source, output):
-    new=subprocess.check_output(['git','rev-list','HEAD','^'+source['commit']],cwd=root,text=True).strip()
-    if not new:return None
-    subprocess.run(['git','bundle','create',str(output),'HEAD','^'+source['commit']],cwd=root,check=True,capture_output=True)
-    return dict(path=output.name,ref='HEAD',head=_head(root),base=source['commit'])
+def _export_bundle(root, source, output, input_head=None):
+    base=source['commit']
+    result=dict(ref='HEAD',head=_head(root),base=base)
+    if input_head and input_head!=base:
+        ancestry=subprocess.run(['git','merge-base','--is-ancestor',input_head,result['head']],
+                                cwd=root,capture_output=True)
+        if ancestry.returncode not in (0,1):ancestry.check_returncode()
+        if ancestry.returncode==0:
+            result['input_head']=input_head
+            if input_head==result['head']:return result
+            base=input_head
+    if not subprocess.check_output(['git','rev-list','-1','HEAD','^'+base],cwd=root,text=True).strip():
+        return None
+    subprocess.run(['git','bundle','create',str(output),'HEAD','^'+base],cwd=root,check=True,capture_output=True)
+    return dict(result,path=output.name)
 
 
 def pauli_calibration_manifest(spec):
@@ -349,7 +359,12 @@ def execute(assignment, base_profile, directory):
     fingerprint=current_preparation_fingerprint(assignment,base_profile)
     marker=directory/'PREPARATION_STARTED.json'
     with marker.open('x')as stream:json.dump(dict(request_sha256=assignment['request_sha256'],automatic_retry=False),stream)
-    cache=worker_cache(profile);artifact_inputs=assigned_artifacts(assignment);cache.materialize(artifact_inputs,directory/'inputs')
+    cache=worker_cache(profile);artifact_inputs=assigned_artifacts(assignment)
+    stage_inputs=spec.get('stage_inputs',True)
+    if stage_inputs:
+        cache.materialize(artifact_inputs,directory/'inputs')
+    elif cache.missing(artifact_inputs.values()):
+        raise ValueError('Missing fixed preparation input artifact')
     source=Path(fingerprint['views'][spec['source']['commit']]);owned={}
     metadata_repository=_metadata_repository_path(profile,source) if metadata_bundle_hashes(assignment) else None
     if spec.get('source_workspace'):
@@ -388,11 +403,16 @@ def execute(assignment, base_profile, directory):
     for input_name,destination in target_inputs.items():
         path=directory.joinpath(*artifact_path(destination).parts)
         path.parent.mkdir(parents=True,exist_ok=True)
-        data=(directory/'inputs').joinpath(*artifact_path(input_name).parts).read_bytes()
+        original=((directory/'inputs').joinpath(*artifact_path(input_name).parts) if stage_inputs
+                  else cache.path(artifact_inputs[input_name]))
+        data=original.read_bytes()
         if path.exists()and path.read_bytes()!=data:raise ValueError('Input would replace different fixed workspace bytes')
         if not path.exists():path.write_bytes(data)
     _guard_owned_source(source,spec['source'])
     for alias,(workspace,manifest)in owned.items():_guard_owned_source(workspace,manifest)
+    input_heads={}
+    if spec.get('return_git_delta') is True:
+        input_heads={alias:_head(workspace) for alias,(workspace,_) in owned.items()}
     start=time.monotonic();timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_START',stage=spec['stage'])
     with(directory/'PREPARATION_BODY.log').open('xb')as log:
         process=subprocess.run(command,cwd=source,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',RPE_PREPARATION_PATH_MAP=json.dumps(bindings),RPE_PREPARATION_PYTHON=profile['interpreter']),stdout=log,stderr=subprocess.STDOUT)
@@ -405,10 +425,11 @@ def execute(assignment, base_profile, directory):
         if directory.joinpath(*Path(name).parts).exists():outputs.append(name)
     if process.returncode==0:
         for alias,(workspace,manifest)in owned.items():
-            path=directory/(alias+'-output.bundle');bundle=_export_bundle(workspace,manifest,path)
+            path=directory/(alias+'-output.bundle');bundle=_export_bundle(workspace,manifest,path,input_heads.get(alias))
             if bundle:
                 bundle['workspace']='workspace'if alias=='source'else'workspaces/'+alias
-                outputs.append(path.name);bundles.append(bundle)
+                if 'path' in bundle:outputs.append(path.name)
+                bundles.append(bundle)
         artifacts=cache.capture(directory,outputs)
     else:artifacts={}
     outcome=dict(status='PREPARATION_COMPLETE'if process.returncode==0 else'PREPARATION_FAILED',route='preparation',request_id=request['request_id'],task_id=request['request_id'],request_sha256=assignment['request_sha256'],stage=spec['stage'],artifacts=artifacts,git_bundles=bundles,source=spec['source'],source_manifest=spec['source'],execution_profile_sha256=digest(preparation_profile_core(profile)),resolved_path_bindings=bindings,automatic_retry=False)

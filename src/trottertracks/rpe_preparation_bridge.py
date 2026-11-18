@@ -504,7 +504,7 @@ class DistributedPreparationBridge:
                     input_hashes=input_hashes,working_input_hashes=working_hashes,
                     required_views=required_views,
                     required_paths=required_paths,
-                    optional_outputs=optional_outputs,
+                    optional_outputs=optional_outputs, return_git_delta=True, stage_inputs=False,
                     runtime_requirements=requirements,compiler_bindings=compiler_bindings)
         self._validate_bundle_inputs(prep)
         return dict(schema='RPE_PREPARATION_REQUEST_V1', route=dict(kind='preparation'), preparation=prep,
@@ -579,6 +579,22 @@ class DistributedPreparationBridge:
             failed=any(row['state']in('STOP','FAILED')for row in observations),
             pending=any(row['state']=='RUNNING_OR_UNKNOWN_ORIGINAL_OWNER'for row in observations))
 
+    def _result_bundle_inputs(self, view, result):
+        if not view.get('checkout_input_head', True):
+            raise ValueError('Result claims a Git input HEAD for a fixed checkout')
+        cache = self.executor.artifact_cache
+        inputs = view.get('input_git_bundles', [])
+        chosen = next((row for row in reversed(inputs) if row.get('checkout_input_head', True)), None)
+        if not chosen or cache.missing(row['sha256'] for row in inputs):
+            raise ValueError('Missing original Git inputs of returned preparation delta')
+        heads = subprocess.check_output(
+            ['git','bundle','list-heads',str(cache.path(chosen['sha256'])),chosen.get('ref','HEAD')],
+            cwd=self.root,text=True,
+        ).splitlines()
+        if len(heads)!=1 or heads[0].split()[0]!=result['input_head']:
+            raise ValueError('Returned Git delta does not bind the assigned input HEAD')
+        return [(cache.path(row['sha256']),row.get('ref','HEAD')) for row in inputs]
+
     def _import_result(self, result, request):
         artifacts = result.get('artifacts') or result.get('artifact_manifest') or {}
         directory = Path(result['artifact_directory'])
@@ -597,19 +613,45 @@ class DistributedPreparationBridge:
                        if value == '@WORKSPACE:' + alias + '@')
             workspaces['workspaces/' + alias] = Path(old)
         for bundle in result.get('git_bundles', []):
-            path = directory / artifact_path(bundle['path'])
-            if hashlib.sha256(path.read_bytes()).hexdigest() != artifacts[bundle['path']]:
-                raise ValueError('Returned scientific Git bundle changed')
-            destination = workspaces[bundle.get('workspace', 'workspace')]
+            alias = bundle.get('workspace', 'workspace')
+            destination = workspaces[alias]
+            view = request['preparation'] if alias=='workspace' else request['preparation']['workspaces'][alias.split('/',1)[1]]
+            if bundle['base']!=view['source']['commit']:
+                raise ValueError('Returned Git bundle SOURCE differs')
+            inputs = self._result_bundle_inputs(view,bundle) if 'input_head' in bundle else []
+            path = None
+            if 'path' in bundle:
+                path = directory / artifact_path(bundle['path'])
+                key = artifacts[bundle['path']]
+                if hashlib.sha256(path.read_bytes()).hexdigest()!=key:
+                    raise ValueError('Returned scientific Git bundle changed')
+            elif not inputs or bundle['head']!=bundle['input_head']:
+                raise ValueError('Returned Git result is missing its bundle')
+            else:
+                key = digest(bundle)
             # The central optimizer's GitReader can be a different repository
             # from an owned provider clone. Both must resolve the original
             # returned commit; neither working HEAD is changed.
+            def import_tip(repository):
+                if path is None:
+                    return subprocess.run(['git','rev-parse','--verify',bundle['input_head']+'^{commit}'],
+                                          cwd=repository,capture_output=True,text=True)
+                process = subprocess.run(['git','fetch','--no-tags',str(path),bundle.get('ref','HEAD')],
+                                         cwd=repository,capture_output=True,text=True)
+                if process.returncode:return process
+                return subprocess.run(['git','rev-parse','FETCH_HEAD'],cwd=repository,capture_output=True,text=True)
+
             for repository in dict.fromkeys([destination,self.root]):
-                subprocess.run(['git', 'fetch', '--no-tags', str(path), bundle.get('ref', 'HEAD')], cwd=repository,
-                               check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-                tip=subprocess.check_output(['git','rev-parse','FETCH_HEAD'],cwd=repository,text=True).strip()
+                fetched = import_tip(repository)
+                if fetched.returncode and inputs:
+                    for file,ref in inputs:
+                        subprocess.run(['git','fetch','--no-tags',str(file),ref],cwd=repository,check=True,capture_output=True)
+                    fetched = import_tip(repository)
+                fetched.check_returncode()
+                tip = fetched.stdout.strip()
+                if tip!=bundle['head']:raise ValueError('Returned Git bundle HEAD differs')
                 namespace='refs/rpe-preparation/'+digest(str(self.executor.run_dir))[:16]
-                subprocess.run(['git','update-ref',namespace+'/'+artifacts[bundle['path']],tip],cwd=repository,check=True)
+                subprocess.run(['git','update-ref',namespace+'/'+key,tip],cwd=repository,check=True)
         private = next((old for old,value in request['preparation'].get('path_bindings',{}).items()if value=='@WORK@/private'),None)
         if private:workspaces['private']=Path(private)
         for name, sha in artifacts.items():
