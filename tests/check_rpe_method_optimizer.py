@@ -78,6 +78,17 @@ class Search(unittest.TestCase):
         seeds = [p for p in props if p['configuration_id'] == 'B']
         self.assertTrue(seeds and all(p['origin']['kind'] == 'GENERATOR_SEED' and p['cost'] < inc['cost'] for p in seeds))
 
+    def test_linear_seed_uses_round_count_and_respects_caps_without_clipping(self):
+        candidate = dict(configuration_id='LINEAR', caps=[10, 7, 4, 1])
+        search = dict(rpe_linear_seed=True)
+        vector, origin = O.rpe_linear_seed(candidate, search, {})
+        self.assertEqual(O.split(vector), ([10, 7, 4, 1], [10, 7, 4, 1]))
+        self.assertEqual(origin['kind'], 'RPE_LINEAR_SEED')
+        self.assertIsNone(O.rpe_linear_seed(candidate, search, {('LINEAR', vector): {}}))
+        self.assertIsNone(O.rpe_linear_seed(candidate, search, {}, skipped={('LINEAR', vector)}))
+        candidate['caps'] = [10, 6, 4, 1]
+        self.assertIsNone(O.rpe_linear_seed(candidate, search, {}))
+
     def test_loop_continues_after_improvement_and_stops_by_rule(self):
         c = candidate('A', self.prices, caps=[8] * 13)
         def mse(cid, v):

@@ -1,7 +1,9 @@
 """Artificial workers only; do not import/execute any H4 scientific Q3 leaf."""
+from contextlib import redirect_stdout
 from copy import deepcopy
 from fractions import Fraction
 import importlib.util
+import io
 import json
 from pathlib import Path
 import subprocess
@@ -20,6 +22,14 @@ from trottertracks import rpe_method_optimizer as O
 from trottertracks import rpe_optimizer_concurrent as C
 
 METHODS=['FULL_PF','TRUNCATED_PF','PR_PAULI','PR_DF']
+
+
+class LegacySeedBranch(ast.NodeTransformer):
+    """Compare the unselected seed policy to pinned legacy code."""
+    def visit_If(self, node):
+        if ast.unparse(node.test) == "(linear := rpe_linear_seed(c, search, knowledge, limit=limit)) is not None":
+            return node.orelse
+        return self.generic_visit(node)
 
 
 def baseline():
@@ -79,6 +89,62 @@ class SchedulerTests(unittest.TestCase):
             self.assertLessEqual(metrics['peak_active'],6)
             self.assertEqual(metrics['new_real_route_launches'],0)
             self.assertGreaterEqual(metrics['speculative_launched'],0)
+
+    def test_linear_seed_through_schedule_entry_and_resume(self):
+        import run_rpe_schedule_search as entry
+
+        fixed_problem = (
+            'a8b34511b40defac9a2ad7f497869b6d42bf0efd:'
+            'docs/research/pr_r08_live_ready_switch_20261118/PROBLEM.json'
+        )
+        fixed_caps = json.loads(subprocess.check_output(['git', 'show', fixed_problem], cwd=ROOT))['methods']
+        expected = [37, 34, 31, 28, 25, 22, 19, 16, 13, 10, 7, 4, 1]
+        for rule in ('FINITE_LOCAL_DESCENT_V1', 'METHOD_MINIMUM_PRIORITY_V2'):
+            with self.subTest(rule=rule), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                problem, context, routes = fixture(configurations=2, lookahead=2)
+                problem['execution_routes'] = routes
+                problem['search'].update(rule=rule, incumbent_scope='METHOD', seed_rules=['B_PRICE', 'A_SHAPE'])
+                context['saved'].table.clear()
+                context['generate'] = generator = unittest.mock.Mock(side_effect=lambda caps, *args: dict(shots=caps))
+                candidates = {m: [c for c in context['candidates'] if c['method'] == m] for m in METHODS}
+                for method, (new, saved) in candidates.items():
+                    new['caps'] = saved['caps'] = fixed_caps[method]['caps']
+                    saved['prices'] = [Fraction(1000)] * 26
+                    context['saved'].table[saved['configuration_id'], (1,) * 26] = dict(
+                        status=O.PASS, MSE_lower=Fraction(1, 2), MSE_upper=Fraction(1, 2), source='SAVED')
+                # The artificial Full PF seed fails, so the existing generator is used.
+                routes['FULL_PF'][0]['artificial'].update(weights=[0] * 12 + [1], scale='8')
+                budgets = {m: 2 if m == 'FULL_PF' else 1 for m in METHODS}
+                spec = dict(round_id='ARTIFICIAL_RPE_LINEAR_SEED', methods=METHODS, science_approved=True,
+                            max_new_q3_per_method=budgets, search_overrides=dict(rpe_linear_seed=True),
+                            executor=dict(scheduler='concurrent', max_concurrent_jobs=4))
+                problem_path, round_path, run = root / 'PROBLEM.json', root / 'ROUND.json', root / 'run'
+                problem_path.write_text(json.dumps(problem))
+                round_path.write_text(json.dumps(spec))
+                args = ['--problem', str(problem_path), '--round', str(round_path), '--run-dir', str(run)]
+                with patch.object(O, 'prepare', return_value=context), redirect_stdout(io.StringIO()):
+                    entry.main(args)
+                    first = O.load_json(run / 'ROUND_RESULT.json')['methods']
+                    launches = {p: p.read_bytes() for p in run.glob('jobs/*/*/LAUNCH.json')}
+                    self.assertEqual(generator.call_count, 2)
+                    entry.main(args)
+                    resumed = O.load_json(run / 'ROUND_RESULT.json')['methods']
+                self.assertEqual(len(launches), sum(budgets.values()))
+                self.assertEqual(launches, {p: p.read_bytes() for p in run.glob('jobs/*/*/LAUNCH.json')})
+                for method, (new, saved) in candidates.items():
+                    result = first[method]
+                    initial = result['trace'][0]
+                    self.assertEqual(initial['configuration_id'], new['configuration_id'])
+                    self.assertEqual(initial['origin']['kind'], 'RPE_LINEAR_SEED')
+                    self.assertEqual((initial['N_X'], initial['N_Y']), (expected, expected))
+                    self.assertTrue(any(e['configuration_id'] == saved['configuration_id'] and e['source'] == 'SAVED'
+                                        for e in result['evaluated']))
+                    self.assertEqual(resumed[method]['best'], result['best'])
+                    self.assertEqual(resumed[method]['stop_reason'], result['stop_reason'])
+                full_trace = first['FULL_PF']['trace']
+                self.assertEqual([row['status'] for row in full_trace], [O.FAIL, O.PASS])
+                self.assertEqual(full_trace[1]['origin']['kind'], 'GENERATOR_SEED')
 
     def test_finite_budget_reserved_before_launch(self):
         with tempfile.TemporaryDirectory()as tmp:
@@ -396,8 +462,8 @@ class SchedulerTests(unittest.TestCase):
     def test_fixed_selection_except_explicit_execution_readiness_guard(self):
         old=ast.parse(subprocess.check_output(['git','show','5b48aabbc:src/trottertracks/rpe_method_optimizer.py'],cwd=ROOT))
         new=ast.parse((ROOT/'src/trottertracks/rpe_method_optimizer.py').read_bytes())
-        # The route repair adds only a pre-proposal availability gate. Retain
-        # the strict AST comparison for every ranking, price and update rule.
+        # Keep the strict comparison of legacy ranking, price and update rules.
+        LegacySeedBranch().visit(new)
         guard=ast.dump(ast.parse("not c['ready'] or c.get('execution_needs')",mode='eval').body)
         isolated=ast.dump(ast.parse("""if hold:
     candidate=next(c for c in ready if c['configuration_id']==choice['configuration_id'])

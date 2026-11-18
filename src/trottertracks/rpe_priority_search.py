@@ -260,12 +260,15 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                 excluded = {v for cid, v in knowledge if cid == st.cid} | {v for cid, v in skipped if cid == st.cid}
                 raw += exchange_moves(base, prices, caps, steps, s['allocation_exchange'], excluded)
         else:
-            budget = O.cost(caps, prices)
-            for rule in search['seed_rules']:
-                g = generate(list(caps), list(prices), budget, rule)
-                if g is not None:
-                    raw.append((tuple(g['shots']), dict(kind='GENERATOR_SEED', rule=rule, budget=str(budget))))
-            raw.append((caps, dict(kind='CAP_VECTOR_SEED')))
+            if (linear := O.rpe_linear_seed(c, search, knowledge, skipped=skipped)) is not None:
+                raw.append(linear)
+            else:
+                budget = O.cost(caps, prices)
+                for rule in search['seed_rules']:
+                    g = generate(list(caps), list(prices), budget, rule)
+                    if g is not None:
+                        raw.append((tuple(g['shots']), dict(kind='GENERATOR_SEED', rule=rule, budget=str(budget))))
+                raw.append((caps, dict(kind='CAP_VECTOR_SEED')))
             for seed in c.get('sibling_seeds', []):
                 raw.append((tuple(seed['vector']), dict(kind='SAVED_SAME_L_D_INCUMBENT_SEED', from_configuration=seed['configuration_id'],
                                                         from_label=seed.get('label'))))

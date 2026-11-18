@@ -361,6 +361,7 @@ artifacts/<validation_name>/
 [C7-4保存再解析runner](run_track_d_c7_4.py)／[結果projection](summarize_track_d_c7_4.py)：保存88 pathのみの探索fit/CV/bootstrapと固定人工6系列/短P0 2本。新H4 sampling/build/compileなし。既存runのmain/guardを変更しない。
 
 - `run_rpe_schedule_search.py` の `search_overrides.requested_widths` は両PR方式の要求幅を通常の準備・価格・V2 shot/Q3へ渡す。保存照合は `check_pr_requested_width_saved.py`。[SOURCEと起動方法](../docs/research/pr_requested_step_search_20261117/HANDOFF.md)。
+- `ROUND.json` の `search_overrides.rpe_linear_seed: true` で、未適合構成の新規初期配分を X/Y 各軸の `3*(M-m)+1` にする。V1/V2共通で、対象のラウンド数と既存のショット上限を使う。保存適合点と既存の転用候補は引き続き利用する。初期配分が評価済み、上限外、または既存のV1費用条件外であれば、従来の初期配分候補へ進める。精度は元のQ3で判定する。[Kimmel・Low・Yoder, Eq. (V.11)](https://arxiv.org/pdf/1502.02677)。
 
 - `summarize_rpe_q3_timing.py RUN --output FILE`：通常distributed runの配送・Q3 body・受領・探索採用をhost/attempt別に集計する。SOURCEと時計domainの条件は[HANDOFF](../docs/research/rpe_q3_timing_20261117/HANDOFF.md)。
 

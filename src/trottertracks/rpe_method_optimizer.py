@@ -383,6 +383,21 @@ def axis_groups(prices, m):
     return [('X', 'Y'), ('X',), ('Y',)]
 
 
+def rpe_linear_seed(candidate, search, knowledge, *, limit=None, skipped=()):
+    """One primary seed from Kimmel, Low and Yoder, Eq. (V.11), with alpha=3 and beta=1."""
+    if search.get('rpe_linear_seed') is not True:
+        return None
+    caps = candidate['caps']
+    shots = [3 * rounds_left + 1 for rounds_left in range(len(caps) - 1, -1, -1)]
+    if not shots or any(n > cap for n, cap in zip(shots, caps)):
+        return None
+    vector = interleave(shots, shots)
+    key = (candidate['configuration_id'], vector)
+    if key in knowledge or key in skipped or (limit is not None and cost(vector, candidate['prices']) >= limit):
+        return None
+    return vector, dict(kind='RPE_LINEAR_SEED')
+
+
 def proposals(candidates, knowledge, threshold, search, generate):
     best, incumbent = method_state(candidates, knowledge, threshold)
     limit = None if incumbent is None else incumbent['cost']
@@ -408,12 +423,15 @@ def proposals(candidates, knowledge, threshold, search, generate):
                                                        base_vector=list(base['vector']), base_headroom=None if h is None else '%.6f' % float(h))))
         else:
             budget = limit if limit is not None else cost(caps, prices)
-            for rule in search['seed_rules']:
-                g = generate(list(caps), list(prices), budget, rule)
-                if g is not None:
-                    raw.append((tuple(g['shots']), dict(kind='GENERATOR_SEED', rule=rule, budget=str(budget))))
-            if limit is None:
-                raw.append((caps, dict(kind='CAP_VECTOR_SEED')))
+            if (linear := rpe_linear_seed(c, search, knowledge, limit=limit)) is not None:
+                raw.append(linear)
+            else:
+                for rule in search['seed_rules']:
+                    g = generate(list(caps), list(prices), budget, rule)
+                    if g is not None:
+                        raw.append((tuple(g['shots']), dict(kind='GENERATOR_SEED', rule=rule, budget=str(budget))))
+                if limit is None:
+                    raw.append((caps, dict(kind='CAP_VECTOR_SEED')))
             for seed in c.get('sibling_seeds', []):  # saved feasible incumbents of same-method, same-L_D configurations
                 raw.append((tuple(seed['vector']), dict(kind='SAVED_SAME_L_D_INCUMBENT_SEED', from_configuration=seed['configuration_id'],
                                                         from_label=seed.get('label'))))
