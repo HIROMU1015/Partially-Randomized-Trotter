@@ -189,6 +189,23 @@ class PrefixStore:
         self.last_evicted_bytes = evicted_bytes
         return True
 
+    def reclaim(self, retained_bytes):
+        """Trim checkpoints under the writer lock while retaining demand metadata."""
+        if self.directory is None or not self.directory.is_dir():
+            return 0
+        with (self.directory / '.prefix-storage.lock').open('a+b') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            metadata = self.directory / _ADMISSION_FILE
+            floor = metadata.stat().st_size if metadata.is_file() else 0
+            original_limit = self.max_bytes
+            self.last_evicted_files = self.last_evicted_bytes = 0
+            try:
+                self.max_bytes = max(1, floor, min(retained_bytes, original_limit))
+                self._make_room(0)
+                return self.last_evicted_files
+            finally:
+                self.max_bytes = original_limit
+
     def put(self, key, snapshot):
         self.last_evicted_files = self.last_evicted_bytes = 0
         if self.directory is None:

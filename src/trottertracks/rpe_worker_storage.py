@@ -9,6 +9,7 @@ import time
 
 from .rpe_q3_coordinator import atomic_json
 from .rpe_preparation_artifacts import worker_cache
+from .rpe_dp_prefix_reuse import PrefixStore
 
 
 SAMPLE_SECONDS = 5
@@ -111,8 +112,8 @@ def _reclaim(spools, roots, used, target):
     return used, removed
 
 
-def report(policy, *, spools=(), pbs_runs=None, refresh=False):
-    """At the limit, reclaim acknowledged copies before computing intake capacity."""
+def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, refresh=False):
+    """Reclaim acknowledged copies and recoverable cache at the intake limit."""
     if policy is None:
         return None
     limit, roots = policy['limit_bytes'], policy['roots']
@@ -122,7 +123,7 @@ def report(policy, *, spools=(), pbs_runs=None, refresh=False):
             or not sample.is_absolute()):
         raise ValueError('Worker storage requires a positive byte limit and absolute paths')
     identity = dict(limit_bytes=limit, roots=roots)
-    cleanup = dict(spools=list(spools), pbs_runs=pbs_runs) if spools or pbs_runs else None
+    cleanup = dict(spools=list(spools), pbs_runs=pbs_runs, prefix_cache=prefix_cache)
 
     def recent():
         if refresh:
@@ -131,7 +132,7 @@ def report(policy, *, spools=(), pbs_runs=None, refresh=False):
             saved = json.loads(sample.read_bytes())
             if saved['policy'] == identity and 0 <= time.time() - saved['sampled_epoch'] < SAMPLE_SECONDS:
                 report = saved['report']
-                if (cleanup is None or report['reason'] != 'STORAGE_LIMIT_REACHED'
+                if (report['reason'] != 'STORAGE_LIMIT_REACHED'
                         or saved.get('cleanup') == cleanup):
                     return report
         except (OSError, KeyError, TypeError, ValueError):
@@ -151,19 +152,29 @@ def report(policy, *, spools=(), pbs_runs=None, refresh=False):
             try:
                 used = _used_bytes(roots)
                 before, reclaimed = used, 0
+                target = limit * 9 // 10
                 if used >= limit and (spools or pbs_runs):
                     candidates = list(spools)
                     if pbs_runs:
                         candidates.extend(Path(pbs_runs).glob('*/workers/*'))
                     # Leave room for new attempts before the next cleanup pass.
-                    used, reclaimed = _reclaim(candidates, roots, used, limit * 9 // 10)
+                    used, reclaimed = _reclaim(candidates, roots, used, target)
+                evicted = 0
+                if used >= limit and prefix_cache:
+                    cache = Path(prefix_cache).resolve()
+                    if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):
+                        cache_size = _used_bytes([str(cache)])
+                        evicted = PrefixStore(cache).reclaim(cache_size - (used-target))
+                        used = _used_bytes(roots)
             except (OSError, ValueError, subprocess.SubprocessError):
                 measured = dict(limit_bytes=limit, used_bytes=None, accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')
             else:
                 measured = dict(limit_bytes=limit, used_bytes=used, accepting_new_jobs=used < limit,
                                 reason='STORAGE_LIMIT_REACHED' if used >= limit else None)
-                if reclaimed:
+                if reclaimed or evicted:
                     measured.update(reclaimed_copies=reclaimed, reclaimed_bytes=max(0, before-used))
+                if evicted:
+                    measured['evicted_prefix_checkpoints'] = evicted
             atomic_json(sample, dict(policy=identity, cleanup=cleanup, sampled_epoch=time.time(), report=measured))
             return measured
     except OSError:

@@ -240,7 +240,9 @@ class ManagerTests(unittest.TestCase):
             manager._demand = lambda: ([(['pbs-0'], ready)] * 4, [], 4, 0)
             observed = dict(token=token, status='R', host_id='pbs-0', job_id='artificial',
                             worker={'accepting': True})
-            gateway.call = lambda _: dict(allocations=[observed], requests={})
+            original_call = gateway.call
+            gateway.call = lambda message: (dict(allocations=[observed], requests={})
+                                            if message['action'] == 'exchange' else original_call(message))
             executor._owned_attempts = lambda: [dict(host_id='pbs-0')]
             manager.cycle()
             self.assertFalse(manager.controls[token]['stop'])
@@ -253,6 +255,12 @@ class ManagerTests(unittest.TestCase):
                 payload=dict(host_id='pbs-0', slots=1, capacity=1)))
             self.assertTrue(response['ok'])
             self.assertEqual(executor.calls[-1][1]['slots'], 0)
+            observed = dict(observed, status='F')
+            gateway.harvest['host_id'] = 'pbs-0'
+            manager.cycle()
+            self.assertEqual(len(manager.state['allocations']), 2)
+            replacement = next(row for other, row in manager.state['allocations'].items() if other != token)
+            self.assertEqual(replacement['spec']['resources']['ncpus'], 4)
 
     def test_preparation_reserved_with_local_readiness_can_wake_pbs(self):
         with tempfile.TemporaryDirectory() as directory:

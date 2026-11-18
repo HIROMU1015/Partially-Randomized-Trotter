@@ -139,6 +139,25 @@ class WorkerTests(unittest.TestCase):
                  patch.object(W.Storage, 'SAMPLE_SECONDS', 0):
                 self.assertEqual(W.Storage.report(policy)['reason'], 'STORAGE_USAGE_UNAVAILABLE')
 
+    def test_storage_can_evict_only_checkpoint_cache_when_spool_has_no_safe_copies(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            cache = root / 'prefix'
+            cache.mkdir()
+            checkpoint = cache / ('1' * 64 + '.json.gz')
+            checkpoint.write_bytes(b'x' * 32768)
+            admissions = cache / '.prefix-admissions.json'
+            admissions.write_text('{}')
+            protected = cache / 'PROTECTED_RECEIPT.json'
+            protected.write_text('retained')
+            policy = dict(roots=[str(cache)], limit_bytes=32768, sample_path=str(root / 'usage.json'))
+            report = W.Storage.report(policy, prefix_cache=str(cache), refresh=True)
+            self.assertTrue(report['accepting_new_jobs'])
+            self.assertEqual(report['evicted_prefix_checkpoints'], 1)
+            self.assertFalse(checkpoint.exists())
+            self.assertEqual(admissions.read_text(), '{}')
+            self.assertEqual(protected.read_text(), 'retained')
+
     def test_storage_reclaims_only_acknowledged_worker_copies(self):
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)

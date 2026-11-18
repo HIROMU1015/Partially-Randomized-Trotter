@@ -335,8 +335,8 @@ def supervise(attempt):
         exclusive(attempt / 'SCIENTIFIC_STARTING.json', dict(epoch=time.time(), automatic_retry=False))
         _run_adapter(profile, attempt, 'execute', attempt)
         observed = validate_completed(profile, assignment, attempt)
-        save_state(attempt, 'COMPLETED_PENDING_TRANSFER', outcome_status=observed['status'])
         timing_append(attempt/'TRANSPORT_TIMING.jsonl','RESULT_BUNDLE_READY')
+        save_state(attempt, 'COMPLETED_PENDING_TRANSFER', outcome_status=observed['status'])
         event(profile, 'COMPLETE', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
               status=observed['status'], process_return=read(attempt / 'PROCESS_RETURN.json'))
         return 0
@@ -417,7 +417,8 @@ class Worker:
         return Resources.resource_snapshot(self.profile)
 
     def _storage_offer(self, report):
-        storage = Storage.report(self.profile.get('storage_limit'), spools=(str(self.work),))
+        storage = Storage.report(self.profile.get('storage_limit'), spools=(str(self.work),),
+                                 prefix_cache=self.profile.get('prefix_cache_directory'))
         if storage is not None:
             report['storage'] = storage
             if not storage['accepting_new_jobs']:
