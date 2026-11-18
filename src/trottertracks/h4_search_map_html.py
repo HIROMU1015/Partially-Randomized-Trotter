@@ -138,17 +138,29 @@ body{background:#f5f7f5}main{max-width:1440px;padding-top:32px}header{margin:0 0
 .result:hover{background:#f3faf7}.result.unavailable{border-top-color:#889397}.method{font-weight:700;font-size:16px}.result strong{margin:8px 0 4px;font:650 clamp(17px,1.8vw,28px)/1.3 system-ui,sans-serif;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.result small{font:500 11px system-ui;color:var(--muted)}.track{height:5px;background:#edf1ee;margin:5px 0 12px}.track i{display:block;height:100%;background:#308377}.conditions{font-size:13px;color:var(--muted)}.inspect{color:var(--blue);font-weight:600;margin-top:10px;font-size:12px}
 .map{table-layout:auto;min-width:100%}.map td{min-width:110px}.map th:first-child{position:sticky;left:0;z-index:2}.map th{line-height:1.4}.map th small{display:block;font-size:10px;color:var(--muted);font-weight:400}.cell{min-height:86px;padding:8px}.cell strong{font-size:14px}.cell.absent{display:grid;align-content:center}.cell[aria-pressed="true"]{box-shadow:inset 0 0 0 3px var(--blue)}.cell[data-state="SOURCE_NOT_IMPORTED"]{background:#f1ebf8}.cell[data-state="PRICE_WAITING"]{background:#e8f0f9}.card{box-shadow:none}.detail-note{margin:0;color:var(--muted)}#detail:focus{outline:0}.allocation{padding:10px 0}.allocation>summary{font-variant-numeric:tabular-nums}.overview p,.section-desc{font-size:14px;margin:4px 0 12px;color:var(--muted)}.map-intro{margin-top:25px}.map-intro h2{margin-bottom:2px}.tabs button.active{background:#125c55}.legend b{vertical-align:middle}.metrics{margin:10px 0}.metric strong{font-size:21px}
 @media(max-width:950px){.results{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:500px){.result{padding:10px}.results{gap:7px}.result strong{font-size:16px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding-top:18px}}
+.joint-tools,.joint-head,.joint-chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.joint-tools{margin:18px 0 10px}.joint-tools button,.joint-chip{background:white;color:var(--ink);border:1px solid #a9bfba;border-radius:6px;padding:6px 12px}
+.joint-tools [aria-pressed=true],.joint-chip[aria-pressed=true]{background:#195e56;color:white;border-color:#195e56}
+.joint-head{justify-content:space-between;margin:16px 0 8px}.joint-head h3,.joint-group h4{margin:0}.joint-stats,.joint-group h4 small{font-size:13px;color:var(--muted);font-weight:normal}
+.joint-group{margin:12px 0 20px;border-left:3px solid #a4c7bb;background:#fbfcfb;padding:10px 14px}.joint-group h4{font-size:18px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.joint-branch{display:grid;grid-template-columns:minmax(145px,19%) 1fr;gap:8px 14px;align-items:baseline;border-top:1px solid var(--line);padding:10px 0;margin-top:4px}
+.joint-branch-title strong,.joint-branch-title small{display:block}.joint-branch-title small{color:var(--muted)}.joint-chip{font:inherit;font-size:14px;line-height:1.35}.joint-chip:hover{border-color:#195e56}.joint-chip small{margin-left:6px;opacity:.85;font-size:11px}
+.joint-inspector{grid-column:1/-1;border:1px solid #a4c7bb;background:#fff;padding:14px;border-radius:6px;min-width:0;overflow-wrap:anywhere}.joint-inspector h5{font-size:16px;margin:0 0 8px}.joint-inspector label{display:grid;gap:3px;min-width:0}.joint-inspector select{min-width:0;max-width:100%;width:100%}.joint-selectors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.joint-rounds{width:auto;font-variant-numeric:tabular-nums}.joint-rounds td,.joint-rounds th{padding:4px 12px;text-align:right}.joint-inspector p{margin:6px 0}
+@media(max-width:700px){.joint-branch,.joint-selectors{grid-template-columns:1fr}.joint-group{padding:8px}.joint-chip{padding:7px 9px}.joint-head{display:block}}
 </style></head><body><main>
 <header><h1>H₄ RPE 探索マップ</h1><p class="sub">目標精度を満たした保存結果について、回路方式ごとの総RZ数と評価範囲を比較します。</p></header>
 <section class="overview" aria-labelledby="comparison-title"><h2 id="comparison-title">方式別の最小総RZ数</h2><p>全収録runのうち、MSE条件を満たし、価格を照合できた配分を比較。棒が短いほど低コストです。</p><div class="results" id="overview"><!--OVERVIEW--></div></section>
-<div class="map-intro"><h2>パラメータの探索範囲</h2><p class="section-desc">方式を選ぶと、登録された候補とQ3で実際に評価した値を比較できます。個別のrunを選ぶと、そのrunの開始時の指定と評価範囲に絞れます。</p></div>
+<div class="map-intro"><h2>どの条件を組み合わせて探索したか</h2><p class="section-desc">方式とrunを選ぶと、その範囲で一緒に評価された条件とショット配分をたどれます。</p></div>
 <section class="card"><div class="bar"><div><label for="view">表示範囲</label><select id="view"></select></div><div><label for="search">候補を絞る</label><input id="search" type="search" placeholder="configuration・公式・κ・配分"></div><button id="clear">絞り込み解除</button></div><p id="coverage" class="data-note"></p><div id="scope" class="run-scope"></div></section>
 <nav id="methods" class="tabs" aria-label="方式"></nav><section class="card parameter-panel"><h2 id="range-title">探索範囲</h2>
 <div class="bar"><label><span id="dimension-label">分割</span><select id="dimension-filter"></select></label><label>要求PF幅<select id="width-filter"></select></label><label>PF公式<select id="formula-filter"></select></label></div>
-<p id="subset-note" class="data-note"></p><div id="parameter-table" class="scroll"></div><details><summary>ラウンド別の実評価範囲（q、R、X/Yショット）</summary><div id="round-ranges" class="scroll"></div></details>
+<div class="joint-tools" role="group" aria-label="表示する記録"><button type="button" id="joint-measured" aria-pressed="true">Q3評価済み</button><button type="button" id="joint-targets" aria-pressed="false">登録候補</button></div>
+<div class="joint-head"><h3 id="joint-title">実際に評価した組み合わせ</h3><span class="joint-stats" id="joint-count" aria-live="polite"></span></div>
+<p class="data-note" id="joint-guide"></p><div id="joint-tree"></div>
+<details id="axis-summary"><summary>各パラメータの指定範囲と評価値</summary><p id="subset-note" class="data-note"></p><div id="parameter-table" class="scroll"></div><details><summary>ラウンド別の実評価範囲（q、R、X/Yショット）</summary><div id="round-ranges" class="scroll"></div></details></details>
 </section><div id="metrics" class="metrics"></div>
 <details class="card" id="coverage-matrix"><summary id="map-title">組合せごとの評価記録</summary><p class="data-note">「対象登録あり・評価記録なし」は対象の記録だけがある組合せ。「—」は対象登録も評価記録も見つからない組合せです。「元結果未取込」は、対応する結果が索引に揃っていないことを表します。</p><div id="grid" class="scroll"></div></details>
-<section id="detail" tabindex="-1" class="card" aria-live="polite"><h2>マスを選ぶと元結果を確認できます</h2><p class="muted">公式・κ・実schedule・X/Y配分・価格根拠・固定commitへたどれます。</p></section>
+<section id="detail" tabindex="-1" class="card" aria-live="polite"><h2>評価記録の詳細</h2><p class="muted">公式・κ・実schedule・X/Y配分・価格根拠・固定commitへたどれます。</p></section>
 <details class="card"><summary>収録run・比較条件・取り込み待ちの記録</summary><div id="sources"></div></details>
 <details class="card"><summary>全収録点の静的表（JavaScriptなしでも閲覧可能）</summary><p class="data-note">ブラウザ内検索も使えます。詳細なJSONは <a href="INDEX.json">INDEX.json</a> を参照してください。</p><div class="scroll"><table class="fallback-table"><thead><tr><th>方式</th><th>公式/p/LD</th><th>要求幅</th><th>configuration</th><th>保存Q3判定</th><th>条件付き費用</th><th>N_X</th><th>N_Y</th><th>固定SOURCE</th></tr></thead><tbody><!--FALLBACK--></tbody></table></div></details>
 <footer class="data-note">Cの比較カタログと公開探索記録を読取専用で結合。ロードマップとは別の探索coverage成果物です。</footer>
@@ -248,6 +260,111 @@ function buildRanges(v,ts,ps){
  if(scope?.source)E('subset-note').append(' ',link(scope.source))
 }
 
+let jointMode='measured';
+function buckets(rows,key){
+ const groups=new Map();
+ for(const r of rows){const k=key(r);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r)}
+ return groups;
+}
+function jointM(r){
+ if(Array.isArray(r.N_X)&&r.N_X.length&&r.N_X.length===r.N_Y?.length)return r.N_X.length-1;
+ return Number.isInteger(r.M)?r.M:null;
+}
+function jointK(r){
+ const token=kval.get(r);
+ if(token==null)return {label:'κ 未収録',exact:'κの値は未収録'};
+ const [kind,value,approx]=K.values[token];
+ const name=kind.startsWith('PAPER')?'κ':kind?kind+' κ':'κ（定義未収録）';
+ return {label:name+(value===approx?' = ':' ≈ ')+(value===approx?value:approx),exact:(kind||'定義未収録')+' ／ κ = '+value};
+}
+function jointField(parent,title,items){
+ const label=el('label',title),select=el('select');
+ for(const [value,name]of items)select.add(new Option(name,value));
+ label.append(select);parent.append(label);return select;
+}
+function jointInspector(rows,branch,trigger,context){
+ const tree=E('joint-tree'), old=tree.querySelector('.joint-inspector');
+ const closing=trigger.getAttribute('aria-pressed')==='true';
+ if(old)old.remove();for(const b of tree.querySelectorAll('[aria-pressed="true"]'))b.setAttribute('aria-pressed','false');
+ if(closing)return;trigger.setAttribute('aria-pressed','true');
+ const box=el('section',null,'joint-inspector'),measured=jointMode==='measured';
+ box.append(el('h5',context));branch.append(box);
+ const selectors=el('div',null,'joint-selectors');box.append(selectors);
+ const byConfig=buckets(rows,r=>r.configuration_id||''),configs=[...byConfig];
+ const cfg=jointField(selectors,'回路構成',configs.map(([id,rs],i)=>[String(i),(id?id.slice(0,12)+'…':'構成ID未収録')+' · '+rs.length+(measured?'配分':'記録')]));
+ const pick=jointField(selectors,measured?'ショット配分':'登録記録',[]),out=el('div');box.append(out);
+ function showRecord(){
+  const r=byConfig.get(configs[Number(cfg.value)][0])[Number(pick.value)];
+  out.replaceChildren();
+  const details=el('details');details.append(el('summary','条件の正確値・記録ID'));
+  field(details,'記録ID',r.id);field(details,'構成ID',r.configuration_id);field(details,'要求PF幅',r.width_key);
+  if(method.startsWith('PR_'))details.append(el('p',jointK(r).exact));
+  out.append(details);
+  if(measured){
+   const table=el('table',null,'joint-rounds'),head=el('tr'),pr=method.startsWith('PR_');
+   for(const h of ['m','qₘ',...(pr?['Rₘ']:[]),'Xショット','Yショット'])head.append(el('th',h));table.append(head);
+   const schedule=r.schedule||(!r.issues?.includes('CONFLICTING_PHYSICAL_SCHEDULE')?configuration(r).schedule:null);
+   const byRound=new Map((Array.isArray(schedule)?schedule:[]).filter(x=>Number.isInteger(x.m)).map(x=>[x.m,x]));
+   const rounds=new Set([...byRound.keys(),...(r.N_X||[]).keys(),...(r.N_Y||[]).keys()]);
+   if(rounds.size){
+    for(const m of [...rounds].sort((a,b)=>a-b)){const t=byRound.get(m)||{},tr=el('tr');
+     for(const value of [m,t.q??t.q_PF,...(pr?[t.R??t.R_outer]:[]),r.N_X?.[m],r.N_Y?.[m]])tr.append(el('td',value??'—'));
+     table.append(tr);
+    }
+    const wrap=el('div',null,'scroll');wrap.append(table);out.append(wrap);
+   }else out.append(el('p','ラウンド別の値は未収録です。'));
+  }else{field(out,'登録状態',r.status);if(r.missing?.length)field(out,'不足',r.missing)}
+  const original=el('button','元記録を見る');original.type='button';
+  original.onclick=()=>{
+   showCell({row_label:r.row_label,width_label:r.width_label,point_ids:measured?[r.id]:[],target_ids:measured?[]:[r.id],state:measured?'EVALUATED':r.status},measured?r.id:undefined);
+   E('detail').focus();
+  };out.append(original);
+ }
+ function setRecords(){
+  const rs=configs[Number(cfg.value)][1];pick.replaceChildren();
+  rs.forEach((r,i)=>pick.add(new Option((measured?'配分 ':'記録 ')+(i+1)+' · '+(r.id||''),String(i))));
+  showRecord();
+ }
+ cfg.onchange=setRecords;pick.onchange=showRecord;setRecords();
+}
+function buildCombinations(targets,points){
+ const measured=jointMode==='measured',pr=method.startsWith('PR_'),unit=measured?'配分':'記録';
+ const rows=[...new Set(measured?points:targets)],tree=E('joint-tree');
+ tree.replaceChildren();
+ E('joint-measured').setAttribute('aria-pressed',String(measured));E('joint-targets').setAttribute('aria-pressed',String(!measured));
+ E('joint-title').textContent=measured?'実際に評価した組み合わせ':'探索候補に登録された組み合わせ';
+ E('joint-guide').textContent=measured?(pr?'各L_Dの下に、そのPF幅・公式・最大ラウンドMで評価したκを表示します。κを選ぶと配分が開きます。':'各条件の「配分を見る」を選ぶと、その回路構成とラウンド別のショット数が開きます。'):'同じ候補記録にある条件をまとめています。記録を選ぶと登録状態と出典を確認できます。';
+ const groups=[...buckets(rows,r=>r.row_key)].sort((a,b)=>numericSort(a[0],b[0]));
+ let paths=0;
+ for(const [,group]of groups){
+  const panel=el('section',null,'joint-group'),title=el('h4',method==='FULL_PF'?'PF公式 '+(group[0].row_label||'未収録'):(group[0].row_label||'分割未収録'));
+  title.append(el('small',group.length.toLocaleString('ja-JP')+unit));panel.append(title);tree.append(panel);
+  const branches=[...buckets(group,r=>JSON.stringify([r.width_key??null,r.formula??null,jointM(r)]))];
+  branches.sort((a,b)=>numericSort(a[1][0].width_label,b[1][0].width_label)||numericSort(a[0],b[0]));
+  for(const [,rs]of branches){
+   const r=rs[0],branch=el('div',null,'joint-branch'),where=el('div',null,'joint-branch-title');
+   const formula=formulas[r.formula]||r.formula||'公式未収録',m=jointM(r);
+   const width=(r.width_label||'幅未同定').split(' [')[0].replace(/^(\d+(?:\.\d+)?)≈h$/,'約$1h');
+   const sub=[...(method==='FULL_PF'?[]:['PF公式 '+formula]),m!=null?'M='+m:'M未収録'].join(' · ');
+   where.append(el('strong','PF幅 '+width),el('small',sub));where.title=(r.width_label||'幅未同定')+' ／ '+(r.width_key||'');
+   const chips=el('div',null,'joint-chips');branch.append(where,chips);panel.append(branch);
+   const leaves=[...buckets(rs,x=>pr?kval.get(x):null)];
+   leaves.sort((a,b)=>Number(K.values[a[0]]?.[2]??Infinity)-Number(K.values[b[0]]?.[2]??Infinity));
+   for(const [,items]of leaves){
+    paths++;const key=pr?jointK(items[0]):null,action=key?key.label:measured?'配分を見る':'登録記録を見る';
+    const b=el('button',action,'joint-chip');b.type='button';b.dataset.count=String(items.length);b.setAttribute('aria-pressed','false');
+    if(key)b.title=key.exact;
+    b.append(el('small',items.length.toLocaleString('ja-JP')+unit));
+    const context=[r.row_label,width,sub,key?.label].filter(Boolean).join(' ／ ');
+    b.onclick=()=>jointInspector(items,branch,b,context);chips.append(b);
+   }
+  }
+ }
+ E('joint-count').textContent=paths.toLocaleString('ja-JP')+'組の表示条件 · '+rows.length.toLocaleString('ja-JP')+unit;
+ if(!rows.length)tree.append(el('p',measured?'この絞り込みにQ3評価の記録はありません。':'この絞り込みに候補の登録記録はありません。','empty'));
+}
+for(const [id,mode]of [['joint-measured','measured'],['joint-targets','targets']])
+ E(id).onclick=()=>{jointMode=mode;redraw()};
 function showCell(c, topPoint){let d=E('detail');d.replaceChildren();let h=el('div',null,'detail-head');h.append(el('h2',labels[method]+' · '+c.row_label+' × '+c.width_label),el('span',states[c.state]||c.state,'pill'));d.append(h);const matched=points(c).filter(p=>p.q3_evaluated);field(d,'表示中のQ3構成 / 配分 / 適合',new Set(matched.map(p=>p.configuration_id)).size+' / '+matched.length+' / '+matched.filter(p=>p.q3_status==='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD').length);
  const bestIds=new Set(c.min_point_ids||[]), ps=points(c).sort((a,b)=>Number(b.id===topPoint)-Number(a.id===topPoint)||Number(bestIds.has(b.id))-Number(bestIds.has(a.id)));if(!ps.length)d.append(el('p','該当する評価点はありません。以下の対象・欠測記録を確認してください。','muted'));
  const progress=el('p',null,'data-note'),articles=el('div'),more=el('button','次の50件');let shown=0;d.append(progress,articles,more);
@@ -260,7 +377,7 @@ function showCell(c, topPoint){let d=E('detail');d.replaceChildren();let h=el('d
  more.onclick=appendPage;appendPage();
  const ts=(c.target_ids||[]).map(id=>allTargets.get(id)).filter(t=>t&&passes(t,E('search').value.trim().toLowerCase()));if(ts.length){let x=el('details');x.open=!ps.length;x.append(el('summary','探索対象・選択・不足記録 ('+ts.length+')'));for(const t of ts){let item=el('div',null,'item');field(item,'状態',t.status);field(item,'構成',t.configuration_id);field(item,'不足',t.missing);if(t.source)item.append(link(t.source));x.append(item)}d.append(x)}
 }
-function redraw(){E('detail').replaceChildren(el('h2','評価点の詳細'),el('p','「組合せごとの評価記録」を開いてマスを選ぶと、個々の配分を確認できます。','detail-note'));const v=selected(), q=E('search').value.trim().toLowerCase();let sourceCells=(v.cells||[]).filter(c=>c.method===method);
+function redraw(){E('detail').replaceChildren(el('h2','評価点の詳細'),el('p','組み合わせから配分を選び、「元記録を見る」を開いてください。','detail-note'));const v=selected(), q=E('search').value.trim().toLowerCase();let sourceCells=(v.cells||[]).filter(c=>c.method===method);
  E('dimension-label').textContent=method==='FULL_PF'?'公式':method==='TRUNCATED_PF'?'p':'L_D';
  selectOptions('dimension-filter',sourceCells.map(c=>[c.row_key,c.row_label]));
  E('dimension-filter').parentElement.hidden=method==='FULL_PF';
@@ -270,6 +387,7 @@ function redraw(){E('detail').replaceChildren(el('h2','評価点の詳細'),el('
  const getRecords=(ids,map)=>(ids||[]).map(i=>map.get(i)).filter(r=>r&&passes(r,q));
  const ts=records.filter(r=>allTargets.has(r.id)&&passes(r,q)),evaluated=records.filter(r=>allPoints.has(r.id)&&passes(r,q)&&r.q3_evaluated);
  buildRanges(v,ts,evaluated);
+ buildCombinations(ts,evaluated);
  let cells=sourceCells.filter(c=>getRecords(c.point_ids,allPoints).length||getRecords(c.target_ids,allTargets).length);
  E('map-title').textContent='組合せごとの評価記録を開く · '+labels[method]+' · '+({FULL_PF:'公式 × 要求幅',TRUNCATED_PF:'切り捨て位置p × 要求幅',PR_PAULI:'L_D × 要求幅',PR_DF:'L_D × 要求幅'}[method]);
  let pointsIds=new Set(cells.flatMap(c=>c.point_ids||[])), ps=[...pointsIds].map(id=>allPoints.get(id)).filter(Boolean).filter(p=>passes(p,q));let configs=new Set(ps.filter(p=>p.q3_status).map(p=>p.configuration_id));let metrics=[['Q3評価済み物理構成',configs.size],['評価した配分',ps.filter(p=>p.q3_status).length],['適合配分',ps.filter(p=>p.q3_status==='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD').length],['記録未取込の対象',cells.reduce((n,c)=>n+(c.missing_count||0),0)]];E('metrics').replaceChildren(...metrics.map(([l,n])=>{let e=el('div',null,'metric');e.append(el('strong',n),el('span',l));return e}));
