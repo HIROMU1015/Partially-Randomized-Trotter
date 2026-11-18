@@ -306,6 +306,45 @@ class RelayTests(unittest.TestCase):
             finally:
                 harness.close()
 
+    def test_foreign_mailbox_attempts_do_not_block_claim_or_recovery(self):
+        for local_ledger in (True, False):
+            with self.subTest(local_ledger=local_ledger), tempfile.TemporaryDirectory() as temporary:
+                harness = Harness(temporary)
+                try:
+                    if local_ledger:
+                        config = W.read(harness.configuration)
+                        config['state_directory'] = str(harness.executor.run_dir/'distributed'/'relay')
+                        write(harness.configuration, config)
+                        harness.relay = R.Relay(harness.configuration)
+                    proposal, task = harness.propose(2)
+                    stale = [
+                        dict(job_id='old-job', attempt_id='old-attempt', state='UNKNOWN'),
+                        dict(job_id=task.job.name, attempt_id='old-owned-job-attempt',
+                             state='COMPLETED_PENDING_TRANSFER'),
+                    ]
+                    remote = harness.relay.remote
+                    def mailbox(worker, action, value=None):
+                        result, seconds = remote(worker, action, value)
+                        if action == 'status':
+                            result['attempts'] = stale + result['attempts']
+                        return result, seconds
+                    harness.relay.remote = mailbox
+                    with patch.object(harness.relay, 'post', wraps=harness.relay.post) as post:
+                        harness.tick()
+                        wait_until(lambda: harness.tick() or task.event.is_set())
+                        ignored = {row['attempt_id'] for row in stale}
+                        reported = {call.args[1].get('attempt_id') for call in post.call_args_list
+                                    if call.args[0] == '/v1/state'}
+                        self.assertEqual(reported & ignored, set() if local_ledger else ignored)
+                        self.assertFalse(any(call.args[1].get('attempt_id') in ignored
+                                             for call in post.call_args_list if call.args[0] == '/v1/complete'))
+                    self.assertEqual(harness.view.answer(proposal, allow_new=False)['MSE_upper'], Fraction(13, 2))
+                    self.assertEqual(sum(e['event'] == 'ASSIGN' for e in harness.executor.store.events()), 1)
+                    self.assertEqual(sum(e['event'] == 'ACCEPT' for e in harness.executor.store.events()), 1)
+                    events = (harness.relay.directory/'EVENTS.jsonl').read_text()
+                    self.assertEqual(events.count('MAILBOX_ATTEMPT_OUTSIDE_RUN'), 2)
+                finally:
+                    harness.close()
 
     def test_cli_stop_leaves_received_job_running_then_start_recovers(self):
         with tempfile.TemporaryDirectory(prefix='q3-relay-cli-artificial-') as temporary:

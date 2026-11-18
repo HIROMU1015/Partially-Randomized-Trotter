@@ -8,6 +8,7 @@ Stopping this relay leaves all received jobs running independently.
 import argparse
 import base64
 from concurrent.futures import ThreadPoolExecutor, wait
+from contextlib import closing
 import threading
 try:
     import fcntl
@@ -17,10 +18,12 @@ import json
 import os
 from pathlib import Path
 import shlex
+import sqlite3
 import subprocess
 import sys
 import tempfile
 import time
+from urllib.error import HTTPError
 import urllib.request
 import uuid
 
@@ -168,6 +171,7 @@ class Relay:
         self.pending_ticks = {}
         self.log_lock = threading.Lock()
         self.deployed_workers={}
+        self.reported_unowned = set()
         started = time.time()
         self.state = dict(pid=os.getpid(), configuration=str(self.configuration), workers={},
                           started_epoch=started, heartbeat_epoch=started, stopped=False,
@@ -370,6 +374,43 @@ class Relay:
             self.remote(worker,'artifacts-put',dict(blobs=result['blobs']))
             self.log('ARTIFACT_DELIVERED',host_id=worker['host_id'],sha256=sha)
 
+    def _owned_attempts(self, host):
+        """Read the controller's run ledger when the relay shares that host."""
+        distributed = self.directory.parent
+        if not self.config.get('external_tunnel') or (distributed.name, self.directory.name) != ('distributed', 'relay'):
+            return None
+        ledger = distributed/'QUEUE.sqlite3'
+        endpoint = distributed/'ENDPOINT.json'
+        if not ledger.is_file() or not endpoint.is_file() or json.loads(endpoint.read_text())['url'] != self.url:
+            return None
+        with closing(sqlite3.connect(ledger.as_uri()+'?mode=ro', uri=True, timeout=2)) as db:
+            return set(db.execute('SELECT job_id,attempt_id FROM jobs WHERE host_id=? AND attempt_id IS NOT NULL',
+                                  (host,)))
+
+    def _log_unowned_attempt(self, owner):
+        identity = (owner['host_id'], owner['job_id'], owner['attempt_id'])
+        if identity not in self.reported_unowned:
+            self.reported_unowned.add(identity)
+            self.log('MAILBOX_ATTEMPT_OUTSIDE_RUN', **owner)
+
+    def _report_attempt(self, owner, state, detail):
+        try:
+            self.post('/v1/state', dict(owner, state=state, detail=detail))
+        except HTTPError as error:
+            # A relay on a different host has no local ledger to consult.
+            # Only an explicit ownership rejection can be skipped.
+            with error:
+                if error.code != 409:
+                    raise
+                try: reason = json.load(error)['error']
+                except (ValueError, KeyError, TypeError): raise error
+            if reason not in ('ValueError: Different execution host/attempt',
+                              'ValueError: Unknown job or different execution host/attempt'):
+                raise ValueError(reason) from error
+            self._log_unowned_attempt(owner)
+            return False
+        return True
+
     def tick(self, worker, observed=None):
         info = self.state['workers'].setdefault(worker['host_id'], dict(failure_count=0, next_retry_epoch=0))
         info['phase'] = 'MAILBOX_STATUS'
@@ -382,12 +423,17 @@ class Relay:
         self.log('MAILBOX_STATUS_RETURN',host_id=worker['host_id'],started=status_start,seconds=download_seconds)
         host = status['host_id']
         if host != worker['host_id']: raise ValueError('Mailbox host differs from relay profile')
+        owned = self._owned_attempts(host) if any(a['state'] != 'TRANSFERRED' for a in status['attempts']) else None
         for attempt in status['attempts']:
             state = attempt['state']
             if state == 'TRANSFERRED': continue
             owner = dict(host_id=host, job_id=attempt['job_id'], attempt_id=attempt['attempt_id'])
+            if owned is not None and (owner['job_id'], owner['attempt_id']) not in owned:
+                self._log_unowned_attempt(owner)
+                continue
             info['phase'] = 'CONTROLLER_STATE'
-            self.post('/v1/state', dict(owner, state=state, detail=attempt.get('detail', {})))
+            if not self._report_attempt(owner, state, attempt.get('detail', {})):
+                continue
             if state == 'COMPLETED_PENDING_TRANSFER':
                 started = time.monotonic()
                 info['phase'] = 'CONTROLLER_ARTIFACTS'
