@@ -83,6 +83,8 @@ class WorkerTests(unittest.TestCase):
                 self.assertEqual(W.resource_state(attempt, 'COMPLETED_PENDING_TRANSFER'),
                                  'COMPLETED_PENDING_TRANSFER')
                 timing.unlink()
+                (attempt / 'PROCESS_RETURN.json').touch()
+                self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'UNKNOWN')
                 W.atomic(attempt / 'PROCESS_RETURN.json', {'returncode': 1})
                 self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'EXITED')
                 W.atomic(attempt / 'WORKER_LAUNCH.json', {'pid': 99})

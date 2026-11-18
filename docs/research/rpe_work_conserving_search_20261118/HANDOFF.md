@@ -116,3 +116,19 @@ PR-Pauliの信号では保存平均のカーネル照合に使う固定Gitファ
 2026-11-19の継続では、SOURCE `39efb5ad191b180fba84174bef54a1d025c5d9dd` をRomuTail、Romulaptop WSL、server2、PBSに配置した。旧run `search-d7b7c5848d3b46f445b3` にWSLの終了済み3件を元のattemptで回収し、各1回の受付とackを確認してから通常Stopで終了した。継続run `search-2029d134639349cb5961` は `romutail-prep-recovery-39efb5ad1` を明示指定し、旧runの準備台帳15件と元の探索範囲・予算を継承した。
 
 通常Startのクライアント応答は時間切れだった。同じIDを通常Statusで照会し、起動・稼働と§10.5 PASSを確認した。RomuTailの `prep-06b0565d847ea43c7188b7fc` と `prep-1b04d50e54d6437d1e05d80b` は通常キューでPR-Pauli信号を完了し、各1回回収・採用された。新規信号は計12ラウンド、保存信号の再利用は計14ラウンド。RomuTailの `.rpe-central/deployment/romutail-prep-recovery-39efb5ad1/LIVE_ACCEPTANCE.json` にreceipt照合を保存した。PR-Pauli compileの受付条件は旧runから継承した。
+
+### 準備キューの継続と空き枠の復旧
+
+2026-11-19に、照合済みキューを先に用意する継続runが、明示した `auto` を同時1枠として保存してしまうことを確認した。PBSの準備1件が未確定になるとほかのホストに割当が進まなくなった。修正後は保存ROUNDの `auto` を継承し、元runの前提と同じ方式・範囲・予算で動作する。終了済みの親PBS割当から引き継いだ `UNKNOWN` の準備attemptは同じrequestの保留に使い、引継ぎ先のCPU枠を占有しない。
+
+準備workerは、実行版の作業ディレクトリ作成処理を使い、providerごとの固定SOURCE・実行コマンド・入力・runtime照合をそのまま適用する。疎なGit indexで、対象外の保存成果のblobを読み込まずに作業領域を作成できる。PBSは適合する待ち仕事が増えた場合、所有attemptがない小さな割当を終了し、既存のCPU・RAM条件の範囲で確保し直す。
+
+WSLでは容量上限を超えていたため、再生成できるDP checkpointを既存のLRUで整理し、受付4枠を回復した。新版は50 GiBに達したとき、回収済み作業コピーの整理に続き、必要ならprofile指定のDP checkpointも整理する。原結果・所有・receipt・未確定成果は保持する。
+
+固定版 `1232aa3eb3de4afc28ff63e412169b74f10e3dfa` のreleaseは `romutail-prep-fleet-1232aa3eb`。RomuTail、server2、WSL、PBSに配置済み。server1は復帰後に同じmanifestで配置する。人工・回帰125件とサブテスト3件が通過した。元runは `search-2029d134639349cb5961`、引継ぎ先は `search-f93ece39d4907cd3d3dd`。元runの準備受付済み25件、Q3の採用済み9件、元PBS準備の未確定1件を照合し、通常Startの§10.5が通過した。元の保存価格はGit入力の出所とSHA-256を保全した。引継ぎ後の同時実行の保存設定は `auto`。中央記録は各runの `RUN_LINEAGE.json`、`DUPLICATE_PREFLIGHT.json` とreleaseの `TRANSPORT_ACCEPTANCE.json` を参照する。
+
+PBS実機の人工検収は先行版 `b62f0353d6b49445da0eaedfb6f10871cf687d17` で実施した。通常Startの人工run `search-3c1090aeeb0e3c8d80e9` で、PBSが人工compile 1件、人工Q3 4件を処理し、RomuTailが人工信号2件と監査1件を処理した。完了後の通常Resumeは `REUSED_COMPLETED`。PBS割当 `267297.CPUcluster-PRISM` は2 CPUで終了した。実H4の準備との照合は別に記録する。
+
+引継ぎ先の実探索で、PBSが2 CPUの割当 `267298.CPUcluster-PRISM` を終了し、8 CPUの割当 `267299.CPUcluster-PRISM` へ切り替えた。RomuTailの中央台帳でPBSおよびRomulaptop WSLへのQ3実行開始を確認した。server2では、旧未確定attempt `a68a78ab458e0a0d0987` の0バイト終了ファイルで受付照会が停止した。空ファイルを同じattempt内の `PROCESS_RETURN.interrupted-empty` に保全し、`INTERRUPTED_RECEIPT_LOCATION.json` に出所とSHA-256を記録した。コードにも中断書き込みの例外処理を追加した。元の状態は `UNKNOWN` のまま再実行を禁止する。
+
+PR-Pauliの価格較正は、元の固定設定のホスト別参照と、科学実行器が確認する公開済みGit束縛を準備するまで保留する。通常の信号生成および評価可能なQ3は独立して割り当てる。

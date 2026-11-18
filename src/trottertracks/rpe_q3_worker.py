@@ -104,8 +104,12 @@ def resource_state(attempt, state):
             return state
     exit_receipt = attempt / 'PROCESS_RETURN.json'
     if exit_receipt.is_file():
-        receipt = read(exit_receipt)
-        if type(receipt.get('returncode')) is int or type(receipt.get('signal')) is int:
+        try:
+            receipt = read(exit_receipt)
+        except (OSError, ValueError):
+            receipt = None  # An interrupted write cannot release a live slot.
+        if isinstance(receipt, dict) and (
+                type(receipt.get('returncode')) is int or type(receipt.get('signal')) is int):
             return 'EXITED'
     timing = attempt / 'TRANSPORT_TIMING.jsonl'
     if timing.is_file():
