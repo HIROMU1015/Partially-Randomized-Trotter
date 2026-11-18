@@ -5,12 +5,14 @@ run_rpe_schedule_search CLI, started once after metadata checks and input publis
 """
 import argparse
 from collections import Counter
+from contextlib import ExitStack
 from copy import deepcopy
 from datetime import datetime, timezone
 import fcntl
 import hashlib
 import json
 import os
+import signal
 from pathlib import Path
 import subprocess
 import sys
@@ -142,7 +144,7 @@ def q3_preflight(old_run):
     return dict(status_counts=dict(counts), unresolved=unresolved)
 
 
-def import_inputs(plan, old_run, study):
+def import_inputs(plan, old_run, study, old_return=None):
     from trottertracks import rpe_method_optimizer as O, rpe_kappa_schedule as KS, rpe_schedule_search as W
     import run_rpe_kappa_neighbourhood as K
     from run_rpe_schedule_search import WidthDriver
@@ -168,6 +170,7 @@ def import_inputs(plan, old_run, study):
         raise RuntimeError('Prior Q3 needs review; no scientific launch: PRELAUNCH_REVIEW.json')
     provenance = dict(run_directory=str(old_run), worktree_head=old_head,
                       snapshots_sha256=original, code_source=plan['old_code_source'],
+                      termination=old_return,
                       old_evidence_local_only=plan.get('old_evidence_local_only') is True)
     old_state = read(old_run / 'KAPPA_STATE.json')
     completed = read(old_run / 'completion/STATE.json')
@@ -179,6 +182,8 @@ def import_inputs(plan, old_run, study):
     spec = read(old_study / 'ROUND.json')
     if plan.get('live_ready_refill') is True:
         spec['live_ready_refill'] = True
+    if plan.get('work_conserving_search') is True:
+        spec['search_overrides']['work_conserving_search'] = True
     registry = str(run / 'PRICE_RULES_REGISTRY.json')
     spec['base_commit'] = plan['new_code_source']
     spec['candidate_completion']['source'] = plan['new_code_source']
@@ -239,22 +244,102 @@ def import_inputs(plan, old_run, study):
     return run, remaining
 
 
+def previous_controller_return(plan, old_run):
+    """The handover wrapper owns a study lock and writes its terminal status there."""
+    if plan.get('previous_handover_wrapper') is True:
+        terminal = read(old_run.parent / 'HANDOVER_STATUS.json')
+        start = read(old_run / 'CONTROLLER_PID.json')
+        if not (terminal.get('status') == 'CONTROLLER_RETURN'
+                and Path(terminal['run_directory']).resolve() == old_run
+                and start.get('status') == 'CONTROLLER_START'
+                and start.get('source') == plan['old_code_source']
+                and start.get('input_commit') == plan['old_input_commit']):
+            raise RuntimeError('Previous handover wrapper identity or terminal status differs')
+        return terminal
+    records = [json.loads(l) for l in (old_run / 'CONTROLLER_INVOCATIONS.jsonl').read_text().splitlines()]
+    if not records or records[-1].get('event') != 'CONTROLLER_RETURN':
+        raise RuntimeError('No recorded old controller return; preserve and review ownership')
+    return records[-1]
+
+
+def preparation_wave_drained(old_run):
+    driver = [json.loads(line) for line in (old_run / 'DRIVER_PROGRESS.jsonl').read_text().splitlines()]
+    last_wave = next((r for r in reversed(driver) if r['event'] in
+                      ('PREPARATION_WAVE_START', 'PREPARATION_WAVE_END')), {})
+    stages = [json.loads(line) for line in (old_run / 'ROUND_STAGES.jsonl').read_text().splitlines()]
+    phase = stages[-1]
+    state = read(old_run / 'KAPPA_STATE.json')
+    completion = read(old_run / 'completion/STATE.json')
+    return (last_wave.get('event') == 'PREPARATION_WAVE_END' and last_wave['cycle'] == state['cycle']
+            and phase['event'] == 'START' and phase['phase'] in
+            ('WIDTH_READY_DURING_PREPARATION', 'WIDTH_SEARCH_AND_Q3')
+            and not state.get('stop')
+            and not any(r['status'] == 'SELECTED' for r in completion['records'].values()))
+
+
+def request_drain_at_boundary(plan, study, old_run, status):
+    """Request one controller-only interrupt when no preparation leaf is owned."""
+    request = study / 'DRAIN_REQUEST.json'
+    previous_status = old_run.parent / 'HANDOVER_STATUS.json'
+    old_pid = read(old_run / 'CONTROLLER_PID.json')
+    if not (old_pid.get('source') == plan['old_code_source']
+            and old_pid.get('input_commit') == plan['old_input_commit']
+            and old_pid.get('pid') == plan['old_pid']):
+        raise RuntimeError('Previous controller identity differs')
+    if request.exists() or read(previous_status).get('status') == 'CONTROLLER_RETURN':
+        return
+
+    write(status, stamp('WAITING_FOR_PREPARATION_BOUNDARY', previous_pid=old_pid['pid'],
+                        old_run=str(old_run), new_source=plan['new_code_source']))
+    pid = old_pid['pid']
+    process = Path(f'/proc/{pid}')
+    with os.fdopen(os.pidfd_open(pid), 'rb') as handle:
+        while True:
+            old_status = read(previous_status)
+            if old_status.get('status') == 'CONTROLLER_RETURN':
+                return
+            if old_status.get('status') != 'FIXED_SOURCE_RUNNING':
+                raise RuntimeError('Previous controller is no longer in its expected running state')
+            command = process.joinpath('cmdline').read_bytes().rstrip(b'\0').split(b'\0')
+            if ([os.fsdecode(arg) for arg in command] != old_pid['command']
+                or process.joinpath('cwd').resolve() != Path(plan['old_root']).resolve()):
+                raise RuntimeError('Previous controller process differs from the recorded command and worktree')
+            try:
+                safe = preparation_wave_drained(old_run)
+            except json.JSONDecodeError:
+                safe = False  # a progress line may be in the middle of appending
+            if safe:
+                # A loss before recording the send leaves an ambiguous request.
+                # Stop there instead of risking a second signal on resume.
+                record = stamp('CONTROLLER_ONLY_DRAIN_REQUEST', previous_pid=pid,
+                               old_run=str(old_run), worker_signals=0,
+                               old_code_source=plan['old_code_source'])
+                with request.open('x') as out:
+                    json.dump(record, out, indent=2)
+                    out.write('\n')
+                signal.pidfd_send_signal(handle.fileno(), signal.SIGINT)
+                return
+            time.sleep(1)
+
+
 def execute(plan, study):
     old_run = Path(plan['old_run'])
     status = study / 'HANDOVER_STATUS.json'
+    if plan.get('drain_at_preparation_boundary') is True:
+        request_drain_at_boundary(plan, study, old_run, status)
     write(status, stamp('WAITING_FOR_OLD_OWNER', old_run=str(old_run),
                         new_source=plan['new_code_source'], automatic_scientific_retry=False))
-    # The old wrapper holds this lock until its controller and child drain end.
-    # No signal or modification of the running old SOURCE is used.
-    with (old_run / 'CONTROLLER.lock').open('a') as ownership:
-        fcntl.flock(ownership, fcntl.LOCK_EX)
+    # Retain prior ownership while the new controller runs. Take the immediate
+    # wrapper lock before its ancestors, in the same order used by that wrapper.
+    previous_wrapper = plan.get('previous_handover_wrapper') is True
+    owner = old_run.parent / 'HANDOVER.lock' if previous_wrapper else old_run / 'CONTROLLER.lock'
+    with ExitStack() as ownership:
+        for lock in (owner, *(Path(p) for p in plan.get('ancestor_owner_locks', ()))):
+            fcntl.flock(ownership.enter_context(lock.open('a')), fcntl.LOCK_EX)
         write(status, stamp('OLD_OWNER_RELEASED_PREFLIGHT', old_run=str(old_run)))
-        records = [json.loads(l) for l in (old_run / 'CONTROLLER_INVOCATIONS.jsonl').read_text().splitlines()]
-        if not records or records[-1].get('event') != 'CONTROLLER_RETURN':
-            raise RuntimeError('No recorded old controller return; preserve and review ownership')
-        old_return = records[-1]
+        old_return = previous_controller_return(plan, old_run)
         if plan.get('controller_only_sigint') is True:
-            terminal = read(old_run / 'CONTROLLER_STATUS.json')
+            terminal = old_return if previous_wrapper else read(old_run / 'CONTROLLER_STATUS.json')
             stop = read(old_run / 'KAPPA_STATE.json').get('stop', {})
             if not (terminal == old_return and terminal.get('returncode') in (-2, 130, 1)
                     and terminal.get('stop') == stop and stop.get('reason') == 'RUNTIME_EXCEPTION'
@@ -273,18 +358,20 @@ def execute(plan, study):
                 raise RuntimeError('Old branch ownership changed; no automatic edits')
             git('diff', '--exit-code', plan['old_code_source'], '--', 'src', 'scripts', cwd=old_root)
             old_paths = [str((old_run / f).relative_to(old_root)) for f in plan['snapshot_files']]
-            old_paths += [str((old_run / f).relative_to(old_root)) for f in
-                          ('CONTROLLER.log', 'CONTROLLER_INVOCATIONS.jsonl', 'ROUND_STAGES.jsonl',
-                           'DRIVER_PROGRESS.jsonl', 'PROGRESS.jsonl', 'completion/PROGRESS.jsonl')]
+            logs = ['ROUND_STAGES.jsonl', 'DRIVER_PROGRESS.jsonl', 'PROGRESS.jsonl', 'completion/PROGRESS.jsonl']
+            if not previous_wrapper:
+                logs += ['CONTROLLER.log', 'CONTROLLER_INVOCATIONS.jsonl']
             if plan.get('controller_only_sigint') is True:
-                old_paths += [str((old_run / f).relative_to(old_root)) for f in
-                              ('CONTROLLER_STATUS.json', 'RUNTIME_ERRORS.jsonl')]
+                logs += ['RUNTIME_ERRORS.jsonl']
+                if not previous_wrapper:
+                    logs += ['CONTROLLER_STATUS.json']
+            old_paths += [str((old_run / f).relative_to(old_root)) for f in logs]
             git(*IDENTITY, 'add', '--sparse', '--', *old_paths, cwd=old_root)
             if git('diff', 'HEAD', '--name-only', '--', *old_paths, cwd=old_root):
                 git(*IDENTITY, 'commit', '--only', '-m', 'Preserve terminal R08 metadata before technical source handover', '--', *old_paths, cwd=old_root)
                 if plan.get('old_evidence_local_only') is not True:
                     git('push', 'origin', plan['old_branch'], cwd=old_root)
-            run, remaining = import_inputs(plan, old_run, study)
+            run, remaining = import_inputs(plan, old_run, study, old_return)
             git(*IDENTITY, 'add', '--sparse', '--', str(study.relative_to(ROOT)))
             git(*IDENTITY, 'commit', '--only', '-m', 'Fix R08 recovery inputs after old owner drain; preserve scientific evidence', '--', str(study.relative_to(ROOT)))
             git('push', 'origin', git('branch', '--show-current'))
@@ -307,7 +394,7 @@ def execute(plan, study):
                    '--problem', str(study / 'PROBLEM.json'), '--round', str(study / 'ROUND.json'),
                    '--run-dir', str(run), '--batch', str(plan['batch']), '--max-cycles', str(remaining)]
         write(status, stamp('FIXED_SOURCE_RUNNING', input_commit=commit, command=command,
-                            old_return=records[-1], run_directory=str(run)))
+                            old_return=old_return, run_directory=str(run)))
         env = dict(os.environ, PYTHONUNBUFFERED='1', PYTHONDONTWRITEBYTECODE='1', PYTHONPATH=str(ROOT / 'src'))
         with (run / 'CONTROLLER.log').open('a') as log:
             process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)

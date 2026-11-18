@@ -3,6 +3,9 @@ from copy import deepcopy
 import importlib.util
 import json
 from pathlib import Path
+import signal
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -55,6 +58,63 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual([p['status'] for p in driver.state['points']], ['HELD', 'REGISTERED'])
         self.assertEqual(held[0]['reason'], 'COMPLETED_CONFIGURATION_MISMATCH:DIFFERENT_SPLIT_LAMBDA_SOURCE')
         self.assertEqual(records['bad']['status'], 'READY_FOR_SEARCH')
+
+    def test_previous_handover_identity_and_terminal_status(self):
+        with tempfile.TemporaryDirectory() as t:
+            study = Path(t).resolve()
+            run = study / 'run02'
+            plan = dict(previous_handover_wrapper=True, old_code_source='previous-code',
+                        old_input_commit='previous-input')
+            H.write(run / 'CONTROLLER_PID.json', dict(status='CONTROLLER_START',
+                source='previous-code', input_commit='previous-input'))
+            terminal = dict(status='CONTROLLER_RETURN', run_directory=str(run), returncode=-2,
+                            stop=dict(reason='RUNTIME_EXCEPTION', error_type='KeyboardInterrupt'))
+            status = study / 'HANDOVER_STATUS.json'
+            H.write(status, terminal)
+            self.assertEqual(H.previous_controller_return(plan, run), terminal)
+            with self.assertRaisesRegex(RuntimeError, 'identity'):
+                H.previous_controller_return(dict(plan, old_input_commit='other-input'), run)
+            H.write(status, dict(terminal, status='FIXED_SOURCE_RUNNING'))
+            with self.assertRaisesRegex(RuntimeError, 'terminal'):
+                H.previous_controller_return(plan, run)
+
+    def test_preparation_boundary_and_controller_only_signal(self):
+        with tempfile.TemporaryDirectory() as t:
+            root = Path(t).resolve()
+            old = root / 'old' / 'run02'
+            study = root / 'new'
+            H.write(old / 'KAPPA_STATE.json', dict(cycle=12))
+            H.write(old / 'completion/STATE.json', dict(records={'a': dict(status='SELECTED')}))
+            # The progress files use one JSON object per line.
+            (old / 'ROUND_STAGES.jsonl').write_text(json.dumps(dict(event='START',
+                phase='WIDTH_READY_DURING_PREPARATION')) + '\n')
+            progress = old / 'DRIVER_PROGRESS.jsonl'
+            progress.write_text(json.dumps(dict(cycle=12, event='PREPARATION_WAVE_START')) + '\n')
+            self.assertFalse(H.preparation_wave_drained(old))
+            progress.write_text(json.dumps(dict(cycle=12, event='PREPARATION_WAVE_END')) + '\n')
+            self.assertFalse(H.preparation_wave_drained(old))
+            H.write(old / 'completion/STATE.json', dict(records={'a': dict(status='READY_FOR_SEARCH')}))
+            self.assertTrue(H.preparation_wave_drained(old))
+            child_command = [sys.executable, '-c', 'import time; time.sleep(30)']
+            child = subprocess.Popen(child_command, cwd=root, stderr=subprocess.DEVNULL)
+            try:
+                H.write(old / 'CONTROLLER_PID.json', dict(pid=child.pid, command=child_command,
+                                                         source='previous-code', input_commit='previous-input'))
+                H.write(old.parent / 'HANDOVER_STATUS.json', dict(status='FIXED_SOURCE_RUNNING'))
+                plan = dict(old_pid=child.pid, old_root=str(root), old_code_source='previous-code',
+                            old_input_commit='previous-input', new_code_source='new-code')
+                status = study / 'HANDOVER_STATUS.json'
+                H.request_drain_at_boundary(plan, study, old, status)
+                self.assertIn(child.wait(timeout=5), (-signal.SIGINT, 130))
+                request = study / 'DRAIN_REQUEST.json'
+                saved = request.read_bytes()
+                self.assertEqual(H.read(request)['worker_signals'], 0)
+                H.request_drain_at_boundary(plan, study, old, status)
+                self.assertEqual(request.read_bytes(), saved)
+            finally:
+                if child.poll() is None:
+                    child.terminate()
+                    child.wait()
 
     def test_q3_missing_or_failed_return_is_not_automatic_retry(self):
         with tempfile.TemporaryDirectory() as t:
