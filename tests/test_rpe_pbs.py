@@ -160,6 +160,50 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual(gateway.calls[0]['spec']['token'], token)
             self.assertEqual(P.read(manager.path)['allocations'][token]['status'], 'INTENT')
 
+    def test_ready_q3_sizing_uses_fixed_cpu_footprint_and_pins_the_intent(self):
+        with tempfile.TemporaryDirectory() as directory:
+            executor = FakeExecutor(directory)
+            gateway = FakeGateway()
+            config = settings()
+            config['resources'].update(ncpus=96, mem='350gb')
+            config['workers'][0]['profile']['dp_workers'] = 2
+            config.update(task_seconds={'q3': 60},
+                          allocation_sizing={'q3_startup_memory_bytes_per_task': 8 * 1024**3})
+            manager = P.PbsManager(executor, config, gateway=gateway)
+            try:
+                request = dict(route={'kind': 'pauli'})
+                single = manager._submit('pbs-0', config['workers'][0], {'shortage': 1}, [request])
+                batch = manager._submit('pbs-0', config['workers'][0], {'shortage': 3}, [request] * 3)
+                bounded = manager._submit('pbs-0', config['workers'][0], {'shortage': 50}, [request] * 50)
+                for spec, cpus, slots in ((single, 2, 1), (batch, 6, 3), (bounded, 96, 43)):
+                    self.assertEqual(spec['resources']['ncpus'], cpus)
+                    self.assertEqual(spec['resources']['mem'], '350gb')
+                    self.assertEqual(spec['profile']['slot_policy']['initial_slots'], slots)
+                    self.assertEqual(P.read(manager.path)['allocations'][spec['token']]['spec'], spec)
+                self.assertEqual(executor.calls, [])
+            finally:
+                manager.close()
+
+    def test_sizing_only_counts_unmatched_ready_compatible_tasks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, _ = self.manager(directory)
+            executor.hosts = {'local': {}}
+            executor._host_admission_policy = lambda: ({}, None)
+            executor._host_admission = lambda host, *_: dict(accepting=host == 'pbs-0')
+            executor._host_supports_stage = lambda host, request: True
+            executor._offer_free = lambda host, *_: 1
+            executor._match_ready_jobs = lambda tasks, slots: {tasks[0].job.name}
+            executor._ready_queue = lambda: [SimpleNamespace(job=Path(name)) for name in executor.rows]
+            executor.store.artificial = lambda request: request['route']['kind'] == 'artificial'
+            for name in ('covered', 'ready', 'missing_estimate'):
+                executor.rows[name] = dict(request=dict(id=name,
+                    route=dict(kind='pauli' if name == 'missing_estimate' else 'artificial')),
+                    eligibility=dict(eligible_host_ids=['local', 'pbs-0']))
+            ready, pending, queued, covered = manager._demand()
+            self.assertEqual([(hosts, req['id']) for hosts, req in ready], [(['pbs-0'], 'ready')])
+            self.assertEqual((pending, queued, covered), ([], 2, 1))
+            manager.close()
+
     def test_restart_keeps_submission_token_and_rejects_changed_settings(self):
         with tempfile.TemporaryDirectory() as directory:
             executor = FakeExecutor(directory)

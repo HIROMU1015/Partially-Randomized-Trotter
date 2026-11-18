@@ -62,6 +62,13 @@ def runtime_profiles(profile):
         yield 'preparation-' + str(index), rule['profile']
 
 
+def task_cpu_footprint(profile):
+    threads = int(_positive(profile.get('pbs', {}).get('library_threads', 1), 'library_threads'))
+    return max(max(int(runtime.get('dp_workers') or 1) * threads,
+                   int(runtime.get('task_cpu_count') or 1))
+               for _, runtime in runtime_profiles(profile))
+
+
 def allocation_profile(profile, allocation, *, environ=None, snapshot=None):
     """Bind actual PBS limits, accounting DP workers and inner library threads.
 
@@ -81,10 +88,7 @@ def allocation_profile(profile, allocation, *, environ=None, snapshot=None):
     resolved = deepcopy(profile)
     pbs = resolved['pbs']
     threads = int(_positive(pbs.get('library_threads', 1), 'library_threads'))
-    costs = [max(int(runtime.get('dp_workers') or 1) * threads,
-                 int(runtime.get('task_cpu_count') or 1))
-             for _, runtime in runtime_profiles(resolved)]
-    cost = max(costs)
+    cost = task_cpu_footprint(resolved)
     policy = resolved.setdefault('slot_policy', {})
     declared = policy.setdefault('resource_limits', {})
     declared['cpu_count'] = min(ncpus, declared.get('cpu_count', ncpus))

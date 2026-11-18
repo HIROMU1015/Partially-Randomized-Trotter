@@ -329,6 +329,8 @@ def summarize(problem, spec, canonical):
             unconfigured_q3_methods={method: 'PBS_WALLTIME_ESTIMATE_UNAVAILABLE'
                 for method in spec['methods'] if not any(
                     row['method'] == method and row['seconds'] > 0 for row in rules)})
+        if 'allocation_sizing' in pbs:
+            result['pbs_walltime']['allocation_sizing'] = deepcopy(pbs['allocation_sizing'])
     return result
 
 

@@ -8,6 +8,7 @@ import fcntl
 import json
 from pathlib import Path
 import queue
+import re
 import shlex
 import subprocess
 import threading
@@ -16,6 +17,7 @@ import uuid
 
 from .rpe_q3_timing import stamp, append
 from .rpe_q3_worker import atomic, digest, read
+from .rpe_pbs_worker import task_cpu_footprint
 
 
 TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED'}
@@ -113,6 +115,12 @@ def apply_walltime_policy(settings, policy, overrides, *, computation_source=Non
             raise ValueError('PBS walltime rule has no matching fixed route profile: ' + row['id'])
     settings.update(walltime_policy=dict(id=policy['id'], sha256=digest(policy)),
                     q3_task_seconds=q3, preparation_task_seconds=preparation, task_seconds={})
+    if 'allocation_sizing' in policy:
+        sizing = policy['allocation_sizing']
+        memory = sizing['q3_startup_memory_bytes_per_task']
+        if type(memory) is not int or memory <= 0:
+            raise ValueError('PBS Q3 startup memory estimate must be positive integer bytes')
+        settings['allocation_sizing'] = deepcopy(sizing)
 
 
 def task_estimate(request, settings, host_id=None):
@@ -258,31 +266,67 @@ class PbsManager:
 
     def _demand(self):
         with self.executor.state.cv:
-            def relevant(request, eligibility):
-                artificial = self.executor.store.artificial(request)
-                return any(self.executor._host_supports_stage(host, request) and
-                    (artificial or (task_estimate(request, self.settings, host) or 0) > 0) and
-                    (eligibility is None and artificial or host in (eligibility or {}).get('eligible_host_ids', []))
-                    for host in self.configured)
-            tasks = [task for task in self.executor.state.tasks.values()
-                     if task.status == 'QUEUED' and self.executor._task_ready(task) and relevant(
-                         self.executor.store.row(task.job.name)['request'],
-                         self.executor.store.row(task.job.name)['eligibility'])]
-            # Pending preparation metadata is also demand for a live compute
-            # worker, but does not consume a scientific budget or reserve a task.
-            pending = sum(self.executor.store.row(job) is None and
-                (task_estimate(record['request'], self.settings) or 0) > 0 and
-                any(self.executor._host_supports_stage(host, record['request']) for host in self.configured)
-                for job,record in self.executor.preparation_pending.items())
-            queued = len(tasks) + pending
             policy, error = self.executor._host_admission_policy()
-            available = {host:self.executor._offer_free(host,policy,error) for host in self.executor.hosts if host not in self.configured}
-            free = len(self.executor._match_ready_jobs(tasks, {host:count for host,count in available.items() if count > 0}))
-            return max(0, queued-free), queued, free
+            hosts = [host for host in self.configured
+                     if self.executor._host_admission(host, policy, error)['accepting']]
+            def compatible(request, eligibility, *, unchecked=False):
+                artificial = self.executor.store.artificial(request)
+                return [host for host in hosts if self.executor._host_supports_stage(host, request) and
+                    (artificial or (task_estimate(request, self.settings, host) or 0) > 0) and
+                    (unchecked or (eligibility is None and artificial) or
+                     host in (eligibility or {}).get('eligible_host_ids', []))]
 
-    def _submit(self, host, worker, demand):
+            ready = []
+            for task in self.executor._ready_queue():
+                row = self.executor.store.row(task.job.name)
+                usable = compatible(row['request'], row['eligibility'])
+                if usable:
+                    ready.append((task, usable, row['request']))
+            available = {host:self.executor._offer_free(host,policy,error) for host in self.executor.hosts if host not in self.configured}
+            matched = self.executor._match_ready_jobs([task for task, _, _ in ready],
+                {host:count for host,count in available.items() if count > 0})
+            outstanding = [(usable, request) for task, usable, request in ready if task.job.name not in matched]
+            # A pending preparation needs an allocated host for its preflight.
+            # It can wake one worker, and does not count toward initial slots.
+            pending = []
+            for job, record in self.executor.preparation_pending.items():
+                if self.executor.store.row(job) is not None:
+                    continue
+                usable = [host for host in compatible(record['request'], None, unchecked=True)
+                          if host not in record.get('failures', {})]
+                if usable:
+                    pending.append((usable, record['request']))
+            return outstanding, pending, len(ready) + len(pending), len(matched)
+
+    def _submit(self, host, worker, demand, requests=()):
         token = uuid.uuid4().hex
         profile = deepcopy(worker['profile'])
+        resources = deepcopy(self.settings['resources'])
+        sizing = self.settings.get('allocation_sizing')
+        if sizing:
+            cost = task_cpu_footprint(profile)
+            maximum = int(min(resources['ncpus'], (profile.get('slot_policy') or {}).get(
+                'resource_limits', {}).get('cpu_count', resources['ncpus']))) // cost
+            capacity = min(maximum, max(1, len(requests)))
+            if capacity < 1:
+                raise ValueError('PBS CPU limit does not fit one configured task')
+            resources['ncpus'] = capacity * cost
+            policy = profile.setdefault('slot_policy', {})
+            if policy.get('max_slots') is not None:
+                capacity = min(capacity, policy['max_slots'])
+                resources['ncpus'] = capacity * cost
+            if capacity < 1:
+                raise ValueError('PBS slot limit does not fit one configured task')
+            if requests and all(request.get('route', {}).get('kind') != 'preparation'
+                                and task_estimate(request, self.settings, host) for request in requests):
+                amount, unit = re.fullmatch(r'(\d+)([kmgt]?b)?', resources['mem'].lower()).groups()
+                memory = int(amount) * (1024 ** ('b', 'kb', 'mb', 'gb', 'tb').index(unit or 'b'))
+                per_task = sizing['q3_startup_memory_bytes_per_task']
+                if (profile.get('pbs') or {}).get('task_memory_bytes'):
+                    per_task = max(per_task, profile['pbs']['task_memory_bytes'])
+                policy['initial_slots'] = max(1, min(capacity, memory // per_task))
+            demand = dict(demand, requested_cpu_per_task=cost, requested_task_capacity=capacity,
+                          initial_slots=policy.get('initial_slots', profile.get('slots', 1)))
         profile['host_id'] = host
         profile['work_dir'] = self.settings['remote_root']+'/workers/'+host
         profile.setdefault('prefix_cache_directory', self.settings['remote_root']+'/cache/'+host+'/dp')
@@ -292,7 +336,7 @@ class PbsManager:
         deployment=worker.get('deployment')or self.settings.get('deployment')
         if deployment:
             profile['pbs']['deployment']=deepcopy(deployment)
-        spec = dict(token=token, profile=profile, resources=self.settings['resources'],
+        spec = dict(token=token, profile=profile, resources=resources,
             python=self.settings['python'], transport_root=self.settings['transport_root'],
             run_id=str(self.executor.run_dir), reason=demand)
         # Save intent BEFORE making the remote call. On lost qsub/SSH response
@@ -301,6 +345,7 @@ class PbsManager:
         self.save()
         self.log('PBS_SUBMISSION_INTENT', token=token, host_id=host, resources=spec['resources'], reason=demand)
         self.gateway.call(dict(action='ensure', spec=spec))
+        return spec
 
     def cycle(self):
         for token, record in self.state['allocations'].items():
@@ -324,7 +369,8 @@ class PbsManager:
                 self._harvest(allocation)
         for token, requests in data['requests'].items():
             self.responses[token] = {request['request_id']:self._dispatch(token, request) for request in requests}
-        shortage, queued, free = self._demand()
+        outstanding, pending, queued, free = self._demand()
+        shortage = len(outstanding) + bool(pending)
         active = [a for a in self.allocations if a['status'] not in TERMINAL]
         stopping = self.stop.is_set() or self.executor._user_stop_requested() or self.executor.state.closed
         for allocation in self.allocations:
@@ -341,7 +387,7 @@ class PbsManager:
             # snapshot. It still occupies its prospective allocation.
             owned_hosts.update(r['spec']['profile']['host_id'] for r in self.state['allocations'].values()
                                if r['status'] not in TERMINAL)
-            covered = sum(max(1, self.settings['resources']['ncpus']//max(1,int(a['spec']['profile'].get('dp_workers',1))))
+            covered = sum(max(1, a['spec']['resources']['ncpus']//task_cpu_footprint(a['spec']['profile']))
                           for a in self.state['allocations'].values() if a['status'] not in TERMINAL)
             for host, worker in self.configured.items():
                 if shortage <= covered: break
@@ -350,9 +396,11 @@ class PbsManager:
                        for record in self.state['allocations'].values()): continue
                 # UNKNOWN/transfer-pending original attempts prevent reuse.
                 if any(row['host_id'] == host for row in self.executor._owned_attempts()): continue
-                self._submit(host, worker, dict(ready_tasks=queued, existing_host_free_slots=free,
-                    prospective_pbs_task_slots=covered, shortage=shortage))
-                covered += max(1,self.settings['resources']['ncpus']//max(1,int(worker['profile'].get('dp_workers',1))))
+                requests = [request for usable, request in outstanding if host in usable]
+                if not requests and not any(host in usable for usable, _ in pending): continue
+                spec = self._submit(host, worker, dict(ready_tasks=queued, existing_host_free_slots=free,
+                    prospective_pbs_task_slots=covered, shortage=shortage), requests[:shortage-covered])
+                covered += max(1, spec['resources']['ncpus']//task_cpu_footprint(spec['profile']))
         self.last_error = None
         self.state['heartbeat'] = stamp()
         self.save()
