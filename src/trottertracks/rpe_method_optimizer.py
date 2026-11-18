@@ -753,9 +753,14 @@ class Executor:
             return cache.prior_records(self, candidates)[:2]
         ready = {c['configuration_id']: c for c in candidates if c['ready'] and c['configuration_id']}
         known, refused = {}, []
+        held_jobs = {(Path(item['parent_directory'])/'jobs'/item['method']/item['job_id']).resolve()
+                     for item in getattr(self,'prior_q3_holds', ())}
         for base in self.prior_run_dirs:
             for job in sorted((base / 'jobs' / self.method).glob('*/OUTCOME.json')):
                 job = job.parent
+                if held_jobs and job.resolve() in held_jobs:
+                    refused.append(dict(job=str(job), reason='PRIOR_Q3_PERSISTENCE_HOLD'))
+                    continue
                 request = job / 'REQUEST.json'
                 try:
                     stat = request.stat()
@@ -1450,6 +1455,9 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                          refused=len(refused), refused_reasons=sorted({r['reason'] for r in refused}))
         else:
             prior = None
+        prior_q3_holds = [item for item in getattr(executor, 'prior_q3_holds', ()) if item['method'] == name]
+        if prior_q3_holds and search.get('rule') != 'METHOD_MINIMUM_PRIORITY_V2':
+            raise ValueError('Prior Q3 holds require the V2 priority search')
         if search.get('rule') == 'METHOD_MINIMUM_PRIORITY_V2':
             from trottertracks import rpe_priority_search as P
             refresh_ready = None
@@ -1484,7 +1492,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 def standby(choice, proposals):
                     def saved(p):
                         return (p['configuration_id'], p['vector']) in table
-                    ex.prefetch_standby(None if saved(choice) else choice, [p for p in proposals if not saved(p)])
+                    ex.prefetch_standby(None if choice is None or saved(choice) else choice, [p for p in proposals if not saved(p)])
             result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                     baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),
                                     routes=problem.get('q3_routes'), spent=spent, free=free, science_approved=science_approved,
@@ -1492,7 +1500,9 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                     prefetch_state=getattr(ex, 'prefetch_state', None) if executor is not None else None,
                                     refresh_ready=refresh_ready, standby=standby,
                                     search_observations=ex.search_observations if standby is not None else None,
-                                    search_profile=ex.search_profile_for_proposal if standby is not None else None)
+                                    search_profile=ex.search_profile_for_proposal if standby is not None else None,
+                                    prior_q3_holds=prior_q3_holds,
+                                    retire_priced_out=getattr(ex,'retire_priced_out',None) if executor is not None else None)
             prep = (problem['methods'][name].get('generation') or {}).get('preparation')
             if prep and search.get('prepare_kappa_proposals'):
                 result['input_requests'] = prepare_kappa_requests(root, problem, context, name, prep, result['input_requests'])
@@ -1506,7 +1516,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         if executor is not None:
             out[name]['execution_holds']=list(executor.execution_holds.get(name,{}).values())
         out[name]['prior_rounds'] = prior
-        for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing'):
+        for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing', 'prior_q3_holds', 'self_price_floor_deferred'):
             if key in result:
                 out[name][key] = result[key]
         out[name]['budget'] = dict(max_new_q3='UNLIMITED_WITHIN_RANGE' if budget is None else budget, science_approved=science_approved,

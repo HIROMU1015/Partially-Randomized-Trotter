@@ -99,6 +99,34 @@ class SchedulerTests(unittest.TestCase):
             self.assertEqual(ex.answer(props[2])['status'],'BUDGET_EXHAUSTED')
             root.finish();self.assertLessEqual(root.metrics()['launched'],2)
 
+    def test_price_retirement_leaves_running_and_other_method_work(self):
+        problem, context, routes=fixture(['PR_PAULI','PR_DF'],configurations=3)
+        with tempfile.TemporaryDirectory() as tmp:
+            root=C.ConcurrentExecutor(ROOT,tmp,routes,{},problem,max_concurrent=1)
+            try:
+                ex=root.for_method('PR_PAULI')
+                # Hold the dispatcher while arranging two outcomes of the queue race.
+                with ex.state.cv:
+                    proposals=[dict(configuration_id=c['configuration_id'],vector=(1,)*26,
+                                    cost=Fraction(1),origin={}) for c in context['candidates']]
+                    assigned=ex._enqueue(proposals[0])
+                    assigned.status='RUNNING'
+                    queued=ex._enqueue(proposals[1])
+                    untouched=ex._enqueue(proposals[2])
+                    other=root.for_method('PR_DF')._enqueue(proposals[3])
+                    ex.standby=C.deque(proposals[:3])
+                    ex.retire_priced_out({p['configuration_id'] for p in proposals[:2]+proposals[3:4]})
+                    self.assertEqual([t.status for t in (assigned,queued,untouched,other)],
+                                     ['RUNNING','CANCELLED','QUEUED','QUEUED'])
+                    self.assertEqual(list(ex.standby),[proposals[2]])
+                    assigned.status='QUEUED'
+                    ex._cancel(assigned)
+                    ex._cancel(untouched)
+                    other.view._cancel(other)
+            finally:
+                root.finish()
+            self.assertEqual(root.metrics()['launched'],0)
+
     def test_standby_replenishes_after_worker_exit_even_while_demand_is_blocked(self):
         problem, context, routes = fixture(['PR_DF'], configurations=4)
         proposals = [dict(configuration_id=c['configuration_id'], vector=(1,) * 26,
@@ -314,7 +342,7 @@ class SchedulerTests(unittest.TestCase):
             pf.write_text(json.dumps(problem));rf.write_text(json.dumps(dict(round_id='ARTIFICIAL_CLI',methods=METHODS,
                 science_approved=True,max_new_q3_per_method={m:1 for m in METHODS},initial='all',
                 executor=dict(scheduler='concurrent',max_concurrent_jobs=2,dp_workers=1,
-                    prefix_cache_directory=str(tmp/'prefix'),prefix_checkpoint_rounds=[11]))))
+                    prefix_cache_directory=str(tmp/'prefix'),prefix_checkpoint_rounds=[11],prefix_cache_max_bytes=32000,compact_q3_evidence=True,parallel_dp_residual=True))))
             with patch.object(O,'prepare',return_value=context),patch.object(sys,'argv',
                 ['run_rpe_method_optimizer.py','--problem',str(pf),'--round',str(rf),'--run-dir',str(run)]):cli.main()
             data=json.loads((run/'ROUND_RESULT.json').read_text())
@@ -324,7 +352,25 @@ class SchedulerTests(unittest.TestCase):
                 profile=json.loads(request.read_text())['execution_profile']
                 self.assertEqual(profile['prefix_cache_directory'],str(tmp/'prefix'))
                 self.assertEqual(profile['prefix_checkpoint_rounds'],[11])
+                self.assertEqual(profile['prefix_cache_max_bytes'],32000)
+                self.assertIs(profile['compact_q3_evidence'],True)
+                self.assertIs(profile['parallel_dp_residual'],True)
             self.assertTrue(all(r['executor_metrics']['new_real_route_launches']==0 for r in data['methods'].values()))
+
+    def test_host_only_prefix_cache_can_receive_the_budget(self):
+        problem, context, routes = fixture(['PR_DF'], 1)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = C.ConcurrentExecutor(ROOT, tmp, routes, {}, problem, prefix_cache_max_bytes=32000)
+            try:
+                ex = root.for_method('PR_DF')
+                candidate = context['candidates'][0]
+                proposal = dict(configuration_id=candidate['configuration_id'], vector=(1,) * 26,
+                                cost=Fraction(1), origin={})
+                request = ex.request(proposal, ex.job_dir(proposal), routes['PR_DF'][0])
+                self.assertNotIn('prefix_cache_directory', request['execution_profile'])
+                self.assertEqual(request['execution_profile']['prefix_cache_max_bytes'], 32000)
+            finally:
+                root.finish()
 
     def test_launch_persistence_failure_stops_queue_and_waits_started_child(self):
         p,c,r=fixture(['PR_DF'],1);r['PR_DF'][0]['artificial']['sleep_seconds']=.15

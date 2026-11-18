@@ -190,4 +190,27 @@ class ScopedPriceTests(unittest.TestCase):
         self.assertEqual([frac(v['unit_price_RZ'])for v in q['rows']],[frac(v['C_ref'])for v in r.read(p['price_source'])['rows']])
 
 
+class CommonPauliFloorTests(unittest.TestCase):
+    def test_only_source_bound_complete_one_piece_monotone_pauli_model(self):
+        reader=Documents()
+        cfg=config();imp=implementation()
+        model=dict(coefficients={'A3':11,'H3':5,'E3':2})
+        entry=dict(name='PAULI_LD3',mode='PAULI_AUDIT',configuration_source=reader.add('CONFIG',cfg),
+                   model_source=reader.add('MODEL',model),implementation=imp)
+        registry=StepPriceRegistry(reader,dict(entries=[entry]))
+        terms=registry.common_pauli_model_terms(cfg,imp)
+        self.assertEqual(len(terms),26)
+        self.assertEqual(terms[0],(18,2))
+        self.assertIsNone(registry.common_pauli_model_terms(config(pauli=False),implementation(pauli=False)))
+        self.assertIsNone(registry.common_pauli_model_terms(config(delta=.05),imp))
+        registry.state['entries'].append(dict(domain=dict(family=registry.api['family'](cfg,imp))))
+        self.assertIsNone(registry.common_pauli_model_terms(cfg,imp))
+        registry.state['entries'].clear()
+        rules=registry.api['PriceRules'](reader,registry.registry)
+        rules.entries[0]['saved'][1,'X']=dict(value=1,source=entry['model_source'])
+        self.assertIsNone(registry.common_pauli_model_terms(cfg,imp,rules=rules))
+        entry['model_source']=reader.add('NEGATIVE_MODEL',dict(coefficients={'A3':11,'H3':5,'E3':-2}))
+        self.assertIsNone(StepPriceRegistry(reader,dict(entries=[entry])).common_pauli_model_terms(cfg,imp))
+
+
 if __name__=='__main__':unittest.main(verbosity=2)

@@ -122,6 +122,36 @@ class ControllerFailures(unittest.TestCase):
             waiter.join(timeout=3)
         self.assertEqual(answers[0]['status'], O.PASS)
 
+    def test_work_conserving_records_distinct_idle_slot_reasons(self):
+        from trottertracks.rpe_preparation_queue import normalize_preparation_request
+        from trottertracks.rpe_q3_timing import read_lines
+        executor = DistributedExecutor(ROOT, self.run, self.routes, {}, self.problem,
+            optimizer_source=self.source, max_concurrent='auto', budgets={'PR_PAULI': 1},
+            distributed=dict(port=0, live_ready_refill=True, work_conserving_search=True,
+                             host_stage_capabilities={'waiting-host': ['q3'], 'prep-host': ['signal']}))
+        self.executors.append(executor)
+
+        def poll(host, observe_only=False):
+            return executor.rpc('/v1/poll', dict(host_id=host, source_sha=self.source, slots=1, capacity=1,
+                                                observe_only=observe_only))
+
+        poll('waiting-host')
+        prep = normalize_preparation_request(dict(route={'kind': 'preparation'}, method='ARTIFICIAL',
+            preparation=dict(stage='signal', provider='ARTIFICIAL_SIGNAL', artificial=True,
+                source=executor.source_manifest, identity='idle-reason', outputs=['products'],
+                command=['@PYTHON@', '@SOURCE@/scripts/artificial_preparation_leaf.py'])))
+        executor.submit_preparation(prep, budget=1, approved=True)
+        self.assertFalse(poll('waiting-host')['assignments'])
+        assignment = poll('prep-host')['assignments'][0]
+        executor.rpc('/v1/state', dict(host_id='prep-host', job_id=assignment['job_id'],
+                     attempt_id=assignment['attempt_id'], state='RUNNING'))
+        poll('waiting-host')
+        self.enqueue(executor, 'waits-for-assignment')
+        poll('waiting-host', observe_only=True)
+        snapshots = read_lines(self.run/'PROGRESS.jsonl')
+        reasons = {event.get('hosts', {}).get('waiting-host', {}).get('idle_reason') for event in snapshots}
+        self.assertTrue({'CANDIDATE_SHORTAGE', 'PREPARATION_WAIT', 'ELIGIBLE_HOST_SHORTAGE', 'ASSIGNMENT_WAIT'} <= reasons)
+
     def test_retransmit_after_accept_before_publish_releases_waiter_once(self):
         executor = self.executor()
         task = self.enqueue(executor, 'first')

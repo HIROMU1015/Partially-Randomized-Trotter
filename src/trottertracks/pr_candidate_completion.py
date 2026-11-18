@@ -112,6 +112,16 @@ class PreparationYield(Exception):
 
 
 
+
+PRICE_SOURCE_CONFLICT = 'MULTIPLE_SCOPED_MODELS_CHOOSE_SOURCE_NO_POOLING'
+
+
+def conflicting_price_axes(quote):
+    return [dict(m=row['m'],axis=row['axis'],entry_ids=row['needs'].get('entry_ids',[]))
+            for row in quote.get('rows',[]) if row.get('unit_price_RZ') is None
+            and PRICE_SOURCE_CONFLICT in (row.get('needs') or {}).get('reasons',[])]
+
+
 class Completion:
     def path(self,name):
         value=getattr(self,"settings",{}).get("controller_paths",{}).get(name,globals()[name])
@@ -187,6 +197,20 @@ class Completion:
             put(getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json'),rules.state)
         return answers
 
+    def common_pauli_model_terms(self, configurations):
+        from .pauli_calibration_request import implementation
+        step=self._step_rules()
+        rules=step.api['PriceRules'](step.reader,step.registry)
+        out={}
+        for key,config in configurations.items():
+            try:
+                terms=step.common_pauli_model_terms(config,implementation(),rules=rules)
+            except (KeyError,ValueError,TypeError):
+                terms=None
+            if terms is not None:
+                out[key]=terms
+        return out
+
     def price_registry_digest(self):
         path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
         return key(dict(legacy=read(self.registry),steps=read(path)if path.exists()else None))
@@ -216,6 +240,12 @@ class Completion:
         token=key(dict(source=self.source,identity=identity))
         with self.lock:return self.shared_preparation_locks.setdefault(token,threading.RLock())
 
+    def stage_source(self, stage):
+        if stage in ('DF_PRICE_PREPARE', 'DF_CALIBRATION', 'DF_MODEL_FREEZE',
+                     'DF_HOLDOUT', 'DF_HOLDOUT_COMPARE'):
+            return self.settings.get('df_price_source', self.source)
+        return self.source
+
     def call(self,cmd,d,stage,output=None,science=False):
         d=Path(d);d.mkdir(parents=True,exist_ok=True);done=d/(stage+'.RETURN.json');started=d/(stage+'.STARTED.json')
         if done.exists():
@@ -231,13 +261,14 @@ class Completion:
         if getattr(self,'stop_requested',lambda:False)():
             self.log(event='STAGE_YIELDED_AFTER_ORCHESTRATOR_FAILURE',stage=stage,directory=rel(d))
             raise PreparationYield(stage)
-        put(started,dict(command=cmd,source=self.source,science=science,automatic_retry=False))
+        source=self.stage_source(stage)
+        put(started,dict(command=cmd,source=source,science=science,automatic_retry=False))
         self.log(event='STAGE_START',stage=stage,science=science,directory=rel(d));t=time.time()
         with(d/(stage+'.log')).open('w')as f:
             p=subprocess.Popen(cmd,cwd=ROOT,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),stdout=f,stderr=subprocess.STDOUT)
-            put(started,dict(command=cmd,source=self.source,pid=p.pid,science=science,automatic_retry=False))
+            put(started,dict(command=cmd,source=source,pid=p.pid,science=science,automatic_retry=False))
             code=p.wait()
-        put(done,dict(returncode=code if code>=0 else None,signal=-code if code<0 else None,seconds=time.time()-t,source=self.source))
+        put(done,dict(returncode=code if code>=0 else None,signal=-code if code<0 else None,seconds=time.time()-t,source=source))
         self.log(event='STAGE_RETURN',stage=stage,returncode=code,seconds=time.time()-t)
         if code!=0:
             detail=read(output)if output and Path(output).exists()else{}
@@ -396,7 +427,7 @@ class Completion:
                 raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
             initial_quote=self.initial_quote(config,cref,d)
             if request['method']=='PR_DF':
-                if not initial_quote['complete']:
+                if not initial_quote['complete'] and not conflicting_price_axes(initial_quote):
                     design=self.service('df-price-design',dict(configuration=config,price_quote=initial_quote),d)
                     bad=[g for g in design.get('groups',[])if g['status']!='CALIBRATION_DESIGN_READY']
                     if bad:raise Held('DF_MODEL_DESIGN:'+str(bad))
@@ -418,7 +449,12 @@ class Completion:
                 intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(self.path('B_VIEW') if request['method']=='PR_PAULI'else self.path('DF_Q3_VIEW'))),d)
                 rec['intake']=intake;self.save()
                 quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
-            if not quote['complete']:raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
+            if not quote['complete']:
+                conflict=conflicting_price_axes(quote) if request['method']=='PR_DF' else []
+                if conflict:
+                    rec['conflicting_price_axes']=conflict
+                    raise Held('PRICE_EVIDENCE_REQUIRED:'+PRICE_SOURCE_CONFLICT)
+                raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
             quote_commit=publish([d],'Publish completed candidate prices and receipt bindings')
             with self.lock:
                 local_registry=d/'PRICE_RULES.json'
@@ -635,6 +671,9 @@ class Completion:
         req=dict(configuration=cref,view=str(self.path('D2_VIEW')),registry_file=str(registry),policy='MODEL')
         quote=self.initial_quote(config,cref,d)if initial_quote is None else initial_quote
         quote=self.quote_with_steps(config,quote)
+        if r['method']=='PR_DF' and conflicting_price_axes(quote):
+            put(d/'FINAL_QUOTE.json',quote)
+            return quote
         if not quote['complete']:
             if r['method']=='PR_PAULI':
                 inp=d/'PAULI_PRICE_REQUEST.json';out=d/'PAULI_PRICE_RESULT.json'
@@ -679,6 +718,9 @@ class Completion:
                 # A different candidate may have completed this exact group
                 # while we waited. Requote from its verified registry first.
                 refreshed=self.quote_with_steps(config,quote)
+                if conflicting_price_axes(refreshed):
+                    put(d/'FINAL_QUOTE.json',refreshed)
+                    raise Held('PRICE_EVIDENCE_REQUIRED:'+PRICE_SOURCE_CONFLICT)
                 missing={(r['m'],r['axis'])for r in refreshed['rows']if r.get('unit_price_RZ')is None}
                 if not any((r['m'],r['axis'])in missing for r in group['axis_keys']):continue
                 package=self.df_price_group(cref,refreshed,d/'df_price_groups'/group['group_id'][:20],registry,group,descriptor)
@@ -693,10 +735,12 @@ class Completion:
         descriptor_file=d/'DF_DESCRIPTOR_LOCATOR.json'
         if descriptor:put(descriptor_file,descriptor)
         quote_file=d/'AVAILABLE_PRICE_QUOTE.json';put(quote_file,quote)
-        self.call(args+['prepare']+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort','D2_AUTO_DF_'+d.name,'--source',self.source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,'DF_PRICE_PREPARE')
+        parallel=['--parallel-axes'] if self.settings.get('parallel_df_price_axes') is True else []
+        price_source=self.stage_source('DF_PRICE_PREPARE')
+        self.call(args+['prepare']+parallel+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort','D2_AUTO_DF_'+d.name,'--source',price_source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,'DF_PRICE_PREPARE')
         if not inp.exists():raise Held('DF_PRICE_RULE_OR_RECEIPT_REUSE_REQUIRED:'+str(read(base/'NEEDS.json')))
         inputs=publish([d],'Fix candidate DF calibration and independent holdout inputs')
-        common=['--input',str(inp),'--inputs-commit',inputs,'--source',self.source]
+        common=['--input',str(inp),'--inputs-commit',inputs,'--source',price_source]
         self.call(args+['acquire',*common,'--stage','calibration'],d,'DF_CALIBRATION',science=True)
         raw=publish([d],'Save DF calibration wrapper receipts')
         self.call(args+['freeze',*common,'--raw-commit',raw],d,'DF_MODEL_FREEZE',science=True)
@@ -966,6 +1010,7 @@ def continue_selected_preparation(root,problem,context,spec,run,completion,execu
 def publish_comparison_exports(completion,run,context):
     """Publish each acquired candidate's actual Q3 answer for unchanged C sync."""
     from .rpe_method_optimizer import job_outcome
+    from . import rpe_q3_evidence as evidence
     run=Path(run);exports=[]
     for record in completion.state['records'].values():
         if record['status']!='READY_FOR_SEARCH':continue
@@ -976,11 +1021,22 @@ def publish_comparison_exports(completion,run,context):
             if request['configuration_id']!=cid or outcome['status']not in ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD','MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD','INCONCLUSIVE'):continue
             leaf=job/job.name;result=leaf/'RESULT.json'
             if not result.exists():continue
+            api=leaf/'API_RETURN.json'
+            witness=leaf/evidence.WITNESS
+            if not api.exists() and not witness.exists() and (leaf/evidence.CHECKPOINTS).is_file():
+                # A successfully validated job whose retained sidecars differ
+                # from the result still publishes its actual worker API bytes.
+                preserved_api=evidence.checkpoints(leaf)['API_RETURN.json']
+                with api.open('xb') as stream:
+                    stream.write(preserved_api)
+            field, artifact = ('api',api) if api.is_file() else ('compact_evidence',witness)
+            if not artifact.is_file():raise ValueError('Published Q3 evidence is missing for '+job.name)
             raw=publish([job],'Publish automated candidate Q3 raw and individual receipts')
             d=completion.directory/'comparisons'/method/job.name;d.mkdir(parents=True,exist_ok=True)
             req=dict(configuration=record['intake']['configuration'],case_inputs=dict(commit=raw,path=rel(job/'CASE_INPUTS.json')),
-                result=dict(commit=raw,path=rel(result)),outcome=dict(commit=raw,path=rel(outcome_path)),api=dict(commit=raw,path=rel(leaf/'API_RETURN.json')),
+                result=dict(commit=raw,path=rel(result)),outcome=dict(commit=raw,path=rel(outcome_path)),
                 quote=record['quote'],comparison_label=method+'_AUTO_'+cid[:12]+'_'+job.name)
+            req[field]=dict(commit=raw,path=rel(artifact))
             inp=d/'EXPORT_REQUEST.json';put(inp,req);script=str(ROOT/'scripts/export_pr_candidate_comparison.py')
             completion.call([completion.path("NATIVE"),'-B',script,'prices','--request',str(inp),'--output',str(d/'AXIS_PRICES.json')],d,'EXPORT_PRICES')
             pc=publish([d],'Bind automated candidate 26 axis prices for C')

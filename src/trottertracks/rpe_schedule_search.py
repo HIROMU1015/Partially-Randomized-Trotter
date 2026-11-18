@@ -177,7 +177,7 @@ def _log(x):
     return math.log(float(x))
 
 
-def plan_wide(families, points, s=None, price_floor=None):
+def plan_wide(families, points, s=None, price_floor=None, *, price_floor_best=None):
     """families: {key: Family}; points: dicts(family, kappa (Fraction), status, best (Fraction|None), min_lower_over_tau).
     Returns (proposals, decisions, report)."""
     bounds = kappa_bounds(s)
@@ -193,6 +193,7 @@ def plan_wide(families, points, s=None, price_floor=None):
             per_family[p['family']].append(p)
     feas = [p['best'] for p in points if p['status'] == 'FEASIBLE' and p.get('best') is not None]
     gbest = min(feas) if feas else None
+    cutoff = gbest if price_floor_best is None else price_floor_best
     exploit, explore, init, decisions, report = [], [], [], [], {}
     for key in sorted(families, key=str):
         f, ps = families[key], sorted(per_family[key], key=lambda p: p['kappa'])
@@ -207,11 +208,11 @@ def plan_wide(families, points, s=None, price_floor=None):
                    best=None if fbest is None else dict(kappa=fbest['kappa'], cost=fbest['best']))
         # range limit
         hi, basis = s['max_kappa'], 'RANGE_LIMIT'
-        if price_floor is not None and gbest is not None:
+        if price_floor is not None and cutoff is not None:
             k = f.floor_end or Fraction(1)
             while k <= s['max_kappa']:
                 lb = price_floor(key, f.R(k))
-                if lb is not None and lb >= gbest:
+                if lb is not None and lb >= cutoff:
                     hi, basis = k, 'PROVEN_COST_FLOOR';break
                 k *= 2
         # empirical upper stop
@@ -312,6 +313,16 @@ def plan_wide(families, points, s=None, price_floor=None):
         k = (p['family'], families[p['family']].R(p['kappa']))
         if k not in seen:
             seen.add(k);out.append(p)
+    if price_floor is not None and price_floor_best is not None:
+        kept=[]
+        for p in out:
+            lower=price_floor(p['family'],families[p['family']].R(p['kappa']))
+            if lower is not None and lower>=cutoff:
+                decisions.append(dict(family=p['family'],decision='PROVEN_COST_FLOOR',
+                    kappa=str(p['kappa']),lower=str(lower),incumbent=str(cutoff)))
+            else:
+                kept.append(p)
+        out=kept
     for p in out:
         p['kappa'] = families[p['family']].rep(p['kappa'])
         if bounds is not None and not bounds[0] <= p['kappa'] <= bounds[1]:

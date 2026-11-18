@@ -410,7 +410,8 @@ class Worker:
             seconds = observed['monotonic']-previous.get('monotonic', observed['monotonic'])
             same_clock = previous.get('clock_id') == observed['clock_id']
             cores = max(0, sample['cpu_seconds']-previous.get('cpu_seconds', 0))/seconds if same_clock and seconds > 0 else 0
-            job = dict(state=state, dp_workers=saved.get('dp_workers') or 1,
+            job = dict(state=state, dp_workers=max(saved.get('dp_workers') or 1,
+                                                 saved.get('task_cpu_count') or 1),
                        peak_rss_bytes=peak, cpu_seconds=sample['cpu_seconds'],
                        observed_cpu_cores=max(cores, previous.get('observed_cpu_cores', 0)))
             if state in ('ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN') and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':

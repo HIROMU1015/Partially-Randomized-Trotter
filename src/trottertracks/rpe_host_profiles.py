@@ -10,6 +10,13 @@ from pathlib import Path, PurePosixPath
 import subprocess
 
 
+REVIEWED_PR_Q3_ROUTES = {
+    ('PR_PAULI', 'pauli_b_common_entry'),
+    ('PR_DF', 'prdf_d2_common_entry'),
+}
+REVIEWED_PR_Q3_OPTIONS = ('compact_q3_evidence', 'parallel_dp_residual')
+
+
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), default=str).encode()).hexdigest()
 
@@ -17,7 +24,7 @@ def digest(value):
 def profile_core(profile):
     keys = ('host_id', 'root', 'interpreter', 'route_views', 'dp_workers',
             'prefix_cache_directory', 'runtime', 'adapter_root', 'adapter_manifest')
-    keys += ('runtime_checks',)
+    keys += ('runtime_checks', 'reviewed_pr_q3')
     return {key: deepcopy(profile[key]) for key in keys if key in profile}
 
 
@@ -101,6 +108,16 @@ def select_host_profile(base, assignment):
     if selected.get('host_id') != base.get('host_id'):
         raise ValueError('Route-specific profile belongs to another host')
     selected.pop('route_profiles', None)
+    request = assignment['request']
+    execution = request.get('execution_profile') or {}
+    if request['route']['kind'] != 'artificial' and any(
+            execution.get(option) is True for option in REVIEWED_PR_Q3_OPTIONS):
+        if ((request['method'], request['route']['kind']) not in REVIEWED_PR_Q3_ROUTES
+                or selected.get('reviewed_pr_q3') is not True
+                or not selected.get('prefix_cache_directory')
+                or not selected.get('adapter_manifest', {}).get('files', {}).get(
+                    'src/trottertracks/rpe_q3_evidence.py')):
+            raise ValueError('No compatible reviewed PR Q3 adapter and local cache for this request')
     for key in ('work_dir', 'slots'):
         if key in base:
             selected[key] = deepcopy(base[key])

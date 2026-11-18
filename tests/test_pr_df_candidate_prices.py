@@ -5,6 +5,10 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+import resource
+import time
+import traceback
+from threading import Event
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -28,6 +32,76 @@ class PriceTests(unittest.TestCase):
         bad=E.design(config([2]*13));self.assertIn('RANK_DEFICIENT_HEAD_Q_AND_TAIL_QR_COEFFICIENTS',bad['reasons'])
         other=config();other['spec']['formula']='4th(m5_best)';self.assertTrue(E.design(other)['reasons'])
         other=config();other['rounds'][4]['actual_delta_pf']={'numerator':1,'denominator':16};self.assertIn('MULTIPLE_ACTUAL_STEPS_REQUIRE_SEPARATE_CALIBRATION_GROUPS',E.design(other)['reasons'])
+
+    def test_split_axis_jobs_keep_budget_stop_markers_and_one_event_backing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out=Path(tmp)
+            cell=dict(m=3,request=dict(request_id='test',axes=['X','Y']))
+            fresh={a:dict(status='MISSING') for a in ('X','Y')}
+            jobs=E.pending_axis_jobs(cell,0,out,deepcopy(fresh),parallel=True)
+            self.assertEqual([job[0]['request']['axes'] for job in jobs],[['X'],['Y']])
+            self.assertEqual({job[1] for job in jobs},{0})
+            self.assertEqual(cell['request']['axes'],['X','Y'])
+            self.assertEqual(len({E.axis_stage_path(out/'STOP.json',selected,selected['request'])
+                                  for selected,_ in jobs}),2)
+            (out/'STARTED_m3_p0_axesX.json').touch()
+            remaining=E.pending_axis_jobs(cell,0,out,deepcopy(fresh),parallel=True)
+            self.assertEqual([job[0]['request']['axes'] for job in remaining],[['Y']])
+            (out/'STARTED_m3_p0_axesXY.json').touch()
+            self.assertFalse(E.pending_axis_jobs(cell,0,out,deepcopy(fresh),parallel=True))
+            writer=E.shared_event_writer(E.write,lambda data:json.dumps(data,sort_keys=True))
+            paths=[]
+            for axis in ('X','Y'):
+                p=out/('axes_'+axis)/'events_PRIVATE.json'
+                p.parent.mkdir()
+                writer(p,{'sealed_events':[1,2,3]})
+                paths.append(p)
+            self.assertTrue(paths[0].samefile(paths[1]))
+            with self.assertRaisesRegex(ValueError,'event log differs'):
+                writer(paths[1],{'sealed_events':[7]})
+
+    def test_fixed_selected_acquirer_compiles_and_validates_both_individual_axes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out=Path(tmp)
+            (out/'acquisition').mkdir()
+            digest=lambda rows:json.dumps(rows,sort_keys=True)
+            request=SimpleNamespace(rte_occurrence=SimpleNamespace(
+                events=[SimpleNamespace(to_dict=lambda:{'kind':'ZZ'})]))
+            ctx=SimpleNamespace(compile=lambda *args,**kwargs:None,prep=object(),
+                h={'sample_requests':lambda *args:([request],[17],[])})
+            science=SimpleNamespace(m=SimpleNamespace(digest=digest),write=E.write)
+            wrapper=SimpleNamespace(num_qubits=9,num_clbits=1,count_ops=lambda:{'measure':1})
+            axis_files={'X':'cosine','Y':'sine'}
+
+            class Adapter:
+                def __init__(self,*args,observer,**kwargs):
+                    self.stage=observer
+
+                def acquire(self,req,requests,*,cohort,index,directory):
+                    axis,=req['axes']
+                    directory.mkdir(parents=True)
+                    event_rows=[[{'kind':'ZZ'}]]
+                    science.write(directory/'events_PRIVATE.json',event_rows)
+                    self.stage(axis+'_compile','STARTED')
+                    ctx.compile(wrapper,'COMPILER')
+                    E.write(directory/(axis_files[axis]+'.json'),dict(fingerprint=axis,compiler='COMPILER'))
+                    return dict(seeds=[17],event_digest=digest(event_rows),new_compiles=1,
+                                cache_hits=0,records=[dict(axis=axis,C=13,metrics=dict(rz_count=13),fingerprint=axis)])
+
+            runtime=SimpleNamespace(science=science)
+            helper=SimpleNamespace(ROOT=out,PUBLIC='',STATE=dict(runtimes={3:runtime},contexts={3:ctx},
+                inputs=dict(cache_root=out/'cache')),time=time,json=json,resource=resource,traceback=traceback,
+                FAILURE=Event(),P=SimpleNamespace(event_metrics=lambda events:events),write=E.write,
+                D=SimpleNamespace(Adapter=Adapter,AXES=axis_files,p=SimpleNamespace(PROFILE={'compiler':'COMPILER'})))
+            cell=dict(m=3,cohort='TEST',seeds=[[17]],request=dict(request_id='test',axes=['X','Y'],
+                physical_context=dict(physical_candidate={})))
+            jobs=E.pending_axis_jobs(cell,0,out,{a:dict(status='MISSING') for a in 'XY'},parallel=True)
+            with patch.object(E,'runtime',return_value=helper):
+                results=[E.selected_acquire_path(job) for job in jobs]
+            self.assertEqual([r['status'] for r in results],['VALID','VALID'],results)
+            self.assertEqual([r['compiles'][0]['axis'] for r in results],['X','Y'])
+            self.assertEqual(results[0]['record']['event_digest'],results[1]['record']['event_digest'])
+            self.assertFalse(helper.FAILURE.is_set())
 
     def test_axis_fit_freeze_and_exact_descriptive_holdout(self):
         cfg=config();cal=[dict(m=m,axis=a,q=2**m,R=1,mean_C=E.enc(11+5*2**m))for a in ('X','Y')for m in (0,6)]

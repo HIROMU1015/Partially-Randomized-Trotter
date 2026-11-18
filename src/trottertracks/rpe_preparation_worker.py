@@ -185,6 +185,11 @@ def current_preparation_fingerprint(assignment, base_profile):
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
     pauli_calibration_manifest(spec)
     if spec.get('stage')not in STAGES:raise ValueError('Unknown preparation stage')
+    if spec.get('parallel_df_price_axes') is True:
+        if spec.get('provider') not in ('DF_CALIBRATION', 'DF_HOLDOUT'):
+            raise ValueError('Parallel DF price execution requires a calibration or holdout request')
+        if type(profile.get('task_cpu_count')) is not int or profile['task_cpu_count'] < 1:
+            raise ValueError('Parallel DF price execution requires a fixed CPU reservation')
     if spec.get('inspection_blockers'):raise ValueError('Saved inspection input dependencies unresolved: '+'; '.join(spec['inspection_blockers']))
     requirements=spec.get('runtime_requirements',{})
     if spec.get('stage')=='compile'and spec.get('artificial')is not True and not requirements.get('packages',{}).get('qiskit') and not requirements.get('tools'):
@@ -417,8 +422,14 @@ def execute(assignment, base_profile, directory):
     if spec.get('return_git_delta') is True:
         input_heads={alias:_head(workspace) for alias,(workspace,_) in owned.items()}
     start=time.monotonic();timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_START',stage=spec['stage'])
+    env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',RPE_PREPARATION_PATH_MAP=json.dumps(bindings),
+             RPE_PREPARATION_PYTHON=profile['interpreter'])
+    if spec.get('parallel_df_price_axes') is True:
+        env.update(RPE_DF_PRICE_AXIS_WORKERS=str(profile['task_cpu_count']),
+                   OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1',
+                   RAYON_NUM_THREADS='1', QISKIT_NUM_PROCS='1')
     with(directory/'PREPARATION_BODY.log').open('xb')as log:
-        process=subprocess.run(command,cwd=source,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',RPE_PREPARATION_PATH_MAP=json.dumps(bindings),RPE_PREPARATION_PYTHON=profile['interpreter']),stdout=log,stderr=subprocess.STDOUT)
+        process=subprocess.run(command,cwd=source,env=env,stdout=log,stderr=subprocess.STDOUT)
     timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_END',stage=spec['stage'],returncode=process.returncode)
     receipt=dict(command=command,source=spec['source'],runtime=fingerprint['runtime'],tools=fingerprint['tools'],returncode=process.returncode if process.returncode>=0 else None,signal=-process.returncode if process.returncode<0 else None,wall_seconds=time.monotonic()-start,automatic_retry=False)
     put(directory/'PREPARATION_RECEIPT.json',receipt)

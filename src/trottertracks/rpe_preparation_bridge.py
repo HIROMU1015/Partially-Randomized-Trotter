@@ -376,7 +376,7 @@ class DistributedPreparationBridge:
         root = Path(getattr(completion, 'preparation_root', self.root)).resolve()
         directory = Path(directory).resolve()
         relative = directory.relative_to(root).as_posix()
-        source = completion.source
+        source = completion.stage_source(stage) if hasattr(completion, 'stage_source') else completion.source
         command = list(command)
         script = next((Path(arg) for arg in command[1:]
                        if isinstance(arg, str) and arg.endswith('.py') and Path(arg).is_file()), None)
@@ -506,6 +506,12 @@ class DistributedPreparationBridge:
                     required_paths=required_paths,
                     optional_outputs=optional_outputs, return_git_delta=True, stage_inputs=False,
                     runtime_requirements=requirements,compiler_bindings=compiler_bindings)
+        if stage in ('DF_CALIBRATION', 'DF_HOLDOUT') and '--input' in command:
+            frozen = read(Path(command[command.index('--input')+1]))
+            if frozen.get('parallel_axes') is True:
+                if frozen['source'] != source:
+                    raise ValueError('Parallel DF price input SOURCE differs from its assigned runner')
+                prep['parallel_df_price_axes'] = True
         self._validate_bundle_inputs(prep)
         return dict(schema='RPE_PREPARATION_REQUEST_V1', route=dict(kind='preparation'), preparation=prep,
                     original_contract=dict(source=source, stage=stage, automatic_retry=False))
@@ -689,7 +695,7 @@ class DistributedPreparationBridge:
             try:request = self.build_request(completion, command, directory, stage, output)
             except (OSError,ValueError,subprocess.CalledProcessError)as error:
                 raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:'+stage+':INPUT_OR_SOURCE_METADATA_UNAVAILABLE:'+str(error))from error
-            submitted = dict(request=request, source=completion.source, automatic_retry=False)
+            submitted = dict(request=request, source=request['preparation']['source']['commit'], automatic_retry=False)
         # A Q3 approval/budget does not open signal/compile scope. The round
         # must separately bound preparation tasks and retain leaf input caps.
         budget = self.settings.get('budgets', {}).get(STAGES[stage], 0)
@@ -711,7 +717,7 @@ class DistributedPreparationBridge:
                 raise Held('STAGE_FAILED:'+stage+':DISTRIBUTED_'+terminal['status']+':NO_AUTOMATIC_RETRY:'+str(result))
             raise Held('DISTRIBUTED_PREPARATION_OPERATIONAL_HOLD:' + stage + ':' + str(result))
         self._import_result(result, request)
-        receipt = dict(returncode=0, signal=None, source=completion.source, job_id=job_id,
+        receipt = dict(returncode=0, signal=None, source=request['preparation']['source']['commit'], job_id=job_id,
                        transport='distributed', automatic_retry=False, preparation_calls=result.get('preparation_calls', 0))
         put(directory / (stage + '.RETURN.json'), receipt)
         completion.log(event='DISTRIBUTED_STAGE_RETURN', stage=stage, job_id=job_id)

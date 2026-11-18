@@ -40,6 +40,10 @@ _timing_path=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_q3_timin
 _timing_spec=importlib.util.spec_from_file_location('_q3_operational_timing',_timing_path)
 TIMING=importlib.util.module_from_spec(_timing_spec);_timing_spec.loader.exec_module(TIMING)
 
+_evidence_path=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_q3_evidence.py'
+_evidence_spec=importlib.util.spec_from_file_location('_q3_output_evidence',_evidence_path)
+EVIDENCE=importlib.util.module_from_spec(_evidence_spec);_evidence_spec.loader.exec_module(EVIDENCE)
+
 if hasattr(sys, 'set_int_max_str_digits'):
     sys.set_int_max_str_digits(0)
 PASS = 'MODEL_BOUND_MEETS_ADOPTED_THRESHOLD'
@@ -261,12 +265,12 @@ def route(view, kind, route_views=None):
         X = load(view, '_rpe_opt_common', 'scripts/run_pauli_ld5_two_vectors_q3_fixed.py');X.check_source()
         COMMON.update(view=view, X=X)
         return NS(metadata=common_metadata, installed=common_installed, supervise=X.L.M.supervise,
-                  validate=pinned_validator(view, X.L.H, X.L.T.Q.a.exact_scalar),
+                  evidence_writer=X.R, validate=pinned_validator(view, X.L.H, X.L.T.Q.a.exact_scalar),
                   bounds=lambda s: X.L.H.finite_bounds([r['N_X'] for r in s]), runtime=None)
     if kind in ('prdf_d2_split','prdf_d2_common_entry'):
         W, resolution = load_prdf_route(view, route_views or {})
         return NS(metadata=W.U.metadata, installed=lambda out: nullcontext(), supervise=W.supervise,
-                  validate=pinned_validator(view, W.U.H, W.U.T.Q.a.exact_scalar), bounds=lambda s: W.Q.bounds(dict(allocation=dict(shots=s))),
+                  evidence_writer=W.U.R if kind=='prdf_d2_common_entry' else None, validate=pinned_validator(view, W.U.H, W.U.T.Q.a.exact_scalar), bounds=lambda s: W.Q.bounds(dict(allocation=dict(shots=s))),
                   runtime=W.runtime_check, source_resolution=resolution)
     raise ValueError('Unknown route kind: ' + kind)
 
@@ -324,7 +328,8 @@ def outcome_from(view, request, case, inputs, r, out, source, supervision=None):
         result = json.loads((folder / 'RESULT.json').read_text())
         if result.get('status') == 'UNKNOWN':
             raise ValueError('Worker reported UNKNOWN: ' + str(result.get('reason')))
-        value = r.validate(case, inputs, folder, source)
+        artifacts = EVIDENCE.ValidatorDirectory(folder)
+        value = r.validate(case, inputs, artifacts if artifacts.payloads else folder, source)
         status = 'UNKNOWN' if bad else value['status']
         return dict(status=status, reason='SUPERVISOR_OR_PROCESS_GATE' if bad else None,
                     MSE_lower=value['MSE_lower'], MSE_upper=value['MSE_upper'],
@@ -422,13 +427,14 @@ def execution_profile(inputs, request):
 def prefix_cache_context(request,case,inputs,out):
     """Opt-in cache in the real existing worker path, inherited by its fork."""
     profile=request.get('execution_profile',{});directory=profile.get('prefix_cache_directory')
-    if directory is None:
+    parallel_residual=profile.get('parallel_dp_residual') is True
+    if directory is None and not parallel_residual:
         yield;return
     module=sys.modules.get('trottertracks.rpe_total_dp_parallel')
     if module is None:raise ValueError('Route has no supported fixed total-state accelerator')
     helper=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_dp_prefix_reuse.py'
     spec=importlib.util.spec_from_file_location('_rpe_opt_prefix_reuse',helper)
-    C=importlib.util.module_from_spec(spec);spec.loader.exec_module(C)  # keep pinned route import paths unchanged
+    C=importlib.util.module_from_spec(spec);sys.modules[spec.name]=C;spec.loader.exec_module(C)  # keep pinned route import paths unchanged
     namespace=dict(method=request['method'],configuration_id=request['configuration_id'],expected=request['expected'],
         route_commit=request['route']['view_commit'],
         physical={k:case.get(k)for k in ('configuration','signal_packet','evaluation_target','binding_id','total_configuration_id')},
@@ -437,7 +443,9 @@ def prefix_cache_context(request,case,inputs,out):
         with (Path(out)/'DP_PREFIX_EVENTS.jsonl').open('a')as f:
             f.write(json.dumps(dict(UTC=utc(),pid=os.getpid(),**value))+'\n')
     with C.installed(module,directory=directory,cache_namespace=namespace,
-                     checkpoint_rounds=profile.get('prefix_checkpoint_rounds'),event_sink=event):
+                     checkpoint_rounds=profile.get('prefix_checkpoint_rounds') if directory is not None else [],
+                     event_sink=event,max_bytes=profile.get('prefix_cache_max_bytes', C.DEFAULT_CACHE_MAX_BYTES),
+                     parallel_residual=parallel_residual):
         yield
 
 
@@ -446,10 +454,20 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--request', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
-    p.add_argument('--mode', choices=('execute', 'collect', 'dry-check'), default='execute')
+    p.add_argument('--mode', choices=('execute', 'collect', 'dry-check', 'export-evidence'), default='execute')
+    p.add_argument('--evidence-directory', type=Path, help='Destination for explicitly exporting original sidecars')
     p.add_argument('--route-views', type=Path, help='Optional host commit-to-checkout JSON; original REQUEST stays unchanged')
     a = p.parse_args()
-    request = json.loads(a.request.read_text());out = a.output.resolve();out.mkdir(parents=True, exist_ok=True)
+    request = json.loads(a.request.read_text());out = a.output.resolve()
+    if a.mode == 'export-evidence':
+        if a.evidence_directory is None:
+            p.error('--evidence-directory required for export-evidence')
+        label = request['request_id']
+        if not label or Path(label).name != label or label in ('.','..'):
+            p.error('Invalid evidence case label')
+        EVIDENCE.export(out / label, a.evidence_directory)
+        return 0
+    out.mkdir(parents=True, exist_ok=True)
     kind = request['route']['kind'];stage(out, 'JOB_START', mode=a.mode, kind=kind, pid=os.getpid())
     name = 'OUTCOME.json' if a.mode != 'dry-check' else 'DRY_CHECK.json'
     if kind == 'artificial':
@@ -488,8 +506,12 @@ def main():
             else:
                 write(out / 'SOURCE.json', source);write(out / 'CASE_INPUTS.json', inputs);(out / case['label']).mkdir()
                 stage(out, 'SCIENTIFIC_ROUTE_START')
+                writer = getattr(r, 'evidence_writer', None)
+                storage = (EVIDENCE.capture(writer, out / case['label'])
+                           if writer is not None and request.get('execution_profile', {}).get('compact_q3_evidence') is True
+                           else nullcontext())
                 with prefix_cache_context(request, case, inputs, out), TIMING.body_context(
-                        sys.modules.get('trottertracks.rpe_total_dp_parallel'),out), r.installed(out):
+                        sys.modules.get('trottertracks.rpe_total_dp_parallel'),out), r.installed(out), storage:
                     supervision = r.supervise([case], inputs, source, out)
                 stage(out, 'SCIENTIFIC_ROUTE_RETURNED')
                 outcome = outcome_from(view, request, case, inputs, r, out, source, supervision)
@@ -498,7 +520,14 @@ def main():
         # Nothing to validate: leave no OUTCOME so the executor reports the job for review (no automatic retry).
         (out / 'COLLECT_ATTEMPT.json').write_text(json.dumps(outcome) + '\n');stage(out, 'JOB_END', status='NO_ARTIFACT')
         return 3
-    write(out / name, outcome);stage(out, 'JOB_END', status=outcome['status'])
+    write(out / name, outcome)
+    if kind != 'artificial' and a.mode == 'execute' and outcome['status'] in EVIDENCE.COMPLETE:
+        try:
+            if EVIDENCE.compact(out / case['label'], out / name):
+                stage(out, 'Q3_SIDECARS_COMPACTED')
+        except (OSError, ValueError, KeyError, EVIDENCE.sqlite3.Error) as exc:
+            stage(out, 'Q3_CHECKPOINTS_RETAINED', reason=str(exc))
+    stage(out, 'JOB_END', status=outcome['status'])
     print(outcome['status'], flush=True)
     return 0 if outcome['status'] != 'UNKNOWN' else 2
 
