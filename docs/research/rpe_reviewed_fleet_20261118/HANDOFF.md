@@ -1,6 +1,12 @@
 # PRレビュー・容量対策を統合したRomuTail版
 
-新規runの `current` は `romutail-reviewed-pr-3b38e4af6`。統合実装は `3b38e4af67f6b673303cff9f963ac1381627c4d0`、取り込んだPR実装は `e433938dd39ac4c2cb6b7ab8865e41c0b996d232`。直前の `romutail-startup-e97575eb0` から、起動時の一括mapperと既存の配送、準備bundle・Gitオブジェクト共有、中央受領ファイルの共有を継承した。[検収記録](ACCEPTANCE.json) · [探索設定とアルゴリズム](../../PERFORMANCE_METHODS.md)
+初回の採用版は `romutail-reviewed-pr-3b38e4af6`。統合実装は `3b38e4af67f6b673303cff9f963ac1381627c4d0`、取り込んだPR実装は `e433938dd39ac4c2cb6b7ab8865e41c0b996d232`。直前の `romutail-startup-e97575eb0` から、起動時の一括mapperと既存の配送、準備bundle・Gitオブジェクト共有、中央受領ファイルの共有を継承した。[検収記録](ACCEPTANCE.json) · [探索設定とアルゴリズム](../../PERFORMANCE_METHODS.md)
+
+## PR-DF保存信号照合の追加採用
+
+新規runの `current` は `romutail-reviewed-pr-9187e39b5`。optimizer SOURCEは `9187e39b5af87bfca4132875a59ce40a756e4cb6`。保存信号照合の上流は `f79708a7126ecbd827747bd261289d93496d9fa4`。同一物理キーで数値・検査・参照入力が一致した保存信号を使う。差があればラウンド・出所・相違項目を残し、該当候補の信号・価格準備を投入前に保留する。
+
+RomuTail、server2、local0-wsl、PBSゲートウェイへoptimizerを配置した。worker・adapter・runtime/profileの固定版と工程別の受付条件は前の検収を継承する。Windows/CLIは明示指定とrelease無指定の両方でPreview通過。回帰32件中30件が通過し、ルート登録の残り2件は旧採用版でも同じ失敗を確認した。server2の旧R08はユーザー停止で終了しており、旧runの固定版とSTOPを保全した。新規信号・compile・fit・Q3は各0件。[追加検収](PR_DF_RECONCILIATION.json)
 
 ## 通常入口
 
