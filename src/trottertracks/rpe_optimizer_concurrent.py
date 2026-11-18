@@ -177,6 +177,7 @@ class ConcurrentExecutor(O.Executor):
     def _cancel(self,t):
         t.status='CANCELLED';self.state.reserved[t.view.method]-=1
         self.state.metrics['queued_cancelled']+=1;t.event.set()
+        self.state.cv.notify_all()
         t.view.log(event='CANCEL_QUEUED',job=t.job.name)
 
     def hold_configuration(self,proposal,answer):
@@ -197,6 +198,7 @@ class ConcurrentExecutor(O.Executor):
                 t=min(queue,key=lambda t:(not t.demand,s.owner_clock.get(t.owner,-1),t.enqueue))
                 s.clock+=1;s.owner_clock[t.owner]=s.clock;t.status='RUNNING';t.speculative=not t.demand;s.active+=1
                 s.peak_active=max(s.peak_active,s.active)
+                s.cv.notify_all()  # the dispatch may empty the queue with spare slots
             self._start(t)
 
     def _user_stop_requested(self):
@@ -285,16 +287,37 @@ class ConcurrentExecutor(O.Executor):
             with s.cv:s.peak_RSS_KiB=max(s.peak_RSS_KiB,rss)
             s.monitor_stop.wait(.1)
 
+    def has_spare_slot(self):
+        with self.state.cv:
+            return (not self.state.failure and self.state.active < self.capacity
+                    and not any(t.status == 'QUEUED' for t in self.state.tasks.values()))
+
+    def _wait_for_task(self, task):
+        """Wake the selector for fresh work only when the queue can use it."""
+        s = self.state
+        ready_pending = getattr(self, 'ready_pending', None)
+        self.log(event='DEPENDENCY_WAIT_START', job=task.job.name)
+        try:
+            if ready_pending is None:
+                task.event.wait()
+                return True
+            with s.cv:
+                s.cv.wait_for(lambda: task.event.is_set() or (ready_pending() and self.has_spare_slot()))
+                if task.event.is_set():
+                    return True
+            self.log(event='Q3_WAIT_YIELD_FOR_READY', job=task.job.name)
+            return False
+        finally:
+            self.log(event='DEPENDENCY_WAIT_END', job=task.job.name)
+
     def answer(self,proposal,allow_new=True):
         job=self.job_dir(proposal);s=self.state
         with s.cv:
             task=s.tasks.get(job)
             if task and task.status=='CANCELLED':task=None
             if task:task.demand=True;s.cv.notify_all()
-        if task and not task.event.is_set():
-            self.log(event='DEPENDENCY_WAIT_START',job=job.name)
-            try:task.event.wait()  # retain parent-exit gate even if OUTCOME appeared first
-            finally:self.log(event='DEPENDENCY_WAIT_END',job=job.name)
+        if task and not task.event.is_set() and not self._wait_for_task(task):
+            return dict(status='RESELECT_READY', job=str(job), calls=0)
         if task and task.error == 'HOST_ELIGIBILITY_HOLD':
             return self._held_answer(proposal)
         if task and task.error:
@@ -321,9 +344,8 @@ class ConcurrentExecutor(O.Executor):
                     if self._user_stop_requested():return None
                     return dict(status='BUDGET_EXHAUSTED',job=None)
                 if task is None:return dict(status='NO_ROUTE',job=None)
-                self.log(event='DEPENDENCY_WAIT_START',job=job.name)
-                try:task.event.wait()
-                finally:self.log(event='DEPENDENCY_WAIT_END',job=job.name)
+                if not self._wait_for_task(task):
+                    return dict(status='RESELECT_READY', job=str(job), calls=0)
                 if task.error == 'HOST_ELIGIBILITY_HOLD':
                     return self._held_answer(proposal)
                 if(job/'OUTCOME.json').exists():answer=self.ingest(job,proposal,calls=self.take_count(job))
@@ -716,8 +738,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def _refresh_capacity(self, policy, error=None):
         if not self.state.allocation_auto: return
         owned = len(self._owned_attempts())
-        queue = sorted((task for task in self.state.tasks.values() if task.status == 'QUEUED' and self._task_ready(task)),
-                       key=lambda task:(not task.demand, self.state.owner_clock.get(task.owner,-1),task.enqueue))
+        queue = self._ready_queue()
         available = {host:self._offer_free(host, policy, error) for host in self.hosts}
         available = {host:min(free,len(queue)) for host,free in available.items() if free > 0}
         usable = len(self._match_ready_jobs(queue, available))
@@ -728,6 +749,36 @@ class DistributedExecutor(ConcurrentExecutor):
                      ready_jobs=len(queue), fresh_free_slots=sum(available.values()),
                      request_compatible_slots=usable,
                      reason='MATCHED_READY_REQUESTS_TO_PARTICIPATING_FRESH_ELIGIBLE_SLOTS')
+
+    def _ready_queue(self):
+        def priority(task):
+            rank = 2 if not task.demand else int(self.distributed.get('live_ready_refill', False)
+                                                and task.rule['kind'] == 'preparation')
+            return (getattr(task, 'optional_price_validation', False), rank,
+                    self.state.owner_clock.get(task.owner, -1), task.enqueue)
+
+        return sorted((task for task in self.state.tasks.values() if task.status == 'QUEUED'
+                       and self._task_ready(task)), key=priority)
+
+    def has_spare_slot(self):
+        # Auto capacity is sized against already queued jobs. With one job
+        # running it can equal one even when another worker has a free offer.
+        with self.state.cv:
+            if self.state.failure or self.state.closed:
+                return False
+            owned = max(self.state.active, len(self._owned_attempts()))
+            if not self.hosts:
+                return not owned
+            policy, error = self._host_admission_policy()
+            offers = {host: self._offer_free(host, policy, error) for host in self.hosts}
+            offers = {host: count for host, count in offers.items() if count}
+            free = sum(offers.values())
+            if not self.state.allocation_auto:
+                free = min(free, self.capacity - owned)
+            if free <= 0:
+                return False
+            demand = [task for task in self._ready_queue() if task.demand and task.rule['kind'] != 'preparation']
+            return free > len(self._match_ready_jobs(demand, offers))
 
     def _host_rank(self, host):
         groups = self.allocation_config['priority_groups']
@@ -756,7 +807,7 @@ class DistributedExecutor(ConcurrentExecutor):
             row = self.store.row(task.job.name)
             compatible[task.job.name] = []
             for h in available:
-                if not self._host_supports_stage(h, row['request']):
+                if not self._host_supports_stage(h, row['request']) or not self._fits_host_walltime(h, row['request']):
                     skipped[h] = True
                     continue
                 if not self.store.eligible(row['request'], row['eligibility'], h,
@@ -791,6 +842,10 @@ class DistributedExecutor(ConcurrentExecutor):
         stage = preparation.get('stage', 'q3')
         providers=(self.distributed.get('preparation_provider_hosts') or {}).get(preparation.get('provider'))
         return (capabilities is None or stage in capabilities) and (providers is None or host in providers)
+
+    def _fits_host_walltime(self, host, request):
+        from .rpe_pbs import fits_request
+        return fits_request(request, self.hosts.get(host, {}).get('resource_report'), self.distributed.get('pbs') or {})
 
     def _capacity_feedback(self, host):
         with self.store._connection() as database:
@@ -1422,6 +1477,15 @@ class DistributedExecutor(ConcurrentExecutor):
             reasons[task.job.name]=reason
         payload=dict(reasons=reasons,active=s.active,capacity=self.capacity,
             hosts={h:dict(capacity=v.get('capacity'),slots=v['slots'])for h,v in self.hosts.items()})
+        if self.distributed.get('live_ready_refill'):
+            ready = self._ready_queue()
+            for host, observation in payload['hosts'].items():
+                free = self._offer_free(host, admission, admission_error)
+                observation.update(owned=owned[host], fresh_free_slots=free)
+                if free:
+                    compatible = self._match_ready_jobs(ready, {host: free})
+                    observation['idle_reason'] = ('NO_READY_TASK' if not ready else
+                        'DISPATCH_READINESS_OR_POLL_WAIT' if compatible else 'NO_ELIGIBLE_READY_TASK')
         marker=json.dumps(payload,sort_keys=True)
         if marker!=getattr(s,'last_timing_queue',None):
             s.last_timing_queue=marker;self.log(event='QUEUE_WAIT_STATE',**payload)
@@ -1463,6 +1527,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 self._refresh_pending_preparation(host,fingerprints,value.get('readiness_errors')or{})
                 pending_challenges=self._pending_preparation_challenges(host)
                 self._refresh_capacity(admission_policy, admission_error)
+                s.cv.notify_all()
                 new_slots = self._offer_free(host, admission_policy, admission_error)
                 def reply(**fields):
                     existing=fields.get('eligibility_challenges',[])
@@ -1487,9 +1552,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 if not new_slots:
                     return reply(assignments=assignments, stop=False, host_admission=admission,
                                 eligibility_challenges=[])
-                queue = sorted((t for t in s.tasks.values() if t.status == 'QUEUED' and self._task_ready(t)),
-                    key=lambda t: (getattr(t, 'optional_price_validation', False), not t.demand,
-                                   s.owner_clock.get(t.owner, -1), t.enqueue))
+                queue = self._ready_queue()
                 if s.failure or s.closed: return reply(assignments=assignments, stop=False, host_admission=admission)
                 eligible, challenges = [], []
                 skipped = False
@@ -1498,11 +1561,9 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not self._host_supports_stage(host, row['request']):
                         skipped = True
                         continue
-                    if (value.get('resource_report') or {}).get('pbs'):
-                        from .rpe_pbs import fits_request
-                        if not fits_request(row['request'], value['resource_report'], self.distributed.get('pbs') or {}):
-                            skipped = True
-                            continue
+                    if not self._fits_host_walltime(host, row['request']):
+                        skipped = True
+                        continue
                     decision = self._eligibility_for(row['request'], row['job_id'])
                     if not self.store.set_eligibility(row['job_id'], decision):
                         self.eligibility_holds[row['job_id']] = decision
@@ -1573,6 +1634,8 @@ class DistributedExecutor(ConcurrentExecutor):
                             and self._host_new_slots(h, info.get('reported_slots', info['slots']),
                                 self._host_admission(h, admission_policy, admission_error)) > 0
                             and time.time()-info['epoch'] < 2 and key in info['cached_prefixes']
+                            and self._host_supports_stage(h, first['request'])
+                            and self._fits_host_walltime(h, first['request'])
                             and self.store.eligible(first['request'], first['eligibility'], h,
                                                    info.get('host_fingerprints'), first['job_id'])]
                         if preferred: return reply(assignments=assignments, stop=False, eligibility_challenges=challenges, host_admission=admission)
@@ -1695,6 +1758,8 @@ class DistributedExecutor(ConcurrentExecutor):
         if row and row['state'] not in ('ACCEPTED', 'CANCELLED'):
             with self.state.cv: self._restore_task(row, proposal, demand=True)
         answer = super().answer(proposal, allow_new)
+        if answer and answer.get('status') == 'RESELECT_READY':
+            return answer  # a concurrent transfer is not adoption by this selector
         if answer and answer.get('status') == 'BUDGET_EXHAUSTED' and job.name in self.eligibility_holds:
             return self._held_answer(proposal)
         if answer and row is not None and self.store.row(row['job_id'])['state'] == 'ACCEPTED':
@@ -1843,7 +1908,7 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
     try:
         if kwargs.get('context') is None:kwargs['context']=O.prepare(root,problem,methods=methods)
         with ThreadPoolExecutor(max_workers=max(1,len(methods)))as pool:
-            futures={m:pool.submit(O.optimize,root,problem,executor=executor.for_method(m),methods=[m],**kwargs)for m in methods}
+            ready_source = kwargs.get('ready_source')
             def report_failure(method,future):
                 if future.cancelled():return
                 error=future.exception()
@@ -1855,9 +1920,46 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
                     return
                 try:executor._stop_after_failure(error)
                 finally:O.record_runtime_error(executor.run_dir,error,'METHOD_OPTIMIZE',method=method)
-            for method,future in futures.items():
-                future.add_done_callback(lambda done,m=method:report_failure(m,done))
-            out={m:futures[m].result()[m]for m in methods}
+            def finished(method, future):
+                try:
+                    report_failure(method, future)
+                finally:
+                    with executor.state.cv:
+                        executor.state.cv.notify_all()
+
+            def submit(method):
+                future = pool.submit(O.optimize, root, problem, executor=executor.for_method(method),
+                                     methods=[method], **kwargs)
+                future.add_done_callback(lambda done: finished(method, done))
+                return future
+
+            futures = {m: submit(m) for m in methods}
+            if ready_source is None:
+                out = {m: futures[m].result()[m] for m in methods}
+            else:
+                out = {}
+                state = executor.state
+
+                def idle_ready():
+                    if not executor.has_spare_slot():
+                        return []
+                    return [m for m in out if m not in futures and ready_source.has_new(m)]
+
+                while futures:
+                    with state.cv:
+                        state.cv.wait_for(lambda: any(f.done() for f in futures.values()) or idle_ready())
+                        done = [m for m, f in futures.items() if f.done()]
+                    for method in done:
+                        out[method] = futures.pop(method).result()[method]
+                    if not futures or any(r['stop_reason'] == 'UNKNOWN_RESULT' for r in out.values()):
+                        # If one method failed, drain the other selector using the
+                        # same failure callback and existing stop contract.
+                        out.update((m, f.result()[m]) for m, f in futures.items())
+                        break
+                    with state.cv:
+                        restart = idle_ready()
+                    for method in restart:
+                        futures[method] = submit(method)
     except BaseException:
         primary=getattr(executor.state,'primary_exception',None)
         if primary is not None:raise primary

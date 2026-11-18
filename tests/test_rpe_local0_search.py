@@ -67,6 +67,20 @@ class Tests(unittest.TestCase):
     def test_exact_fraction_and_binary64_are_different(self):
         exact=number(dict(kind='exact',value='1/5'),'width');binary=number(dict(kind='binary64',value='0.2'),'width')
         self.assertNotEqual(exact[1]['exact'],binary[1]['exact']);self.assertEqual(exact[1]['exact'],'1/5')
+    def test_normal_width_preview_enables_refill_only_for_selected_release(self):
+        self.config['entry'] = 'schedule'
+        scope = request(4, 6, 2)
+        scope['action'] = 'preview'
+        scope['scope']['per_method']['PR_PAULI']['delta_pf'] = [dict(kind='exact', value='1/5')]
+        without = Gateway(self.config).handle(scope)
+        self.config['live_ready_refill'] = True
+        with_refill = Gateway(self.config).handle(scope)
+        _, spec, _ = resolve(self.config, scope)
+        self.assertNotIn('live_ready_refill', without['applied'])
+        self.assertTrue(with_refill['applied']['live_ready_refill'])
+        self.assertTrue(spec['overlap_ready_batch'])
+        self.assertNotEqual(without['run_id'], with_refill['run_id'])
+
     def test_unsupported_kappa_modes_report_specific_field_and_create_no_run(self):
         for mode in ('absolute','multiplier'):
             q=request(4,7);q['scope']['per_method']['PR_PAULI']['kappa']=dict(mode=mode,min='2',max='64')

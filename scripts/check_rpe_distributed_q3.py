@@ -334,11 +334,15 @@ def wait_for(predicate, *, seconds=30, reason):
     raise AssertionError(reason)
 
 
-def fault_acceptance(directory):
+def fault_acceptance(directory, *, live_ready_refill=False):
     """Kill only the synthetic controller; keep detached artificial Q3 running."""
     directory = Path(directory)
     port = free_port()
     prepare(directory, port=port, local_slots=0, total_slots=1, sleep_seconds=.4)
+    if live_ready_refill:
+        settings = json.loads((directory/'ROUND.json').read_text())
+        settings.update(live_ready_refill=True, overlap_ready_batch=True)
+        write(directory/'ROUND.json', settings)
     remote = profile(directory, 'simulated-recovery-worker')
     profile_path = directory / 'PROFILE_recovery.json'
     write(profile_path, remote)

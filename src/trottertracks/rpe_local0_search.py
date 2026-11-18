@@ -258,6 +258,10 @@ def resolve(config, request):
         if 'max_steps_per_method' not in stop:
             spec['max_steps_per_method']=None
             spec.setdefault('search_overrides',{}).pop('max_steps_per_method',None)
+    widths = spec.get('search_overrides', {}).get('requested_widths') or {}
+    if (config.get('live_ready_refill') is True and config.get('entry') == 'schedule'
+            and any(widths.get(method) for method in methods if method.startswith('PR_'))):
+        spec.update(live_ready_refill=True, overlap_ready_batch=True)
     if request['action'] in ('start','prepare'):
         spec['science_approved'] = True
     return problem, spec, canonical
@@ -282,6 +286,8 @@ def summarize(problem, spec, canonical):
     if preparation is not None:
         result['preparation_budgets'] = {stage: preparation.get('budgets', {}).get(stage, 0)
                                          for stage in ('signal', 'compile', 'audit')}
+    if spec.get('live_ready_refill') is True:
+        result['live_ready_refill'] = True
     return result
 
 
@@ -617,7 +623,7 @@ class Gateway:
         root=Path(self.config['code_root'])
         fixed_implementation(self.config)
         scoped = CLI.price_overrides(CLI.scoped(problem,spec.get('method_overrides')),spec)
-        if spec.get('search_to_rule_stop'):
+        if spec.get('search_to_rule_stop') or spec.get('live_ready_refill'):
             from .rpe_schedule_search import requested_widths
             for method,widths in (requested_widths(scoped,spec) or {}).items():
                 scoped['methods'][method]['requested_delta_pf_values']=[

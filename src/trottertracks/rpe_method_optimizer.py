@@ -37,6 +37,7 @@ No signal, price, compile or Q3 is computed here.  Costs are each candidate's ow
 saved unit prices times the integer shots, validated against C's saved totals.
 """
 import ast
+from copy import deepcopy
 from fractions import Fraction
 from copy import deepcopy
 import hashlib
@@ -1379,7 +1380,7 @@ def scope_absolute_kappa(context, problem):
 
 
 def optimize(root, problem, *, context=None, methods=None, initial='all', extra_results=(), backend=None, max_new=None,
-             executor=None, saved_is_free=True, science_approved=True):
+             executor=None, saved_is_free=True, science_approved=True, ready_source=None):
     """Run the per-method search.
 
     initial: 'all' saved results, 'none', or {method: [saved labels]} (replay from seeds).
@@ -1395,6 +1396,9 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
     out = {}
     for name in methods or problem['methods']:
         cands = [c for c in context['candidates'] if c['method'] == name]
+        if ready_source is not None:
+            # Each live selector owns its candidate dictionaries and route view.
+            cands = deepcopy(cands)
         if executor is not None:
             ex = executor.for_method(name)
             for c in cands:
@@ -1436,6 +1440,21 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
             prior = None
         if search.get('rule') == 'METHOD_MINIMUM_PRIORITY_V2':
             from trottertracks import rpe_priority_search as P
+            refresh_ready = None
+            if ready_source is not None:
+                pending_ready, take_ready = ready_source.subscribe(name, context, cands, ex)
+                ex.ready_pending = pending_ready
+
+                def refresh_ready():
+                    added = take_ready()
+                    if not added:
+                        return [], {}
+                    ids = {c['configuration_id'] for c in added}
+                    cands[:] = [c for c in cands if c['configuration_id'] not in ids] + added
+                    saved = ingest(initial_knowledge(context['saved'], added, start), added, extra_results)
+                    prior_saved, _ = ex.prior_records(added)
+                    saved.update((key, value) for key, value in prior_saved.items() if key not in saved)
+                    return added, saved
             log = None
             if executor is not None:
                 ex_log = executor.for_method(name)
@@ -1446,7 +1465,8 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                     baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),
                                     routes=problem.get('q3_routes'), spent=spent, free=free, science_approved=science_approved,
                                     prefetch=prefetch, on_missing=search.get('on_missing', 'STOP'), facts=context.get('facts'), log=log,
-                                    prefetch_state=getattr(ex, 'prefetch_state', None) if executor is not None else None)
+                                    prefetch_state=getattr(ex, 'prefetch_state', None) if executor is not None else None,
+                                    refresh_ready=refresh_ready)
             prep = (problem['methods'][name].get('generation') or {}).get('preparation')
             if prep and search.get('prepare_kappa_proposals'):
                 result['input_requests'] = prepare_kappa_requests(root, problem, context, name, prep, result['input_requests'])

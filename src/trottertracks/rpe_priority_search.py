@@ -163,7 +163,7 @@ class ConfigState:
 
 def run_priority(name, candidates, knowledge, backend, search, threshold, generate, max_new, *, baseline=None, routes=None,
                  spent=0, free=None, science_approved=True, prefetch=None, on_missing='STOP', facts=None, log=None,
-                 prefetch_state=None):
+                 prefetch_state=None, refresh_ready=None):
     s = settings(search);baseline = baseline or {}
     ready = [c for c in candidates if c['ready'] and c['configuration_id']]
     states = {c['configuration_id']: ConfigState(c) for c in ready}
@@ -425,6 +425,18 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
     while step_limit is None or step<step_limit:
         if work_slice is not None and step>=work_slice:
             stop='WORK_SLICE_YIELDED';break
+        if refresh_ready is not None:
+            added, saved = refresh_ready()
+            if added:
+                ready.extend(added)
+                states.update((c['configuration_id'], ConfigState(c)) for c in added)
+                knowledge.update(saved)
+                for (cid, v), record in saved.items():
+                    absorb(cid, v, record)
+                if search.get('seed_saved_same_L_D'):
+                    O.sibling_seeds(candidates, knowledge)
+                for state in states.values():
+                    state.dirty = True
         groups, M = classify()
         if groups['UPDATE'] and not (groups['EXPLORE'] and since_explore >= s['explore_every'] - 1):
             choice = groups['UPDATE'][0]
@@ -458,6 +470,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None
         selection_timing['backend_answer_seconds'] += time.perf_counter() - answer_started
         selection_timing['backend_answer_calls'] += int(backend is not None and (is_free or allow))
+        if answer is not None and answer['status'] == 'RESELECT_READY' and refresh_ready is not None:
+            continue
         if O.is_local_unknown(answer):
             st=states[choice['configuration_id']]
             new_calls+=answer.get('calls',0)

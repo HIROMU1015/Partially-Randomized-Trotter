@@ -310,6 +310,14 @@ class WidthDriver:
                 raise ValueError('Explicit requested_widths required')
             self.widths={}
         self.methods = list(self.spec['methods']) if self.rule_stop else list(self.widths)
+        self.live_ready_refill = self.spec.get('live_ready_refill') is True
+        if self.live_ready_refill and (
+            self.spec.get('overlap_ready_batch') is not True
+            or self.spec.get('executor', {}).get('scheduler') != 'concurrent'
+            or self.spec.get('search_overrides', {}).get('rule', self.problem['search'].get('rule'))
+                != 'METHOD_MINIMUM_PRIORITY_V2'
+        ):
+            raise ValueError('live_ready_refill requires overlapping preparation and concurrent V2 search')
         for method,widths in self.widths.items():
             self.problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
         self.state_file = self.run/'KAPPA_STATE.json'
@@ -347,6 +355,8 @@ class WidthDriver:
         if preparation:
             current['preparation_budgets']={stage:preparation.get('budgets',{}).get(stage,0)
                 for stage in ('signal','compile','audit')}
+        if self.live_ready_refill:
+            current['round_scope']['live_ready_refill'] = True
         path=self.run/'FIXED_INPUTS.json'
         if path.exists():
             if O.load_json(path)!=current:
@@ -606,7 +616,8 @@ class WidthDriver:
             self.completion=Completion(self.run/'completion',settings)
         return self.completion
 
-    def complete_points(self, stop_requested=None):
+    def complete_points(self, stop_requested=None, announce_ready=None, stop_on_error=None,
+                        wait_for_preparation=None):
         comp=self.completion_api()
         if hasattr(comp,'ingest_price_results'):comp.ingest_price_results()
         # INIT may expose a whole far-kappa ladder at once. Transfer only the
@@ -647,34 +658,53 @@ class WidthDriver:
         self.log(event='PREPARATION_WAVE_START',dispatch_reason=reason,per_method_limit=limit,
             selected_by_method=counts,pending_before=len(pending),deferred=len(pending)-len(selected),
             selected=[dict(method=p['method'],family=p['family'],kappa=p['kappa'])for p in selected])
-        for p in selected:
-            if stop_requested is not None and stop_requested():
-                self.log(event='PREPARATION_YIELD_AFTER_FATAL');break
-            p['input_dispatches']=p.get('input_dispatches',0)+1
-            started=time.monotonic();self.log(event='CANDIDATE_INPUTS_START',family=p['family'],kappa=p['kappa'])
-            if self.a.plan_only or self.spec.get('science_approved')is not True:
-                record=comp.plan(p['completion_request'])
-            else:record=comp.complete(p['completion_request'])
-            self.log(event='CANDIDATE_INPUTS_END',family=p['family'],kappa=p['kappa'],status=record['status'],
-                reason=record.get('reason'),wall_seconds=time.monotonic()-started)
-            p['completion']=dict(status=record['status'],key=record.get('key'),reason=record.get('reason'),
-                                 signal_plan=record.get('signal_plan'),price_plan=record.get('price_plan',record.get('price_quote')),
-                                 calibration_requests=record.get('calibration_requests'),readiness=record.get('readiness'),
-                                 rounds=record.get('rounds'))
-            if record['status']=='READY_FOR_SEARCH':
-                try:self.check_completed_configuration(p,record)
-                except (ValueError,KeyError,TypeError) as exc:
-                    p.update(status='HELD',reason='COMPLETED_CONFIGURATION_MISMATCH:'+str(exc));continue
-                p.update(status='REGISTERED',configuration_id=record['configuration_id'])
-            elif record['status']=='SELECTED'and str(record.get('reason','')).startswith('ORCHESTRATOR_YIELD_BEFORE_STAGE:'):
-                p.update(status='COMPLETION',reason=record['reason'])
-                self.log(event='PREPARATION_YIELD_AFTER_FATAL',family=p['family'],stage=record.get('interrupted_before_stage'))
-                break
-            elif (record['status'].startswith('STOP') or 'NUMERICAL_GATE' in str(record.get('reason','')) or
-                  getattr(self,'rule_stop',False) and record.get('scientific_failure')):
-                p.update(status='HELD',reason=record.get('reason',record['status']))
-            else:
-                p.update(status='WAITING_INPUTS',reason=record.get('reason',record['status']))
+        def prepare_points(points):
+            for p in points:
+                if ((wait_for_preparation is not None and not wait_for_preparation())
+                    or (stop_requested is not None and stop_requested())):
+                    self.log(event='PREPARATION_YIELD_AFTER_FATAL');break
+                p['input_dispatches']=p.get('input_dispatches',0)+1
+                started=time.monotonic();self.log(event='CANDIDATE_INPUTS_START',family=p['family'],kappa=p['kappa'])
+                if self.a.plan_only or self.spec.get('science_approved')is not True:
+                    record=comp.plan(p['completion_request'])
+                else:record=comp.complete(p['completion_request'])
+                self.log(event='CANDIDATE_INPUTS_END',family=p['family'],kappa=p['kappa'],status=record['status'],
+                    reason=record.get('reason'),wall_seconds=time.monotonic()-started)
+                p['completion']=dict(status=record['status'],key=record.get('key'),reason=record.get('reason'),
+                                     signal_plan=record.get('signal_plan'),price_plan=record.get('price_plan',record.get('price_quote')),
+                                     calibration_requests=record.get('calibration_requests'),readiness=record.get('readiness'),
+                                     rounds=record.get('rounds'))
+                if record['status']=='READY_FOR_SEARCH':
+                    try:self.check_completed_configuration(p,record)
+                    except (ValueError,KeyError,TypeError) as exc:
+                        p.update(status='HELD',reason='COMPLETED_CONFIGURATION_MISMATCH:'+str(exc));continue
+                    p.update(status='REGISTERED',configuration_id=record['configuration_id'])
+                    if announce_ready is not None:
+                        announce_ready(p['method'], record)
+                elif record['status']=='SELECTED'and str(record.get('reason','')).startswith('ORCHESTRATOR_YIELD_BEFORE_STAGE:'):
+                    p.update(status='COMPLETION',reason=record['reason'])
+                    self.log(event='PREPARATION_YIELD_AFTER_FATAL',family=p['family'],stage=record.get('interrupted_before_stage'))
+                    break
+                elif (record['status'].startswith('STOP') or 'NUMERICAL_GATE' in str(record.get('reason','')) or
+                      getattr(self,'rule_stop',False) and record.get('scientific_failure')):
+                    p.update(status='HELD',reason=record.get('reason',record['status']))
+                else:
+                    p.update(status='WAITING_INPUTS',reason=record.get('reason',record['status']))
+        if announce_ready is None:
+            prepare_points(selected)
+        else:
+            # Candidates within one method can share descriptors, signals and
+            # calibration cells. Retain their order while methods run in parallel.
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+            by_method = [[p for p in selected if p['method'] == method] for method in self.methods]
+            with ThreadPoolExecutor(max_workers=len(by_method)) as pool:
+                tasks = [pool.submit(prepare_points, points) for points in by_method if points]
+                try:
+                    for task in as_completed(tasks):
+                        task.result()
+                except BaseException:
+                    stop_on_error()
+                    raise
         self.log(event='PREPARATION_WAVE_END',dispatch_reason=reason,selected_by_method=counts,
             remaining_pending=sum(p['status']in('COMPLETION','WAITING_INPUTS')for p in self.state['points']))
 
@@ -755,6 +785,90 @@ class WidthDriver:
         K.CLI.write(self.run/'CONFIRMED_MINIMA.json',K.CLI.slim(dict(schema='RPE_WIDTH_CONFIRMED_MINIMA_V1',tau=tau,
             methods=methods,scope='PER_METHOD_EVALUATED_SET_CONDITIONAL_PRICE_NOT_FORMAL_G',new_scientific_calls=0)))
 
+    def live_ready_source(self, executor, completion, problem, stop_preparation):
+        """Publish validated registrations to each selector's private view."""
+        from contextlib import nullcontext
+        from types import SimpleNamespace
+        announced = {method: set() for method in self.methods}
+        observed = {method: set() for method in self.methods}
+        state = executor.state
+        condition = state.cv
+
+        def wait_for_preparation():
+            # Give already queued Q3 work first access to the slots. Polling
+            # CPU use is unnecessary. Once started, a preparation may finish.
+            with condition:
+                while not (stop_preparation.is_set() or state.failure or executor._user_stop_requested()):
+                    if executor.has_spare_slot():
+                        return True
+                    condition.wait(.5)  # also observes STOP written outside the executor
+                return False
+
+        def announce(method, record):
+            with condition:
+                executor.for_method(method).log(event='CANDIDATE_READY', configuration=record['configuration_id'],
+                                                completion_key=record['key'])
+                announced[method].add(record['key'])
+                condition.notify_all()
+
+        def has_new(method):
+            with condition:
+                return not stop_preparation.is_set() and bool(announced[method] - observed[method])
+
+        def subscriber(method, context, candidates, view):
+            seen = set()
+
+            def pending():
+                with condition:
+                    return not stop_preparation.is_set() and bool(announced[method] - seen)
+
+            def take():
+                with condition:
+                    keys = announced[method] - seen
+                    seen.update(keys)
+                    observed[method].update(keys)
+                if not keys or stop_preparation.is_set():
+                    return []
+                scratch = dict(context, candidates=deepcopy(candidates), expected=dict(view.expected))
+                scoped = dict(problem, execution_routes=view.routes)
+                if hasattr(completion, 'install_snapshot'):
+                    routes, records = completion.install_snapshot(scratch, scoped, keys)
+                else:
+                    with getattr(completion, 'lock', nullcontext()):
+                        records = deepcopy([completion.state['records'][key] for key in keys])
+                    routes = completion.install(scratch, scoped, records)
+                O.apply_published(scratch['candidates'], routes)
+                # The installer resolves aliases. Keep existing routes and
+                # bindings, including those of jobs already running.
+                trial = view.for_method(method)
+                trial.routes, trial.expected = routes, scratch['expected']
+                existing = {c['configuration_id'] for c in candidates if c['ready']}
+                registered = {r.get('installed_configuration_id', r.get('configuration_id')) for r in records}
+                added = []
+                new_routes = []
+                expected = dict(view.expected)
+                for candidate in scratch['candidates']:
+                    cid = candidate['configuration_id']
+                    if (candidate['method'] != method or not candidate['ready']
+                        or not cid or cid not in registered or cid in existing):
+                        continue
+                    route = trial.route(cid)
+                    if route is None or trial.refresh_execution_hold(cid):
+                        continue
+                    candidate['execution_needs'] = []
+                    candidate.pop('execution_hold', None)
+                    added.append(candidate)
+                    new_routes.append(dict(route, configuration_ids=[cid]))
+                    expected[cid] = trial.expected_for(cid, route)
+                view.routes = dict(view.routes, **{method: new_routes + view.routes.get(method, [])})
+                view.expected = expected
+                if added:
+                    self.log(event='LIVE_READY_INSTALLED', method=method,
+                             configurations=[c['configuration_id'] for c in added])
+                return added
+            return pending, take
+        return announce, wait_for_preparation, SimpleNamespace(subscribe=subscriber, has_new=has_new)
+
     def batch(self, prepare_during=False):
         # Same V2/Executor and risk contract as the old ordinary round entry.
         # Completion selects no new designs here: the width planner already did.
@@ -800,6 +914,8 @@ class WidthDriver:
         # install its existing waiting records, without a second design chooser.
         active_spec=deepcopy(self.spec);active_spec['max_new_q3_per_method']=budgets
         active_spec['executor']=dict(options,prior_run_dirs=list(options.get('prior_run_dirs',[]))+[str(self.run)])
+        if self.live_ready_refill and active_spec['executor'].get('distributed'):
+            active_spec['executor']['distributed'] = dict(active_spec['executor']['distributed'], live_ready_refill=True)
         active_spec['candidate_completion']=dict(self.spec.get('candidate_completion')or{},max_attempted_per_method=0)
         executor,optimize=K.CLI.make_executor(ROOT,self.run,routes,context['expected'],problem,active_spec)
         runtime=K.CLI.preparation_runtime(executor,self.run,active_spec)
@@ -812,19 +928,31 @@ class WidthDriver:
                 # Snapshot/install happens before starting preparation. While
                 # it owns Completion state, Q3 only reads this frozen context.
                 from concurrent.futures import ThreadPoolExecutor,TimeoutError
-                from contextlib import nullcontext
                 import inspect,threading
-                preparation_pool=ThreadPoolExecutor(max_workers=2 if pf_enabled else 1)
                 stop_preparation=threading.Event()
-                executor.state.failure_callback=lambda error:stop_preparation.set()
+
+                def stop_preparing():
+                    with executor.state.cv:
+                        stop_preparation.set()
+                        executor.state.cv.notify_all()
+
+                preparation_pool=ThreadPoolExecutor(max_workers=2 if pf_enabled else 1)
+                executor.state.failure_callback=lambda error:stop_preparing()
                 comp.stop_requested=stop_preparation.is_set
                 supports_stop='stop_requested'in inspect.signature(self.complete_points).parameters
+                prepare_options = {'stop_requested': stop_preparation.is_set} if supports_stop else {}
+                search_options = {}
+                if self.live_ready_refill:
+                    announce, wait_for_preparation, subscriber = self.live_ready_source(
+                        executor, comp, problem, stop_preparation)
+                    prepare_options.update(announce_ready=announce, stop_on_error=stop_preparing,
+                                           wait_for_preparation=wait_for_preparation)
+                    search_options['ready_source'] = subscriber
                 def prepare():
                     if runtime is not None and not stop_preparation.is_set():
                         self.bootstrap_families()
                     if not stop_preparation.is_set():
-                        self.complete_points(**({'stop_requested':stop_preparation.is_set}if supports_stop else{}))
-                pending=preparation_pool.submit(prepare)
+                        self.complete_points(**prepare_options)
                 pf_future=None
                 self.pf_more=False
                 if pf_enabled:
@@ -833,17 +961,20 @@ class WidthDriver:
                     pf_future=preparation_pool.submit(pf_candidate_selection.prepare_next,ROOT,problem,
                         snapshot_context(context),active_spec,self.run,deepcopy(routes),runtime)
                 def ready_keys():
-                    with(getattr(comp,'lock',None)or nullcontext()):
-                        return{r.get('key')for r in comp.state['records'].values()if r['status']=='READY_FOR_SEARCH'}
+                    return {p['completion']['key'] for p in self.state['points']
+                            if p['status'] in ('REGISTERED', 'EVALUATED') and p.get('completion', {}).get('key')}
+
                 installed=ready_keys()
+                pending=preparation_pool.submit(prepare)
                 can_search=any(c['ready']for c in context['candidates'])
                 while True:
                     if can_search:
-                        with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION',on_error=lambda error:stop_preparation.set()):
+                        with K.CLI.round_phase(self.run,'WIDTH_READY_DURING_PREPARATION',on_error=lambda error:stop_preparing()):
                             interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
-                                initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True)
+                                initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,science_approved=True,
+                                **search_options)
                         if any(r['stop_reason']in fatal for r in interim.values()):
-                            stop_preparation.set();pending.result();break
+                            stop_preparing();pending.result();break
                     if pending.done():pending.result();break
                     ready=ready_keys()
                     changed=ready-installed
@@ -887,7 +1018,7 @@ class WidthDriver:
                     result=continue_selected_preparation(ROOT,dict(problem,search=search),context,
                         active_spec,self.run,comp,executor,result,optimizer=optimize)
         except BaseException as error:
-            if preparation_pool is not None:stop_preparation.set()
+            if preparation_pool is not None:stop_preparing()
             O.record_runtime_error(self.run,error,'WIDTH_BATCH')
             if hasattr(executor,'_stop_after_failure'):executor._stop_after_failure(error)
             self.state['stop']=dict(reason='RUNTIME_EXCEPTION',error_type=type(error).__name__,message=str(error),

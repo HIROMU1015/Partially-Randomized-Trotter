@@ -194,9 +194,16 @@ def summarize(run, *, timeline=None, public_summary=None):
             event=dict(event,reasons={job:reason for job,reason in event.get('reasons',{}).items()if job not in preparation_jobs})
         events.append(event)
     launches = defaultdict(list)
+    candidate_ready = {}
+    first_candidate_assignments = {}
     for e in events:
+        candidate = (e.get('invocation'), e.get('method'), e.get('configuration'))
+        if e.get('event') == 'CANDIDATE_READY':
+            candidate_ready.setdefault(candidate, e)
         if e.get('event') == 'LAUNCH' and e.get('attempt_id'):
             launches[e['job']].append(e)
+            if candidate in candidate_ready:
+                first_candidate_assignments.setdefault(candidate, e)
     attempts = {}; ambiguous = []; waiting = defaultdict(list)
     wait_intervals = []; pending_adopt = defaultdict(list)
     for e in events:
@@ -284,10 +291,15 @@ def summarize(run, *, timeline=None, public_summary=None):
             if exact is not None:return dict(kind='EXACT_SAME_CLOCK',seconds=exact)
             return dict(kind='BOUNDED' if overhead is not None else 'MISSING',seconds=None,lower_seconds=0 if overhead is not None else None,
                         upper_seconds=overhead,reason='Absolute host clocks not subtracted; B+C shared upper envelope' if overhead is not None else 'Q3 body or controller receive boundary missing')
+        candidate = (launch.get('invocation'), launch.get('method'), launch.get('configuration'))
+        ready = candidate_ready.get(candidate) if first_candidate_assignments.get(candidate) is launch else None
+        prefix_events = read_lines(directory/'DP_PREFIX_EVENTS.jsonl') if artifact_ok is True else []
         row=dict(job_id=job,attempt_id=attempt,host=host,method=launch.get('method'),
             host_phase='FIRST_ASSIGNMENT_TO_HOST' if first_host else 'FOLLOWUP_ASSIGNMENT',
             queue_phase='PRE_FIRST_DISPATCH_ENQUEUE' if q is not None and first_dispatch is not None and launch['monotonic']-q<first_dispatch else 'AFTER_DISPATCH_ENQUEUE',
             artifact_attempt_matches=artifact_ok,
+            A_candidate_ready_to_first_assignment_seconds=delta(ready,launch),
+            dp_prefix_hits=sum(e.get('event')=='HIT' for e in prefix_events) if prefix_events else None,
             A_queue_to_assignment_seconds=q,A_start_scope='OPTIMIZER_ALLOCATION_ENQUEUED; not physical candidate preparation READY',
             B_assignment_to_Q3_body=bounded(b),Q3_body_seconds=body_seconds,
             Q3_body_calls_measured=len(pairs),Q3_body_scope='EXISTING_ACCELERATOR_API_CALL_SPAN_OR_LABELLED_ARTIFICIAL_BODY',
@@ -309,12 +321,14 @@ def summarize(run, *, timeline=None, public_summary=None):
     by_host={}
     for host in sorted({r['host'] for r in rows}):
         selected=[r for r in rows if r['host']==host]
-        keys=['A_queue_to_assignment_seconds','Q3_body_seconds','assignment_to_controller_receive_seconds',
+        keys=['A_queue_to_assignment_seconds','A_candidate_ready_to_first_assignment_seconds','Q3_body_seconds','assignment_to_controller_receive_seconds',
               'D_receive_to_executor_adopt_seconds','D_receive_to_search_adopt_seconds','receive_validation_persistence_seconds',
               'worker_upload_ACK_roundtrip_seconds','SSH_status_download_roundtrip_seconds',
               'worker_assignment_durable_to_body_seconds','body_to_worker_bundle_ready_seconds','worker_adapter_execute_process_seconds',
               'SSH_delivery_roundtrip_seconds','relay_response_to_submit_seconds','SSH_ACK_roundtrip_seconds']
-        by_host[host]=dict(count=len(selected),metrics={k:stats([r[k] for r in selected]) for k in keys},
+        by_host[host]=dict(count=len(selected),dp_prefix_hits=sum(r['dp_prefix_hits'] or 0 for r in selected),
+            prefix_event_coverage=sum(r['dp_prefix_hits'] is not None for r in selected),
+            metrics={k:stats([r[k] for r in selected]) for k in keys},
             first_assignment=[r for r in selected if r['host_phase']=='FIRST_ASSIGNMENT_TO_HOST'],
             initial_queue_metrics={k:stats([r[k] for r in selected if r['queue_phase']=='PRE_FIRST_DISPATCH_ENQUEUE'])for k in keys},
             followup_metrics={k:stats([r[k] for r in selected if r['queue_phase']=='AFTER_DISPATCH_ENQUEUE']) for k in keys},
@@ -350,6 +364,8 @@ def summarize(run, *, timeline=None, public_summary=None):
         dependency_wait_intervals_measured=len(wait_intervals),
         pre_first_dispatch_queue_seconds=None if first_dispatch is None or not queue_intervals else max(0,first_dispatch-min(a for d,a,z in queue_intervals)),
         queue_wait_state_observations=len(slots),queue_wait_observed_union_by_reason={k:union_seconds(v) for k,v in slot_intervals.items()},
+        idle_slot_observations=dict(Counter(observation['idle_reason'] for slot in slots
+            for observation in slot.get('hosts',{}).values() if 'idle_reason' in observation)),
         queue_wait_state_scope='Observed controller reservation/eligibility state; no attribution if snapshots absent; first host assignment is not a proof of setup completion',
         published_summary_reference=public_summary,
         scientific_H4_calls_added=0)
