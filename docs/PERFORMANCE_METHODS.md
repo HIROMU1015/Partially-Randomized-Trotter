@@ -1,5 +1,13 @@
 # 性能対策の再利用索引
 
+## Q3のDP中間キャッシュの圧縮と容量管理（2026-11-18）
+
+通常入口の `prefix_cache_directory`（分散時はworker側の保存先）に対し、[PrefixStore](../src/trottertracks/rpe_dp_prefix_reuse.py) が中間状態を可逆gzipで保存する。旧V1 JSONも同じ評価条件とruntimeで照合して読める。上限はディレクトリ単位で既定40 GiB。`ROUND.json` の `executor.prefix_cache_max_bytes` で正整数のバイト数を指定できる。新規保存の直前にロックを取り、上限を超える場合だけ、最後の保存・読込が古いキャッシュから解放する。単体で上限を超える状態は保存を省略する。
+
+次の固定版にはcontrollerとQ3 adapterをそろえて配置し、同一キャッシュへの旧版workerからの書込を避ける。保存対象は再計算できるDP中間状態。Q3の原API、RESULT、receipt、再開状態、固定kernelは維持する。 `DP_PREFIX_EVENTS.jsonl` の `serialized_bytes` と `evicted_bytes` で実際の保存量と解放量を確認できる。上限はデータディレクトリ全体には及ばない。
+
+[人工13ラウンドの既存fixture](../scripts/benchmark_rpe_prefix_boundaries.py)を使った各3回の比較では、3ファイルの合計が110,437 Bから37,591 Bへ約66%減り、出力とHITの位置が完全一致した。片方の末尾を変更した評価で新workerから旧形式を読み、12ラウンドを再利用した。中央値は旧2.406秒、新2.422秒。新規実H4評価0件。実H4での削減率と速度は未測定。
+
 ## 探索を止めない共有モデル診断（2026-11-17）
 
 `rpe_price_validation.Service/ModelStore`と既存分散preparation queueを再利用し、凍結モデル＋物理domain単位の初回照合を全配分・run・workerから共有する。固定requestをqueue投入前に保存し、optional compileを通常Q3/準備より後にclaimする。checkpoint再開・同時要求・失敗時の探索継続・通常C同期は人工検査、LD2/PFの独立実測再利用は保存資料で確認。新規実compileの速度・実host配置は未検証。単一controllerの共通namespaceを使用し、別cloneの独立storeを共有とみなさない。[REPORT](research/h4_price_validation_integration_20261117/REPORT.md)／[HANDOFF](research/h4_price_validation_integration_20261117/HANDOFF.md)。

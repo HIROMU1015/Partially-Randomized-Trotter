@@ -1,5 +1,7 @@
 """Artificial tables only. Saved kernel/accelerator SOURCE, no H4 evaluation."""
+import gzip
 import importlib.util
+import multiprocessing as mp
 import json
 import os
 from pathlib import Path
@@ -113,10 +115,77 @@ class PrefixTests(unittest.TestCase):
             engine=self.engine(store=C.PrefixStore(d));engine(tt,h=10.,target=0.,scope=scope)
             bad=changed_tail(tt);bad[-1]['denominator']+=1
             self.assertEqual(engine(bad,h=10.,target=0.,scope=scope),P.Accelerator(workers=1)(bad,h=10.,target=0.,scope=scope))
-            p=next(Path(d).glob('*.json'));p.write_text('{"broken":true}')
+            p=next(Path(d).glob('*.json.gz'));p.write_bytes(p.read_bytes()[:12])
             trial=changed_tail(tt)
             self.assertEqual(engine(trial,h=10.,target=0.,scope=scope),P.Accelerator(workers=1)(trial,h=10.,target=0.,scope=scope))
             self.assertTrue(any(e['event']=='READ_REJECTED'for e in engine.cache_events))
+
+    def test_legacy_json_checkpoint_can_resume_under_the_same_key(self):
+        _, tt, scope = example(n=4)
+        with tempfile.TemporaryDirectory() as d:
+            store = C.PrefixStore(d)
+            self.engine(store=store)(tt, h=10., target=0., scope=scope)
+            compressed, = Path(d).glob('*.json.gz')
+            raw = gzip.decompress(compressed.read_bytes())
+            self.assertLess(compressed.stat().st_size, len(raw))
+            compressed.with_suffix('').write_bytes(raw)
+            compressed.unlink()
+            trial = changed_tail(tt)
+            engine = self.engine(store=C.PrefixStore(d))
+            expected = P.Accelerator(workers=1)(trial, h=10., target=0., scope=scope)
+            self.assertEqual(engine(trial, h=10., target=0., scope=scope), expected)
+            self.assertEqual([e['reused_rounds'] for e in engine.cache_events if e['event']=='HIT'], [3])
+
+    def test_cap_retains_recent_hits_and_leaves_other_files_untouched(self):
+        with tempfile.TemporaryDirectory() as d:
+            store = C.PrefixStore(d, max_bytes=500)
+            base = Path(d)
+            keys = [str(i) * 64 for i in range(1, 4)]
+            value = dict(signed_zero=-0., rational=Fraction(7, 13), large_int=2**4096 + 1)
+            unrelated = base/'OUTCOME.json'
+            unrelated.write_text('fixed receipt')
+            self.assertTrue(store.put(keys[0], value))
+            self.assertTrue(store.put(keys[1], value))
+            first, second = [base / (k + '.json.gz') for k in keys[:2]]
+            os.utime(first, (1, 1))
+            os.utime(second, (2, 2))
+            self.assertEqual(store.get(keys[0], P.Mass)['signed_zero'].hex(), '-0x0.0p+0')
+            self.assertTrue(store.put(keys[2], value))
+            self.assertEqual(store.last_evicted_files, 1)
+            self.assertIsNone(store.get(keys[1], P.Mass))
+            self.assertEqual(store.get(keys[0], P.Mass), value)
+            self.assertEqual(store.get(keys[2], P.Mass), value)
+            self.assertLessEqual(sum(p.stat().st_size for p in base.glob('*.json.gz')), store.max_bytes)
+            self.assertEqual(unrelated.read_text(), 'fixed receipt')
+
+    def test_concurrent_writers_and_abandoned_staging_file(self):
+        with tempfile.TemporaryDirectory() as d:
+            base = Path(d)
+            stale = base/(C._STAGING_PREFIX + 'previous')
+            stale.write_bytes(b'x' * 100)
+            store = C.PrefixStore(d, max_bytes=300)
+            value = dict(exact=2**4096 + 1)
+            keys = [str(i) * 64 for i in range(1, 5)]
+            children = [mp.get_context('fork').Process(target=store.put, args=(key, value)) for key in keys]
+            for child in children:
+                child.start()
+            for child in children:
+                child.join(20)
+            self.assertEqual([child.exitcode for child in children], [0] * len(keys))
+            self.assertFalse(stale.exists())
+            self.assertLessEqual(sum(p.stat().st_size for p in base.glob('*.json.gz')), store.max_bytes)
+            retained = [snapshot for key in keys if (snapshot := store.get(key, P.Mass)) is not None]
+            self.assertTrue(retained)
+            self.assertEqual(retained, [value] * len(retained))
+
+    def test_oversize_checkpoint_is_a_cache_skip_with_exact_result(self):
+        _, tt, scope = example(n=4)
+        with tempfile.TemporaryDirectory() as d:
+            engine = self.engine(store=C.PrefixStore(Path(d)/'cache', max_bytes=1))
+            value = engine(tt, h=10., target=0., scope=scope)
+            self.assertEqual(value, P.Accelerator(workers=1)(tt, h=10., target=0., scope=scope))
+            self.assertIn('SAVE_SKIPPED', [e['event'] for e in engine.cache_events])
+            self.assertFalse((Path(d)/'cache').exists())
 
     def test_existing_observed_subclass_constructor_and_process_inheritance(self):
         _,tt,scope=example(n=4);events=[]
@@ -130,7 +199,6 @@ class PrefixTests(unittest.TestCase):
             self.assertTrue(any(e['event']=='HIT'for e in events))
 
     def test_adapter_context_fork_worker_disk_reuse(self):
-        import multiprocessing as mp
         adapter_spec=importlib.util.spec_from_file_location('_prefix_adapter',ROOT/'scripts/run_rpe_optimizer_q3_job.py')
         A=importlib.util.module_from_spec(adapter_spec);adapter_spec.loader.exec_module(A)
         A.route(VIEW,'pauli_b_common_entry')  # unchanged saved worker constructor path
@@ -138,7 +206,8 @@ class PrefixTests(unittest.TestCase):
         _,tt,scope=example(n=4)
         with tempfile.TemporaryDirectory()as d:
             request=dict(method='PR_DF',configuration_id='ARTIFICIAL',expected={'configuration_id':'ARTIFICIAL'},
-                route=dict(view_commit='ARTIFICIAL_FIXED'),execution_profile=dict(prefix_cache_directory=str(Path(d)/'cache')))
+                route=dict(view_commit='ARTIFICIAL_FIXED'),execution_profile=dict(prefix_cache_directory=str(Path(d)/'cache'),
+                    prefix_cache_max_bytes=20000))
             inputs={k:{'fixture':'ARTIFICIAL'}for k in A.CONTRACT}
             case=dict(configuration={'fixture':'ARTIFICIAL'},signal_packet={'fixture':'ARTIFICIAL'})
             for i,trial in enumerate((tt,changed_tail(tt))):
@@ -153,6 +222,9 @@ class PrefixTests(unittest.TestCase):
             events=[json.loads(l)for l in(Path(d)/'1'/'DP_PREFIX_EVENTS.jsonl').read_text().splitlines()]
             self.assertTrue(any(e['event']=='HIT'for e in events))
             self.assertTrue(all(e['pid']!=os.getpid()for e in events))
+            files = list((Path(d)/'cache').glob('*.json.gz'))
+            self.assertTrue(files)
+            self.assertLessEqual(sum(f.stat().st_size for f in files), 20000)
 
     def test_original_guards_stay_active(self):
         with patch.object(P,'REFERENCE_DP_AST_SHA256','WRONG'):

@@ -198,7 +198,8 @@ def make_executor(root, run, routes, expected, problem, spec):
         extra={} if executor_class is C.ConcurrentExecutor else dict(distributed=options['distributed'])
         executor=executor_class(root,run,routes,expected,problem,**common,**extra,budgets=budgets,
             science_approved=approved,dp_workers=options.get('dp_workers'),prefix_cache_directory=cache,
-            prefix_checkpoint_rounds=options.get('prefix_checkpoint_rounds'))
+            prefix_checkpoint_rounds=options.get('prefix_checkpoint_rounds'),
+            prefix_cache_max_bytes=options.get('prefix_cache_max_bytes'))
         def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
     else:
         executor=O.Executor(root,run,routes,expected,problem,**common);optimize=O.optimize

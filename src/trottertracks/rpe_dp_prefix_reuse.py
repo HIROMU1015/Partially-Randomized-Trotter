@@ -7,18 +7,29 @@ moment equations are not replaced. No cache can change the evaluation scope.
 import ast
 from contextlib import contextmanager
 from copy import deepcopy
+import fcntl
 from fractions import Fraction
+import gzip
 import hashlib
 import inspect
+import io
 import json
 import os
 from pathlib import Path
+import re
 import tempfile
 import time
 import sys
 from unittest.mock import patch
+import zlib
 
 SCHEMA='RPE_TOTAL_DP_PREFIX_V1'
+DEFAULT_CACHE_MAX_BYTES = 40 * 2**30
+# The former V1 helper hash is the checkpoint semantics identity. Update this
+# only when changing the checkpoint content or the round boundaries of the hooks.
+CHECKPOINT_SEMANTICS_ID = '554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2'
+_CACHE_FILE = re.compile(r'[0-9a-f]{64}\.json(?:\.gz)?')
+_STAGING_PREFIX = '.prefix-writing-'
 # Filled from the fixed accelerator method, not from the user's approval.
 ACCELERATOR_SOURCE_SHA256='d8bf773bf699ab84f3ec2d00216d15f692b9825c3a453346827bfcf79d8b9286'
 
@@ -50,34 +61,106 @@ def _digest(value):return hashlib.sha256(_bytes(_encode(value))).hexdigest()
 
 
 class PrefixStore:
-    """Owned-run cache; atomic JSON snapshots, no executable deserialization."""
-    def __init__(self,directory=None):
-        self.directory=None if directory is None else Path(directory)
-        if self.directory is not None:self.directory.mkdir(parents=True,exist_ok=True)
-        self.memory={}  # memory mode only; disk mode does not retain duplicate states
+    """Bound the recoverable cache per directory, including legacy V1 files."""
 
-    def get(self,key,mass_type):
-        if self.directory is None:return deepcopy(self.memory.get(key))
-        p=self.directory/(key+'.json')
-        if not p.exists():return None
-        data=p.read_bytes();self.last_read_bytes=len(data)
-        envelope=json.loads(data);body=envelope['body']
-        if envelope['sha256']!=hashlib.sha256(_bytes(body)).hexdigest():raise ValueError('Cache payload checksum mismatch')
-        if body['schema']!=SCHEMA or body['key']!=key:raise ValueError('Cache identity mismatch')
-        return _decode(body['snapshot'],mass_type)
+    def __init__(self, directory=None, *, max_bytes=DEFAULT_CACHE_MAX_BYTES):
+        if type(max_bytes) is not int or max_bytes < 1:
+            raise ValueError('Positive integer prefix_cache_max_bytes required')
+        self.directory = None if directory is None else Path(directory)
+        self.max_bytes = max_bytes
+        self.memory = {}  # memory mode only
 
-    def put(self,key,snapshot):
-        if self.directory is None:self.memory[key]=deepcopy(snapshot);return
-        body=dict(schema=SCHEMA,key=key,snapshot=_encode(snapshot))
-        data=_bytes(dict(body=body,sha256=hashlib.sha256(_bytes(body)).hexdigest()))
-        name=None
-        try:
-            with tempfile.NamedTemporaryFile(dir=self.directory,prefix='.writing-',delete=False)as f:
-                name=f.name;f.write(data);f.flush();os.fsync(f.fileno())
-            os.replace(name,self.directory/(key+'.json'))
-            self.last_write_bytes=len(data)
-        finally:
-            if name is not None:Path(name).unlink(missing_ok=True)
+    def get(self, key, mass_type):
+        if self.directory is None:
+            return deepcopy(self.memory.get(key))
+        for suffix in ('.json.gz', '.json'):
+            path = self.directory / (key + suffix)
+            try:
+                data = path.read_bytes()
+            except FileNotFoundError:
+                continue  # also covers a concurrent eviction
+            self.last_read_bytes = len(data)
+            if suffix == '.json.gz':
+                try:
+                    data = gzip.decompress(data)
+                except (EOFError, zlib.error) as exc:
+                    raise ValueError('Incomplete or corrupt compressed checkpoint') from exc
+            envelope = json.loads(data)
+            body = envelope['body']
+            if envelope['sha256'] != hashlib.sha256(_bytes(body)).hexdigest():
+                raise ValueError('Cache payload checksum mismatch')
+            if body['schema'] != SCHEMA or body['key'] != key:
+                raise ValueError('Cache identity mismatch')
+            snapshot = _decode(body['snapshot'], mass_type)
+            try:
+                os.utime(path, None)  # LRU mark after verifying the checkpoint
+            except OSError:
+                pass  # eviction or a read-only cache can still supply this hit
+            return snapshot
+        return None
+
+    def _make_room(self, incoming_bytes):
+        """Called under the writer lock, before writing an atomic staging file."""
+        entries = []
+        with os.scandir(self.directory) as files:
+            for entry in files:
+                if not entry.is_file(follow_symlinks=False):
+                    continue
+                if entry.name.startswith(_STAGING_PREFIX):
+                    os.unlink(entry.path)  # remains only after an interrupted writer
+                elif _CACHE_FILE.fullmatch(entry.name):
+                    info = entry.stat(follow_symlinks=False)
+                    entries.append((info.st_mtime_ns, entry.name, info.st_size))
+        total = sum(size for _, _, size in entries)
+        if total + incoming_bytes <= self.max_bytes:
+            return
+        evicted_files = evicted_bytes = 0
+        for _, name, size in sorted(entries):
+            if total + incoming_bytes <= self.max_bytes:
+                break
+            (self.directory / name).unlink()
+            total -= size
+            evicted_files += 1
+            evicted_bytes += size
+        self.last_evicted_files = evicted_files
+        self.last_evicted_bytes = evicted_bytes
+
+    def put(self, key, snapshot):
+        self.last_evicted_files = self.last_evicted_bytes = 0
+        if self.directory is None:
+            self.memory[key] = deepcopy(snapshot)
+            return True
+        destination = key + '.json.gz'
+        if not _CACHE_FILE.fullmatch(destination):
+            raise ValueError('Invalid checkpoint cache key')
+        body = _bytes(dict(schema=SCHEMA, key=key, snapshot=_encode(snapshot)))
+        checksum = hashlib.sha256(body).hexdigest().encode()
+        buffer = io.BytesIO()
+        with gzip.GzipFile(fileobj=buffer, mode='wb', compresslevel=1, mtime=0) as stream:
+            stream.write(b'{"body":')
+            stream.write(body)
+            stream.write(b',"sha256":"' + checksum + b'"}')
+        del body
+        data = buffer.getbuffer()
+        self.last_write_bytes = len(data)
+        if len(data) > self.max_bytes:
+            return False
+        self.directory.mkdir(parents=True, exist_ok=True)
+        with (self.directory / '.prefix-storage.lock').open('a+b') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            self._make_room(len(data))
+            name = None
+            try:
+                with tempfile.NamedTemporaryFile(dir=self.directory, prefix=_STAGING_PREFIX, delete=False) as file:
+                    name = file.name
+                    file.write(data)
+                    file.flush()
+                    os.fsync(file.fileno())
+                os.replace(name, self.directory / destination)
+            finally:
+                if name is not None:
+                    Path(name).unlink(missing_ok=True)
+        return True
 
 
 def _instrument(tree):
@@ -124,7 +207,7 @@ scope.update(_prefix_restore=self._restore, _prefix_save=self._save)
     exec(compile(ast.fix_missing_locations(tree),'fixed_accelerator_with_prefix_hooks','exec'),namespace)
     build_kernel=namespace['_kernel']
     import numpy as np
-    runtime=dict(prefix_source=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),python=sys.version,numpy=np.__version__,source_files={
+    runtime=dict(prefix_source=CHECKPOINT_SEMANTICS_ID,python=sys.version,numpy=np.__version__,source_files={
         str(m.__file__):hashlib.sha256(Path(m.__file__).read_bytes()).hexdigest()for m in (P,P.R,P.R.T)})
 
     class PrefixAccelerator(P.Accelerator):
@@ -183,9 +266,12 @@ scope.update(_prefix_restore=self._restore, _prefix_save=self._save)
                 rounds=rounds,observations=self.observations)
             try:
                 write_start=time.perf_counter()
-                self.store.put(self.keys[m],snapshot)
-                self._event(dict(event='SAVE',completed=m,key=self.keys[m],states=len(states),
-                    write_seconds=time.perf_counter()-write_start,serialized_bytes=getattr(self.store,'last_write_bytes',None)))
+                stored=self.store.put(self.keys[m],snapshot)
+                event=dict(event='SAVE' if stored else 'SAVE_SKIPPED',completed=m,key=self.keys[m],states=len(states),
+                    write_seconds=time.perf_counter()-write_start,serialized_bytes=getattr(self.store,'last_write_bytes',None),
+                    evicted_files=self.store.last_evicted_files,evicted_bytes=self.store.last_evicted_bytes)
+                if not stored:event['reason']='SNAPSHOT_EXCEEDS_BYTE_LIMIT'
+                self._event(event)
             except (OSError,ValueError,TypeError)as exc:
                 # Caching is optional. A write failure never converts a numerical result to PASS.
                 self._event(dict(event='WRITE_FAILED',completed=m,reason=str(exc)))
@@ -197,9 +283,9 @@ scope.update(_prefix_restore=self._restore, _prefix_save=self._save)
 
 
 @contextmanager
-def installed(P,*,directory,cache_namespace,checkpoint_rounds=None,event_sink=None):
+def installed(P,*,directory,cache_namespace,checkpoint_rounds=None,event_sink=None,max_bytes=DEFAULT_CACHE_MAX_BYTES):
     """Patch only this worker's accelerator constructor for its existing entry."""
-    cls=accelerator_class(P);store=PrefixStore(directory)
+    cls=accelerator_class(P);store=PrefixStore(directory,max_bytes=max_bytes)
     # Existing Observed subclasses resolve super() to the old base. Replace its
     # _kernel and add hook methods for the context rather than changing its MRO.
     original=P.Accelerator.__init__

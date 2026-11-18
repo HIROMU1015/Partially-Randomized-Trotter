@@ -75,7 +75,7 @@ def boundary_worker(output, boundaries):
     with tempfile.TemporaryDirectory(prefix='artificial-rpe-boundary-') as tmp:
         cache = None if boundaries is None else Path(tmp) / 'cache'
         rows = [evaluate(trial, scope, 1, cache, boundaries, {'fixture':'ARTIFICIAL_BOUNDARY'}) for trial in trials]
-        stored = [] if cache is None else list(cache.glob('*.json'))
+        stored = [] if cache is None else list(cache.glob('*.json.gz'))
         size = sum(path.stat().st_size for path in stored)
         result = dict(kind='BOUNDARY_SEQUENCE', boundaries=boundaries, jobs=rows,
                       wall_seconds=time.perf_counter()-start, CPU_seconds=cpu_seconds()-cpu,
@@ -112,7 +112,7 @@ def profile_worker(output, slots, workers, cold):
                 proc.join();exits.append(dict(exitcode=proc.exitcode,signal=-proc.exitcode if proc.exitcode<0 else None))
                 jobs.append(json.loads(path.read_text()))
                 if proc.exitcode!=0 or not jobs[-1]['completed']:raise RuntimeError('Artificial child failed')
-        stored=[] if cache is None else list(cache.glob('*.json'))
+        stored=[] if cache is None else list(cache.glob('*.json.gz'))
         result=dict(kind='CONCURRENT_COLD' if cold else 'FOUR_INDEPENDENT_JOBS',slots=slots,dp_workers=workers,
                     jobs=jobs,wall_seconds=time.perf_counter()-start,CPU_seconds=cpu_seconds()-cpu,
                     summed_job_CPU_seconds=sum(j['CPU_seconds'] for j in jobs),process_exits=exits,
@@ -129,7 +129,7 @@ def narrow_worker(output, workers, boundaries):
     with tempfile.TemporaryDirectory(prefix='artificial-rpe-narrow-') as tmp:
         cache=None if boundaries is None else Path(tmp)/'cache'
         rows=[evaluate(trial,scope,workers,cache,boundaries,{'fixture':'ARTIFICIAL_NARROW'}) for trial in trials[:2]]
-        files=[] if cache is None else list(cache.glob('*.json'))
+        files=[] if cache is None else list(cache.glob('*.json.gz'))
         result=dict(kind='NARROW_SEQUENTIAL_PAIR',slots=1,dp_workers=workers,boundaries=boundaries,
             jobs=rows,wall_seconds=time.perf_counter()-start,CPU_seconds=cpu_seconds()-cpu,
             cache_files=len(files),cache_bytes=sum(p.stat().st_size for p in files))

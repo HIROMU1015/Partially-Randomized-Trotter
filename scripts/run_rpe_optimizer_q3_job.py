@@ -437,7 +437,8 @@ def prefix_cache_context(request,case,inputs,out):
         with (Path(out)/'DP_PREFIX_EVENTS.jsonl').open('a')as f:
             f.write(json.dumps(dict(UTC=utc(),pid=os.getpid(),**value))+'\n')
     with C.installed(module,directory=directory,cache_namespace=namespace,
-                     checkpoint_rounds=profile.get('prefix_checkpoint_rounds'),event_sink=event):
+                     checkpoint_rounds=profile.get('prefix_checkpoint_rounds'),event_sink=event,
+                     max_bytes=profile.get('prefix_cache_max_bytes', C.DEFAULT_CACHE_MAX_BYTES)):
         yield
 
 

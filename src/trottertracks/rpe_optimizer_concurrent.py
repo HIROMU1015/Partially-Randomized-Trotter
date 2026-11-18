@@ -43,10 +43,12 @@ def _tree_rss(pid):
 
 class ConcurrentExecutor(O.Executor):
     supports_nonblocking_prefetch=True
-    def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,prefix_cache_directory=None,prefix_checkpoint_rounds=None,**kwargs):
+    def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,prefix_cache_directory=None,prefix_checkpoint_rounds=None,prefix_cache_max_bytes=None,**kwargs):
         super().__init__(*args,**kwargs)
         if dp_workers is not None and (type(dp_workers)is not int or dp_workers<1):
             raise ValueError('Positive integer dp_workers required')
+        if prefix_cache_max_bytes is not None and (type(prefix_cache_max_bytes) is not int or prefix_cache_max_bytes < 1):
+            raise ValueError('Positive integer prefix_cache_max_bytes required')
         self.run_dir.mkdir(parents=True,exist_ok=True)
         driver=(self.run_dir/'FAST_DRIVER.lock').open('a')
         try:fcntl.flock(driver,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -55,6 +57,7 @@ class ConcurrentExecutor(O.Executor):
         self.capacity=max(1,kwargs.get('max_concurrent',1));self.dp_workers=dp_workers
         self.prefix_cache_directory=None if prefix_cache_directory is None else str(Path(prefix_cache_directory).resolve())
         self.prefix_checkpoint_rounds=prefix_checkpoint_rounds
+        self.prefix_cache_max_bytes=prefix_cache_max_bytes
         existing={}
         for method in self.routes:
             base=self.run_dir/'jobs'/method
@@ -112,6 +115,9 @@ class ConcurrentExecutor(O.Executor):
         if self.prefix_cache_directory is not None:
             req['execution_profile'].update(prefix_cache_directory=self.prefix_cache_directory,
                 prefix_checkpoint_rounds=self.prefix_checkpoint_rounds)
+        # A distributed host can enable its own cache without a controller path.
+        if self.prefix_cache_max_bytes is not None:
+            req['execution_profile']['prefix_cache_max_bytes']=self.prefix_cache_max_bytes
         return req
 
     def prefetch_state(self):

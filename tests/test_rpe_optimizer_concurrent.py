@@ -314,7 +314,7 @@ class SchedulerTests(unittest.TestCase):
             pf.write_text(json.dumps(problem));rf.write_text(json.dumps(dict(round_id='ARTIFICIAL_CLI',methods=METHODS,
                 science_approved=True,max_new_q3_per_method={m:1 for m in METHODS},initial='all',
                 executor=dict(scheduler='concurrent',max_concurrent_jobs=2,dp_workers=1,
-                    prefix_cache_directory=str(tmp/'prefix'),prefix_checkpoint_rounds=[11]))))
+                    prefix_cache_directory=str(tmp/'prefix'),prefix_checkpoint_rounds=[11],prefix_cache_max_bytes=32000))))
             with patch.object(O,'prepare',return_value=context),patch.object(sys,'argv',
                 ['run_rpe_method_optimizer.py','--problem',str(pf),'--round',str(rf),'--run-dir',str(run)]):cli.main()
             data=json.loads((run/'ROUND_RESULT.json').read_text())
@@ -324,7 +324,23 @@ class SchedulerTests(unittest.TestCase):
                 profile=json.loads(request.read_text())['execution_profile']
                 self.assertEqual(profile['prefix_cache_directory'],str(tmp/'prefix'))
                 self.assertEqual(profile['prefix_checkpoint_rounds'],[11])
+                self.assertEqual(profile['prefix_cache_max_bytes'],32000)
             self.assertTrue(all(r['executor_metrics']['new_real_route_launches']==0 for r in data['methods'].values()))
+
+    def test_host_only_prefix_cache_can_receive_the_budget(self):
+        problem, context, routes = fixture(['PR_DF'], 1)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = C.ConcurrentExecutor(ROOT, tmp, routes, {}, problem, prefix_cache_max_bytes=32000)
+            try:
+                ex = root.for_method('PR_DF')
+                candidate = context['candidates'][0]
+                proposal = dict(configuration_id=candidate['configuration_id'], vector=(1,) * 26,
+                                cost=Fraction(1), origin={})
+                request = ex.request(proposal, ex.job_dir(proposal), routes['PR_DF'][0])
+                self.assertNotIn('prefix_cache_directory', request['execution_profile'])
+                self.assertEqual(request['execution_profile']['prefix_cache_max_bytes'], 32000)
+            finally:
+                root.finish()
 
     def test_launch_persistence_failure_stops_queue_and_waits_started_child(self):
         p,c,r=fixture(['PR_DF'],1);r['PR_DF'][0]['artificial']['sleep_seconds']=.15
