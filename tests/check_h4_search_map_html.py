@@ -7,6 +7,30 @@ from trottertracks.h4_search_map_html import render, source_url
 
 
 class SearchMapHTML(unittest.TestCase):
+    def test_range_view_preserves_close_kappa_values_and_missing_records(self):
+        points = [{'method':'PR_PAULI', 'id':str(i), 'kappa':{'kind':'PAPER_TOTAL_ROTATIONS',
+                   'value':{'numerator':2**54+i, 'denominator':3}}} for i in (0, 1)]
+        page = render({'points':points, 'targets':[{'kappa':None}, {'kappa':'2'}]})
+        compact = json.loads(re.search(r'<script id="kappa-data" type="application/json">(.*?)</script>', page).group(1))
+        self.assertNotEqual(*compact['points'])
+        self.assertIsNone(compact['targets'][0])
+        self.assertIn('登録候補にある値', page)
+        self.assertIn('Q3評価で確認した値', page)
+
+    def test_overview_links_the_exact_admitted_minimum_inside_the_all_runs_view(self):
+        def cell(point, cost):
+            return {'method':'PR_PAULI', 'row_label':'L_D=5', 'width_label':'1h',
+                    'min_point_ids':[point], 'min_cost':{'numerator':cost, 'denominator':1}}
+        cost = 2**54
+        page = render({'views':[
+            {'mode':'RUN', 'cells':[cell('other-run', 1)]},
+            {'mode':'ALL', 'cells':[cell('more-expensive', cost + 1), cell('least', cost)]}],
+            'points':[]})
+        cards = page.split('<div class="results" id="overview">', 1)[1].split('</section>', 1)[0]
+        self.assertEqual(re.findall(r'data-point="([^"]+)"', cards), ['least'])
+        self.assertEqual(cards.count('価格未確定'), 3)
+        self.assertIn(f'{cost:,}.00', cards)
+
     def test_offline_exact_data_source_trace_and_untrusted_labels(self):
         source={'commit':'a'*40,'path':'docs/research/space name/RESULT.json','selector':['rows',0]}
         index={'schema':'H4_SEARCH_MAP_V1','comparison':{'snapshot':'SYNTHETIC'},'runs':[],

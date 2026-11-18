@@ -244,6 +244,16 @@ def _run_result(reader, head, path, document, paths):
                directory=directory, status={}, hosts=[], scope_sources=[source],
                targets=_scope_from_round(spec, dict(source, selector=['round'])),
                evaluations=[], branches=[], snapshot_source_commit=head)
+    scope_path = directory + '/APPLIED_SCOPE.json'
+    if scope_path in paths:
+        doc = _read(reader, head, scope_path)
+        if (isinstance(doc, dict) and doc.get('schema') == 'LOCAL0_APPLIED_SEARCH_SCOPE_V1'
+                and doc.get('run_id') == run_id):
+            applied = doc.get('applied') or {}
+            requested = applied.get('requested') or {}
+            run['parameter_scope'] = dict(per_method=deepcopy(requested.get('per_method') or {}),
+                shots=deepcopy(requested.get('shots')), M=(applied.get('fixed') or {}).get('rpe', {}).get('M'),
+                source=_source(reader, head, scope_path, ['applied']))
     metadata = _context(reader, head, directory, paths, spec)
     for row, locator in metadata.values():
         if row.get('method') in METHODS:
