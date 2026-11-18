@@ -88,9 +88,12 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--request', type=Path, required=True);p.add_argument('--output', type=Path, required=True)
     a = p.parse_args();req = json.loads(a.request.read_text());view = Path(req['view'])
-    b, build = generator(req['kind'], view);out = [];reproduced = {}
+    b, build = generator(req['kind'], view);out = [];reproduced = {};bases = {}
     for item in req['items']:
-        base = git_json(view, item['base']);ch = item.get('changes', {});bkey = json.dumps(item['base'], sort_keys=True)
+        ch = item.get('changes', {});bkey = json.dumps(item['base'], sort_keys=True)
+        if bkey not in bases:
+            bases[bkey] = git_json(view, item['base'])
+        base = bases[bkey]
         row = dict(item_id=item['item_id'], base=item['base'], changes=ch, kind=req['kind'], supported_formulas=SUPPORTED[req['kind']])
         try:
             if ch.get('formula') and ch['formula'] not in SUPPORTED[req['kind']]:

@@ -1600,9 +1600,15 @@ def run_by_configuration(name, candidates, knowledge, backend, search, threshold
                 incumbent=incumbent, not_ready_in_range=missing, by_configuration=by, incumbent_scope='CONFIGURATION')
 
 
-def prepare(root, problem, generate_configurations=True, methods=None, preparation_dir=None):
+def prepare(root, problem, generate_configurations=True, methods=None, preparation_dir=None, *, saved_catalog=None):
     facts = hamiltonian_facts(problem)
-    reader, inputs, catalog = load_catalog(root, problem)
+    if saved_catalog is None:
+        reader, inputs, catalog = load_catalog(root, problem)
+    else:
+        # Same invocation, same committed catalog input. Consumers may
+        # annotate their own candidate rows without touching the snapshot.
+        _, inputs, raw = saved_catalog
+        reader, catalog = Reader(Path(root)), deepcopy(raw)
     check_comparison(problem, facts, inputs['comparison'])
     candidates = enumerate_candidates(reader, problem, facts, catalog)
     from . import pf_optimizer_connection as PF

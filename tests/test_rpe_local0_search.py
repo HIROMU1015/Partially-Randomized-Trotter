@@ -23,6 +23,43 @@ def request(lo,hi,budget=0):
 class Tests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.home=pathlib.Path(self.tmp.name);self.config=fixture_config(self.home)
+
+    def test_status_observes_local_q3_body_before_the_worker_state_report(self):
+        from trottertracks.rpe_local0_search import local0_progress
+        from trottertracks.rpe_q3_store import JobStore
+
+        run=self.home/'telemetry'
+        spool=self.home/'worker'
+        store=JobStore(run/'distributed'/'QUEUE.sqlite3')
+        task=dict(route=dict(kind='artificial'),configuration_id='ARTIFICIAL')
+        store.reserve('PR_PAULI','job',task,1,True)
+        row,=store.claim('local',1)
+        self.assertEqual(row['state'],'ASSIGNED')
+        write(run/'distributed'/'LOCAL_WORKER.json',dict(host_id='local',work_dir=str(spool)))
+        attempt=spool/'job'/row['attempt_id'];attempt.mkdir(parents=True)
+        (attempt/'Q3_BODY_TIMING.jsonl').write_text('{"event":"Q3_BODY_START"}\n')
+        assignment=attempt/'ASSIGNMENT.json'
+        owner={key:row[key] for key in ('job_id','attempt_id','request_sha256')}
+        write(assignment,dict(owner,request_sha256='not-the-assigned-request'))
+        before=local0_progress({}, {}, run)
+        self.assertEqual(before['stages'][0]['execution_started'],0)
+        write(assignment,owner)
+        observed=local0_progress({}, {}, run)
+        self.assertEqual(observed['stages'][0]['execution_started'],1)
+        self.assertEqual(observed['stages'][0]['execution_completed'],0)
+        self.assertEqual(observed['candidates'][0]['state'],'EVALUATION_RUNNING')
+        self.assertEqual(store.row('job')['state'],'ASSIGNED')
+
+    def test_start_returns_a_small_duplicate_check_summary_and_keeps_full_evidence(self):
+        refused=[dict(job=str(i),reason='DIFFERENT_JOB_KEY_OR_ROUTE') for i in range(100)]
+        g=Gateway(self.config,preflight=lambda *args:dict(status='PASS',refused=refused),
+                  launch=lambda *args:None)
+        result=g.handle(request(4,6))
+        self.assertEqual(result['preflight']['refused_count'],100)
+        self.assertEqual(len(result['preflight']['refused']),16)
+        self.assertEqual(load(result['preflight']['report_path'])['refused'],refused)
+        self.assertGreaterEqual(result['preflight']['elapsed_seconds'],0)
+
     def test_explicit_unlimited_crosses_old_cap_and_uses_rule_termination(self):
         gateway=build(self.config)
         previous=gateway.handle(request(4,4,1))

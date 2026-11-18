@@ -405,15 +405,19 @@ class WidthDriver:
                 raise ValueError('METADATA_CONSTANTS_DIFFER_FROM_CONFIGURATION:'+key)
 
     def catalog(self):
-        reader, inputs, catalog = O.load_catalog(ROOT,self.problem)
+        reader, inputs, catalog = self.saved_catalog(self.problem)
         self.catalog_facts=O.hamiltonian_facts(self.problem)
         O.check_comparison(self.problem,self.catalog_facts,inputs['comparison'])
         return reader,catalog
 
-    def generate(self, method, base, changes):
-        g=self.problem['methods'][method]['generation']
-        result=O.run_generator(ROOT,g,[dict(item_id='WIDTH_FAMILY',base=base,changes=changes)])
-        return result['items'][0]
+    def saved_catalog(self, problem):
+        source=problem['evidence']['saved_catalog_inputs']
+        if not hasattr(self,'_saved_catalog') or self._saved_catalog[0]!=source:
+            self._saved_catalog=(deepcopy(source),O.load_catalog(ROOT,problem))
+        return self._saved_catalog[1]
+
+    def generate_families(self, method, items):
+        return O.run_generator(ROOT,self.problem['methods'][method]['generation'],items)['items']
 
     def seed(self):
         reader,catalog=self.catalog();sources={}
@@ -432,6 +436,8 @@ class WidthDriver:
                 bound=setting['L_D_range']
                 allowed=list(range(bound['min'],self.catalog_facts['fragment_count']+bound['max_offset_from_fragment_count']+1))
             bases=[(ld,loc)for (name,ld),loc in sources.items()if name==method and (allowed is None or ld in allowed)]
+            families={}
+            items=[]
             for ld,loc in bases:
                 base=reader.read(loc);base=base.get('configuration',base)
                 for formula in (setting.get('generation')or{}).get('formulas',['2nd']):
@@ -441,25 +447,34 @@ class WidthDriver:
                             requested_delta_pf=width['raw'],delta_pf=O.enc(KS._frac(width['raw'])),
                             base_source=loc,status='MAPPER_PENDING')
                         self.state['families'][key]=family
-                        started=time.monotonic();self.log(event='SEED_FAMILY_START',family=key)
-                        try:
-                            ratio=KS._frac(width['raw'])/KS._frac(base['spec']['h'])
-                            made=self.generate(method,loc,dict(formula=formula,delta_over_h=str(ratio)))
-                            if made['status']!='GENERATED':
-                                raise ValueError(made.get('reason')or made['status'])
-                            cfg=made['configuration'];s=cfg['spec']
-                            if KS._frac(s['delta_pf'])!=KS._frac(width['raw']):
-                                raise ValueError('MAPPER_DOES_NOT_PRESERVE_EXACT_REQUESTED_WIDTH')
-                            if KS._frac(s['h'])!=KS._frac(base['spec']['h']) or s['M']!=base['spec']['M']:
-                                raise ValueError('MAPPER_CHANGED_FIXED_RPE_TIME_GRID')
-                            rows=KS.constants(cfg); k=KS._frac(s['kappa']['value'])
-                            if KS.R_vector(rows,k)!=[v['R_outer']for v in sorted(cfg['rounds'],key=lambda r:r['m'])]:
-                                raise ValueError('SCHEDULE_CONSTANTS_DO_NOT_REPRODUCE_CANONICAL_MAPPER')
-                            family.update(status='READY_METADATA',rows=KS.encode_rows(rows),configuration=cfg)
-                        except (ValueError,KeyError,TypeError) as exc:
-                            family.update(status='UNSUPPORTED_MAPPER',reason=str(exc))
-                        self.log(event='SEED_FAMILY_END',family=key,status=family['status'],
-                            reason=family.get('reason'),wall_seconds=time.monotonic()-started)
+                        ratio=KS._frac(width['raw'])/KS._frac(base['spec']['h'])
+                        items.append(dict(item_id=key,base=loc,changes=dict(formula=formula,delta_over_h=str(ratio))))
+                        families[key]=(family,base['spec'])
+            if items:
+                started=time.monotonic()
+                self.log(event='SEED_MAPPER_START',method=method,families=len(items))
+                results=self.generate_families(method,items)
+                by_id={r['item_id']:r for r in results}
+                if len(by_id)!=len(results) or by_id.keys()!=families.keys():
+                    raise ValueError('Width mapper results differ from the requested families')
+                self.log(event='SEED_MAPPER_END',method=method,families=len(items),wall_seconds=time.monotonic()-started)
+                for key,(family,base) in families.items():
+                    made=by_id[key]
+                    try:
+                        if made['status']!='GENERATED':
+                            raise ValueError(made.get('reason')or made['status'])
+                        cfg=made['configuration'];s=cfg['spec']
+                        if KS._frac(s['delta_pf'])!=KS._frac(family['requested_delta_pf']):
+                            raise ValueError('MAPPER_DOES_NOT_PRESERVE_EXACT_REQUESTED_WIDTH')
+                        if KS._frac(s['h'])!=KS._frac(base['h']) or s['M']!=base['M']:
+                            raise ValueError('MAPPER_CHANGED_FIXED_RPE_TIME_GRID')
+                        rows=KS.constants(cfg); k=KS._frac(s['kappa']['value'])
+                        if KS.R_vector(rows,k)!=[v['R_outer']for v in sorted(cfg['rounds'],key=lambda r:r['m'])]:
+                            raise ValueError('SCHEDULE_CONSTANTS_DO_NOT_REPRODUCE_CANONICAL_MAPPER')
+                        family.update(status='READY_METADATA',rows=KS.encode_rows(rows),configuration=cfg)
+                    except (ValueError,KeyError,TypeError) as exc:
+                        family.update(status='UNSUPPORTED_MAPPER',reason=str(exc))
+                    self.log(event='SEED_FAMILY_END',family=key,status=family['status'],reason=family.get('reason'))
             # Bootstrap a missing split through D2's ordinary preparation entry.
             # A template supplies only the fixed time grid / binding and a
             # metadata kappa.  The target split supplies its own descriptor and
@@ -743,7 +758,7 @@ class WidthDriver:
 
     def context(self, problem):
         return O.prepare(ROOT,problem,methods=self.methods,generate_configurations=False,
-                         preparation_dir=self.run/'preparation')
+                         preparation_dir=self.run/'preparation',saved_catalog=self.saved_catalog(problem))
 
     def confirm_completed(self, context, executor, result):
         """Existing ledger checks after finish, including unadopted speculation.

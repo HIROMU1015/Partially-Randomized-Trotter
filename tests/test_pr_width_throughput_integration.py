@@ -164,11 +164,17 @@ class Driver(E.WidthDriver):
             def read(self,loc):return configuration(loc['method'],.1)
         return Reader(),dict(candidates=[])
 
-    def generate(self,method,base,changes):
-        delta=Fraction(.1)*KS._frac(changes['delta_over_h'])
-        if (method=='PR_PAULI'and delta==Fraction(1,5))or(method=='PR_DF'and delta==Fraction(.2)):
-            return dict(status='UNSUPPORTED',reason='ARTIFICIAL_MAPPER_EXACT_WIDTH_REFUSAL_NO_ROUNDING')
-        return dict(status='GENERATED',configuration=configuration(method,delta))
+    def generate_families(self,method,items):
+        result=[]
+        for item in items:
+            delta=Fraction(.1)*KS._frac(item['changes']['delta_over_h'])
+            row={'item_id': item['item_id']}
+            if (method=='PR_PAULI'and delta==Fraction(1,5))or(method=='PR_DF'and delta==Fraction(.2)):
+                row.update(status='UNSUPPORTED',reason='ARTIFICIAL_MAPPER_EXACT_WIDTH_REFUSAL_NO_ROUNDING')
+            else:
+                row.update(status='GENERATED',configuration=configuration(method,delta))
+            result.append(row)
+        return result
 
     def context(self,problem):
         candidates=[]

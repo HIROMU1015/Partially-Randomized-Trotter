@@ -3,6 +3,7 @@
 No optimizer or scientific adapter is implemented here. Saved Q3 acceptance is
 delegated to Executor.prior_records/ingest, including route and identity checks.
 """
+from collections import Counter
 from contextlib import contextmanager
 from copy import deepcopy
 from fractions import Fraction
@@ -296,7 +297,7 @@ def summarize(problem, spec, canonical):
 
 
 def local0_progress(applied, spec, run=None):
-    """Report central acceptance separately from transferred execution receipts."""
+    """Report queue acceptance separately from observed body execution."""
     effective = {key: applied[key] for key in ('preparation_budgets', 'max_new_q3_per_method') if key in applied}
     executor = spec.get('executor', {})
     effective['resources'] = dict(max_concurrent_jobs=executor.get('max_concurrent_jobs'))
@@ -339,10 +340,22 @@ def local0_progress(applied, spec, run=None):
     import sqlite3
     identified = {}
     try:
+        worker_path = run/'distributed/LOCAL_WORKER.json'
+        local_worker = load(worker_path) if worker_path.is_file() else {}
         with sqlite3.connect(database.resolve().as_uri()+'?mode=ro', uri=True, timeout=1) as db:
-            rows = db.execute('SELECT job_id,method,request,state,adopted_epoch,detail FROM jobs ORDER BY rowid').fetchall()
+            rows = db.execute('''SELECT job_id,method,request,state,adopted_epoch,detail,
+                host_id,attempt_id,request_sha256 FROM jobs ORDER BY rowid''').fetchall()
         stages = {}
-        for job, method, raw, state, adopted, detail in rows:
+        def body_events(directory):
+            events = set()
+            for name in ('JOB_STAGES.jsonl','Q3_BODY_TIMING.jsonl'):
+                path = directory/name
+                if path.is_file():
+                    for line in path.read_bytes().splitlines(keepends=True):
+                        if line.endswith(b'\n'):events.add(json.loads(line).get('event'))
+            return events
+
+        for job, method, raw, state, adopted, detail, host, attempt, checksum in rows:
             request = json.loads(raw, parse_int=str)
             prep = request.get('preparation', {})
             stage = prep.get('stage', 'q3')
@@ -351,20 +364,23 @@ def local0_progress(applied, spec, run=None):
                 active_receipts_pending=0))
             count['queue_accepted'] += 1
             directory = run/'jobs'/method/job
-            timing = directory/'JOB_STAGES.jsonl'
-            events = set()
-            if timing.is_file():
-                for line in timing.read_bytes().splitlines(keepends=True):
-                    if line.endswith(b'\n'):
-                        events.add(json.loads(line).get('event'))
             receipt = 'Q3_BODY' if stage == 'q3' else 'PREPARATION_BODY'
+            events = body_events(directory)
+            if (receipt+'_START' not in events and state in ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')
+                    and attempt and host==local_worker.get('host_id') and local_worker.get('work_dir')):
+                live=Path(local_worker['work_dir'])/job/attempt
+                assignment=live/'ASSIGNMENT.json'
+                if assignment.is_file():
+                    owner=load(assignment)
+                    if (owner.get('job_id'),owner.get('attempt_id'),owner.get('request_sha256'))==(job,attempt,checksum):
+                        events.update(body_events(live))
             native_start = receipt+'_START' in events or receipt+'_END' in events
             native_end = receipt+'_END' in events
             # Older routes may have final receipts without the timing markers.
             terminal = (directory/'PREPARATION_RECEIPT.json').is_file() if prep else adopted is not None
             count['execution_started'] += int(native_start or terminal)
             count['execution_completed'] += int(native_end or terminal)
-            active = state in ('STARTING', 'RUNNING', 'COMPLETED_PENDING_TRANSFER')
+            active = state in ('STARTING', 'RUNNING', 'COMPLETED_PENDING_TRANSFER') or (state=='ASSIGNED' and native_start)
             count['active_receipts_pending'] += int(active and not (native_start or terminal))
             if prep:
                 if str(prep.get('provider', '')).startswith('PF_'):
@@ -545,7 +561,9 @@ class Gateway:
         if spec.get('q3_budget_parents'):
             from .rpe_search_continuation import verify_budget_parents
             immutable(run/'Q3_BUDGET_CONTINUATION.json',verify_budget_parents(run,problem,spec))
-        report = self.preflight(run, problem, spec)
+        preflight_started = time.monotonic()
+        report = dict(self.preflight(run, problem, spec),
+                      elapsed_seconds=time.monotonic() - preflight_started)
         write(run/'DUPLICATE_PREFLIGHT.json', report)
         if report.get('status') != 'PASS': raise RequestError('preflight', '§10.5 evidence is incomplete/conflicting; see DUPLICATE_PREFLIGHT.json')
         immutable(run/'ROUND.json', spec)
@@ -562,10 +580,18 @@ class Gateway:
         actual = Path(self.config['artificial_controller_directory'])/'run' if self.config.get('artificial_controller_directory') else run
         requested = run/'ROUND.requested.json'
         progress = local0_progress(a['applied'], load(requested) if requested.is_file() else {}, actual)
+        preflight_path = run/'DUPLICATE_PREFLIGHT.json'
+        preflight = load(preflight_path) if preflight_path.exists() else None
+        if preflight is not None and isinstance(preflight.get('refused'), list):
+            refused = preflight['refused']
+            preflight.update(report_path=str(preflight_path),
+                             refused_count=len(refused),
+                             refused_by_reason=dict(Counter(row.get('reason') for row in refused).most_common(10)),
+                             refused=refused[:16])
         result = dict(run_id=a['run_id'],run_directory=str(run),status=status,applied=a['applied'],started=(run/'LAUNCH.json').exists(),
                     computation_source=self.config['computation_source'],release=self.config.get('release'),controller_source=self.config['code_source'],
                     runtime=self.runtime_status(run),progress=progress,
-                    preflight=load(run/'DUPLICATE_PREFLIGHT.json') if (run/'DUPLICATE_PREFLIGHT.json').exists() else None)
+                    preflight=preflight)
         if 'continuation' in progress:
             result['continuation'] = progress.pop('continuation')
         return result
