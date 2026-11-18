@@ -35,6 +35,14 @@ PR-DF信号workerの修正を採用したreleaseは `romutail-df-signal-9ed5fcc9
 - 人工・回帰12件がPASS。別runの未確定attemptと同一job IDの旧attemptが混在しても、現行runで割当・回収が各1回であることを確認した。WindowsとCLIの通常Previewで新releaseを確認した。検収記録は `.rpe-central/deployment/romutail-owned-relay-0fc8268cf`。
 - 旧固定版のcontrollerが中継を新規起動したときは、中継のSOURCEを確認する必要がある。旧版に戻っていれば、そのrunの `distributed/relay/CONFIG.json` を使い、中継だけを `--stop` でdrainし、同じ設定のまま修正版の `run_rpe_q3_relay.py --config CONFIG.json --start` で起動する。controllerの稼働、relay lockの解放、利用者STOPの有無を切替時に確認する。
 
+## 稼働中のH4探索へPBSを追加
+
+2026-11-19 JSTに `search-6be05579540d7ed291b7` を通常Stopでdrainし、同じ探索条件とチェックポイントから継続run `search-f0ba946f506fd1e8e386` を通常Startで起動した。固定releaseは `romutail-pbs-h4-442bef4b0`、controller SOURCEは `442bef4b04903023104e08c93478d7c5162cb105`。範囲、shot規則、累計Q3上限なし、準備予算、科学Q3 SOURCE、既存host受付を引き継いだ。新規run用の共通currentは `romutail-owned-relay-0fc8268cf`。
+
+- 元runのQ3台帳は受理98件、配分前の取消26件で、所有中のattemptは0件。元runのSTOPを保持した。継続時に同じ配分の再試行を防ぐため、旧未確定2件と、実Q3開始前に終了して受理されたUNKNOWN 1件を個別に保留した。§10.5でB0I 53、PR-Pauli 148、PR-DF 64件を照合した。
+- PR-PauliとB0Iの既存の4時間見積りを適用し、PBSの `267266.CPUcluster-PRISM` を `CPUcluster011` の96 CPUで確保した。最初のPR-Pauli Q3 `e2b92bf64e9c918f6d59` はworkerの `SCIENTIFIC_ROUTE_START` まで確認した。実行可能なPBS割当は、固定SOURCE・入力照合と空き枠・残りwalltimeを満たすタスクに限る。
+- 回帰39件がPASS。新runは通常 `Status`・`Stop`・`Resume` でrun IDを明示する。運用記録は `.rpe-central/deployment/romutail-pbs-h4-442bef4b0`。
+
 ## 通常入口
 
 - Romulaptopでは既存の `Invoke-RpeSearch.ps1 -Action Preview -RequestFile SCOPE.json` を使う。RomuTailのCLIは `scripts/run_rpe_search.py --config .rpe-central/CLIENT.json --action preview --request-file SCOPE.json`。
