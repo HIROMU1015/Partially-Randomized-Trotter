@@ -28,13 +28,21 @@ A_WORKSPACE=ROOT.parent/'d2-pauli-auto-nodrop-evidence-20261116'
 GIT_LOCK=threading.RLock()
 IDENTITY=['-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp']
 _DF_PRICE_BOOTSTRAP="""
-import runpy, sys
+import json, runpy, sys
 from pathlib import Path
 runner, view = sys.argv[1:3]
 sys.argv = [runner, *sys.argv[3:]]
 sys.path.insert(0, str(Path(runner).resolve().parents[1]/'src'))
 import trottertracks
 trottertracks.__path__.insert(0, str(Path(view)/'src'/'trottertracks'))
+if '--input' in sys.argv:
+    from trottertracks.rpe_preparation_paths import resolve
+    document = Path(sys.argv[sys.argv.index('--input')+1])
+    provider = resolve(json.loads(document.read_bytes())['runtime']['provider_root'])
+    native = Path(provider)/'src'/'trottertracks'
+    if native.is_dir():
+        import trottertracks.resource_applicability as resource_applicability
+        resource_applicability.__path__.insert(0, str(native/'resource_applicability'))
 main = runpy.run_path(runner)['main']
 main.__globals__['FIXED_VIEW'] = Path(view)
 raise SystemExit(main())

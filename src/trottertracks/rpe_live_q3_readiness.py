@@ -141,11 +141,31 @@ def _supply_inputs(executor, payload, invoke, response):
     return dict(result, input_transfer=dict(objects=len(needed), bytes=len(content), sha256=sha256))
 
 
+def controller_input_hashes(executor, request):
+    """Place newer provider receipts in the fixed controller-side Q3 object store."""
+    target=executor.computation_root
+    try:
+        return Q.input_hashes(target,request,executor.input_hash_cache)
+    except subprocess.CalledProcessError:
+        if target==executor.root:
+            raise
+    expected=Q.input_hashes(executor.root,request)
+    commits=sorted({row['commit']for row in expected})
+    before=subprocess.check_output(['git','rev-parse','HEAD'],cwd=target)
+    subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(executor.root),*commits],
+                   cwd=target,check=True,capture_output=True)
+    observed=Q.input_hashes(target,request)
+    if observed!=expected or subprocess.check_output(['git','rev-parse','HEAD'],cwd=target)!=before:
+        raise ValueError('Controller Q3 input placement changed fixed SOURCE or input bytes')
+    executor.input_hash_cache.update({(row['commit'],row['path']):row for row in observed})
+    return observed
+
+
 def probe(executor, request, job_id, decision):
     """Obtain real-input dry checks for new jobs before reserving a slot."""
     assignment = dict(job_id=job_id, method=request['method'], request=request,
                       request_sha256=Q.digest(request), source_manifest=executor.source_manifest,
-                      input_hashes=Q.input_hashes(executor.computation_root, request, executor.input_hash_cache))
+                      input_hashes=controller_input_hashes(executor,request))
     local = executor.distributed.get('local_worker') or {}
     policy, error = executor._host_admission_policy()
     participants = []

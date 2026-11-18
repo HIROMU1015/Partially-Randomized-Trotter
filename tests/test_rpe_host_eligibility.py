@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from trottertracks import rpe_host_eligibility as H
-from trottertracks.rpe_live_q3_readiness import _HOST_PROBE, _supply_inputs
+from trottertracks.rpe_live_q3_readiness import _HOST_PROBE, _supply_inputs, controller_input_hashes
 from trottertracks.rpe_q3_coordinator import digest
 
 
@@ -36,6 +36,7 @@ class HostEligibilityTests(unittest.TestCase):
             git(controller,'add','.');git(controller,'commit','-m','fixed')
             base=git(controller,'rev-parse','HEAD')
             view=top/'frozen-route';git(top,'clone','--no-local',str(controller),str(view))
+            computation=top/'fixed-computation';git(top,'clone','--no-local',str(controller),str(computation))
             raw=b'{"fixture":true}\n';(controller/'input.json').write_bytes(raw)
             git(controller,'add','input.json');git(controller,'commit','-m','new saved input')
             revision=git(controller,'rev-parse','HEAD')
@@ -54,12 +55,17 @@ p=Path(sys.argv[sys.argv.index('--output')+1]);p.mkdir()
             payload=dict(worker_root=str(worker),profile=dict(root=str(view)),input_anchors=[base],
                 assignment=dict(request={'route':{'kind':'fixture'}},request_sha256='fixture',
                     input_hashes=[dict(commit=revision,path='input.json',sha256=hashlib.sha256(raw).hexdigest())]))
+            executor=SimpleNamespace(root=controller,computation_root=computation,input_hash_cache={})
+            request=dict(route=dict(kind='fixture',templates=[dict(commit=revision,path='input.json')]))
+            self.assertEqual(controller_input_hashes(executor,request),payload['assignment']['input_hashes'])
+            self.assertEqual(git(computation,'rev-parse','HEAD'),base)
+            self.assertFalse((computation/'input.json').exists())
             def invoke(data):
                 return json.loads(subprocess.check_output([sys.executable,'-B','-c',_HOST_PROBE],
                     input=json.dumps(data),text=True))
             first=invoke(payload)
             self.assertEqual(first['status'],'NEEDS_Q3_INPUT_OBJECTS')
-            result=_supply_inputs(SimpleNamespace(computation_root=controller),payload,invoke,first)
+            result=_supply_inputs(executor,payload,invoke,first)
             self.assertEqual(result['status'],'PASS')
             self.assertEqual(result['input_transfer']['objects'],3)
             self.assertEqual(git(view,'show',revision+':input.json'),raw.decode().strip())
