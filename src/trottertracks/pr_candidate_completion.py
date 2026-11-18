@@ -129,7 +129,7 @@ class Completion:
     def saved_signal_packets(self,method):
         name='saved_pauli_packets'if method=='PR_PAULI'else'saved_df_bundles'
         packets=list(getattr(self,'settings',{}).get(name,[]))
-        for record in getattr(self,'state',{}).get('records',{}).values():
+        for record in list(getattr(self,'state',{}).get('records',{}).values()):
             loc=(record.get('signal')or{}).get('packet_source')
             if record.get('method')==method and loc and loc not in packets:packets.append(loc)
         return packets
@@ -203,7 +203,7 @@ class Completion:
                 # The descriptor validator still checks its H/state/prefix.
                 return source
         prefix=(request.get('design')or{}).get('L_D')
-        for record in self.state['records'].values():
+        for record in list(self.state['records'].values()):
             source=record.get('request',{}).get('tail_descriptor')
             if record['method']=='PR_DF'and source and (record.get('design')or record.get('request',{}).get('design',{})).get('L_D')==prefix:
                 return source
@@ -287,7 +287,7 @@ class Completion:
             # A declaration can differ while the complete physical schedule and
             # evaluation contract are identical. Reuse READY inputs before any
             # scientific leaf; install() retains both declarations as aliases.
-            twin=next((old for old in self.state['records'].values()
+            twin=next((old for old in list(self.state['records'].values())
                 if old is not rec and old.get('method')==request['method']and old.get('status')=='READY_FOR_SEARCH'
                 and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical_evaluation_contract(config)),None)
             if twin is not None:
@@ -314,7 +314,8 @@ class Completion:
             quote_commit=publish([d],'Publish completed candidate prices and receipt bindings')
             with self.lock:
                 local_registry=d/'PRICE_RULES.json'
-                if local_registry.exists():
+                # DF publishes step rules through the locked registry writer.
+                if request['method'] == 'PR_PAULI' and local_registry.exists():
                     current=read(self.registry);merged={e['name']:e for e in current['entries']};merged.update({e['name']:e for e in read(local_registry)['entries']});put(self.registry,dict(current,entries=list(merged.values())))
             rec.update(status='READY_FOR_SEARCH',quote=dict(commit=quote_commit,path=rel(d/'FINAL_QUOTE.json')),
                 price_policy='MODEL',prices=[r['unit_price_RZ']for r in quote['rows']],

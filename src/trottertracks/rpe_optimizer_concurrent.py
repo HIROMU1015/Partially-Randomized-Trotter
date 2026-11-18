@@ -159,6 +159,7 @@ class ConcurrentExecutor(O.Executor):
     def _cancel(self,t):
         t.status='CANCELLED';self.state.reserved[t.view.method]-=1
         self.state.metrics['queued_cancelled']+=1;t.event.set()
+        self.state.cv.notify_all()
         t.view.log(event='CANCEL_QUEUED',job=t.job.name)
 
     def hold_configuration(self,proposal,answer):
@@ -179,6 +180,7 @@ class ConcurrentExecutor(O.Executor):
                 t=min(queue,key=lambda t:(not t.demand,s.owner_clock.get(t.owner,-1),t.enqueue))
                 s.clock+=1;s.owner_clock[t.owner]=s.clock;t.status='RUNNING';t.speculative=not t.demand;s.active+=1
                 s.peak_active=max(s.peak_active,s.active)
+                s.cv.notify_all()  # the dispatch may empty the queue with spare slots
             self._start(t)
 
     def _stop_after_failure(self,error):
@@ -258,16 +260,37 @@ class ConcurrentExecutor(O.Executor):
             with s.cv:s.peak_RSS_KiB=max(s.peak_RSS_KiB,rss)
             s.monitor_stop.wait(.1)
 
+    def has_spare_slot(self):
+        with self.state.cv:
+            return (not self.state.failure and self.state.active < self.capacity
+                    and not any(t.status == 'QUEUED' for t in self.state.tasks.values()))
+
+    def _wait_for_task(self, task):
+        """Wake the selector for fresh work only when the queue can use it."""
+        s = self.state
+        ready_pending = getattr(self, 'ready_pending', None)
+        self.log(event='DEPENDENCY_WAIT_START', job=task.job.name)
+        try:
+            if ready_pending is None:
+                task.event.wait()
+                return True
+            with s.cv:
+                s.cv.wait_for(lambda: task.event.is_set() or (ready_pending() and self.has_spare_slot()))
+                if task.event.is_set():
+                    return True
+            self.log(event='Q3_WAIT_YIELD_FOR_READY', job=task.job.name)
+            return False
+        finally:
+            self.log(event='DEPENDENCY_WAIT_END', job=task.job.name)
+
     def answer(self,proposal,allow_new=True):
         job=self.job_dir(proposal);s=self.state
         with s.cv:
             task=s.tasks.get(job)
             if task and task.status=='CANCELLED':task=None
             if task:task.demand=True;s.cv.notify_all()
-        if task and not task.event.is_set():
-            self.log(event='DEPENDENCY_WAIT_START',job=job.name)
-            try:task.event.wait()  # retain parent-exit gate even if OUTCOME appeared first
-            finally:self.log(event='DEPENDENCY_WAIT_END',job=job.name)
+        if task and not task.event.is_set() and not self._wait_for_task(task):
+            return dict(status='RESELECT_READY', job=str(job), calls=0)
         if task and task.error:
             return dict(status='UNKNOWN',reason=task.error,source='EXECUTOR_FAILURE',calls=self.take_count(job),
                         MSE_lower=None,MSE_upper=None,job=str(job))
@@ -294,9 +317,8 @@ class ConcurrentExecutor(O.Executor):
                     return dict(status='BUDGET_EXHAUSTED',job=None,calls=0,scientific_evaluation_calls=0,
                         source='EXECUTOR_BUDGET',reason='NEW_RESERVATION_REFUSED')
                 if task is None:return dict(status='NO_ROUTE',job=None,calls=0,source='EXECUTOR_CONTROL')
-                self.log(event='DEPENDENCY_WAIT_START',job=job.name)
-                try:task.event.wait()
-                finally:self.log(event='DEPENDENCY_WAIT_END',job=job.name)
+                if not self._wait_for_task(task):
+                    return dict(status='RESELECT_READY', job=str(job), calls=0)
                 if(job/'OUTCOME.json').exists():answer=self.ingest(job,proposal,calls=self.take_count(job))
                 else:answer=dict(status='UNKNOWN',reason=task.error or'ADAPTER_EXIT_WITHOUT_OUTCOME',
                     source='NEW_Q3_JOB',calls=self.take_count(job),MSE_lower=None,MSE_upper=None,job=str(job))
@@ -374,7 +396,7 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
     try:
         if kwargs.get('context') is None:kwargs['context']=O.prepare(root,problem,methods=methods)
         with ThreadPoolExecutor(max_workers=max(1,len(methods)))as pool:
-            futures={m:pool.submit(O.optimize,root,problem,executor=executor.for_method(m),methods=[m],**kwargs)for m in methods}
+            ready_source = kwargs.get('ready_source')
             def report_failure(method,future):
                 if future.cancelled():return
                 error=future.exception()
@@ -386,9 +408,48 @@ def optimize(root,problem,*,executor,methods=None,close_executor=True,**kwargs):
                     return
                 try:executor._stop_after_failure(error)
                 finally:O.record_runtime_error(executor.run_dir,error,'METHOD_OPTIMIZE',method=method)
-            for method,future in futures.items():
-                future.add_done_callback(lambda done,m=method:report_failure(m,done))
-            out={m:futures[m].result()[m]for m in methods}
+            def finished(method, future):
+                try:
+                    report_failure(method, future)
+                finally:
+                    with executor.state.cv:
+                        executor.state.cv.notify_all()
+
+            def submit(method):
+                future = pool.submit(O.optimize, root, problem, executor=executor.for_method(method),
+                                     methods=[method], **kwargs)
+                future.add_done_callback(lambda done: finished(method, done))
+                return future
+
+            futures = {m: submit(m) for m in methods}
+            if ready_source is None:
+                out = {m: futures[m].result()[m] for m in methods}
+            else:
+                out = {}
+                state = executor.state
+
+                def idle_ready():
+                    if not executor.has_spare_slot():
+                        return []
+                    occupied = {t.view.method for t in state.tasks.values() if t.status in ('QUEUED', 'RUNNING')}
+                    return [m for m in out if m not in futures and m not in occupied
+                            and ready_source.has_new(m)]
+
+                while futures:
+                    with state.cv:
+                        state.cv.wait_for(lambda: any(f.done() for f in futures.values()) or idle_ready())
+                        done = [m for m, f in futures.items() if f.done()]
+                    for method in done:
+                        out[method] = futures.pop(method).result()[method]
+                    if not futures or any(r['stop_reason'] == 'UNKNOWN_RESULT' for r in out.values()):
+                        # If one method failed, drain the other selector using the
+                        # same failure callback and existing stop contract.
+                        out.update((m, f.result()[m]) for m, f in futures.items())
+                        break
+                    with state.cv:
+                        restart = idle_ready()
+                    for method in restart:
+                        futures[method] = submit(method)
     except BaseException:
         primary=getattr(executor.state,'primary_exception',None)
         if primary is not None:raise primary

@@ -1,5 +1,9 @@
 # 性能対策の再利用索引
 
+## PR幅探索で空き枠へ後着候補を投入する（2026-11-18）
+
+幅探索の `live_ready_refill` は、Q3完了と候補準備完了の通知を既存V2・共通キューにつなぐ。後着候補を通常の物理ID・証拠確認で登録し、空き枠で同じ選択ルールに戻す。方式間の準備を並行させ、同じ方式の信号・較正の再利用順を保つ。人工の通常入口で先行Q3の終了前に投入し、同じrunの再開で二重起動0を確認。実H4速度は未測定。[適用条件・検証](research/pr_live_ready_refill_20261118/HANDOFF.md)。
+
 ## 並列queueのbatch予約到達を通常制御で返す（2026-11-18）
 
 SOURCE `2c2196bee` は `BUDGET_EXHAUSTED` を数値Q3回答から分離し、予約拒否の新規0件会計と、実起動した先読みの累計計上を維持する。queue予約が先に埋まりselector側が `calls` を読む失敗を、通常幅入口・同じqueueの次batch・同じrun再開で検証。追加5＋既存32 PASS、native5 PASS。キャンセルで戻った枠は準備完了前にQ3へ戻す。順位・数値kernel・compilerは変更せず、実H4速度倍率は未測定。[REPORT/継続](research/pr_r08_budget_fix_20261118/HANDOFF.md)。

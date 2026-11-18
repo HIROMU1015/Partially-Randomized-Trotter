@@ -208,6 +208,8 @@ def import_inputs(plan, old_run, study):
                  round_scope={k: spec.get(k) for k in ('method_overrides', 'search_overrides', 'width_families', 'new_families', 'kappa_families')},
                  completion={k: v for k, v in spec['candidate_completion'].items()
                              if k not in ('price_evidence_results', 'plan_only')})
+    if spec.get('live_ready_refill') is True:
+        fixed['round_scope']['live_ready_refill'] = True
     write(run / 'FIXED_INPUTS.json', fixed)
     args = SimpleNamespace(problem=study / 'PROBLEM.json', round=study / 'ROUND.json',
                            run_dir=run, batch=plan['batch'], max_cycles=remaining, plan_only=True)

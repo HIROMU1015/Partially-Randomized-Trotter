@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR幅探索の空き枠への投入](docs/research/pr_live_ready_refill_20261118/HANDOFF.md)。後から準備できた候補を共通キューに渡し、方式間の準備を並行した。
+
 [R08のcalls例外修正・予算継続](docs/research/pr_r08_budget_fix_20261118/HANDOFF.md)：予約拒否を通常batch制御へ分離、元128結果/STOPと科学条件を保全。
 
 [R08への修正版引継ぎ・状態確認](docs/research/h4_pr_r08_recovery_20261117/HANDOFF.md)：走行中stageを保全し、所有lock解放後に同じ通常探索へ戻す。待機と科学controller稼働を区別。
