@@ -1867,19 +1867,14 @@ class DistributedExecutor(ConcurrentExecutor):
             return dict(ok=True, duplicate=duplicate)
 
     def _publish_transfer(self, row):
-        from . import rpe_q3_coordinator as Q
-        import base64
+        from .rpe_q3_coordinator import publish_staged_files
+
         job = self.run_dir/'jobs'/row['method']/row['job_id']
         stage = self.run_dir/'distributed'/'transfers'/row['job_id']/row['attempt_id']
         if not stage.exists():
             if (job/'OUTCOME.json').exists(): return
             raise ValueError('Accepted completion is missing its transfer directory')
-        job.mkdir(parents=True, exist_ok=True)
-        files = {str(p.relative_to(stage)): base64.b64encode(p.read_bytes()).decode() for p in stage.rglob('*')
-                 if p.is_file() and str(p.relative_to(stage)) not in ('REQUEST.json', 'OUTCOME.json')}
-        Q.install_files(job, files)
-        outcome = stage/'OUTCOME.json'
-        if outcome.exists(): Q.install_files(job, {'OUTCOME.json': base64.b64encode(outcome.read_bytes()).decode()})
+        publish_staged_files(stage, job)
 
     def answer(self, proposal, allow_new=True):
         blocked = self._wait_candidate_preparation(proposal)

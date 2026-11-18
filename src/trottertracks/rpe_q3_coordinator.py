@@ -4,6 +4,7 @@ SSH supplies the connection boundary. This module never chooses scientific
 candidates, creates approvals, expires leases, or starts a numerical worker.
 """
 import base64
+import errno
 import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
@@ -27,9 +28,7 @@ def atomic_json(path, value):
         os.fsync(output.fileno())
     temporary.replace(path)
     if os.name != 'nt':  # Windows cannot open directory handles with os.open.
-        directory = os.open(path.parent, os.O_RDONLY)
-        try: os.fsync(directory)
-        finally: os.close(directory)
+        _sync_directory(path.parent)
 
 
 def source_manifest(root, commit):
@@ -87,17 +86,30 @@ def prefix_key(request):
                        expected=request['expected'], route=effective))
 
 
+def _artifact_destination(job, name):
+    forbidden = {'REQUEST.json', 'LAUNCH.json', 'STARTING.json'}
+    part = PurePosixPath(name)
+    if part.is_absolute() or '..' in part.parts or not part.parts or part.as_posix() in forbidden:
+        raise ValueError('Unsafe or controller-owned artifact path: '+name)
+    destination = job.joinpath(*part.parts)
+    if not destination.resolve().is_relative_to(job.resolve()):
+        raise ValueError('Artifact leaves job directory')
+    return destination
+
+
+def _sync_directory(path):
+    directory = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(directory)
+    finally:
+        os.close(directory)
+
+
 def install_files(job, files):
     """Idempotent import; controller-owned request/launch records stay original."""
     job = Path(job)
-    forbidden = {'REQUEST.json', 'LAUNCH.json', 'STARTING.json'}
     for name, encoded in files.items():
-        part = PurePosixPath(name)
-        if part.is_absolute() or '..' in part.parts or not part.parts or name in forbidden:
-            raise ValueError('Unsafe or controller-owned artifact path: '+name)
-        destination = job.joinpath(*part.parts)
-        if not destination.resolve().is_relative_to(job.resolve()):
-            raise ValueError('Artifact leaves job directory')
+        destination = _artifact_destination(job, name)
         value = base64.b64decode(encoded, validate=True)
         destination.parent.mkdir(parents=True, exist_ok=True)
         if destination.exists():
@@ -107,9 +119,43 @@ def install_files(job, files):
             with temporary.open('wb') as output:
                 output.write(value); output.flush(); os.fsync(output.fileno())
             temporary.replace(destination)
-            directory = os.open(destination.parent, os.O_RDONLY)
-            try: os.fsync(directory)
-            finally: os.close(directory)
+            _sync_directory(destination.parent)
+
+
+def _same_artifact(source, destination):
+    if destination.is_symlink() or not destination.is_file():
+        return False
+    if source.samefile(destination):
+        return True
+    if source.stat().st_size != destination.stat().st_size:
+        return False
+    with source.open('rb') as original, destination.open('rb') as saved:
+        return all(block == saved.read(len(block)) for block in iter(lambda: original.read(1 << 20), b''))
+
+
+def publish_staged_files(stage, job):
+    """Expose accepted immutable bytes at the job path, with OUTCOME last."""
+    stage, job = Path(stage), Path(job)
+    sources = (path for path in stage.rglob('*')
+               if path != stage/'REQUEST.json' and (path.is_file() or path.is_symlink()))
+    for source in sorted(sources, key=lambda path: (path == stage/'OUTCOME.json', path)):
+        name = source.relative_to(stage).as_posix()
+        if source.is_symlink() or not source.resolve().is_relative_to(stage.resolve()):
+            raise ValueError('Unsafe staged artifact path: '+name)
+        destination = _artifact_destination(job, name)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.link(source, destination)
+        except FileExistsError:
+            if not _same_artifact(source, destination):
+                raise ValueError('Changed immutable artifact: '+name)
+        except OSError as error:
+            if error.errno not in (errno.EXDEV, errno.EOPNOTSUPP, errno.ENOSYS, errno.EMLINK):
+                raise
+            # Some deployments place jobs on another filesystem. The original
+            # atomic installer remains the fallback for that file only.
+            install_files(job, {name: base64.b64encode(source.read_bytes())})
+        _sync_directory(destination.parent)
 
 
 class Server(ThreadingHTTPServer):

@@ -34,3 +34,9 @@ WindowsとRomuTailは、明示版とcurrentのPreviewで同じrun IDを解決し
 - RomuTail、server2、Romulaptop WSL、PBS gatewayの固定配置を検証した。server1は停止扱い。今回の人工投入はRomuTailとserver2で行った。通常SERVICEのPBS実Q3見積りは従来の未設定。PBSで実Q3を選択するには対象runの時間見積りとrequest別適格性が必要。
 
 実H4信号・実compile・実Q3・価格fit・本番探索の新規起動は各0件。元runの科学結果、未確定attemptとSTOPを保全した。[検収データ](ACCEPTANCE.json)
+
+## 中央の転送結果の保存
+
+中央は受領済みファイルを `distributed/transfers/<job>/<attempt>/` に保存し、同じファイルシステムの `jobs/<method>/<job>/` からはハードリンクで参照する。台帳の受領確定後に補助ファイルを公開し、最後に `OUTCOME.json` を公開する。既存の別コピーは内容が一致する場合に再利用し、異なる内容は拒否する。ハードリンクが使えないファイルシステムでは従来の原子的コピーを使用する。
+
+人工検収88件を通過した。受領確定後に `OUTCOME.json` の公開を中断して再起動し、同じattemptから一度だけ採用した。保存Q3の1件を一時領域で回収すると、33ファイルのhashと両方のpathを保持して17,522,688バイトの追加書込みを回避した。既存runの固定SOURCE・台帳・ファイルには変更を加えていない。

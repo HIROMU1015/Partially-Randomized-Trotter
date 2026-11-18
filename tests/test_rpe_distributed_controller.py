@@ -3,6 +3,7 @@
 No adapter is launched: outcomes stand in for already completed artificial jobs.
 """
 import base64
+import errno
 from fractions import Fraction
 import json
 from pathlib import Path
@@ -16,6 +17,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 from trottertracks import rpe_method_optimizer as O
+from trottertracks import rpe_q3_coordinator as Q
 from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
 
 
@@ -175,13 +177,26 @@ class ControllerFailures(unittest.TestCase):
         task = self.enqueue(executor, 'first')
         assigned = self.poll(executor)['assignments'][0]
         payload = self.completion(assigned)
-        with patch.object(executor, '_publish_transfer', side_effect=OSError('ARTIFICIAL publish interruption')):
+        evidence = b'ARTIFICIAL raw evidence\n' * 100_000
+        payload['files']['raw/RESULT.json'] = base64.b64encode(evidence).decode()
+        link = Q.os.link
+
+        def interrupt_before_outcome(source, destination):
+            if source.name == 'OUTCOME.json':
+                raise OSError('ARTIFICIAL publish interruption')
+            return link(source, destination)
+
+        with patch.object(Q.os, 'link', side_effect=interrupt_before_outcome):
             with self.assertRaises(OSError):
                 executor.rpc('/v1/complete', payload)
         self.assertFalse((task.job/'OUTCOME.json').exists())
+        stage = self.run/'distributed'/'transfers'/assigned['job_id']/assigned['attempt_id']
+        self.assertTrue((task.job/'raw/RESULT.json').samefile(stage/'raw/RESULT.json'))
         self.close_one(executor)
         resumed = self.executor()
-        self.assertTrue((task.job/'OUTCOME.json').exists())
+        for name in payload['files']:
+            self.assertTrue((task.job/name).samefile(stage/name), name)
+        self.assertEqual((task.job/'raw/RESULT.json').read_bytes(), evidence)
         answer = resumed.for_method('PR_PAULI').answer(proposal)
         self.assertEqual(answer['status'], O.PASS)
         self.assertEqual(answer['calls'], 0)
@@ -190,6 +205,26 @@ class ControllerFailures(unittest.TestCase):
         self.assertEqual(self.poll(resumed)['assignments'], [])
         self.assertEqual([e['event'] for e in resumed.store.events()].count('ACCEPT'), 1)
         self.assertEqual([e['event'] for e in resumed.store.events()].count('ADOPT'), 1)
+
+    def test_transfer_can_publish_to_another_filesystem_and_reject_changed_legacy_copy(self):
+        stage = self.run/'transfer'
+        stage.mkdir(parents=True)
+        raw = b'ARTIFICIAL exact bytes'
+        (stage/'OUTCOME.json').write_bytes(raw)
+        job = self.run/'job'
+        with patch.object(Q.os, 'link', side_effect=OSError(errno.EXDEV, 'artificial mount')):
+            Q.publish_staged_files(stage, job)
+        outcome = job/'OUTCOME.json'
+        self.assertEqual(outcome.read_bytes(), raw)
+        self.assertFalse(outcome.samefile(stage/'OUTCOME.json'))
+        # Previous releases retain separate copies. Replay compares the
+        # exact bytes and leaves both file identities intact.
+        Q.publish_staged_files(stage, job)
+        self.assertFalse(outcome.samefile(stage/'OUTCOME.json'))
+        outcome.write_bytes(b'changed'.ljust(len(raw), b' '))
+        with self.assertRaisesRegex(ValueError, 'Changed immutable artifact: OUTCOME.json'):
+            Q.publish_staged_files(stage, job)
+        self.assertEqual((stage/'OUTCOME.json').read_bytes(), raw)
 
     def test_successful_artifact_requires_both_zero_return_and_no_signal(self):
         executor = self.executor()
