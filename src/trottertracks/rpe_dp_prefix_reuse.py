@@ -32,6 +32,9 @@ DEFAULT_CACHE_MAX_BYTES = 40 * 2**30
 CHECKPOINT_SEMANTICS_ID = '554460755ab6fcd38ad5b9f1a680b543aed7e26906579b26470d73fa659148f2'
 _CACHE_FILE = re.compile(r'[0-9a-f]{64}\.json(?:\.gz)?')
 _STAGING_PREFIX = '.prefix-writing-'
+_ADMISSION_FILE = '.prefix-admissions.json'
+_ADMISSION_MAX_KEYS = 4096
+DEFAULT_SELECTIVE_WINDOW_SECONDS = 600
 # Filled from the fixed accelerator method, not from the user's approval.
 ACCELERATOR_SOURCE_SHA256='d8bf773bf699ab84f3ec2d00216d15f692b9825c3a453346827bfcf79d8b9286'
 
@@ -71,6 +74,59 @@ class PrefixStore:
         self.directory = None if directory is None else Path(directory)
         self.max_bytes = max_bytes
         self.memory = {}  # memory mode only
+        self._admission_memory = {}
+
+    def _admissions(self, entries, keys, window, observe):
+        now = time.time()
+        entries = {k: v for k, v in entries.items() if 0 <= now-v[0] <= window}
+        if observe:
+            for key in keys:
+                _, count = entries.pop(key, (now, 0))
+                entries[key] = [now, min(2, count+1)]
+        if len(entries) > _ADMISSION_MAX_KEYS:
+            entries = dict(list(entries.items())[-_ADMISSION_MAX_KEYS:])
+        return entries
+
+    def observe(self, keys, window):
+        """Record small demand hints at lookup, before a candidate reaches a boundary."""
+        if not keys:
+            return
+        self._selective_admissions(keys, window, observe=True)
+
+    def admit(self, key, window):
+        entries = self._selective_admissions((), window, observe=False)
+        return key in entries and entries[key][1] >= 2
+
+    def _selective_admissions(self, keys, window, *, observe):
+        if self.directory is None:
+            self._admission_memory = self._admissions(self._admission_memory, keys, window, observe)
+            return self._admission_memory
+        if observe:
+            self.directory.mkdir(parents=True, exist_ok=True)
+        elif not self.directory.is_dir():
+            return {}
+        path = self.directory / _ADMISSION_FILE
+        with (self.directory / '.prefix-storage.lock').open('a+b') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            try:
+                entries = json.loads(path.read_bytes())
+                entries = self._admissions(entries, keys, window, observe)
+            except (ValueError, TypeError, KeyError, IndexError, AttributeError, FileNotFoundError):
+                entries = self._admissions({}, keys, window, observe)
+            if observe:
+                data=json.dumps(entries,separators=(',',':')).encode()
+                if not self._make_room(len(data)):
+                    return {}
+                # Use one atomic file for metadata. Interrupted writes use the
+                # same staging prefix cleaned by the checkpoint writer.
+                with tempfile.NamedTemporaryFile(dir=self.directory, prefix=_STAGING_PREFIX, delete=False) as temporary:
+                    try:
+                        temporary.write(data)
+                        temporary.flush()
+                        os.replace(temporary.name,path)
+                    finally:
+                        Path(temporary.name).unlink(missing_ok=True)
+            return entries
 
     def get(self, key, mass_type):
         if self.directory is None:
@@ -104,6 +160,7 @@ class PrefixStore:
     def _make_room(self, incoming_bytes):
         """Called under the writer lock, before writing an atomic staging file."""
         entries = []
+        metadata_bytes=0
         with os.scandir(self.directory) as files:
             for entry in files:
                 if not entry.is_file(follow_symlinks=False):
@@ -113,9 +170,13 @@ class PrefixStore:
                 elif _CACHE_FILE.fullmatch(entry.name):
                     info = entry.stat(follow_symlinks=False)
                     entries.append((info.st_mtime_ns, entry.name, info.st_size))
-        total = sum(size for _, _, size in entries)
+                elif entry.name == _ADMISSION_FILE:
+                    metadata_bytes=entry.stat(follow_symlinks=False).st_size
+        total = metadata_bytes+sum(size for _, _, size in entries)
+        if metadata_bytes+incoming_bytes > self.max_bytes:
+            return False
         if total + incoming_bytes <= self.max_bytes:
-            return
+            return True
         evicted_files = evicted_bytes = 0
         for _, name, size in sorted(entries):
             if total + incoming_bytes <= self.max_bytes:
@@ -126,6 +187,7 @@ class PrefixStore:
             evicted_bytes += size
         self.last_evicted_files = evicted_files
         self.last_evicted_bytes = evicted_bytes
+        return True
 
     def put(self, key, snapshot):
         self.last_evicted_files = self.last_evicted_bytes = 0
@@ -150,7 +212,8 @@ class PrefixStore:
         self.directory.mkdir(parents=True, exist_ok=True)
         with (self.directory / '.prefix-storage.lock').open('a+b') as lock:
             fcntl.flock(lock, fcntl.LOCK_EX)
-            self._make_room(len(data))
+            if not self._make_room(len(data)):
+                return False
             name = None
             try:
                 with tempfile.NamedTemporaryFile(dir=self.directory, prefix=_STAGING_PREFIX, delete=False) as file:
@@ -208,43 +271,58 @@ def _grouped_sum(original, residual, key, mass, coefficient):
 
 
 def _drop_batch(bounds, context=None):
-    ordered, denominator, completed, drop, mass_type = _drop_context if context is None else context
+    ordered, denominator, completed, drop, mass_type, profile = _drop_context if context is None else context
+    started = time.perf_counter() if profile else None
     partial = dict(events=0, groups={})
     for index in range(*bounds):
         (flag, phase), count = ordered[index]
         drop(flag, phase, mass_type(count, denominator), completed, partial)
+    if started is not None:
+        partial['worker_seconds'] = time.perf_counter()-started
     return partial
 
 
-def _drop_many(P, worker_count, ordered, denominator, completed, drop):
+def _drop_many(P, worker_count, ordered, denominator, completed, drop, event_sink=None):
     if not ordered:
         return
-    context = ordered, denominator, completed, drop, P.Mass
+    started = time.perf_counter() if event_sink is not None else None
+    context = ordered, denominator, completed, drop, P.Mass, event_sink is not None
     available = len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else os.cpu_count() or 1
     workers = min(worker_count or available, max(1, len(ordered)//MIN_DROPS_PER_WORKER))
     if 'fork' not in mp.get_all_start_methods():
         workers = 1
 
     residual = drop.residual()
+    merge_seconds=0.
+    worker_seconds=[]
     def merge(partial):
+        nonlocal merge_seconds
+        start=time.perf_counter() if started is not None else None
         residual['events'] += partial['events']
         for key, terms in partial['groups'].items():
             for den, num in terms.items():
                 P._accumulate(residual, key, P.Mass(num, den), 1)
+        if start is not None:
+            merge_seconds+=time.perf_counter()-start
+            worker_seconds.append(partial['worker_seconds'])
 
     if workers == 1:
         merge(_drop_batch((0,len(ordered)),context))
-        return
-    global _drop_context
-    _drop_context = context
-    chunk = (len(ordered) + workers - 1)//workers
-    batches = [(i,min(i+chunk,len(ordered))) for i in range(0,len(ordered),chunk)]
-    try:
-        with ProcessPoolExecutor(max_workers=workers,mp_context=mp.get_context('fork')) as pool:
-            for partial in pool.map(_drop_batch,batches):
-                merge(partial)
-    finally:
-        _drop_context = None
+    else:
+        global _drop_context
+        _drop_context = context
+        chunk = (len(ordered) + workers - 1)//workers
+        batches = [(i,min(i+chunk,len(ordered))) for i in range(0,len(ordered),chunk)]
+        try:
+            with ProcessPoolExecutor(max_workers=workers,mp_context=mp.get_context('fork')) as pool:
+                for partial in pool.map(_drop_batch,batches):
+                    merge(partial)
+        finally:
+            _drop_context = None
+    if started is not None:
+        event_sink(dict(event='RESIDUAL_TIMING',completed=completed,states=len(ordered),workers=workers,
+            wall_seconds=time.perf_counter()-started,parent_merge_seconds=merge_seconds,
+            worker_max_seconds=max(worker_seconds),worker_sum_seconds=sum(worker_seconds)))
 
 
 def _drop_loop(body, expression):
@@ -317,17 +395,28 @@ scope.update(_drop_many=self._drop_many, _accumulate=self._grouped_sum)
 
     class PrefixAccelerator(P.Accelerator):
         _kernel=build_kernel
-        def __init__(self,*,store=None,cache_namespace,checkpoint_rounds=None,**kwargs):
+        def __init__(self,*,store=None,cache_namespace,checkpoint_rounds=None,selective_rounds=(),
+                     selective_window_seconds=DEFAULT_SELECTIVE_WINDOW_SECONDS,profile_residual=False,**kwargs):
             if not cache_namespace:raise ValueError('Explicit configuration/signal/evaluation cache_namespace required')
             self.store=store if store is not None else PrefixStore()
             self.cache_namespace=deepcopy(cache_namespace)
             self.checkpoint_rounds=checkpoint_rounds
+            self.selective_rounds=set(selective_rounds)
+            self.selective_window_seconds=selective_window_seconds
+            self.profile_residual=profile_residual
             self.cache_events=[];self.cache_sink=None
             super().__init__(**kwargs)
 
         def _event(self,value):
             self.cache_events.append(value)
             if self.cache_sink is not None:self.cache_sink(value)
+
+        def _observe_selective(self, restored):
+            keys=[self.keys[m] for m in self.selective_rounds if m>restored]
+            try:
+                self.store.observe(keys,self.selective_window_seconds)
+            except OSError as exc:
+                self._event(dict(event='ADMISSION_UNAVAILABLE',reason=str(exc)))
 
         def _restore(self,tables,h,target,scope):
             start=time.perf_counter();read_seconds=0.
@@ -344,6 +433,8 @@ scope.update(_drop_many=self._drop_many, _accumulate=self._grouped_sum)
             if any(type(m)is not int or not 0<=m<M for m in self.boundaries):
                 if M==0 and self.checkpoint_rounds is None:self.boundaries=set()
                 else:raise ValueError('Checkpoint must be a nonterminal round')
+            if not self.selective_rounds <= self.boundaries or self.selective_window_seconds <= 0:
+                raise ValueError('Selective checkpoints need configured boundaries and a positive reuse window')
             hash_seconds=time.perf_counter()-start
             for m in sorted(self.boundaries,reverse=True):
                 read_start=time.perf_counter()
@@ -357,19 +448,24 @@ scope.update(_drop_many=self._drop_many, _accumulate=self._grouped_sum)
                     self._event(dict(event='HIT',completed=m,reused_rounds=m+1,key=self.keys[m],hash_seconds=hash_seconds,
                         read_seconds=read_seconds,serialized_bytes=getattr(self.store,'last_read_bytes',None)))
                     self.observations=deepcopy(snapshot['observations'])
+                    self._observe_selective(m)
                     return m+1,snapshot
                 except (OSError,ValueError,KeyError,TypeError)as exc:
                     self._event(dict(event='READ_REJECTED',completed=m,reason=str(exc)))
             self._event(dict(event='MISS',reused_rounds=0,hash_seconds=hash_seconds,read_seconds=read_seconds))
+            self._observe_selective(-1)
             return 0,None
 
         def _save(self,m,states,denominator,pairs,worst,res,rounds):
             if m not in self.boundaries:return
-            snapshot=dict(completed=m,states=[(f,p,w)for(f,p),w in states.items()],
-                denominator=denominator,pairs=pairs,worst=worst,
-                res={k:v for k,v in res.items()if k!='_cached'},
-                rounds=rounds,observations=self.observations)
             try:
+                if m in self.selective_rounds and not self.store.admit(self.keys[m],self.selective_window_seconds):
+                    self._event(dict(event='SAVE_NOT_ADMITTED',completed=m,key=self.keys[m],reason='NO_RECENT_REPEAT'))
+                    return
+                snapshot=dict(completed=m,states=[(f,p,w)for(f,p),w in states.items()],
+                    denominator=denominator,pairs=pairs,worst=worst,
+                    res={k:v for k,v in res.items()if k!='_cached'},
+                    rounds=rounds,observations=self.observations)
                 write_start=time.perf_counter()
                 stored=self.store.put(self.keys[m],snapshot)
                 event=dict(event='SAVE' if stored else 'SAVE_SKIPPED',completed=m,key=self.keys[m],states=len(states),
@@ -386,14 +482,16 @@ scope.update(_drop_many=self._drop_many, _accumulate=self._grouped_sum)
             return super().__call__(*args,**kwargs)
     if parallel_residual:
         PrefixAccelerator.propagate=_fixed_propagate(P)
-        PrefixAccelerator._drop_many=lambda self,*args:_drop_many(P,self.workers,*args)
+        PrefixAccelerator._drop_many=lambda self,*args:_drop_many(P,self.workers,*args,
+            event_sink=self._event if self.profile_residual else None)
         PrefixAccelerator._grouped_sum=lambda self,*args:_grouped_sum(P._accumulate,*args)
     return PrefixAccelerator
 
 
 @contextmanager
 def installed(P,*,directory,cache_namespace,checkpoint_rounds=None,event_sink=None,max_bytes=DEFAULT_CACHE_MAX_BYTES,
-              parallel_residual=False):
+              parallel_residual=False,selective_rounds=(),selective_window_seconds=DEFAULT_SELECTIVE_WINDOW_SECONDS,
+              profile_residual=False):
     """Patch only this worker's accelerator constructor for its existing entry."""
     cls=accelerator_class(P,parallel_residual=parallel_residual);store=PrefixStore(directory,max_bytes=max_bytes)
     # Existing Observed subclasses resolve super() to the old base. Replace its
@@ -402,8 +500,11 @@ def installed(P,*,directory,cache_namespace,checkpoint_rounds=None,event_sink=No
     def init(self,**kwargs):
         self.store=store;self.cache_namespace=deepcopy(cache_namespace)
         self.checkpoint_rounds=checkpoint_rounds;self.cache_events=[];self.cache_sink=event_sink
+        self.selective_rounds=set(selective_rounds);self.selective_window_seconds=selective_window_seconds
+        self.profile_residual=profile_residual
         original(self,**kwargs)
-    hooks={'__init__':init,'_kernel':cls._kernel,'_event':cls._event,'_restore':cls._restore,'_save':cls._save}
+    hooks={'__init__':init,'_kernel':cls._kernel,'_event':cls._event,'_restore':cls._restore,'_save':cls._save,
+           '_observe_selective':cls._observe_selective}
     if parallel_residual:
         hooks.update(propagate=cls.propagate,_drop_many=cls._drop_many,_grouped_sum=cls._grouped_sum)
     with ExitStack() as stack:

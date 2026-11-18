@@ -445,7 +445,9 @@ def prefix_cache_context(request,case,inputs,out):
     with C.installed(module,directory=directory,cache_namespace=namespace,
                      checkpoint_rounds=profile.get('prefix_checkpoint_rounds') if directory is not None else [],
                      event_sink=event,max_bytes=profile.get('prefix_cache_max_bytes', C.DEFAULT_CACHE_MAX_BYTES),
-                     parallel_residual=parallel_residual):
+                     parallel_residual=parallel_residual,profile_residual=profile.get('profile_dp_residual') is True,
+                     selective_rounds=profile.get('prefix_selective_checkpoint_rounds',()) if directory is not None else (),
+                     selective_window_seconds=profile.get('prefix_selective_window_seconds',C.DEFAULT_SELECTIVE_WINDOW_SECONDS)):
         yield
 
 
@@ -489,6 +491,12 @@ def main():
             if a.mode == 'dry-check':
                 outcome = dict(status='DRY_CHECK_PASS', bounds=bounds, case_label=case['label'], template=inputs['template_source'],
                                metadata='PASS', runtime=runtime)
+                profile = request.get('execution_profile', {})
+                if profile.get('prefix_selective_checkpoint_rounds') or profile.get('profile_dp_residual') is True:
+                    # Check the accelerator and propagation guards in this
+                    # route's actual runtime without running its evaluation.
+                    with prefix_cache_context(request, case, inputs, out):
+                        outcome['prefix_runtime_check'] = 'PASS'
                 if getattr(r, 'source_resolution', None) is not None:
                     outcome['source_resolution'] = r.source_resolution
             elif a.mode == 'collect':

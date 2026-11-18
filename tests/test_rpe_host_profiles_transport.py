@@ -25,6 +25,46 @@ from test_rpe_optimizer_concurrent import fixture
 
 
 class HostProfileTransportTests(unittest.TestCase):
+    def test_selective_configuration_is_bound_to_pr_routes_and_capable_hosts(self):
+        methods = ['FULL_PF', 'PR_PAULI', 'PR_DF']
+        problem, context, routes = fixture(methods=methods, configurations=1)
+        source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+        with tempfile.TemporaryDirectory() as tmp:
+            executor = DistributedExecutor(ROOT, tmp, routes, context['expected'], problem,
+                optimizer_source=source, distributed=dict(port=0),
+                prefix_checkpoint_rounds=[5,8,11], prefix_selective_checkpoint_rounds=[8,11],
+                prefix_selective_window_seconds=600, prefix_cache_max_bytes=40*2**30,
+                compact_q3_evidence=True, parallel_dp_residual=True, profile_dp_residual=True)
+            try:
+                adapter = {'files':{'src/trottertracks/rpe_dp_prefix_reuse.py':'fixture',
+                                    'src/trottertracks/rpe_q3_evidence.py':'fixture'}}
+                profile = dict(host_id='worker', reviewed_pr_q3=True,
+                               prefix_cache_directory='/private/cache', adapter_manifest=adapter)
+                for candidate in context['candidates']:
+                    method = candidate['method']
+                    kinds = {'FULL_PF':['pf_b_pf6'], 'PR_PAULI':['pauli_b_common_entry'],
+                             'PR_DF':['prdf_d2_split','prdf_d2_common_entry']}[method]
+                    view = executor.for_method(method)
+                    proposal = dict(configuration_id=candidate['configuration_id'], vector=(1,)*26,
+                                    cost=26, origin={})
+                    for kind in kinds:
+                        request = view.request(proposal, view.job_dir(proposal), {'kind':kind})
+                        options = request['execution_profile']
+                        if method == 'FULL_PF':
+                            self.assertEqual(options, {'dp_workers':None})
+                            continue
+                        self.assertEqual(options['prefix_selective_checkpoint_rounds'], [8,11])
+                        self.assertEqual(options['prefix_selective_window_seconds'], 600)
+                        self.assertTrue(options['profile_dp_residual'])
+                        self.assertEqual(options.get('compact_q3_evidence'), None if kind=='prdf_d2_split' else True)
+                        with self.assertRaisesRegex(ValueError, 'No compatible selective PR Q3 adapter'):
+                            select_host_profile(profile, {'request':request})
+                        capable = dict(profile, selective_pr_q3=True)
+                        self.assertEqual(profile_core(select_host_profile(capable, {'request':request})),
+                                         profile_core(capable))
+            finally:
+                executor.finish()
+
     def test_assignment_mailbox_adapter_and_duplicate_keep_route_specific_interpreter(self):
         methods = ['FULL_PF', 'TRUNCATED_PF', 'PR_DF']
         problem, context, routes = fixture(methods=methods, configurations=1)

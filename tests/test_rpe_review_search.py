@@ -96,6 +96,27 @@ class ReviewSearch(unittest.TestCase):
         self.assertLess(asks.index(('leader','DECREMENT_FROM_CONFIGURATION_INCUMBENT')),
                         asks.index(('leader','COST_DECREASING_ROUND_EXCHANGE')))
 
+    def test_eligible_moves_precede_conditional_standby_without_changing_demand(self):
+        base=(4,)*26
+        choice=[];batches=[]
+        class Backend:
+            def answer(self,proposal):
+                choice.append(proposal['vector'])
+                return dict(status=O.FAIL,MSE_upper=Fraction(2),source='ARTIFICIAL',calls=1)
+        for enabled in (False,True):
+            P.run_priority('PR_PAULI',[candidate('leader',1,1)],
+                {('leader',base):dict(status=O.PASS,MSE_upper=Fraction(1,2),source='FIXTURE')},
+                Backend(),dict(seed_rules=[],decrement_steps=[1],max_steps_per_method=1,
+                    large_step_headroom='1/2',small_gain_fraction='0',lookahead=4,
+                    lookahead_mode='HYBRID',adaptive_hybrid=True,eligible_first_prefetch=enabled),
+                Fraction(1),lambda *args:None,8,prefetch_state=lambda:dict(capacity=4),
+                standby=lambda _,proposals:batches.append(proposals))
+        self.assertEqual(choice[0],choice[1])
+        self.assertEqual(batches[0][0]['cls'],'CHAIN')
+        self.assertEqual(batches[1][0]['cls'],'UPDATE')
+        self.assertCountEqual([(p['cls'],p['vector']) for p in batches[0]],
+                              [(p['cls'],p['vector']) for p in batches[1]])
+
 
 class WidthFloor(unittest.TestCase):
     def test_width_planner_uses_valid_model_incumbent_and_leaves_unmatched_family_open(self):

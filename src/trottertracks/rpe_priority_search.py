@@ -54,6 +54,24 @@ def settings(search):
     return s
 
 
+def standby_candidates(choice, preview, groups, *, eligible_first=False):
+    eligible=groups['UPDATE']+[p for queue in groups['_queues'] for p in queue]+groups['FINE']
+    if eligible_first:
+        ordinary=[p for p in preview if p['cls']!='CHAIN']
+        chains=[p for p in preview if p['cls']=='CHAIN']
+        alternatives=ordinary+eligible+chains
+    else:
+        alternatives=preview+eligible
+    seen={(choice['configuration_id'],choice['vector'])}
+    backlog=[]
+    for p in alternatives:
+        key=(p['configuration_id'],p['vector'])
+        if key not in seen and p['cls'] not in ('SMALL','DEFERRED'):
+            seen.add(key)
+            backlog.append(p)
+    return backlog
+
+
 def family(c, baseline):
     k = c['key']
     return (k.get('L_D'), str(k.get('formula', baseline.get('formula'))), str(k.get('delta_over_h', baseline.get('delta_over_h'))))
@@ -567,17 +585,14 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             if work_slice is not None:
                 width = min(width, work_slice-step)
             preview = order(groups, width, observe=True)
-            # Independent heads first, then the remaining already eligible
-            # moves. Future search steps and missing inputs are not synthesized.
-            alternatives = (preview + groups['UPDATE']
-                            + [p for queue in groups['_queues'] for p in queue] + groups['FINE'])
-            seen = {(choice['configuration_id'], choice['vector'])}
-            backlog = []
-            for p in alternatives:
-                key = (p['configuration_id'], p['vector'])
-                if key not in seen and p['cls'] not in ('SMALL', 'DEFERRED'):
-                    seen.add(key)
-                    backlog.append(p)
+            # The selected demand is unchanged. Independent prepared moves
+            # can use spare slots before conditional chains from prior picks.
+            eligible_first=search.get('eligible_first_prefetch') is True
+            backlog=standby_candidates(choice,preview,groups,eligible_first=eligible_first)
+            if eligible_first:
+                prefetch_metrics['standby_order']='ELIGIBLE_BEFORE_CONDITIONAL_CHAINS'
+                prefetch_metrics['latest_standby_eligible']=sum(p['cls']!='CHAIN' for p in backlog)
+                prefetch_metrics['latest_standby_conditional']=sum(p['cls']=='CHAIN' for p in backlog)
             standby(choice, backlog)
         elif prefetch is not None and science_approved and s['lookahead'] > 1 and new_calls < limit:
             # finite budgets prefetch too (rounds driven in batches); unconsumed jobs stay reusable knowledge

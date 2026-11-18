@@ -315,7 +315,8 @@ def summarize(problem, spec, canonical):
             execution.get(key) is True for key in ('compact_q3_evidence', 'parallel_dp_residual')):
         result['reviewed_pr_q3'] = {key: execution[key] for key in
             ('compact_q3_evidence', 'parallel_dp_residual', 'prefix_cache_max_bytes',
-             'prefix_checkpoint_rounds') if key in execution}
+             'prefix_checkpoint_rounds', 'prefix_selective_checkpoint_rounds',
+             'prefix_selective_window_seconds', 'profile_dp_residual') if key in execution}
     completion = spec.get('candidate_completion') or {}
     if 'PR_DF' in spec['methods'] and 'parallel_df_price_axes' in completion:
         result['parallel_df_price_axes'] = completion['parallel_df_price_axes']

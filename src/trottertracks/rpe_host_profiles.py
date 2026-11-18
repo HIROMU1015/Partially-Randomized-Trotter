@@ -14,7 +14,7 @@ REVIEWED_PR_Q3_ROUTES = {
     ('PR_PAULI', 'pauli_b_common_entry'),
     ('PR_DF', 'prdf_d2_common_entry'),
 }
-REVIEWED_PR_Q3_OPTIONS = ('compact_q3_evidence', 'parallel_dp_residual')
+PREFIX_PR_Q3_ROUTES = REVIEWED_PR_Q3_ROUTES | {('PR_DF', 'prdf_d2_split')}
 
 
 def digest(value):
@@ -24,7 +24,7 @@ def digest(value):
 def profile_core(profile):
     keys = ('host_id', 'root', 'interpreter', 'route_views', 'dp_workers',
             'prefix_cache_directory', 'runtime', 'adapter_root', 'adapter_manifest')
-    keys += ('runtime_checks', 'reviewed_pr_q3')
+    keys += ('runtime_checks', 'reviewed_pr_q3', 'selective_pr_q3')
     return {key: deepcopy(profile[key]) for key in keys if key in profile}
 
 
@@ -110,13 +110,17 @@ def select_host_profile(base, assignment):
     selected.pop('route_profiles', None)
     request = assignment['request']
     execution = request.get('execution_profile') or {}
-    if request['route']['kind'] != 'artificial' and any(
-            execution.get(option) is True for option in REVIEWED_PR_Q3_OPTIONS):
-        if ((request['method'], request['route']['kind']) not in REVIEWED_PR_Q3_ROUTES
-                or selected.get('reviewed_pr_q3') is not True
-                or not selected.get('prefix_cache_directory')
-                or not selected.get('adapter_manifest', {}).get('files', {}).get(
-                    'src/trottertracks/rpe_q3_evidence.py')):
+    route = request.get('method'), request['route']['kind']
+    if route[1] != 'artificial':
+        files = selected.get('adapter_manifest', {}).get('files', {})
+        selective = execution.get('prefix_selective_checkpoint_rounds') or execution.get('profile_dp_residual') is True
+        if selective and (route not in PREFIX_PR_Q3_ROUTES or selected.get('selective_pr_q3') is not True
+                or not selected.get('prefix_cache_directory') or not files.get('src/trottertracks/rpe_dp_prefix_reuse.py')):
+            raise ValueError('No compatible selective PR Q3 adapter and local cache for this request')
+        reviewed = (execution.get('compact_q3_evidence') is True or
+                    execution.get('parallel_dp_residual') is True and not selective)
+        if reviewed and (route not in REVIEWED_PR_Q3_ROUTES or selected.get('reviewed_pr_q3') is not True
+                or not selected.get('prefix_cache_directory') or not files.get('src/trottertracks/rpe_q3_evidence.py')):
             raise ValueError('No compatible reviewed PR Q3 adapter and local cache for this request')
     for key in ('work_dir', 'slots'):
         if key in base:
