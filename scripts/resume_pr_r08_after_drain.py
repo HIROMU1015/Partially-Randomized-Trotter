@@ -167,7 +167,8 @@ def import_inputs(plan, old_run, study):
         write(study / 'PRELAUNCH_REVIEW.json', q3)
         raise RuntimeError('Prior Q3 needs review; no scientific launch: PRELAUNCH_REVIEW.json')
     provenance = dict(run_directory=str(old_run), worktree_head=old_head,
-                      snapshots_sha256=original, code_source=plan['old_code_source'])
+                      snapshots_sha256=original, code_source=plan['old_code_source'],
+                      old_evidence_local_only=plan.get('old_evidence_local_only') is True)
     old_state = read(old_run / 'KAPPA_STATE.json')
     completed = read(old_run / 'completion/STATE.json')
     state, completion, held = reconcile(old_state, completed, provenance)
@@ -281,7 +282,8 @@ def execute(plan, study):
             git(*IDENTITY, 'add', '--sparse', '--', *old_paths, cwd=old_root)
             if git('diff', 'HEAD', '--name-only', '--', *old_paths, cwd=old_root):
                 git(*IDENTITY, 'commit', '--only', '-m', 'Preserve terminal R08 metadata before technical source handover', '--', *old_paths, cwd=old_root)
-                git('push', 'origin', plan['old_branch'], cwd=old_root)
+                if plan.get('old_evidence_local_only') is not True:
+                    git('push', 'origin', plan['old_branch'], cwd=old_root)
             run, remaining = import_inputs(plan, old_run, study)
             git(*IDENTITY, 'add', '--sparse', '--', str(study.relative_to(ROOT)))
             git(*IDENTITY, 'commit', '--only', '-m', 'Fix R08 recovery inputs after old owner drain; preserve scientific evidence', '--', str(study.relative_to(ROOT)))
