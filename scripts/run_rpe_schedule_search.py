@@ -297,6 +297,8 @@ class WidthDriver:
     requested_widths declaration.  This path never invents q/R from a width:
     family constants come from the method's existing canonical generator.
     """
+    work_conserving_search = False
+
     def __init__(self, a):
         self.a = a; self.run = a.run_dir.resolve(); self.run.mkdir(parents=True, exist_ok=True)
         self.spec = O.load_json(a.round)
@@ -312,6 +314,9 @@ class WidthDriver:
                 != 'METHOD_MINIMUM_PRIORITY_V2'
         ):
             raise ValueError('live_ready_refill requires overlapping preparation and concurrent V2 search')
+        self.work_conserving_search = self.spec.get('search_overrides', {}).get('work_conserving_search') is True
+        if self.work_conserving_search and not self.live_ready_refill:
+            raise ValueError('work_conserving_search requires live_ready_refill')
         for method,widths in self.widths.items():
             self.problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
         self.state_file = self.run/'KAPPA_STATE.json'
@@ -603,13 +608,23 @@ class WidthDriver:
                 if i<len(unknown):order.append(unknown[i])
             # Fairness is only a dispatch order, not a price estimate or veto.
             order.sort(key=lambda f:loads[f])
+            if self.work_conserving_search:
+                # Diversify the next READY supply across requested widths, while
+                # keeping the existing family and kappa order within each width.
+                by_width = {}
+                for family in order:
+                    delta = KS._frac(self.state['families'][family]['requested_delta_pf'])
+                    by_width.setdefault(delta, []).append(family)
+                from itertools import zip_longest
+                order = [family for level in zip_longest(*by_width.values()) for family in level if family is not None]
             available=max(0,limit-wave['dispatched'].get(method,0));chosen=[]
             while len(chosen)<available and any(queues.values()):
                 for family in order:
                     if queues[family]and len(chosen)<available:chosen.append(queues[family].pop(0))
             selected.extend(chosen);counts[method]=len(chosen)
             wave['dispatched'][method]=wave['dispatched'].get(method,0)+len(chosen)
-        reason='EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN'
+        reason = ('PER_DECISION_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if self.work_conserving_search
+                  else 'EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN')
         self.log(event='PREPARATION_WAVE_START',dispatch_reason=reason,per_method_limit=limit,
             selected_by_method=counts,pending_before=len(pending),deferred=len(pending)-len(selected),
             selected=[dict(method=p['method'],family=p['family'],kappa=p['kappa'])for p in selected])
@@ -752,7 +767,8 @@ class WidthDriver:
             # Give already queued Q3 work first access to the slots. Polling
             # CPU use is unnecessary. Once started, a preparation may finish.
             with condition:
-                condition.wait_for(lambda: stop_preparation.is_set() or state.failure or executor.has_spare_slot())
+                condition.wait_for(lambda: stop_preparation.is_set() or state.failure or
+                                   executor.has_spare_slot(allow_queued_speculation=self.work_conserving_search))
                 return not stop_preparation.is_set() and not state.failure
 
         def announce(method, key):

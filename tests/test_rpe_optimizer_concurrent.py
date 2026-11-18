@@ -99,6 +99,84 @@ class SchedulerTests(unittest.TestCase):
             self.assertEqual(ex.answer(props[2])['status'],'BUDGET_EXHAUSTED')
             root.finish();self.assertLessEqual(root.metrics()['launched'],2)
 
+    def test_standby_replenishes_after_worker_exit_even_while_demand_is_blocked(self):
+        problem, context, routes = fixture(['PR_DF'], configurations=4)
+        proposals = [dict(configuration_id=c['configuration_id'], vector=(1,) * 26,
+                          cost=Fraction(1), origin={}) for c in context['candidates']]
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            root = C.ConcurrentExecutor(ROOT, directory, routes, {}, problem,
+                                        max_concurrent=2, budgets={'PR_DF': 4})
+            ex = root.for_method('PR_DF')
+            demand, last = ex.job_dir(proposals[0]), ex.job_dir(proposals[-1])
+            run_adapter = O.Executor.run_adapter
+
+            def gated(view, job, rule, mode):
+                if job != demand or mode != 'execute':
+                    return run_adapter(view, job, rule, mode)
+                # Even the last standby job must launch before demand completes.
+                gate = (
+                    "from pathlib import Path; import os,sys,time\n"
+                    "end=time.monotonic()+8\n"
+                    "while not Path(sys.argv[1]).exists():\n"
+                    "    if time.monotonic()>end: sys.exit(71)\n"
+                    "    time.sleep(.01)\n"
+                    "os.execv(sys.executable,[sys.executable,'-B',*sys.argv[2:]])\n"
+                )
+                with (job / 'EXECUTE.log').open('a') as log:
+                    return subprocess.Popen([sys.executable, '-B', '-c', gate, str(last / 'LAUNCH.json'),
+                          str(view.adapter), '--request', str(job / 'REQUEST.json'), '--output', str(job), '--mode', mode],
+                          cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+
+            try:
+                with patch.object(O.Executor, 'run_adapter', gated):
+                    ex.prefetch_standby(proposals[0], proposals[1:])
+                    response = ex.answer(proposals[0])
+            finally:
+                root.finish()
+            self.assertIn(response['status'], (O.PASS, O.FAIL))
+            events = [json.loads(l) for l in (directory / 'PROGRESS.jsonl').read_text().splitlines()]
+            launched = {e['job']: e['monotonic'] for e in events if e['event'] == 'LAUNCH'}
+            exits = {e['job']: e['monotonic'] for e in events if e['event'] == 'EXIT'}
+            self.assertEqual(len(launched), 4)
+            self.assertLess(launched[last.name], exits[demand.name])
+            self.assertGreater(launched[last.name], min(exits.values()))
+            self.assertEqual(root.metrics()['peak_active'], 2)
+            self.assertGreaterEqual(sum(e['event'] == 'Q3_STANDBY_REFILL' for e in events), 2)
+            self.assertEqual(set(launched), set(exits))
+
+            resume = C.ConcurrentExecutor(ROOT, directory, routes, {}, problem,
+                                          max_concurrent=2, budgets={'PR_DF': 4})
+            try:
+                view = resume.for_method('PR_DF')
+                view.prefetch_standby(proposals[0], proposals[1:])
+                self.assertEqual(view.answer(proposals[0])['MSE_upper'], response['MSE_upper'])
+            finally:
+                resume.finish()
+            self.assertEqual(resume.metrics()['launched'], 0)
+
+    def test_ready_configuration_order_uses_measured_q3_time(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for enabled in (False, True):
+                problem, context, routes = fixture(['PR_DF'], configurations=2, steps=1)
+                problem['search'].update(rule='METHOD_MINIMUM_PRIORITY_V2', work_conserving_search=enabled)
+                slow, fast = context['candidates']
+                slow['prices'] = [Fraction(3)] * 26
+                fast['prices'] = [Fraction(4)] * 2 + [Fraction(3)] * 24
+                root = C.ConcurrentExecutor(ROOT, Path(tmp) / str(enabled), routes, {}, problem,
+                                            max_concurrent=1, budgets={'PR_DF': 1})
+                view = root.for_method('PR_DF')
+                root.state.observations['PR_DF'].extend(
+                    dict(id='receipt-' + c['configuration_id'], method='PR_DF', configuration_id=c['configuration_id'],
+                         kind='SHOT_Q3', profile=view.search_profile(c['configuration_id']), status=O.PASS,
+                         finished_at=time.monotonic() - 10, seconds=seconds)
+                    for c, seconds in ((slow, 100), (fast, 10)))
+                r = C.optimize(ROOT, problem, context=context, executor=root, max_new={'PR_DF': 1})
+                first = r['PR_DF']['trace'][0]
+                self.assertEqual(first['configuration_id'], (fast if enabled else slow)['configuration_id'])
+                self.assertEqual('order_reason' in first, enabled)
+                self.assertEqual(root.metrics()['launched'], 1)
+
     def test_completed_resume_no_duplicate_launch(self):
         with tempfile.TemporaryDirectory()as tmp:
             path=Path(tmp);first,_=run_fixture(path,True,methods=['PR_DF'],budget=2)

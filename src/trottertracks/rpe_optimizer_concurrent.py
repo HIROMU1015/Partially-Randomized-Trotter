@@ -4,7 +4,7 @@ Only the search's chosen answer is adopted. Out-of-order completions stay in
 their source-bound job directories. Finite budgets include reservations before
 launch; running scientific workers are never cancelled to discard lookahead.
 """
-from collections import Counter
+from collections import Counter, defaultdict, deque
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 import fcntl
@@ -57,7 +57,7 @@ class ConcurrentExecutor(O.Executor):
             existing[method]=sum((d/'LAUNCH.json').exists()or(d/'STARTING.json').exists()for d in base.iterdir())if base.exists()else 0
         self.state=SimpleNamespace(cv=threading.Condition(threading.RLock()),tasks={},active=0,closed=False,
             failure=None,owner_clock={},clock=0,budgets=budgets or {},approved=science_approved,existing=existing,
-            reserved=Counter(),metrics=Counter(),by_method={},pids={},driver=driver,peak_RSS_KiB=0,peak_active=0,adopted_jobs=set(),external={},monitor_stop=threading.Event())
+            reserved=Counter(),metrics=Counter(),by_method={},pids={},driver=driver,peak_RSS_KiB=0,peak_active=0,adopted_jobs=set(),observations=defaultdict(list),external={},monitor_stop=threading.Event())
         self.invocation=str(os.getpid())+'-'+str(time.time_ns())
         self.log(event='EXECUTOR_START',capacity=self.capacity,dp_workers=dp_workers)
         for method in self.routes:
@@ -156,6 +156,53 @@ class ConcurrentExecutor(O.Executor):
                 if same_scope and t.status=='QUEUED'and not t.demand and t.job not in desired:self._cancel(t)
         for i,p in enumerate(proposals):self._enqueue(p,demand=(i==0))
 
+    def prefetch_standby(self, choice, proposals):
+        """Reserve the demand first and retain the rest as unreserved alternatives."""
+        self.standby = deque(proposals)
+        with self.state.cv:
+            speculative = [t for t in self.state.tasks.values() if t.view.method == self.method
+                           and t.status == 'QUEUED' and not t.demand]
+            demand = self.job_dir(choice) if choice is not None else None
+            if speculative:
+                desired = {self.job_dir(p) for p in self.standby}
+                for t in speculative:
+                    if t.job not in desired and t.job != demand:
+                        self._cancel(t)
+            if choice is not None and self._enqueue(choice, demand=True) is False:
+                # Queued reservations can be reassigned to demand. Running jobs retain theirs.
+                t = next((t for t in reversed(speculative) if t.status == 'QUEUED'
+                          and not t.demand and t.job != demand), None)
+                if t is not None:
+                    self._cancel(t)
+                    self._enqueue(choice, demand=True)
+            self._fill_standby()
+
+    def _standby_can_fill(self):
+        s = self.state
+        return (getattr(self, 'standby', None) and not s.failure and not s.closed and
+                s.active + sum(t.status == 'QUEUED' for t in s.tasks.values()) < self.capacity + 1)
+
+    def _fill_standby(self):
+        # Keep one queued job ahead of dispatch. Advance the cursor on every
+        # duplicate/hold so completion notifications do not revisit the same work.
+        before = self.state.metrics['submitted']
+        while self._standby_can_fill():
+            if self._enqueue(self.standby.popleft()) is False:
+                self.standby.clear()
+                break
+        added = self.state.metrics['submitted'] - before
+        if added:
+            self.log(event='Q3_STANDBY_REFILL', added=added, remaining=len(self.standby))
+
+    def search_profile(self, configuration_id):
+        route = self.route(configuration_id) or {}
+        return (route.get('kind'), route.get('interpreter'), route.get('view_commit'),
+                self.dp_workers, self.prefix_cache_directory)
+
+    def search_observations(self):
+        with self.state.cv:
+            return list(self.state.observations.get(self.method, ()))
+
     def _cancel(self,t):
         t.status='CANCELLED';self.state.reserved[t.view.method]-=1
         self.state.metrics['queued_cancelled']+=1;t.event.set()
@@ -200,6 +247,7 @@ class ConcurrentExecutor(O.Executor):
 
     def _start(self,t):
         s=self.state;v=t.view;job=t.job;start=time.time();proc=None
+        t.started_monotonic = time.monotonic()
         try:
             job.mkdir(parents=True,exist_ok=True)
             if not(job/'REQUEST.json').exists():_write(job/'REQUEST.json',v.request(t.proposal,job,t.rule))
@@ -237,6 +285,7 @@ class ConcurrentExecutor(O.Executor):
         s=self.state
         with s.cv:
             t.status='DONE';s.active-=1;s.pids.pop(t.job,None);s.metrics['finished']+=1
+            t.finished_at = time.monotonic()
             try:t.view.log(event='EXIT',job=t.job.name,returncode=code,error=t.error,wall_seconds=time.time()-start)
             except OSError as exc:
                 t.error=repr(exc);self._stop_after_failure(exc)
@@ -260,10 +309,11 @@ class ConcurrentExecutor(O.Executor):
             with s.cv:s.peak_RSS_KiB=max(s.peak_RSS_KiB,rss)
             s.monitor_stop.wait(.1)
 
-    def has_spare_slot(self):
+    def has_spare_slot(self, *, allow_queued_speculation=False):
         with self.state.cv:
             return (not self.state.failure and self.state.active < self.capacity
-                    and not any(t.status == 'QUEUED' for t in self.state.tasks.values()))
+                    and not any(t.status == 'QUEUED' and (t.demand or not allow_queued_speculation)
+                                for t in self.state.tasks.values()))
 
     def _wait_for_task(self, task):
         """Wake the selector for fresh work only when the queue can use it."""
@@ -271,13 +321,21 @@ class ConcurrentExecutor(O.Executor):
         ready_pending = getattr(self, 'ready_pending', None)
         self.log(event='DEPENDENCY_WAIT_START', job=task.job.name)
         try:
-            if ready_pending is None:
+            if ready_pending is None and not getattr(self, 'standby', None):
                 task.event.wait()
                 return True
+
+            def fresh_ready():
+                return ready_pending is not None and ready_pending() and self.has_spare_slot()
+
             with s.cv:
-                s.cv.wait_for(lambda: task.event.is_set() or (ready_pending() and self.has_spare_slot()))
-                if task.event.is_set():
-                    return True
+                while True:
+                    s.cv.wait_for(lambda: task.event.is_set() or fresh_ready() or self._standby_can_fill())
+                    if task.event.is_set():
+                        return True
+                    if fresh_ready():
+                        break
+                    self._fill_standby()
             self.log(event='Q3_WAIT_YIELD_FOR_READY', job=task.job.name)
             return False
         finally:
@@ -329,6 +387,13 @@ class ConcurrentExecutor(O.Executor):
                 if first:
                     s.adopted_jobs.add(job);s.metrics['adopted']+=1;s.by_method.setdefault(self.method,Counter())['adopted']+=1
                     if task and getattr(task,'speculative',False):s.metrics['speculative_adopted']+=1
+                    if (getattr(self, 'standby', None) is not None and task and task.status == 'DONE'
+                        and answer['status'] in (O.PASS, O.FAIL) and task.started):
+                        cid = proposal['configuration_id']
+                        s.observations[self.method].append(dict(
+                            id=job.name, kind='SHOT_Q3', method=self.method, configuration_id=cid,
+                            profile=self.search_profile(cid), status=answer['status'],
+                            finished_at=task.finished_at, seconds=task.finished_at-task.started_monotonic))
             if first:self.log(event='ADOPT',job=job.name,configuration=proposal['configuration_id'],status=answer['status'])
         return answer
 

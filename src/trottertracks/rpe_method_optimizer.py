@@ -1419,13 +1419,24 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                 ex_log = executor.for_method(name)
                 log = lambda row, ex_log=ex_log: ex_log.log(event='SEARCH_ADOPT' if getattr(ex_log, 'supports_nonblocking_prefetch', False) else 'ADOPT', configuration=row['configuration_id'][:8], cls=row['cls'],
                                                            status=row['status'], cost=show(row['cost']),
-                                                           method_min=row['method_min_after'] and show(row['method_min_after']))
+                                                           method_min=row['method_min_after'] and show(row['method_min_after']),
+                                                           **({'order_reason': row['order_reason']} if 'order_reason' in row else {}))
+            standby = None
+            if search.get('work_conserving_search') is True:
+                if executor is None or not getattr(ex, 'prefetch_standby', None):
+                    raise ValueError('work_conserving_search requires the concurrent Q3 executor')
+                def standby(choice, proposals):
+                    def saved(p):
+                        return (p['configuration_id'], p['vector']) in table
+                    ex.prefetch_standby(None if saved(choice) else choice, [p for p in proposals if not saved(p)])
             result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                     baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),
                                     routes=problem.get('q3_routes'), spent=spent, free=free, science_approved=science_approved,
                                     prefetch=prefetch, on_missing=search.get('on_missing', 'STOP'), facts=context.get('facts'), log=log,
                                     prefetch_state=getattr(ex, 'prefetch_state', None) if executor is not None else None,
-                                    refresh_ready=refresh_ready)
+                                    refresh_ready=refresh_ready, standby=standby,
+                                    search_observations=ex.search_observations if standby is not None else None,
+                                    search_profile=ex.search_profile if standby is not None else None)
             prep = (problem['methods'][name].get('generation') or {}).get('preparation')
             if prep and search.get('prepare_kappa_proposals'):
                 result['input_requests'] = prepare_kappa_requests(root, problem, context, name, prep, result['input_requests'])

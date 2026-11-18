@@ -12,12 +12,12 @@ import test_pr_width_overlap as overlap
 
 
 class LiveReadyRefillTests(unittest.TestCase):
-    def run_fixture(self, directory, enabled, idle_method=None):
+    def run_fixture(self, directory, enabled, idle_method=None, standby=False):
         directory = Path(directory)
         args, _, _ = overlap.setup(directory, True)
         spec = overlap.E.O.load_json(directory / 'ROUND.json')
         spec['live_ready_refill'] = enabled
-        spec['search_overrides'].update(lookahead=4, lookahead_mode='HYBRID')
+        spec['search_overrides'].update(lookahead=4, lookahead_mode='HYBRID', work_conserving_search=standby)
         spec['executor']['max_concurrent_jobs'] = 4
         overlap.F.write(directory / 'ROUND.json', spec)
         base, _ = overlap.classes(True)
@@ -136,6 +136,15 @@ os.execv(sys.executable, [sys.executable, '-B', *sys.argv[3:]])
                          {'PR_DF', 'PR_PAULI'})
         self.assertEqual(live_totals, base_totals)
         self.assertTrue(all(first == resumed and first is not None for _, first, resumed in live_totals))
+
+    def test_work_conserving_mode_through_normal_width_entry(self):
+        with tempfile.TemporaryDirectory(prefix='pr-standby-ready-') as tmp:
+            offsets, events, totals = self.run_fixture(tmp, True, standby=True)
+            stages = overlap.records(Path(tmp) / 'run' / 'DRIVER_PROGRESS.jsonl')
+        self.assertTrue(all(x < 0 for x in offsets))
+        self.assertTrue(all(before == after for _, before, after in totals))
+        self.assertTrue(any(e.get('dispatch_reason') == 'PER_DECISION_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN'
+                            for e in stages))
 
     def test_idle_method_refills_slots_while_peer_is_still_running(self):
         with tempfile.TemporaryDirectory(prefix='pr-idle-ready-') as tmp:

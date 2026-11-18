@@ -163,7 +163,7 @@ class ConfigState:
 
 def run_priority(name, candidates, knowledge, backend, search, threshold, generate, max_new, *, baseline=None, routes=None,
                  spent=0, free=None, science_approved=True, prefetch=None, on_missing='STOP', facts=None, log=None,
-                 prefetch_state=None, refresh_ready=None):
+                 prefetch_state=None, refresh_ready=None, standby=None, search_observations=None, search_profile=None):
     s = settings(search);baseline = baseline or {}
     ready = [c for c in candidates if c['ready'] and c['configuration_id']]
     states = {c['configuration_id']: ConfigState(c) for c in ready}
@@ -420,6 +420,40 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             frontiers = pending_frontiers
         return extra
 
+    def reorder_updates(updates, current_best):
+        # UPDATE candidates within one configuration share the timing/pass
+        # observations. Rank its cheapest eligible proposal once.
+        if current_best is None or search_observations is None or not updates:
+            return updates
+        if free is not None and free(updates[0]):
+            return updates  # use an already owned answer before creating new work
+        observations = search_observations()
+        if not observations:
+            return updates
+        from .rpe_candidate_ordering import Selector
+
+        heads = {}
+        for p in updates:
+            cid = p['configuration_id']
+            if cid not in heads and (free is None or not free(p)):
+                heads[cid] = p
+        if len(heads) < 2:
+            return updates
+        actions = []
+        for rank, (cid, p) in enumerate(heads.items()):
+            parent = states[cid].best
+            actions.append(dict(id=cid, a_rank=[rank], kind='SHOT_Q3', method=name,
+                                configuration_id=cid, cost=p['cost'], profile=search_profile(cid),
+                                parent_MSE_upper=None if parent is None else parent[2].get('MSE_upper'),
+                                preparation=dict(signal_reuse=True, price_reuse=True, requires_calibration=False)))
+        picked = Selector('IMPROVEMENT_PER_TIME_V1').choose(actions, method_best=current_best,
+                                                          tau=threshold, now=time.monotonic(),
+                                                          observations=observations)
+        if picked['trace']['reason'] != 'IMMEDIATE_SAVING_X_EMPIRICAL_PASS_PER_ESTIMATED_TIME':
+            return updates
+        choice = heads[picked['chosen']['id']]
+        return [dict(choice, order_reason=picked['trace']['reason'])] + [p for p in updates if p is not choice]
+
     while step < search['max_steps_per_method']:
         if refresh_ready is not None:
             added, saved = refresh_ready()
@@ -434,6 +468,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                 for state in states.values():
                     state.dirty = True
         groups, M = classify()
+        if standby is not None:
+            groups['UPDATE'] = reorder_updates(groups['UPDATE'], M)
         if groups['UPDATE'] and not (groups['EXPLORE'] and since_explore >= s['explore_every'] - 1):
             choice = groups['UPDATE'][0]
         elif groups['EXPLORE']:
@@ -450,7 +486,22 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             stop = 'NO_CANDIDATE_LEFT_IN_RANGE' if M is not None else 'NO_FEASIBLE_POINT_IN_RANGE'
             break
         allow = new_calls < limit;is_free = free is not None and free(choice)
-        if prefetch is not None and science_approved and s['lookahead'] > 1 and new_calls < limit:
+        if standby is not None and science_approved and new_calls < limit:
+            width = int(prefetch_state().get('capacity') or s['lookahead']) + 1
+            preview = order(groups, width, observe=True)
+            # Independent heads first, then the remaining already eligible
+            # moves. Future search steps and missing inputs are not synthesized.
+            alternatives = (preview + groups['UPDATE']
+                            + [p for queue in groups['_queues'] for p in queue] + groups['FINE'])
+            seen = {(choice['configuration_id'], choice['vector'])}
+            backlog = []
+            for p in alternatives:
+                key = (p['configuration_id'], p['vector'])
+                if key not in seen and p['cls'] not in ('SMALL', 'DEFERRED'):
+                    seen.add(key)
+                    backlog.append(p)
+            standby(choice, backlog)
+        elif prefetch is not None and science_approved and s['lookahead'] > 1 and new_calls < limit:
             # finite budgets prefetch too (rounds driven in batches); unconsumed jobs stay reusable knowledge
             width = s['lookahead']
             if s.get('adaptive_hybrid') and s.get('lookahead_mode') == 'HYBRID' and prefetch_state is not None:
@@ -512,6 +563,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                    configuration_best_before=before_cfg, configuration_best_after=None if st.best is None else st.best[0],
                    improved=after is not None and (M is None or after[0] < M),
                    improved_configuration=st.best is not None and (before_cfg is None or st.best[0] < before_cfg))
+        if 'order_reason' in choice:
+            row['order_reason'] = choice['order_reason']
         trace.append(row)
         if log is not None:
             log(row)

@@ -14,6 +14,10 @@ SOURCE314524a91は既存concurrent queue/Completionを保ち、method/phase例�
 
 R08への再適用は、旧ownerのlock解放後にterminal metadata/key/holdを移し、同じ通常queue/DP/cacheへ戻す。走行中SOURCEを変えず、元cycle上限も維持する。人工4件・native4件、保存H4 metadataで確認。切替待機と修正版稼働を明示的に区別する。[R08再開入口](research/h4_pr_r08_recovery_20261117/HANDOFF.md)。
 
+## PR探索の待機候補補充と評価順（2026-11-18）
+
+通常の複数幅入口で `work_conserving_search` を明示採用すると、Q3の優先予約、worker終了時の待機候補補充、要求幅を交互に選ぶ準備、完了観測を用いたREADY構成間の評価順を使う。既存の有限予算・精度・再開検査を保持する。人工4件・2枠で優先Q3完了前の継続投入と再開0起動を確認した。実H4・分散版の速度は未測定。[適用と人工検収](research/pr_live_ready_refill_20261118/HANDOFF.md#待機候補の補充と評価順)。
+
 ## PR探索の準備完了後の保存Q3照合（2026-11-18）
 
 [`Executor.prior_records`](../src/trottertracks/rpe_method_optimizer.py) は、準備済み候補ごとに繰り返す旧Q3照合で、未変更の対象外REQUESTを再読込しない。executor内にファイルのinode・サイズ・時刻とconfiguration IDを保持する。対象となるREQUEST、route、OUTCOMEは従来の検査で受け入れる。新しいreceiptや変更されたREQUESTは再確認する。通常入口の `PRIOR_READY_INGEST_END` でREADY取込みの所要時間を観測できる。
