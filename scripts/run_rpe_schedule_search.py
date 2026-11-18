@@ -362,6 +362,9 @@ class WidthDriver:
                 for stage in ('signal','compile','audit')}
         if self.live_ready_refill:
             current['round_scope']['live_ready_refill'] = True
+        pf_candidates=(self.spec.get('pf_completion') or self.problem.get('pf_completion') or {}).get('max_candidates',1)
+        if pf_candidates!=1:
+            current['round_scope']['pf_parallel_candidates']=pf_candidates
         path=self.run/'FIXED_INPUTS.json'
         if path.exists():
             if O.load_json(path)!=current:
@@ -770,21 +773,23 @@ class WidthDriver:
         if announce_ready is None:
             prepare_points(selected)
         elif selected:
-            # Pauli publishes through one owned workspace. DF stages keep
-            # per-candidate outputs and already lock identical calibrations.
-            # Serialize one split so it can reuse its own descriptor and signals.
+            # Keep one split in order to reuse its descriptor and signals.
+            # Pauli also needs the distributed provider's isolated attempts.
             from concurrent.futures import ThreadPoolExecutor, as_completed
             from contextlib import ExitStack
+            parallel_methods={'PR_DF'}
+            if getattr(comp,'parallel_pauli_preparation',lambda:False)():
+                parallel_methods.add('PR_PAULI')
             groups = {}
             for point in selected:
                 method = point['method']
-                split = self.state['families'][point['family']]['L_D'] if method=='PR_DF' else None
+                split = self.state['families'][point['family']]['L_D'] if method in parallel_methods else None
                 groups.setdefault(method, {}).setdefault(split, []).append(point)
             parallel = int((self.spec.get('candidate_completion') or {}).get('parallel', 1))
             with ExitStack() as stack:
                 tasks = []
                 for method, splits in groups.items():
-                    workers = max(1, min(parallel, len(splits))) if method=='PR_DF' else 1
+                    workers = max(1, min(parallel, len(splits))) if method in parallel_methods else 1
                     pool = stack.enter_context(ThreadPoolExecutor(max_workers=workers))
                     tasks.extend(pool.submit(prepare_points, points) for points in splits.values())
                 try:
@@ -966,7 +971,9 @@ class WidthDriver:
             problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
         context=self.context(problem);comp=self.completion_api()
         routes=K.CLI.merged_routes(problem,self.spec)
-        pf_enabled=getattr(self,'rule_stop',False) and 'TRUNCATED_PF' in self.methods
+        pf_settings=self.spec.get('pf_completion') or self.problem.get('pf_completion') or {}
+        pf_enabled=getattr(self,'rule_stop',False) and ('TRUNCATED_PF' in self.methods or
+            'FULL_PF' in self.methods and bool(pf_settings))
         if pf_enabled:
             from trottertracks import pf_optimizer_connection as PF
             routes=PF.registry_routes(routes,context['pf_evidence_registry'])
@@ -1049,7 +1056,8 @@ class WidthDriver:
                     from trottertracks import pf_candidate_selection
                     from trottertracks.rpe_preparation_round import snapshot_context,_merge_pf
                     pf_future=preparation_pool.submit(pf_candidate_selection.prepare_next,ROOT,problem,
-                        snapshot_context(context),active_spec,self.run,deepcopy(routes),runtime)
+                        snapshot_context(context),active_spec,self.run,deepcopy(routes),runtime,
+                        stop_requested=stop_preparation.is_set)
                 def ready_keys():
                     return {p['completion']['key'] for p in self.state['points']
                             if p['status'] in ('REGISTERED', 'EVALUATED') and p.get('completion', {}).get('key')}

@@ -228,10 +228,11 @@ class DistributedPreparationBridge:
     def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         namespace='refs/rpe-preparation/' + digest(str(self.executor.run_dir))[:16]
-        for value in sorted({row['commit'] for row in input_hashes}):
-            commit=subprocess.check_output(['git','rev-parse',value+'^{commit}'],cwd=root,text=True).strip()
-            subprocess.run(['git','update-ref',namespace+'/input-'+commit,commit],cwd=root,check=True)
-        imported=subprocess.check_output(['git','for-each-ref','--format=%(refname)',namespace],cwd=root,text=True).splitlines()
+        with self.lock:
+            for value in sorted({row['commit'] for row in input_hashes}):
+                commit=subprocess.check_output(['git','rev-parse',value+'^{commit}'],cwd=root,text=True).strip()
+                subprocess.run(['git','update-ref',namespace+'/input-'+commit,commit],cwd=root,check=True)
+            imported=subprocess.check_output(['git','for-each-ref','--format=%(refname)',namespace],cwd=root,text=True).splitlines()
         if head == source and not imported:
             return []
         if subprocess.check_output(['git','rev-list','--count','HEAD',*imported,'^'+source],cwd=root,text=True).strip()=='0':
@@ -250,7 +251,8 @@ class DistributedPreparationBridge:
                 tip=subprocess.check_output(args+['-m','Make fixed preparation inputs reachable from the tracked workspace'],
                     cwd=root,text=True,env=dict(os.environ,GIT_AUTHOR_DATE=date,GIT_COMMITTER_DATE=date)).strip()
                 endpoint=namespace+'/workspace-'+tip
-                subprocess.run(['git','update-ref',endpoint,tip],cwd=root,check=True)
+                with self.lock:
+                    subprocess.run(['git','update-ref',endpoint,tip],cwd=root,check=True)
                 heads=[endpoint]
         # Include the original provider branch even if its publication history
         # diverged. Git bundle prerequisites are checked by the destination;
@@ -344,7 +346,9 @@ class DistributedPreparationBridge:
             if expected != script.read_bytes():
                 raise ValueError('Preparation leaf script differs from its declared SOURCE')
             for name in ('src/trottertracks/rpe_preparation_paths.py',
-                         'scripts/run_pr_pauli_candidate_signals.py'):
+                         'scripts/run_pr_pauli_candidate_signals.py',
+                         *(['src/trottertracks/rpe_saved_signal_index.py']
+                           if script.name=='run_pr_pauli_candidate_signals.py' else [])):
                 item=root/name
                 if item.is_file():
                     raw=subprocess.check_output(['git','show',source+':'+name],cwd=root)
@@ -554,11 +558,12 @@ class DistributedPreparationBridge:
             # from an owned provider clone. Both must resolve the original
             # returned commit; neither working HEAD is changed.
             for repository in dict.fromkeys([destination,self.root]):
-                subprocess.run(['git', 'fetch', '--no-tags', str(path), bundle.get('ref', 'HEAD')], cwd=repository,
-                               check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-                tip=subprocess.check_output(['git','rev-parse','FETCH_HEAD'],cwd=repository,text=True).strip()
                 namespace='refs/rpe-preparation/'+digest(str(self.executor.run_dir))[:16]
-                subprocess.run(['git','update-ref',namespace+'/'+artifacts[bundle['path']],tip],cwd=repository,check=True)
+                ref=namespace+'/'+artifacts[bundle['path']]
+                with self.lock:
+                    subprocess.run(['git', 'fetch', '--no-tags', '--no-write-fetch-head', str(path),
+                                    bundle.get('ref', 'HEAD')+':'+ref], cwd=repository,
+                                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
         private = next((old for old,value in request['preparation'].get('path_bindings',{}).items()if value=='@WORK@/private'),None)
         if private:workspaces['private']=Path(private)
         for name, sha in artifacts.items():

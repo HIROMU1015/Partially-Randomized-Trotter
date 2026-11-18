@@ -169,10 +169,13 @@ R08で過去に `df-plan` が保留した3件の保存入力を、従来の固�
 | Full PF、B0I、PR-Pauli、PR-DF | [共通executor](../scripts/run_rpe_method_optimizer.py) が `prior_run_dirs` のQ3を方式別のローカルSQLiteに索引化する。候補の物理ID・route・評価契約・保存ファイルの変更時は再照合し、保留を引き継ぐ。総費用は現在の単価で求める。幅探索のサイクル末の全完了点照合でも同じ索引を使う。比較用に `executor.prior_history_cache: false` で従来経路を選べる。 |
 | PR-DF | [信号準備](../scripts/pr_candidate_services.py) の `df-plan`、`df-stage`、`df-bundle` で、固定SOURCEとdescriptorで検証済みのpacket索引を共有する。packet、構成、rawを完全なcommit参照で固定できるものが対象。追加packetは個別に検証し、同じ物理roundに異なる証拠があれば従来どおり保留する。 |
 | PR-DF | [候補準備](../src/trottertracks/pr_candidate_completion.py) では、価格の出所選択待ち、または追加根拠のない外挿保留が先に分かれば、未着手の信号取得を保留する。価格登録の変更後は同じ構成から再開可能。live-ready経路では `candidate_completion.parallel` の既存設定を使って異なる分割を並行準備し、同一分割内は順番を保つ。科学枠・同一較正のlock・着手済みstageの回収は既存経路に従う。 |
+| PR-Pauli | [固定信号入口のlauncher](../scripts/run_pr_pauli_candidate_signals.py) は、元の検証器で確認した固定packetの物理索引をplan・execute・assembleで共有する。packetの追加分だけ元の検証器を呼び、先着順と元のcarrier・kernel照合を保つ。出所選択待ちの価格を検出した候補は未着手の信号を保留し、価格登録の変更後に同じ構成へ戻る。分散live-readyでは `candidate_completion.parallel` の設定内で、別の `L_D` の信号・価格を独立worker領域で並行準備する。共有のP0準備と同一分割内の候補は順番を保つ。 |
+| Full PF、B0I | [分散PF準備](../src/trottertracks/pf_distributed_preparation.py) は元のproviderの保存信号索引を事前照合と計画で共有する。選んだ元の信号は従来の結合・数値gateを通す。片軸だけの保存で現行callerが取得不能、または較正2点とholdoutを選べない場合は信号投入前に保留する。分散自動補完は `pf_completion.max_candidates` の範囲で候補別に所有cloneを使う。上限の既定は1。同じ方式・prefix・公式の幅違いは同時に投入せず、元のsignal・compile・audit科学枠を使う。 |
 
-PR-Pauliの候補間では共有worktreeへの書込を直列化する。Full PFとB0Iの自動補完は既存の有限候補数を守り、独立した信号・価格の並行処理を使う。新しい索引だけが置かれる `cache/prior-q3` と `cache/df-saved-index` は再生成可能でGit管理外。DP prefix-cacheの境界はこの変更の対象外。
+ローカルのPR-Pauli候補間は共有worktreeへの書込を直列化する。PFは同一候補内の信号と価格の並行処理も使う。索引は再生成可能で、`cache/prior-q3`、`cache/df-saved-index`、`cache/pf-saved-signal-index` とPauli作業領域のGit内部にだけ置く。分散側へ版を適用する場合はcontrollerとworkerのSOURCEをそろえる。
 
 人工・回帰検証で、[4方式の履歴再利用と保留](../tests/test_rpe_plan_history_cache.py)、[packet追加時の再検証と衝突検出](../tests/test_pr_saved_quote_resume.py)、[価格変更時の再開](../tests/test_pr_width_completion.py)、[分割間並行と同一分割の順序](../tests/test_pr_multiwidth_launch_contracts.py) を確認した。実H4の速度倍率は未測定。
+PR-PauliとPFの拡張では、[通常launcherとPFメタデータ入口の索引再利用](../tests/test_saved_preparation_signal_index.py)、[独立PF候補の並行・保留・再開](../tests/test_rpe_preparation_round.py)、[再開時の取得枠固定](../tests/test_rpe_preparation_budgets.py) を人工検証した。追加の実H4信号、compile、Q3は0件。
 
 ## PR-Pauli広域schedule探索：粗い探索の優先・HYBRID並列・価格下界による打ち切り（B2、2026-11-16）
 

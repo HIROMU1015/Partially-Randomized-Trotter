@@ -195,6 +195,32 @@ class WidthCompletionTests(unittest.TestCase):
                 self.assertEqual(signals.call_args.kwargs['plan']['rounds'],[dict(decision='REQUEST',m=4)])
                 price.assert_called_once()
 
+    def test_pauli_waits_on_confirmed_price_hold_and_resumes_from_its_configuration(self):
+        reader,cfg,_,_=pauli_fixture();enrich(cfg)
+        request=dict(method='PR_PAULI',design=dict(L_D=3,formula='2nd',delta_pf=.2,kappa='2',K=2))
+        hold=missing_quote(cfg)
+        hold['rows'][0]['needs']=dict(reasons=[C.PRICE_SOURCE_CONFLICT],entry_ids=['a','b'])
+        ready=deepcopy(hold);ready['complete']=True
+        for row in ready['rows']:row['unit_price_RZ']=exact(2)
+        with tempfile.TemporaryDirectory() as tmp, patch.object(C,'ROOT',Path(tmp)):
+            c,publisher=self.setup_completion(Path(tmp),reader)
+            signal=dict(packet_source=reader.add('PACKET.json',dict(status='ARTIFICIAL_COMPLETE')))
+            with patch.object(C,'value',side_effect=reader.read), patch.object(C,'publish',side_effect=publisher), \
+                 patch.object(c,'pauli_configuration',return_value=(cfg,{})) as configuration, \
+                 patch.object(c,'initial_quote',side_effect=[hold,ready]), patch.object(c,'price',return_value=ready) as price, \
+                 patch.object(c,'pauli_signals',return_value=signal) as signals, \
+                 patch.object(c,'service',return_value=dict(binding_id='BIND',total_configuration_id='TOTAL')) as service:
+                held=c.complete(request)
+                self.assertEqual(held['status'],'WAITING_INPUTS')
+                self.assertEqual(c.price_deferred_keys(),{held['key']})
+                self.assertTrue(c.complete(request)['resumed'])
+                signals.assert_not_called();price.assert_not_called();service.assert_not_called()
+                C.put(c.registry,dict(entries=[],revision='new admissible price'))
+                accepted=c.complete(request)
+                self.assertEqual(accepted['status'],'READY_FOR_SEARCH',accepted)
+                self.assertEqual(configuration.call_args.args[0]['configuration'],held['configuration'])
+                signals.assert_called_once();price.assert_called_once()
+
     def test_df_direct_group_does_not_expand_to_other_rounds(self):
         reader,cfg,imp,package=df_direct_fixture();enrich(cfg)
         reader.docs['ARTIFICIAL','CONFIG.json']=deepcopy(cfg)

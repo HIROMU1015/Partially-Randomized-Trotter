@@ -8,12 +8,37 @@ import argparse
 import importlib.util
 import json
 import resource
+import runpy
 import shutil
 import subprocess
 import sys
 import time
 from copy import deepcopy
 from pathlib import Path
+
+
+def cache_mean_pool(root, directory):
+    """Reuse the fixed PF provider's saved-round locator index across planners."""
+    from trottertracks import pf_evidence_preparation as E
+    if subprocess.run(['git','diff','--quiet','HEAD','--','src','scripts'],cwd=root).returncode != 0:
+        return
+    trees=subprocess.check_output(['git','rev-parse','HEAD:src','HEAD:scripts'],cwd=root,text=True).splitlines()
+    helper=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_saved_signal_index.py'
+    functions=runpy.run_path(str(helper))
+    load_or_build,fixed_locator=functions['load_or_build'],functions['fixed_locator']
+    original=E.mean_pool
+
+    def pool(root):
+        def build():
+            # make_plan reads the locator. The fixed saved_record and bind_mean
+            # still validate the selected original numerical row.
+            rows=[[key,[dict(source=hit['source']) for hit in hits]]
+                  for key,hits in original(root).items()]
+            return rows,all(fixed_locator(hit['source']) for _,hits in rows for hit in hits)
+
+        return {tuple(key):hits for key,hits in load_or_build(directory,['pf-mean-pool-v1',trees],build)}
+
+    E.mean_pool=pool
 
 
 def load_provider(root):
@@ -145,8 +170,13 @@ def run(provider,request):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--provider-root',type=Path,required=True);p.add_argument('--input',type=Path,required=True)
-    p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+    p.add_argument('--output',type=Path,required=True);p.add_argument('--plan-signal-index',type=Path);a=p.parse_args()
     provider=load_provider(a.provider_root);request=load(a.input)
+    if a.plan_signal_index is not None:
+        cache_mean_pool(a.provider_root,a.plan_signal_index)
+        sys.argv=[str(a.provider_root/'scripts/prepare_pf_candidate.py'),'--request',str(a.input),
+                  '--output',str(a.output),'--mode','plan']
+        return provider.main()
     result=run(provider,request);write(a.output,result)
     return 0
 

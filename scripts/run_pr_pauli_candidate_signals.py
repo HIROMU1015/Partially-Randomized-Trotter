@@ -84,8 +84,31 @@ def live(marker,run):
     except OSError:return False
 
 
+_CACHED_ENTRY = '''
+from functools import partial
+from pathlib import Path
+import runpy
+import sys
+from types import SimpleNamespace
+
+helper, directory, source, runner, *arguments = sys.argv[1:]
+root = Path(runner).resolve().parents[1]
+sys.path[:0] = [str(root/'src'), str(root/'scripts')]
+from trottertracks import pauli_signal_entry as entry
+index = runpy.run_path(helper)['pauli_index']
+fixed = SimpleNamespace(saved_index=entry.saved_index, read_ref=entry.read_ref)
+entry.saved_index = partial(index, fixed, directory, [source, entry.S3.P1_KERNEL, entry.KERNEL_FILES])
+sys.argv = [runner, *arguments]
+runpy.run_path(runner, run_name='__main__')
+'''
+
+
 def entry(workspace,interpreter,arguments,log,marker=None):
-    cmd=[interpreter,'-B',str(workspace/'scripts/run_pauli_signal_entry.py'),*arguments]
+    helper=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_saved_signal_index.py'
+    cache=Path(git(workspace,'rev-parse','--git-path','rpe-pauli-signal-index'))
+    if not cache.is_absolute():cache=workspace/cache
+    cmd=[interpreter,'-B','-c',_CACHED_ENTRY,str(helper),str(cache),ENTRY_SOURCE,
+         str(workspace/'scripts/run_pauli_signal_entry.py'),*arguments]
     if marker is not None:write(marker,dict(status='STARTING',UTC=utc(),command=cmd,automatic_retry=False))
     start=time.monotonic()
     with log.open('a')as stream:

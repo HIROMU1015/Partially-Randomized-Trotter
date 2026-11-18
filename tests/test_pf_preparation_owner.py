@@ -20,7 +20,9 @@ class OriginalPFOwner(unittest.TestCase):
                 "def preflight(plan,out):(out/'PROBED.json').write_text('{}')\n")
             package=root/'src/trottertracks';package.mkdir(parents=True)
             (package/'__init__.py').write_text('')
-            (package/'pf_evidence_preparation.py').write_text('def make_plan(root,cfg,source):return {"ARTIFICIAL":True}\n')
+            plan=('raise ValueError("One saved axis only: resolve per-axis native execution before compiling")'
+                  if mode=='price' else 'return {"ARTIFICIAL":True}')
+            (package/'pf_evidence_preparation.py').write_text('def make_plan(root,cfg,source):'+plan+'\n')
             folder=root/'study/selected/C';folder.mkdir(parents=True)
             original=None
             if mode=='partial':original=folder/'signal_run01';original.mkdir();original=original/'STATUS.json';original.write_text('{"status":"COMPLETE_THIRTEEN_ROUNDS"}')
@@ -44,6 +46,11 @@ class OriginalPFOwner(unittest.TestCase):
     def test_original_completed_receipt_reused_and_clear_scope_preflighted(self):
         self.assertEqual(self.check('complete')['status'],'REUSE_COMPLETE_ORIGINAL_OWNER')
         self.assertEqual(self.check('clear')['status'],'ORIGINAL_OWNER_PREFLIGHT_PASS')
+
+    def test_price_incompatibility_is_recorded_before_signal_dispatch(self):
+        row=self.check('price')
+        self.assertEqual(row['status'],'PRICE_EVIDENCE_REQUIRED')
+        self.assertTrue(row['signal_deferred_for_price'])
 
 
 if __name__=='__main__':unittest.main()

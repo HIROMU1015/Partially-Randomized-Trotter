@@ -271,6 +271,12 @@ class Completion:
         self.stage_executor=runtime
         return self
 
+    def parallel_pauli_preparation(self):
+        runtime=getattr(self,'stage_executor',None)
+        handles=getattr(runtime,'handles',None)
+        return handles is not None and all(handles(stage) for stage in
+                                          ('PAULI_SIGNALS','PAULI_COMPILE','PAULI_AUDIT'))
+
     def shared_preparation_lock(self,identity):
         """One producer for an exact physical contract or calibration group."""
         token=key(dict(source=self.source,identity=identity))
@@ -440,7 +446,9 @@ class Completion:
         physical_guard=None
         try:
             if request.get('selection_error'):raise Held('B2_SELECTION_NORMALIZATION:'+request['selection_error'])
-            if request['method']=='PR_PAULI':config,prepared=self.pauli_configuration(request,d)
+            if request['method']=='PR_PAULI':
+                pauli_request=dict(request,configuration=rec['deferred_configuration']) if rec.get('deferred_configuration') else request
+                config,prepared=self.pauli_configuration(pauli_request,d)
             elif rec.get('deferred_configuration'):
                 config,prepared=value(rec['deferred_configuration']),None
                 descriptor=rec['deferred_tail_descriptor']
@@ -483,11 +491,22 @@ class Completion:
                 and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical),None)
             if failed_twin is not None:
                 raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
-            initial_registry=self.price_registry_digest() if request['method']=='PR_DF' else None
+            initial_registry=self.price_registry_digest()
             initial_quote=self.initial_quote(config,cref,d)
+            holds=price_source_holds(initial_quote)
+            if request['method']=='PR_PAULI':
+                already_started = (bool(old and old.get('signal')) or
+                    any(d.glob('PAULI_SIGNALS.*.json')) or any(d.glob('PAULI_COMPILE.*.json')) or
+                    any(d.glob('PAULI_PRICES.*.json')) or (d/'PAULI_SIGNAL_REQUEST.json').exists())
+                if holds and not already_started:
+                    # Another scoped Pauli model cannot resolve the existing
+                    # per-axis choice. Ordinary missing axes still calibrate.
+                    put(d/'FINAL_QUOTE.json',initial_quote)
+                    record_price_holds(rec,holds)
+                    rec.update(signal_deferred_for_price=True,registry_at_hold=initial_registry)
+                    raise Held(price_hold_reason(holds))
             if request['method']=='PR_DF':
                 descriptor=request.get('tail_descriptor')
-                holds=price_source_holds(initial_quote)
                 # Resume an original owner through its normal reconciliation path.
                 already_started = (any(d.glob('DF_SIGNALS.*.json')) or
                                    (d/'df_price_groups').exists() or bool(old and old.get('signal')))
@@ -529,11 +548,10 @@ class Completion:
                 rec['intake']=intake;self.save()
                 quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
             if not quote['complete']:
-                if request['method']=='PR_DF':
-                    holds = price_source_holds(quote)
-                    record_price_holds(rec, holds)
-                    if holds:
-                        raise Held(price_hold_reason(holds))
+                holds = price_source_holds(quote)
+                record_price_holds(rec, holds)
+                if holds:
+                    raise Held(price_hold_reason(holds))
                 raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
             quote_commit=publish([d],'Publish completed candidate prices and receipt bindings')
             with self.lock:
@@ -742,10 +760,11 @@ class Completion:
         return self.quote_with_steps(config,quote)
 
     def price(self,config,cref,prepared,r,d,initial_quote=None):
-        # Pauli stages publish into one owned mutable checkout. Retain its
-        # normal worker parallelism, but requery after another candidate has
-        # registered the same calibration before launching a duplicate cell.
         lock=getattr(self,'pauli_price_lock',None)
+        if r['method']=='PR_PAULI' and self.parallel_pauli_preparation():
+            # Distributed leaves use their own attempt workspaces. Pauli
+            # calibration groups within one split can still overlap.
+            lock=self.shared_preparation_lock(dict(stage='PAULI_PRICE',L_D=config['spec']['L_D']))
         with (lock if r['method']=='PR_PAULI'and lock is not None else nullcontext()):
             return self._price(config,cref,prepared,r,d,initial_quote)
 
@@ -754,7 +773,7 @@ class Completion:
         req=dict(configuration=cref,view=str(self.path('D2_VIEW')),registry_file=str(registry),policy='MODEL')
         quote=self.initial_quote(config,cref,d)if initial_quote is None else initial_quote
         quote=self.quote_with_steps(config,quote)
-        if r['method']=='PR_DF' and price_source_holds(quote):
+        if price_source_holds(quote):
             put(d/'FINAL_QUOTE.json',quote)
             return quote
         if not quote['complete']:

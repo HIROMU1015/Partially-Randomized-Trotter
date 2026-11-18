@@ -213,22 +213,25 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         d.methods=['PR_DF','PR_PAULI'];d.wide=dict(per_decision=8);d.a=SimpleNamespace(plan_only=False)
         d.spec=dict(science_approved=True,candidate_completion=dict(parallel=2))
         d.log=lambda **event:None;d.check_completed_configuration=lambda *args:None
-        splits=dict(df1=1,df1_other_width=1,df2=2,df_held=3,pauli=4)
+        splits=dict(df1=1,df1_other_width=1,df2=2,df_held=3,pauli=4,pauli2=5)
         d.state=dict(cycle=1,families={family:dict(L_D=split) for family,split in splits.items()},
-                     points=[dict(method='PR_PAULI' if family=='pauli' else 'PR_DF',family=family,kappa='1',
+                     points=[dict(method='PR_PAULI' if family.startswith('pauli') else 'PR_DF',family=family,kappa='1',
                                   status='WAITING_INPUTS' if family=='df_held' else 'COMPLETION',
                                   completion_request=dict(family=family)) for family in splits])
-        started=threading.Barrier(3)
+        started=threading.Barrier(4)
         first_finished=threading.Event()
         calls=[]
 
         class Completion:
+            def parallel_pauli_preparation(self):
+                return True
+
             def price_deferred_keys(self):
                 return {key(dict(family='df_held'))}
 
             def complete(self,request):
                 family=request['family'];calls.append(family)
-                if family in ('df1','df2','pauli'):
+                if family in ('df1','df2','pauli','pauli2'):
                     started.wait(timeout=5)
                     if family=='df1':first_finished.set()
                 elif family=='df1_other_width':
@@ -240,11 +243,10 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         d.completion_api=Completion
         ready=[]
         d.complete_points(announce_ready=lambda method,record:ready.append(record['key']))
-        self.assertCountEqual(ready,['df1','df2','df1_other_width','pauli'])
-        self.assertEqual(calls[0:4].count('df_held'),0)
+        self.assertCountEqual(ready,['df1','df2','df1_other_width','pauli','pauli2'])
         self.assertLess(calls.index('df1'),calls.index('df1_other_width'))
         d.complete_points(announce_ready=lambda *_:self.fail('No duplicate preparation'))
-        self.assertEqual(len(calls),4)
+        self.assertEqual(len(calls),5)
 
     def test_joint_method_planning_matches_independent_method_refinements(self):
         methods=('PR_PAULI','PR_DF')

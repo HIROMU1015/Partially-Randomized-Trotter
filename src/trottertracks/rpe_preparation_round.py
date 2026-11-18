@@ -113,7 +113,11 @@ def prepare_inputs(root,problem,context,spec,run,routes,executor,optimize,runtim
     # Keep exact raw history/pinned readers shared; only writable search state
     # needs a snapshot, not another copy of the large catalog and reader cache.
     with ThreadPoolExecutor(max_workers=2,thread_name_prefix='rpe-input-preparation')as pool:
-        pf_future=pool.submit(PF.prepare,root,problem,snapshot_context(context),spec,run,deepcopy(routes),stage_executor=runtime)
+        pf_settings=spec.get('pf_completion') or problem.get('pf_completion') or {}
+        prepare_pf=(PF.prepare_next if pf_settings.get('max_candidates',1)!=1 and
+                    pf_settings.get('mode')=='complete' and not pf_settings.get('selected') and runtime is not None
+                    else PF.prepare)
+        pf_future=pool.submit(prepare_pf,root,problem,snapshot_context(context),spec,run,deepcopy(routes),stage_executor=runtime)
         pr_future=(pool.submit(PR.prepare_for_search,root,dict(problem,execution_routes=deepcopy(routes)),
             snapshot_context(context),spec,run,completion=completion,stage_executor=runtime)if completion is not None else None)
         pending={pf_future}|({pr_future}if pr_future is not None else set())
