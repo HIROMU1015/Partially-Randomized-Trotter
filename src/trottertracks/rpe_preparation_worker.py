@@ -371,7 +371,10 @@ def execute(assignment, base_profile, directory):
         source=_clone(source,directory/'workspace',spec.get('input_git_bundles',[]),cache,
                       source_files=spec['source']['files'],metadata_repository=metadata_repository)
         owned['source']=(source,spec['source'])
-    replacements={'@PYTHON@':profile['interpreter'],'@SOURCE@':str(source),'@WORK@':str(directory),'@INPUTS@':str(directory/'inputs'),'@TRANSPORT@':str(Path(__file__).resolve().parents[2])}
+    # Transport releases may change without changing the verified provider
+    # wrapper that a preparation command actually imports or executes.
+    provider_transport=profile.get('preparation_adapter_root') or Path(__file__).resolve().parents[2]
+    replacements={'@PYTHON@':profile['interpreter'],'@SOURCE@':str(source),'@WORK@':str(directory),'@INPUTS@':str(directory/'inputs'),'@TRANSPORT@':str(provider_transport)}
     for alias,workspace in spec.get('workspaces',{}).items():
         if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe preparation workspace alias')
         target=_clone(fingerprint['views'][alias],directory/'workspaces'/alias,workspace.get('input_git_bundles',[]),cache,
