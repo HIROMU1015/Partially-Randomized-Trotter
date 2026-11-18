@@ -106,6 +106,22 @@ def main():
         self.assertEqual(c.saved_df_descriptor(dict(design={'L_D':8,'kappa':'2'})),loc)
         self.assertIsNone(c.saved_df_descriptor(dict(design={'L_D':7,'kappa':'2'})))
 
+    def test_scoped_price_conflict_skips_calibration_only_for_that_candidate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)
+            c=C.Completion.__new__(C.Completion)
+            need=dict(m=3,axis='X',unit_price_RZ=None,needs=dict(reasons=[C.PRICE_SOURCE_CONFLICT],
+                                                               entry_ids=['scoped1','scoped2']))
+            quote=dict(complete=False,rows=[need])
+            with patch.object(c,'path',return_value='FIXTURE'),patch.object(c,'quote_with_steps',side_effect=lambda cfg,q:q), \
+                 patch.object(c,'df_price') as calibrate,patch.object(c,'ingest_price_results'):
+                self.assertEqual(c._price({}, {}, {}, {'method':'PR_DF'},path,quote),quote)
+                calibrate.assert_not_called()
+                self.assertEqual(C.read(path/'FINAL_QUOTE.json'),quote)
+                complete=dict(complete=True,rows=[dict(need,unit_price_RZ=5)])
+                self.assertEqual(c._price({}, {}, {}, {'method':'PR_DF'},path,complete),complete)
+                calibrate.assert_not_called()
+
     def test_new_registry_recovers_price_hold_without_scientific_retry(self):
         with tempfile.TemporaryDirectory()as tmp:
             c=C.Completion.__new__(C.Completion);c.directory=Path(tmp);c.registry=Path(tmp)/'registry.json'

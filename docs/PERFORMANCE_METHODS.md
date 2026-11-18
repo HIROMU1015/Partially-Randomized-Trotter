@@ -16,6 +16,22 @@
 
 [人工13ラウンドの既存fixture](../scripts/benchmark_rpe_prefix_boundaries.py)を使った各3回の比較では、3ファイルの合計が110,437 Bから37,591 Bへ約66%減り、出力とHITの位置が完全一致した。片方の末尾を変更した評価で新workerから旧形式を読み、12ラウンドを再利用した。中央値は旧2.406秒、新2.422秒。新規実H4評価0件。実H4での削減率と速度は未測定。
 
+## PR探索の計算順とQ3残差積算（2026-11-18）
+
+[Claudeの探索・計算レビュー](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5e9e08ef15d1ff384b45b36caeb3436641350c20/docs/research/a_pr_search_strategy_review_20261118/REPORT.md) の技術改善を、容量対策済みの通常 `scripts/run_rpe_schedule_search.py` へ接続した。新しいroundの設定で必要な機能を有効にできる。
+
+| ROUND.json の設定 | 適用 |
+| --- | --- |
+| `search_overrides.self_price_floor: true` | 26軸の有効な価格と各軸1 shotの下限を、Q3で適合した方式別費用と比較する。改善不能な構成は新規の通常選択と空き枠補充で保留する。単価や最安が変われば再判定する。 |
+| `search_overrides.review_search_order: true` | UPDATEと既存の探索間隔を維持し、新しい幅・分割の最初のEXPLOREを優先する。高価な小κの準備済み点がある場合に、同じfamilyでそれ以上のκの準備順を後ろへ移す。既存の `allocation_exchange.enabled` も設定した場合は、有力な減算候補が尽きた最安構成に費用減の交換を提案する。 |
+| `search_overrides.common_pauli_price_floor: true` | 同じ価格規則で比較元の適合費用を再現し、同一物理family内で単調なPauli MODELの下限を証明できた場合に、上位κの新規準備提案を絞る。実stepや監査済み時間、別の価格出所も確認する。PR-DFのκ方向は候補別の価格較正に依存するため、準備順の判断に留める。 |
+| `executor.parallel_dp_residual: true` | 固定のDP省略項を分母ごとに厳密加算し、大きなバッチは既存DP worker数の設定内で並列加算する。cacheの有無にかかわらず適用できる。 |
+| `candidate_completion.parallel_df_price_axes: true` | 固定軸別workerを使い、同じpathのX/Y wrapperを別プロセスで処理する。seedでイベント列を決定論的に再現し、同じdigestのイベントファイルを共有する。軸別のbuildメモリと時間は要確認。 |
+
+自価格下限の成立範囲は、採用中の価格表で求める条件付き総費用に限る。確定済みの結果は保持し、queueからの取下げは未割当のQ3に限る。PR-DFで複数モデルの出所指定待ちと分かる場合は、その価格較正の追加投入を保留し、競合軸を記録する。
+
+人工テストで通常選択・空き枠補充・再価格付け、並列DPの正確な上下界、圧縮cacheの再開、軸別receiptと共有イベントを検証した。32,768件の人工省略項の厳密加算は3回中央値で、元の積算0.900秒、分母別1 worker 0.300秒、分母別4 worker 0.112秒。測定対象は人工入力の積算部。実H4の速度・探索短縮は未測定。並列残差を有効にしたcacheは残差SOURCEを識別するため、新しいkeyで蓄積する。`prefix_checkpoint_rounds` は既存設定を使う。例えば `[5,8,11]` は明示設定できるが、既定の境界は今回変更していない。
+
 ## 探索を止めない共有モデル診断（2026-11-17）
 
 `rpe_price_validation.Service/ModelStore`と既存分散preparation queueを再利用し、凍結モデル＋物理domain単位の初回照合を全配分・run・workerから共有する。固定requestをqueue投入前に保存し、optional compileを通常Q3/準備より後にclaimする。checkpoint再開・同時要求・失敗時の探索継続・通常C同期は人工検査、LD2/PFの独立実測再利用は保存資料で確認。新規実compileの速度・実host配置は未検証。単一controllerの共通namespaceを使用し、別cloneの独立storeを共有とみなさない。[REPORT](research/h4_price_validation_integration_20261117/REPORT.md)／[HANDOFF](research/h4_price_validation_integration_20261117/HANDOFF.md)。

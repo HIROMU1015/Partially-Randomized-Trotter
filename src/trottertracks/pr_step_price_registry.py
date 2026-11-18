@@ -312,6 +312,47 @@ class StepPriceRegistry:
             request_id=digest(dict(family=domain['family'],step=domain['actual_step'],calibration=calibration)),
             qualification='DESCRIPTIVE_HOLDOUT_FINITE_COHORT_NOT_EXPECTATION_OR_CI'))
 
+    def common_pauli_model_terms(self, configuration, implementation, rules=None):
+        """Return source-bound MODEL terms only for one-piece Pauli families.
+
+        A step-specific rule or a missing base axis leaves the proof unavailable.
+        This is a bound on the search's model cost under the current registry.
+        """
+        if configuration['spec']['M']!=12 or configuration['spec']['formula'] not in ('2nd','S2'):
+            return None
+        family=self.api['family'](configuration,implementation)
+        if family['method']!='PR_PAULI' or any(same(e['domain']['family'],family) for e in self.state['entries']):
+            return None
+        rules=self.api['PriceRules'](self.reader,self.registry) if rules is None else rules
+        match=[e for e in rules.entries if same(e['family'],family)]
+        if len(match)!=1 or match[0]['mode'] not in ('PAULI_AUDIT','PAULI_C2'):
+            return None
+        entry=match[0]
+        # An identical-physical saved value can override the common formula.
+        for (m,axis),saved in entry['saved'].items():
+            model,_=rules._model(entry,entry['points'][m],axis)
+            if model is None or frac(saved['value'])!=model:
+                return None
+        quote=rules.quote(dict(configuration=configuration,implementation=implementation,policy='MODEL'))
+        if not quote['complete']:
+            return None
+        terms=[]
+        rounds={r['m']:r for r in configuration['rounds']}
+        for row in quote['rows']:
+            p=self.api['point'](rounds[row['m']])
+            if (p['structure']['signed_weights']!=[1.] or len(p['structure']['allocation'])!=1
+                    or row.get('classification')!='MODEL_REFERENCE'):
+                return None
+            one,_=rules._model(entry,dict(p,R=1),row['axis'])
+            two,_=rules._model(entry,dict(p,R=2),row['axis'])
+            if one is None or two is None or one<=0 or two<one:
+                return None
+            slope=two-one
+            if frac(row['unit_price_RZ'])!=one+slope*(p['R']-1):
+                return None
+            terms.append((one,slope))
+        return tuple(terms) if len(terms)==26 else None
+
     def quote(self, configuration, implementation, base_quote=None):
         config=configuration;family=self.api['family'](config,implementation)
         if base_quote is None:

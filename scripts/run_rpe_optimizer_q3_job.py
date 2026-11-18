@@ -427,13 +427,14 @@ def execution_profile(inputs, request):
 def prefix_cache_context(request,case,inputs,out):
     """Opt-in cache in the real existing worker path, inherited by its fork."""
     profile=request.get('execution_profile',{});directory=profile.get('prefix_cache_directory')
-    if directory is None:
+    parallel_residual=profile.get('parallel_dp_residual') is True
+    if directory is None and not parallel_residual:
         yield;return
     module=sys.modules.get('trottertracks.rpe_total_dp_parallel')
     if module is None:raise ValueError('Route has no supported fixed total-state accelerator')
     helper=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_dp_prefix_reuse.py'
     spec=importlib.util.spec_from_file_location('_rpe_opt_prefix_reuse',helper)
-    C=importlib.util.module_from_spec(spec);spec.loader.exec_module(C)  # keep pinned route import paths unchanged
+    C=importlib.util.module_from_spec(spec);sys.modules[spec.name]=C;spec.loader.exec_module(C)  # keep pinned route import paths unchanged
     namespace=dict(method=request['method'],configuration_id=request['configuration_id'],expected=request['expected'],
         route_commit=request['route']['view_commit'],
         physical={k:case.get(k)for k in ('configuration','signal_packet','evaluation_target','binding_id','total_configuration_id')},
@@ -442,8 +443,9 @@ def prefix_cache_context(request,case,inputs,out):
         with (Path(out)/'DP_PREFIX_EVENTS.jsonl').open('a')as f:
             f.write(json.dumps(dict(UTC=utc(),pid=os.getpid(),**value))+'\n')
     with C.installed(module,directory=directory,cache_namespace=namespace,
-                     checkpoint_rounds=profile.get('prefix_checkpoint_rounds'),event_sink=event,
-                     max_bytes=profile.get('prefix_cache_max_bytes', C.DEFAULT_CACHE_MAX_BYTES)):
+                     checkpoint_rounds=profile.get('prefix_checkpoint_rounds') if directory is not None else [],
+                     event_sink=event,max_bytes=profile.get('prefix_cache_max_bytes', C.DEFAULT_CACHE_MAX_BYTES),
+                     parallel_residual=parallel_residual):
         yield
 
 

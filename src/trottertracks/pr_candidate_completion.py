@@ -112,6 +112,16 @@ class PreparationYield(Exception):
 
 
 
+
+PRICE_SOURCE_CONFLICT = 'MULTIPLE_SCOPED_MODELS_CHOOSE_SOURCE_NO_POOLING'
+
+
+def conflicting_price_axes(quote):
+    return [dict(m=row['m'],axis=row['axis'],entry_ids=row['needs'].get('entry_ids',[]))
+            for row in quote.get('rows',[]) if row.get('unit_price_RZ') is None
+            and PRICE_SOURCE_CONFLICT in (row.get('needs') or {}).get('reasons',[])]
+
+
 class Completion:
     def path(self,name):
         value=getattr(self,"settings",{}).get("controller_paths",{}).get(name,globals()[name])
@@ -186,6 +196,20 @@ class Completion:
             rules=self._step_rules();answers=[rules.ingest(item)for item in packages]
             put(getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json'),rules.state)
         return answers
+
+    def common_pauli_model_terms(self, configurations):
+        from .pauli_calibration_request import implementation
+        step=self._step_rules()
+        rules=step.api['PriceRules'](step.reader,step.registry)
+        out={}
+        for key,config in configurations.items():
+            try:
+                terms=step.common_pauli_model_terms(config,implementation(),rules=rules)
+            except (KeyError,ValueError,TypeError):
+                terms=None
+            if terms is not None:
+                out[key]=terms
+        return out
 
     def price_registry_digest(self):
         path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
@@ -396,7 +420,7 @@ class Completion:
                 raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
             initial_quote=self.initial_quote(config,cref,d)
             if request['method']=='PR_DF':
-                if not initial_quote['complete']:
+                if not initial_quote['complete'] and not conflicting_price_axes(initial_quote):
                     design=self.service('df-price-design',dict(configuration=config,price_quote=initial_quote),d)
                     bad=[g for g in design.get('groups',[])if g['status']!='CALIBRATION_DESIGN_READY']
                     if bad:raise Held('DF_MODEL_DESIGN:'+str(bad))
@@ -418,7 +442,12 @@ class Completion:
                 intake=self.service('intake',dict(method=request['method'],configuration=signal.get('configuration_source',cref),packet=signal['packet_source'],view=str(self.path('B_VIEW') if request['method']=='PR_PAULI'else self.path('DF_Q3_VIEW'))),d)
                 rec['intake']=intake;self.save()
                 quote=self.price(config,cref,prepared,request,d,initial_quote=initial_quote)
-            if not quote['complete']:raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
+            if not quote['complete']:
+                conflict=conflicting_price_axes(quote) if request['method']=='PR_DF' else []
+                if conflict:
+                    rec['conflicting_price_axes']=conflict
+                    raise Held('PRICE_EVIDENCE_REQUIRED:'+PRICE_SOURCE_CONFLICT)
+                raise Held('PRICE_RULE_INCOMPLETE:'+str(quote.get('classifications')))
             quote_commit=publish([d],'Publish completed candidate prices and receipt bindings')
             with self.lock:
                 local_registry=d/'PRICE_RULES.json'
@@ -635,6 +664,9 @@ class Completion:
         req=dict(configuration=cref,view=str(self.path('D2_VIEW')),registry_file=str(registry),policy='MODEL')
         quote=self.initial_quote(config,cref,d)if initial_quote is None else initial_quote
         quote=self.quote_with_steps(config,quote)
+        if r['method']=='PR_DF' and conflicting_price_axes(quote):
+            put(d/'FINAL_QUOTE.json',quote)
+            return quote
         if not quote['complete']:
             if r['method']=='PR_PAULI':
                 inp=d/'PAULI_PRICE_REQUEST.json';out=d/'PAULI_PRICE_RESULT.json'
@@ -679,6 +711,9 @@ class Completion:
                 # A different candidate may have completed this exact group
                 # while we waited. Requote from its verified registry first.
                 refreshed=self.quote_with_steps(config,quote)
+                if conflicting_price_axes(refreshed):
+                    put(d/'FINAL_QUOTE.json',refreshed)
+                    raise Held('PRICE_EVIDENCE_REQUIRED:'+PRICE_SOURCE_CONFLICT)
                 missing={(r['m'],r['axis'])for r in refreshed['rows']if r.get('unit_price_RZ')is None}
                 if not any((r['m'],r['axis'])in missing for r in group['axis_keys']):continue
                 package=self.df_price_group(cref,refreshed,d/'df_price_groups'/group['group_id'][:20],registry,group,descriptor)
@@ -693,7 +728,8 @@ class Completion:
         descriptor_file=d/'DF_DESCRIPTOR_LOCATOR.json'
         if descriptor:put(descriptor_file,descriptor)
         quote_file=d/'AVAILABLE_PRICE_QUOTE.json';put(quote_file,quote)
-        self.call(args+['prepare']+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort','D2_AUTO_DF_'+d.name,'--source',self.source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,'DF_PRICE_PREPARE')
+        parallel=['--parallel-axes'] if self.settings.get('parallel_df_price_axes') is True else []
+        self.call(args+['prepare']+parallel+(['--tail-descriptor',str(descriptor_file)]if descriptor else[])+['--configuration',cref['commit']+':'+cref['path'],'--output',rel(base),'--cohort','D2_AUTO_DF_'+d.name,'--source',self.source,'--price-quote',str(quote_file),'--covered-rounds',json.dumps(group['covered_rounds'])],d,'DF_PRICE_PREPARE')
         if not inp.exists():raise Held('DF_PRICE_RULE_OR_RECEIPT_REUSE_REQUIRED:'+str(read(base/'NEEDS.json')))
         inputs=publish([d],'Fix candidate DF calibration and independent holdout inputs')
         common=['--input',str(inp),'--inputs-commit',inputs,'--source',self.source]

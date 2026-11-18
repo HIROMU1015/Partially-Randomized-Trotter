@@ -13,8 +13,8 @@ One ordered queue per method instead of one exhaustive descent per configuration
 Moves are those of FINITE_LOCAL_DESCENT_V1 (decrement d in {1,2} per round/axis group from the configuration
 incumbent, d = 1 only when headroom >= large_step_headroom; generator, cap and saved-sibling seeds without a feasible
 point) plus TRANSFER seeds: the cheapest feasible allocations of the nearest kappa of the same (L_D, formula, width).
-Nothing is ever skipped because another configuration is cheaper; finishing a configuration's small improvements is
-not a condition for moving on.
+The opt-in self_price_floor parks configurations that cannot strictly improve the method minimum at their own prices.
+Finishing a configuration's small improvements is not a condition for moving on.
 
 Kappa plan per (L_D, formula, width) from current incumbents: minimum at an edge -> extend geometrically
 (kappa*^2 / neighbour); interior minimum -> arithmetic midpoints towards both neighbours (cheaper side first) while the
@@ -164,8 +164,10 @@ class ConfigState:
 def run_priority(name, candidates, knowledge, backend, search, threshold, generate, max_new, *, baseline=None, routes=None,
                  spent=0, free=None, science_approved=True, prefetch=None, on_missing='STOP', facts=None, log=None,
                  prefetch_state=None, refresh_ready=None, standby=None, search_observations=None, search_profile=None,
-                 prior_q3_holds=()):
+                 prior_q3_holds=(), retire_priced_out=None):
     s = settings(search);baseline = baseline or {}
+    use_price_floor = search.get('self_price_floor') is True
+    review_order = search.get('review_search_order') is True
     ready = [c for c in candidates if c['ready'] and c['configuration_id']]
     states = {c['configuration_id']: ConfigState(c) for c in ready}
     limit = 0 if not science_approved else (float('inf') if max_new is None else max_new)
@@ -236,7 +238,7 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                         if min(v) >= 1:
                             raw.append((tuple(v), dict(kind='DECREMENT_FROM_CONFIGURATION_INCUMBENT', m=m, axes=list(group), d=d,
                                                        base_vector=list(base), base_headroom=None if h is None else '%.6f' % float(h))))
-            if s['allocation_exchange']:
+            if s['allocation_exchange'] and not review_order:
                 excluded = {v for cid, v in knowledge if cid == st.cid} | {v for cid, v in skipped if cid == st.cid}
                 raw += exchange_moves(base, prices, caps, steps, s['allocation_exchange'], excluded)
         else:
@@ -265,14 +267,41 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         st.cache, st.dirty = out, False
         return out
 
+    def price_floor(st):
+        prices = st.c['prices']
+        if len(prices) == 26 and all(type(p) in (int, Fraction) and p >= 0 for p in prices):
+            return sum(prices)
+
+    def positive_allocation(v):
+        return len(v) == 26 and all(type(n) is int and n >= 1 for n in v)
+
     def classify():
         """SMALL = saving below small_gain_fraction of the configuration's own best (any cost); UPDATE = not small and
         cheaper than M; EXPLORE = per non-leading configuration its non-small, non-deferred candidates (head first)."""
         selection_started = time.perf_counter()
         mm = method_min();M = None if mm is None else mm[0];lead = None if mm is None else mm[1]
         groups = {k: [] for k in CLASS_ORDER};explore, queues = [], {}
+        floor_deferred = {}
+        floor_best = None
+        if use_price_floor:
+            # A saved PASS may remain usable even if its current worker is unavailable.
+            floor_best = min((st.best[0] for st in states.values()
+                             if st.best is not None and price_floor(st) is not None
+                             and positive_allocation(st.best[1])
+                             and st.best[2].get('MSE_upper') is not None
+                             and st.best[2]['MSE_upper'] <= threshold), default=None)
+        visited = set()
+        if review_order:
+            evaluated = {cid for cid,_ in knowledge}
+            visited = {family(st.c,baseline) for cid,st in states.items() if cid in evaluated}
         for cid, st in states.items():
             items = local(st);open_ = []
+            floor = price_floor(st) if floor_best is not None else None
+            if (items and floor is not None and floor >= floor_best
+                    and all(positive_allocation(p['vector']) for p in items)):
+                floor_deferred[cid] = dict(reason='OWN_PRICE_FLOOR_GE_METHOD_MIN', floor=floor, incumbent=floor_best, proposals=len(items))
+                st.promising = 0
+                continue
             for p in items:
                 if p['deferred']:
                     groups['DEFERRED'].append(dict(p, cls='DEFERRED'));continue
@@ -290,7 +319,10 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             st.promising = sum(1 for p in items if not p['deferred'] and not (st.best is not None and (st.best[0] - p['cost'])
                                                                                 < s['small_gain_fraction'] * st.best[0]))
             if cid != lead and open_:
-                if st.best is None:
+                if review_order and family(st.c,baseline) not in visited:
+                    floor_first=price_floor(st)
+                    rank=(-1,open_[0]['cost'] if floor_first is None else floor_first,open_[0]['cost'])
+                elif st.best is None:
                     rank = (0, open_[0]['cost'], 0)
                 elif M is not None and st.best[0] <= s['explore_window'] * M:
                     rank = (1, st.explore_picks, st.best[0])
@@ -298,11 +330,27 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                     rank = (2, st.best[0], 0)
                 explore.append((rank, cid, dict(open_[0], cls='EXPLORE', explore_rank=rank[0])))
                 queues[cid] = [dict(p, cls='EXPLORE', explore_rank=rank[0]) for p in open_]
+        if review_order and s['allocation_exchange'] and lead is not None:
+            st=states[lead]
+            # Finish cost-reducing decrements in the leading configuration first.
+            head_decrements=[p for p in groups['UPDATE']+groups['FINE'] if p['configuration_id']==lead]
+            if not head_decrements and not st.c.get('execution_needs'):
+                own_prices=st.c['prices']
+                caps=tuple(n for n in st.c['caps'] for _ in O.AXES)
+                excluded={v for cid,v in knowledge if cid==lead}|{v for cid,v in skipped if cid==lead}
+                base=st.best[1]
+                for v,origin in exchange_moves(base,own_prices,caps,search['decrement_steps'],s['allocation_exchange'],excluded):
+                    cost=O.cost(v,own_prices)
+                    if cost < M and M-cost >= s['small_gain_fraction']*M and not st.deferred(v):
+                        groups['FINE'].append(dict(configuration_id=lead,candidate=st.c['name'],method=name,
+                            cls='FINE',vector=v,cost=cost,origin=origin,deferred=False,
+                            shot_change=sum(abs(a-b) for a,b in zip(v,base))))
         for k in groups:
             groups[k].sort(key=lambda x: (x['cost'], x['shot_change'], x['candidate'], x['vector']))
         explore.sort(key=lambda x: (x[0], x[1]))
         groups['EXPLORE'] = [p for _, _, p in explore]
         groups['_queues'] = [queues[cid] for _, cid, _ in explore]
+        groups['_price_floor_deferred'] = floor_deferred
         selection_timing['candidate_classification_seconds'] += time.perf_counter() - selection_started
         selection_timing['candidate_classification_calls'] += 1
         return groups, M
@@ -469,16 +517,20 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         if refresh_ready is not None:
             added, saved = refresh_ready()
             if added:
-                ready.extend(added)
-                states.update((c['configuration_id'], ConfigState(c)) for c in added)
+                updated = {c['configuration_id']: ConfigState(c) for c in added}
+                ready[:] = [c for c in ready if c['configuration_id'] not in updated] + added
+                states.update(updated)
                 knowledge.update(saved)
-                for (cid, v), record in saved.items():
-                    absorb(cid, v, record)
+                for (cid, v), record in knowledge.items():
+                    if cid in updated:
+                        absorb(cid, v, record)
                 if search.get('seed_saved_same_L_D'):
                     O.sibling_seeds(candidates, knowledge)
                 for state in states.values():
                     state.dirty = True
         groups, M = classify()
+        if retire_priced_out is not None and groups['_price_floor_deferred']:
+            retire_priced_out(groups['_price_floor_deferred'])
         if standby is not None:
             groups['UPDATE'] = reorder_updates(groups['UPDATE'], M)
         if groups['UPDATE'] and not (groups['EXPLORE'] and since_explore >= s['explore_every'] - 1):
@@ -488,13 +540,24 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
         elif groups['FINE']:
             choice = groups['FINE'][0]
         elif (groups['SMALL'] or groups['DEFERRED']) and search.get('small_and_deferred') == 'STOP':
+            if groups['_price_floor_deferred'] and standby is not None:
+                standby(None, [])
+            elif groups['_price_floor_deferred'] and prefetch is not None:
+                prefetch([])
             stop = 'ONLY_SMALL_OR_DEFERRED_LEFT';break
         elif groups['SMALL']:
             choice = groups['SMALL'][0]
         elif groups['DEFERRED']:
             choice = groups['DEFERRED'][0]
         else:
-            stop = 'NO_CANDIDATE_LEFT_IN_RANGE' if M is not None else 'NO_FEASIBLE_POINT_IN_RANGE'
+            if groups['_price_floor_deferred']:
+                if standby is not None:
+                    standby(None, [])
+                elif prefetch is not None:
+                    prefetch([])
+                stop = 'ONLY_SMALL_OR_DEFERRED_LEFT'
+            else:
+                stop = 'NO_CANDIDATE_LEFT_IN_RANGE' if M is not None else 'NO_FEASIBLE_POINT_IN_RANGE'
             break
         allow = new_calls < limit;is_free = free is not None and free(choice)
         if standby is not None and science_approved and new_calls < limit:
@@ -582,6 +645,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                    configuration_best_before=before_cfg, configuration_best_after=None if st.best is None else st.best[0],
                    improved=after is not None and (M is None or after[0] < M),
                    improved_configuration=st.best is not None and (before_cfg is None or st.best[0] < before_cfg))
+        if groups['_price_floor_deferred']:
+            row['self_price_floor_deferred'] = len(groups['_price_floor_deferred'])
         if 'order_reason' in choice:
             row['order_reason'] = choice['order_reason']
             row['order_baseline'] = choice['order_baseline']
@@ -611,6 +676,7 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                 pending_request=pending, incumbent=incumbent, not_ready_in_range=[c['name'] for c in candidates if not c['ready']],
                 by_configuration=by, incumbent_scope='METHOD_PRIORITY', unevaluated=unevaluated,
                 prior_q3_holds=list(prior_q3_holds),
+                **({'self_price_floor_deferred':groups['_price_floor_deferred']} if use_price_floor else {}),
                 prefetch_policy=prefetch_metrics,
                 selection_timing=selection_timing,
                 left={k: len(v) for k, v in groups.items() if not k.startswith('_')}, input_requests=requests, settings={k: str(v) if isinstance(v, Fraction) else v

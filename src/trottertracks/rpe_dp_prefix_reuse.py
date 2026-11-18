@@ -1,11 +1,11 @@
-"""Opt-in exact prefix checkpoints around the fixed total-state accelerator.
+"""Opt-in checkpoints and exact residual aggregation around the fixed total-state DP.
 
-The original kernel and accelerator AST guards still execute. Only the outer
-round-loop entry/exit is instrumented; transition, pruning, residual and final
-moment equations are not replaced. No cache can change the evaluation scope.
+The reference and accelerator SOURCE guards remain active. Transition selection,
+pruning geometry, loss bounds and final-moment equations stay in the fixed kernel.
 """
 import ast
-from contextlib import contextmanager
+from concurrent.futures import ProcessPoolExecutor
+from contextlib import ExitStack, contextmanager
 from copy import deepcopy
 import fcntl
 from fractions import Fraction
@@ -14,10 +14,12 @@ import hashlib
 import inspect
 import io
 import json
+import multiprocessing as mp
 import os
 from pathlib import Path
 import re
 import tempfile
+import textwrap
 import time
 import sys
 from unittest.mock import patch
@@ -190,7 +192,103 @@ if _prefix_state is not None:
     return tree
 
 
-def accelerator_class(P):
+PROPAGATE_SOURCE_SHA256 = 'd84467c758e23e4fdd3e9b56e1c1dd5d0101cb90118c16ce397bc39c276c8321'
+MIN_DROPS_PER_WORKER = 1024
+_drop_context = None  # inherited by the existing Linux fork worker model
+
+
+def _grouped_sum(original, residual, key, mass, coefficient):
+    if 'groups' not in residual:
+        return original(residual, key, mass, coefficient)
+    if coefficient and mass.numerator:
+        coefficient = Fraction(coefficient)
+        terms = residual['groups'].setdefault(key, {})
+        denominator = mass.denominator * coefficient.denominator
+        terms[denominator] = terms.get(denominator, 0) + mass.numerator * coefficient.numerator
+
+
+def _drop_batch(bounds, context=None):
+    ordered, denominator, completed, drop, mass_type = _drop_context if context is None else context
+    partial = dict(events=0, groups={})
+    for index in range(*bounds):
+        (flag, phase), count = ordered[index]
+        drop(flag, phase, mass_type(count, denominator), completed, partial)
+    return partial
+
+
+def _drop_many(P, worker_count, ordered, denominator, completed, drop):
+    if not ordered:
+        return
+    context = ordered, denominator, completed, drop, P.Mass
+    available = len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else os.cpu_count() or 1
+    workers = min(worker_count or available, max(1, len(ordered)//MIN_DROPS_PER_WORKER))
+    if 'fork' not in mp.get_all_start_methods():
+        workers = 1
+
+    residual = drop.residual()
+    def merge(partial):
+        residual['events'] += partial['events']
+        for key, terms in partial['groups'].items():
+            for den, num in terms.items():
+                P._accumulate(residual, key, P.Mass(num, den), 1)
+
+    if workers == 1:
+        merge(_drop_batch((0,len(ordered)),context))
+        return
+    global _drop_context
+    _drop_context = context
+    chunk = (len(ordered) + workers - 1)//workers
+    batches = [(i,min(i+chunk,len(ordered))) for i in range(0,len(ordered),chunk)]
+    try:
+        with ProcessPoolExecutor(max_workers=workers,mp_context=mp.get_context('fork')) as pool:
+            for partial in pool.map(_drop_batch,batches):
+                merge(partial)
+    finally:
+        _drop_context = None
+
+
+def _drop_loop(body, expression):
+    indices = [i for i,n in enumerate(body) if isinstance(n,ast.For) and len(n.body)==1
+               and isinstance(n.body[0],ast.Expr) and isinstance(n.body[0].value,ast.Call)
+               and getattr(n.body[0].value.func,'id',None)=='drop']
+    if len(indices)!=1:
+        raise ValueError('Fixed DP omission loop changed')
+    body[indices[0]:indices[0]+1] = ast.parse(expression).body
+
+
+def _instrument_residual(tree):
+    fn = tree.body[0]
+    drop_index, drop = next((i,n) for i,n in enumerate(fn.body) if isinstance(n,ast.FunctionDef) and n.name=='drop')
+    # Use the original closure by default and explicitly accept a batch-local
+    # sink. A getter follows the live closure even after prefix restoration.
+    for n in ast.walk(drop):
+        if isinstance(n,ast.Name) and n.id=='res':
+            n.id='sink'
+    drop.args.args.append(ast.arg(arg='sink'))
+    drop.args.defaults.append(ast.Constant(None))
+    drop.body[:0] = ast.parse('if sink is None: sink = res').body
+    fn.body[drop_index+1:drop_index+1] = ast.parse('drop.residual = lambda: res').body
+    loop = next(n for n in fn.body if isinstance(n,ast.For) and getattr(n.iter,'func',None)
+                and getattr(n.iter.func,'id',None)=='enumerate')
+    prune = next(n for n in loop.body if isinstance(n,ast.If) and
+                 any(isinstance(t,ast.For) and getattr(t.body[0],'value',None)
+                     and getattr(getattr(t.body[0].value,'func',None),'id',None)=='drop' for t in n.body))
+    _drop_loop(prune.body,'_drop_many(ordered[maximum_states:],denominator,m,drop)')
+    return tree
+
+
+def _fixed_propagate(P):
+    source = inspect.getsource(P.Accelerator.propagate)
+    if hashlib.sha256(source.encode()).hexdigest()!=PROPAGATE_SOURCE_SHA256:
+        raise ValueError('Fixed accelerator propagation SOURCE changed')
+    tree=ast.parse(textwrap.dedent(source))
+    _drop_loop(tree.body[0].body,'self._drop_many(ordered[count:],previous,m-1,drop)')
+    scope=dict(P.__dict__)
+    exec(compile(ast.fix_missing_locations(tree),'fixed_accelerator_with_grouped_omissions','exec'),scope)
+    return scope['propagate']
+
+
+def accelerator_class(P, *, parallel_residual=False):
     """Extend this pinned module's class, keeping both original SOURCE guards."""
     source=inspect.getsource(P.Accelerator._kernel)
     if hashlib.sha256(source.encode()).hexdigest()!=ACCELERATOR_SOURCE_SHA256:
@@ -203,12 +301,19 @@ def accelerator_class(P):
 tree = _prefix_instrument(tree)
 scope.update(_prefix_restore=self._restore, _prefix_save=self._save)
 ''').body
-    namespace=dict(P.__dict__,_prefix_instrument=_instrument)
+    if parallel_residual:
+        fn.body[indices[0]:indices[0]]=ast.parse('''
+tree = _instrument_residual(tree)
+scope.update(_drop_many=self._drop_many, _accumulate=self._grouped_sum)
+''').body
+    namespace=dict(P.__dict__,_prefix_instrument=_instrument,_instrument_residual=_instrument_residual)
     exec(compile(ast.fix_missing_locations(tree),'fixed_accelerator_with_prefix_hooks','exec'),namespace)
     build_kernel=namespace['_kernel']
     import numpy as np
     runtime=dict(prefix_source=CHECKPOINT_SEMANTICS_ID,python=sys.version,numpy=np.__version__,source_files={
         str(m.__file__):hashlib.sha256(Path(m.__file__).read_bytes()).hexdigest()for m in (P,P.R,P.R.T)})
+    if parallel_residual:
+        runtime['residual_source']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
     class PrefixAccelerator(P.Accelerator):
         _kernel=build_kernel
@@ -279,13 +384,18 @@ scope.update(_prefix_restore=self._restore, _prefix_save=self._save)
         def __call__(self,*args,**kwargs):
             self.cache_events=[]
             return super().__call__(*args,**kwargs)
+    if parallel_residual:
+        PrefixAccelerator.propagate=_fixed_propagate(P)
+        PrefixAccelerator._drop_many=lambda self,*args:_drop_many(P,self.workers,*args)
+        PrefixAccelerator._grouped_sum=lambda self,*args:_grouped_sum(P._accumulate,*args)
     return PrefixAccelerator
 
 
 @contextmanager
-def installed(P,*,directory,cache_namespace,checkpoint_rounds=None,event_sink=None,max_bytes=DEFAULT_CACHE_MAX_BYTES):
+def installed(P,*,directory,cache_namespace,checkpoint_rounds=None,event_sink=None,max_bytes=DEFAULT_CACHE_MAX_BYTES,
+              parallel_residual=False):
     """Patch only this worker's accelerator constructor for its existing entry."""
-    cls=accelerator_class(P);store=PrefixStore(directory,max_bytes=max_bytes)
+    cls=accelerator_class(P,parallel_residual=parallel_residual);store=PrefixStore(directory,max_bytes=max_bytes)
     # Existing Observed subclasses resolve super() to the old base. Replace its
     # _kernel and add hook methods for the context rather than changing its MRO.
     original=P.Accelerator.__init__
@@ -293,8 +403,10 @@ def installed(P,*,directory,cache_namespace,checkpoint_rounds=None,event_sink=No
         self.store=store;self.cache_namespace=deepcopy(cache_namespace)
         self.checkpoint_rounds=checkpoint_rounds;self.cache_events=[];self.cache_sink=event_sink
         original(self,**kwargs)
-    with patch.object(P.Accelerator,'__init__',init),patch.object(P.Accelerator,'_kernel',cls._kernel),\
-         patch.object(P.Accelerator,'_event',cls._event,create=True),\
-         patch.object(P.Accelerator,'_restore',cls._restore,create=True),\
-         patch.object(P.Accelerator,'_save',cls._save,create=True):
+    hooks={'__init__':init,'_kernel':cls._kernel,'_event':cls._event,'_restore':cls._restore,'_save':cls._save}
+    if parallel_residual:
+        hooks.update(propagate=cls.propagate,_drop_many=cls._drop_many,_grouped_sum=cls._grouped_sum)
+    with ExitStack() as stack:
+        for name,fn in hooks.items():
+            stack.enter_context(patch.object(P.Accelerator,name,fn,create=True))
         yield

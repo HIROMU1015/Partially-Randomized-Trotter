@@ -26,6 +26,7 @@ import argparse
 from copy import deepcopy
 from fractions import Fraction
 import json
+import subprocess
 from pathlib import Path
 import sys
 import time
@@ -42,7 +43,6 @@ if hasattr(sys, 'set_int_max_str_digits'):
 
 
 def read_loc(loc):
-    import subprocess
     x = json.loads(subprocess.check_output(['git', 'show', loc['commit'] + ':' + loc['path']], cwd=ROOT))
     for k in loc.get('selector', []):
         x = x[k]
@@ -577,6 +577,47 @@ class WidthDriver:
     def point(self, family, kappa):
         return next((p for p in self.state['points']if p['family']==family and Fraction(p['kappa'])==Fraction(kappa)),None)
 
+    def model_floor(self, families):
+        """Use the same active price model to reproduce a saved feasible cost."""
+        if getattr(self,'spec',{}).get('search_overrides',{}).get('common_pauli_price_floor') is not True:
+            return None,None
+        configs={key:self.state['families'][key]['configuration'] for key in families
+                 if all(r['J']==1 for r in families[key].rows)}
+        if not configs or not any(p.get('best_MSE_upper') is not None and p.get('best') is not None
+                                  for p in self.state['points'] if p['family'] in configs):
+            return None,None
+        lookup=getattr(self.completion_api(),'common_pauli_model_terms',None)
+        if lookup is None:
+            return None,None
+        try:
+            terms=lookup(configs)
+        except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError):
+            return None,None
+
+        def prices(key,R):
+            return [one+slope*(r-1) for (one,slope),r in zip(terms[key],(r for r in R for _ in O.AXES))]
+
+        feasible=[]
+        tau=O.tau(self.problem)
+        for p in self.state['points']:
+            key=p['family']
+            if (key not in terms or p.get('best_MSE_upper') is None or p.get('best') is None
+                    or not 0<=O.frac(p['best_MSE_upper'])<=tau):
+                continue
+            nx,ny=p.get('best_N_X'),p.get('best_N_Y')
+            if nx is None or ny is None or len(nx)!=13 or len(ny)!=13:
+                continue
+            vector=O.interleave(nx,ny)
+            if any(type(n)is not int or n<1 for n in vector):
+                continue
+            own=prices(key,families[key].R(Fraction(p['kappa'])))
+            cost=O.cost(vector,own)
+            if cost==O.frac(p['best']):
+                feasible.append(cost)
+        if not feasible:
+            return None,None
+        return lambda key,R:sum(prices(key,R)) if key in terms else None,min(feasible)
+
     def plan(self):
         families=self.families();points=[]
         for p in self.state['points']:
@@ -592,7 +633,9 @@ class WidthDriver:
         methods=list(dict.fromkeys(self.state['families'][key]['method']for key in families))
         for method in methods:
             scoped={key:f for key,f in families.items()if self.state['families'][key]['method']==method}
-            chosen,why,summary=W.plan_wide(scoped,[p for p in points if p['family']in scoped],self.wide_for(method))
+            floor,verified_best=self.model_floor(scoped) if method=='PR_PAULI' else (None,None)
+            chosen,why,summary=W.plan_wide(scoped,[p for p in points if p['family']in scoped],self.wide_for(method),
+                                          floor,price_floor_best=verified_best)
             proposals.extend(chosen);decisions.extend(why);reports[method]=summary;family_reports.update(summary['families'])
         report=dict(per_method=reports,global_best_by_method={m:r['global_best']for m,r in reports.items()},
             global_best=next(iter(reports.values()))['global_best']if len(reports)==1 else None,families=family_reports,
@@ -634,17 +677,26 @@ class WidthDriver:
         if wave is None or wave['cycle']!=cycle:
             wave=self.state['preparation_wave']=dict(cycle=cycle,dispatched={})
         selected=[];counts={}
+        review_order=self.spec.get('search_overrides',{}).get('review_search_order') is True
         for method in self.methods:
             queues={}
             for p in pending:
                 if p['method']==method:queues.setdefault(p['family'],[]).append(p)
-            costs={};loads={}
+            costs={};loads={};dear=set()
+            incumbents=[O.frac(p['best']) for p in self.state['points']
+                        if p.get('method')==method and p.get('best') is not None]
+            incumbent=min(incumbents) if review_order and incumbents else None
             for family in queues:
                 members=[p for p in self.state['points']if p.get('family')==family]
                 saved=[O.frac(v)for p in members for v in(p.get('best'),p.get('confirmed_all_best'))if v is not None]
                 costs[family]=min(saved)if saved else None
                 loads[family]=sum(p.get('input_dispatches',0)for p in members)
-                queues[family].sort(key=lambda p:p.get('input_dispatches',0))
+                if incumbent is not None:
+                    anchors=[Fraction(p['kappa']) for p in members if p.get('own_price_floor') is not None
+                             and O.frac(p['own_price_floor'])>=incumbent]
+                    if anchors:
+                        dear.update(id(p) for p in queues[family] if Fraction(p['kappa'])>=min(anchors))
+                queues[family].sort(key=lambda p:(id(p) in dear,p.get('input_dispatches',0)))
             known=sorted((f for f in queues if costs[f]is not None),key=lambda f:costs[f])
             unknown=[f for f in queues if costs[f]is None]
             order=[]
@@ -664,7 +716,8 @@ class WidthDriver:
                 order = [family for level in zip_longest(*by_width.values()) for family in level if family is not None]
             available=max(0,limit-wave['dispatched'].get(method,0));chosen=[]
             while len(chosen)<available and any(queues.values()):
-                for family in order:
+                ready=[family for family in order if queues[family] and id(queues[family][0]) not in dear]
+                for family in ready or order:
                     if queues[family]and len(chosen)<available:chosen.append(queues[family].pop(0))
             selected.extend(chosen);counts[method]=len(chosen)
             wave['dispatched'][method]=wave['dispatched'].get(method,0)+len(chosen)
@@ -1068,8 +1121,14 @@ class WidthDriver:
             K.CLI.write(self.run/'NEEDS.json',dict(candidates=K.CLI.candidate_rows(context)))
             from publish_h4_search_run import prepare as publish_search
             publish_search(ROOT,self.run,self.run.parent/'SEARCH_PUBLICATION.json',run_id=self.spec['round_id'])
+        priced={c['configuration_id']:c['prices'] for c in context['candidates']
+                if c.get('ready') and c.get('prices')}
         for p in self.state['points']:
             if p['status']not in('REGISTERED','EVALUATED'):continue
+            prices=priced.get(p.get('evaluation_configuration_id',p.get('configuration_id')),[])
+            if (search.get('review_search_order') is True and len(prices)==26
+                    and all(type(v) in (int,Fraction) and v>=0 for v in prices)):
+                p['own_price_floor']=sum(prices)
             rows=result.get(p['method'],{}).get('by_configuration',[])
             b=next((v for v in rows if v['configuration_id']==p.get('evaluation_configuration_id',p.get('configuration_id'))),None)
             if b:

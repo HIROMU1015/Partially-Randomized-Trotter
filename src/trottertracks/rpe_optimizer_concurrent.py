@@ -43,7 +43,7 @@ def _tree_rss(pid):
 
 class ConcurrentExecutor(O.Executor):
     supports_nonblocking_prefetch=True
-    def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,prefix_cache_directory=None,prefix_checkpoint_rounds=None,prefix_cache_max_bytes=None,compact_q3_evidence=False,**kwargs):
+    def __init__(self,*args,budgets=None,science_approved=True,dp_workers=None,prefix_cache_directory=None,prefix_checkpoint_rounds=None,prefix_cache_max_bytes=None,compact_q3_evidence=False,parallel_dp_residual=False,**kwargs):
         super().__init__(*args,**kwargs)
         if dp_workers is not None and (type(dp_workers)is not int or dp_workers<1):
             raise ValueError('Positive integer dp_workers required')
@@ -51,6 +51,8 @@ class ConcurrentExecutor(O.Executor):
             raise ValueError('Positive integer prefix_cache_max_bytes required')
         if type(compact_q3_evidence) is not bool:
             raise ValueError('compact_q3_evidence must be a boolean')
+        if type(parallel_dp_residual) is not bool:
+            raise ValueError('parallel_dp_residual must be a boolean')
         self.run_dir.mkdir(parents=True,exist_ok=True)
         driver=(self.run_dir/'FAST_DRIVER.lock').open('a')
         try:fcntl.flock(driver,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -61,6 +63,7 @@ class ConcurrentExecutor(O.Executor):
         self.prefix_checkpoint_rounds=prefix_checkpoint_rounds
         self.prefix_cache_max_bytes=prefix_cache_max_bytes
         self.compact_q3_evidence=compact_q3_evidence
+        self.parallel_dp_residual=parallel_dp_residual
         existing={}
         for method in self.routes:
             base=self.run_dir/'jobs'/method
@@ -123,6 +126,8 @@ class ConcurrentExecutor(O.Executor):
             req['execution_profile']['prefix_cache_max_bytes']=self.prefix_cache_max_bytes
         if self.compact_q3_evidence:
             req['execution_profile']['compact_q3_evidence']=True
+        if self.parallel_dp_residual:
+            req['execution_profile']['parallel_dp_residual']=True
         return req
 
     def prefetch_state(self):
@@ -184,6 +189,16 @@ class ConcurrentExecutor(O.Executor):
                 same_scope=(t.view.method==self.method) if scope=='METHOD' else t.owner==owner
                 if same_scope and t.status=='QUEUED'and not t.demand and t.job not in desired:self._cancel(t)
         for i,p in enumerate(proposals):self._enqueue(p,demand=(i==0))
+
+    def retire_priced_out(self, configurations):
+        """Retire only work still owned by this method's local queue."""
+        with self.state.cv:
+            self.standby = deque(p for p in getattr(self,'standby', ())
+                                 if p['configuration_id'] not in configurations)
+            for task in self.state.tasks.values():
+                if task.status=='QUEUED' and task.owner[0]==self.method and task.owner[1] in configurations \
+                        and task.rule['kind']!='preparation':
+                    self._cancel(task)
 
     def prefetch_standby(self, choice, proposals):
         """Reserve the demand first and retain the rest as unreserved alternatives."""

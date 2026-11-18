@@ -19,7 +19,7 @@ VIEW=Path(os.environ.get('RPE_FIXED_VIEW','/home/AbeHiromu/projects/partially-ra
 sys.path[:0]=[str(VIEW/'src'),str(VIEW/'tests')]
 from trottertracks import rpe_total_dp_parallel as P
 spec=importlib.util.spec_from_file_location('_d2_prefix',ROOT/'src/trottertracks/rpe_dp_prefix_reuse.py')
-C=importlib.util.module_from_spec(spec);spec.loader.exec_module(C)
+C=importlib.util.module_from_spec(spec);sys.modules[spec.name]=C;spec.loader.exec_module(C)
 from check_rpe_total_dp_parallel import tables
 from check_rpe_total_decoder_risk import make,CASES
 R=P.R
@@ -204,27 +204,42 @@ class PrefixTests(unittest.TestCase):
         A.route(VIEW,'pauli_b_common_entry')  # unchanged saved worker constructor path
         observed=A.COMMON['X'].L.R.Observed
         _,tt,scope=example(n=4)
-        with tempfile.TemporaryDirectory()as d:
-            request=dict(method='PR_DF',configuration_id='ARTIFICIAL',expected={'configuration_id':'ARTIFICIAL'},
-                route=dict(view_commit='ARTIFICIAL_FIXED'),execution_profile=dict(prefix_cache_directory=str(Path(d)/'cache'),
-                    prefix_cache_max_bytes=20000))
-            inputs={k:{'fixture':'ARTIFICIAL'}for k in A.CONTRACT}
-            case=dict(configuration={'fixture':'ARTIFICIAL'},signal_packet={'fixture':'ARTIFICIAL'})
-            for i,trial in enumerate((tt,changed_tail(tt))):
-                out=Path(d)/str(i);out.mkdir()
-                route_path=list(sys.path)
-                with A.prefix_cache_context(request,case,inputs,out):
-                    self.assertEqual(sys.path,route_path)
-                    child=mp.get_context('fork').Process(target=artificial_child,args=(trial,scope,out,observed))
-                    child.start();child.join(20);self.assertEqual(child.exitcode,0)
-                result=json.loads((out/'RESULT.json').read_text())
-                self.assertEqual(result,P.Accelerator(workers=1)(trial,h=10.,target=0.,scope=scope))
-            events=[json.loads(l)for l in(Path(d)/'1'/'DP_PREFIX_EVENTS.jsonl').read_text().splitlines()]
-            self.assertTrue(any(e['event']=='HIT'for e in events))
-            self.assertTrue(all(e['pid']!=os.getpid()for e in events))
-            files = list((Path(d)/'cache').glob('*.json.gz'))
-            self.assertTrue(files)
-            self.assertLessEqual(sum(f.stat().st_size for f in files), 20000)
+        for parallel_residual in (False,True):
+            with self.subTest(parallel_residual=parallel_residual), tempfile.TemporaryDirectory()as d:
+                request=dict(method='PR_DF',configuration_id='ARTIFICIAL',expected={'configuration_id':'ARTIFICIAL'},
+                    route=dict(view_commit='ARTIFICIAL_FIXED'),execution_profile=dict(prefix_cache_directory=str(Path(d)/'cache'),
+                        prefix_cache_max_bytes=20000,parallel_dp_residual=parallel_residual))
+                inputs={k:{'fixture':'ARTIFICIAL'}for k in A.CONTRACT}
+                case=dict(configuration={'fixture':'ARTIFICIAL'},signal_packet={'fixture':'ARTIFICIAL'})
+                for i,trial in enumerate((tt,changed_tail(tt))):
+                    out=Path(d)/str(i);out.mkdir()
+                    route_path=list(sys.path)
+                    with A.prefix_cache_context(request,case,inputs,out):
+                        self.assertEqual(sys.path,route_path)
+                        child=mp.get_context('fork').Process(target=artificial_child,args=(trial,scope,out,observed))
+                        child.start();child.join(20);self.assertEqual(child.exitcode,0)
+                    result=json.loads((out/'RESULT.json').read_text())
+                    self.assertEqual(result,P.Accelerator(workers=1)(trial,h=10.,target=0.,scope=scope))
+                events=[json.loads(l)for l in(Path(d)/'1'/'DP_PREFIX_EVENTS.jsonl').read_text().splitlines()]
+                self.assertTrue(any(e['event']=='HIT'for e in events))
+                self.assertTrue(all(e['pid']!=os.getpid()for e in events))
+                files = list((Path(d)/'cache').glob('*.json.gz'))
+                self.assertTrue(files)
+                self.assertLessEqual(sum(f.stat().st_size for f in files), 20000)
+
+    def test_grouped_residual_processes_exact_with_pair_and_frontier_limits(self):
+        _,tt,scope=example(n=5,shots=12,states=384,pairs=95000)
+        reference=P.Accelerator(workers=1)(tt,h=10.,target=0.,scope=scope)
+        with patch.object(C,'ProcessPoolExecutor',wraps=C.ProcessPoolExecutor) as pool, \
+             patch.object(C,'MIN_DROPS_PER_WORKER',32):
+            engine=C.accelerator_class(P,parallel_residual=True)(workers=3,
+                cache_namespace={'fixture':'grouped_residual'},checkpoint_rounds=[1,3])
+            self.assertEqual(engine(tt,h=10.,target=0.,scope=scope),reference)
+            self.assertGreater(pool.call_count,0)
+        trial=changed_tail(tt)
+        self.assertEqual(engine(trial,h=10.,target=0.,scope=scope),
+                         P.Accelerator(workers=1)(trial,h=10.,target=0.,scope=scope))
+        self.assertTrue(any(e['event']=='HIT' and e['completed']==3 for e in engine.cache_events))
 
     def test_original_guards_stay_active(self):
         with patch.object(P,'REFERENCE_DP_AST_SHA256','WRONG'):

@@ -20,6 +20,7 @@ import subprocess
 import sys
 import time
 import traceback
+from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 CALLER='scripts/run_pr_df_candidate_prices.py'
@@ -362,7 +363,7 @@ def scalar_metadata(config,tail_descriptor=None):
     return dict(tail_source=tail_source,scalar=scalar,record=scalar_record)
 
 
-def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=None,covered_rounds=None):
+def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=None,covered_rounds=None,*,parallel_axes=False):
     fixed(source);config=read(config_source);output=ROOT/output;output.mkdir(parents=True,exist_ok=True)
     selected=design(config,covered_rounds)
     if price_quote is not None:
@@ -388,6 +389,7 @@ def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=
     old=read(BASE_INPUTS)
     write(output/'INPUTS.json',dict(schema='PR_DF_CANDIDATE_PRICE_INPUTS_V1',source=source,configuration=config_source,configuration_id=config['id'],output_directory=rel(output),
         **({}if covered_rounds is None else dict(covered_rounds=selected['covered_rounds'])),
+        **(dict(parallel_axes=True) if parallel_axes else {}),
         cohort_adoption=adoption_summary,price_reuse=reuse_summary,tail_descriptor=tail_descriptor,cells=cells,model_design={k:v for k,v in selected.items()if k!='matrix'},runtime=old['runtime'],saved_input_files=old['saved_input_files'],
         local_support=old['local_support'],reused_worker=REUSED,adapter_source=ADAPTER_SOURCE,scalar=scalar_record,
         max_new_paths=sum(any(v['status']=='MISSING'for v in path.values())for c in cells for path in c['axis_evidence'].values()),max_wrapper_compiles=sum(v['status']=='MISSING'for c in cells for path in c['axis_evidence'].values()for v in path.values()),
@@ -411,13 +413,16 @@ def selected_acquire_path(job):
     """
     R=runtime();tree=ast.parse(blob(REUSED,'scripts/run_pr_df_ld_split.py'))
     fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef)and n.name=='acquire_path')
-    count={'directory':0,'limit':0,'zip':0}
+    count={'directory':0,'limit':0,'zip':0,'log':0,'stop':0}
     class Select(ast.NodeTransformer):
         def visit_Assign(self,node):
             self.generic_visit(node)
             if any(isinstance(t,ast.Name)and t.id=='directory'for t in node.targets):
                 count['directory']+=1
                 node.value=ast.BinOp(left=node.value,op=ast.Div(),right=ast.parse("'axes_'+''.join(req['axes'])",mode='eval').body)
+            if any(isinstance(t,ast.Name)and t.id=='log'for t in node.targets):
+                count['log']+=1
+                node.value=ast.Call(func=ast.Name('_axis_stage_path',ast.Load()),args=[node.value,ast.Name('cell',ast.Load()),ast.Name('req',ast.Load())],keywords=[])
             return node
         def visit_Compare(self,node):
             self.generic_visit(node)
@@ -428,12 +433,74 @@ def selected_acquire_path(job):
             self.generic_visit(node)
             if isinstance(node.func,ast.Name)and node.func.id=='zip'and len(node.args)==2 and ast.unparse(node.args[1])=="('X', 'Y')":
                 count['zip']+=1;node.args[1]=ast.parse("req['axes']",mode='eval').body
+            if (getattr(node.func,'id',None)=='write' and node.args
+                    and 'STOP_m' in ast.unparse(node.args[0])):
+                count['stop']+=1
+                node.args[0]=ast.Call(func=ast.Name('_axis_stage_path',ast.Load()),args=[node.args[0],ast.Name('cell',ast.Load()),ast.Name('req',ast.Load())],keywords=[])
             return node
     fn=Select().visit(fn)
-    if count!={'directory':1,'limit':1,'zip':1}:raise ValueError('Fixed worker axis specialization does not match SOURCE')
-    scope=dict(R.__dict__);module=ast.fix_missing_locations(ast.Module(body=[fn],type_ignores=[]))
+    if count!={'directory':1,'limit':1,'zip':1,'log':1,'stop':1}:raise ValueError('Fixed worker axis specialization does not match SOURCE')
+    scope=dict(R.__dict__,_axis_stage_path=axis_stage_path);module=ast.fix_missing_locations(ast.Module(body=[fn],type_ignores=[]))
     exec(compile(module,REUSED+':selected_acquire_path','exec'),scope)
-    return scope['acquire_path'](job)
+    cell,index=job
+    if not cell.get('parallel_axis_group'):
+        return scope['acquire_path'](job)
+    science=R.STATE['runtimes'][cell['m']].science
+    with patch.object(science,'write',shared_event_writer(science.write,science.m.digest)):
+        return scope['acquire_path'](job)
+
+
+def axis_stage_path(path,cell,request):
+    if not cell.get('parallel_axis_group'):
+        return path
+    return path.with_name(path.stem+'_axes'+''.join(request['axes'])+path.suffix)
+
+
+def shared_event_writer(original,digest):
+    """Both split receipts keep a local path to one immutable event artifact."""
+    def emit(path,value):
+        path=Path(path)
+        if path.name!='events_PRIVATE.json' or path.parent.name not in ('axes_X','axes_Y'):
+            return original(path,value)
+        parent=path.parent.parent
+        common=parent/'events_PRIVATE.json'
+        lock=parent/'SHARED_EVENTS.lock'
+        fingerprint=parent/'SHARED_EVENTS.json'
+        identity=digest(value)
+        with lock.open('a+b') as handle:
+            fcntl.flock(handle,fcntl.LOCK_EX)
+            if common.exists():
+                if json.loads(fingerprint.read_text())['digest']!=identity:
+                    raise ValueError('Split X/Y event log differs')
+            else:
+                original(common,value)
+                write(fingerprint,dict(digest=identity))
+            os.link(common,path)
+    return emit
+
+
+def pending_axis_jobs(cell,index,out,evidence,parallel=False):
+    point=f'm{cell["m"]}_p{index}'
+    missing=[]
+    for axis in ('X','Y'):
+        if evidence[axis]['status']!='MISSING':
+            continue
+        prior=(f'STARTED_{point}.json',f'STARTED_{point}_axesXY.json',f'STARTED_{point}_axes{axis}.json',
+               f'STOP_{point}.json',f'STOP_{point}_axes{axis}.json')
+        if any((out/name).exists() for name in prior):
+            evidence[axis]=dict(status='HELD_PRIOR_START_OR_FAILURE_NO_RETRY')
+        else:
+            missing.append(axis)
+    if not missing:
+        return []
+    jobs=[]
+    for axes in ([a] for a in missing) if parallel else (missing,):
+        selected=deepcopy(cell)
+        selected['request']=selected_request(cell['request'],axes)
+        if parallel:
+            selected['parallel_axis_group']=True
+        jobs.append((selected,index))
+    return jobs
 
 
 def selected_request(request,axes):
@@ -492,14 +559,7 @@ def _acquire(inputs,input_commit,stage,source,model_commit=None):
     for cell in cells:
         for index in cell['indices']:
             evidence=scan_path_axes(cell,index,out);initial[cell['m'],index]=evidence
-            axes=[a for a in ('X','Y')if evidence[a]['status']=='MISSING']
-            marker=out/f'STARTED_m{cell["m"]}_p{index}_axes{"".join(axes)}.json'
-            old_marker=out/f'STARTED_m{cell["m"]}_p{index}.json';stop=out/f'STOP_m{cell["m"]}_p{index}.json'
-            if axes and (marker.exists()or old_marker.exists()or stop.exists()):
-                for a in axes:evidence[a]=dict(status='HELD_PRIOR_START_OR_FAILURE_NO_RETRY')
-                axes=[]
-            if axes:
-                selected=deepcopy(cell);selected['request']=selected_request(cell['request'],axes);pending.append((selected,index))
+            pending.extend(pending_axis_jobs(cell,index,out,evidence,inputs.get('parallel_axes') is True))
     if pending:
         ham,metadata=R.restore(pending[0][0]['request'],inputs['saved_input_files'],inputs['runtime']);contexts={};runtimes={}
         for cell in cells:
@@ -540,8 +600,10 @@ def _acquire(inputs,input_commit,stage,source,model_commit=None):
             atomic(out/f'm{cell["m"]}'/f'p{index}'/'PATH_INDEX.json',row);rows.append(row)
     good=all(r['status']=='VALID'for r in rows)
     reused=sum(v['status']=='REUSE'for evidence in initial.values()for v in evidence.values())
+    new_paths={(c['m'],i) for c,i in pending}
     atomic(out/'RESULT.json',dict(status='ACQUIRED'if good else'STOP_PARTIAL',rows=rows,
-        new_paths=len(pending),new_independent_paths=sum(all(v['status']=='MISSING'for v in initial[c['m'],i].values())for c,i in pending),resumed_partial_paths=sum(any(v['status']=='REUSE'for v in initial[c['m'],i].values())for c,i in pending),reused_axes=reused,new_wrapper_axes=sum(len(c['request']['axes'])for c,i in pending),
+        **(dict(axis_worker_starts=len(pending)) if inputs.get('parallel_axes') is True else {}),
+        new_paths=len(new_paths),new_independent_paths=sum(all(v['status']=='MISSING'for v in initial[k].values())for k in new_paths),resumed_partial_paths=sum(any(v['status']=='REUSE'for v in initial[k].values())for k in new_paths),reused_axes=reused,new_wrapper_axes=sum(len(c['request']['axes'])for c,i in pending),
         held_axes=sum(v['status']!='REUSE'for r in rows for v in r['axes'].values()),
         compile_attempts=sum(len(r['compiles'])for r in new_results),completed_compiles=sum(c['status']=='COMPLETE'for r in new_results for c in r['compiles']),
         source=source,inputs_commit=input_commit,model_commit=model_commit,elapsed_seconds=time.perf_counter()-start,
@@ -614,9 +676,9 @@ def compare(inputs,raw_commit,model_commit,source):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('mode',choices=('prepare','acquire','freeze','compare-holdout'));ap.add_argument('--source',required=True)
-    ap.add_argument('--tail-descriptor',type=Path);ap.add_argument('--price-quote',type=Path);ap.add_argument('--configuration');ap.add_argument('--selector',default='[]');ap.add_argument('--output');ap.add_argument('--cohort');ap.add_argument('--input',type=Path);ap.add_argument('--inputs-commit');ap.add_argument('--stage',choices=('calibration','holdout'));ap.add_argument('--raw-commit');ap.add_argument('--model-commit');ap.add_argument('--covered-rounds',type=json.loads);a=ap.parse_args()
+    ap.add_argument('--tail-descriptor',type=Path);ap.add_argument('--price-quote',type=Path);ap.add_argument('--configuration');ap.add_argument('--selector',default='[]');ap.add_argument('--output');ap.add_argument('--cohort');ap.add_argument('--input',type=Path);ap.add_argument('--inputs-commit');ap.add_argument('--stage',choices=('calibration','holdout'));ap.add_argument('--raw-commit');ap.add_argument('--model-commit');ap.add_argument('--covered-rounds',type=json.loads);ap.add_argument('--parallel-axes',action='store_true');a=ap.parse_args()
     if a.mode=='prepare':
-        commit,path=a.configuration.split(':',1);prepare(dict(commit=commit,path=path,selector=json.loads(a.selector)),a.output,a.source,a.cohort,None if a.price_quote is None else json.loads(a.price_quote.read_text()),None if a.tail_descriptor is None else json.loads(a.tail_descriptor.read_text()),a.covered_rounds)
+        commit,path=a.configuration.split(':',1);prepare(dict(commit=commit,path=path,selector=json.loads(a.selector)),a.output,a.source,a.cohort,None if a.price_quote is None else json.loads(a.price_quote.read_text()),None if a.tail_descriptor is None else json.loads(a.tail_descriptor.read_text()),a.covered_rounds, parallel_axes=a.parallel_axes)
     else:
         inputs=load_inputs(a.input,a.inputs_commit,a.source)
         if a.mode=='acquire':return 0 if acquire(inputs,a.inputs_commit,a.stage,a.source,a.model_commit)else 2
