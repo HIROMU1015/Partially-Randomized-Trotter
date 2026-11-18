@@ -25,6 +25,8 @@ def verify_prior_q3_holds(root, run, problem, spec):
                 or len(job_id) != 20 or any(c not in '0123456789abcdef' for c in job_id)):
             raise ValueError('Prior Q3 hold must refer to a job in the duplicate audit')
         if fixed.get('kind') == 'LOCAL_INTERRUPTED_WRITE':
+            if fixed.get('replay_exact'):
+                raise ValueError('Prior distributed Q3 replay cannot use a local hold: '+job_id)
             job = parent/'jobs'/method/job_id
             old_problem = load(parent.parent/'PROBLEM.json')
             request = load(job/'REQUEST.json')
@@ -89,10 +91,24 @@ def verify_prior_q3_holds(root, run, problem, spec):
                     or (job/'OUTCOME.json').exists()):
                 raise ValueError('Prior Q3 hold no longer matches the unresolved attempt: '+job_id)
             reason = detail['reason']
+        if fixed.get('replay_exact') is True:
+            if (terminal or reason != 'LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT'
+                    or (job/'PROCESS_RETURN.json').exists()
+                    or _has_local_owner(launch.get('pid'), parent)):
+                raise ValueError('Prior Q3 replay requires a stopped, interrupted attempt: '+job_id)
         holds[str(job)] = dict(fixed, parent_directory=str(parent), method=method,
                                configuration_id=request['configuration_id'], N_X=request['N_X'], N_Y=request['N_Y'],
                                reason=reason)
     return holds
+
+
+def _has_local_owner(pid, run):
+    if type(pid) is not int:
+        return False
+    try:
+        return str(run).encode() in (Path('/proc')/str(pid)/'cmdline').read_bytes()
+    except FileNotFoundError:
+        return False
 
 
 def verify_budget_parents(run,problem,spec):

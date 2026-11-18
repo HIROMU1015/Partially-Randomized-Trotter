@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import Mock
 
 from trottertracks.rpe_local0_search import Gateway, RequestError
-from trottertracks.rpe_method_optimizer import FAIL
+from trottertracks.rpe_method_optimizer import FAIL, Executor
 from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
 from trottertracks.rpe_priority_search import run_priority
 from trottertracks.rpe_q3_coordinator import digest
@@ -59,6 +59,46 @@ class ContinuationTests(unittest.TestCase):
 
     def save(self, name, body):
         (self.original/name).write_text(json.dumps(body))
+
+    def test_exact_replay_preserves_request_and_resumes_without_a_second_attempt(self):
+        import sys
+
+        method = 'PR_PAULI'
+        problem, context, routes = fixture([method], 1)
+        root = Path(__file__).resolve().parents[1]
+        source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+        proposal = dict(configuration_id=context['candidates'][0]['configuration_id'],
+                        vector=(2,)*26, cost=10, origin=dict(kind='ARTIFICIAL_REPLAY'))
+        old = Executor(root, self.original, routes, {}, problem, optimizer_source=source).for_method(method)
+        job = old.job_dir(proposal)
+        request = old.request(proposal, job, old.route(proposal['configuration_id']))
+        request['execution_profile'] = dict(dp_workers=3)
+        job.mkdir(parents=True)
+        (job/'REQUEST.json').write_text(json.dumps(request))
+        original_launch = dict(host_id='old-host', attempt_id='previous-attempt')
+        (job/'LAUNCH.json').write_text(json.dumps(original_launch))
+        fixed = dict(parent_directory=str(self.original), method=method, job_id=job.name,
+                     request_sha256=digest(request), replay_exact=True)
+        profile = dict(host_id='test-local', root=str(root), interpreter=sys.executable, slots=1,
+                       route_views={}, work_dir=str(self.root/'worker'))
+        attempts = []
+        for _ in range(2):
+            successor = DistributedExecutor(root, self.successor, routes, {}, problem, optimizer_source=source,
+                prior_run_dirs=[self.original, self.successor], budgets={method: 1},
+                distributed=dict(port=0, local_worker=profile))
+            successor.prior_q3_holds = [fixed]
+            try:
+                self.assertTrue(successor.replay_prior_q3())
+                row = successor.store.row(job.name)
+                self.assertEqual(row['state'], 'ACCEPTED')
+                self.assertEqual(row['request'], request)
+                attempts.append((row['attempt_id'], row['adopted_epoch']))
+            finally:
+                successor.finish()
+        self.assertEqual(attempts[0], attempts[1])
+        self.assertNotEqual(attempts[0][0], original_launch['attempt_id'])
+        self.assertEqual(json.loads((job/'LAUNCH.json').read_text()), original_launch)
+        self.assertFalse((job/'OUTCOME.json').exists())
 
     def test_shutdown_stop_is_not_reported_as_completed(self):
         gateway = Gateway({'state_directory': str(self.root)}, launch=Mock())

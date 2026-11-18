@@ -1631,7 +1631,48 @@ class DistributedExecutor(ConcurrentExecutor):
         self.state.peak_active = max(self.state.peak_active, self.state.active)
         return task
 
-    def _enqueue(self, proposal, demand=False):
+    def replay_prior_q3(self):
+        """Resolve exact allocations authorized in the successor's fixed round."""
+        from .rpe_q3_coordinator import digest
+
+        checked = []
+        for hold in self.prior_q3_holds:
+            if hold.get('replay_exact') is not True:
+                continue
+            method, job_id = hold['method'], hold['job_id']
+            parent_job = Path(hold['parent_directory'])/'jobs'/method/job_id
+            request = O.load_json(parent_job/'REQUEST.json')
+            view = self.for_method(method)
+            cid = request['configuration_id']
+            proposal = dict(configuration_id=cid, vector=O.interleave(request['N_X'], request['N_Y']),
+                            origin=request['origin'], cost=O.frac(request['cost']))
+            row = self.store.row(job_id)
+            if (digest(request) != hold['request_sha256']
+                    or request['optimizer_source'] != self.computation_source
+                    or view.job_dir(proposal).name != job_id or not view.same_route(parent_job, cid)
+                    or view.prior_job(proposal, exclude=(parent_job.resolve(), view.job_dir(proposal).resolve())) is not None
+                    or (row is not None and row['request'] != request)
+                    or (parent_job/'OUTCOME.json').exists()):
+                raise ValueError('Prior Q3 replay binding or ownership changed: '+job_id)
+            checked.append((view, proposal, parent_job, request))
+
+        # Dispatch the whole independent set before waiting for any result.
+        for view, proposal, parent_job, request in checked:
+            view._enqueue(proposal, demand=True, replay=(parent_job, request))
+        for view, proposal, parent_job, request in checked:
+            row = self.store.row(request['request_id'])
+            if row is None or row['state'] == 'CANCELLED':
+                if self._user_stop_requested():
+                    return False
+                raise RuntimeError('No eligible allocation for exact Q3 replay: '+parent_job.name)
+            answer = view.answer(proposal, allow_new=False)
+            if not answer or answer['status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
+                raise RuntimeError('Exact Q3 replay requires reconciliation: '+parent_job.name)
+            view.log(event='PRIOR_Q3_REPLAY_VALIDATED', job=parent_job.name, parent_job=str(parent_job))
+        self.prior_q3_holds = [hold for hold in self.prior_q3_holds if hold.get('replay_exact') is not True]
+        return True
+
+    def _enqueue(self, proposal, demand=False, *, replay=None):
         from .rpe_q3_coordinator import prefix_key
         if not self._candidate_preparation_ready(proposal):
             return False
@@ -1664,14 +1705,15 @@ class DistributedExecutor(ConcurrentExecutor):
             if resolved:
                 return task
             if not row or row['state'] == 'CANCELLED':
-                if (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists() or self.prior_job(proposal) is not None:
+                excluded = (replay[0].resolve(),) if replay else ()
+                if (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists() or self.prior_job(proposal, exclude=excluded) is not None:
                     return None
-                rule = self.route(proposal['configuration_id'])
+                rule = replay[1]['route'] if replay else self.route(proposal['configuration_id'])
                 if rule is None:
                     return None
                 if not s.approved or self._budget_reserved():
                     return False
-            request = row['request'] if row else self.request(proposal, job, rule)
+            request = row['request'] if row else replay[1] if replay else self.request(proposal, job, rule)
 
         eligibility = self._eligibility_for(request, job.name, previous=row and row['eligibility'])
 

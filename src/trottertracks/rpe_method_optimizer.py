@@ -731,13 +731,13 @@ class Executor:
         except (OSError,ValueError,KeyError,TypeError,subprocess.CalledProcessError):
             return False
 
-    def prior_job(self, proposal):
+    def prior_job(self, proposal, *, exclude=()):
         name = self.job_dir(proposal).name
         # A same-key prior LAUNCH remains owned there, even without an outcome.
         for marker in ('OUTCOME.json', 'LAUNCH.json'):
             for base in self.prior_run_dirs:
                 job = base / 'jobs' / self.method / name
-                if (job / marker).exists():
+                if (job / marker).exists() and (not exclude or job.resolve() not in exclude):
                     return job
         return None
 

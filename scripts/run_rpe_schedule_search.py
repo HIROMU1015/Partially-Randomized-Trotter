@@ -1076,6 +1076,8 @@ class WidthDriver:
         if runtime is not None:comp.bind_stage_executor(runtime)
         preparation_pool=None
         try:
+            if any(hold.get('replay_exact') is True for hold in getattr(executor, 'prior_q3_holds', ())):
+                prepare_during = executor.replay_prior_q3() and prepare_during
             interim=None
             fatal={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
             if prepare_during:
