@@ -241,6 +241,8 @@ class Completion:
         with self.lock:return self.shared_preparation_locks.setdefault(token,threading.RLock())
 
     def stage_source(self, stage):
+        if stage == 'DF_SIGNALS':
+            return self.settings.get('df_signal_source', self.source)
         if stage in ('DF_PRICE_PREPARE', 'DF_CALIBRATION', 'DF_MODEL_FREEZE',
                      'DF_HOLDOUT', 'DF_HOLDOUT_COMPARE'):
             return self.settings.get('df_price_source', self.source)
@@ -402,7 +404,8 @@ class Completion:
                     generated=self.service('df-generate',request,d,tag='DF_GENERATE_WITH_DESCRIPTOR')
                 if generated['status']!='CONFIGURATION_READY':raise Held('CONFIGURATION:'+str(generated))
                 config=generated['configuration'];prepared=None
-            physical_guard=self.shared_preparation_lock(dict(method=request['method'],physical=physical_evaluation_contract(config)))
+            physical=physical_evaluation_contract(config)
+            physical_guard=self.shared_preparation_lock(dict(method=request['method'],physical=physical))
             physical_guard.acquire()
             if request.get('design')and dec(config['spec']['kappa']['value'])!=dec(request['design']['kappa']):raise Held('ABSOLUTE_KAPPA_MISMATCH')
             put(d/'CONFIGURATION.json',config);commit=publish([d],'Fix selected PR candidate configuration')
@@ -410,9 +413,11 @@ class Completion:
             # A declaration can differ while the complete physical schedule and
             # evaluation contract are identical. Reuse READY inputs before any
             # scientific leaf; install() retains both declarations as aliases.
-            twin=next((old for old in list(self.state['records'].values())
+            with self.lock:
+                records=list(self.state['records'].values())
+            twin=next((old for old in records
                 if old is not rec and old.get('method')==request['method']and old.get('status')=='READY_FOR_SEARCH'
-                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical_evaluation_contract(config)),None)
+                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical),None)
             if twin is not None:
                 rec.update(status='READY_FOR_SEARCH',signal=deepcopy(twin['signal']),intake=deepcopy(twin['intake']),
                     quote=deepcopy(twin['quote']),prices=deepcopy(twin['prices']),price_policy=twin.get('price_policy','MODEL'),
@@ -420,9 +425,9 @@ class Completion:
                     design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),delta_pf=config['spec']['delta_pf']),
                     schedule=deepcopy(twin.get('schedule',[])))
                 self.save();return rec
-            failed_twin=next((old for old in self.state['records'].values()
+            failed_twin=next((old for old in records
                 if old is not rec and old.get('method')==request['method']and old.get('scientific_failure')
-                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical_evaluation_contract(config)),None)
+                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical),None)
             if failed_twin is not None:
                 raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
             initial_quote=self.initial_quote(config,cref,d)
@@ -641,11 +646,12 @@ class Completion:
     def df_signals(self,config,cref,d,descriptor,*,plan,bundles):
         result=dict(rows=[],new_provider_calls=0);obtained={}
         if any(row['decision']=='REQUEST' for row in plan['rounds']):
-            request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=self.source,
+            source=self.stage_source('DF_SIGNALS')
+            request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=source,
                          output_directory=rel(d/'df_signals'),runtime=dict(signal_view=str(self.path('SIGNAL_VIEW'))))
             inp=d/'DF_SIGNAL_REQUEST.json';put(inp,request);input_commit=publish([d],'Fix missing DF round jobs')
             output=d/'df_signals/RESULT.json'
-            result=self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/run_pr_df_candidate_signal_jobs.py'),'--input',str(inp),'--inputs-commit',input_commit,'--source',self.source],d,'DF_SIGNALS',output,science=True)
+            result=self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/run_pr_df_candidate_signal_jobs.py'),'--input',str(inp),'--inputs-commit',input_commit,'--source',source],d,'DF_SIGNALS',output,science=True)
             if result['status']not in ('REQUESTED_ROUNDS_COMPLETE','SIGNALS_READY','MISSING_ROUNDS_COMPLETE'):raise Held('DF_SIGNAL_RESULT:'+str(result['status']))
             raw=publish([d],'Publish missing DF round signals')
             obtained={str(x['m']):dict(commit=raw,path=x['raw_path'])for x in result['rows']if x.get('raw_path')}

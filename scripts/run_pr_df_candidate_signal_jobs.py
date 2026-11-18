@@ -57,21 +57,34 @@ def event(output, stage, **values):
 
 
 def fixed_runtime(view):
-    """Fresh worker imports the existing provider before any newer package."""
+    """Keep pinned relative imports separate from the worker's own package."""
     view = Path(view).resolve()
     if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=view, text=True).strip() != PROVIDER_COMMIT:
         raise ValueError('Fixed signal view HEAD differs')
-    for path in (PROVIDER_PATH, 'src/trottertracks/pr_rpe_signal_plan.py',
-                 'src/trottertracks/pr_rpe_rmse_s0_v2.py'):
+    paths = (PROVIDER_PATH, 'src/trottertracks/pr_rpe_signal_plan.py',
+             'src/trottertracks/pr_rpe_rmse_s0_v2.py')
+    for path in paths:
         if (view / path).read_bytes() != read_git(PROVIDER_COMMIT, path):
             raise ValueError('Fixed signal bytes differ: ' + path)
+    # As in the fixed DF planner's FixedRuntime, use a distinct package for
+    # the provider and its relative imports, including lazy imports after fork.
     sys.path[:0] = [str(view / 'src'), str(view / 'scripts')]
-    provider = importlib.import_module('trottertracks.pr_rpe_signal_provider')
-    metadata = importlib.import_module('trottertracks.pr_rpe_signal_plan')
-    fixed = importlib.import_module('trottertracks.pr_rpe_rmse_s0_v2')
-    if Path(provider.__file__).resolve() != (view / PROVIDER_PATH).resolve():
-        raise ValueError('Numerical provider import came from a foreign package')
-    node = next(n for n in ast.parse((view / 'src/trottertracks/pr_rpe_rmse_s0_v2.py').read_bytes()).body
+    package = '_pr_df_signal_worker_fixed'
+    directory = view / 'src/trottertracks'
+    if package not in sys.modules:
+        spec = importlib.util.spec_from_file_location(
+            package, directory / '__init__.py', submodule_search_locations=[str(directory)])
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[package] = module
+        spec.loader.exec_module(module)
+    if list(sys.modules[package].__path__) != [str(directory)]:
+        raise ValueError('DF signal worker already bound to a different view')
+    modules = [importlib.import_module(package + '.' + Path(path).stem) for path in paths]
+    for module, path in zip(modules, paths):
+        if Path(module.__file__).resolve() != (view / path).resolve():
+            raise ValueError('Fixed signal import came from a foreign package: ' + path)
+    provider, metadata, fixed = modules
+    node = next(n for n in ast.parse((view / paths[2]).read_bytes()).body
                 if isinstance(n, ast.FunctionDef) and n.name == 'b_metadata')
     namespace = dict(vars(fixed), B_RELEASE=B_RELEASE)
     exec(compile(ast.Module(body=[node], type_ignores=[]), 'fixed:DF-B_metadata', 'exec'), namespace)

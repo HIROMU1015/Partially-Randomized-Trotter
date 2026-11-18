@@ -319,6 +319,8 @@ def summarize(problem, spec, canonical):
     completion = spec.get('candidate_completion') or {}
     if 'PR_DF' in spec['methods'] and 'parallel_df_price_axes' in completion:
         result['parallel_df_price_axes'] = completion['parallel_df_price_axes']
+    if 'PR_DF' in spec['methods'] and 'df_signal_source' in completion:
+        result['df_signal_source'] = completion['df_signal_source']
     pbs = (execution.get('distributed') or {}).get('pbs') or {}
     if pbs.get('walltime_policy'):
         rules = [row for row in pbs['q3_task_seconds'] if row['method'] in spec['methods']]

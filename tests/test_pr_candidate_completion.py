@@ -8,6 +8,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1];sys.path[:0]=[str(ROOT/'src'),str(ROOT/'tests')]
@@ -43,6 +44,43 @@ def main():
             with patch.object(c,'pauli_configuration',side_effect=AssertionError('no acquisition')):
                 out=c.complete(r)
             self.assertTrue(out['resumed']);self.assertEqual(out['configuration_id'],'ARTIFICIAL')
+
+    def test_prior_failure_lookup_survives_concurrent_candidate_registration(self):
+        request = {'method': 'PR_DF', 'configuration': 'selected'}
+        config = {'id': 'selected', 'spec': {}, 'rounds': []}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            registry = root / 'fixture_registry.json'
+            C.put(registry, {'entries': []})
+            with patch.object(C, 'ROOT', root):
+                completion = C.Completion(root / 'run', {'source': 'fixture', 'price_registry_file': registry})
+                records = completion.state['records']
+                records.update({
+                    name: dict(key=name, method='PR_DF', status='HELD_TECHNICAL_FAILURE',
+                               scientific_failure=True, configuration={'path': name})
+                    for name in ('unrelated', 'physical_twin')
+                })
+
+                def read_previous(locator):
+                    if locator['path'] == 'unrelated':
+                        def register():
+                            with completion.lock:
+                                records['late'] = {'status': 'SELECTED'}
+                        new_candidate = threading.Thread(target=register)
+                        new_candidate.start()
+                        new_candidate.join(timeout=2)
+                        self.assertFalse(new_candidate.is_alive())
+                        return dict(config, spec={'different': True})
+                    return config
+
+                with patch.object(completion, 'saved_df_descriptor', return_value=None), \
+                     patch.object(completion, 'service', return_value=dict(status='CONFIGURATION_READY', configuration=config)), \
+                     patch.object(completion, 'initial_quote', side_effect=AssertionError('prior failure must hold')), \
+                     patch.object(C, 'publish', return_value='fixed'), patch.object(C, 'value', side_effect=read_previous):
+                    result = completion.complete(request)
+                self.assertEqual(result['reason'], 'PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:physical_twin')
+                self.assertTrue(result['scientific_failure'])
+                self.assertIn('late', records)
 
     def test_published_v2_missing_order_not_reimplemented(self):
         candidates=[dict(name='PR_DF:'+str(n),ready=False,configuration_id=None,key=dict(L_D=n),needs=['SIGNAL'])for n in (9,6,8,5)]

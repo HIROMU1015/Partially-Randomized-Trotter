@@ -26,6 +26,37 @@ from trottertracks.rpe_q3_store import JobStore
 
 
 class CompletionBridgeTests(unittest.TestCase):
+    def test_df_signal_request_binds_selected_runner_without_legacy_bootstrap(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            def git(*args):
+                return subprocess.check_output(
+                    ['git', *args], cwd=root, text=True, stderr=subprocess.PIPE).strip()
+            git('init')
+            script = root / 'scripts/run_pr_df_candidate_signal_jobs.py'
+            script.parent.mkdir()
+            script.write_text('# artificial signal runner\n')
+            git('add', '.')
+            git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+                'commit', '-qm', 'fixed artificial signal source')
+            source = git('rev-parse', 'HEAD')
+            work = root / 'candidate'
+            work.mkdir()
+            engine = type('Engine', (), {'run_dir': root / 'run'})()
+            bridge = B.DistributedPreparationBridge(engine, root)
+            completion = C.Completion.__new__(C.Completion)
+            completion.source = 'legacy-source'
+            completion.settings = {'df_signal_source': source, 'df_price_source': 'fixed-price'}
+            command = [sys.executable, '-B', str(script), '--source', source]
+            request = bridge.build_request(completion, command, work, 'DF_SIGNALS')
+            self.assertEqual(request['preparation']['command'], command)
+            self.assertEqual(request['original_contract']['source'], source)
+            self.assertEqual(request['preparation']['source'], dict(
+                commit=source, files={str(script.relative_to(root)):
+                    hashlib.sha256(script.read_bytes()).hexdigest()}))
+            self.assertEqual(completion.stage_source('DF_CALIBRATION'), 'fixed-price')
+            self.assertEqual(completion.stage_source('PAULI_SIGNALS'), 'legacy-source')
+
     def test_native_runtime_paths_reuse_original_seals_and_ignore_optional_cache(self):
         with tempfile.TemporaryDirectory()as tmp:
             root=Path(tmp);provider=root/'provider';provider.mkdir();code=provider/'worker.py';code.write_text('# fixed native fixture\n')
