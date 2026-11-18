@@ -120,6 +120,10 @@ class ArtificialCompletion:
 class ArtificialDriver(E.WidthDriver):
     def catalog(self):return Reader(),dict(candidates=[])
 
+    def generate_families(self, method, items):
+        return [dict(item_id=item['item_id'], **self.generate(method, item['base'], item['changes']))
+                for item in items]
+
     def generate(self, method, base, changes):
         delta=Fraction(.1)*KS._frac(changes['delta_over_h'])
         # The real DF mapper, unlike the Pauli mapper, rejects this grid.
