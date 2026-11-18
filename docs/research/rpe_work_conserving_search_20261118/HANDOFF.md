@@ -133,4 +133,8 @@ PBS実機の人工検収は先行版 `b62f0353d6b49445da0eaedfb6f10871cf687d17` 
 
 PBSの信号準備 `prep-7eedb01dbec53998d13aca2b` は、初回の作業領域でGit objectが不足し、信号本体に入る前に終了した。専用の準備キャッシュに必要な1,252 object（pack 8,602,065 bytes）を追加し、同じ保存入力で出力先の展開まで通った。元attemptは既存の終了コードとログを伴う準備失敗として通常の結果入口で一度回収した。実行結果への再分類や再実行は行っていない。記録は `PBS_GIT_OUTPUT_CONES_REPAIR.json` と `PBS_WORKSPACE_FAILURE_RECOVERY.json`。PBSとWSLでは実Q3の完了を確認した。WSLの終了記録が欠けた評価は保留し、同じ評価の再投入を避ける。
 
+終了時に中央が回収した新規Q3はRomuTail 6件、server2 8件、WSL 4件、PBS 1件。RomuTailの信号は9件を回収し、探索へ取り込んだ。server2の信号完了1件は元runで確認した。WSLとPBSの信号本体完了は引継ぎ先では未確認。二重割当と二重結果受付は各0件。PBSの2割当はいずれも終了した。WSLの容量は中央の保存物とSHA-256が一致した旧配布cache 33点の整理により 50,417,528,832 bytesとなり、既存の受付を戻した。
+
+通常Statusは `RECONCILIATION_REQUIRED`。WSLのPR-Pauli `1372275cb36e31a0940b` の終了記録がなく、探索は `V2_RESULT_REQUIRES_REVIEW` で終了した。同じ期間にB0IのWSL評価2件にも終了記録がなかった。3件は保留している。上記実運用の修正をコードへ反映した次回用SOURCE `35f8ddd8ad92efa347ed86afa979237bf72b3445` は4環境に固定配置済み。
+
 PR-Pauliの価格較正は、元の固定設定のホスト別参照と、科学実行器が確認する公開済みGit束縛を準備するまで保留する。通常の信号生成および評価可能なQ3は独立して割り当てる。
