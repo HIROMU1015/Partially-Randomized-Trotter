@@ -90,3 +90,13 @@ Windowsと共通CLIは、明示版・currentのPreviewで同じ版を選ぶ。�
 固定SOURCEで人工・回帰186件がPASS。人工DPで厳密一致、m8からの再開、容量、残差計時、既存raw証跡の回収を確認した。RomuTail、server2、Romulaptop WSL、PBS gatewayに配置し、保存入力を用いたhostとルートの組合せ12件で、元入力と新adapterのDPガードを照合した。PBSの別の旧Pauli入力 `3b58bd604a40222989a6` は、前版でも再現する辞書identityの不一致で保留した。旧adapterの固定版専用テスト2件は前版でも同様に失敗した。
 
 WindowsとCLIの明示版・currentの通常Previewで新設定を確認した。旧run `search-8b10307fd1b9fc375b6b` は元の固定版で `STOPPED`。新規の実信号・compile・Q3・PBS投入は各0件。新releaseでの実H4短縮率は未計測。server1の復帰後は新releaseのmanifestで配置し、保存入力を照合してから参加する。
+
+## Worker保存領域の50 GiB受付制限
+
+新規runのcurrentは `romutail-storage-limit-d39c21ab9`。controllerとworkerのSOURCEは `d39c21ab9eb6bf7527cb2f8604fe5265db7a5ca3`。前currentは `romutail-selective-q3-ed4d7855b`。
+
+RomuTail・Romulaptop WSL・server2・PBS・server1に各50 GiB（53,687,091,200バイト）を設定した。環境別profileの `storage_limit` が、最適化workerの作業ファイル・未回収結果と入力・DP等のキャッシュの合計を測る。PBSは全run共通の保存先とキャッシュの合計を使う。RomuTailではworker側の領域を対象とする。各DPキャッシュの40 GiB設定も適用される。
+
+測定値が50 GiB以上、または使用量が取得できない環境は、新規受付を停止する。PBSでは新規allocationを要求する前にも確認する。実行中jobと結果回収は続き、使用量が減ると再計測で受付を再開する。この受付制限では実行中の書き込みで一時的に50 GiBを超え得る。通常Previewの `applied.worker_storage_limits_bytes` と稼働中のキュー計時 `QUEUE_WAIT_STATE` に、設定値と受付の状態が出る。
+
+人工・回帰128件が通過した。RomuTail（31.8 GiB）、Romulaptop WSL（20.4 GiB）、server2（9.6 GiB）、PBS（1.6 GiB）で50 GiB設定と現在使用量を確認した。PBS gatewayの新規投入前の照会も通過した。server1の設定は新releaseに固定し、復帰後にworkerを配置して容量照会を確認する。旧runは元の固定版でSTOPを維持。新規の実科学計算とPBS投入は各0件。
