@@ -36,6 +36,18 @@ def put(path, value):
 def is_preparation(value):return (value.get('request',value).get('route')or{}).get('kind')=='preparation'
 
 
+def bind_df_signal_workers(command, workers):
+    if (type(workers) is not int or workers < 1 or len(command) < 3
+            or Path(command[2]).name != 'run_pr_df_candidate_signal_jobs.py'):
+        raise ValueError('DF signal reservation requires a fixed runner and positive CPU count')
+    if '--workers' in command:
+        index = command.index('--workers')
+        if command[index+1:index+2] != [str(workers)]:
+            raise ValueError('DF signal worker count differs from its reserved CPUs')
+        return command
+    return [*command, '--workers', str(workers)]
+
+
 def preparation_profile_core(profile):
     excluded={'work_dir','slots','slot_policy','route_profiles','preparation_profiles','artifact_cache_directory','preparation_metadata_cache_directory','pbs'}
     return {key:deepcopy(value) for key,value in profile.items() if key not in excluded}
@@ -402,6 +414,8 @@ def execute(assignment, base_profile, directory):
     for argument in spec['command']:
         for old,new in sorted(bindings.items(),key=lambda pair:-len(pair[0])):argument=argument.replace(old,new)
         command.append(resolve(argument))
+    if spec.get('provider') == 'DF_SIGNALS' and profile.get('task_cpu_count') is not None:
+        command = bind_df_signal_workers(command, profile['task_cpu_count'])
     if command[0]!=profile['interpreter'] and command[0]not in {t['path']for t in fingerprint['tools'].values()}:raise ValueError('Command does not use verified Python/compiler')
     _include_declared_outputs(owned,directory,list(spec['outputs'])+list(spec.get('optional_outputs',[])))
     # Inputs may contain prior owned workspace outputs. Materialize after clone.

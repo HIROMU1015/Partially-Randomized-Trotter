@@ -98,7 +98,7 @@ class ControllerFailures(unittest.TestCase):
         executor.distributed['host_eligibility'] = dict(schema='RPE_Q3_HOST_ELIGIBILITY_V1', jobs={})
         started, release, completed = threading.Event(), threading.Event(), threading.Event()
 
-        def slow_probe(view, request, job, decision):
+        def slow_probe(view, request, job, decision, *, publish):
             started.set()
             if not release.wait(5):
                 raise AssertionError('Completion was blocked by readiness')
@@ -133,7 +133,7 @@ class ControllerFailures(unittest.TestCase):
         started, release = threading.Event(), threading.Event()
         fingerprint = {'fixture':'current'}
 
-        def probe(view, request, job, decision):
+        def probe(view, request, job, decision, *, publish):
             hosts = ['server1']
             if 'joined' in view.hosts:
                 started.set()
@@ -164,11 +164,12 @@ class ControllerFailures(unittest.TestCase):
         proposal = self.proposal('on-retry')
         fingerprint = {'fixture':'current'}
 
-        def recovered(view, request, job, decision):
+        def recovered(view, request, job, decision, *, publish):
             return dict(decision, eligible_host_ids=['server1'],
                         host_fingerprints={'server1':Q.digest(fingerprint)})
 
-        with patch('trottertracks.rpe_live_q3_readiness.probe', side_effect=lambda _, rq, job, result: result) as probe:
+        with patch('trottertracks.rpe_live_q3_readiness.probe',
+                   side_effect=lambda _, rq, job, result, **kw: result) as probe:
             self.assertFalse(view._enqueue(proposal))
             self.assertFalse(view._enqueue(proposal))
             self.assertEqual(probe.call_count, 1)
@@ -183,6 +184,42 @@ class ControllerFailures(unittest.TestCase):
             assignment, = executor.rpc('/v1/poll', dict(host_id='server1', slots=1, source_sha=self.source,
                 host_fingerprints={task.job.name:fingerprint}))['assignments']
             executor.rpc('/v1/complete', self.completion(assignment))
+        self.assertEqual(executor.store.counts('PR_PAULI', started_only=True), 1)
+
+    def test_first_verified_host_claims_before_other_host_finishes_its_probe(self):
+        executor = self.executor(capacity=2, live_q3_readiness=True,
+                                 host_eligibility=dict(schema='RPE_Q3_HOST_ELIGIBILITY_V1', jobs={}))
+        view = executor.for_method('PR_PAULI')
+        proposal = self.proposal('early-pass')
+        local = {'fixture':'local'}
+        remote = {'fixture':'remote'}
+        released = threading.Event()
+
+        def probe(executor, request, job, decision, *, publish):
+            def snapshot(facts):
+                return dict(decision, eligible_host_ids=list(facts),
+                            host_fingerprints={host:Q.digest(value) for host,value in facts.items()},
+                            host_decisions={host:{'status':'PASS'} for host in facts}, execution_profiles={})
+            publish(snapshot({'server1':local}))
+            if not released.wait(5):
+                raise AssertionError('Assignment waited for the slow host')
+            return snapshot({'server1':local, 'remote':remote})
+
+        with patch('trottertracks.rpe_live_q3_readiness.probe', side_effect=probe):
+            try:
+                task = view._enqueue(proposal, demand=True)
+                self.assertTrue(executor.live_readiness_inflight)
+                poll = dict(host_id='server1', slots=1, source_sha=self.source,
+                            host_fingerprints={task.job.name:local})
+                assignment, = executor.rpc('/v1/poll', poll)['assignments']
+                executor.rpc('/v1/complete', self.completion(assignment))
+            finally:
+                released.set()
+            with executor.state.cv:
+                self.assertTrue(executor.state.cv.wait_for(lambda: not executor.live_readiness_inflight, 3))
+            answer = executor.rpc('/v1/poll', dict(poll, host_id='remote',
+                                                 host_fingerprints={task.job.name:remote}))
+            self.assertEqual(answer['assignments'], [])
         self.assertEqual(executor.store.counts('PR_PAULI', started_only=True), 1)
 
     def test_standby_refills_after_another_polling_host_joins_and_finishes(self):

@@ -276,27 +276,32 @@ class PbsManager:
                     (unchecked or (eligibility is None and artificial) or
                      host in (eligibility or {}).get('eligible_host_ids', []))]
 
+            # A task can already be reserved on another host before a PBS
+            # allocation exists to check it. Retain that eligible demand if
+            # there is no compatible free slot outside PBS.
+            checks = {}
+            for job, record in self.executor.preparation_pending.items():
+                request = record['request']
+                usable = [host for host in compatible(request, None, unchecked=True)
+                          if host not in record.get('failures', {})]
+                if usable:
+                    checks[job] = (usable, request)
             ready = []
             for task in self.executor._ready_queue():
                 row = self.executor.store.row(task.job.name)
                 usable = compatible(row['request'], row['eligibility'])
-                if usable:
-                    ready.append((task, usable, row['request']))
+                unchecked, _ = checks.pop(task.job.name, ([], None))
+                if usable or unchecked:
+                    ready.append((task, usable, unchecked, row['request']))
             available = {host:self.executor._offer_free(host,policy,error) for host in self.executor.hosts if host not in self.configured}
-            matched = self.executor._match_ready_jobs([task for task, _, _ in ready],
+            matched = self.executor._match_ready_jobs([task for task, _, _, _ in ready],
                 {host:count for host,count in available.items() if count > 0})
-            outstanding = [(usable, request) for task, usable, request in ready if task.job.name not in matched]
-            # A pending preparation needs an allocated host for its preflight.
-            # It can wake one worker, and does not count toward initial slots.
-            pending = []
-            for job, record in self.executor.preparation_pending.items():
-                if self.executor.store.row(job) is not None:
-                    continue
-                usable = [host for host in compatible(record['request'], None, unchecked=True)
-                          if host not in record.get('failures', {})]
-                if usable:
-                    pending.append((usable, record['request']))
-            return outstanding, pending, len(ready) + len(pending), len(matched)
+            outstanding = [(usable, request) for task, usable, _, request in ready
+                           if usable and task.job.name not in matched]
+            pending = [(unchecked, request) for task, usable, unchecked, request in ready
+                       if not usable and task.job.name not in matched]
+            unreserved = [row for job,row in checks.items() if self.executor.store.row(job) is None]
+            return outstanding, pending + unreserved, len(ready) + len(unreserved), len(matched)
 
     def _submit(self, host, worker, demand, requests=()):
         token = uuid.uuid4().hex

@@ -1,6 +1,6 @@
 {
   "schema": "RPE_PBS_WALLTIME_POLICY_V1",
-  "id": "h4-pbs-walltime-v2",
+  "id": "h4-pbs-walltime-v3",
   "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
   "transport_source": "3b38e4af67f6b673303cff9f963ac1381627c4d0",
   "allocation_sizing": {
@@ -22,6 +22,14 @@
       "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
       "adapter_source": "349558b748a82f384a4589434a63ef9b5572032c",
       "seconds": 14400
+    },
+    {
+      "id": "prdf-d2-split",
+      "method": "PR_DF",
+      "route_kind": "prdf_d2_split",
+      "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+      "adapter_source": "349558b748a82f384a4589434a63ef9b5572032c",
+      "seconds": 3600
     }
   ],
   "preparation": [
@@ -38,6 +46,27 @@
       "provider": "PAULI_COMPILE",
       "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
       "seconds": 180
+    },
+    {
+      "id": "pauli_signals_saved_inputs",
+      "stage": "signal",
+      "provider": "PAULI_SIGNALS",
+      "source": "8d03cd254db4ae5f7b4d786f54e4fc66f0fcb4a8",
+      "seconds": 120
+    },
+    {
+      "id": "pauli_signals_preparation_throughput",
+      "stage": "signal",
+      "provider": "PAULI_SIGNALS",
+      "source": "8cc86e60a337272b2b013bd100a6a9c6c8da93ae",
+      "seconds": 120
+    },
+    {
+      "id": "prdf-signals-fixed-provider",
+      "stage": "signal",
+      "provider": "DF_SIGNALS",
+      "source": "9ed5fcc98d38c328c447f4270eabc73090fcaa02",
+      "seconds": 120
     },
     {
       "id": "pf_audit",

@@ -1,6 +1,7 @@
 """Request-specific dry-checks using the already deployed worker and adapter."""
 import base64
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
@@ -174,7 +175,7 @@ def controller_input_hashes(executor, request):
     return observed
 
 
-def probe(executor, request, job_id, decision):
+def probe(executor, request, job_id, decision, *, publish=None):
     """Obtain real-input dry checks for new jobs before reserving a slot."""
     assignment = dict(job_id=job_id, method=request['method'], request=request,
                       request_sha256=Q.digest(request), source_manifest=executor.source_manifest,
@@ -239,24 +240,37 @@ def probe(executor, request, job_id, decision):
         except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
             return host, dict(status='HOLD', reason=str(exc)[-2000:])
 
-    with ThreadPoolExecutor(max_workers=max(1, len(participants))) as pool:
-        observations = dict(pool.map(check, participants))
+    def snapshot():
+        value = deepcopy(decision)
+        value['eligible_host_ids'].sort()
+        value['reasons'] = [] if value['eligible_host_ids'] else ['ALL_LIVE_DRY_CHECKS_HELD']
+        return dict(value, decision_sha256=Q.digest(value))
+
+    observations = {}
     record = executor.run_dir/'distributed'/'q3-readiness'/job_id/'READINESS.json'
-    with executor.state.cv:
-        if not executor.state.closed:
-            record.parent.mkdir(parents=True, exist_ok=True)
-            Q.atomic_json(record, dict(assignment=assignment, observations=observations))
+
+    def save(complete):
+        with executor.state.cv:
+            if not executor.state.closed:
+                record.parent.mkdir(parents=True, exist_ok=True)
+                Q.atomic_json(record, dict(assignment=assignment, observations=observations, complete=complete))
+
     decision.update(input_hashes=assignment['input_hashes'], execution_profiles={}, host_decisions={})
-    for host, result in observations.items():
-        fingerprint = result.get('fingerprint') or {}
-        current = result.get('status') == 'PASS' and result.get('request_sha256') == assignment['request_sha256']
-        if current and fingerprint.get('source_manifest') == executor.source_manifest:
-            decision['eligible_host_ids'].append(host)
-            decision['host_fingerprints'][host] = Q.digest(fingerprint)
-            decision['execution_profiles'][host] = result['profile']
-            decision['host_decisions'][host] = dict(status='PASS', reasons=[])
-        else:
-            decision['host_decisions'][host] = dict(status='HOLD', reasons=[result.get('reason', 'Fingerprint differs')])
-    decision['reasons'] = [] if decision['eligible_host_ids'] else ['ALL_LIVE_DRY_CHECKS_HELD']
-    decision['decision_sha256'] = Q.digest(decision)
-    return decision
+    with ThreadPoolExecutor(max_workers=max(1, len(participants))) as pool:
+        for future in as_completed(pool.submit(check, item) for item in participants):
+            host, result = future.result()
+            observations[host] = result
+            fingerprint = result.get('fingerprint') or {}
+            current = result.get('status') == 'PASS' and result.get('request_sha256') == assignment['request_sha256']
+            if current and fingerprint.get('source_manifest') == executor.source_manifest:
+                decision['eligible_host_ids'].append(host)
+                decision['host_fingerprints'][host] = Q.digest(fingerprint)
+                decision['execution_profiles'][host] = result['profile']
+                decision['host_decisions'][host] = dict(status='PASS', reasons=[])
+                if publish is not None:
+                    save(complete=False)
+                    publish(snapshot())
+            else:
+                decision['host_decisions'][host] = dict(status='HOLD', reasons=[result.get('reason', 'Fingerprint differs')])
+    save(complete=True)
+    return snapshot()

@@ -248,6 +248,51 @@ class IndependentMethodLaunchContract(unittest.TestCase):
         d.complete_points(announce_ready=lambda *_:self.fail('No duplicate preparation'))
         self.assertEqual(len(calls),5)
 
+    def test_continuous_preparation_refills_a_free_lane_while_a_peer_is_waiting(self):
+        d = ENTRY.WidthDriver.__new__(ENTRY.WidthDriver)
+        d.work_conserving_search = True
+        d.methods = ['PR_DF']
+        d.wide = dict(per_decision=2)
+        d.a = SimpleNamespace(plan_only=False)
+        d.spec = dict(science_approved=True, candidate_completion=dict(parallel=2))
+        d.log = lambda **event: None
+        d.check_completed_configuration = lambda *args: None
+        splits = {'slow': 7, 'first': 8, 'next': 9, 'shared': 7}
+        d.state = dict(cycle=1, families={family:dict(L_D=split, requested_delta_pf={'numerator':1,'denominator':1})
+                                          for family,split in splits.items()},
+                       points=[dict(method='PR_DF', family=family, kappa='1', status='COMPLETION',
+                                    completion_request=dict(family=family)) for family in splits])
+        slow_started = threading.Event()
+        released = threading.Event()
+        calls = []
+
+        class Completion:
+            def complete(self, request):
+                family = request['family']
+                calls.append(family)
+                if family == 'slow':
+                    slow_started.set()
+                    if not released.wait(5):
+                        raise AssertionError('Independent candidate did not refill the free lane')
+                elif family == 'next':
+                    assert slow_started.is_set() and not released.is_set()
+                    released.set()
+                elif family == 'shared':
+                    assert released.is_set()
+                return dict(status='READY_FOR_SEARCH', key=family, configuration_id=family)
+
+        d.completion_api = Completion
+        stop = threading.Event()
+        executor = SimpleNamespace(state=SimpleNamespace(cv=threading.Condition(), failure=None),
+                                   _user_stop_requested=stop.is_set, for_method=lambda _:d,
+                                   has_spare_slot=lambda **kw:self.fail('Preparation waited for a Q3 slot'))
+        announce, wait_for_preparation, _ = d.live_ready_source(executor, None, None, stop, continuous=True)
+        d.complete_points(announce_ready=announce, wait_for_preparation=wait_for_preparation, continuous=True)
+        self.assertCountEqual(calls, splits.keys())
+        self.assertLess(calls.index('first'), calls.index('next'))
+        self.assertLess(calls.index('next'), calls.index('shared'))
+        self.assertEqual(d.state['cycle'], 1)
+
     def test_joint_method_planning_matches_independent_method_refinements(self):
         methods=('PR_PAULI','PR_DF')
         independent=[]

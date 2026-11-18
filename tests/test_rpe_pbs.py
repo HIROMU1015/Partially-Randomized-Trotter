@@ -135,6 +135,14 @@ class AdmissionTests(unittest.TestCase):
         report['pbs']['remaining_seconds'] = 209
         self.assertFalse(P.fits_request(dict(preparation=preparation), report, settings))
 
+    def test_df_signal_parallelism_matches_the_reserved_cpus(self):
+        command = ['/fixed/python', '-B', '/fixed/run_pr_df_candidate_signal_jobs.py', '--source', 'fixed']
+        bound = Preparation.bind_df_signal_workers(command, 2)
+        self.assertEqual(bound, command + ['--workers','2'])
+        self.assertEqual(Preparation.bind_df_signal_workers(bound, 2), bound)
+        with self.assertRaisesRegex(ValueError, 'differs from its reserved CPUs'):
+            Preparation.bind_df_signal_workers(bound, 4)
+
 
 class ManagerTests(unittest.TestCase):
     def manager(self, directory, gateway=None):
@@ -203,6 +211,30 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual([(hosts, req['id']) for hosts, req in ready], [(['pbs-0'], 'ready')])
             self.assertEqual((pending, queued, covered), ([], 2, 1))
             manager.close()
+
+    def test_preparation_reserved_with_local_readiness_can_wake_pbs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, _ = self.manager(directory)
+            manager.settings['preparation_task_seconds'] = [
+                dict(stage='signal', provider='DF_SIGNALS', source='fixed', seconds=120)]
+            request = dict(route=dict(kind='preparation'),
+                           preparation=dict(stage='signal', provider='DF_SIGNALS', source=dict(commit='fixed')))
+            executor.rows['signal'] = dict(request=request, state='QUEUED', eligibility=dict(eligible_host_ids=['local']))
+            executor.preparation_pending['signal'] = dict(request=request, failures={})
+            executor.hosts = dict(local={})
+            executor._host_admission_policy = lambda: ({}, None)
+            executor._host_admission = lambda *_: dict(accepting=True)
+            executor._host_supports_stage = lambda *_: True
+            executor._ready_queue = lambda: [SimpleNamespace(job=Path('signal'))]
+            executor._offer_free = lambda *_: 0
+            executor._match_ready_jobs = lambda tasks, slots: {task.job.name for task in tasks} if slots else set()
+            executor.store.artificial = lambda _: False
+
+            self.assertEqual(manager._demand(), ([], [(['pbs-0'],request)], 1, 0))
+            executor._offer_free = lambda *_: 1
+            self.assertEqual(manager._demand(), ([], [], 1, 1))
+            executor.preparation_pending['signal']['failures']['pbs-0'] = 'runtime mismatch'
+            self.assertEqual(manager._demand(), ([], [], 0, 0))
 
     def test_restart_keeps_submission_token_and_rejects_changed_settings(self):
         with tempfile.TemporaryDirectory() as directory:

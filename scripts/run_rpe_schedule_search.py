@@ -683,12 +683,12 @@ class WidthDriver:
         return self.completion
 
     def complete_points(self, stop_requested=None, announce_ready=None, stop_on_error=None,
-                        wait_for_preparation=None):
+                        wait_for_preparation=None, *, continuous=False):
         comp=self.completion_api()
         if hasattr(comp,'ingest_price_results'):comp.ingest_price_results()
-        # INIT may expose a whole far-kappa ladder at once. Transfer only the
-        # existing per_decision-sized wave to preparation, so its late READY
-        # points return to the Q3 queue before preparing the remaining ladder.
+        # INIT may expose a whole far-kappa ladder at once. Distributed
+        # preparation refills bounded lanes as candidates finish; other callers
+        # keep a single per-decision wave.
         pending=[p for p in self.state['points']if p['status']in('COMPLETION','WAITING_INPUTS')]
         total_pending = len(pending)
         blocked = comp.price_deferred_keys() if hasattr(comp, 'price_deferred_keys') else set()
@@ -696,6 +696,8 @@ class WidthDriver:
             from trottertracks.pr_candidate_completion import key
             pending = [p for p in pending if key(p['completion_request']) not in blocked]
         cycle=self.state['cycle'];limit=W.settings(self.wide)['per_decision']
+        if continuous:
+            pending = [p for p in pending if p.get('input_dispatch_cycle') != cycle]
         wave=self.state.get('preparation_wave')
         if wave is None or wave['cycle']!=cycle:
             wave=self.state['preparation_wave']=dict(cycle=cycle,dispatched={})
@@ -737,15 +739,18 @@ class WidthDriver:
                     by_width.setdefault(delta, []).append(family)
                 from itertools import zip_longest
                 order = [family for level in zip_longest(*by_width.values()) for family in level if family is not None]
-            available=max(0,limit-wave['dispatched'].get(method,0));chosen=[]
+            available = sum(map(len, queues.values())) if continuous else max(0, limit-wave['dispatched'].get(method,0))
+            chosen=[]
             while len(chosen)<available and any(queues.values()):
                 ready=[family for family in order if queues[family] and id(queues[family][0]) not in dear]
                 for family in ready or order:
                     if queues[family]and len(chosen)<available:chosen.append(queues[family].pop(0))
             selected.extend(chosen);counts[method]=len(chosen)
-            wave['dispatched'][method]=wave['dispatched'].get(method,0)+len(chosen)
-        reason = ('PER_DECISION_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if self.work_conserving_search
-                  else 'EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN')
+            if not continuous:
+                wave['dispatched'][method]=wave['dispatched'].get(method,0)+len(chosen)
+        reason = ('CONTINUOUS_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if continuous else
+                  'PER_DECISION_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if self.work_conserving_search else
+                  'EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN')
         self.log(event='PREPARATION_WAVE_START',dispatch_reason=reason,per_method_limit=limit,
             selected_by_method=counts,pending_before=total_pending,deferred=total_pending-len(selected),
             waiting_unchanged_price=total_pending-len(pending),
@@ -756,6 +761,8 @@ class WidthDriver:
                     or (stop_requested is not None and stop_requested())):
                     self.log(event='PREPARATION_YIELD_AFTER_FATAL');break
                 p['input_dispatches']=p.get('input_dispatches',0)+1
+                if continuous:
+                    p['input_dispatch_cycle'] = cycle
                 started=time.monotonic();self.log(event='CANDIDATE_INPUTS_START',family=p['family'],kappa=p['kappa'])
                 if self.a.plan_only or self.spec.get('science_approved')is not True:
                     record=comp.plan(p['completion_request'])
@@ -790,7 +797,8 @@ class WidthDriver:
         elif selected:
             # Keep one split in order to reuse its descriptor and signals.
             # Pauli also needs the distributed provider's isolated attempts.
-            from concurrent.futures import ThreadPoolExecutor, as_completed
+            from collections import Counter, deque
+            from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, as_completed, wait
             from contextlib import ExitStack
             parallel_methods={'PR_DF'}
             if getattr(comp,'parallel_pauli_preparation',lambda:False)():
@@ -801,15 +809,49 @@ class WidthDriver:
                 split = self.state['families'][point['family']]['L_D'] if method in parallel_methods else None
                 groups.setdefault(method, {}).setdefault(split, []).append(point)
             parallel = int((self.spec.get('candidate_completion') or {}).get('parallel', 1))
+            lanes = {m: max(1, min(limit, parallel, len(splits)) if m in parallel_methods else 1)
+                     for m, splits in groups.items()}
             with ExitStack() as stack:
+                pools = {method: stack.enter_context(ThreadPoolExecutor(max_workers=workers))
+                         for method, workers in lanes.items()}
                 tasks = []
-                for method, splits in groups.items():
-                    workers = max(1, min(parallel, len(splits))) if method in parallel_methods else 1
-                    pool = stack.enter_context(ThreadPoolExecutor(max_workers=workers))
-                    tasks.extend(pool.submit(prepare_points, points) for points in splits.values())
                 try:
-                    for task in as_completed(tasks):
-                        task.result()
+                    if continuous:
+                        # A preparation may be queued while Q3 owns every slot.
+                        # Only these bounded, independent candidates can submit
+                        # stages. The common executor prioritizes Q3 on dispatch.
+                        by_point = {id(point): (method, split) for method, splits in groups.items()
+                                    for split, points in splits.items() for point in points}
+                        backlog = deque(selected)
+                        active = {}
+                        max_active = sum(lanes.values())
+                        while backlog or active:
+                            if stop_requested is not None and stop_requested():
+                                backlog.clear()
+                            busy = set(active.values())
+                            used = Counter(method for method, _ in busy)
+                            for _ in range(len(backlog)):
+                                if len(active) >= max_active:
+                                    break
+                                point = backlog.popleft()
+                                method, split = by_point[id(point)]
+                                if used[method] >= lanes[method] or (method, split) in busy:
+                                    backlog.append(point)
+                                    continue
+                                active[pools[method].submit(prepare_points, [point])] = (method, split)
+                                busy.add((method, split))
+                                used[method] += 1
+                                wave['dispatched'][method] = wave['dispatched'].get(method, 0) + 1
+                            if active:
+                                finished, _ = wait(active, return_when=FIRST_COMPLETED)
+                                for task in finished:
+                                    del active[task]
+                                    task.result()
+                    else:
+                        for method, splits in groups.items():
+                            tasks.extend(pools[method].submit(prepare_points, points) for points in splits.values())
+                        for task in as_completed(tasks):
+                            task.result()
                 except BaseException:
                     if stop_on_error is not None:
                         stop_on_error()
@@ -894,7 +936,7 @@ class WidthDriver:
         K.CLI.write(self.run/'CONFIRMED_MINIMA.json',K.CLI.slim(dict(schema='RPE_WIDTH_CONFIRMED_MINIMA_V1',tau=tau,
             methods=methods,scope='PER_METHOD_EVALUATED_SET_CONDITIONAL_PRICE_NOT_FORMAL_G',new_scientific_calls=0)))
 
-    def live_ready_source(self, executor, completion, problem, stop_preparation):
+    def live_ready_source(self, executor, completion, problem, stop_preparation, *, continuous=False):
         """Publish validated registrations to each selector's private view."""
         from contextlib import nullcontext
         from types import SimpleNamespace
@@ -904,11 +946,11 @@ class WidthDriver:
         condition = state.cv
 
         def wait_for_preparation():
-            # Give already queued Q3 work first access to the slots. Polling
-            # CPU use is unnecessary. Once started, a preparation may finish.
+            # The distributed queue gives demand Q3 first access at dispatch.
+            # A direct preparation still waits before acquiring a slot itself.
             with condition:
                 while not (stop_preparation.is_set() or state.failure or executor._user_stop_requested()):
-                    if executor.has_spare_slot(allow_queued_speculation=self.work_conserving_search):
+                    if continuous or executor.has_spare_slot(allow_queued_speculation=self.work_conserving_search):
                         return True
                     condition.wait(.5)  # also observes STOP written outside the executor
                 return False
@@ -1055,10 +1097,11 @@ class WidthDriver:
                 prepare_options = {'stop_requested': stop_preparation.is_set} if supports_stop else {}
                 search_options = {}
                 if self.live_ready_refill:
+                    continuous = self.work_conserving_search and runtime is not None
                     announce, wait_for_preparation, subscriber = self.live_ready_source(
-                        executor, comp, problem, stop_preparation)
+                        executor, comp, problem, stop_preparation, continuous=continuous)
                     prepare_options.update(announce_ready=announce, stop_on_error=stop_preparing,
-                                           wait_for_preparation=wait_for_preparation)
+                                           wait_for_preparation=wait_for_preparation, continuous=continuous)
                     search_options['ready_source'] = subscriber
                 def prepare():
                     if runtime is not None and not stop_preparation.is_set():
