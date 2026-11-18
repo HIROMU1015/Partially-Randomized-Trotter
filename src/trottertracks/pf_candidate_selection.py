@@ -159,7 +159,12 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor):
     """One durable PF candidate per wave, with evidence from every prior wave."""
     run=Path(run)
     index=run/'pf_auto'/'WAVES.json'
-    records=json.loads(index.read_text()) if index.exists() else {}
+    if index.exists():
+        records=json.loads(index.read_text())
+    else:
+        from .pf_optimizer_connection import read_source
+        previous=spec.get('pf_completion',{}).get('prior_waves_from')
+        records=read_source(root,context['reader'],previous) if previous else {}
     registry=deepcopy(context['pf_evidence_registry'])
     for record in records.values():
         registry['configurations'].update(record.get('configurations',{}))

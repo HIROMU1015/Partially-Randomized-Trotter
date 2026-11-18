@@ -509,6 +509,12 @@ class Gateway:
         routes = CLI.merged_routes(scoped,spec)
         if spec.get('search_to_rule_stop'):
             from .pf_optimizer_connection import registry_routes
+            for method in spec['methods']:
+                registered=scoped['methods'][method].get('configuration_ids')
+                if method in ('FULL_PF','TRUNCATED_PF') and registered is not None:
+                    observed={candidate['configuration_id'] for candidate in context['candidates'] if candidate['method']==method}
+                    if observed!=set(registered):
+                        raise RequestError('scope',method+' registered configurations are not represented by the fixed candidate index')
             if context.get('pf_evidence_registry'):
                 routes=registry_routes(routes,context['pf_evidence_registry'])
             completion=spec.get('candidate_completion') or {}
