@@ -1,0 +1,1117 @@
+{
+  "schema": "A_PAULI_SIGNAL_ENTRY_PLAN_V1",
+  "configuration_id": "0b7c4e0723b83e983d37a12396a8ded745f56c81a88081b21a1556830619fee8",
+  "configuration_source": null,
+  "prefix": 2,
+  "configuration_reasons": [],
+  "counts": {
+    "REQUEST": 13
+  },
+  "reuse_rounds": [],
+  "rebind_rounds": [],
+  "request_rounds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "request_normalizer_budget": 13,
+  "unsupported_rounds": [],
+  "rounds": [
+    {
+      "m": 0,
+      "candidate_id": "RMSE:ba72715297d20e1fac5214826ad23841373331d83697a7b3c0f7fe3c876df8f9",
+      "physical_key": "628978417ea69c56e17bfdf94a7f473079011e125d63222b8ec754276d324158",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 1,
+        "q_PF": 1,
+        "T": 0.1,
+        "delta": 0.1,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 128,
+        "event_count": 128,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          128
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[0] (T=0.1)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m0.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.event_count",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 1,
+      "candidate_id": "RMSE:5ab3fd8e655ae5cc84e459c3579e086b9774b93fd3a0205ecd72c344a05e5f6d",
+      "physical_key": "76bfc22f136b27a4da51598f8dda3c46ee0afba2884e4be5c61e36149fc92e9b",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 2,
+        "q_PF": 1,
+        "T": 0.2,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 512,
+        "event_count": 512,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          512
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[1] (T=0.2)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m1.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 2,
+      "candidate_id": "RMSE:d393bf53b6fb6ef9e78c6b1c54b5b4410d2d3fa0a98d30d03dbcc33a8384e6cb",
+      "physical_key": "6d9685cb49afddaf2aff5f3248f7784e9c1355e00551646f0ee5eeb517363434",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 4,
+        "q_PF": 2,
+        "T": 0.4,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 1024,
+        "event_count": 2048,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          1024
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[2] (T=0.4)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m2.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 3,
+      "candidate_id": "RMSE:59c639937130673894907094e20b9fdf0d221b068d68367946de4cf04bb604e5",
+      "physical_key": "949421d4d6367c46efa00e554884a797b5b0a6211fce69bd9d26a6146b65068d",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 8,
+        "q_PF": 4,
+        "T": 0.8,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 2048,
+        "event_count": 8192,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          2048
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[3] (T=0.8)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m3.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 4,
+      "candidate_id": "RMSE:f4ffb3caaccbf9a63f2b3107f8003bcb544bafd9e7a577a16435a937d7e62ae4",
+      "physical_key": "60d2559e5a9a41e7e67e91a4e7dc97ab17df3f5ef7918cf19631e2673d3f6bd8",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 16,
+        "q_PF": 8,
+        "T": 1.6,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 4096,
+        "event_count": 32768,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          4096
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[4] (T=1.6)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m4.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 5,
+      "candidate_id": "RMSE:020f7f7314d852bde42587722ecc4e4c4b28f0c69c8f3003a689108dda7cc5d8",
+      "physical_key": "b5f6cc9f4ca02cfbe76b81a1543d6a884e9ce01b4b1c893de684cd95533021a4",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 32,
+        "q_PF": 16,
+        "T": 3.2,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 8192,
+        "event_count": 131072,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          8192
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[5] (T=3.2)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m5.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 6,
+      "candidate_id": "RMSE:2f72fc68d5f88ed0bce69732106dec300e3d03daaba40f347778c6b99e9799fe",
+      "physical_key": "6454c3c65b9788f20fa9c980f9b1b4c6346766b7af7c5e34a304f9c44dc139e2",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 64,
+        "q_PF": 32,
+        "T": 6.4,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 16384,
+        "event_count": 524288,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          16384
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[6] (T=6.4)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m6.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 7,
+      "candidate_id": "RMSE:f5cc495d4a2aabef748eb10c4a817929042f6b78fbbcf1270be52c59058647cf",
+      "physical_key": "e48b9280909d3cddc455450865e837a98ea945ca0959302cc7dbfce9b923d4fe",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 128,
+        "q_PF": 64,
+        "T": 12.8,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 32768,
+        "event_count": 2097152,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          32768
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[7] (T=12.8)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m7.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 8,
+      "candidate_id": "RMSE:a662b643a5251b561503ff2320b170a035910d8329c50e88831bd3983a1f8d91",
+      "physical_key": "a43852b5d4124901a6af5ef5de8b67402579a87e5af43dc3d35c234b5443c744",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 256,
+        "q_PF": 128,
+        "T": 25.6,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 65536,
+        "event_count": 8388608,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          65536
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[8] (T=25.6)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m8.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 9,
+      "candidate_id": "RMSE:f0d7c175f378a77cf4b0094891b18c413d493802b9150015a552c930d799a234",
+      "physical_key": "5ad4946a52de35b4365c49764de8a00ffebacb984631a30db961152e624efcaa",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 512,
+        "q_PF": 256,
+        "T": 51.2,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 131072,
+        "event_count": 33554432,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          131072
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[9] (T=51.2)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m9.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 10,
+      "candidate_id": "RMSE:5f2f36184f7db300cc94566b017cce949773687f0feb317631ea422141355c72",
+      "physical_key": "314f82ef8a245a67e7855ca78614563ad1ab51c417ba0ae291169022f80c228e",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 1024,
+        "q_PF": 512,
+        "T": 102.4,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 262144,
+        "event_count": 134217728,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          262144
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[10] (T=102.4)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m10.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 11,
+      "candidate_id": "RMSE:5a8c80122df2e9acdd3f07435d8e89b77e26c9985b553bafe063508810740654",
+      "physical_key": "53be1d967bda1dc73a64dffc99fe3db17c18034306f61edd4c0c3f854fd5d9f0",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 2048,
+        "q_PF": 1024,
+        "T": 204.8,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 524288,
+        "event_count": 536870912,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          524288
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[11] (T=204.8)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m11.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    },
+    {
+      "m": 12,
+      "candidate_id": "RMSE:7c8ff54f0e4cc4c6e8d387f8671e604894f7a87a33759ac6400e099de2499766",
+      "physical_key": "cf638652680b6997fc4d0f3a4624d132e8603ead0860db15c2a4106561a9fca7",
+      "provider_support": "SUPPORTED_VALIDATED_FOR_PAULI",
+      "provider_reasons": [],
+      "job": {
+        "q_RPE": 4096,
+        "q_PF": 2048,
+        "T": 409.6,
+        "delta": 0.2,
+        "formula": "2nd",
+        "K": 2,
+        "R_outer": 1048576,
+        "event_count": 2147483648,
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          1048576
+        ]
+      },
+      "decision": "REQUEST",
+      "request": {
+        "provider": "src/trottertracks/pr_rpe_signal_provider.py",
+        "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1",
+        "space": "sector36",
+        "context": {
+          "builder": "src/trottertracks/df_head_pauli_tail_ld3_signals.py:load_context",
+          "common_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/COMMON_OPERATORS.npz"
+          },
+          "tail_operators": {
+            "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+            "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz",
+            "field": "Pauli_nonidentity"
+          }
+        },
+        "reference": "provider.saved_h4_reference: PHYSICAL_INPUTS rounds[12] (T=409.6)",
+        "route": "scripts/run_pauli_signal_entry.py --execute --approve-new-means"
+      },
+      "changed_from_saved_round": {
+        "mean_source": {
+          "commit": "35b37ff33780038e817178675a7240429659c967",
+          "path": "docs/research/b2_pauli_kappa_signals_20261116/runs/LD2_S2_delta_h_kappa_x2o3/run01/LD2_m12.json",
+          "selector": [
+            "record"
+          ],
+          "scientific_source": "31d1bcc0bf9f43fa0afdef9d9813d9f57b049f81"
+        },
+        "fields": [
+          "candidate.R_outer",
+          "candidate.delta",
+          "candidate.event_count",
+          "candidate.q",
+          "structure.allocation",
+          "structure.event_count"
+        ]
+      }
+    }
+  ],
+  "dictionary": {
+    "source": {
+      "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+      "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_DICTIONARY.json"
+    },
+    "sha256": "dd986e52057aa01a330a83dd147316696dbae669dc8a51828ee2a54734016ea7",
+    "lambda_P": 2.0550998769244275,
+    "operators": {
+      "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+      "path": "docs/research/df_head_pauli_tail_p0_results_20261114/run01/LD2_OPERATORS.npz"
+    }
+  },
+  "saved_packets": [
+    {
+      "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+      "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+      "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+      "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD2_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+      "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+      "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+      "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD3_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+      "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2o3/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+      "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x1_saved_reuse/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "1537dfdf9d7fbf52c24609ed3a188381cc24eb8c",
+      "path": "docs/research/b2_pauli_kappa_signals_20261116/packets/LD5_S2_delta_h_kappa_x2/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "2895671ae86d3969dcac1dcc7f538d5911f2c62d",
+      "path": "docs/research/d2_automatic_pr_20261116/8bf6eb88c735daf2499c/descriptor_envelope_v2/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "0a13f88b25f16523f0519b4e60ace73fa670ffaf",
+      "path": "docs/research/d2_automatic_pr_20261116/96c372162d2f235dbb1d/multiwidth_r08_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "8ed5fe4667c22b9863daa7e7bed432039f339a8a",
+      "path": "docs/research/d2_automatic_pr_20261116/b1db87e0b76566a68af6/multiwidth_r08_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "5fd1fadcaea1cbd22c209240dee4f635e94babd1",
+      "path": "docs/research/d2_automatic_pr_20261116/764b622e1ffcf8ef7c91/multiwidth_r08_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "866b61a788be5e5d8a361713fba21e9338d32ceb",
+      "path": "docs/research/d2_automatic_pr_20261116/997b87c9aadb839535fb/multiwidth_r08_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "5dbd1aeef52d39195a0eb60512e4a302b2802a27",
+      "path": "docs/research/d2_automatic_pr_20261116/7e12d153e9363ec34899/multiwidth_r08_recovery_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "ee6b37422ebf437a5da2ccc178e0f881f5d97d92",
+      "path": "docs/research/d2_automatic_pr_20261116/fd084e450058d713c544/multiwidth_r08_recovery_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "f25970df72da0a0f3ec141c020c1502db1474b94",
+      "path": "docs/research/d2_automatic_pr_20261116/39bdb905c829c9180ece/multiwidth_r08_recovery_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "12a662b798cd8f650d70db22978d4b9193e39824",
+      "path": "docs/research/d2_automatic_pr_20261116/0a09039bd59f2de94717/multiwidth_r08_recovery_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "0160ce2a6a844d88b325fd7dad7b116e8eddf4b2",
+      "path": "docs/research/d2_automatic_pr_20261116/c8637b0710b24a0aa779/multiwidth_r08_recovery_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "bd14c6da7c27baacb23f75f52b14222a35ad2dca",
+      "path": "docs/research/d2_automatic_pr_20261116/55c1d06635b4340d0dc6/multiwidth_r08_recovery_20261117/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "5b3e3ca13155ab0a6bc69258369ecda678fc0436",
+      "path": "docs/research/d2_automatic_pr_20261116/e68a74e669ef714a6ffe/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "a1f18f9ecbb41df1237768c37dc0dfa15277b226",
+      "path": "docs/research/d2_automatic_pr_20261116/065498072c5182139f43/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "68d10168ab9b1ed1ff845b53ab1fc9a6c8f0a29f",
+      "path": "docs/research/d2_automatic_pr_20261116/796ef8702417fa6944f4/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "5c93b164798dda9e874b3ba6020a0f506bf9045e",
+      "path": "docs/research/d2_automatic_pr_20261116/b8d02e2569b15398901f/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "583208d98fde0fb8268fc688593dd8fd672f26b2",
+      "path": "docs/research/d2_automatic_pr_20261116/f121ee2e7dabfcc6058e/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "48634b8f2c97393c3d57c1a329baf5b67e50c756",
+      "path": "docs/research/d2_automatic_pr_20261116/03d305d78339c1ef114b/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "c688c48933836530c625a6d44802683ce6e38456",
+      "path": "docs/research/d2_automatic_pr_20261116/ce0433651c080d4d099e/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "a3965810bdb55c737c218041385558b4adf9cab6",
+      "path": "docs/research/d2_automatic_pr_20261116/9d6aa994f76b42cbca63/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "86bc344372adcdcaa6364a9355617af784a27584",
+      "path": "docs/research/d2_automatic_pr_20261116/662322b153057eb66fff/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "beb6d8f013d4ebef96d49d4293d9aa4c0b05a805",
+      "path": "docs/research/d2_automatic_pr_20261116/798b7fd545eb8d0b9c8e/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "ff042b9ad83b05bb8cd9da5619c53e2ca7f98ef5",
+      "path": "docs/research/d2_automatic_pr_20261116/86074ab038203b189865/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "a1d689a7a7211e8c947c568bcd9025a6a3f8acb7",
+      "path": "docs/research/d2_automatic_pr_20261116/4972d2c3ede8181230d8/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "197a45e06ca1f76b12e8de9e81c64dce792397ba",
+      "path": "docs/research/d2_automatic_pr_20261116/153c3ce44fda20b7ef23/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "a45afdad6969e8ca2bc2d0390425ea8de26eed1f",
+      "path": "docs/research/d2_automatic_pr_20261116/ab9642894caeaa4785be/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "984469c2d18d277a097bf6120a1be0f3ab85278c",
+      "path": "docs/research/d2_automatic_pr_20261116/8335dffeb078a15aeba4/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "73caa6093a6b91b617700d31e71b66bd166736aa",
+      "path": "docs/research/d2_automatic_pr_20261116/d50390cc4310fecac618/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "8937130c7a609cab18a1db427f04f2f494491d3e",
+      "path": "docs/research/d2_automatic_pr_20261116/05a8e35cf944308eb65f/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "f1e7259e6a7df6301f5ff8bd8af658701a0fcc64",
+      "path": "docs/research/d2_automatic_pr_20261116/4aaf6c0b801ce7092fd2/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "55514f0ecee7cc56af3c509c790a642fcbd4414c",
+      "path": "docs/research/d2_automatic_pr_20261116/e49503c3a6e8092da93d/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "b5eb833549c35845c241989ba7a32f6b91fbb78b",
+      "path": "docs/research/d2_automatic_pr_20261116/d0f02b6d28fdc9618054/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "8b03b1604e6be793325cb0ddc92c5bd3802b56bb",
+      "path": "docs/research/d2_automatic_pr_20261116/66ea82d5ea8ec6db3c44/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "e218304429f1acca31a51f74044c9b686c416702",
+      "path": "docs/research/d2_automatic_pr_20261116/025d8bc598a278326dd2/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "4f762f678961824425517c29b5fdf935e9c793e2",
+      "path": "docs/research/d2_automatic_pr_20261116/e4a2e57788dd8dab1bd4/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "345ba8921f01927a10dffe26eec26788718b577a",
+      "path": "docs/research/d2_automatic_pr_20261116/15498f389f6d7f7af9eb/multiwidth_r08_budget_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "81584d5a16e75a878e44a8ec685b725b0c3bcb36",
+      "path": "docs/research/d2_automatic_pr_20261116/ee7f3c3a1fe0585c9f47/multiwidth_r08_live_ready_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "e75ee8c5f43ce133d252a03ca1e416071c849bf3",
+      "path": "docs/research/d2_automatic_pr_20261116/2aecce69c70c52269957/multiwidth_r08_live_ready_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "e5dc26871404954850a238f4b6ce49c345e99e4e",
+      "path": "docs/research/d2_automatic_pr_20261116/2ee796ae3ef9ac44dcf4/multiwidth_r08_live_ready_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "5bc354647973745645258d44ba97ee0e118be8c9",
+      "path": "docs/research/d2_automatic_pr_20261116/6d6ce40213c3faba519b/multiwidth_r08_live_ready_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "86959a8f158878bcf18bdbb05a47bb10461f09e9",
+      "path": "docs/research/d2_automatic_pr_20261116/a4e5505bd3fabd3c0c9b/multiwidth_r08_live_ready_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "2e2d4680c3921df7b1eac34643df3f92a955d0b9",
+      "path": "docs/research/d2_automatic_pr_20261116/ae4059adff16ce42d0aa/multiwidth_r08_live_ready_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "56d535a86c3632291d62829ba5674184796fae7c",
+      "path": "docs/research/d2_automatic_pr_20261116/6a95d7a3e54b2ecdac5b/multiwidth_r08_live_ready_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "e270144fecd3dbfff0c0f9da3ceaec44a9bd4335",
+      "path": "docs/research/d2_automatic_pr_20261116/bd5850ef77769bd86c87/multiwidth_r08_work_conserving_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "207700eb46cd657d00720adb1e7addef66f4d318",
+      "path": "docs/research/d2_automatic_pr_20261116/8cbcb7404af32feaabb3/multiwidth_r08_work_conserving_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "3cf32091a98bc9ff65799430160d2d39bede7000",
+      "path": "docs/research/d2_automatic_pr_20261116/bb16b38b6e6d44723f6d/multiwidth_r08_work_conserving_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "cc2f20db5e8803295bb3dc144a0212cd8d93dc44",
+      "path": "docs/research/d2_automatic_pr_20261116/6a567acbfc846cf1bbcc/multiwidth_r08_work_conserving_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "0093a72d88b74e091e3c1d1f927c73038cb87610",
+      "path": "docs/research/d2_automatic_pr_20261116/29c6665596655ff7e501/multiwidth_r08_storage_review_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "0a9ebcd88b12e7d1796ebb2af09d7b646fb2d275",
+      "path": "docs/research/d2_automatic_pr_20261116/ad681f06ba20f3830c86/multiwidth_r08_storage_review_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "7bd221609bb4c87b5bfc8bb9757bc91d30f5b834",
+      "path": "docs/research/d2_automatic_pr_20261116/32aa086c8fac9fcf9d30/multiwidth_r08_storage_review_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "2e77f9cbc2a04497007611ca6c0034cdeca0d442",
+      "path": "docs/research/d2_automatic_pr_20261116/e74206a14fb6e1b493eb/multiwidth_r08_storage_review_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "5516ee0484bab0221d53405c21b618ba1b910277",
+      "path": "docs/research/d2_automatic_pr_20261116/6db9b4bb5dd709ea080b/multiwidth_r08_storage_review_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "6d77c1929533306ece78d89fc8d8ba9511064ff9",
+      "path": "docs/research/d2_automatic_pr_20261116/93fef643631278d2bef9/multiwidth_r08_storage_review_20261118/packet/MEAN_HANDOFF.json"
+    },
+    {
+      "commit": "920e7bab574fcb51da320a905a85935d035a89ee",
+      "path": "docs/research/d2_automatic_pr_20261116/978b694ee2d7b5d5ec2c/multiwidth_r08_storage_review_20261118/packet/MEAN_HANDOFF.json"
+    }
+  ],
+  "provider": {
+    "module": "src/trottertracks/pr_rpe_signal_provider.py",
+    "kernel": "e8641b84fd8a3e98a49b65ecaa8fbd371a9d8ab7",
+    "formulas": [
+      "2nd",
+      "4th(m5_best)"
+    ],
+    "K": [
+      2,
+      4,
+      6
+    ],
+    "validated_for_pauli": {
+      "formula": "2nd",
+      "K": 2
+    }
+  },
+  "new_mean_calls": 0,
+  "compile": 0,
+  "Q3": 0
+}
