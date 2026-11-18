@@ -3,6 +3,7 @@ from copy import deepcopy
 from pathlib import Path
 import json
 import sys
+import tempfile
 import unittest
 import importlib.util
 from types import SimpleNamespace
@@ -75,6 +76,30 @@ class SavedQuotes(unittest.TestCase):
                 self.assertEqual(entry.saved,['packet1','packet2'])
                 self.assertEqual(calls,['packet1','packet2'])
                 self.assertEqual(entry._index['own'],{'source':'a'})
+                with tempfile.TemporaryDirectory() as tmp:
+                    def locator(path):
+                        return dict(commit='1'*40,path=path)
+
+                    class FixedEntry(Entry):
+                        def saved_index(self):
+                            name=self.saved[0]['path']
+                            calls.append(name)
+                            return {'own':{'source':'a'},'shared':{'source':'a' if name=='packet1' else 'b'}}
+
+                    cached=FixedEntry()
+                    cached.reader=SimpleNamespace(read=lambda loc: docs[loc] if isinstance(loc,str) else
+                        dict(configuration_source=locator('configuration'),means=[dict(source=locator('raw'))]))
+                    cached.saved=[locator('packet1')]
+                    calls.clear()
+                    self.assertFalse(service.scope_df_saved_index(cached,configuration,cache_dir=tmp,scope='fixed'))
+                    cached.saved.append(locator('packet2'))
+                    self.assertEqual(service.scope_df_saved_index(cached,configuration,cache_dir=tmp,scope='fixed'),conflicts)
+                    self.assertEqual(cached._index,entry._index)
+                    self.assertEqual(calls,['packet1','packet2'])
+                    self.assertEqual(service.scope_df_saved_index(cached,configuration,cache_dir=tmp,scope='fixed'),conflicts)
+                    self.assertEqual(calls,['packet1','packet2'])
+                    service.scope_df_saved_index(cached,configuration,cache_dir=tmp,scope='changed-descriptor')
+                    self.assertEqual(calls,['packet1','packet2','packet1','packet2'])
                 if field is None:
                     self.assertFalse(conflicts)
                     self.assertEqual(entry._index['shared'],{'source':'a'})

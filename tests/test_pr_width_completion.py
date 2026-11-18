@@ -148,6 +148,53 @@ class WidthCompletionTests(unittest.TestCase):
                 self.assertEqual(c.complete(request),held)
                 self.assertEqual(run.call_count,1)
 
+    def test_df_price_hold_skips_signal_and_resumes_fixed_configuration(self):
+        reader=Documents();cfg=enrich(config(.1,pauli=False))
+        request=dict(method='PR_DF',design=dict(L_D=8,delta_pf=.1,kappa='2'))
+        hold=missing_quote(cfg,'PR_DF')
+        hold['rows'][2]['needs']=dict(reasons=[C.PRICE_SOURCE_CONFLICT],entry_ids=['a','b'])
+        ready=deepcopy(hold);ready['complete']=True
+        for row in ready['rows']:
+            row['unit_price_RZ']=exact(2)
+
+        with tempfile.TemporaryDirectory() as tmp, patch.object(C,'ROOT',Path(tmp)):
+            c,publisher=self.setup_completion(Path(tmp),reader)
+            signal=dict(packet_source=reader.add('PACKET.json',dict(status='ARTIFICIAL_COMPLETE')))
+            modes=[]
+            def service(mode,*args,**kwargs):
+                modes.append(mode)
+                if mode=='df-generate':return dict(status='CONFIGURATION_READY',configuration=cfg)
+                if mode=='df-plan':return dict(rounds=[dict(decision='REQUEST',m=4)])
+                if mode=='intake':return dict(binding_id='BIND',total_configuration_id='TOTAL')
+                self.fail('Unexpected stage: '+mode)
+
+            with patch.object(c,'service',side_effect=service), patch.object(C,'value',side_effect=reader.read), \
+                 patch.object(C,'publish',side_effect=publisher), patch.object(c,'initial_quote',side_effect=[hold,ready,ready]), \
+                 patch.object(c,'price',return_value=ready) as price, patch.object(c,'df_signals',return_value=signal) as signals:
+                held=c.complete(request)
+                self.assertEqual(held['status'],'WAITING_INPUTS')
+                self.assertEqual(c.price_deferred_keys(),{held['key']})
+                self.assertEqual(modes,['df-generate'])
+                self.assertTrue(c.complete(request)['resumed'])
+                signals.assert_not_called();price.assert_not_called()
+                original=(C.ROOT/held['directory']/'FINAL_QUOTE.json').read_bytes()
+                C.put(c.registry,dict(entries=[],revision='fresh saved price evidence'))
+                self.assertFalse(c.price_deferred_keys())
+                # A cooperative stop after the re-quote keeps the original
+                # frozen configuration and the new staging directory.
+                signals.side_effect=[C.PreparationYield('DF_SIGNALS'),signal]
+                selected=c.complete(request)
+                self.assertEqual(selected['status'],'SELECTED')
+                accepted=c.complete(request)
+                self.assertEqual(accepted['status'],'READY_FOR_SEARCH',accepted)
+                self.assertEqual(accepted['configuration_id'],cfg['id'])
+                self.assertEqual(accepted['directory'],selected['directory'])
+                self.assertNotEqual(accepted['directory'],held['directory'])
+                self.assertEqual((C.ROOT/held['directory']/'FINAL_QUOTE.json').read_bytes(),original)
+                self.assertEqual(modes,['df-generate','df-plan','df-plan','intake'])
+                self.assertEqual(signals.call_args.kwargs['plan']['rounds'],[dict(decision='REQUEST',m=4)])
+                price.assert_called_once()
+
     def test_df_direct_group_does_not_expand_to_other_rounds(self):
         reader,cfg,imp,package=df_direct_fixture();enrich(cfg)
         reader.docs['ARTIFICIAL','CONFIG.json']=deepcopy(cfg)

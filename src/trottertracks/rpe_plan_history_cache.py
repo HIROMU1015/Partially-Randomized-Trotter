@@ -161,10 +161,13 @@ class HistoryCache:
     def __exit__(self, *exc):
         self.close()
 
-    def prior_records(self, executor, candidates):
+    def prior_records(self, executor, candidates, *, details=True):
         started = time.monotonic()
         ready = {c['configuration_id']: c for c in candidates
                  if c['ready'] and c['configuration_id']}
+        held = {(Path(row['parent_directory'])/'jobs'/row['method']/row['job_id']).resolve()
+                for row in getattr(executor, 'prior_q3_holds', ())}
+        record_reuse = None if details else getattr(executor, 'record_prior_result_reuse', None)
         validator = _validator(executor)
         contexts = {}
         known, refused = {}, []
@@ -175,7 +178,9 @@ class HistoryCache:
             directory = Path(base) / 'jobs' / executor.method
             if not directory.exists():
                 continue
-            for job in sorted(p for p in directory.iterdir() if p.is_dir()):
+            jobs = (sorted(p for p in directory.iterdir() if p.is_dir()) if details else
+                    [outcome.parent for outcome in sorted(directory.glob('*/OUTCOME.json'))])
+            for job in jobs:
                 signature = _signature(job)
                 present = {name for name, value in signature if value is not None}
                 if not present.intersection(('REQUEST.json', 'LAUNCH.json', 'OUTCOME.json')):
@@ -183,6 +188,9 @@ class HistoryCache:
                 stats['scanned_jobs'] += 1
                 if 'OUTCOME.json' not in present:
                     stats['current_unresolved'].append(_current_unresolved(job))
+                    continue
+                if held and job.resolve() in held:
+                    refused.append(dict(job=str(job), reason='PRIOR_Q3_PERSISTENCE_HOLD'))
                     continue
                 key = str(job.resolve())
                 saved = self.db.execute('SELECT signature, context, payload FROM evidence WHERE job=?', (key,)).fetchone()
@@ -202,8 +210,7 @@ class HistoryCache:
                     except (OSError, ValueError):
                         refused.append(dict(job=str(job), reason='NO_REQUEST'))
                         continue
-                    cached = dict(request=request, record=None,
-                                  provenance=dict(job=key, sha256=_hashes(job, signature)))
+                    cached = dict(request=request, record=None)
                     if signature != _signature(job):
                         refused.append(dict(job=str(job), reason='HISTORY_CHANGED_DURING_VALIDATION'))
                         continue
@@ -215,7 +222,7 @@ class HistoryCache:
                     # Even a currently unavailable configuration may have an
                     # unresolved old owner. Discover its status once per delta,
                     # then refresh only the current markers/process each call.
-                    if 'outcome_status' not in cached:
+                    if details and 'outcome_status' not in cached:
                         try:
                             cached['outcome_status'] = json.loads((job / 'OUTCOME.json').read_text()).get('status')
                         except (OSError, ValueError):
@@ -224,7 +231,7 @@ class HistoryCache:
                             old_context = saved[1] if saved is not None and cached.get('record') is not None else ''
                             self.db.execute('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
                                             (key, _json(signature), old_context, _pack(cached)))
-                    if cached['outcome_status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
+                    if details and cached['outcome_status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
                         stats['current_unresolved'].append(_current_unresolved(job, cached['outcome_status']))
                     refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
                     continue
@@ -234,7 +241,8 @@ class HistoryCache:
                                                   context=_context(executor, cid)))
                     context = contexts[cid]
                     proposal = dict(configuration_id=cid, vector=O.interleave(request['N_X'], request['N_Y']))
-                    if cached.get('record') is not None and saved is not None and saved[1] == context:
+                    hit = cached.get('record') is not None and saved is not None and saved[1] == context
+                    if hit:
                         record = cached['record']
                         stats['cache_hits'] += 1
                     else:
@@ -247,10 +255,10 @@ class HistoryCache:
                         stats['validated_jobs'] += 1
                         if record['status'] not in (O.PASS, O.FAIL, 'INCONCLUSIVE'):
                             refused.append(dict(job=str(job), reason=record['status'] + ':' + str(record.get('reason'))))
-                            stats['current_unresolved'].append(_current_unresolved(job, record['status']))
+                            if details:
+                                stats['current_unresolved'].append(_current_unresolved(job, record['status']))
                             continue
-                        provenance = cached['provenance']
-                        cached = dict(request=request, record=record, provenance=provenance, outcome_status=record['status'])
+                        cached.update(record=record, outcome_status=record['status'])
                         if signature != _signature(job):
                             refused.append(dict(job=str(job), reason='HISTORY_CHANGED_DURING_VALIDATION'))
                             continue
@@ -259,9 +267,19 @@ class HistoryCache:
                     if signature != _signature(job):
                         refused.append(dict(job=str(job), reason='HISTORY_CHANGED_DURING_VALIDATION'))
                         continue
+                    if details:
+                        if 'provenance' not in cached:
+                            cached['provenance'] = dict(job=key, sha256=_hashes(job, signature))
+                            if signature != _signature(job):
+                                refused.append(dict(job=str(job), reason='HISTORY_CHANGED_DURING_VALIDATION'))
+                                continue
+                            self.db.execute('INSERT OR REPLACE INTO evidence VALUES (?, ?, ?, ?)',
+                                            (key, _json(signature), context, _pack(cached)))
+                        stats['evidence'].append(cached['provenance'])
+                    if hit and record_reuse is not None:
+                        record_reuse(job)
                     known[(cid, proposal['vector'])] = dict(record, source='PRIOR_ROUND_JOB',
                                                           cost=O.cost(proposal['vector'], candidate['prices']))
-                    stats['evidence'].append(cached['provenance'])
                 except (OSError, ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
                     refused.append(dict(job=str(job), reason='HISTORY_METADATA_ERROR:' + str(exc)))
         self.db.commit()

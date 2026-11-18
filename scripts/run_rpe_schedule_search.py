@@ -687,6 +687,11 @@ class WidthDriver:
         # existing per_decision-sized wave to preparation, so its late READY
         # points return to the Q3 queue before preparing the remaining ladder.
         pending=[p for p in self.state['points']if p['status']in('COMPLETION','WAITING_INPUTS')]
+        total_pending = len(pending)
+        blocked = comp.price_deferred_keys() if hasattr(comp, 'price_deferred_keys') else set()
+        if blocked:
+            from trottertracks.pr_candidate_completion import key
+            pending = [p for p in pending if key(p['completion_request']) not in blocked]
         cycle=self.state['cycle'];limit=W.settings(self.wide)['per_decision']
         wave=self.state.get('preparation_wave')
         if wave is None or wave['cycle']!=cycle:
@@ -739,7 +744,8 @@ class WidthDriver:
         reason = ('PER_DECISION_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if self.work_conserving_search
                   else 'EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN')
         self.log(event='PREPARATION_WAVE_START',dispatch_reason=reason,per_method_limit=limit,
-            selected_by_method=counts,pending_before=len(pending),deferred=len(pending)-len(selected),
+            selected_by_method=counts,pending_before=total_pending,deferred=total_pending-len(selected),
+            waiting_unchanged_price=total_pending-len(pending),
             selected=[dict(method=p['method'],family=p['family'],kappa=p['kappa'])for p in selected])
         def prepare_points(points):
             for p in points:
@@ -778,18 +784,30 @@ class WidthDriver:
                     p.update(status='WAITING_INPUTS',reason=record.get('reason',record['status']))
         if announce_ready is None:
             prepare_points(selected)
-        else:
-            # Candidates within one method can share descriptors, signals and
-            # calibration cells. Retain their order while methods run in parallel.
+        elif selected:
+            # Pauli publishes through one owned workspace. DF stages keep
+            # per-candidate outputs and already lock identical calibrations.
+            # Serialize one split so it can reuse its own descriptor and signals.
             from concurrent.futures import ThreadPoolExecutor, as_completed
-            by_method = [[p for p in selected if p['method'] == method] for method in self.methods]
-            with ThreadPoolExecutor(max_workers=len(by_method)) as pool:
-                tasks = [pool.submit(prepare_points, points) for points in by_method if points]
+            from contextlib import ExitStack
+            groups = {}
+            for point in selected:
+                method = point['method']
+                split = self.state['families'][point['family']]['L_D'] if method=='PR_DF' else None
+                groups.setdefault(method, {}).setdefault(split, []).append(point)
+            parallel = int((self.spec.get('candidate_completion') or {}).get('parallel', 1))
+            with ExitStack() as stack:
+                tasks = []
+                for method, splits in groups.items():
+                    workers = max(1, min(parallel, len(splits))) if method=='PR_DF' else 1
+                    pool = stack.enter_context(ThreadPoolExecutor(max_workers=workers))
+                    tasks.extend(pool.submit(prepare_points, points) for points in splits.values())
                 try:
                     for task in as_completed(tasks):
                         task.result()
                 except BaseException:
-                    stop_on_error()
+                    if stop_on_error is not None:
+                        stop_on_error()
                     raise
         self.log(event='PREPARATION_WAVE_END',dispatch_reason=reason,selected_by_method=counts,
             remaining_pending=sum(p['status']in('COMPLETION','WAITING_INPUTS')for p in self.state['points']))

@@ -751,6 +751,19 @@ class Executor:
         cache = getattr(self, 'preparation_history_cache', None)
         if cache is not None:
             return cache.prior_records(self, candidates)[:2]
+        cache_dir = getattr(self, 'optimizer_history_directory', None)
+        if cache_dir is not None:
+            from .rpe_plan_history_cache import HistoryCache
+            import sqlite3
+            try:
+                with HistoryCache(cache_dir / (self.method + '.sqlite3')) as history:
+                    known, refused, stats = history.prior_records(self, candidates, details=False)
+                self.log(event='PRIOR_HISTORY_CACHE', hits=stats['cache_hits'],
+                         scanned=stats['scanned_jobs'], validated=stats['validated_jobs'],
+                         seconds=stats['wall_seconds'])
+                return known, refused
+            except (OSError, sqlite3.Error) as exc:
+                self.log(event='PRIOR_HISTORY_CACHE_UNAVAILABLE', reason=str(exc))
         ready = {c['configuration_id']: c for c in candidates if c['ready'] and c['configuration_id']}
         known, refused = {}, []
         held_jobs = {(Path(item['parent_directory'])/'jobs'/item['method']/item['job_id']).resolve()

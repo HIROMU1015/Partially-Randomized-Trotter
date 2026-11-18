@@ -162,6 +162,18 @@ R08で過去に `df-plan` が保留した3件の保存入力を、従来の固�
 - [価格照会](../src/trottertracks/pr_step_price_registry.py) は元の物理条件検査の後、round・軸ごとに適用可能なモデルを調べる。受入済みの単価が空欄なら、同一物理点の一意な直接観測を優先する。重複登録では較正範囲内のモデルが一つなら使い、複数なら出所選択待ち、外挿しか残らなければ追加根拠待ちとする。較正範囲は保存済みの `q/R` の最小値・最大値であり、適用した値は従来どおり条件付き参照価格として残す。単独登録の既存外挿とその表示は従来のまま。
 - [候補準備](../src/trottertracks/pr_candidate_completion.py) はこの2種の保留で較正を再投入せず、照会規則または登録表が変わったときに保存情報だけで再照会する。[軸別照会](../tests/test_pr_step_price_registry.py)と[通常入口・再開](../tests/test_pr_width_completion.py)を人工検証。新しい実H4価格、信号、Q3は取得していない。
 
+### 候補準備と過去Q3の差分再利用
+
+| 対象 | 通常入口での適用 |
+| --- | --- |
+| Full PF、B0I、PR-Pauli、PR-DF | [共通executor](../scripts/run_rpe_method_optimizer.py) が `prior_run_dirs` のQ3を方式別のローカルSQLiteに索引化する。候補の物理ID・route・評価契約・保存ファイルの変更時は再照合し、保留を引き継ぐ。総費用は現在の単価で求める。幅探索のサイクル末の全完了点照合でも同じ索引を使う。比較用に `executor.prior_history_cache: false` で従来経路を選べる。 |
+| PR-DF | [信号準備](../scripts/pr_candidate_services.py) の `df-plan`、`df-stage`、`df-bundle` で、固定SOURCEとdescriptorで検証済みのpacket索引を共有する。packet、構成、rawを完全なcommit参照で固定できるものが対象。追加packetは個別に検証し、同じ物理roundに異なる証拠があれば従来どおり保留する。 |
+| PR-DF | [候補準備](../src/trottertracks/pr_candidate_completion.py) では、価格の出所選択待ち、または追加根拠のない外挿保留が先に分かれば、未着手の信号取得を保留する。価格登録の変更後は同じ構成から再開可能。live-ready経路では `candidate_completion.parallel` の既存設定を使って異なる分割を並行準備し、同一分割内は順番を保つ。科学枠・同一較正のlock・着手済みstageの回収は既存経路に従う。 |
+
+PR-Pauliの候補間では共有worktreeへの書込を直列化する。Full PFとB0Iの自動補完は既存の有限候補数を守り、独立した信号・価格の並行処理を使う。新しい索引だけが置かれる `cache/prior-q3` と `cache/df-saved-index` は再生成可能でGit管理外。DP prefix-cacheの境界はこの変更の対象外。
+
+人工・回帰検証で、[4方式の履歴再利用と保留](../tests/test_rpe_plan_history_cache.py)、[packet追加時の再検証と衝突検出](../tests/test_pr_saved_quote_resume.py)、[価格変更時の再開](../tests/test_pr_width_completion.py)、[分割間並行と同一分割の順序](../tests/test_pr_multiwidth_launch_contracts.py) を確認した。実H4の速度倍率は未測定。
+
 ## PR-Pauli広域schedule探索：粗い探索の優先・HYBRID並列・価格下界による打ち切り（B2、2026-11-16）
 
 - **価格下界による打ち切り**（`run_rpe_schedule_search.py` の `prune`、`rpe_schedule_search.plan_wide(price_floor=)`）

@@ -257,6 +257,7 @@ class ControllerFailures(unittest.TestCase):
         # Use the normal saved-result entry, rather than answer(), because
         # optimize loads prior_records before asking for any new proposals.
         view.prior_run_dirs = [self.run]
+        view.optimizer_history_directory = self.run/'cache'/'prior-q3'
         candidate = dict(configuration_id='first', ready=True, prices=[Fraction(1)]*4)
         known, refused = view.prior_records([candidate])
         self.assertEqual(refused, [])
@@ -266,7 +267,10 @@ class ControllerFailures(unittest.TestCase):
 
         # Reloading the catalog and directly ingesting/answering the same saved
         # job within this invocation must not inflate the host's reuse count.
-        view.prior_records([candidate])
+        with patch.object(view, 'ingest', side_effect=AssertionError('Cached evidence should not be revalidated')), \
+             patch.object(view, 'record_prior_result_reuse', wraps=view.record_prior_result_reuse) as reuse:
+            self.assertEqual(view.prior_records([candidate]), (known, refused))
+            reuse.assert_called_once_with(task.job)
         view.ingest(task.job, proposal, calls=0)
         view.answer(proposal)
         self.assertEqual(executor.metrics()['by_host']['server1']['reused'], 1)
