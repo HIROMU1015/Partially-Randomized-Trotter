@@ -1,0 +1,284 @@
+{
+  "schema": "LOCAL0_APPLIED_SEARCH_SCOPE_V1",
+  "run_id": "search-e3288a841e437a13ab6a",
+  "signature": "e3288a841e437a13ab6a3e9caadad5b2f3dd5d216caa83b13d8f955afc768ef5",
+  "evaluation_identity": "58949b602df63559ed99c327698c232e1607229d58c212a9305dac68c2e049b2",
+  "entry": "schedule",
+  "code_source": "ca8030e689c7e8de2d2af63212b5805e63424faa",
+  "applied": {
+    "methods": [
+      "PR_DF"
+    ],
+    "requested": {
+      "methods": [
+        "PR_DF"
+      ],
+      "per_method": {
+        "PR_DF": {
+          "L_D": [
+            7,
+            8,
+            9
+          ],
+          "delta_pf": [
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/36028797018963968"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/18014398509481984"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/9007199254740992"
+            },
+            {
+              "kind": "binary64",
+              "exact": "3602879701896397/4503599627370496"
+            }
+          ]
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_new_q3_per_method": 16
+      },
+      "preparation_budgets": {
+        "signal": "UNLIMITED",
+        "compile": "UNLIMITED",
+        "audit": "UNLIMITED"
+      }
+    },
+    "fixed": {
+      "problem": {
+        "system": "H4",
+        "geometry": "linear_1Angstrom",
+        "basis": "STO-3G",
+        "rank_policy": "tol_only_1e-8",
+        "hamiltonian_data": {
+          "snapshot": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_snapshot.npz",
+            "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+          },
+          "receipt": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_receipt.json",
+            "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+          },
+          "expected": {
+            "fragment_count": 10,
+            "n_qubits": 8,
+            "sector_dimension": 36
+          }
+        }
+      },
+      "accuracy": {
+        "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+        "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+        "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+        "epsilon_E_decimal": "0.00159360010199040",
+        "scope": "MODEL_MSE_FILTER_ONLY"
+      },
+      "target": {
+        "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+        "energy_ha": -2.1663874486347634,
+        "source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        }
+      },
+      "rpe": {
+        "M": 12
+      }
+    },
+    "method_settings": {
+      "PR_DF": {
+        "family": "PR",
+        "definition": "L_D = number of two-body DF fragments kept in the deterministic head (saved order); one-body separate head; prefix and tail non-empty",
+        "L_D_range": {
+          "min": 7,
+          "max_offset_from_fragment_count": -1
+        },
+        "caps": [
+          64,
+          60,
+          56,
+          52,
+          47,
+          43,
+          38,
+          34,
+          30,
+          25,
+          21,
+          17,
+          12
+        ],
+        "generation": {
+          "kind": "prdf_a_fixed_grid",
+          "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+          "view": "/home/abe/Project/Partially Randomized Trotter/.worktrees/rpe-distributed-q3-local/.local-q3/views/23160cc876807c0300be3de811f767b5810640a7",
+          "view_commit": "23160cc876807c0300be3de811f767b5810640a7",
+          "baseline": {
+            "formula": "2nd",
+            "delta_over_h": "1",
+            "kappa_multiplier": "1"
+          },
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "1/2"
+          ],
+          "kappa_multipliers": [
+            "1",
+            "2"
+          ],
+          "mapper": "D2 B release 437ba4ac A_FIXED_GRID_510FBACD_V1 adapter (run_pr_df_ld7_v0.signal_modules) with the paper common-kappa mapper",
+          "supported_formulas": [
+            "2nd",
+            "4th(m5_best)"
+          ],
+          "note": "delta must make T_m/delta integral for every round (A fixed grid); h stays the RPE base time"
+        },
+        "L_D_values": [
+          7,
+          8,
+          9
+        ],
+        "saved_configurations_only": false
+      }
+    },
+    "method_overrides": {
+      "PR_DF": {
+        "L_D_values": [
+          7,
+          8,
+          9
+        ],
+        "saved_configurations_only": false,
+        "generation": {
+          "formulas": [
+            "2nd"
+          ],
+          "delta_over_h_values": [
+            "1",
+            "1/2"
+          ]
+        },
+        "L_D_range": {
+          "min": 7,
+          "max_offset_from_fragment_count": -1
+        }
+      }
+    },
+    "search": {
+      "rule": "METHOD_MINIMUM_PRIORITY_V2",
+      "decrement_steps": [
+        1,
+        2
+      ],
+      "large_step_headroom": "9/10",
+      "seed_rules": [
+        "B_PRICE",
+        "A_SHAPE"
+      ],
+      "max_steps_per_method": 100000,
+      "max_new_q3_per_method": 0,
+      "seed_saved_same_L_D": true,
+      "explore_every": 4,
+      "explore_window": "3/2",
+      "small_gain_fraction": "1/1000",
+      "deferral_fail_margin": "1/10000",
+      "transfer_count": 2,
+      "lookahead": 16,
+      "lookahead_mode": "HYBRID",
+      "adaptive_lookahead": false,
+      "coarse_gain_fraction": "1/100",
+      "small_and_deferred": "STOP",
+      "schedule_wide": {
+        "rule": "SCHEDULE_WIDE_V1",
+        "ladder_ratio": "4",
+        "explore_ratio": "2",
+        "refine_ratio": "33/32",
+        "exploit_per_explore": 2,
+        "window": "3/2",
+        "upper_stop_steps": 2,
+        "upper_stop_margin": "1/20",
+        "max_kappa": "65536",
+        "per_decision": 8,
+        "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family"
+      },
+      "note": "Absolute requested PF widths. JSON .2 retains binary64, string 1/5 exact rational. Fixed h/M/T and evaluation contract unchanged; mapper may reject per method.",
+      "adaptive_hybrid": true,
+      "allocation_exchange": null,
+      "kappa_neighbourhood": {
+        "outer_planner": "SCHEDULE_WIDE_V1_METADATA_PLAN_SEPARATE"
+      },
+      "requested_widths": {
+        "PR_DF": [
+          0.1,
+          0.2,
+          0.4,
+          0.8
+        ]
+      }
+    },
+    "max_new_q3_per_method": {
+      "PR_DF": 16
+    },
+    "max_steps_per_method": 100000,
+    "preparation_budgets": {
+      "signal": "UNLIMITED",
+      "compile": "UNLIMITED",
+      "audit": "UNLIMITED"
+    }
+  },
+  "problem_sha256": "992e101b4b6479ccd2710d5bf3c76ae7ee31618e5383cfd3552fe7df3161de7d",
+  "round_requested_sha256": "b64e28b43a5ebbca659aac3e0de0c69bb55a011f15b34efd1b0005838f195461",
+  "scope": {
+    "methods": [
+      "PR_DF"
+    ],
+    "per_method": {
+      "PR_DF": {
+        "L_D": [
+          7,
+          8,
+          9
+        ],
+        "delta_pf": [
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/36028797018963968"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/18014398509481984"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/9007199254740992"
+          },
+          {
+            "kind": "binary64",
+            "exact": "3602879701896397/4503599627370496"
+          }
+        ]
+      }
+    },
+    "shots": "auto",
+    "stop": {
+      "max_new_q3_per_method": 16
+    },
+    "preparation_budgets": {
+      "signal": "UNLIMITED",
+      "compile": "UNLIMITED",
+      "audit": "UNLIMITED"
+    }
+  }
+}
