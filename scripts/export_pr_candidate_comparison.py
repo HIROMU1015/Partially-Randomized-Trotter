@@ -7,6 +7,7 @@ join. Each input locator is immutable; the caller commits the produced files.
 import argparse
 from copy import deepcopy
 from fractions import Fraction
+import importlib.util
 import json
 from pathlib import Path
 import subprocess
@@ -42,9 +43,13 @@ def locator(root, value):
     return dict(value, commit=fixed)
 
 
+def saved_bytes(root, loc):
+    return subprocess.check_output(['git', 'show', loc['commit']+':'+loc['path']], cwd=root)
+
+
 def read(root, value):
     loc = locator(root, value)
-    result = json.loads(subprocess.check_output(['git', 'show', loc['commit']+':'+loc['path']], cwd=root))
+    result = json.loads(saved_bytes(root, loc))
     for key in loc.get('selector', []):
         result = result[int(key)] if isinstance(result, list) else result[key]
     return result
@@ -95,6 +100,13 @@ def validated(root, request):
     if request.get('api'):
         sources['api'] = locator(root, request['api']);api = read(root, sources['api'])
         require(api == [record], 'Original API record differs from saved worker result')
+    if request.get('compact_evidence'):
+        sources['compact_evidence'] = locator(root, request['compact_evidence'])
+        witness = read(root, sources['compact_evidence'])
+        spec = importlib.util.spec_from_file_location('_q3_evidence_export', ROOT/'src/trottertracks/rpe_q3_evidence.py')
+        evidence = importlib.util.module_from_spec(spec);spec.loader.exec_module(evidence)
+        require(json.loads(evidence.verified_sidecars(saved_bytes(root, sources['result']), witness)['API_RETURN.json']) == [record],
+                'Compact API record differs from saved worker result')
     prices = quote['rows']
     require(len(prices) == 26 and {(p['m'],p['axis']) for p in prices} == {(m,a) for m in range(13) for a in ('X','Y')},
             '26 unique price axes required')

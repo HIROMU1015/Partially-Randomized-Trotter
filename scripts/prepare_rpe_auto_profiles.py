@@ -28,8 +28,10 @@ def prepare(profiles, layout, source, output, run_id):
     if not run_id or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-' for c in run_id):
         raise ValueError('Use a simple new run identifier')
     source = subprocess.check_output(['git', 'rev-parse', source+'^{commit}'], cwd=ROOT, text=True).strip()
+    helper='src/trottertracks/rpe_q3_evidence.py'
+    files=FILES+(helper,) if subprocess.check_output(['git','ls-tree',source,'--',helper],cwd=ROOT) else FILES
     manifest = dict(commit=source, files={name: hashlib.sha256(subprocess.check_output(
-        ['git', 'show', source+':'+name], cwd=ROOT)).hexdigest() for name in FILES})
+        ['git', 'show', source+':'+name], cwd=ROOT)).hexdigest() for name in files})
     output = Path(output);output.mkdir(parents=True, exist_ok=False)
     rows = []
     for path in sorted(Path(profiles).glob('*.json')):

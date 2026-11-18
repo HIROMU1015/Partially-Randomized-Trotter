@@ -966,6 +966,7 @@ def continue_selected_preparation(root,problem,context,spec,run,completion,execu
 def publish_comparison_exports(completion,run,context):
     """Publish each acquired candidate's actual Q3 answer for unchanged C sync."""
     from .rpe_method_optimizer import job_outcome
+    from . import rpe_q3_evidence as evidence
     run=Path(run);exports=[]
     for record in completion.state['records'].values():
         if record['status']!='READY_FOR_SEARCH':continue
@@ -976,11 +977,22 @@ def publish_comparison_exports(completion,run,context):
             if request['configuration_id']!=cid or outcome['status']not in ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD','MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD','INCONCLUSIVE'):continue
             leaf=job/job.name;result=leaf/'RESULT.json'
             if not result.exists():continue
+            api=leaf/'API_RETURN.json'
+            witness=leaf/evidence.WITNESS
+            if not api.exists() and not witness.exists() and (leaf/evidence.CHECKPOINTS).is_file():
+                # A successfully validated job whose retained sidecars differ
+                # from the result still publishes its actual worker API bytes.
+                preserved_api=evidence.checkpoints(leaf)['API_RETURN.json']
+                with api.open('xb') as stream:
+                    stream.write(preserved_api)
+            field, artifact = ('api',api) if api.is_file() else ('compact_evidence',witness)
+            if not artifact.is_file():raise ValueError('Published Q3 evidence is missing for '+job.name)
             raw=publish([job],'Publish automated candidate Q3 raw and individual receipts')
             d=completion.directory/'comparisons'/method/job.name;d.mkdir(parents=True,exist_ok=True)
             req=dict(configuration=record['intake']['configuration'],case_inputs=dict(commit=raw,path=rel(job/'CASE_INPUTS.json')),
-                result=dict(commit=raw,path=rel(result)),outcome=dict(commit=raw,path=rel(outcome_path)),api=dict(commit=raw,path=rel(leaf/'API_RETURN.json')),
+                result=dict(commit=raw,path=rel(result)),outcome=dict(commit=raw,path=rel(outcome_path)),
                 quote=record['quote'],comparison_label=method+'_AUTO_'+cid[:12]+'_'+job.name)
+            req[field]=dict(commit=raw,path=rel(artifact))
             inp=d/'EXPORT_REQUEST.json';put(inp,req);script=str(ROOT/'scripts/export_pr_candidate_comparison.py')
             completion.call([completion.path("NATIVE"),'-B',script,'prices','--request',str(inp),'--output',str(d/'AXIS_PRICES.json')],d,'EXPORT_PRICES')
             pc=publish([d],'Bind automated candidate 26 axis prices for C')

@@ -314,7 +314,7 @@ class SchedulerTests(unittest.TestCase):
             pf.write_text(json.dumps(problem));rf.write_text(json.dumps(dict(round_id='ARTIFICIAL_CLI',methods=METHODS,
                 science_approved=True,max_new_q3_per_method={m:1 for m in METHODS},initial='all',
                 executor=dict(scheduler='concurrent',max_concurrent_jobs=2,dp_workers=1,
-                    prefix_cache_directory=str(tmp/'prefix'),prefix_checkpoint_rounds=[11],prefix_cache_max_bytes=32000))))
+                    prefix_cache_directory=str(tmp/'prefix'),prefix_checkpoint_rounds=[11],prefix_cache_max_bytes=32000,compact_q3_evidence=True))))
             with patch.object(O,'prepare',return_value=context),patch.object(sys,'argv',
                 ['run_rpe_method_optimizer.py','--problem',str(pf),'--round',str(rf),'--run-dir',str(run)]):cli.main()
             data=json.loads((run/'ROUND_RESULT.json').read_text())
@@ -325,6 +325,7 @@ class SchedulerTests(unittest.TestCase):
                 self.assertEqual(profile['prefix_cache_directory'],str(tmp/'prefix'))
                 self.assertEqual(profile['prefix_checkpoint_rounds'],[11])
                 self.assertEqual(profile['prefix_cache_max_bytes'],32000)
+                self.assertIs(profile['compact_q3_evidence'],True)
             self.assertTrue(all(r['executor_metrics']['new_real_route_launches']==0 for r in data['methods'].values()))
 
     def test_host_only_prefix_cache_can_receive_the_budget(self):

@@ -1,5 +1,13 @@
 # 性能対策の再利用索引
 
+## 最適化器の完了Q3出力の重複削減（2026-11-18）
+
+通常のconcurrent探索で `ROUND.json` の `executor.compact_q3_evidence` を `true` にすると、PR-Pauli/PR-DFのcommon-entry workerは `API_RETURN.json` と `PARTIAL_*.json` 3種を個別に書かず、完了まで圧縮した1つのSQLiteチェックポイントに保存する。固定validatorはworkerが書いた値を読み、元のMSE・数値gateを適用する。正常終了後、`RESULT.json` から4種を復元したbytesの完全一致を確かめて、小さい `Q3_COMPACT_EVIDENCE.json` を保存してチェックポイントを解放する。中断、UNKNOWN、照合差がある場合はチェックポイントを保持する。
+
+[Q3 worker adapter](../scripts/run_rpe_optimizer_q3_job.py)の `collect` と通常のC exportはそのまま使える。直接ファイルが必要なら `--mode export-evidence --request RUN/jobs/METHOD/JOB/REQUEST.json --output RUN/jobs/METHOD/JOB --evidence-directory NEW_DIRECTORY` で元のbytesを別ディレクトリに復元できる。分散環境ではcontrollerとworker adapterの対応版をそろえる。旧版や対象外のrouteは元の形式で保存する。
+
+人工の通常入口で有効判定とMSE、元バイト列の復元を比較した。関連ファイルは5→2件、283,862→139,720 B（50.8%減）。既存R08の正常完了111件の照合では4種合計0.97 GiBが同じ `RESULT.json` 内から復元できた。R08への適用、新規実H4 Q3、実H4での性能測定は未実施。
+
 ## Q3のDP中間キャッシュの圧縮と容量管理（2026-11-18）
 
 通常入口の `prefix_cache_directory`（分散時はworker側の保存先）に対し、[PrefixStore](../src/trottertracks/rpe_dp_prefix_reuse.py) が中間状態を可逆gzipで保存する。旧V1 JSONも同じ評価条件とruntimeで照合して読める。上限はディレクトリ単位で既定40 GiB。`ROUND.json` の `executor.prefix_cache_max_bytes` で正整数のバイト数を指定できる。新規保存の直前にロックを取り、上限を超える場合だけ、最後の保存・読込が古いキャッシュから解放する。単体で上限を超える状態は保存を省略する。

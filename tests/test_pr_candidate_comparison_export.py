@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 sp=importlib.util.spec_from_file_location('_comparison_export',ROOT/'scripts/export_pr_candidate_comparison.py')
 E=importlib.util.module_from_spec(sp);sp.loader.exec_module(E)
+from trottertracks import rpe_q3_evidence as W
 C=types.ModuleType('trottertracks._candidate_export_c');C.__package__='trottertracks'
 exec(compile(subprocess.check_output(['git','show','06e0b67634265d6dc818d4032f0cdb8fe8fd5629:src/trottertracks/saved_rpe_cost_catalog.py'],cwd=ROOT),
              'fixed_C:06e0b6763','exec'),C.__dict__)
@@ -27,7 +28,7 @@ def put(root,path,value):
 def loc(commit,path):return dict(commit=commit,path=path)
 
 
-def fixture(root,pauli,status=E.PASS):
+def fixture(root,pauli,status=E.PASS, *, compact=False):
     lower,upper=(.25,.25)if status==E.PASS else(2,3)if status==E.FAIL else(.25,2)
     split={'tail_dictionary':{'fixture':'ARTIFICIAL'}}if pauli else{'lambda_source':{'fixture':'ARTIFICIAL'}}
     cfg=dict(id='ARTIFICIAL_CONFIGURATION',spec=dict(method='PR',L_D=4,formula='2nd',finite_K=2,kappa={'value':2},
@@ -40,7 +41,8 @@ def fixture(root,pauli,status=E.PASS):
         signal_packet=loc('SOURCE','signals.json'),evaluation_target={'energy_ha':0},allocation=allocation)
     adopted=dict(MSE_upper=1)
     record=dict(configuration_id=case['total_configuration_id'],canonical_binding=case['binding_id'],allocation=allocation,
-        evaluation_target=case['evaluation_target'],diagnostic={'deterministic_risk':dict(MSE_lower=lower,MSE_upper=upper)})
+        evaluation_target=case['evaluation_target'],diagnostic=dict(partial_decoder_risk={},deterministic_risk=dict(
+            MSE_lower=lower,MSE_upper=upper,bounds={'lemma':{},'total_state_dp':{}})))
     result=dict(status=status,allocation=allocation,record=record,adopted_q3_assessment={'status':status})
     quote=dict(configuration_id=cfg['id'],complete=True,policy='MODEL',rows=[dict(m=m,axis=a,physical_id='P'+str(m),q=1<<m,R=1,
         unit_price_RZ={'numerator':m+1,'denominator':2},classification='MODEL_REFERENCE',source={'fixture':'ARTIFICIAL'},qualified_E_C=False)
@@ -51,36 +53,59 @@ def fixture(root,pauli,status=E.PASS):
         total_configuration_id=case['total_configuration_id'],binding_id=case['binding_id'],contract_matches=True,
         allocation=allocation['shots'],signal_packet=case['signal_packet'],evaluation_target=case['evaluation_target']))
     put(root,'case_inputs.json',dict(cases=[case],adopted_evaluation=adopted));put(root,'result.json',result)
-    put(root,'api.json',[record]);put(root,'outcome.json',outcome);put(root,'quote.json',quote);raw=commit(root)
+    if compact:
+        put(root,W.WITNESS,dict(schema=W.SCHEMA,result_sha256=W.sha((root/'result.json').read_bytes()),
+                               sha256={k:W.sha(W.encode(v)) for k,v in W.source_sidecars(result).items()}))
+        storage_key=('compact_evidence',W.WITNESS)
+    else:
+        put(root,'api.json',[record])
+        storage_key=('api','api.json')
+    put(root,'outcome.json',outcome);put(root,'quote.json',quote);raw=commit(root)
     request=dict(configuration=loc(src,'configuration.json'),**{k:loc(raw,path)for k,path in (
-        ('case_inputs','case_inputs.json'),('result','result.json'),('api','api.json'),('outcome','outcome.json'),('quote','quote.json'))})
+        ('case_inputs','case_inputs.json'),('result','result.json'),storage_key,('outcome','outcome.json'),('quote','quote.json'))})
     return request,dict(binding={'system':'ARTIFICIAL'},h=.1,M=12,accuracy=adopted)
 
 
 class ExportTests(unittest.TestCase):
     def test_both_pr_methods_through_unchanged_c_catalog(self):
-        for pauli,status in ((pauli,status)for pauli in (False,True)for status in (E.PASS,E.FAIL,E.INCONCLUSIVE)):
-            with self.subTest(pauli=pauli,status=status),tempfile.TemporaryDirectory()as temp:
-                root=Path(temp);git(root,'init','-q');request,comparison=fixture(root,pauli,status)
-                axis=E.prices(root,request);put(root,'export/AXIS_PRICES.json',axis);price_commit=commit(root)
-                inputs=E.consumer_inputs(root,request,loc(price_commit,'export/AXIS_PRICES.json'))
-                put(root,'export/INPUTS.json',inputs);input_commit=commit(root)
-                summary,index=E.join(root,loc(input_commit,'export/INPUTS.json'),root/'export')
-                put(root,'export/SUMMARY.json',summary);put(root,'export/C_RESULT_JOIN.json',index);final=commit(root)
-                catalog=C.Catalog(C.Reader(root),comparison);catalog.add(loc(final,'export/C_RESULT_JOIN.json'));r=catalog.result()['candidates'][0]
-                self.assertEqual(r['method'],'PR_PAULI'if pauli else'PR_DF')
-                self.assertEqual(r['status'],{E.PASS:'FEASIBLE',E.FAIL:'INFEASIBLE',E.INCONCLUSIVE:'PENDING'}[status]);self.assertEqual(len(r['price_axes']),26)
-                self.assertTrue(all(x['price_kind']=='MODEL_REFERENCE'for x in r['price_axes']))
-                self.assertEqual(E.frac(r['conditional_cost']),sum((m+1)*5/2 for m in range(13)))
-                self.assertIsNone(r['E_C']);self.assertIsNone(r['G_qualified'])
-                sp=importlib.util.spec_from_file_location('_c_sync_export_check',ROOT/'scripts/check_pr_candidate_c_sync.py')
-                checker=importlib.util.module_from_spec(sp);sp.loader.exec_module(checker)
-                put(root,'baseline.json',dict(comparison=comparison,sources=[]));baseline=commit(root)
-                checked=checker.check(root,loc(final,'export/C_RESULT_JOIN.json'),loc(baseline,'baseline.json'))
-                self.assertEqual(checked['status'],'PASS')
-                self.assertEqual(checked['discovered'],2)
-                self.assertTrue(checked['original_discover_and_reconcile'])
+        for pauli in (False,True):
+            for status,compact in ((E.PASS,False),(E.FAIL,False),(E.INCONCLUSIVE,False),(E.PASS,True)):
+                with self.subTest(pauli=pauli,status=status,compact=compact),tempfile.TemporaryDirectory()as temp:
+                    root=Path(temp);git(root,'init','-q');request,comparison=fixture(root,pauli,status,compact=compact)
+                    axis=E.prices(root,request);put(root,'export/AXIS_PRICES.json',axis);price_commit=commit(root)
+                    inputs=E.consumer_inputs(root,request,loc(price_commit,'export/AXIS_PRICES.json'))
+                    put(root,'export/INPUTS.json',inputs);input_commit=commit(root)
+                    summary,index=E.join(root,loc(input_commit,'export/INPUTS.json'),root/'export')
+                    put(root,'export/SUMMARY.json',summary);put(root,'export/C_RESULT_JOIN.json',index);final=commit(root)
+                    catalog=C.Catalog(C.Reader(root),comparison);catalog.add(loc(final,'export/C_RESULT_JOIN.json'));r=catalog.result()['candidates'][0]
+                    self.assertEqual(r['method'],'PR_PAULI'if pauli else'PR_DF')
+                    self.assertEqual(r['status'],{E.PASS:'FEASIBLE',E.FAIL:'INFEASIBLE',E.INCONCLUSIVE:'PENDING'}[status]);self.assertEqual(len(r['price_axes']),26)
+                    self.assertTrue(all(x['price_kind']=='MODEL_REFERENCE'for x in r['price_axes']))
+                    self.assertEqual(E.frac(r['conditional_cost']),sum((m+1)*5/2 for m in range(13)))
+                    self.assertIsNone(r['E_C']);self.assertIsNone(r['G_qualified'])
+                    sp=importlib.util.spec_from_file_location('_c_sync_export_check',ROOT/'scripts/check_pr_candidate_c_sync.py')
+                    checker=importlib.util.module_from_spec(sp);sp.loader.exec_module(checker)
+                    put(root,'baseline.json',dict(comparison=comparison,sources=[]));baseline=commit(root)
+                    checked=checker.check(root,loc(final,'export/C_RESULT_JOIN.json'),loc(baseline,'baseline.json'))
+                    self.assertEqual(checked['status'],'PASS')
+                    self.assertEqual(checked['discovered'],2)
+                    self.assertTrue(checked['original_discover_and_reconcile'])
 
+
+    def test_compact_evidence_supplies_the_same_prices_without_api_file(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);git(root,'init','-q');request,_=fixture(root,True)
+            expected=E.prices(root,request)
+            result=(root/'result.json').read_bytes()
+            witness=dict(schema=W.SCHEMA,result_sha256=W.sha(result),
+                         sha256={k:W.sha(W.encode(v)) for k,v in W.source_sidecars(json.loads(result)).items()})
+            put(root,W.WITNESS,witness);(root/'api.json').unlink()
+            request.pop('api');request['compact_evidence']=loc(commit(root),W.WITNESS)
+            self.assertEqual(E.prices(root,request),expected)
+            witness['sha256']['API_RETURN.json']='corrupt'
+            put(root,W.WITNESS,witness);request['compact_evidence']=loc(commit(root),W.WITNESS)
+            with self.assertRaisesRegex(ValueError,'checksum differs'):
+                E.prices(root,request)
 
     def test_missing_prices_and_identity_mismatch_rejected(self):
         with tempfile.TemporaryDirectory()as temp:
