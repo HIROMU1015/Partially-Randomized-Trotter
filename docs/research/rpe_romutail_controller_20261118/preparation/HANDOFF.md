@@ -118,7 +118,7 @@ server1復帰時は、既存の固定f956 transportと工程SOURCE・Python/comp
 元REQUESTの固定入力を延べ80件照合した。人工検収では、別候補の履歴を同梱せず、
 候補が変わっても共通履歴を再利用できることと、旧bundleを読み込めることを確認した。
 初回の容量は入力の履歴に依存する。表の較正と信号では、外部デルタ参照を使わないpackの容量が増えた。
-実workerへの配置とcurrent採用は次のreleaseで行う。
+実workerへの配置とcurrent採用は、末尾の容量対策releaseを参照。
 
 ## workerの実行ディレクトリ容量
 
@@ -131,3 +131,33 @@ server1復帰時は、既存の固定f956 transportと工程SOURCE・Python/comp
 作業領域のどちらにも入力packの複製がなく、同量をworkerの共有キャッシュに1回保持した。
 両方で固定SOURCEと入力が一致した。人工jobでは別のprovider作業領域からの成果公開・回収も確認した。
 対象は新規attemptの準備Git pack。既存attemptの容量削減には、回収済み成果と参照の別途照合が必要。
+
+## 容量対策releaseの配置
+
+2026-11-18 JST。RomuTailで `romutail-worker-storage-dd832d360` をcurrentに採用した。
+中央とworker通信の固定SOURCEは `dd832d360ee600335b81280b0891b55ade44b5d7`。
+前current `romutail-work-conserving-5c8ced4b2-laptop4x4` の固定SOURCEに容量対策のみを取り込んだ。
+科学Q3は28d976b99、timed adapterは349558b74、準備wrapperと各provider・価格workerは既存契約を使う。
+PBS gatewayと回収用Python、ホストごとの受付・資源設定を引き継いだ。
+
+- 中央は受領済みファイルをハードリンクで公開する。同一ファイルシステムでリンクできない場合は既存のコピー経路を使う。
+- 新規準備jobは、事前照合で取り込んだGitオブジェクトを各workerのキャッシュから参照し、実行に使わない `inputs/` の複製を省く。
+- 作業開始時に照合したGit commitを基点に、workerはそのjobで増えたGitオブジェクトを返す。
+  中央で前提が不足すれば、元REQUESTのSHA-256で固定された入力bundleを先に取り込む。
+  開始時と終了時のcommitが同じ場合は、そのcommitの参照を返す。旧方式の返却bundleも回収できる。
+
+server2の保存5件で、同じ結果commitとtreeを新規受け側に復元し、返却量は約134.0 MiBから約408 KiBになった。
+RomuTail、server2、Romulaptop WSL、PBSゲートウェイの専用配置で同じ人工検査を通した。
+WSLの通常spoolには比較できる準備bundleがなく、PBSで確認した既存の人工準備4件もGit返却0バイトだった。
+両環境の実ジョブにおける削減量は作業内容に依存する。今回はPBS計算ノードへの新規投入を行っていない。
+
+RomuTailとWindowsの通常入口で、明示releaseとrelease指定なしのPreviewが同じ版とrun IDを返した。
+既存runのStatusは保存済みreleaseを返し、既存設定等35ファイルのSHA-256が一致した。
+人工回帰は113件PASS、1件skip。旧版でも再現したStatusのfixture不一致1件を別に記録した。
+詳細は `.rpe-central/deployment/romutail-worker-storage-dd832d360/` の `VALIDATION.json` と
+`CURRENT_ADOPTION.json`、および同名fleetの `PLACEMENT-*.json` に保存した。
+
+既存の作業ファイルはそのまま保存した。server2の削除候補161ファイルと照合記録は、別の監査
+`.rpe-central/validation/worker-spool-audit-20261118/` にある。実信号・実compile・実Q3・本番探索の起動は各0件。
+server1が復帰したら、Codexは同じfleetのhostレイアウトで既存科学資産を照合し、専用checkoutを配置する。
+配置には必要に応じて `PORTABLE_SOURCE.bundle` を使い、保存入力と人工検査を通してから参加状態を照合する。
