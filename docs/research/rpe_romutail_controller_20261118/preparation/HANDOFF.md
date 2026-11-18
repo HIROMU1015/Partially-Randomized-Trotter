@@ -97,3 +97,25 @@ server1復帰時は、既存の固定f956 transportと工程SOURCE・Python/comp
 中央管理の統合版へ移行する際は、これらhost path mappingを新profileへ引き継ぎ、
 新しい完全REQUESTについて通常のSOURCE/fingerprint/admissionを行う。
 今回のinspectionを実科学性能・新Q3 PASS・実compile成功と呼ばない。
+
+## 準備入力の転送量
+
+中央が準備jobのGit入力を、checkoutに共通の履歴と、そのjobが参照する固定入力に分ける。
+先行jobの結果refは、現在の入力が参照するときに同梱する。同じcheckoutと入力集合から同じbundleを作り、
+既存のSHA-256キャッシュでworkerに不足しているbundleだけを送る。workerは共通履歴を先に取り込み、
+その後で固定入力とSOURCEを照合する。旧jobを再開するときは保存済みのREQUESTとbundleを使う。
+
+保存済みPR-DFのREQUESTを元のcheckoutと固定SOURCEで再構成した。以下は同じキャッシュへ届けるGit bundleの
+合計サイズで、転送時のJSON等を除く。
+
+| 対象 | 保存済みbundle | 新方式 |
+| --- | ---: | ---: |
+| 同じ固定入力を使うdescriptor 4件 | 180.0 MiB | 45.3 MiB。2件目以降は0 bytes |
+| 較正1件の初回 | 66.6 MiB | 81.4 MiB |
+| 信号1件の初回 | 110.1 MiB | 140.0 MiB |
+
+保存6件で、固定SOURCEだけの独立したGitリポジトリから新規workspaceを作り、
+元REQUESTの固定入力を延べ80件照合した。人工検収では、別候補の履歴を同梱せず、
+候補が変わっても共通履歴を再利用できることと、旧bundleを読み込めることを確認した。
+初回の容量は入力の履歴に依存する。表の較正と信号では、外部デルタ参照を使わないpackの容量が増えた。
+実workerへの配置とcurrent採用は次のreleaseで行う。

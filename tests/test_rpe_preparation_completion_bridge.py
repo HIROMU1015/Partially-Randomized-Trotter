@@ -8,6 +8,7 @@ import hashlib
 import shutil
 import subprocess
 from pathlib import Path
+from random import Random
 import sys
 import tempfile
 import threading
@@ -236,11 +237,34 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
                 'historical':{'commit':historic_commit,'path':'old/CONFIGURATION.json'}})+'\n')
             pinned_helper=hashlib.sha256(helper.read_bytes()).hexdigest()
             helper.write_bytes(helper.read_bytes()+b'\n# New controller transport declaration.\n')
+            (root/'shared-history.bin').write_bytes(Random(20261118).randbytes(1024 * 1024))
             git('add','.');git('commit','-qm','frozen task input')
             executor=type('Executor',(),{'run_dir':top/'run','artifact_cache':ArtifactCache(top/'controller-cas')})()
+            git('checkout', '-b', 'earlier-result', source)
+            (root/'unrelated.json').write_text('{"another_candidate": true}\n')
+            git('add', 'unrelated.json');git('commit', '-qm', 'unrelated producer result')
+            unrelated = git('rev-parse', 'HEAD')
+            earlier = 'refs/rpe-preparation/'+B.digest(str(executor.run_dir))[:16]+'/earlier-result'
+            git('update-ref', earlier, unrelated)
+            git('checkout', '-')
             bridge=B.DistributedPreparationBridge(executor,root,{'bundle_validation_sources':{source:str(view)}})
             completion=type('Completion',(),{'source':source})()
             task=bridge.build_request(completion,[sys.executable,'-B',str(script),str(request),str(d/'RESULT.json')],d,'PAULI_SIGNALS')
+            bundles = task['preparation']['input_git_bundles']
+            base, inputs = bundles
+            self.assertGreater(executor.artifact_cache.path(base['sha256']).stat().st_size, 1024 * 1024)
+            self.assertLess(executor.artifact_cache.path(inputs['sha256']).stat().st_size, 64 * 1024)
+            other_run = type('Executor', (), {'run_dir': top/'other-run', 'artifact_cache': executor.artifact_cache})()
+            other_bridge = B.DistributedPreparationBridge(other_run, root)
+            locators = task['preparation']['input_hashes']
+            self.assertEqual(other_bridge._bundle(root, source, locators), bundles)
+            tracked_base, tracked = bridge._bundle(root, source, locators[1:], tracked_workspace=True)
+            self.assertEqual(tracked_base, base)
+            self.assertNotEqual(tracked['sha256'], inputs['sha256'])
+            self.assertLess(executor.artifact_cache.path(tracked['sha256']).stat().st_size, 64 * 1024)
+            self.assertTrue(tracked['checkout_input_head'])
+            tracked_view = W._clone(view, top/'tracked-view', [tracked_base, tracked], executor.artifact_cache)
+            self.assertEqual(git('rev-parse', 'HEAD^{tree}', cwd=tracked_view), git('rev-parse', 'HEAD^{tree}'))
             self.assertEqual(task['preparation']['workspaces']['provider']['source']['files'][
                 'src/trottertracks/rpe_preparation_paths.py'],pinned_helper)
             fixed_provider.write_text('# changed provider body\n')
@@ -265,6 +289,8 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
             self.assertEqual(result['configuration'],{'scientific_fixture':'immutable'})
             self.assertEqual(result['input_sha256'],hashlib.sha256(request.read_bytes()).hexdigest())
             self.assertEqual(git('show',historic_commit+':old/CONFIGURATION.json',cwd=attempt/'workspace'),'{"previous_proof": 17}')
+            unexpected = subprocess.run(['git', 'cat-file', '-e', unrelated], cwd=attempt/'workspace', capture_output=True)
+            self.assertNotEqual(unexpected.returncode, 0)
             self.assertNotEqual(result['workspace'],str(provider))
             self.assertEqual(git('rev-parse','HEAD',cwd=view),source)
             self.assertFalse((provider/'docs/provider-output').exists())

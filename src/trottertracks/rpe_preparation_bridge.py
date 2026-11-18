@@ -235,6 +235,7 @@ class DistributedPreparationBridge:
         self.alias_path=Path(executor.run_dir)/'preparation'/'PATH_ALIASES.json'
         self.aliases=read(self.alias_path)if self.alias_path.exists()else{}
         self.lock=threading.RLock()
+        self.bundle_hashes = {}
 
     @staticmethod
     def handles(stage):
@@ -247,67 +248,94 @@ class DistributedPreparationBridge:
 
     def _bundle(self, root, source, input_hashes=(), *, tracked_workspace=False):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        namespace='refs/rpe-preparation/' + digest(str(self.executor.run_dir))[:16]
-        for value in sorted({row['commit'] for row in input_hashes}):
-            commit=subprocess.check_output(['git','rev-parse',value+'^{commit}'],cwd=root,text=True).strip()
-            subprocess.run(['git','update-ref',namespace+'/input-'+commit,commit],cwd=root,check=True)
-        imported=subprocess.check_output(['git','for-each-ref','--format=%(refname)',namespace],cwd=root,text=True).splitlines()
-        if head == source and not imported:
-            return []
-        if subprocess.check_output(['git','rev-list','--count','HEAD',*imported,'^'+source],cwd=root,text=True).strip()=='0':
-            return []
-        heads=['HEAD', *imported]
-        if tracked_workspace and imported:
-            # The worker fetches one advertised endpoint. A metadata merge
-            # retains the exact workspace tree and also reaches the returned
-            # producer commits even when they are on separate branches.
-            parents=sorted(set(subprocess.check_output(['git','rev-parse',*imported],cwd=root,text=True).split())-{head})
-            tree,date=subprocess.check_output(['git','show','-s','--format=%T %aI',head],cwd=root,text=True).split()
-            if parents:
-                args=['git','-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp',
-                      'commit-tree',tree,'-p',head]
-                for parent in parents:args+=['-p',parent]
-                tip=subprocess.check_output(args+['-m','Make fixed preparation inputs reachable from the tracked workspace'],
-                    cwd=root,text=True,env=dict(os.environ,GIT_AUTHOR_DATE=date,GIT_COMMITTER_DATE=date)).strip()
-                endpoint=namespace+'/workspace-'+tip
-                subprocess.run(['git','update-ref',endpoint,tip],cwd=root,check=True)
-                heads=[endpoint]
-        # Include the original provider branch even if its publication history
-        # diverged. Git bundle prerequisites are checked by the destination;
-        # no scientific checkout or branch HEAD is replaced here.
+        bundles = []
+        namespace = 'refs/rpe-preparation/input-bundles/'
+        # Send the shared checkout history once per worker cache. Retain that
+        # history for provider code that resolves hard-coded Git references.
+        if head != source and subprocess.check_output(
+            ['git', 'rev-list', '-1', head, '^' + source], cwd=root, text=True,
+        ).strip():
+            ref = namespace + 'base-' + head
+            subprocess.run(['git', 'update-ref', ref, head], cwd=root, check=True)
+            bundles.append(self._pack_bundle(root, ref, [source], (), not input_hashes))
+        if not input_hashes:
+            return bundles
+
+        # One advertised endpoint reaches the declared producer commits, even
+        # on separate branches, and preserves the same tracked workspace tree.
+        commits = sorted({row['commit'] + '^{commit}' for row in input_hashes})
+        resolved = subprocess.check_output(['git', 'rev-parse', *commits], cwd=root, text=True).split()
+        parents = [head, *sorted(set(resolved) - {head})]
+        tree, date = subprocess.check_output(
+            ['git', 'show', '-s', '--format=%T %aI', head], cwd=root, text=True,
+        ).split()
+        args = ['git', '-c', 'user.name=HIROMU1015', '-c', 'user.email=u411612g@ecs.osaka-u.ac.jp',
+                'commit-tree', tree]
+        for parent in parents:
+            args.extend(['-p', parent])
+        tip = subprocess.check_output(
+            args + ['-m', 'Make declared preparation input commits reachable'],
+            cwd=root, text=True, env=dict(os.environ, GIT_AUTHOR_DATE=date, GIT_COMMITTER_DATE=date),
+        ).strip()
+        ref = namespace + 'inputs-' + tip
+        subprocess.run(['git', 'update-ref', ref, tip], cwd=root, check=True)
+        prerequisites = list(dict.fromkeys([source, head]))
+        bundles.append(self._pack_bundle(root, ref, prerequisites, input_hashes, tracked_workspace))
+        return bundles
+
+    def _pack_bundle(self, root, ref, prerequisites, input_hashes, checkout):
+        locators = sorted({(row['commit'], row['path']) for row in input_hashes})
+        key = (ref, tuple(prerequisites), tuple(locators))
+        with self.lock:
+            sha = self.bundle_hashes.get(key)
+        if sha and self.executor.artifact_cache.path(sha).is_file():
+            return dict(sha256=sha, ref=ref, checkout_input_head=checkout)
+        revisions = [ref, *('^' + commit for commit in prerequisites)]
         with tempfile.TemporaryDirectory(prefix='rpe-preparation-git-') as temporary:
             path = Path(temporary) / 'input.bundle'
             # Git's bundle command emits thin packs. Keep the increment, but
             # require a pack whose deltas never depend on omitted Git objects.
             subprocess.run(['git', '-c', 'pack.window=0', '-c', 'pack.reuseDeltas=false',
-                            '-c', 'pack.reuseObjects=false', 'bundle', 'create', str(path), *heads, '^' + source], cwd=root,
+                            '-c', 'pack.reuseObjects=false', 'bundle', 'create', str(path), *revisions], cwd=root,
                            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            listed=subprocess.check_output(['git','bundle','list-heads',str(path)],cwd=root,text=True).splitlines()
-            names=[row.split(' ',1)[1]for row in listed]
-            ref='HEAD'if'HEAD'in names else names[0]
-            if input_hashes:
-                # Sparse worker views can lack blobs from earlier commits, even
-                # when the commit itself is advertised as a prerequisite.
-                expressions = set()
-                for row in input_hashes:
-                    commit = row['commit']
-                    parts = artifact_path(row['path']).parts
-                    expressions.update((commit, commit+'^{tree}'))
-                    expressions.update(commit+':'+('/'.join(parts[:depth])) for depth in range(1, len(parts)+1))
-                objects = subprocess.check_output(['git','rev-parse',*sorted(expressions)],cwd=root).splitlines()
-                changed = subprocess.check_output(['git','rev-list','--objects','--no-object-names',*heads,'^'+source],cwd=root).splitlines()
-                with path.open('rb') as original:
-                    header = bytearray()
-                    for line in original:
-                        header.extend(line)
-                        if line == b'\n':
-                            break
-                with path.open('wb') as enriched:
-                    enriched.write(header)
-                    enriched.flush()
-                    subprocess.run(['git','pack-objects','--stdout','--no-reuse-delta','--no-reuse-object'],cwd=root,
-                        input=b'\n'.join(sorted(set(changed+objects)))+b'\n',stdout=enriched,check=True,stderr=subprocess.PIPE)
-            return [dict(sha256=self._blob(path.read_bytes()), ref=ref,checkout_input_head=tracked_workspace or ref=='HEAD')]
+            # Give pack-objects path names so it can compress similar objects
+            # within this pack. Use an explicit object set and no external deltas.
+            changed = subprocess.check_output(['git', 'rev-list', '--objects', *revisions], cwd=root)
+            entries = dict(line.split(b' ', 1) if b' ' in line else (line, b'')
+                           for line in changed.split(b'\n') if line)
+            # Sparse worker views can lack blobs and trees from earlier commits
+            # even when Git already has their commit objects.
+            expressions = {}
+            for commit, path_name in locators:
+                parts = artifact_path(path_name).parts
+                expressions.update({commit: '', commit + '^{tree}': ''})
+                for depth in range(1, len(parts) + 1):
+                    name = '/'.join(parts[:depth])
+                    expressions[commit + ':' + name] = name
+            if expressions:
+                objects = subprocess.check_output(['git', 'rev-parse', *expressions], cwd=root).splitlines()
+                for oid, name in zip(objects, expressions.values(), strict=True):
+                    entries.setdefault(oid, name.encode())
+            with path.open('rb') as original:
+                header = bytearray()
+                for line in original:
+                    header.extend(line)
+                    if line == b'\n':
+                        break
+            data = b''.join(oid + (b' ' + name if name else b'') + b'\n' for oid, name in sorted(entries.items()))
+            with path.open('wb') as packed:
+                packed.write(header)
+                packed.flush()
+                # Threaded delta search can produce different pack bytes from
+                # the same object list and invalidate worker cache reuse.
+                subprocess.run(
+                    ['git', 'pack-objects', '--stdout', '--threads=1', '--no-reuse-delta', '--no-reuse-object'],
+                    cwd=root, input=data, stdout=packed, check=True, stderr=subprocess.PIPE,
+                )
+            sha = self._blob(path.read_bytes())
+        with self.lock:
+            self.bundle_hashes[key] = sha
+        return dict(sha256=sha, ref=ref, checkout_input_head=checkout)
 
     def _validate_bundle_inputs(self, spec):
         sources = self.settings.get('bundle_validation_sources')
