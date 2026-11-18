@@ -1,4 +1,5 @@
 """Verify a technical-stop handoff without mutating its original ledger."""
+import hashlib
 import json
 from pathlib import Path
 import sqlite3
@@ -62,16 +63,35 @@ def verify_prior_q3_holds(root, run, problem, spec):
             row = db.execute('''SELECT state, method, host_id, attempt_id, request_sha256, request,
                 detail, completed_epoch, adopted_epoch, completion_sha256 FROM jobs WHERE job_id=?''',
                 (job_id,)).fetchone()
-        if (not row or row[:5] != ('UNKNOWN', method, fixed['host_id'], fixed['attempt_id'], fixed['request_sha256'])
+        terminal = fixed.get('kind') == 'TERMINAL_WORKER_UNKNOWN'
+        if (not row or row[:5] != ('ACCEPTED' if terminal else 'UNKNOWN',
+                                   method, fixed['host_id'], fixed['attempt_id'], fixed['request_sha256'])
                 or json.loads(row[5]) != request or digest(request) != fixed['request_sha256']
                 or owner.get('host_id') != row[2] or owner.get('attempt_id') != row[3]
-                or (request['request_id'], request['method']) != (job_id, method)
-                or json.loads(row[6]).get('automatic_retry') is not False
-                or any(value is not None for value in row[7:]) or (job/'OUTCOME.json').exists()):
+                or (request['request_id'], request['method']) != (job_id, method)):
             raise ValueError('Prior Q3 hold no longer matches the unresolved attempt: '+job_id)
+        detail = json.loads(row[6])
+        if terminal:
+            outcome_bytes = (job/'OUTCOME.json').read_bytes()
+            receipt_bytes = (job/'PROCESS_RETURN.json').read_bytes()
+            outcome, receipt = json.loads(outcome_bytes), json.loads(receipt_bytes)
+            if (row[7] is None or row[8] is not None or row[9] != fixed['completion_sha256']
+                    or detail.get('outcome_status') != 'UNKNOWN' or outcome.get('status') != 'UNKNOWN'
+                    or outcome.get('request_id') != job_id or outcome.get('scientific_evaluation_calls') != 0
+                    or type(receipt.get('returncode')) is not int or receipt['returncode'] == 0
+                    or receipt.get('automatic_retry') is not False
+                    or hashlib.sha256(outcome_bytes).hexdigest() != fixed['outcome_sha256']
+                    or hashlib.sha256(receipt_bytes).hexdigest() != fixed['process_return_sha256']):
+                raise ValueError('Prior terminal Q3 hold differs from its zero-call receipt: '+job_id)
+            reason = outcome['reason']
+        else:
+            if (detail.get('automatic_retry') is not False or any(value is not None for value in row[7:])
+                    or (job/'OUTCOME.json').exists()):
+                raise ValueError('Prior Q3 hold no longer matches the unresolved attempt: '+job_id)
+            reason = detail['reason']
         holds[str(job)] = dict(fixed, parent_directory=str(parent), method=method,
                                configuration_id=request['configuration_id'], N_X=request['N_X'], N_Y=request['N_Y'],
-                               reason=json.loads(row[6])['reason'])
+                               reason=reason)
     return holds
 
 

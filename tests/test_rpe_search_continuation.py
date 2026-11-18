@@ -1,5 +1,6 @@
 """Continuation from a shutdown fault preserves scientific ownership and budgets."""
 from copy import deepcopy
+import hashlib
 import json
 from pathlib import Path
 import sqlite3
@@ -185,4 +186,20 @@ class ContinuationTests(unittest.TestCase):
         fixed['attempt_id'] = 'attempt'
         (job/'OUTCOME.json').write_text('{}')
         with self.assertRaisesRegex(ValueError, 'no longer matches'):
+            verify_prior_q3_holds(self.root, self.successor, problem, spec)
+        outcome = dict(status='UNKNOWN', request_id=job_id, scientific_evaluation_calls=0,
+                       reason='Sibling failure before science')
+        (job/'OUTCOME.json').write_text(json.dumps(outcome))
+        (job/'PROCESS_RETURN.json').write_text(json.dumps(dict(returncode=2, automatic_retry=False)))
+        with sqlite3.connect(ledger) as db:
+            db.execute("UPDATE jobs SET state='ACCEPTED', detail=?, completed_epoch=1, completion_sha256='saved'",
+                       (json.dumps(dict(outcome_status='UNKNOWN')),))
+        fixed.update(kind='TERMINAL_WORKER_UNKNOWN', completion_sha256='saved',
+                     outcome_sha256=hashlib.sha256((job/'OUTCOME.json').read_bytes()).hexdigest(),
+                     process_return_sha256=hashlib.sha256((job/'PROCESS_RETURN.json').read_bytes()).hexdigest())
+        terminal = verify_prior_q3_holds(self.root, self.successor, problem, spec)
+        self.assertEqual(terminal[str(job)]['reason'], outcome['reason'])
+        outcome['scientific_evaluation_calls'] = 1
+        (job/'OUTCOME.json').write_text(json.dumps(outcome))
+        with self.assertRaisesRegex(ValueError, 'zero-call receipt'):
             verify_prior_q3_holds(self.root, self.successor, problem, spec)

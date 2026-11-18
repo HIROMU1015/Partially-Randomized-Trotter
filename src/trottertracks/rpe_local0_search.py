@@ -715,6 +715,7 @@ class Gateway:
                 prepared=Completion(run/'preflight-completion',completion)
                 routes,_=prepared.install_snapshot(context,dict(scoped,execution_routes=routes),prepared.state['records'])
         ex = O.Executor(Path(self.config['code_root']),run,routes,context['expected'],scoped,prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),launch_disabled=True)
+        ex.prior_q3_holds = list(prior_holds.values())
         loaded, refused = {}, []
         missing=[str(p) for p in spec.get('executor',{}).get('prior_run_dirs',[]) if not Path(p).is_dir()]
         in_progress=[]
@@ -737,7 +738,8 @@ class Gateway:
             loaded[method]=len(known);refused.extend(dict(method=method,**r) for r in rejected)
         # A different configuration/route is excluded, never accepted as a
         # match. Missing/corrupt records for a same-key candidate need review.
-        holds=[r for r in refused if r['reason'] not in ('CONFIGURATION_NOT_IN_THIS_ROUND','DIFFERENT_JOB_KEY_OR_ROUTE')]
+        holds=[r for r in refused if r['reason'] not in ('CONFIGURATION_NOT_IN_THIS_ROUND',
+            'DIFFERENT_JOB_KEY_OR_ROUTE','PRIOR_Q3_PERSISTENCE_HOLD')]
         return dict(status='HOLD' if holds or missing or in_progress else 'PASS',section='10.5',reused=loaded,refused=refused,missing_prior_run_dirs=missing,owned_unresolved_prior_jobs=in_progress,
             prior_q3_holds=list(prior_holds.values()),checked_prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),
             normal_ingest='Executor.prior_records/ingest',scientific_calls=0)
