@@ -102,6 +102,21 @@ def main():
             self.assertEqual(sent['formula'],'4th(m5_best)');self.assertEqual(sent['delta_over_h'],'2')
             self.assertEqual(config,result)
 
+    def test_pauli_missing_saved_input_is_held_before_science(self):
+        request = dict(design=dict(L_D=4))
+        paths = {'/fixed/receipt.json': '/local/receipt.json'}
+        with tempfile.TemporaryDirectory() as tmp:
+            completion = C.Completion.__new__(C.Completion)
+            completion.settings = {'pauli_saved_inputs': paths}
+            detail = dict(status='NEEDS_INPUT_SOURCE', missing_inputs=['receipt'], items=[])
+            with patch.object(completion, 'call', return_value=detail) as call:
+                with self.assertRaisesRegex(C.Held, 'A_PREPARATION:NEEDS_INPUT_SOURCE.*receipt'):
+                    completion.pauli_configuration(request, Path(tmp))
+            command = call.call_args.args[0]
+            self.assertEqual(Path(command[2]).name, 'rpe_pauli_saved_inputs.py')
+            self.assertEqual(json.loads(command[3]), paths)
+            self.assertFalse(call.call_args.kwargs['science'])
+
     def test_registered_no_drop_selected_for_ld7_ld8_ld9_without_science(self):
         for prefix in (7,8,9):
             with self.subTest(prefix=prefix),tempfile.TemporaryDirectory()as tmp:

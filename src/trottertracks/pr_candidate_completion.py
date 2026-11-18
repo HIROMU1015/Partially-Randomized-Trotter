@@ -241,6 +241,8 @@ class Completion:
         with self.lock:return self.shared_preparation_locks.setdefault(token,threading.RLock())
 
     def stage_source(self, stage):
+        if stage == 'PAULI_SIGNALS':
+            return self.settings.get('pauli_signal_source', self.source)
         if stage == 'DF_SIGNALS':
             return self.settings.get('df_signal_source', self.source)
         if stage in ('DF_PRICE_PREPARE', 'DF_CALIBRATION', 'DF_MODEL_FREEZE',
@@ -599,6 +601,9 @@ class Completion:
             put(inp,dict(kind='pauli_native',items=[item],saved_configurations=saved,saved_packets=self.saved_signal_packets('PR_PAULI')))
             cache=(self.directory/'PAULI_SPLITS.json')if hasattr(self,'directory')else d/'SPLITS.json'
             cmd=[self.path('NATIVE'),'-B',str(workspace/'scripts/prepare_pauli_candidate.py'),'--request',str(inp),'--output',str(out),'--cache',str(cache)]
+            if self.settings.get('pauli_saved_inputs') and not science:
+                cmd[2:2]=[str(Path(__file__).with_name('rpe_pauli_saved_inputs.py')),
+                          json.dumps(self.settings['pauli_saved_inputs'])]
             requested_prefix=(item.get('configuration')or{}).get('spec',{}).get('L_D',(item.get('configuration')or{}).get('L_D'))
             if requested_prefix in (7,8,9):cmd+=['--p0-builder','no-drop']
             if science:
@@ -607,6 +612,8 @@ class Completion:
             lock=getattr(self,'pauli_metadata_lock',None)
             with (lock if lock is not None else nullcontext()):
                 response=self.call(cmd,d,tag,out,science=science)
+            if not response.get('items'):
+                raise Held('A_PREPARATION:'+str(response.get('status'))+':'+str(response.get('missing_inputs',[])))
             return response['items'][0]
         if r.get('configuration'):
             config=value(r['configuration'])if 'commit'in r['configuration']else r['configuration']
@@ -638,6 +645,8 @@ class Completion:
             raise Held('PAULI_DESCRIPTOR_SOURCE_UNRESOLVED')
         request=dict(configuration=config,tail_descriptor=descriptor,saved_packets=packets,
             workspace=str(self.settings.get('pauli_workspace',self.path('A_WORKSPACE'))),directory='docs/research/d2_automatic_pr_20261116/'+config['id'][:20]+'/'+self.settings.get('signal_epoch','descriptor_envelope_v2'),interpreter=self.path('NATIVE'))
+        if self.settings.get('pauli_saved_inputs'):
+            request['pauli_saved_inputs']=self.settings['pauli_saved_inputs']
         inp=d/'PAULI_SIGNAL_REQUEST.json';out=d/'PAULI_SIGNAL_RESULT.json';put(inp,request)
         result=self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/run_pr_pauli_candidate_signals.py'),'--request',str(inp),'--output',str(out),'--execute'],d,'PAULI_SIGNALS',out,science=True)
         if result['status']!='SIGNALS_READY':raise Held('PAULI_SIGNAL:'+str(result.get('reason')or result['status']))

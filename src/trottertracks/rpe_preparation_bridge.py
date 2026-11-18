@@ -395,9 +395,9 @@ class DistributedPreparationBridge:
                 item=root/name
                 if item.is_file():
                     raw=subprocess.check_output(['git','show',source+':'+name],cwd=root)
-                    # The controller's path helper may have newer transport
-                    # declarations. The leaf runs the provider's frozen bytes.
-                    if raw!=item.read_bytes() and name!='src/trottertracks/rpe_preparation_paths.py':
+                    # Dependencies such as the Pauli price helper are read
+                    # from the selected leaf SOURCE in the worker checkout.
+                    if raw!=item.read_bytes() and name==script_relative:
                         raise ValueError('Preparation helper differs from fixed SOURCE: '+name)
                     source_files[name]=hashlib.sha256(raw).hexdigest()
         else:
@@ -411,6 +411,8 @@ class DistributedPreparationBridge:
         if root != self.root:
             bindings[str(self.root)] = '@TRANSPORT@'
         workspaces = {};runtime_inputs=[]
+        pauli_inputs = []
+        pauli_locators = []
         if script.name=='run_pr_df_candidate_prices.py' and '-c' in command:
             runtime_inputs.append(dict(df_price_view=command[command.index(str(script))+1]))
         # Original JSON remains byte-for-byte unchanged. Only runtime path
@@ -429,6 +431,25 @@ class DistributedPreparationBridge:
             if not isinstance(value, dict):
                 continue
             workspace = value.get('workspace')
+            if stage == 'PAULI_SIGNALS' and value.get('pauli_saved_inputs'):
+                from .rpe_pauli_saved_inputs import INDEX_PATH, INDEX_SOURCE, PROVIDER_SOURCE, provider_files, saved_inputs
+                paths = value['pauli_saved_inputs']
+                helper = 'src/trottertracks/rpe_pauli_saved_inputs.py'
+                raw = subprocess.check_output(['git', 'show', source + ':' + helper], cwd=root)
+                if raw != (root/helper).read_bytes():
+                    raise ValueError('Pauli saved-input helper differs from fixed SOURCE')
+                source_files[helper] = hashlib.sha256(raw).hexdigest()
+                pauli_locators.extend(dict(commit=PROVIDER_SOURCE, path=name)
+                                      for name in provider_files('run_pauli_signal_entry.py'))
+                pauli_locators.append(dict(commit=INDEX_SOURCE, path=INDEX_PATH))
+                for original, sha in saved_inputs(Path(workspace), paths).items():
+                    raw = Path(paths[original]).read_bytes()
+                    if self._blob(raw) != sha:
+                        raise ValueError('Pauli saved input changed during capture: ' + original)
+                    name = 'private/pauli-saved-inputs/' + Path(original).name
+                    inputs[name] = sha
+                    bindings[original] = '@WORK@/' + name
+                    pauli_inputs.append(dict(path=name, sha256=sha))
             if workspace:
                 workspace = Path(workspace).resolve()
                 if workspace != root:
@@ -450,6 +471,10 @@ class DistributedPreparationBridge:
                                 raise ValueError('Provider workspace SOURCE differs: '+name)
                             files[name]=hashlib.sha256(raw).hexdigest()
                     if not files:raise ValueError('Preparation workspace has no fixed provider source')
+                    if pauli_locators:
+                        for name in provider_files('run_pauli_signal_entry.py'):
+                            raw = subprocess.check_output(['git','show',commit+':'+name],cwd=root)
+                            files[name] = hashlib.sha256(raw).hexdigest()
                     workspaces[alias] = dict(source=dict(commit=commit, files=files), input_git_bundles=self._bundle(workspace,commit),checkout_input_head=False)
                     bindings[str(workspace)] = '@WORKSPACE:' + alias + '@'
                     leaf_directory = value.get('directory')
@@ -466,12 +491,13 @@ class DistributedPreparationBridge:
                 if Path(private).exists():
                     inputs.update(self._capture(Path(private), 'private'))
         inputs.update(self._capture(directory, 'workspace/' + relative))
-        original_documents=[]
+        original_documents=list(pauli_locators)
         for name,sha in inputs.items():
             if name.endswith('.json'):
                 try:original_documents.append(json.loads(self.executor.artifact_cache.path(sha).read_bytes()))
                 except (ValueError,UnicodeError):raise ValueError('Original preparation JSON is incomplete or invalid: '+name)
         input_hashes,working_hashes=fixed_input_hashes(root,original_documents,inputs)
+        working_hashes.extend(pauli_inputs)
         required_views=collect_required_views(runtime_inputs)
         if stage in ('PAULI_COMPILE', 'PAULI_AUDIT') and script.name=='run_pr_pauli_candidate_prices.py':
             required_views.update(pauli_calibration_view(root))

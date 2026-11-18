@@ -16,7 +16,7 @@ import subprocess
 import sys
 import time
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
-from trottertracks.rpe_preparation_paths import runtime_request
+from trottertracks.rpe_preparation_paths import resolve, runtime_request
 
 ENTRY_SOURCE='6e4b6bd6a491815c2a3cb8f809cbfc0240b60fdb'
 ENTRY_FILES=('src/trottertracks/pauli_signal_entry.py','scripts/run_pauli_signal_entry.py',
@@ -84,8 +84,13 @@ def live(marker,run):
     except OSError:return False
 
 
-def entry(workspace,interpreter,arguments,log,marker=None):
+def entry(workspace,interpreter,arguments,log,marker=None,*,saved_inputs=None):
     cmd=[interpreter,'-B',str(workspace/'scripts/run_pauli_signal_entry.py'),*arguments]
+    if saved_inputs:
+        runner=Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_pauli_saved_inputs.py'
+        bindings={original:(resolved if (resolved:=resolve(original))!=original else location)
+                  for original, location in saved_inputs.items()}
+        cmd[2:2]=[str(runner),json.dumps(bindings)]
     if marker is not None:write(marker,dict(status='STARTING',UTC=utc(),command=cmd,automatic_retry=False))
     start=time.monotonic()
     with log.open('a')as stream:
@@ -105,6 +110,7 @@ def run(request,*,execute=False,push=True):
     if relative.is_absolute()or'..'in relative.parts:raise ValueError('REPOSITORY_RELATIVE_OWNED_DIRECTORY_REQUIRED')
     base=(workspace/relative).resolve();base.relative_to(workspace)
     config=request['configuration'];descriptor=request.get('tail_descriptor')
+    saved_options={'saved_inputs':request['pauli_saved_inputs']} if request.get('pauli_saved_inputs') else {}
     interpreter=request.get('interpreter','/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python')
     with owned_checkout_lock(workspace):
         for path in ENTRY_FILES:
@@ -123,7 +129,7 @@ def run(request,*,execute=False,push=True):
                     new_signal_calls=0,compile_calls=0,Q3_calls=0,automatic_retry=False)
         plan_dir=base/'plan'
         if not(plan_dir/'PLAN.json').exists():
-            code=entry(workspace,interpreter,['--plan',*common,'--out',str(plan_dir)],base/'PLAN.log')
+            code=entry(workspace,interpreter,['--plan',*common,'--out',str(plan_dir)],base/'PLAN.log',**saved_options)
             if code!=0:return dict(result,status='STOP_PLAN_FAILED',reason='A_ENTRY_PLAN_FAILED',returncode=code)
         plan=read(plan_dir/'PLAN.json')
         result.update(request_rounds=plan.get('request_rounds',[]),reuse_rounds=plan.get('reuse_rounds',[]),
@@ -162,7 +168,7 @@ def run(request,*,execute=False,push=True):
             if git(workspace,'rev-parse','HEAD')!=source:
                 return dict(state,status='HELD_EXECUTION_SOURCE_CHANGED',reason='FIXED_SOURCE_NOT_CURRENT_NO_NEW_MEANS')
             code=entry(workspace,interpreter,['--execute','--approve-new-means','--source',source,*common,
-                         '--out',str(run_dir)],base/'EXECUTE.log',marker)
+                         '--out',str(run_dir)],base/'EXECUTE.log',marker,**saved_options)
             if not terminal.exists():return dict(state,status='STOP_MISSING_TERMINAL_RESULT',returncode=code)
             saved=read(terminal)
         raw=state.get('raw_commit')or commit(workspace,[run_dir,marker,base/'SIGNALS_RETURN.json',base/'EXECUTE.log'],
@@ -179,7 +185,7 @@ def run(request,*,execute=False,push=True):
             if packet_dir.exists()and any(packet_dir.iterdir()):
                 return dict(state,status='HELD_INCOMPLETE_PACKET_ASSEMBLY',reason='PRESERVE_PARTIAL_ASSEMBLY')
             code=entry(workspace,interpreter,['--assemble',*common,'--source',source,'--raw-commit',raw,
-                '--run-dir',str(relative/'run01')+'/', '--out',str(packet_dir)],base/'ASSEMBLE.log')
+                '--run-dir',str(relative/'run01')+'/', '--out',str(packet_dir)],base/'ASSEMBLE.log',**saved_options)
             if code!=0 or not handoff.exists():
                 state.update(status='HELD_PACKET_ASSEMBLY',reason='A_ENTRY_ASSEMBLE_FAILED',returncode=code)
                 write(state_file,state);return state
