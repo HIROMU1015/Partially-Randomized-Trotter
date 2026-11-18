@@ -132,6 +132,18 @@ class AutoAllocationTests(unittest.TestCase):
         ex.hosts['server1']['observed_monotonic'] -= 1
         self.assertEqual(len(self.poll(ex, WSL, facts)['assignments']), 1)
 
+    def test_relay_offer_has_its_own_finite_lifetime(self):
+        ex = self.executor(offer_ttl_seconds=3, remote_offer_ttl_seconds=15)
+        ex.distributed['relay'] = {'workers': [{'host_id': WSL}]}
+        _, facts = self.jobs(ex, 1)
+        for host in (WSL, 'local'):
+            self.poll(ex, host, facts, observe=True)
+            ex.hosts[host]['observed_monotonic'] -= 6
+        self.assertTrue(ex._offer_fresh(WSL))
+        self.assertFalse(ex._offer_fresh('local'))
+        ex.hosts[WSL]['observed_monotonic'] -= 10
+        self.assertFalse(ex._offer_fresh(WSL))
+
     def test_first_wsl_poll_discovery_is_bounded_when_preferred_never_respond(self):
         ex = self.executor();ex.allocation_config['discovery_grace_seconds'] = .1
         _, facts = self.jobs(ex, 1)

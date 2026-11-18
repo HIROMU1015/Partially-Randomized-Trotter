@@ -242,8 +242,10 @@ def probe(executor, request, job_id, decision):
     with ThreadPoolExecutor(max_workers=max(1, len(participants))) as pool:
         observations = dict(pool.map(check, participants))
     record = executor.run_dir/'distributed'/'q3-readiness'/job_id/'READINESS.json'
-    record.parent.mkdir(parents=True, exist_ok=True)
-    Q.atomic_json(record, dict(assignment=assignment, observations=observations))
+    with executor.state.cv:
+        if not executor.state.closed:
+            record.parent.mkdir(parents=True, exist_ok=True)
+            Q.atomic_json(record, dict(assignment=assignment, observations=observations))
     decision.update(input_hashes=assignment['input_hashes'], execution_profiles={}, host_decisions={})
     for host, result in observations.items():
         fingerprint = result.get('fingerprint') or {}

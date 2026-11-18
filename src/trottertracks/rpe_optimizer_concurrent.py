@@ -21,6 +21,8 @@ import signal
 from . import rpe_method_optimizer as O
 from .rpe_q3_timing import stamp
 
+LIVE_READINESS_RETRY_SECONDS = 10
+
 
 def _write(path, value):
     with Path(path).open('x') as f:json.dump(value,f,default=str);f.write('\n')
@@ -206,8 +208,8 @@ class ConcurrentExecutor(O.Executor):
 
     def prefetch_standby(self, choice, proposals):
         """Reserve the demand first and retain the rest as unreserved alternatives."""
-        self.standby = deque(proposals)
         with self.state.cv:
+            self.standby = deque(proposals)
             speculative = [t for t in self.state.tasks.values() if t.view.method == self.method
                            and t.status == 'QUEUED' and not t.demand]
             demand = self.job_dir(choice) if choice is not None else None
@@ -216,14 +218,16 @@ class ConcurrentExecutor(O.Executor):
                 for t in speculative:
                     if t.job not in desired and t.job != demand:
                         self._cancel(t)
-            if choice is not None and self._enqueue(choice, demand=True) is False and self._budget_reserved():
+        if choice is not None and self._enqueue(choice, demand=True) is False:
+            with self.state.cv:
                 # Queued reservations can be reassigned to demand. Running jobs retain theirs.
-                t = next((t for t in reversed(speculative) if t.status == 'QUEUED'
-                          and not t.demand and t.job != demand), None)
+                t = (next((t for t in reversed(speculative) if t.status == 'QUEUED'
+                           and not t.demand and t.job != demand), None) if self._budget_reserved() else None)
                 if t is not None:
                     self._cancel(t)
-                    self._enqueue(choice, demand=True)
-            self._fill_standby()
+            if t is not None:
+                self._enqueue(choice, demand=True)
+        self._fill_standby()
 
     def _budget_reserved(self):
         cap = self.state.budgets.get(self.method)
@@ -242,10 +246,16 @@ class ConcurrentExecutor(O.Executor):
         # Keep one queued job ahead of dispatch. Advance the cursor on every
         # duplicate/hold so completion notifications do not revisit the same work.
         before = self.state.metrics['submitted']
-        while self._standby_can_fill():
-            if self._enqueue(self.standby.popleft()) is False and (self._budget_reserved() or self._user_stop_requested()):
-                self.standby.clear()
-                break
+        while True:
+            with self.state.cv:
+                if not self._standby_can_fill():
+                    break
+                proposal = self.standby.popleft()
+            if self._enqueue(proposal) is False:
+                with self.state.cv:
+                    if self._budget_reserved() or self._user_stop_requested():
+                        self.standby.clear()
+                        break
         added = self.state.metrics['submitted'] - before
         if added:
             self.log(event='Q3_STANDBY_REFILL', added=added, remaining=len(self.standby))
@@ -396,14 +406,14 @@ class ConcurrentExecutor(O.Executor):
             def fresh_ready():
                 return ready_pending is not None and ready_pending() and self.has_spare_slot()
 
-            with s.cv:
-                while True:
+            while True:
+                with s.cv:
                     s.cv.wait_for(lambda: task.event.is_set() or fresh_ready() or self._standby_can_fill())
                     if task.event.is_set():
                         return True
                     if fresh_ready():
                         break
-                    self._fill_standby()
+                self._fill_standby()
             self.log(event='Q3_WAIT_YIELD_FOR_READY', job=task.job.name)
             return False
         finally:
@@ -553,6 +563,10 @@ class DistributedExecutor(ConcurrentExecutor):
         self.distributed = deepcopy(distributed)
         self.eligibility_holds = {}
         self.eligibility_policy_cache = {}
+        self.live_readiness_inflight = {}
+        self.live_readiness_workers = max(1, len(kwargs.get('problem', args[4] if len(args)>4 else {}).get('methods', {})))
+        self.live_readiness_pool = (ThreadPoolExecutor(max_workers=self.live_readiness_workers, thread_name_prefix='rpe-q3-readiness')
+                                    if self.distributed.get('live_q3_readiness') is True else None)
         self.host_admission_cache = {}
         self.preparation_holds = {}
         self.preparation_dependencies = {}
@@ -564,7 +578,8 @@ class DistributedExecutor(ConcurrentExecutor):
         default_allocation = dict(priority_groups=[['server2', 'server1', 'local'], ['local0-wsl']],
                                   offer_ttl_seconds=2.0, discovery_grace_seconds=1.0)
         config = dict(default_allocation, **(distributed.get('auto_allocation') or {}))
-        if config.get('offer_ttl_seconds', 0) <= 0 or config.get('discovery_grace_seconds', -1) < 0:
+        if (config.get('offer_ttl_seconds', 0) <= 0 or config.get('remote_offer_ttl_seconds', 1) <= 0
+                or config.get('discovery_grace_seconds', -1) < 0):
             raise ValueError('Positive offer lifetime and nonnegative discovery grace required')
         if settings_path.exists():
             settings = json.loads(settings_path.read_text())
@@ -636,7 +651,8 @@ class DistributedExecutor(ConcurrentExecutor):
             with self.state.cv:
                 for row in self.store.rows():
                     if row['state'] == 'QUEUED':
-                        decision = self._eligibility_for(row['request'], row['job_id'])
+                        decision = self._eligibility_for(row['request'], row['job_id'], blocking=False,
+                                                         previous=row['eligibility'])
                         if not self.store.set_eligibility(row['job_id'], decision):
                             self.eligibility_holds[row['job_id']] = decision
                             continue
@@ -682,6 +698,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 self.state.cv.notify_all()
                 self.state.monitor_stop.set()
             self.dispatcher.join(); self.monitor.join()
+            if self.live_readiness_pool: self.live_readiness_pool.shutdown(wait=False, cancel_futures=True)
             self.stop_controller_relay()
             if self.pbs_manager: self.pbs_manager.close()
             if self.rpc_server: self.rpc_server.shutdown(); self.rpc_server.server_close()
@@ -826,7 +843,7 @@ class DistributedExecutor(ConcurrentExecutor):
     def _offer_free(self, host, policy, error=None):
         """Fresh unused capacity, never a lease on an assigned evaluation."""
         info = self.hosts.get(host)
-        if not info or time.monotonic()-info.get('observed_monotonic', float('-inf')) > self.allocation_config['offer_ttl_seconds']:
+        if not self._offer_fresh(host):
             return 0
         if info.get('accepting_new_jobs') is False: return 0
         admission = self._host_admission(host, policy, error)
@@ -840,6 +857,14 @@ class DistributedExecutor(ConcurrentExecutor):
         if type(capacity) is int and capacity >= 0:
             free = min(free, max(0, capacity-len(current)))
         return free
+
+    def _offer_fresh(self, host):
+        ttl = self.allocation_config['offer_ttl_seconds']
+        if 'remote_offer_ttl_seconds' in self.allocation_config and any(
+                w['host_id'] == host for w in (self.distributed.get('relay') or {}).get('workers', ())):
+            ttl = self.allocation_config['remote_offer_ttl_seconds']
+        info = self.hosts.get(host, {})
+        return time.monotonic() - info.get('observed_monotonic', float('-inf')) <= ttl
 
     def _refresh_capacity(self, policy, error=None):
         if not self.state.allocation_auto: return
@@ -922,7 +947,7 @@ class DistributedExecutor(ConcurrentExecutor):
             compatible = [profile for profile in measured if (host := profile[0]) in self.hosts
                         and self._host_admission(host, policy, error)['accepting']
                         and self.hosts[host]['accepting_new_jobs']
-                        and time.monotonic()-self.hosts[host]['observed_monotonic'] <= self.allocation_config['offer_ttl_seconds']
+                        and self._offer_fresh(host)
                         and self._host_supports_stage(host, request) and self._fits_host_walltime(host, request)]
             if not compatible:
                 return None
@@ -1042,7 +1067,7 @@ class DistributedExecutor(ConcurrentExecutor):
             decision_wait_scope='SUM_SELECTED_JOB_DEPENDENCY_WAIT_SPANS_SAME_CONTROLLER_CLOCK',
             ready_jobs=ready, capacity=self.capacity)
 
-    def _eligibility_for(self, request, job_id):
+    def _eligibility_for(self, request, job_id, *, blocking=True, previous=None, host=None):
         """Bind a prepared host decision to this exact scientific request."""
         from . import rpe_q3_coordinator as Q
         if request.get('route', {}).get('kind') == 'preparation':
@@ -1105,16 +1130,48 @@ class DistributedExecutor(ConcurrentExecutor):
         if (self.distributed.get('live_q3_readiness') is True and not result['eligible_host_ids']
                 and result['reasons'] in (['NO_REQUEST_SPECIFIC_HOST_EVIDENCE'],
                                           ['HOST_ELIGIBILITY_CHANGED_REQUEST_SHA256'])):
-            from .rpe_live_q3_readiness import probe
-            cache = self.eligibility_policy_cache.setdefault('live_checks', {})
-            key = (job_id, result['request_sha256'])
-            try:
-                if key not in cache:
-                    cache[key] = probe(self, request, job_id, result)
-                return deepcopy(cache[key])
-            except (OSError, KeyError, ValueError, subprocess.CalledProcessError) as exc:
-                result['reasons'].append(str(exc))
+            return self._live_eligibility(request, job_id, result, blocking=blocking, previous=previous, host=host)
         return result
+
+    def _live_eligibility(self, request, job_id, result, *, blocking, previous, host):
+        """Share a probe per exact REQUEST and refresh missing hosts without blocking a poll."""
+        from .rpe_live_q3_readiness import probe
+
+        key = (job_id, result['request_sha256'])
+        with self.state.cv:
+            cache = self.eligibility_policy_cache.setdefault('live_checks', {})
+            cached = cache.get(key)
+            seen = frozenset(name for name, report in self.hosts.items()
+                              if report.get('accepting_new_jobs', True))
+            eligible = (cached[2] if cached else None) or previous or result
+            if not eligible['eligible_host_ids'] and previous:
+                eligible = previous  # a claim still requires a fresh matching worker fingerprint
+            future = self.live_readiness_inflight.get(key)
+            missing_host = host is not None and host in seen and host not in eligible['eligible_host_ids']
+            if blocking or missing_host:
+                stale = (not cached or cached[1] != seen or
+                         (not eligible['eligible_host_ids'] or missing_host) and
+                         time.monotonic() - cached[0] >= LIVE_READINESS_RETRY_SECONDS)
+                if (stale and future is None and not self.state.closed and not self._user_stop_requested()
+                        and (blocking or len(self.live_readiness_inflight) < self.live_readiness_workers)):
+                    def check():
+                        decision = result
+                        try:
+                            decision = probe(self, request, job_id, deepcopy(result))
+                        except (OSError, KeyError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
+                            decision['reasons'].append(str(exc))
+                        finally:
+                            with self.state.cv:
+                                cache[key] = (time.monotonic(), seen, decision)
+                                self.live_readiness_inflight.pop(key, None)
+                                self.state.cv.notify_all()
+                        return decision
+
+                    future = self.live_readiness_pool.submit(check)
+                    self.live_readiness_inflight[key] = future
+            if not blocking or future is None or eligible['eligible_host_ids']:
+                return deepcopy(eligible)
+        return deepcopy(future.result())
 
     @staticmethod
     def _preparation_request(request):
@@ -1233,7 +1290,7 @@ class DistributedExecutor(ConcurrentExecutor):
             if not admission['accepting']or admission['max_slots']==0:continue
             if observed is not None and observed.get('accepting_new_jobs')is False:continue
             if admission['optional'] and (observed is None or
-                    time.monotonic()-observed.get('observed_monotonic',float('-inf'))>self.allocation_config['offer_ttl_seconds']):continue
+                    not self._offer_fresh(host)):continue
             targets.add(host)
         return targets
 
@@ -1523,40 +1580,70 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _enqueue(self, proposal, demand=False):
         from .rpe_q3_coordinator import prefix_key
-        if not self._candidate_preparation_ready(proposal): return False
-        job = self.job_dir(proposal); s = self.state
-        with s.cv:
-            if self._user_stop_requested():return False
-            if s.failure: raise RuntimeError('Executor persistence failure: '+s.failure)
+        if not self._candidate_preparation_ready(proposal):
+            return False
+        job = self.job_dir(proposal)
+        s = self.state
+
+        def current_job():
+            if self._user_stop_requested():
+                return True, False, None
+            if s.failure:
+                raise RuntimeError('Executor persistence failure: ' + s.failure)
             task = s.tasks.get(job)
             if task and task.status != 'CANCELLED':
                 task.demand |= demand
-                return task
+                s.cv.notify_all()
+                return True, task, None
             row = self.store.row(job.name)
-            if row and row['state'] == 'ACCEPTED': return None
-            if row and row['state'] != 'CANCELLED':
+            if row and row['state'] == 'ACCEPTED':
+                return True, None, row
+            if row and row['state'] not in ('QUEUED', 'CANCELLED'):
+                return True, self._restore_task(row, proposal, demand), row
+            if proposal['configuration_id'] in self.execution_holds.get(self.method, {}):
+                return True, None, row
+            if s.closed:
+                raise RuntimeError('Executor is closed')
+            return False, None, row
+
+        with s.cv:
+            resolved, task, row = current_job()
+            if resolved:
+                return task
+            if not row or row['state'] == 'CANCELLED':
+                if (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists() or self.prior_job(proposal) is not None:
+                    return None
+                rule = self.route(proposal['configuration_id'])
+                if rule is None:
+                    return None
+                if not s.approved or self._budget_reserved():
+                    return False
+            request = row['request'] if row else self.request(proposal, job, rule)
+
+        eligibility = self._eligibility_for(request, job.name, previous=row and row['eligibility'])
+
+        with s.cv:
+            resolved, task, row = current_job()
+            if resolved:
+                return task
+            if row and row['request'] != request:
                 if row['state'] == 'QUEUED':
-                    decision = self._eligibility_for(row['request'], row['job_id'])
-                    if not self.store.set_eligibility(row['job_id'], decision):
-                        self.eligibility_holds[job.name] = decision
-                        return False
-                    row = self.store.row(job.name)
-                return self._restore_task(row, proposal, demand)
-            if (job/'OUTCOME.json').exists() or (job/'LAUNCH.json').exists() or self.prior_job(proposal) is not None: return None
-            rule = self.route(proposal['configuration_id'])
-            if rule is None: return None
-            if s.closed: raise RuntimeError('Executor is closed')
-            request = self.request(proposal, job, rule)
-            if row is not None: request = row['request']  # same cancelled scientific job; origin may have changed
-            eligibility = self._eligibility_for(request, job.name)
+                    return self._restore_task(row, proposal, demand)
+                raise ValueError('Scientific request changed during host readiness')
             if not self.store.eligible(request, eligibility):
+                if row and row['state'] == 'QUEUED':
+                    self.store.set_eligibility(job.name, eligibility)
                 self.eligibility_holds[job.name] = eligibility
                 self.log(event='HOST_ELIGIBILITY_HOLD', job=job.name, eligibility=eligibility)
                 return False
             self.eligibility_holds.pop(job.name, None)
+            if row and row['state'] == 'QUEUED':
+                self.store.set_eligibility(job.name, eligibility)
+                return self._restore_task(self.store.row(job.name), proposal, demand)
             if not self.store.reserve(self.method, job.name, request, s.budgets.get(self.method), s.approved,
                                       contract=dict(evaluation=self.contract, prefix_key=prefix_key(request)),
-                                      eligibility=eligibility): return False
+                                      eligibility=eligibility):
+                return False
             task = self._restore_task(self.store.row(job.name), proposal, demand)
             s.metrics['submitted'] += 1
             self.log(event='ENQUEUE', job=job.name, configuration=proposal['configuration_id'], demand=demand,
@@ -1629,8 +1716,7 @@ class DistributedExecutor(ConcurrentExecutor):
                     and self._host_admission(h,admission,admission_error)['max_slots']!=0
                     and self.hosts.get(h,{}).get('accepting_new_jobs') is not False
                     and (not self._host_admission(h,admission,admission_error)['optional'] or
-                         (h in self.hosts and time.monotonic()-self.hosts[h].get('observed_monotonic',float('-inf'))
-                          <= self.allocation_config['offer_ttl_seconds']))]
+                         self._offer_fresh(h))]
             def capacity(h):
                 value=self.hosts[h].get('capacity')
                 maximum=None if admission is None else self._host_admission(h,admission,admission_error)['max_slots']
@@ -1742,7 +1828,8 @@ class DistributedExecutor(ConcurrentExecutor):
                     if not self._fits_host_walltime(host, row['request']):
                         skipped = True
                         continue
-                    decision = self._eligibility_for(row['request'], row['job_id'])
+                    decision = self._eligibility_for(row['request'], row['job_id'], blocking=False,
+                                                     previous=row['eligibility'], host=host)
                     if not self.store.set_eligibility(row['job_id'], decision):
                         self.eligibility_holds[row['job_id']] = decision
                         task.error = 'HOST_ELIGIBILITY_HOLD'
@@ -1912,26 +1999,11 @@ class DistributedExecutor(ConcurrentExecutor):
         if blocked is not None: return blocked
         job = self.job_dir(proposal)
         row = self.store.row(job.name)
-        # Readiness is an operational hold, not a failed scientific evaluation
-        # or an exhausted budget. Already owned/complete jobs retain recovery.
-        if (allow_new and (row is None or row['state'] in ('CANCELLED', 'QUEUED')) and
-                not (job/'OUTCOME.json').exists() and not (job/'LAUNCH.json').exists() and self.prior_job(proposal) is None):
-            rule = self.route(proposal['configuration_id'])
-            if rule is not None:
-                request = row['request'] if row is not None else self.request(proposal, job, rule)
-                decision = self._eligibility_for(request, job.name)
-                if not self.store.eligible(request, decision):
-                    with self.state.cv:
-                        self.eligibility_holds[job.name] = decision
-                        if row is not None: self.store.set_eligibility(job.name, decision)
-                        task = self.state.tasks.get(job)
-                        if task and task.status == 'QUEUED':
-                            task.error = 'HOST_ELIGIBILITY_HOLD'
-                            ConcurrentExecutor._cancel(self, task)
-                    return self._held_answer(proposal)
-                self.eligibility_holds.pop(job.name, None)
         if row and row['state'] not in ('ACCEPTED', 'CANCELLED'):
-            with self.state.cv: self._restore_task(row, proposal, demand=True)
+            with self.state.cv:
+                row = self.store.row(job.name)
+                if row and row['state'] not in ('ACCEPTED', 'CANCELLED'):
+                    self._restore_task(row, proposal, demand=True)
         answer = super().answer(proposal, allow_new)
         if answer and answer.get('status') == 'RESELECT_READY':
             return answer  # a concurrent transfer is not adoption by this selector
@@ -2028,6 +2100,8 @@ class DistributedExecutor(ConcurrentExecutor):
                          owner_preserved=True,automatic_retry=False)
             self.state.cv.notify_all()
         super().finish()
+        if self.live_readiness_pool:
+            self.live_readiness_pool.shutdown(wait=False, cancel_futures=True)
         if self.pbs_manager: self.pbs_manager.close()
         self.stop_controller_relay()
         try:

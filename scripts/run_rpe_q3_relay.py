@@ -334,7 +334,7 @@ class Relay:
         # Status and current-request checks may run concurrently for independent
         # hosts; no thread claims a job or delivers an assignment here.
         started = stamp()
-        status, seconds = self.remote(worker, 'status')
+        status, seconds = self.remote(worker, 'status', dict(metadata_only=True))
         if status.get('host_id') != worker['host_id']:
             raise ValueError('Mailbox host differs from relay profile')
         poll = self._poll_value(status)
@@ -416,14 +416,17 @@ class Relay:
         info['phase'] = 'MAILBOX_STATUS'
         if observed is None:
             status_start=stamp()
-            status, download_seconds = self.remote(worker, 'status')
+            status, download_seconds = self.remote(worker, 'status', dict(metadata_only=True))
             poll = self._poll_value(status)
+            if status.get('metadata_only') is True:
+                self.post('/v1/poll', dict(poll, observe_only=True))
         else:
             status, download_seconds, status_start, poll, _ = observed
         self.log('MAILBOX_STATUS_RETURN',host_id=worker['host_id'],started=status_start,seconds=download_seconds)
         host = status['host_id']
         if host != worker['host_id']: raise ValueError('Mailbox host differs from relay profile')
         owned = self._owned_attempts(host) if any(a['state'] != 'TRANSFERRED' for a in status['attempts']) else None
+        recovered = False
         for attempt in status['attempts']:
             state = attempt['state']
             if state == 'TRANSFERRED': continue
@@ -436,6 +439,11 @@ class Relay:
                 continue
             if state == 'COMPLETED_PENDING_TRANSFER':
                 started = time.monotonic()
+                result_download_seconds = None
+                if 'files' not in attempt:
+                    result, result_download_seconds = self.remote(
+                        worker, 'result', dict(owner, request_sha256=attempt['request_sha256']))
+                    attempt = dict(attempt, **result)
                 info['phase'] = 'CONTROLLER_ARTIFACTS'
                 self._recover_artifacts(worker, attempt)
                 info['phase'] = 'CONTROLLER_COMPLETE'
@@ -445,14 +453,26 @@ class Relay:
                 info['phase'] = 'MAILBOX_ACK'
                 acknowledgement, ack_seconds = self.remote(worker, 'ack', owner)
                 if acknowledgement.get('ok') is not True: raise ValueError('Worker refused completion acknowledgement')
+                recovered = True
                 timing = dict(upload_roundtrip_seconds=upload_seconds, ssh_status_download_seconds=download_seconds,
                               ssh_ack_roundtrip_seconds=ack_seconds,
-                              artificial_transport_scope='SSH status includes all pending attempts for this host')
+                              artificial_transport_scope=('SSH metadata-only status' if status.get('metadata_only')
+                                                          else 'SSH status includes all pending attempts for this host'))
+                if result_download_seconds is not None:
+                    timing['ssh_result_download_seconds'] = result_download_seconds
                 self.log('RESULT_RECOVERED', **owner, duplicate=response.get('duplicate', False), **timing)
                 try: self.post('/v1/transfer-metric', dict(owner, timing=timing))
                 except Exception as error: self.log('TELEMETRY_PENDING', **owner, error=str(error))
         if (self.directory/'STOP').exists():
             return
+        if recovered and status.get('metadata_only') is True:
+            # A completed attempt held a slot in the original offer. Sample
+            # the released capacity now, applying the same participation flag.
+            status, _ = self.remote(worker, 'status', dict(metadata_only=True))
+            if status['host_id'] != host:
+                raise ValueError('Refreshed mailbox host differs from relay profile')
+            poll = self._poll_value(status)
+            self.post('/v1/poll', dict(poll, observe_only=True))
         info['phase'] = 'CONTROLLER_POLL'
         # Recovery above always precedes new claims, including while paused.
         response = self.post('/v1/poll', poll)

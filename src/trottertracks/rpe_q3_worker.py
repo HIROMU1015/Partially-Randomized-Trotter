@@ -635,8 +635,8 @@ class Worker:
 def mailbox(profile, action, payload=None):
     """One SSH request against the same durable spool used by the HTTP daemon.
 
-    submit detaches the one-shot supervisor; status transfers bytes only after
-    saved adapter return/outcome validation. No shared filesystem is assumed.
+    Submit detaches the one-shot supervisor. Metadata-only status advertises
+    capacity and attempt state, and result retrieves a specific validated attempt.
     """
     payload = payload or {}
     if action in ('artifacts-missing', 'artifacts-get', 'artifacts-put'):
@@ -646,6 +646,21 @@ def mailbox(profile, action, payload=None):
         return dict(ok=True, **cache.put(payload.get('blobs', {})))
     if action == 'readiness':
         return dict(host_id=profile['host_id'], **host_fingerprints(profile, payload.get('challenges', [])))
+    if action == 'result':
+        job = safe_id(payload['job_id']); attempt_id = safe_id(payload['attempt_id'])
+        attempt = Path(profile['work_dir']).resolve()/job/attempt_id
+        assignment = read(attempt/'ASSIGNMENT.json')
+        host = profile['host_id']
+        if (payload.get('host_id', host) != host or
+                (assignment['job_id'], assignment['attempt_id'], assignment.get('host_id', host),
+                 assignment['request_sha256']) != (job, attempt_id, host, payload['request_sha256'])):
+            raise ValueError('Completion identity differs from the saved assignment')
+        if read(attempt/'WORKER_STATE.json')['state'] != 'COMPLETED_PENDING_TRANSFER':
+            raise ValueError('Attempt has no pending completion')
+        result = dict(files=result_bundle(attempt))
+        if Preparation.is_preparation(assignment):
+            result['artifact_manifest'] = read(attempt/'OUTCOME.json').get('artifacts', {})
+        return result
     worker = Worker(profile, 'http://127.0.0.1:1')
     try:
         if action == 'resources':
@@ -684,26 +699,29 @@ def mailbox(profile, action, payload=None):
                 event(worker.profile, 'TRANSFER_ACK', job_id=payload['job_id'], attempt_id=payload['attempt_id'], via='SSH_MAILBOX')
             return dict(ok=True, duplicate=duplicate)
         if action == 'status':
-            attempts = []; active = 0; cached = set()
+            metadata_only = payload.get('metadata_only') is True
+            attempts = []; cached = set()
             for attempt, assignment in worker.records.items():
                 state = worker._reconcile(attempt, assignment)
                 if state['state'] == 'ASSIGNED':
                     worker._launch(attempt)
                     threading.Thread(target=worker.processes[attempt].wait, daemon=True).start()
                     state = read(attempt / 'WORKER_STATE.json')
-                active += state['state'] in Resources.OCCUPIED
+                if state['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED') and assignment.get('prefix_key'):
+                    cached.add(assignment['prefix_key'])
+                if metadata_only and state['state'] == 'TRANSFERRED':
+                    continue
                 row = dict(job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                     state=state['state'], detail=state['detail'], request_sha256=assignment['request_sha256'])
-                if state['state'] == 'COMPLETED_PENDING_TRANSFER':
+                if not metadata_only and state['state'] == 'COMPLETED_PENDING_TRANSFER':
                     row['files'] = result_bundle(attempt)
                     if Preparation.is_preparation(assignment):
                         row['artifact_manifest'] = read(attempt/'OUTCOME.json').get('artifacts', {})
-                if state['state'] in ('COMPLETED_PENDING_TRANSFER', 'TRANSFERRED') and assignment.get('prefix_key'):
-                    cached.add(assignment['prefix_key'])
                 attempts.append(row)
             report = worker._resource_offer()
             return dict(host_id=worker.host_id, slots=report['slots'], capacity=worker.slots, resource_report=report, source_sha=worker.source_sha,
-                        cached_prefixes=sorted(cached), cached_artifact_sha256=worker_cache(profile).hashes(), attempts=attempts)
+                        cached_prefixes=sorted(cached), cached_artifact_sha256=worker_cache(profile).hashes(),
+                        attempts=attempts, metadata_only=metadata_only)
         raise ValueError('Unknown mailbox action')
     finally:
         worker.close()
