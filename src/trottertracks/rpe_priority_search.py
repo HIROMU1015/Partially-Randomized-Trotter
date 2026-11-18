@@ -420,7 +420,11 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
             frontiers = pending_frontiers
         return extra
 
-    while step < search['max_steps_per_method']:
+    step_limit=search['max_steps_per_method']
+    work_slice=search.get('work_slice_steps')
+    while step_limit is None or step<step_limit:
+        if work_slice is not None and step>=work_slice:
+            stop='WORK_SLICE_YIELDED';break
         groups, M = classify()
         if groups['UPDATE'] and not (groups['EXPLORE'] and since_explore >= s['explore_every'] - 1):
             choice = groups['UPDATE'][0]
@@ -447,6 +451,8 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
                 width = max(width, int(prefetch_state().get('capacity') or width))
             if limit != float('inf'):
                 width = int(min(width, limit - new_calls))
+            if work_slice is not None:
+                width=min(width,work_slice-step)
             prefetch(order(groups, width, observe=True))
         answer_started = time.perf_counter()
         answer = backend.answer(choice) if backend is not None and (is_free or allow) else None

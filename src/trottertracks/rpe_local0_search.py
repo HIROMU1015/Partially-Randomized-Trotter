@@ -95,7 +95,7 @@ def request_service(config, request):
         return config
     route = config.get('absolute_kappa_route')
     if route and kappa.get('mode') == 'absolute':
-        if scope.get('methods', ['PR_PAULI']) != ['PR_PAULI']:
+        if scope.get('methods', ['PR_PAULI']) != ['PR_PAULI'] and not config.get('combined_width_search'):
             raise RequestError('scope.methods', 'absolute kappa schedule entry currently accepts PR_PAULI alone')
         selected = deepcopy(config)
         selected.pop('absolute_kappa_route')
@@ -186,15 +186,20 @@ def resolve(config, request):
             if mode == 'multiplier':
                 raise RequestError(method + '.kappa.multiplier', 'selected normal entry does not enforce a multiplier-only candidate range')
             physical_schedule = config.get('entry') == 'schedule' and config.get('absolute_kappa_schedule') is True
-            if (config.get('entry') != 'neighbourhood' and not physical_schedule) or methods != ['PR_PAULI']:
+            combined=config.get('combined_width_search') and physical_schedule and method=='PR_PAULI'
+            if (config.get('entry') != 'neighbourhood' and not physical_schedule) or (methods != ['PR_PAULI'] and not combined):
                 raise RequestError(method + '.kappa.absolute', 'absolute min/max needs an adopted PR-Pauli neighbourhood entry; current entry is ' + config.get('entry', 'method'))
             if 'values' in k: raise RequestError(method + '.kappa.values', 'normal entry takes bounds, not a discrete grid')
             a, b = Fraction(k['min']), Fraction(k['max'])
             if not 0 < a <= b: raise RequestError(method + '.kappa', 'invalid positive absolute bounds')
             if physical_schedule:
-                spec.setdefault('search_overrides', {}).setdefault('schedule_wide', {})['kappa_bounds'] = [str(a), str(b)]
+                if combined:
+                    wide=spec.setdefault('search_overrides',{}).setdefault('schedule_wide_by_method',{})
+                    wide[method]=dict(spec['search_overrides'].get('schedule_wide',{}),kappa_bounds=[str(a),str(b)],max_kappa=str(b))
+                else:
+                    spec.setdefault('search_overrides', {}).setdefault('schedule_wide', {})['kappa_bounds'] = [str(a), str(b)]
+                    spec['search_overrides']['schedule_wide']['max_kappa'] = str(b)
                 override['absolute_kappa_bounds'] = [str(a), str(b)]
-                spec['search_overrides']['schedule_wide']['max_kappa'] = str(b)
                 spec['search_overrides']['kappa_neighbourhood'] = dict(outer_planner='SCHEDULE_WIDE_V1')
             else:
                 spec.setdefault('search_overrides', {}).setdefault('kappa_neighbourhood', {})['bounds'] = [str(a), str(b)]
@@ -248,6 +253,11 @@ def resolve(config, request):
     # stopping limits. A caller's explicit zero budget remains zero.
     if config.get('plan_template') and not spec.get('science_approved') and 'max_new_q3_per_method' not in stop:
         spec['max_new_q3_per_method'] = {m: 'UNLIMITED' if spec['max_new_q3_per_method'][m] == 0 else spec['max_new_q3_per_method'][m] for m in methods}
+    if 'max_new_q3_per_method' in stop and all(spec['max_new_q3_per_method'][m]=='UNLIMITED' for m in methods):
+        spec['search_to_rule_stop']=True
+        if 'max_steps_per_method' not in stop:
+            spec['max_steps_per_method']=None
+            spec.setdefault('search_overrides',{}).pop('max_steps_per_method',None)
     if request['action'] in ('start','prepare'):
         spec['science_approved'] = True
     return problem, spec, canonical
@@ -399,7 +409,12 @@ class Gateway:
             reasons={v['stop_reason'] for v in outcomes.values()}
             holds={'UNKNOWN_RESULT','STALE_JOB_NEEDS_REVIEW','NO_ROUTE_ADAPTER','HOST_ELIGIBILITY_HOLD'}
             if reasons & holds:raise RequestError('run','existing scientific hold/STOP is preserved: '+','.join(sorted(reasons & holds)))
-            if not user_interrupted and reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED'}:
+            settings=load(run/'ROUND.requested.json')
+            if settings.get('search_to_rule_stop'):
+                final=run/'SEARCH_TERMINATION.json'
+                if final.exists() and not user_interrupted:
+                    return 'REUSED_COMPLETED'
+            elif not user_interrupted and reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED'}:
                 return 'REUSED_COMPLETED'
         spec = load(run/'ROUND.requested.json'); problem = load(run/'PROBLEM.json')
         applied = load(run/'APPLIED_SCOPE.json')
@@ -409,6 +424,9 @@ class Gateway:
         if spec.get('continuation'):
             from .rpe_search_continuation import verify
             write(run/'CONTINUATION_PREFLIGHT.json', verify(run, problem, spec))
+        if spec.get('q3_budget_parents'):
+            from .rpe_search_continuation import verify_budget_parents
+            immutable(run/'Q3_BUDGET_CONTINUATION.json',verify_budget_parents(run,problem,spec))
         report = self.preflight(run, problem, spec)
         write(run/'DUPLICATE_PREFLIGHT.json', report)
         if report.get('status') != 'PASS': raise RequestError('preflight', '§10.5 evidence is incomplete/conflicting; see DUPLICATE_PREFLIGHT.json')
@@ -582,6 +600,10 @@ def execute_run(config, run, invocation):
         from .rpe_search_continuation import verify
         if verify(run, load(run/'PROBLEM.json'), spec) != load(run/'CONTINUATION_PREFLIGHT.json'):
             raise RequestError('continuation','parent reconciliation changed before launch')
+    if spec.get('q3_budget_parents'):
+        from .rpe_search_continuation import verify_budget_parents
+        if verify_budget_parents(run,load(run/'PROBLEM.json'),spec)!=load(run/'Q3_BUDGET_CONTINUATION.json'):
+            raise RequestError('continuation','capped parent reconciliation changed before launch')
     command=[config['python'],'-B',str(Path(config['code_root'])/'scripts'/ENTRIES[scope['entry']]),
         '--problem',str(run/'PROBLEM.json'),'--round',str(run/'ROUND.json'),'--run-dir',str(run)]
     if config.get('artificial_controller_directory'):

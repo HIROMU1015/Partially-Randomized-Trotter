@@ -131,6 +131,11 @@ class Completion:
             # Failed stages and their original STOPs remain in the old state.
             self.state['records']={k:dict(r,reused_from=imported) for k,r in saved['records'].items()
                                    if r['status']=='READY_FOR_SEARCH'}
+        if not prior:
+            for locator in settings.get('protected_stops_from',()):
+                for k,record in value(locator)['records'].items():
+                    if record.get('scientific_failure'):
+                        self.state['records'].setdefault(k,dict(record,reused_from=locator))
         if self.state['source']!=self.source:raise ValueError('Completion SOURCE changed; preserve prior state')
         self.lock=threading.RLock()
         self.pauli_price_lock=threading.RLock()

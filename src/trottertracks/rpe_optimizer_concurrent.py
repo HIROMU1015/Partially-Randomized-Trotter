@@ -787,8 +787,10 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _host_supports_stage(self, host, request):
         capabilities = (self.distributed.get('host_stage_capabilities') or {}).get(host)
-        stage = (request.get('preparation') or {}).get('stage', 'q3')
-        return capabilities is None or stage in capabilities
+        preparation=request.get('preparation') or {}
+        stage = preparation.get('stage', 'q3')
+        providers=(self.distributed.get('preparation_provider_hosts') or {}).get(preparation.get('provider'))
+        return (capabilities is None or stage in capabilities) and (providers is None or host in providers)
 
     def _capacity_feedback(self, host):
         with self.store._connection() as database:

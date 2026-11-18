@@ -44,9 +44,9 @@ def inspect(context,methods):
     return rows,evaluated
 
 
-def select(context,methods):
+def select(context,methods,excluded=()):
     rows,evaluated=inspect(context,methods)
-    eligible=[r for r in rows if not r['ready'] and r['needs']]
+    eligible=[r for r in rows if not r['ready'] and r['needs'] and r['configuration_id'] not in excluded]
     chosen=deepcopy(eligible[0])if eligible else None
     incumbents=[p for p in context['catalog']['candidates']if p['method']=='TRUNCATED_PF'and p['status']=='FEASIBLE'and p.get('conditional_cost')is not None]
     from .saved_rpe_cost_catalog import frac
@@ -74,7 +74,7 @@ def _refresh(root,problem,context,methods,registry,artificial):
     return after
 
 
-def prepare(root,problem,context,spec,run,routes,*,stage_executor=None):
+def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=()):
     """One automatic finite selection, existing D request, same optimizer context.
 
     plan never starts science; complete is the existing explicitly authorized
@@ -97,7 +97,7 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None):
         write(selection_path,selection);selected=deepcopy(settings['selected']);chosen_id=None
     else:
         if selection_path.exists():selection=json.loads(selection_path.read_text())
-        else:selection=select(context,methods);write(selection_path,selection)
+        else:selection=select(context,methods,excluded);write(selection_path,selection)
         chosen=selection['selected']
         if chosen is None:return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',selection=selection)
         matches=[c for c in context['candidates']if c['configuration_id']==chosen['configuration_id']]
@@ -153,3 +153,33 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None):
         status=dict(status='READY_RETURNED_TO_SAME_OPTIMIZER'if ready else'PREPARATION_INCOMPLETE',selection=selection,response=response,artificial_only=artificial,remaining_needs=needs)
     write(status_path,status)
     return context,routes,status
+
+
+def prepare_next(root,problem,context,spec,run,routes,stage_executor):
+    """One durable PF candidate per wave, with evidence from every prior wave."""
+    run=Path(run)
+    index=run/'pf_auto'/'WAVES.json'
+    records=json.loads(index.read_text()) if index.exists() else {}
+    registry=deepcopy(context['pf_evidence_registry'])
+    for record in records.values():
+        registry['configurations'].update(record.get('configurations',{}))
+    if records:
+        context=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
+        routes=PF.registry_routes(routes,registry)
+    chosen=select(context,spec['methods'],records)['selected']
+    if chosen is None:
+        return context,routes,dict(status='NO_INCOMPLETE_PF_CANDIDATE',records=records)
+    cid=chosen['configuration_id']
+    after,after_routes,status=prepare(root,problem,context,spec,run/'pf_auto'/'candidates'/cid,routes,
+                                    stage_executor=stage_executor,excluded=records)
+    entry=after['pf_evidence_registry']['configurations'].get(cid)
+    records[cid]=dict(status=status['status'],reason=status.get('reason'),key=chosen['key'],
+                      configurations={cid:entry} if entry is not None else {})
+    index.parent.mkdir(parents=True,exist_ok=True)
+    from .rpe_release_registry import write as atomic_write
+    atomic_write(index,records)
+    if entry is not None:
+        registry['configurations'][cid]=entry
+        after=_refresh(root,problem,context,spec['methods'],registry,registry.get('artificial',False))
+        after_routes=PF.registry_routes(after_routes,registry)
+    return after,after_routes,dict(status='PREPARATION_WAVE_PROCESSED',records=records)

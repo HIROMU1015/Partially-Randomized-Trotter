@@ -491,7 +491,12 @@ def run_method(name, candidates, knowledge, backend, search, threshold, generate
     ready = [c for c in candidates if c['ready']];missing = [c['name'] for c in candidates if not c['ready'] or c.get('execution_needs')]
     limit = 0 if not science_approved else (float('inf') if max_new is None else max_new)
     large_headroom = Fraction(search['large_step_headroom'])
-    for step in range(search['max_steps_per_method']):
+    from itertools import count
+    max_steps=search['max_steps_per_method']
+    work_slice=search.get('work_slice_steps')
+    for step in count() if max_steps is None else range(max_steps):
+        if work_slice is not None and step>=work_slice:
+            stop='WORK_SLICE_YIELDED';break
         props, incumbent = proposals(ready, knowledge, threshold, search, generate)
         if not props:
             # Exhausted within the approved finite range; distinguish candidates that still lack inputs.

@@ -303,9 +303,13 @@ class WidthDriver:
         self.a = a; self.run = a.run_dir.resolve(); self.run.mkdir(parents=True, exist_ok=True)
         self.spec = O.load_json(a.round)
         self.problem = K.CLI.price_overrides(K.CLI.scoped(O.load_json(a.problem), self.spec.get('method_overrides')), self.spec)
+        self.rule_stop = self.spec.get('search_to_rule_stop',False)
         self.widths = W.requested_widths(self.problem, self.spec)
-        if self.widths is None: raise ValueError('Explicit requested_widths required')
-        self.methods = list(self.widths)
+        if self.widths is None:
+            if not self.rule_stop or any(m.startswith('PR_') for m in self.spec['methods']):
+                raise ValueError('Explicit requested_widths required')
+            self.widths={}
+        self.methods = list(self.spec['methods']) if self.rule_stop else list(self.widths)
         for method,widths in self.widths.items():
             self.problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
         self.state_file = self.run/'KAPPA_STATE.json'
@@ -487,12 +491,12 @@ class WidthDriver:
 
     def seed_ready_continuation(self):
         comp = self.completion_api()
-        bounds = W.kappa_bounds(self.wide)
         for key, rec in comp.state['records'].items():
             if rec.get('status') != 'READY_FOR_SEARCH' or rec.get('method') not in self.methods:
                 continue
             cfg = read_loc(rec['configuration'])
             method, spec = rec['method'], cfg['spec']
+            bounds = W.kappa_bounds(self.wide_for(method))
             kappa = KS._frac(spec['kappa']['value'])
             family = W.width_family_key(method, spec['L_D'], spec['formula'], spec['delta_pf'], spec['finite_K'])
             if (bounds and not bounds[0] <= kappa <= bounds[1]) or self.state['families'].get(family, {}).get('status') != 'READY_METADATA':
@@ -551,6 +555,10 @@ class WidthDriver:
         return {key:W.Family(key,rows['rows'])for key,rows in self.state['families'].items()
                 if rows['status']=='READY_METADATA'}
 
+    def wide_for(self,method):
+        overrides=getattr(self,'spec',{}).get('search_overrides',{}).get('schedule_wide_by_method',{})
+        return overrides.get(method,self.wide)
+
     def point(self, family, kappa):
         return next((p for p in self.state['points']if p['family']==family and Fraction(p['kappa'])==Fraction(kappa)),None)
 
@@ -569,7 +577,7 @@ class WidthDriver:
         methods=list(dict.fromkeys(self.state['families'][key]['method']for key in families))
         for method in methods:
             scoped={key:f for key,f in families.items()if self.state['families'][key]['method']==method}
-            chosen,why,summary=W.plan_wide(scoped,[p for p in points if p['family']in scoped],self.wide)
+            chosen,why,summary=W.plan_wide(scoped,[p for p in points if p['family']in scoped],self.wide_for(method))
             proposals.extend(chosen);decisions.extend(why);reports[method]=summary;family_reports.update(summary['families'])
         report=dict(per_method=reports,global_best_by_method={m:r['global_best']for m,r in reports.items()},
             global_best=next(iter(reports.values()))['global_best']if len(reports)==1 else None,families=family_reports,
@@ -662,7 +670,8 @@ class WidthDriver:
                 p.update(status='COMPLETION',reason=record['reason'])
                 self.log(event='PREPARATION_YIELD_AFTER_FATAL',family=p['family'],stage=record.get('interrupted_before_stage'))
                 break
-            elif record['status'].startswith('STOP') or 'NUMERICAL_GATE' in str(record.get('reason','')):
+            elif (record['status'].startswith('STOP') or 'NUMERICAL_GATE' in str(record.get('reason','')) or
+                  getattr(self,'rule_stop',False) and record.get('scientific_failure')):
                 p.update(status='HELD',reason=record.get('reason',record['status']))
             else:
                 p.update(status='WAITING_INPUTS',reason=record.get('reason',record['status']))
@@ -754,6 +763,10 @@ class WidthDriver:
             problem['methods'][method]['requested_delta_pf_values']=[O.enc(KS._frac(w['raw']))for w in widths]
         context=self.context(problem);comp=self.completion_api()
         routes=K.CLI.merged_routes(problem,self.spec)
+        pf_enabled=getattr(self,'rule_stop',False) and 'TRUNCATED_PF' in self.methods
+        if pf_enabled:
+            from trottertracks import pf_optimizer_connection as PF
+            routes=PF.registry_routes(routes,context['pf_evidence_registry'])
         def install_ready(current_routes, snapshot=False):
             accepted={p.get('completion',{}).get('key')for p in self.state['points']if p['status']in('REGISTERED','EVALUATED')}
             if snapshot and hasattr(comp,'install_snapshot'):
@@ -774,8 +787,12 @@ class WidthDriver:
         budgets={m:launched[m]+self.a.batch for m in self.methods}
         for method,budget in budgets.items():
             maximum=self.spec.get('max_new_q3_per_method',{}).get(method)
-            if maximum not in(None,'UNLIMITED'):budgets[method]=min(budget,maximum)
+            if maximum=='UNLIMITED' and getattr(self,'rule_stop',False):budgets[method]='UNLIMITED'
+            elif maximum not in(None,'UNLIMITED'):budgets[method]=min(budget,maximum)
         search=dict(problem['search'],**self.spec.get('search_overrides',{}))
+        if getattr(self,'rule_stop',False):
+            search['max_steps_per_method']=self.spec.get('max_steps_per_method')
+            search['work_slice_steps']=W.settings(self.wide)['per_decision']
         # Existing V2 switch: kappa schedules are chosen by this outer width
         # planner, not by a second inner multiplier-neighbour chooser.
         search.setdefault('kappa_neighbourhood',dict(outer_planner=W.RULE))
@@ -797,7 +814,7 @@ class WidthDriver:
                 from concurrent.futures import ThreadPoolExecutor,TimeoutError
                 from contextlib import nullcontext
                 import inspect,threading
-                preparation_pool=ThreadPoolExecutor(max_workers=1)
+                preparation_pool=ThreadPoolExecutor(max_workers=2 if pf_enabled else 1)
                 stop_preparation=threading.Event()
                 executor.state.failure_callback=lambda error:stop_preparation.set()
                 comp.stop_requested=stop_preparation.is_set
@@ -808,6 +825,13 @@ class WidthDriver:
                     if not stop_preparation.is_set():
                         self.complete_points(**({'stop_requested':stop_preparation.is_set}if supports_stop else{}))
                 pending=preparation_pool.submit(prepare)
+                pf_future=None
+                self.pf_more=False
+                if pf_enabled:
+                    from trottertracks import pf_candidate_selection
+                    from trottertracks.rpe_preparation_round import snapshot_context,_merge_pf
+                    pf_future=preparation_pool.submit(pf_candidate_selection.prepare_next,ROOT,problem,
+                        snapshot_context(context),active_spec,self.run,deepcopy(routes),runtime)
                 def ready_keys():
                     with(getattr(comp,'lock',None)or nullcontext()):
                         return{r.get('key')for r in comp.state['records'].values()if r['status']=='READY_FOR_SEARCH'}
@@ -830,7 +854,7 @@ class WidthDriver:
                         for method,r in interim.items():
                             spent=executor.launched(method);maximum=self.spec.get('max_new_q3_per_method',{}).get(method)
                             if r['stop_reason']=='STEP_LIMIT'and spent<budgets[method]:remaining_ready_work=True
-                            if spent>=budgets[method]and(changed or r['stop_reason']in('Q3_BUDGET_EXHAUSTED','STEP_LIMIT')):
+                            if isinstance(budgets[method],int) and spent>=budgets[method]and(changed or r['stop_reason']in('Q3_BUDGET_EXHAUSTED','STEP_LIMIT')):
                                 target=spent+self.a.batch
                                 if maximum not in(None,'UNLIMITED'):target=min(target,maximum)
                                 if target>budgets[method]:budgets[method]=target;replenished=True
@@ -844,6 +868,12 @@ class WidthDriver:
                         except TimeoutError:pass
                 # No other thread now changes Completion or its registry.
                 routes=install_ready(routes);executor.routes=routes;executor.expected=context['expected']
+                if pf_future is not None:
+                    pf_context,pf_routes,pf=pf_future.result()
+                    context,routes=_merge_pf(context,pf_context,routes,pf_routes,self.methods)
+                    executor.routes=routes;executor.expected=context['expected']
+                    self.pf_more=pf['status']=='PREPARATION_WAVE_PROCESSED'
+                    K.CLI.write(self.run/'PF_PREPARATION_STATUS.json',pf)
                 O.apply_published(context['candidates'],routes)
             if interim and any(r['stop_reason']in fatal for r in interim.values()):result=interim
             else:
@@ -912,13 +942,15 @@ class WidthDriver:
         if previous and previous not in transient:
             self.log(event='PRESERVED_STOP',reason=previous);return
         if previous:self.state.pop('stop')
-        if self.a.plan_only and W.kappa_bounds(self.wide) is not None:
+        bounded={method:W.kappa_bounds(self.wide_for(method)) for method in self.widths} if self.a.plan_only else {}
+        if self.a.plan_only and any(bounded.values()):
             # Native physical schedule selection only. Missing family/input
             # preparation remains explicit; no Completion, Executor or worker.
             self.state['cycle'] += 1
             proposals, report = self.plan()
             self.state['scope_plan'] = dict(rule=W.RULE,
-                kappa_bounds=[str(v) for v in W.kappa_bounds(self.wide)],
+                kappa_bounds=[str(v) for v in next(b for b in bounded.values() if b)],
+                kappa_bounds_by_method={m:[str(v) for v in b] if b else None for m,b in bounded.items()},
                 bounds_inclusive=[True, True],
                 requested_L_D={m:self.problem['methods'][m].get('L_D_values') for m in self.methods},
                 family_status={k:dict(L_D=v['L_D'],status=v['status'],reason=v.get('reason'))
@@ -928,8 +960,8 @@ class WidthDriver:
             self.state['stop'] = dict(reason='BOUNDED_SCHEDULE_PLAN_ONLY',UTC=K.now())
             self.save()
             return
-        end=self.state['cycle']+self.a.max_cycles
-        while self.state['cycle']<end:
+        end=None if self.a.max_cycles is None else self.state['cycle']+self.a.max_cycles
+        while end is None or self.state['cycle']<end:
             if (self.run/'STOP_REQUESTED.json').exists():
                 self.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());self.save();return
             self.state['cycle']+=1;started=time.monotonic();self.log(event='PLAN_START')
@@ -963,9 +995,19 @@ class WidthDriver:
                      any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values())or
                      any(r.get('input_requests')for r in result.values()))
             pending=any(p['status']in('COMPLETION','REGISTERED')or(p['status']=='EVALUATED'and p.get('promising'))for p in self.state['points'])
+            if getattr(self,'rule_stop',False):
+                if any(r['stop_reason']=='STEP_LIMIT' for r in result.values()):
+                    self.state['stop']=dict(reason='EXPLICIT_STEP_LIMIT',UTC=K.now());self.save();return
+                if getattr(self,'pf_more',False) or any(r['stop_reason']=='WORK_SLICE_YIELDED' for r in result.values()):
+                    continue
+                pending=any(p['status'] in ('COMPLETION','REGISTERED') for p in self.state['points'])
             if (not proposals and not pending and ready_families ==
                     sum(f['status']=='READY_METADATA' for f in self.state['families'].values())):
-                self.state['stop']=dict(reason='WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED',
+                blocked=waiting or any(f['status']!='READY_METADATA' for f in self.state['families'].values()) or any(
+                    p['status']=='HELD' for p in self.state['points']) or any(r.get('not_ready_candidates') for r in result.values())
+                reason=('SCOPE_HELD_INPUTS' if blocked else 'REQUESTED_WIDTH_RULE_EXHAUSTED') if getattr(self,'rule_stop',False) else (
+                    'WAITING_FOR_INPUTS'if waiting else'REQUESTED_WIDTH_RULE_EXHAUSTED')
+                self.state['stop']=dict(reason=reason,
                     UTC=K.now(),methods={m:r['stop_reason']for m,r in result.items()});self.save();return
         self.state['stop']=dict(reason='MAX_CYCLES',UTC=K.now());self.save()
 
@@ -974,7 +1016,7 @@ def main(argv=None, *, driver_factory=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--problem', type=Path, required=True);ap.add_argument('--round', type=Path, required=True)
     ap.add_argument('--run-dir', type=Path, required=True);ap.add_argument('--batch', type=int, default=64)
-    ap.add_argument('--max-cycles', type=int, default=200);ap.add_argument('--plan-only', action='store_true')
+    ap.add_argument('--max-cycles', type=int);ap.add_argument('--plan-only', action='store_true')
     ap.add_argument('--prepare-readiness', action='store_true', help='plan-only: delta saved history, chosen requests, server2 dry-check and immutable remote delivery')
     ap.add_argument('--preparation-cache', type=Path, help='local disposable cache for --prepare-readiness')
     ap.add_argument('--host-readiness', type=Path, help='saved host READINESS descriptors to join during --prepare-readiness')
@@ -983,8 +1025,9 @@ def main(argv=None, *, driver_factory=None):
         from trottertracks.rpe_plan_prepare import prepare
         return prepare(a, code_root=ROOT, cli=K.CLI)
     problem=O.load_json(a.problem);spec=O.load_json(a.round)
+    if a.max_cycles is None and not spec.get('search_to_rule_stop'):a.max_cycles=200
     declared=W.requested_widths(problem,spec)
-    if driver_factory is None and declared is None and any(m in('FULL_PF','TRUNCATED_PF')for m in spec.get('methods',[])):
+    if driver_factory is None and declared is None and not spec.get('search_to_rule_stop') and any(m in('FULL_PF','TRUNCATED_PF')for m in spec.get('methods',[])):
         # PF selection and shot/Q3 remain owned by the existing method CLI.
         # This is the same public entry, not another PF driver/optimizer.
         from types import SimpleNamespace
@@ -993,7 +1036,7 @@ def main(argv=None, *, driver_factory=None):
         result=O.load_json(a.run_dir/'ROUND_RESULT.json')
         return SimpleNamespace(run=a.run_dir,state=dict(stop=dict(reason='METHOD_ROUND_COMPLETE',
             methods={m:r['stop_reason']for m,r in result['methods'].items()})))
-    factory=driver_factory or (WidthDriver if declared is not None else WideDriver)
+    factory=driver_factory or (WidthDriver if declared is not None or spec.get('search_to_rule_stop') else WideDriver)
     d = factory(a);d.log(event='DRIVER_START', plan_only=a.plan_only)
     try:d.loop()
     except KeyboardInterrupt:
@@ -1012,6 +1055,9 @@ def main(argv=None, *, driver_factory=None):
             'V2_RESULT_REQUIRES_REVIEW','RUNTIME_EXCEPTION'):
         d.state['stop']=dict(reason='USER_REQUESTED_STOP',UTC=K.now());d.save()
     d.log(event='DRIVER_END', stop=d.state.get('stop'))
+    if spec.get('search_to_rule_stop') and d.state.get('stop',{}).get('reason') in (
+            'REQUESTED_WIDTH_RULE_EXHAUSTED','SCOPE_HELD_INPUTS','EXPLICIT_STEP_LIMIT','MAX_CYCLES'):
+        K.CLI.write(a.run_dir/'SEARCH_TERMINATION.json',d.state['stop'])
     print(json.dumps(O.jsonable(d.state.get('stop')), default=str)[:2000])
     return d
 

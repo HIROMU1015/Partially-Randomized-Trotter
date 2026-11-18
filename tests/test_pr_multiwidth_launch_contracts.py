@@ -47,6 +47,26 @@ def proposals(instance):
 
 
 class IndependentMethodLaunchContract(unittest.TestCase):
+    def test_unlimited_wave_yields_past_old_cap_and_stops_on_held_scope(self):
+        instance=driver(['PR_DF'])
+        with tempfile.TemporaryDirectory() as tmp:
+            instance.rule_stop=True
+            instance.spec=dict(science_approved=True,max_new_q3_per_method={'PR_DF':'UNLIMITED'})
+            instance.a=SimpleNamespace(max_cycles=None,plan_only=False)
+            instance.run=Path(tmp);instance.log=lambda **row:None;instance.save=lambda:None
+            instance.bootstrap_families=lambda:None;instance.complete_points=lambda:None
+            instance.plan=lambda:([],{})
+            instance.state['points'].append(dict(status='HELD',reason='artificial unsupported input'))
+            calls=[]
+            def batch():
+                calls.append(True)
+                instance.state['q3_launched']={'PR_DF':16+len(calls)}
+                return {'PR_DF':dict(stop_reason='WORK_SLICE_YIELDED' if len(calls)==1 else 'NO_CANDIDATE_LEFT_IN_RANGE',new_calls=1)}
+            instance.batch=batch
+            instance.loop()
+            self.assertEqual(len(calls),2)
+            self.assertEqual(instance.state['stop']['reason'],'SCOPE_HELD_INPUTS')
+
     def test_distributed_family_preparation_reenters_the_planner(self):
         instance=ENTRY.WidthDriver.__new__(ENTRY.WidthDriver)
         temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)

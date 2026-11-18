@@ -10,6 +10,55 @@ def load(path):
     return json.loads(path.read_bytes())
 
 
+def verify_budget_parents(run,problem,spec):
+    """A new run can lift its Q3 ceiling while the old terminal runs stay fixed."""
+    from .rpe_local0_search import digest
+
+    prior={Path(path).resolve() for path in spec['executor']['prior_run_dirs']}
+    report={}
+    for fixed in spec['q3_budget_parents']:
+        parent=Path(fixed['path']).resolve()
+        method=fixed['method']
+        if parent==run.resolve() or parent not in prior or spec['max_new_q3_per_method'].get(method)!='UNLIMITED':
+            raise ValueError('Unbounded continuation must retain its capped parent in the duplicate audit')
+        applied=load(parent/'APPLIED_SCOPE.json')
+        old=load(parent/'ROUND.requested.json')
+        previous_problem=load(parent/'PROBLEM.json')
+        if (applied['signature']!=fixed['signature'] or applied['code_source']!=fixed['controller_source'] or
+                applied['round_requested_sha256']!=digest(old) or
+                applied['problem_sha256']!=digest(previous_problem) or
+                any(problem[k]!=previous_problem[k] for k in ('problem','rpe','target','accuracy'))):
+            raise ValueError('Unbounded continuation differs from the fixed parent inputs')
+        final=load(parent/'EXIT.json')
+        result=load(parent/'ROUND_RESULT.json')['methods'][method]
+        if (final['invocation_id']!=load(parent/'LAUNCH.json')['invocation_id'] or
+                result['stop_reason']!='Q3_BUDGET_EXHAUSTED'):
+            raise ValueError('Parent did not settle at its Q3 ceiling')
+        for name in ('LAUNCH.json','NORMAL_DRIVER.json','distributed/relay/STATUS.json'):
+            path=parent/name
+            if path.exists():
+                pid=load(path).get('pid')
+                try: command=(Path('/proc')/str(pid)/'cmdline').read_bytes()
+                except FileNotFoundError:continue
+                if str(parent).encode() in command or str(fixed['path']).encode() in command:
+                    raise ValueError('Unbounded continuation still has a live parent owner')
+        pbs=parent/'distributed/pbs/STATE.json'
+        if pbs.exists() and load(pbs).get('allocations'):
+            raise ValueError('Unbounded continuation has an unresolved parent PBS owner')
+        queue=parent/'distributed/QUEUE.sqlite3'
+        with sqlite3.connect(queue.as_uri()+'?mode=ro',uri=True) as db:
+            rows=db.execute('SELECT job_id,method,state,host_id,attempt_id,request_sha256 FROM jobs ORDER BY job_id').fetchall()
+        if fingerprint(rows)!=fixed['queue_sha256'] or any(row[2] not in ('ACCEPTED','CANCELLED') for row in rows):
+            raise ValueError('Unbounded continuation parent has changed or unresolved attempts')
+        accepted=sum(row[1]==method and row[2]=='ACCEPTED' and bool(row[3] and row[4]) for row in rows)
+        cap=old['max_new_q3_per_method'][method]
+        if type(cap) is not int or accepted!=cap:
+            raise ValueError('Parent adopted Q3 count does not match its original ceiling')
+        report[method]=dict(parent=parent.name,old_q3_ceiling=cap,accepted=accepted,new_q3_ceiling='UNLIMITED',
+                           parent_queue_sha256=fixed['queue_sha256'])
+    return report
+
+
 def verify(run, problem, spec):
     from .rpe_local0_search import digest
 
