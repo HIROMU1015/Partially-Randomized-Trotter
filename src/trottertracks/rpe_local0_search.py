@@ -500,8 +500,22 @@ class Gateway:
         root=Path(self.config['code_root'])
         fixed_implementation(self.config)
         scoped = CLI.price_overrides(CLI.scoped(problem,spec.get('method_overrides')),spec)
+        if spec.get('search_to_rule_stop'):
+            from .rpe_schedule_search import requested_widths
+            for method,widths in (requested_widths(scoped,spec) or {}).items():
+                scoped['methods'][method]['requested_delta_pf_values']=[
+                    O.enc(Fraction(entry['exact'])) for entry in widths]
         context = O.prepare(Path(self.config['code_root']),scoped,methods=spec['methods'],generate_configurations=False,preparation_dir=run/'preflight-inputs')
         routes = CLI.merged_routes(scoped,spec)
+        if spec.get('search_to_rule_stop'):
+            from .pf_optimizer_connection import registry_routes
+            if context.get('pf_evidence_registry'):
+                routes=registry_routes(routes,context['pf_evidence_registry'])
+            completion=spec.get('candidate_completion') or {}
+            if completion.get('resume_preparation_from'):
+                from .pr_candidate_completion import Completion
+                prepared=Completion(run/'preflight-completion',completion)
+                routes,_=prepared.install_snapshot(context,dict(scoped,execution_routes=routes),prepared.state['records'])
         ex = O.Executor(Path(self.config['code_root']),run,routes,context['expected'],scoped,prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),launch_disabled=True)
         loaded, refused = {}, []
         missing=[str(p) for p in spec.get('executor',{}).get('prior_run_dirs',[]) if not Path(p).is_dir()]

@@ -23,6 +23,25 @@ def request(lo,hi,budget=0):
 class Tests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup);self.home=pathlib.Path(self.tmp.name);self.config=fixture_config(self.home)
+    def test_explicit_unlimited_crosses_old_cap_and_uses_rule_termination(self):
+        gateway=build(self.config)
+        previous=gateway.handle(request(4,4,1))
+        source=pathlib.Path(previous['run_directory'])
+        old=(source/'ROUND.json').read_bytes()
+        current=gateway.handle(request(4,4,'UNLIMITED'))
+        parent=pathlib.Path(current['run_directory'])
+        applied=load(parent/'ROUND.json')
+        self.assertIsNone(applied['max_steps_per_method'])
+        self.assertEqual(applied['max_new_q3_per_method'],{'PR_PAULI':'UNLIMITED'})
+        self.assertNotEqual(current['run_id'],previous['run_id'])
+        self.assertEqual(current['preflight']['reused']['PR_PAULI'],1)
+        jobs=load(self.home/'state'/'ARTIFICIAL_CALLS.json')
+        self.assertGreater(sum(update['run']==str(parent) for update in jobs),1)
+        self.assertEqual(load(parent/'SEARCH_TERMINATION.json')['reason'],'SEARCH_RULE_EXHAUSTED')
+        self.assertEqual(gateway.handle(dict(action='resume',run_id=current['run_id'],instruction='Artificial replay'))['status'],
+                         'REUSED_COMPLETED')
+        self.assertEqual(jobs,load(self.home/'state'/'ARTIFICIAL_CALLS.json'))
+        self.assertEqual(old,(source/'ROUND.json').read_bytes())
     def test_partial_overlap_uses_normal_entry_and_retains_unseen_point(self):
         gateway=build(self.config);old=gateway.handle(request(4,6));old_run=pathlib.Path(old['run_directory'])
         prior=seed(old_run,self.config);old_round=(old_run/'ROUND.json').read_bytes()

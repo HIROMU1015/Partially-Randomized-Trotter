@@ -375,6 +375,14 @@ def round_mode(a, problem, extra, *, prepared_context=None, executor_setup=None,
         else:
             write(run / 'NEEDS.json', dict(candidates=[r for r in candidate_rows(context) if r['method'] in spec['methods']],
                                            pending_Q3={m: r['pending_request'] for m, r in result.items()}))
+        if spec.get('search_to_rule_stop') and not (run/'STOP_REQUESTED.json').exists():
+            reasons={m:r['stop_reason'] for m,r in result.items()}
+            terminal={'NO_IMPROVING_PROPOSAL','NO_IMPROVING_PROPOSAL_INPUTS_MISSING',
+                      'NO_FEASIBLE_POINT_IN_RANGE','NO_CANDIDATE_LEFT_IN_RANGE','ONLY_SMALL_OR_DEFERRED_LEFT','STEP_LIMIT'}
+            if set(reasons.values())<=terminal:
+                held=any(r.get('not_ready_candidates') or r.get('execution_holds') for r in result.values())
+                reason='SCOPE_HELD_INPUTS' if held else 'EXPLICIT_STEP_LIMIT' if 'STEP_LIMIT' in reasons.values() else 'SEARCH_RULE_EXHAUSTED'
+                write(run/'SEARCH_TERMINATION.json',dict(reason=reason,methods=reasons))
     if not compact and not payload.get('artificial_only') and str(run).startswith(str(ROOT/'docs/research')):
         from publish_h4_search_run import prepare as publish_search
         publish_search(ROOT,run,run.parent/'SEARCH_PUBLICATION.json',run_id=spec['round_id'])
