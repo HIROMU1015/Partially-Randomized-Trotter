@@ -3,7 +3,9 @@ from copy import deepcopy
 from fractions import Fraction
 import importlib.util
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -13,6 +15,26 @@ from trottertracks import pr_candidate_completion as C,rpe_method_optimizer as O
 
 
 class CompletionTests(unittest.TestCase):
+    @unittest.skipUnless(sys.platform.startswith('linux'), 'DF price worker uses Linux fork')
+    def test_df_price_bootstrap_keeps_the_worker_importable_for_fork_pool(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            runner=Path(tmp)/'scripts'/'price.py'
+            runner.parent.mkdir()
+            runner.write_text("""from concurrent.futures import ProcessPoolExecutor
+import multiprocessing
+
+def fixture():
+    return 23
+
+def main():
+    with ProcessPoolExecutor(max_workers=1, mp_context=multiprocessing.get_context('fork')) as pool:
+        print(pool.submit(fixture).result(timeout=5))
+    return 0
+""")
+            output=subprocess.check_output([sys.executable,'-B','-c',C._DF_PRICE_BOOTSTRAP,str(runner),tmp],
+                text=True,env=dict(os.environ,PYTHONPATH=str(ROOT/'src')))
+            self.assertEqual(output.strip(),'23')
+
     def test_saved_ready_resume_does_not_call_acquisition(self):
         with tempfile.TemporaryDirectory()as tmp:
             c=C.Completion.__new__(C.Completion);c.directory=Path(tmp);c.state={'records':{}};c.lock=__import__('threading').RLock();c.state_path=Path(tmp)/'STATE.json'

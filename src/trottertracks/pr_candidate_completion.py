@@ -28,7 +28,7 @@ A_WORKSPACE=ROOT.parent/'d2-pauli-auto-nodrop-evidence-20261116'
 GIT_LOCK=threading.RLock()
 IDENTITY=['-c','user.name=HIROMU1015','-c','user.email=u411612g@ecs.osaka-u.ac.jp']
 _DF_PRICE_BOOTSTRAP="""
-import json, runpy, sys
+import importlib.util, json, sys
 from pathlib import Path
 runner, view = sys.argv[1:3]
 sys.argv = [runner, *sys.argv[3:]]
@@ -43,9 +43,13 @@ if '--input' in sys.argv:
     if native.is_dir():
         import trottertracks.resource_applicability as resource_applicability
         resource_applicability.__path__.insert(0, str(native/'resource_applicability'))
-main = runpy.run_path(runner)['main']
-main.__globals__['FIXED_VIEW'] = Path(view)
-raise SystemExit(main())
+# Pool jobs resolve functions by module name even with the fork start method.
+spec = importlib.util.spec_from_file_location('_rpe_fixed_df_price_runner', runner)
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
+module.FIXED_VIEW = Path(view)
+raise SystemExit(module.main())
 """
 
 
