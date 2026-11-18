@@ -695,8 +695,9 @@ class Gateway:
         import run_rpe_method_optimizer as CLI
         root=Path(self.config['code_root'])
         fixed_implementation(self.config)
-        from .rpe_search_continuation import verify_prior_q3_holds
+        from .rpe_search_continuation import verify_prior_q3_holds, verify_retired_preparation_attempts
         prior_holds = verify_prior_q3_holds(root,run,problem,spec)
+        retired_preparation = verify_retired_preparation_attempts(run)
         scoped = CLI.price_overrides(CLI.scoped(problem,spec.get('method_overrides')),spec)
         if spec.get('search_to_rule_stop') or spec.get('live_ready_refill'):
             from .rpe_schedule_search import requested_widths
@@ -736,6 +737,7 @@ class Gateway:
             for path in Path(directory).glob('jobs/*/*/REQUEST.json'):
                 job=path.parent
                 if (job/'OUTCOME.json').exists():continue
+                if job.resolve() in retired_preparation:continue
                 if (job/'LAUNCH.json').exists() or (job/'STARTING.json').exists():
                     if load(path).get('configuration_id') in ids and str(job.resolve()) not in prior_holds:
                         in_progress.append(str(job))
@@ -747,7 +749,8 @@ class Gateway:
         holds=[r for r in refused if r['reason'] not in ('CONFIGURATION_NOT_IN_THIS_ROUND',
             'DIFFERENT_JOB_KEY_OR_ROUTE','PRIOR_Q3_PERSISTENCE_HOLD')]
         return dict(status='HOLD' if holds or missing or in_progress else 'PASS',section='10.5',reused=loaded,refused=refused,missing_prior_run_dirs=missing,owned_unresolved_prior_jobs=in_progress,
-            prior_q3_holds=list(prior_holds.values()),checked_prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),
+            prior_q3_holds=list(prior_holds.values()),retired_preparation_holds=sorted(str(path) for path in retired_preparation),
+            checked_prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),
             normal_ingest='Executor.prior_records/ingest',scientific_calls=0)
 
     def normal_launch(self, run, problem, spec):

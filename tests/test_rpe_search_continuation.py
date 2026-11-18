@@ -15,7 +15,7 @@ from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
 from trottertracks.rpe_priority_search import run_priority
 from trottertracks.rpe_q3_coordinator import digest
 from trottertracks.rpe_release_registry import fingerprint
-from trottertracks.rpe_search_continuation import verify, verify_prior_q3_holds
+from trottertracks.rpe_search_continuation import verify, verify_prior_q3_holds, verify_retired_preparation_attempts
 
 from test_rpe_optimizer_concurrent import fixture
 
@@ -59,6 +59,32 @@ class ContinuationTests(unittest.TestCase):
 
     def save(self, name, body):
         (self.original/name).write_text(json.dumps(body))
+
+    def test_retired_preparation_validates_same_request_and_stopped_allocation(self):
+        (self.successor/'distributed').mkdir(parents=True)
+        (self.original/'distributed/relay').mkdir()
+        (self.original/'distributed/pbs').mkdir()
+        self.save('distributed/relay/STATUS.json', {'stopped': True})
+        self.save('distributed/pbs/STATE.json', {'allocations': {'token': {
+            'spec': {'profile': {'host_id': 'pbs-0'}}, 'observed': {'job_id': 'test.pbs'}}}})
+        request = {'request_id': 'prep-123', 'preparation': {'stage': 'signal'}}
+        row = ('prep-123', 'PREPARATION:signal', 'pbs-0', 'attempt', digest(request),
+               json.dumps(request), 'UNKNOWN', json.dumps({'automatic_retry': False}))
+        for run in (self.original, self.successor):
+            with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
+                db.execute('DROP TABLE IF EXISTS jobs')
+                db.execute('CREATE TABLE jobs (job_id, method, host_id, attempt_id, request_sha256, request, state, detail)')
+                db.execute('INSERT INTO jobs VALUES (?,?,?,?,?,?,?,?)', row)
+        hold = dict(attempt_id='attempt', request_sha256=digest(request),
+                    allocation_receipt={'pbs_job_id': 'test.pbs', 'job_state': 'F'})
+        lineage = self.successor/'RUN_LINEAGE.json'
+        record = dict(parent_directory=str(self.original), retired_preparation_attempts={'prep-123': hold})
+        lineage.write_text(json.dumps(record))
+        self.assertEqual(list(verify_retired_preparation_attempts(self.successor).values()), [('prep-123', 'attempt')])
+        hold['allocation_receipt']['job_state'] = 'R'
+        lineage.write_text(json.dumps(record))
+        with self.assertRaisesRegex(ValueError, 'Retired preparation ownership differs'):
+            verify_retired_preparation_attempts(self.successor)
 
     def test_exact_replay_preserves_request_and_resumes_without_a_second_attempt(self):
         import sys

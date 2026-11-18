@@ -626,11 +626,10 @@ class DistributedExecutor(ConcurrentExecutor):
         self.allocation_settings = settings
         self.allocation_settings_path = settings_path
         self.allocation_config = config
-        lineage = run/'RUN_LINEAGE.json'
-        carried = json.loads(lineage.read_text()).get('retired_preparation_attempts', {}) if lineage.is_file() else {}
-        self.retired_preparation_attempts = {(job, row['attempt_id']) for job, row in carried.items()}
         kwargs['max_concurrent'] = 1 if requested_capacity == 'auto' else requested_capacity
         self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
+        from .rpe_search_continuation import verify_retired_preparation_attempts
+        self.retired_preparation_attempts = set(verify_retired_preparation_attempts(run).values())
         from .rpe_preparation_artifacts import ArtifactCache
         self.artifact_cache = ArtifactCache(run/'distributed'/'artifacts')
         self.preparation_pending_path = run/'distributed'/'PREPARATION_PENDING.json'

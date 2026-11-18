@@ -11,6 +11,45 @@ def load(path):
     return json.loads(path.read_bytes())
 
 
+def verify_retired_preparation_attempts(run):
+    """Bind inherited holds to the same request and ended parent allocation."""
+    from .rpe_q3_coordinator import digest
+
+    lineage = run/'RUN_LINEAGE.json'
+    if not lineage.is_file():
+        return {}
+    handoff = load(lineage)
+    carried = handoff.get('retired_preparation_attempts', {})
+    if not carried:
+        return {}
+    parent = Path(handoff['parent_directory']).resolve()
+    stopped = (load(parent/'LAUNCH.json')['invocation_id'] == load(parent/'EXIT.json')['invocation_id']
+               and load(parent/'distributed/relay/STATUS.json').get('stopped') is True)
+    if parent == run.resolve() or not stopped:
+        raise ValueError('Retired preparation attempts require a stopped parent')
+    verified = {}
+    with sqlite3.connect((parent/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as old, \
+         sqlite3.connect((run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro', uri=True) as new:
+        for job, hold in carried.items():
+            query = ('SELECT method, host_id, attempt_id, request_sha256, request, state, detail '
+                     'FROM jobs WHERE job_id=?')
+            row = old.execute(query, (job,)).fetchone()
+            receipt = hold['allocation_receipt']
+            allocations = load(parent/'distributed/pbs/STATE.json')['allocations'].values()
+            known_allocation = any(a['spec']['profile']['host_id'] == 'pbs-0' and
+                                   a.get('observed', {}).get('job_id') == receipt['pbs_job_id']
+                                   for a in allocations)
+            if (not row or row != new.execute(query, (job,)).fetchone()
+                    or not row[0].startswith('PREPARATION:')
+                    or row[1:4] != ('pbs-0', hold['attempt_id'], hold['request_sha256'])
+                    or row[5] != 'UNKNOWN' or json.loads(row[6]).get('automatic_retry') is not False
+                    or digest(json.loads(row[4])) != row[3] or not known_allocation
+                    or receipt['job_state'] not in ('F', 'X')):
+                raise ValueError('Retired preparation ownership differs: '+job)
+            verified[(parent/'jobs'/row[0]/job).resolve()] = (job, row[2])
+    return verified
+
+
 def verify_prior_q3_holds(root, run, problem, spec):
     """Keep an unresolved prior evaluation out of both reuse and new dispatch."""
     from .rpe_q3_coordinator import digest
