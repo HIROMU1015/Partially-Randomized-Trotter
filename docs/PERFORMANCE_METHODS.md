@@ -151,6 +151,12 @@ R08で過去に `df-plan` が保留した3件の保存入力を、従来の固�
 - 失敗例：最初のdescriptor envelope不足は科学call前に停止。DF supervisorの終了receipt形式をPauli形式として読んだ誤りは、保存exitcode/identityをcollectして解決し、再Q3していない。
 - SOURCE・適用条件・検収：[API](research/d_pr_candidates_auto_20261116/API.md)、[REPORT](research/d_pr_candidates_auto_20261116/REPORT.md)。曖昧な稼働jobや失敗leafをretryせず、既存科学STOPを保持する。
 
+### 固定PR-DF信号workerの読込と候補並行時の照合
+
+- [信号worker](../scripts/run_pr_df_candidate_signal_jobs.py) は、固定`fefd548ec`のprovider群を専用packageで読み込む。運用パス解決で先に読み込んだcontroller側packageと分離し、ローカル・分散とも同じworker入口を使う。viewのHEAD、主要な固定ファイルのbyte列、実際のimport元を照合する。子processの遅延importも専用packageを使う。
+- [候補準備](../src/trottertracks/pr_candidate_completion.py) は、別候補を登録できる間も同一物理候補のREADY・旧失敗を同じ候補一覧で照合する。重いGit読込みは一覧取得用のlock外で行う。同一物理候補の準備lockと失敗後の自動retry禁止を維持する。
+- R08で旧`DF_SIGNALS`の8候補がprovider import時に停止した。この8候補が要求した延べ39 roundについて、保存設定と固定referenceを照合した。`bc3d1625c731cc58bf79`ではfork先の依存モジュールのimport元も照合した。人工検査は[workerの起動・fork・保存・再開](../tests/test_pr_df_candidate_signal_jobs.py)と[並行登録中の旧失敗照合](../tests/test_pr_candidate_completion.py)を含む。実H4信号の追加計算は0件。実信号からQ3までの完走と速度はこの修正では未測定。
+
 ## PR-Pauli広域schedule探索：粗い探索の優先・HYBRID並列・価格下界による打ち切り（B2、2026-11-16）
 
 - **価格下界による打ち切り**（`run_rpe_schedule_search.py` の `prune`、`rpe_schedule_search.plan_wide(price_floor=)`）

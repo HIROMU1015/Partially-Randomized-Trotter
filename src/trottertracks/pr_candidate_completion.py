@@ -395,7 +395,8 @@ class Completion:
                     generated=self.service('df-generate',request,d,tag='DF_GENERATE_WITH_DESCRIPTOR')
                 if generated['status']!='CONFIGURATION_READY':raise Held('CONFIGURATION:'+str(generated))
                 config=generated['configuration'];prepared=None
-            physical_guard=self.shared_preparation_lock(dict(method=request['method'],physical=physical_evaluation_contract(config)))
+            physical=physical_evaluation_contract(config)
+            physical_guard=self.shared_preparation_lock(dict(method=request['method'],physical=physical))
             physical_guard.acquire()
             if request.get('design')and dec(config['spec']['kappa']['value'])!=dec(request['design']['kappa']):raise Held('ABSOLUTE_KAPPA_MISMATCH')
             put(d/'CONFIGURATION.json',config);commit=publish([d],'Fix selected PR candidate configuration')
@@ -403,9 +404,11 @@ class Completion:
             # A declaration can differ while the complete physical schedule and
             # evaluation contract are identical. Reuse READY inputs before any
             # scientific leaf; install() retains both declarations as aliases.
-            twin=next((old for old in list(self.state['records'].values())
+            with self.lock:
+                records=list(self.state['records'].values())
+            twin=next((old for old in records
                 if old is not rec and old.get('method')==request['method']and old.get('status')=='READY_FOR_SEARCH'
-                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical_evaluation_contract(config)),None)
+                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical),None)
             if twin is not None:
                 rec.update(status='READY_FOR_SEARCH',signal=deepcopy(twin['signal']),intake=deepcopy(twin['intake']),
                     quote=deepcopy(twin['quote']),prices=deepcopy(twin['prices']),price_policy=twin.get('price_policy','MODEL'),
@@ -413,9 +416,9 @@ class Completion:
                     design=dict(L_D=config['spec']['L_D'],formula=config['spec']['formula'],kappa=enc(dec(config['spec']['kappa']['value'])),delta_pf=config['spec']['delta_pf']),
                     schedule=deepcopy(twin.get('schedule',[])))
                 self.save();return rec
-            failed_twin=next((old for old in self.state['records'].values()
+            failed_twin=next((old for old in records
                 if old is not rec and old.get('method')==request['method']and old.get('scientific_failure')
-                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical_evaluation_contract(config)),None)
+                and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical),None)
             if failed_twin is not None:
                 raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
             initial_quote=self.initial_quote(config,cref,d)

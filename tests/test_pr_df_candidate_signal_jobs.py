@@ -1,11 +1,15 @@
 """Fake DF numerical provider only; checks real fork orchestration and resume."""
+from contextlib import redirect_stdout
 import importlib.util
+import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import sys
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('_df_signal_execution',ROOT/'scripts/run_pr_df_candidate_signal_jobs.py')
@@ -38,6 +42,76 @@ def fixture():
 
 
 class ExecutionTests(unittest.TestCase):
+    def test_fixed_view_beats_preloaded_controller_module_and_survives_fork(self):
+        with tempfile.TemporaryDirectory(dir=ROOT) as temp:
+            view = Path(temp)
+            directory = view / 'src/trottertracks'
+            directory.mkdir(parents=True)
+            sources = {
+                'src/trottertracks/__init__.py': '',
+                'src/trottertracks/pr_rpe_signal_plan.py':
+                    'from types import SimpleNamespace\ncommon = SimpleNamespace(same=lambda a, b: a == b)\n',
+                'src/trottertracks/pr_rpe_rmse_s0_v2.py':
+                    'from types import SimpleNamespace\ndef b_metadata(root):\n'
+                    '    return SimpleNamespace(validate=lambda config: None, release=B_RELEASE)\n',
+                E.PROVIDER_PATH:
+                    'def evaluate(*args, **kwargs):\n'
+                    '    from .worker_fixture import record\n'
+                    '    return record(fixture, *args, **kwargs)\n',
+                'src/trottertracks/worker_fixture.py':
+                    'def record(fixture, *args, **kwargs):\n'
+                    '    return dict(fixture(*args, **kwargs), fixture_leaf=__file__)\n',
+            }
+            for path, content in sources.items():
+                (view / path).write_text(content)
+            original = importlib.import_module('trottertracks')
+            original_path = list(original.__path__)
+            foreign = SimpleNamespace(__file__=str(ROOT / E.PROVIDER_PATH))
+            fake = FakeProvider()
+            config, plan, _, _ = fixture()
+            output = view / 'output'
+            input_file = view / 'REQUEST.json'
+            requested_view = '/fixture/controller/fixed-signal-view'
+            E.write_new(input_file, dict(configuration=config, plan=plan,
+                execution_source=E.PROVIDER_COMMIT, output_directory=str(output.relative_to(ROOT)),
+                runtime={'signal_view': requested_view}))
+            sources[E.CALLER] = (ROOT / E.CALLER).read_text()
+            sources[str(input_file.relative_to(ROOT))] = input_file.read_text()
+            aliases = {'RPE_PREPARATION_PATH_MAP': json.dumps({requested_view: str(view)})}
+            argv = [E.CALLER, '--input', str(input_file), '--inputs-commit', 'fixture-inputs',
+                    '--source', E.PROVIDER_COMMIT, '--workers', '2']
+            with patch.object(sys, 'path', sys.path.copy()), patch.dict(
+                sys.modules, {'trottertracks.pr_rpe_signal_provider': foreign,
+                    'numpy': SimpleNamespace(__version__='1.26.4'), 'scipy': SimpleNamespace(__version__='1.14.1')}
+            ), patch.object(E.subprocess, 'check_output', return_value=E.PROVIDER_COMMIT + '\n'), patch.object(
+                E, 'read_git', side_effect=lambda _commit, path: sources[path].encode()
+            ), patch.dict(os.environ, aliases), patch.object(sys, 'argv', argv), redirect_stdout(io.StringIO()):
+                provider, _, b = E.fixed_runtime(view)
+                self.assertEqual(Path(provider.__file__), view / E.PROVIDER_PATH)
+                self.assertIs(sys.modules['trottertracks.pr_rpe_signal_provider'], foreign)
+                self.assertEqual(list(original.__path__), original_path)
+                self.assertEqual(b.release, E.B_RELEASE)
+                for name in ('numerical_recipe', 'saved_h4_reference', 'load_h4_context'):
+                    setattr(provider, name, getattr(fake, name))
+                provider.fixture = fake.evaluate
+                leaf_name = provider.__package__ + '.worker_fixture'
+                self.assertNotIn(leaf_name, sys.modules)
+                self.assertEqual(E.main(), 0)
+                result = json.loads((output / 'RESULT.json').read_text())
+                self.assertEqual(result['status'], 'REQUESTED_ROUNDS_COMPLETE')
+                self.assertEqual(result['new_provider_calls'], 2)
+                self.assertTrue(all(p['pid'] != os.getpid() and p['exitcode'] == 0 for p in result['process_exits']))
+                raw = json.loads((output / 'raw/m0.json').read_text())
+                self.assertEqual(Path(raw['fixture_leaf']), directory / 'worker_fixture.py')
+                self.assertNotIn(leaf_name, sys.modules)
+                self.assertEqual(E.main(), 0)
+                resumed = json.loads((output / 'RESULT.json').read_text())
+                self.assertEqual(resumed['reused_terminal_rounds'], 2)
+                self.assertEqual(resumed['new_provider_calls'], 0)
+                (view / E.PROVIDER_PATH).write_text('# changed despite same HEAD\n')
+                with self.assertRaisesRegex(ValueError, 'Fixed signal bytes differ'):
+                    E.fixed_runtime(view)
+
     def test_fake_fork_then_resume_no_duplicate_provider_calls(self):
         cfg,plan,metadata,b=fixture()
         with tempfile.TemporaryDirectory(dir=ROOT,prefix='.df-signal-test-')as d:
