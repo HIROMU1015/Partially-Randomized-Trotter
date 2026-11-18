@@ -9,8 +9,8 @@ Full PF・B0I・PR-Pauli・PR-DFについて、公開した探索対象と実評
 |---|---:|---:|---:|---:|
 |FULL_PF|4|256|33|480,258,064.00|
 |TRUNCATED_PF|5|38|31|372,035,410.00|
-|PR_PAULI|31|4632|1597|410,199,237.00|
-|PR_DF|5|46|34|1,235,340,731.91|
+|PR_PAULI|105|5755|2152|410,199,237.00|
+|PR_DF|27|1003|714|1,235,340,731.91|
 
 公開controller summaryで評価された配分を数える。exact原本や価格のC側受入が不足する点は、
 summary由来の表示と元SOURCEを残し、最安価格の選択には昇格しない。共通snapshot・比較条件はINDEX.comparison。
@@ -28,6 +28,7 @@ summary由来の表示と元SOURCEを残し、最安価格の選択には昇格�
 |D_FULL_PF_S2_2H_Q3_ONE_V1|{"FULL_PF": "Q3_BUDGET_EXHAUSTED"}|1||[feee120da](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/feee120daa61a68741e446535b7f34a35121522d/docs/research/d_full_pf_s2_2h_q3_e2e_20261116/run01/ROUND_RESULT.json)|
 |D_FULL_PF_S2_2H_Q3_PROPOSAL_ONLY|{"FULL_PF": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET"}|0||[90a52a211](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/90a52a211f6acc4d7b01e1017572c15224ac25de/docs/research/d_full_pf_s2_2h_q3_e2e_20261116/proposal_only/ROUND_RESULT.json)|
 |D_PF_SAVED_REGISTRY_RETURN_02|{"FULL_PF": "NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET"}|0||[c94f290d5](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c94f290d5fb1f14e244fb4f87903b58df6d27690/docs/research/d_pf_on_demand_evidence_20261116/optimizer_round02/ROUND_RESULT.json)|
+|H4_PR_BOTH_MULTIWIDTH_CONTINUITY_R08_20261117|{"PR_PAULI": "RUNNING_CHECKPOINT_20261118T084525Z", "PR_DF": "RUNNING_CHECKPOINT_20261118T084525Z"}|57|GPUA100-gleap02|[a8b34511b](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a8b34511b40defac9a2ad7f497869b6d42bf0efd/docs/research/pr_r08_live_ready_switch_20261118/run02/ROUND_RESULT.json)|
 |SAVED_LD2_PRICE_VALIDATION_ACCEPTANCE_ZERO_SCIENCE|{"PR_PAULI": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING"}|0||[a550012d7](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a550012d7db570eb1b204d9a2752bc739663b578/docs/research/h4_price_validation_integration_20261117/saved_entry_example/ROUND_RESULT.json)|
 |PRICE_VALIDATION_SAVED_LD2_ZERO_SCIENCE|{"PR_PAULI": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING"}|0||[8ba82646e](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8ba82646eae8a013b58a956bb10995c3c9451f86/docs/research/h4_price_validation_local_controller_20261118/saved_ld2_entry/ROUND_RESULT.json)|
 |normal_saved_entry|{"PR_PAULI": "NO_IMPROVING_PROPOSAL_INPUTS_MISSING"}|0|local, local0-wsl, server1, server2|[187c1b088](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/187c1b088638d9d4cf0a298b56d64e8a91c59105/docs/research/romutail_controller_runs/normal_saved_entry/ROUND_RESULT.json)|
