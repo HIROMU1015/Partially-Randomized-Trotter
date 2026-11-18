@@ -44,3 +44,15 @@ WindowsとRomuTailは、明示版とcurrentのPreviewで同じrun IDを解決し
 保存候補32件で構成生成を確認した。RomuTail、server2、Romulaptop WSL、PBS gatewayで同一の保存REQUESTを検証用作業ディレクトリに展開し、13ラウンドの信号計画生成と3ファイルのSHA照合を確認した。PBS計算ノードへの投入は0件。関連回帰36件がPASS。別の準備回帰で失敗した5ケースは旧releaseでも同じ箇所で再現した。[保存入力の検収](PAULI_SAVED_INPUTS_ACCEPTANCE.json)
 
 新規runの通常Previewは、Windowsと共通CLIの両方から同じreleaseを選ぶ。旧 `search-8b10307fd1b9fc375b6b` は、そのrunが記録したreleaseで照会する。停止理由は `V2_RESULT_REQUIRES_REVIEW` で、終了receiptがないWSLのattemptが4件残る。継続時はCodexが旧台帳・元host・receiptを照合し、既存の継続手順を使う。server1は停止扱いで、復帰時は同じmanifestで不足分を配置し、保存入力の照合後に参加する。
+
+## 履歴再利用と並列準備の分散運用（2026-11-19）
+
+新規run用のcurrentは `romutail-prep-throughput-8cc86e60a`。controllerとPauli信号wrapperは `8cc86e60a337272b2b013bd100a6a9c6c8da93ae`。`e25179a74b`、`748c4e0b49`、`587deb5c6a` の差分を `romutail-pauli-inputs-8d03cd254-r2` の運用へ取り込んだ。Q3計算SOURCE `28d976b99cdf8329adcc1b79327e329e947ef774`、Pauliの固定provider、DF信号worker、PFの科学workerと回収用runtimeを使用する。
+
+- 4方式の過去Q3照合でSQLite索引を使用。PFとPRの信号準備で検証済みの索引を再利用する。PR-DFの価格は軸ごとの適用条件で選択し、価格が保留のPR候補は未着手の信号も保留する。
+- 通常と絶対κの両ROUNDで `candidate_completion.parallel=2` と `pf_completion.max_candidates=2` を設定した。PRは方式内で異なる `L_D` を並行準備し、同じ `L_D` 内は順番を維持する。PFは独立した候補だけを候補別の所有領域で並行準備する。割当は既存の共通キューを使い、科学予算とCPU・メモリ等の資源上限は従来の設定に従う。PBSは新Pauli信号wrapperに既存の120秒見積りを引き継いだ。
+- 固定Pauli入力3件のSHA照合を信号索引より先に行う。準備結果のGit取込みは検証済みの参照へ直接fetchする。並行回収で `FETCH_HEAD` を共有せず、元入力からの差分取込みと受領済みattemptの回収を保持する。
+
+人工・回帰155件で候補並行、保存索引再利用、停止後の回収、重複防止を確認した。RomuTail、server2、Romulaptop WSL、PBS gatewayで同じ保存入力を新規workspaceへ配布し、固定入力3件、生成した索引3件、13ラウンドの信号計画を確認した。実信号・compile・Q3・PBS投入は各0件。server1は停止扱い。戻った際はこのreleaseのmanifestで配置し、検証後に参加できる。
+
+Windowsと共通CLIで明示版・currentのPreviewが同じ版を解決した。旧run `search-8b10307fd1b9fc375b6b` のStatusは元の固定版を解決し、記録済みのSTOPを確認した。[検収記録](PREPARATION_THROUGHPUT_ACCEPTANCE.json)

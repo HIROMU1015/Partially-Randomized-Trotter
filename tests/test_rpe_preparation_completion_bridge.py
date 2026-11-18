@@ -164,7 +164,8 @@ class CompletionBridgeTests(unittest.TestCase):
                 c.shared_preparation_locks={};c.state={'records':{}};c.state_path=root/'STATE.json';c.registry=root/'REGISTRY.json'
                 C.put(c.registry,{'entries':[]})
                 ex=Engine();bridge=B.DistributedPreparationBridge(ex,root,{'budgets':{'signal':1}},approved=True);c.bind_stage_executor(bridge)
-                frozen={'route':{'kind':'preparation'},'preparation':{'artificial':True},'original_contract':{'source':'fixed'}}
+                frozen={'route':{'kind':'preparation'},'preparation':{'artificial':True,'source':{'commit':'fixed'}},
+                        'original_contract':{'source':'fixed'}}
                 request={'method':'PR_PAULI','configuration':{'id':'a','spec':{'L_D':4,'formula':'2nd','kappa':{'value':'2'},'delta_pf':'1'},'rounds':[]}}
                 with patch.object(C,'ROOT',root),patch.object(C,'publish',return_value='saved'),\
                      patch.object(C,'value',side_effect=lambda loc:C.read(root/loc['path'])),\
@@ -433,7 +434,8 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
                 def preparation_result(self,*args,**kwargs):return {'status':'PREPARATION_BUDGET_OR_PERMISSION_HOLD'}
             ex=Executor();bridge=B.DistributedPreparationBridge(ex,tmp,approved=True)
             completion=type('C',(),{'source':'fixed'})()
-            with patch.object(bridge,'build_request',return_value={'original_contract':{}}):
+            frozen={'preparation':{'source':{'commit':'fixed'}},'original_contract':{}}
+            with patch.object(bridge,'build_request',return_value=frozen):
                 with self.assertRaisesRegex(C.Held,'BUDGET_OR_PERMISSION_HOLD'):
                     bridge.call(completion,[],tmp,'DF_SIGNALS')
             self.assertEqual(ex.args['budget'],0)
