@@ -87,6 +87,28 @@ def audit_receipts(provider,value,out,compiled):
         gate='C_IMPLEMENTATION_GUARD_PASS')for i,x in enumerate(prices)]
 
 
+def bind_total(view,configuration,source):
+    path=Path(view['view'])
+    commit=view['view_commit']
+    try:
+        relative='src/trottertracks/rpe_total_binding.py'
+        actual=subprocess.check_output(['git','rev-parse','HEAD'],cwd=path,text=True).strip()
+        original=subprocess.check_output(['git','show',commit+':'+relative],cwd=path)
+        if actual!=commit or (path/relative).read_bytes()!=original:
+            raise ValueError('Pinned B binding view changed')
+    except OSError as error:
+        raise ValueError('Pinned B binding view is unavailable: '+str(path)) from error
+    code="""import sys,json
+sys.path.insert(0,'src')
+from trottertracks import rpe_total_binding as T
+d=json.load(sys.stdin)
+b=T.create(d['root'],d['configuration'],original_source=d['source'])
+print(json.dumps({'id':b['id'],'total_configuration':{'id':b['total_configuration']['id']}}))
+"""
+    payload=json.dumps(dict(root=str(ROOT),configuration=configuration,source=source)).encode()
+    return json.loads(subprocess.check_output([sys.executable,'-B','-c',code],cwd=path,input=payload))
+
+
 def run(provider,request):
     value=request['value'];out=ROOT/request['relative_output'];phase=request['phase']
     source=request['source']
@@ -107,6 +129,12 @@ def run(provider,request):
         # The central owned clone imports remote objects without switching its
         # HEAD. Bind its newly received signal files before gitref() is used.
         publish([out],'Bind received PF evidence before central registry publication')
+        if request.get('binding_view'):
+            fixed=load(ROOT/'configs/rpe_method_optimizer/h4_df10_problem.json')['execution_routes']['FULL_PF'][0]
+            view=request['binding_view']
+            if view['view_commit']!=fixed['view_commit']:
+                raise ValueError('Requested PF binding does not match the fixed provider SOURCE')
+            provider.total_binding=lambda cfg,src:bind_total(view,cfg,src)
         admitted=provider.register(value,out,request['prices'],ROOT/request['registry'])
         publish([out],'Publish distributed PF completed evidence')
         return dict(status='READY_FOR_SAME_OPTIMIZER',configuration_id=value['configuration']['id'],

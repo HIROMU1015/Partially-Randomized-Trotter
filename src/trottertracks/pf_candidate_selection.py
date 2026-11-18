@@ -113,6 +113,11 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None):
         return context,routes,status
     completion={k:deepcopy(v)for k,v in settings.items()if k not in ('max_candidates','selected')}
     completion.update(selected=selected,mode='plan'if mode=='plan'else'complete')
+    if stage_executor is not None:
+        binding=next((r for m in ('FULL_PF','TRUNCATED_PF') for r in routes.get(m,[])
+                      if r.get('kind')=='pf_b_pf6' and r.get('view') and r.get('view_commit')),None)
+        if binding:
+            completion['binding_view']={k:binding[k]for k in ('view','view_commit')}
     completion.setdefault('output_root',str(folder/'provider_output'))
     completion.setdefault('registry_file',str(folder/'REGISTRY.json'))
     helper_spec=dict(spec,methods=sorted({item['configuration_body']['spec']['split'].get('original_PF_method')=='B0I'and'TRUNCATED_PF'or'FULL_PF'for item in selected})if not manual else [m for m in methods if m in PF.METHODS],pf_completion=completion)

@@ -176,7 +176,7 @@ def pauli_calibration_view(repository):
         source=dict(commit=PAULI_CALIBRATION_SOURCE, files=files))}
 
 
-def collect_required_paths(documents):
+def collect_required_paths(documents, controller_paths=None):
     """Reuse the existing native runtime/config contract, without its approval flow.
 
     Only runtime.provider_root and runtime.input_config are interpreted. The
@@ -184,6 +184,7 @@ def collect_required_paths(documents):
     optional caches and historical permission/ledger fields are not imported.
     """
     found={}
+    controller_paths=controller_paths or {}
     def visit(value):
         if isinstance(value,list):
             for item in value:visit(item)
@@ -192,27 +193,34 @@ def collect_required_paths(documents):
             if isinstance(runtime,dict)and(runtime.get('provider_root')or runtime.get('input_config')):
                 config_path=runtime.get('input_config')
                 if not isinstance(config_path,str):raise ValueError('Native provider runtime needs its original input_config')
-                config_path=Path(config_path).resolve()
+                original_config=Path(config_path)
+                configured=controller_paths.get(str(original_config),{})
+                config_path=Path(configured.get('path',original_config)).resolve()
                 if not config_path.is_file():raise ValueError('Native runtime input_config missing: '+str(config_path))
                 raw=config_path.read_bytes();sha=hashlib.sha256(raw).hexdigest();config=json.loads(raw)
-                found['runtime_input_config_'+sha[:12]]=dict(controller_path=str(config_path),kind='file',sha256=sha)
+                if configured and configured.get('sha256')!=sha:
+                    raise ValueError('Native runtime input_config differs from its fixed host mapping')
+                found['runtime_input_config_'+sha[:12]]=dict(controller_path=str(original_config),kind='file',sha256=sha)
                 provider=runtime.get('provider_root')
                 if provider:
-                    provider=Path(provider).resolve()
+                    original_provider=Path(provider)
+                    mapped=controller_paths.get(str(original_provider),{})
+                    provider=Path(mapped.get('path',original_provider)).resolve()
                     if not provider.is_dir():raise ValueError('Native provider_root missing: '+str(provider))
                     files={}
                     for row in config.get('sealed_files',[]):
                         if row.get('role')!='provider/runtime':continue
-                        path=Path(row['path']).resolve()
-                        if not path.is_relative_to(provider):continue
-                        relative=path.relative_to(provider).as_posix();artifact_path(relative)
+                        original=Path(row['path'])
+                        if not original.is_relative_to(original_provider):continue
+                        relative=original.relative_to(original_provider).as_posix();artifact_path(relative)
+                        path=provider/relative
                         expected=row.get('sha256')
                         if not isinstance(expected,str)or len(expected)!=64:raise ValueError('Original provider seal lacks hash: '+str(path))
                         if not path.is_file()or hashlib.sha256(path.read_bytes()).hexdigest()!=expected:
                             raise ValueError('Original sealed provider/runtime file missing or changed: '+str(path))
                         files[relative]=expected
                     if not files:raise ValueError('Native provider_root has no original provider/runtime seals: '+str(provider))
-                    found['runtime_provider_root_'+digest(files)[:12]]=dict(controller_path=str(provider),kind='directory',files=files)
+                    found['runtime_provider_root_'+digest(files)[:12]]=dict(controller_path=str(original_provider),kind='directory',files=files)
             for item in value.values():visit(item)
     visit(documents)
     return found
@@ -383,7 +391,7 @@ class DistributedPreparationBridge:
         required_views=collect_required_views(runtime_inputs)
         if stage in ('PAULI_COMPILE', 'PAULI_AUDIT') and script.name=='run_pr_pauli_candidate_prices.py':
             required_views.update(pauli_calibration_view(root))
-        required_paths=collect_required_paths(runtime_inputs)
+        required_paths=collect_required_paths(runtime_inputs,self.settings.get('controller_paths'))
         with self.lock:
             for old, original in self.aliases.items():
                 if original in bindings:bindings[old]=bindings[original]

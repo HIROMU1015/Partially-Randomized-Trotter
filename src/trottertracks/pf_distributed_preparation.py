@@ -221,7 +221,8 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
                 signal=pool.submit(call,'signal','PF_SIGNALS');price=pool.submit(prices)
                 signal.result();price_source=price.result()
         items.append(local('register',prices=price_source,
-            registry=str(Path(selected['registry_file']).relative_to(workspace))))
+            registry=str(Path(selected['registry_file']).relative_to(workspace)),
+            binding_view=selected.get('binding_view')))
     # The usual registry loader consumes the original producer locators. Fetch
     # the owned clone's objects, without changing the controller's HEAD.
     subprocess.run(['git','fetch','--no-tags',str(workspace),'HEAD'],cwd=root,check=True,
