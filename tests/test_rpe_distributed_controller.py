@@ -91,6 +91,19 @@ class ControllerFailures(unittest.TestCase):
         next_assignment = self.poll(executor)['assignments']
         self.assertEqual(next_assignment[0]['job_id'], second_task.job.name)
 
+    def test_existing_queue_with_explicit_auto_round_keeps_auto_capacity(self):
+        from trottertracks.rpe_q3_store import JobStore
+
+        JobStore(self.run/'distributed'/'QUEUE.sqlite3')
+        Q.atomic_json(self.run/'ROUND.json', {'executor': {'max_concurrent_jobs': 'auto'}})
+        executor = self.executor(capacity='auto')
+        self.assertTrue(executor.state.allocation_auto)
+        self.assertEqual(executor.allocation_settings['max_concurrent_jobs'], 'auto')
+        self.enqueue(executor, 'first')
+        self.enqueue(executor, 'second')
+        assignments = self.poll(executor, slots=2)['assignments']
+        self.assertEqual(len(assignments), 2)
+
     def test_standby_probe_allows_completion_and_rechecks_stop_before_reserving(self):
         executor = self.executor(live_q3_readiness=True)
         self.enqueue(executor, 'owned')

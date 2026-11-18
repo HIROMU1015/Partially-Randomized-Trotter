@@ -620,13 +620,15 @@ class DistributedExecutor(ConcurrentExecutor):
             if requested_capacity == 'auto' and (run/'distributed'/'QUEUE.sqlite3').exists():
                 old_round = json.loads((run/'ROUND.json').read_text()) if (run/'ROUND.json').exists() else {}
                 requested_capacity = old_round.get('executor', {}).get('max_concurrent_jobs', 1)
-                if requested_capacity == 'auto': requested_capacity = 1
             settings = dict(schema='RPE_Q3_ALLOCATION_SETTINGS_V1',
                 mode='auto' if requested_capacity == 'auto' else 'fixed',
                 max_concurrent_jobs=requested_capacity, auto_allocation=config)
         self.allocation_settings = settings
         self.allocation_settings_path = settings_path
         self.allocation_config = config
+        lineage = run/'RUN_LINEAGE.json'
+        carried = json.loads(lineage.read_text()).get('retired_preparation_attempts', {}) if lineage.is_file() else {}
+        self.retired_preparation_attempts = {(job, row['attempt_id']) for job, row in carried.items()}
         kwargs['max_concurrent'] = 1 if requested_capacity == 'auto' else requested_capacity
         self.store = JobStore(run/'distributed'/'QUEUE.sqlite3')
         from .rpe_preparation_artifacts import ArtifactCache
@@ -864,8 +866,13 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _owned_attempts(self):
         with self.store._connection() as database:
-            return [dict(row) for row in database.execute(
-                "SELECT job_id,host_id,attempt_id,state FROM jobs WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")]
+            rows = database.execute(
+                "SELECT job_id,host_id,attempt_id,state,method FROM jobs WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")
+            # A retired parent's allocation has no live owner in this run.
+            # Retain the original UNKNOWN row so its request cannot be launched.
+            return [dict(row) for row in rows if not (
+                row['state'] == 'UNKNOWN' and row['method'].startswith('PREPARATION:')
+                and (row['job_id'], row['attempt_id']) in self.retired_preparation_attempts)]
 
     def _offer_free(self, host, policy, error=None):
         """Fresh unused capacity, never a lease on an assigned evaluation."""

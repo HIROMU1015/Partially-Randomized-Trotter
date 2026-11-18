@@ -45,6 +45,21 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(ex.store.row(q3.job.name)['state'],'QUEUED')
         self.assertEqual(ex.state.active,1)
 
+    def test_retired_preparation_ownership_preserves_hold_and_releases_capacity(self):
+        ex = self.executor(capacity=1)
+        prior = self.submit(ex, 'signal', 'prior')
+        assignment, = self.poll_host(ex, 'pbs-0')['assignments']
+        owner = dict(host_id='pbs-0', job_id=prior, attempt_id=assignment['attempt_id'])
+        ex.rpc('/v1/state', dict(owner, state='UNKNOWN', detail={'automatic_retry': False}))
+        waiting = self.submit(ex, 'signal', 'independent')
+        self.assertEqual(self.poll_host(ex, 'pbs-0')['assignments'], [])
+        ex.retired_preparation_attempts.add((prior, assignment['attempt_id']))
+        next_assignment, = self.poll_host(ex, 'pbs-0')['assignments']
+        self.assertEqual(next_assignment['job_id'], waiting)
+        self.assertEqual(self.submit(ex, 'signal', 'prior'), prior)
+        self.assertEqual(ex.preparation_result(prior)['status'], 'UNKNOWN')
+        self.assertEqual(ex.store.row(prior)['attempt_id'], assignment['attempt_id'])
+
     def test_dependency_artifacts_cross_host_and_shared_cell_is_once(self):
         ex=self.executor(capacity=2)
         cell=self.submit(ex,'compile','shared-cell')
