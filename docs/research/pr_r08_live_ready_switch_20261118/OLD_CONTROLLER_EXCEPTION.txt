@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/scripts/run_rpe_schedule_search.py", line 928, in <module>
+    main()
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/scripts/run_rpe_schedule_search.py", line 914, in main
+    try:d.loop()
+        ^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/scripts/run_rpe_schedule_search.py", line 878, in loop
+    result=self.batch(prepare_during=True)if overlap else self.batch()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/scripts/run_rpe_schedule_search.py", line 775, in batch
+    interim=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/scripts/run_rpe_method_optimizer.py", line 183, in optimize
+    def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-pr-budget-continuity-20261118/src/trottertracks/rpe_optimizer_concurrent.py", line 391, in optimize
+    out={m:futures[m].result()[m]for m in methods}
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 451, in result
+    self._condition.wait(timeout)
+  File "/usr/lib/python3.12/threading.py", line 355, in wait
+    waiter.acquire()
+KeyboardInterrupt
