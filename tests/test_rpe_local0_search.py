@@ -60,6 +60,36 @@ class Tests(unittest.TestCase):
         self.assertEqual(load(result['preflight']['report_path'])['refused'],refused)
         self.assertGreaterEqual(result['preflight']['elapsed_seconds'],0)
 
+    def test_shared_pbs_walltime_is_displayed_and_pinned_at_prepare(self):
+        common = pathlib.Path(self.config['round'])
+        round_spec = load(common)
+        profile = dict(route_profiles=[dict(route_kind='pauli', view_commit='view',
+                                           profile=dict(adapter_manifest=dict(commit='adapter')))])
+        round_spec['executor'] = dict(distributed=dict(
+            pbs=dict(transport_source='worker', workers=[dict(host_id='pbs-0', profile=profile)])))
+        write(common, round_spec)
+        path = self.home/'PBS_WALLTIME.json'
+        policy = dict(schema='RPE_PBS_WALLTIME_POLICY_V1', id='policy-v1',
+                      computation_source=self.config['computation_source'], transport_source='worker',
+                      q3=[dict(id='pauli', method='PR_PAULI', route_kind='pauli', view_commit='view',
+                               adapter_source='adapter', seconds=14400)], preparation=[])
+        write(path, policy)
+        self.config['pbs_walltime_policy'] = str(path)
+        g = Gateway(self.config)
+        selected = request(4, 6)
+        preview = g.handle(dict(selected, action='preview'))
+        prepared = g.handle(dict(selected, action='prepare'))
+        self.assertEqual(preview['run_id'], prepared['run_id'])
+        self.assertEqual(preview['progress']['effective']['pbs_walltime']['q3'][0]['seconds'], 14400)
+        work = pathlib.Path(prepared['run_directory'])
+        pinned = load(work/'ROUND.requested.json')['executor']['distributed']['pbs']
+        self.assertEqual(pinned['q3_task_seconds'][0]['seconds'], 14400)
+        selected['scope']['pbs_walltime_overrides'] = dict(pauli=15000)
+        override = g.handle(dict(selected, action='preview'))
+        self.assertEqual(override['applied']['pbs_walltime']['q3'][0]['seconds'], 15000)
+        status = g.handle(dict(action='status', run_id=prepared['run_id']))
+        self.assertEqual(status['applied']['pbs_walltime']['q3'][0]['seconds'], 14400)
+
     def test_explicit_unlimited_crosses_old_cap_and_uses_rule_termination(self):
         gateway=build(self.config)
         previous=gateway.handle(request(4,4,1))

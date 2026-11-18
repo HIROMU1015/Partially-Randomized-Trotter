@@ -82,6 +82,31 @@ class FakeExecutor:
 
 
 class AdmissionTests(unittest.TestCase):
+    def test_release_q3_estimate_binds_the_route_and_worker_and_can_be_disabled(self):
+        route = dict(route_kind='pauli', view_commit='view', adapter_source='new-adapter')
+        policy = dict(schema='RPE_PBS_WALLTIME_POLICY_V1', id='walltime-v1',
+                      computation_source='science', transport_source='worker',
+                      q3=[dict(route, id='pauli', method='PR_PAULI', seconds=14400)],
+                      preparation=[])
+        workers = [dict(host_id=host, profile=dict(route_profiles=[
+            dict(route_kind='pauli', view_commit='view',
+                 profile=dict(adapter_manifest=dict(commit=adapter)))]))
+                   for host, adapter in [('reviewed', 'new-adapter'), ('legacy', 'old-adapter')]]
+        options = dict(transport_source='worker', workers=workers, task_seconds=dict(q3=1))
+        P.apply_walltime_policy(options, policy, {}, computation_source='science')
+        request = dict(method='PR_PAULI', route=dict(kind='pauli', view_commit='view'))
+        self.assertEqual(P.task_estimate(request, options, 'reviewed'), 14400)
+        self.assertIsNone(P.task_estimate(request, options, 'legacy'))
+        self.assertIsNone(P.task_estimate(dict(request, method='PR_DF'), options))
+        report = dict(pbs=dict(accepting=True, remaining_seconds=14429))
+        self.assertFalse(P.fits_request(request, report, options, 'reviewed'))
+        report['pbs']['remaining_seconds'] += 1
+        self.assertTrue(P.fits_request(request, report, options, 'reviewed'))
+        P.apply_walltime_policy(options, policy, {'pauli': 0}, computation_source='science')
+        self.assertFalse(P.fits_request(request, report, options, 'reviewed'))
+        with self.assertRaises(ValueError):
+            P.apply_walltime_policy(options, policy, {'unknown': 1}, computation_source='science')
+
     def test_scientific_stage_requires_estimate_and_respects_remaining_time(self):
         report = dict(pbs=dict(accepting=True, remaining_seconds=40, minimum_task_seconds=2))
         compile = dict(route=dict(kind='preparation'), preparation=dict(stage='compile'))

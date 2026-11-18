@@ -1013,7 +1013,8 @@ class DistributedExecutor(ConcurrentExecutor):
 
     def _fits_host_walltime(self, host, request):
         from .rpe_pbs import fits_request
-        return fits_request(request, self.hosts.get(host, {}).get('resource_report'), self.distributed.get('pbs') or {})
+        return fits_request(request, self.hosts.get(host, {}).get('resource_report'),
+                            self.distributed.get('pbs') or {}, host)
 
     def _capacity_feedback(self, host):
         with self.store._connection() as database:

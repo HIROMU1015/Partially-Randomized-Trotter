@@ -76,7 +76,46 @@ class Gateway:
             self.process = None
 
 
-def task_estimate(request, settings):
+def q3_walltime_workers(rule, settings):
+    """Resolve the runtime through the release's existing fixed worker profiles."""
+    return [worker for worker in settings.get('workers', [])
+            if any((route['route_kind'], route['view_commit'],
+                    route['profile'].get('adapter_manifest', {}).get('commit'))
+                   == (rule['route_kind'], rule['view_commit'], rule['adapter_source'])
+                   for route in worker['profile'].get('route_profiles', []))]
+
+
+def apply_walltime_policy(settings, policy, overrides, *, computation_source=None):
+    """Resolve one release policy into the existing immutable PBS run settings."""
+    if policy['schema'] != 'RPE_PBS_WALLTIME_POLICY_V1':
+        raise ValueError('Unsupported PBS walltime policy')
+    if (policy['computation_source'] != computation_source
+            or policy['transport_source'] != settings.get('transport_source')):
+        raise ValueError('PBS walltime policy SOURCE differs from selected release')
+    q3 = deepcopy(policy['q3'])
+    preparation = deepcopy(policy['preparation'])
+    rules = q3 + preparation
+    ids = {row['id'] for row in rules}
+    if (len(ids) != len(rules) or set(overrides) - ids
+            or any(type(value) is not int or value < 0 for value in overrides.values())):
+        raise ValueError('PBS overrides require known rule IDs and nonnegative integer seconds')
+    for rows, keys in ((q3, ('method', 'route_kind', 'view_commit')),
+                       (preparation, ('stage', 'provider', 'source'))):
+        if len({tuple(row[key] for key in keys) for row in rows}) != len(rows):
+            raise ValueError('Ambiguous PBS walltime estimate')
+    for row in rules:
+        if type(row['seconds']) is not int or row['seconds'] <= 0:
+            raise ValueError('Release PBS estimates must be positive integer seconds')
+        row['seconds'] = overrides.get(row['id'], row['seconds'])
+    for row in q3:
+        row['hosts'] = [w['host_id'] for w in q3_walltime_workers(row, settings)]
+        if not row['hosts']:
+            raise ValueError('PBS walltime rule has no matching fixed route profile: ' + row['id'])
+    settings.update(walltime_policy=dict(id=policy['id'], sha256=digest(policy)),
+                    q3_task_seconds=q3, preparation_task_seconds=preparation, task_seconds={})
+
+
+def task_estimate(request, settings, host_id=None):
     preparation = request.get('preparation') or {}
     stage = preparation.get('stage', 'q3')
     rules = settings.get('preparation_task_seconds')
@@ -86,16 +125,23 @@ def task_estimate(request, settings):
         matches = [rule['seconds'] for rule in rules if (rule['stage'], rule['provider'], rule['source'])
                    == (stage, provider, source)]
         return matches[0] if len(matches) == 1 else None
+    if not preparation and 'q3_task_seconds' in settings:
+        route = request.get('route') or {}
+        values = (request.get('method'), route.get('kind'), route.get('view_commit'))
+        matches = [rule['seconds'] for rule in settings['q3_task_seconds']
+                   if values == (rule['method'], rule['route_kind'], rule['view_commit'])
+                   and (host_id is None or host_id in rule['hosts'])]
+        return matches[0] if len(matches) == 1 else None
     return (settings.get('task_seconds') or {}).get(stage)
 
 
-def fits_request(request, report, settings):
+def fits_request(request, report, settings, host_id=None):
     """Require a declared conservative runtime before starting scientific work."""
     pbs = (report or {}).get('pbs')
     if pbs is None:
         return True
     artificial = request.get('route', {}).get('kind') == 'artificial' or request.get('preparation', {}).get('artificial')
-    estimate = task_estimate(request, settings)
+    estimate = task_estimate(request, settings, host_id)
     if estimate is None and artificial:
         estimate = pbs.get('minimum_task_seconds', 1)
     if not isinstance(estimate, (int, float)) or estimate <= 0:
@@ -214,9 +260,8 @@ class PbsManager:
         with self.executor.state.cv:
             def relevant(request, eligibility):
                 artificial = self.executor.store.artificial(request)
-                if not artificial and not (task_estimate(request, self.settings) or 0) > 0:
-                    return False
                 return any(self.executor._host_supports_stage(host, request) and
+                    (artificial or (task_estimate(request, self.settings, host) or 0) > 0) and
                     (eligibility is None and artificial or host in (eligibility or {}).get('eligible_host_ids', []))
                     for host in self.configured)
             tasks = [task for task in self.executor.state.tasks.values()

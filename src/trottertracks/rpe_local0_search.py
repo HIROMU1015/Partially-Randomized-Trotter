@@ -109,7 +109,8 @@ def resolve(config, request):
     """Translate only settings that the selected normal entry actually consumes."""
     keys(request, {'scope', 'instruction', 'action', 'release', 'run_id'}, 'request')
     scope = deepcopy(request.get('scope') or {})
-    keys(scope, {'methods', 'per_method', 'shots', 'stop', 'preparation_budgets'}, 'scope')
+    keys(scope, {'methods', 'per_method', 'shots', 'stop', 'preparation_budgets',
+                 'pbs_walltime_overrides'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
     if config.get('release_manifest'):
         from .rpe_release_deployment import manifest_reference
@@ -134,6 +135,20 @@ def resolve(config, request):
     methods = sorted(set(methods), key=METHODS.index)
     if any(m not in problem['methods'] for m in methods):raise RequestError('scope.methods','method is not enabled in the adopted problem')
     spec['methods'] = methods
+    walltime = config.get('pbs_walltime_policy')
+    overrides = scope.get('pbs_walltime_overrides', {})
+    if walltime:
+        from .rpe_pbs import apply_walltime_policy
+        try:
+            if not isinstance(overrides, dict):
+                raise ValueError('Use a mapping from PBS rule IDs to seconds')
+            pbs = spec['executor']['distributed']['pbs']
+            apply_walltime_policy(pbs, load(walltime), overrides,
+                                  computation_source=config['computation_source'])
+        except (KeyError, ValueError, TypeError) as error:
+            raise RequestError('scope.pbs_walltime_overrides', str(error)) from error
+    elif 'pbs_walltime_overrides' in scope:
+        raise RequestError('scope.pbs_walltime_overrides', 'Selected release has no shared PBS walltime policy')
     spec.setdefault('max_steps_per_method',spec.get('search_overrides',{}).get('max_steps_per_method',problem['search']['max_steps_per_method']))
     spec['method_overrides'] = {m: v for m, v in spec.get('method_overrides', {}).items() if m in methods}
     if 'max_new_q3_per_method' in spec:
@@ -267,6 +282,8 @@ def resolve(config, request):
             spec.setdefault('search_overrides', {})['work_conserving_search'] = True
     if request['action'] in ('start','prepare'):
         spec['science_approved'] = True
+    if 'pbs_walltime_overrides' in scope:
+        canonical['pbs_walltime_overrides'] = overrides
     return problem, spec, canonical
 
 @contextmanager
@@ -302,12 +319,21 @@ def summarize(problem, spec, canonical):
     completion = spec.get('candidate_completion') or {}
     if 'PR_DF' in spec['methods'] and 'parallel_df_price_axes' in completion:
         result['parallel_df_price_axes'] = completion['parallel_df_price_axes']
+    pbs = (execution.get('distributed') or {}).get('pbs') or {}
+    if pbs.get('walltime_policy'):
+        rules = [row for row in pbs['q3_task_seconds'] if row['method'] in spec['methods']]
+        result['pbs_walltime'] = dict(policy=pbs['walltime_policy'], q3=rules,
+            preparation=pbs['preparation_task_seconds'], drain_seconds=pbs.get('drain_seconds', 30),
+            unconfigured_q3_methods={method: 'PBS_WALLTIME_ESTIMATE_UNAVAILABLE'
+                for method in spec['methods'] if not any(
+                    row['method'] == method and row['seconds'] > 0 for row in rules)})
     return result
 
 
 def local0_progress(applied, spec, run=None):
     """Report queue acceptance separately from observed body execution."""
-    effective = {key: applied[key] for key in ('preparation_budgets', 'max_new_q3_per_method') if key in applied}
+    effective = {key: applied[key] for key in ('preparation_budgets', 'max_new_q3_per_method',
+                                               'pbs_walltime') if key in applied}
     executor = spec.get('executor', {})
     effective['resources'] = dict(max_concurrent_jobs=executor.get('max_concurrent_jobs'))
     progress = dict(schema='RPE_LOCAL0_PROGRESS_V1', effective=effective, candidates=[], stages=[])

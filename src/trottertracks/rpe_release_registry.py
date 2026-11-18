@@ -37,6 +37,8 @@ def load_service(path):
 
 def input_files(config):
     files={key:config[key] for key in ('problem','round')}
+    if config.get('pbs_walltime_policy'):
+        files['pbs_walltime_policy'] = config['pbs_walltime_policy']
     for key in ('problem','round'):
         if config.get('absolute_kappa_route',{}).get(key):
             files['absolute_kappa_route.'+key]=config['absolute_kappa_route'][key]

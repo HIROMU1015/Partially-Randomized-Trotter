@@ -1,0 +1,89 @@
+{
+  "schema": "RPE_PBS_WALLTIME_POLICY_V1",
+  "id": "h4-pbs-walltime-v1",
+  "computation_source": "28d976b99cdf8329adcc1b79327e329e947ef774",
+  "transport_source": "3b38e4af67f6b673303cff9f963ac1381627c4d0",
+  "q3": [
+    {
+      "id": "pauli-common",
+      "method": "PR_PAULI",
+      "route_kind": "pauli_b_common_entry",
+      "view_commit": "33e324b43690caeaa353ecdb9e3d42f3139198b6",
+      "adapter_source": "3b38e4af67f6b673303cff9f963ac1381627c4d0",
+      "seconds": 14400
+    },
+    {
+      "id": "b0i-pf6",
+      "method": "TRUNCATED_PF",
+      "route_kind": "pf_b_pf6",
+      "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+      "adapter_source": "349558b748a82f384a4589434a63ef9b5572032c",
+      "seconds": 14400
+    }
+  ],
+  "preparation": [
+    {
+      "id": "pauli_signals",
+      "stage": "signal",
+      "provider": "PAULI_SIGNALS",
+      "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+      "seconds": 120
+    },
+    {
+      "id": "pauli_compile",
+      "stage": "compile",
+      "provider": "PAULI_COMPILE",
+      "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+      "seconds": 180
+    },
+    {
+      "id": "pf_audit",
+      "stage": "audit",
+      "provider": "PF_AUDIT",
+      "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "seconds": 600
+    },
+    {
+      "id": "pf_finish",
+      "stage": "audit",
+      "provider": "PF_FINISH",
+      "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "seconds": 600
+    },
+    {
+      "id": "pf_holdout_audit",
+      "stage": "audit",
+      "provider": "PF_HOLDOUT_AUDIT",
+      "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "seconds": 600
+    },
+    {
+      "id": "pf_model_freeze",
+      "stage": "audit",
+      "provider": "PF_MODEL_FREEZE",
+      "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "seconds": 600
+    },
+    {
+      "id": "pf_compile",
+      "stage": "compile",
+      "provider": "PF_COMPILE",
+      "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "seconds": 3600
+    },
+    {
+      "id": "pf_holdout_compile",
+      "stage": "compile",
+      "provider": "PF_HOLDOUT_COMPILE",
+      "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "seconds": 3600
+    },
+    {
+      "id": "pf_signals",
+      "stage": "signal",
+      "provider": "PF_SIGNALS",
+      "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+      "seconds": 600
+    }
+  ]
+}

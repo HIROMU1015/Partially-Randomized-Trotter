@@ -4,11 +4,13 @@ from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 from pathlib import Path
+import shlex
 import subprocess
 import sys
 import zlib
 
 from . import rpe_q3_coordinator as Q
+from .rpe_pbs import task_estimate
 
 _REMOTE_PROBE = (
     'import base64,io,json,sys,zlib;v=json.load(sys.stdin);'
@@ -124,9 +126,20 @@ def _supply_inputs(executor, payload, invoke, response):
             row['commit'] for row in payload['assignment']['input_hashes']}:
         raise ValueError('Worker Git input inventory is outside the fixed Q3 assignment')
     root = executor.computation_root
-    objects = subprocess.check_output(['git', 'rev-list', '--objects', '--no-object-names',
-                                       *sorted(commits), '--not', *sorted(anchors)], cwd=root, text=True).split()
-    inventory = invoke(dict(payload, input_objects=objects))
+    objects = set(subprocess.check_output(['git', 'rev-list', '--objects', '--no-object-names',
+                                          *sorted(commits), '--not', *sorted(anchors)], cwd=root, text=True).split())
+    # Sparse worker stores can lack trees or blobs shared with an anchor.
+    # Include only the fixed locators' commits and their path components.
+    locators = []
+    for row in payload['assignment']['input_hashes']:
+        commit = row['commit']
+        if commit in commits:
+            path = Path(row['path'])
+            locators.extend([commit, commit+'^{tree}',
+                             *(commit+':'+p.as_posix() for p in (*path.parents, path) if p != Path('.'))])
+    if locators:
+        objects.update(subprocess.check_output(['git', 'rev-parse', *locators], cwd=root, text=True).split())
+    inventory = invoke(dict(payload, input_objects=sorted(objects)))
     if inventory['status'] != 'NEEDS_Q3_INPUT_OBJECTS':
         return inventory
     needed = sorted({oid for row in inventory['repositories'] for oid in row['objects']})
@@ -169,8 +182,12 @@ def probe(executor, request, job_id, decision):
     local = executor.distributed.get('local_worker') or {}
     policy, error = executor._host_admission_policy()
     participants = []
+    pbs = executor.distributed.get('pbs') or {}
+    pbs_workers = {worker['host_id']: worker for worker in pbs.get('workers', [])
+                   if pbs.get('walltime_policy') and executor._host_admission(worker['host_id'], policy, error)['accepting']}
     if local and executor._host_admission(local['host_id'], policy, error)['accepting']:
         participants.append((local['host_id'], None))
+    participants.extend((host, None) for host in pbs_workers)
     relay = executor.run_dir/'distributed'/'relay'/'CONFIG.json'
     bridge = None
     if relay.is_file():
@@ -191,7 +208,19 @@ def probe(executor, request, job_id, decision):
             if provider:
                 anchors.append(provider)
             payload = dict(assignment=assignment, input_anchors=[value for value in anchors if value])
-            if worker is None:
+            if host in pbs_workers:
+                if not (task_estimate(request, pbs, host) or 0) > 0:
+                    return host, dict(status='HOLD', reason='PBS_WALLTIME_ESTIMATE_UNAVAILABLE')
+                # The gateway and compute nodes share the deployed fixed views.
+                # The worker repeats the normal fingerprint on the allocated node.
+                payload.update(profile=pbs_workers[host]['profile'], worker_root=pbs['transport_root'])
+                command = ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8',
+                           pbs['ssh_alias'], shlex.join([pbs['gateway_python'], '-B', '-c', _HOST_PROBE])]
+                def invoke(data):
+                    checked = subprocess.run(command, input=json.dumps(data), text=True,
+                                             capture_output=True, check=True, timeout=120)
+                    return json.loads(checked.stdout)
+            elif worker is None:
                 payload.update(profile=local, worker_root=str(executor.worker_script.parent.parent))
                 def invoke(data):
                     return json.loads(subprocess.check_output([sys.executable, '-B', '-c', _HOST_PROBE],
