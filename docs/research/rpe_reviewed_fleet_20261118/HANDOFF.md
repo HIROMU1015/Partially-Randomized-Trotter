@@ -20,12 +20,20 @@ PBSの共通ポリシーを最初に採用したreleaseは `romutail-pbs-walltim
 
 ## PR-DF信号workerの修正
 
-新規runの `current` は `romutail-df-signal-9ed5fcc98`。controllerとPR-DF信号runnerは `9ed5fcc98d38c328c447f4270eabc73090fcaa02`。上流 `4d4fc04a10fb07a5561bebc0ecf7333c69b808f8` の固定provider読込と並行登録時の旧失敗照合を取り込んだ。候補の一覧をlock内で取得し、固定Git入力をlock外で読む。同一物理候補の失敗記録と自動再試行禁止を引き継ぐ。上流の後続 `438af4c3f` はR08専用の固定入力と引継ぎ記録。 [上流修正](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/4d4fc04a10fb07a5561bebc0ecf7333c69b808f8)
+PR-DF信号workerの修正を採用したreleaseは `romutail-df-signal-9ed5fcc98`。controllerとPR-DF信号runnerは `9ed5fcc98d38c328c447f4270eabc73090fcaa02`。上流 `4d4fc04a10fb07a5561bebc0ecf7333c69b808f8` の固定provider読込と並行登録時の旧失敗照合を取り込んだ。候補の一覧をlock内で取得し、固定Git入力をlock外で読む。同一物理候補の失敗記録と自動再試行禁止を引き継ぐ。上流の後続 `438af4c3f` はR08専用の固定入力と引継ぎ記録。 [上流修正](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/4d4fc04a10fb07a5561bebc0ecf7333c69b808f8)
 
 - 通常入口で `applied.df_signal_source` を確認できる。分散REQUESTの `DF_SIGNALS` だけをmanifestの `df_signal_runner` へ固定し、workerは従来の計算provider `fefd548ecd56f60d72031b3d385f6f5e6ee95d06` を自身と子プロセスの両方で読み込む。NumPy 1.26.4、SciPy 1.14.1、科学Q3 SOURCE、価格provider、共同キューと受付設定を引き継いだ。PBSのPR-Pauli・B0IのQ3見積りは各4時間。PR-DF信号とQ3のPBS見積りは未登録。
 - RomuTail・server2・Romulaptop WSL・PBSゲートウェイのrelease/profileと固定providerの子プロセス読み込みを確認した。PBSの新release専用ストアには不足していた固定参照を補った。server1が復帰したら同じmanifestで配置し、固定参照が不足する場合は `DF_SIGNAL_FIXED_REFERENCES.pack` を当該releaseの `objects.git` に `git index-pack --stdin` で取り込んでから入力照合を行う。
 - server2のR08保存REQUESTを8候補・39ラウンド照合した。人工・回帰は84テスト中82件PASS。残る2テストの計4エラーは既存モックの準備REQUESTに必須フィールドが不足するもので、旧SOURCEでも再現した。WindowsとCLIの明示・無指定Previewで、信号runnerとPBS設定を確認した。検収記録は `.rpe-central/deployment/romutail-df-signal-9ed5fcc98` と同名のfleetディレクトリに保存した。
 - 既存の中央runは固定releaseで継続し、今回の切替でR08の起動・切替は行っていない。価格未確定の6候補は上流の残件。新規の実信号・実compile・fit・実Q3・PBS投入は各0件で、実信号からQ3までの通しは将来の承認済み探索で確認する。
+
+## 共有mailboxの旧attemptを除外する中継
+
+新規runの `current` は `romutail-owned-relay-0fc8268cf`。固定controller SOURCEは `0fc8268cfc7a2c6322986ad5a6895c185604d58e`。RomuTailの中継は接続中のrunのJobStoreを読み取り専用で照合し、実行ホスト・job ID・attempt IDがそろう通知だけを送る。遠隔の旧controllerへ接続する場合は、所有不一致を明示する409だけを処理して次へ進む。外したattemptの結果とackはその所有runに残る。現行run所有の回収は新規割当より先に行う。
+
+- `search-6be05579540d7ed291b7` は2026-11-19 00:18 JSTに中継のみを交換した。controllerと固定設定は継続。旧B0I `bf164759c491f8d2c68b` は元runの台帳で `UNKNOWN`。server2の既存受付停止も保持した。WSLはQ3を4件受領し、少なくとも1件を中央が回収・受理した後に次の割当が届いた。
+- 人工・回帰12件がPASS。別runの未確定attemptと同一job IDの旧attemptが混在しても、現行runで割当・回収が各1回であることを確認した。WindowsとCLIの通常Previewで新releaseを確認した。検収記録は `.rpe-central/deployment/romutail-owned-relay-0fc8268cf`。
+- 旧固定版のcontrollerが中継を新規起動したときは、中継のSOURCEを確認する必要がある。旧版に戻っていれば、そのrunの `distributed/relay/CONFIG.json` を使い、中継だけを `--stop` でdrainし、同じ設定のまま修正版の `run_rpe_q3_relay.py --config CONFIG.json --start` で起動する。controllerの稼働、relay lockの解放、利用者STOPの有無を切替時に確認する。
 
 ## 通常入口
 
