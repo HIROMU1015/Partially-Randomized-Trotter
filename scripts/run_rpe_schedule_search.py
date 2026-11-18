@@ -1140,7 +1140,7 @@ class WidthDriver:
                 self.save();return
             waiting=(any(p['status']=='WAITING_INPUTS'for p in self.state['points'])or
                      any(f['status']in('FAMILY_PREPARATION_PENDING','NEEDS_FAMILY_CONFIGURATION_SOURCE')for f in self.state['families'].values())or
-                     any(r.get('input_requests')for r in result.values()))
+                     any(r.get('input_requests') or r.get('prior_q3_holds') for r in result.values()))
             pending=any(p['status']in('COMPLETION','REGISTERED')or(p['status']=='EVALUATED'and p.get('promising'))for p in self.state['points'])
             if getattr(self,'rule_stop',False):
                 if any(r['stop_reason']=='STEP_LIMIT' for r in result.values()):

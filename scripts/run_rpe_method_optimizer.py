@@ -168,6 +168,8 @@ def make_executor(root, run, routes, expected, problem, spec):
     launch budget, expected identities and prefix-cache profile alive.
     """
     run=Path(run);root=Path(root);options=spec.get('executor',{})
+    from trottertracks.rpe_search_continuation import verify_prior_q3_holds
+    prior_q3_holds = list(verify_prior_q3_holds(root,run,problem,spec).values())
     scheduler=options.get('scheduler','legacy')
     if scheduler not in('legacy','concurrent'):raise ValueError('Unknown executor.scheduler')
     budgets=spec['max_new_q3_per_method']
@@ -200,6 +202,7 @@ def make_executor(root, run, routes, expected, problem, spec):
         def optimize(*args,**kwargs):return C.optimize(*args,close_executor=False,**kwargs)
     else:
         executor=O.Executor(root,run,routes,expected,problem,**common);optimize=O.optimize
+    executor.prior_q3_holds = prior_q3_holds
     graph=spec.get('distributed_preparation')
     if graph and not getattr(executor,'launch_disabled',False) and approved:
         if not hasattr(executor,'configure_preparation_graph'):

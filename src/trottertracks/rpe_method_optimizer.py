@@ -1450,6 +1450,9 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                          refused=len(refused), refused_reasons=sorted({r['reason'] for r in refused}))
         else:
             prior = None
+        prior_q3_holds = [item for item in getattr(executor, 'prior_q3_holds', ()) if item['method'] == name]
+        if prior_q3_holds and search.get('rule') != 'METHOD_MINIMUM_PRIORITY_V2':
+            raise ValueError('Prior Q3 holds require the V2 priority search')
         if search.get('rule') == 'METHOD_MINIMUM_PRIORITY_V2':
             from trottertracks import rpe_priority_search as P
             refresh_ready = None
@@ -1492,7 +1495,8 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                                     prefetch_state=getattr(ex, 'prefetch_state', None) if executor is not None else None,
                                     refresh_ready=refresh_ready, standby=standby,
                                     search_observations=ex.search_observations if standby is not None else None,
-                                    search_profile=ex.search_profile_for_proposal if standby is not None else None)
+                                    search_profile=ex.search_profile_for_proposal if standby is not None else None,
+                                    prior_q3_holds=prior_q3_holds)
             prep = (problem['methods'][name].get('generation') or {}).get('preparation')
             if prep and search.get('prepare_kappa_proposals'):
                 result['input_requests'] = prepare_kappa_requests(root, problem, context, name, prep, result['input_requests'])
@@ -1506,7 +1510,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         if executor is not None:
             out[name]['execution_holds']=list(executor.execution_holds.get(name,{}).values())
         out[name]['prior_rounds'] = prior
-        for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing'):
+        for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing', 'prior_q3_holds'):
             if key in result:
                 out[name][key] = result[key]
         out[name]['budget'] = dict(max_new_q3='UNLIMITED_WITHIN_RANGE' if budget is None else budget, science_approved=science_approved,

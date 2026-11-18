@@ -626,6 +626,8 @@ class Gateway:
         import run_rpe_method_optimizer as CLI
         root=Path(self.config['code_root'])
         fixed_implementation(self.config)
+        from .rpe_search_continuation import verify_prior_q3_holds
+        prior_holds = verify_prior_q3_holds(root,run,problem,spec)
         scoped = CLI.price_overrides(CLI.scoped(problem,spec.get('method_overrides')),spec)
         if spec.get('search_to_rule_stop') or spec.get('live_ready_refill'):
             from .rpe_schedule_search import requested_widths
@@ -665,7 +667,8 @@ class Gateway:
                 job=path.parent
                 if (job/'OUTCOME.json').exists():continue
                 if (job/'LAUNCH.json').exists() or (job/'STARTING.json').exists():
-                    if load(path).get('configuration_id') in ids:in_progress.append(str(job))
+                    if load(path).get('configuration_id') in ids and str(job.resolve()) not in prior_holds:
+                        in_progress.append(str(job))
         for method in spec['methods']:
             known, rejected = ex.for_method(method).prior_records(context['candidates'])
             loaded[method]=len(known);refused.extend(dict(method=method,**r) for r in rejected)
@@ -673,7 +676,8 @@ class Gateway:
         # match. Missing/corrupt records for a same-key candidate need review.
         holds=[r for r in refused if r['reason'] not in ('CONFIGURATION_NOT_IN_THIS_ROUND','DIFFERENT_JOB_KEY_OR_ROUTE')]
         return dict(status='HOLD' if holds or missing or in_progress else 'PASS',section='10.5',reused=loaded,refused=refused,missing_prior_run_dirs=missing,owned_unresolved_prior_jobs=in_progress,
-            checked_prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),normal_ingest='Executor.prior_records/ingest',scientific_calls=0)
+            prior_q3_holds=list(prior_holds.values()),checked_prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),
+            normal_ingest='Executor.prior_records/ingest',scientific_calls=0)
 
     def normal_launch(self, run, problem, spec):
         invocation=uuid.uuid4().hex
@@ -738,7 +742,8 @@ def execute_run(config, run, invocation):
     run=Path(run);scope=load(run/'APPLIED_SCOPE.json');spec=load(run/'ROUND.json')
     root=Path(config['code_root'])
     implementation=fixed_implementation(config)
-    if load(run/'DUPLICATE_PREFLIGHT.json')['status']!='PASS':raise RequestError('preflight','no matching successful §10.5 preflight')
+    preflight = load(run/'DUPLICATE_PREFLIGHT.json')
+    if preflight['status']!='PASS':raise RequestError('preflight','no matching successful §10.5 preflight')
     auth=load(run/'AUTHORIZATION.json')
     if auth['scope_signature']!=scope['signature'] or auth['kind']!='EXPLICIT_USER_START':raise RequestError('authorization','scope binding differs')
     if digest(load(run/'PROBLEM.json'))!=scope['problem_sha256'] or digest(spec)!=scope['round_requested_sha256']:
@@ -751,6 +756,11 @@ def execute_run(config, run, invocation):
         from .rpe_search_continuation import verify_budget_parents
         if verify_budget_parents(run,load(run/'PROBLEM.json'),spec)!=load(run/'Q3_BUDGET_CONTINUATION.json'):
             raise RequestError('continuation','capped parent reconciliation changed before launch')
+    if spec.get('executor', {}).get('prior_q3_holds'):
+        from .rpe_search_continuation import verify_prior_q3_holds
+        holds = verify_prior_q3_holds(root,run,load(run/'PROBLEM.json'),spec)
+        if list(holds.values()) != preflight.get('prior_q3_holds'):
+            raise RequestError('continuation','prior Q3 holds changed before launch')
     command=[config['python'],'-B',str(Path(config['code_root'])/'scripts'/ENTRIES[scope['entry']]),
         '--problem',str(run/'PROBLEM.json'),'--round',str(run/'ROUND.json'),'--run-dir',str(run)]
     if config.get('artificial_controller_directory'):

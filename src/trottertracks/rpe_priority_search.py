@@ -163,13 +163,16 @@ class ConfigState:
 
 def run_priority(name, candidates, knowledge, backend, search, threshold, generate, max_new, *, baseline=None, routes=None,
                  spent=0, free=None, science_approved=True, prefetch=None, on_missing='STOP', facts=None, log=None,
-                 prefetch_state=None, refresh_ready=None, standby=None, search_observations=None, search_profile=None):
+                 prefetch_state=None, refresh_ready=None, standby=None, search_observations=None, search_profile=None,
+                 prior_q3_holds=()):
     s = settings(search);baseline = baseline or {}
     ready = [c for c in candidates if c['ready'] and c['configuration_id']]
     states = {c['configuration_id']: ConfigState(c) for c in ready}
     limit = 0 if not science_approved else (float('inf') if max_new is None else max_new)
     large = Fraction(search['large_step_headroom']);margin = 1 + s['deferral_fail_margin']
-    trace, held, unevaluated, skipped = [], [], [], set()
+    trace, held, unevaluated = [], [], []
+    skipped = {(item['configuration_id'], O.interleave(item['N_X'], item['N_Y']))
+               for item in prior_q3_holds}
     new_calls, pending, stop, since_explore, step = spent, None, None, 0, 0
     prefetch_metrics = dict(decisions=0, maximum_preview=0, chain_proposals=0, latest=None)
     selection_timing = dict(candidate_classification_seconds=0.0, candidate_classification_calls=0,
@@ -607,6 +610,7 @@ def run_priority(name, candidates, knowledge, backend, search, threshold, genera
     return dict(method=name, rule=RULE_V2, stop_reason=stop, trace=trace, held=held, new_calls=new_calls - spent, spent_before=spent,
                 pending_request=pending, incumbent=incumbent, not_ready_in_range=[c['name'] for c in candidates if not c['ready']],
                 by_configuration=by, incumbent_scope='METHOD_PRIORITY', unevaluated=unevaluated,
+                prior_q3_holds=list(prior_q3_holds),
                 prefetch_policy=prefetch_metrics,
                 selection_timing=selection_timing,
                 left={k: len(v) for k, v in groups.items() if not k.startswith('_')}, input_requests=requests, settings={k: str(v) if isinstance(v, Fraction) else v

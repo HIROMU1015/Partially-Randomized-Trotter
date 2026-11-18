@@ -10,6 +10,46 @@ def load(path):
     return json.loads(path.read_bytes())
 
 
+def verify_prior_q3_holds(root, run, problem, spec):
+    """Keep an unresolved prior evaluation out of both reuse and new dispatch."""
+    from .rpe_q3_coordinator import digest
+
+    options = spec.get('executor', {})
+    holds = {}
+    for fixed in options.get('prior_q3_holds', []):
+        parent = Path(fixed['parent_directory']).resolve()
+        prior = {(root / path).resolve() for path in options.get('prior_run_dirs', [])}
+        job_id, method = fixed['job_id'], fixed['method']
+        if (parent == run.resolve() or parent not in prior or method not in spec['methods']
+                or len(job_id) != 20 or any(c not in '0123456789abcdef' for c in job_id)):
+            raise ValueError('Prior Q3 hold must refer to a job in the duplicate audit')
+        old_problem = load(parent/'PROBLEM.json')
+        launch, end = load(parent/'LAUNCH.json'), load(parent/'EXIT.json')
+        if (any(problem[key] != old_problem[key] for key in ('problem', 'rpe', 'target', 'accuracy'))
+                or launch['invocation_id'] != end['invocation_id']
+                or load(parent/'distributed/relay/STATUS.json').get('stopped') is not True):
+            raise ValueError('Prior Q3 hold requires the same scientific problem and a stopped parent')
+        job = parent/'jobs'/method/job_id
+        request = load(job/'REQUEST.json')
+        owner = load(job/'LAUNCH.json')
+        queue = parent/'distributed/QUEUE.sqlite3'
+        with sqlite3.connect(queue.as_uri()+'?mode=ro', uri=True) as db:
+            row = db.execute('''SELECT state, method, host_id, attempt_id, request_sha256, request,
+                detail, completed_epoch, adopted_epoch, completion_sha256 FROM jobs WHERE job_id=?''',
+                (job_id,)).fetchone()
+        if (not row or row[:5] != ('UNKNOWN', method, fixed['host_id'], fixed['attempt_id'], fixed['request_sha256'])
+                or json.loads(row[5]) != request or digest(request) != fixed['request_sha256']
+                or owner.get('host_id') != row[2] or owner.get('attempt_id') != row[3]
+                or (request['request_id'], request['method']) != (job_id, method)
+                or json.loads(row[6]).get('automatic_retry') is not False
+                or any(value is not None for value in row[7:]) or (job/'OUTCOME.json').exists()):
+            raise ValueError('Prior Q3 hold no longer matches the unresolved attempt: '+job_id)
+        holds[str(job)] = dict(fixed, parent_directory=str(parent), method=method,
+                               configuration_id=request['configuration_id'], N_X=request['N_X'], N_Y=request['N_Y'],
+                               reason=json.loads(row[6])['reason'])
+    return holds
+
+
 def verify_budget_parents(run,problem,spec):
     """A new run can lift its Q3 ceiling while the old terminal runs stay fixed."""
     from .rpe_local0_search import digest

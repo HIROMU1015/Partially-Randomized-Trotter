@@ -9,9 +9,14 @@ import unittest
 from unittest.mock import Mock
 
 from trottertracks.rpe_local0_search import Gateway, RequestError
+from trottertracks.rpe_method_optimizer import FAIL
 from trottertracks.rpe_optimizer_concurrent import DistributedExecutor
+from trottertracks.rpe_priority_search import run_priority
+from trottertracks.rpe_q3_coordinator import digest
 from trottertracks.rpe_release_registry import fingerprint
-from trottertracks.rpe_search_continuation import verify
+from trottertracks.rpe_search_continuation import verify, verify_prior_q3_holds
+
+from test_rpe_optimizer_concurrent import fixture
 
 
 class ContinuationTests(unittest.TestCase):
@@ -104,3 +109,50 @@ class ContinuationTests(unittest.TestCase):
         with self.assertRaises(subprocess.TimeoutExpired):
             executor._finish_local_worker()
         worker.kill.assert_not_called()
+
+    def test_prior_hold_keeps_the_exact_shots_out_of_dispatch_and_adoption(self):
+        problem, context, _ = fixture(['TRUNCATED_PF'], 1)
+        problem.update(problem={'system': 'ARTIFICIAL'}, rpe={}, target={})
+        candidate, = context['candidates']
+        shots = candidate['caps']
+        method, cid, job_id = 'TRUNCATED_PF', candidate['configuration_id'], 'd'*20
+        job = self.original/'jobs'/method/job_id
+        job.mkdir(parents=True)
+        (self.original/'distributed/relay').mkdir()
+        self.save('PROBLEM.json', problem)
+        self.save('distributed/relay/STATUS.json', dict(stopped=True))
+        request = dict(request_id=job_id, method=method, configuration_id=cid, N_X=shots, N_Y=shots)
+        (job/'REQUEST.json').write_text(json.dumps(request))
+        (job/'LAUNCH.json').write_text(json.dumps(dict(host_id='wsl', attempt_id='attempt')))
+        ledger = self.original/'distributed/QUEUE.sqlite3'
+        with sqlite3.connect(ledger) as db:
+            db.execute('DROP TABLE jobs')
+            db.execute('''CREATE TABLE jobs (job_id, state, method, host_id, attempt_id, request_sha256, request,
+                detail, completed_epoch, adopted_epoch, completion_sha256)''')
+            db.execute('INSERT INTO jobs VALUES (?,?,?,?,?,?,?,?,NULL,NULL,NULL)', (
+                job_id, 'UNKNOWN', method, 'wsl', 'attempt', digest(request), json.dumps(request),
+                json.dumps(dict(automatic_retry=False, reason='MISSING_EXIT_RECEIPT'))))
+        fixed = dict(parent_directory=str(self.original), method=method, job_id=job_id, host_id='wsl',
+                     attempt_id='attempt', request_sha256=digest(request))
+        spec = dict(methods=[method], executor=dict(prior_run_dirs=[str(self.original)], prior_q3_holds=[fixed]))
+        holds = verify_prior_q3_holds(self.root, self.successor, problem, spec)
+        self.assertEqual(set(holds), {str(job)})
+        self.assertEqual(holds[str(job)]['configuration_id'], cid)
+        backend = Mock()
+        backend.answer.return_value = dict(status=FAIL, source='ARTIFICIAL', MSE_upper=2, calls=1)
+        standby = Mock()
+        search = dict(problem['search'], seed_rules=['alternate'], max_steps_per_method=1, work_conserving_search=True)
+        report = run_priority(method, [candidate], {}, backend, search, 1, lambda *_: {'shots': [1]*26}, 1,
+                              prior_q3_holds=holds.values(), standby=standby, prefetch_state=lambda: {'capacity': 2})
+        self.assertEqual(report['new_calls'], 1)
+        self.assertEqual(backend.answer.call_args.args[0]['vector'], (1,)*26)
+        self.assertTrue(all(p['vector'] == (1,)*26 for args, _ in standby.call_args_list
+                            for p in [args[0], *args[1]]))
+        self.assertEqual(report['prior_q3_holds'][0]['job_id'], job_id)
+        fixed['attempt_id'] = 'different'
+        with self.assertRaisesRegex(ValueError, 'no longer matches'):
+            verify_prior_q3_holds(self.root, self.successor, problem, spec)
+        fixed['attempt_id'] = 'attempt'
+        (job/'OUTCOME.json').write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'no longer matches'):
+            verify_prior_q3_holds(self.root, self.successor, problem, spec)
