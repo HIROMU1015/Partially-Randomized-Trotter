@@ -14,6 +14,12 @@ SOURCE314524a91は既存concurrent queue/Completionを保ち、method/phase例�
 
 R08への再適用は、旧ownerのlock解放後にterminal metadata/key/holdを移し、同じ通常queue/DP/cacheへ戻す。走行中SOURCEを変えず、元cycle上限も維持する。人工4件・native4件、保存H4 metadataで確認。切替待機と修正版稼働を明示的に区別する。[R08再開入口](research/h4_pr_r08_recovery_20261117/HANDOFF.md)。
 
+## PR探索の準備完了後の保存Q3照合（2026-11-18）
+
+[`Executor.prior_records`](../src/trottertracks/rpe_method_optimizer.py) は、準備済み候補ごとに繰り返す旧Q3照合で、未変更の対象外REQUESTを再読込しない。executor内にファイルのinode・サイズ・時刻とconfiguration IDを保持する。対象となるREQUEST、route、OUTCOMEは従来の検査で受け入れる。新しいreceiptや変更されたREQUESTは再確認する。通常入口の `PRIOR_READY_INGEST_END` でREADY取込みの所要時間を観測できる。
+
+対象外の人工4,096件を同じexecutorで11回ずつ照合した中央値は旧0.234秒、新0.153秒で、採否は一致した。初回は旧0.248秒、新0.267秒だった。保存再利用・通常READY補充と再開・キュー予算の人工回帰31件PASS。実H4の取込み時間と探索全体の速度差は未測定。
+
 ## PR探索の候補分離・後着READY投入（2026-11-17）
 
 `hold_candidate`と既存`ROUND_RESULT.execution_holds`で旧job照合待ちをconfiguration単位に限定し、無検証再利用/retryを避けて他候補を継続する。CompletionのREADY snapshotを元installerへ渡し、準備wave全体を待たず同じqueueでQ3を進める。有限総予算と重大UNKNOWN停止は維持。[REPORT](research/h4_pr_candidate_continuity_20261117/REPORT.md)／[HANDOFF](research/h4_pr_candidate_continuity_20261117/HANDOFF.md)。人工82件・native8件PASS、実H4の速度倍率は未測定。R07 STOPを残す新SOURCE/R08で継続。

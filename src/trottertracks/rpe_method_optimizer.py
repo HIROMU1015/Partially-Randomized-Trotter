@@ -600,6 +600,9 @@ class Executor:
         # Completed jobs of earlier rounds (same job key, same route for the configuration) answer without a new Q3.
         self.prior_run_dirs, self.launch_disabled = [Path(d) for d in prior_run_dirs], launch_disabled
         self.pf_template_reader, self.pf_template_cache = Reader(self.root), {}
+        # READY refreshes consult the same prior jobs with a different candidate subset.
+        # Only cache the identity used to skip unrelated requests; validate matching jobs afresh.
+        self.prior_request_configurations = {}
         previous=self.run_dir/'ROUND_RESULT.json'
         saved=load_json(previous).get('methods',{})if previous.exists()else {}
         self.execution_holds={m:{r['configuration_id']:r for r in v.get('execution_holds',[])}for m,v in saved.items()}
@@ -739,11 +742,20 @@ class Executor:
         for base in self.prior_run_dirs:
             for job in sorted((base / 'jobs' / self.method).glob('*/OUTCOME.json')):
                 job = job.parent
+                request = job / 'REQUEST.json'
                 try:
-                    q = json.loads((job / 'REQUEST.json').read_text())
+                    stat = request.stat()
+                    signature = (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
+                    cached = self.prior_request_configurations.get(request)
+                    if cached is not None and cached[0] == signature and cached[1] not in ready:
+                        refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'))
+                        continue
+                    q = json.loads(request.read_text())
                 except (OSError, ValueError):
                     refused.append(dict(job=str(job), reason='NO_REQUEST'));continue
-                c = ready.get(q.get('configuration_id'))
+                cid = q.get('configuration_id')
+                self.prior_request_configurations[request] = (signature, cid)
+                c = ready.get(cid)
                 if c is None:
                     refused.append(dict(job=str(job), reason='CONFIGURATION_NOT_IN_THIS_ROUND'));continue
                 proposal = dict(configuration_id=c['configuration_id'], vector=interleave(q['N_X'], q['N_Y']))
@@ -1396,7 +1408,10 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     ids = {c['configuration_id'] for c in added}
                     cands[:] = [c for c in cands if c['configuration_id'] not in ids] + added
                     saved = ingest(initial_knowledge(context['saved'], added, start), added, extra_results)
+                    ingest_start = time.perf_counter()
                     prior_saved, _ = ex.prior_records(added)
+                    ex.log(event='PRIOR_READY_INGEST_END', seconds=time.perf_counter()-ingest_start,
+                           configurations=len(ids), reused=len(prior_saved))
                     saved.update((key, value) for key, value in prior_saved.items() if key not in saved)
                     return added, saved
             log = None

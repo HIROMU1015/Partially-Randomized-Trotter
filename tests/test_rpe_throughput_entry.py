@@ -164,6 +164,52 @@ class EntryTests(unittest.TestCase):
                 self.assertEqual(got['calls'],0);self.assertEqual(ex.launched('PR_PAULI'),0)
             finally:fresh.finish()
 
+    def test_prior_request_cache_skips_only_unrelated_unchanged_requests(self):
+        from fractions import Fraction
+        problem, context, routes = F.fixture(methods=['PR_PAULI'], configurations=1)
+        candidate = context['candidates'][0]
+        vector = (1,) * 26
+        proposal = dict(configuration_id=candidate['configuration_id'],
+                        vector=vector, cost=Fraction(1), origin={})
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)
+            old = C.ConcurrentExecutor(ROOT, path / 'old', routes, {}, problem,
+                                       max_concurrent=1, budgets={'PR_PAULI': 1})
+            try:
+                prior = old.for_method('PR_PAULI')
+                want = prior.answer(proposal)
+                request = prior.job_dir(proposal) / 'REQUEST.json'
+            finally:
+                old.finish()
+            root = C.ConcurrentExecutor(ROOT, path / 'fresh', routes, {}, problem,
+                                       max_concurrent=1, budgets={'PR_PAULI': 0},
+                                       science_approved=False, prior_run_dirs=[path / 'old'])
+            try:
+                first = root.for_method('PR_PAULI').prior_records([])
+                self.assertEqual(first[1][0]['reason'], 'CONFIGURATION_NOT_IN_THIS_ROUND')
+                ex = root.for_method('PR_PAULI')
+                with patch.object(Path, 'read_text', side_effect=AssertionError('unrelated REQUEST read')):
+                    self.assertEqual(ex.prior_records([]), first)
+                known, refused = ex.prior_records([candidate])
+                self.assertEqual(known[(candidate['configuration_id'], vector)]['MSE_upper'], want['MSE_upper'])
+                self.assertFalse(refused)
+
+                original = request.read_text()
+                invalid = json.loads(original)
+                invalid['route']['artificial']['scale'] = '2'
+                replacement = request.with_suffix('.tmp')
+                replacement.write_text(json.dumps(invalid))
+                replacement.replace(request)
+                known, refused = ex.prior_records([candidate])
+                self.assertFalse(known)
+                self.assertEqual(refused[0]['reason'], 'DIFFERENT_JOB_KEY_OR_ROUTE')
+
+                request.write_text(original)
+                self.assertTrue(ex.prior_records([candidate])[0])
+                self.assertEqual(ex.launched('PR_PAULI'), 0)
+            finally:
+                root.finish()
+
     def test_interim_batch_failure_is_persisted_before_any_second_batch(self):
         with tempfile.TemporaryDirectory() as tmp:
             d=self.driver(tmp);d.a.max_cycles=4;d.spec['overlap_ready_batch']=True
