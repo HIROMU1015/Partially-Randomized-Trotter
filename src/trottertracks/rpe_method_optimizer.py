@@ -753,9 +753,14 @@ class Executor:
             return cache.prior_records(self, candidates)[:2]
         ready = {c['configuration_id']: c for c in candidates if c['ready'] and c['configuration_id']}
         known, refused = {}, []
+        held_jobs = {(Path(item['parent_directory'])/'jobs'/item['method']/item['job_id']).resolve()
+                     for item in getattr(self,'prior_q3_holds', ())}
         for base in self.prior_run_dirs:
             for job in sorted((base / 'jobs' / self.method).glob('*/OUTCOME.json')):
                 job = job.parent
+                if held_jobs and job.resolve() in held_jobs:
+                    refused.append(dict(job=str(job), reason='PRIOR_Q3_PERSISTENCE_HOLD'))
+                    continue
                 request = job / 'REQUEST.json'
                 try:
                     stat = request.stat()

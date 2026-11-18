@@ -23,6 +23,31 @@ def verify_prior_q3_holds(root, run, problem, spec):
         if (parent == run.resolve() or parent not in prior or method not in spec['methods']
                 or len(job_id) != 20 or any(c not in '0123456789abcdef' for c in job_id)):
             raise ValueError('Prior Q3 hold must refer to a job in the duplicate audit')
+        if fixed.get('kind') == 'LOCAL_INTERRUPTED_WRITE':
+            job = parent/'jobs'/method/job_id
+            old_problem = load(parent.parent/'PROBLEM.json')
+            request = load(job/'REQUEST.json')
+            outcome = job/'OUTCOME.json'
+            returned = job/'PROCESS_RETURN.json'
+            owner = load(parent/'CONTROLLER_PID.json')
+            if (any(problem[key] != old_problem[key] for key in ('problem','rpe','target','accuracy'))
+                    or (request['request_id'],request['method']) != (job_id,method)
+                    or digest(request) != fixed['request_sha256']
+                    or not (job/'STARTING.json').is_file() or not (job/'LAUNCH.json').is_file()
+                    or (outcome.exists() and outcome.stat().st_size)
+                    or not returned.is_file() or returned.stat().st_size):
+                raise ValueError('Prior local Q3 write hold changed: '+job_id)
+            for marker, directory in ((owner,parent),(load(job/'LAUNCH.json'),job)):
+                try:
+                    command = (Path('/proc')/str(marker['pid'])/'cmdline').read_bytes()
+                except FileNotFoundError:
+                    continue
+                if str(directory).encode() in command:
+                    raise ValueError('Prior local Q3 still has a live owner: '+job_id)
+            holds[str(job)] = dict(fixed, parent_directory=str(parent),
+                                  configuration_id=request['configuration_id'], N_X=request['N_X'],
+                                  N_Y=request['N_Y'], reason='INTERRUPTED_RESULT_PERSISTENCE_NO_RETRY')
+            continue
         old_problem = load(parent/'PROBLEM.json')
         launch, end = load(parent/'LAUNCH.json'), load(parent/'EXIT.json')
         if (any(problem[key] != old_problem[key] for key in ('problem', 'rpe', 'target', 'accuracy'))

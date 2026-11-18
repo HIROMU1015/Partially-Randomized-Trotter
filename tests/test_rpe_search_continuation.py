@@ -110,6 +110,36 @@ class ContinuationTests(unittest.TestCase):
             executor._finish_local_worker()
         worker.kill.assert_not_called()
 
+    def test_local_interrupted_write_is_scoped_before_reading_corrupt_outcome(self):
+        from trottertracks.rpe_method_optimizer import Executor
+        original = self.root/'old_study'/'run02'
+        job_id,method='a'*20,'PR_DF'
+        job=original/'jobs'/method/job_id
+        job.mkdir(parents=True)
+        problem=dict(problem={},rpe={},target={'energy_ha':0},accuracy={})
+        (original.parent/'PROBLEM.json').write_text(json.dumps(problem))
+        (original/'CONTROLLER_PID.json').write_text(json.dumps({'pid': 999999999}))
+        request=dict(request_id=job_id,method=method,configuration_id='fixed',N_X=[2]*13,N_Y=[3]*13)
+        (job/'REQUEST.json').write_text(json.dumps(request))
+        for name in ('STARTING.json','LAUNCH.json'):
+            (job/name).write_text(json.dumps({'pid': 999999999}))
+        for name in ('PROCESS_RETURN.json','OUTCOME.json'):
+            (job/name).touch()
+        spec=dict(methods=[method],executor=dict(prior_run_dirs=[str(original)],prior_q3_holds=[
+            dict(parent_directory=str(original),method=method,job_id=job_id,
+                 kind='LOCAL_INTERRUPTED_WRITE',request_sha256=digest(request))]))
+        holds=verify_prior_q3_holds(self.root,self.successor,problem,spec)
+        self.assertEqual(holds[str(job)]['N_Y'],[3]*13)
+        executor=Executor(self.root,self.successor,{}, {},problem,prior_run_dirs=[original]).for_method(method)
+        executor.prior_q3_holds=list(holds.values())
+        known,refused=executor.prior_records([dict(configuration_id='fixed',ready=True)])
+        self.assertFalse(known)
+        self.assertEqual(refused,[dict(job=str(job),reason='PRIOR_Q3_PERSISTENCE_HOLD')])
+        self.assertEqual((job/'OUTCOME.json').read_bytes(),b'')
+        (job/'OUTCOME.json').write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'hold changed'):
+            verify_prior_q3_holds(self.root,self.successor,problem,spec)
+
     def test_prior_hold_keeps_the_exact_shots_out_of_dispatch_and_adoption(self):
         problem, context, _ = fixture(['TRUNCATED_PF'], 1)
         problem.update(problem={'system': 'ARTIFICIAL'}, rpe={}, target={})
