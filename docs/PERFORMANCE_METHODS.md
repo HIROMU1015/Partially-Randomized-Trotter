@@ -32,6 +32,12 @@
 
 人工テストで通常選択・空き枠補充・再価格付け、並列DPの正確な上下界、圧縮cacheの再開、軸別receiptと共有イベントを検証した。32,768件の人工省略項の厳密加算は3回中央値で、元の積算0.900秒、分母別1 worker 0.300秒、分母別4 worker 0.112秒。測定対象は人工入力の積算部。実H4の速度・探索短縮は未測定。並列残差を有効にしたcacheは残差SOURCEを識別するため、新しいkeyで蓄積する。`prefix_checkpoint_rounds` は既存設定を使う。例えば `[5,8,11]` は明示設定できるが、既定の境界は今回変更していない。
 
+## 同一PR-DF保存信号の再利用（2026-11-18）
+
+[通常のdf-plan](../scripts/pr_candidate_services.py)は、固定validatorを通過した同一物理キーの保存レコードを照合する。固定stageが再結合するBの宣言（候補・構成IDとcanonical identity/law binding）とその再利用履歴を除き、信号、入力・reference、数値gate、allowance等を完全一致で比較する。一致すれば元の保存SOURCEから再利用する。差が残るroundは `saved_signal_conflicts` に両出所と相違項目を記録して保留する。Completionはこの確認を信号・較正workerへの投入前に行い、他候補を通常キューで処理する。
+
+R08で過去に `df-plan` が保留した3件の保存入力を、従来の固定providerとmetadata専用入口で再確認した。元候補キー `b8cba2bd1990188c53f8` と `75a10d084f0948c5f712` は各10 round、`7fc104bbd75cc70800c1` は8 roundを再利用できた。残りは順に3・3・5 roundの計画上の不足。新規信号・compile・Q3は0件。人工回帰では値・数値gate・reference SOURCEの差の保留と、中央準備の投入前に止まることを検査した。稼働中R08への導入は固定SOURCEを切り替える別の手続で行う。
+
 ## 探索を止めない共有モデル診断（2026-11-17）
 
 `rpe_price_validation.Service/ModelStore`と既存分散preparation queueを再利用し、凍結モデル＋物理domain単位の初回照合を全配分・run・workerから共有する。固定requestをqueue投入前に保存し、optional compileを通常Q3/準備より後にclaimする。checkpoint再開・同時要求・失敗時の探索継続・通常C同期は人工検査、LD2/PFの独立実測再利用は保存資料で確認。新規実compileの速度・実host配置は未検証。単一controllerの共通namespaceを使用し、別cloneの独立storeを共有とみなさない。[REPORT](research/h4_price_validation_integration_20261117/REPORT.md)／[HANDOFF](research/h4_price_validation_integration_20261117/HANDOFF.md)。

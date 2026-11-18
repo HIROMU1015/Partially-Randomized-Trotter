@@ -420,13 +420,23 @@ class Completion:
                 raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
             initial_quote=self.initial_quote(config,cref,d)
             if request['method']=='PR_DF':
+                descriptor=request.get('tail_descriptor')
+                df_bundles=self.saved_signal_packets('PR_DF')
+                df_plan=self.service('df-plan',dict(configuration=config,tail_descriptor=descriptor,saved_bundles=df_bundles),d)
+                conflicts=df_plan.get('saved_signal_conflicts',[])
+                if conflicts:
+                    rec['conflicting_signal_rounds']=conflicts
+                    rounds=','.join(str(row['m']) for row in conflicts)
+                    raise Held('DF_SAVED_SIGNAL_CONFLICT:rounds='+rounds)
+                if df_plan.get('unsupported_rounds') or any(row['decision']=='UNSUPPORTED' for row in df_plan['rounds']):
+                    raise Held('DF_PROVIDER_UNSUPPORTED:'+str(df_plan))
                 if not initial_quote['complete'] and not conflicting_price_axes(initial_quote):
                     design=self.service('df-price-design',dict(configuration=config,price_quote=initial_quote),d)
                     bad=[g for g in design.get('groups',[])if g['status']!='CALIBRATION_DESIGN_READY']
                     if bad:raise Held('DF_MODEL_DESIGN:'+str(bad))
             def signal_work():
                 return (self.pauli_signals(config,prepared,d)if request['method']=='PR_PAULI'
-                        else self.df_signals(config,cref,d,request.get('tail_descriptor')))
+                        else self.df_signals(config,cref,d,descriptor,plan=df_plan,bundles=df_bundles))
             # Both branches depend on the frozen configuration, not on each
             # other's numerical result. They share host slots through the
             # executor rather than independently reserving CPU resources.
@@ -621,10 +631,7 @@ class Completion:
         if result['status']!='SIGNALS_READY':raise Held('PAULI_SIGNAL:'+str(result.get('reason')or result['status']))
         return result
 
-    def df_signals(self,config,cref,d,descriptor=None):
-        bundles=self.saved_signal_packets('PR_DF')
-        plan=self.service('df-plan',dict(configuration=config,tail_descriptor=descriptor,saved_bundles=bundles),d)
-        if plan.get('unsupported_rounds')or any(r['decision']=='UNSUPPORTED'for r in plan['rounds']):raise Held('DF_PROVIDER_UNSUPPORTED:'+str(plan))
+    def df_signals(self,config,cref,d,descriptor,*,plan,bundles):
         result=dict(rows=[],new_provider_calls=0);obtained={}
         if any(row['decision']=='REQUEST' for row in plan['rounds']):
             request=dict(configuration=cref,plan=plan,tail_descriptor=descriptor,execution_source=self.source,

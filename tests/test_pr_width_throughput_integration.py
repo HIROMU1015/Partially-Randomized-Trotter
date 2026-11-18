@@ -112,6 +112,7 @@ class Completion(C.Completion):
     def service(self,mode,request,d,**kwargs):
         if mode=='df-generate':
             x=request['design'];return dict(status='CONFIGURATION_READY',configuration=configuration('PR_DF',x['delta_pf'],x['kappa'],x['L_D']))
+        if mode=='df-plan':return dict(rounds=[dict(m=0,decision='REUSE')])
         if mode=='df-price-design':return dict(groups=[dict(status='CALIBRATION_DESIGN_READY')])
         if mode=='intake':
             cfg=WORLD.reader.read(request['configuration']);return dict(binding_id='ARTIFICIAL_BINDING',total_configuration_id='ARTIFICIAL_TOTAL:'+cfg['id'])

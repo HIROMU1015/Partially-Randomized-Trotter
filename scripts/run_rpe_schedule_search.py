@@ -742,6 +742,8 @@ class WidthDriver:
                                      signal_plan=record.get('signal_plan'),price_plan=record.get('price_plan',record.get('price_quote')),
                                      calibration_requests=record.get('calibration_requests'),readiness=record.get('readiness'),
                                      rounds=record.get('rounds'))
+                if record.get('conflicting_signal_rounds'):
+                    p['completion']['conflicting_signal_rounds']=record['conflicting_signal_rounds']
                 if record['status']=='READY_FOR_SEARCH':
                     try:self.check_completed_configuration(p,record)
                     except (ValueError,KeyError,TypeError) as exc:
@@ -753,7 +755,8 @@ class WidthDriver:
                     p.update(status='COMPLETION',reason=record['reason'])
                     self.log(event='PREPARATION_YIELD_AFTER_FATAL',family=p['family'],stage=record.get('interrupted_before_stage'))
                     break
-                elif (record['status'].startswith('STOP') or 'NUMERICAL_GATE' in str(record.get('reason','')) or
+                elif (record.get('conflicting_signal_rounds') or record['status'].startswith('STOP')
+                      or 'NUMERICAL_GATE' in str(record.get('reason','')) or
                       getattr(self,'rule_stop',False) and record.get('scientific_failure')):
                     p.update(status='HELD',reason=record.get('reason',record['status']))
                 else:
