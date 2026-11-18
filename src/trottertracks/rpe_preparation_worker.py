@@ -146,6 +146,13 @@ def metadata_bundle_hashes(assignment):
     return list(dict.fromkeys(artifact_hash(bundle['sha256'])for bundle in bundles))
 
 
+def _metadata_repository_path(profile, root):
+    common=Path(subprocess.check_output(['git','rev-parse','--git-common-dir'],cwd=root,text=True).strip())
+    if not common.is_absolute():common=Path(root)/common
+    directory=Path(profile.get('preparation_metadata_cache_directory')or Path(profile['work_dir']).parent/'preparation-metadata-cache')
+    return directory.resolve()/digest(str(common.resolve()))[:16]/'objects.git'
+
+
 def _metadata_input_repository(profile, root, spec):
     bundles=list(spec.get('input_git_bundles',[]))
     for workspace in spec.get('workspaces',{}).values():bundles.extend(workspace.get('input_git_bundles',[]))
@@ -153,11 +160,9 @@ def _metadata_input_repository(profile, root, spec):
     cache=worker_cache(profile)
     hashes=[artifact_hash(bundle['sha256'])for bundle in bundles]
     if cache.missing(hashes):raise ValueError('Preparation metadata Git bundle missing before preflight')
-    common=Path(subprocess.check_output(['git','rev-parse','--git-common-dir'],cwd=root,text=True).strip())
-    if not common.is_absolute():common=Path(root)/common
-    directory=Path(profile.get('preparation_metadata_cache_directory')or Path(profile['work_dir']).parent/'preparation-metadata-cache')
-    directory=directory/digest(str(common.resolve()))[:16];directory.mkdir(parents=True,exist_ok=True)
-    target=directory/'objects.git';marker=directory/'IMPORTED.json'
+    target=_metadata_repository_path(profile,root)
+    directory=target.parent;directory.mkdir(parents=True,exist_ok=True)
+    marker=directory/'IMPORTED.json'
     with(directory/'IMPORT.lock').open('a')as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
         if not target.exists():subprocess.run(['git','clone','--shared','--bare',str(root),str(target)],check=True,capture_output=True)
@@ -243,10 +248,15 @@ def _guard_owned_source(root, source):
             raise ValueError('Imported workspace changed fixed scientific SOURCE: '+name)
 
 
-def _clone(source, destination, bundles, cache, checkout_input_head=True, source_files=()):
+def _clone(source, destination, bundles, cache, checkout_input_head=True, source_files=(), *, metadata_repository=None):
     destination=Path(destination)
     if destination.exists():raise ValueError('Preparation workspace already exists; never retry science')
-    subprocess.run(['git','clone','--shared','--no-checkout',str(source),str(destination)],check=True,capture_output=True)
+    clone=['git','clone','--shared','--no-checkout']
+    if bundles and metadata_repository is not None:
+        # Preflight already imported and pinned these objects on this host.
+        # The working tree and new commits still belong to this attempt.
+        clone.extend(['--reference',str(metadata_repository)])
+    subprocess.run(clone+[str(source),str(destination)],check=True,capture_output=True)
     commit=_head(source)
     directories={'scripts','src','configs','schemas','references'}
     for name in source_files:
@@ -265,9 +275,18 @@ def _clone(source, destination, bundles, cache, checkout_input_head=True, source
         sha=bundle['sha256'];path=cache.path(sha)
         if cache.missing([sha]):raise ValueError('Missing source Git bundle')
         subprocess.run(['git','bundle','verify',str(path)],cwd=destination,check=True,capture_output=True)
-        subprocess.run(['git','fetch',str(path),bundle.get('ref','HEAD')],cwd=destination,check=True,capture_output=True)
+        ref=bundle.get('ref','HEAD')
+        heads=[]
+        if metadata_repository is not None:
+            heads=subprocess.check_output(['git','bundle','list-heads',str(path),ref],cwd=destination,text=True).splitlines()
+        if len(heads)==1:
+            tip=heads[0].split()[0]
+            subprocess.run(['git','cat-file','-e',tip+'^{commit}'],cwd=destination,check=True,capture_output=True)
+        else:
+            subprocess.run(['git','fetch',str(path),ref],cwd=destination,check=True,capture_output=True)
+            tip='FETCH_HEAD'
         if checkout_input_head and bundle.get('checkout_input_head',True):
-            subprocess.run(['git','reset','--hard','FETCH_HEAD'],cwd=destination,check=True,capture_output=True)
+            subprocess.run(['git','reset','--hard',tip],cwd=destination,check=True,capture_output=True)
     return destination
 
 
@@ -332,12 +351,17 @@ def execute(assignment, base_profile, directory):
     with marker.open('x')as stream:json.dump(dict(request_sha256=assignment['request_sha256'],automatic_retry=False),stream)
     cache=worker_cache(profile);artifact_inputs=assigned_artifacts(assignment);cache.materialize(artifact_inputs,directory/'inputs')
     source=Path(fingerprint['views'][spec['source']['commit']]);owned={}
+    metadata_repository=_metadata_repository_path(profile,source) if metadata_bundle_hashes(assignment) else None
     if spec.get('source_workspace'):
-        source=_clone(source,directory/'workspace',spec.get('input_git_bundles',[]),cache,source_files=spec['source']['files']);owned['source']=(source,spec['source'])
+        source=_clone(source,directory/'workspace',spec.get('input_git_bundles',[]),cache,
+                      source_files=spec['source']['files'],metadata_repository=metadata_repository)
+        owned['source']=(source,spec['source'])
     replacements={'@PYTHON@':profile['interpreter'],'@SOURCE@':str(source),'@WORK@':str(directory),'@INPUTS@':str(directory/'inputs'),'@TRANSPORT@':str(Path(__file__).resolve().parents[2])}
     for alias,workspace in spec.get('workspaces',{}).items():
         if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe preparation workspace alias')
-        target=_clone(fingerprint['views'][alias],directory/'workspaces'/alias,workspace.get('input_git_bundles',[]),cache,workspace.get('checkout_input_head',True),workspace['source']['files'])
+        target=_clone(fingerprint['views'][alias],directory/'workspaces'/alias,workspace.get('input_git_bundles',[]),cache,
+                      workspace.get('checkout_input_head',True),workspace['source']['files'],
+                      metadata_repository=metadata_repository)
         replacements['@WORKSPACE:'+alias+'@']=str(target);owned[alias]=(target,workspace['source'])
     materialize_pauli_calibration_view(spec, fingerprint, directory)
     for alias in spec.get('required_views',{}):replacements['@VIEW:'+alias+'@']=fingerprint['views']['view:'+alias]

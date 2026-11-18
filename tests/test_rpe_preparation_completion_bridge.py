@@ -280,11 +280,23 @@ Path(sys.argv[2]).write_text(json.dumps({'configuration':config,'input_sha256':h
                      'work_dir':str(top/'worker-spool'),'preparation_sources':{source:str(view)},
                      'artifact_cache_directory':str(top/'worker-cas')}
             hashes=set(task['preparation']['inputs'].values())|root_hashes|provider_hashes
-            ArtifactCache(top/'worker-cas').put(executor.artifact_cache.get(hashes))
+            worker_cache=ArtifactCache(top/'worker-cas')
+            worker_cache.put(executor.artifact_cache.get(hashes))
             self.assertNotEqual(subprocess.run(['git','cat-file','-e',config_commit],cwd=view,
                 stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode,0)
+
+            # The legacy clone imports the same pack into each workspace.
+            legacy = W._clone(view, top/'legacy-worker-view', bundles, worker_cache)
+            legacy_packs = list((legacy/'.git/objects/pack').glob('*.pack'))
+            self.assertGreater(sum(path.stat().st_size for path in legacy_packs), 1024 * 1024)
             attempt=top/'worker-attempt';outcome=W.execute(assignment,profile,attempt)
             self.assertEqual(outcome['status'],'PREPARATION_COMPLETE')
+            self.assertEqual(W.collect(assignment,profile,attempt), outcome)
+            shared = W._metadata_repository_path(profile, view)/'objects'
+            for workspace in (attempt/'workspace', attempt/'workspaces/provider'):
+                objects = workspace/'.git/objects'
+                self.assertIn(str(shared), (objects/'info/alternates').read_text().splitlines())
+                self.assertFalse(list((objects/'pack').glob('*.pack')))
             result=json.loads((attempt/'workspace/docs/candidate/RESULT.json').read_text())
             self.assertEqual(result['configuration'],{'scientific_fixture':'immutable'})
             self.assertEqual(result['input_sha256'],hashlib.sha256(request.read_bytes()).hexdigest())
