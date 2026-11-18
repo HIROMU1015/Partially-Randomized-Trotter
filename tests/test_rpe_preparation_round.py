@@ -150,6 +150,7 @@ class PreparationRoundTests(unittest.TestCase):
                 def bind_stage_executor(self,runtime):self.stage_executor=runtime;return self
                 def ingest_price_results(self):pass
                 def refresh_price_hold(self,record):pass
+                def price_deferred_keys(self):return {'unchanged-price'}
                 def install(self,context,problem,records):
                     context['ready']=[r['key']for r in records if r['status']=='READY_FOR_SEARCH'];return {}
                 def complete(self,request):
@@ -162,14 +163,17 @@ class PreparationRoundTests(unittest.TestCase):
                     ('failed','SELECTED',{'scientific_failure':True}),('stop','STOP_NO_RETRY',{})]:
                 completion.state['records'][key]=dict(key=key,method='PR_PAULI',status=status,
                     request={'key':key,'method':'PR_PAULI'},**extra)
-            spec=dict(methods=['PR_PAULI'],science_approved=True,
-                candidate_completion={'source':'ARTIFICIAL_FIXED','max_attempted_per_method':4})
-            problem={'search':{},'methods':{'PR_PAULI':{}}};context={}
+            for key in ('new-price','unchanged-price'):
+                completion.state['records'][key]=dict(key=key,method='PR_DF',status='WAITING_INPUTS',
+                    signal_deferred_for_price=True,request={'key':key,'method':'PR_DF'})
+            spec=dict(methods=['PR_PAULI','PR_DF'],science_approved=True,
+                candidate_completion={'source':'ARTIFICIAL_FIXED','max_attempted_per_method':2})
+            problem={'search':{},'methods':{'PR_PAULI':{},'PR_DF':{}}};context={}
             with patch.object(PR,'publish',return_value='ARTIFICIAL_FIXED'),patch('trottertracks.rpe_method_optimizer.optimize',side_effect=AssertionError('New selection after attempt cap')):
                 got,_,_=PR.prepare_for_search(ROOT,problem,context,spec,Path(tmp),completion=completion,stage_executor=object())
                 PR.prepare_for_search(ROOT,problem,context,spec,Path(tmp),completion=completion,stage_executor=object())
-            self.assertEqual([r['key']for r in calls],['selected','pending'])
-            self.assertEqual(got['ready'],['selected','pending'])
+            self.assertCountEqual([r['key']for r in calls],['selected','pending','new-price'])
+            self.assertEqual(got['ready'],['selected','pending','new-price'])
             self.assertTrue(completion.state['records']['failed']['scientific_failure'])
             self.assertEqual(completion.state['records']['stop']['status'],'STOP_NO_RETRY')
 

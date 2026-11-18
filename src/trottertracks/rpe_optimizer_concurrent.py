@@ -1944,16 +1944,22 @@ class DistributedExecutor(ConcurrentExecutor):
             if current and current['state'] == 'ACCEPTED': self.store.adopt(current['job_id'])
         return answer
 
-    def ingest(self, job, proposal, calls):
-        answer = super().ingest(job, proposal, calls)
-        current = self.store.row(Path(job).name)
-        own = current is not None and Path(job) == self.run_dir/'jobs'/current['method']/current['job_id']
-        if calls == 0 and own and current['state'] == 'ACCEPTED':
+    def record_prior_result_reuse(self, job):
+        job = Path(job)
+        if job.parent.parent != self.run_dir/'jobs':
+            return
+        current = self.store.row(job.name)
+        if current is not None and job.parent.name == current['method'] and current['state'] == 'ACCEPTED':
             with self.state.cv:
                 reused = getattr(self.state, 'reused_jobs', set())
                 if current['job_id'] not in reused:
                     reused.add(current['job_id']); self.state.reused_jobs = reused
                     self.log(event='RESULT_REUSE', job=current['job_id'], host_id=current['host_id'])
+
+    def ingest(self, job, proposal, calls):
+        answer = super().ingest(job, proposal, calls)
+        if calls == 0:
+            self.record_prior_result_reuse(job)
         return answer
 
     def metrics(self):

@@ -242,6 +242,15 @@ class Completion:
         return key(dict(legacy=read(self.registry),steps=read(path)if path.exists()else None,
                         quote_policy_revision=QUOTE_POLICY_REVISION))
 
+    def price_deferred_keys(self):
+        with self.lock:
+            waiting = [record for record in self.state['records'].values()
+                       if record.get('signal_deferred_for_price') and record['status']=='WAITING_INPUTS']
+            if not waiting:
+                return set()
+            digest = self.price_registry_digest()
+            return {record['key'] for record in waiting if record.get('registry_at_hold')==digest}
+
     def quote_with_steps(self,config,quote):
         path=getattr(self,'step_registry_path',self.directory/'STEP_PRICE_RULES.json')
         if not path.exists()and not(quote.get('rows')and config.get('spec',{}).get('method')=='PR'):return quote
@@ -298,6 +307,8 @@ class Completion:
     def service(self,mode,request,d,tag=None,python=None):
         python=python or self.path("NATIVE")
         request=dict(request,controller_paths=self.settings.get("controller_paths",{}))
+        if mode in ('df-plan','df-stage','df-bundle'):
+            request['saved_index_cache']=str(self.directory/'cache'/'df-saved-index')
         tag=tag or mode;inp=d/(tag+'.INPUT.json');out=d/(tag+'.json');put(inp,request)
         return self.call([python,'-B',str(ROOT/'scripts/pr_candidate_services.py'),mode,'--input',str(inp),'--output',str(out)],d,tag,out)
 
@@ -402,15 +413,27 @@ class Completion:
                         reason='AMBIGUOUS_EXISTING_COMPLETION_REQUEST_NO_DUPLICATE',key=None)
                 if matches:
                     identifier,old=matches[0];d=self.directory/'candidates'/identifier
+            if old and old.get('directory'):
+                previous=(ROOT/old['directory']).resolve()
+                if previous.is_relative_to(self.directory.resolve()):
+                    d=previous
             if old and old['status']=='READY_FOR_SEARCH':return dict(old,resumed=True)
             if old and old['status'].startswith(('HELD','STOP','WAITING')):
                 if old.get('scientific_failure'):return dict(old,resumed=True)
                 if not old.get('recoverable_preparation'):
                     self.ingest_price_results()
-                    return dict(self.refresh_price_hold(old)or old,resumed=True)
+                    if old.get('signal_deferred_for_price'):
+                        digest=self.price_registry_digest()
+                        if old.get('registry_at_hold')==digest:return dict(old,resumed=True)
+                        d=self.directory/'candidates'/identifier/'price-refresh'/digest
+                    else:
+                        return dict(self.refresh_price_hold(old)or old,resumed=True)
             rec=(dict(old,previous_hold=dict(status=old['status'],reason=old.get('reason')),status='SELECTED',
                       reason=None,recoverable_preparation=False)if old and old.get('recoverable_preparation')else
                  dict(method=request['method'],selection=request.get('selection'),request=deepcopy(request),status='SELECTED',key=identifier,directory=rel(d)))
+            if old and (old.get('signal_deferred_for_price') or old.get('deferred_configuration')):
+                rec.update(deferred_configuration=old.get('deferred_configuration') or old['configuration'],
+                           deferred_tail_descriptor=old.get('deferred_tail_descriptor'))
             self.state['records'][identifier]=rec;self.save()
         request=deepcopy(request)  # descriptor resolution must not change the caller's stable request key
         self.log(event='SELECTED_BY_B2',method=rec['method'],selection=rec['selection'])
@@ -418,6 +441,10 @@ class Completion:
         try:
             if request.get('selection_error'):raise Held('B2_SELECTION_NORMALIZATION:'+request['selection_error'])
             if request['method']=='PR_PAULI':config,prepared=self.pauli_configuration(request,d)
+            elif rec.get('deferred_configuration'):
+                config,prepared=value(rec['deferred_configuration']),None
+                descriptor=rec['deferred_tail_descriptor']
+                if descriptor:request['tail_descriptor']=descriptor
             else:
                 saved_descriptor=self.saved_df_descriptor(request)
                 if saved_descriptor:request['tail_descriptor']=saved_descriptor
@@ -456,9 +483,20 @@ class Completion:
                 and old.get('configuration')and physical_evaluation_contract(value(old['configuration']))==physical),None)
             if failed_twin is not None:
                 raise Held('PRIOR_PHYSICAL_PREPARATION_FAILED_NO_AUTOMATIC_RETRY:'+failed_twin['key'])
+            initial_registry=self.price_registry_digest() if request['method']=='PR_DF' else None
             initial_quote=self.initial_quote(config,cref,d)
             if request['method']=='PR_DF':
                 descriptor=request.get('tail_descriptor')
+                holds=price_source_holds(initial_quote)
+                # Resume an original owner through its normal reconciliation path.
+                already_started = (any(d.glob('DF_SIGNALS.*.json')) or
+                                   (d/'df_price_groups').exists() or bool(old and old.get('signal')))
+                if holds and not already_started:
+                    put(d/'FINAL_QUOTE.json',initial_quote)
+                    record_price_holds(rec,holds)
+                    rec.update(signal_deferred_for_price=True,deferred_tail_descriptor=descriptor,
+                               registry_at_hold=initial_registry)
+                    raise Held(price_hold_reason(holds))
                 df_bundles=self.saved_signal_packets('PR_DF')
                 df_plan=self.service('df-plan',dict(configuration=config,tail_descriptor=descriptor,saved_bundles=df_bundles),d)
                 conflicts=df_plan.get('saved_signal_conflicts',[])
@@ -468,7 +506,7 @@ class Completion:
                     raise Held('DF_SAVED_SIGNAL_CONFLICT:rounds='+rounds)
                 if df_plan.get('unsupported_rounds') or any(row['decision']=='UNSUPPORTED' for row in df_plan['rounds']):
                     raise Held('DF_PROVIDER_UNSUPPORTED:'+str(df_plan))
-                if not initial_quote['complete'] and not price_source_holds(initial_quote):
+                if not initial_quote['complete']:
                     design=self.service('df-price-design',dict(configuration=config,price_quote=initial_quote),d)
                     bad=[g for g in design.get('groups',[])if g['status']!='CALIBRATION_DESIGN_READY']
                     if bad:raise Held('DF_MODEL_DESIGN:'+str(bad))
@@ -520,7 +558,8 @@ class Completion:
         except Exception as exc:rec.update(status='HELD_TECHNICAL_FAILURE',reason=type(exc).__name__+': '+str(exc),scientific_failure=True)
         finally:
             if physical_guard is not None:physical_guard.release()
-        if rec['status'].startswith(('HELD','STOP','WAITING')):rec['registry_at_hold']=self.price_registry_digest()
+        if rec['status'].startswith(('HELD','STOP','WAITING')) and not rec.get('signal_deferred_for_price'):
+            rec['registry_at_hold']=self.price_registry_digest()
         self.save();self.log(event='CANDIDATE_COMPLETED',method=request['method'],status=rec['status'],reason=rec.get('reason'));return rec
 
     def plan(self,request):
@@ -982,6 +1021,15 @@ def prepare_for_search(root,problem,context,spec,run,*,selection_results=None,co
         maximum=settings.get('max_completed_per_method')
         if isinstance(maximum,dict):maximum=maximum.get(method)
         if maximum is not None and sum(r['status']=='READY_FOR_SEARCH'for r in current)>=maximum:return current
+        deferred=[r for r in current if r.get('signal_deferred_for_price')
+                  and r['status']=='WAITING_INPUTS' and not r.get('scientific_failure')]
+        if deferred:
+            blocked=completion.price_deferred_keys()
+            for record in deferred:
+                if record['key'] in blocked:continue
+                resumed=completion.complete(deepcopy(record['request']))
+                if resumed['status']=='READY_FOR_SEARCH':
+                    return [r for r in completion.state['records'].values()if r['method']==method]
         attempted={Selection.identity(r['request']['selection'])for r in current if r['request'].get('selection')}
         limit=settings.get('max_attempted_per_method')
         remaining=None if limit is None else max(0,limit-len(current))

@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+import threading
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -203,6 +204,47 @@ class IndependentMethodLaunchContract(unittest.TestCase):
                 d.complete_points()
                 d.complete_points()
                 self.assertEqual(selected, ['A', 'C'] if enabled else ['A', 'B'])
+
+    def test_live_ready_runs_independent_df_splits_in_parallel_and_skips_held_prices(self):
+        from trottertracks.pr_candidate_completion import key
+
+        d=ENTRY.WidthDriver.__new__(ENTRY.WidthDriver)
+        d.work_conserving_search=False
+        d.methods=['PR_DF','PR_PAULI'];d.wide=dict(per_decision=8);d.a=SimpleNamespace(plan_only=False)
+        d.spec=dict(science_approved=True,candidate_completion=dict(parallel=2))
+        d.log=lambda **event:None;d.check_completed_configuration=lambda *args:None
+        splits=dict(df1=1,df1_other_width=1,df2=2,df_held=3,pauli=4)
+        d.state=dict(cycle=1,families={family:dict(L_D=split) for family,split in splits.items()},
+                     points=[dict(method='PR_PAULI' if family=='pauli' else 'PR_DF',family=family,kappa='1',
+                                  status='WAITING_INPUTS' if family=='df_held' else 'COMPLETION',
+                                  completion_request=dict(family=family)) for family in splits])
+        started=threading.Barrier(3)
+        first_finished=threading.Event()
+        calls=[]
+
+        class Completion:
+            def price_deferred_keys(self):
+                return {key(dict(family='df_held'))}
+
+            def complete(self,request):
+                family=request['family'];calls.append(family)
+                if family in ('df1','df2','pauli'):
+                    started.wait(timeout=5)
+                    if family=='df1':first_finished.set()
+                elif family=='df1_other_width':
+                    assert first_finished.is_set()
+                else:
+                    raise AssertionError('The unchanged price hold must not redispatch')
+                return dict(status='READY_FOR_SEARCH',key=family,configuration_id=family)
+
+        d.completion_api=Completion
+        ready=[]
+        d.complete_points(announce_ready=lambda method,record:ready.append(record['key']))
+        self.assertCountEqual(ready,['df1','df2','df1_other_width','pauli'])
+        self.assertEqual(calls[0:4].count('df_held'),0)
+        self.assertLess(calls.index('df1'),calls.index('df1_other_width'))
+        d.complete_points(announce_ready=lambda *_:self.fail('No duplicate preparation'))
+        self.assertEqual(len(calls),4)
 
     def test_joint_method_planning_matches_independent_method_refinements(self):
         methods=('PR_PAULI','PR_DF')

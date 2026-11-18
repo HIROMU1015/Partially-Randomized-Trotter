@@ -12,8 +12,10 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
+import tempfile
 
 ROOT=Path(__file__).resolve().parents[1]
 if hasattr(sys,'set_int_max_str_digits'):sys.set_int_max_str_digits(0)
@@ -75,16 +77,56 @@ def df_record_differences(left, right):
             or exact(left[key]) != exact(right[key])}
 
 
-def scope_df_saved_index(entry, configuration):
+def fixed_locator(ref):
+    if not isinstance(ref, dict) or not ref.get('path'):
+        return False
+    commit = ref.get('commit')
+    return isinstance(commit, str) and re.fullmatch(r'[0-9a-f]{40}', commit) is not None
+
+
+def validated_packet_index(entry, source, cache_dir, scope):
+    entry.saved = [source]
+    entry._index = None
+    if cache_dir is None or not fixed_locator(source):
+        return entry.saved_index()
+    cache_dir = Path(cache_dir)
+    key = hashlib.sha256(json.dumps([scope, source], sort_keys=True).encode()).hexdigest()
+    path = cache_dir / (key + '.json')
+    try:
+        saved = json.loads(path.read_bytes())
+        if saved['key'] == key and isinstance(saved['index'], dict):
+            return saved['index']
+    except (OSError, ValueError, TypeError, KeyError):
+        pass
+    index = entry.saved_index()
+    packet = entry.reader.read(source)
+    if not (fixed_locator(packet['configuration_source'])
+            and all(fixed_locator(mean['source']) for mean in packet['means'])):
+        return index
+    try:
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(mode='w', dir=cache_dir, delete=False) as out:
+            try:
+                json.dump(dict(key=key, index=index), out, allow_nan=False)
+                out.flush()
+                Path(out.name).replace(path)
+            finally:
+                Path(out.name).unlink(missing_ok=True)
+    except OSError:
+        pass  # The original fixed validation remains authoritative.
+    return index
+
+
+def scope_df_saved_index(entry, configuration, *, cache_dir=None, scope=None):
     """Use the fixed validator for every packet before comparing duplicates."""
     wanted = {entry.physical_key(job): job['m'] for job in entry.runtime.jobs(configuration)}
     inventory = list(entry.saved)
+    if cache_dir is not None:
+        scope = hashlib.sha256(json.dumps(scope, sort_keys=True).encode()).hexdigest()
     selected, alternatives, differences, first_records = {}, {}, {}, {}
     try:
         for source in inventory:
-            entry.saved = [source]
-            entry._index = None
-            for key, item in entry.saved_index().items():
+            for key, item in validated_packet_index(entry, source, cache_dir, scope).items():
                 if key not in wanted:
                     continue
                 first = selected.setdefault(key, item)
@@ -131,7 +173,7 @@ def bind_df_conflicts(entry, conflicts):
     entry.plan = plan
 
 
-def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None):
+def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None,cache_dir=None):
     # Same fixed entry as326fe; no source edits to its canonical/provider contracts.
     sys.path.insert(0,str(DF_VIEW/'src'))
     from trottertracks.pr_df_signal_entry import DFSignalEntry,FixedRuntime
@@ -140,7 +182,21 @@ def df_entry(tail_descriptor=None,saved_bundles=(),configuration=None):
            df_extension().entry(ROOT,tail_descriptor,DFSignalEntry,runtime=runtime))
     entry.saved.extend(x for x in saved_bundles if x not in entry.saved)
     if configuration is not None and not entry._support(configuration):
-        conflicts = scope_df_saved_index(entry, configuration)
+        scope = None
+        if cache_dir is not None:
+            views = (DF_VIEW, SIGNAL_VIEW)
+            # Cache only immutable Git locators validated by unmodified views.
+            if ((tail_descriptor is None or fixed_locator(tail_descriptor))
+                    and all(subprocess.run(['git','diff','--quiet','HEAD','--','src'],cwd=view).returncode == 0
+                            for view in views)):
+                scope = dict(views=[subprocess.check_output(['git','rev-parse','HEAD'],cwd=view,text=True).strip()
+                                    for view in views], descriptor=tail_descriptor,
+                             caller=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                             extension=hashlib.sha256((ROOT/'src/trottertracks/pr_df_descriptor_extension.py').read_bytes()).hexdigest(),
+                             validated_metadata=entry.info)
+            else:
+                cache_dir = None
+        conflicts = scope_df_saved_index(entry, configuration, cache_dir=cache_dir, scope=scope)
         if conflicts:
             bind_df_conflicts(entry, conflicts)
     return entry
@@ -205,11 +261,11 @@ def main():
     DF_VIEW=Path(paths.get('DF_VIEW',DF_VIEW));SIGNAL_VIEW=Path(paths.get('SIGNAL_VIEW',SIGNAL_VIEW))
     if a.mode=='df-generate':value=df_generate(r)
     elif a.mode=='df-plan':
-        config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config).plan(config)
+        config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config,r.get('saved_index_cache')).plan(config)
     elif a.mode=='df-stage':
-        config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config).stage(config,ROOT/r['directory'],obtained={int(m):v for m,v in r.get('obtained',{}).items()})
+        config=read(r['configuration']);value=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config,r.get('saved_index_cache')).stage(config,ROOT/r['directory'],obtained={int(m):v for m,v in r.get('obtained',{}).items()})
     elif a.mode=='df-bundle':
-        config=read(r['configuration_source']);entry=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config);value=entry.assemble(r['configuration_source'],{int(m):v for m,v in r['raw_sources'].items()})
+        config=read(r['configuration_source']);entry=df_entry(r.get('tail_descriptor'),r.get('saved_bundles',[]),config,r.get('saved_index_cache'));value=entry.assemble(r['configuration_source'],{int(m):v for m,v in r['raw_sources'].items()})
     elif a.mode=='df-price-design':
         spec=importlib.util.spec_from_file_location('_df_candidate_price_design',ROOT/'scripts/run_pr_df_candidate_prices.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)

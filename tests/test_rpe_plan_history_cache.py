@@ -35,7 +35,7 @@ class SavedHistoryDeltas(unittest.TestCase):
 
     def evidence(self, n, status=O.PASS, outcome=True):
         proposal = dict(configuration_id='cfg', vector=(n, n), cost=Fraction(2*n), origin=dict(kind='SYNTHETIC'))
-        job = self.prior / 'jobs/FULL_PF' / self.executor.job_dir(proposal).name
+        job = self.prior / 'jobs' / self.executor.method / self.executor.job_dir(proposal).name
         job.mkdir(parents=True)
         request = self.executor.request(proposal, job, self.rule)
         (job / 'REQUEST.json').write_text(json.dumps(request))
@@ -132,6 +132,33 @@ class SavedHistoryDeltas(unittest.TestCase):
         self.assertEqual(restored['bounds'], original)
         self.assertTrue(all(type(x) is Fraction for x in restored['bounds']))
         self.assertTrue(all(x.denominator > 0 for x in restored['bounds']))
+
+    def test_normal_factory_reuses_prior_results_and_honors_holds_for_all_methods(self):
+        from run_rpe_method_optimizer import make_executor
+
+        methods = ('FULL_PF', 'TRUNCATED_PF', 'PR_PAULI', 'PR_DF')
+        spec = dict(max_new_q3_per_method=dict.fromkeys(methods, 0),
+                    executor=dict(prior_run_dirs=[str(self.prior)]))
+        executor, _ = make_executor(ROOT, self.root / 'current',
+                                    dict.fromkeys(methods, [self.rule]), self.expected, self.problem, spec)
+        for method in methods:
+            with self.subTest(method=method):
+                self.executor = executor.for_method(method)
+                accepted = self.evidence(4)
+                self.evidence(5, O.FAIL)
+                self.evidence(6, outcome=False)
+                with patch.object(self.executor, 'optimizer_history_directory', None):
+                    baseline = self.executor.prior_records(self.candidates)
+                self.assertEqual(len(baseline[0]), 2)
+                self.assertEqual(self.executor.prior_records(self.candidates), baseline)
+                with patch.object(self.executor, 'ingest', wraps=self.executor.ingest) as ingest:
+                    self.assertEqual(executor.for_method(method).prior_records(self.candidates), baseline)
+                    self.assertEqual(self.executor.prior_records(self.candidates), baseline)
+                self.assertEqual(ingest.call_count, 0)
+                self.executor.prior_q3_holds = [dict(parent_directory=str(self.prior), method=method, job_id=accepted.name)]
+                known, refused = self.executor.prior_records(self.candidates)
+                self.assertNotIn(('cfg', (4, 4)), known)
+                self.assertEqual(refused, [dict(job=str(accepted), reason='PRIOR_Q3_PERSISTENCE_HOLD')])
 
 
 if __name__ == '__main__':

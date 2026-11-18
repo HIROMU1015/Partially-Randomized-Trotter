@@ -206,6 +206,8 @@ def make_executor(root, run, routes, expected, problem, spec):
     else:
         executor=O.Executor(root,run,routes,expected,problem,**common);optimize=O.optimize
     executor.prior_q3_holds = prior_q3_holds
+    if common['prior_run_dirs'] and options.get('prior_history_cache', True):
+        executor.optimizer_history_directory = run / 'cache' / 'prior-q3'
     graph=spec.get('distributed_preparation')
     if graph and not getattr(executor,'launch_disabled',False) and approved:
         if not hasattr(executor,'configure_preparation_graph'):
