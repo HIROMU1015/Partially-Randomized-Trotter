@@ -176,6 +176,8 @@ def import_inputs(plan, old_run, study):
         raise RuntimeError('Original cycle ceiling reached; not enlarged by technical recovery')
     problem = read(old_study / 'PROBLEM.json')
     spec = read(old_study / 'ROUND.json')
+    if plan.get('live_ready_refill') is True:
+        spec['live_ready_refill'] = True
     registry = str(run / 'PRICE_RULES_REGISTRY.json')
     spec['base_commit'] = plan['new_code_source']
     spec['candidate_completion']['source'] = plan['new_code_source']
@@ -249,7 +251,17 @@ def execute(plan, study):
         records = [json.loads(l) for l in (old_run / 'CONTROLLER_INVOCATIONS.jsonl').read_text().splitlines()]
         if not records or records[-1].get('event') != 'CONTROLLER_RETURN':
             raise RuntimeError('No recorded old controller return; preserve and review ownership')
-        if records[-1].get('shell_returncode') not in (0, 1):
+        old_return = records[-1]
+        if plan.get('controller_only_sigint') is True:
+            terminal = read(old_run / 'CONTROLLER_STATUS.json')
+            stop = read(old_run / 'KAPPA_STATE.json').get('stop', {})
+            if not (terminal == old_return and terminal.get('returncode') in (-2, 130, 1)
+                    and terminal.get('stop') == stop and stop.get('reason') == 'RUNTIME_EXCEPTION'
+                    and stop.get('error_type') == 'KeyboardInterrupt'):
+                raise RuntimeError('Expected a recorded controller-only KeyboardInterrupt drain')
+            if q3_preflight(old_run)['unresolved']:
+                raise RuntimeError('Unresolved Q3 receipts after controller drain')
+        elif old_return.get('shell_returncode') not in (0, 1):
             raise RuntimeError('Old owner ended by signal/abnormal exit; review owned children before new science')
         run = study / 'run02'
         if not (run / 'SOURCE.json').exists():
@@ -263,12 +275,15 @@ def execute(plan, study):
             old_paths += [str((old_run / f).relative_to(old_root)) for f in
                           ('CONTROLLER.log', 'CONTROLLER_INVOCATIONS.jsonl', 'ROUND_STAGES.jsonl',
                            'DRIVER_PROGRESS.jsonl', 'PROGRESS.jsonl', 'completion/PROGRESS.jsonl')]
-            git(*IDENTITY, 'add', '--', *old_paths, cwd=old_root)
+            if plan.get('controller_only_sigint') is True:
+                old_paths += [str((old_run / f).relative_to(old_root)) for f in
+                              ('CONTROLLER_STATUS.json', 'RUNTIME_ERRORS.jsonl')]
+            git(*IDENTITY, 'add', '--sparse', '--', *old_paths, cwd=old_root)
             if git('diff', 'HEAD', '--name-only', '--', *old_paths, cwd=old_root):
                 git(*IDENTITY, 'commit', '--only', '-m', 'Preserve terminal R08 metadata before technical source handover', '--', *old_paths, cwd=old_root)
                 git('push', 'origin', plan['old_branch'], cwd=old_root)
             run, remaining = import_inputs(plan, old_run, study)
-            git(*IDENTITY, 'add', '--', str(study.relative_to(ROOT)))
+            git(*IDENTITY, 'add', '--sparse', '--', str(study.relative_to(ROOT)))
             git(*IDENTITY, 'commit', '--only', '-m', 'Fix R08 recovery inputs after old owner drain; preserve scientific evidence', '--', str(study.relative_to(ROOT)))
             git('push', 'origin', git('branch', '--show-current'))
         else:
