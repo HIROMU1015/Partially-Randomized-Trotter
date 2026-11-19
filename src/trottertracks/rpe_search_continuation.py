@@ -60,8 +60,8 @@ def verify_retired_preparation_attempts(run):
     return verified
 
 
-def preparation_rejected_before_delivery(job):
-    """Recognize a local dispatch rejection with no worker-side execution."""
+def preparation_rejected_before_science(job):
+    """Verify a local preparation stopped before a scientific command ran."""
     from .rpe_q3_coordinator import digest
     from .rpe_release_deployment import manifest_reference
 
@@ -75,12 +75,13 @@ def preparation_rejected_before_delivery(job):
         row = db.execute('''SELECT state, method, host_id, attempt_id, request_sha256, detail,
             started_epoch, completed_epoch, adopted_epoch, completion_sha256, request
             FROM jobs WHERE job_id=?''', (job.name,)).fetchone()
-    if not row or row[0:2] != ('UNKNOWN', job.parent.name) or any(x is not None for x in row[6:10]):
+    if not row or row[0:2] != ('UNKNOWN', job.parent.name) or any(x is not None for x in row[7:10]):
         return False
-    if json.loads(row[5]) != dict(reason='PREPARATION_DISPATCH_VALIDATION_REJECTED_BEFORE_DELIVERY',
-                                  automatic_retry=False, resource_released=True):
+    detail = json.loads(row[5])
+    if detail.get('automatic_retry') is not False or detail.get('resource_released') is not True:
         return False
-    if not (parent/'EXIT.json').is_file() or not (parent/'STOP_REQUESTED.json').is_file():
+    if not all((parent/path).is_file() for path in ('EXIT.json', 'STOP_REQUESTED.json',
+                                                   'distributed/relay/STATUS.json')):
         return False
     if (load(parent/'LAUNCH.json')['invocation_id'] != load(parent/'EXIT.json')['invocation_id']
             or load(parent/'distributed/relay/STATUS.json').get('stopped') is not True):
@@ -93,16 +94,38 @@ def preparation_rejected_before_delivery(job):
     if ((row[2], row[3], row[4]) != (worker['host_id'], owner['attempt_id'], digest(request))
             or json.loads(row[10]) != request
             or owner['host_id'] != row[2] or not work_dir.is_dir()
-            or (work_dir/job.name).exists() or (parent/'distributed/transfers'/job.name).exists()
+            or (parent/'distributed/transfers'/job.name).exists()
             or set(p.name for p in job.iterdir()) != {'REQUEST.json', 'LAUNCH.json'}):
         return False
     stage = request['preparation']['stage']
     source = request['preparation']['source']['commit']
     manifest = load(Path(dist['release_manifest']))
-    return (row[1] == 'PREPARATION:'+stage and bool(dist.get('local_deployment_layout'))
-            and dist.get('required_release') == manifest_reference(manifest)
-            and not any(manifest['components'][name]['source'] == source
-                        for name in manifest['stage_components'].get(stage, [])))
+    if (row[1] != 'PREPARATION:'+stage or not dist.get('local_deployment_layout')
+            or dist.get('required_release') != manifest_reference(manifest)):
+        return False
+    if detail['reason'] == 'PREPARATION_DISPATCH_VALIDATION_REJECTED_BEFORE_DELIVERY':
+        return (row[6] is None and not (work_dir/job.name).exists()
+                and not any(manifest['components'][name]['source'] == source
+                            for name in manifest['stage_components'].get(stage, [])))
+    spec = request['preparation']
+    if spec.get('provider') != 'PAULI_COMPILE' or spec.get('publish_pauli_binding') is not True:
+        return False
+    # Older workers recorded this failure in stderr before they wrote a
+    # preparation outcome. Bind that receipt to the original worker attempt.
+    attempt = work_dir/job.name/row[3]
+    if (row[6] is None or (attempt/'PREPARATION_BODY.log').exists()
+            or not all((attempt/path).is_file() for path in ('ASSIGNMENT.json', 'PROCESS_RETURN.json',
+                                                           'WORKER_STATE.json', 'WORKER_EXECUTE.log'))):
+        return False
+    assignment = load(attempt/'ASSIGNMENT.json')
+    receipt = load(attempt/'PROCESS_RETURN.json')
+    worker_state = load(attempt/'WORKER_STATE.json')
+    return (assignment['request'] == request and assignment['attempt_id'] == row[3]
+            and assignment['request_sha256'] == row[4] and receipt.get('returncode') == 1
+            and receipt.get('signal') is None and receipt.get('automatic_retry') is False
+            and worker_state.get('state') == 'UNKNOWN' and worker_state.get('detail') == detail
+            and (attempt/'WORKER_EXECUTE.log').read_text().rstrip().endswith(
+                'ValueError: Pauli publication base ref differs from the fixed provider'))
 
 
 def verify_prior_q3_holds(root, run, problem, spec):

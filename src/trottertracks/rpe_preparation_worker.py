@@ -499,7 +499,6 @@ def execute(assignment, base_profile, directory):
     input_heads={}
     if spec.get('return_git_delta') is True:
         input_heads={alias:_head(workspace) for alias,(workspace,_) in owned.items()}
-    start=time.monotonic();timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_START',stage=spec['stage'])
     env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',RPE_PREPARATION_PATH_MAP=json.dumps(bindings),
              RPE_PREPARATION_PYTHON=profile['interpreter'])
     if spec.get('publish_pauli_binding') is True:
@@ -507,12 +506,21 @@ def execute(assignment, base_profile, directory):
         if ('--no-push' not in command or '--phase' not in command
                 or command[command.index('--phase')+1:command.index('--phase')+2] != ['compile']):
             raise ValueError('Pauli binding publication requires the fixed compile command')
-        env.update(prepare_pauli_binding_publication(profile, assignment, provider, manifest['commit']))
+        try:
+            env.update(prepare_pauli_binding_publication(profile, assignment, provider, manifest['commit']))
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
+            outcome.update(status='PREPARATION_FAILED', artifacts={}, git_bundles=[],
+                           workspace_error=dict(step='Pauli binding publication preflight',
+                                                reason=str(error), scientific_body_started=False))
+            put(directory/'ARTIFACT_MANIFEST.json', {})
+            put(directory/'OUTCOME.json', outcome)
+            return outcome
         command.append('--publish-binding')
     if spec.get('parallel_df_price_axes') is True:
         env.update(RPE_DF_PRICE_AXIS_WORKERS=str(profile['task_cpu_count']),
                    OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1',
                    RAYON_NUM_THREADS='1', QISKIT_NUM_PROCS='1')
+    start=time.monotonic();timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_START',stage=spec['stage'])
     with(directory/'PREPARATION_BODY.log').open('xb')as log:
         process=subprocess.run(command,cwd=source,env=env,stdout=log,stderr=subprocess.STDOUT)
     timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_END',stage=spec['stage'],returncode=process.returncode)
