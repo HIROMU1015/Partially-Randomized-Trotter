@@ -1,0 +1,52 @@
+{
+  "command": [
+    "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "-B",
+    "-c",
+    "\nimport importlib.util, json, sys\nfrom pathlib import Path\nrunner, view = sys.argv[1:3]\nsys.argv = [runner, *sys.argv[3:]]\nsys.path.insert(0, str(Path(runner).resolve().parents[1]/'src'))\nimport trottertracks\ntrottertracks.__path__.insert(0, str(Path(view)/'src'/'trottertracks'))\nif '--input' in sys.argv:\n    from trottertracks.rpe_preparation_paths import resolve\n    document = Path(sys.argv[sys.argv.index('--input')+1])\n    provider = resolve(json.loads(document.read_bytes())['runtime']['provider_root'])\n    native = Path(provider)/'src'/'trottertracks'\n    if native.is_dir():\n        import trottertracks.resource_applicability as resource_applicability\n        resource_applicability.__path__.insert(0, str(native/'resource_applicability'))\n# Pool jobs resolve functions by module name even with the fork start method.\nspec = importlib.util.spec_from_file_location('_rpe_fixed_df_price_runner', runner)\nmodule = importlib.util.module_from_spec(spec)\nsys.modules[spec.name] = module\nspec.loader.exec_module(module)\nmodule.FIXED_VIEW = Path(view)\nraise SystemExit(module.main())\n",
+    "/home/abe/Project/Partially Randomized Trotter/.rpe-central/workers/local/spool/prep-8df6c2efdf1595bfda330450/27bdac5f76f84b72a57beca7c02997d8/workspace/scripts/run_pr_df_candidate_prices.py",
+    "/home/abe/Project/Partially Randomized Trotter/.rpe-central/views/326feadd093920bbea29b498108aa4eae6f67a75",
+    "--openblas-coretype",
+    "HASWELL",
+    "acquire",
+    "--input",
+    "/home/abe/Project/Partially Randomized Trotter/.rpe-central/workers/local/spool/prep-8df6c2efdf1595bfda330450/27bdac5f76f84b72a57beca7c02997d8/workspace/search-evidence/search-eea38701fa5a6a593e9f/completion/candidates/5496051fc6ea607899d8/df_price_groups/02d8888c5457fb0fb449/df_prices/INPUTS.json",
+    "--inputs-commit",
+    "a3bbf4f142685f650489da6092dbc9ebefa7b0c3",
+    "--source",
+    "cac95fd9c483995170a429c7ed5b8f7001873d12",
+    "--stage",
+    "calibration"
+  ],
+  "source": {
+    "commit": "cac95fd9c483995170a429c7ed5b8f7001873d12",
+    "files": {
+      "scripts/run_pr_df_candidate_prices.py": "dc681c97ddbf570a771578a98392e6af2d0593349696c57bbafddc55f1c5e6bb",
+      "scripts/run_pr_pauli_candidate_signals.py": "2847b94b4c5a030d5ada0db243ecbc247240af7948862543a88774abcdcad6ea",
+      "src/trottertracks/pr_df_descriptor_extension.py": "7596e1c46e4dec6d2eaeb69363976ff835155d981cc4333754e85ac3209037d9",
+      "src/trottertracks/rpe_preparation_paths.py": "e1f214a4a2d7c222e1183e62ecfae4728b52577539a7d6048aa65e16ab448d1f"
+    }
+  },
+  "runtime": {
+    "executable": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "version": "3.11.0rc1 (main, Aug 12 2022, 10:02:14) [GCC 11.2.0]",
+    "version_info": [
+      3,
+      11,
+      0,
+      "candidate",
+      1
+    ],
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "packages": {
+      "numpy": "1.26.4",
+      "qiskit": "1.3.0",
+      "scipy": "1.14.1"
+    }
+  },
+  "tools": {},
+  "returncode": 0,
+  "signal": null,
+  "wall_seconds": 515.6122655021027,
+  "automatic_retry": false
+}
