@@ -56,3 +56,39 @@ finite-grid plannerはこの7点だけを提案し、経験的な上方停止や
 他の独立した条件の通常開始を妨げない。旧4件の再試行は許可しない。
 人工回帰 `tests/test_rpe_legacy_failed_hold.py` は、原本不変、改変・稼働中・再試行の拒否、
 同じ配分がshot候補にあっても新規評価されないことを検査する。
+
+## 通常Startと実Q3開始
+
+固定controller `d9a4c2ac47c72c7f42190b5a0ab88313ba1e1cd2` を使う
+release `romutail-h4-discrete-d9a4c2ac47` を新規run向けcurrentへ採用した。
+科学Q3・価格・信号workerとruntime、PBSの需要連動配分は前の混在版を維持する。
+scope原本はRomuTailの
+`.rpe-central/planning/h4-three-method-discrete-20261120/SCOPE.json`。
+
+通常Startのrunは `search-906c799cfd87c62160ce`。
+§10.5はPASS、B0I保存評価255件の再利用と旧失敗4配分の個別保留を確認した。
+Full PF・B0I・PR-DFの全3方式で新しいQ3の実行・結果回収が始まった。
+観測時点では9件が中央ACCEPTED（Full PF4、B0I3、PR-DF2）。
+この9件の判定は `MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD` で、成功解の発見とは異なる。
+server2とWSLに加え、PBS `267545.CPUcluster-PRISM` でもFull PF1件を実行・回収した。
+同PBS枠は適格な需要に応じた2 CPU・9 GiBで、96 CPU運用の検収ではない。
+依頼は開始までであり、担当の判断でStopせず探索を継続している。
+
+一部の新規PR-DF候補はdf-planで元の絶対パス
+`/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/H4_context.json` を解決できず
+候補単位で保留された。新しい信号・価格準備の全条件が通過したという主張はしない。
+既存成果を使う評価と独立した候補の探索は継続する。後続の技術作業は、
+このcontroller側metadataサービスへの保存入力パス受渡しの修正である。
+失敗した候補の原記録を保全し、同じ科学処理の自動再試行を追加しない。
+
+通常操作：
+
+```bash
+.venv311/bin/python -B .rpe-central/releases/romutail-h4-discrete-d9a4c2ac47/scripts/run_rpe_search.py \
+  --config .rpe-central/CLIENT.json --action status --run-id search-906c799cfd87c62160ce
+```
+
+実装は親Codex、PFとPR backendおよび人工回帰は委任Codexと共同で担当した。
+親Codexによる関連66テストと4subtest、委任Codexによるcontinuation14テストが通過した。
+実環境への配置・元hostの終了確認・通常Start・Q3結果回収の確認は親Codexが担当した。
+独立した重要科学レビューを実施したという意味ではない。
