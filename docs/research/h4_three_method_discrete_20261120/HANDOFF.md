@@ -164,3 +164,14 @@ PF信号準備も保存receiptの元の絶対パス未解決で失敗した。PR
 PFの完了済みcalibration（SOURCE raw_commit `960c0497534bc13924f41be4c7ca22c437653ac6`）も
 元bundleとreceiptを照合し、候補ID別の保存calibrationとして再利用する。
 新しいsignal/holdout等の不足分だけを許可済み130条件内で実行する。
+
+修正版13bの `search-2bf68d58d3d7c32243c8` ではPF信号とdescriptorを実行・成功回収した。
+引継ぎ設定が旧READY recordを方式で絞らずPR-Pauli packetまでDFリストへ加えたため、
+5候補のdf-planがmetadataのみでKeyErrorとなった。担当の設定ミスとして修正する。
+DF専用リストへ絞り、誤方式を明確なエラーで拒否する入力検査を追加した。
+実際の7候補のdf-planを局所の修正版で通し、科学stage未起動の旧3metadata receiptを保全する。
+
+価格用の回収軸は、RMSE要求IDと有限回路IDを区別して再利用候補へ渡す。
+実データの読み取り検証では40回収軸と既存LD9の8軸を厳密照合して再利用でき、HOLDは0件だった。
+HASWELLの追加reference確認ではLD5・6も保存λとtail scalarへ厳密一致した。
+新holdoutの独立性は維持し、保存軸を監査済みモデルや科学的成功へ変換しない。

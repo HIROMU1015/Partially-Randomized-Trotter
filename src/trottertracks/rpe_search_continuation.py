@@ -509,9 +509,12 @@ def verify(run, problem, spec):
             verify_attempts(previous, contract['preparation_retry_jobs'])
         for key in hold_keys:
             row = records.get(key) or {}
-            if (row.get('method') != 'PR_DF' or row.get('status') != 'WAITING_DISTRIBUTED_PREPARATION'
-                    or row.get('recoverable_preparation') is not True or row.get('scientific_failure') is not False
-                    or not row.get('reason', '').startswith(prefix)):
+            from .pr_candidate_completion import Completion
+            metadata_only = Completion.metadata_path_failure(row, metadata_file.parent/'candidates'/key)
+            descriptor_hold = (row.get('method') == 'PR_DF' and row.get('status') == 'WAITING_DISTRIBUTED_PREPARATION'
+                               and row.get('recoverable_preparation') is True and row.get('scientific_failure') is False
+                               and row.get('reason', '').startswith(prefix))
+            if not (metadata_only or descriptor_hold):
                 raise ValueError('Continuation cannot repair a scientific failure or another metadata hold')
         if any(row.get('scientific_failure') is True for row in records.values()):
             # Candidate-level stops remain terminal across a deployment repair.

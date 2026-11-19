@@ -322,19 +322,21 @@ def resolve_reuse(cells,quote,reader=None,source_reader=None):
     return summary
 
 
-def merge_saved_axis_quotes(quote, packages):
+def merge_saved_axis_quotes(quote, packages, cells=None):
     """Offer published partial receipts to the ordinary strict reuse checks.
 
     This supplies no price/model verdict. Rows must match the exact physical
     round; calibration/holdout roles and every receipt are checked at adoption.
     """
     merged=deepcopy(quote)
+    finite_ids={cell['m']:cell['request']['physical_context']['physical_candidate']['id'] for cell in (cells or [])}
     for package in packages:
         if package.get('schema')!='PR_DF_PARTIAL_AXIS_QUOTES_V1':
             raise ValueError('Unknown saved DF partial-axis quote schema')
         for saved in package['rows']:
             matches=[row for row in merged['rows'] if all(row.get(k)==saved.get(k)
-                     for k in ('m','axis','physical_id','q','R'))]
+                     for k in ('m','axis','q','R')) and saved.get('physical_id') in
+                     (row.get('physical_id'),finite_ids.get(row['m']))]
             for row in matches:
                 alternatives=row.setdefault('direct_alternatives',[])
                 for alternative in saved['direct_alternatives']:
@@ -431,10 +433,9 @@ def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=
     selected=design(config,covered_rounds)
     if saved_axis_quotes:
         if price_quote is None:raise ValueError('Saved axis receipts require a fixed candidate quote')
-        price_quote=merge_saved_axis_quotes(price_quote,[read(locator)for locator in saved_axis_quotes])
     if price_quote is not None:
         if price_quote.get('configuration_id')!=config['id']:raise ValueError('Price quote belongs to another configuration')
-        write(output/'PRICE_QUOTE.json',price_quote)
+        if not saved_axis_quotes:write(output/'PRICE_QUOTE.json',price_quote)
     if selected['reasons']:
         write(output/'NEEDS.json',{k:v for k,v in selected.items()if k!='matrix'});return
     R=runtime();resolved=scalar_metadata(config,tail_descriptor)
@@ -448,6 +449,9 @@ def prepare(config_source,output,source,cohort,price_quote=None,tail_descriptor=
         c=request['physical_context']['physical_candidate'];name=cohort+'_'+role
         seeds=[[seed(c,name,i,j,0)for j in range(c['q'])]for i in range(n)]
         cells.append(dict(m=m,role=role,request=request,cohort=name,indices=list(range(n)),seeds=seeds))
+    if saved_axis_quotes:
+        price_quote=merge_saved_axis_quotes(price_quote,[read(locator)for locator in saved_axis_quotes],cells)
+        write(output/'PRICE_QUOTE.json',price_quote)
     adoption_summary=adopt_saved_calibration_cohorts(cells,price_quote)
     reuse_summary=resolve_reuse(cells,price_quote)
     all_seeds=[v for c in cells for row in c['seeds']for v in row]

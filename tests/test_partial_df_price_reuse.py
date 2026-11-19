@@ -232,6 +232,11 @@ class PartialReuseTests(unittest.TestCase):
         self.assertNotIn('direct_alternatives',quote['rows'][0])
         self.assertEqual(len(merged['rows'][0]['direct_alternatives']),1)
         self.assertNotIn('direct_alternatives',merged['rows'][1]);self.assertNotIn('direct_alternatives',merged['rows'][2])
+        # Normal quotes name the upstream RMSE candidate, while path receipts
+        # name the finite wrapper. The generated cell binds those two IDs.
+        mapped={'rows':[dict(quoted,physical_id='RMSE:upstream-declaration')]}
+        mapped=E.merge_saved_axis_quotes(mapped,[package],[saved])
+        self.assertEqual(len(mapped['rows'][0]['direct_alternatives']),1)
         c=deepcopy(saved);c['cohort']='NEW'
         result=E.adopt_saved_calibration_cohorts([c],merged,reader=lambda loc:deepcopy(docs[loc['path']]),source_reader=self.source)
         self.assertEqual(result[0]['status'],'ADOPTED_SAVED_CALIBRATION_COHORT')

@@ -36,6 +36,25 @@ class SavedQuotes(unittest.TestCase):
                         self.assertEqual(c['ready'],bad is None)
                         self.assertEqual(c['prices']is not None,bad is None)
 
+    def test_df_inventory_rejects_pauli_envelopes_before_fixed_validator(self):
+        spec=importlib.util.spec_from_file_location('_typed_df_service',ROOT/'scripts/pr_candidate_services.py')
+        service=importlib.util.module_from_spec(spec);spec.loader.exec_module(service)
+        source=dict(commit='1'*40,path='saved-packet.json')
+        def forbidden():
+            raise AssertionError('A wrong-method packet reached DF validation')
+        for packet in (dict(packets=[dict(rounds=[])]),
+                       dict(method='PR_PAULI',configuration_source={},means=[]),
+                       dict(schema='PAULI_SIGNAL_PACKET_V1',configuration_source={},means=[]),
+                       dict(configuration_source={},means=[None])):
+            with self.subTest(packet=packet),tempfile.TemporaryDirectory() as cache:
+                entry=SimpleNamespace(reader=SimpleNamespace(read=lambda loc:packet),saved_index=forbidden)
+                with self.assertRaisesRegex(ValueError,'DF_SAVED_BUNDLE_EXPECTED'):
+                    service.validated_packet_index(entry,source,cache,'fixed')
+                self.assertEqual(list(Path(cache).iterdir()),[])
+        entry=SimpleNamespace(reader=SimpleNamespace(read=lambda loc:dict(
+            configuration_source=source,means=[dict(source=source)])),saved_index=lambda:{'physical':'original'})
+        self.assertEqual(service.validated_packet_index(entry,source,None,'fixed'),{'physical':'original'})
+
     def test_df_alias_reuses_only_strictly_matching_scientific_records(self):
         spec=importlib.util.spec_from_file_location('_scoped_df_service',ROOT/'scripts/pr_candidate_services.py')
         service=importlib.util.module_from_spec(spec);spec.loader.exec_module(service)
@@ -55,7 +74,8 @@ class SavedQuotes(unittest.TestCase):
                     _index=None
                     runtime=SimpleNamespace(jobs=lambda configuration:[dict(key=key,m=m)
                                              for m,key in enumerate(configuration)])
-                    reader=SimpleNamespace(read=lambda loc:docs[loc])
+                    reader=SimpleNamespace(read=lambda loc: dict(configuration_source={},means=[])
+                        if loc in ('packet1','packet2') else docs[loc])
 
                     def physical_key(self,job):return job['key']
 

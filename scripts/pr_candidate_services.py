@@ -96,6 +96,17 @@ def fixed_locator(ref):
 def validated_packet_index(entry, source, cache_dir, scope):
     entry.saved = [source]
     entry._index = None
+    packet = entry.reader.read(source)
+    # DF's fixed validator expects the assembled top-level means bundle.
+    # Pauli packets use a different envelope and must not reach that validator
+    # (or a cached index) through a mixed-method continuation inventory.
+    labels = ' '.join(str(packet.get(name, '')) for name in ('method', 'kind', 'schema')) if isinstance(packet, dict) else ''
+    if (not isinstance(packet, dict) or 'PAULI' in labels.upper()
+            or packet.get('method') in ('FULL_PF', 'TRUNCATED_PF')
+            or not isinstance(packet.get('configuration_source'), dict)
+            or not isinstance(packet.get('means'), list)
+            or any(not isinstance(mean, dict) or 'source' not in mean for mean in packet['means'])):
+        raise ValueError('DF_SAVED_BUNDLE_EXPECTED: saved_df_bundles requires a DF bundle with configuration_source and top-level means: '+str(source))
     if cache_dir is None or not fixed_locator(source):
         return entry.saved_index()
     cache_dir = Path(cache_dir)
@@ -108,7 +119,6 @@ def validated_packet_index(entry, source, cache_dir, scope):
     except (OSError, ValueError, TypeError, KeyError):
         pass
     index = entry.saved_index()
-    packet = entry.reader.read(source)
     if not (fixed_locator(packet['configuration_source'])
             and all(fixed_locator(mean['source']) for mean in packet['means'])):
         return index

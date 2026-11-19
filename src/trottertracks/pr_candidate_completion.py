@@ -250,7 +250,9 @@ class Completion:
             if {p.name for p in markers}!={'df-generate.STARTED.json','INITIAL_QUOTE.STARTED.json','df-plan.STARTED.json'}:
                 return False
             if (directory/'df-plan.json').exists():return False
-            return "FileNotFoundError: [Errno 2] No such file or directory:" in (directory/'df-plan.log').read_text()
+            log=(directory/'df-plan.log').read_text()
+            return ("FileNotFoundError: [Errno 2] No such file or directory:" in log
+                    or ("KeyError: 'means'" in log and 'validated_packet_index' in log))
         except (OSError,ValueError,KeyError,TypeError):
             return False
 

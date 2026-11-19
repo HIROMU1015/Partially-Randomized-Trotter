@@ -55,12 +55,15 @@ def reuse_signal(root, workspace, folder, plan, saved):
         raise Held('PF_SAVED_SIGNAL_REUSE_HOLD:'+str(error)) from error
 
 
-def reuse_calibration(root, workspace, folder, plan, rounds, receipt):
+def reuse_calibration(root, workspace, folder, plan, rounds, receipt, *, phase='calibration'):
+    """Restore exact completed calibration or holdout compile artifacts."""
+    if phase not in ('calibration', 'holdout'):
+        raise ValueError('Unsupported PF compile reuse phase: '+phase)
     from .pr_candidate_completion import Held
-    relative=(folder/'calibration/run01').relative_to(workspace).as_posix()
+    relative=(folder/phase/'run01').relative_to(workspace).as_posix()
     commit=receipt['raw_commit']
     try:
-        if (receipt['status']!='COMPILE_RECEIPTS_READY' or receipt['phase']!='calibration' or
+        if (receipt['status']!='COMPILE_RECEIPTS_READY' or receipt['phase']!=phase or
                 receipt['relative']!=relative or receipt['rounds']!=rounds):
             raise ValueError('Collected calibration differs from the selected PF leaf')
         def blob(path):
@@ -77,14 +80,14 @@ def reuse_calibration(root, workspace, folder, plan, rounds, receipt):
                        stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
         for name in names:
             path=workspace/Path(name)
-            path.relative_to(folder/'calibration/run01')
+            path.relative_to(folder/phase/'run01')
             path.parent.mkdir(parents=True,exist_ok=True)
             raw=blob(name)
             if path.exists():
                 if path.read_bytes()!=raw:raise ValueError('Existing calibration artifact differs')
             else:
                 with path.open('xb') as stream:stream.write(raw)
-        put(folder/'PF_COMPILE.RESULT.json',receipt)
+        put(folder/('PF_COMPILE.RESULT.json' if phase=='calibration' else 'PF_HOLDOUT_COMPILE.RESULT.json'),receipt)
     except (OSError,KeyError,ValueError,subprocess.CalledProcessError) as error:
         raise Held('PF_SAVED_CALIBRATION_REUSE_HOLD:'+str(error)) from error
     return receipt
@@ -104,7 +107,9 @@ def track_collected_prices(workspace, compiled):
 
 def saved_for_configuration(settings, field, configuration_id):
     """Reuse a completed leaf only for its canonical configuration identity."""
-    plural = {'saved_calibration': 'saved_calibrations',
+    plural = {'saved_signal': 'saved_signals',
+              'saved_holdout_compile': 'saved_holdout_compiles',
+              'saved_calibration': 'saved_calibrations',
               'saved_calibration_audit': 'saved_calibration_audits'}[field]
     values = settings.get(plural, {})
     if not isinstance(values, dict):
@@ -219,11 +224,13 @@ def complete_selected(root,spec,run,request,entry,output,runtime):
             frozen=call('freeze','PF_MODEL_FREEZE',prices=values)['model']
             holdout=[r['m']for r in value['new_compile_cells']if r['role']=='HOLDOUT']
             if holdout:
-                compiled=call('compile','PF_HOLDOUT_COMPILE',cohort='holdout',rounds=holdout)
+                saved=saved_for_configuration(spec['pf_completion'],'saved_holdout_compile',value['configuration']['id'])
+                compiled=(reuse_calibration(root,workspace,folder,value,holdout,saved,phase='holdout') if saved else
+                          call('compile','PF_HOLDOUT_COMPILE',cohort='holdout',rounds=holdout))
                 track_collected_prices(workspace,compiled)
                 values+=call('audit','PF_HOLDOUT_AUDIT',compiled=compiled)['prices']
             return call('finish','PF_FINISH',prices=values,model=frozen)['prices']
-        saved_signal=spec['pf_completion'].get('saved_signal')
+        saved_signal=saved_for_configuration(spec['pf_completion'],'saved_signal',value['configuration']['id'])
         if saved_signal:
             reuse_signal(root,workspace,folder,value,saved_signal)
             price_source=prices()
