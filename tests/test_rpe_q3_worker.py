@@ -4,6 +4,7 @@ import base64
 import hashlib
 import json
 from pathlib import Path
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -237,6 +238,41 @@ class WorkerTests(unittest.TestCase):
             self.assertTrue(report['accepting_new_jobs'])
             self.assertEqual(report['evicted_prefix_checkpoints'], 1)
             self.assertFalse(checkpoint.exists())
+
+    def test_local_cache_duplicate_reclaim_preserves_queued_and_unmatched_files(self):
+        sys.path.insert(0, str(ROOT/'scripts'))
+        from reclaim_rpe_worker_storage import local_duplicate_cache
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            run, cache = root/'run', root/'cache'
+            central = run/'distributed/artifacts'
+            central.mkdir(parents=True)
+            profile = dict(host_id='local', artifact_cache_directory=str(cache), work_dir=str(root/'spool'),
+                           storage_limit=dict(roots=[str(cache)], limit_bytes=1, sample_path=str(root/'usage.json')))
+            eligible = {}
+            for name, copies in (('duplicate', (cache,central)), ('queued', (cache,central)), ('private', (cache,))):
+                raw = name.encode()
+                digest = hashlib.sha256(raw).hexdigest()
+                eligible[name] = digest
+                for directory in copies:
+                    target = directory/digest[:2]/digest
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes(raw)
+            W.atomic(run/'CONTROLLER_CONFIG.json', dict(state_directory=str(root)))
+            W.atomic(root/'CURRENT_TARGET.json', dict(run_directory=str(run)))
+            W.atomic(root/'RUNS.json', {'r':dict(run_directory=str(run))})
+            (root/'REGISTRY.lock').touch(); (root/'usage.lock').touch()
+            W.atomic(root/'usage.json', dict(policy=dict(limit_bytes=1,roots=[str(cache)]),
+                       report=dict(reason='STORAGE_LIMIT_REACHED',limit_bytes=1,used_bytes=10)))
+            with sqlite3.connect(run/'distributed/QUEUE.sqlite3') as db:
+                db.execute('CREATE TABLE jobs(host_id,state,request)')
+                db.execute('INSERT INTO jobs VALUES (NULL,?,?)', ('QUEUED',json.dumps({'sha':eligible['queued']})))
+            self.assertEqual(set(local_duplicate_cache(run,profile)),{eligible['duplicate']})
+            for name in ('queued','private'):
+                digest = eligible[name]
+                self.assertEqual((cache/digest[:2]/digest).read_text(),name)
+            digest = eligible['duplicate']
+            self.assertEqual((central/digest[:2]/digest).read_text(),'duplicate')
 
     def test_artificial_execute_transfer_duplicate_ack_and_resume(self):
         with tempfile.TemporaryDirectory() as temporary:

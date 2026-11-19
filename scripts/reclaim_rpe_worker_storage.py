@@ -4,9 +4,13 @@ import argparse
 import base64
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
+import fcntl
+import hashlib
 import json
 from pathlib import Path
+import re
 import shlex
+import sqlite3
 import subprocess
 import sys
 import time
@@ -34,6 +38,112 @@ def read(path):
     return json.loads(path.read_bytes())
 
 
+def _hashes(value):
+    if isinstance(value, str) and re.fullmatch('[a-f0-9]{64}', value):
+        yield value
+    elif isinstance(value, (dict, list)):
+        for item in value.values() if isinstance(value, dict) else value:
+            yield from _hashes(item)
+
+
+def local_duplicate_cache(run, profile):
+    """Drop only idle local cache copies with a byte-verified central copy."""
+    policy = profile['storage_limit']
+    sample = Path(policy['sample_path'])
+    worker = Path(profile['artifact_cache_directory']).resolve()
+    central = (run/'distributed/artifacts').resolve()
+    spool = Path(profile['work_dir']).resolve()
+    if (str(worker) not in policy['roots'] or worker == central
+            or central.is_relative_to(worker) or worker.is_relative_to(central)):
+        return {}
+    state_dir = Path(read(run/'CONTROLLER_CONFIG.json')['state_directory'])
+
+    def protected():
+        if Path(read(state_dir/'CURRENT_TARGET.json')['run_directory']).resolve() != run:
+            return None
+        for item in read(state_dir/'RUNS.json').values():
+            other = Path(item['run_directory']).resolve()
+            if other == run or not (other/'LAUNCH.json').is_file():
+                continue
+            if (not (other/'EXIT.json').is_file() or
+                    read(other/'LAUNCH.json')['invocation_id'] != read(other/'EXIT.json')['invocation_id']):
+                return None
+        with sqlite3.connect((run/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as db:
+            if db.execute("""SELECT 1 FROM jobs WHERE host_id=? AND state IN
+                            ('ASSIGNED','STARTING','RUNNING','COMPLETED_PENDING_TRANSFER')""",
+                          (profile['host_id'],)).fetchone():
+                return None
+            queued = [r[0] for r in db.execute("SELECT request FROM jobs WHERE state='QUEUED'")]
+        retained = {sha for request in queued for sha in _hashes(json.loads(request))}
+        pending = run/'distributed/PREPARATION_PENDING.json'
+        if pending.is_file():
+            retained.update(_hashes(read(pending)))
+        for marker in spool.glob('*/*/WORKER_STATE.json'):
+            status = read(marker)['state']
+            if status == 'TRANSFERRED':
+                continue
+            if status != 'UNKNOWN':
+                return None
+            for name in ('ASSIGNMENT.json', 'OUTCOME.json', 'ARTIFACT_MANIFEST.json'):
+                path = marker.with_name(name)
+                if path.is_file():
+                    retained.update(_hashes(read(path)))
+        return retained
+
+    def sha(path):
+        with path.open('rb') as stream:
+            return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+    with sample.with_suffix('.lock').open('r+b') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        measurement = read(sample)
+        latest = measurement['report']
+        if (measurement['policy'] != dict(limit_bytes=policy['limit_bytes'], roots=policy['roots'])
+                or latest['reason'] != 'STORAGE_LIMIT_REACHED'):
+            return {}
+        retained = protected()
+        if retained is None:
+            return {}
+        target = latest['used_bytes'] - latest['limit_bytes'] * 9 // 10
+        removed = {}
+        for path in sorted(worker.glob('*/*'), key=lambda path: path.stat().st_mtime_ns):
+            if (path.name in retained or path.parent.name != path.name[:2]
+                    or not re.fullmatch('[a-f0-9]{64}', path.name) or path.is_symlink() or not path.is_file()):
+                continue
+            original = central/path.relative_to(worker)
+            stat = path.stat()
+            if (stat.st_nlink != 1 or not original.is_file() or original.is_symlink()
+                    or original.stat().st_size != stat.st_size or sha(path) != path.name or sha(original) != path.name):
+                continue
+            with (state_dir/'REGISTRY.lock').open('rb') as registry:
+                try:
+                    fcntl.flock(registry, fcntl.LOCK_SH | fcntl.LOCK_NB)
+                except BlockingIOError:
+                    break
+                current = protected()
+                if current is None:
+                    break
+                if path.name in current:
+                    continue
+                path.unlink()
+            removed[path.name] = stat.st_blocks * 512
+            if sum(removed.values()) >= target:
+                break
+        return removed
+
+
+def local_report(run, profile):
+    policy = profile.get('storage_limit')
+    options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile))
+    result = report(policy, **options)
+    if result and result['reason'] == 'STORAGE_LIMIT_REACHED' and profile.get('artifact_cache_directory'):
+        removed = local_duplicate_cache(run, profile)
+        if removed:
+            result = report(policy, refresh=True, **options)
+            result.update(reclaimed_duplicate_artifacts=len(removed), reclaimed_duplicate_bytes=sum(removed.values()))
+    return result
+
+
 def wsl_running(worker, ssh):
     name = worker['distribution'].replace("'", "''")
     executable = worker.get('wsl_executable', 'wsl.exe').replace("'", "''")
@@ -57,8 +167,7 @@ def cleanup(run, source):
     work = []
     if local.exists():
         profile = read(local)
-        work.append(('local', lambda p=profile: report(p.get('storage_limit'), spools=(p['work_dir'],),
-                                                      cache_directories=prefix_caches(p))))
+        work.append(('local', lambda p=profile: local_report(run,p)))
     if relay is not None:
         for worker in relay.config['workers']:
             host = worker['host_id']
@@ -90,7 +199,7 @@ def cleanup(run, source):
         for host, future in [(host, pool.submit(check)) for host, check in work]:
             try:
                 result = future.result()
-            except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+            except (OSError, KeyError, ValueError, RuntimeError, sqlite3.Error, subprocess.SubprocessError) as error:
                 result = dict(error_type=type(error).__name__)
             print(json.dumps(dict(epoch=time.time(), host_id=host, storage=result)), flush=True)
 
