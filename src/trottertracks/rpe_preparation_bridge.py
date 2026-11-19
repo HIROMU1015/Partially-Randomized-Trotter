@@ -207,6 +207,22 @@ def pauli_price_guard_inputs(request):
     return paths
 
 
+def pauli_audit_raw_inputs(name, state):
+    """Declare sibling-branch artifacts consumed through the audit's Git reads."""
+    prefix = Path('workspaces/provider')
+    path = Path(artifact_path(name))
+    if (not path.is_relative_to(prefix) or path.name != 'PRICE_STATE.json'
+            or state.get('status') != 'COMPILE_READY_FOR_AUDIT'):
+        return []
+    directory = path.parent.relative_to(prefix)
+    base = Path(artifact_path(state['driver_spec']['base']))
+    if base != directory/'calibration':
+        raise ValueError('Pauli audit raw source is outside its prepared group')
+    return [dict(commit=state['raw_commit'], path=(base/relative).as_posix())
+            for relative in ('BINDING.json', 'run01/COMPILE_RECEIPTS.json', 'run01/RESULT.json')
+            ] + [dict(commit=state['inputs_commit'], path=(directory/'CONFIGURATION.json').as_posix())]
+
+
 def collect_required_paths(documents, controller_paths=None):
     """Reuse the existing native runtime/config contract, without its approval flow.
 
@@ -582,8 +598,11 @@ class DistributedPreparationBridge:
         original_documents=list(pauli_locators)
         for name,sha in inputs.items():
             if name.endswith('.json'):
-                try:original_documents.append(json.loads(self.executor.artifact_cache.path(sha).read_bytes()))
+                try:document=json.loads(self.executor.artifact_cache.path(sha).read_bytes())
                 except (ValueError,UnicodeError):raise ValueError('Original preparation JSON is incomplete or invalid: '+name)
+                original_documents.append(document)
+                if stage == 'PAULI_AUDIT' and isinstance(document, dict):
+                    original_documents.extend(pauli_audit_raw_inputs(name, document))
         input_hashes,working_hashes=fixed_input_hashes(root,original_documents,inputs)
         working_hashes.extend(pauli_inputs)
         required_views=collect_required_views(runtime_inputs)

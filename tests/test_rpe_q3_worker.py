@@ -223,6 +223,21 @@ class WorkerTests(unittest.TestCase):
             for attempt in (pending, unknown, running, failed):
                 self.assertTrue((attempt/'workspaces'/'expanded-input').is_file())
 
+    def test_storage_reclaims_configured_route_checkpoint_caches(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            default, routed = root/'default', root/'routed'
+            default.mkdir(); routed.mkdir()
+            checkpoint = routed/('1'*64+'.json.gz')
+            checkpoint.write_bytes(b'x'*32768)
+            profile = dict(prefix_cache_directory=str(default), route_profiles=[
+                dict(profile={'prefix_cache_directory':str(routed)})])
+            policy = dict(roots=[str(root)], limit_bytes=32768, sample_path=str(root/'usage.json'))
+            report = W.Storage.report(policy, cache_directories=W.Storage.prefix_caches(profile), refresh=True)
+            self.assertTrue(report['accepting_new_jobs'])
+            self.assertEqual(report['evicted_prefix_checkpoints'], 1)
+            self.assertFalse(checkpoint.exists())
+
     def test_artificial_execute_transfer_duplicate_ack_and_resume(self):
         with tempfile.TemporaryDirectory() as temporary:
             profile, assignment = fixture(temporary); remote = FakeController(assignment, lose_ack=True)

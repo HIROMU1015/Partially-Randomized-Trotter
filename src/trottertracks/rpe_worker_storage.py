@@ -16,6 +16,12 @@ SAMPLE_SECONDS = 5
 PREPARATION_COPIES = ('inputs', 'workspace', 'workspaces')
 
 
+def prefix_caches(profile):
+    profiles = [profile, *(rule['profile'] for rule in profile.get('route_profiles', []))]
+    return tuple(dict.fromkeys(p['prefix_cache_directory'] for p in profiles
+                               if p.get('prefix_cache_directory')))
+
+
 def _used_bytes(roots):
     existing = set()
     for path in roots:
@@ -112,7 +118,7 @@ def _reclaim(spools, roots, used, target):
     return used, removed
 
 
-def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, refresh=False):
+def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(), refresh=False):
     """Reclaim acknowledged copies and recoverable cache at the intake limit."""
     if policy is None:
         return None
@@ -123,7 +129,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, refresh=False
             or not sample.is_absolute()):
         raise ValueError('Worker storage requires a positive byte limit and absolute paths')
     identity = dict(limit_bytes=limit, roots=roots)
-    cleanup = dict(spools=list(spools), pbs_runs=pbs_runs, prefix_cache=prefix_cache)
+    caches = list(dict.fromkeys([*([prefix_cache] if prefix_cache else []), *cache_directories]))
+    cleanup = dict(spools=list(spools), pbs_runs=pbs_runs, prefix_caches=caches)
 
     def recent():
         if refresh:
@@ -160,12 +167,15 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, refresh=False
                     # Leave room for new attempts before the next cleanup pass.
                     used, reclaimed = _reclaim(candidates, roots, used, target)
                 evicted = 0
-                if used >= limit and prefix_cache:
-                    cache = Path(prefix_cache).resolve()
-                    if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):
-                        cache_size = _used_bytes([str(cache)])
-                        evicted = PrefixStore(cache).reclaim(cache_size - (used-target))
-                        used = _used_bytes(roots)
+                if used >= limit:
+                    for path in caches:
+                        cache = Path(path).resolve()
+                        if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):
+                            cache_size = _used_bytes([str(cache)])
+                            evicted += PrefixStore(cache).reclaim(cache_size - (used-target))
+                            used = _used_bytes(roots)
+                            if used <= target:
+                                break
             except (OSError, ValueError, subprocess.SubprocessError):
                 measured = dict(limit_bytes=limit, used_bytes=None, accepting_new_jobs=False, reason='STORAGE_USAGE_UNAVAILABLE')
             else:

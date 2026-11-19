@@ -12,7 +12,7 @@ import sys
 import time
 
 from run_rpe_q3_relay import Relay, acquire_lock
-from trottertracks.rpe_worker_storage import report
+from trottertracks.rpe_worker_storage import prefix_caches, report
 
 
 REMOTE_REPORT = """
@@ -25,7 +25,8 @@ payload = json.load(sys.stdin)
 exec(compile(payload['source'], 'rpe_worker_storage.py', 'exec'), vars(storage))
 profile = json.loads(Path(sys.argv[2]).read_bytes()) if sys.argv[2] else payload['profile']
 spools = (profile['work_dir'],) if sys.argv[2] else payload['spools']
-print(json.dumps(storage.report(profile.get('storage_limit'), spools=spools, pbs_runs=payload.get('pbs_runs'))))
+print(json.dumps(storage.report(profile.get('storage_limit'), spools=spools, pbs_runs=payload.get('pbs_runs'),
+                               cache_directories=storage.prefix_caches(profile))))
 """
 
 
@@ -56,7 +57,8 @@ def cleanup(run, source):
     work = []
     if local.exists():
         profile = read(local)
-        work.append(('local', lambda p=profile: report(p.get('storage_limit'), spools=(p['work_dir'],))))
+        work.append(('local', lambda p=profile: report(p.get('storage_limit'), spools=(p['work_dir'],),
+                                                      cache_directories=prefix_caches(p))))
     if relay is not None:
         for worker in relay.config['workers']:
             host = worker['host_id']

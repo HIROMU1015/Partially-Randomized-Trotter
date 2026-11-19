@@ -16,7 +16,7 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 from trottertracks import rpe_preparation_worker as P
-from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge
+from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge, fixed_input_hashes, pauli_audit_raw_inputs
 from trottertracks.rpe_preparation_artifacts import ArtifactCache
 from trottertracks import rpe_q3_worker as W
 
@@ -386,6 +386,36 @@ subprocess.run(['git','commit','--only','-qm','signal','--',str(p)],check=True)
         bundle=W.result_bundle(attempt)
         self.assertEqual(set(bundle),{'OUTCOME.json','PROCESS_RETURN.json'})
         self.assertLess(sum(len(x)for x in bundle.values()),100)
+
+    def test_audit_bundle_carries_raw_commit_from_another_branch(self):
+        source = self.root/'source'
+        def git(*args, cwd=source):
+            return subprocess.check_output(['git', *args], cwd=cwd, text=True).strip()
+        group = Path('docs/research/pauli/group')
+        raw = group/'calibration/run01'
+        (source/raw).mkdir(parents=True)
+        for name in (group/'CONFIGURATION.json', group/'calibration/BINDING.json',
+                     raw/'RESULT.json', raw/'COMPILE_RECEIPTS.json'):
+            (source/name).write_text('{}\n')
+        git('add', str(group))
+        git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', 'commit', '-qm', 'saved compile')
+        raw_commit = git('rev-parse', 'HEAD')
+        git('checkout', '--detach', self.source['commit'])
+        state = dict(status='COMPILE_READY_FOR_AUDIT', driver_spec={'base':str(group/'calibration')},
+                     raw_commit=raw_commit, inputs_commit=raw_commit)
+        declarations = pauli_audit_raw_inputs(str(Path('workspaces/provider')/group/'PRICE_STATE.json'), state)
+        locators, _ = fixed_input_hashes(source, declarations, {})
+        self.assertEqual(len(locators), 4)
+        cache = ArtifactCache(self.root/'cache')
+        bridge = DistributedPreparationBridge(SimpleNamespace(artifact_cache=cache, run_dir=self.root/'run'), source)
+        bundles = bridge._bundle(source, self.source['commit'], locators)
+        worker = self.root/'worker'
+        git('init', str(worker))
+        git('fetch', '--depth=1', str(source), self.source['commit'], cwd=worker)
+        for bundle in bundles:
+            git('bundle', 'unbundle', str(cache.path(bundle['sha256'])), cwd=worker)
+        for locator in locators:
+            self.assertEqual(git('show', locator['commit']+':'+locator['path'], cwd=worker), '{}')
 
 
 if __name__=='__main__':unittest.main()
