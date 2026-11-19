@@ -17,6 +17,11 @@ class PreparationFingerprintContractTests(unittest.TestCase):
     profile=Fixture.PreparationTransportTests.profile
     task=Fixture.PreparationTransportTests.task
 
+    def test_installed_metadata_does_not_substitute_for_required_import(self):
+        with self.assertRaisesRegex(ValueError, 'Preparation runtime/package probe failed'):
+            P._runtime({'interpreter':sys.executable},
+                       {'packages':{'pip':None}, 'imports':['rpe_missing_artificial_provider']})
+
     def example(self):
         inner=self.root/'inner';inner_source=Fixture.repo(inner)
         config=self.root/'config.json';config.write_text('{"fixed":1}')

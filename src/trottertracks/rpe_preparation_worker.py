@@ -99,8 +99,24 @@ def _source(profile, source):
 def _runtime(profile, requirements):
     python=profile['interpreter']
     if not Path(python).is_absolute() or not Path(python).is_file():raise ValueError('Preparation Python missing: '+python)
-    probe='import sys,json,platform,importlib.metadata;print(json.dumps(dict(executable=sys.executable,version=sys.version,version_info=list(sys.version_info),platform=platform.platform(),packages={name:importlib.metadata.version(name)for name in json.load(sys.stdin)})))'
-    result=subprocess.run([python,'-B','-c',probe],input=json.dumps(list(requirements.get('packages',{}))),text=True,capture_output=True)
+    probe = """
+import contextlib
+import importlib
+import importlib.metadata
+import json
+import platform
+import sys
+requirements = json.load(sys.stdin)
+packages = {name: importlib.metadata.version(name) for name in requirements['packages']}
+with contextlib.redirect_stdout(sys.stderr):
+    for name in requirements['imports']:
+        importlib.import_module(name)
+print(json.dumps(dict(executable=sys.executable, version=sys.version,
+    version_info=list(sys.version_info), platform=platform.platform(), packages=packages)))
+"""
+    result=subprocess.run([python,'-B','-c',probe],input=json.dumps(dict(
+        packages=list(requirements.get('packages', {})), imports=requirements.get('imports', []))),
+        text=True,capture_output=True)
     if result.returncode:raise ValueError('Preparation runtime/package probe failed: '+result.stderr.strip()[-1500:])
     runtime=json.loads(result.stdout)
     if runtime['executable']!=python:
