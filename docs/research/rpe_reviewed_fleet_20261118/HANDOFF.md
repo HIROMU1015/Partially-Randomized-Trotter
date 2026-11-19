@@ -452,3 +452,25 @@ RomuTailが回収したのは失敗receiptで、実compile・audit・Q3は各0�
 RomuTailでの費用・MSEの採用は保留。価格較正を再度行うには、
 サンプリング開始済みで自動再試行不可の記録を保全したまま、
 この候補の再実行条件を明示して新しい継続として扱う。
+
+### 許可されたLD8価格較正の手動再実行
+
+利用者の手動再実行指示を受け、通常Startの
+`search-d92e9c1c3114f20a522c` を開始した。対象はPR-DF LD8・幅h・κ=1のみ。
+controllerは `c74369eaa356bf9e07bc7ff34cb9f508371d0a15`、
+価格workerは `22b2e3e5dd0b8ae7a040ee80161ff008b790e729`。
+科学Q3と配送workerの固定版は従前の契約を使う。
+保存入力の照合は13ラウンドREUSE、信号REQUEST 0件を確認した。
+controllerの保存descriptor参照も、元ファイルのhashを確認して配置先へ解決する。
+固定providerのモジュール探索に依存せず、controllerのパス解決実装を明示して読み込む。
+
+配置は `.rpe-central/acceptance/pbs-prdf-ld8-manual-retry-c74369e-r3/`。
+旧STOPと各失敗attemptを保持し、旧runの消費を取り消していない。
+その直前の `search-57a46eedb8de4775ddd8` は価格bundleの履歴照合で停止し、
+計算本体を開始していない。PBS専用配置に不足commit履歴を物理保存し、
+新規workspaceが同じbundleを検証できるように補完した。
+この再配置のための準備予約と実科学計算を区別すること。
+本runのPBS割当は `267541.CPUcluster-PRISM`。
+較正taskは `prep-583f157930591d64801b9e74`、
+attemptは `034ea7403733456d86e90926e40ed1f4`。
+進行中の証跡と結果は同runのqueueと候補ディレクトリを参照する。
