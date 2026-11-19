@@ -480,7 +480,8 @@ class PbsManager:
         for token, requests in data['requests'].items():
             self.responses[token] = {request['request_id']:self._dispatch(token, request) for request in requests}
         outstanding, pending, queued, free = self._demand()
-        shortage = len(outstanding) + bool(pending)
+        waiting_tasks = outstanding + pending
+        shortage = len(waiting_tasks)
         active = [a for a in self.allocations if a['status'] not in TERMINAL]
         stopping = self.stop.is_set() or self.executor._user_stop_requested() or self.executor.state.closed
         keep_for_preparation = (not (outstanding or pending) and not stopping and any(
@@ -493,10 +494,10 @@ class PbsManager:
                 record = self.state['allocations'][token]
                 spec = record['spec']
                 current_cpus = spec['resources']['ncpus']
-                requested_slots = sum(host in usable for usable, _ in outstanding)
+                requested_slots = sum(host in usable for usable, _ in waiting_tasks)
                 cpu_per_task = task_cpu_footprint(spec['profile'])
                 slot_memory = spec['profile'].get('pbs', {}).get('sized_task_memory_bytes')
-                waiting = [request for hosts, request in outstanding + pending if host in hosts]
+                waiting = [request for hosts, request in waiting_tasks if host in hosts]
                 estimates = [task_memory_estimate(request, self.settings, host) for request in waiting]
                 memory_mismatch = slot_memory is not None and estimates and all(
                     estimate is None or estimate > slot_memory for estimate in estimates)
@@ -531,10 +532,11 @@ class PbsManager:
                        for record in self.state['allocations'].values()): continue
                 # UNKNOWN/transfer-pending original attempts prevent reuse.
                 if host in hosts_with_attempts: continue
-                requests = [request for usable, request in outstanding if host in usable]
-                if not requests and not any(host in usable for usable, _ in pending): continue
-                if not requests:
-                    requests = [next(request for usable, request in pending if host in usable)]
+                # Reserve room for independent preparation tasks whose worker
+                # preflight can only run after PBS starts. Assignment still
+                # requires that task's successful preflight.
+                requests = [request for usable, request in waiting_tasks if host in usable]
+                if not requests: continue
                 if not self._storage_accepting(worker): continue
                 spec = self._submit(host, worker, dict(ready_tasks=queued, existing_host_free_slots=free,
                     prospective_pbs_task_slots=covered, shortage=shortage), requests[:shortage-covered])

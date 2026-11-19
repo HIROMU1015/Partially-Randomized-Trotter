@@ -341,6 +341,36 @@ class ManagerTests(unittest.TestCase):
             executor.preparation_pending['signal']['failures']['pbs-0'] = 'runtime mismatch'
             self.assertEqual(manager._demand(), ([], [], 0, 0))
 
+    def test_mixed_methods_request_capacity_for_all_independent_preparation_checks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            manager.settings['resources'].update(ncpus=96, mem='350gb')
+            manager.settings['allocation_sizing'] = {'q3_startup_memory_bytes_per_task': 8 * 1024**3}
+            manager.configured['pbs-0']['profile']['dp_workers'] = 2
+            supported = ('PF_SIGNALS', 'DF_SIGNALS', 'PAULI_SIGNALS')
+            manager.settings['preparation_task_seconds'] = [
+                dict(stage='signal', provider=provider, source='fixed',
+                     seconds=120, memory_bytes=2 * 1024**3)
+                for provider in supported]
+            executor._host_admission_policy = lambda: ({}, None)
+            executor._host_admission = lambda *_: dict(accepting=True)
+            executor._host_supports_stage = lambda *_: True
+            executor._ready_queue = lambda: []
+            executor._match_ready_jobs = lambda *_: set()
+            executor.store.artificial = lambda _: False
+            for provider in (*supported, 'UNSUPPORTED'):
+                request = dict(route=dict(kind='preparation'), preparation=dict(
+                    stage='signal', provider=provider, source=dict(commit='fixed')))
+                executor.preparation_pending[provider] = dict(request=request, failures={})
+
+            manager.cycle()
+
+            spec, = [call['spec'] for call in gateway.calls if call['action'] == 'ensure']
+            self.assertEqual(spec['resources']['ncpus'], 6)
+            self.assertEqual(spec['resources']['mem'], '7gb')
+            self.assertEqual(spec['profile']['slot_policy']['initial_slots'], 3)
+            self.assertEqual(executor.calls, [])
+
     def test_restart_keeps_submission_token_and_rejects_changed_settings(self):
         with tempfile.TemporaryDirectory() as directory:
             executor = FakeExecutor(directory)
