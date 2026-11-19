@@ -295,3 +295,5 @@ PBS割当 `267442.CPUcluster-PRISM`（4 CPU、9 GiB）と `267444.CPUcluster-PRI
 最終runは `romutail-pbs-pf-live-4b3e5b7c2-r3` を明示して開始。信号・通常compileの再実行は0件。最終runの6タスクについて台帳の割当・受領・採用は各1回。通常終了後のrelay停止とPBS枠の返却を確認した。他候補の旧Q3 holdは維持し、この候補の評価は探索step上限1で終了した。通常運用currentは `romutail-fleet-efficiency-b65a30d81-r2`。
 
 成功したPBS割当の使用CPU時間／確保CPU時間は、信号 `267457` が39／1,312 CPU秒、通常監査・固定 `267459` が34／1,208 CPU秒、独立検証監査・集計 `267461` が33／1,232 CPU秒。1構成の配送待ちを含む測定なので、複数の適格な実タスクでの高負荷効率は未検収。PBSでのcompileの厳密再現も残る。埋め合わせのcompileや追加Q3は実行していない。既存のC同期で探索マップを `75c736406df4fe2cc956c2932b1a4bb4f8adbf96` に公開した。
+
+Romulaptopでは通常の観測SSHが120秒でタイムアウトした。Cの通常observerが最終結果を照合した公開データをRomuTailから転送し、Windowsの既存同期エンジンでGit blob、SHA-256、配置先を検証して5ファイルを反映した。`H4-search-map/index.html` はC公開版と同じSHA-256 `b6ca0b4578844f8c244a473419cde5bc53819e8e42e03c4e8bf715d0eb3882c1`。`INDEX.json` のrun IDと、受領状態 `FINAL_RESULT_PUBLISHED` を確認した。Windowsの既存設定は維持し、通常の観測SSHのタイムアウトは継続課題として記録した。同期の実機記録は最終release配置の `WINDOWS_FINAL_SYNC_VERIFIED_COPY.log`。
