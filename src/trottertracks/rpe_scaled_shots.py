@@ -125,7 +125,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
     knowledge.clear()
     held_keys = {(r['configuration_id'], O.interleave(r['N_X'], r['N_Y'])): r for r in held}
     trace, holds = [], []
-    used, steps, pending, fatal, step_stop = 0, 0, None, False, None
+    used, steps, pending, fatal, requested_stop = 0, 0, None, False, None
     limits = [v for v in (search.get('max_steps_per_method'), search.get('work_slice_steps')) if v is not None]
     step_limit = min(limits, default=None)
     budget = 0 if not science_approved else max_new
@@ -185,7 +185,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
             if k is None:
                 reference.append(row)
             elif best is not None and (row['cost'], k) >= (best['cost'], best['smallest_grid_k']):
-                row['status'] = 'COST_PRUNED'
+                row.update(status='COST_PRUNED', reason='OWN_GRID_PASS_COST_OR_TIE')
             else:
                 grid.append(row)
         return (min(grid, key=lambda r: (r['cost'], r['smallest_grid_k'])) if grid else
@@ -203,7 +203,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         if not proposals:
             break
         if step_limit is not None and steps >= step_limit:
-            step_stop = 'STEP_LIMIT' if search.get('max_steps_per_method') == step_limit else 'WORK_SLICE_YIELDED'
+            requested_stop = 'STEP_LIMIT' if search.get('max_steps_per_method') == step_limit else 'WORK_SLICE_YIELDED'
             break
         proposals.sort(key=lambda r: (free is None or not free(r), r['smallest_grid_k'] is None,
                                       r['cost'], r['M'], r['configuration_id']))
@@ -211,6 +211,7 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         is_free = free is not None and free(choice)
         if flagged_stop is not None and flagged_stop():
             pending = choice
+            requested_stop = 'USER_REQUESTED_STOP'
             break
         if not is_free and budget is not None and spent + used >= budget:
             pending = choice
@@ -220,6 +221,9 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
         answer = backend.answer(choice) if backend is not None else None
         if answer is None or answer.get('status') in ('BUDGET_EXHAUSTED', 'STOP_REQUESTED'):
             pending = choice
+            if answer is not None:
+                requested_stop = ('USER_REQUESTED_STOP' if answer['status'] == 'STOP_REQUESTED'
+                                  else 'Q3_BUDGET_EXHAUSTED')
             break
         c = groups[name, choice['configuration_id'], choice['M']]['candidate']
         used += answer.get('calls', 0)
@@ -296,8 +300,8 @@ def run(name, candidates, knowledge, backend, search, threshold, max_new, *, spe
     budget_exhausted = pending is not None and budget is not None and spent + used >= budget
     if fatal:
         stop = 'UNKNOWN_RESULT'
-    elif step_stop:
-        stop = step_stop
+    elif requested_stop:
+        stop = requested_stop
     elif budget_exhausted:
         stop = 'Q3_BUDGET_EXHAUSTED'
     elif any(r['status'] in unresolved for g in rows for r in g['allocations']):

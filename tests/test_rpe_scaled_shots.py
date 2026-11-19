@@ -79,6 +79,15 @@ class ScaleTests(unittest.TestCase):
         self.assertEqual(calls,pass_which[:2])
         self.assertEqual(result['by_configuration'][0]['best']['N_X'],[8])
 
+    def test_user_stop_keeps_the_pending_multiplier_and_reason(self):
+        p = S.settings(dict(M=[0], grid=dict(min_k=0, max_k=0, divisor=4)))
+        c = self.candidate('c', [2, 2])
+        result = S.run('PR_PAULI', [c], {}, None, dict(scaled_shots=p), TAU, 1,
+                       flagged_stop=lambda: True)
+        self.assertEqual(result['stop_reason'], 'USER_REQUESTED_STOP')
+        self.assertEqual(result['pending_request']['status'], 'PENDING')
+        self.assertEqual(result['new_calls'], 0)
+
     def test_off_grid_reference_costs_less_without_becoming_grid_best(self):
         p = S.settings(dict(M=[0], grid=dict(min_k=2, max_k=2, divisor=1)))
         c = self.candidate('c', [2, 2], kappa='2')

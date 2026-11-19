@@ -120,6 +120,10 @@ function showCell(c){let d=E('detail');d.replaceChildren();let h=el('div',null,'
 }
 const gridStatus={MINIMUM_WITHIN_REGISTERED_CANDIDATES:'登録済み回路の範囲で格子内確定',GRID_MINIMUM_CONFIRMED:'この回路とMで格子内確定',EVALUATED_MINIMUM:'評価済み最安',
  NO_GRID_POINT_MEETS_LIMIT:'格子内適合なし',NO_CONFIRMED_GRID_POINT:'適合未確認'};
+const scaledStops={SCALED_SHOT_GRID_COMPLETE:'指定範囲の倍率探索が完了',
+ Q3_BUDGET_EXHAUSTED:'新規Q3の予算上限',STEP_LIMIT:'探索step上限',WORK_SLICE_YIELDED:'次の探索区間に継続',
+ UNRESOLVED_SCALED_SCOPE:'未評価・入力待ち・判定保留が残る', USER_REQUESTED_STOP:'利用者による停止', UNKNOWN_RESULT:'結果照合が必要'};
+const scaledDirections={COST_DOWN:'費用減',COST_UP:'費用増',EQUAL:'同額',UNRESOLVED:'費用差は未確定'};
 function scaledView(view){
  const panel=E('scaled-panel'), filter=E('scaled-group'), host=E('scaled-rows'), summary=E('scaled-summary');
  const runs=(D.runs||[]).filter(r=>(!view.run_id||r.id===view.run_id)&&r.scaled_shots?.[method]);
@@ -143,13 +147,28 @@ function scaledView(view){
  }
  table.append(header);
  for(const run of runs){
-  const {summary:s,configurations}=run.scaled_shots[method];
+  const {summary:s,configurations,stop_reason,horizon_directions}=run.scaled_shots[method];
   const card=el('details');card.append(el('summary',run.label));
+  field(card,'停止・継続理由',scaledStops[stop_reason]||stop_reason);
+  field(card,'指定探索範囲',s.policy);
   field(card,'M=12の格子内',s.M12_best?.cost);
   field(card,'全Mの格子内',s.all_M_best?.cost);
   field(card,'集約状態',gridStatus[s.all_M_minimum_status]||s.all_M_minimum_status);
   field(card,'比較専用の最安／格子内との差',s.comparison_only_best?fmt(s.comparison_only_best.cost)+' / '+fmt(s.comparison_only_delta_RZ):null);
   field(card,'従来の保存配分（参照）',s.legacy_free_allocation_reference?.cost);
+  if(horizon_directions?.length){
+   const trend=el('details');trend.append(el('summary','同じ回路でMを変えたときの費用差'));
+   trend.append(el('p','指定範囲の評価済み最小適合配分を両端で比較。配分はMごとに生成。'));
+   for(const d of horizon_directions){
+    const item=el('div',null,'item');
+    field(item,'回路',d.source_configuration_id);
+    field(item,'M='+d.from_M+' → '+d.to_M,scaledDirections[d.direction]+(d.delta_RZ?' '+exact(d.delta_RZ)+' RZ':''));
+    field(item,'両端の状態',[gridStatus[d.from_status]||d.from_status,gridStatus[d.to_status]||d.to_status]);
+    item.append(link(d.from_source),link(d.to_source));
+    trend.append(item);
+   }
+   card.append(trend);
+  }
   summary.append(card);
   for(const row of configurations){
    const label=groupLabel(row), c=row.configuration||{}, best=row.best, comp=row.comparison_best;
@@ -170,6 +189,9 @@ function scaledView(view){
    if(row.needs?.length)field(notes,'準備待ち',row.needs);
    if(row.required_rounds?.length)field(notes,'不足ラウンド',row.required_rounds);
    if(row.allocation_states)field(notes,'配分の状態',row.allocation_states);
+   const reasons=Object.entries(row.allocation_reasons||{}).map(([reason,count])=>
+      [(reason==='OWN_GRID_PASS_COST_OR_TIE'?'同じ回路・Mの適合点より安くならず、同額でより小さい倍率にもならない':reason),count]);
+   if(reasons.length)field(notes,'省略・保留理由',Object.fromEntries(reasons));
    if(row.source)notes.append(link(row.source));
    tr.append(notes);table.append(tr);
   }

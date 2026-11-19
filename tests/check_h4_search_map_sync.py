@@ -47,7 +47,12 @@ class NormalMapSync(unittest.TestCase):
                         scaled_shots=dict(all_M_best=dict(M=11, cost=42)),
                         by_configuration=[dict(configuration_id='SHORT_HORIZON', source_configuration_id='SAME_PHYSICAL',
                             M=11, configuration=dict(L_D=3, formula='2nd', absolute_kappa='7/2'),
-                            best=allocation, minimum_status='GRID_MINIMUM_CONFIRMED', allocations=[allocation])])
+                            best=allocation, minimum_status='GRID_MINIMUM_CONFIRMED', allocations=[
+                                allocation, dict(status='COST_PRUNED', reason='OWN_GRID_PASS_COST_OR_TIE')]),
+                            dict(configuration_id='SAME_PHYSICAL', M=12, minimum_status='GRID_MINIMUM_CONFIRMED',
+                                 best=dict(allocation, N_X=[2]*13, N_Y=[2]*13, cost=100)),
+                            dict(configuration_id='M13_WAIT', source_configuration_id='SAME_PHYSICAL', M=13,
+                                 minimum_status='NO_CONFIRMED_GRID_POINT')])
                 p = put(directory + '/ROUND_RESULT.json', result)
                 validation = put(directory + '/PRICE_MODEL_VALIDATIONS.json', dict(
                     schema='RPE_PRICE_MODEL_VALIDATIONS_V1', models=[dict(model_id='frozen-shared',
@@ -92,6 +97,14 @@ class NormalMapSync(unittest.TestCase):
                 self.assertEqual(case['source']['selector'], ['methods', 'PR_PAULI', 'by_configuration', 0])
                 self.assertEqual(case['configuration']['absolute_kappa'], '7/2')
                 self.assertEqual(len(case['best']['N_X']), 12)
+                self.assertEqual(case['allocation_reasons'], {'OWN_GRID_PASS_COST_OR_TIE': 1})
+                self.assertEqual(scaled['stop_reason'], 'STEP_LIMIT')
+                first, second = scaled['horizon_directions']
+                self.assertEqual(first['direction'], 'COST_UP')
+                self.assertEqual(first['delta_RZ'], dict(numerator='58', denominator='1'))
+                self.assertEqual(first['from_source'], case['source'])
+                self.assertEqual(second['direction'], 'UNRESOLVED')
+                self.assertIsNone(second['delta_RZ'])
                 self.assertIn('independent-environment/publication', index['included_public_heads'])
                 point = index['points'][0]
                 self.assertEqual(len(point['occurrences']), 2)
