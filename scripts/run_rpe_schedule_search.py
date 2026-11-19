@@ -691,6 +691,8 @@ class WidthDriver:
         # keep a single per-decision wave.
         pending=[p for p in self.state['points']if p['status']in('COMPLETION','WAITING_INPUTS')]
         total_pending = len(pending)
+        priced_rechecks = (
+            getattr(comp, 'priced_pauli_recheck_keys', set)() if continuous else set())
         blocked = comp.price_deferred_keys() if hasattr(comp, 'price_deferred_keys') else set()
         if blocked:
             from trottertracks.pr_candidate_completion import key
@@ -748,6 +750,16 @@ class WidthDriver:
             selected.extend(chosen);counts[method]=len(chosen)
             if not continuous:
                 wave['dispatched'][method]=wave['dispatched'].get(method,0)+len(chosen)
+        if priced_rechecks:
+            from trottertracks.pr_candidate_completion import key
+            def priced_recheck(point):
+                recorded = (point.get('completion') or {}).get('key')
+                return (recorded or key(point['completion_request'])) in priced_rechecks
+
+            priced_points = {id(point) for point in selected if priced_recheck(point)}
+            selected.sort(key=lambda point: id(point) not in priced_points)
+        else:
+            priced_points = set()
         reason = ('CONTINUOUS_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if continuous else
                   'PER_DECISION_PER_METHOD_WIDTH_INTERLEAVED_FAMILY_ROUND_ROBIN' if self.work_conserving_search else
                   'EXISTING_PER_DECISION_PER_METHOD_FAMILY_ROUND_ROBIN')
@@ -807,6 +819,10 @@ class WidthDriver:
             for point in selected:
                 method = point['method']
                 split = self.state['families'][point['family']]['L_D'] if method in parallel_methods else None
+                if id(point) in priced_points and method in parallel_methods:
+                    # Exact configurations already have their saved descriptor
+                    # and share no signal assignment.
+                    split = (split, id(point))
                 groups.setdefault(method, {}).setdefault(split, []).append(point)
             parallel = int((self.spec.get('candidate_completion') or {}).get('parallel', 1))
             lanes = {m: max(1, min(limit, parallel, len(splits)) if m in parallel_methods else 1)
@@ -830,11 +846,16 @@ class WidthDriver:
                                 backlog.clear()
                             busy = set(active.values())
                             used = Counter(method for method, _ in busy)
+                            priced_waiting = any(id(point) in priced_points for point in backlog)
+                            priced_active = any(isinstance(split, tuple) for _, split in busy)
                             for _ in range(len(backlog)):
                                 if len(active) >= max_active:
                                     break
                                 point = backlog.popleft()
                                 method, split = by_point[id(point)]
+                                if method == 'PR_PAULI' and id(point) not in priced_points and (priced_waiting or priced_active):
+                                    backlog.append(point)
+                                    continue
                                 if used[method] >= lanes[method] or (method, split) in busy:
                                     backlog.append(point)
                                     continue

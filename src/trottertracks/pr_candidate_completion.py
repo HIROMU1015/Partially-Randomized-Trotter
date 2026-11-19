@@ -438,8 +438,11 @@ class Completion:
 
     def saved_pauli_recheck_directory(self, record, directory):
         """Resolve a copied metadata recheck using its original candidate and receipts."""
+        missing_source = 'A_PREPARATION:NEEDS_INPUT_SOURCE:'
+        history = (record.get('reason'), (record.get('previous_hold') or {}).get('reason'))
         if (record.get('method') != 'PR_PAULI' or record.get('scientific_failure')
-                or not str(record.get('reason')).startswith('A_PREPARATION:NEEDS_INPUT_SOURCE:')):
+                or record.get('status') == 'READY_FOR_SEARCH'
+                or not any(str(reason).startswith(missing_source) for reason in history)):
             return None
         if not self.recoverable_pauli_input_hold(
                 dict(method='PR_PAULI', reason='IndexError: list index out of range'), directory):
@@ -482,6 +485,20 @@ class Completion:
         except (OSError, KeyError, TypeError, ValueError, IndexError, subprocess.CalledProcessError):
             return None
         return checked
+
+    def priced_pauli_recheck_keys(self):
+        """Bring previously priced receipt recoveries forward in the preparation lanes."""
+        with self.lock:
+            records = list(self.state['records'].items())
+        ready = set()
+        for identifier, record in records:
+            checked = self.saved_pauli_recheck_directory(record, self.directory/'candidates'/identifier)
+            if checked is None or not (checked/'FINAL_QUOTE.json').is_file():
+                continue
+            quote = read(checked/'FINAL_QUOTE.json')
+            if quote.get('complete') is True and quote.get('configuration_id') == read(checked/'CONFIGURATION.json')['id']:
+                ready.add(identifier)
+        return ready
 
     def complete(self,request):
         request=deepcopy(request)  # internal descriptor resolution must not change the caller's cache key
@@ -529,8 +546,10 @@ class Completion:
                       reason=None,recoverable_preparation=False)if old and old.get('recoverable_preparation')else
                  dict(method=request['method'],selection=request.get('selection'),request=deepcopy(request),status='SELECTED',key=identifier,directory=rel(d)))
             if recovered_input or recheck:
-                rec['previous_hold'] = dict(status=old['status'],reason=old['reason'],
-                                            metadata_receipt=rel(d.parent/'A_BASE.RETURN.json'))
+                previous_hold = old.get('previous_hold') or {}
+                if not str(previous_hold.get('reason')).startswith('A_PREPARATION:NEEDS_INPUT_SOURCE:'):
+                    previous_hold = dict(status=old['status'], reason=old['reason'])
+                rec['previous_hold'] = dict(previous_hold, metadata_receipt=rel(d.parent/'A_BASE.RETURN.json'))
                 rec['directory'] = rel(d)
             if old and (old.get('signal_deferred_for_price') or old.get('deferred_configuration')):
                 rec.update(deferred_configuration=old.get('deferred_configuration') or old['configuration'],
