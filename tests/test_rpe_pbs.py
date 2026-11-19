@@ -157,6 +157,16 @@ class ManagerTests(unittest.TestCase):
         manager._submit('pbs-0', config, dict(ready_tasks=3, shortage=2))
         return next(iter(manager.state['allocations']))
 
+    def test_preparation_wait_is_extended_only_for_live_gateway_worker(self):
+        with tempfile.TemporaryDirectory() as directory:
+            manager, _, _ = self.manager(directory)
+            before = manager.preparation_readiness_wait_seconds('pbs-0')
+            self.assertLess(before, 300)
+            manager.allocations = [dict(host_id='pbs-0', status='R', worker=dict(accepting=True))]
+            self.assertEqual(manager.preparation_readiness_wait_seconds('pbs-0'), 300)
+            manager.last_error = 'transport offline'
+            self.assertEqual(manager.preparation_readiness_wait_seconds('pbs-0'), before)
+
     def test_allocation_submission_preserves_task_scientific_budget(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, gateway = self.manager(directory)

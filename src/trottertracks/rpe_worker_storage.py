@@ -2,6 +2,7 @@
 import fcntl
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -200,6 +201,65 @@ def _reclaim(spools, roots, used, target):
     return used, removed
 
 
+def _share_transferred_git_packs(spools, roots, bytes_needed):
+    """Share byte-identical immutable Git packs in acknowledged workspaces."""
+    monitored = [Path(root).resolve() for root in roots]
+    reclaimed = 0
+    for spool in sorted({Path(path).resolve() for path in spools}):
+        if not any(spool.is_relative_to(root) for root in monitored):
+            continue
+        for marker in spool.glob('*/*/WORKER_STATE.json'):
+            if reclaimed >= bytes_needed:
+                return reclaimed
+            attempt = marker.parent
+            if marker.resolve() != marker or not (attempt/'workspaces').is_dir():
+                continue
+            lock = attempt/'WORKER_PROCESS.lock'
+            try:
+                if not stat.S_ISREG(lock.lstat().st_mode):
+                    continue
+                with lock.open('r+b') as process_lock:
+                    fcntl.flock(process_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    if json.loads(marker.read_bytes()).get('state') != 'TRANSFERRED':
+                        continue
+                    reclaimed += _share_attempt_git_packs(attempt)
+            except (OSError, ValueError):
+                continue
+    return reclaimed
+
+
+def _share_attempt_git_packs(attempt):
+    copies = sorted(attempt.glob('workspaces/*/.git/objects/pack/pack-*'))
+    original = attempt/'workspace/.git/objects/pack'
+    reclaimed = 0
+    for path in copies:
+        source = original/path.name
+        if (not re.fullmatch(r'pack-[a-f0-9]{40,64}\.(pack|idx)', path.name)
+                or source.resolve() != source or path.resolve() != path):
+            continue
+        try:
+            left, right = source.lstat(), path.lstat()
+        except FileNotFoundError:
+            continue
+        if (not stat.S_ISREG(left.st_mode) or left.st_mode != right.st_mode
+                or left.st_mode & 0o222 or left.st_size != right.st_size
+                or left.st_dev != right.st_dev or left.st_ino == right.st_ino
+                or (left.st_uid, left.st_gid) != (right.st_uid, right.st_gid)):
+            continue
+        with source.open('rb') as a, path.open('rb') as b:
+            if hashlib.file_digest(a, 'sha256').digest() != hashlib.file_digest(b, 'sha256').digest():
+                continue
+        temporary = path.with_name('.shared-'+path.name)
+        os.link(source, temporary)
+        try:
+            os.replace(temporary, path)
+        finally:
+            temporary.unlink(missing_ok=True)
+        if right.st_nlink == 1:
+            reclaimed += right.st_blocks * 512
+    return reclaimed
+
+
 def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(), refresh=False):
     """Reclaim acknowledged copies and recoverable cache before reaching the intake limit."""
     if policy is None:
@@ -249,6 +309,9 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                         candidates.extend(Path(pbs_runs).glob('*/workers/*'))
                     # Leave room for new attempts before the next cleanup pass.
                     used, reclaimed = _reclaim(candidates, roots, used, target)
+                if cleanup_due and used > target and (spools or pbs_runs):
+                    if _share_transferred_git_packs(candidates, roots, used-target):
+                        used = _used_bytes(roots)
                 evicted = 0
                 if cleanup_due and used > target:
                     for path in caches:
@@ -264,7 +327,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             else:
                 measured = dict(limit_bytes=limit, used_bytes=used, accepting_new_jobs=used < limit,
                                 reason='STORAGE_LIMIT_REACHED' if used >= limit else None)
-                if reclaimed or evicted:
+                if used < before:
                     measured.update(reclaimed_copies=reclaimed, reclaimed_bytes=max(0, before-used))
                 if evicted:
                     measured['evicted_prefix_checkpoints'] = evicted

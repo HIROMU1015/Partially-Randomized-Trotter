@@ -19,6 +19,7 @@ from trottertracks import rpe_preparation_worker as P
 from trottertracks.rpe_preparation_bridge import DistributedPreparationBridge, fixed_input_hashes, pauli_audit_raw_inputs
 from trottertracks.rpe_preparation_artifacts import ArtifactCache
 from trottertracks import rpe_q3_worker as W
+from trottertracks import rpe_worker_storage as Storage
 
 
 def repo(root):
@@ -37,6 +38,29 @@ class PreparationTransportTests(unittest.TestCase):
         self.source=repo(self.root/'source')
 
     def tearDown(self):self.tmp.cleanup()
+
+    def test_only_matching_packs_in_transferred_attempts_share_storage(self):
+        spool = self.root/'spool'
+        packname = 'pack-'+'a'*40+'.pack'
+        pairs = {}
+        for job, state, matching in (('complete', 'TRANSFERRED', True),
+                                     ('different', 'TRANSFERRED', False),
+                                     ('pending', 'UNKNOWN', True)):
+            attempt = spool/job/'attempt'
+            paths = [attempt/p/'.git/objects/pack'/packname
+                     for p in ('workspace', 'workspaces/provider')]
+            for index, path in enumerate(paths):
+                path.parent.mkdir(parents=True)
+                path.write_bytes(b'git pack' if index == 0 or matching else b'other...')
+                path.chmod(0o444)
+            (attempt/'WORKER_STATE.json').write_text(json.dumps(dict(state=state)))
+            (attempt/'WORKER_PROCESS.lock').touch()
+            pairs[job] = paths
+
+        Storage._share_transferred_git_packs([str(spool)], [str(spool)], 2**20)
+        for job, (original, copy) in pairs.items():
+            self.assertEqual(os.path.samefile(original, copy), job == 'complete')
+        self.assertEqual(pairs['different'][1].read_bytes(), b'other...')
 
     def test_pauli_binding_publishes_only_owned_metadata_history(self):
         spec=importlib.util.spec_from_file_location('pauli_candidate_prices',ROOT/'scripts/run_pr_pauli_candidate_prices.py')

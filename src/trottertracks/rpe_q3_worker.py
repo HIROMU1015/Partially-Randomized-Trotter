@@ -230,7 +230,7 @@ def validate_assignment(profile, assignment):
     return resolved
 
 
-def host_fingerprints(profile, challenges, *, q3_parallel=1):
+def host_fingerprints(profile, challenges, *, q3_parallel=1, preparation_parallel=1):
     """Read current execution identities; never acquire or launch a job."""
     from .rpe_host_eligibility import current_host_fingerprint
     fingerprints, errors = {}, {}
@@ -250,13 +250,15 @@ def host_fingerprints(profile, challenges, *, q3_parallel=1):
             else:
                 errors[job] = error
 
-    q3 = [item for item in challenges if not Preparation.is_preparation(item)]
-    if q3_parallel > 1 and len(q3) > 1:
-        with ThreadPoolExecutor(max_workers=min(len(q3), q3_parallel)) as pool:
-            collect(pool.map(check, q3))
-        collect(map(check, (item for item in challenges if Preparation.is_preparation(item))))
-    else:
-        collect(map(check, challenges))
+    q3, preparation = [], []
+    for item in challenges:
+        (preparation if Preparation.is_preparation(item) else q3).append(item)
+    for batch, parallel in ((q3, q3_parallel), (preparation, preparation_parallel)):
+        if parallel > 1 and len(batch) > 1:
+            with ThreadPoolExecutor(max_workers=min(len(batch), parallel)) as pool:
+                collect(pool.map(check, batch))
+        else:
+            collect(map(check, batch))
     return dict(host_fingerprints=fingerprints, readiness_errors=errors)
 
 

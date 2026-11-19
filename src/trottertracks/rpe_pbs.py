@@ -270,10 +270,20 @@ class PbsManager:
                    if 'submit_to_ready_seconds' in a]
         return max(15., min(30., median(samples[-10:]) if samples else 20.))
 
-    def preparation_readiness_wait_seconds(self):
-        # A running allocation can still need the challenge, fixed input
-        # transfer and verified reply before it can receive preparation work.
-        return self.readiness_wait_seconds() + 3 * self.settings.get('request_timeout_seconds', 20)
+    def preparation_readiness_wait_seconds(self, host):
+        # Queue wait and worker-side preflight have different budgets. A live
+        # worker may need several artifact RPCs before it can report readiness.
+        # Bound the extended wait so a stalled controller cannot hold a lane.
+        rpc_timeout = self.settings.get('request_timeout_seconds', 20)
+        worker = self.configured[host]['profile']
+        rpc_timeout = max(rpc_timeout, (worker.get('pbs') or {}).get('rpc_timeout_seconds', 15))
+        base = self.readiness_wait_seconds() + 3 * rpc_timeout
+        ready = any(allocation['host_id'] == host and allocation['status'] == 'R'
+                    and (allocation.get('worker') or {}).get('accepting')
+                    for allocation in self.allocations)
+        if ready and self.last_error is None:
+            return max(base, 300.)
+        return base
 
     def _recent_preparation_completion(self, seconds):
         # A newly accepted, successful required stage may shortly deliver an
@@ -501,8 +511,14 @@ class PbsManager:
         profile['work_dir'] = self.settings['remote_root']+'/workers/'+host
         profile.setdefault('prefix_cache_directory', self.settings['remote_root']+'/cache/'+host+'/dp')
         profile.setdefault('artifact_cache_directory', self.settings['remote_root']+'/cache/'+host+'/artifacts')
+        if self.settings.get('namespace_by_run', True):
+            pool = Path(self.settings['remote_root']).parent/'preparation-metadata-cache'
+            storage = profile.get('storage_limit') or {}
+            if any(pool.is_relative_to(Path(root)) for root in storage.get('roots', [])):
+                profile.setdefault('preparation_metadata_cache_directory', str(pool))
         profile['pbs'] = dict(profile.get('pbs') or {}, worker_source=self.settings['transport_source'],
             worker_root=self.settings['transport_root'], drain_seconds=self.settings.get('drain_seconds', 30))
+        profile['pbs'].setdefault('rpc_timeout_seconds', max(15., 2 * self.settings.get('request_timeout_seconds', 20)))
         deployment=worker.get('deployment')or self.settings.get('deployment')
         if deployment:
             profile['pbs']['deployment']=deepcopy(deployment)

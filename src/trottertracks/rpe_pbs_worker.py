@@ -240,7 +240,10 @@ class AllocationWorker(Worker):
             return super()._check_challenges(challenges, report)
         started = time.monotonic()
         parallel = max(1, min(report['slots'], 4))
-        result = host_fingerprints(self.profile, challenges, q3_parallel=parallel)
+        # Metadata import is already serialized per Git repository. Runtime
+        # and input-hash checks after import may proceed on separate reserved CPUs.
+        result = host_fingerprints(self.profile, challenges, q3_parallel=parallel,
+                                   preparation_parallel=parallel)
         event(self.profile, 'PBS_READINESS_CHECKED', jobs=[item['job_id'] for item in challenges],
               parallel=parallel, passed=len(result['host_fingerprints']),
               seconds=time.monotonic()-started)

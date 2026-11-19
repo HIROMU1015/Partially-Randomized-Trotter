@@ -124,10 +124,14 @@ class ConcurrentExecutor(O.Executor):
         if job:
             event['job'] = Path(str(job)).name
             marker = self.run_dir/'jobs'/str(self.method)/event['job']/'LAUNCH.json'
-            if marker.exists():
+            try:
                 owner = json.loads(marker.read_text())
-                for key in ('host_id', 'attempt_id'):
-                    if owner.get(key) is not None:event.setdefault(key, owner[key])
+            except (FileNotFoundError, json.JSONDecodeError):
+                # An independent local launcher may still be writing the
+                # receipt. Event annotations must not stop the evaluator.
+                owner = {}
+            for key in ('host_id', 'attempt_id'):
+                if owner.get(key) is not None:event.setdefault(key, owner[key])
         with self.lock:
             with(self.run_dir/'PROGRESS.jsonl').open('a')as f:
                 f.write(json.dumps(dict(UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
@@ -1416,7 +1420,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 # PBS may have to acquire a worker just to check this request.
                 # Keep only this candidate's lane waiting for a bounded period.
                 started = record.get('probe_started_epoch', 0)
-                if 0 <= time.time() - started < manager.preparation_readiness_wait_seconds():
+                if 0 <= time.time() - started < manager.preparation_readiness_wait_seconds(host):
                     return None
                 reasons[host] = 'PBS_PREPARATION_READINESS_WAIT_EXPIRED'
             else:

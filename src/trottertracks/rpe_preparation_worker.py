@@ -66,7 +66,8 @@ def select_preparation_profile(base, assignment):
     elif spec.get('artificial') is True:selected=deepcopy(base)
     else:raise ValueError('No verified preparation profile for stage/provider')
     if selected.get('host_id')!=base.get('host_id'):raise ValueError('Preparation profile belongs to another host')
-    for name in ('work_dir','slots','slot_policy','artifact_cache_directory'):
+    for name in ('work_dir','slots','slot_policy','artifact_cache_directory',
+                 'preparation_metadata_cache_directory'):
         if name in base:selected[name]=deepcopy(base[name])
     selected.pop('route_profiles',None);selected.pop('preparation_profiles',None)
     selected['preparation_stage']=spec.get('stage');selected['preparation_provider']=spec.get('provider')
@@ -251,6 +252,41 @@ def _metadata_input_repository(profile, root, spec):
     return target
 
 
+def _verify_fixed_git_inputs(root, locators):
+    if not locators:
+        return
+    # A single Git process shares pack indexes between all locators. Keep
+    # hashing the full blob bytes without retaining large blobs in memory.
+    with subprocess.Popen(['git', 'cat-file', '--batch'], cwd=root,
+                          stdin=subprocess.PIPE, stdout=subprocess.PIPE) as git:
+        for locator in locators:
+            path = locator['path']
+            artifact_path(path)
+            expression = locator['commit'] + ':' + path
+            if '\n' in expression:
+                raw = subprocess.check_output(['git', 'show', expression], cwd=root)
+                observed = hashlib.sha256(raw).hexdigest()
+            else:
+                git.stdin.write(expression.encode() + b'\n')
+                git.stdin.flush()
+                header = git.stdout.readline().split()
+                if len(header) != 3 or header[1] != b'blob':
+                    raise ValueError('Preparation fixed Git input is unavailable: ' + path)
+                remaining = int(header[2])
+                digest = hashlib.sha256()
+                while remaining:
+                    raw = git.stdout.read(min(remaining, 1024 * 1024))
+                    if not raw:
+                        raise ValueError('Truncated fixed Git input: ' + path)
+                    remaining -= len(raw)
+                    digest.update(raw)
+                if git.stdout.read(1) != b'\n':
+                    raise ValueError('Missing fixed Git input boundary: ' + path)
+                observed = digest.hexdigest()
+            if observed != locator['sha256']:
+                raise ValueError('Preparation fixed Git input differs: ' + path)
+
+
 def current_preparation_fingerprint(assignment, base_profile):
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
     pauli_calibration_manifest(spec)
@@ -284,10 +320,7 @@ def current_preparation_fingerprint(assignment, base_profile):
     path_facts=_required_path_facts(profile,spec.get('required_paths',{}))
     pauli_runtime=pauli_calibration_runtime(profile) if spec.get('publish_pauli_binding') is True else None
     input_root=_metadata_input_repository(profile,root,spec)
-    for locator in spec.get('input_hashes',[]):
-        artifact_path(locator['path'])
-        raw=subprocess.check_output(['git','show',locator['commit']+':'+locator['path']],cwd=input_root)
-        if hashlib.sha256(raw).hexdigest()!=locator['sha256']:raise ValueError('Preparation fixed Git input differs: '+locator['path'])
+    _verify_fixed_git_inputs(input_root, spec.get('input_hashes', []))
     declared=input_manifest(request)
     for locator in spec.get('working_input_hashes',[]):
         if declared.get(locator['path'])!=locator['sha256']:raise ValueError('Preparation WORKING input is not bound to its immutable artifact')
