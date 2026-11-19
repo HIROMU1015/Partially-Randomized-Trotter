@@ -161,4 +161,24 @@ PR-Pauliの信号に必要な疎なcheckoutのオブジェクトを、通常の�
 
 PBSは、見積りを設定したPauli/B0I Q3を1件8 GiB、固定版Pauli信号を1件4 GiBとして、1 GiBの余裕を加えたメモリを要求する。根拠は `search-6478c133043b892af38c` のworker計測で、Pauli/B0I Q3の観測最大1,435 MiB、Pauli信号の観測最大509 MiB。小さいメモリで起動した割当は、対応する見積りがあるタスクに限定する。未知の工程には既存の予約を使う。設定値は実行全域のピークを保証するものではない。
 
-Pauli compileでは、固定providerと一致する公開済み元コミットを確認し、jobとattempt固有のブランチに較正入力とBINDINGを公開する経路を追加した。既存の科学実行器が行う公開コミットとBINDINGの照合を使う。公開履歴は候補内の許可ファイルに限定し、rawと監査結果は既存の回収キューに渡す。複数の較正グループをまとめた要求は、グループごとの公開経路が検証されるまで保留する。
+Pauli compileでは、固定providerと一致する公開済み元コミットを確認し、jobとattempt固有のブランチに較正入力とBINDINGを公開する経路を追加した。既存の科学実行器が行う公開コミットとBINDINGの照合を使う。公開履歴は候補内の許可ファイルに限定し、rawと監査結果は既存の回収キューに渡す。複数の較正グループを含む要求では、各グループを同じ公開基点から専用ブランチに分ける。公開refは各グループの入力とBINDINGまでとし、rawを含む履歴はローカルで結合して中央キューで回収する。
+
+継続run `search-5c2b9e9b63ece99a4608` は `romutail-prep-fleet-054489a9a` を固定し、通常の Resume で起動した。controller SOURCE は `054489a9a907681ae152d83511201df2c5573111`。RomuTail、Romulaptop WSL、server2、PBS で SHA を確認した。Q3・信号の科学 SOURCE、価格の固定 provider、元の探索範囲と予算、50 GiB のホスト別保存上限を継承した。
+
+価格較正の固定ビューを候補メタデータをコミットする optimizer から分け、中央と RomuTail の worker に同じ工程 profile を置いた。manifest の compile と audit に較正ラッパーの SOURCE を登録した。較正作業領域の固定 SHA と GitHub の公開基点 `codex/rpe-pauli-binding-base-054489a9a9` の一致を確認し、既存の公開照合と同じ経路で権限検査の dry-run が通った。最新配置の保存要求は27件の入力照合を通った。
+
+前の継続run `search-5cdeb457cae5b7ba22c7` までのSTOPと原結果を保持した。較正の旧attemptは、配送前の拒否1件と、配送後の公開基点照合エラー5件を実行台帳と元ログで確認した。科学処理の開始前であることを照合し、旧attemptと予算の消費履歴を残した。旧controllerは新規受付停止後、全結果の回収とPBS割当の終了を確認してから、未割当の準備を待ち続けた専用controllerを終了した。通常の継続前照合で再利用可能な保存Q3は559件（B0I 242、PR-Pauli 253、PR-DF 64）。準備台帳63件と既存の保留を継承した。未予約の準備待機を解放する修正後は、通常Stopで旧runが終了した。
+
+WSL の旧4 attempt は実行セッションの終了を確認し、結果は未確定として保全した。先行runでは、解放した枠に別のQ3を割り当て、WSL と PBS から実結果を回収した。PBS の予約は 2 CPU・9 GiB、4 CPU・17 GiB、6 CPU・25 GiB、8 CPU・33 GiB を確認した。割当 `267348.CPUcluster-PRISM` は4 CPU・17 GiBで実Q3 4件を回収して終了した。
+
+直前の固定版（`ffc1df03964397524a0b53e4017969a142adf221`）では、過去に失敗した信号要求で WSL の固定Git入力168件、PBS の固定Git入力206件と、各3件の作業入力を照合した。両環境で一時作業領域の展開と人工コミットに成功した。この検査の実信号生成は0件。WSL は再生成可能なDPチェックポイント57件の整理で約2.1 GiBを解放した。RomuTail は元bundle 131件のSHA-256を照合し、旧展開キャッシュ約7.7 GiBを回収した。
+
+人工・回帰123件とサブテスト3件、配送前の照合追加で28件、較正前照合で26件とサブテスト12件が通過した。
+
+複数グループの公開分離、停止時の未予約準備の待機解除、継続時の所有照合を含む後続SOURCEは `547121fbb02864098bdc834b3a9dd651d3df99dc`。人工・回帰48件とサブテスト12件が通過した。人工Git検査で、公開された2つのrefに各BINDINGだけが入り、両グループのraw commitは中央回収用の履歴に残ることを確認した。
+
+旧Pauli較正の `--input-preflight` は、server2の原本にSHA-256で一致する保存config、封印済みprovider 278ファイル、H4の保存snapshotとreceiptを読み取り専用で対応付け、固定checkout `13ab1acfaebe5f33958e1db67862f5c45725ab91` に同一blobの参照JSONを展開して通過した。固定checkoutと科学コードのSHAは同じ。対応付けはRomuTailのcompile worker内に限定し、通常のホストファイルを変更しない。最後の関連回帰は49件とサブテスト12件。
+
+実検収では通常キューの較正 `prep-e77324f01c49371095250002`（attempt `1d2eef60123d4a7ebdc9b26ac7f108c9`）をRomuTailが実行した。3グループの公開refを照合した。各グループの2経路×X/Yの4回、計12回の実compileが終了し、中央が `PREPARATION_COMPLETE` を1回採用した。前版の保留attemptは元の台帳に保持した。
+
+この継続では4環境から実Q3を回収した。WSLとPBSの実信号については、新版から今回の確認時点までに起動・完了したジョブがなく、保存入力・一時作業領域の検査まで。PBSの最大確認予約は8 CPU・33 GiB。通常Resumeはclient応答がタイムアウトしたため、同じrunを通常Statusと中央の採用記録で確認した。全体の既定currentは維持し、この継続runに明示releaseを選んだ。
