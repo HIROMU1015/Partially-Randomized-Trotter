@@ -47,8 +47,17 @@ def main():
         os.execv(python, [python, *trailing])
     if trailing[:1] != ['-B'] or len(trailing) < 2:
         raise ValueError('Expected a fixed PF script')
-    entry = Path(trailing[1]).name
     scope = Path(config['write_root']).resolve(strict=True)
+    script = Path(trailing[1]).resolve(strict=True)
+    entry = script.name
+    if (script == Path(__file__).with_name('run_rpe_q3_worker.py').resolve()
+            and len(trailing) == 4 and trailing[2] == '--supervise-attempt'):
+        attempt = Path(trailing[3]).resolve(strict=True)
+        if attempt == scope or not attempt.is_relative_to(scope) or not attempt.is_dir():
+            raise ValueError('Fixed PF attempt is outside the owned workspace')
+        # The supervisor records its one-shot ownership and starts this
+        # launcher again for dry-check and execution inside the input mounts.
+        os.execv(python, [python, *trailing])
     if entry == 'run_rpe_preparation_job.py':
         target = Path(trailing[trailing.index('--task-root')+1]).resolve()
     elif entry in ('check_pf_preparation_owner.py', 'run_pf_preparation_stage.py'):
