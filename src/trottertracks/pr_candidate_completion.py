@@ -763,6 +763,27 @@ class Completion:
         if item['status']!='GENERATED':raise Held('A_CONFIG_NOT_READY:'+str(item))
         return item['configuration'],item
 
+    @staticmethod
+    def pauli_signal_inputs(workspace, relative, config, descriptor, packets):
+        base = workspace/relative
+        frozen = base/'SAVED_PACKETS.json'
+        if not frozen.is_file() or read(frozen) == packets:
+            return relative, packets
+        if read(base/'CONFIGURATION.json') != config:
+            raise Held('FIXED_PAULI_SIGNAL_CONFIGURATION_DIFFERS')
+        old_descriptor = read(base/'DESCRIPTOR.json') if (base/'DESCRIPTOR.json').is_file() else None
+        if descriptor != old_descriptor:
+            raise Held('FIXED_PAULI_SIGNAL_DESCRIPTOR_DIFFERS')
+        state = base/'SIGNAL_STATE.json'
+        if state.is_file() and read(state).get('status') == 'SIGNALS_READY':
+            # The fixed wrapper reuses the original complete packet.
+            return relative, read(frozen)
+        if any(base.rglob('SIGNALS_STARTED.json')) or any(base.rglob('STOP*.json')):
+            raise Held('PRIOR_PAULI_SIGNALS_STARTED_OR_STOPPED_NO_AUTOMATIC_RETRY')
+        # Acquire only missing rounds using the updated evidence. The old
+        # metadata and the fixed science contract remain independently readable.
+        return relative/('saved-packets-'+key(packets)), packets
+
     def pauli_signals(self,config,prepared,d):
         packets=self.saved_signal_packets('PR_PAULI')
         source=prepared['descriptor']['source']
@@ -774,8 +795,11 @@ class Completion:
             descriptor=prepared['descriptor']['descriptor'],source=source)if 'commit'in source else None)
         if descriptor is None and(config['spec']['L_D']not in(1,2,3,5)or not all(k in source for k in('index','context_sha256'))):
             raise Held('PAULI_DESCRIPTOR_SOURCE_UNRESOLVED')
+        workspace=Path(self.settings.get('pauli_workspace',self.path('A_WORKSPACE')))
+        relative=Path('docs/research/d2_automatic_pr_20261116')/config['id'][:20]/self.settings.get('signal_epoch','descriptor_envelope_v2')
+        relative,packets=self.pauli_signal_inputs(workspace,relative,config,descriptor,packets)
         request=dict(configuration=config,tail_descriptor=descriptor,saved_packets=packets,
-            workspace=str(self.settings.get('pauli_workspace',self.path('A_WORKSPACE'))),directory='docs/research/d2_automatic_pr_20261116/'+config['id'][:20]+'/'+self.settings.get('signal_epoch','descriptor_envelope_v2'),interpreter=self.path('NATIVE'))
+            workspace=str(workspace),directory=str(relative),interpreter=self.path('NATIVE'))
         if self.settings.get('pauli_saved_inputs'):
             request['pauli_saved_inputs']=self.settings['pauli_saved_inputs']
         inp=d/'PAULI_SIGNAL_REQUEST.json';out=d/'PAULI_SIGNAL_RESULT.json';put(inp,request)

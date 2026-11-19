@@ -102,6 +102,26 @@ def main():
             self.assertEqual(sent['formula'],'4th(m5_best)');self.assertEqual(sent['delta_over_h'],'2')
             self.assertEqual(config,result)
 
+    def test_pauli_signal_evidence_change_preserves_old_attempts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            relative = Path('attempt')
+            previous = root/relative
+            previous.mkdir()
+            config = {'id': 'fixed'}
+            C.put(previous/'CONFIGURATION.json', config)
+            C.put(previous/'SAVED_PACKETS.json', ['old'])
+            inputs = C.Completion.pauli_signal_inputs
+            refreshed, packets = inputs(root, relative, config, None, ['new'])
+            self.assertEqual(refreshed.parent, relative)
+            self.assertEqual(packets, ['new'])
+            self.assertEqual(C.read(previous/'SAVED_PACKETS.json'), ['old'])
+            (previous/'SIGNALS_STARTED.json').touch()
+            with self.assertRaisesRegex(C.Held, 'NO_AUTOMATIC_RETRY'):
+                inputs(root, relative, config, None, ['new'])
+            C.put(previous/'SIGNAL_STATE.json', {'status': 'SIGNALS_READY'})
+            self.assertEqual(inputs(root, relative, config, None, ['new']), (relative, ['old']))
+
     def test_pauli_price_uses_frozen_preparation_only_for_unchanged_calibration_inputs(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)/'PREPARATION.json'
