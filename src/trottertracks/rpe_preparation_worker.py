@@ -263,15 +263,14 @@ def _verify_fixed_git_inputs(root, locators):
             path = locator['path']
             artifact_path(path)
             expression = locator['commit'] + ':' + path
-            if '\n' in expression:
-                raw = subprocess.check_output(['git', 'show', expression], cwd=root)
-                observed = hashlib.sha256(raw).hexdigest()
-            else:
+            kind = None
+            if '\n' not in expression:
                 git.stdin.write(expression.encode() + b'\n')
                 git.stdin.flush()
                 header = git.stdout.readline().split()
-                if len(header) != 3 or header[1] != b'blob':
+                if len(header) != 3:
                     raise ValueError('Preparation fixed Git input is unavailable: ' + path)
+                kind = header[1]
                 remaining = int(header[2])
                 digest = hashlib.sha256()
                 while remaining:
@@ -282,7 +281,13 @@ def _verify_fixed_git_inputs(root, locators):
                     digest.update(raw)
                 if git.stdout.read(1) != b'\n':
                     raise ValueError('Missing fixed Git input boundary: ' + path)
+            if kind == b'blob':
                 observed = digest.hexdigest()
+            else:
+                # Saved tree locators hash the listing rendered by git show.
+                # Preserve that contract instead of hashing the binary tree.
+                raw = subprocess.check_output(['git', 'show', expression], cwd=root)
+                observed = hashlib.sha256(raw).hexdigest()
             if observed != locator['sha256']:
                 raise ValueError('Preparation fixed Git input differs: ' + path)
 

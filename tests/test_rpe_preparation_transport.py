@@ -39,6 +39,22 @@ class PreparationTransportTests(unittest.TestCase):
 
     def tearDown(self):self.tmp.cleanup()
 
+    def test_fixed_git_inputs_keep_saved_tree_listing_hash(self):
+        root = self.root/'source'
+        (root/'nested').mkdir()
+        (root/'nested/leaf').write_bytes(b'contents\x00\n')
+        subprocess.run(['git', 'add', 'nested'], cwd=root, check=True)
+        subprocess.run(['git', '-c', 'user.name=Test', '-c', 'user.email=test@example.invalid',
+                        'commit', '-qm', 'tree'], cwd=root, check=True)
+        locators = []
+        for path in ('nested', 'nested/leaf'):
+            raw = subprocess.check_output(['git', 'show', 'HEAD:'+path], cwd=root)
+            locators.append(dict(commit='HEAD', path=path, sha256=hashlib.sha256(raw).hexdigest()))
+        P._verify_fixed_git_inputs(root, locators)
+        locators[1]['sha256'] = '0'*64
+        with self.assertRaisesRegex(ValueError, 'nested/leaf'):
+            P._verify_fixed_git_inputs(root, locators)
+
     def test_only_matching_packs_in_transferred_attempts_share_storage(self):
         spool = self.root/'spool'
         packname = 'pack-'+'a'*40+'.pack'
