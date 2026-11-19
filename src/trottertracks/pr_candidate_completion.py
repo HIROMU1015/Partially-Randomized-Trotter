@@ -852,8 +852,11 @@ class Completion:
         if not path.is_file() or not isinstance(prepared, dict):
             return prepared
         frozen = read(path)
-        signal_metadata = {'configuration_file', 'signal_plan', 'signal_plan_command'}
-        scientific = lambda item: {k: v for k, v in item.items() if k not in signal_metadata}
+        metadata = {'configuration_file', 'signal_plan', 'signal_plan_command'}
+        if {frozen.get('preparation_status'), prepared.get('preparation_status')} == {
+                'GENERATED_CONFIGURATION', 'REUSED_LOCAL_METADATA_CONFIGURATION'}:
+            metadata.add('preparation_status')
+        scientific = lambda item: {k: v for k, v in item.items() if k not in metadata}
         return frozen if scientific(frozen) == scientific(prepared) else prepared
 
     def _price(self,config,cref,prepared,r,d,initial_quote=None):

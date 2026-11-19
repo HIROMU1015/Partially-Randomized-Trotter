@@ -125,9 +125,11 @@ def main():
     def test_pauli_price_uses_frozen_preparation_only_for_unchanged_calibration_inputs(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)/'PREPARATION.json'
-            saved = dict(configuration={'id': 'fixed'}, schedule=[1], signal_plan={'REQUEST': 13})
+            saved = dict(configuration={'id': 'fixed'}, schedule=[1], signal_plan={'REQUEST': 13},
+                         preparation_status='GENERATED_CONFIGURATION')
             C.put(path, saved)
-            current = dict(saved, signal_plan={'REUSE': 12})
+            current = dict(saved, signal_plan={'REUSE': 12},
+                           preparation_status='REUSED_LOCAL_METADATA_CONFIGURATION')
             self.assertEqual(C.Completion.pauli_price_preparation(path, current), saved)
             changed = dict(current, schedule=[2])
             self.assertEqual(C.Completion.pauli_price_preparation(path, changed), changed)
