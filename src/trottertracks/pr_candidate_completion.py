@@ -505,6 +505,22 @@ class Completion:
         if request['method']not in ('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
         if request.get('plan_only')or getattr(self,'settings',{}).get('plan_only'):
             return self.plan(request)
+        replacement = getattr(self, 'settings', {}).get('df_descriptor_replacement')
+        if replacement and request['method'] == 'PR_DF' and request.get('design') == replacement['design']:
+            previous = self.state['records'].get(replacement['prior_key'])
+            if (previous is None or previous['method'] != 'PR_DF'
+                    or previous['request']['design'] != replacement['design']
+                    or not previous.get('scientific_failure') or previous['status'] != 'HELD_WITH_REASON'
+                    or not previous['reason'].startswith('STAGE_FAILED:DF_CALIBRATION:')):
+                raise ValueError('DF_DESCRIPTOR_REPLACEMENT_REQUIRES_PRESERVED_FAILURE')
+            old_split = value(previous['configuration'])['spec']['split']
+            descriptor = replacement['descriptor']
+            updated = value(descriptor)
+            if (updated['prefix'] != replacement['design']['L_D']
+                    or descriptor == old_split['lambda_source']
+                    or dec(updated['descriptor']['lambda_R']) == dec(old_split['lambda_R'])):
+                raise ValueError('DF_DESCRIPTOR_REPLACEMENT_REQUIRES_DISTINCT_FIXED_INPUT')
+            request['tail_descriptor'] = descriptor
         identifier=key(request);d=self.directory/'candidates'/identifier
         with self.lock:
             old=self.state['records'].get(identifier)

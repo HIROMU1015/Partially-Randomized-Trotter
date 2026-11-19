@@ -32,12 +32,15 @@ def read(loc):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--prefix',type=int,required=True);p.add_argument('--configuration',required=True);p.add_argument('--selector',default='[]');p.add_argument('--output',type=Path,required=True);p.add_argument('--source',required=True);a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--prefix',type=int,required=True);p.add_argument('--configuration',required=True);p.add_argument('--selector',default='[]');p.add_argument('--output',type=Path,required=True);p.add_argument('--source',required=True)
+    p.add_argument('--signal-view', type=Path, default=VIEW)
+    a=p.parse_args()
     if subprocess.check_output(['git','show',a.source+':'+CALLER],cwd=ROOT)!=Path(__file__).read_bytes():raise ValueError('Descriptor runner differs from fixed SOURCE')
     source_loc=dict(commit=a.source,path=CALLER);c,path=a.configuration.split(':',1);config_loc=dict(commit=c,path=path,selector=json.loads(a.selector));config=read(config_loc)
     if not 1<=a.prefix<config['spec']['binding']['rank']:raise ValueError('Nonempty head/tail prefix required')
-    if subprocess.check_output(['git','rev-parse','HEAD'],cwd=VIEW,text=True).strip()!=SIGNAL:raise ValueError('Fixed signal view differs')
-    sys.path[:0]=[str(VIEW/'src'),str(VIEW/'scripts')]
+    view=a.signal_view.resolve()
+    if subprocess.check_output(['git','rev-parse','HEAD'],cwd=view,text=True).strip()!=SIGNAL:raise ValueError('Fixed signal view differs')
+    sys.path[:0]=[str(view/'src'),str(view/'scripts')]
     from trottertracks import h4_pr_rmse_completion as completion
     index=read(INDEX);saved=index['T20_reference_files']['H4'];raw=Path(saved['path']).read_bytes()
     if hashlib.sha256(raw).hexdigest()!=saved['sha256']:raise ValueError('Saved context descriptor bytes differ')
