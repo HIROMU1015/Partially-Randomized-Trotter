@@ -7,6 +7,7 @@ import multiprocessing
 import os
 from pathlib import Path
 import subprocess
+import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,8 +62,6 @@ def prepare(q4, p, spec, cfg):
     from trottertracks.resource_applicability.ax2b_h6_saved_completion_loader_v1 import load_h6_snapshot
     from trottertracks.resource_applicability.h6_hash_reuse_v1 import use_fingerprint_reuse
     from trotterlib import rte_compiled_cost
-    from trotterlib.rte import CompilerSettings
-    from trottertracks.resource_applicability import ax2b_native_df_v5
 
     p.verify_provider()
     inputs = cfg['inputs']
@@ -116,7 +115,7 @@ def main():
     p.write(output/'INPUTS.json', dict(source=source, dependency=DEPENDENCY, scientific_helper_source=p.CARRIER,
         provider=p.PROVIDER, compiler=p.COMPILER, input_sha256=spec['input_sha256'],
         configuration='Full19/M5, h=0.1, requested width 1.6', cases=rows,
-        maximum_compile=2*len(rows), interpreter=os.path.realpath(os.sys.executable)))
+        maximum_compile=2*len(rows), interpreter=sys.executable))
     if not args.execute:
         return
     global PRICE

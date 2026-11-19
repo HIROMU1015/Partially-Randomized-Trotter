@@ -128,10 +128,15 @@ def hamiltonian_facts(problem):
     arrays = receipt['arrays']
     fragments, orbitals, _ = arrays['g_matrices']['shape']
     states = arrays['state_vector']['shape'][0]
-    facts = dict(fragment_count=fragments, rank=receipt['rank'], n_qubits=int(math.log2(states)),
+    if problem['problem']['system'] == 'H6' and 'rank' not in receipt:
+        metadata = receipt['metadata']
+        identity = dict(rank=metadata['hamiltonian_metadata']['df_rank_actual'],
+                        hamiltonian_hash=metadata['hamiltonian_hash'], state_hash=metadata['state_hash'])
+    else:
+        identity = {k: receipt[k] for k in ('rank', 'hamiltonian_hash', 'state_hash')}
+    facts = dict(fragment_count=fragments, n_qubits=int(math.log2(states)),
                  orbital_dimension=orbitals, sector_dimension=arrays['sector_state_vector']['shape'][0],
-                 hamiltonian_hash=receipt['hamiltonian_hash'], state_hash=receipt['state_hash'],
-                 snapshot_sha256=receipt['sha256'])
+                 snapshot_sha256=receipt['sha256'], **identity)
     expected = data.get('expected', {})
     for key, value in expected.items():
         if key in facts and facts[key] != value:
@@ -166,7 +171,8 @@ def load_catalog(root, problem):
     """Rebuild C's catalog from C's fixed INPUTS (reuse of C's reader, normalizer and checks)."""
     reader = Reader(Path(root))
     source = problem['evidence']['saved_catalog_inputs']
-    inputs = reader.document(source['commit'], source['path'])
+    from .pf_optimizer_connection import read_source
+    inputs = read_source(root, reader, source)
     catalog = Catalog(reader, inputs['comparison'])
     for item in inputs['sources']:
         catalog.add(dict(item, commit=reader.commit(item['commit'])))
@@ -287,7 +293,8 @@ def enumerate_candidates(reader, problem, facts, catalog):
     by_config = {}
     for p in points:
         by_config.setdefault(p['configuration_id'], []).append(p)
-    index = reader.document(problem['evidence']['pf_candidate_index']['commit'], problem['evidence']['pf_candidate_index']['path'])
+    from .pf_optimizer_connection import read_source
+    index = read_source(Path(reader.root), reader, problem['evidence']['pf_candidate_index'])
     out = []
     for name, spec in problem['methods'].items():
         caps = spec['caps']
