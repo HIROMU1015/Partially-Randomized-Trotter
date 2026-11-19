@@ -620,7 +620,11 @@ class DistributedPreparationBridge:
                     required_paths=required_paths,
                     optional_outputs=optional_outputs, return_git_delta=True, stage_inputs=False,
                     runtime_requirements=requirements,compiler_bindings=compiler_bindings)
-        if stage == 'PAULI_SIGNALS':
+        binding_publication = (stage == 'PAULI_COMPILE' and
+                               (getattr(completion, 'settings', {}) or {}).get('pauli_price_wrapper_source') == source)
+        if binding_publication:
+            prep['publish_pauli_binding'] = True
+        if stage == 'PAULI_SIGNALS' or binding_publication:
             declared = [*prep['outputs'], *prep.get('optional_outputs', [])]
             prep['input_git_bundles'].append(self._workspace_bundle(root,prep,Path('workspace'),declared))
             for alias, view in workspaces.items():

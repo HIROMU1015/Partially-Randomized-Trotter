@@ -18,6 +18,7 @@ from .rpe_preparation_artifacts import ArtifactCache, artifact_path, artifact_ha
 from .rpe_q3_timing import append as timing_append
 
 STAGES = ('signal', 'compile', 'audit')
+PAULI_BINDING_ORIGIN = 'git@github.com:HIROMU1015/Partially-Randomized-Trotter.git'
 
 
 def digest(value):
@@ -203,6 +204,14 @@ def current_preparation_fingerprint(assignment, base_profile):
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
     pauli_calibration_manifest(spec)
     if spec.get('stage')not in STAGES:raise ValueError('Unknown preparation stage')
+    if spec.get('publish_pauli_binding') is True:
+        publication = profile.get('pauli_binding_publication') or {}
+        reference = publication.get('base_ref', '')
+        if (spec.get('stage') != 'compile' or spec.get('provider') != 'PAULI_COMPILE'
+                or publication.get('origin') != PAULI_BINDING_ORIGIN
+                or not isinstance(reference, str) or not reference.startswith('refs/heads/codex/')
+                or subprocess.run(['git', 'check-ref-format', reference], capture_output=True).returncode):
+            raise ValueError('Fixed Pauli binding publication profile is missing')
     if spec.get('parallel_df_price_axes') is True:
         if spec.get('provider') not in ('DF_CALIBRATION', 'DF_HOLDOUT'):
             raise ValueError('Parallel DF price execution requires a calibration or holdout request')
@@ -385,6 +394,30 @@ def materialize_pauli_calibration_view(spec, fingerprint, directory):
     alias.symlink_to(expected, target_is_directory=True)
 
 
+def prepare_pauli_binding_publication(profile, assignment, workspace, base):
+    """Give the legacy binding check an independently published, scoped ref."""
+    publication = profile['pauli_binding_publication']
+    origin, reference = publication['origin'], publication['base_ref']
+    if _head(workspace) != base:
+        raise ValueError('Pauli publication workspace does not start at its fixed public base')
+    env = dict(os.environ, GIT_TERMINAL_PROMPT='0', GIT_SSH_COMMAND='ssh -o BatchMode=yes')
+    result = subprocess.check_output(['git', 'ls-remote', '--exit-code', '--refs', origin, reference],
+                                     cwd=workspace, env=env, text=True, timeout=25).splitlines()
+    if len(result) != 1 or result[0].split()[1] != reference:
+        raise ValueError('Pauli publication base ref is unavailable')
+    published = result[0].split()[0]
+    if published != base:
+        raise ValueError('Pauli publication base ref differs from the fixed provider')
+    ids = (assignment['job_id'], assignment['attempt_id'])
+    if any(not v or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-' for c in v) for v in ids):
+        raise ValueError('Invalid Pauli publication attempt identity')
+    branch = 'codex/rpe-pauli-binding-' + '-'.join(ids)
+    subprocess.run(['git', 'branch', '-m', branch], cwd=workspace, check=True)
+    subprocess.run(['git', 'remote', 'add', 'origin', origin], cwd=workspace, check=True)
+    return dict(RPE_PAULI_BINDING_PUBLIC_BASE=base, GIT_SSH_COMMAND=env['GIT_SSH_COMMAND'],
+                GIT_TERMINAL_PROMPT=env['GIT_TERMINAL_PROMPT'])
+
+
 def execute(assignment, base_profile, directory):
     directory=Path(directory).resolve();directory.mkdir(parents=True,exist_ok=True)
     request=assignment['request'];spec=request['preparation'];profile=select_preparation_profile(base_profile,assignment)
@@ -469,6 +502,13 @@ def execute(assignment, base_profile, directory):
     start=time.monotonic();timing_append(directory/'JOB_STAGES.jsonl','PREPARATION_BODY_START',stage=spec['stage'])
     env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',RPE_PREPARATION_PATH_MAP=json.dumps(bindings),
              RPE_PREPARATION_PYTHON=profile['interpreter'])
+    if spec.get('publish_pauli_binding') is True:
+        provider, manifest = owned['provider']
+        if ('--no-push' not in command or '--phase' not in command
+                or command[command.index('--phase')+1:command.index('--phase')+2] != ['compile']):
+            raise ValueError('Pauli binding publication requires the fixed compile command')
+        env.update(prepare_pauli_binding_publication(profile, assignment, provider, manifest['commit']))
+        command.append('--publish-binding')
     if spec.get('parallel_df_price_axes') is True:
         env.update(RPE_DF_PRICE_AXIS_WORKERS=str(profile['task_cpu_count']),
                    OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1',

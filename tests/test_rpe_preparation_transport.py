@@ -3,6 +3,7 @@ import base64
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -35,6 +36,32 @@ class PreparationTransportTests(unittest.TestCase):
         self.source=repo(self.root/'source')
 
     def tearDown(self):self.tmp.cleanup()
+
+    def test_pauli_binding_publishes_only_owned_metadata_history(self):
+        spec=importlib.util.spec_from_file_location('pauli_candidate_prices',ROOT/'scripts/run_pr_pauli_candidate_prices.py')
+        prices=importlib.util.module_from_spec(spec);spec.loader.exec_module(prices)
+        workspace=self.root/'source'
+        git=lambda *args:subprocess.check_output(['git',*args],cwd=workspace,text=True).strip()
+        bare=self.root/'publication.git'
+        git('clone','--bare',str(workspace),str(bare))
+        base=self.source['commit']; reference='refs/heads/codex/fixed-provider'
+        subprocess.run(['git','-C',str(bare),'update-ref',reference,base],check=True)
+        env=P.prepare_pauli_binding_publication(dict(pauli_binding_publication=dict(origin=str(bare),base_ref=reference)),
+                                                dict(job_id='prep-test',attempt_id='a1'),workspace,base)
+        candidate=workspace/'docs/research/d2_automatic_price_20261116/test-candidate'
+        candidate.mkdir(parents=True)
+        binding=candidate/'BINDING.json';binding.write_text('{}\n')
+        prices.OPS.commit(workspace,[binding],'Freeze synthetic binding')
+        with patch.dict(os.environ,env):
+            prices._publish_compile_binding(workspace,candidate)
+            published=git('ls-remote','--heads','origin','codex/rpe-pauli-binding-prep-test-a1').split()[0]
+            self.assertEqual(published,git('rev-parse','HEAD'))
+            private=candidate/'PRIVATE.json';private.write_text('private\n')
+            prices.OPS.commit(workspace,[private],'Synthetic out-of-scope commit')
+            git('rm',str(private));git('-c','user.name=Test','-c','user.email=test@example.invalid','commit','-qm','remove')
+            with self.assertRaisesRegex(ValueError,'outside the compile binding'):
+                prices._publish_compile_binding(workspace,candidate)
+            self.assertEqual(git('ls-remote','--heads','origin','codex/rpe-pauli-binding-prep-test-a1').split()[0],published)
 
     def profile(self,host):
         return dict(host_id=host,root=str(self.root/'source'),interpreter=sys.executable,

@@ -66,6 +66,23 @@ def finish(worker, timeout=8):
 
 
 class WorkerTests(unittest.TestCase):
+    def test_unknown_detached_session_releases_only_after_the_session_exits(self):
+        with tempfile.TemporaryDirectory() as directory:
+            attempt = Path(directory)
+            process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(10)'],
+                                       start_new_session=True)
+            try:
+                W.atomic(attempt/'SUPERVISOR_STARTED.json', dict(pid=process.pid, session_id=process.pid))
+                W.atomic(attempt/'SUPERVISOR_LAUNCH.json', dict(pid=process.pid))
+                (attempt/'WORKER_PROCESS.lock').touch()
+                (attempt/'TRANSPORT_TIMING.jsonl').write_text(json.dumps(W.stamp()))
+                self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'UNKNOWN')
+            finally:
+                process.terminate()
+                process.wait(timeout=5)
+            self.assertEqual(W.resource_state(attempt, 'UNKNOWN'), 'EXITED')
+            self.assertFalse((attempt/'PROCESS_RETURN.json').exists())
+
     def test_unknown_attempt_only_releases_capacity_with_exit_evidence(self):
         with tempfile.TemporaryDirectory() as temporary:
             attempt = Path(temporary)

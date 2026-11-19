@@ -285,6 +285,8 @@ class Completion:
     def stage_source(self, stage):
         if stage == 'PAULI_SIGNALS':
             return self.settings.get('pauli_signal_source', self.source)
+        if stage in ('PAULI_COMPILE', 'PAULI_AUDIT'):
+            return self.settings.get('pauli_price_wrapper_source', self.source)
         if stage == 'DF_SIGNALS':
             return self.settings.get('df_signal_source', self.source)
         if stage in ('DF_PRICE_PREPARE', 'DF_CALIBRATION', 'DF_MODEL_FREEZE',

@@ -866,12 +866,15 @@ class DistributedExecutor(ConcurrentExecutor):
     def _owned_attempts(self):
         with self.store._connection() as database:
             rows = database.execute(
-                "SELECT job_id,host_id,attempt_id,state,method FROM jobs WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")
-            # A retired parent's allocation has no live owner in this run.
-            # Retain the original UNKNOWN row so its request cannot be launched.
+                "SELECT job_id,host_id,attempt_id,state,method,detail FROM jobs WHERE host_id IS NOT NULL AND state NOT IN ('QUEUED','CANCELLED','ACCEPTED')")
+            # UNKNOWN still owns the request. Release only its capacity when
+            # the worker proved it exited or a retired PBS allocation is verified.
             return [dict(row) for row in rows if not (
-                row['state'] == 'UNKNOWN' and row['method'].startswith('PREPARATION:')
-                and (row['job_id'], row['attempt_id']) in self.retired_preparation_attempts)]
+                row['state'] == 'UNKNOWN' and (
+                    (row['method'].startswith('PREPARATION:')
+                     and (row['job_id'], row['attempt_id']) in self.retired_preparation_attempts)
+                    or (json.loads(row['detail']).get('resource_released') is True
+                        and json.loads(row['detail']).get('automatic_retry') is False)))]
 
     def _offer_free(self, host, policy, error=None):
         """Fresh unused capacity, never a lease on an assigned evaluation."""

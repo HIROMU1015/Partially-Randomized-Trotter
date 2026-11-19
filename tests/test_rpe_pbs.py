@@ -230,6 +230,31 @@ class ManagerTests(unittest.TestCase):
             self.assertEqual((pending, queued, covered), ([], 2, 1))
             manager.close()
 
+    def test_measured_memory_scales_request_and_fences_other_stages(self):
+        with tempfile.TemporaryDirectory() as directory:
+            executor = FakeExecutor(directory)
+            config = settings()
+            config['resources'].update(ncpus=96, mem='350gb')
+            config['workers'][0]['profile']['dp_workers'] = 2
+            gib = 1024**3
+            config.update(allocation_sizing={'q3_startup_memory_bytes_per_task': 8*gib},
+                          preparation_task_seconds=[
+                              dict(stage='signal', provider='signal', source='pinned', seconds=12, memory_bytes=4*gib),
+                              dict(stage='compile', provider='compile', source='pinned', seconds=12)])
+            manager = P.PbsManager(executor, config, gateway=FakeGateway())
+            try:
+                signal = dict(preparation=dict(stage='signal', provider='signal', source={'commit':'pinned'}))
+                compile = dict(preparation=dict(stage='compile', provider='compile', source={'commit':'pinned'}))
+                spec = manager._submit('pbs-0', config['workers'][0], {}, [signal]*2)
+                self.assertEqual((spec['resources']['ncpus'],spec['resources']['mem']), (4,'9gb'))
+                report = dict(pbs=dict(accepting=True, remaining_seconds=100, sized_task_memory_bytes=4*gib))
+                self.assertTrue(P.fits_request(signal, report, config))
+                self.assertFalse(P.fits_request(compile, report, config))
+                full = manager._submit('pbs-0', config['workers'][0], {}, [compile])
+                self.assertEqual(full['resources']['mem'], '350gb')
+            finally:
+                manager.close()
+
     def test_only_idle_undersized_allocation_drains_for_later_demand(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, gateway = self.manager(directory)

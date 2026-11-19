@@ -75,7 +75,29 @@ def public_files(base):
     return [p for p in base.rglob('*')if p.is_file()and 'work' not in p.relative_to(base).parts]
 
 
-def _run_one(request,*,execute=False,push=True,phase='all'):
+def _publish_compile_binding(workspace, output):
+    """Publish the fixed inputs and binding; raw results stay in the artifact queue."""
+    from pathlib import PurePosixPath
+
+    base = os.environ['RPE_PAULI_BINDING_PUBLIC_BASE']
+    allowed = {'CONFIGURATION.json', 'PREPARATION.json', 'INPUT_QUOTE.json', 'CAL_PREPARATION.json',
+               'EXECUTION_OPS.json', 'GROUP_CALIBRATION_REQUEST.json', 'BINDING.json',
+               'PREPARE.log', 'PREPARE_EXECUTION.log', 'METADATA.log', 'PREFLIGHT.log', 'FREEZE.log'}
+    prefix = PurePosixPath('docs/research/d2_automatic_price_20261116')
+    destination = PurePosixPath(output.relative_to(workspace).as_posix())
+    history = base + '..HEAD'
+    changed = OPS.git(workspace, 'log', '--format=', '--name-only', history).splitlines()
+    paths = {PurePosixPath(path) for path in changed if path}
+    if (not destination.is_relative_to(prefix) or not paths or
+            OPS.git(workspace, 'rev-list', '--merges', history) or
+            not any(path.name == 'BINDING.json' for path in paths) or
+            any(not PurePosixPath(path).is_relative_to(destination) or
+                PurePosixPath(path).name not in allowed for path in paths)):
+        raise ValueError('Pauli publication contains files outside the compile binding')
+    OPS.publish(workspace)
+
+
+def _run_one(request,*,execute=False,push=True,phase='all',publish_binding=False):
     if phase not in ('all','compile','audit'):raise ValueError('Unknown preparation phase')
     request=runtime_request(request,('workspace','private_root','d2_view','registry_file','interpreter','quote_interpreter'))
     workspace=Path(request['workspace']).resolve();relative=Path(request['directory'])
@@ -185,7 +207,11 @@ Path(sys.argv[6]).write_text(json.dumps(dict(schema='A_PAULI_SPLIT_CAL_REQUEST_V
         if 'binding_commit'not in state:
             state['binding_commit']=OPS.commit(workspace,[base/'BINDING.json',out/'METADATA.log',out/'PREFLIGHT.log',out/'FREEZE.log'],
                 'Freeze selected Pauli calibration binding')
-            OPS.publish(workspace,push);OPS.write(statefile,state)
+            if publish_binding:
+                _publish_compile_binding(workspace, out)
+            else:
+                OPS.publish(workspace,push)
+            OPS.write(statefile,state)
         marker=out/'CALIBRATION_STARTED.json';terminal=base/'run01/RESULT.json'
         if terminal.exists():
             if marker.exists()and OPS.live(OPS.read(marker),requestfile):
@@ -262,26 +288,30 @@ Path(sys.argv[6]).write_text(json.dumps(dict(schema='A_PAULI_SPLIT_CAL_REQUEST_V
         OPS.write(statefile,state);return state
 
 
-def run(request,*,execute=False,push=True,phase='all'):
+def run(request,*,execute=False,push=True,phase='all',publish_binding=False):
     """Selected groups use existing acquisition/audit, then caller registration.
 
     Each step has its own stage namespace. No one-step model is registered as a
     legacy 26-axis rule. Repeated completed groups return their fixed receipts.
     """
+    if publish_binding and (not execute or push or phase != 'compile'):
+        raise ValueError('Isolated Pauli publication only supports distributed compile bindings')
     if not request.get('scoped_registration')or request.get('group_request_id'):
         return (_run_one(request,execute=execute,push=push)if phase=='all'
-                else _run_one(request,execute=execute,push=push,phase=phase))
+                else _run_one(request,execute=execute,push=push,phase=phase,publish_binding=publish_binding))
     plan=_run_one(request,execute=False,push=False)
     if plan.get('status')=='PRICES_READY'or not execute:return plan
     if plan.get('needs')or not plan.get('calibration_requests'):
         return dict(plan,status='WAITING_PRICE_EVIDENCE')
+    if publish_binding and len(plan['calibration_requests']) != 1:
+        return dict(plan,status='HELD_PAULI_BINDING_REQUIRES_INDEPENDENT_CALIBRATION_GROUPS')
     packages=[];results=[]
     for group in plan['calibration_requests']:
         child=dict(request,group_request_id=group['request_id'],
             directory=str(Path(request['directory'])/'step_groups'/group['request_id'].split(':')[-1][:24]),
             private_root=str(Path(request['private_root'])/'step_groups'/group['request_id'].split(':')[-1][:24]))
         result=(_run_one(child,execute=True,push=push)if phase=='all'
-                else _run_one(child,execute=True,push=push,phase=phase));results.append(result)
+                else _run_one(child,execute=True,push=push,phase=phase,publish_binding=publish_binding));results.append(result)
         if result.get('status')not in('SCOPED_STEP_MODEL_READY','PRICES_READY','COMPILE_READY_FOR_AUDIT'):
             return dict(plan,status=result['status'],group_results=results,evidence_packages=packages)
         packages.extend(result.get('evidence_packages',[]))
@@ -294,8 +324,9 @@ def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--request',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--execute',action='store_true');p.add_argument('--no-push',action='store_true')
     p.add_argument('--phase',choices=('all','compile','audit'),default='all')
+    p.add_argument('--publish-binding',action='store_true')
     a=p.parse_args(argv)
-    try:result=run(OPS.read(a.request),execute=a.execute,push=not a.no_push,phase=a.phase)
+    try:result=run(OPS.read(a.request),execute=a.execute,push=not a.no_push,phase=a.phase,publish_binding=a.publish_binding)
     except (ValueError,OSError,KeyError,subprocess.CalledProcessError)as exc:
         result=dict(schema='PR_PAULI_CANDIDATE_PRICES_V1',status='HELD_ORCHESTRATION_FAILURE',reason=repr(exc),automatic_retry=False)
     OPS.write(a.output,result);print(json.dumps(result,ensure_ascii=False,default=str))

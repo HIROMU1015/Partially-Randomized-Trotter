@@ -126,6 +126,13 @@ class ControllerFailures(unittest.TestCase):
         self.assertEqual(ex.store.row(task.job.name)['attempt_id'], assignment['attempt_id'])
         self.assertTrue(O.is_local_unknown(view.answer(proposal)))
         self.assertEqual(ex.metrics()['unresolved_q3_attempts'][0]['job_id'], task.job.name)
+        self.assertFalse(self.poll(ex)['assignments'])
+        ex.rpc('/v1/state', dict(owner, state='UNKNOWN', detail=dict(detail, resource_released=True)))
+        third = self.enqueue(ex, 'same-host-after-exit')
+        replacement, = self.poll(ex)['assignments']
+        self.assertEqual(replacement['job_id'], third.job.name)
+        self.assertTrue(O.is_local_unknown(view.answer(proposal)))
+        self.assertEqual(ex.store.row(task.job.name)['attempt_id'], owner['attempt_id'])
 
     def test_standby_probe_allows_completion_and_rechecks_stop_before_reserving(self):
         executor = self.executor(live_q3_readiness=True)

@@ -46,13 +46,19 @@ def read(path):
     return json.loads(Path(path).read_text())
 
 
-def atomic(path, value):
+def atomic(path, value, *, publish_once=False):
     path = Path(path)
     temporary = path.with_name(path.name + '.tmp-' + str(os.getpid()) + '-' + str(threading.get_ident()))
     with temporary.open('w') as stream:
         json.dump(value, stream, default=str, allow_nan=False)
         stream.write('\n'); stream.flush(); os.fsync(stream.fileno())
-    os.replace(temporary, path)
+    if publish_once:
+        try:
+            os.link(temporary, path)
+        finally:
+            temporary.unlink()
+    else:
+        os.replace(temporary, path)
     descriptor = os.open(path.parent, os.O_RDONLY)
     try:
         os.fsync(descriptor)
@@ -94,6 +100,34 @@ def process_alive(pid, marker):
         return False
 
 
+def supervisor_session_ended(attempt):
+    """A matching detached session with no live members cannot consume a slot."""
+    try:
+        started = read(attempt / 'SUPERVISOR_STARTED.json')
+        launched = read(attempt / 'SUPERVISOR_LAUNCH.json')
+        with (attempt / 'TRANSPORT_TIMING.jsonl').open() as stream:
+            clock = json.loads(stream.readline())['clock_id']
+        pid = started['pid']
+        if (clock != stamp()['clock_id'] or type(pid) is not int or pid <= 0
+                or launched['pid'] != pid or started.get('session_id', pid) != pid):
+            return False
+        adapter = attempt / 'WORKER_LAUNCH.json'
+        if adapter.exists() and read(adapter).get('supervisor_pid') != pid:
+            return False
+        with (attempt / 'WORKER_PROCESS.lock').open('rb') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            for stat in Path('/proc').glob('[0-9]*/stat'):
+                try:
+                    fields = stat.read_text().rsplit(')', 1)[1].split()
+                except (FileNotFoundError, ProcessLookupError):
+                    continue
+                if int(fields[3]) == pid and fields[0] not in ('Z', 'X'):
+                    return False
+        return True
+    except (OSError, ValueError, KeyError, IndexError, TypeError):
+        return False
+
+
 def resource_state(attempt, state):
     """Keep recovery ownership separate from CPU occupancy with exit evidence."""
     if state != 'UNKNOWN':
@@ -122,7 +156,7 @@ def resource_state(attempt, state):
                 return 'EXITED'
         except (ValueError, AttributeError):
             pass
-    return state
+    return 'EXITED' if supervisor_session_ended(attempt) else state
 
 
 def event(profile, name, **detail):
@@ -259,11 +293,11 @@ def _run_adapter(profile, attempt, mode, output):
                 # A launched adapter still needs its exit receipt on marker/log failure.
                 launch_error = error
         code = process.wait()
-    timing_append(Path(attempt)/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_END',mode=mode,returncode=code)
     receipt = dict(returncode=code if code >= 0 else None, signal=-code if code < 0 else None,
                    wall_seconds=time.monotonic() - started, automatic_retry=False)
     destination = 'PROCESS_RETURN.json' if mode == 'execute' else 'WORKER_' + mode.upper() + '_RETURN.json'
-    exclusive(Path(attempt) / destination, receipt)
+    atomic(Path(attempt) / destination, receipt, publish_once=True)
+    timing_append(Path(attempt)/'TRANSPORT_TIMING.jsonl','ADAPTER_PROCESS_END',mode=mode,returncode=code)
     if launch_error is not None:
         raise launch_error
     return code
@@ -328,7 +362,8 @@ def supervise(attempt):
     if (attempt / 'SUPERVISOR_STARTED.json').exists() or read(attempt / 'WORKER_STATE.json')['state'] != 'STARTING':
         lock.close(); return 3
     try:
-        exclusive(attempt / 'SUPERVISOR_STARTED.json', dict(pid=os.getpid(), epoch=time.time()))
+        exclusive(attempt / 'SUPERVISOR_STARTED.json',
+                  dict(pid=os.getpid(), session_id=os.getsid(0), epoch=time.time()))
         resolved = validate_assignment(profile, assignment)
         exclusive(attempt / 'RESOLVED_REQUEST.json', resolved)
         dry = attempt / '_dry_check'; dry.mkdir()
@@ -438,7 +473,8 @@ class Worker:
             return self._storage_offer(report)
         jobs = []
         for attempt, assignment in self.records.items():
-            state = read(attempt / 'WORKER_STATE.json')['state']
+            persisted = read(attempt / 'WORKER_STATE.json')
+            state = persisted['state']
             saved = read(attempt / 'WORKER_PROFILE.json')
             sample = dict(rss_bytes=0, cpu_seconds=0)
             for name in ('SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json'):
@@ -455,7 +491,8 @@ class Worker:
             seconds = observed['monotonic']-previous.get('monotonic', observed['monotonic'])
             same_clock = previous.get('clock_id') == observed['clock_id']
             cores = max(0, sample['cpu_seconds']-previous.get('cpu_seconds', 0))/seconds if same_clock and seconds > 0 else 0
-            job = dict(state=resource_state(attempt, state), dp_workers=max(saved.get('dp_workers') or 1,
+            resource = 'EXITED' if state == 'UNKNOWN' and persisted['detail'].get('resource_released') is True else resource_state(attempt, state)
+            job = dict(state=resource, dp_workers=max(saved.get('dp_workers') or 1,
                                                  saved.get('task_cpu_count') or 1),
                        peak_rss_bytes=peak, cpu_seconds=sample['cpu_seconds'],
                        observed_cpu_cores=max(cores, previous.get('observed_cpu_cores', 0)))
@@ -547,7 +584,9 @@ class Worker:
             event(self.profile, 'SUPERVISOR_RETURN', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                   returncode=code if code >= 0 else None, signal=-code if code < 0 else None)
             state = read(attempt / 'WORKER_STATE.json')
-        if state['state'] in ('STARTING', 'RUNNING'):
+        if state['state'] in ('STARTING', 'RUNNING') or (
+                state['state'] == 'UNKNOWN' and (attempt / 'OUTCOME.json').is_file()
+                and (attempt / 'PROCESS_RETURN.json').is_file()):
             for name in ('SUPERVISOR_STARTED.json', 'SUPERVISOR_LAUNCH.json'):
                 marker = attempt / name
                 if marker.exists() and process_alive(read(marker)['pid'], attempt):
@@ -563,6 +602,9 @@ class Worker:
                     state = save_state(attempt, 'UNKNOWN', reason=str(error), automatic_retry=False)
             else:
                 state = save_state(attempt, 'UNKNOWN', reason='LAUNCH_STATE_UNCERTAIN_NO_ADAPTER_EXIT_RECEIPT', automatic_retry=False)
+        if state['state'] == 'UNKNOWN' and not state['detail'].get('resource_released'):
+            if resource_state(attempt, 'UNKNOWN') == 'EXITED':
+                state = save_state(attempt, 'UNKNOWN', **dict(state['detail'], resource_released=True))
         return state
 
     def _prepare_challenge_artifacts(self, challenges):

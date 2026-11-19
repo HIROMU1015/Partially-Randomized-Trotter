@@ -266,6 +266,8 @@ class AllocationWorker(Worker):
                        remaining_seconds=self.remaining(),
                        minimum_task_seconds=self.minimum_task_seconds,
                        drain_seconds=self.drain_seconds, accepting=self.accepting())
+            if 'sized_task_memory_bytes' in self.profile['pbs']:
+                pbs['sized_task_memory_bytes'] = self.profile['pbs']['sized_task_memory_bytes']
             payload.setdefault('resource_report', {})['pbs'] = pbs
             if not pbs['accepting']:
                 payload['slots'] = 0

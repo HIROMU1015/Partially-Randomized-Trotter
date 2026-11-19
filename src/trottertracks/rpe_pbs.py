@@ -123,6 +123,8 @@ def apply_walltime_policy(settings, policy, overrides, *, computation_source=Non
     for row in rules:
         if type(row['seconds']) is not int or row['seconds'] <= 0:
             raise ValueError('Release PBS estimates must be positive integer seconds')
+        if 'memory_bytes' in row and (type(row['memory_bytes']) is not int or row['memory_bytes'] <= 0):
+            raise ValueError('Release PBS memory estimates must be positive integer bytes')
         row['seconds'] = overrides.get(row['id'], row['seconds'])
     for row in q3:
         row['hosts'] = [w['host_id'] for w in q3_walltime_workers(row, settings)]
@@ -138,24 +140,32 @@ def apply_walltime_policy(settings, policy, overrides, *, computation_source=Non
         settings['allocation_sizing'] = deepcopy(sizing)
 
 
-def task_estimate(request, settings, host_id=None):
+def task_rule(request, settings, host_id=None):
     preparation = request.get('preparation') or {}
     stage = preparation.get('stage', 'q3')
     rules = settings.get('preparation_task_seconds')
     if rules is not None and preparation:
         provider = preparation.get('provider')
         source = (preparation.get('source') or {}).get('commit')
-        matches = [rule['seconds'] for rule in rules if (rule['stage'], rule['provider'], rule['source'])
+        matches = [rule for rule in rules if (rule['stage'], rule['provider'], rule['source'])
                    == (stage, provider, source)]
         return matches[0] if len(matches) == 1 else None
     if not preparation and 'q3_task_seconds' in settings:
         route = request.get('route') or {}
         values = (request.get('method'), route.get('kind'), route.get('view_commit'))
-        matches = [rule['seconds'] for rule in settings['q3_task_seconds']
+        matches = [rule for rule in settings['q3_task_seconds']
                    if values == (rule['method'], rule['route_kind'], rule['view_commit'])
                    and (host_id is None or host_id in rule['hosts'])]
         return matches[0] if len(matches) == 1 else None
-    return (settings.get('task_seconds') or {}).get(stage)
+    return dict(seconds=(settings.get('task_seconds') or {}).get(stage))
+
+
+def task_estimate(request, settings, host_id=None):
+    return (task_rule(request, settings, host_id) or {}).get('seconds')
+
+
+def task_memory_estimate(request, settings, host_id=None):
+    return (task_rule(request, settings, host_id) or {}).get('memory_bytes')
 
 
 def fits_request(request, report, settings, host_id=None):
@@ -169,6 +179,11 @@ def fits_request(request, report, settings, host_id=None):
         estimate = pbs.get('minimum_task_seconds', 1)
     if not isinstance(estimate, (int, float)) or estimate <= 0:
         return False
+    slot_memory = pbs.get('sized_task_memory_bytes')
+    if slot_memory is not None:
+        required = task_memory_estimate(request, settings, host_id)
+        if required is None or required > slot_memory:
+            return False
     return (pbs.get('accepting', False) and
             pbs.get('remaining_seconds', 0) >= estimate + settings.get('drain_seconds', 30))
 
@@ -364,7 +379,22 @@ class PbsManager:
                 resources['ncpus'] = capacity * cost
             if capacity < 1:
                 raise ValueError('PBS slot limit does not fit one configured task')
-            if requests and all(request.get('route', {}).get('kind') != 'preparation'
+            estimates = [task_memory_estimate(request, self.settings, host) for request in requests[:capacity]]
+            if estimates and all(value is not None for value in estimates):
+                amount, unit = re.fullmatch(r'(\d+)([kmgt]?b)?', resources['mem'].lower()).groups()
+                maximum_memory = int(amount) * (1024 ** ('b', 'kb', 'mb', 'gb', 'tb').index(unit or 'b'))
+                task_memory = max(*estimates, (profile.get('pbs') or {}).get('task_memory_bytes') or 0)
+                unit = 1024**3
+                task_gib = (task_memory + unit - 1) // unit
+                overhead_gib = 1
+                capacity = min(capacity, (maximum_memory // unit - overhead_gib) // task_gib)
+                if capacity < 1:
+                    raise ValueError('PBS memory limit does not fit one compatible task')
+                resources.update(ncpus=capacity * cost, mem=f'{capacity * task_gib + overhead_gib}gb')
+                policy['initial_slots'] = capacity
+                profile.setdefault('pbs', {}).update(task_memory_bytes=task_gib * unit,
+                                                     sized_task_memory_bytes=task_memory)
+            elif requests and all(request.get('route', {}).get('kind') != 'preparation'
                                 and task_estimate(request, self.settings, host) for request in requests):
                 amount, unit = re.fullmatch(r'(\d+)([kmgt]?b)?', resources['mem'].lower()).groups()
                 memory = int(amount) * (1024 ** ('b', 'kb', 'mb', 'gb', 'tb').index(unit or 'b'))
@@ -428,11 +458,17 @@ class PbsManager:
                 current_cpus = spec['resources']['ncpus']
                 requested_slots = sum(host in usable for usable, _ in outstanding)
                 cpu_per_task = task_cpu_footprint(spec['profile'])
+                slot_memory = spec['profile'].get('pbs', {}).get('sized_task_memory_bytes')
+                waiting = [request for hosts, request in outstanding + pending if host in hosts]
+                estimates = [task_memory_estimate(request, self.settings, host) for request in waiting]
+                memory_mismatch = slot_memory is not None and estimates and all(
+                    estimate is None or estimate > slot_memory for estimate in estimates)
                 # Releasing the old idle allocation is required before another
                 # allocation can take ownership under this PBS host identity.
                 if (not stopping and self.settings.get('allocation_sizing') and allocation['status'] == 'R'
                         and (allocation.get('worker') or {}).get('accepting') and not record.get('resize_requested')
-                        and min(self.settings['resources']['ncpus'], requested_slots * cpu_per_task) >= 2 * current_cpus
+                        and (memory_mismatch or
+                             min(self.settings['resources']['ncpus'], requested_slots * cpu_per_task) >= 2 * current_cpus)
                         and not any(row['host_id'] == host for row in self.executor._owned_attempts())):
                     record['resize_requested'] = True
                     self.log('PBS_IDLE_ALLOCATION_RESIZE_DRAIN', token=token, host_id=host,
@@ -461,6 +497,8 @@ class PbsManager:
                 if any(row['host_id'] == host for row in self.executor._owned_attempts()): continue
                 requests = [request for usable, request in outstanding if host in usable]
                 if not requests and not any(host in usable for usable, _ in pending): continue
+                if not requests:
+                    requests = [next(request for usable, request in pending if host in usable)]
                 if not self._storage_accepting(worker): continue
                 spec = self._submit(host, worker, dict(ready_tasks=queued, existing_host_free_slots=free,
                     prospective_pbs_task_slots=covered, shortage=shortage), requests[:shortage-covered])
