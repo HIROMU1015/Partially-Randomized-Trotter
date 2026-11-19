@@ -394,3 +394,17 @@ PR-DF LD8・幅h・κ=1、PBS指定を確認した。候補の旧較正
 固定providerの `0x1.5d3f2ff8b67ffp-14` でbinary64の1 ULP異なる。
 既存の厳密照合と保留を保持した。新規PBS投入、実較正、監査、Q3、採用は各0件。
 RomuTailの記録は `.rpe-central/acceptance/pbs-prdf-ld8-continuation-8b941595-r3/`。
+
+### LD8の再計算descriptorとPBSの固定入力
+
+保存スナップショットを両経路で読み、既存のdescriptor導出と固定価格providerの
+λが `0x1.5d3f2ff8b67ffp-14`、tailのスカラーが `0x1.9a41efba5338cp-17`
+に厳密一致することをRomuTailで確認した。旧descriptor、STOP、台帳を残し、
+新しいlocatorを候補の準備記録に固定した。13ラウンドの物理時間、PF回数、
+外側反復数、実際の幅も旧候補と照合した。
+[descriptor](PR_DF_LD8_DESCRIPTOR.json) · [固定構成](PR_DF_LD8_FAMILY.json)
+
+PBS用の臨時配備では、入力bundleが移動するcontroller HEADを前提にしない設定
+`bundle_fixed_source_only` を使用した。固定worker SOURCEしか持たない新規Git環境で
+通常 `git bundle verify` と固定入力の取り込みを確認した。旧attemptを起動せず、
+PBSの価格用と信号用の専用キャッシュそれぞれで不足オブジェクトを補った。
