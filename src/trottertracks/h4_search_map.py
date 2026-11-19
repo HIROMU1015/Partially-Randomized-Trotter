@@ -3,6 +3,7 @@
 Counts identify evaluations, not jobs, file copies, or execution hosts. Prices
 used for minima come only from the existing C comparison consumer.
 """
+from collections import defaultdict
 from copy import deepcopy
 from fractions import Fraction
 import hashlib
@@ -191,6 +192,116 @@ def _attach_price_validations(points, runs, issues):
     return models
 
 
+def _direction_parameters(point):
+    params = dict(M=point.get('M'), formula=point.get('formula'))
+    method = point['method']
+    try:
+        params['width'] = frac(point['width_key'])
+        if method == 'TRUNCATED_PF':
+            params['p'] = point.get('p')
+        if method.startswith('PR_'):
+            kappa = point.get('kappa') or {}
+            if not isinstance(kappa, dict) or not kappa.get('kind'):
+                return None
+            params.update(L_D=point.get('L_D'), kappa=Fraction(kappa['value']) if isinstance(kappa['value'], float) else frac(kappa['value']))
+        if any(v is None for v in params.values()):
+            return None
+    except (ValueError, TypeError, KeyError, ZeroDivisionError):
+        return None
+    return params
+
+
+def _endpoint_rank(point):
+    if point['status'] == 'FEASIBLE' and point.get('q3_status') == PASS and point.get('conditional_cost') is not None:
+        return 0, frac(point['conditional_cost']), point['id']
+    if point.get('q3_status') == PASS:
+        return 1, 0, point['id']
+    return (2 if point.get('q3_status') == FAIL else 3 if point.get('q3_status') else 4), 0, point['id']
+
+
+def _direction_records(points, details):
+    """Adjacent observed values of one variable under the catalog's existing admission."""
+    groups = defaultdict(lambda: defaultdict(dict))
+    representatives = {}
+    for point in points:
+        if (point['cost_admission'] != 'EXISTING_C_CATALOG' or not point.get('configuration_id')
+                or not point.get('adopted_evaluation') or point.get('h') is None):
+            continue
+        detail = details[point['configuration_detail_key']]
+        if not detail.get('profile') or any(v['field'] != 'configuration_source' for v in detail.get('metadata_variants', [])):
+            continue
+        evidence = point.get('price_evidence') or {}
+        axes = evidence.get('price_axes') or []
+        lowering = sorted({str(a.get('lowering_id') or a.get('lowering')) for a in axes
+                           if a.get('lowering_id') or a.get('lowering')})
+        choice = (point['configuration_detail_key'], key(point['adopted_evaluation']),
+                  evidence.get('scenario'), tuple(lowering))
+        previous = representatives.get(choice)
+        if previous is None or _endpoint_rank(point) < _endpoint_rank(previous):
+            representatives[choice] = point
+
+    for (_, _, scenario, lowering), point in representatives.items():
+        params = _direction_parameters(point)
+        if params is None:
+            continue
+        detail = details[point['configuration_detail_key']]
+        physical = [r.get('physical_id') for r in detail.get('schedule', [])]
+        pr = point['method'].startswith('PR_')
+        if pr and point.get('finite_K') is None:
+            continue
+        h = Fraction(point['h']) if isinstance(point['h'], float) else frac(point['h'])
+        contract = [point['method'], str(h), point['adopted_evaluation'], detail['profile'],
+                    scenario, lowering, point.get('finite_K')]
+        if pr:
+            contract += [point['kappa']['kind'], point['kappa'].get('A_definition_name')]
+        for parameter, value in params.items():
+            if parameter == 'kappa' and not (physical and all(physical)):
+                continue
+            fixed = {k: str(v) for k, v in params.items() if k != parameter}
+            # A split variation changes the tail/preparation itself. Keep the
+            # model and scalar convention fixed even when the dictionary changes.
+            law = detail.get('law') or {}
+            split = detail.get('split') or {}
+            if parameter in ('L_D', 'p'):
+                law = {k: law.get(k) for k in ('model', 'event_model', 'scalar')}
+                split = {k: split.get(k) for k in ('randomized_scope', 'deterministic_scope', 'original_PF_method', 'one_body_policy')}
+            group = (point['method'], parameter, key([contract, fixed, law, split]))
+            # Identical per-round physical IDs represent one schedule for κ.
+            identity = tuple(physical) if parameter == 'kappa' else point['configuration_id']
+            at_value = groups[group][value]
+            previous = at_value.get(identity)
+            if previous is None or _endpoint_rank(point) < _endpoint_rank(previous[0]):
+                at_value[identity] = (point, fixed)
+
+    rows = []
+    for (method, parameter, _), values in sorted(groups.items()):
+        visited = set()
+        distinct = []
+        for value, options in sorted(values.items()):
+            if len(options) != 1:
+                # Multiple incompatible configurations at one coordinate
+                # interrupt adjacency instead of selecting a favorable one.
+                distinct.append((value, None, None))
+                continue
+            identity, (point, fixed) = next(iter(options.items()))
+            if identity in visited:
+                continue
+            visited.add(identity)
+            distinct.append((value, point, fixed))
+        for (a, first, fixed), (b, second, _) in zip(distinct, distinct[1:]):
+            if first is None or second is None:
+                continue
+            left, right = _endpoint_rank(first), _endpoint_rank(second)
+            delta = right[1] - left[1] if left[0] == right[0] == 0 else None
+            rows.append(dict(method=method, parameter=parameter, fixed=fixed, from_value=str(a), to_value=str(b),
+                from_point=first['id'], to_point=second['id'],
+                same_allocation=bool(first.get('N_X') and second.get('N_X')) and
+                    (first.get('N_X'), first.get('N_Y')) == (second.get('N_X'), second.get('N_Y')),
+                delta_RZ=None if delta is None else dict(numerator=str(delta.numerator), denominator=str(delta.denominator)),
+                direction='UNRESOLVED' if delta is None else 'COST_DOWN' if delta < 0 else 'COST_UP' if delta > 0 else 'EQUAL'))
+    return rows
+
+
 def build_index(catalog, runs, *, sources=None, issues=None):
     comparison = catalog['comparison']; points = {}; targets = {}; problems = list(issues or [])
     accepted = {}; configurations={}
@@ -240,7 +351,7 @@ def build_index(catalog, runs, *, sources=None, issues=None):
     for r in catalog['candidates']:
         if r['method'] not in METHODS: continue
         row = {k: deepcopy(r.get(k)) for k in ('method', 'configuration_id', 'formula', 'L_D', 'split',
-            'h', 'kappa', 'delta_pf', 'N_X', 'N_Y', 'q3_status', 'status', 'MSE_lower', 'MSE_upper',
+            'h', 'M', 'finite_K', 'kappa', 'delta_pf', 'N_X', 'N_Y', 'q3_status', 'status', 'MSE_lower', 'MSE_upper',
             'conditional_cost', 'adopted_evaluation', 'schedule', 'signal_source', 'binding_id',
             'total_configuration_id', 'issues', 'profile', 'law')}
         row.update(source=(r.get('result_sources') or [r.get('configuration_source')])[0],
@@ -337,6 +448,7 @@ def build_index(catalog, runs, *, sources=None, issues=None):
                 selected,rt,run_id=rid,mode=mode))
     return dict(schema='H4_SEARCH_MAP_V1', comparison=deepcopy(comparison), sources=sources or [],
         runs=clean_runs, points=points,configuration_details=details, targets=targets, views=views, issues=problems,
+        direction_records=_direction_records(points, details),
         price_validation_models=price_validation_models,
         count_policy=dict(evaluation='method/configuration/decoder-contract/X-Y-vector; unknown contract marked, jobs/hosts/copies not counted',
             new='Explicit NEW_Q3_JOB or controller-owned evaluation index; SAVED/PRIOR_ROUND_JOB excluded; unknown not counted as new',

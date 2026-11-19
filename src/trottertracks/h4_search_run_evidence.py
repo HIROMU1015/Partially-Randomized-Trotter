@@ -4,7 +4,9 @@ Summary outcomes count as observed evaluations, with their summary provenance.
 Only explicitly NEW_Q3_JOB records count as new work in a legacy run. Reused
 records, child-worker copies, and plan-only targets are kept distinct.
 """
+from collections import defaultdict
 from copy import deepcopy
+from fractions import Fraction
 import hashlib
 import json
 from pathlib import PurePosixPath
@@ -227,6 +229,40 @@ def _context(reader, head, directory, paths, spec=None):
     return meta
 
 
+def _scaled_horizon_directions(rows):
+    """Compare adjacent horizons of one explicitly linked physical candidate."""
+    groups = defaultdict(lambda: defaultdict(list))
+    for row in rows:
+        cid = row.get('source_configuration_id') or row['configuration_id']
+        if cid and type(row['M']) is int:
+            groups[cid][row['M']].append(row)
+
+    def feasible_cost(row):
+        best = row.get('best') or {}
+        cost = best.get('cost')
+        if best.get('status') != 'MODEL_BOUND_MEETS_ADOPTED_THRESHOLD' or cost is None:
+            return None
+        try:
+            if isinstance(cost, dict):
+                return Fraction(int(cost['numerator']), int(cost['denominator']))
+            return Fraction(cost) if type(cost) is int or isinstance(cost, str) else None
+        except (KeyError, TypeError, ValueError, ZeroDivisionError):
+            return None
+
+    for cid, horizons in sorted(groups.items()):
+        pairs = sorted(horizons.items())
+        for (m, a), (n, b) in zip(pairs, pairs[1:]):
+            if len(a) != 1 or len(b) != 1:
+                continue
+            left, right = a[0], b[0]
+            lo, hi = feasible_cost(left), feasible_cost(right)
+            delta = None if lo is None or hi is None else hi - lo
+            yield dict(source_configuration_id=cid, from_M=m, to_M=n, from_source=left['source'],
+                to_source=right['source'], from_status=left['minimum_status'], to_status=right['minimum_status'],
+                direction='UNRESOLVED' if delta is None else 'COST_DOWN' if delta < 0 else 'COST_UP' if delta > 0 else 'EQUAL',
+                delta_RZ=None if delta is None else dict(numerator=str(delta.numerator), denominator=str(delta.denominator)))
+
+
 def _run_result(reader, head, path, document, paths):
     source = _source(reader, head, path)
     spec = document.get('round') or {}
@@ -252,6 +288,27 @@ def _run_result(reader, head, path, document, paths):
         if method not in METHODS or not isinstance(value, dict):
             continue
         run['status'][method] = value.get('stop_reason')
+        if (value.get('search_range') or {}).get('rule') == 'RPE_SCALED_SHOTS_V1' and value.get('scaled_shots'):
+            # Keep the controller's conditional quote and actual Q3 verdict
+            # separate from C's existing price admission/certification.
+            summaries = []
+            for i, row in enumerate(value.get('by_configuration') or []):
+                item = {k: deepcopy(row.get(k)) for k in ('configuration_id', 'source_configuration_id',
+                    'M', 'configuration', 'needs', 'minimum_status', 'unresolved_competitors', 'required_rounds',
+                    'best', 'comparison_best', 'comparison_delta_RZ')}
+                item['source'] = dict(source, selector=['methods', method, 'by_configuration', i])
+                item['allocation_states'] = {}
+                item['allocation_reasons'] = {}
+                for alloc in row.get('allocations') or []:
+                    state = alloc.get('status')
+                    item['allocation_states'][state] = item['allocation_states'].get(state, 0) + 1
+                    reason = alloc.get('reason')
+                    if reason:
+                        item['allocation_reasons'][reason] = item['allocation_reasons'].get(reason, 0) + 1
+                summaries.append(item)
+            run.setdefault('scaled_shots', {})[method] = dict(
+                summary=deepcopy(value['scaled_shots']), configurations=summaries,
+                stop_reason=run['status'][method], horizon_directions=list(_scaled_horizon_directions(summaries)))
         for i, row in enumerate(value.get('not_ready_candidates', [])):
             run['targets'].append(_target(row, method, dict(source, selector=['methods', method, 'not_ready_candidates', i])))
         for i, name in enumerate((value.get('search_range') or {}).get('candidates', [])):
@@ -379,6 +436,9 @@ def _publication(reader, head, path, doc, paths):
     run.update(id=_ident([label, directory]), label=label, directory=directory,
                publication_source=_source(reader, head, path),
                hosts=doc.get('execution_hosts', []), producer_role='CONTROLLER')
+    progress = doc.get('search_progress')
+    if isinstance(progress, dict) and progress.get('schema') == 'H4_SEARCH_PROGRESS_V1':
+        run['search_progress'] = dict(progress, source=dict(run['publication_source'], selector=['search_progress']))
     return run
 
 
