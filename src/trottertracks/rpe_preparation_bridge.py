@@ -99,7 +99,8 @@ _DF_PRICE_BACKEND = tuple(
             'scripts/h46_new2_core.py', 'scripts/h46_new2_native.py',
             'scripts/h46_pr_pilot_repair.py', 'src/trotterlib/h46_m5_plan.py')),
         ('326feadd093920bbea29b498108aa4eae6f67a75', (
-            'src/trottertracks/efficient_controlled_zz.py', 'src/trottertracks/p1_efficient_zz.py')),
+            'src/trottertracks/efficient_controlled_zz.py', 'src/trottertracks/p1_efficient_zz.py',
+            'scripts/h46_b3_fast_fingerprint.py')),
         ('c31ef424175c02379eafebe8fc6c7548c1d9aabe', (
             'src/trotterlib/df_partial_randomized_pf.py', 'src/trotterlib/df_partial_s2.py',
             'src/trotterlib/df_rte_circuit.py', 'src/trotterlib/df_rte_qiskit.py',

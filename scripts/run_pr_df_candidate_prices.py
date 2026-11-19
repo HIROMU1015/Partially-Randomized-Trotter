@@ -91,6 +91,28 @@ def runtime():
     R.ROOT=ROOT;RUNTIME=R;return R
 
 
+def load_fixed_fingerprint():
+    """Resolve the legacy adapter's lazy import before any path starts."""
+    name='h46_b3_fast_fingerprint'
+    path=FIXED_VIEW/'scripts'/f'{name}.py'
+    raw=path.read_bytes()
+    if raw!=blob(VIEW_COMMIT,'scripts/'+path.name):
+        raise ValueError('Fixed DF fingerprint helper SOURCE differs')
+    loaded=sys.modules.get(name)
+    if loaded is not None:
+        if Path(loaded.__file__).read_bytes()!=raw:
+            raise ValueError('Already loaded DF fingerprint helper SOURCE differs')
+        return
+    spec=importlib.util.spec_from_file_location(name,path)
+    module=importlib.util.module_from_spec(spec)
+    sys.modules[name]=module
+    try:
+        spec.loader.exec_module(module)
+    except BaseException:
+        sys.modules.pop(name,None)
+        raise
+
+
 def solve(matrix,rhs):
     tree=ast.parse(blob(*SOLVER));node=next(n for n in tree.body if isinstance(n,ast.FunctionDef)and n.name=='_solve')
     namespace=dict(Fraction=Fraction)
@@ -575,6 +597,7 @@ def _acquire(inputs,input_commit,stage,source,model_commit=None):
             if not any(pair[0]['m']==cell['m']for pair in pending):continue
             pc=cell['request']['physical_context'];r=R.D.NativeRuntime(ROOT,ham,binding=pc['binding'],input_source=pc['input_source'],execution_source=pc['execution_source'])
             runtimes[cell['m']]=r;contexts[cell['m']]=r.context(cell['request'])
+        load_fixed_fingerprint()
         preparation=dict(metadata=metadata,contexts={str(m):dict(preparation_hash=c.prep.preparation_hash,scalar=c.scalar,head=list(c.prep.deterministic_fragment_indices),tail=list(c.prep.randomized_block_indices))for m,c in contexts.items()})
         if (out/'PREPARATION.json').exists():
             old=json.loads((out/'PREPARATION.json').read_text())
