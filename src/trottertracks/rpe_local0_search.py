@@ -135,6 +135,23 @@ def resolve(config, request):
     methods = sorted(set(methods), key=METHODS.index)
     if any(m not in problem['methods'] for m in methods):raise RequestError('scope.methods','method is not enabled in the adopted problem')
     spec['methods'] = methods
+    if 'q3_budget_parents' in spec:
+        spec['q3_budget_parents'] = [parent for parent in spec['q3_budget_parents']
+                                     if parent['method'] in methods]
+    executor = spec.get('executor', {})
+    if 'prior_q3_holds' in executor:
+        executor['prior_q3_holds'] = [hold for hold in executor['prior_q3_holds']
+                                      if hold['method'] in methods]
+    if 'width_families' in spec:
+        spec['width_families'] = [family for family in spec['width_families']
+                                  if family['method'] in methods]
+    search = spec.get('search_overrides', {})
+    widths = search.get('requested_widths', problem['search'].get('requested_widths'))
+    if isinstance(widths, dict) and widths:
+        scoped_widths = {method: values for method, values in widths.items()
+                         if method in methods or method not in ('PR_PAULI', 'PR_DF')}
+        if scoped_widths != widths:
+            spec.setdefault('search_overrides', {})['requested_widths'] = scoped_widths or None
     walltime = config.get('pbs_walltime_policy')
     overrides = scope.get('pbs_walltime_overrides', {})
     if walltime:
@@ -182,7 +199,9 @@ def resolve(config, request):
             if current['family'] != 'PR' or config.get('entry', 'method') != 'schedule':
                 raise RequestError(method + '.delta_pf', 'absolute requested widths require an adopted requested-width schedule entry')
             nums = [number(x, method + '.delta_pf') for x in values['delta_pf']]
-            spec.setdefault('search_overrides', {}).setdefault('requested_widths', {})[method] = [x[0] for x in nums]
+            width_settings = spec.setdefault('search_overrides', {})
+            width_settings['requested_widths'] = dict(width_settings.get('requested_widths') or {},
+                                                       **{method: [x[0] for x in nums]})
             observed['delta_pf'] = [x[1] for x in nums]
         if 'delta_over_h' in values:
             if current['family'] != 'PF':

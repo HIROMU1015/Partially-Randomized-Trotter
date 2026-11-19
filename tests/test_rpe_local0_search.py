@@ -90,6 +90,34 @@ class Tests(unittest.TestCase):
         status = g.handle(dict(action='status', run_id=prepared['run_id']))
         self.assertEqual(status['applied']['pbs_walltime']['q3'][0]['seconds'], 14400)
 
+    def test_method_subset_keeps_its_settings_and_all_duplicate_history(self):
+        selected = dict(method='PR_PAULI', run_directory='/prior/pauli')
+        excluded = dict(method='TRUNCATED_PF', run_directory='/prior/pf')
+        round_spec = load(self.config['round'])
+        round_spec['q3_budget_parents'] = [selected, excluded]
+        history = ['/prior/pauli', '/prior/pf']
+        round_spec['executor']['prior_run_dirs'] = history
+        selected_hold = dict(method='PR_PAULI', job_id='a'*20)
+        excluded_hold = dict(method='TRUNCATED_PF', job_id='b'*20)
+        round_spec['executor']['prior_q3_holds'] = [selected_hold, excluded_hold]
+        round_spec['search_overrides'] = dict(requested_widths={'PR_DF': ['1/5']})
+        round_spec['width_families'] = [dict(method='PR_DF', L_D=8)]
+        write(self.config['round'], round_spec)
+
+        _, scoped, _ = resolve(self.config, request(4, 6, 'UNLIMITED'))
+
+        self.assertEqual(scoped['q3_budget_parents'], [selected])
+        self.assertEqual(scoped['executor']['prior_run_dirs'], history)
+        self.assertEqual(scoped['executor']['prior_q3_holds'], [selected_hold])
+        self.assertEqual(scoped['width_families'], [])
+        from trottertracks.rpe_schedule_search import requested_widths
+        self.assertIsNone(requested_widths(load(self.config['problem']), scoped))
+        self.config['entry'] = 'schedule'
+        explicit = request(4, 6, 'UNLIMITED')
+        explicit['scope']['per_method']['PR_PAULI']['delta_pf'] = [dict(kind='exact', value='1/7')]
+        problem, scoped, _ = resolve(self.config, explicit)
+        self.assertEqual(requested_widths(problem, scoped)['PR_PAULI'][0]['exact'], '1/7')
+
     def test_explicit_unlimited_crosses_old_cap_and_uses_rule_termination(self):
         gateway=build(self.config)
         previous=gateway.handle(request(4,4,1))
