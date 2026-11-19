@@ -1861,7 +1861,7 @@ class DistributedExecutor(ConcurrentExecutor):
         with self.store._connection() as db:
             snapshot={r['job_id']:dict(r)for r in db.execute(
                 "SELECT job_id,host_id,state,eligibility FROM jobs WHERE state NOT IN ('CANCELLED','ACCEPTED')")}
-        owned=Counter(r['host_id']for r in snapshot.values()if r['state']!='QUEUED')
+        owned=Counter(r['host_id'] for r in self._owned_attempts())
         for task in s.tasks.values():
             if task.status!='QUEUED':continue
             row=snapshot.get(task.job.name)

@@ -447,10 +447,14 @@ class Worker:
             self.records[path.parent] = assignment
         event(self.profile, 'WORKER_START', source_sha=self.source_sha, slots=self.slots)
 
+    @property
+    def capacity_state_dir(self):
+        return self.work
+
     def _capacity_feedback(self, response):
         feedback = response.get('capacity_feedback')
         if feedback is not None and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
-            atomic(self.work / 'CAPACITY_FEEDBACK.json', feedback)
+            atomic(self.capacity_state_dir / 'CAPACITY_FEEDBACK.json', feedback)
 
     def resource_snapshot(self):
         return Resources.resource_snapshot(self.profile)
@@ -499,8 +503,8 @@ class Worker:
             if state in ('ASSIGNED', 'STARTING', 'RUNNING', 'UNKNOWN') and (self.profile.get('slot_policy') or {}).get('mode') == 'auto':
                 atomic(path, dict(observed, **job))
             jobs.append(job)
-        feedback_path = self.work / 'CAPACITY_FEEDBACK.json'
-        state_path = self.work / 'SLOT_STATE.json'
+        feedback_path = self.capacity_state_dir / 'CAPACITY_FEEDBACK.json'
+        state_path = self.capacity_state_dir / 'SLOT_STATE.json'
         feedback = read(feedback_path) if feedback_path.exists() else {}
         previous = read(state_path) if state_path.exists() else {}
         resources = self.resource_snapshot() if (self.profile.get('slot_policy') or {}).get('mode') == 'auto' else {}

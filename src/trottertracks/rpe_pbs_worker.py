@@ -205,6 +205,12 @@ class AllocationWorker(Worker):
         super().__init__(profile, 'http://127.0.0.1:1',
                          poll_seconds=poll_seconds, transport=transport)
 
+    @property
+    def capacity_state_dir(self):
+        # Attempts stay in the shared spool. Throughput trials belong to the
+        # allocation whose CPU and memory limits they were measured under.
+        return self.directory
+
     def control(self):
         path = self.directory / 'CONTROL.json'
         return read(path) if path.exists() else {}

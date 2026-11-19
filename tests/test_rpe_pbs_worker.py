@@ -156,6 +156,28 @@ class AdmissionTests(unittest.TestCase):
             self.assertTrue(resources['allocation_bounds_complete'])
             self.assertEqual(resources['missing_controls'], ['cpu', 'memory'])
 
+    def test_new_allocation_offers_its_own_slots_with_a_shared_attempt_spool(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            spool = root/'spool'
+            spool.mkdir()
+            snapshot = dict(allowed_cpu_count=12, allowed_memory_bytes=49*1024**3)
+            old = self.worker(root/'small')
+            new = self.worker(root/'large')
+            for worker, slots in ((old, 1), (new, 6)):
+                worker.directory.mkdir()
+                worker.profile.update(root=str(ROOT), work_dir=str(spool),
+                                      slot_policy=dict(mode='auto', initial_slots=slots))
+                worker.work = spool
+                worker.records = {}
+            with patch.object(P.AllocationWorker, 'resource_snapshot', return_value=snapshot):
+                self.assertEqual(old._resource_offer()['slots'], 1)
+                self.assertEqual(new._resource_offer()['slots'], 6)
+                self.assertEqual(old._resource_offer()['slots'], 1)
+            for worker, slots in ((old, 1), (new, 6)):
+                state = json.loads((worker.directory/'SLOT_STATE.json').read_text())
+                self.assertEqual(state['target_slots'], slots)
+
     def test_idle_release_writes_exit_without_waiting_for_walltime(self):
         with tempfile.TemporaryDirectory() as directory:
             worker = self.worker(directory)
