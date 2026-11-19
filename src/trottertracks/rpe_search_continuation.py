@@ -459,6 +459,9 @@ def verify(run, problem, spec):
     from .rpe_local0_search import digest
 
     contract = spec['continuation']
+    repair = contract.get('kind') == 'OPERATIVE_METADATA_REPAIR'
+    if contract.get('kind') not in (None, 'OPERATIVE_METADATA_REPAIR'):
+        raise ValueError('Unknown continuation kind')
     previous = Path(contract['parent_directory']).resolve()
     if previous == run.resolve() or previous.name != contract['parent_run_id']:
         raise ValueError('Continuation parent identity differs')
@@ -471,7 +474,7 @@ def verify(run, problem, spec):
             or load(previous/'PROBLEM.json') != problem):
         raise ValueError('Continuation parent SOURCE, problem or scope binding differs')
     for key in ('base_commit', 'methods', 'initial', 'method_overrides', 'search_overrides',
-                'kappa_families', 'max_steps_per_method'):
+                'kappa_families', 'max_steps_per_method', 'width_families'):
         if spec.get(key) != old.get(key):
             raise ValueError('Continuation changes the adopted scope: '+key)
     if previous.as_posix() not in spec['executor'].get('prior_run_dirs', []):
@@ -481,15 +484,38 @@ def verify(run, problem, spec):
     launch = load(previous/'LAUNCH.json')
     stopped = load(previous/'EXIT.json')
     end = load(previous/'KAPPA_STATE.json').get('stop') or {}
-    if (stopped.get('invocation_id') != launch.get('invocation_id')
+    if repair:
+        error_log = previous/'RUNTIME_ERRORS.jsonl'
+        raw = error_log.read_bytes()
+        entries = [json.loads(line) for line in raw.splitlines() if line.strip()]
+        driver = next((row for row in reversed(entries) if row.get('phase') == 'DRIVER'), {})
+        message = end.get('message', '')
+        # This continuation repairs the metadata owner-check entry point, never a
+        # numerical subprocess or an arbitrary scientific runtime exception.
+        if (stopped.get('invocation_id') != launch.get('invocation_id')
+                or type(stopped.get('returncode')) is not int or stopped['returncode'] == 0
+                or end.get('reason') != 'RUNTIME_EXCEPTION'
+                or end.get('error_type') != 'CalledProcessError'
+                or 'scripts/check_pf_preparation_owner.py' not in message
+                or 'ORIGINAL_OWNER_CHECK.json' not in message
+                or hashlib.sha256(raw).hexdigest() != contract.get('parent_error_log_sha256')
+                or any(driver.get(k) != end.get(k) for k in ('error_type', 'message'))
+                or driver.get('event') != 'RUNTIME_EXCEPTION'):
+            raise ValueError('Continuation requires the saved metadata owner-check failure')
+        relay = previous/'distributed/relay/STATUS.json'
+        if relay.exists() and load(relay).get('stopped') is not True:
+            raise ValueError('Continuation parent relay is not stopped')
+    elif (stopped.get('invocation_id') != launch.get('invocation_id')
             or stopped.get('returncode') in (None, 0)
             or end.get('reason') != 'RUNTIME_EXCEPTION'
             or end.get('error_type') != 'TimeoutExpired'
             or str(previous/'distributed/LOCAL_WORKER.json') not in end.get('message', '')):
         raise ValueError('Continuation requires a reconciled polling-worker shutdown failure')
-    reasons = {row['stop_reason'] for row in load(previous/'ROUND_RESULT.json')['methods'].values()}
-    if reasons & {'UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'HOST_ELIGIBILITY_HOLD'}:
-        raise ValueError('Continuation preserves the scientific STOP')
+    result = previous/'ROUND_RESULT.json'
+    if result.exists() or not repair:
+        reasons = {row['stop_reason'] for row in load(result)['methods'].values()}
+        if reasons & {'UNKNOWN_RESULT', 'STALE_JOB_NEEDS_REVIEW', 'NO_ROUTE_ADAPTER', 'HOST_ELIGIBILITY_HOLD'}:
+            raise ValueError('Continuation preserves the scientific STOP')
     for marker in ('LAUNCH.json', 'NORMAL_DRIVER.json', 'distributed/LOCAL_DAEMON.json',
                    'distributed/relay/LAUNCH.json'):
         path = previous/marker
@@ -503,7 +529,13 @@ def verify(run, problem, spec):
                 raise ValueError('Continuation parent still has a live owner: '+marker)
     pbs = previous/'distributed/pbs/STATE.json'
     if pbs.exists() and load(pbs).get('allocations'):
-        raise ValueError('Continuation requires reconciliation of the parent PBS allocation')
+        if not repair:
+            raise ValueError('Continuation requires reconciliation of the parent PBS allocation')
+        terminal = contract.get('terminal_pbs_jobs', {})
+        for record in load(pbs)['allocations'].values():
+            job = (record.get('observed') or {}).get('job_id')
+            if not job or (record.get('status') not in ('F', 'X') and terminal.get(job) not in ('F', 'X')):
+                raise ValueError('Continuation requires a terminal parent PBS allocation')
     ledger = previous/'distributed/QUEUE.sqlite3'
     with sqlite3.connect(ledger.as_uri()+'?mode=ro', uri=True) as sql:
         rows = sql.execute('SELECT job_id, method, state, host_id, attempt_id, request_sha256 FROM jobs ORDER BY job_id').fetchall()
@@ -521,10 +553,23 @@ def verify(run, problem, spec):
         raise ValueError('Continuation parent accepted job is missing its owner/attempt')
     old_budgets = old['executor']['distributed']['preparation']['budgets']
     new_budgets = spec['executor']['distributed']['preparation']['budgets']
-    remaining = {k: n - counts.get('PREPARATION:'+k, 0) for k, n in old_budgets.items()}
-    remaining_q3 = {k: n - counts.get(k, 0) for k, n in old['max_new_q3_per_method'].items()}
+    if repair:
+        for job_id, method, state, *_ in rows:
+            if state == 'ACCEPTED' and not method.startswith('PREPARATION:'):
+                outcome = load(previous/'jobs'/method/job_id/'OUTCOME.json')
+                if outcome.get('status') not in ('MODEL_BOUND_MEETS_ADOPTED_THRESHOLD',
+                                                  'MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD', 'INCONCLUSIVE'):
+                    raise ValueError('Continuation preserves the scientific STOP in an accepted outcome')
+    def deduct(value, used):
+        if repair and value == 'UNLIMITED':
+            return value
+        if type(value) is not int:
+            raise ValueError('Continuation has an invalid parent budget')
+        return value - used
+    remaining = {k: deduct(n, counts.get('PREPARATION:'+k, 0)) for k, n in old_budgets.items()}
+    remaining_q3 = {k: deduct(n, counts.get(k, 0)) for k, n in old['max_new_q3_per_method'].items()}
     if (remaining != new_budgets or remaining_q3 != spec['max_new_q3_per_method']
-            or min(*remaining.values(), *remaining_q3.values()) < 0):
+            or any(type(n) is int and n < 0 for n in (*remaining.values(), *remaining_q3.values()))):
         raise ValueError('Continuation increases or resets the parent budget')
     return dict(parent=previous.name, consumed=counts, remaining=remaining, remaining_q3=remaining_q3,
                 parent_queue_sha256=contract['parent_queue_sha256'])

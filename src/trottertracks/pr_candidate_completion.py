@@ -172,6 +172,23 @@ class Completion:
                 for k,record in value(locator)['records'].items():
                     if record.get('scientific_failure'):
                         self.state['records'].setdefault(k,dict(record,reused_from=locator))
+            for repair in settings.get('metadata_repair_from', ()):
+                path=Path(repair['state_file']).resolve()
+                if hashlib.sha256(path.read_bytes()).hexdigest()!=repair['sha256']:
+                    raise ValueError('Metadata repair state changed')
+                failed=read(path)
+                for identifier in repair['record_keys']:
+                    record=failed['records'][identifier]
+                    directory=path.parent/'candidates'/identifier
+                    if not self.metadata_path_failure(record,directory):
+                        raise ValueError('Metadata repair would retry a scientific or ambiguous failure: '+identifier)
+                    carried=self.state['records'].get(identifier)
+                    if carried is not None and {k:v for k,v in carried.items() if k!='reused_from'}!=record:
+                        raise ValueError('Metadata repair does not match the preserved failure: '+identifier)
+                    self.state.setdefault('metadata_repairs',{})[identifier]=dict(
+                        original_record=deepcopy(record),state_file=str(path),sha256=repair['sha256'],
+                        reason='NONSCIENTIFIC_DF_PLAN_PATH_REPAIR')
+                    self.state['records'].pop(identifier,None)
         if self.state['source']!=self.source:raise ValueError('Completion SOURCE changed; preserve prior state')
         self.lock=threading.RLock()
         self.pauli_price_lock=threading.RLock()
@@ -206,6 +223,27 @@ class Completion:
             loc=(record.get('signal')or{}).get('packet_source')
             if record.get('method')==method and loc and loc not in packets:packets.append(loc)
         return packets
+
+    @staticmethod
+    def metadata_path_failure(record,directory):
+        """Only a recorded DF metadata lookup failure may start fresh metadata."""
+        if (record.get('method')!='PR_DF' or record.get('status')!='HELD_WITH_REASON'
+                or not str(record.get('reason','')).startswith('STAGE_FAILED:df-plan:')):
+            return False
+        try:
+            markers=list(directory.rglob('*.STARTED.json'))
+            if not markers or any(p.parent!=directory or read(p).get('science') is not False for p in markers):return False
+            for marker in markers:
+                stage=marker.name.removesuffix('.STARTED.json')
+                if stage not in ('df-generate','INITIAL_QUOTE','df-plan'):return False
+                receipt=read(directory/(stage+'.RETURN.json'))
+                if receipt.get('signal') is not None or receipt.get('returncode')!=(1 if stage=='df-plan'else 0):return False
+            if {p.name for p in markers}!={'df-generate.STARTED.json','INITIAL_QUOTE.STARTED.json','df-plan.STARTED.json'}:
+                return False
+            if (directory/'df-plan.json').exists():return False
+            return "FileNotFoundError: [Errno 2] No such file or directory:" in (directory/'df-plan.log').read_text()
+        except (OSError,ValueError,KeyError,TypeError):
+            return False
 
     def _step_rules(self):
         """The partial-step registry is independent of the legacy 26-axis rule."""
@@ -283,6 +321,8 @@ class Completion:
         with self.lock:return self.shared_preparation_locks.setdefault(token,threading.RLock())
 
     def stage_source(self, stage):
+        if stage == 'DF_DESCRIPTOR':
+            return self.settings.get('df_descriptor_source', self.source)
         if stage == 'PAULI_SIGNALS':
             return self.settings.get('pauli_signal_source', self.source)
         if stage in ('PAULI_COMPILE', 'PAULI_AUDIT'):
@@ -312,8 +352,13 @@ class Completion:
         source=self.stage_source(stage)
         put(started,dict(command=cmd,source=source,science=science,automatic_retry=False))
         self.log(event='STAGE_START',stage=stage,science=science,directory=rel(d));t=time.time()
+        environment=dict(os.environ,PYTHONDONTWRITEBYTECODE='1')
+        mapping=json.loads(environment.get('RPE_PREPARATION_PATH_MAP','{}'))
+        mapping.update(self.settings.get('pauli_saved_inputs') or {})
+        mapping.update(self.settings.get('preparation_path_map') or {})
+        if mapping:environment['RPE_PREPARATION_PATH_MAP']=json.dumps(mapping)
         with(d/(stage+'.log')).open('w')as f:
-            p=subprocess.Popen(cmd,cwd=ROOT,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'),stdout=f,stderr=subprocess.STDOUT)
+            p=subprocess.Popen(cmd,cwd=ROOT,env=environment,stdout=f,stderr=subprocess.STDOUT)
             put(started,dict(command=cmd,source=source,pid=p.pid,science=science,automatic_retry=False))
             code=p.wait()
         put(done,dict(returncode=code if code>=0 else None,signal=-code if code<0 else None,seconds=time.time()-t,source=source))
@@ -326,6 +371,8 @@ class Completion:
     def service(self,mode,request,d,tag=None,python=None):
         python=python or self.path("NATIVE")
         request=dict(request,controller_paths=self.settings.get("controller_paths",{}))
+        request['preparation_path_map'] = dict(self.settings.get('pauli_saved_inputs') or {},
+                                              **(self.settings.get('preparation_path_map') or {}))
         if mode in ('df-plan','df-stage','df-bundle'):
             request['saved_index_cache']=str(self.directory/'cache'/'df-saved-index')
         tag=tag or mode;inp=d/(tag+'.INPUT.json');out=d/(tag+'.json');put(inp,request)
@@ -589,7 +636,7 @@ class Completion:
                 generated=self.service('df-generate',request,d)
                 if generated['status']=='NEEDS_DF_TAIL_DESCRIPTOR':
                     prefix=request['design']['L_D'];descriptor=d/'DF_TAIL_DESCRIPTOR.json'
-                    self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/derive_pr_df_candidate_descriptor.py'),'--prefix',str(prefix),'--configuration','0defa286c53a1b9acf513be453907bcad83102b3:docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json','--output',str(descriptor),'--source',self.source],d,'DF_DESCRIPTOR',descriptor,science=True)
+                    self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/derive_pr_df_candidate_descriptor.py'),'--prefix',str(prefix),'--configuration','0defa286c53a1b9acf513be453907bcad83102b3:docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json','--output',str(descriptor),'--source',self.stage_source('DF_DESCRIPTOR'),'--signal-view',str(self.path('SIGNAL_VIEW'))],d,'DF_DESCRIPTOR',descriptor,science=True)
                     dc=publish([d],'Fix derived DF tail descriptor and scientific SOURCE')
                     request['tail_descriptor']=dict(commit=dc,path=rel(descriptor))
                     generated=self.service('df-generate',request,d,tag='DF_GENERATE_WITH_DESCRIPTOR')
@@ -788,7 +835,8 @@ class Completion:
                     prefix=selected['design']['L_D'];target=d/'DF_TAIL_DESCRIPTOR.json'
                     template=selected.get('template_source')or dict(commit='0defa286c53a1b9acf513be453907bcad83102b3',path='docs/research/d_pr_df_ld7_v0_results_20261116/generation/CONFIGURATION.json')
                     self.call([self.path('NATIVE'),'-B',str(ROOT/'scripts/derive_pr_df_candidate_descriptor.py'),'--prefix',str(prefix),
-                        '--configuration',template['commit']+':'+template['path'],'--output',str(target),'--source',self.source],
+                        '--configuration',template['commit']+':'+template['path'],'--output',str(target),'--source',self.stage_source('DF_DESCRIPTOR'),
+                        '--signal-view',str(self.path('SIGNAL_VIEW'))],
                         d,'DF_DESCRIPTOR',target,science=True)
                     fixed=publish([d],'Fix chosen split descriptor for mapper metadata')
                     selected['tail_descriptor']=dict(commit=fixed,path=rel(target))

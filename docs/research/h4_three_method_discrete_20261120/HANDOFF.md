@@ -92,3 +92,19 @@ server2とWSLに加え、PBS `267545.CPUcluster-PRISM` でもFull PF1件を実�
 親Codexによる関連66テストと4subtest、委任Codexによるcontinuation14テストが通過した。
 実環境への配置・元hostの終了確認・通常Start・Q3結果回収の確認は親Codexが担当した。
 独立した重要科学レビューを実施したという意味ではない。
+
+## 2026-11-20：運用障害の修正と継続準備
+
+上記runはPF準備の `check_pf_preparation_owner.py` が、新releaseの出力先を旧PF専用Pythonの
+書込み範囲外として拒否して終了した。Q3は20件を回収済み（Full PF9、B0I8、PR-DF3）。
+PBS枠267545は終了F・Exit_status=0、中央キューはACCEPTED20・CANCELLED1で未確定attemptなし。
+元runの記録は変更しない。
+
+修正版は新しいPF専用出力設定、PR metadataへの保存入力path map、DF_DESCRIPTOR専用SOURCE、
+RomuTail Q3の固定adapter checkout参照を使用する。新しい科学条件は追加しない。
+`OPERATIVE_METADATA_REPAIR` 継続は保存されたPF metadata障害・終了・キュー・scope・予算を
+照合し、明示STOPと科学STOPを維持する。PRのpath障害は3工程すべてがscience=falseの保存記録を
+持つ場合だけmetadataを再準備できる。旧科学処理の失敗配分は保留を引き継ぐ。
+継続用snapshotは `continuation-inputs/h4-discrete-906c799/` に元記録のまま保存する。
+実装・人工検査は親Codexと委任Codexが担当し、重要科学レビューではない。
+再開runと実worker確認は配置後に追記する。

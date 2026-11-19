@@ -7,6 +7,7 @@ The selected canonical configuration goes to D's existing completion protocol.
 from copy import deepcopy
 from fractions import Fraction
 import json
+import hashlib
 from pathlib import Path
 import shutil
 
@@ -162,6 +163,46 @@ def prepare(root,problem,context,spec,run,routes,*,stage_executor=None,excluded=
     return context,routes,status
 
 
+def repair_metadata_waves(records, repairs):
+    """Re-select only a wave whose original owner check failed before a stage."""
+    from .rpe_search_continuation import _has_local_owner
+    repaired={}
+    records=deepcopy(records)
+    for repair in repairs:
+        path=Path(repair['state_file']).resolve()
+        if hashlib.sha256(path.read_bytes()).hexdigest()!=repair['sha256']:
+            raise ValueError('PF metadata repair wave changed')
+        original=json.loads(path.read_text());parent=path.parent.parent
+        launch=json.loads((parent/'LAUNCH.json').read_text())
+        ended=json.loads((parent/'EXIT.json').read_text())
+        failure=json.loads((parent/'KAPPA_STATE.json').read_text()).get('stop')or{}
+        if (launch.get('invocation_id')!=ended.get('invocation_id') or ended.get('returncode')!=1
+                or failure.get('reason')!='RUNTIME_EXCEPTION' or failure.get('error_type')!='CalledProcessError'
+                or 'check_pf_preparation_owner.py' not in failure.get('message','')
+                or 'returned non-zero exit status 1' not in failure.get('message','')
+                or _has_local_owner(launch.get('pid'),parent)):
+            raise ValueError('PF metadata repair requires an ended owner-check failure')
+        for cid in repair['configuration_ids']:
+            row=original[cid];directory=path.parent/'candidates'/cid
+            expected={'pf_auto/SELECTION.json','pf_auto/pf_completion/REQUEST.json',
+                      'pf_auto/pf_completion/ORIGINAL_OWNER_REQUEST.json'}
+            files={p.relative_to(directory).as_posix() for p in directory.rglob('*') if p.is_file()}
+            if (row.get('status')!='PREPARATION_SCHEDULED' or row.get('configurations')
+                    or records.get(cid)!=row or files!=expected or cid not in failure['message']):
+                raise ValueError('PF metadata repair would retry a stage or change its selection: '+cid)
+            selection=json.loads((directory/'pf_auto/SELECTION.json').read_text())['selected']
+            request=json.loads((directory/'pf_auto/pf_completion/REQUEST.json').read_text())
+            owner=json.loads((directory/'pf_auto/pf_completion/ORIGINAL_OWNER_REQUEST.json').read_text())
+            if (selection['configuration_id']!=cid or selection['key']!=row['key']
+                    or [v['configuration_body']['id'] for v in request['selected']]!=[cid]
+                    or [v['configuration_body']['id'] for v in owner['selected']]!=[cid]):
+                raise ValueError('PF metadata repair candidate identity differs: '+cid)
+            repaired[cid]=dict(original_record=deepcopy(row),state_file=str(path),sha256=repair['sha256'],
+                               reason='OWNER_CHECK_FAILED_BEFORE_ANY_SCIENTIFIC_STAGE')
+            records.pop(cid)
+    return records,repaired
+
+
 def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requested=None):
     """A durable PF wave, with each candidate and native owner in its own directory."""
     from concurrent.futures import ThreadPoolExecutor,as_completed
@@ -181,6 +222,8 @@ def prepare_next(root,problem,context,spec,run,routes,stage_executor,*,stop_requ
         from .pf_optimizer_connection import read_source
         previous=settings.get('prior_waves_from')
         records=read_source(root,context['reader'],previous) if previous else {}
+        records,repaired=repair_metadata_waves(records,settings.get('metadata_repair_from',()))
+        if repaired:atomic_write(index.with_name('METADATA_REPAIRS.json'),repaired)
         for row in records.values():
             if row.get('status')=='PREPARATION_SCHEDULED':
                 row.update(status='PRIOR_OWNER_HOLD',reason='Reconcile the scheduled wave in its original run',

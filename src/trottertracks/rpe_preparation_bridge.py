@@ -594,7 +594,8 @@ class DistributedPreparationBridge:
         df_inputs = []
         df_locators = []
         snapshot = self.settings.get('df_snapshot_directory')
-        if snapshot and script.name in ('run_pr_df_candidate_prices.py', 'run_pr_df_candidate_signal_jobs.py'):
+        if snapshot and script.name in ('run_pr_df_candidate_prices.py', 'run_pr_df_candidate_signal_jobs.py',
+                                        'derive_pr_df_candidate_descriptor.py'):
             extension = 'src/trottertracks/pr_df_descriptor_extension.py'
             raw = subprocess.check_output(['git', 'show', source + ':' + extension], cwd=root)
             source_files[extension] = hashlib.sha256(raw).hexdigest()
@@ -613,6 +614,8 @@ class DistributedPreparationBridge:
                 df_inputs.append(dict(path=name, sha256=sha))
         if script.name=='run_pr_df_candidate_prices.py' and '-c' in command:
             runtime_inputs.append(dict(df_price_view=command[command.index(str(script))+1]))
+        if script.name=='derive_pr_df_candidate_descriptor.py' and '--signal-view' in command:
+            runtime_inputs.append(dict(signal_view=command[command.index('--signal-view')+1]))
         # Original JSON remains byte-for-byte unchanged. Only runtime path
         # access is resolved by rpe_preparation_paths in the existing provider.
         for index,arg in enumerate(command):
@@ -695,6 +698,9 @@ class DistributedPreparationBridge:
                     inputs.update(self._capture(Path(private), 'private'))
         inputs.update(self._capture(directory, 'workspace/' + relative))
         original_documents=[*pauli_locators, *df_locators]
+        if script.name == 'derive_pr_df_candidate_descriptor.py':
+            original_documents.append(dict(commit='7f4c9a171a1d4caeaeaee6c443217edec761f4c9',
+                                           path='scripts/h46_new2_core.py'))
         if script.name == 'run_pr_df_candidate_prices.py':
             # The fixed split compiler loads these with git show from inside
             # the sparse attempt checkout, even for audit-only commands.

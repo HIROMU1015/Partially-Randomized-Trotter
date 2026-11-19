@@ -282,6 +282,9 @@ def main():
     # Deployment paths only. Existing provider SOURCE/hash/runtime guards still
     # validate each relocated checkout and descriptor before scientific work.
     paths=r.get('controller_paths',{})
+    mapping = json.loads(os.environ.get('RPE_PREPARATION_PATH_MAP', '{}'))
+    mapping.update(r.get('preparation_path_map') or {})
+    os.environ['RPE_PREPARATION_PATH_MAP'] = json.dumps(mapping)
     DF_VIEW=Path(paths.get('DF_VIEW',DF_VIEW));SIGNAL_VIEW=Path(paths.get('SIGNAL_VIEW',SIGNAL_VIEW))
     if a.mode=='df-generate':value=df_generate(r)
     elif a.mode=='df-plan':

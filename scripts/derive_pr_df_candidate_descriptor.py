@@ -16,6 +16,7 @@ import resource
 import subprocess
 import sys
 import time
+from types import FunctionType, SimpleNamespace
 
 ROOT=Path(__file__).resolve().parents[1]
 CALLER='scripts/derive_pr_df_candidate_descriptor.py'
@@ -31,6 +32,31 @@ def read(loc):
     return value
 
 
+def saved_context(completion, config):
+    """Use the frozen loader on identical input bytes at explicit local paths."""
+    # Import by the owning controller path; the provider uses its own package.
+    spec=importlib.util.spec_from_file_location('_descriptor_preparation_paths',
+        ROOT/'src/trottertracks/rpe_preparation_paths.py')
+    paths=importlib.util.module_from_spec(spec);spec.loader.exec_module(paths)
+    index=read(INDEX);source_index=deepcopy(index);saved=index['T20_reference_files']['H4']
+    relocated=False
+    for entry in (saved,*index['saved_inputs']['H4']['inputs'].values()):
+        old=entry['path'];entry['path']=paths.resolve(old);relocated |= old!=entry['path']
+    raw=Path(saved['path']).read_bytes()
+    if hashlib.sha256(raw).hexdigest()!=saved['sha256']:raise ValueError('Saved context descriptor bytes differ')
+    original=json.loads(raw)
+    for key in ('system','basis','geometry','rank','rank_policy','hamiltonian','state','snapshot'):
+        if original['binding'].get(key)!=config['spec']['binding'].get(key):
+            raise ValueError('Configuration/saved H binding mismatch: '+key)
+    loader=completion.load_context
+    if relocated:
+        namespace=dict(loader.__globals__)
+        namespace['p']=SimpleNamespace(SavedArtifacts=lambda root: SimpleNamespace(read=lambda locator:deepcopy(index)),
+                                     same=namespace['p'].same)
+        loader=FunctionType(loader.__code__,namespace)
+    return loader,original,source_index
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--prefix',type=int,required=True);p.add_argument('--configuration',required=True);p.add_argument('--selector',default='[]');p.add_argument('--output',type=Path,required=True);p.add_argument('--source',required=True)
     p.add_argument('--signal-view', type=Path, default=VIEW)
@@ -42,11 +68,8 @@ def main():
     if subprocess.check_output(['git','rev-parse','HEAD'],cwd=view,text=True).strip()!=SIGNAL:raise ValueError('Fixed signal view differs')
     sys.path[:0]=[str(view/'src'),str(view/'scripts')]
     from trottertracks import h4_pr_rmse_completion as completion
-    index=read(INDEX);saved=index['T20_reference_files']['H4'];raw=Path(saved['path']).read_bytes()
-    if hashlib.sha256(raw).hexdigest()!=saved['sha256']:raise ValueError('Saved context descriptor bytes differ')
-    original=json.loads(raw)
-    for k in ('system','basis','geometry','rank','rank_policy','hamiltonian','state','snapshot'):
-        if original['binding'].get(k)!=config['spec']['binding'].get(k):raise ValueError('Configuration/saved H binding mismatch: '+k)
+    loader,original,index=saved_context(completion,config)
+    saved=index['T20_reference_files']['H4']
     a.output=a.output.resolve()
     if not a.output.is_relative_to(ROOT):raise ValueError('Descriptor output must be in the owned candidate worktree')
     a.output.parent.mkdir(parents=True,exist_ok=True)
@@ -59,7 +82,7 @@ def main():
     marker.write_text(json.dumps(dict(source=source_loc,configuration=config_loc,prefix=a.prefix,started=time.time(),automatic_retry=False))+'\n')
     start=time.perf_counter()
     try:
-        loaded,_=completion.load_context(ROOT,original['binding'])
+        loaded,_=loader(ROOT,original['binding'])
         text=subprocess.check_output(['git','show',DERIVATION['commit']+':'+DERIVATION['path']],cwd=ROOT)
         node=next(n for n in ast.parse(text).body if isinstance(n,ast.FunctionDef)and n.name==DERIVATION['function'])
         namespace=dict(math=math)
