@@ -232,6 +232,11 @@ class PbsManager:
                    if 'submit_to_ready_seconds' in a]
         return max(15., min(30., median(samples[-10:]) if samples else 20.))
 
+    def preparation_readiness_wait_seconds(self):
+        # A running allocation can still need the challenge, fixed input
+        # transfer and verified reply before it can receive preparation work.
+        return self.readiness_wait_seconds() + 3 * self.settings.get('request_timeout_seconds', 20)
+
     def _recent_preparation_completion(self, seconds):
         # A newly accepted, successful required stage may shortly deliver an
         # audit or a ready candidate. Never hold an allocation for a long stage

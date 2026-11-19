@@ -228,12 +228,14 @@ class PreparationQueue(Base.ControllerFailures):
         with patch.object(ex, 'pbs_manager', Mock(configured={'pbs-0': {}},
                 settings={'task_seconds': {'signal': 120}})) as pbs, patch.object(
                 ex, '_pending_preparation_assignment', return_value={}):
-            pbs.readiness_wait_seconds.return_value = 20
+            pbs.preparation_readiness_wait_seconds.return_value = 80
             job = ex.submit_preparation(request, approved=True, budget=1)
             self.assertIsNone(ex.preparation_result(job))
             self.assertIsNone(ex.store.row(job))
             self.assertEqual(ex.store.counts('PREPARATION:signal'), 0)
             ex.preparation_pending[job]['probe_started_epoch'] = time.time() - 30
+            self.assertIsNone(ex.preparation_result(job))
+            ex.preparation_pending[job]['probe_started_epoch'] = time.time() - 90
             result = ex.preparation_result(job)
             self.assertEqual(result['host_reasons'], {'pbs-0': 'PBS_PREPARATION_READINESS_WAIT_EXPIRED'})
 

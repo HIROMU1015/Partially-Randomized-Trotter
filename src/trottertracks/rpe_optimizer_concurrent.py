@@ -637,6 +637,11 @@ class DistributedExecutor(ConcurrentExecutor):
         if saved_preparation and saved_preparation.get('schema') != 'RPE_PENDING_PREPARATION_READINESS_V1':
             raise ValueError('Unknown saved preparation readiness schema')
         self.preparation_pending = saved_preparation.get('tasks', {})
+        # A resumed controller can recheck a pending request which never had
+        # a queue reservation. Existing attempt ownership stays in JobStore.
+        for job_id, record in self.preparation_pending.items():
+            if self.store.row(job_id) is None:
+                record['probe_started_epoch'] = time.time()
         self.preparation_probe_offsets = {}
         self.hosts = {}
         self.input_hash_cache = {}
@@ -1388,7 +1393,7 @@ class DistributedExecutor(ConcurrentExecutor):
                 # PBS may have to acquire a worker just to check this request.
                 # Keep only this candidate's lane waiting for a bounded period.
                 started = record.get('probe_started_epoch', 0)
-                if 0 <= time.time() - started < manager.readiness_wait_seconds():
+                if 0 <= time.time() - started < manager.preparation_readiness_wait_seconds():
                     return None
                 reasons[host] = 'PBS_PREPARATION_READINESS_WAIT_EXPIRED'
             else:
