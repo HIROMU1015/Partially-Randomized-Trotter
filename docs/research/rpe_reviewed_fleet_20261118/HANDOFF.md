@@ -2,6 +2,8 @@
 
 配置・継続・障害復旧の作業前に、[H4 RPE分散探索の共通運用ルール](../rpe_distributed_operations.md)を参照する。PBSの割当前依存関係照合、旧attemptの扱い、容量からの受付復旧、各工程の検収をまとめている。
 
+新規runの倍率・M探索の指定方法、採用releaseと検収は[共通ショット倍率・M探索HANDOFF](../r08_scaled_shots_horizon_20261119/HANDOFF.md)を参照する。
+
 初回の採用版は `romutail-reviewed-pr-3b38e4af6`。統合実装は `3b38e4af67f6b673303cff9f963ac1381627c4d0`、取り込んだPR実装は `e433938dd39ac4c2cb6b7ab8865e41c0b996d232`。直前の `romutail-startup-e97575eb0` から、起動時の一括mapperと既存の配送、準備bundle・Gitオブジェクト共有、中央受領ファイルの共有を継承した。[検収記録](ACCEPTANCE.json) · [探索設定とアルゴリズム](../../PERFORMANCE_METHODS.md)
 
 ## PR-DF保存信号照合の追加採用

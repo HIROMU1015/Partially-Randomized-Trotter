@@ -1,5 +1,44 @@
 # R08の共通ショット倍率と最大ラウンド番号
 
+## RomuTail通常運用への採用（2026-11-20 JST）
+
+Windowsの通常Previewが解決していた `romutail-mixed-methods-0c67daacd` を基点に、
+検収済み `romutail-scaled-shots-9ab86dadc` を新規runの `current` に採用した。
+controller・Q3 adapter・worker輸送は `9ab86dadc274a501c9c535cc1c00b92197d992bf`。
+科学Q3 SOURCEは `28d976b99cdf8329adcc1b79327e329e947ef774`。
+RomuTail、server2、PBSで配置を照合し、各ホストで保存PR-Pauli要求のM=11、12のdry-checkが通過した。
+M=13はm13信号・価格待ちであり、固定Q3の検証域外も検査した。既存の科学SOURCE・route view・
+DP cache・受付と容量設定を引き継いだ。PBS所要時間規則は新adapterのSHAへ結び直し、
+各工程の見積りと資源上限を継承した。
+
+Windows通常入口から隔離した人工run `search-ecee387725493ee8588f` を開始した。
+初回応答は試験中の同期実行で時間切れになったが、PBS `267499.CPUcluster-PRISM` は
+2 CPUで正常終了し、中央で12ラウンド10件、13ラウンド10件、14ラウンド8件を採用した。
+Full PFの別候補がm13入力待ちでも残りの候補を評価できた。同じrunをWindowsからResumeし、
+追加job・二重採用・PBS再投入が各0件だった。旧runのResumeは人工検収で旧固定版を解決し、
+実運用の旧runはStatusで旧releaseを確認した。切替前後で旧runのROUND、設定、起動記録は一致した。
+倍率・マップ・worker・固定版・準備環境の回帰31件と、固定route viewでのDP回帰19件が通過した。
+別途、旧ショット選択のAST固定1件と旧owner照合2経路の失敗は、切替前の採用版でも再現した。
+
+Windowsのrelease明示PreviewでH₄、H₆、H₈を確認し、切替後のrelease指定なしPreviewでも
+新currentを確認した。H₆は `{"scope":{"system":"H6"}}` で固定Full PF／M5の保存メタデータを表示する。
+保存信号13ラウンド、直接価格14/26軸、m7〜m12の価格12軸とH₆専用Q3入力の不足を返す。
+H₈は同じ形式で `"H8"` を指定し、準備中と表示する。H₆とH₈はPreview専用。
+新規の実信号・実compile・実Q3・本番探索は各0件。
+
+Cの通常同期には倍率・Mの読込と従来の方向表示を反映した。公開版は
+`5cba7efd4307ca0edaf576998b6f7d22c566f1f6`。停止・保留・費用省略の理由、M=12と全Mの最安、
+同じ回路でMを変えた費用差と未確定の扱いは、隔離した公開fixtureで通常同期を検収した。
+Romulaptopの通常閲覧用 `H4-search-map/index.html` は公開版とSHA-256が一致し、倍率欄と
+従来の方向表示の実装が届いたことを確認した。人工結果は検証用の保存先で扱った。
+
+WSLは既存の通常配備基点がなく、補完用bundleを用意した時点で停止中だった。
+次回の起動後は `.rpe-central/deployment/romutail-scaled-shots-9ab86dadc/WSL-CATCHUP.bundle` を
+既存 `3cea00961` 系列から取り込み、新releaseの `HOST.json` と `RELEASE_COMPONENTS.json` で配置照合する。
+server1は復帰後に同じ構成で配置し、対応routeの保存入力dry-checkを通してから参加する。
+各ホストに必要な配置・証拠はRomuTailの `.rpe-central/deployment/romutail-scaled-shots-9ab86dadc`
+にある。[共通運用ルール](../rpe_distributed_operations.md)
+
 Full PF、B0I、PR-Pauli、PR-DFの通常探索に、`RPE_SCALED_SHOTS_V1` を追加した。各回路と `M` について、X/Y共通の倍率から全shot列を作る。各軸の整数配分は `ceil(s*(11+4*(M-m)))`。配分の軸別修正と旧上限は適用しない。Q3の採用条件は保存H₄全DF10のsolver値に対するMSE上界が `Fraction("0.00159360010199040")**2` 以下であること。固定routeからtarget、law、lossを継承する。
 
 ## 固定入口と配備
