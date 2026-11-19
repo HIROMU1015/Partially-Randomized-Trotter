@@ -42,15 +42,24 @@ def module(view,name,path):
     s=importlib.util.spec_from_file_location(name,view/path);m=importlib.util.module_from_spec(s);sys.modules[name]=m;s.loader.exec_module(m);return m
 
 
-def place_intake_inputs(view, locators):
-    """Make saved inputs visible to the fixed adapter without moving its HEAD."""
+def expose_intake_objects():
+    """Share imported objects with this intake process and its fixed adapters."""
+    objects = subprocess.check_output(
+        ['git', 'rev-parse', '--path-format=absolute', '--git-path', 'objects'],
+        cwd=ROOT, text=True,
+    ).strip()
+    alternates = os.environ.get('GIT_ALTERNATE_OBJECT_DIRECTORIES')
+    direct = json.dumps(objects, ensure_ascii=False)
+    os.environ['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = os.pathsep.join(
+        value for value in (direct, alternates) if value
+    )
+
+
+def check_intake_inputs(view, locators):
+    env = dict(os.environ, GIT_NO_LAZY_FETCH='1', GIT_TERMINAL_PROMPT='0')
     for locator in locators:
-        commit=locator['commit']
-        args=['git','cat-file','-e',commit+':'+locator['path']]
-        if subprocess.run(args,cwd=view,capture_output=True,
-                          env=dict(os.environ,GIT_NO_LAZY_FETCH='1',GIT_TERMINAL_PROMPT='0')).returncode:
-            subprocess.run(['git','fetch','--no-tags','--no-write-fetch-head',str(ROOT),
-                            commit+':refs/rpe-intake-inputs/'+commit],cwd=view,check=True,capture_output=True)
+        ref = f"{locator['commit']}:{locator['path']}"
+        subprocess.run(['git', 'cat-file', '-e', ref], cwd=view, env=env, check=True)
 
 
 def df_extension():
@@ -295,7 +304,9 @@ def main():
         value['implementation']=implementation
     else:
         view=Path(r['view']);sys.path[:0]=[str(view/'scripts'),str(view/'src')]
-        place_intake_inputs(view, (r['configuration'],r['packet']))
+        inputs = (r['configuration'], r['packet'])
+        expose_intake_objects()
+        check_intake_inputs(view, inputs)
         if r['method']=='PR_PAULI':
             from trottertracks import rpe_pauli_signal_intake as A,rpe_total_binding as T
             got=A.accept_saved(view,integration=T.C.interfaces(str(view)).pipeline,handoff_source=r['packet'])
@@ -303,7 +314,7 @@ def main():
         else:
             adapter=module(ROOT,'_portable_prdf_intake','scripts/run_rpe_optimizer_q3_job.py')
             W,_=adapter.load_prdf_route(view,r.get('controller_paths',{}).get('route_views',{}))
-            place_intake_inputs(Path(W.U.ROOT), (r['configuration'],r['packet']))
+            check_intake_inputs(W.U.ROOT, inputs)
             config=read(r['configuration']);binding,_=W.U.T.create(view,config,original_source=r['configuration']),None
             case=dict(configuration=r['configuration'],original_configuration_id=config['id'],signal_packet=r['packet'],
                 signal_packet_kind='A_BUNDLE_REQUIRES_EXISTING_K_ACCEPT_SAVED',binding_id=binding['id'],total_configuration_id=binding['total_configuration']['id'])
