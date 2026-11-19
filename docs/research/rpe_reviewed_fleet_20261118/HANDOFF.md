@@ -340,3 +340,31 @@ Full PFのQ3と別候補のPR-Pauli監査が並行した。台帳の中央値は
   通常運用のcurrent `romutail-pbs-task-resources-f67a86291` と探索
   `search-300182abb6401030e0a6` は切り替えていない。新規実H4信号・実compile・
   実Q3・価格fitはいずれも0件。
+
+## 2026-11-20 PR-DFの価格工程と共通Q3ルートの追加照合
+
+実入力の確認先はRomuTailの `.rpe-central/acceptance/pbs-prdf-current-check`。
+PR-DF LD8・幅h・shot autoを既存H4のbinary64表現で指定した。
+新規候補が選ぶ `prdf_d2_common_entry` 用に、既設の固定view `23160cc87` と
+固定adapter `f67a86291` を指定した隔離PBSルールを追加し、通常Previewで
+`pbs-0` に合致することを確認した。4時間・8 GiBは検収用の予約見積り。
+splitの保存実績や、共通入口の実行時間を置き換える観測値ではない。
+価格工程は較正・holdout・モデル固定・独立比較を現行固定SOURCE
+`3b38e4af67f6b673303cff9f963ac1381627c4d0` に留める。
+
+実入力の通常Startは予算・継続照合で停止。継続・予算親を除外して進める変更は
+自動審査で拒否された。元の情報を残した読み取り専用の§10.5照合もHOLD。
+現探索 `search-300182abb6401030e0a6` は同じPR-DFを探索範囲に含み、
+過去の未確定attemptも残っている。理由は `READ_ONLY_DUPLICATE_PREFLIGHT.json`。
+隔離実入力runにLAUNCHとキューDBは存在せず、新規実H4信号・価格較正・監査・Q3は0件。
+現探索の起動・台帳・固定版は維持した。
+
+独立した人工検収は、通常Startと既存のPBSキューで縮約した依存順を再現する。
+人工のモデル固定が生成するreceiptを独立比較へ渡し、holdoutのcompile成果と
+そろうまで比較を割り当てない。実価格コードの検収と混同しない。
+
+修正後の人工run `search-3a7e66251806b683cafb` は `pbs-df-chain-02` に保存。
+固定 `73af8d69eb` で通常Startし、PBS `267532.CPUcluster-PRISM` の4 CPU枠で、
+信号、較正、モデル固定、holdout、独立比較を各1件、Q3を2件完了した。
+7件すべてをRomuTailが一度採用し、通常Resumeは `REUSED_COMPLETED`。
+PBS枠は終了コード0で返却済み。関連する回帰75件を通過した。
