@@ -1,0 +1,2247 @@
+{
+  "schema": "PR_PRICE_APPLICABILITY_V1",
+  "configuration_id": "29c1db7ed89e871ec297215f9bf43e48e4914022b24eddb2dd765d6c776a4cad",
+  "policy": "MODEL",
+  "method": "PR_PAULI",
+  "L_D": 5,
+  "rows": [
+    {
+      "m": 0,
+      "axis": "X",
+      "physical_id": "RMSE:7b3e2ebcc7195400afd858720ccf632917d2591551cbb31564fc7a1078ca24e0",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": {
+        "numerator": 126983,
+        "denominator": 28
+      },
+      "classification": "MODEL_REFERENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": {
+        "value": {
+          "numerator": 126983,
+          "denominator": 28
+        },
+        "source": {
+          "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+          "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": [
+            "rows",
+            0
+          ]
+        },
+        "rule": "PAULI_AUDIT",
+        "calibration_domain": {
+          "q": [
+            8,
+            8
+          ],
+          "R": [
+            4,
+            4
+          ]
+        },
+        "extrapolation": [
+          "q",
+          "R"
+        ],
+        "application": "SAVED_MODEL_REFERENCE_REUSE",
+        "caveats": [
+          "A S0-r1 decomposition supports this candidate and saved wrapper margins; all round prices are model applications, not cell direct observations",
+          "finite-cohort model; no all-law expectation/CI or prediction guarantee",
+          "q/R box membership is not independent validation"
+        ],
+        "event_step_changed_from_calibration": true,
+        "calibration_evidence": {
+          "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+          "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": [
+            "calibration_cell",
+            "rows"
+          ]
+        }
+      },
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "source": {
+        "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+        "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": [
+          "rows",
+          0
+        ]
+      }
+    },
+    {
+      "m": 0,
+      "axis": "Y",
+      "physical_id": "RMSE:7b3e2ebcc7195400afd858720ccf632917d2591551cbb31564fc7a1078ca24e0",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": {
+        "numerator": 126983,
+        "denominator": 28
+      },
+      "classification": "MODEL_REFERENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": {
+        "value": {
+          "numerator": 126983,
+          "denominator": 28
+        },
+        "source": {
+          "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+          "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": [
+            "rows",
+            1
+          ]
+        },
+        "rule": "PAULI_AUDIT",
+        "calibration_domain": {
+          "q": [
+            8,
+            8
+          ],
+          "R": [
+            4,
+            4
+          ]
+        },
+        "extrapolation": [
+          "q",
+          "R"
+        ],
+        "application": "SAVED_MODEL_REFERENCE_REUSE",
+        "caveats": [
+          "A S0-r1 decomposition supports this candidate and saved wrapper margins; all round prices are model applications, not cell direct observations",
+          "finite-cohort model; no all-law expectation/CI or prediction guarantee",
+          "q/R box membership is not independent validation"
+        ],
+        "event_step_changed_from_calibration": true,
+        "calibration_evidence": {
+          "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+          "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": [
+            "calibration_cell",
+            "rows"
+          ]
+        }
+      },
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "source": {
+        "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+        "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+        "selector": [
+          "rows",
+          1
+        ]
+      }
+    },
+    {
+      "m": 1,
+      "axis": "X",
+      "physical_id": "RMSE:77b6ce810b9ab3635b1f5a87d7c14c6928adfaac9bd29286e300369e97bb7f87",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 1,
+      "axis": "Y",
+      "physical_id": "RMSE:77b6ce810b9ab3635b1f5a87d7c14c6928adfaac9bd29286e300369e97bb7f87",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 2,
+      "axis": "X",
+      "physical_id": "RMSE:a101e9d87f34963728f8c6f5b4eaab977684a8da078456a24596957f0c55cefe",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 2,
+      "axis": "Y",
+      "physical_id": "RMSE:a101e9d87f34963728f8c6f5b4eaab977684a8da078456a24596957f0c55cefe",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 3,
+      "axis": "X",
+      "physical_id": "RMSE:27db3ca3741d51466143d80308626a81fec3c8a9fe404ae121c2e103809ca2e3",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 3,
+      "axis": "Y",
+      "physical_id": "RMSE:27db3ca3741d51466143d80308626a81fec3c8a9fe404ae121c2e103809ca2e3",
+      "q": 1,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 4,
+      "axis": "X",
+      "physical_id": "RMSE:d1ff301757c3e7d04dff1953497ad1a026d6d3a96676c57186c92edb5203a178",
+      "q": 2,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 4,
+      "axis": "Y",
+      "physical_id": "RMSE:d1ff301757c3e7d04dff1953497ad1a026d6d3a96676c57186c92edb5203a178",
+      "q": 2,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 5,
+      "axis": "X",
+      "physical_id": "RMSE:60ae6e2faa3e9e00833c83278147f8b50d03345dc2394c7954bcd1c68a45ac8d",
+      "q": 4,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 5,
+      "axis": "Y",
+      "physical_id": "RMSE:60ae6e2faa3e9e00833c83278147f8b50d03345dc2394c7954bcd1c68a45ac8d",
+      "q": 4,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 6,
+      "axis": "X",
+      "physical_id": "RMSE:487a556e7b1ae27836455087787eabb37942c05fd67f56bad474d7bd5f61898c",
+      "q": 8,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 6,
+      "axis": "Y",
+      "physical_id": "RMSE:487a556e7b1ae27836455087787eabb37942c05fd67f56bad474d7bd5f61898c",
+      "q": 8,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 7,
+      "axis": "X",
+      "physical_id": "RMSE:d28ac9e77e0723b0798ed33e004922a5aac0cb735d73f93cdfb306e0d8150bbd",
+      "q": 16,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 7,
+      "axis": "Y",
+      "physical_id": "RMSE:d28ac9e77e0723b0798ed33e004922a5aac0cb735d73f93cdfb306e0d8150bbd",
+      "q": 16,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 8,
+      "axis": "X",
+      "physical_id": "RMSE:738520c88f0efdd218f75355c9adc4610880ddf57ac411834f8093c50c72c1dd",
+      "q": 32,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 8,
+      "axis": "Y",
+      "physical_id": "RMSE:738520c88f0efdd218f75355c9adc4610880ddf57ac411834f8093c50c72c1dd",
+      "q": 32,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 9,
+      "axis": "X",
+      "physical_id": "RMSE:4e4e3801f3533a0fbf33f12e0979460a0de2b307c48d4eedfc0e1388574ad954",
+      "q": 64,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 9,
+      "axis": "Y",
+      "physical_id": "RMSE:4e4e3801f3533a0fbf33f12e0979460a0de2b307c48d4eedfc0e1388574ad954",
+      "q": 64,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 10,
+      "axis": "X",
+      "physical_id": "RMSE:a249ee82e7b7341f5f5c99b207ad8af2e47f92724efdf53722d316314fdc350f",
+      "q": 128,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 10,
+      "axis": "Y",
+      "physical_id": "RMSE:a249ee82e7b7341f5f5c99b207ad8af2e47f92724efdf53722d316314fdc350f",
+      "q": 128,
+      "R": 1,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 11,
+      "axis": "X",
+      "physical_id": "RMSE:07f7cfe34adade1f5cc2b8c313b130e411dd493fca2b46ddc20e7fe4be37920d",
+      "q": 256,
+      "R": 2,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 11,
+      "axis": "Y",
+      "physical_id": "RMSE:07f7cfe34adade1f5cc2b8c313b130e411dd493fca2b46ddc20e7fe4be37920d",
+      "q": 256,
+      "R": 2,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 12,
+      "axis": "X",
+      "physical_id": "RMSE:8d9cf1c60cffc96fc350b4475e7d25ca3c930128928acd13d106e0e684d8a963",
+      "q": 512,
+      "R": 4,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "X"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    },
+    {
+      "m": 12,
+      "axis": "Y",
+      "physical_id": "RMSE:8d9cf1c60cffc96fc350b4475e7d25ca3c930128928acd13d106e0e684d8a963",
+      "q": 512,
+      "R": 4,
+      "unit_price_RZ": null,
+      "classification": "NEEDS_PRICE_EVIDENCE",
+      "quantity": "MEASURED_FULL_CONTROLLED_HADAMARD_WRAPPER_COMPILED_RZ_PER_SHOT",
+      "direct_alternatives": [],
+      "model_alternative": null,
+      "qualified_E_C": false,
+      "CI": null,
+      "registered_rule": "PAULI_LD5",
+      "needs": {
+        "reasons": [
+          "actual PF step/rotation angles changed; coefficients require same-step calibration or sourced audit extension"
+        ],
+        "missing_axes": [
+          "Y"
+        ],
+        "calibration": {
+          "rule": "A + H*q + E*qR",
+          "coefficients": [
+            "A",
+            "H",
+            "E"
+          ],
+          "action": "Candidate-specific compile/decomposition audit of wrapper/end runs, head boundaries and normal tail bodies; verify wrapper margins at all requested T",
+          "reuse": "Same-candidate matching receipts only; A LD3/LD5 audited cell is a template, not transferable coefficients"
+        },
+        "execution_authorized": false
+      }
+    }
+  ],
+  "total_RZ": null,
+  "complete": false,
+  "qualified_E_C": false,
+  "CI": null,
+  "Q3_executed": false,
+  "implementation": {
+    "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+    "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T",
+    "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+    "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+    "contract_source": {
+      "commit": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+      "path": "scripts/run_pauli_b1_prices.py"
+    }
+  },
+  "model_validations": [
+    {
+      "model_id": "eaf2eb8e9d03995e3688edf541b433e310fa32e9113d72c4cef862a1087b9cc7",
+      "identity": {
+        "actual_step": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "coefficients": {
+          "A5": 311,
+          "A5_minus_A3": -2,
+          "A_parts": {
+            "end_E": 156,
+            "final_run": 2,
+            "first_entry_F": 2247,
+            "minus_per_step_H": 4215,
+            "suffix_S": 2121
+          },
+          "E5": {
+            "numerator": 255,
+            "denominator": 28
+          },
+          "E5_display": {
+            "numerator": 2563432823614903,
+            "denominator": 281474976710656
+          },
+          "E5_unit": "RZ_PER_EVENT",
+          "H5": 4215,
+          "H5_minus_H3": 1530,
+          "events_in_denominator": 56,
+          "evidence": {
+            "audit": "audit_run01/AUDIT_RESULT.json",
+            "edges": "audit_run01/EDGES.json",
+            "segments": "audit_run01/SEGMENTS.csv"
+          },
+          "intervals": 14,
+          "later_body_sum": 510
+        },
+        "event_recipe": {
+          "binding": {
+            "actual_sampler_qualified": false,
+            "event_model": "EXISTING_PAIRED_TAYLOR_SIGNED_PAULI_INVOLUTIONS",
+            "model": "ideal_finite_RTE_law",
+            "scalar": "SAVED_sR_AND_c_ONCE_AT_TOTAL_TIME",
+            "source": {
+              "dictionary": {
+                "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+              },
+              "primitive": {
+                "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+                "path": "src/trotterlib/rte.py"
+              }
+            },
+            "tail_dictionary": {
+              "P0_operator_residual_source": {
+                "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+              },
+              "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+              "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+              "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+              "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+              "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+              "prefix": 5,
+              "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+              "source": {
+                "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+              }
+            }
+          },
+          "round_definition": null
+        },
+        "family": {
+          "K": 2,
+          "L_D": 5,
+          "binding": {
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "decomposition": {
+              "contract": {
+                "completion": "saved_weighted_Hermitian_completion",
+                "fragment_order": "saved_snapshot_order",
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "preparation_binding": {
+                  "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                  "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING",
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+                },
+                "state_preparation_cost": 0
+              },
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "source": {
+                "composition_recipe": {
+                  "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                  "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                  "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                },
+                "input_source": {
+                  "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                  "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                },
+                "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+              }
+            },
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "source": {
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "formula": "2nd",
+          "implementation": {
+            "contract_source": {
+              "commit": "13ab1acfaebe5f33958e1db67862f5c45725ab91",
+              "path": "scripts/run_pauli_b1_prices.py"
+            },
+            "fragment_order": "SAVED_SNAPSHOT_ORDER_ONE_BODY_SEPARATE_HEAD",
+            "lowering_id": "PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF",
+            "sampler": "ORIGINAL_NORMAL_PCG64_NUMPY_CHOICE",
+            "scalar": "HAMILTONIAN_CONSTANT_PLUS_SAVED_sR_ONCE_AT_TOTAL_T"
+          },
+          "law": {
+            "actual_sampler_qualified": false,
+            "event_model": "EXISTING_PAIRED_TAYLOR_SIGNED_PAULI_INVOLUTIONS",
+            "model": "ideal_finite_RTE_law",
+            "scalar": "SAVED_sR_AND_c_ONCE_AT_TOTAL_TIME",
+            "source": {
+              "dictionary": {
+                "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+              },
+              "primitive": {
+                "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+                "path": "src/trotterlib/rte.py"
+              }
+            },
+            "tail_dictionary": {
+              "P0_operator_residual_source": {
+                "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+              },
+              "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+              "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+              "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+              "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+              "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+              "prefix": 5,
+              "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+              "source": {
+                "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+              }
+            }
+          },
+          "method": "PR_PAULI",
+          "profile": {
+            "P": 0,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "seed_transpiler": 17,
+            "wrapper": "full_Hadamard_with_measurement"
+          },
+          "split": {
+            "L_D": 5,
+            "deterministic_scope": "PREFIX",
+            "lambda_R": {
+              "numerator": 8873225809512217,
+              "denominator": 144115188075855872
+            },
+            "lambda_source": {
+              "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+              "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json",
+              "selector": [
+                "lambda_P"
+              ]
+            },
+            "one_body_policy": "DETERMINISTIC",
+            "original_PF_method": "B0",
+            "randomized_scope": "TAIL_AFTER_PREFIX",
+            "scalar": {
+              "numerator": 2569094703488691,
+              "denominator": 288230376151711744
+            },
+            "source": {
+              "composition_recipe": {
+                "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+              },
+              "input_source": {
+                "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+              },
+              "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+            },
+            "tail_dictionary": {
+              "P0_operator_residual_source": {
+                "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+              },
+              "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+              "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+              "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+              "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+              "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+              "prefix": 5,
+              "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+              "source": {
+                "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+              }
+            }
+          }
+        },
+        "mode": "PAULI_AUDIT",
+        "model_source": {
+          "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+          "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": []
+        },
+        "piece_pattern": {
+          "allocation": [
+            {
+              "numerator": 1,
+              "denominator": 1
+            }
+          ],
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "formula_id": "S2",
+          "law_model": "ideal_finite_RTE_law",
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "signed_weights": [
+            {
+              "numerator": 1,
+              "denominator": 1
+            }
+          ]
+        }
+      },
+      "registry": "PAULI_LD5",
+      "calibration_sources": [
+        {
+          "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+          "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": []
+        },
+        {
+          "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+          "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+          "selector": [
+            "calibration_cell",
+            "rows"
+          ]
+        }
+      ],
+      "calibration_points": [
+        {
+          "m": null,
+          "point": {
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "q": 8,
+            "R": 4,
+            "step": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "structure": {
+              "formula_id": "S2",
+              "signed_weights": [
+                1.0
+              ],
+              "allocation": [
+                4
+              ],
+              "event_count": 32,
+              "scalar_policy": "scalar_identity_once_at_total_T",
+              "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+              "law_model": "ideal_finite_RTE_law"
+            },
+            "piece_pattern": {
+              "formula_id": "S2",
+              "signed_weights": [
+                1.0
+              ],
+              "allocation": [
+                {
+                  "numerator": 1,
+                  "denominator": 1
+                }
+              ],
+              "scalar_policy": "scalar_identity_once_at_total_T",
+              "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+              "law_model": "ideal_finite_RTE_law"
+            },
+            "event_recipe": {
+              "binding": {
+                "model": "ideal_finite_RTE_law",
+                "tail_dictionary": {
+                  "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+                  "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+                  "source": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                  },
+                  "prefix": 5,
+                  "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+                  "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+                  "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+                  "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+                  "P0_operator_residual_source": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+                  }
+                },
+                "source": {
+                  "primitive": {
+                    "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+                    "path": "src/trotterlib/rte.py"
+                  },
+                  "dictionary": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                  }
+                },
+                "event_model": "EXISTING_PAIRED_TAYLOR_SIGNED_PAULI_INVOLUTIONS",
+                "scalar": "SAVED_sR_AND_c_ONCE_AT_TOTAL_TIME",
+                "actual_sampler_qualified": false
+              },
+              "round_definition": null
+            },
+            "event_steps": [
+              {
+                "numerator": 3602879701896397,
+                "denominator": 144115188075855872
+              }
+            ]
+          },
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "calibration_cell",
+              "rows"
+            ]
+          }
+        },
+        {
+          "m": null,
+          "point": {
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 4503599627370496
+            },
+            "q": 8,
+            "R": 4,
+            "step": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "structure": {
+              "formula_id": "S2",
+              "signed_weights": [
+                1.0
+              ],
+              "allocation": [
+                4
+              ],
+              "event_count": 32,
+              "scalar_policy": "scalar_identity_once_at_total_T",
+              "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+              "law_model": "ideal_finite_RTE_law"
+            },
+            "piece_pattern": {
+              "formula_id": "S2",
+              "signed_weights": [
+                1.0
+              ],
+              "allocation": [
+                {
+                  "numerator": 1,
+                  "denominator": 1
+                }
+              ],
+              "scalar_policy": "scalar_identity_once_at_total_T",
+              "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+              "law_model": "ideal_finite_RTE_law"
+            },
+            "event_recipe": {
+              "binding": {
+                "model": "ideal_finite_RTE_law",
+                "tail_dictionary": {
+                  "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+                  "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+                  "source": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                  },
+                  "prefix": 5,
+                  "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+                  "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+                  "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+                  "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+                  "P0_operator_residual_source": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+                  }
+                },
+                "source": {
+                  "primitive": {
+                    "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+                    "path": "src/trotterlib/rte.py"
+                  },
+                  "dictionary": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                  }
+                },
+                "event_model": "EXISTING_PAIRED_TAYLOR_SIGNED_PAULI_INVOLUTIONS",
+                "scalar": "SAVED_sR_AND_c_ONCE_AT_TOTAL_TIME",
+                "actual_sampler_qualified": false
+              },
+              "round_definition": null
+            },
+            "event_steps": [
+              {
+                "numerator": 3602879701896397,
+                "denominator": 144115188075855872
+              }
+            ]
+          },
+          "source": {
+            "commit": "fb0d60b0a1e7c31aee73b2b31f802dda7b2f0125",
+            "path": "docs/research/a_pauli_ld5_cal_price_20261116/PRICE_26AXIS.json",
+            "selector": [
+              "calibration_cell",
+              "rows"
+            ]
+          }
+        }
+      ],
+      "evidence_sources": [],
+      "calibration_domain": {
+        "q": [
+          8,
+          8
+        ],
+        "R": [
+          4,
+          4
+        ]
+      },
+      "configuration_source": {
+        "commit": "39a1fc7dfe9b093f0e246be595e2f7938191368b",
+        "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/config_run01/CONFIGURATION_LD5.json"
+      },
+      "evidence_points": [
+        {
+          "m": 0,
+          "q": 1,
+          "R": 1
+        },
+        {
+          "m": 1,
+          "q": 2,
+          "R": 1
+        },
+        {
+          "m": 2,
+          "q": 4,
+          "R": 1
+        },
+        {
+          "m": 3,
+          "q": 8,
+          "R": 1
+        },
+        {
+          "m": 4,
+          "q": 16,
+          "R": 1
+        },
+        {
+          "m": 5,
+          "q": 32,
+          "R": 1
+        },
+        {
+          "m": 6,
+          "q": 64,
+          "R": 1
+        },
+        {
+          "m": 7,
+          "q": 128,
+          "R": 1
+        },
+        {
+          "m": 8,
+          "q": 256,
+          "R": 1
+        },
+        {
+          "m": 9,
+          "q": 512,
+          "R": 1
+        },
+        {
+          "m": 10,
+          "q": 1024,
+          "R": 1
+        },
+        {
+          "m": 11,
+          "q": 2048,
+          "R": 2
+        },
+        {
+          "m": 12,
+          "q": 4096,
+          "R": 4
+        }
+      ],
+      "configuration_id": "29c1db7ed89e871ec297215f9bf43e48e4914022b24eddb2dd765d6c776a4cad",
+      "points": [
+        {
+          "m": 0,
+          "q": 1,
+          "R": 1,
+          "physical_id": "RMSE:7b3e2ebcc7195400afd858720ccf632917d2591551cbb31564fc7a1078ca24e0",
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "actual_step": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "round": {
+            "m": 0,
+            "q_RPE": 1,
+            "q_PF": 1,
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "actual_delta_pf": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "structure": {
+              "formula_id": "S2",
+              "signed_weights": [
+                1.0
+              ],
+              "allocation": [
+                1
+              ],
+              "event_count": 1,
+              "scalar_policy": "scalar_identity_once_at_total_T",
+              "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+              "law_model": "ideal_finite_RTE_law"
+            },
+            "mapping": {
+              "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+              "source": {
+                "commit": "ce0517de6e7b58cf4bf4c69f99f998d86099c406",
+                "path": "src/trottertracks/pr_rpe_rmse_controller.py",
+                "function": "paper_event_mapper"
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 3,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "url": "https://arxiv.org/pdf/2503.05647v2",
+                  "sections": [
+                    "B.2",
+                    "E.1",
+                    "E.3"
+                  ],
+                  "equations": [
+                    "A38",
+                    "B30",
+                    "E1",
+                    "E2",
+                    "E21",
+                    "E22"
+                  ]
+                },
+                "A_definition_name": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED"
+              },
+              "R_outer": 1,
+              "event_count": 1,
+              "paper_total_target": 1,
+              "finite_K_signed_guarantee": false
+            },
+            "resolution": "GENERATED",
+            "R_outer": 1,
+            "candidate": {
+              "id": "RMSE:7b3e2ebcc7195400afd858720ccf632917d2591551cbb31564fc7a1078ca24e0",
+              "method": "PR",
+              "system": "H4",
+              "prefix": 5,
+              "formula": "2nd",
+              "T": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "q": 1,
+              "delta": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "K": 2,
+              "R_outer": 1,
+              "event_count": 1
+            },
+            "identity": {
+              "m": 0,
+              "q_RPE": 1,
+              "q_PF": 1,
+              "candidate": {
+                "id": "RMSE:7b3e2ebcc7195400afd858720ccf632917d2591551cbb31564fc7a1078ca24e0",
+                "method": "PR",
+                "system": "H4",
+                "prefix": 5,
+                "formula": "2nd",
+                "T": {
+                  "numerator": 3602879701896397,
+                  "denominator": 36028797018963968
+                },
+                "q": 1,
+                "delta": {
+                  "numerator": 3602879701896397,
+                  "denominator": 36028797018963968
+                },
+                "K": 2,
+                "R_outer": 1,
+                "event_count": 1
+              },
+              "structure": {
+                "formula_id": "S2",
+                "signed_weights": [
+                  1.0
+                ],
+                "allocation": [
+                  1
+                ],
+                "event_count": 1,
+                "scalar_policy": "scalar_identity_once_at_total_T",
+                "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+                "law_model": "ideal_finite_RTE_law"
+              },
+              "binding": {
+                "T": 0.8,
+                "basis": "STO-3G",
+                "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                "control": "symmetric_directional",
+                "geometry": "linear_1Angstrom",
+                "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                "profile_is_reference_only": true,
+                "rank": 10,
+                "rank_is_saved_observation_not_generation_argument": true,
+                "rank_policy": "tol_only_1e-8",
+                "series": "H4_TOL_ONLY_DF10",
+                "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                "system": "H4",
+                "source": {
+                  "input_source": {
+                    "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                    "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                  },
+                  "composition_recipe": {
+                    "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                    "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                    "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                  },
+                  "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                },
+                "decomposition": {
+                  "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                  "contract": {
+                    "completion": "saved_weighted_Hermitian_completion",
+                    "fragment_order": "saved_snapshot_order",
+                    "preparation_binding": {
+                      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                      "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                      "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                    },
+                    "state_preparation_cost": 0,
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    }
+                  },
+                  "source": {
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    },
+                    "composition_recipe": {
+                      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                    },
+                    "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                  }
+                }
+              },
+              "contract": {
+                "split": {
+                  "L_D": 5,
+                  "source": {
+                    "input_source": {
+                      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                    },
+                    "composition_recipe": {
+                      "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                      "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                      "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                    },
+                    "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                  },
+                  "randomized_scope": "TAIL_AFTER_PREFIX",
+                  "deterministic_scope": "PREFIX",
+                  "original_PF_method": "B0",
+                  "lambda_R": {
+                    "numerator": 8873225809512217,
+                    "denominator": 144115188075855872
+                  },
+                  "lambda_source": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json",
+                    "selector": [
+                      "lambda_P"
+                    ]
+                  },
+                  "tail_dictionary": {
+                    "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+                    "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+                    "source": {
+                      "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                      "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                    },
+                    "prefix": 5,
+                    "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+                    "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+                    "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+                    "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+                    "P0_operator_residual_source": {
+                      "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                      "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+                    }
+                  },
+                  "one_body_policy": "DETERMINISTIC",
+                  "scalar": 0.008913337788299013
+                },
+                "rmse_policy": {
+                  "family": "PR_PAPER_RMSE",
+                  "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                  "source": {
+                    "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                    "path": "scripts/run_pr_rpe_rmse_s0.py",
+                    "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                  },
+                  "target_rmse_ha": {
+                    "numerator": 3890625249,
+                    "denominator": 2441406250000
+                  },
+                  "error_contract": {
+                    "A_policy": {
+                      "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                      "metric": "energy_RMSE",
+                      "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                      "family": "PR_PAPER_RMSE",
+                      "target_rmse": "3890625249/2441406250000",
+                      "qpe_rmse": "3890625249/4882812500000",
+                      "evolution_rmse": "3890625249/4882812500000",
+                      "error_rule": "minkowski",
+                      "normalization_rule": "finite_B_diagnostic",
+                      "N_terminal": 11,
+                      "slope_D": 4,
+                      "Cmax": {
+                        "PF": 0.08,
+                        "PR": 0.1
+                      },
+                      "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                      "source": {
+                        "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                        "path": "scripts/run_pr_rpe_rmse_s0.py",
+                        "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                      },
+                      "paper": {
+                        "url": "https://arxiv.org/pdf/2503.05647v2",
+                        "sections": [
+                          "B.2",
+                          "E.1",
+                          "E.3"
+                        ],
+                        "equations": [
+                          "A38",
+                          "B30",
+                          "E1",
+                          "E2",
+                          "E21",
+                          "E22"
+                        ]
+                      },
+                      "high_probability_compatible": false
+                    },
+                    "state_assumption": "saved_numerical_state_conditional_ground",
+                    "energy_prior_ha": [
+                      -4.994249624417489,
+                      -2.0985459369977186
+                    ],
+                    "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+                  },
+                  "scientific_status": "PROPOSED_NOT_ADOPTED"
+                },
+                "law": {
+                  "model": "ideal_finite_RTE_law",
+                  "tail_dictionary": {
+                    "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+                    "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+                    "source": {
+                      "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                      "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                    },
+                    "prefix": 5,
+                    "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+                    "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+                    "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+                    "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+                    "P0_operator_residual_source": {
+                      "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                      "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+                    }
+                  },
+                  "source": {
+                    "primitive": {
+                      "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+                      "path": "src/trotterlib/rte.py"
+                    },
+                    "dictionary": {
+                      "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                      "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                    }
+                  },
+                  "event_model": "EXISTING_PAIRED_TAYLOR_SIGNED_PAULI_INVOLUTIONS",
+                  "scalar": "SAVED_sR_AND_c_ONCE_AT_TOTAL_TIME",
+                  "actual_sampler_qualified": false
+                }
+              },
+              "profile": {
+                "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              },
+              "configuration": {
+                "schema": "PR_RPE_RMSE_V2",
+                "configuration_id": "29c1db7ed89e871ec297215f9bf43e48e4914022b24eddb2dd765d6c776a4cad",
+                "spec": {
+                  "binding": {
+                    "T": 0.8,
+                    "basis": "STO-3G",
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "geometry": "linear_1Angstrom",
+                    "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+                    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+                    "profile_is_reference_only": true,
+                    "rank": 10,
+                    "rank_is_saved_observation_not_generation_argument": true,
+                    "rank_policy": "tol_only_1e-8",
+                    "series": "H4_TOL_ONLY_DF10",
+                    "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                    "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+                    "system": "H4",
+                    "source": {
+                      "input_source": {
+                        "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                        "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                      },
+                      "composition_recipe": {
+                        "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                        "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                      },
+                      "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                    },
+                    "decomposition": {
+                      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                      "contract": {
+                        "completion": "saved_weighted_Hermitian_completion",
+                        "fragment_order": "saved_snapshot_order",
+                        "preparation_binding": {
+                          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+                          "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+                          "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+                        },
+                        "state_preparation_cost": 0,
+                        "input_source": {
+                          "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                          "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                        }
+                      },
+                      "source": {
+                        "input_source": {
+                          "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                          "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                        },
+                        "composition_recipe": {
+                          "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                          "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                          "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                        },
+                        "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                      }
+                    }
+                  },
+                  "method": "PR",
+                  "L_D": 5,
+                  "split": {
+                    "L_D": 5,
+                    "source": {
+                      "input_source": {
+                        "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+                        "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+                      },
+                      "composition_recipe": {
+                        "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+                        "path": "src/trottertracks/pr_rpe_signal_provider.py",
+                        "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+                      },
+                      "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+                    },
+                    "randomized_scope": "TAIL_AFTER_PREFIX",
+                    "deterministic_scope": "PREFIX",
+                    "original_PF_method": "B0",
+                    "lambda_R": {
+                      "numerator": 8873225809512217,
+                      "denominator": 144115188075855872
+                    },
+                    "lambda_source": {
+                      "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                      "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json",
+                      "selector": [
+                        "lambda_P"
+                      ]
+                    },
+                    "tail_dictionary": {
+                      "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+                      "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+                      "source": {
+                        "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                        "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                      },
+                      "prefix": 5,
+                      "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+                      "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+                      "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+                      "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+                      "P0_operator_residual_source": {
+                        "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                        "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+                      }
+                    },
+                    "one_body_policy": "DETERMINISTIC",
+                    "scalar": 0.008913337788299013
+                  },
+                  "delta_pf": {
+                    "numerator": 3602879701896397,
+                    "denominator": 4503599627370496
+                  },
+                  "formula": "2nd",
+                  "h": {
+                    "numerator": 3602879701896397,
+                    "denominator": 36028797018963968
+                  },
+                  "M": 12,
+                  "kappa": {
+                    "kind": "PAPER_TOTAL_ROTATIONS",
+                    "value": {
+                      "numerator": 3,
+                      "denominator": 1
+                    },
+                    "definition_source": {
+                      "url": "https://arxiv.org/pdf/2503.05647v2",
+                      "sections": [
+                        "B.2",
+                        "E.1",
+                        "E.3"
+                      ],
+                      "equations": [
+                        "A38",
+                        "B30",
+                        "E1",
+                        "E2",
+                        "E21",
+                        "E22"
+                      ]
+                    },
+                    "A_definition_name": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED"
+                  },
+                  "event_mapping": {
+                    "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                    "source": {
+                      "commit": "ce0517de6e7b58cf4bf4c69f99f998d86099c406",
+                      "path": "src/trottertracks/pr_rpe_rmse_controller.py",
+                      "function": "paper_event_mapper"
+                    }
+                  },
+                  "finite_K": 2,
+                  "law": {
+                    "model": "ideal_finite_RTE_law",
+                    "tail_dictionary": {
+                      "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+                      "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+                      "source": {
+                        "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                        "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                      },
+                      "prefix": 5,
+                      "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+                      "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+                      "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+                      "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+                      "P0_operator_residual_source": {
+                        "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                        "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+                      }
+                    },
+                    "source": {
+                      "primitive": {
+                        "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+                        "path": "src/trotterlib/rte.py"
+                      },
+                      "dictionary": {
+                        "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                        "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                      }
+                    },
+                    "event_model": "EXISTING_PAIRED_TAYLOR_SIGNED_PAULI_INVOLUTIONS",
+                    "scalar": "SAVED_sR_AND_c_ONCE_AT_TOTAL_TIME",
+                    "actual_sampler_qualified": false
+                  },
+                  "rmse_policy": {
+                    "family": "PR_PAPER_RMSE",
+                    "id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                    "source": {
+                      "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                      "path": "scripts/run_pr_rpe_rmse_s0.py",
+                      "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                    },
+                    "target_rmse_ha": {
+                      "numerator": 3890625249,
+                      "denominator": 2441406250000
+                    },
+                    "error_contract": {
+                      "A_policy": {
+                        "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+                        "metric": "energy_RMSE",
+                        "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+                        "family": "PR_PAPER_RMSE",
+                        "target_rmse": "3890625249/2441406250000",
+                        "qpe_rmse": "3890625249/4882812500000",
+                        "evolution_rmse": "3890625249/4882812500000",
+                        "error_rule": "minkowski",
+                        "normalization_rule": "finite_B_diagnostic",
+                        "N_terminal": 11,
+                        "slope_D": 4,
+                        "Cmax": {
+                          "PF": 0.08,
+                          "PR": 0.1
+                        },
+                        "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+                        "source": {
+                          "commit": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e",
+                          "path": "scripts/run_pr_rpe_rmse_s0.py",
+                          "plan": "d97a40ab719bd71fee4ad41d5acc2abe3c89904d"
+                        },
+                        "paper": {
+                          "url": "https://arxiv.org/pdf/2503.05647v2",
+                          "sections": [
+                            "B.2",
+                            "E.1",
+                            "E.3"
+                          ],
+                          "equations": [
+                            "A38",
+                            "B30",
+                            "E1",
+                            "E2",
+                            "E21",
+                            "E22"
+                          ]
+                        },
+                        "high_probability_compatible": false
+                      },
+                      "state_assumption": "saved_numerical_state_conditional_ground",
+                      "energy_prior_ha": [
+                        -4.994249624417489,
+                        -2.0985459369977186
+                      ],
+                      "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+                    },
+                    "scientific_status": "PROPOSED_NOT_ADOPTED"
+                  },
+                  "profile": {
+                    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+                    "control": "symmetric_directional",
+                    "wrapper": "full_Hadamard_with_measurement",
+                    "scope": "single_hadamard_interrogation_without_state_preparation",
+                    "P": 0,
+                    "qiskit_version": "1.3.0",
+                    "basis_gates": [
+                      "rz",
+                      "sx",
+                      "x",
+                      "cx"
+                    ],
+                    "optimization_level": 1,
+                    "seed_transpiler": 17
+                  }
+                }
+              }
+            },
+            "law_binding": {
+              "definition": {
+                "model": "ideal_finite_RTE_law",
+                "tail_dictionary": {
+                  "kind": "GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL",
+                  "dictionary_sha256": "2947784cb614c097cb5f1e77e5cde99a39a62f89c4f2aa63af8ce3c739428648",
+                  "source": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                  },
+                  "prefix": 5,
+                  "mode_mapping": "OpenFermion mode q -> Qiskit qubit q; reverse_bits to saved mode-0-MSB basis",
+                  "coefficient_policy": "P0_GLOBAL_COLLECTOR_NO_ADDITIONAL_CUTOFF",
+                  "scalar_policy": "KEEP_SAVED_sR_AND_c_ONCE",
+                  "event_space": "FULL_2_TO_N_NOT_PROJECTED_PAULI",
+                  "P0_operator_residual_source": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/result.json"
+                  }
+                },
+                "source": {
+                  "primitive": {
+                    "commit": "4220f3006d0d8d413e195ed948e250578513b557",
+                    "path": "src/trotterlib/rte.py"
+                  },
+                  "dictionary": {
+                    "commit": "6255fbc422121fd777cad52763ef5a684abd46a3",
+                    "path": "docs/research/df_head_pauli_tail_ld5_stage1_20261116/p0_run01/LD5_DICTIONARY.json"
+                  }
+                },
+                "event_model": "EXISTING_PAIRED_TAYLOR_SIGNED_PAULI_INVOLUTIONS",
+                "scalar": "SAVED_sR_AND_c_ONCE_AT_TOTAL_TIME",
+                "actual_sampler_qualified": false
+              },
+              "configuration_id": "29c1db7ed89e871ec297215f9bf43e48e4914022b24eddb2dd765d6c776a4cad",
+              "candidate_id": "RMSE:7b3e2ebcc7195400afd858720ccf632917d2591551cbb31564fc7a1078ca24e0",
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 3,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "url": "https://arxiv.org/pdf/2503.05647v2",
+                  "sections": [
+                    "B.2",
+                    "E.1",
+                    "E.3"
+                  ],
+                  "equations": [
+                    "A38",
+                    "B30",
+                    "E1",
+                    "E2",
+                    "E21",
+                    "E22"
+                  ]
+                },
+                "A_definition_name": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED"
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "commit": "ce0517de6e7b58cf4bf4c69f99f998d86099c406",
+                  "path": "src/trottertracks/pr_rpe_rmse_controller.py",
+                  "function": "paper_event_mapper"
+                }
+              }
+            }
+          },
+          "predicted_RZ": {
+            "X": {
+              "numerator": 126983,
+              "denominator": 28
+            },
+            "Y": {
+              "numerator": 126983,
+              "denominator": 28
+            }
+          }
+        }
+      ],
+      "qualified_for_candidate": false
+    }
+  ],
+  "step_registry_schema": "PR_ACTUAL_STEP_PRICE_REGISTRY_V1"
+}
