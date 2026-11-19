@@ -72,5 +72,5 @@ RomuTailの中央担当、Romulaptopの操作担当、各環境のworker担当�
 - PBSの信号は、要求登録から割当までの時間をbundle転送、固定入力照合、受付・予算待ちに分けて記録する。大きな既存bundleの先行配置は、対象runの要求、PBSの残容量、転送前後のSHA-256を確認する。保存入力の木（tree）を照合するときは、既存の `git show` 表示に対するハッシュを継承する。
 - 容量整理では回収済み作業領域の同一Git packを内容照合して共有できる。過去のメタデータキャッシュを圧縮する場合は、取込みと同じロックで作業し、Gitオブジェクト一覧と新packの整合を検証する。実行・回収中や終了未確定のattemptは整理対象にしない。
 - WSLやPBSで追加のキャッシュ整理が必要なら、受領済みの中央保存データとのハッシュとサイズの一致、転送ACK、実行中・未回収・未確定attemptから参照されていないことを確認する。共有のGitメタデータを整理する場合は、元bundleで再生成できることを確認し、取込みと同じロックを使う。
-- 固定版で稼働中のrunでは、RomuTailで対象runを指定して `scripts/reclaim_rpe_worker_storage.py RUN_DIR --watch` を起動する。起動後は既存のSSH経路で、run終了まで約1分ごとに点検する。結果はrun内の `distributed/STORAGE_RECLAIM.log` で確認する。
+- RomuTailのユーザーサービス `rpe-storage-recovery.service` が `scripts/reclaim_rpe_worker_storage.py --state-dir STATE_DIR` で稼働中のrunを追跡する。約1分ごとに既存のSSH経路で点検し、点検結果は `journalctl --user -u rpe-storage-recovery.service` に残る。50 GiBの95%から、回収済み作業コピー・再計算可能なキャッシュを整理する。空きが戻れば既存workerの受付が自動復帰する。ロックとGitオブジェクトの一致を確認できる場合は、旧メタデータpackも容量外の専用一時領域で圧縮する。個別runを調査するときは、常設サービスと同時に同じrunを操作しない。
 - 整理後は45 GiBを目安に再計測する。50 GiB未満になれば、次のworkerの照会で容量による受付保留が自動で解除される。利用者のPause・受付OFFとWSL停止は各環境の設定に従う。実行可能な仕事が待機中なら、`QUEUE_WAIT_STATE` と台帳で新規割当まで確認する。上限を下回れない環境は新規受付を保留し、回収と他の適格な環境での探索を続ける。

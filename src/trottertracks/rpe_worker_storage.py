@@ -1,4 +1,6 @@
 """Host-wide intake limits and reclamation of acknowledged worker copies."""
+from contextlib import ExitStack
+import ctypes
 import fcntl
 import hashlib
 import json
@@ -8,6 +10,7 @@ import re
 import shutil
 import stat
 import subprocess
+import tempfile
 import time
 
 from .rpe_q3_coordinator import atomic_json
@@ -260,7 +263,106 @@ def _share_attempt_git_packs(attempt):
     return reclaimed
 
 
-def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(), refresh=False):
+def _packed_objects(directory):
+    objects = set()
+    for index in sorted(directory.glob('*.idx')):
+        with index.open('rb') as stream:
+            output = subprocess.check_output(['git', 'show-index'], stdin=stream, timeout=30)
+        objects.update(line.split()[1] for line in output.splitlines())
+    return objects
+
+
+def _compact_metadata_packs(policy, spools, pbs_runs):
+    """Compact an idle worker's derived Git store without pruning objects."""
+    roots = [Path(root).resolve() for root in policy['roots']]
+    scratch_root = Path(policy['sample_path']).resolve().parent
+    if any(scratch_root.is_relative_to(root) for root in roots):
+        return 0
+    spools = set(spools)
+    if pbs_runs:
+        spools.update(str(spool) for spool in Path(pbs_runs).glob('*/workers/*')
+                      if (spool/'WORKER.lock').is_file())
+    candidates = {}
+    for spool_name in spools:
+        spool = Path(spool_name).resolve()
+        pool = spool.parent/'preparation-metadata-cache'
+        for repository in pool.glob('*/objects.git'):
+            if repository.resolve() == repository and any(repository.is_relative_to(root) for root in roots):
+                candidates.setdefault(repository, [spool])
+    if pbs_runs:
+        shared = Path(pbs_runs).resolve()/'preparation-metadata-cache'
+        for repository in shared.glob('*/objects.git'):
+            if repository.resolve() == repository and any(repository.is_relative_to(root) for root in roots):
+                candidates[repository] = sorted({Path(name).resolve() for name in spools})
+    packed = []
+    for repository, owners in candidates.items():
+        directory = repository/'objects/pack'
+        packs = list(directory.glob('*.pack'))
+        if len(packs) >= 8:
+            packed.append((sum(p.stat().st_blocks * 512 for p in packs), directory, owners))
+    for size, directory, owners in sorted(packed, reverse=True):
+        if size < 256 * 1024**2:
+            break
+        try:
+            with ExitStack() as stack:
+                for spool in owners:
+                    worker_lock = stack.enter_context((spool/'WORKER.lock').open('rb'))
+                    fcntl.flock(worker_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    if any(json.loads(marker.read_bytes()).get('state') in
+                           ('ASSIGNED', 'STARTING', 'RUNNING', 'COMPLETED_PENDING_TRANSFER')
+                           for marker in spool.glob('*/*/WORKER_STATE.json')):
+                        raise BlockingIOError('Active worker attempts still own inputs')
+                import_lock = stack.enter_context((directory.parents[2]/'IMPORT.lock').open('rb'))
+                fcntl.flock(import_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                reclaimed = _compact_pack_directory(directory, scratch_root)
+                if reclaimed:
+                    return reclaimed
+        except (OSError, ValueError, subprocess.SubprocessError):
+            continue
+    return 0
+
+
+def _compact_pack_directory(directory, scratch_root):
+    entries = list(directory.iterdir())
+    if any(path.resolve() != path or not path.is_file() or path.suffix not in ('.pack', '.idx')
+           for path in entries):
+        return 0
+    if directory.stat().st_dev != scratch_root.stat().st_dev:
+        return 0
+    before = sum(path.stat().st_blocks * 512 for path in entries)
+    if shutil.disk_usage(scratch_root).free < before:
+        return 0
+    originals = _packed_objects(directory)
+    if not originals:
+        return 0
+    repo = directory.parent.parent
+    with tempfile.TemporaryDirectory(prefix='rpe-cache-compact-', dir=scratch_root) as temp:
+        scratch = Path(temp)/'objects'
+        stage = scratch/'pack'
+        stage.mkdir(parents=True, mode=directory.stat().st_mode & 0o777)
+        env = dict(os.environ, GIT_OBJECT_DIRECTORY=str(scratch),
+                   GIT_ALTERNATE_OBJECT_DIRECTORIES=str(repo/'objects'))
+        git = ['git', '-C', str(repo)]
+        name = subprocess.check_output([*git, '-c', 'pack.threads=2', 'pack-objects',
+                                        str(stage/'pack')],
+            input=b'\n'.join(sorted(originals)) + b'\n',
+            env=env, stderr=subprocess.PIPE, timeout=180).decode().strip()
+        subprocess.run([*git, 'index-pack', '--verify', str(stage/f'pack-{name}.pack')],
+                       check=True, capture_output=True, timeout=60)
+        if _packed_objects(stage) != originals:
+            raise ValueError('Compacted metadata pack has a different object set')
+        after = sum(path.stat().st_blocks * 512 for path in stage.iterdir())
+        if after >= before:
+            return 0
+        rename = getattr(ctypes.CDLL(None, use_errno=True), 'renameat2', None)
+        if rename is None:
+            return 0
+        if rename(-100, os.fsencode(stage), -100, os.fsencode(directory), 2) != 0:
+            raise OSError(ctypes.get_errno(), 'Cannot atomically exchange metadata packs')
+        return before - after
+
+
+def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(), refresh=False, compact_metadata=False):
     """Reclaim acknowledged copies and recoverable cache before reaching the intake limit."""
     if policy is None:
         return None
@@ -293,6 +395,15 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
         if cached is not None:
             return cached
         sample.parent.mkdir(parents=True, exist_ok=True)
+        compacted = 0
+        if compact_metadata:
+            observation = report(policy, spools=spools, pbs_runs=pbs_runs,
+                                 cache_directories=caches, refresh=refresh)
+            if observation['used_bytes'] is not None and observation['used_bytes'] >= limit * 95 // 100:
+                compacted = _compact_metadata_packs(policy, spools, pbs_runs)
+            if not compacted:
+                return observation
+            refresh = True
         with sample.with_suffix('.lock').open('a+b') as lock:
             fcntl.flock(lock, fcntl.LOCK_EX)
             cached = recent()
@@ -331,6 +442,8 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                     measured.update(reclaimed_copies=reclaimed, reclaimed_bytes=max(0, before-used))
                 if evicted:
                     measured['evicted_prefix_checkpoints'] = evicted
+                if compacted:
+                    measured['compacted_metadata_bytes'] = compacted
             atomic_json(sample, dict(policy=identity, cleanup=cleanup, sampled_epoch=time.time(), report=measured))
             return measured
     except OSError:

@@ -29,7 +29,7 @@ payload = json.load(sys.stdin)
 exec(compile(payload['source'], 'rpe_worker_storage.py', 'exec'), vars(storage))
 profile = json.loads(Path(sys.argv[2]).read_bytes()) if sys.argv[2] else payload['profile']
 spools = (profile['work_dir'],) if sys.argv[2] else payload['spools']
-options = dict(spools=spools, pbs_runs=payload.get('pbs_runs'), cache_directories=storage.prefix_caches(profile))
+options = dict(spools=spools, pbs_runs=payload.get('pbs_runs'), cache_directories=storage.prefix_caches(profile), compact_metadata=True)
 result = storage.report(profile.get('storage_limit'), **options)
 if result and result['reason'] == 'STORAGE_LIMIT_REACHED' and payload.get('duplicate_inventory'):
     result['duplicate_inventory'] = storage.duplicate_inventory(profile)
@@ -159,7 +159,7 @@ def local_duplicate_cache(run, profile):
 
 def local_report(run, profile):
     policy = profile.get('storage_limit')
-    options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile))
+    options = dict(spools=(profile['work_dir'],), cache_directories=prefix_caches(profile), compact_metadata=True)
     result = report(policy, **options)
     if result and result['reason'] == 'STORAGE_LIMIT_REACHED' and profile.get('artifact_cache_directory'):
         removed = local_duplicate_cache(run, profile)
@@ -217,6 +217,8 @@ def cleanup(run, source):
     distributed = run/'distributed'
     conf = distributed/'relay'/'CONFIG.json'
     relay = Relay(conf) if conf.exists() else None
+    if relay is not None:
+        relay.config['request_timeout_seconds'] = max(300, relay.config.get('request_timeout_seconds', 60))
     admission_path = run/'HOST_ADMISSION.json'
     admission = read(admission_path).get('hosts', {}) if admission_path.exists() else {}
     local = distributed/'LOCAL_WORKER.json'
@@ -236,7 +238,7 @@ def cleanup(run, source):
                     return dict(status='WSL_STOPPED')
                 command = [w['python'], '-B', '-c', REMOTE_REPORT, w['root'], w['profile']]
                 result = relay.remote_command(w, command, 'storage-reclaim',
-                                              dict(source=source, duplicate_inventory=wsl))[0]
+                                              dict(source=source, duplicate_inventory=True))[0]
                 inventory = result.pop('duplicate_inventory', {}) if result else {}
                 if inventory:
                     target = result['used_bytes'] - result['limit_bytes'] * 9 // 10
@@ -259,7 +261,7 @@ def cleanup(run, source):
                 output = subprocess.check_output(
                     ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5',
                      settings['ssh_alias'], shlex.join(command)],
-                    input=json.dumps(payload), text=True, stderr=subprocess.PIPE, timeout=45)
+                    input=json.dumps(payload), text=True, stderr=subprocess.PIPE, timeout=300)
                 return json.loads(output)
             work.append((worker['host_id'], gateway))
     with ThreadPoolExecutor(max_workers=max(1, len(work))) as pool:
@@ -280,15 +282,41 @@ def invocation_active(run):
     return not finished.is_file() or read(finished).get('invocation_id') != invocation
 
 
+def watch_active_runs(state, source):
+    """Follow normal Start and Resume, including after the active run changes."""
+    with closing((state/'STORAGE_RECLAIM.lock').open('a+b')) as lock:
+        acquire_lock(lock)
+        while True:
+            try:
+                index = read(state/'RUNS.json')
+                for entry in index.values():
+                    run = Path(entry['run_directory']).resolve()
+                    if (run/'CONTROLLER_CONFIG.json').is_file() and invocation_active(run):
+                        with (run/'distributed'/'STORAGE_RECLAIM.lock').open('a+b') as run_lock:
+                            try:
+                                fcntl.flock(run_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                            except BlockingIOError:
+                                continue
+                            cleanup(run, source)
+            except (OSError, KeyError, ValueError) as error:
+                print(json.dumps(dict(event='STORAGE_WATCH_WAIT', error_type=type(error).__name__)), flush=True)
+            time.sleep(60)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('run', type=Path)
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument('run', type=Path, nargs='?')
+    target.add_argument('--state-dir', type=Path)
     parser.add_argument('--watch', action='store_true')
     args = parser.parse_args()
+    source = (Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_worker_storage.py').read_text()
+    if args.state_dir:
+        watch_active_runs(args.state_dir.resolve(strict=True), source)
+        return
     run = args.run.resolve(strict=True)
     if not (run/'CONTROLLER_CONFIG.json').is_file():
         parser.error('Expected an existing central run directory')
-    source = (Path(__file__).resolve().parents[1]/'src/trottertracks/rpe_worker_storage.py').read_text()
     if not args.watch:
         cleanup(run, source)
         return

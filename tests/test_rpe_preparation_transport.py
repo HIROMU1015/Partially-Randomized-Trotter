@@ -55,6 +55,18 @@ class PreparationTransportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'nested/leaf'):
             P._verify_fixed_git_inputs(root, locators)
 
+    def test_compaction_preserves_git_objects_and_reclaims_exact_duplicate_pack(self):
+        root = (self.root/'source').resolve()
+        subprocess.run(['git', 'repack', '-ad'], cwd=root, check=True)
+        packdir = root/'.git/objects/pack'
+        for path in list(packdir.iterdir()):
+            shutil.copy2(path, path.with_name('pack-'+'b'*40+path.suffix))
+        before = Storage._packed_objects(packdir)
+        self.assertGreater(Storage._compact_pack_directory(packdir, self.root.resolve()), 0)
+        self.assertEqual(Storage._packed_objects(packdir), before)
+        self.assertEqual(subprocess.check_output(['git', 'show', 'HEAD:leaf.py'], cwd=root),
+                         (root/'leaf.py').read_bytes())
+
     def test_only_matching_packs_in_transferred_attempts_share_storage(self):
         spool = self.root/'spool'
         packname = 'pack-'+'a'*40+'.pack'
