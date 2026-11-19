@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -103,6 +104,19 @@ class PreparationTransportTests(unittest.TestCase):
         for commit in raw_commits:
             git('merge-base','--is-ancestor',commit,'HEAD')
         self.assertEqual(len(list((workspace/request['directory']).rglob('RAW.json'))),2)
+
+    @unittest.skipUnless(shutil.which('bwrap'), 'bubblewrap is unavailable')
+    def test_fixed_pauli_runtime_refuses_changed_input(self):
+        path = self.root/'retained.json'
+        path.write_text('{}\n')
+        original = '/home/AbeHiromu/projects/artificial/retained.json'
+        mount = dict(controller_path=original, path=str(path), kind='file',
+                     sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+        profile = dict(pauli_binding_publication=dict(legacy_runtime={'saved_config': mount}))
+        self.assertEqual(P.pauli_calibration_runtime(profile)[original]['path'],str(path))
+        path.write_text('{"changed":true}\n')
+        with self.assertRaisesRegex(ValueError,'runtime file hash differs'):
+            P.pauli_calibration_runtime(profile)
 
     def profile(self,host):
         return dict(host_id=host,root=str(self.root/'source'),interpreter=sys.executable,

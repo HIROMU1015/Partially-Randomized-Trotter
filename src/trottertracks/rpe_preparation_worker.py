@@ -11,6 +11,7 @@ import importlib.metadata
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import time
@@ -152,6 +153,40 @@ def _required_path_facts(profile, requirements):
     return facts
 
 
+def pauli_calibration_runtime(profile):
+    publication = profile.get('pauli_binding_publication') or {}
+    mounts = publication.get('legacy_runtime')
+    if not mounts:
+        raise ValueError('Fixed Pauli calibration runtime paths are missing')
+    paths = {}
+    declarations = {}
+    for alias, mount in mounts.items():
+        original = Path(mount['controller_path'])
+        if not original.is_relative_to('/home/AbeHiromu/projects') or '..' in original.parts:
+            raise ValueError('Unexpected fixed Pauli runtime path: '+str(original))
+        paths[alias] = mount['path']
+        declarations[alias] = {key: value for key, value in mount.items() if key != 'path'}
+    if not shutil.which('bwrap'):
+        raise ValueError('Dedicated Pauli calibration runtime needs bubblewrap')
+    facts = _required_path_facts({'preparation_paths': paths}, declarations)
+    return {mounts[alias]['controller_path']: fact for alias, fact in facts.items()}
+
+
+def pauli_calibration_command(command, runtime_paths, directory, source):
+    """Expose the verified legacy inputs only inside this worker attempt."""
+    home = Path.home()
+    cache = directory/'runtime-cache'
+    cache.mkdir(exist_ok=False)
+    launcher = ['bwrap', '--die-with-parent', '--ro-bind', '/', '/', '--dev', '/dev',
+                '--tmpfs', '/home', '--ro-bind', str(home), str(home),
+                '--bind', str(directory), str(directory), '--chdir', str(source)]
+    for name in ('TMPDIR', 'MPLCONFIGDIR', 'NUMBA_CACHE_DIR'):
+        launcher += ['--setenv', name, str(cache)]
+    for original, fact in runtime_paths.items():
+        launcher += ['--ro-bind', fact['path'], original]
+    return [*launcher, '--', *command]
+
+
 def metadata_bundle_hashes(assignment):
     spec=assignment.get('request',assignment)['preparation']
     bundles=list(spec.get('input_git_bundles',[]))
@@ -231,6 +266,7 @@ def current_preparation_fingerprint(assignment, base_profile):
         if not alias.replace('_','').replace('-','').isalnum():raise ValueError('Unsafe required SOURCE alias')
         views['view:'+alias]=str(_source(profile,required['source']))
     path_facts=_required_path_facts(profile,spec.get('required_paths',{}))
+    pauli_runtime=pauli_calibration_runtime(profile) if spec.get('publish_pauli_binding') is True else None
     input_root=_metadata_input_repository(profile,root,spec)
     for locator in spec.get('input_hashes',[]):
         artifact_path(locator['path'])
@@ -255,7 +291,10 @@ def current_preparation_fingerprint(assignment, base_profile):
     if not isinstance(command,list)or not command or any(not isinstance(v,str)for v in command):raise ValueError('Preparation command must be explicit argv')
     if not spec.get('outputs'):raise ValueError('Declared preparation outputs required')
     for name in spec['outputs']:artifact_path(name)
-    return dict(schema='RPE_PREPARATION_CURRENT_HOST_FINGERPRINT_V1',stage=spec['stage'],provider=spec.get('provider'),request_sha256=assignment['request_sha256'],source_manifest=source,input_hashes=spec.get('input_hashes',[]),working_input_hashes=spec.get('working_input_hashes',[]),required_views=spec.get('required_views',{}),required_paths=spec.get('required_paths',{}),runtime_paths=path_facts,input_artifacts=inputs,profile=preparation_profile_core(profile),views=views,runtime=runtime,tools=tools)
+    facts = dict(schema='RPE_PREPARATION_CURRENT_HOST_FINGERPRINT_V1',stage=spec['stage'],provider=spec.get('provider'),request_sha256=assignment['request_sha256'],source_manifest=source,input_hashes=spec.get('input_hashes',[]),working_input_hashes=spec.get('working_input_hashes',[]),required_views=spec.get('required_views',{}),required_paths=spec.get('required_paths',{}),runtime_paths=path_facts,input_artifacts=inputs,profile=preparation_profile_core(profile),views=views,runtime=runtime,tools=tools)
+    if pauli_runtime is not None:
+        facts['pauli_calibration_runtime'] = pauli_runtime
+    return facts
 
 
 def dry_check(request, profile, source_manifest=None):
@@ -516,6 +555,7 @@ def execute(assignment, base_profile, directory):
             put(directory/'OUTCOME.json', outcome)
             return outcome
         command.append('--publish-binding')
+        command = pauli_calibration_command(command, fingerprint['pauli_calibration_runtime'], directory, source)
     if spec.get('parallel_df_price_axes') is True:
         env.update(RPE_DF_PRICE_AXIS_WORKERS=str(profile['task_cpu_count']),
                    OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1',
@@ -602,6 +642,13 @@ def validate_preparation_fingerprint(assignment, base_profile, fingerprint):
             runtime_paths[alias]=dict(path=configured,kind=kind,files=files)
         else:raise ValueError('Unknown required runtime path type')
     if fingerprint.get('runtime_paths')!=runtime_paths:raise ValueError('Current preparation runtime paths differ')
+    if spec.get('publish_pauli_binding') is True:
+        mounts = selected['pauli_binding_publication']['legacy_runtime']
+        expected_mounts = {mount['controller_path']: {key: value for key, value in mount.items()
+                                                    if key != 'controller_path'}
+                           for mount in mounts.values()}
+        if fingerprint.get('pauli_calibration_runtime') != expected_mounts:
+            raise ValueError('Pauli calibration runtime path fingerprint differs')
     if spec.get('artificial')is not True and not selected.get('preparation_adapter_manifest'):
         raise ValueError('Fixed preparation adapter manifest missing')
     runtime=fingerprint.get('runtime')or{}
