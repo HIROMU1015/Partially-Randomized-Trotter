@@ -474,3 +474,34 @@ controllerの保存descriptor参照も、元ファイルのhashを確認して�
 較正taskは `prep-583f157930591d64801b9e74`、
 attemptは `034ea7403733456d86e90926e40ed1f4`。
 進行中の証跡と結果は同runのqueueと候補ディレクトリを参照する。
+
+同runで較正16軸、モデル凍結、独立holdoutの4軸、比較判定がPBSで完了し、
+中央で全4準備taskを受理した。候補は `READY_FOR_SEARCH` となった。
+Q3の事前照合では固定 `caf1417ef20d0a5ab2030a2d957ee4f09443be43` の
+INPUTS、PARTIAL_TOTAL_DP_LD1、PARTIAL_COARSE_LD1が不足していた。
+元のGitオブジェクトをPBSの固定viewへ補完した。科学コードの変更はない。
+
+準備済み状態を `6e1c81aa9f` の `continuation-inputs/ld8-price-ready/` に保存し、
+通常Startの `search-b5fa7a7515854aabb31c` へ引き継いだ。
+配置は `.rpe-central/acceptance/pbs-prdf-ld8-manual-retry-c74369e-r4/`。
+この継続ではsignal・compile・audit予算を各0とし、準備済み成果を再利用した。
+PBS割当 `267542.CPUcluster-PRISM` で次のQ3を実行し、中央の
+`PROGRESS.jsonl` に各jobの `ADOPT` と `SEARCH_ADOPT` を確認した。
+
+|job|判定|MSE上下界の表示値|総費用RZ|
+|---|---|---|---|
+|3d3885941ec9adb6b636|MODEL_BOUND_MEETS_ADOPTED_THRESHOLD|約4.2841040912702504e-7|13206349469/7|
+|8f52c10fcdadcd7430fa|MODEL_BOUND_MEETS_ADOPTED_THRESHOLD|約5.03116930085422e-7|12409137487/7|
+
+厳密なMSEの整数比は各jobのOUTCOME.jsonを保持する。2件目は最初の結果を受けた
+通常のshot提案で起動された。通しの採用確認を終え、担当Codexの判断で通常Stopを
+発行した。起動済み2件目を完了・採用し、未開始3件をCANCELLEDとして正常終了した。
+旧STOP・各失敗attempt・予約消費は保持した。
+専用PBS割当267540、267541、267542はすべてF、Exit_status=0を確認した。
+本作業で新規信号は0件。較正16軸と独立holdout4軸は実compileで、
+準備taskの会計はcompile 2、audit 2。Q3は実行・採用とも2件。
+
+通常公開は結果branchの `8f165c143b973388e99dd9e23e306fe3349bc8a5` で
+PUBLISHEDとなった。ただし停止時の公開manifestにROUND_RESULTが含まれず、
+この公開応答だけでは上記2件のマップ表示を確認できない。採用証拠の正本は
+中央runのPROGRESS.jsonl、queue、REQUEST、OUTCOME、終了receiptである。
