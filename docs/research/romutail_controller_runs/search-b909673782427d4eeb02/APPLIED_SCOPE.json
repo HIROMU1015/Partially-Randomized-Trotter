@@ -1,0 +1,378 @@
+{
+  "schema": "LOCAL0_APPLIED_SEARCH_SCOPE_V1",
+  "run_id": "search-b909673782427d4eeb02",
+  "signature": "b909673782427d4eeb02fa6ccb08324f071e15908d4ff3473fa082d6241ef970",
+  "evaluation_identity": "e6d6e48e6bcda9df3cdf6d5bd04bceeba6be414ecc643a21d11d48d789d881bc",
+  "entry": "schedule",
+  "code_source": "65769c5e07486af0b88f253cb7d75d4a1191fbbe",
+  "applied": {
+    "methods": [
+      "TRUNCATED_PF"
+    ],
+    "requested": {
+      "methods": [
+        "TRUNCATED_PF"
+      ],
+      "per_method": {
+        "TRUNCATED_PF": {
+          "p": [
+            8
+          ],
+          "formulas": [
+            "4th"
+          ],
+          "delta_over_h": [
+            "8",
+            "8"
+          ]
+        }
+      },
+      "shots": "auto",
+      "stop": {
+        "max_new_q3_per_method": "UNLIMITED",
+        "max_cycles": 1,
+        "max_steps_per_method": 1
+      },
+      "preparation_budgets": {
+        "signal": 1,
+        "compile": 2,
+        "audit": 4
+      }
+    },
+    "fixed": {
+      "problem": {
+        "system": "H4",
+        "geometry": "linear_1Angstrom",
+        "basis": "STO-3G",
+        "rank_policy": "tol_only_1e-8",
+        "hamiltonian_data": {
+          "snapshot": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_snapshot.npz",
+            "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+          },
+          "receipt": {
+            "path": "/home/abe/Project/Partially Randomized Trotter/.rpe-central/deployment/source-server2/saved-physical-inputs/tol_only_receipt.json",
+            "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+          },
+          "expected": {
+            "fragment_count": 10,
+            "n_qubits": 8,
+            "sector_dimension": 36
+          }
+        }
+      },
+      "accuracy": {
+        "estimator": "consecutive_dyadic_nearest_branch_principal_energy_total_v1",
+        "target": "SAVED_DF10_SOLVER_ENERGY_CONDITIONAL_PROXY",
+        "loss": "ALL_EVENT_SQUARED_ENERGY_ERROR",
+        "epsilon_E_decimal": "0.00159360010199040",
+        "scope": "MODEL_MSE_FILTER_ONLY"
+      },
+      "target": {
+        "kind": "SAVED_FULL_DF_H_SOLVER_CONDITIONAL_PROXY",
+        "energy_ha": -2.1663874486347634,
+        "source": {
+          "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+          "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json",
+          "selector": [
+            "target"
+          ]
+        }
+      },
+      "rpe": {
+        "M": 12
+      }
+    },
+    "method_settings": {
+      "TRUNCATED_PF": {
+        "family": "PF",
+        "index_method": "B0I_P7",
+        "formulas": [
+          "4th"
+        ],
+        "delta_over_h_range": [
+          "8",
+          "8"
+        ],
+        "caps": [
+          59,
+          55,
+          51,
+          47,
+          43,
+          39,
+          35,
+          31,
+          27,
+          23,
+          19,
+          15,
+          11
+        ],
+        "p_values": [
+          8
+        ],
+        "configuration_ids": [
+          "b3430ea5eb978ab4fbaf22e83c3c112fc0609cb8d00f06419e56f9d2b9164d6d"
+        ]
+      }
+    },
+    "method_overrides": {
+      "TRUNCATED_PF": {
+        "p_values": [
+          8
+        ],
+        "configuration_ids": [
+          "b3430ea5eb978ab4fbaf22e83c3c112fc0609cb8d00f06419e56f9d2b9164d6d"
+        ],
+        "formulas": [
+          "4th"
+        ],
+        "delta_over_h_range": [
+          "8",
+          "8"
+        ]
+      }
+    },
+    "search": {
+      "rule": "METHOD_MINIMUM_PRIORITY_V2",
+      "decrement_steps": [
+        1,
+        2
+      ],
+      "large_step_headroom": "9/10",
+      "seed_rules": [
+        "B_PRICE",
+        "A_SHAPE"
+      ],
+      "max_steps_per_method": 40,
+      "max_new_q3_per_method": 0,
+      "seed_saved_same_L_D": true,
+      "explore_every": 4,
+      "explore_window": "3/2",
+      "small_gain_fraction": "1/1000",
+      "deferral_fail_margin": "1/10000",
+      "transfer_count": 2,
+      "lookahead": 16,
+      "lookahead_mode": "HYBRID",
+      "adaptive_lookahead": false,
+      "coarse_gain_fraction": "1/100",
+      "small_and_deferred": "STOP",
+      "schedule_wide": {
+        "rule": "SCHEDULE_WIDE_V1",
+        "ladder_ratio": "4",
+        "explore_ratio": "2",
+        "refine_ratio": "33/32",
+        "exploit_per_explore": 2,
+        "window": "3/2",
+        "upper_stop_steps": 2,
+        "upper_stop_margin": "1/20",
+        "max_kappa": "65536",
+        "per_decision": 8,
+        "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family"
+      },
+      "note": "Absolute requested PF widths. JSON .2 retains binary64, string 1/5 exact rational. Fixed h/M/T and evaluation contract unchanged; mapper may reject per method.",
+      "adaptive_hybrid": true,
+      "allocation_exchange": {
+        "enabled": true
+      },
+      "kappa_neighbourhood": {
+        "outer_planner": "SCHEDULE_WIDE_V1"
+      },
+      "requested_widths": null,
+      "self_price_floor": true,
+      "review_search_order": true,
+      "common_pauli_price_floor": true,
+      "schedule_wide_by_method": {
+        "PR_PAULI": {
+          "rule": "SCHEDULE_WIDE_V1",
+          "ladder_ratio": "4",
+          "explore_ratio": "2",
+          "refine_ratio": "33/32",
+          "exploit_per_explore": 2,
+          "window": "3/2",
+          "upper_stop_steps": 2,
+          "upper_stop_margin": "1/20",
+          "max_kappa": "64",
+          "per_decision": 8,
+          "note": "no centre: floor schedule, saved feasible schedules, far ladder; then refinement around cheap feasible schedules interleaved with the widest unexplored gaps; bases reported per family",
+          "kappa_bounds": [
+            "2",
+            "64"
+          ]
+        }
+      },
+      "work_conserving_search": true
+    },
+    "max_new_q3_per_method": {
+      "TRUNCATED_PF": "UNLIMITED"
+    },
+    "max_steps_per_method": 1,
+    "preparation_budgets": {
+      "signal": 1,
+      "compile": 2,
+      "audit": 4
+    },
+    "live_ready_refill": true,
+    "work_conserving_search": true,
+    "worker_storage_limits_bytes": {
+      "local": 53687091200,
+      "server2": 53687091200,
+      "local0-wsl": 53687091200,
+      "server1": 53687091200,
+      "pbs-0": 53687091200
+    },
+    "pbs_walltime": {
+      "policy": {
+        "id": "h4-pbs-walltime-v4-selective-q3-allocation-reuse",
+        "sha256": "69f5bb20a21c1c421ad623b276ef0cc6e617348ddc8d6beaa0f8df7b3e77e81a"
+      },
+      "q3": [
+        {
+          "id": "b0i-pf6",
+          "method": "TRUNCATED_PF",
+          "route_kind": "pf_b_pf6",
+          "view_commit": "cbc471c913072de45c25a0ed22d51dff8a9b7034",
+          "adapter_source": "349558b748a82f384a4589434a63ef9b5572032c",
+          "seconds": 14400,
+          "memory_bytes": 8589934592,
+          "hosts": [
+            "pbs-0"
+          ]
+        }
+      ],
+      "preparation": [
+        {
+          "id": "pauli_signals",
+          "stage": "signal",
+          "provider": "PAULI_SIGNALS",
+          "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+          "seconds": 120
+        },
+        {
+          "id": "pauli_compile",
+          "stage": "compile",
+          "provider": "PAULI_COMPILE",
+          "source": "d887abdcadf47a969aa2f69c1dd3bdc88c20f1c2",
+          "seconds": 180
+        },
+        {
+          "id": "pauli_signals_saved_inputs",
+          "stage": "signal",
+          "provider": "PAULI_SIGNALS",
+          "source": "8d03cd254db4ae5f7b4d786f54e4fc66f0fcb4a8",
+          "seconds": 120
+        },
+        {
+          "id": "pauli_signals_preparation_throughput",
+          "stage": "signal",
+          "provider": "PAULI_SIGNALS",
+          "source": "8cc86e60a337272b2b013bd100a6a9c6c8da93ae",
+          "seconds": 120,
+          "memory_bytes": 4294967296
+        },
+        {
+          "id": "prdf-signals-fixed-provider",
+          "stage": "signal",
+          "provider": "DF_SIGNALS",
+          "source": "9ed5fcc98d38c328c447f4270eabc73090fcaa02",
+          "seconds": 120
+        },
+        {
+          "id": "pf_audit",
+          "stage": "audit",
+          "provider": "PF_AUDIT",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_finish",
+          "stage": "audit",
+          "provider": "PF_FINISH",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_holdout_audit",
+          "stage": "audit",
+          "provider": "PF_HOLDOUT_AUDIT",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_model_freeze",
+          "stage": "audit",
+          "provider": "PF_MODEL_FREEZE",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pf_compile",
+          "stage": "compile",
+          "provider": "PF_COMPILE",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 3600
+        },
+        {
+          "id": "pf_holdout_compile",
+          "stage": "compile",
+          "provider": "PF_HOLDOUT_COMPILE",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 3600
+        },
+        {
+          "id": "pf_signals",
+          "stage": "signal",
+          "provider": "PF_SIGNALS",
+          "source": "36ad751d4ebf0ec160532615da6425b268a0c18a",
+          "seconds": 600
+        },
+        {
+          "id": "pauli-audit-raw-receipts-4d20f4b7a",
+          "stage": "audit",
+          "provider": "PAULI_AUDIT",
+          "source": "4d20f4b7a009c42d9a4918f8db17dc87503d060e",
+          "seconds": 180,
+          "memory_bytes": 4294967296
+        }
+      ],
+      "drain_seconds": 30,
+      "unconfigured_q3_methods": {},
+      "allocation_sizing": {
+        "q3_startup_memory_bytes_per_task": 8589934592
+      }
+    }
+  },
+  "problem_sha256": "f588d4ce3a1f913b950aafe56eb1f48555d1d1d3b0eb1ab0ca58f399b491859c",
+  "round_requested_sha256": "46af61a2fc914516204a9d192aedcdf4732c9dd06175beb610b953ab13f76fd7",
+  "scope": {
+    "methods": [
+      "TRUNCATED_PF"
+    ],
+    "per_method": {
+      "TRUNCATED_PF": {
+        "p": [
+          8
+        ],
+        "formulas": [
+          "4th"
+        ],
+        "delta_over_h": [
+          "8",
+          "8"
+        ]
+      }
+    },
+    "shots": "auto",
+    "stop": {
+      "max_new_q3_per_method": "UNLIMITED",
+      "max_cycles": 1,
+      "max_steps_per_method": 1
+    },
+    "preparation_budgets": {
+      "signal": 1,
+      "compile": 2,
+      "audit": 4
+    }
+  }
+}
