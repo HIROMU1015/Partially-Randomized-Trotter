@@ -18,6 +18,7 @@ H4_PROBLEM = 'configs/rpe_method_optimizer/h4_df10_problem.json'
 BASE = '97ec984197f1f01c401d1b10422ee44e1d7ebbcb'
 PRICE_SOURCE = '73dcbe23678bfc50d5654f09e600d4cfbe75e697'
 PRICE_INPUTS = 'docs/research/h6_df19_price_v2_20261110/PILOT_INPUTS.json'
+SHORT_RUN = 'docs/research/h6_h8_rpe_readiness_20261119/short_prices_run01/'
 
 
 def read(commit, path, selector=()):
@@ -36,7 +37,42 @@ def write(output, **files):
             stream.write('\n')
 
 
-def build(output, private_config):
+def short_price_refs(commit, coverage, inputs):
+    """Bind the finite price receipt to the same Full19 snapshot and three cases."""
+    receipt = read(commit, SHORT_RUN + 'INPUTS.json')
+    results = read(commit, SHORT_RUN + 'AXIS_PRICES.json')
+    early = {r['m']: r for r in coverage['rows'] if r['m'] in (0, 1, 2)}
+    if (receipt['source'] != results['source'] or receipt['maximum_compile'] != 6
+            or receipt['compiler'] != inputs['compiler_hash']
+            or receipt['input_sha256'] != inputs['input_sha256']
+            or receipt['provider'] != inputs['provider_source']
+            or len(results['rows']) != len(early)
+            or not 0 <= results['compile_count'] <= 6):
+        raise ValueError('Short-price receipt does not match the fixed execution')
+    cases = dict(receipt['cases'])
+    refs = {}
+    for i, row in enumerate(results['rows']):
+        m = row['m']
+        archive = early.get(m)
+        candidate = row['candidate']
+        if (archive is None or m in refs or candidate != cases.get(m)
+                or candidate['id'] != archive['saved_round_candidate_id']
+                or candidate['q'] != archive['q_PF']
+                or candidate['T'] != float(archive['T'])
+                or candidate['delta'] != float(archive['actual_delta_pf'])
+                or row['preparation_hash'] != inputs['preparation_hash']['19']
+                or set(row['axes']) != {'X', 'Y'}):
+            raise ValueError('Short-price case does not match the archived physical round')
+        refs[m] = {}
+        for axis, result in row['axes'].items():
+            if result['compiler'] != receipt['compiler'] or not result.get('fingerprint'):
+                raise ValueError('Short-price axis lacks its fixed compiler or fingerprint')
+            refs[m][axis] = dict(commit=commit, path=SHORT_RUN + 'AXIS_PRICES.json',
+                                 selector=['rows', i, 'axes', axis, 'metrics', 'rz_count'])
+    return refs
+
+
+def build(output, private_config, short_prices_commit=None):
     coverage = read(SAVED, COVERAGE)['H6']
     old = json.loads(private_config.read_text())['systems']['H6']
     inputs = read(PRICE_SOURCE, PRICE_INPUTS)
@@ -70,6 +106,7 @@ def build(output, private_config):
                           delta_pf=O.enc(Fraction(1.6)), rank=19, M=12), api=api)
     cid = config['id']
     physical = PF.physical_ids(ROOT, config)
+    short = short_price_refs(short_prices_commit, coverage, inputs) if short_prices_commit else {}
     means, axes = [], []
     for row, archive in zip(config['rounds'], coverage['rows'], strict=True):
         m = row['m']
@@ -84,7 +121,7 @@ def build(output, private_config):
         means.append(dict(m=m, identity=row['identity'], law_binding=row['law_binding'],
             physical_candidate=dict(id=old_id), raw=raw, source=raw_ref,
             status='SIGNAL_AVAILABLE_NOT_RMSE_QUALIFIED'))
-        for axis, source in archive['axis_price_source'].items():
+        for axis, source in short.get(m, archive['axis_price_source']).items():
             if source is None:
                 continue
             value = read(**source)
@@ -120,5 +157,6 @@ if __name__ == '__main__':
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--saved-input-config', required=True, type=Path)
     ap.add_argument('--output', required=True, type=Path)
+    ap.add_argument('--short-prices-commit', help='fixed commit containing the additional six axis receipts')
     args=ap.parse_args()
-    print(build(args.output.resolve(), args.saved_input_config))
+    print(build(args.output.resolve(), args.saved_input_config, args.short_prices_commit))
