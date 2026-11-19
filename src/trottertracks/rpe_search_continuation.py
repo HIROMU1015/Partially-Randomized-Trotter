@@ -227,6 +227,81 @@ def verify_pbs_prelaunch_rejections(run, prior_dirs):
         verified.add(directory.resolve())
     return verified
 
+def _legacy_problem_identity(problem):
+    """Relocated hash-bound molecular inputs keep the same scientific identity."""
+    def identity(value):
+        if isinstance(value, dict):
+            return {k: identity(v) for k, v in value.items()
+                    if not (k == 'path' and 'sha256' in value)}
+        if isinstance(value, list):
+            return [identity(v) for v in value]
+        return value
+    return {key: identity(problem[key]) for key in ('problem', 'rpe', 'target', 'accuracy')}
+
+
+def _legacy_failed_return(parent, job, fixed, problem):
+    """Retain a terminal imported failure as an exact-allocation no-retry hold.
+
+    Old local executors had neither a distributed queue nor parent EXIT. Their
+    original nonzero return receipt is not a scientific result or retry grant.
+    Import provenance and a read-only source-host check establish which ended
+    attempt is retained; none of its original evidence is modified.
+    """
+    from .rpe_q3_coordinator import digest
+
+    job_id, method = fixed['job_id'], fixed['method']
+    if fixed.get('replay_exact'):
+        raise ValueError('Legacy failed Q3 cannot be replayed: ' + job_id)
+    required = {'REQUEST.json', 'LAUNCH.json', 'STARTING.json', 'PROCESS_RETURN.json', 'FIXED_INPUTS.json'}
+    hashes = fixed['files_sha256']
+    if set(hashes) != required or (job/'OUTCOME.json').exists():
+        raise ValueError('Legacy failed Q3 evidence changed: ' + job_id)
+    for name, expected in hashes.items():
+        path = (parent if name == 'FIXED_INPUTS.json' else job)/name
+        if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+            raise ValueError('Legacy failed Q3 evidence hash differs: ' + job_id + ':' + name)
+    provenance = fixed['provenance_manifest']
+    manifest_path = Path(provenance['path']).resolve()
+    if hashlib.sha256(manifest_path.read_bytes()).hexdigest() != provenance['sha256']:
+        raise ValueError('Legacy Q3 transfer manifest changed: ' + job_id)
+    manifest = load(manifest_path)
+    roots = [row for row in manifest['roots']
+             if (manifest_path.parent/row['snapshot_root']).resolve() == parent]
+    if len(roots) != 1:
+        raise ValueError('Legacy Q3 parent lacks source provenance: ' + job_id)
+    original = Path(roots[0]['original_root'])
+    files = {row['path']: row for row in manifest['files']}
+    for name, expected in hashes.items():
+        relative = Path(name) if name == 'FIXED_INPUTS.json' else Path('jobs')/method/job_id/name
+        record = files.get((Path(roots[0]['snapshot_root'])/relative).as_posix(), {})
+        if record.get('sha256') != expected or record.get('original') != str(original/relative):
+            raise ValueError('Legacy Q3 imported file provenance differs: ' + job_id)
+    request, launch, starting, receipt = (load(job/name) for name in
+        ('REQUEST.json', 'LAUNCH.json', 'STARTING.json', 'PROCESS_RETURN.json'))
+    old_problem = load(parent/'FIXED_INPUTS.json')['problem']
+    if (_legacy_problem_identity(problem) != _legacy_problem_identity(old_problem)
+            or (request.get('request_id'), request.get('method')) != (job_id, method)
+            or digest(request) != fixed['request_sha256']
+            or type(receipt.get('returncode')) is not int or receipt['returncode'] == 0
+            or receipt.get('automatic_retry') is not False or starting.get('automatic_retry') is not False
+            or type(launch.get('pid')) is not int or launch['pid'] <= 0
+            or type(starting.get('parent_pid')) is not int or starting['parent_pid'] <= 0):
+        raise ValueError('Legacy failed Q3 terminal identity differs: ' + job_id)
+    observed = fixed['liveness']
+    path = Path(observed['path']).resolve()
+    if hashlib.sha256(path.read_bytes()).hexdigest() != observed['sha256']:
+        raise ValueError('Legacy Q3 source-host check changed: ' + job_id)
+    check = load(path)
+    if (check.get('host_id') != fixed['host_id']
+            or check.get('original_parent_directory') != str(original)
+            or type(check.get('active_owner_count')) is not int or check['active_owner_count'] != 0
+            or job_id not in check.get('checked_job_ids', [])
+            or check.get('job_process_ids', {}).get(job_id) != dict(pid=launch['pid'], parent_pid=starting['parent_pid'])):
+        raise ValueError('Legacy Q3 source host still owns an attempt or check differs: ' + job_id)
+    return dict(fixed, parent_directory=str(parent), configuration_id=request['configuration_id'],
+                N_X=request['N_X'], N_Y=request['N_Y'], reason='LEGACY_FAILED_RETURN_NO_RETRY')
+
+
 def verify_prior_q3_holds(root, run, problem, spec):
     """Keep an unresolved prior evaluation out of both reuse and new dispatch."""
     from .rpe_q3_coordinator import digest
@@ -240,6 +315,10 @@ def verify_prior_q3_holds(root, run, problem, spec):
         if (parent == run.resolve() or parent not in prior or method not in spec['methods']
                 or len(job_id) != 20 or any(c not in '0123456789abcdef' for c in job_id)):
             raise ValueError('Prior Q3 hold must refer to a job in the duplicate audit')
+        if fixed.get('kind') == 'LEGACY_FAILED_RETURN':
+            job = parent/'jobs'/method/job_id
+            holds[str(job)] = _legacy_failed_return(parent, job, fixed, problem)
+            continue
         if fixed.get('kind') == 'LOCAL_INTERRUPTED_WRITE':
             if fixed.get('replay_exact'):
                 raise ValueError('Prior distributed Q3 replay cannot use a local hold: '+job_id)

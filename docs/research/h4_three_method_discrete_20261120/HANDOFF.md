@@ -41,3 +41,18 @@ finite-grid plannerはこの7点だけを提案し、経験的な上方停止や
 - `tests/test_rpe_discrete_kappa.py`：7点の有限探索、grid外の保存候補除外、pendingの保全、非実行PlanOnly。
 
 計算と配置の経過・run IDは開始時の追記で示す。人工テストは科学的性能を示さない。
+
+## 旧ローカル評価の失敗を保全する開始照合
+
+初回Start `search-5c9a54cac2fe1630160c` は科学起動前の§10.5で保留された。
+旧server2取込み `prior-c11a81adff03` のPR-DF4件にOUTCOMEはないが、元ホストと
+取込みの双方に終了コード1・`automatic_retry=false` のPROCESS_RETURNが存在した。
+元ホストで対象runの稼働プロセスがないことを照会し、原ファイルのハッシュも一致した。
+旧attempt、原結果、STOPは変更せず、同じ構成・測定配分を再利用も再投入もしない。
+
+既存 `verify_prior_q3_holds` に `LEGACY_FAILED_RETURN` を追加し、取込みprovenance、
+固定問題の同一性、原REQUEST・起動・失敗receipt、元hostの状態照会を照合する。
+これは失敗を成功や科学結果へ変換せず、該当配分だけを既存shot探索のheld集合へ渡す。
+他の独立した条件の通常開始を妨げない。旧4件の再試行は許可しない。
+人工回帰 `tests/test_rpe_legacy_failed_hold.py` は、原本不変、改変・稼働中・再試行の拒否、
+同じ配分がshot候補にあっても新規評価されないことを検査する。
