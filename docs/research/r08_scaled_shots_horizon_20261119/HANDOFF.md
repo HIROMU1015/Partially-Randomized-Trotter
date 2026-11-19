@@ -47,4 +47,5 @@ Full PF、B0I、PR-Pauli、PR-DFの通常探索に、`RPE_SCALED_SHOTS_V1` を�
 - M<12は元の固定configuration、信号packet、価格の対応済みprefixを使い、Mに固有の評価ID、配分、復号の終端と費用で評価する。元のM=12のMSEを短いMへ流用しない。保存H₄を使った新しいM=11の実Q3は未実施。
 - M>12では不足ラウンドとX/Y価格を `HORIZON_INPUTS_MISSING` として列挙する。保存H₄のM=13にはm13の信号・価格を用意する既存13-round providerの拡張が必要。正式な固定Q3の `OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN` が残るため、M=13の正式評価をscience queueへ自動接続するところまでは未対応。固定ガードを維持し、実Q3へ進める条件は別途検証する。
   [固定Q3の検証域](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/710aa69b/src/trottertracks/rpe_deterministic_risk.py#L286)
+- 固定SHAから人工profileを組み立て、通常Previewの既定値と旧adapter profileの拒否を確認した。旧テスト `test_status_reports_completed_exit_and_preserves_scientific_stop_reason` は基点と今回の両方で `COMPLETE` の代わりに `RECONCILIATION_REQUIRED` を返した。
 - 実H₄での新規信号、compile、実Q3、実探索投入は各0件。次の実探索の前に、指定範囲と新規不足を§10.5で照合する。
