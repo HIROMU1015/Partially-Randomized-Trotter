@@ -31,6 +31,8 @@ RomuTailの中央担当、Romulaptopの操作担当、各環境のworker担当�
 
 通常のResumeは記録済みのreleaseと入力を使う。運用設定の修正に別の継続runが必要なら、元runの新規受付を止めて、実行中の `job_id`・`attempt_id` と結果を照合してから切り替える。切断・応答欠落・`UNKNOWN` は元ホストのプロセスと保存receiptを先に調べる。再送や再開は既存の所有・採用を使い、未確定の同一評価と科学上のSTOPは保留する。
 
+継続版の初回Resume前に、元runの準備台帳・保存結果が参照する固定Git locatorを継続版のcontroller checkout内で一括照合する。元checkoutにしかないオブジェクトは、固定SHAを保持したまま取得するか、保全した元オブジェクトストアを参照する。継承した台帳が参照する保存成果も維持する。
+
 新規run用currentの切替は中央担当が行う。保存入力と変更経路の技術検収を済ませたreleaseを登録し、明示版のPreview、切替直前のcurrent・所有、切替後の版指定なしPreviewを確認する。稼働中runはそのrunの固定版を使い続ける。
 
 ## 割当前に確認する入力と実行環境

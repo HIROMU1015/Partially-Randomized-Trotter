@@ -201,3 +201,41 @@ RomuTailとserver2の人工runで、先行Q3の実行中に別候補の信号・
 保存REQUESTのdry-checkはRomuTail・server2・local0-wslで両PR方式がPASS。WSLは新release専用のPython 3.11.0rc1 launcherにSQLite拡張を追加し、PR-DFの不足Gitオブジェクト2件を補った。PBSゲートウェイではPR-Pauliの保存入力がPASS。PR-DFの保存fixtureでは固定providerの旧 `INPUTS.json` が不足し、該当routeはHOLD。PBSの実Q3には既存の残りwalltime照合と工程別見積りが必要。server1は停止状態。
 
 人工回帰126件と、固定DP実装を使ったprefix cache・並列残差の人工回帰15件がPASS。
+
+## 2026-11-20 実探索の継続とPBSタスク別予約
+
+`search-c18e36af4fdf8186b360` は通常Stopで受付を止め、PBSの終了と19件の
+回収ACKを照合してから、`search-300182abb6401030e0a6` を通常Resumeで起動した。
+継続版は `romutail-pbs-task-resources-f67a86291-continuation-r3`。
+固定実装は `f67a86291a8a0247f99bd952d7ea0b41ab1a14b9`。継続では元の探索範囲、
+shot規則、Q3のUNLIMITED、方式比較規則、サイクル条件を継承した。
+新規run用currentは `romutail-pbs-task-resources-f67a86291`。
+
+保存成果の§10.5照合ではB0I 255件、PR-Pauli 278件、PR-DF 64件が
+再利用可能。値は事前照合の件数。準備台帳は118件を引き継ぎ、
+未確定 `prep-e298f74fb699ea3ebde0b633` の元attempt、旧STOP、元の原結果を保全した。
+未予約の要求だけを数え、準備枠を信号76→86、compile 35→38、audit 14据え置きとした。
+追加した枠と実行件数は別に会計する。
+
+最初の移行候補r2は継承した保存台帳のGit locator 27件を解決できず、科学ジョブを
+起動する前に終了。r3では元checkoutのオブジェクトストアを読み取り参照し、同じ
+locatorを解決した。通常Resumeのクライアント応答はタイムアウトしたが、中央の
+起動記録・キュー・実行を確認したため再送しなかった。詳細はRomuTailの
+`.rpe-central/deployment/romutail-pbs-task-resources-f67a86291-continuation-r3` に保存。
+
+PBSは適格な需要に応じて2 → 4 → 8 → 10 → 14 CPUまで拡張した。新しい採用結果を
+含む最初の8 CPU枠 `267504.CPUcluster-PRISM` では実Q3 4件を並行実行し、
+中央が4件を採用した。PBSの会計では起動・回収を含む割当全体で
+678 / 1,456 CPU秒（46.6%）。元runの直近4 CPU枠 `267495.CPUcluster-PRISM` は
+2,214 / 14,272 CPU秒（15.5%）。8 CPU枠の稼働中34秒間の差分は
+168 / 272 CPU秒（61.8%）。計測区間・タスクの内訳が異なる。
+14 CPU・53 GiBの枠は `267506.CPUcluster-PRISM`。96 CPUは設定上限であり、
+今回の実探索で実際に確保した最大枠は14 CPU。
+
+追加信号 `prep-229d419c0903b05dfac470aa` をPBSで実行し、中央が
+`PREPARATION_COMPLETE` として採用した。PR-Pauli LD5・κ2・幅4hが
+`READY_FOR_SEARCH` で同じrunへ戻った。後続の実Q3 `a03100bca051988fd19d` は
+PBSで実行を終え、中央が採用した。同じ構成の別配分4件はWSLで実行を確認した。
+現行固定経路でRomuTailだけが適格な一部 `PAULI_COMPILE` は50 GiB受付条件で保留中。
+追加信号の一部ではPBSの開始前照合待ちが期限切れになり、descriptor待ちの候補も残る。
+実行可能な候補は同じ継続runで処理を続けている。
