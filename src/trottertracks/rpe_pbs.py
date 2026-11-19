@@ -18,11 +18,12 @@ import uuid
 
 from .rpe_q3_timing import stamp, append
 from .rpe_q3_worker import atomic, digest, read
-from .rpe_pbs_worker import task_cpu_footprint
+from .rpe_pbs_worker import request_cpu_footprint, task_cpu_footprint
 from .rpe_worker_storage import SAMPLE_SECONDS
 
 
 TERMINAL = {'F', 'X', 'FINISHED_SAVED_WORKER', 'SUBMIT_REJECTED'}
+GIB = 1024**3
 
 
 class Gateway:
@@ -169,6 +170,43 @@ def task_memory_estimate(request, settings, host_id=None):
     return (task_rule(request, settings, host_id) or {}).get('memory_bytes')
 
 
+def usable_memory(profile, settings):
+    amount, unit = re.fullmatch(r'(\d+)([kmgt]?b)?', settings['resources']['mem'].lower()).groups()
+    memory = int(amount) * (1024 ** ('b', 'kb', 'mb', 'gb', 'tb').index(unit or 'b'))
+    limit = profile.get('slot_policy', {}).get('resource_limits', {}).get('memory_bytes', memory)
+    return min(memory, limit) // GIB * GIB - GIB
+
+
+def resource_need(request, profile, settings, host):
+    memory = task_memory_estimate(request, settings, host)
+    if memory is None:
+        # An unmeasured preparation stage runs alone from the memory pool.
+        memory = usable_memory(profile, settings) if request.get('preparation') else settings['allocation_sizing']['q3_startup_memory_bytes_per_task']
+    return (request_cpu_footprint(profile, request),
+            max(1, memory, (profile.get('pbs') or {}).get('task_memory_bytes') or 0))
+
+
+def packed_resources(requests, profile, settings, host):
+    resources = settings['resources']
+    limits = profile.get('slot_policy', {}).get('resource_limits', {})
+    cpu_limit = min(resources['ncpus'], limits.get('cpu_count', resources['ncpus']))
+    memory_limit = usable_memory(profile, settings)
+    cpus = memory = count = 0
+    max_slots = profile.get('slot_policy', {}).get('max_slots') or cpu_limit
+    for request in requests:
+        if count >= max_slots:
+            break
+        try:
+            cpu, ram = resource_need(request, profile, settings, host)
+        except (KeyError, ValueError):
+            continue
+        if cpus + cpu <= cpu_limit and memory + ram <= memory_limit:
+            cpus += cpu
+            memory += ram
+            count += 1
+    return cpus, (memory + GIB - 1) // GIB + 1, count
+
+
 def fits_request(request, report, settings, host_id=None):
     """Require a declared conservative runtime before starting scientific work."""
     pbs = (report or {}).get('pbs')
@@ -299,6 +337,15 @@ class PbsManager:
                 if admission is not None:
                     admission['remaining_seconds'] = min(admission.get('remaining_seconds',0), current.get('remaining_seconds',0))
                     admission['accepting'] = admission.get('accepting',False) and current.get('accepting',False)
+                    spec = self.state['allocations'][token]['spec']
+                    if spec['profile'].get('pbs', {}).get('per_task_resources'):
+                        observed = current.get('resources') or {}
+                        admission['resource_pool'] = dict(
+                            cpu_count=min(spec['resources']['ncpus'], observed.get('cpu_count') or 0),
+                            memory_bytes=min(int(spec['resources']['mem'][:-2]) * GIB,
+                                             observed.get('memory_bytes') or 0))
+                    else:
+                        admission.pop('resource_pool', None)
             if request['endpoint'] == '/v1/poll' and (allocation is None or allocation['status'] != 'R' or
                     not (allocation.get('worker') or {}).get('accepting', False) or
                     self.state['allocations'][token].get('resize_requested')):
@@ -403,7 +450,15 @@ class PbsManager:
         profile = deepcopy(worker['profile'])
         resources = deepcopy(self.settings['resources'])
         sizing = self.settings.get('allocation_sizing')
-        if sizing:
+        if sizing and sizing.get('per_task_resources'):
+            cpus, gib, capacity = packed_resources(requests, profile, self.settings, host)
+            if not capacity:
+                raise ValueError('No PBS task fits the configured CPU and memory pool')
+            resources.update(ncpus=cpus, mem=f'{gib}gb')
+            profile.setdefault('pbs', {})['per_task_resources'] = True
+            profile.setdefault('slot_policy', {})['initial_slots'] = capacity
+            demand = dict(demand, requested_task_capacity=capacity, per_task_resources=True)
+        elif sizing:
             cost = task_cpu_footprint(profile)
             maximum = int(min(resources['ncpus'], (profile.get('slot_policy') or {}).get(
                 'resource_limits', {}).get('cpu_count', resources['ncpus']))) // cost
@@ -513,12 +568,19 @@ class PbsManager:
                 estimates = [task_memory_estimate(request, self.settings, host) for request in waiting]
                 memory_mismatch = slot_memory is not None and estimates and all(
                     estimate is None or estimate > slot_memory for estimate in estimates)
+                if spec['profile'].get('pbs', {}).get('per_task_resources'):
+                    target_cpus, target_gib, _ = packed_resources(
+                        waiting, self.configured[host]['profile'], self.settings, host)
+                    memory_mismatch = target_gib > int(spec['resources']['mem'][:-2])
+                    requested_cpus = target_cpus
+                else:
+                    requested_cpus = min(self.settings['resources']['ncpus'], requested_slots * cpu_per_task)
                 # Releasing the old idle allocation is required before another
                 # allocation can take ownership under this PBS host identity.
                 if (not stopping and self.settings.get('allocation_sizing') and allocation['status'] == 'R'
                         and (allocation.get('worker') or {}).get('accepting') and not record.get('resize_requested')
                         and (memory_mismatch or
-                             min(self.settings['resources']['ncpus'], requested_slots * cpu_per_task) >= 2 * current_cpus)
+                             requested_cpus >= 2 * current_cpus)
                         and host not in hosts_with_attempts):
                     record['resize_requested'] = True
                     self.log('PBS_IDLE_ALLOCATION_RESIZE_DRAIN', token=token, host_id=host,
@@ -535,7 +597,8 @@ class PbsManager:
             # snapshot. It still occupies its prospective allocation.
             owned_hosts.update(r['spec']['profile']['host_id'] for r in self.state['allocations'].values()
                                if r['status'] not in TERMINAL)
-            covered = sum(max(1, a['spec']['resources']['ncpus']//task_cpu_footprint(a['spec']['profile']))
+            covered = sum(a['spec'].get('reason', {}).get('requested_task_capacity',
+                          max(1, a['spec']['resources']['ncpus']//task_cpu_footprint(a['spec']['profile'])))
                           for a in self.state['allocations'].values() if a['status'] not in TERMINAL)
             for host, worker in self.configured.items():
                 if shortage <= covered: break
@@ -552,7 +615,8 @@ class PbsManager:
                 if not self._storage_accepting(worker): continue
                 spec = self._submit(host, worker, dict(ready_tasks=queued, existing_host_free_slots=free,
                     prospective_pbs_task_slots=covered, shortage=shortage), requests[:shortage-covered])
-                covered += max(1, spec['resources']['ncpus']//task_cpu_footprint(spec['profile']))
+                covered += spec['reason'].get('requested_task_capacity',
+                    max(1, spec['resources']['ncpus']//task_cpu_footprint(spec['profile'])))
         self.last_error = None
         self.state['heartbeat'] = stamp()
         self.save()

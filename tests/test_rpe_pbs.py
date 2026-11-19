@@ -210,6 +210,29 @@ class ManagerTests(unittest.TestCase):
             finally:
                 manager.close()
 
+    def test_mixed_tasks_pack_96_cpu_without_charging_q3_at_compile_weight(self):
+        config = settings()
+        config['resources'].update(ncpus=96, mem='350gb')
+        profile = config['workers'][0]['profile']
+        profile['dp_workers'] = 2
+        profile['preparation_profiles'] = [
+            dict(stage='compile', provider='compile', source_commit='pinned',
+                 profile=dict(profile, task_cpu_count=8))]
+        config.update(allocation_sizing=dict(per_task_resources=True,
+                      q3_startup_memory_bytes_per_task=7*P.GIB),
+                      preparation_task_seconds=[
+                          dict(stage='compile', provider='compile', source='pinned',
+                               seconds=60, memory_bytes=20*P.GIB)])
+        q3 = dict(route=dict(kind='artificial'))
+        compile = dict(route=dict(kind='preparation'),
+                       preparation=dict(stage='compile', provider='compile', source={'commit':'pinned'}))
+        self.assertEqual(P.packed_resources([q3]*4+[compile], profile, config, 'pbs-0'), (16, 49, 5))
+        self.assertEqual(P.packed_resources([q3]*44+[compile], profile, config, 'pbs-0'), (96, 329, 45))
+        config['allocation_sizing']['q3_startup_memory_bytes_per_task'] = 8*P.GIB
+        self.assertEqual(P.packed_resources([q3]*48, profile, config, 'pbs-0'), (86, 345, 43))
+        config['preparation_task_seconds'][0].pop('memory_bytes')
+        self.assertEqual(P.packed_resources([compile, q3], profile, config, 'pbs-0'), (8, 350, 1))
+
     def test_sizing_only_counts_unmatched_ready_compatible_tasks(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, _ = self.manager(directory)

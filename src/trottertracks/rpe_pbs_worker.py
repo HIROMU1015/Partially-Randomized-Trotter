@@ -63,10 +63,18 @@ def runtime_profiles(profile):
 
 
 def task_cpu_footprint(profile):
+    return max(runtime_cpu_footprint(profile, runtime) for _, runtime in runtime_profiles(profile))
+
+
+def runtime_cpu_footprint(profile, runtime):
     threads = int(_positive(profile.get('pbs', {}).get('library_threads', 1), 'library_threads'))
-    return max(max(int(runtime.get('dp_workers') or 1) * threads,
-                   int(runtime.get('task_cpu_count') or 1))
-               for _, runtime in runtime_profiles(profile))
+    return max(int(runtime.get('dp_workers') or 1) * threads, int(runtime.get('task_cpu_count') or 1))
+
+
+def request_cpu_footprint(profile, request):
+    from .rpe_q3_worker import select_host_profile
+    runtime = select_host_profile(profile, {'request': request})
+    return runtime_cpu_footprint(profile, runtime)
 
 
 def allocation_profile(profile, allocation, *, environ=None, snapshot=None):
@@ -88,7 +96,8 @@ def allocation_profile(profile, allocation, *, environ=None, snapshot=None):
     resolved = deepcopy(profile)
     pbs = resolved['pbs']
     threads = int(_positive(pbs.get('library_threads', 1), 'library_threads'))
-    cost = task_cpu_footprint(resolved)
+    weighted = pbs.get('per_task_resources') is True
+    cost = 1 if weighted else task_cpu_footprint(resolved)
     policy = resolved.setdefault('slot_policy', {})
     declared = policy.setdefault('resource_limits', {})
     declared['cpu_count'] = min(ncpus, declared.get('cpu_count', ncpus))
@@ -101,16 +110,20 @@ def allocation_profile(profile, allocation, *, environ=None, snapshot=None):
     cpu_slots = int(cpu_bound // cost)
     if cpu_slots < 1:
         raise ValueError('Configured DP/library/compiler CPU footprint exceeds PBS allocation')
-    task_memory = pbs.get('task_memory_bytes')
+    task_memory = None if weighted else pbs.get('task_memory_bytes')
     memory_slots = int(memory_bound // _positive(task_memory, 'task_memory_bytes')) if task_memory else cpu_slots
     maximum = min(cpu_slots, memory_slots, int(policy.get('max_slots', cpu_slots)))
     if maximum < 1:
         raise ValueError('Configured task memory footprint exceeds PBS allocation')
-    policy['mode'] = 'auto'
+    policy['mode'] = 'fixed' if weighted else 'auto'
     policy['initial_slots'] = min(int(policy.get('initial_slots', resolved.get('slots', 1))), maximum)
     if policy['initial_slots'] < 1:
         raise ValueError('Positive initial_slots required')
     policy['max_slots'] = maximum
+    if weighted:
+        # This offer is a count ceiling. The controller reserves CPU and RAM
+        # against each actual request before claiming it under the queue lock.
+        resolved['slots'] = maximum
     # Existing auto-slot logic accounts dp_workers.  The CPU bound additionally
     # enforces library threads/compiler parallelism without changing task profiles.
     policy['resource_limits']['cpu_count'] = min(cpu_bound, maximum * cost)
@@ -292,6 +305,8 @@ class AllocationWorker(Worker):
                        drain_seconds=self.drain_seconds, accepting=self.accepting())
             if 'sized_task_memory_bytes' in self.profile['pbs']:
                 pbs['sized_task_memory_bytes'] = self.profile['pbs']['sized_task_memory_bytes']
+            if self.profile['pbs'].get('per_task_resources'):
+                pbs['resource_pool'] = {key: self.pbs_resources[key] for key in ('cpu_count', 'memory_bytes')}
             payload.setdefault('resource_report', {})['pbs'] = pbs
             if not pbs['accepting']:
                 payload['slots'] = 0

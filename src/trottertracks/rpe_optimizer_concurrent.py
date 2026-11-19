@@ -2122,12 +2122,36 @@ class DistributedExecutor(ConcurrentExecutor):
                 unresolved = len(self._owned_attempts())
                 remaining = max(0, min(slots-len(assignments), new_slots,
                     self.capacity-max(s.active, unresolved)-len(reserved_for_preferred)))
+                resource_pool = ((value.get('resource_report') or {}).get('pbs') or {}).get('resource_pool')
+                if resource_pool is not None and remaining:
+                    from .rpe_pbs import GIB, resource_need
+                    settings = self.distributed['pbs']
+                    worker = next(w for w in settings['workers'] if w['host_id'] == host)
+                    free_cpu = resource_pool['cpu_count']
+                    free_memory = resource_pool['memory_bytes'] - GIB
+                    for owned in self._owned_attempts():
+                        if owned['host_id'] == host:
+                            cpu, memory = resource_need(self.store.row(owned['job_id'])['request'],
+                                                        worker['profile'], settings, host)
+                            free_cpu -= cpu
+                            free_memory -= memory
                 for task in eligible:
                     if remaining <= 0: break
+                    if resource_pool is not None:
+                        try:
+                            cpu, memory = resource_need(self.store.row(task.job.name)['request'],
+                                                        worker['profile'], settings, host)
+                        except (KeyError, ValueError):
+                            continue
+                        if cpu > free_cpu or memory > free_memory:
+                            continue
                     rows = self.store.claim(host, 1, value.get('cached_prefixes', []), [task.job.name],
                                             host_fingerprints=fingerprints)
                     if not rows: continue
                     row = rows[0]
+                    if resource_pool is not None:
+                        free_cpu -= cpu
+                        free_memory -= memory
                     # Assignment and reservation are committed before a worker
                     # receives anything. A lost HTTP response retains ownership.
                     Q.atomic_json(task.job/'LAUNCH.json', dict(host_id=host, attempt_id=row['attempt_id'],
