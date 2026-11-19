@@ -508,6 +508,8 @@ class WidthDriver:
             family=W.width_family_key(p['method'],p['L_D'],p['formula'],p['delta_pf'],p.get('finite_K')or 2)
             if self.state['families'].get(family,{}).get('status')!='READY_METADATA':continue
             k=KS._frac((p['kappa'].get('value')if isinstance(p['kappa'],dict)and'value'in p['kappa']else p['kappa']))
+            if not W.kappa_allowed(self.wide_for(p['method']), k):
+                continue
             same=next((v for v in self.state['points']if v['family']==family and Fraction(v['kappa'])==k),None)
             if same is None:
                 same=dict(family=family,method=p['method'],L_D=p['L_D'],kappa=str(k),status='EVALUATED',
@@ -530,10 +532,9 @@ class WidthDriver:
                 continue
             cfg = read_loc(rec['configuration'])
             method, spec = rec['method'], cfg['spec']
-            bounds = W.kappa_bounds(self.wide_for(method))
             kappa = KS._frac(spec['kappa']['value'])
             family = W.width_family_key(method, spec['L_D'], spec['formula'], spec['delta_pf'], spec['finite_K'])
-            if (bounds and not bounds[0] <= kappa <= bounds[1]) or self.state['families'].get(family, {}).get('status') != 'READY_METADATA':
+            if not W.kappa_allowed(self.wide_for(method), kappa) or self.state['families'].get(family, {}).get('status') != 'READY_METADATA':
                 continue
             point = dict(family=family, method=method, L_D=spec['L_D'], kappa=str(kappa),
                          status='REGISTERED', configuration_id=cfg['id'],
@@ -1026,6 +1027,7 @@ class WidthDriver:
                     with getattr(completion, 'lock', nullcontext()):
                         records = deepcopy([completion.state['records'][key] for key in keys])
                     routes = completion.install(scratch, scoped, records)
+                O.scope_absolute_kappa(scratch, problem)
                 O.apply_published(scratch['candidates'], routes)
                 # The installer resolves aliases. Keep existing routes and
                 # bindings, including those of jobs already running.
@@ -1283,26 +1285,29 @@ class WidthDriver:
     def loop(self):
         previous=self.state.get('stop',{}).get('reason')
         transient={'USER_REQUESTED_STOP','REQUESTED_WIDTH_METADATA_ONLY','WAITING_FOR_INPUTS',
-                   'SCOPE_HELD_Q3','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY'}
+                   'SCOPE_HELD_Q3','MAX_CYCLES','BOUNDED_SCHEDULE_PLAN_ONLY','DISCRETE_SCHEDULE_PLAN_ONLY'}
         if previous and previous not in transient:
             self.log(event='PRESERVED_STOP',reason=previous);return
         if previous:self.state.pop('stop')
         bounded={method:W.kappa_bounds(self.wide_for(method)) for method in self.widths} if self.a.plan_only else {}
-        if self.a.plan_only and any(bounded.values()):
+        grids={method:W.kappa_values(self.wide_for(method)) for method in self.widths} if self.a.plan_only else {}
+        if self.a.plan_only and (any(bounded.values()) or any(grids.values())):
             # Native physical schedule selection only. Missing family/input
             # preparation remains explicit; no Completion, Executor or worker.
             self.state['cycle'] += 1
             proposals, report = self.plan()
             self.state['scope_plan'] = dict(rule=W.RULE,
-                kappa_bounds=[str(v) for v in next(b for b in bounded.values() if b)],
+                kappa_bounds=next(([str(v) for v in b] for b in bounded.values() if b),None),
                 kappa_bounds_by_method={m:[str(v) for v in b] if b else None for m,b in bounded.items()},
+                kappa_values_by_method={m:[str(v) for v in grid] if grid else None for m,grid in grids.items()},
                 bounds_inclusive=[True, True],
                 requested_L_D={m:self.problem['methods'][m].get('L_D_values') for m in self.methods},
                 family_status={k:dict(L_D=v['L_D'],status=v['status'],reason=v.get('reason'))
                                for k,v in self.state['families'].items()},
                 preparation_pending=[k for k,v in self.state['families'].items() if v['status']!='READY_METADATA'],
                 scientific_calls=0, queue_operations=0, dry_check_calls=0)
-            self.state['stop'] = dict(reason='BOUNDED_SCHEDULE_PLAN_ONLY',UTC=K.now())
+            self.state['stop'] = dict(reason='DISCRETE_SCHEDULE_PLAN_ONLY' if any(grids.values())
+                                     else 'BOUNDED_SCHEDULE_PLAN_ONLY',UTC=K.now())
             self.save()
             return
         end=None if self.a.max_cycles is None else self.state['cycle']+self.a.max_cycles

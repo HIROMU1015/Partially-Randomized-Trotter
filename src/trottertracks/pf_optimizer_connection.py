@@ -65,9 +65,31 @@ def configuration_metadata(config):
     return dict(method=method, p=p, formula=s['formula'], delta_over_h=frac(s['delta_pf']) / frac(s['h']))
 
 
+def width_values(spec):
+    """Return an explicit finite width grid, or None for the legacy interval."""
+    values = spec.get('delta_over_h_values')
+    if values is None:
+        return None
+    if not isinstance(values, list) or not values:
+        raise ValueError('PF delta_over_h_values must be a nonempty exact width list')
+    if any(isinstance(value, bool) for value in values):
+        raise ValueError('PF discrete widths must be positive exact values')
+    widths = tuple(dict.fromkeys(frac(value) for value in values))
+    if any(width <= 0 for width in widths):
+        raise ValueError('PF discrete widths must be positive exact values')
+    return widths
+
+
+def width_inside(value, spec):
+    widths = width_values(spec)
+    if widths is not None:
+        return frac(value) in widths
+    return Fraction(spec['delta_over_h_range'][0]) <= frac(value) <= Fraction(spec['delta_over_h_range'][1])
+
+
 def _inside(entry, spec):
     return (entry['formula'] in spec['formulas']
-            and Fraction(spec['delta_over_h_range'][0]) <= frac(entry['delta_over_h']) <= Fraction(spec['delta_over_h_range'][1])
+            and width_inside(entry['delta_over_h'], spec)
             and (spec.get('p_values') is None or entry['p'] in spec['p_values']))
 
 
@@ -80,7 +102,8 @@ def enumerate_prefixes(root, reader, problem, candidates, methods=None):
     A registry can then hydrate any selected subset.  p10 is represented by the
     existing Full PF method, never a second truncated-PF candidate.
     """
-    scoped=[(m,s)for m,s in problem['methods'].items()if s.get('family')=='PF' and s.get('p_values') is not None
+    scoped=[(m,s)for m,s in problem['methods'].items()if s.get('family')=='PF'
+            and (s.get('p_values') is not None or s.get('delta_over_h_values') is not None)
             and (methods is None or m in methods)]
     if not scoped:
         return candidates
@@ -89,17 +112,21 @@ def enumerate_prefixes(root, reader, problem, candidates, methods=None):
                           problem['evidence']['pf_candidate_index']['path'])
     by_id={c['configuration_id']:c for c in candidates}
     for method,spec in scoped:
-        values=spec['p_values']
+        values=spec.get('p_values')
+        if values is None:
+            values=[problem['problem']['hamiltonian_data']['expected']['fragment_count']] if method=='FULL_PF' else [7]
         if (len(set(values))!=len(values) or any(type(p)is not int or p not in range(11)for p in values)
                 or (method=='FULL_PF' and any(p!=10 for p in values))):
             raise ValueError('PF p_values must be unique legal prefixes; Full PF is p10')
-        widths={f:[] for f in spec['formulas']}
-        for row in index['candidates']:
-            width=row.get('requested_delta_over_h');formula=row['formula']
-            if (row['method']==spec['index_method'] and formula in widths and width is not None
-                    and Fraction(spec['delta_over_h_range'][0])<=frac(width)<=Fraction(spec['delta_over_h_range'][1])):
-                if frac(width) not in widths[formula]:
-                    widths[formula].append(frac(width))
+        explicit = width_values(spec)
+        widths={f:list(explicit or ()) for f in spec['formulas']}
+        if explicit is None:
+            for row in index['candidates']:
+                width=row.get('requested_delta_over_h');formula=row['formula']
+                if (row['method']==spec['index_method'] and formula in widths and width is not None
+                        and width_inside(width, spec)):
+                    if frac(width) not in widths[formula]:
+                        widths[formula].append(frac(width))
         for meta in P.candidates(root,formulas=spec['formulas'],widths=widths,p_values=values):
             # P's p10 canonical alias is already enumerated under Full PF.
             if meta['method']!=method:

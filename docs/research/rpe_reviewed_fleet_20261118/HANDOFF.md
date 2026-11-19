@@ -505,3 +505,72 @@ PBS割当 `267542.CPUcluster-PRISM` で次のQ3を実行し、中央の
 PUBLISHEDとなった。ただし停止時の公開manifestにROUND_RESULTが含まれず、
 この公開応答だけでは上記2件のマップ表示を確認できない。採用証拠の正本は
 中央runのPROGRESS.jsonl、queue、REQUEST、OUTCOME、終了receiptである。
+
+<a id="mixed-df-portable"></a>
+
+## 2026-11-20 PBSのPR-DF修正を混在運用へ反映
+
+通常current `romutail-pbs-task-resources-f67a86291` と、成功したPBS専用runの
+`SERVICE.release.json`・ROUND・host profile・PBS見積りを照合した。
+通常版にはcontroller `c74369eaa3`、DF信号 `fa3d5c96c2`、DF価格
+`22b2e3e5dd`、保存snapshotの配送とbundle生成の修正が未反映だった。
+さらに新SOURCEの工程別profileと、DF価格4工程・共通Q3のPBS見積りが不足していた。
+
+`scripts/prepare_rpe_mixed_df_release.py` を追加した。既存のcomponent配置、
+profile選択、registryと通常入口を再利用し、通常設定から新しいreleaseを作る。
+新SOURCEの5工程を各host固有のPythonと配置先へ対応付け、PBSだけは検収済みの
+chem05 Pythonを用いる。ローカル・PBS埋込みprofile、relayとPBSのdeployment参照、
+manifestの工程別componentを揃える。新しい固定コードbundleもhostの再配置入力に残す。
+通常とabsolute routeのhost profileが異なる場合は、同じ設定で上書きせず分けて準備する。
+
+科学条件、shot規則、範囲、通常のhost配分、受付設定、価格共有store、継続状態、
+STOP・予算と既消費を通常版から引き継ぐ。専用runのLD8 descriptor差し替え、
+保存信号、手動再試行条件、隔離store、`scaled_shots_default=False` はコピーしない。
+LD8だけで検収した `NEHALEM` も全DF候補へ自動適用しない。
+数値の厳密照合が保留する候補は、その理由と既存の科学条件を保持する。
+
+準備先はRomuTailの `.rpe-central/deployment/romutail-mixed-df-portable-20261120-r3/`。
+生成例（設定の作成だけで、登録・起動はしない）：
+
+```bash
+.venv311/bin/python -B .worktrees/rpe-worker-storage-release/scripts/prepare_rpe_mixed_df_release.py \
+  --base-service .rpe-central/deployment/romutail-pbs-task-resources-f67a86291/SERVICE.json \
+  --accepted-service .rpe-central/acceptance/pbs-prdf-ld8-manual-retry-c74369e-r4/SERVICE.release.json \
+  --output NEW_DEPLOYMENT_DIRECTORY --release NEW_RELEASE_ID \
+  --source-bundle FIXED_CODE.bundle
+```
+
+固定コードbundleは公開済み `5cd8e653c6` のbranch refから `^f67a86291` を基点に
+作った約84 KiBの差分bundleであり、科学入力bundleとは別物である。
+SOURCEは各hostの既存object storeへ補い、新しい専用checkoutだけを追加する。
+稼働中の旧checkout、run、worker受付、共有Pythonは変更しない。
+
+技術検収の記録は同ディレクトリの `TECHNICAL_ACCEPTANCE.json` とhost別記録に置く。
+通常registryへ登録し、版を明示した通常CLI Previewが通過した後、
+expected-currentを旧 `romutail-pbs-task-resources-f67a86291` と照合してr3をcurrentにした。
+版指定なしの通常CLI Previewも `PREVIEW`、`started=false`、配置検査 `PASS` となった。
+既存 `CURRENT_TARGET.json` は変更しておらず、旧runは元の固定版を使い続ける。
+
+固定コード3 componentの配置はRomuTail、server2、PBS、Romulaptop/WSLで確認した。
+価格4工程のSOURCE・必要view・外部パス・Python依存関係も同4環境で通過した。
+保存価格較正REQUESTの完全なdry-checkはRomuTail・server2・PBSで通過した。
+WSLにはこの約92 MBの科学入力bundleを転送しておらず、完全な入力fingerprint検査は未実施。
+server1は停止中の既存設定を保持し、復帰時の配置・照合が必要である。
+新しい設定生成の人工回帰7件と既存の関連回帰39件、計46件がPASSした。
+調査と人工testの作成は親Codexと委任Codex、実装・46件の通しtest実行・各host照合は
+親Codexが担当した。独立した科学レビューではない。
+
+r2で通過した上記3環境のdry-checkと価格依存検査は、r3の全host profileがr2と
+バイト単位で同じであることを照合して再利用した。r3での差分はrelease識別と
+metadata参照、コードbundleの再配置参照であり、profileの科学条件は変えていない。
+新規科学計算、signal、compile、監査本体、Q3、PBS投入はすべて0件。
+保存価格較正REQUESTのdry-checkでは固定SOURCE、入力bundle、全入力locator、
+必要なview・パス・Python依存関係を検査し、価格サンプリングを呼ばない。
+約92 MBの保存入力bundleのserver2/PBSへの転送は、利用者の明示許可後に実施した。
+人工テストとdry-checkの通過は、新規候補の科学的性能や混在実計算の通し検収ではない。
+
+既知の別件として、`test_rpe_release_registry.py` の
+`test_status_reports_completed_exit_and_preserves_scientific_stop_reason` は
+`UNKNOWN_RESULT` を `COMPLETE` と期待するが、既存の固定SOURCE `5cd8e653c6` は
+`RECONCILIATION_REQUIRED` を返す。この作業でその実装やテストは変更していない。
+停止時の2結果の公開・マップ表示の残件も本作業とは別に残る。

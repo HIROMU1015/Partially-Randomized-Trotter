@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+[H4の3方式・離散130条件](docs/research/h4_three_method_discrete_20261120/HANDOFF.md) — Full PF／B0Iの離散幅、PR-DFの離散κ、通常入口と保存候補の同一scope。
+
+[PBSのPR-DF修正を混在運用へ反映](docs/research/rpe_reviewed_fleet_20261118/HANDOFF.md#mixed-df-portable) — 通常設定の保持、新旧SOURCEの工程別配置、保存要求の非科学dry-check。
+
 [PR分散探索の空き枠補充と評価順](docs/research/rpe_work_conserving_search_20261118/HANDOFF.md) — 採用current、既存キューでの連続補充、Q3実測に基づく評価順と2実機での人工検収。
 
 [PR後着READYの分散割当](docs/research/rpe_distributed_live_ready_20261118/HANDOFF.md) — 通常入口と既存キューで準備済み候補を空き適格枠へ投入し、RomuTail・server2の人工検収と切断後の同一attempt回収を確認。

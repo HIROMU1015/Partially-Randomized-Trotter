@@ -92,6 +92,61 @@ def kappa_bounds(s):
     return lo, hi
 
 
+def kappa_values(s):
+    """An explicit finite absolute-kappa grid, with exact membership."""
+    raw = (s or {}).get('kappa_values')
+    if raw is None:
+        return None
+    if not isinstance(raw, list) or not raw:
+        raise ValueError('kappa_values requires a nonempty exact positive list')
+    values = sorted({KS._frac(v) for v in raw})
+    if values[0] <= 0:
+        raise ValueError('kappa_values must be positive')
+    bounds = kappa_bounds(s)
+    if bounds is not None and any(not bounds[0] <= v <= bounds[1] for v in values):
+        raise ValueError('kappa_values escape the requested bounds')
+    return values
+
+
+def kappa_allowed(s, value):
+    value = KS._frac(value)
+    grid, bounds = kappa_values(s), kappa_bounds(s)
+    return ((grid is None or value in grid) and
+            (bounds is None or bounds[0] <= value <= bounds[1]))
+
+
+def plan_grid(families, points, s):
+    """Enumerate only requested grid values, without off-grid representatives.
+
+    Distinct requested kappas remain visible even if their physical schedules
+    coincide. The ordinary completion/evidence identity path owns that reuse.
+    No empirical trend closes unvisited grid points.
+    """
+    grid = kappa_values(s)
+    settings_ = settings(s)
+    points = [p for p in points if p['family'] in families and KS._frac(p['kappa']) in grid]
+    seen = {(p['family'], KS._frac(p['kappa'])) for p in points}
+    feasible = [p['best'] for p in points if p['status'] == 'FEASIBLE' and p.get('best') is not None]
+    proposals, decisions, report = [], [], {}
+    for key in sorted(families, key=str):
+        mine = [p for p in points if p['family'] == key]
+        missing = [v for v in grid if (key, v) not in seen]
+        report[key] = dict(family=key, requested_kappa_values=list(grid),
+                           sampled=len(mine), unsampled_kappa_values=missing,
+                           upper_basis='EXPLICIT_DISCRETE_GRID',
+                           refinement='OPEN' if missing else 'RESOLVED')
+    # Distribute each wave across families before proceeding along the grid.
+    for value in grid:
+        for key in sorted(families, key=str):
+            if (key, value) not in seen and len(proposals) < settings_['per_decision']:
+                proposals.append(dict(family=key, kappa=value, reason='EXPLICIT_KAPPA_GRID'))
+                decisions.append(dict(family=key, decision='EXPLICIT_KAPPA_GRID', kappa=str(value)))
+    pending = any(p['status'] in ('PENDING', 'IN_PROGRESS') for p in points)
+    stop = None if proposals else 'WAIT_FOR_PENDING' if pending else 'RULE_EXHAUSTED'
+    return proposals, decisions, dict(stop=stop, global_best=min(feasible) if feasible else None,
+                                     families=report, requested_kappa_values=list(grid))
+
+
 def family_rows(lambda_R, h, delta, M=12, J=1):
     """Mapper constants without a configuration: T_m = 2^m h, q_m = ceil(T_m / delta), c_m = lambda_R^2 T_m^2 (exact)."""
     lam, h, delta = Fraction(lambda_R), Fraction(h), Fraction(delta)
@@ -180,6 +235,8 @@ def _log(x):
 def plan_wide(families, points, s=None, price_floor=None, *, price_floor_best=None):
     """families: {key: Family}; points: dicts(family, kappa (Fraction), status, best (Fraction|None), min_lower_over_tau).
     Returns (proposals, decisions, report)."""
+    if kappa_values(s) is not None:
+        return plan_grid(families, points, s)
     bounds = kappa_bounds(s)
     if bounds is not None:
         families = {k: BoundedFamily(f, bounds) for k, f in families.items()}

@@ -1,5 +1,9 @@
 # 文書索引
 
+[H4の3方式・離散130条件](research/h4_three_method_discrete_20261120/HANDOFF.md)：指定scope、16hの既存mapper再利用、離散κと保存候補の照合。
+
+[PBSのPR-DF修正と混在運用](research/rpe_reviewed_fleet_20261118/HANDOFF.md#mixed-df-portable)：通常releaseとの差分、非科学的な配置・保存要求の検査、LD8限定実行との境界。
+
 [通常運用へのPBS統合](research/rpe_pbs_current_integration_20261118/HANDOFF.md)：current95、通常Windows Startの人工PBS検収、exact保存成果の回収runtime、配置・server1復帰・旧run pin。
 
 [価格検証統合・4環境配置](research/rpe_price_release_integration_20261118/HANDOFF.md)：共有store、工程別SOURCE/runtime、共通操作、保存入力・人工検収、server1復帰。

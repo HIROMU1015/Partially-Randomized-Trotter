@@ -83,6 +83,21 @@ def number(value, field):
     return native, dict(kind=kind, exact=str(exact))
 
 
+def exact_values(value, field):
+    """Canonical finite positive rational list; never reinterpret a JSON float."""
+    if not isinstance(value, list) or not value:
+        raise RequestError(field, 'a nonempty exact string/integer list is required')
+    try:
+        if any(isinstance(v, bool) or not isinstance(v, (str, int)) for v in value):
+            raise ValueError('inexact value')
+        values = sorted(set(Fraction(v) for v in value))
+        if values[0] <= 0:
+            raise ValueError('nonpositive value')
+    except (ValueError, ZeroDivisionError):
+        raise RequestError(field, 'positive exact fraction/decimal strings or integers required')
+    return [str(v) for v in values]
+
+
 def request_service(config, request):
     """Select the adopted physical schedule entry for a PR-Pauli absolute interval."""
     scope = request.get('scope') or {}
@@ -195,7 +210,7 @@ def resolve(config, request):
     fragment_count = problem['problem']['hamiltonian_data']['expected']['fragment_count']
     for method, values in scope.get('per_method', {}).items():
         if method not in methods: raise RequestError('scope.per_method.' + method, 'method is not selected')
-        keys(values, {'L_D', 'p', 'formulas', 'delta_pf', 'delta_over_h', 'kappa'}, method)
+        keys(values, {'L_D', 'p', 'formulas', 'delta_pf', 'delta_over_h', 'delta_over_h_values', 'kappa'}, method)
         current = deepcopy(problem['methods'][method]); override = spec['method_overrides'].setdefault(method, {})
         observed = {}
         for key in ('L_D', 'p'):
@@ -210,11 +225,39 @@ def resolve(config, request):
                 raise RequestError(method + '.p', 'Full PF retains all fragments')
         if 'formulas' in values:
             forms = values['formulas']
-            if current['family'] != 'PF':
-                raise RequestError(method + '.formulas', 'this normal entry cannot restrict saved PR formulas; request is preserved, not narrowed')
-            if not isinstance(forms, list) or not forms or any(f not in current['formulas'] for f in forms):
-                raise RequestError(method + '.formulas', 'unsupported PF formula')
-            override['formulas'] = sorted(set(forms)); observed['formulas'] = override['formulas']
+            supported = (current['formulas'] if current['family'] == 'PF' else
+                         current.get('generation', {}).get('supported_formulas',
+                         current.get('generation', {}).get('formulas', [])))
+            if not isinstance(forms, list) or not forms or any(f not in supported for f in forms):
+                raise RequestError(method + '.formulas', 'unsupported formula')
+            forms = sorted(set(forms))
+            if current['family'] == 'PF':
+                override['formulas'] = forms
+            else:
+                override.setdefault('generation', {})['formulas'] = forms
+            observed['formulas'] = forms
+        if 'delta_over_h_values' in values:
+            if 'delta_over_h' in values or 'delta_pf' in values:
+                raise RequestError(method + '.delta_over_h_values', 'choose one width representation')
+            widths = exact_values(values['delta_over_h_values'], method + '.delta_over_h_values')
+            observed['delta_over_h_values'] = widths
+            if current['family'] == 'PF':
+                override.update(delta_over_h_values=widths,
+                                delta_over_h_range=[widths[0], widths[-1]],
+                                configuration_ids=None)
+                if method == 'FULL_PF':
+                    override['p_values'] = [fragment_count]
+            else:
+                if config.get('entry') != 'schedule':
+                    raise RequestError(method + '.delta_over_h_values', 'requested-width schedule entry required')
+                raw_h = config.get('absolute_kappa_defaults', {}).get('h')
+                if not isinstance(raw_h, dict) or set(raw_h) != {'numerator', 'denominator'}:
+                    raise RequestError(method + '.delta_over_h_values', 'fixed base-time h is unavailable')
+                h = Fraction(raw_h['numerator'], raw_h['denominator'])
+                absolute = [h * Fraction(width) for width in widths]
+                spec.setdefault('search_overrides', {}).setdefault('requested_widths', {})[method] = [
+                    dict(numerator=v.numerator, denominator=v.denominator) for v in absolute]
+                override.setdefault('generation', {})['delta_over_h_values'] = widths
         if 'delta_pf' in values:
             if not isinstance(values['delta_pf'],list) or not values['delta_pf']:raise RequestError(method+'.delta_pf','a nonempty typed width list is required')
             if current['family'] != 'PR' or config.get('entry', 'method') != 'schedule':
@@ -243,11 +286,20 @@ def resolve(config, request):
                 raise RequestError(method + '.kappa.multiplier', 'selected normal entry does not enforce a multiplier-only candidate range')
             physical_schedule = config.get('entry') == 'schedule' and config.get('absolute_kappa_schedule') is True
             combined=config.get('combined_width_search') and physical_schedule and method=='PR_PAULI'
-            single_df = physical_schedule and methods == ['PR_DF']
+            single_df = physical_schedule and method == 'PR_DF' and (
+                methods == ['PR_DF'] or config.get('combined_width_search'))
             if (config.get('entry') != 'neighbourhood' and not physical_schedule) or (methods != ['PR_PAULI'] and not combined and not single_df):
                 raise RequestError(method + '.kappa.absolute', 'absolute min/max needs a supported PR schedule entry')
-            if 'values' in k: raise RequestError(method + '.kappa.values', 'normal entry takes bounds, not a discrete grid')
-            a, b = Fraction(k['min']), Fraction(k['max'])
+            discrete = None
+            if 'values' in k:
+                if 'min' in k or 'max' in k:
+                    raise RequestError(method + '.kappa', 'choose exact values or inclusive bounds')
+                if not physical_schedule:
+                    raise RequestError(method + '.kappa.values', 'discrete kappa requires the physical schedule entry')
+                discrete = exact_values(k['values'], method + '.kappa.values')
+                a, b = Fraction(discrete[0]), Fraction(discrete[-1])
+            else:
+                a, b = Fraction(k['min']), Fraction(k['max'])
             if not 0 < a <= b: raise RequestError(method + '.kappa', 'invalid positive absolute bounds')
             if physical_schedule:
                 if combined or single_df:
@@ -257,11 +309,17 @@ def resolve(config, request):
                     spec.setdefault('search_overrides', {}).setdefault('schedule_wide', {})['kappa_bounds'] = [str(a), str(b)]
                     spec['search_overrides']['schedule_wide']['max_kappa'] = str(b)
                 override['absolute_kappa_bounds'] = [str(a), str(b)]
+                if discrete is not None:
+                    override['absolute_kappa_values'] = discrete
+                    target = (spec['search_overrides']['schedule_wide_by_method'][method]
+                              if combined or single_df else spec['search_overrides']['schedule_wide'])
+                    target['kappa_values'] = discrete
                 spec['search_overrides']['kappa_neighbourhood'] = dict(outer_planner='SCHEDULE_WIDE_V1')
             else:
                 spec.setdefault('search_overrides', {}).setdefault('kappa_neighbourhood', {})['bounds'] = [str(a), str(b)]
             spec['kappa_families'] = override.get('L_D_values', spec.get('kappa_families'))
-            observed['kappa'] = dict(mode=mode, min=str(a), max=str(b))
+            observed['kappa'] = (dict(mode=mode, values=discrete) if discrete is not None else
+                                 dict(mode=mode, min=str(a), max=str(b)))
         canonical['per_method'][method] = observed
     shots = scope.get('shots', 'auto')
     if config.get('scaled_shots_default') is True or 'scaled_shots' in scope:

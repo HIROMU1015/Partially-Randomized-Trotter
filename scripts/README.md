@@ -1,5 +1,9 @@
 # scripts 索引
 
+[H4の3方式・離散130条件](../docs/research/h4_three_method_discrete_20261120/HANDOFF.md)：通常 `run_rpe_search.py` の `delta_over_h_values` とPR-DF絶対κの `values`、保存候補の厳密な離散制限。
+
+`prepare_rpe_mixed_df_release.py` は通常releaseを基礎に、PBSで検収済みのDF固定SOURCE・工程別profile・入力配布・資源見積りを新しい混在運用版へ組み込む。設定生成のみで、起動・registry変更は行わない。[手順と検収](../docs/research/rpe_reviewed_fleet_20261118/HANDOFF.md#mixed-df-portable)、人工回帰は `tests/test_rpe_mixed_df_release.py`。
+
 [最新通常入口とPBSの接続](../docs/research/rpe_pbs_current_integration_20261118/HANDOFF.md)：既存Gateway/共通CLIからPBSへ人工taskを配送し、component版・保存exact回収・再開を検収。保存値だけの回収検査callerは同資料のharvest節。
 
 [価格検証統合と4環境配置](../docs/research/rpe_price_release_integration_20261118/HANDOFF.md)：`prepare_rpe_release_fleet.py`、`manage_rpe_release_deployment.py`、`run_rpe_search.py` が既存registry・workerを使って固定版を配置・照合し、操作をRomuTailへ送る。

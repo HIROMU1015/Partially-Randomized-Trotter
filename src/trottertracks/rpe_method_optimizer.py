@@ -293,7 +293,7 @@ def enumerate_candidates(reader, problem, facts, catalog):
     by_config = {}
     for p in points:
         by_config.setdefault(p['configuration_id'], []).append(p)
-    from .pf_optimizer_connection import read_source
+    from .pf_optimizer_connection import read_source, width_inside
     index = read_source(Path(reader.root), reader, problem['evidence']['pf_candidate_index'])
     out = []
     for name, spec in problem['methods'].items():
@@ -302,7 +302,7 @@ def enumerate_candidates(reader, problem, facts, catalog):
         if spec['family'] == 'PF':
             prefix = facts['fragment_count'] if name == 'FULL_PF' else 7
             def inside(formula, delta, p=prefix):
-                return (formula in spec['formulas'] and delta is not None and delta_ok(delta, spec['delta_over_h_range'])
+                return (formula in spec['formulas'] and delta is not None and width_inside(delta, spec)
                         and (spec.get('p_values') is None or p in spec['p_values']))
             indexed = [r for r in index['candidates'] if r['method'] == spec['index_method']]
             seen = {r['configuration_id'] for r in indexed}
@@ -334,6 +334,9 @@ def enumerate_candidates(reader, problem, facts, catalog):
                     allowed_widths = {exact_width(v) for v in widths}
                     configs = [cid for cid in configs if by_config[cid][0].get('delta_pf') is not None
                                and exact_width(by_config[cid][0]['delta_pf']) in allowed_widths]
+                formulas = (spec.get('generation') or {}).get('formulas')
+                if formulas is not None:
+                    configs = [cid for cid in configs if by_config[cid][0].get('formula') in formulas]
                 if not configs and not spec.get('saved_configurations_only'):
                     out.append(dict(method=name, family='PR', key=dict(L_D=ld), configuration_id=None, index_signal=None, caps=caps))
                 for cid in configs:
@@ -1391,8 +1394,9 @@ def jsonable(value):
 
 
 def scope_absolute_kappa(context, problem):
-    """Apply explicit absolute bounds to saved, generated and installed candidates."""
-    if not any(v.get('absolute_kappa_bounds') is not None for v in problem['methods'].values()):
+    """Apply the same exact PR design domain to every candidate source."""
+    if not any(v.get('absolute_kappa_bounds') is not None or v.get('absolute_kappa_values') is not None
+               for v in problem['methods'].values()):
         return context
     from .rpe_kappa_schedule import _frac
     saved = {p['configuration_id']: p for p in context['catalog']['candidates']}
@@ -1400,16 +1404,34 @@ def scope_absolute_kappa(context, problem):
     for candidate in context['candidates']:
         setting = problem['methods'][candidate['method']]
         bounds = setting.get('absolute_kappa_bounds')
-        if bounds is None or candidate.get('configuration_id') is None:
+        grid = setting.get('absolute_kappa_values')
+        if bounds is None and grid is None:
             kept.append(candidate)
             continue
+        meta = saved.get(candidate.get('configuration_id'), {})
+        generated = (candidate.get('generated_configuration') or {}).get('spec', {})
         allowed = setting.get('L_D_values')
-        ld = candidate.get('L_D', candidate.get('key', {}).get('L_D'))
+        ld = candidate.get('L_D', candidate.get('key', {}).get('L_D', generated.get('L_D', meta.get('L_D'))))
         if allowed is not None and ld not in allowed:
             excluded.append(dict(configuration_id=candidate['configuration_id'], L_D=ld,
                                  reason='OUTSIDE_REQUESTED_L_D_VALUES'))
             continue
-        lo, hi = (_frac(v) for v in bounds)
+        formulas = (setting.get('generation') or {}).get('formulas')
+        formula = generated.get('formula', candidate.get('key', {}).get('formula', meta.get('formula')))
+        if formulas is not None and candidate.get('configuration_id') is not None and formula not in formulas:
+            excluded.append(dict(configuration_id=candidate['configuration_id'], formula=formula,
+                                 reason='OUTSIDE_REQUESTED_PR_FORMULAS'))
+            continue
+        widths = setting.get('requested_delta_pf_values')
+        width = generated.get('delta_pf', meta.get('delta_pf'))
+        if widths is not None and candidate.get('configuration_id') is not None and (
+                width is None or _frac(width) not in {_frac(v) for v in widths}):
+            excluded.append(dict(configuration_id=candidate['configuration_id'],
+                                 reason='OUTSIDE_REQUESTED_PR_WIDTHS'))
+            continue
+        if candidate.get('configuration_id') is None:
+            kept.append(candidate)
+            continue
         value = candidate.get('kappa_value')
         if value is None and candidate.get('generated_configuration'):
             value = candidate['generated_configuration']['spec']['kappa']['value']
@@ -1420,12 +1442,15 @@ def scope_absolute_kappa(context, problem):
         if value is None:
             raise ValueError('Cannot establish absolute kappa of candidate: ' + candidate['configuration_id'])
         kappa = _frac(value)
-        if lo <= kappa <= hi:
+        inside_bounds = bounds is None or _frac(bounds[0]) <= kappa <= _frac(bounds[1])
+        inside_grid = grid is None or kappa in {_frac(v) for v in grid}
+        if inside_bounds and inside_grid:
             candidate['kappa_value'] = str(kappa)
             kept.append(candidate)
         else:
             excluded.append(dict(configuration_id=candidate['configuration_id'], kappa=str(kappa),
-                                 reason='OUTSIDE_INCLUSIVE_ABSOLUTE_KAPPA_BOUNDS'))
+                                 reason='OUTSIDE_REQUESTED_ABSOLUTE_KAPPA_VALUES' if not inside_grid
+                                 else 'OUTSIDE_INCLUSIVE_ABSOLUTE_KAPPA_BOUNDS'))
     context['candidates'] = kept
     context.setdefault('scope_excluded', []).extend(excluded)
     return context
