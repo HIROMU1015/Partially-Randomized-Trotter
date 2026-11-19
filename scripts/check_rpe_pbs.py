@@ -79,6 +79,11 @@ def driver_type(fixture, *, preparation_source=None, pf_fixture=None, all_method
     Base = fixture.fixture_driver()
 
     class Driver(Base):
+        def __init__(self, args):
+            super().__init__(args)
+            if all_methods:
+                self.methods = list(self.spec['methods'])
+
         def completion_api(self):
             completion = super().completion_api()
             if getattr(completion, '_pbs_wrapped', False): return completion
