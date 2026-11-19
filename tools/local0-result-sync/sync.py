@@ -1,5 +1,5 @@
 """Windows-owned, read-only public result mirror and per-run monitor."""
-import argparse,base64,contextlib,hashlib,io,json,os,pathlib,subprocess,sys,time,uuid,zipfile
+import argparse,base64,contextlib,hashlib,io,json,os,pathlib,subprocess,sys,tempfile,time,uuid,zipfile
 if hasattr(sys,'set_int_max_str_digits'):sys.set_int_max_str_digits(0)
 P=pathlib.Path
 sha=lambda b:hashlib.sha256(b).hexdigest()
@@ -40,10 +40,19 @@ def remote(config,payload):
     quote=lambda value:"'"+value.replace("'","'\"'\"'")+"'"
     if not config.get('remote_observer'):raise ValueError('Installed read-only remote_observer path is required')
     remote_command='set -o pipefail; '+quote(config['remote_python'])+' -B '+quote(config['remote_observer'])+' --payload-base64 '+encoded+' | base64 -w 1024'
-    command=[ssh,'-n','-o','BatchMode=yes','-o','ConnectTimeout=20','-o','ServerAliveInterval=15','-o','ServerAliveCountMax=2',config['ssh_alias'],remote_command]
-    p=subprocess.run(command,stdin=subprocess.DEVNULL,capture_output=True,timeout=120)
-    if p.returncode:raise RuntimeError('SSH observation failed: '+p.stderr.decode(errors='replace')[-2000:]+p.stdout.decode(errors='replace')[-1500:])
-    response=json.loads(base64.b64decode(p.stdout))
+    command=[ssh,'-T','-o','BatchMode=yes','-o','ConnectTimeout=20','-o','ServerAliveInterval=15','-o','ServerAliveCountMax=2',config['ssh_alias'],remote_command]
+    if os.name=='nt':
+        # Git for Windows SSH can retain Python's capture pipes when launched
+        # inside Windows OpenSSH. The same command exits with file-backed output.
+        with tempfile.TemporaryFile() as output:
+            result=subprocess.run(command,stdout=output,timeout=120)
+            output.seek(0)
+            code,raw,error=result.returncode,output.read(),b''
+    else:
+        result=subprocess.run(command,stdin=subprocess.DEVNULL,capture_output=True,timeout=120)
+        code,raw,error=result.returncode,result.stdout,result.stderr
+    if code:raise RuntimeError('SSH observation failed: '+error.decode(errors='replace')[-2000:]+raw.decode(errors='replace')[-1500:])
+    response=json.loads(base64.b64decode(raw))
     if not response['ok']:raise RuntimeError(response.get('error'))
     return response['result']
 
