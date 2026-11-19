@@ -74,7 +74,7 @@ def prepare(directory, source, settings=None, *, exercise_faults=False):
         ['git','rev-parse','HEAD'],cwd=source,text=True).strip()))
 
 
-def driver_type(fixture, *, preparation_source=None, pf_fixture=None, all_methods=False):
+def driver_type(fixture, *, preparation_source=None, pf_fixture=None, all_methods=False, df_price_chain=False):
     from trottertracks.rpe_preparation_queue import normalize_preparation_request
     Base = fixture.fixture_driver()
 
@@ -98,7 +98,7 @@ def driver_type(fixture, *, preparation_source=None, pf_fixture=None, all_method
 
             def prepare_candidate(obj, method, identity):
                 runtime = obj.runtime
-                def task(stage, name, dependencies=(), inputs=None):
+                def task(stage, name, dependencies=(), inputs=None, *, provider_name=None):
                     faults = read(obj.root.parent/'ROUND.json').get('artificial_pbs_fault_exercise', False)
                     command=['@PYTHON@','-B','@SOURCE@/scripts/artificial_preparation_leaf.py',
                         '--stage',stage,'--output','@WORK@/products','--sleep',
@@ -106,12 +106,30 @@ def driver_type(fixture, *, preparation_source=None, pf_fixture=None, all_method
                     if stage == 'audit': command += ['--inputs','@INPUTS@']
                     provider = method if all_methods else 'ARTIFICIAL'
                     value=normalize_preparation_request(dict(method='ARTIFICIAL',route=dict(kind='preparation'),
-                        preparation=dict(stage=stage,provider=provider+'_'+stage,artificial=True,
+                        preparation=dict(stage=stage,provider=provider_name or provider+'_'+stage,artificial=True,
                             identity=name,command=command,outputs=['products'],
                             source=deepcopy(preparation_source or runtime.executor.source_manifest),dependencies=list(dependencies),
                             dependency_inputs=inputs or {})))
                     return runtime.executor.submit_preparation(value, approved=True,budget=100,
                         contract=dict(artificial=True))
+                if df_price_chain and method == 'PR_DF':
+                    signal = task('signal', identity, provider_name='DF_SIGNALS')
+                    calibration = task('compile', identity, provider_name='DF_CALIBRATION')
+                    def receipt(job, path='compiled'):
+                        return {job: {'products/circuit.txt': path+'/circuit.txt',
+                                      'products/receipt.json': path+'/receipt.json'}}
+                    frozen = task('audit', 'freeze:'+identity, (calibration,), receipt(calibration),
+                                  provider_name='DF_MODEL_FREEZE')
+                    holdout = task('compile', 'holdout:'+identity, (frozen,),
+                                   provider_name='DF_HOLDOUT')
+                    compared = task('audit', 'compare:'+identity, (holdout, frozen),
+                                    dict(receipt(holdout), **receipt(frozen, 'model')),
+                                    provider_name='DF_HOLDOUT_COMPARE')
+                    for job in (signal, calibration, frozen, holdout, compared):
+                        result = runtime.executor.preparation_result(job, wait=True)
+                        if result['status'] != 'PREPARATION_COMPLETE':
+                            raise AssertionError(result)
+                    return
                 signal=task('signal',identity)
                 shared = identity if all_methods else 'ONE_SHARED_ARTIFICIAL_CIRCUIT'
                 if pf_fixture is None:

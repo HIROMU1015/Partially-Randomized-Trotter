@@ -201,7 +201,8 @@ def controller(directory,*,plan_only=False,control_run=None,batch=32,max_cycles=
             transport = PBS.artificial_transport_faults(directory, fixture_spec)
         driver=PBS.driver_type(F,preparation_source=fixture_spec.get('artificial_preparation_source'),
                                pf_fixture=fixture_spec.get('artificial_pf_preparation'),
-                               all_methods=fixture_spec.get('artificial_pbs_all_methods', False))
+                               all_methods=fixture_spec.get('artificial_pbs_all_methods', False),
+                               df_price_chain=fixture_spec.get('artificial_pbs_df_price_chain', False))
     else:
         driver=(F.fixture_driver()if fixture_spec.get('artificial_mode')=='Q3_ONLY'else fixture_driver(directory))
     try:
