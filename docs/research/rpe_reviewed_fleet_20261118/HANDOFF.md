@@ -119,6 +119,34 @@ Resumeのクライアント応答が時間切れでも、通常Statusで既存co
 最終固定版の回帰104件とsubtest 5件がPASS。別途、固定release束縛の旧mock
 2件は前版でも失敗し、入力を照合して保存する実経路は既存・新規回帰で確認した。
 
+## 2026-11-20 PBSの固定Pauli信号runtime
+
+Pauli信号の通常REQUESTは固定SOURCEの `requirements.txt` から
+`openfermionpyscf 0.5`、`openfermion 1.6.1`、`pyscf 2.7.0` を宣言する。
+割当前に版と `openfermionpyscf` のimportを検査する。PBSのPauli信号profileに
+`runtime/venv311rc1-pauli-signal-chem05/bin/python` を追加し、既存のPython
+3.11.0rc1と数値ライブラリは読み取りで参照する。固定配置は
+`romutail-pbs-pauli-chemistry-628e7f38c`。
+
+`search-c18e36af4fdf8186b360` を停止せず、LD5・κ63・幅4hの既存障害だけを
+同じSOURCE・入力・丸め条件で、通常の分散キューを使う候補限定の復旧として再実行した。
+旧job `prep-72214e2a90fdb8296fa7143e` のREQUEST、OUTCOME、PROCESS_RETURNを
+ハッシュで保全した。新job `prep-4ff76743bda54b34e85e3b91` はPBSで
+不足ラウンド7～12を計算し、保存ラウンド0～6を再利用して中央が採用した。
+同じ候補の自動shot提案を評価したQ3 `cb476bbc3385a5899c7f` はPBS
+`267496.CPUcluster-PRISM` で終了コード0となり、中央キューが1回採用した。
+判定は `MODEL_BOUND_EXCEEDS_ADOPTED_THRESHOLD`。信号とQ3の採用記録、
+原本ハッシュは新配置の `search-evidence/recovery-eb8aa01e0a2e63a69147` に保存した。
+稼働中の親runは従来の固定版で継続した。復旧結果はこの候補限定runに属する。
+親runの最安や公開表に反映する際は、通常の保存評価照合を行う。
+
+10 CPUはPBSの固定上限ではなく、そのときの適格Q3 5件に各2 CPUを確保した結果。
+同枠の実績は2051/4690 CPU秒（43.7%）。次の枠は適格な待機仕事とメモリに合わせて要求する。
+設定済み上限は1枠96 CPU・PBS合計100 CPU。1件2 CPU・8 GiBの適格Q3が6件あれば、
+従来と同じ見積りで12 CPU・49 GiBを要求できる。検収で確保中の枠は変更していない。
+PBSとRomuTailの50 GiB受付上限は従来どおりで、元の保全先と照合できた再取得可能な
+キャッシュを整理して受付を戻した。
+
 ## 通常入口
 
 - Romulaptopでは既存の `Invoke-RpeSearch.ps1 -Action Preview -RequestFile SCOPE.json` を使う。RomuTailのCLIは `scripts/run_rpe_search.py --config .rpe-central/CLIENT.json --action preview --request-file SCOPE.json`。
