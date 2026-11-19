@@ -101,6 +101,33 @@ class MetadataCompatibility(unittest.TestCase):
         self.assertEqual({c['key']['p']for c in result},{7,10})
         self.assertTrue(all(expected[c['configuration_id']]['binding_id']for c in result))
 
+    def test_full_h6_partial_prices_keep_exact_missing_axes(self):
+        cid, physical, docs, problem = metadata_fixture()
+        config = docs['CONFIGURATION']
+        config['spec'].update(L_D=19, split=dict(original_PF_method='FULL'))
+        config['spec']['binding']['rank'] = 19
+        entry = problem['pf_evidence_registry']['configurations'][cid]
+        entry.update(method='FULL_PF', p=19)
+        spec = problem['methods'].pop('TRUNCATED_PF')
+        problem['methods']['FULL_PF'] = spec
+        prices = docs['PRICES']
+        prices.update(axes=prices['axes'][6:14])
+        facts = dict(fragment_count=19, snapshot_sha256='SNAPSHOT', hamiltonian_hash='H', state_hash='STATE')
+        registry = problem['pf_evidence_registry']
+        with patch.object(PF, 'physical_ids', return_value=physical):
+            with self.assertRaisesRegex(ValueError, 'explicit partial'):
+                PF.hydrate(ROOT, FixtureReader(docs), problem, [], registry, facts)
+            prices['coverage'] = 'PARTIAL_DIRECT_PRICE_EVIDENCE'
+            result = []
+            PF.hydrate(ROOT, FixtureReader(docs), problem, result, registry, facts)
+            self.assertEqual(len(result[0]['price_axes']), 8)
+            self.assertEqual(len(result[0]['price_needs']), 18)
+            self.assertIsNone(result[0]['prices'])
+            self.assertFalse(result[0]['ready'])
+            prices['axes'][0]['physical_id'] = 'ANOTHER_CANDIDATE'
+            with self.assertRaisesRegex(ValueError, 'axis/physical'):
+                PF.hydrate(ROOT, FixtureReader(docs), problem, [], registry, facts)
+
     def test_price_schedule_and_law_mismatch_are_rejected(self):
         _,physical,docs,problem=metadata_fixture()
         docs['SIGNAL']['means'][0]['law_binding']={'OTHER_LAW':True}

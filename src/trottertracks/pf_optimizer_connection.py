@@ -138,8 +138,9 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
         method = entry['method']
         if method not in METHODS:
             raise ValueError('Non-PF method in deterministic PF registry')
-        if type(entry['p']) is not int or not 0 <= entry['p'] <= 10 or (entry['p'] == 10) != (method == 'FULL_PF'):
-            raise ValueError('B0I p=0..9; p=10 is the existing Full PF alias')
+        rank = (facts or {}).get('fragment_count', 10)
+        if type(entry['p']) is not int or not 0 <= entry['p'] <= rank or (entry['p'] == rank) != (method == 'FULL_PF'):
+            raise ValueError('Full PF must use the saved rank; B0I must retain a strict prefix')
         if method not in problem['methods']:
             continue
         spec = problem['methods'][method]
@@ -205,14 +206,24 @@ def hydrate(root, reader, problem, candidates, registry, facts=None, *, allow_ar
                 if row['kind'].startswith('STRUCTURAL'):
                     raise ValueError('Structural price is not compiled RZ price')
                 units[key] = frac(row['unit_price_RZ'])
-            if len(rows) != 26 or sorted(units) != [(m, a) for m in range(13) for a in AXES] or any(v <= 0 for v in units.values()):
-                raise ValueError('PF registry needs 26 unique positive own-axis prices')
-            prices = [units[(m, a)] for m in range(13) for a in AXES]
-            if c['prices'] is not None and c['prices'] != prices:
+            keys = [(m, a) for m in sorted(rounds) for a in AXES]
+            missing = [dict(m=m, axis=a) for m, a in keys if (m, a) not in units]
+            partial = table.get('coverage') == 'PARTIAL_DIRECT_PRICE_EVIDENCE'
+            if any(v <= 0 for v in units.values()) or (missing and not partial):
+                raise ValueError('PF registry needs positive own-axis prices and explicit partial coverage')
+            if c['prices'] is not None and any(units[key] != c['prices'][i]
+                    for i, key in enumerate(keys) if key in units):
                 raise ValueError('PF registry conflicts with existing accepted unit prices')
-            c.update(prices=prices, price_status='SOURCE_BOUND_PF_26_AXIS_PRICES', price_scope=entry.get('price_scope'),
-                     price_axes=deepcopy(rows), price_source=deepcopy(entry['prices']))
-            c['needs'] = [n for n in c['needs'] if n != 'PRICE_26AXIS']
+            if partial and missing and c['prices'] is None:
+                c.update(price_status='SOURCE_BOUND_PF_PARTIAL_AXIS_PRICES', price_axes=deepcopy(rows),
+                         price_source=deepcopy(entry['prices']), price_needs=missing)
+                c['needs'] = list(dict.fromkeys([*c['needs'], 'PRICE_26AXIS']))
+            elif not missing:
+                c.update(prices=[units[key] for key in keys], price_status='SOURCE_BOUND_PF_26_AXIS_PRICES',
+                         price_scope=entry.get('price_scope'), price_axes=deepcopy(rows),
+                         price_source=deepcopy(entry['prices']))
+                c['needs'] = [n for n in c['needs'] if n != 'PRICE_26AXIS']
+                c.pop('price_needs', None)
         if entry.get('q3_inputs'):
             inputs = read_source(root, reader, entry['q3_inputs'])
             cases = [r for r in inputs['cases'] if (r.get('configuration_id') or r.get('original_configuration_id')) == cid]

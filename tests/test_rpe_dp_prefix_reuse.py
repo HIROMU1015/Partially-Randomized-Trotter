@@ -68,6 +68,36 @@ class PrefixTests(unittest.TestCase):
                 self.assertTrue(any(e['event']=='HIT'for e in engine.cache_events))
             self.assertEqual(expected[1][0]['diagnostic']['deterministic_risk']['q3']['within_limit'],limit==100)
 
+    def test_projected_artificial_q3_matches_a_native_short_horizon(self):
+        spec = importlib.util.spec_from_file_location('_scaled_job_adapter', ROOT/'scripts/run_rpe_optimizer_q3_job.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        short = make(vector=[1]*12, raws=[(.25,-.5)]*12, partial=None)
+        full = make(vector=[1]*13, raws=[(.25,-.5)]*12 + [(-1.,1.)], partial=None)
+        full['allocations'][0]['shots'].pop()
+        full['options']['phase_radii'] = full['options']['phase_radii'][:12]
+        projection = dict(M=11, source_M=12, source_configuration_id=full['config']['id'])
+        explicit = R.evaluate(**short)[0]['diagnostic']
+        with adapter.horizon_inputs(projection):
+            projected = R.evaluate(**full)[0]['diagnostic']
+        self.assertEqual(projected, explicit)
+        self.assertEqual([r['m'] for r in projected['deterministic_risk']['bounds']['total_state_dp']['rounds']],
+                         list(range(12)))
+
+    def test_fixed_z1_t1_dp_consumes_12_13_and_14_artificial_count_tables(self):
+        for M in (11,12,13):
+            with self.subTest(M=M):
+                args, tt, scope = example(n=M+1, shots=1, states=8)
+                engine = P.Accelerator(workers=1)
+                accelerated = engine(tt, h=10., target=0., scope=scope)
+                reference = R.total_state_dp(tt, h=10., target=0., scope=scope)
+                self.assertEqual(accelerated, reference)
+                self.assertIsNotNone(reference['MSE_upper'])
+                self.assertEqual([r['m'] for r in reference['rounds']], list(range(M+1)))
+                if M==13:
+                    value=R.evaluate(**args)[0]['diagnostic']['deterministic_risk']
+                    self.assertEqual(value['reason'],'OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN')
+
     def test_residual_and_scope_boundaries_and_no_mass_frontier(self):
         for states,pairs in ((0,0),(0,10000),(1,7),(2,30),(8,2000)):
             _,tt,scope=example(n=4,states=states,pairs=pairs);engine=self.engine()

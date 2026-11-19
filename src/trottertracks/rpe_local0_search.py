@@ -109,9 +109,11 @@ def resolve(config, request):
     """Translate only settings that the selected normal entry actually consumes."""
     keys(request, {'scope', 'instruction', 'action', 'release', 'run_id'}, 'request')
     scope = deepcopy(request.get('scope') or {})
-    keys(scope, {'methods', 'per_method', 'shots', 'stop', 'preparation_budgets',
+    keys(scope, {'system', 'methods', 'per_method', 'shots', 'stop', 'preparation_budgets', 'scaled_shots',
                  'pbs_walltime_overrides'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
+    if 'system' in scope and scope['system'] != problem.get('problem', {}).get('system'):
+        raise RequestError('scope.system', 'system is unavailable on the selected release')
     if config.get('release_manifest'):
         from .rpe_release_deployment import manifest_reference
         manifest=load(config['release_manifest']);reference=manifest_reference(manifest)
@@ -242,6 +244,18 @@ def resolve(config, request):
             observed['kappa'] = dict(mode=mode, min=str(a), max=str(b))
         canonical['per_method'][method] = observed
     shots = scope.get('shots', 'auto')
+    if config.get('scaled_shots_default') is True or 'scaled_shots' in scope:
+        from . import rpe_scaled_shots as scaled
+        if shots != 'auto':
+            raise RequestError('scope.shots', 'scaled_shots determines the whole allocation')
+        if Fraction(problem['accuracy']['epsilon_E_decimal']) != Fraction(scaled.EPSILON):
+            raise RequestError('accuracy.epsilon_E_decimal', 'scaled search requires the saved R08 exact threshold')
+        try:
+            policy = scaled.settings(scope.get('scaled_shots'))
+        except (TypeError, ValueError) as error:
+            raise RequestError('scope.scaled_shots', str(error)) from error
+        canonical['scaled_shots'] = policy
+        spec.setdefault('search_overrides', {}).update(rule=scaled.RULE, scaled_shots=policy)
     if shots != 'auto':
         if not isinstance(shots, dict): raise RequestError('scope.shots', 'use auto or min/max_per_round')
         keys(shots, {'min', 'max_per_round'}, 'scope.shots')
@@ -321,6 +335,13 @@ def summarize(problem, spec, canonical):
         fixed=dict(problem=problem.get('problem'), accuracy=problem.get('accuracy'), target=problem.get('target'), rpe=problem.get('rpe')),
         method_settings={m:effective[m] for m in spec['methods']},method_overrides=spec.get('method_overrides', {}), search=dict(problem.get('search', {}), **spec.get('search_overrides', {})),
         max_new_q3_per_method=spec.get('max_new_q3_per_method'),max_steps_per_method=spec.get('max_steps_per_method',problem['search']['max_steps_per_method']))
+    if result['search'].get('scaled_shots'):
+        from .rpe_scaled_shots import allocation_menu
+        policy = result['search']['scaled_shots']
+        result['scaled_shot_allocations'] = [
+            dict(M=M, allocations=[dict(N_X=list(vector[::2]), N_Y=list(vector[1::2]), aliases=aliases)
+                                  for vector, aliases in allocation_menu(M, policy).items()])
+            for M in policy['M']]
     preparation = (spec.get('executor', {}).get('distributed') or {}).get('preparation')
     if preparation is not None:
         result['preparation_budgets'] = {stage: preparation.get('budgets', {}).get(stage, 0)
@@ -516,6 +537,20 @@ class Gateway:
                 launch=None if self.launch == self.normal_launch else self.launch).handle(request)
         if request.get('action') not in ('preview', 'planonly', 'prepare', 'start', 'resume', 'stop', 'status'):
             raise RequestError('action', 'preview, planonly, prepare, start, resume, stop, or status required')
+        scope = request.get('scope')
+        if isinstance(scope, dict) and scope.get('system') in ('H6', 'H8') and self.config.get('readiness_metadata'):
+            keys(scope, {'system', 'methods'}, 'scope')
+            system = scope['system']
+            if request['action'] != 'preview':
+                raise RequestError('scope.system', system + ' is available for metadata Preview only')
+            if system == 'H6' and scope.get('methods', ['FULL_PF']) != ['FULL_PF']:
+                raise RequestError('scope.methods', 'the saved H6 preview covers FULL_PF only')
+            evidence = self.config['readiness_metadata'][system]
+            readiness = load(evidence['path']) if system == 'H6' else {'status': 'IN_PREPARATION'}
+            return dict(status='PREVIEW', started=False, release=self.config.get('release'),
+                        controller_source=self.config['code_source'],
+                        applied=dict(system=system, methods=['FULL_PF'] if system == 'H6' else [],
+                                     readiness=readiness, source=evidence['source']))
         if (self.state/'MIGRATED_TO.json').exists() and request['action'] not in ('preview', 'status'):
             raise RequestError('controller', 'this state moved; use '+str(load(self.state/'MIGRATED_TO.json').get('controller','RomuTail')))
         with locked(self.state):
@@ -610,7 +645,7 @@ class Gateway:
                 final=run/'SEARCH_TERMINATION.json'
                 if final.exists() and not user_interrupted:
                     return 'REUSED_COMPLETED'
-            elif not user_interrupted and reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED'}:
+            elif not user_interrupted and reasons and reasons <= {'NO_IMPROVING_PROPOSAL','NO_FEASIBLE_POINT_IN_RANGE','Q3_BUDGET_EXHAUSTED','STEP_LIMIT','NEW_Q3_REQUIRED_OUTSIDE_APPROVED_BUDGET','NO_CANDIDATE_LEFT_IN_RANGE','SCHEDULE_WIDE_RULE_EXHAUSTED','SCALED_SHOT_GRID_COMPLETE'}:
                 return 'REUSED_COMPLETED'
         spec = load(run/'ROUND.requested.json'); problem = load(run/'PROBLEM.json')
         applied = load(run/'APPLIED_SCOPE.json')

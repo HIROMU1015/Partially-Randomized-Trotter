@@ -311,15 +311,16 @@ class WidthDriver:
             if not self.rule_stop or any(m.startswith('PR_') for m in self.spec['methods']):
                 raise ValueError('Explicit requested_widths required')
             self.widths={}
-        self.methods = list(self.spec['methods']) if self.rule_stop else list(self.widths)
+        self.scaled_shots = self.spec.get('search_overrides', {}).get('rule') == 'RPE_SCALED_SHOTS_V1'
+        self.methods = list(self.spec['methods']) if self.rule_stop or self.scaled_shots else list(self.widths)
         self.live_ready_refill = self.spec.get('live_ready_refill') is True
         if self.live_ready_refill and (
             self.spec.get('overlap_ready_batch') is not True
             or self.spec.get('executor', {}).get('scheduler') != 'concurrent'
             or self.spec.get('search_overrides', {}).get('rule', self.problem['search'].get('rule'))
-                != 'METHOD_MINIMUM_PRIORITY_V2'
+                not in ('METHOD_MINIMUM_PRIORITY_V2', 'RPE_SCALED_SHOTS_V1')
         ):
-            raise ValueError('live_ready_refill requires overlapping preparation and concurrent V2 search')
+            raise ValueError('live_ready_refill requires overlapping preparation and a concurrent selector')
         self.work_conserving_search = self.spec.get('search_overrides', {}).get('work_conserving_search') is True
         if self.work_conserving_search and not self.live_ready_refill:
             raise ValueError('work_conserving_search requires live_ready_refill')
@@ -651,8 +652,12 @@ class WidthDriver:
         methods=list(dict.fromkeys(self.state['families'][key]['method']for key in families))
         for method in methods:
             scoped={key:f for key,f in families.items()if self.state['families'][key]['method']==method}
-            floor,verified_best=self.model_floor(scoped) if method=='PR_PAULI' else (None,None)
-            chosen,why,summary=W.plan_wide(scoped,[p for p in points if p['family']in scoped],self.wide_for(method),
+            scaled = getattr(self, 'scaled_shots', False)
+            floor,verified_best=self.model_floor(scoped) if method=='PR_PAULI' and not scaled else (None,None)
+            selection = self.wide_for(method)
+            if scaled:
+                selection = dict(selection, stop_by_observed_trend=False)
+            chosen,why,summary=W.plan_wide(scoped,[p for p in points if p['family']in scoped],selection,
                                           floor,price_floor_best=verified_best)
             proposals.extend(chosen);decisions.extend(why);reports[method]=summary;family_reports.update(summary['families'])
         report=dict(per_method=reports,global_best_by_method={m:r['global_best']for m,r in reports.items()},
@@ -911,6 +916,18 @@ class WidthDriver:
         """
         import hashlib
         tau=context['tau'];methods={}
+        if getattr(self, 'scaled_shots', False):
+            # Prior/free-vector results cannot update a multiplier-grid minimum.
+            for method, r in result.items():
+                r['rule_adopted_best'] = r['best']
+                r['confirmed_all_best'] = r['best']
+                methods[method] = dict(rule_adopted_best=r['best'], confirmed_all_best=r['best'],
+                                       scaled_shots=r['scaled_shots'])
+            self.state['method_minima'] = methods
+            K.CLI.write(self.run/'CONFIRMED_MINIMA.json', K.CLI.slim(dict(
+                schema='RPE_WIDTH_CONFIRMED_MINIMA_V1', tau=tau, methods=methods,
+                scope='RPE_SCALED_SHOTS_V1_CONDITIONAL_GRID_ONLY', new_scientific_calls=0)))
+            return
         for method,r in result.items():
             candidates=[c for c in context['candidates']if c['method']==method];ready={c['configuration_id']:c for c in candidates if c['ready']}
             view=executor.for_method(method)
@@ -1191,7 +1208,9 @@ class WidthDriver:
                     result=optimize(ROOT,dict(problem,search=search),context=context,methods=self.methods,
                         initial=self.spec.get('initial','all'),max_new=budgets,executor=executor,
                         science_approved=self.spec.get('science_approved')is True)
-            if not any(r['stop_reason']in fatal for r in result.values())and any(r.get('input_requests')for r in result.values()):
+            actionable = any(req['kind'] != 'HORIZON_INPUTS_MISSING'
+                             for r in result.values() for req in r.get('input_requests', []))
+            if not any(r['stop_reason'] in fatal for r in result.values()) and actionable:
                 from trottertracks.pr_candidate_completion import continue_selected_preparation
                 with K.CLI.round_phase(self.run,'WIDTH_PREPARATION_CONTINUATION'):
                     result=continue_selected_preparation(ROOT,dict(problem,search=search),context,
@@ -1240,7 +1259,16 @@ class WidthDriver:
                     and all(type(v) in (int,Fraction) and v>=0 for v in prices)):
                 p['own_price_floor']=sum(prices)
             rows=result.get(p['method'],{}).get('by_configuration',[])
-            b=next((v for v in rows if v['configuration_id']==p.get('evaluation_configuration_id',p.get('configuration_id'))),None)
+            cid = p.get('evaluation_configuration_id', p.get('configuration_id'))
+            if getattr(self, 'scaled_shots', False):
+                matches = [v for v in rows if cid and cid in (v['configuration_id'], v.get('source_configuration_id'))]
+                b = min(matches, key=lambda v: (v['best'] is None,
+                    v['best']['cost'] if v['best'] else 0, v['M']), default=None)
+                if b:
+                    p['best_M'] = b['M'] if b['best'] else None
+                    b = dict(b, promising=sum(v['promising'] for v in matches))
+            else:
+                b = next((v for v in rows if v['configuration_id'] == cid), None)
             if b:
                 adopted=b.get('best');best=b.get('confirmed_all_best')or adopted
                 p.update(status='EVALUATED',best=None if best is None else best['cost'],
