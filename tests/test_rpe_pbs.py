@@ -287,6 +287,32 @@ class ManagerTests(unittest.TestCase):
             replacement = next(row for other, row in manager.state['allocations'].items() if other != token)
             self.assertEqual(replacement['spec']['resources']['ncpus'], 4)
 
+    def test_recent_required_completion_keeps_live_allocation_for_successor(self):
+        from trottertracks.rpe_q3_store import JobStore
+        with tempfile.TemporaryDirectory() as directory:
+            manager, executor, gateway = self.manager(directory)
+            token = self.submit(manager)
+            executor.store = JobStore(Path(directory)/'QUEUE.sqlite3')
+            manager._demand = lambda: ([], [], 0, 0)
+            observed = dict(token=token, host_id='pbs-0', job_id='42', status='R',
+                            worker=dict(accepting=True))
+            gateway.call = lambda message: dict(allocations=[observed], requests={})
+            manager.cycle()
+            self.assertTrue(manager.controls[token]['release_when_idle'])
+            request = dict(preparation={})
+            with executor.store._connection(write=True) as db:
+                db.execute(
+                    "INSERT INTO jobs(job_id, method, request, request_sha256, contract, state, "
+                    "enqueued_epoch, updated_epoch, completed_epoch, detail) "
+                    "VALUES ('prep', 'PREPARATION:compile', ?, 'fixed', '{}', 'ACCEPTED', 0, 0, ?, ?)",
+                    (json.dumps(request), P.time.time(), '{"outcome_status":"PREPARATION_COMPLETE"}'))
+            manager.cycle()
+            self.assertFalse(manager.controls[token]['release_when_idle'])
+            with executor.store._connection(write=True) as db:
+                db.execute("UPDATE jobs SET completed_epoch=0")
+            manager.cycle()
+            self.assertTrue(manager.controls[token]['release_when_idle'])
+
     def test_preparation_reserved_with_local_readiness_can_wake_pbs(self):
         with tempfile.TemporaryDirectory() as directory:
             manager, executor, _ = self.manager(directory)

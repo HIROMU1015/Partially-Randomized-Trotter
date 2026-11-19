@@ -43,41 +43,70 @@ def _used_bytes(roots):
     return int(output.splitlines()[-1].split('\t', 1)[0])
 
 
+def _attempt_copies(marker):
+    attempt = marker.parent
+    if attempt.resolve() != attempt or marker.is_symlink():
+        return
+    try:
+        state = json.loads(marker.read_bytes())
+        if state.get('state') != 'TRANSFERRED':
+            return
+        assignment = json.loads((attempt/'ASSIGNMENT.json').read_bytes())
+        if (assignment['job_id'], assignment['attempt_id']) != (attempt.parent.name, attempt.name):
+            return
+        paths = [(0, attempt/'_dry_check')]
+        if assignment['request']['route']['kind'] == 'preparation':
+            outcome = json.loads((attempt/'OUTCOME.json').read_bytes())
+            receipt = json.loads((attempt/'PROCESS_RETURN.json').read_bytes())
+            if (outcome['status'] == 'PREPARATION_COMPLETE'
+                    and outcome['request_id'] == assignment['job_id']
+                    and outcome['request_sha256'] == assignment['request_sha256']
+                    and receipt.get('returncode') == 0 and receipt.get('signal') is None):
+                artifacts = outcome['artifacts']
+                profile = json.loads((attempt/'WORKER_PROFILE.json').read_bytes())
+                cache = worker_cache(profile)
+                if all(cache.path(sha).is_file() for sha in set(artifacts.values())):
+                    paths += [(1, attempt/name) for name in PREPARATION_COPIES]
+                    paths += [(2, path) for path in attempt.glob('*-output.bundle') if path.name in artifacts]
+        for priority, path in paths:
+            if path.exists() and not path.is_symlink():
+                yield priority, marker.stat().st_mtime_ns, path
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return
+
+
 def _acknowledged_copies(spools, roots):
     monitored = {Path(root).resolve() for root in roots}
     for spool in sorted({Path(path).resolve() for path in spools}):
-        if not any(spool.is_relative_to(root) for root in monitored):
-            continue
-        for marker in spool.glob('*/*/WORKER_STATE.json'):
-            attempt = marker.parent
-            if attempt.resolve() != attempt or marker.is_symlink():
-                continue
-            try:
-                state = json.loads(marker.read_bytes())
-                if state.get('state') != 'TRANSFERRED':
-                    continue
-                assignment = json.loads((attempt/'ASSIGNMENT.json').read_bytes())
-                if (assignment['job_id'], assignment['attempt_id']) != (attempt.parent.name, attempt.name):
-                    continue
-                paths = [(0, attempt/'_dry_check')]
-                if assignment['request']['route']['kind'] == 'preparation':
-                    outcome = json.loads((attempt/'OUTCOME.json').read_bytes())
-                    receipt = json.loads((attempt/'PROCESS_RETURN.json').read_bytes())
-                    if (outcome['status'] == 'PREPARATION_COMPLETE'
-                            and outcome['request_id'] == assignment['job_id']
-                            and outcome['request_sha256'] == assignment['request_sha256']
-                            and receipt.get('returncode') == 0 and receipt.get('signal') is None):
-                        artifacts = outcome['artifacts']
-                        profile = json.loads((attempt/'WORKER_PROFILE.json').read_bytes())
-                        cache = worker_cache(profile)
-                        if all(cache.path(sha).is_file() for sha in set(artifacts.values())):
-                            paths += [(1, attempt/name) for name in PREPARATION_COPIES]
-                            paths += [(2, path) for path in attempt.glob('*-output.bundle') if path.name in artifacts]
-                for priority, path in paths:
-                    if path.exists() and not path.is_symlink():
-                        yield priority, marker.stat().st_mtime_ns, path
-            except (OSError, ValueError, KeyError, TypeError, AttributeError):
-                continue
+        if any(spool.is_relative_to(root) for root in monitored):
+            for marker in spool.glob('*/*/WORKER_STATE.json'):
+                yield from _attempt_copies(marker)
+
+
+def _remove_copy(path):
+    lock = path.parent/'WORKER_PROCESS.lock'
+    try:
+        if not stat.S_ISREG(lock.lstat().st_mode):
+            return False
+        with lock.open('r+b') as process_lock:
+            fcntl.flock(process_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            if path.is_symlink():
+                return False
+            if path.is_dir():
+                shutil.rmtree(path)
+            else:
+                path.unlink()
+        return True
+    except OSError:
+        return False
+
+
+def reclaim_transferred_attempt(policy, attempt):
+    """Discard acknowledged working copies, retaining receipts and result blobs."""
+    if policy is None or not any(attempt.is_relative_to(Path(root).resolve()) for root in policy['roots']):
+        return
+    for _, _, path in _attempt_copies(attempt/'WORKER_STATE.json'):
+        _remove_copy(path)
 
 
 def _reclaim(spools, roots, used, target):
@@ -92,26 +121,11 @@ def _reclaim(spools, roots, used, target):
         sizes = {name: int(size) for size, name in (line.split('\t', 1) for line in output.splitlines())}
         remaining = used
         for filename in paths:
-            path = Path(filename)
-            lock = path.parent/'WORKER_PROCESS.lock'
-            try:
-                if not stat.S_ISREG(lock.lstat().st_mode):
-                    continue
-                with lock.open('r+b') as process_lock:
-                    fcntl.flock(process_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                    # The supervisor has exited. Keep its tombstone and receipts.
-                    if path.is_symlink():
-                        continue
-                    if path.is_dir():
-                        shutil.rmtree(path)
-                    else:
-                        path.unlink()
+            if _remove_copy(Path(filename)):
                 removed += 1
                 remaining -= sizes.get(filename, 0)
                 if remaining <= target:
                     break
-            except OSError:
-                continue
         used = _used_bytes(roots)
         if used <= target:
             break
@@ -119,7 +133,7 @@ def _reclaim(spools, roots, used, target):
 
 
 def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directories=(), refresh=False):
-    """Reclaim acknowledged copies and recoverable cache at the intake limit."""
+    """Reclaim acknowledged copies and recoverable cache before reaching the intake limit."""
     if policy is None:
         return None
     limit, roots = policy['limit_bytes'], policy['roots']
@@ -139,7 +153,7 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
             saved = json.loads(sample.read_bytes())
             if saved['policy'] == identity and 0 <= time.time() - saved['sampled_epoch'] < SAMPLE_SECONDS:
                 report = saved['report']
-                if (report['reason'] != 'STORAGE_LIMIT_REACHED'
+                if (report['used_bytes'] is None or report['used_bytes'] < limit * 95 // 100
                         or saved.get('cleanup') == cleanup):
                     return report
         except (OSError, KeyError, TypeError, ValueError):
@@ -160,14 +174,15 @@ def report(policy, *, spools=(), pbs_runs=None, prefix_cache=None, cache_directo
                 used = _used_bytes(roots)
                 before, reclaimed = used, 0
                 target = limit * 9 // 10
-                if used >= limit and (spools or pbs_runs):
+                cleanup_due = used >= limit * 95 // 100
+                if cleanup_due and (spools or pbs_runs):
                     candidates = list(spools)
                     if pbs_runs:
                         candidates.extend(Path(pbs_runs).glob('*/workers/*'))
                     # Leave room for new attempts before the next cleanup pass.
                     used, reclaimed = _reclaim(candidates, roots, used, target)
                 evicted = 0
-                if used >= limit:
+                if cleanup_due and used > target:
                     for path in caches:
                         cache = Path(path).resolve()
                         if cache.is_dir() and any(cache.is_relative_to(Path(root).resolve()) for root in roots):

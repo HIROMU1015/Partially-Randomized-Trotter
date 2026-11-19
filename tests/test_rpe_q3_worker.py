@@ -224,6 +224,26 @@ class WorkerTests(unittest.TestCase):
             for attempt in (pending, unknown, running, failed):
                 self.assertTrue((attempt/'workspaces'/'expanded-input').is_file())
 
+    def test_transferred_cleanup_is_immediate_and_preserves_unreceived_attempt(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            attempt = root/'job'/'attempt'
+            dry = attempt/'_dry_check'
+            dry.mkdir(parents=True)
+            (dry/'temporary').write_bytes(b'artificial')
+            (attempt/'WORKER_PROCESS.lock').touch()
+            W.atomic(attempt/'ASSIGNMENT.json', dict(job_id='job', attempt_id='attempt',
+                request=dict(route=dict(kind='artificial'))))
+            W.atomic(attempt/'OUTCOME.json', dict(status='ARTIFICIAL'))
+            policy = dict(roots=[str(root)])
+            W.save_state(attempt, 'COMPLETED_PENDING_TRANSFER')
+            W.Storage.reclaim_transferred_attempt(policy, attempt)
+            self.assertTrue(dry.exists())
+            W.save_state(attempt, 'TRANSFERRED')
+            W.Storage.reclaim_transferred_attempt(policy, attempt)
+            self.assertFalse(dry.exists())
+            self.assertTrue((attempt/'OUTCOME.json').is_file())
+
     def test_storage_reclaims_configured_route_checkpoint_caches(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

@@ -216,6 +216,27 @@ class PreparationQueue(Base.ControllerFailures):
         self.assertEqual(ex.preparation_result(job,wait=True)['status'],'HOST_ELIGIBILITY_HOLD')
         self.assertIsNone(ex.store.row(job))
 
+    def test_pbs_preparation_probe_waits_for_allocation_without_reserving(self):
+        import time
+        from unittest.mock import Mock, patch
+
+        ex = self.executor(capacity=2)
+        request = self.request('signal', 'pbs-readiness')
+        request['preparation'].update(artificial=False, source=ex.source_manifest, provider='DF_SIGNALS')
+        ex.distributed['preparation_profiles'] = {'pbs-0': {}}
+        ex.distributed['host_admission'] = {'hosts': {'pbs-0': dict(accepting=True, optional=True)}}
+        with patch.object(ex, 'pbs_manager', Mock(configured={'pbs-0': {}},
+                settings={'task_seconds': {'signal': 120}})) as pbs, patch.object(
+                ex, '_pending_preparation_assignment', return_value={}):
+            pbs.readiness_wait_seconds.return_value = 20
+            job = ex.submit_preparation(request, approved=True, budget=1)
+            self.assertIsNone(ex.preparation_result(job))
+            self.assertIsNone(ex.store.row(job))
+            self.assertEqual(ex.store.counts('PREPARATION:signal'), 0)
+            ex.preparation_pending[job]['probe_started_epoch'] = time.time() - 30
+            result = ex.preparation_result(job)
+            self.assertEqual(result['host_reasons'], {'pbs-0': 'PBS_PREPARATION_READINESS_WAIT_EXPIRED'})
+
     def test_joining_optional_host_during_metrics_uses_consistent_snapshot(self):
         import threading
         ex=self.executor(capacity=2)

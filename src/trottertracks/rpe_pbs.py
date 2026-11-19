@@ -12,6 +12,7 @@ import re
 import shlex
 import subprocess
 import threading
+from statistics import median
 import time
 import uuid
 
@@ -224,6 +225,26 @@ class PbsManager:
     def save(self):
         atomic(self.path, self.state)
 
+    def readiness_wait_seconds(self):
+        # PBS queue latency varies by queue and resource request. Keep the
+        # wait bounded, including when the gateway or scheduler is unavailable.
+        samples = [a['submit_to_ready_seconds'] for a in self.state['allocations'].values()
+                   if 'submit_to_ready_seconds' in a]
+        return max(15., min(30., median(samples[-10:]) if samples else 20.))
+
+    def _recent_preparation_completion(self, seconds):
+        # A newly accepted, successful required stage may shortly deliver an
+        # audit or a ready candidate. Never hold an allocation for a long stage
+        # with no completion in sight or for optional price checks.
+        with self.executor.store._connection() as database:
+            rows = database.execute(
+                "SELECT request, detail FROM jobs WHERE state='ACCEPTED' "
+                "AND method LIKE 'PREPARATION:%' AND completed_epoch>=?",
+                (time.time() - seconds,))
+            return any(not json.loads(row[0])['preparation'].get('optional_price_validation')
+                       and json.loads(row[1] or '{}').get('outcome_status') == 'PREPARATION_COMPLETE'
+                       for row in rows)
+
     def _storage_accepting(self, worker):
         policy = worker['profile'].get('storage_limit')
         if policy is None:
@@ -324,8 +345,8 @@ class PbsManager:
     def _demand(self):
         with self.executor.state.cv:
             policy, error = self.executor._host_admission_policy()
-            hosts = [host for host in self.configured
-                     if self.executor._host_admission(host, policy, error)['accepting']]
+            admission = {host: self.executor._host_admission(host, policy, error) for host in self.configured}
+            hosts = [host for host, rule in admission.items() if rule['accepting'] and rule.get('max_slots') != 0]
             def compatible(request, eligibility, *, unchecked=False):
                 artificial = self.executor.store.artificial(request)
                 return [host for host in hosts if self.executor._host_supports_stage(host, request) and
@@ -418,7 +439,8 @@ class PbsManager:
             run_id=str(self.executor.run_dir), reason=demand)
         # Save intent BEFORE making the remote call. On lost qsub/SSH response
         # the same token is reconciled, never replaced with a new submission.
-        self.state['allocations'][token] = dict(spec=spec, status='INTENT', clock=stamp())
+        started = stamp()
+        self.state['allocations'][token] = dict(spec=spec, status='INTENT', clock=started, submitted_clock=started)
         self.save()
         self.log('PBS_SUBMISSION_INTENT', token=token, host_id=host, resources=spec['resources'], reason=demand)
         self.gateway.call(dict(action='ensure', spec=spec))
@@ -441,7 +463,13 @@ class PbsManager:
             if record.get('status') != allocation['status']:
                 self.log('PBS_ALLOCATION_STATE', token=token, job_id=allocation['job_id'],
                     status=allocation['status'], worker=allocation['worker'])
-            record.update(status=allocation['status'], observed=allocation, clock=stamp())
+            now = stamp()
+            worker = allocation.get('worker') or {}
+            started = record.get('submitted_clock') or {}
+            if (allocation['status'] == 'R' and worker.get('accepting')
+                    and 'submit_to_ready_seconds' not in record and now['clock_id'] == started.get('clock_id')):
+                record['submit_to_ready_seconds'] = max(0., now['monotonic'] - started['monotonic'])
+            record.update(status=allocation['status'], observed=allocation, clock=now)
             if allocation['status'] in TERMINAL or allocation['status'] == 'HISTORY_MISSING_RECONCILE_SPOOL':
                 self._harvest(allocation)
         for token, requests in data['requests'].items():
@@ -450,6 +478,9 @@ class PbsManager:
         shortage = len(outstanding) + bool(pending)
         active = [a for a in self.allocations if a['status'] not in TERMINAL]
         stopping = self.stop.is_set() or self.executor._user_stop_requested() or self.executor.state.closed
+        keep_for_preparation = (not (outstanding or pending) and not stopping and any(
+            a['status'] == 'R' and (a.get('worker') or {}).get('accepting') for a in active)
+            and self._recent_preparation_completion(self.readiness_wait_seconds()))
         for allocation in self.allocations:
             if allocation['status'] not in TERMINAL:
                 token, host = allocation['token'], allocation['host_id']
@@ -474,7 +505,7 @@ class PbsManager:
                     self.log('PBS_IDLE_ALLOCATION_RESIZE_DRAIN', token=token, host_id=host,
                              previous_cpus=current_cpus, compatible_ready_jobs=requested_slots)
                 self.controls[token] = dict(stop=stopping or record.get('resize_requested', False),
-                                            release_when_idle=queued == 0)
+                                            release_when_idle=not waiting and not keep_for_preparation)
                 if stopping and allocation['status'] in ('Q','H','W') and allocation.get('job_id') and not any(
                         row['host_id'] == allocation['host_id'] for row in self.executor._owned_attempts()):
                     result = self.gateway.call(dict(action='delete', token=allocation['token']))

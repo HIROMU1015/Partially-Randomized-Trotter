@@ -653,6 +653,7 @@ class Worker:
                     timing = dict(upload_roundtrip_seconds=time.monotonic()-started,
                                   bytes=sum(len(base64.b64decode(v)) for v in files.values()))
                     save_state(attempt, 'TRANSFERRED', duplicate=response.get('duplicate', False))
+                    Storage.reclaim_transferred_attempt(self.profile.get('storage_limit'), attempt)
                     event(self.profile, 'TRANSFER_ACK', job_id=assignment['job_id'], attempt_id=assignment['attempt_id'],
                           seconds=timing['upload_roundtrip_seconds'], bytes=timing['bytes'],
                           duplicate=response.get('duplicate', False))
@@ -788,6 +789,7 @@ def mailbox(profile, action, payload=None):
             if not duplicate:
                 save_state(attempt, 'TRANSFERRED', via='SSH_MAILBOX')
                 event(worker.profile, 'TRANSFER_ACK', job_id=payload['job_id'], attempt_id=payload['attempt_id'], via='SSH_MAILBOX')
+            Storage.reclaim_transferred_attempt(worker.profile.get('storage_limit'), attempt)
             return dict(ok=True, duplicate=duplicate)
         if action == 'status':
             metadata_only = payload.get('metadata_only') is True

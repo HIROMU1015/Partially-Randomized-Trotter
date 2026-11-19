@@ -1363,9 +1363,40 @@ class DistributedExecutor(ConcurrentExecutor):
                  if self._host_supports_stage(host,record['request'])}
         if targets.intersection(record['decision']['eligible_host_ids']):return None
         if targets and not targets.issubset(record.get('failures',{})):return None
+        reasons = deepcopy(record.get('failures', {}))
+        request = record['request']
+        policy, error = self._host_admission_policy()
+        manager = self.pbs_manager
+        for host in (self.distributed.get('preparation_profiles') or {}):
+            if host in targets or host in reasons:
+                continue
+            admission = self._host_admission(host, policy, error)
+            if not self._host_supports_stage(host, request):
+                reasons[host] = 'STAGE_OR_PROVIDER_NOT_CONFIGURED'
+            elif not admission['accepting'] or admission['max_slots'] == 0:
+                reasons[host] = 'HOST_ADMISSION_HOLD'
+            elif manager is not None and host in manager.configured:
+                from .rpe_pbs import task_estimate
+                if not (task_estimate(request, manager.settings, host) or 0) > 0:
+                    reasons[host] = 'PBS_WALLTIME_ESTIMATE_UNAVAILABLE'
+                    continue
+                try:
+                    self._pending_preparation_assignment(record, host)
+                except (OSError, KeyError, ValueError, TypeError) as exc:
+                    reasons[host] = str(exc)
+                    continue
+                # PBS may have to acquire a worker just to check this request.
+                # Keep only this candidate's lane waiting for a bounded period.
+                started = record.get('probe_started_epoch', 0)
+                if 0 <= time.time() - started < manager.readiness_wait_seconds():
+                    return None
+                reasons[host] = 'PBS_PREPARATION_READINESS_WAIT_EXPIRED'
+            else:
+                reasons[host] = (((self.hosts.get(host, {}).get('resource_report') or {}).get('storage') or {}).get('reason')
+                                 or 'HOST_HAS_NO_FRESH_ACCEPTING_OFFER')
         return dict(status='HOST_ELIGIBILITY_HOLD',
             reason='ALL_PARTICIPATING_PREPARATION_HOSTS_FAIL_OR_UNCHECKED'if targets else'NO_PARTICIPATING_PREPARATION_HOST',
-            host_reasons=deepcopy(record.get('failures',{})),probe_host_ids=sorted(targets))
+            host_reasons=reasons,probe_host_ids=sorted(targets))
 
     def _pending_preparation_challenges(self, host):
         if host not in self._preparation_probe_targets():return []
@@ -1473,11 +1504,17 @@ class DistributedExecutor(ConcurrentExecutor):
                     if (approved is True and budget not in (0,) and self.distributed.get('preparation_profiles')
                             and not self.store.artificial(request) and job_id not in self.preparation_pending):
                         empty=dict(request_sha256=Q.digest(request),eligible_host_ids=[],host_fingerprints={},execution_profiles={},reasons=['PREPARATION_HOST_METADATA_PENDING'])
-                        self.preparation_pending[job_id]=dict(request=request,budget=budget,approved=approved,contract=deepcopy(contract),decision=empty,reports={},failures={})
+                        self.preparation_pending[job_id]=dict(request=request,budget=budget,approved=approved,contract=deepcopy(contract),decision=empty,reports={},failures={},probe_started_epoch=time.time())
                         self._save_preparation_pending()
                     self.eligibility_holds[job_id] = eligibility
                     self.preparation_holds[job_id] = dict(status='HOST_ELIGIBILITY_HOLD',reason='NO_MATCHING_PREPARATION_STAGE_HOST',host_eligibility=eligibility)
-                    self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],reason='NO_MATCHING_PREPARATION_STAGE_HOST')
+                    pending = self.preparation_pending.get(job_id)
+                    hold = self._preparation_probe_hold(pending) if pending is not None else self.preparation_holds[job_id]
+                    if hold is None:
+                        self.log(event='PREPARATION_PROBE_PENDING',job=job_id,stage=preparation['stage'])
+                    else:
+                        self.log(event='PREPARATION_HOLD',job=job_id,stage=preparation['stage'],
+                            reason=hold['reason'],host_reasons=hold.get('host_reasons', {}))
                     return job_id
                 if not self.store.reserve(method, job_id, request, budget, approved, contract=task_contract,eligibility=eligibility):
                     self.preparation_holds[job_id] = dict(status='PREPARATION_BUDGET_OR_PERMISSION_HOLD',reason='EXISTING_STAGE_CONTRACT_DOES_NOT_ALLOW_NEW_CALL')
