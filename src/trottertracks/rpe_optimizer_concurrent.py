@@ -862,6 +862,10 @@ class DistributedExecutor(ConcurrentExecutor):
             return dict(hosts={}), str(exc)
 
     def _host_admission(self, host, policy, error=None):
+        execution_hosts = self.distributed.get('execution_hosts')
+        if execution_hosts is not None and host not in execution_hosts:
+            return dict(accepting=False, optional=True, max_slots=0,
+                        reason='OUTSIDE_FIXED_EXECUTION_HOSTS')
         rule = policy['hosts'].get(host, {})
         return dict(accepting=rule.get('accepting', True) and error is None,
                     optional=rule.get('optional', False), max_slots=rule.get('max_slots'),

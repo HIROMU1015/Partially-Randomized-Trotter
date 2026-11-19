@@ -60,6 +60,27 @@ class Tests(unittest.TestCase):
         self.assertEqual(load(result['preflight']['report_path'])['refused'],refused)
         self.assertGreaterEqual(result['preflight']['elapsed_seconds'],0)
 
+    def test_fixed_pbs_only_preview_and_prepare_remove_other_compute_paths(self):
+        path = pathlib.Path(self.config['round'])
+        spec = load(path)
+        distributed = spec.setdefault('executor', {}).setdefault('distributed', {})
+        distributed.update(local_worker={'host_id':'local'}, relay={'workers':[]},
+            required_hosts=['local'], preparation_profiles={'local':{},'pbs-0':{}},
+            pbs={'workers':[{'host_id':'pbs-0'}]})
+        write(path, spec)
+        gateway = Gateway(self.config)
+        value = request(4, 6)
+        value['scope']['execution_hosts'] = ['pbs-0']
+        preview = gateway.handle(dict(value, action='preview'))
+        self.assertEqual(preview['applied']['execution_hosts'], ['pbs-0'])
+        gateway.handle(dict(value, action='prepare'))
+        run = self.home/'state'/'runs'/preview['run_id']
+        pinned = load(run/'ROUND.requested.json')['executor']['distributed']
+        self.assertEqual(pinned['preparation_profiles'], {'pbs-0':{}})
+        self.assertEqual(pinned['required_hosts'], [])
+        self.assertNotIn('local_worker', pinned)
+        self.assertNotIn('relay', pinned)
+
     def test_shared_pbs_walltime_is_displayed_and_pinned_at_prepare(self):
         common = pathlib.Path(self.config['round'])
         round_spec = load(common)

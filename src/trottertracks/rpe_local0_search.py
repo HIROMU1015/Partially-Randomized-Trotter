@@ -110,7 +110,7 @@ def resolve(config, request):
     keys(request, {'scope', 'instruction', 'action', 'release', 'run_id'}, 'request')
     scope = deepcopy(request.get('scope') or {})
     keys(scope, {'system', 'methods', 'per_method', 'shots', 'stop', 'preparation_budgets', 'scaled_shots',
-                 'pbs_walltime_overrides'}, 'scope')
+                 'pbs_walltime_overrides', 'execution_hosts'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
     if 'system' in scope and scope['system'] != problem.get('problem', {}).get('system'):
         raise RequestError('scope.system', 'system is unavailable on the selected release')
@@ -173,6 +173,25 @@ def resolve(config, request):
     if 'max_new_q3_per_method' in spec:
         spec['max_new_q3_per_method'] = {m: spec['max_new_q3_per_method'].get(m, 0) for m in methods}
     canonical = dict(methods=methods, per_method={}, shots=scope.get('shots', 'auto'), stop=scope.get('stop', {}))
+    if 'execution_hosts' in scope:
+        hosts = scope['execution_hosts']
+        distributed = executor.get('distributed') or {}
+        workers = (distributed.get('pbs') or {}).get('workers', [])
+        configured = {worker['host_id'] for worker in workers}
+        if (not isinstance(hosts, list) or not hosts or
+                any(not isinstance(host, str) or host not in configured for host in hosts)):
+            raise RequestError('scope.execution_hosts', 'choose a nonempty list of fixed PBS host IDs')
+        hosts = sorted(set(hosts))
+        distributed['execution_hosts'] = hosts
+        distributed['pbs']['workers'] = [worker for worker in workers if worker['host_id'] in hosts]
+        for name in ('local_worker', 'relay'):
+            distributed.pop(name, None)
+        distributed['required_hosts'] = [host for host in distributed.get('required_hosts', []) if host in hosts]
+        distributed['preparation_profiles'] = {
+            host: profile for host, profile in (distributed.get('preparation_profiles') or {}).items()
+            if host in hosts
+        }
+        canonical['execution_hosts'] = hosts
     fragment_count = problem['problem']['hamiltonian_data']['expected']['fragment_count']
     for method, values in scope.get('per_method', {}).items():
         if method not in methods: raise RequestError('scope.per_method.' + method, 'method is not selected')
@@ -351,6 +370,8 @@ def summarize(problem, spec, canonical):
     if spec.get('search_overrides', {}).get('work_conserving_search') is True:
         result['work_conserving_search'] = True
     execution = spec.get('executor', {})
+    if 'execution_hosts' in canonical:
+        result['execution_hosts'] = canonical['execution_hosts']
     worker_limits = (execution.get('distributed') or {}).get('worker_storage_limits_bytes')
     if worker_limits:
         result['worker_storage_limits_bytes'] = worker_limits

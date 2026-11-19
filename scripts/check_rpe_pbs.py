@@ -74,7 +74,7 @@ def prepare(directory, source, settings=None, *, exercise_faults=False):
         ['git','rev-parse','HEAD'],cwd=source,text=True).strip()))
 
 
-def driver_type(fixture, *, preparation_source=None, pf_fixture=None):
+def driver_type(fixture, *, preparation_source=None, pf_fixture=None, all_methods=False):
     from trottertracks.rpe_preparation_queue import normalize_preparation_request
     Base = fixture.fixture_driver()
 
@@ -91,37 +91,47 @@ def driver_type(fixture, *, preparation_source=None, pf_fixture=None):
                 with save_lock: return saved()
             completion.save = types.MethodType(save,completion)
 
-            def bind(obj, runtime): obj.runtime = runtime; return obj
-            def complete(obj, request):
+            def prepare_candidate(obj, method, identity):
                 runtime = obj.runtime
-                cid = json.dumps(request,sort_keys=True)
-                def task(stage, identity, dependencies=(), inputs=None):
+                def task(stage, name, dependencies=(), inputs=None):
                     faults = read(obj.root.parent/'ROUND.json').get('artificial_pbs_fault_exercise', False)
                     command=['@PYTHON@','-B','@SOURCE@/scripts/artificial_preparation_leaf.py',
                         '--stage',stage,'--output','@WORK@/products','--sleep',
                         '3' if faults and stage == 'signal' else '.2']
                     if stage == 'audit': command += ['--inputs','@INPUTS@']
+                    provider = method if all_methods else 'ARTIFICIAL'
                     value=normalize_preparation_request(dict(method='ARTIFICIAL',route=dict(kind='preparation'),
-                        preparation=dict(stage=stage,provider='ARTIFICIAL_'+stage,artificial=True,
-                            identity=identity,command=command,outputs=['products'],
+                        preparation=dict(stage=stage,provider=provider+'_'+stage,artificial=True,
+                            identity=name,command=command,outputs=['products'],
                             source=deepcopy(preparation_source or runtime.executor.source_manifest),dependencies=list(dependencies),
                             dependency_inputs=inputs or {})))
                     return runtime.executor.submit_preparation(value, approved=True,budget=100,
                         contract=dict(artificial=True))
-                signal=task('signal',cid)
+                signal=task('signal',identity)
+                shared = identity if all_methods else 'ONE_SHARED_ARTIFICIAL_CIRCUIT'
                 if pf_fixture is None:
-                    compile=task('compile','ONE_SHARED_ARTIFICIAL_CIRCUIT')
-                    compiles = [(compile, 'products')]
+                    compiles = [(task('compile', shared), 'products')]
                 else:
                     compiles = submit_pf_fixture(runtime.executor, pf_fixture)
-                audits = [task('audit','SHARED_CROSS_HOST_AUDIT'+(':'+job if pf_fixture else ''),(job,), {job:{
+                audits = [task('audit','AUDIT:'+shared+(':'+job if pf_fixture else ''),(job,), {job:{
                     prefix+'/circuit.txt':'compiled/circuit.txt',
                     prefix+'/receipt.json':'compiled/receipt.json'}}) for job, prefix in compiles]
                 for job in (signal, *(job for job, _ in compiles), *audits):
                     result=runtime.executor.preparation_result(job,wait=True)
                     if result['status'] != 'PREPARATION_COMPLETE': raise AssertionError(result)
+
+            def bind(obj, runtime):
+                obj.runtime = runtime
+                if all_methods:
+                    for method in ('FULL_PF', 'TRUNCATED_PF'):
+                        prepare_candidate(obj, method, 'ARTIFICIAL_'+method)
+                return obj
+
+            def complete(obj, request):
+                prepare_candidate(obj, request['method'], json.dumps(request,sort_keys=True))
                 with save_lock:
                     return original(request)
+
             def install_snapshot(obj, context, problem, keys):
                 with save_lock:
                     records = deepcopy([record for record in obj.state['records'].values()
@@ -131,6 +141,20 @@ def driver_type(fixture, *, preparation_source=None, pf_fixture=None):
             completion.complete=types.MethodType(complete,completion)
             completion.install_snapshot=types.MethodType(install_snapshot,completion)
             return completion
+        def context(self, problem):
+            context = super().context(problem)
+            if all_methods:
+                from fractions import Fraction
+                for method in ('FULL_PF', 'TRUNCATED_PF'):
+                    candidate_id = 'ARTIFICIAL_'+method
+                    context['candidates'].append(dict(method=method,family='PF',name=candidate_id,
+                        key=dict(p=10 if method=='FULL_PF' else 6,formula='2nd',delta_over_h='1'),
+                        configuration_id=candidate_id,ready=True,prices=[Fraction(1)]*26,
+                        caps=[1]*12+[2],needs=[],labels=[],saved_points=[],
+                        price_status='ARTIFICIAL_ONLY',signal_source='ARTIFICIAL_ONLY'))
+                    context['expected'][candidate_id] = dict(total_configuration_id=candidate_id,
+                                                              binding_id='ARTIFICIAL_BINDING')
+            return context
     return Driver
 
 
