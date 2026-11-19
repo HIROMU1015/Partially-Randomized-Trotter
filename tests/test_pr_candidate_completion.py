@@ -117,6 +117,30 @@ def main():
             self.assertEqual(json.loads(command[3]), paths)
             self.assertFalse(call.call_args.kwargs['science'])
 
+    def test_legacy_pauli_missing_input_is_rechecked_only_without_science(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root/'receipt.json'
+            source.touch()
+            c = C.Completion.__new__(C.Completion)
+            c.settings = {'pauli_saved_inputs': {'/old/receipt.json': str(source)}}
+            record = dict(method='PR_PAULI', reason='IndexError: list index out of range')
+            C.put(root/'A_BASE.json', dict(status='NEEDS_INPUT_SOURCE', items=[],
+                                         signal_price_Q3_evaluation_performed=False))
+            C.put(root/'A_BASE.STARTED.json', dict(science=False, source='fixed'))
+            C.put(root/'A_BASE.RETURN.json', dict(returncode=0, signal=None, source='fixed'))
+            source.unlink()
+            self.assertFalse(c.recoverable_pauli_input_hold(record, root))
+            # The mapped input is external to the attempt evidence directory.
+            attempt = root/'attempt'
+            attempt.mkdir()
+            for path in root.glob('A_BASE.*'):
+                path.rename(attempt/path.name)
+            source.touch()
+            self.assertTrue(c.recoverable_pauli_input_hold(record, attempt))
+            (attempt/'PAULI_SIGNALS.STARTED.json').touch()
+            self.assertFalse(c.recoverable_pauli_input_hold(record, attempt))
+
     def test_registered_no_drop_selected_for_ld7_ld8_ld9_without_science(self):
         for prefix in (7,8,9):
             with self.subTest(prefix=prefix),tempfile.TemporaryDirectory()as tmp:

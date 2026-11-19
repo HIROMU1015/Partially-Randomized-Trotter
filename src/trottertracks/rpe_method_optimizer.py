@@ -733,13 +733,19 @@ class Executor:
 
     def prior_job(self, proposal, *, exclude=()):
         name = self.job_dir(proposal).name
-        # A same-key prior LAUNCH remains owned there, even without an outcome.
+        # Prefer an exact saved outcome across all prior directories. Retain
+        # unmatched and unfinished ownership when no reusable result exists.
+        fallback = None
         for marker in ('OUTCOME.json', 'LAUNCH.json'):
             for base in self.prior_run_dirs:
                 job = base / 'jobs' / self.method / name
-                if (job / marker).exists() and (not exclude or job.resolve() not in exclude):
+                if not (job / marker).exists() or (exclude and job.resolve() in exclude):
+                    continue
+                if marker == 'OUTCOME.json' and self.same_route(job, proposal['configuration_id']):
                     return job
-        return None
+                if fallback is None:
+                    fallback = job
+        return fallback
 
     def has_job(self, proposal):
         job = self.job_dir(proposal)

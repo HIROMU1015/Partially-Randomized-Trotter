@@ -412,6 +412,30 @@ class Completion:
             recovered_by='METADATA_REQUERY_NO_SCIENTIFIC_RETRY')
         self.save();return record
 
+    def recoverable_pauli_input_hold(self, record, directory):
+        """An old empty metadata response can be rechecked with fixed saved inputs."""
+        if (record.get('method') != 'PR_PAULI' or record.get('configuration')
+                or record.get('reason') != 'IndexError: list index out of range'):
+            return False
+        paths = getattr(self, 'settings', {}).get('pauli_saved_inputs') or {}
+        if not paths or not all(Path(path).is_file() for path in paths.values()):
+            return False
+        try:
+            # Any additional stage evidence keeps the old no-retry decision.
+            files = {p.name for p in directory.iterdir()}
+            if not files <= {'A_BASE.json', 'A_BASE.REQUEST.json', 'A_BASE.STARTED.json',
+                             'A_BASE.RETURN.json', 'A_BASE.log', 'saved-input-recheck'}:
+                return False
+            result = read(directory/'A_BASE.json')
+            started = read(directory/'A_BASE.STARTED.json')
+            receipt = read(directory/'A_BASE.RETURN.json')
+        except (OSError, ValueError):
+            return False
+        return (result.get('status') == 'NEEDS_INPUT_SOURCE' and result.get('items') == []
+                and result.get('signal_price_Q3_evaluation_performed') is False
+                and started.get('science') is False and receipt.get('returncode') == 0
+                and receipt.get('signal') is None and started.get('source') == receipt.get('source'))
+
     def complete(self,request):
         request=deepcopy(request)  # internal descriptor resolution must not change the caller's cache key
         if request['method']not in ('PR_PAULI','PR_DF'):raise ValueError('PR_CANDIDATE_COMPLETION_ONLY')
@@ -437,7 +461,11 @@ class Completion:
                 if previous.is_relative_to(self.directory.resolve()):
                     d=previous
             if old and old['status']=='READY_FOR_SEARCH':return dict(old,resumed=True)
-            if old and old['status'].startswith(('HELD','STOP','WAITING')):
+            recovered_input = (old is not None and old['status']=='HELD_TECHNICAL_FAILURE'
+                               and self.recoverable_pauli_input_hold(old, d))
+            if recovered_input:
+                d = d/'saved-input-recheck'
+            if old and old['status'].startswith(('HELD','STOP','WAITING')) and not recovered_input:
                 if old.get('scientific_failure'):return dict(old,resumed=True)
                 if not old.get('recoverable_preparation'):
                     self.ingest_price_results()
@@ -450,6 +478,9 @@ class Completion:
             rec=(dict(old,previous_hold=dict(status=old['status'],reason=old.get('reason')),status='SELECTED',
                       reason=None,recoverable_preparation=False)if old and old.get('recoverable_preparation')else
                  dict(method=request['method'],selection=request.get('selection'),request=deepcopy(request),status='SELECTED',key=identifier,directory=rel(d)))
+            if recovered_input:
+                rec['previous_hold'] = dict(status=old['status'],reason=old['reason'],
+                                            metadata_receipt=rel(d.parent/'A_BASE.RETURN.json'))
             if old and (old.get('signal_deferred_for_price') or old.get('deferred_configuration')):
                 rec.update(deferred_configuration=old.get('deferred_configuration') or old['configuration'],
                            deferred_tail_descriptor=old.get('deferred_tail_descriptor'))

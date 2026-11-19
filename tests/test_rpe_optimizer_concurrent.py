@@ -71,6 +71,22 @@ def run_fixture(directory,fast,*,methods=METHODS,configurations=2,budget=None,st
 
 
 class SchedulerTests(unittest.TestCase):
+    def test_prior_job_prefers_matching_completed_result_over_first_foreign_route(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            ex=O.Executor.__new__(O.Executor)
+            ex.method='PR_PAULI'
+            ex.prior_run_dirs=[root/'old',root/'same']
+            proposal=dict(configuration_id='fixed',vector=(1,2))
+            jobs=[p/'jobs/PR_PAULI/job' for p in ex.prior_run_dirs]
+            for job in jobs:
+                job.mkdir(parents=True)
+                (job/'OUTCOME.json').touch()
+            with patch.object(ex,'job_dir',return_value=root/'job'), patch.object(
+                    ex,'same_route',side_effect=lambda job,cid:job==jobs[1]):
+                self.assertEqual(ex.prior_job(proposal),jobs[1])
+                self.assertEqual(ex.prior_job(proposal,exclude=[jobs[1]]),jobs[0])
+
     def test_four_methods_same_adoption_order_best_and_stop(self):
         with tempfile.TemporaryDirectory()as tmp:
             old,_=run_fixture(Path(tmp)/'old',False)
