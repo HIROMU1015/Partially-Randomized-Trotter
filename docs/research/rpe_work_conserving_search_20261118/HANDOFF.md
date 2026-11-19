@@ -322,3 +322,13 @@ RomuTailの配置・検収証拠は `.rpe-central/deployment/romutail-mixed-meth
 通常Resumeで `search-d1fd259351dae2f86070` を再開した。固定版 `romutail-fleet-efficiency-3cea00961` の探索範囲と工程別予算を継承し、runの `HOST_ADMISSION.json` でWSLの新規受付を閉じた。§10.5照合はPASS。RomuTail・server2・PBSで実PR-Pauli Q3を中央回収した。4 CPUのPBS割当 `267466` の観測値は、壁時計197秒までの110 CPU秒で、全割当CPU時間の約14%。同じ採択条件の実Q3本体114.10秒に対し、割当から中央受領までは約180秒だった。準備済み要求の供給と割当から受領までの差が残る。
 
 容量監視は `LAUNCH.json` と `EXIT.json` の invocation IDを照合して、以前の終了receiptが残る再開runでも継続する。受付を閉じたrelay先は監視の対象外。事前に同じ評価条件の終了済みrunに中央原本があるローカルキャッシュも候補にし、コピーと原本の両方のSHA-256を照合する。待機・未確定入力、別の稼働中run、原本とreceiptは保全する。この手順でRomuTailの重複コピー65個（2,550,206,464 bytes）を除去し、50 GiB未満での受付再開を確認した。調査・回収のログは対象run内の `distributed/STORAGE_RECLAIM.log`。
+
+### PBS向けの先行照合と割当ごとの枠数
+
+分散autoの待機キューは、受付中で直近の状態が分かるworkerの枠数を使い、稼働中の処理に加えて次の一巡分を事前照合する。通常の予算・要求別適格性・割当・回収を使う。2件稼働中に次の2件が揃い、終了直後の次回pollで別の要求を2件取得できる回帰を追加した。継続・通常入口・PBSの回帰66件とPBS workerの回帰11件が通った。
+
+稼働中の元run `search-d1fd259351dae2f86070` から、運用修正版の `search-0d8c2bc34c58f349a12c`、さらにPBS workerの更新を含む `search-3a962b43686c76679768` へ順に引き継いだ。通常Previewで探索範囲と予算が同じであることを照合し、元の実行を回収し終えてから通常Resumeした。最終の明示releaseは `romutail-pbs-ready-wave-54b7f7416-allocation`。科学Q3 SOURCE・adapter・固定入力は元の探索から継承した。旧B0IのPBS trialは、終了した割当と元試行のファイル・起動前エラーを照合し、重複照合で安全に扱った。
+
+元runの再開後に終了したPBS割当4件は、PBSのcput合計1137秒／確保4242 CPU秒で26.8%。最初の継続版は待機の供給が増え、12 CPUを確保した。旧PBS workerは小さい割当時の1枠を持ち越していたため、同版全体は443／3448 CPU秒で12.8%。最終版には、既存の割当単位でslot trialとfeedbackを保存するPBS workerを適用した。Romulaptop WSLは中央の受付を戻し、固定releaseを配置した。
+
+2026-11-19 23:05 JST時点で最終版の最初の終了済みPBS割当2件（`267473`、`267474`、各終了コード0）は241／582 CPU秒で41.4%。`267474` では確保4 CPUで実PR-Pauli Q3が2件並行し、両方を中央で照合・回収した。同時に待機キューに4件残っていることを確認した。その後は待機3件を根拠に6 CPUの割当 `267475` を起動した。測定区間の候補・割当構成は同一ではないため、この比率は探索中の観測値として扱う。
