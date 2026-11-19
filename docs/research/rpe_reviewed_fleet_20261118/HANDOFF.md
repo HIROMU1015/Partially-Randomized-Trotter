@@ -53,6 +53,39 @@ PR-DF信号workerの修正を採用したreleaseは `romutail-df-signal-9ed5fcc9
 
 稼働中のH4探索は `search-f0ba946f506fd1e8e386` から `search-8b10307fd1b9fc375b6b` へ引き継いだ。旧PBSの3枠は終了し、旧PBSで受理したattemptは10件。§10.5でB0I 81、PR-Pauli 181、PR-DF 64件を照合した。最初のPBS枠 `267269.CPUcluster-PRISM` は `CPUcluster011` 上の4 CPUで、PR-PauliとB0IのQ3を各1件並行起動した。実測ピークが1件あたり2.06 CPU相当に達したため、既存の自動資源制御は稼働中の2件を継続させながら追加受付の上限を1件に下げた。運用記録は `.rpe-central/deployment/romutail-pbs-sizing-48ebf75d5-h4-continuation`。
 
+## 2026-11-19 PBSの候補補充とWSLの容量復旧
+
+H4の継続runは `search-bec31e449b46e6576743`、明示releaseは
+`romutail-pbs-candidate-feed-aacbd846f`。元run `search-3a962b43686c76679768`
+は受付停止後に結果を回収し、終了コード0を確認した。元runの準備台帳109件とQ3
+55件を引き継いだ。§10.5ではB0I 255件、PR-Pauli 278件、PR-DF 64件の保存評価が
+再利用可能だった。既定のcurrentは `romutail-mixed-methods-0c67daacd`。
+
+予算に達した準備要求がPBSのCPU需要に含まれ、確保後も実行に移れない状態があった。
+準備工程の予算残数の範囲で、未予約の入力照合だけを需要に数える。空き理由では、
+準備待ち、予算待ち、適格な候補の不足を分ける。今回の探索では保存価格が揃い、
+固定信号入力を照合できたPR-Pauli 3候補に信号枠を追加した。
+信号は67→70件、compileとauditは35件・14件。旧消費とQ3の累計上限なしを継承した。
+3件はRomuTailとserver2で完了し、候補が探索に戻った。
+
+PBSでは準備から戻った候補のQ3を1件採用した後、`267485.CPUcluster-PRISM`
+の14 CPU枠に別の評価を6件渡した。6件とも計算ノードでQ3本体の開始・終了を確認した。
+23:40 JST時点の利用率は、PBSのCPU時間を確保CPU数×稼働時間で割った集計で
+直前runの10.2%から継続runの15.2%へ上がった。14 CPU枠の計時・回収はこの時点で
+継続していた。全96 CPUを埋めるだけの継続的な候補数は、この観測では確認できていない。
+
+WSLの保留4件は元attemptで実行・回収し、中央で割当と採用が各1回だった。
+実機では中央とバイト単位で一致したキャッシュ12個を整理し、約2.17 GiBを回収した。
+稼働中の専用容量監視は、50 GiBに達して通常回収で足りない場合に、中央CASとの
+SHA-256照合を通ったWSLコピーを追加で回収する。実行中、未回収、未確定attemptの
+入力を保護する。使用量が下がれば次の容量確認から受付が戻る。WSLの受付スイッチは
+従来の状態を使う。この監視を別の継続runでも使う場合は、そのrunの実行に合わせて
+`scripts/reclaim_rpe_worker_storage.py RUN_DIRECTORY --watch` を起動する。
+
+固定版はRomuTail、server2、WSL、PBSに配置し、人工・回帰72件とsubtest 2件が通過した。
+server1は停止中。旧run、配分・採用の証拠と使用量ログはRomuTailの
+`.rpe-central/state/runs` に保存している。
+
 ## 通常入口
 
 - Romulaptopでは既存の `Invoke-RpeSearch.ps1 -Action Preview -RequestFile SCOPE.json` を使う。RomuTailのCLIは `scripts/run_rpe_search.py --config .rpe-central/CLIENT.json --action preview --request-file SCOPE.json`。
