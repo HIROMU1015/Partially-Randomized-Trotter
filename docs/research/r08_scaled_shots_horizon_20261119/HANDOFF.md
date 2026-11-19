@@ -32,10 +32,11 @@ Cの通常同期には倍率・Mの読込と従来の方向表示を反映した
 Romulaptopの通常閲覧用 `H4-search-map/index.html` は公開版とSHA-256が一致し、倍率欄と
 従来の方向表示の実装が届いたことを確認した。人工結果は検証用の保存先で扱った。
 
-WSLは既存の通常配備基点がなく、補完用bundleを用意した時点で停止中だった。
-次回の起動後は `.rpe-central/deployment/romutail-scaled-shots-9ab86dadc/WSL-CATCHUP.bundle` を
-既存 `3cea00961` 系列から取り込み、新releaseの `HOST.json` と `RELEASE_COMPONENTS.json` で配置照合する。
-server1は復帰後に同じ構成で配置し、対応routeの保存入力dry-checkを通してから参加する。
+WSLは利用者の指示で起動し、`.rpe-central/deployment/romutail-scaled-shots-9ab86dadc/WSL-CATCHUP.bundle` を
+既存 `3cea00961` 系列から取り込んだ。新controller・worker・adapterの固定SHAを照合し、
+WSLで採用済みのPR-Pauli要求 `812d57780623a54ba41b` の保存入力でM=11、12のdry-checkが通過した。
+M=13は固定Q3の検証域外で保留。RomuTailからの通常照会で受付ON・4枠を確認した。
+server1は復帰後に新releaseを配置し、対応routeの保存入力dry-checkを通してから参加する。
 各ホストに必要な配置・証拠はRomuTailの `.rpe-central/deployment/romutail-scaled-shots-9ab86dadc`
 にある。[共通運用ルール](../rpe_distributed_operations.md)
 
