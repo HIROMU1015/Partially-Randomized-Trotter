@@ -16,7 +16,7 @@ class PreparationRepairTests(unittest.TestCase):
         self.put('EXIT.json', {'invocation_id':'fixed','returncode':0})
         self.put('LAUNCH.json', {'invocation_id':'fixed'})
         self.put('distributed/relay/STATUS.json', {'stopped':True})
-        self.request={'preparation':{'provider':'DF_DESCRIPTOR'}}
+        self.request={'request_id':'task','preparation':{'provider':'DF_DESCRIPTOR','dependencies':[]}}
         self.sha=fingerprint(self.request)
         self.job='jobs/PREPARATION:signal/task'
         self.put(self.job+'/REQUEST.json', self.request)
@@ -30,7 +30,8 @@ class PreparationRepairTests(unittest.TestCase):
         self.db.commit()
         self.original={'method':'PR_DF','status':'HELD_WITH_REASON','scientific_failure':True,'reason':'failed'}
         self.put('completion/STATE.json', {'records':{'selected':self.original,'other':dict(self.original)}})
-        self.put('completion/candidates/selected/DF_DESCRIPTOR.DISTRIBUTED.json', {'job_id':'task','request':self.request})
+        self.put('completion/candidates/selected/DF_DESCRIPTOR.DISTRIBUTED.json',
+                 {'job_id':'task','request':{'preparation':{'provider':'DF_DESCRIPTOR'}}})
         self.repair={'state_file':str(self.parent/'completion/STATE.json'),'record_keys':['selected'],'job_ids':['task']}
 
     def put(self, name, value):

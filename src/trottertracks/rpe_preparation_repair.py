@@ -69,7 +69,17 @@ def retry_records(records, repairs, *, pf=False):
             for marker in directory.rglob('*.DISTRIBUTED.json'):
                 task = read(marker).get('job_id')
                 if task in attempts:
-                    if read(marker).get('request') != read(Path(attempts[task]['job_directory'])/'REQUEST.json'):
+                    original_request = deepcopy(read(marker).get('request'))
+                    submitted_request = read(Path(attempts[task]['job_directory'])/'REQUEST.json')
+                    if not isinstance(original_request, dict) or not isinstance(original_request.get('preparation'), dict):
+                        raise ValueError('Preparation repair candidate/task binding differs')
+                    # Submission assigns the task ID and the default empty
+                    # dependency list after the bridge freezes its leaf.
+                    if 'request_id' not in original_request:
+                        original_request['request_id'] = task
+                    original_request['preparation'].setdefault('dependencies', [])
+                    submitted_request['preparation'].setdefault('dependencies', [])
+                    if original_request != submitted_request:
                         raise ValueError('Preparation repair candidate/task binding differs')
                     matches.append(task)
             if not matches:
