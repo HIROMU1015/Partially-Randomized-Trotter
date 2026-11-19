@@ -462,6 +462,7 @@ def route_supports_configuration(rule, cid, reader):
     allowed = rule.get('configuration_ids')
     if allowed not in (None, '*') and cid not in allowed:
         return False
+    cid = (rule.get('horizon_projection') or {}).get('source_configuration_id', cid)
     if rule.get('kind') in ('pauli_b_common_entry', 'prdf_d2_common_entry'):
         entry = (rule.get('configurations') or {}).get(cid) or {}
         return all(entry.get(k) is not None for k in
@@ -703,6 +704,7 @@ class Executor:
 
     def pf_template_source(self, rule, cid):
         """Effective first PF template SOURCE; unrelated additions are harmless."""
+        cid = (rule.get('horizon_projection') or {}).get('source_configuration_id', cid)
         templates=rule['templates'];key=(cid,json.dumps(templates,sort_keys=True))
         if key in self.pf_template_cache:
             return self.pf_template_cache[key]
@@ -723,7 +725,7 @@ class Executor:
             pf=before.get('kind')==now.get('kind')=='pf_b_pf6'
             omitted=('configurations','configuration_ids','existing_caller','configurations_file')+(('templates',)if pf else())
             fixed=lambda r:{k:v for k,v in r.items()if k not in omitted}
-            entry=lambda r:(r.get('configurations')or{}).get(cid)
+            entry=lambda r:(r.get('configurations')or{}).get((r.get('horizon_projection')or{}).get('source_configuration_id',cid))
             if not (old.get('configuration_id')==cid and fixed(before)==fixed(now) and entry(before)==entry(now)
                     and old.get('expected')==json.loads(json.dumps(self.expected_for(cid,now),default=str))):
                 return False
@@ -910,13 +912,14 @@ class Executor:
         answer=dict(answer,failure_scope='GLOBAL')
         if getattr(getattr(self,'state',None),'failure',None):return answer
         reason=answer.get('reason');job=Path(job)
-        if reason not in ('COUNT_ONLY_SCOPE_EXCEEDED','ADAPTER_EXIT_WITHOUT_OUTCOME'):return answer
+        pre_api = ('COUNT_ONLY_SCOPE_EXCEEDED', 'OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN')
+        if reason not in (*pre_api, 'ADAPTER_EXIT_WITHOUT_OUTCOME'):return answer
         try:
             request=load_json(job/'REQUEST.json');nx,ny=split(proposal['vector'])
             if(request['configuration_id']!=proposal['configuration_id']or request['N_X']!=nx or request['N_Y']!=ny
                 or request['request_id']!=self.job_dir(proposal).name or not self.same_route(job,proposal['configuration_id'])):
                 return answer
-            if reason=='COUNT_ONLY_SCOPE_EXCEEDED'and type(answer.get('scientific_evaluation_calls'))is int and answer['scientific_evaluation_calls']==0:
+            if reason in pre_api and type(answer.get('scientific_evaluation_calls'))is int and answer['scientific_evaluation_calls']==0:
                 answer.update(failure_scope='CONFIGURATION',failure_kind='PRE_API_SCOPE_REJECTION')
             elif reason=='ADAPTER_EXIT_WITHOUT_OUTCOME':
                 receipt=load_json(job/'PROCESS_RETURN.json')
@@ -934,7 +937,7 @@ class Executor:
             checks = dict(configuration=ident.get('configuration_id') == proposal['configuration_id'],
                           allocation=ident.get('allocation') == [dict(m=m, N_X=x, N_Y=y) for m, (x, y) in enumerate(zip(nx, ny))],
                           contract=ident.get('contract_matches') is True)
-            for key in ('total_configuration_id', 'binding_id'):
+            for key in ('total_configuration_id', 'binding_id', 'M'):
                 if want.get(key) is not None:
                     checks[key] = ident.get(key) == want[key]
             if not all(checks.values()):
@@ -942,9 +945,15 @@ class Executor:
         source = 'ARTIFICIAL_JOB' if out.get('artificial') else 'NEW_Q3_JOB'
         lower = None if out.get('MSE_lower') is None else frac(out['MSE_lower'])
         upper = None if out.get('MSE_upper') is None else frac(out['MSE_upper'])
-        return self.scope_unknown(job,proposal,dict(status=status, reason=reason, MSE_lower=lower, MSE_upper=upper, source=source, calls=calls,
-                    scientific_evaluation_calls=out.get('scientific_evaluation_calls'),
-                    job=str(job.relative_to(self.root)) if job.is_relative_to(self.root) else str(job), label=None))
+        result = dict(status=status, reason=reason, MSE_lower=lower, MSE_upper=upper, source=source, calls=calls,
+                      scientific_evaluation_calls=out.get('scientific_evaluation_calls'),
+                      job=str(job.relative_to(self.root)) if job.is_relative_to(self.root) else str(job), label=None)
+        origin = proposal.get('origin')
+        if origin is None and (job / 'REQUEST.json').is_file():
+            origin = load_json(job / 'REQUEST.json').get('origin')
+        if origin and origin.get('kind') == 'RPE_SCALED_SHOTS_V1':
+            result['allocation_rule'] = origin['kind']
+        return self.scope_unknown(job, proposal, result)
 
 
 def apply_published(candidates, routes):
@@ -1439,6 +1448,12 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     if hold:
                         c['execution_hold']=hold;c['execution_needs'].append('SAVED_JOB_REVIEW_REQUIRED')
                     else:c.pop('execution_hold',None)
+        base_candidates = cands
+        if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
+            from . import rpe_scaled_shots as scaled
+            policy = scaled.settings(search['scaled_shots'])
+            cands = scaled.horizon_candidates(base_candidates, problem, policy,
+                                              ex if executor is not None else None, context.get('catalog'))
         start = initial if isinstance(initial, str) else initial.get(name, [])
         knowledge = ingest(initial_knowledge(context['saved'], cands, start), cands, extra_results)
         budget = max_new.get(name, 0) if isinstance(max_new, dict) else max_new
@@ -1446,7 +1461,6 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         table = context['saved'].table if saved_is_free else {}
         prefetch = None
         if executor is not None:
-            ex = executor.for_method(name)
             answer, spent = ChainBackend(context['saved'], ex), ex.launched(name)
             free = lambda p, ex=ex: (p['configuration_id'], p['vector']) in table or ex.has_job(p)
             if getattr(ex, 'supports_nonblocking_prefetch', False) and search.get('rule') == 'METHOD_MINIMUM_PRIORITY_V2':
@@ -1459,7 +1473,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         if executor is not None and executor.prior_run_dirs:
             ingest_start = time.perf_counter()
             executor.for_method(name).log(event='PRIOR_INGEST_START')
-            known, refused = executor.for_method(name).prior_records(cands)
+            known, refused = ex.prior_records(cands)
             executor.for_method(name).log(event='PRIOR_INGEST_END', seconds=time.perf_counter()-ingest_start,
                                           reused=len(known), refused=len(refused))
             fresh = {k: v for k, v in known.items() if k not in knowledge}
@@ -1469,19 +1483,21 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         else:
             prior = None
         prior_q3_holds = [item for item in getattr(executor, 'prior_q3_holds', ()) if item['method'] == name]
-        if prior_q3_holds and search.get('rule') != 'METHOD_MINIMUM_PRIORITY_V2':
-            raise ValueError('Prior Q3 holds require the V2 priority search')
-        if search.get('rule') == 'METHOD_MINIMUM_PRIORITY_V2':
+        if prior_q3_holds and search.get('rule') not in ('METHOD_MINIMUM_PRIORITY_V2', 'RPE_SCALED_SHOTS_V1'):
+            raise ValueError('Prior Q3 holds require an isolated-candidate search')
+        if search.get('rule') in ('METHOD_MINIMUM_PRIORITY_V2', 'RPE_SCALED_SHOTS_V1'):
             from trottertracks import rpe_priority_search as P
             refresh_ready = None
             if ready_source is not None:
-                pending_ready, take_ready = ready_source.subscribe(name, context, cands, ex)
+                pending_ready, take_ready = ready_source.subscribe(name, context, base_candidates, ex)
                 ex.ready_pending = pending_ready
 
                 def refresh_ready():
                     added = take_ready()
                     if not added:
                         return [], {}
+                    if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
+                        added = scaled.horizon_candidates(added, problem, policy, ex, context.get('catalog'))
                     ids = {c['configuration_id'] for c in added}
                     cands[:] = [c for c in cands if c['configuration_id'] not in ids] + added
                     saved = ingest(initial_knowledge(context['saved'], added, start), added, extra_results)
@@ -1506,19 +1522,31 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
                     def saved(p):
                         return (p['configuration_id'], p['vector']) in table
                     ex.prefetch_standby(None if choice is None or saved(choice) else choice, [p for p in proposals if not saved(p)])
-            result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
-                                    baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),
-                                    routes=problem.get('q3_routes'), spent=spent, free=free, science_approved=science_approved,
-                                    prefetch=prefetch, on_missing=search.get('on_missing', 'STOP'), facts=context.get('facts'), log=log,
-                                    prefetch_state=getattr(ex, 'prefetch_state', None) if executor is not None else None,
-                                    refresh_ready=refresh_ready, standby=standby,
-                                    search_observations=ex.search_observations if standby is not None else None,
-                                    search_profile=ex.search_profile_for_proposal if standby is not None else None,
-                                    prior_q3_holds=prior_q3_holds,
-                                    retire_priced_out=getattr(ex,'retire_priced_out',None) if executor is not None else None)
-            prep = (problem['methods'][name].get('generation') or {}).get('preparation')
-            if prep and search.get('prepare_kappa_proposals'):
-                result['input_requests'] = prepare_kappa_requests(root, problem, context, name, prep, result['input_requests'])
+            if search.get('rule') == 'RPE_SCALED_SHOTS_V1':
+                def submit_standby(choice, proposals):
+                    if standby is not None:
+                        standby(choice, proposals)
+                    elif prefetch is not None:
+                        prefetch(proposals[:max(0, search.get('lookahead', 1)-1)])
+                result = scaled.run(name, cands, knowledge, answer, search, threshold, budget,
+                                    spent=spent, free=free, science_approved=science_approved,
+                                    refresh_ready=refresh_ready, submit_standby=submit_standby,
+                                    held=prior_q3_holds,
+                                    flagged_stop=(lambda: (ex.run_dir/'STOP_REQUESTED.json').exists()) if executor is not None else None)
+            else:
+                result = P.run_priority(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
+                                        baseline=(problem['methods'][name].get('generation') or {}).get('baseline'),
+                                        routes=problem.get('q3_routes'), spent=spent, free=free, science_approved=science_approved,
+                                        prefetch=prefetch, on_missing=search.get('on_missing', 'STOP'), facts=context.get('facts'), log=log,
+                                        prefetch_state=getattr(ex, 'prefetch_state', None) if executor is not None else None,
+                                        refresh_ready=refresh_ready, standby=standby,
+                                        search_observations=ex.search_observations if standby is not None else None,
+                                        search_profile=ex.search_profile_for_proposal if standby is not None else None,
+                                        prior_q3_holds=prior_q3_holds,
+                                        retire_priced_out=getattr(ex,'retire_priced_out',None) if executor is not None else None)
+                prep = (problem['methods'][name].get('generation') or {}).get('preparation')
+                if prep and search.get('prepare_kappa_proposals'):
+                    result['input_requests'] = prepare_kappa_requests(root, problem, context, name, prep, result['input_requests'])
         elif search.get('incumbent_scope') == 'CONFIGURATION':
             result = run_by_configuration(name, cands, knowledge, answer, search, threshold, context['generate'], budget,
                                           problem.get('q3_routes'), spent, free, science_approved, prefetch)
@@ -1529,7 +1557,7 @@ def optimize(root, problem, *, context=None, methods=None, initial='all', extra_
         if executor is not None:
             out[name]['execution_holds']=list(executor.execution_holds.get(name,{}).values())
         out[name]['prior_rounds'] = prior
-        for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing', 'prior_q3_holds', 'self_price_floor_deferred'):
+        for key in ('unevaluated', 'input_requests', 'left', 'settings', 'prefetch_policy', 'selection_timing', 'prior_q3_holds', 'self_price_floor_deferred', 'scaled_shots'):
             if key in result:
                 out[name][key] = result[key]
         out[name]['budget'] = dict(max_new_q3='UNLIMITED_WITHIN_RANGE' if budget is None else budget, science_approved=science_approved,

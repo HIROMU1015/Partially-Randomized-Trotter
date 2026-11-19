@@ -109,6 +109,81 @@ def common_case(view, request):
     return case, inputs
 
 
+def horizon_of(request):
+    """Verify the whole integer allocation before routing any scaled request."""
+    if request.get('origin', {}).get('kind') != 'RPE_SCALED_SHOTS_V1':
+        if request['route'].get('horizon_projection'):
+            raise ValueError('A projected route requires the scaled-shot evaluation identity')
+        return None
+    M = request['origin']['M']
+    nx, ny = request['N_X'], request['N_Y']
+    if type(M) is not int or M < 0 or nx != ny or len(nx) != M + 1 or any(type(n) is not int or n < 1 for n in nx):
+        raise ValueError('Scaled allocation must contain M+1 positive symmetric rounds')
+    projection = request['route'].get('horizon_projection')
+    if projection:
+        source = projection['source_configuration_id']
+        source_M = projection['source_M']
+        value = json.dumps(['RPE_SCALED_SHOTS_V1', 'PREFIX', source, source_M, M], separators=(',', ':'))
+        if not (type(source_M) is int and M < source_M and M == projection['M']
+                and hashlib.sha256(value.encode()).hexdigest() == request['configuration_id']):
+            raise ValueError('Projected Q3 identity differs from its fixed source and horizon')
+    return M
+
+
+@contextmanager
+def horizon_inputs(projection):
+    """Bind the archived whole packet before consuming its validated prefix.
+
+    The fixed count enumerator, decoder and risk code receive only m=0..M.
+    The unused source rows are presented only to the metadata validator.
+    """
+    if projection is None:
+        yield
+        return
+    from unittest.mock import patch
+
+    kernel = sys.modules['trottertracks.rpe_signal_statistics_caller']
+    original = kernel.prepare
+    M, source_M = projection['M'], projection['source_M']
+
+    def prepare(config, packet, allocations, **kwargs):
+        if config['spec']['M'] != source_M or config['id'] != projection['source_configuration_id']:
+            raise ValueError('Original Q3 configuration/horizon differs from projection')
+        if len(allocations) != 1 or [row['m'] for row in allocations[0]['shots']] != list(range(M + 1)):
+            raise ValueError('Q3 projection requires one complete allocation')
+        used = allocations[0]['shots']
+        unused = [dict(m=m, N_X=1, N_Y=1) for m in range(M + 1, source_M + 1)]
+        entries = original(config, packet, [dict(allocations[0], shots=used + unused)], **kwargs)
+        if len(entries) != 1:
+            raise ValueError('Expected a single validated source entry')
+        entry = entries[0]
+        prepared = entry['prepared']
+        if prepared['M'] != source_M or [r['m'] for r in prepared['rows']] != list(range(source_M + 1)):
+            raise ValueError('Source Q3 packet is not a complete consecutive horizon')
+        original_input = entry['signal_input']
+        consumed = dict(original_input, means=original_input['means'][:M+1]) if 'means' in original_input else original_input
+        return [dict(entry, prepared=dict(prepared, M=M, rows=prepared['rows'][:M+1]),
+                     allocation=dict(entry['allocation'], shots=used), signal_input=consumed)]
+
+    with patch.object(kernel, 'prepare', prepare):
+        yield
+
+
+def scoped_case(view, request):
+    projection = request['route'].get('horizon_projection')
+    base = dict(request, configuration_id=projection['source_configuration_id']) if projection else request
+    case, inputs = build(view, base)
+    if projection:
+        radii = inputs['options']['phase_radii']
+        if len(radii) != projection['source_M'] + 1:
+            raise ValueError('Source Q3 phase radii are not bound to the complete source horizon')
+        case['horizon_projection'] = deepcopy(projection)
+        case['source_configuration_id'] = base['configuration_id']
+        case['effective_configuration_id'] = request['configuration_id']
+        inputs['options']['phase_radii'] = radii[:projection['M']+1]
+    return case, inputs
+
+
 def build(view, request):
     if request['route']['kind'] in ('pauli_b_common_entry','prdf_d2_common_entry'):
         return common_case(view, request)
@@ -284,7 +359,16 @@ def identity(result, case, inputs):
             return [strip(v, src) for v in value]
         return value
     src = record.get('source')
-    return dict(configuration_id=case.get('configuration_id') or case.get('original_configuration_id'),
+    projection = case.get('horizon_projection')
+    cid = case.get('configuration_id') or case.get('original_configuration_id')
+    if projection:
+        diagnostic = record['diagnostic']['deterministic_risk']
+        rounds = diagnostic['bounds']['total_state_dp']['rounds']
+        if [r['m'] for r in rounds] != list(range(projection['M'] + 1)) or cid != projection['source_configuration_id']:
+            raise ValueError('Returned Q3 terminal round/identity differs')
+        cid = case['effective_configuration_id']
+    return dict(configuration_id=cid,
+                **({'M': projection['M'], 'source_configuration_id': projection['source_configuration_id']} if projection else {}),
                 total_configuration_id=record.get('configuration_id'), binding_id=record.get('canonical_binding'),
                 signal_packet=case.get('signal_packet'), allocation=record.get('allocation', {}).get('shots'),
                 evaluation_target=record.get('evaluation_target'),
@@ -442,11 +526,17 @@ def prefix_cache_context(request,case,inputs,out):
     def event(value):
         with (Path(out)/'DP_PREFIX_EVENTS.jsonl').open('a')as f:
             f.write(json.dumps(dict(UTC=utc(),pid=os.getpid(),**value))+'\n')
+    checkpoints = profile.get('prefix_checkpoint_rounds') if directory is not None else []
+    selective = profile.get('prefix_selective_checkpoint_rounds',()) if directory is not None else ()
+    M = horizon_of(request)
+    if M is not None and checkpoints is not None:
+        checkpoints = [m for m in checkpoints if m < M]
+        selective = [m for m in selective if m < M]
     with C.installed(module,directory=directory,cache_namespace=namespace,
-                     checkpoint_rounds=profile.get('prefix_checkpoint_rounds') if directory is not None else [],
+                     checkpoint_rounds=checkpoints,
                      event_sink=event,max_bytes=profile.get('prefix_cache_max_bytes', C.DEFAULT_CACHE_MAX_BYTES),
                      parallel_residual=parallel_residual,profile_residual=profile.get('profile_dp_residual') is True,
-                     selective_rounds=profile.get('prefix_selective_checkpoint_rounds',()) if directory is not None else (),
+                     selective_rounds=selective,
                      selective_window_seconds=profile.get('prefix_selective_window_seconds',C.DEFAULT_SELECTIVE_WINDOW_SECONDS)):
         yield
 
@@ -472,12 +562,18 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     kind = request['route']['kind'];stage(out, 'JOB_START', mode=a.mode, kind=kind, pid=os.getpid())
     name = 'OUTCOME.json' if a.mode != 'dry-check' else 'DRY_CHECK.json'
+    M = horizon_of(request)
     if kind == 'artificial':
         outcome = artificial(request, out, a.mode)
+        if M is not None and outcome.get('identity'):
+            outcome['identity']['M'] = M
+    elif M is not None and M > 12:
+        outcome = dict(status='UNKNOWN', reason='OUTSIDE_VALIDATED_R3_SCALAR_EQUIVALENCE_DOMAIN',
+                       requested_M=M, MSE_lower=None, MSE_upper=None, scientific_evaluation_calls=0, identity=None)
     else:
         view = Path(request['route']['view'])
         route_views = json.loads(a.route_views.read_text()) if a.route_views else request['route'].get('route_views', {})
-        case, inputs = build(view, request);inputs = execution_profile(inputs, request);r = route(view, kind, route_views)
+        case, inputs = scoped_case(view, request);inputs = execution_profile(inputs, request);r = route(view, kind, route_views)
         stage(out, 'CASE_BUILT', template=inputs['template_source'])
         bounds = r.bounds(case['allocation']['shots'])
         if not in_scope(bounds, inputs['options']):
@@ -521,7 +617,7 @@ def main():
                 storage = (EVIDENCE.capture(writer, out / case['label'])
                            if writer is not None and request.get('execution_profile', {}).get('compact_q3_evidence') is True
                            else nullcontext())
-                with prefix_cache_context(request, case, inputs, out), TIMING.body_context(
+                with horizon_inputs(case.get('horizon_projection')), prefix_cache_context(request, case, inputs, out), TIMING.body_context(
                         sys.modules.get('trottertracks.rpe_total_dp_parallel'),out), r.installed(out), storage:
                     supervision = r.supervise([case], inputs, source, out)
                 stage(out, 'SCIENTIFIC_ROUTE_RETURNED')

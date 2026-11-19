@@ -53,6 +53,8 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
         layout.get('candidate_completion_source', resolved_source) + '^{commit}'], cwd=code_root, text=True).strip()
     worker_script = str(Path(layout.get('worker_script', code_root / 'scripts/run_rpe_q3_worker.py')).resolve())
     original_service = read(source_directory / 'SERVICE.json')
+    scaled_default = subprocess.run(['git', 'cat-file', '-e', resolved_source + ':src/trottertracks/rpe_scaled_shots.py'],
+                         cwd=code_root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
     output.mkdir(parents=True)
     profiles = {}
     for host, entry in layout['hosts'].items():
@@ -83,6 +85,13 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
         profile['slots'] = entry.get('slots', profile.get('slots', 1))
         for nested in profile.get('route_profiles', []):
             nested['profile']['work_dir'] = profile['work_dir']
+        if scaled_default:
+            # Use the fixed profiles prepared by prepare_rpe_auto_profiles.
+            # A worker with the old adapter cannot resolve a projected horizon.
+            for selected in [profile, *(rule['profile'] for rule in profile.get('route_profiles', []))]:
+                manifest = selected.get('adapter_manifest') or {}
+                if not selected.get('adapter_root') or manifest.get('commit') != resolved_source:
+                    raise ValueError('Scaled shots require Q3 adapter profiles at the new release SOURCE: ' + host)
         put(output / 'profiles' / (host + '.json'), profile)
         profiles[host] = profile
     holds = []
@@ -131,6 +140,8 @@ def prepare(source_directory, snapshot_manifest, layout, source, output):
     service.update(code_root=str(code_root), code_source=resolved_source, problem=str(output / 'PROBLEM.json'),
         round=str(output / 'ROUND.default.json'), python=layout['controller_python'],
         state_directory=layout['state_directory'], config_path=str(output / 'SERVICE.json'), entry='schedule')
+    if scaled_default:
+        service['scaled_shots_default'] = True
     service['absolute_kappa_route'].update(problem=service['problem'], round=str(output / 'ROUND.absolute-kappa.json'))
     if layout.get('publication'):
         service['publication'] = deepcopy(layout['publication'])

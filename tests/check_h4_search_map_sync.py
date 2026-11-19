@@ -39,6 +39,15 @@ class NormalMapSync(unittest.TestCase):
                         N_X=[2]*13, N_Y=[2]*13, status='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD', source=origin,
                         job=directory + '/jobs/PR_PAULI/J', formula='2nd', L_D=3, requested_delta_pf='1/5',
                         cost=dict(numerator=100, denominator=1))])})
+                if label == 'HOST_B':
+                    allocation = dict(N_X=[2]*12, N_Y=[2]*12, aliases=[dict(kind='GRID', value='2^(-3)')],
+                                      status='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD', cost=42)
+                    result['methods']['PR_PAULI'].update(
+                        search_range=dict(rule='RPE_SCALED_SHOTS_V1'),
+                        scaled_shots=dict(all_M_best=dict(M=11, cost=42)),
+                        by_configuration=[dict(configuration_id='SHORT_HORIZON', source_configuration_id='SAME_PHYSICAL',
+                            M=11, configuration=dict(L_D=3, formula='2nd', absolute_kappa='7/2'),
+                            best=allocation, minimum_status='GRID_MINIMUM_CONFIRMED', allocations=[allocation])])
                 p = put(directory + '/ROUND_RESULT.json', result)
                 validation = put(directory + '/PRICE_MODEL_VALIDATIONS.json', dict(
                     schema='RPE_PRICE_MODEL_VALIDATIONS_V1', models=[dict(model_id='frozen-shared',
@@ -76,6 +85,13 @@ class NormalMapSync(unittest.TestCase):
                 index = json.loads(index_path.read_text())
                 self.assertEqual(len(index['runs']), 2)
                 self.assertEqual(len(index['points']), 1)
+                run = next(row for row in index['runs'] if row.get('scaled_shots'))
+                scaled = run['scaled_shots']['PR_PAULI']
+                self.assertEqual(scaled['summary']['all_M_best'], dict(M=11, cost=42))
+                case = scaled['configurations'][0]
+                self.assertEqual(case['source']['selector'], ['methods', 'PR_PAULI', 'by_configuration', 0])
+                self.assertEqual(case['configuration']['absolute_kappa'], '7/2')
+                self.assertEqual(len(case['best']['N_X']), 12)
                 self.assertIn('independent-environment/publication', index['included_public_heads'])
                 point = index['points'][0]
                 self.assertEqual(len(point['occurrences']), 2)

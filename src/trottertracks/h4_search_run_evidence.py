@@ -252,6 +252,22 @@ def _run_result(reader, head, path, document, paths):
         if method not in METHODS or not isinstance(value, dict):
             continue
         run['status'][method] = value.get('stop_reason')
+        if (value.get('search_range') or {}).get('rule') == 'RPE_SCALED_SHOTS_V1' and value.get('scaled_shots'):
+            # Keep the controller's conditional quote and actual Q3 verdict
+            # separate from C's existing price admission/certification.
+            summaries = []
+            for i, row in enumerate(value.get('by_configuration') or []):
+                item = {k: deepcopy(row.get(k)) for k in ('configuration_id', 'source_configuration_id',
+                    'M', 'configuration', 'needs', 'minimum_status', 'unresolved_competitors', 'required_rounds',
+                    'best', 'comparison_best', 'comparison_delta_RZ')}
+                item['source'] = dict(source, selector=['methods', method, 'by_configuration', i])
+                item['allocation_states'] = dict()
+                for alloc in row.get('allocations') or []:
+                    state = alloc.get('status')
+                    item['allocation_states'][state] = item['allocation_states'].get(state, 0) + 1
+                summaries.append(item)
+            run.setdefault('scaled_shots', {})[method] = dict(
+                summary=deepcopy(value['scaled_shots']), configurations=summaries)
         for i, row in enumerate(value.get('not_ready_candidates', [])):
             run['targets'].append(_target(row, method, dict(source, selector=['methods', method, 'not_ready_candidates', i])))
         for i, name in enumerate((value.get('search_range') or {}).get('candidates', [])):

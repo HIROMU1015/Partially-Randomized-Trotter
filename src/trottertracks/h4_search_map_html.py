@@ -77,7 +77,10 @@ _PAGE = r'''<!doctype html>
 <header><div class="eyebrow">SAVED EVIDENCE · H₄ / RPE</div><h1>実際に探索した範囲を見る</h1><p class="sub">方式・要求幅・分割を切り替え、公開された物理構成とshot配分の評価範囲を確認します。価格は保存済みの条件付き参照費用です。</p></header>
 <div class="notice">結論の範囲は「収録した保存候補集合内」。全lawの平均compiled価格や正式G・winnerの新しい資格は与えません。新しい信号・Q3・compileは起動しません。</div>
 <section class="card"><div class="bar"><div><label for="view">表示範囲</label><select id="view"></select></div><div><label for="search">候補を絞る</label><input id="search" type="search" placeholder="configuration・公式・κ・配分"></div><button id="clear">絞り込み解除</button></div><p id="coverage" class="data-note"></p><div id="scope" class="run-scope"></div></section>
-<nav id="methods" class="tabs" aria-label="方式"></nav><div id="metrics" class="metrics"></div>
+<nav id="methods" class="tabs" aria-label="方式"></nav><details class="card" id="scaled-panel" hidden><summary>倍率格子の探索結果</summary>
+<p class="data-note">保存コントローラーの条件付き総RZ。格子内・比較専用・従来の自由配分を分けて表示します。</p>
+<div class="bar"><label>集約条件（L_D・公式・要求幅・M）<select id="scaled-group"></select></label></div>
+<div id="scaled-summary"></div><div id="scaled-rows" class="scroll"></div></details><div id="metrics" class="metrics"></div>
 <section class="card"><h2 id="map-title">探索範囲</h2><div id="grid" class="scroll"></div><div class="legend"><span><b style="background:var(--good)"></b>適合点あり</span><span><b style="background:var(--bad)"></b>評価済み・適合0件</span><span><b style="background:var(--warn)"></b>対象・未評価／元記録未取込</span><span><b style="background:#f5f6f8"></b>対象として未確認</span></div><p class="data-note">各マス：Q3評価済み物理構成数／評価配分数／適合配分数。最安値は接続済みの条件付き費用に限定。再利用は全run累計で1件です。「そのrunで新たに評価」は起動来歴の確認できるものだけを数えます。</p></section>
 <section id="detail" class="card" aria-live="polite"><h2>マスを選ぶと元結果を確認できます</h2><p class="muted">公式・κ・実schedule・X/Y配分・価格根拠・固定commitへたどれます。</p></section>
 <section class="card"><h2>収録run・固定SOURCE・未解決項目</h2><div id="sources"></div></section>
@@ -115,7 +118,65 @@ function showCell(c){let d=E('detail');d.replaceChildren();let h=el('div',null,'
  more.onclick=appendPage;appendPage();
  const ts=(c.target_ids||[]).map(id=>allTargets.get(id)).filter(Boolean);if(ts.length){let x=el('details');x.open=!ps.length;x.append(el('summary','探索対象・選択・不足記録 ('+ts.length+')'));for(const t of ts){let item=el('div',null,'item');field(item,'状態',t.status);field(item,'構成',t.configuration_id);field(item,'不足',t.missing);if(t.source)item.append(link(t.source));x.append(item)}d.append(x)}
 }
-function redraw(){const v=selected(), q=E('search').value.trim().toLowerCase();let cells=(v.cells||[]).filter(c=>c.method===method), filtered=new Set();if(q)cells=cells.filter(c=>{let ps=points(c);ps.forEach(p=>filtered.add(p.id));return ps.length||String(c.row_label+' '+c.width_label).toLowerCase().includes(q)});
+const gridStatus={MINIMUM_WITHIN_REGISTERED_CANDIDATES:'登録済み回路の範囲で格子内確定',GRID_MINIMUM_CONFIRMED:'この回路とMで格子内確定',EVALUATED_MINIMUM:'評価済み最安',
+ NO_GRID_POINT_MEETS_LIMIT:'格子内適合なし',NO_CONFIRMED_GRID_POINT:'適合未確認'};
+function scaledView(view){
+ const panel=E('scaled-panel'), filter=E('scaled-group'), host=E('scaled-rows'), summary=E('scaled-summary');
+ const runs=(D.runs||[]).filter(r=>(!view.run_id||r.id===view.run_id)&&r.scaled_shots?.[method]);
+ panel.hidden=!runs.length;host.replaceChildren();summary.replaceChildren();
+ if(!runs.length)return;
+ const groupLabel=r=>{
+  const c=r.configuration||{};
+  return [c.p==null?null:'p='+c.p,c.L_D==null?null:'L_D='+c.L_D,c.formula,
+   c.delta_pf==null?null:'Δ='+exact(c.delta_pf),c.delta_pf!=null||c.delta_over_h==null?null:'Δ/h='+c.delta_over_h,'M='+r.M].filter(Boolean).join(' · ');
+ };
+ const groups=[...new Set(runs.flatMap(r=>r.scaled_shots[method].configurations.map(groupLabel)))].sort();
+ const previous=filter.value;
+ filter.replaceChildren(el('option','すべて'));filter.firstChild.value='';
+ for(const label of groups){const option=el('option',label);option.value=label;filter.append(option)}
+ if(groups.includes(previous))filter.value=previous;
+ filter.onchange=()=>scaledView(view);
+ const q=E('search').value.trim().toLowerCase();
+ const table=el('table'), header=el('tr');
+ for(const name of ['run／回路条件','絶対κ','評価済み最小適合倍率','条件付き総RZ','状態','比較専用点・入力不足']){
+  header.append(el('th',name));
+ }
+ table.append(header);
+ for(const run of runs){
+  const {summary:s,configurations}=run.scaled_shots[method];
+  const card=el('details');card.append(el('summary',run.label));
+  field(card,'M=12の格子内',s.M12_best?.cost);
+  field(card,'全Mの格子内',s.all_M_best?.cost);
+  field(card,'集約状態',gridStatus[s.all_M_minimum_status]||s.all_M_minimum_status);
+  field(card,'比較専用の最安／格子内との差',s.comparison_only_best?fmt(s.comparison_only_best.cost)+' / '+fmt(s.comparison_only_delta_RZ):null);
+  field(card,'従来の保存配分（参照）',s.legacy_free_allocation_reference?.cost);
+  summary.append(card);
+  for(const row of configurations){
+   const label=groupLabel(row), c=row.configuration||{}, best=row.best, comp=row.comparison_best;
+   if((filter.value&&label!==filter.value)||(q&&!JSON.stringify([label,c.absolute_kappa,row.configuration_id]).toLowerCase().includes(q)))continue;
+   const tr=el('tr');tr.append(el('td',run.label+' · '+label),el('td',c.absolute_kappa??'—'));
+   const aliases=(best?.aliases||[]).filter(a=>a.kind==='GRID').map(a=>a.value);
+   const fit=el('td',aliases[0]||'—');
+   if(best){
+    const detail=el('details');detail.append(el('summary','配分・倍率の由来'));
+    for(const [key,value] of [['X',best.N_X],['Y',best.N_Y],['MSE下界',best.MSE_lower],
+       ['MSE上界',best.MSE_upper],['保存・新規',best.evidence],['倍率',best.aliases]])field(detail,key,value);
+    fit.append(detail);
+   }
+   tr.append(fit,el('td',fmt(best?.cost)),el('td',gridStatus[row.minimum_status]||row.minimum_status));
+   const notes=el('td');
+   if(comp)field(notes,'比較専用 ' + (comp.aliases||[]).map(a=>a.value).join('・'),
+       fmt(comp.cost)+' RZ （格子との差 '+fmt(row.comparison_delta_RZ)+'）');
+   if(row.needs?.length)field(notes,'準備待ち',row.needs);
+   if(row.required_rounds?.length)field(notes,'不足ラウンド',row.required_rounds);
+   if(row.allocation_states)field(notes,'配分の状態',row.allocation_states);
+   if(row.source)notes.append(link(row.source));
+   tr.append(notes);table.append(tr);
+  }
+ }
+ host.append(table);
+}
+function redraw(){const v=selected(), q=E('search').value.trim().toLowerCase();scaledView(v);let cells=(v.cells||[]).filter(c=>c.method===method), filtered=new Set();if(q)cells=cells.filter(c=>{let ps=points(c);ps.forEach(p=>filtered.add(p.id));return ps.length||String(c.row_label+' '+c.width_label).toLowerCase().includes(q)});
  E('map-title').textContent=labels[method]+' · '+({FULL_PF:'公式 × 要求幅',TRUNCATED_PF:'切り捨て位置p × 要求幅',PR_PAULI:'L_D × 要求幅',PR_DF:'L_D × 要求幅'}[method]);
  let pointsIds=new Set(cells.flatMap(c=>c.point_ids||[])), ps=[...pointsIds].map(id=>allPoints.get(id)).filter(Boolean).filter(p=>passes(p,q));let configs=new Set(ps.filter(p=>p.q3_status).map(p=>p.configuration_id));let metrics=[['Q3評価済み物理構成',configs.size],['評価した配分',ps.filter(p=>p.q3_status).length],['適合配分',ps.filter(p=>p.q3_status==='MODEL_BOUND_MEETS_ADOPTED_THRESHOLD').length],['記録未取込の対象',cells.reduce((n,c)=>n+(c.missing_count||0),0)]];E('metrics').replaceChildren(...metrics.map(([l,n])=>{let e=el('div',null,'metric');e.append(el('strong',n),el('span',l));return e}));
  E('scope').replaceChildren();let run=(D.runs||[]).find(r=>r.id===v.run_id);E('scope').append(el('strong',v.label||v.id||'全run累計'));if(run){field(E('scope'),'停止・進行状態',run.status);field(E('scope'),'実行host（保存metadata）',run.hosts);if(run.source)E('scope').append(link(run.source));if(run.missing?.length||run.issues?.length)field(E('scope'),'不足',run.missing||run.issues)}else E('scope').append(el('p','同じ構成・配分・評価契約の再検出／別runでの再利用は1件。母集合全体を網羅したとの主張ではありません。','data-note'));

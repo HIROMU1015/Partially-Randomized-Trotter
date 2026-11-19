@@ -109,7 +109,7 @@ def resolve(config, request):
     """Translate only settings that the selected normal entry actually consumes."""
     keys(request, {'scope', 'instruction', 'action', 'release', 'run_id'}, 'request')
     scope = deepcopy(request.get('scope') or {})
-    keys(scope, {'methods', 'per_method', 'shots', 'stop', 'preparation_budgets',
+    keys(scope, {'methods', 'per_method', 'shots', 'stop', 'preparation_budgets', 'scaled_shots',
                  'pbs_walltime_overrides'}, 'scope')
     problem = load(config['problem']); spec = load(config['round'])
     if config.get('release_manifest'):
@@ -223,6 +223,18 @@ def resolve(config, request):
             observed['kappa'] = dict(mode=mode, min=str(a), max=str(b))
         canonical['per_method'][method] = observed
     shots = scope.get('shots', 'auto')
+    if config.get('scaled_shots_default') is True or 'scaled_shots' in scope:
+        from . import rpe_scaled_shots as scaled
+        if shots != 'auto':
+            raise RequestError('scope.shots', 'scaled_shots determines the whole allocation')
+        if Fraction(problem['accuracy']['epsilon_E_decimal']) != Fraction(scaled.EPSILON):
+            raise RequestError('accuracy.epsilon_E_decimal', 'scaled search requires the saved R08 exact threshold')
+        try:
+            policy = scaled.settings(scope.get('scaled_shots'))
+        except (TypeError, ValueError) as error:
+            raise RequestError('scope.scaled_shots', str(error)) from error
+        canonical['scaled_shots'] = policy
+        spec.setdefault('search_overrides', {}).update(rule=scaled.RULE, scaled_shots=policy)
     if shots != 'auto':
         if not isinstance(shots, dict): raise RequestError('scope.shots', 'use auto or min/max_per_round')
         keys(shots, {'min', 'max_per_round'}, 'scope.shots')

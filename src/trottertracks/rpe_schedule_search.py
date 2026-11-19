@@ -218,7 +218,7 @@ def plan_wide(families, points, s=None, price_floor=None, *, price_floor_best=No
         # empirical upper stop
         ref = fbest['kappa'] if fbest else None
         above = [p for p in known if ref is None or p['kappa'] > ref]
-        tail = above[-s['upper_stop_steps']:] if len(above) >= s['upper_stop_steps'] else []
+        tail = above[-s['upper_stop_steps']:] if s.get('stop_by_observed_trend', True) and len(above) >= s['upper_stop_steps'] else []
         if fbest and tail:
             costs = [p['best'] if p['status'] == 'FEASIBLE' else None for p in tail]
             dear = all(c is None or c >= fbest['best'] * (1 + s['upper_stop_margin']) for c in costs)

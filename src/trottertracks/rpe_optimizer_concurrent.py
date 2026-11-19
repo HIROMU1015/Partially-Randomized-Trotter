@@ -2130,7 +2130,8 @@ class DistributedExecutor(ConcurrentExecutor):
                 raise ValueError('Successful outcome without a clean adapter exit')
             proposal = task.proposal if task else dict(configuration_id=row['request']['configuration_id'],
                 vector=O.interleave(row['request']['N_X'], row['request']['N_Y']))
-            validation = self.for_method(row['method']).ingest(transfer, proposal, calls=0)
+            owner = task.view if task and row['request']['route'].get('horizon_projection') else self.for_method(row['method'])
+            validation = owner.ingest(transfer, proposal, calls=0)
             if outcome['status'] in (O.PASS, O.FAIL, 'INCONCLUSIVE') and validation['status'] == 'UNKNOWN':
                 raise ValueError('Transferred outcome identity mismatch: '+str(validation.get('reason')))
             accepted, duplicate = self.store.complete(host, row['job_id'], row['attempt_id'], value['request_sha256'], value['files'])
