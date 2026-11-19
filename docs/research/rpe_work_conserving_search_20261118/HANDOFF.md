@@ -230,3 +230,24 @@ PBSの実Q3 `20654eb51a02ce12f289` は `267436.CPUcluster-PRISM` の12 CPU・49 
 新規run向けcurrentは `romutail-fleet-efficiency-b65a30d81-r2`、controller・PBS worker SOURCEは `b65a30d8155285b5612d8fb9a8808adadaec7d95`。RomuTail・server2・WSL・PBSに固定配置した。`-r2` ではPBS時間見積りの値を維持し、見積りpolicyが参照する輸送SOURCEを新workerに合わせた。通常Startの隔離人工run `search-0f04c0d6991998a0325c` は、同じ固定コードのPBS `267438.CPUcluster-PRISM` で人工Q3 4件と人工compile 1件、RomuTailで人工信号2件と監査1件を処理し、計8結果を各1回採用した。通常Resumeは `REUSED_COMPLETED`、追加割当・採用・PBS投入は各0件。PBSの終了コードは0。回帰92件とサブテスト3件が通過した。同一spoolを使う新旧allocationが1枠と6枠を別々に報告することは人工回帰で確認した。新版の実PBSでの96 CPU相当の飽和や実測効率は未計測。
 
 50 GiB上限に達したWSLでは中央保存分と同じhashの作業キャッシュを整理した。RomuTailでも回収済みbundleの重複コピーと、別の作業領域から参照されていない再生成用Gitキャッシュを、元bundleのhashを照合して整理した。結果、RomuTailは49,420,140,544 bytesとなり、上限を維持したまま受付可能に戻った。原結果、未回収・未確定の証拠を保全した。実機記録は `.rpe-central/deployment/romutail-fleet-efficiency-b65a30d81/LIVE_ACCEPTANCE.json` と同階層の容量回復記録を参照する。
+
+### 分散運用の完成条件と残件
+
+通常入口で探索範囲を一度指定し、RomuTailが保存成果との照合、候補選択、工程別の予約、割当、回収・採用、次候補選択、公開を進める。入力準備、信号、価格用compile、監査、Q3を、固定入力とruntimeが一致する空き枠に配る。PBSとserver2に同じ工程を配分できる条件を整え、PBSは適格な仕事に見合うCPUとRAMを確保する。RomuTailと受付中のRomulaptopも共通キューを使い、任意の実行先の離脱時は他の仕事を続ける。
+
+| 順序 | 残件 | 完了と判断する証拠 |
+| --- | --- | --- |
+| 1 | PBSのB0I価格用compile・独立検証compile。現行の割当先はserver2のみ。PBSで保存要求2件のGit bundle検証が不足オブジェクトでHOLD。 | 新規作業領域で両要求の固定SOURCE・全入力・runtimeを照合し、通常配送・回収を人工で検査する。実運用の受付追加は固定releaseに記録する。 |
+| 2 | PBSの新規信号、実compile、実監査から探索への引継ぎ。Q3の実回収と保存信号を使う準備、監査の保存入力照合は確認済み。PR-Pauliの価格用compileはRomuTail限定の固定profile。 | 実探索に必要になった未実施タスクで、方式・工程別にworkerの数値処理開始、正常終了、中央回収・採用、同一候補の次工程を確認する。PR-Pauli compileのPBS対応は既存の公開Git束縛と隔離runtimeを再現してから判断する。 |
+| 3 | PBSで複数工程を並行させたときの使用効率。12 CPU時の旧並列数持ち越しは修正済み。新版の実PBS実行は2 CPUの人工検収まで。 | 適格な仕事が十分にある区間で、確保CPU時間、実使用CPU時間、工程別完了件数、割当待ち、転送待ち、idle理由を測り、枠が埋まらない原因を特定する。100 CPUの使用上限を維持し、空いた割当は既存のdrainで返却する。 |
+| 4 | 全体の通し。直近の実検収はPR-PauliのQ3と各環境の一部工程を確認した。 | 一つの通常runで準備からQ3・公開まで追跡し、停止・再開やホスト切断後も同じ結果を二重採用せず、他ホストの探索が継続することを確認する。探索マップで結果を確認し、未対応セルを理由付きで残す。 |
+
+実環境の確認表はホスト×方式×工程で更新する。保存入力照合、人工の配送・回収、実処理と中央採用をそれぞれ記録する。既存の実結果・STOPと未確定attemptを保持し、検収のために同じ科学評価を再実行しない。工程が未確認の場合は候補、入力、runtime、資源、回収のどこで止まったかを記録する。
+
+PBS効率の比較起点は実検収の `267436.CPUcluster-PRISM`。PBSの終了統計は12 CPU、割当時間391秒、使用CPU時間338秒で、割当全体の利用は約7.2%。この割当では旧並列数の持ち越しがあり、輸送・準備の待ち時間も含む。次回は同じ統計に加え、適格な待機仕事がある区間と仕事を待っている区間を分けて記録する。
+
+B0Iの保存REQUESTは3件を比較した。RomuTailで失敗を記録した通常compile `prep-01d7ea983c7bb441b3d27e41`、server2で完了した独立検証compile `prep-2b918638d8153a9181da8b19` と通常compile `prep-f6e4f2f9b315d62a52dbed53`。PBSでは、旧bundleの前提commitを揃えた後にも展開に外部delta基底が必要だった。さらに保存REQUESTが参照する疎なcheckout外のデータを確認した。これらを約2.1 MiBの補助packとして作り、元bundleとREQUESTのhashを保持したまま、PBSの隔離領域で3件のSOURCE・Git入力21、31、24件・runtime（Qiskit 1.3.0）を照合した。記録と補助packは `.rpe-central/deployment/romutail-fleet-efficiency-b65a30d81-r2/PBS_PF_SAVED_INPUT_PARITY.json` と同名の `.pack` に保存した。関連回帰試験65件とサブテスト3件が通過した。
+
+通常compileと独立検証compileの新規REQUESTにも、既存の疎なworkspace用bundleを追加する修正を `da84fc28aa` に固定した。固定SOURCE、宣言済みの出力先とその上位、workflow、ライセンス、参照ファイルを読むためのGitオブジェクトを含む。保存済みREQUESTの変更を伴わない。次はこの配送を通常入口からPBSへの人工実行・回収へ接続する。実機の通常キューで受付が確認できた工程から、配置・新規releaseの採用・採択済み実探索の検収へ進む。
+
+保存REQUESTの3件では、上記と同じ範囲に出力先の上位ディレクトリを含め、PBSの隔離workspaceを展開できた。既存workerの固定SOURCE照合と出力先追加まで3件が通過した。旧bundleの補助packは3件で共用し、25,084,145 bytes。結果とpackは `PBS_PF_SAVED_WORKSPACE_PARITY.json` と同名の `.pack` に保存した。通常キューへの切替は未実施。今回の新規科学実行は0件。
