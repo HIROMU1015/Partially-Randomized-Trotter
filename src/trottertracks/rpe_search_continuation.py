@@ -60,6 +60,51 @@ def verify_retired_preparation_attempts(run):
     return verified
 
 
+def preparation_rejected_before_delivery(job):
+    """Recognize a local dispatch rejection with no worker-side execution."""
+    from .rpe_q3_coordinator import digest
+    from .rpe_release_deployment import manifest_reference
+
+    if not job.parent.name.startswith('PREPARATION:'):
+        return False
+    parent = job.parents[2]
+    queue = parent/'distributed/QUEUE.sqlite3'
+    if not queue.is_file():
+        return False
+    with sqlite3.connect(queue.resolve().as_uri()+'?mode=ro', uri=True) as db:
+        row = db.execute('''SELECT state, method, host_id, attempt_id, request_sha256, detail,
+            started_epoch, completed_epoch, adopted_epoch, completion_sha256, request
+            FROM jobs WHERE job_id=?''', (job.name,)).fetchone()
+    if not row or row[0:2] != ('UNKNOWN', job.parent.name) or any(x is not None for x in row[6:10]):
+        return False
+    if json.loads(row[5]) != dict(reason='PREPARATION_DISPATCH_VALIDATION_REJECTED_BEFORE_DELIVERY',
+                                  automatic_retry=False, resource_released=True):
+        return False
+    if not (parent/'EXIT.json').is_file() or not (parent/'STOP_REQUESTED.json').is_file():
+        return False
+    if (load(parent/'LAUNCH.json')['invocation_id'] != load(parent/'EXIT.json')['invocation_id']
+            or load(parent/'distributed/relay/STATUS.json').get('stopped') is not True):
+        return False
+    request = load(job/'REQUEST.json')
+    owner = load(job/'LAUNCH.json')
+    dist = load(parent/'ROUND.requested.json')['executor']['distributed']
+    worker = dist['local_worker']
+    work_dir = Path(worker['work_dir'])
+    if ((row[2], row[3], row[4]) != (worker['host_id'], owner['attempt_id'], digest(request))
+            or json.loads(row[10]) != request
+            or owner['host_id'] != row[2] or not work_dir.is_dir()
+            or (work_dir/job.name).exists() or (parent/'distributed/transfers'/job.name).exists()
+            or set(p.name for p in job.iterdir()) != {'REQUEST.json', 'LAUNCH.json'}):
+        return False
+    stage = request['preparation']['stage']
+    source = request['preparation']['source']['commit']
+    manifest = load(Path(dist['release_manifest']))
+    return (row[1] == 'PREPARATION:'+stage and bool(dist.get('local_deployment_layout'))
+            and dist.get('required_release') == manifest_reference(manifest)
+            and not any(manifest['components'][name]['source'] == source
+                        for name in manifest['stage_components'].get(stage, [])))
+
+
 def verify_prior_q3_holds(root, run, problem, spec):
     """Keep an unresolved prior evaluation out of both reuse and new dispatch."""
     from .rpe_q3_coordinator import digest

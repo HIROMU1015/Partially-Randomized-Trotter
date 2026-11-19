@@ -697,7 +697,8 @@ class Gateway:
         import run_rpe_method_optimizer as CLI
         root=Path(self.config['code_root'])
         fixed_implementation(self.config)
-        from .rpe_search_continuation import verify_prior_q3_holds, verify_retired_preparation_attempts
+        from .rpe_search_continuation import (preparation_rejected_before_delivery,
+                                              verify_prior_q3_holds, verify_retired_preparation_attempts)
         prior_holds = verify_prior_q3_holds(root,run,problem,spec)
         retired_preparation = verify_retired_preparation_attempts(run)
         scoped = CLI.price_overrides(CLI.scoped(problem,spec.get('method_overrides')),spec)
@@ -728,6 +729,7 @@ class Gateway:
         loaded, refused = {}, []
         missing=[str(p) for p in spec.get('executor',{}).get('prior_run_dirs',[]) if not Path(p).is_dir()]
         in_progress=[]
+        rejected_before_delivery=[]
         ids={c['configuration_id'] for c in context['candidates'] if c['method'] in spec['methods']}
         for directory in spec.get('executor',{}).get('prior_run_dirs',[]):
             prior_root=Path(directory)
@@ -742,7 +744,10 @@ class Gateway:
                 if job.resolve() in retired_preparation:continue
                 if (job/'LAUNCH.json').exists() or (job/'STARTING.json').exists():
                     if load(path).get('configuration_id') in ids and str(job.resolve()) not in prior_holds:
-                        in_progress.append(str(job))
+                        if preparation_rejected_before_delivery(job):
+                            rejected_before_delivery.append(str(job))
+                        else:
+                            in_progress.append(str(job))
         for method in spec['methods']:
             known, rejected = ex.for_method(method).prior_records(context['candidates'])
             loaded[method]=len(known);refused.extend(dict(method=method,**r) for r in rejected)
@@ -752,6 +757,7 @@ class Gateway:
             'DIFFERENT_JOB_KEY_OR_ROUTE','PRIOR_Q3_PERSISTENCE_HOLD')]
         return dict(status='HOLD' if holds or missing or in_progress else 'PASS',section='10.5',reused=loaded,refused=refused,missing_prior_run_dirs=missing,owned_unresolved_prior_jobs=in_progress,
             prior_q3_holds=list(prior_holds.values()),retired_preparation_holds=sorted(str(path) for path in retired_preparation),
+            prior_preparation_rejected_before_delivery=sorted(rejected_before_delivery),
             checked_prior_run_dirs=spec.get('executor',{}).get('prior_run_dirs',[]),
             normal_ingest='Executor.prior_records/ingest',scientific_calls=0)
 
