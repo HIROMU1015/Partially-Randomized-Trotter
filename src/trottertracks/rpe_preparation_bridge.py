@@ -36,6 +36,35 @@ trottertracks.__path__.insert(0, str(view/'src'/'trottertracks'))
 runpy.run_path(str(runner), run_name='__main__')
 """
 
+_PF_STEP_INPUTS = """
+import json
+from pathlib import Path
+import sys
+
+root, payload = map(Path, sys.argv[1:])
+sys.path.insert(0, str(root/'src'))
+from trottertracks import pf_evidence_preparation as E
+
+prepared = json.loads(payload.read_bytes())['value']['prepared']
+prefix = prepared['configuration']['spec']['L_D']
+inputs = [E.scalar_source(prefix)] if prefix < 10 else []
+if prefix in (7, 8, 9):
+    inputs.append(E.ref(E.PS.T2_SOURCE, E.PS.T2_DIR+'CELLS.csv'))
+elif prefix == 10:
+    inputs.extend([E.ref(E.F.FULL, 'docs/research/h4_full_pf_heff_scan_preparation_20261114/PLAN.json'),
+                   E.ref(E.F.FULL, E.F.FULLDIR+'C_HANDOFF.json')])
+for descriptor in E.saved_step_descriptors(root, prepared):
+    inputs.extend(descriptor[name] for name in ('operator_source', 'scope_source', 'summary_source'))
+print(json.dumps(inputs))
+"""
+
+_PF_NATIVE_GUARD_INPUTS = tuple(
+    dict(commit='c31ef424175c02379eafebe8fc6c7548c1d9aabe', path=path) for path in (
+        'src/trotterlib/df_trotter/ops.py',
+        'src/trottertracks/resource_applicability/ax2b_native_df_v5.py',
+        'src/trottertracks/resource_applicability/h6_hash_reuse_v1.py',
+        'src/trotterlib/rte_compiled_cost.py'))
+
 
 STAGES = {
     'PAULI_SIGNALS': 'signal', 'DF_SIGNALS': 'signal',
@@ -597,6 +626,13 @@ class DistributedPreparationBridge:
                     inputs.update(self._capture(Path(private), 'private'))
         inputs.update(self._capture(directory, 'workspace/' + relative))
         original_documents=list(pauli_locators)
+        if script.name == 'run_pf_preparation_stage.py':
+            if stage == 'PF_SIGNALS':
+                payload = command[command.index('--input')+1]
+                original_documents.extend(json.loads(subprocess.check_output(
+                    [command[0], '-B', '-c', _PF_STEP_INPUTS, str(root), payload], cwd=root)))
+            elif stage in ('PF_COMPILE', 'PF_HOLDOUT_COMPILE', 'PF_AUDIT', 'PF_HOLDOUT_AUDIT'):
+                original_documents.extend(_PF_NATIVE_GUARD_INPUTS)
         for name,sha in inputs.items():
             if name.endswith('.json'):
                 try:document=json.loads(self.executor.artifact_cache.path(sha).read_bytes())

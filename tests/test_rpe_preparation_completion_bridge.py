@@ -209,6 +209,7 @@ class CompletionBridgeTests(unittest.TestCase):
                 support = provider/filename
                 support.parent.mkdir(parents=True, exist_ok=True)
                 support.write_text('fixture: '+filename+'\n')
+            (provider/'requirements.txt').write_text('openfermionpyscf==0.5\nopenfermion==1.6.1\npyscf==2.7.0\n')
             git('add','.');git('commit','-qm','fixed PF fixture');source=git('rev-parse','HEAD')
             wrapper=transport/'wrapper.py';wrapper.write_text('# transport adapter fixture\n')
             d=provider/'docs/owned';d.mkdir(parents=True);C.put(d/'REQUEST.json',{'scope':'fixture'})
@@ -217,6 +218,8 @@ class CompletionBridgeTests(unittest.TestCase):
             completion=type('Completion',(),{'source':source,'preparation_root':provider,
                 'preparation_source_manifest':{'commit':source,'files':files}})()
             task=bridge.build_request(completion,[sys.executable,'-B',str(wrapper),'--input',str(d/'REQUEST.json')],d,'PF_COMPILE')
+            self.assertEqual(task['preparation']['runtime_requirements']['packages'],
+                             {'openfermionpyscf': '0.5', 'openfermion': '1.6.1', 'pyscf': '2.7.0'})
             self.assertEqual(task['preparation']['source'],{'commit':source,'files':files})
             self.assertEqual(task['preparation']['path_bindings'][str(transport)],'@TRANSPORT@')
             support_bundle, = [x for x in task['preparation']['input_git_bundles'] if x.get('workspace_objects')]
