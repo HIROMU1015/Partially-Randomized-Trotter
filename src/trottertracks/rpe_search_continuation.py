@@ -22,31 +22,41 @@ def verify_retired_preparation_attempts(run):
     carried = handoff.get('retired_preparation_attempts', {})
     if not carried:
         return {}
-    parent = Path(handoff['parent_directory']).resolve()
-    stopped = (load(parent/'LAUNCH.json')['invocation_id'] == load(parent/'EXIT.json')['invocation_id']
-               and load(parent/'distributed/relay/STATUS.json').get('stopped') is True)
-    if parent == run.resolve() or not stopped:
-        raise ValueError('Retired preparation attempts require a stopped parent')
+    def entry(directory, job):
+        with sqlite3.connect((directory/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro', uri=True) as db:
+            return db.execute('SELECT method, host_id, attempt_id, request_sha256, request, state, detail '
+                              'FROM jobs WHERE job_id=?', (job,)).fetchone()
+
     verified = {}
-    with sqlite3.connect((parent/'distributed/QUEUE.sqlite3').as_uri()+'?mode=ro', uri=True) as old, \
-         sqlite3.connect((run/'distributed/QUEUE.sqlite3').resolve().as_uri()+'?mode=ro', uri=True) as new:
-        for job, hold in carried.items():
-            query = ('SELECT method, host_id, attempt_id, request_sha256, request, state, detail '
-                     'FROM jobs WHERE job_id=?')
-            row = old.execute(query, (job,)).fetchone()
-            receipt = hold['allocation_receipt']
-            allocations = load(parent/'distributed/pbs/STATE.json')['allocations'].values()
-            known_allocation = any(a['spec']['profile']['host_id'] == 'pbs-0' and
-                                   a.get('observed', {}).get('job_id') == receipt['pbs_job_id']
-                                   for a in allocations)
-            if (not row or row != new.execute(query, (job,)).fetchone()
-                    or not row[0].startswith('PREPARATION:')
-                    or row[1:4] != ('pbs-0', hold['attempt_id'], hold['request_sha256'])
-                    or row[5] != 'UNKNOWN' or json.loads(row[6]).get('automatic_retry') is not False
-                    or digest(json.loads(row[4])) != row[3] or not known_allocation
-                    or receipt['job_state'] not in ('F', 'X')):
+    for job, hold in carried.items():
+        row = entry(run, job)
+        receipt = hold['allocation_receipt']
+        if (not row or not row[0].startswith('PREPARATION:')
+                or row[1:4] != ('pbs-0', hold['attempt_id'], hold['request_sha256'])
+                or row[5] != 'UNKNOWN' or json.loads(row[6]).get('automatic_retry') is not False
+                or digest(json.loads(row[4])) != row[3] or receipt['job_state'] not in ('F', 'X')):
+            raise ValueError('Retired preparation ownership differs: '+job)
+        parent = Path(handoff['parent_directory']).resolve()
+        visited = {run.resolve()}
+        while True:
+            if (parent in visited or load(parent/'LAUNCH.json')['invocation_id'] != load(parent/'EXIT.json')['invocation_id']
+                    or load(parent/'distributed/relay/STATUS.json').get('stopped') is not True):
+                raise ValueError('Retired preparation attempts require a stopped parent')
+            if entry(parent, job) != row:
                 raise ValueError('Retired preparation ownership differs: '+job)
             verified[(parent/'jobs'/row[0]/job).resolve()] = (job, row[2])
+            allocations = load(parent/'distributed/pbs/STATE.json')['allocations'].values()
+            if any(a['spec']['profile']['host_id'] == 'pbs-0' and
+                   a.get('observed', {}).get('job_id') == receipt['pbs_job_id'] for a in allocations):
+                break
+            # A successor can carry the same retired attempt across another
+            # handoff. Its terminal allocation remains in the original run.
+            lineage = parent/'RUN_LINEAGE.json'
+            previous = load(lineage) if lineage.is_file() else {}
+            if previous.get('retired_preparation_attempts', {}).get(job) != hold:
+                raise ValueError('Retired preparation ownership differs: '+job)
+            visited.add(parent)
+            parent = Path(previous['parent_directory']).resolve()
     return verified
 
 

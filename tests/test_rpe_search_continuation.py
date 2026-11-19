@@ -81,6 +81,22 @@ class ContinuationTests(unittest.TestCase):
         record = dict(parent_directory=str(self.original), retired_preparation_attempts={'prep-123': hold})
         lineage.write_text(json.dumps(record))
         self.assertEqual(list(verify_retired_preparation_attempts(self.successor).values()), [('prep-123', 'attempt')])
+        next_run = self.root/'search-next'
+        (next_run/'distributed').mkdir(parents=True)
+        (self.successor/'distributed/relay').mkdir()
+        (self.successor/'distributed/pbs').mkdir()
+        for name in ('LAUNCH.json', 'EXIT.json', 'distributed/relay/STATUS.json'):
+            (self.successor/name).write_bytes((self.original/name).read_bytes())
+        (self.successor/'distributed/pbs/STATE.json').write_text(json.dumps({'allocations': {}}))
+        db = 'distributed/QUEUE.sqlite3'
+        (next_run/db).write_bytes((self.successor/db).read_bytes())
+        (next_run/'RUN_LINEAGE.json').write_text(json.dumps(dict(record, parent_directory=str(self.successor))))
+        self.assertEqual(set(verify_retired_preparation_attempts(next_run)),
+                         {p/'jobs/PREPARATION:signal/prep-123' for p in (self.successor,self.original)})
+        with sqlite3.connect(self.successor/db) as connection:
+            connection.execute("UPDATE jobs SET attempt_id='different'")
+        with self.assertRaisesRegex(ValueError, 'Retired preparation ownership differs'):
+            verify_retired_preparation_attempts(next_run)
         hold['allocation_receipt']['job_state'] = 'R'
         lineage.write_text(json.dumps(record))
         with self.assertRaisesRegex(ValueError, 'Retired preparation ownership differs'):
