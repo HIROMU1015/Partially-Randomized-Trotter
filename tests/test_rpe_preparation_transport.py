@@ -63,6 +63,47 @@ class PreparationTransportTests(unittest.TestCase):
                 prices._publish_compile_binding(workspace,candidate)
             self.assertEqual(git('ls-remote','--heads','origin','codex/rpe-pauli-binding-prep-test-a1').split()[0],published)
 
+    def test_pauli_group_publication_excludes_each_groups_raw_result(self):
+        spec=importlib.util.spec_from_file_location('pauli_candidate_prices',ROOT/'scripts/run_pr_pauli_candidate_prices.py')
+        prices=importlib.util.module_from_spec(spec);spec.loader.exec_module(prices)
+        workspace=self.root/'source'
+        git=lambda *args:subprocess.check_output(['git',*args],cwd=workspace,text=True).strip()
+        bare=self.root/'publication.git'
+        git('clone','--bare',str(workspace),str(bare))
+        git('config','user.name','Test');git('config','user.email','test@example.invalid')
+        base=self.source['commit']; reference='refs/heads/codex/fixed-provider'
+        subprocess.run(['git','-C',str(bare),'update-ref',reference,base],check=True)
+        env=P.prepare_pauli_binding_publication(dict(pauli_binding_publication=dict(origin=str(bare),base_ref=reference)),
+                                                dict(job_id='prep-test',attempt_id='a2'),workspace,base)
+        request=dict(workspace=str(workspace),directory='docs/research/d2_automatic_price_20261116/test',
+                     private_root=str(self.root/'private'),scoped_registration=True,configuration={'id':'artificial'})
+        raw_commits=[]
+
+        def synthetic_group(child, *, execute, push, **options):
+            if not execute:
+                return {'calibration_requests':[{'request_id':'test:'+x}for x in ('first','second')]}
+            self.assertEqual(git('rev-parse','HEAD'),base)
+            group=workspace/child['directory'];group.mkdir(parents=True)
+            binding=group/'BINDING.json';binding.write_text('{}\n')
+            prices.OPS.commit(workspace,[binding],'Freeze artificial binding')
+            prices._publish_compile_binding(workspace,group)
+            result=group/'RAW.json';result.write_text('{}\n')
+            raw_commits.append(prices.OPS.commit(workspace,[result],'Save artificial raw result'))
+            return {'status':'COMPILE_READY_FOR_AUDIT'}
+
+        with patch.dict(os.environ,env),patch.object(prices,'_run_one',side_effect=synthetic_group):
+            result=prices.run(request,execute=True,push=False,phase='compile',publish_binding=True)
+        self.assertEqual(result['status'],'STEP_COMPILES_READY_FOR_AUDIT')
+        self.assertEqual(git('branch','--show-current'),'codex/rpe-pauli-binding-prep-test-a2')
+        published=git('ls-remote','--heads','origin','codex/rpe-pauli-binding-prep-test-a2*').splitlines()
+        self.assertEqual(len(published),2)
+        for line in published:
+            files=git('diff','--name-only',base,line.split()[0]).splitlines()
+            self.assertEqual([Path(path).name for path in files],['BINDING.json'])
+        for commit in raw_commits:
+            git('merge-base','--is-ancestor',commit,'HEAD')
+        self.assertEqual(len(list((workspace/request['directory']).rglob('RAW.json'))),2)
+
     def profile(self,host):
         return dict(host_id=host,root=str(self.root/'source'),interpreter=sys.executable,
                     work_dir=str(self.root/host/'spool'),slots=1,dp_workers=1)

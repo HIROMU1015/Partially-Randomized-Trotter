@@ -303,18 +303,40 @@ def run(request,*,execute=False,push=True,phase='all',publish_binding=False):
     if plan.get('status')=='PRICES_READY'or not execute:return plan
     if plan.get('needs')or not plan.get('calibration_requests'):
         return dict(plan,status='WAITING_PRICE_EVIDENCE')
-    if publish_binding and len(plan['calibration_requests']) != 1:
-        return dict(plan,status='HELD_PAULI_BINDING_REQUIRES_INDEPENDENT_CALIBRATION_GROUPS')
     packages=[];results=[]
-    for group in plan['calibration_requests']:
-        child=dict(request,group_request_id=group['request_id'],
-            directory=str(Path(request['directory'])/'step_groups'/group['request_id'].split(':')[-1][:24]),
-            private_root=str(Path(request['private_root'])/'step_groups'/group['request_id'].split(':')[-1][:24]))
-        result=(_run_one(child,execute=True,push=push)if phase=='all'
-                else _run_one(child,execute=True,push=push,phase=phase,publish_binding=publish_binding));results.append(result)
-        if result.get('status')not in('SCOPED_STEP_MODEL_READY','PRICES_READY','COMPILE_READY_FOR_AUDIT'):
-            return dict(plan,status=result['status'],group_results=results,evidence_packages=packages)
-        packages.extend(result.get('evidence_packages',[]))
+    groups=plan['calibration_requests']
+    separate_branches=publish_binding and len(groups)>1
+    branches=[]
+    if separate_branches:
+        workspace=Path(runtime_request(request,('workspace',))['workspace']).resolve()
+        attempt_branch=OPS.git(workspace,'branch','--show-current')
+        public_base=os.environ['RPE_PAULI_BINDING_PUBLIC_BASE']
+        if (not attempt_branch.startswith('codex/rpe-pauli-binding-')
+                or OPS.git(workspace,'rev-parse','HEAD')!=public_base):
+            raise ValueError('The Pauli preparation attempt does not own the fixed public base')
+    try:
+        for index,group in enumerate(groups):
+            if separate_branches:
+                branch=f'{attempt_branch}-group-{index+1}'
+                OPS.git(workspace,'switch','-c',branch,public_base)
+            child=dict(request,group_request_id=group['request_id'],
+                directory=str(Path(request['directory'])/'step_groups'/group['request_id'].split(':')[-1][:24]),
+                private_root=str(Path(request['private_root'])/'step_groups'/group['request_id'].split(':')[-1][:24]))
+            result=(_run_one(child,execute=True,push=push)if phase=='all'
+                    else _run_one(child,execute=True,push=push,phase=phase,publish_binding=publish_binding))
+            results.append(result)
+            if result.get('status')not in('SCOPED_STEP_MODEL_READY','PRICES_READY','COMPILE_READY_FOR_AUDIT'):
+                return dict(plan,status=result['status'],group_results=results,evidence_packages=packages)
+            if separate_branches:
+                branches.append(branch)
+            packages.extend(result.get('evidence_packages',[]))
+    finally:
+        if separate_branches:
+            # Only each group's input and binding commits are public. Join
+            # the group result histories on the private, collectable attempt.
+            OPS.git(workspace,'switch',attempt_branch)
+            if branches:
+                OPS.git(workspace,'merge','--no-edit','--no-ff',*branches)
     return dict(schema='PR_PAULI_CANDIDATE_PRICES_V1',status='STEP_COMPILES_READY_FOR_AUDIT'if phase=='compile'else'STEP_MODELS_READY',
                 configuration_id=request['configuration']['id'],group_results=results,evidence_packages=packages,
                 legacy_registry_modified=False,automatic_retry=False)
