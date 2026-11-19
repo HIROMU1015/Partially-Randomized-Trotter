@@ -80,7 +80,12 @@ def runtime():
             if loaded is not None and Path(loaded.__file__).read_bytes()!=blob(VIEW_COMMIT,relative):
                 raise ValueError('Already loaded DF helper SOURCE differs: '+helper)
         spec=importlib.util.spec_from_file_location('_candidate_df_price_worker',FIXED_VIEW/path)
-        R=importlib.util.module_from_spec(spec);sys.modules[spec.name]=R;spec.loader.exec_module(R)
+        R=importlib.util.module_from_spec(spec);sys.modules[spec.name]=R
+        # The verified legacy module reads fixed Git objects during import.
+        # Resolve those reads in the attempt checkout from the first line;
+        # the external view only supplies the verified Python source bytes.
+        R.__file__=str(ROOT/path)
+        exec(compile((FIXED_VIEW/path).read_bytes(),str(FIXED_VIEW/path),'exec'),R.__dict__)
     finally:
         sys.path[:]=old_path;trottertracks.__path__[:]=old_package_path
     R.ROOT=ROOT;RUNTIME=R;return R
