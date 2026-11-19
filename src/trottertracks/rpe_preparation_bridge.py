@@ -626,6 +626,15 @@ class DistributedPreparationBridge:
             combined=root_bundles+workspace['input_git_bundles']
             workspace['input_git_bundles']=list({item['sha256']:item for item in combined}.values())
         requirements,compiler_bindings=contract_runtime(runtime_inputs,script,self.settings.get('runtime_requirements', {}).get(STAGES[stage], {}))
+        if stage in ('PF_SIGNALS', 'PF_COMPILE', 'PF_HOLDOUT_COMPILE'):
+            pins = subprocess.check_output(['git', 'show', source+':requirements.txt'], cwd=root, text=True)
+            packages = requirements['packages']
+            for line in pins.splitlines():
+                name, separator, version = line.partition('==')
+                if separator and name in ('openfermionpyscf', 'openfermion', 'pyscf'):
+                    if packages.get(name) not in (None, version):
+                        raise ValueError('Preparation runtime version conflicts with fixed PF SOURCE: '+name)
+                    packages[name] = version
         if (stage == 'DF_SIGNALS' and script.name == 'run_pr_df_candidate_signal_jobs.py'
                 and not getattr(completion, 'settings', {}).get('df_signal_source')):
             position = command.index(str(script))
